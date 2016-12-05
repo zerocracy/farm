@@ -16,6 +16,7 @@
  */
 package com.zerocracy.crews.gh;
 
+import com.jcabi.github.Comment;
 import com.jcabi.github.Coordinates;
 import com.jcabi.github.Github;
 import com.jcabi.github.Issue;
@@ -82,7 +83,8 @@ public final class GithubCrew implements Crew {
             this.employ(farm, event);
         }
         req.uri()
-            .queryParam("last_read_at", since).back()
+            .queryParam("last_read_at", new Github.Time(new Date()).toString())
+            .back()
             .method(Request.PUT)
             .body().set("{}").back()
             .fetch()
@@ -101,16 +103,25 @@ public final class GithubCrew implements Crew {
         final Coordinates coords = new Coordinates.Simple(
             event.getJsonObject("repository").getString("full_name")
         );
+        final JsonObject subject = event.getJsonObject("subject");
         final Issue issue = this.github.repos().get(coords).issues().get(
             Integer.parseInt(
                 StringUtils.substringAfterLast(
-                    event.getJsonObject("subject").getString("url"),
+                    subject.getString("url"),
+                    "/"
+                )
+            )
+        );
+        final Comment comment = issue.comments().get(
+            Integer.parseInt(
+                StringUtils.substringAfterLast(
+                    subject.getString("latest_comment_url"),
                     "/"
                 )
             )
         );
         farm.find(coords.toString()).iterator().next().employ(
-            new StkHello(issue)
+            new StkHello(comment)
         );
     }
 }

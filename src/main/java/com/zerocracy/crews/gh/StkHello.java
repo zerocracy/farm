@@ -16,7 +16,7 @@
  */
 package com.zerocracy.crews.gh;
 
-import com.jcabi.github.Issue;
+import com.jcabi.github.Comment;
 import com.jcabi.log.Logger;
 import com.zerocracy.jstk.Stakeholder;
 import java.io.IOException;
@@ -31,25 +31,40 @@ import java.io.IOException;
 public final class StkHello implements Stakeholder {
 
     /**
-     * Issue to talk in.
+     * Comment just posted.
      */
-    private final Issue issue;
+    private final Comment.Smart comment;
 
     /**
      * Ctor.
-     * @param iss Issue in GitHub
+     * @param cmt Comment in GitHub
      */
-    public StkHello(final Issue iss) {
-        this.issue = iss;
+    public StkHello(final Comment cmt) {
+        this(new Comment.Smart(cmt));
+    }
+
+    /**
+     * Ctor.
+     * @param cmt Comment in GitHub
+     */
+    public StkHello(final Comment.Smart cmt) {
+        this.comment = cmt;
     }
 
     @Override
     public void work() throws IOException {
-        this.issue.comments().post("hey, how are you?");
+        this.comment.issue().comments().post(
+            String.format(
+                "> %s\n\n@%s hey, how are you?",
+                this.comment.body(),
+                this.comment.author()
+            )
+        );
         Logger.info(
-            this, "hello at %s#%d",
-            this.issue.repo().coordinates(),
-            this.issue.number()
+            this, "hello at %s#%d/%d",
+            this.comment.issue().repo().coordinates(),
+            this.comment.issue().number(),
+            this.comment.number()
         );
     }
 }
