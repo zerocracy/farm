@@ -21,7 +21,7 @@ release:
     mvn versions:set "-DnewVersion=${tag}"
     git commit -am "${tag}"
     cp ../settings.xml settings.xml
-    mvn clean package -Pqulice -Pzerocracy --errors --batch-mode
+    mvn clean package -Pqulice -Pzc-farm --errors --batch-mode
     git remote add heroku git@heroku.com:zc-farm.git
     mkdir ~/.ssh
     mv ../id_rsa ../id_rsa.pub ~/.ssh
