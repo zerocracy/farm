@@ -57,7 +57,7 @@ public final class StkHello implements Stakeholder {
             String.format(
                 "> %s\n\n@%s hey, how are you?",
                 this.comment.body(),
-                this.comment.author()
+                this.comment.author().login()
             )
         );
         Logger.info(

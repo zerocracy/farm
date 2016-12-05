@@ -112,16 +112,21 @@ public final class GithubCrew implements Crew {
                 )
             )
         );
-        final Comment comment = issue.comments().get(
-            Integer.parseInt(
-                StringUtils.substringAfterLast(
-                    subject.getString("latest_comment_url"),
-                    "/"
+        final Comment.Smart comment = new Comment.Smart(
+            issue.comments().get(
+                Integer.parseInt(
+                    StringUtils.substringAfterLast(
+                        subject.getString("latest_comment_url"),
+                        "/"
+                    )
                 )
             )
         );
-        farm.find(coords.toString()).iterator().next().employ(
-            new StkHello(comment)
-        );
+        if (!this.github.users().self().login()
+            .equals(comment.author().login())) {
+            farm.find(coords.toString()).iterator().next().employ(
+                new StkHello(comment)
+            );
+        }
     }
 }
