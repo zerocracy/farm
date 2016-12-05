@@ -1,1 +1,4 @@
+Zerocracy-Revision: BUILD
+Zerocracy-Version: ${project.version}
+Zerocracy-Date: ${timestamp}
 
