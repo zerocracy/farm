@@ -83,7 +83,7 @@ public final class GithubCrew implements Crew {
             this.employ(farm, event);
         }
         req.uri()
-            .queryParam("last_read_at", new Github.Time(new Date()).toString())
+            .queryParam("last_read_at", since)
             .back()
             .method(Request.PUT)
             .body().set("{}").back()
