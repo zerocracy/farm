@@ -19,7 +19,6 @@ package com.zerocracy.farm;
 import com.jcabi.github.RtGithub;
 import com.zerocracy.crews.gh.GithubCrew;
 import java.io.IOException;
-import javax.validation.constraints.NotNull;
 import org.takes.http.Exit;
 import org.takes.http.FtCli;
 import org.takes.tk.TkText;
@@ -42,7 +41,7 @@ public final class Main {
      * Ctor.
      * @param args Command line arguments
      */
-    public Main(@NotNull final String... args) {
+    public Main(final String... args) {
         this.arguments = args;
     }
 
