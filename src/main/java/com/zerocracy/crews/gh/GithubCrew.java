@@ -75,7 +75,7 @@ public final class GithubCrew implements Crew {
                 ).spliterator(),
                 false
             )
-//            .filter(json -> "mention".equals(json.getString("reason")))
+            .filter(json -> "mention".equals(json.getString("reason")))
             .collect(Collectors.toList());
         Logger.info(this, "%d GitHub events found", events.size());
         for (final JsonObject event : events) {

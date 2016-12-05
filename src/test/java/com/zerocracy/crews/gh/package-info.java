@@ -14,42 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.crews.gh;
-
-import com.jcabi.github.Issue;
-import com.jcabi.log.Logger;
-import com.zerocracy.jstk.Stakeholder;
-import java.io.IOException;
 
 /**
- * He just says hello.
+ * GitHub crew, tests.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class StkHello implements Stakeholder {
-
-    /**
-     * Issue to talk in.
-     */
-    private final Issue issue;
-
-    /**
-     * Ctor.
-     * @param iss Issue in GitHub
-     */
-    public StkHello(final Issue iss) {
-        this.issue = iss;
-    }
-
-    @Override
-    public void work() throws IOException {
-        this.issue.comments().post("hey, how are you?");
-        Logger.info(
-            this, "hello at %s#%d",
-            this.issue.repo().coordinates(),
-            this.issue.number()
-        );
-    }
-}
+package com.zerocracy.crews.gh;
