@@ -22,11 +22,13 @@ import com.jcabi.github.Issue;
 import com.jcabi.github.RtPagination;
 import com.jcabi.http.Request;
 import com.jcabi.http.response.RestResponse;
+import com.jcabi.log.Logger;
 import com.zerocracy.jstk.Crew;
 import com.zerocracy.jstk.Farm;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import javax.json.JsonObject;
@@ -62,7 +64,7 @@ public final class GithubCrew implements Crew {
         ).toString();
         final Request req = this.github.entry()
             .uri().path("/notifications").back();
-        final Iterable<JsonObject> events =
+        final List<JsonObject> events =
             StreamSupport.stream(
                 new RtPagination<>(
                     req.uri().queryParam("participating", "true")
@@ -75,6 +77,7 @@ public final class GithubCrew implements Crew {
             )
             .filter(json -> "mention".equals(json.getString("reason")))
             .collect(Collectors.toList());
+        Logger.info(this, "%d GitHub events found", events.size());
         for (final JsonObject event : events) {
             this.employ(farm, event);
         }
