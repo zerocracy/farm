@@ -103,6 +103,7 @@ public final class GithubCrew implements Crew {
         final Coordinates coords = new Coordinates.Simple(
             event.getJsonObject("repository").getString("full_name")
         );
+        Logger.info(this, "event: %s", event.toString());
         final JsonObject subject = event.getJsonObject("subject");
         final Issue issue = this.github.repos().get(coords).issues().get(
             Integer.parseInt(
