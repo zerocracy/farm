@@ -20,6 +20,7 @@ import com.jcabi.aspects.ScheduleWithFixedDelay;
 import com.zerocracy.jstk.Crew;
 import com.zerocracy.jstk.Farm;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Routine.
@@ -28,7 +29,7 @@ import java.io.IOException;
  * @version $Id$
  * @since 0.1
  */
-@ScheduleWithFixedDelay
+@ScheduleWithFixedDelay(delay = 1, unit = TimeUnit.MINUTES)
 final class Routine implements Runnable {
 
     /**
