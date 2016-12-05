@@ -16,8 +16,6 @@
  */
 package com.zerocracy.farm;
 
-import com.jcabi.github.RtGithub;
-import com.zerocracy.crews.gh.GithubCrew;
 import java.io.IOException;
 import org.takes.http.Exit;
 import org.takes.http.FtCli;
@@ -59,12 +57,12 @@ public final class Main {
      * @throws IOException If fails on I/O
      */
     public void exec() throws IOException {
-        new Routine(
-            new GithubCrew(
-                new RtGithub("0crat", "R83mSikl")
-            ),
-            new SimpleFarm()
-        );
+//        new Routine(
+//            new GithubCrew(
+//                new RtGithub("0crat", "R83mSikl")
+//            ),
+//            new SimpleFarm()
+//        );
         new FtCli(
             new TkText("farm.zerocracy.com"),
             this.arguments
