@@ -17,6 +17,7 @@
 package com.zerocracy.crews.gh;
 
 import com.jcabi.github.Issue;
+import com.jcabi.log.Logger;
 import com.zerocracy.jstk.Stakeholder;
 import java.io.IOException;
 
@@ -45,5 +46,10 @@ public final class StkHello implements Stakeholder {
     @Override
     public void work() throws IOException {
         this.issue.comments().post("hey!");
+        Logger.info(
+            this, "hello at %s#%d",
+            this.issue.repo().coordinates(),
+            this.issue.number()
+        );
     }
 }
