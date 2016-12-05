@@ -1,0 +1,48 @@
+docker:
+  image: yegor256/java8
+assets:
+  settings.xml: teamed/home#assets/zerocracy/settings.xml
+  id_rsa: teamed/home#assets/heroku-key
+  id_rsa.pub: teamed/home#assets/heroku-key.pub
+  s3cfg: teamed/home#assets/s3cfg
+env:
+  MAVEN_OPTS: -XX:MaxPermSize=256m -Xmx1g
+install: |-
+  sudo gem install pdd
+  java -version
+deploy:
+  script: |
+    mvn clean install -Prultor --settings ../settings.xml
+    mvn clean
+    pdd --source=$(pwd) --verbose --file=zc-farm.xml
+    s3cmd --no-progress put zc-farm.xml --config=../s3cfg s3://pdd.teamed.io/zc-farm.xml
+release:
+  script: |
+    mvn versions:set "-DnewVersion=${tag}"
+    git commit -am "${tag}"
+    cp ../settings.xml settings.xml
+    mvn clean package -Pqulice -Pzerocracy --errors --batch-mode
+    git remote add heroku git@heroku.com:zc-farm.git
+    mkdir ~/.ssh
+    mv ../id_rsa ../id_rsa.pub ~/.ssh
+    chmod -R 600 ~/.ssh/*
+    echo -e "Host *\n  StrictHostKeyChecking no\n  UserKnownHostsFile=/dev/null" > ~/.ssh/config
+    git add settings.xml
+    git commit -m 'settings.xml'
+    git fetch
+    git push -f heroku $(git symbolic-ref --short HEAD):master
+    git reset HEAD~1
+    curl -f --connect-timeout 15 --retry 5 --retry-delay 30 http://farm.zerocracy.com > /dev/null
+    # mvn clean site-deploy -Psite --batch-mode --settings ../settings.xml
+  commanders:
+  - yegor256
+merge:
+  script: |-
+    mvn help:system clean install -Pqulice --settings ../settings.xml
+    mvn clean site -Psite --settings ../settings.xml
+    mvn clean
+    pdd --source=$(pwd) --verbose --file=/dev/null
+  commanders: []
+architect:
+- yegor256
+- karato
