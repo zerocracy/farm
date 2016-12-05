@@ -61,7 +61,7 @@ public final class GithubCrew implements Crew {
     @Override
     public void deploy(final Farm farm) throws IOException {
         final String since = new Github.Time(
-            DateUtils.addHours(new Date(), -1)
+            DateUtils.addMinutes(new Date(), -2)
         ).toString();
         final Request req = this.github.entry()
             .uri().path("/notifications").back();
