@@ -23,18 +23,15 @@ import com.jcabi.github.Issue;
 import com.jcabi.github.RtPagination;
 import com.jcabi.http.Request;
 import com.jcabi.http.response.RestResponse;
-import com.jcabi.log.Logger;
 import com.zerocracy.jstk.Crew;
 import com.zerocracy.jstk.Farm;
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import javax.json.JsonObject;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
 
 /**
  * GitHub notifications listening crew.
@@ -60,32 +57,18 @@ public final class GithubCrew implements Crew {
 
     @Override
     public void deploy(final Farm farm) throws IOException {
-        final String since = new Github.Time(
-            DateUtils.addMinutes(new Date(), -2)
-        ).toString();
         final Request req = this.github.entry()
             .uri().path("/notifications").back();
         final List<JsonObject> events =
             StreamSupport.stream(
-                new RtPagination<>(
-                    req.uri().queryParam("participating", "true")
-                        .queryParam("since", since)
-                        .queryParam("all", Boolean.toString(true))
-                        .back(),
-                    RtPagination.COPYING
-                ).spliterator(),
+                new RtPagination<>(req, RtPagination.COPYING).spliterator(),
                 false
             )
-            .filter(json -> "mention".equals(json.getString("reason")))
             .collect(Collectors.toList());
-        Logger.info(this, "%d GitHub events found", events.size());
         for (final JsonObject event : events) {
             this.employ(farm, event);
         }
-        req.uri()
-            .queryParam("last_read_at", since)
-            .back()
-            .method(Request.PUT)
+        req.method(Request.PUT)
             .body().set("{}").back()
             .fetch()
             .as(RestResponse.class)
@@ -103,7 +86,6 @@ public final class GithubCrew implements Crew {
         final Coordinates coords = new Coordinates.Simple(
             event.getJsonObject("repository").getString("full_name")
         );
-        Logger.info(this, "event: %s", event.toString());
         final JsonObject subject = event.getJsonObject("subject");
         final Issue issue = this.github.repos().get(coords).issues().get(
             Integer.parseInt(
