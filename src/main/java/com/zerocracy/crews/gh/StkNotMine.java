@@ -17,47 +17,48 @@
 package com.zerocracy.crews.gh;
 
 import com.jcabi.github.Comment;
-import com.jcabi.log.Logger;
 import com.zerocracy.jstk.Stakeholder;
 import java.io.IOException;
+import java.util.Locale;
 
 /**
- * He just says hello.
+ * Stakeholder if not my comment.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class StkHello implements Stakeholder {
+public final class StkNotMine implements Stakeholder {
 
     /**
-     * Event.
+     * GitHub event.
      */
     private final Event event;
 
     /**
-     * Ctor.
-     * @param evt Event
+     * Stakeholder.
      */
-    public StkHello(final Event evt) {
+    private final Stakeholder origin;
+
+    /**
+     * Ctor.
+     * @param evt Event in GitHub
+     * @param stk Stakeholder
+     */
+    public StkNotMine(final Event evt, final Stakeholder stk) {
         this.event = evt;
+        this.origin = stk;
     }
 
     @Override
     public void work() throws IOException {
         final Comment.Smart comment = new Comment.Smart(this.event.comment());
-        comment.issue().comments().post(
-            String.format(
-                "> %s%n%n@%s hey, how are you?",
-                comment.body(),
-                comment.author().login()
-            )
-        );
-        Logger.info(
-            this, "hello at %s#%d/%d",
-            comment.issue().repo().coordinates(),
-            comment.issue().number(),
-            comment.number()
-        );
+        final String author = comment.author()
+            .login().toLowerCase(Locale.ENGLISH);
+        final String self = comment.issue().repo().github()
+            .users().self().login().toLowerCase(Locale.ENGLISH);
+        if (!author.equals(self)) {
+            this.origin.work();
+        }
     }
 }

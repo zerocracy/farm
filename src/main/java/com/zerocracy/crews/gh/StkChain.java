@@ -16,48 +16,44 @@
  */
 package com.zerocracy.crews.gh;
 
-import com.jcabi.github.Comment;
-import com.jcabi.log.Logger;
 import com.zerocracy.jstk.Stakeholder;
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
- * He just says hello.
+ * Chain of Stakeholders.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class StkHello implements Stakeholder {
+public final class StkChain implements Stakeholder {
 
     /**
-     * Event.
+     * List of stakeholders.
      */
-    private final Event event;
+    private final Iterable<Stakeholder> list;
 
     /**
      * Ctor.
-     * @param evt Event
+     * @param lst List of them
      */
-    public StkHello(final Event evt) {
-        this.event = evt;
+    public StkChain(final Stakeholder... lst) {
+        this(Arrays.asList(lst));
+    }
+
+    /**
+     * Ctor.
+     * @param lst List of them
+     */
+    public StkChain(final Iterable<Stakeholder> lst) {
+        this.list = lst;
     }
 
     @Override
     public void work() throws IOException {
-        final Comment.Smart comment = new Comment.Smart(this.event.comment());
-        comment.issue().comments().post(
-            String.format(
-                "> %s%n%n@%s hey, how are you?",
-                comment.body(),
-                comment.author().login()
-            )
-        );
-        Logger.info(
-            this, "hello at %s#%d/%d",
-            comment.issue().repo().coordinates(),
-            comment.issue().number(),
-            comment.number()
-        );
+        for (final Stakeholder stk : this.list) {
+            stk.work();
+        }
     }
 }

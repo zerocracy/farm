@@ -16,22 +16,20 @@
  */
 package com.zerocracy.crews.gh;
 
-import com.jcabi.github.Comment;
-import com.jcabi.github.Coordinates;
+import com.google.common.collect.ImmutableMap;
 import com.jcabi.github.Github;
-import com.jcabi.github.Issue;
 import com.jcabi.github.RtPagination;
 import com.jcabi.http.Request;
 import com.jcabi.http.response.RestResponse;
 import com.zerocracy.jstk.Crew;
 import com.zerocracy.jstk.Farm;
+import com.zerocracy.jstk.Project;
+import com.zerocracy.jstk.Stakeholder;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-import javax.json.JsonObject;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * GitHub notifications listening crew.
@@ -39,6 +37,7 @@ import org.apache.commons.lang3.StringUtils;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class GithubCrew implements Crew {
 
@@ -59,14 +58,15 @@ public final class GithubCrew implements Crew {
     public void deploy(final Farm farm) throws IOException {
         final Request req = this.github.entry()
             .uri().path("/notifications").back();
-        final List<JsonObject> events =
+        final List<Event> events =
             StreamSupport.stream(
                 new RtPagination<>(req, RtPagination.COPYING).spliterator(),
                 false
             )
+            .map(json -> new Event(this.github, json))
             .collect(Collectors.toList());
-        for (final JsonObject event : events) {
-            this.employ(farm, event);
+        for (final Event event : events) {
+            GithubCrew.employ(farm, event);
         }
         req.method(Request.PUT)
             .body().set("{}").back()
@@ -81,35 +81,31 @@ public final class GithubCrew implements Crew {
      * @param event JSON event from GitHub
      * @throws IOException If fails
      */
-    private void employ(final Farm farm, final JsonObject event)
+    private static void employ(final Farm farm, final Event event)
         throws IOException {
-        final Coordinates coords = new Coordinates.Simple(
-            event.getJsonObject("repository").getString("full_name")
-        );
-        final JsonObject subject = event.getJsonObject("subject");
-        final Issue issue = this.github.repos().get(coords).issues().get(
-            Integer.parseInt(
-                StringUtils.substringAfterLast(
-                    subject.getString("url"),
-                    "/"
-                )
-            )
-        );
-        final Comment.Smart comment = new Comment.Smart(
-            issue.comments().get(
-                Integer.parseInt(
-                    StringUtils.substringAfterLast(
-                        subject.getString("latest_comment_url"),
-                        "/"
+        final Project project = farm
+            .find(event.coordinates().toString())
+            .iterator()
+            .next();
+        project.employ(
+            new StkChain(
+                new StkByReason(
+                    event,
+                    "mention",
+                    new StkNotMine(
+                        event,
+                        new StkChain(
+                            new StkByCommand(
+                                event,
+                                ImmutableMap.<String, Stakeholder>builder()
+                                    .put("hello", new StkHello(event))
+                                    .put(".*", new StkSorry(event))
+                                    .build()
+                            )
+                        )
                     )
                 )
             )
         );
-        if (!this.github.users().self().login()
-            .equals(comment.author().login())) {
-            farm.find(coords.toString()).iterator().next().employ(
-                new StkHello(comment)
-            );
-        }
     }
 }

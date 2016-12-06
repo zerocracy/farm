@@ -16,48 +16,50 @@
  */
 package com.zerocracy.crews.gh;
 
-import com.jcabi.github.Comment;
-import com.jcabi.log.Logger;
 import com.zerocracy.jstk.Stakeholder;
 import java.io.IOException;
 
 /**
- * He just says hello.
+ * Stakeholder by reason.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class StkHello implements Stakeholder {
+public final class StkByReason implements Stakeholder {
 
     /**
-     * Event.
+     * GitHub event.
      */
     private final Event event;
 
     /**
-     * Ctor.
-     * @param evt Event
+     * Reason.
      */
-    public StkHello(final Event evt) {
+    private final String reason;
+
+    /**
+     * Stakeholder.
+     */
+    private final Stakeholder origin;
+
+    /**
+     * Ctor.
+     * @param evt Event in GitHub
+     * @param rson Reason
+     * @param stk Stakeholder
+     */
+    public StkByReason(final Event evt, final String rson,
+        final Stakeholder stk) {
         this.event = evt;
+        this.reason = rson;
+        this.origin = stk;
     }
 
     @Override
     public void work() throws IOException {
-        final Comment.Smart comment = new Comment.Smart(this.event.comment());
-        comment.issue().comments().post(
-            String.format(
-                "> %s%n%n@%s hey, how are you?",
-                comment.body(),
-                comment.author().login()
-            )
-        );
-        Logger.info(
-            this, "hello at %s#%d/%d",
-            comment.issue().repo().coordinates(),
-            comment.issue().number(),
-            comment.number()
-        );
+        if (this.event.reason().equals(this.reason)) {
+            this.origin.work();
+        }
     }
 }

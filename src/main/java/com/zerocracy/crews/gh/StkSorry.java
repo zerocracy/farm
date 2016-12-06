@@ -17,18 +17,17 @@
 package com.zerocracy.crews.gh;
 
 import com.jcabi.github.Comment;
-import com.jcabi.log.Logger;
 import com.zerocracy.jstk.Stakeholder;
 import java.io.IOException;
 
 /**
- * He just says hello.
+ * He says sorry.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class StkHello implements Stakeholder {
+public final class StkSorry implements Stakeholder {
 
     /**
      * Event.
@@ -39,7 +38,7 @@ public final class StkHello implements Stakeholder {
      * Ctor.
      * @param evt Event
      */
-    public StkHello(final Event evt) {
+    public StkSorry(final Event evt) {
         this.event = evt;
     }
 
@@ -48,16 +47,10 @@ public final class StkHello implements Stakeholder {
         final Comment.Smart comment = new Comment.Smart(this.event.comment());
         comment.issue().comments().post(
             String.format(
-                "> %s%n%n@%s hey, how are you?",
+                "> %s%n%n@%s sorry, I didn't understand",
                 comment.body(),
                 comment.author().login()
             )
-        );
-        Logger.info(
-            this, "hello at %s#%d/%d",
-            comment.issue().repo().coordinates(),
-            comment.issue().number(),
-            comment.number()
         );
     }
 }

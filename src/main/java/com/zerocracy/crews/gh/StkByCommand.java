@@ -17,47 +17,51 @@
 package com.zerocracy.crews.gh;
 
 import com.jcabi.github.Comment;
-import com.jcabi.log.Logger;
 import com.zerocracy.jstk.Stakeholder;
 import java.io.IOException;
+import java.util.Locale;
+import java.util.Map;
 
 /**
- * He just says hello.
+ * Stakeholder by command.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class StkHello implements Stakeholder {
+public final class StkByCommand implements Stakeholder {
 
     /**
-     * Event.
+     * GitHub event.
      */
     private final Event event;
 
     /**
-     * Ctor.
-     * @param evt Event
+     * Commands and stakeholders.
      */
-    public StkHello(final Event evt) {
+    private final Map<String, Stakeholder> routes;
+
+    /**
+     * Ctor.
+     * @param evt Event in GitHub
+     * @param map Routes map
+     */
+    public StkByCommand(final Event evt, final Map<String, Stakeholder> map) {
         this.event = evt;
+        this.routes = map;
     }
 
     @Override
     public void work() throws IOException {
         final Comment.Smart comment = new Comment.Smart(this.event.comment());
-        comment.issue().comments().post(
-            String.format(
-                "> %s%n%n@%s hey, how are you?",
-                comment.body(),
-                comment.author().login()
-            )
-        );
-        Logger.info(
-            this, "hello at %s#%d/%d",
-            comment.issue().repo().coordinates(),
-            comment.issue().number(),
-            comment.number()
-        );
+        final String body = comment.body();
+        final String[] words = body.split(" ");
+        for (final Map.Entry<String, Stakeholder> entry
+            : this.routes.entrySet()) {
+            if (words[1].toLowerCase(Locale.ENGLISH).matches(entry.getKey())) {
+                entry.getValue().work();
+                break;
+            }
+        }
     }
 }
