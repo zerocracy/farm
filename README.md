@@ -1,6 +1,6 @@
 <img src="http://www.zerocracy.com/logo.svg" width="64px" height="64px"/>
 
-[![Build Status](https://travis-ci.org/zerocracy/farm.svg?branch=master)](https://travis-ci.org/zerocracy/farm)
+[![Run Status](https://api.shippable.com/projects/58469fb83ee1d30f00c9b66e/badge?branch=master)](https://app.shippable.com/projects/58469fb83ee1d30f00c9b66e)
 
 Stakeholders' Farm.
 
