@@ -56,7 +56,7 @@ public final class Event {
     @Override
     public String toString() {
         return String.format(
-            "GitHub \"%s\" #%s at %s",
+            "\"%s\" #%s at %s",
             this.reason(), this.json.getString("id"),
             this.json.getJsonObject("repository").getString("full_name")
         );

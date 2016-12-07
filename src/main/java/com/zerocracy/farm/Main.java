@@ -61,7 +61,7 @@ public final class Main {
     public void exec() throws IOException {
         new Routine(
             new GithubCrew(
-                new RtGithub("0crat", "R83mSikl")
+                new RtGithub("0crat", "d4tidaXl")
             ),
             new SimpleFarm()
         );

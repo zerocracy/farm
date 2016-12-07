@@ -37,7 +37,7 @@ public final class GithubCrewITCase {
     @Ignore
     public void fetchesNotifications() throws Exception {
         new GithubCrew(
-            new RtGithub("0crat", "R83mSikl")
+            new RtGithub("0crat", "--secret--")
         ).deploy(new SimpleFarm());
     }
 
