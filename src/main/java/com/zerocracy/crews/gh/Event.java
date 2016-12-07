@@ -53,6 +53,15 @@ public final class Event {
         this.json = evt;
     }
 
+    @Override
+    public String toString() {
+        return String.format(
+            "GitHub \"%s\" #%s at %s",
+            this.reason(), this.json.getString("id"),
+            this.json.getJsonObject("repository").getString("full_name")
+        );
+    }
+
     /**
      * Reason.
      * @return The reason
