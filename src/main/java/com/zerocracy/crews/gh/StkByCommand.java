@@ -55,10 +55,16 @@ public final class StkByCommand implements Stakeholder {
     public void work() throws IOException {
         final Comment.Smart comment = new Comment.Smart(this.event.comment());
         final String body = comment.body();
-        final String[] words = body.split(" ");
+        final String[] words = body.trim().split(" ");
+        final String command;
+        if (words.length > 1) {
+            command = words[1];
+        } else {
+            command = "";
+        }
         for (final Map.Entry<String, Stakeholder> entry
             : this.routes.entrySet()) {
-            if (words[1].toLowerCase(Locale.ENGLISH).matches(entry.getKey())) {
+            if (command.toLowerCase(Locale.ENGLISH).matches(entry.getKey())) {
                 entry.getValue().work();
                 break;
             }
