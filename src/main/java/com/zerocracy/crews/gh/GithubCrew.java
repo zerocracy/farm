@@ -66,9 +66,7 @@ public final class GithubCrew implements Crew {
             )
             .map(json -> new Event(this.github, json))
             .collect(Collectors.toList());
-        events.forEach(
-            event -> Logger.info(this, "%s", event)
-        );
+        events.forEach(event -> Logger.info(this, "%s", event));
         for (final Event event : events) {
             GithubCrew.employ(farm, event);
         }
