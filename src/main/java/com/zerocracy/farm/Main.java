@@ -18,6 +18,7 @@ package com.zerocracy.farm;
 
 import com.jcabi.github.RtGithub;
 import com.zerocracy.crews.gh.GithubCrew;
+import com.zerocracy.jstk.fake.FkFarm;
 import java.io.IOException;
 import org.takes.http.Exit;
 import org.takes.http.FtCli;
@@ -63,7 +64,7 @@ public final class Main {
             new GithubCrew(
                 new RtGithub("0crat", "d4tidaXl")
             ),
-            new SimpleFarm()
+            new FkFarm()
         );
         new FtCli(
             new TkText("farm.zerocracy.com"),

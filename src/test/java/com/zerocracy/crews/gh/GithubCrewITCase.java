@@ -17,7 +17,7 @@
 package com.zerocracy.crews.gh;
 
 import com.jcabi.github.RtGithub;
-import com.zerocracy.farm.SimpleFarm;
+import com.zerocracy.jstk.fake.FkFarm;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -38,7 +38,7 @@ public final class GithubCrewITCase {
     public void fetchesNotifications() throws Exception {
         new GithubCrew(
             new RtGithub("0crat", "--secret--")
-        ).deploy(new SimpleFarm());
+        ).deploy(new FkFarm());
     }
 
 }

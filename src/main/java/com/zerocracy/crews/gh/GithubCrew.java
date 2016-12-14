@@ -89,7 +89,7 @@ public final class GithubCrew implements Crew {
             .find(event.coordinates().toString())
             .iterator()
             .next();
-        project.employ(
+        farm.deploy(
             new StkChain(
                 new StkByReason(
                     event,
