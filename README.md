@@ -11,7 +11,7 @@ this simple algorithm:
   * Picks the next `crew` from the list
   * `crew.deploy(farm)`
   * The `crew` finds projects: `list = farm.find('?')`
-  * `list.forEach(p -> p.employ(stk))`, where `stk` is runnable
+  * `list.forEach(p -> farm.employ(stk))`, where `stk` is runnable
 
 Ideally, all of that should happen in parallel threads, to enable
 high throughput and concurrency.
