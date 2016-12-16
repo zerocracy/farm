@@ -56,9 +56,10 @@ public final class Event {
     @Override
     public String toString() {
         return String.format(
-            "\"%s\" #%s at %s",
+            "\"%s\" #%s at %s: %s",
             this.reason(), this.json.getString("id"),
-            this.coordinates()
+            this.coordinates(),
+            this.json
         );
     }
 

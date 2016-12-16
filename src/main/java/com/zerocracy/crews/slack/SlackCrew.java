@@ -16,6 +16,7 @@
  */
 package com.zerocracy.crews.slack;
 
+import com.jcabi.log.Logger;
 import com.ullink.slack.simpleslackapi.SlackChannel;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.SlackUser;
@@ -70,6 +71,10 @@ public final class SlackCrew implements Crew {
             );
             ssn.connect();
             this.session.set(ssn);
+            Logger.info(
+                this, "Slack connected as @%s",
+                ssn.sessionPersona().getUserName()
+            );
         }
     }
 

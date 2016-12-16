@@ -21,7 +21,6 @@ import com.jcabi.github.Github;
 import com.jcabi.github.RtPagination;
 import com.jcabi.http.Request;
 import com.jcabi.http.response.RestResponse;
-import com.jcabi.log.Logger;
 import com.zerocracy.jstk.Crew;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
@@ -70,7 +69,6 @@ public final class GithubCrew implements Crew {
             )
             .map(json -> new Event(this.github, json))
             .collect(Collectors.toList());
-        events.forEach(event -> Logger.info(this, "%s", event));
         for (final Event event : events) {
             GithubCrew.employ(farm, event);
         }
