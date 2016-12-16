@@ -65,7 +65,7 @@ public final class StkReaction implements Stakeholder {
                 StringUtils.abbreviate(comment.body(), Tv.FIFTY)
                     .replaceAll("\n", " "),
                 comment.author().login(),
-                this.routes.get(question.option().group())
+                this.routes.get(question.option().pattern().toString())
                     .answer(this.event, question)
             )
         );
