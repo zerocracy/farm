@@ -72,6 +72,7 @@ public final class Question {
             final Matcher mtr = opt.matcher(this.text);
             if (mtr.matches()) {
                 found = mtr;
+                break;
             }
         }
         if (found == null) {
