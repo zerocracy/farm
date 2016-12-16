@@ -21,6 +21,8 @@ import com.zerocracy.crews.github.GithubCrew;
 import com.zerocracy.crews.slack.SlackCrew;
 import com.zerocracy.jstk.fake.FkFarm;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 import org.takes.http.Exit;
 import org.takes.http.FtCli;
 import org.takes.tk.TkText;
@@ -61,14 +63,20 @@ public final class Main {
      * @throws IOException If fails on I/O
      */
     public void exec() throws IOException {
+        final Properties props = new Properties();
+        try (final InputStream input =
+            this.getClass().getResourceAsStream("main.properties")) {
+            props.load(input);
+        }
         new Routine(
             new FkFarm(),
             new GithubCrew(
-                new RtGithub("0crat", "d4tidaXl")
+                new RtGithub(
+                    "0crat",
+                    props.getProperty("github.0crat.password")
+                )
             ),
-            new SlackCrew(
-                "xoxb-117010373476-nprDjGa5eLcHCBWmtNhG4oDD"
-            )
+            new SlackCrew(props.getProperty("slack.0crat.key"))
         );
         new FtCli(
             new TkText("farm.zerocracy.com"),
