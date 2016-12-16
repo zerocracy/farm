@@ -66,7 +66,7 @@ public final class Main {
     public void exec() throws IOException {
         final Properties props = new Properties();
         try (final InputStream input =
-            this.getClass().getResourceAsStream("main.properties")) {
+            this.getClass().getResourceAsStream("/main.properties")) {
             props.load(input);
         }
         new Routine(
