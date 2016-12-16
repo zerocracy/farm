@@ -21,8 +21,5 @@
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
- * @todo #1:30min We don't have any Slack-talking crew. Let's implement
- *  a simple one, which would listen to the new channels and create
- *  new projects when someone is asking for it.
  */
 package com.zerocracy.farm;
