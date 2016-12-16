@@ -14,52 +14,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.crews.gh;
+package com.zerocracy.crews.github;
 
-import com.zerocracy.jstk.Stakeholder;
+import com.zerocracy.qa.Question;
 import java.io.IOException;
 
 /**
- * Stakeholder by reason.
+ * He says sorry.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class StkByReason implements Stakeholder {
-
-    /**
-     * GitHub event.
-     */
-    private final Event event;
-
-    /**
-     * Reason.
-     */
-    private final String reason;
-
-    /**
-     * Stakeholder.
-     */
-    private final Stakeholder origin;
-
-    /**
-     * Ctor.
-     * @param evt Event in GitHub
-     * @param rson Reason
-     * @param stk Stakeholder
-     */
-    public StkByReason(final Event evt, final String rson,
-        final Stakeholder stk) {
-        this.event = evt;
-        this.reason = rson;
-        this.origin = stk;
-    }
+public final class ReSorry implements Reaction {
 
     @Override
-    public void work() throws IOException {
-        if (this.event.reason().equals(this.reason)) {
-            this.origin.work();
-        }
+    public String answer(final Event event,
+        final Question question) throws IOException {
+        return "sorry, I didn't understand";
     }
+
 }

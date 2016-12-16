@@ -14,43 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.crews.gh;
-
-import com.jcabi.github.Comment;
-import com.zerocracy.jstk.Stakeholder;
-import java.io.IOException;
 
 /**
- * He says sorry.
+ * Slack crew.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class StkSorry implements Stakeholder {
-
-    /**
-     * Event.
-     */
-    private final Event event;
-
-    /**
-     * Ctor.
-     * @param evt Event
-     */
-    public StkSorry(final Event evt) {
-        this.event = evt;
-    }
-
-    @Override
-    public void work() throws IOException {
-        final Comment.Smart comment = new Comment.Smart(this.event.comment());
-        comment.issue().comments().post(
-            String.format(
-                "> %s%n%n@%s sorry, I didn't understand",
-                comment.body(),
-                comment.author().login()
-            )
-        );
-    }
-}
+package com.zerocracy.crews.slack;

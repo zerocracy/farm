@@ -14,54 +14,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.farm;
+package com.zerocracy.crews.github;
 
-import com.jcabi.aspects.ScheduleWithFixedDelay;
-import com.zerocracy.jstk.Crew;
-import com.zerocracy.jstk.Farm;
+import com.zerocracy.jstk.Item;
+import com.zerocracy.jstk.Project;
+import com.zerocracy.qa.Question;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
 
 /**
- * Routine.
+ * Remove this GitHub issue from project scope.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-@ScheduleWithFixedDelay(delay = 1, unit = TimeUnit.MINUTES)
-final class Routine implements Runnable {
+public final class ReOut implements Reaction {
 
     /**
-     * Crews.
+     * Project.
      */
-    private final Iterable<Crew> crews;
-
-    /**
-     * Farm.
-     */
-    private final Farm farm;
+    private final Project project;
 
     /**
      * Ctor.
-     * @param crws Crews
-     * @param frm Farm
+     * @param pkt Project
      */
-    Routine(final Farm frm, final Crew... crws) {
-        this.crews = Arrays.asList(crws);
-        this.farm = frm;
+    public ReOut(final Project pkt) {
+        this.project = pkt;
     }
 
     @Override
-    public void run() {
-        try {
-            for (final Crew crew : this.crews) {
-                crew.deploy(this.farm);
-            }
-        } catch (final IOException ex) {
-            throw new IllegalStateException(ex);
+    public String answer(final Event event,
+        final Question question) throws IOException {
+        try (final Item scope = this.project.acq("scope.xml")) {
+            scope.path();
         }
+        return "done, it's out";
     }
 
 }

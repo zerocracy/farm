@@ -14,51 +14,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.crews.gh;
+package com.zerocracy.crews.github;
 
-import com.jcabi.github.Comment;
-import com.zerocracy.jstk.Stakeholder;
+import com.zerocracy.jstk.Item;
+import com.zerocracy.jstk.Project;
+import com.zerocracy.qa.Question;
 import java.io.IOException;
-import java.util.Locale;
 
 /**
- * Stakeholder if not my comment.
+ * Add this GitHub issue to project scope.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class StkNotMine implements Stakeholder {
+public final class ReIn implements Reaction {
 
     /**
-     * GitHub event.
+     * Project.
      */
-    private final Event event;
-
-    /**
-     * Stakeholder.
-     */
-    private final Stakeholder origin;
+    private final Project project;
 
     /**
      * Ctor.
-     * @param evt Event in GitHub
-     * @param stk Stakeholder
+     * @param pkt Project
      */
-    public StkNotMine(final Event evt, final Stakeholder stk) {
-        this.event = evt;
-        this.origin = stk;
+    public ReIn(final Project pkt) {
+        this.project = pkt;
     }
 
     @Override
-    public void work() throws IOException {
-        final Comment.Smart comment = new Comment.Smart(this.event.comment());
-        final String author = comment.author()
-            .login().toLowerCase(Locale.ENGLISH);
-        final String self = comment.issue().repo().github()
-            .users().self().login().toLowerCase(Locale.ENGLISH);
-        if (!author.equals(self)) {
-            this.origin.work();
+    public String answer(final Event event,
+        final Question question) throws IOException {
+        try (final Item scope = this.project.acq("scope.xml")) {
+            scope.path();
         }
+        return "done, it's in scope";
     }
+
 }

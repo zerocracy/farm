@@ -14,12 +14,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.zerocracy.crews.github;
+
+import com.jcabi.github.RtGithub;
+import com.zerocracy.jstk.fake.FkFarm;
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
- * GitHub crew.
- *
+ * Integration case for {@link GithubCrew}.
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-package com.zerocracy.crews.gh;
+public final class GithubCrewITCase {
+
+    /**
+     * Fetches notifications from Github.
+     * @throws Exception If some problem inside
+     */
+    @Test
+    @Ignore
+    public void fetchesNotifications() throws Exception {
+        new GithubCrew(
+            new RtGithub("0crat", "--secret--")
+        ).deploy(new FkFarm());
+    }
+
+}

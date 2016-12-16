@@ -14,22 +14,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.crews.gh;
+package com.zerocracy.crews.github;
 
 import com.jcabi.github.Comment;
 import com.zerocracy.jstk.Stakeholder;
 import java.io.IOException;
 import java.util.Locale;
-import java.util.Map;
 
 /**
- * Stakeholder by command.
+ * Stakeholder if not my comment.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class StkByCommand implements Stakeholder {
+public final class StkNotMine implements Stakeholder {
 
     /**
      * GitHub event.
@@ -37,37 +36,29 @@ public final class StkByCommand implements Stakeholder {
     private final Event event;
 
     /**
-     * Commands and stakeholders.
+     * Stakeholder.
      */
-    private final Map<String, Stakeholder> routes;
+    private final Stakeholder origin;
 
     /**
      * Ctor.
      * @param evt Event in GitHub
-     * @param map Routes map
+     * @param stk Stakeholder
      */
-    public StkByCommand(final Event evt, final Map<String, Stakeholder> map) {
+    public StkNotMine(final Event evt, final Stakeholder stk) {
         this.event = evt;
-        this.routes = map;
+        this.origin = stk;
     }
 
     @Override
     public void work() throws IOException {
         final Comment.Smart comment = new Comment.Smart(this.event.comment());
-        final String body = comment.body();
-        final String[] words = body.trim().split(" ");
-        final String command;
-        if (words.length > 1) {
-            command = words[1];
-        } else {
-            command = "";
-        }
-        for (final Map.Entry<String, Stakeholder> entry
-            : this.routes.entrySet()) {
-            if (command.toLowerCase(Locale.ENGLISH).matches(entry.getKey())) {
-                entry.getValue().work();
-                break;
-            }
+        final String author = comment.author()
+            .login().toLowerCase(Locale.ENGLISH);
+        final String self = comment.issue().repo().github()
+            .users().self().login().toLowerCase(Locale.ENGLISH);
+        if (!author.equals(self)) {
+            this.origin.work();
         }
     }
 }

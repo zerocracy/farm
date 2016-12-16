@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.crews.gh;
+package com.zerocracy.crews.github;
 
 import com.google.common.collect.ImmutableMap;
 import com.jcabi.github.Github;
@@ -25,7 +25,6 @@ import com.jcabi.log.Logger;
 import com.zerocracy.jstk.Crew;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.Stakeholder;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.List;
@@ -38,12 +37,12 @@ import java.util.stream.StreamSupport;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @todo #3:30min Current implementation has a big flaw -- it reads
  *  the last message in an issue, not the one posted by the user. Thus,
  *  if there were a few messages after the original one, we will lose
  *  them all together with the original one and will process just
  *  the latest one in the thread.
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class GithubCrew implements Crew {
 
@@ -91,23 +90,23 @@ public final class GithubCrew implements Crew {
     private static void employ(final Farm farm, final Event event)
         throws IOException {
         final Project project = farm
-            .find(event.coordinates().toString())
+            .find(String.format("gh:%s", event.coordinates().toString()))
             .iterator()
             .next();
         farm.deploy(
-            new StkChain(
-                new StkByReason(
+            new StkByReason(
+                event,
+                "mention",
+                new StkNotMine(
                     event,
-                    "mention",
-                    new StkNotMine(
+                    new StkReaction(
                         event,
-                        new StkByCommand(
-                            event,
-                            ImmutableMap.<String, Stakeholder>builder()
-                                .put("hello", new StkHello(event))
-                                .put(".*", new StkSorry(event))
-                                .build()
-                        )
+                        ImmutableMap.<String, Reaction>builder()
+                            .put("in", new ReIn(project))
+                            .put("out", new ReOut(project))
+                            .put("hello", new ReHello())
+                            .put(".*", new ReSorry())
+                            .build()
                     )
                 )
             )

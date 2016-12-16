@@ -14,46 +14,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.crews.gh;
+package com.zerocracy.crews.github;
 
-import com.zerocracy.jstk.Stakeholder;
+import com.zerocracy.qa.Question;
 import java.io.IOException;
-import java.util.Arrays;
 
 /**
- * Chain of Stakeholders.
+ * GitHub message reaction.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class StkChain implements Stakeholder {
+public interface Reaction {
 
     /**
-     * List of stakeholders.
+     * Give an answer to this question.
+     * @param event The event
+     * @param question The question
+     * @return Answer or EMPTY string
+     * @throws IOException If fails on I/O
      */
-    private final Iterable<Stakeholder> list;
+    String answer(Event event, Question question) throws IOException;
 
-    /**
-     * Ctor.
-     * @param lst List of them
-     */
-    public StkChain(final Stakeholder... lst) {
-        this(Arrays.asList(lst));
-    }
-
-    /**
-     * Ctor.
-     * @param lst List of them
-     */
-    public StkChain(final Iterable<Stakeholder> lst) {
-        this.list = lst;
-    }
-
-    @Override
-    public void work() throws IOException {
-        for (final Stakeholder stk : this.list) {
-            stk.work();
-        }
-    }
 }

@@ -14,54 +14,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.farm;
+package com.zerocracy.crews.slack;
 
-import com.jcabi.aspects.ScheduleWithFixedDelay;
-import com.zerocracy.jstk.Crew;
-import com.zerocracy.jstk.Farm;
-import java.io.IOException;
-import java.util.Arrays;
+import com.zerocracy.jstk.fake.FkFarm;
 import java.util.concurrent.TimeUnit;
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
- * Routine.
- *
+ * Integration case for {@link SlackCrew}.
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-@ScheduleWithFixedDelay(delay = 1, unit = TimeUnit.MINUTES)
-final class Routine implements Runnable {
+public final class SlackCrewTest {
 
     /**
-     * Crews.
+     * Fetches notifications from Github.
+     * @throws Exception If some problem inside
      */
-    private final Iterable<Crew> crews;
-
-    /**
-     * Farm.
-     */
-    private final Farm farm;
-
-    /**
-     * Ctor.
-     * @param crws Crews
-     * @param frm Farm
-     */
-    Routine(final Farm frm, final Crew... crws) {
-        this.crews = Arrays.asList(crws);
-        this.farm = frm;
-    }
-
-    @Override
-    public void run() {
-        try {
-            for (final Crew crew : this.crews) {
-                crew.deploy(this.farm);
-            }
-        } catch (final IOException ex) {
-            throw new IllegalStateException(ex);
-        }
+    @Test
+    @Ignore
+    public void fetchesNotifications() throws Exception {
+        new SlackCrew(
+            "xoxb-117010373476-nprDjGa5eLcHCBWmtNhG4oDD"
+        ).deploy(new FkFarm());
+        TimeUnit.HOURS.sleep(1L);
     }
 
 }

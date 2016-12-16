@@ -14,12 +14,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.zerocracy.crews.github;
+
+import com.zerocracy.qa.Question;
+import java.io.IOException;
 
 /**
- * GitHub crew, tests.
+ * He just says hello.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-package com.zerocracy.crews.gh;
+public final class ReHello implements Reaction {
+
+    @Override
+    public String answer(final Event event,
+        final Question question) throws IOException {
+        return "hey, how are you?";
+    }
+
+}

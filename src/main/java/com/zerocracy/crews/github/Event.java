@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.crews.gh;
+package com.zerocracy.crews.github;
 
 import com.jcabi.github.Comment;
 import com.jcabi.github.Coordinates;
@@ -58,7 +58,7 @@ public final class Event {
         return String.format(
             "\"%s\" #%s at %s",
             this.reason(), this.json.getString("id"),
-            this.json.getJsonObject("repository").getString("full_name")
+            this.coordinates()
         );
     }
 

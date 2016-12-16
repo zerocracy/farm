@@ -17,7 +17,8 @@
 package com.zerocracy.farm;
 
 import com.jcabi.github.RtGithub;
-import com.zerocracy.crews.gh.GithubCrew;
+import com.zerocracy.crews.github.GithubCrew;
+import com.zerocracy.crews.slack.SlackCrew;
 import com.zerocracy.jstk.fake.FkFarm;
 import java.io.IOException;
 import org.takes.http.Exit;
@@ -61,10 +62,13 @@ public final class Main {
      */
     public void exec() throws IOException {
         new Routine(
+            new FkFarm(),
             new GithubCrew(
                 new RtGithub("0crat", "d4tidaXl")
             ),
-            new FkFarm()
+            new SlackCrew(
+                "xoxb-117010373476-nprDjGa5eLcHCBWmtNhG4oDD"
+            )
         );
         new FtCli(
             new TkText("farm.zerocracy.com"),
