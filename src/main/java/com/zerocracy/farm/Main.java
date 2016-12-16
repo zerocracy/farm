@@ -17,6 +17,7 @@
 package com.zerocracy.farm;
 
 import com.jcabi.github.RtGithub;
+import com.jcabi.log.Logger;
 import com.zerocracy.crews.github.GithubCrew;
 import com.zerocracy.crews.slack.SlackCrew;
 import com.zerocracy.jstk.fake.FkFarm;
@@ -83,6 +84,7 @@ public final class Main {
             new TkText("farm.zerocracy.com"),
             this.arguments
         ).start(Exit.NEVER);
+        Logger.info(this, "Farm is ready");
     }
 
 }

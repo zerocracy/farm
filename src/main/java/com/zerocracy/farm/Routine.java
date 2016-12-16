@@ -17,6 +17,7 @@
 package com.zerocracy.farm;
 
 import com.jcabi.aspects.ScheduleWithFixedDelay;
+import com.jcabi.log.Logger;
 import com.zerocracy.jstk.Crew;
 import com.zerocracy.jstk.Farm;
 import java.io.IOException;
@@ -54,14 +55,22 @@ final class Routine implements Runnable {
     }
 
     @Override
+    @SuppressWarnings("PMD.PrematureDeclaration")
     public void run() {
+        int total = 0;
+        final long start = System.currentTimeMillis();
         try {
             for (final Crew crew : this.crews) {
                 crew.deploy(this.farm);
+                ++total;
             }
         } catch (final IOException ex) {
             throw new IllegalStateException(ex);
         }
+        Logger.info(
+            this, "%d crews in %[ms]s",
+            total, System.currentTimeMillis() - start
+        );
     }
 
 }
