@@ -57,7 +57,7 @@ public final class StkReaction implements Stakeholder {
     public void work() throws IOException {
         final Comment.Smart comment = new Comment.Smart(this.event.comment());
         final Question question = new Question(
-            comment.body(), this.routes.keySet()
+            comment.body().split(" ", 2)[1], this.routes.keySet()
         );
         comment.issue().comments().post(
             String.format(
