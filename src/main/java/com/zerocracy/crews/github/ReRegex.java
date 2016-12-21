@@ -17,48 +17,55 @@
 package com.zerocracy.crews.github;
 
 import com.jcabi.github.Comment;
-import com.zerocracy.jstk.Stakeholder;
+import com.zerocracy.jstk.Farm;
 import java.io.IOException;
-import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
- * Stakeholder if not my comment.
+ * Response if regex matches.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class StkNotMine implements Stakeholder {
+public final class ReRegex implements Response {
 
     /**
-     * GitHub event.
+     * Regex.
      */
-    private final Event event;
+    private final Pattern regex;
 
     /**
-     * Stakeholder.
+     * Reply.
      */
-    private final Stakeholder origin;
+    private final Reply origin;
 
     /**
      * Ctor.
-     * @param evt Event in GitHub
-     * @param stk Stakeholder
+     * @param tgt Target
      */
-    public StkNotMine(final Event evt, final Stakeholder stk) {
-        this.event = evt;
-        this.origin = stk;
+    public ReRegex(final String ptn, final Reply tgt) {
+        this(Pattern.compile(ptn), tgt);
+    }
+
+    /**
+     * Ctor.
+     * @param tgt Target
+     */
+    public ReRegex(final Pattern ptn, final Reply tgt) {
+        this.regex = ptn;
+        this.origin = tgt;
     }
 
     @Override
-    public void work() throws IOException {
-        final Comment.Smart comment = new Comment.Smart(this.event.comment());
-        final String author = comment.author()
-            .login().toLowerCase(Locale.ENGLISH);
-        final String self = comment.issue().repo().github()
-            .users().self().login().toLowerCase(Locale.ENGLISH);
-        if (!author.equals(self)) {
-            this.origin.work();
+    public void react(final Farm farm, final Comment.Smart comment)
+        throws IOException {
+        final Matcher matcher = this.regex.matcher(comment.body());
+        if (matcher.matches()) {
+            comment.issue().comments().post(
+                this.origin.react(farm, comment)
+            );
         }
     }
 }

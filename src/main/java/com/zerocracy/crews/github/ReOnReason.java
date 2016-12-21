@@ -16,22 +16,18 @@
  */
 package com.zerocracy.crews.github;
 
-import com.zerocracy.jstk.Stakeholder;
+import com.zerocracy.jstk.Farm;
 import java.io.IOException;
+import javax.json.JsonObject;
 
 /**
- * Stakeholder by reason.
+ * React on specific reason.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class StkByReason implements Stakeholder {
-
-    /**
-     * GitHub event.
-     */
-    private final Event event;
+public final class ReOnReason implements Reaction {
 
     /**
      * Reason.
@@ -39,27 +35,25 @@ public final class StkByReason implements Stakeholder {
     private final String reason;
 
     /**
-     * Stakeholder.
+     * Reaction.
      */
-    private final Stakeholder origin;
+    private final Reaction origin;
 
     /**
      * Ctor.
-     * @param evt Event in GitHub
      * @param rson Reason
-     * @param stk Stakeholder
+     * @param orgn Original reaction
      */
-    public StkByReason(final Event evt, final String rson,
-        final Stakeholder stk) {
-        this.event = evt;
+    public ReOnReason(final String rson, final Reaction orgn) {
         this.reason = rson;
-        this.origin = stk;
+        this.origin = orgn;
     }
 
     @Override
-    public void work() throws IOException {
-        if (this.event.reason().equals(this.reason)) {
-            this.origin.work();
+    public void react(final Farm farm, final JsonObject event)
+        throws IOException {
+        if (event.getString("reason").equals(this.reason)) {
+            this.origin.react(farm, event);
         }
     }
 }

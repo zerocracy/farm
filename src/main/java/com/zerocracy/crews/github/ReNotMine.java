@@ -18,19 +18,40 @@ package com.zerocracy.crews.github;
 
 import com.jcabi.github.Comment;
 import com.zerocracy.jstk.Farm;
+import java.io.IOException;
+import java.util.Locale;
 
 /**
- * He just says hello.
+ * Response if not my comment.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class ReHello implements Reply {
+public final class ReNotMine implements Response {
 
-    @Override
-    public String react(final Farm farm, final Comment.Smart comment) {
-        return "hey!";
+    /**
+     * Response.
+     */
+    private final Response origin;
+
+    /**
+     * Ctor.
+     * @param tgt Target
+     */
+    public ReNotMine(final Response tgt) {
+        this.origin = tgt;
     }
 
+    @Override
+    public void react(final Farm farm, final Comment.Smart comment)
+        throws IOException {
+        final String author = comment.author()
+            .login().toLowerCase(Locale.ENGLISH);
+        final String self = comment.issue().repo().github()
+            .users().self().login().toLowerCase(Locale.ENGLISH);
+        if (!author.equals(self)) {
+            this.origin.react(farm, comment);
+        }
+    }
 }

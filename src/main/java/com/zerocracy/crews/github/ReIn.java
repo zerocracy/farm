@@ -16,9 +16,10 @@
  */
 package com.zerocracy.crews.github;
 
+import com.jcabi.github.Comment;
+import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
-import com.zerocracy.qa.Question;
 import java.io.IOException;
 
 /**
@@ -28,25 +29,15 @@ import java.io.IOException;
  * @version $Id$
  * @since 0.1
  */
-public final class ReIn implements Reaction {
-
-    /**
-     * Project.
-     */
-    private final Project project;
-
-    /**
-     * Ctor.
-     * @param pkt Project
-     */
-    public ReIn(final Project pkt) {
-        this.project = pkt;
-    }
+public final class ReIn implements Reply {
 
     @Override
-    public String answer(final Event event,
-        final Question question) throws IOException {
-        try (final Item scope = this.project.acq("scope.xml")) {
+    public String react(final Farm farm, final Comment.Smart comment)
+        throws IOException {
+        final Project project = farm.find(
+            comment.issue().repo().coordinates().toString()
+        ).iterator().next();
+        try (final Item scope = project.acq("scope.xml")) {
             scope.path();
         }
         return "done, it's in scope";

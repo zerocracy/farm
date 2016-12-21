@@ -18,29 +18,54 @@ package com.zerocracy.crews.github;
 
 import com.jcabi.github.Comment;
 import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Item;
-import com.zerocracy.jstk.Project;
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
- * Remove this GitHub issue from project scope.
+ * React to GitHub comment.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class ReOut implements Reply {
+public interface Response {
 
-    @Override
-    public String react(final Farm farm, final Comment.Smart comment)
-        throws IOException {
-        final Project project = farm.find(
-            comment.issue().repo().coordinates().toString()
-        ).iterator().next();
-        try (final Item scope = project.acq("scope.xml")) {
-            scope.path();
+    /**
+     * Respond to the comment.
+     * @param farm Farm
+     * @param comment Comment in GitHub
+     * @throws IOException If fails on I/O
+     */
+    void react(Farm farm, Comment.Smart comment) throws IOException;
+
+    /**
+     * Reactions chained.
+     */
+    final class Chain implements Response {
+        /**
+         * Reactions.
+         */
+        private final Iterable<Response> responses;
+        /**
+         * Ctor.
+         * @param list All responses
+         */
+        public Chain(final Iterable<Response> list) {
+            this.responses = list;
         }
-        return "done, it's out";
+        /**
+         * Ctor.
+         * @param list All responses
+         */
+        public Chain(final Response... list) {
+            this(Arrays.asList(list));
+        }
+        @Override
+        public void react(final Farm farm, final Comment.Smart comment)
+            throws IOException {
+            for (final Response response : this.responses) {
+                response.react(farm, comment);
+            }
+        }
     }
-
 }

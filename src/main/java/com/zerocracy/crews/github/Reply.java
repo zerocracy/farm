@@ -18,19 +18,24 @@ package com.zerocracy.crews.github;
 
 import com.jcabi.github.Comment;
 import com.zerocracy.jstk.Farm;
+import java.io.IOException;
 
 /**
- * He just says hello.
+ * Reply to GitHub comment.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class ReHello implements Reply {
+public interface Reply {
 
-    @Override
-    public String react(final Farm farm, final Comment.Smart comment) {
-        return "hey!";
-    }
+    /**
+     * Reply to the comment.
+     * @param farm Farm
+     * @param comment Comment in GitHub
+     * @return Text to reply
+     * @throws IOException If fails on I/O
+     */
+    String react(Farm farm, Comment.Smart comment) throws IOException;
 
 }

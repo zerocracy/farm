@@ -21,72 +21,63 @@ import com.jcabi.github.Coordinates;
 import com.jcabi.github.Github;
 import com.jcabi.github.Issue;
 import com.jcabi.github.Repo;
+import com.zerocracy.jstk.Farm;
+import java.io.IOException;
+import java.util.Locale;
 import javax.json.JsonObject;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * GitHub notification event.
+ * Reaction on GitHub comment.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class Event {
+public final class ReOnComment implements Reaction {
 
     /**
-     * GitHub.
+     * GitHub client.
      */
     private final Github github;
 
     /**
-     * GitHub JSON event.
+     * Response.
      */
-    private final JsonObject json;
+    private final Response response;
 
     /**
      * Ctor.
-     * @param hub Github
-     * @param evt Event in JSON
+     * @param ghb Github client
      */
-    public Event(final Github hub, final JsonObject evt) {
-        this.github = hub;
-        this.json = evt;
+    public ReOnComment(final Github ghb, final Response rsp) {
+        this.github = ghb;
+        this.response = rsp;
     }
 
     @Override
-    public String toString() {
-        return String.format(
-            "\"%s\" #%s at %s",
-            this.reason(), this.json.getString("id"),
-            this.coordinates()
-        );
-    }
-
-    /**
-     * Reason.
-     * @return The reason
-     */
-    public String reason() {
-        return this.json.getString("reason");
-    }
-
-    /**
-     * Coordinates.
-     * @return Coordinates
-     */
-    public Coordinates coordinates() {
-        return new Coordinates.Simple(
-            this.json.getJsonObject("repository").getString("full_name")
-        );
+    public void react(final Farm farm, final JsonObject event) throws IOException {
+        final Comment.Smart comment = new Comment.Smart(this.comment(event));
+        final String author = comment.author()
+            .login().toLowerCase(Locale.ENGLISH);
+        final String self = comment.issue().repo().github()
+            .users().self().login().toLowerCase(Locale.ENGLISH);
+        if (!author.equals(self)) {
+            this.response.react(farm, comment);
+        }
     }
 
     /**
      * The comment where it happened.
      * @return Comment
      */
-    public Comment comment() {
-        final JsonObject subject = this.json.getJsonObject("subject");
-        final Repo repo = this.github.repos().get(this.coordinates());
+    private Comment comment(final JsonObject json) {
+        final JsonObject subject = json.getJsonObject("subject");
+        final Repo repo = this.github.repos().get(
+            new Coordinates.Simple(
+                json.getJsonObject("repository").getString("full_name")
+            )
+        );
         final Issue issue = repo.issues().get(
             Integer.parseInt(
                 StringUtils.substringAfterLast(

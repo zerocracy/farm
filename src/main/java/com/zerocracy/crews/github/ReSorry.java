@@ -16,8 +16,8 @@
  */
 package com.zerocracy.crews.github;
 
-import com.zerocracy.qa.Question;
-import java.io.IOException;
+import com.jcabi.github.Comment;
+import com.zerocracy.jstk.Farm;
 
 /**
  * He says sorry.
@@ -26,12 +26,11 @@ import java.io.IOException;
  * @version $Id$
  * @since 0.1
  */
-public final class ReSorry implements Reaction {
+public final class ReSorry implements Reply {
 
     @Override
-    public String answer(final Event event,
-        final Question question) throws IOException {
-        return "sorry, I didn't understand";
+    public String react(final Farm farm, final Comment.Smart comment) {
+        return "I'm sorry, I don't understand you :(";
     }
 
 }

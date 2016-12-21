@@ -16,20 +16,15 @@
  */
 package com.zerocracy.crews.github;
 
-import com.google.common.collect.ImmutableMap;
 import com.jcabi.github.Github;
 import com.jcabi.github.RtPagination;
 import com.jcabi.http.Request;
 import com.jcabi.http.response.RestResponse;
-import com.jcabi.log.Logger;
 import com.zerocracy.jstk.Crew;
 import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+import javax.json.JsonObject;
 
 /**
  * GitHub notifications listening crew.
@@ -52,27 +47,43 @@ public final class GithubCrew implements Crew {
     private final Github github;
 
     /**
+     * Reaction.
+     */
+    private final Reaction reaction;
+
+    /**
      * Ctor.
      * @param ghb Github client
      */
     public GithubCrew(final Github ghb) {
         this.github = ghb;
+        this.reaction = new Reaction.Chain(
+            new ReOnReason("invitation", new ReOnInvitation(ghb)),
+            new ReOnReason(
+                "mention",
+                new ReOnComment(
+                    ghb,
+                    new ReNotMine(
+                        new Response.Chain(
+                            new ReRegex("hello", new ReHello()),
+                            new ReRegex("in", new ReIn()),
+                            new ReRegex("out", new ReOut()),
+                            new ReRegex(".*", new ReSorry())
+                        )
+                    )
+                )
+            )
+        );
     }
 
     @Override
     public void deploy(final Farm farm) throws IOException {
         final Request req = this.github.entry()
             .uri().path("/notifications").back();
-        final List<Event> events =
-            StreamSupport.stream(
-                new RtPagination<>(req, RtPagination.COPYING).spliterator(),
-                false
-            )
-            .map(json -> new Event(this.github, json))
-            .collect(Collectors.toList());
-        events.forEach(event -> Logger.info(this, "%s", event));
-        for (final Event event : events) {
-            GithubCrew.employ(farm, event);
+        final Iterable<JsonObject> events =
+            new RtPagination<>(req, RtPagination.COPYING);
+        for (final JsonObject event : events) {
+            this.reaction.react(farm, event);
         }
         req.method(Request.PUT)
             .body().set("{}").back()
@@ -81,35 +92,4 @@ public final class GithubCrew implements Crew {
             .assertStatus(HttpURLConnection.HTTP_RESET);
     }
 
-    /**
-     * Event to parse and employ a stakeholder.
-     * @param farm Farm
-     * @param event JSON event from GitHub
-     * @throws IOException If fails
-     */
-    private static void employ(final Farm farm, final Event event)
-        throws IOException {
-        final Project project = farm
-            .find(String.format("gh:%s", event.coordinates().toString()))
-            .iterator()
-            .next();
-        farm.deploy(
-            new StkByReason(
-                event,
-                "mention",
-                new StkNotMine(
-                    event,
-                    new StkReaction(
-                        event,
-                        ImmutableMap.<String, Reaction>builder()
-                            .put("in", new ReIn(project))
-                            .put("out", new ReOut(project))
-                            .put("hello", new ReHello())
-                            .put(".*", new ReSorry())
-                            .build()
-                    )
-                )
-            )
-        );
-    }
 }

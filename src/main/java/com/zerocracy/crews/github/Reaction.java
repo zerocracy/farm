@@ -16,11 +16,13 @@
  */
 package com.zerocracy.crews.github;
 
-import com.zerocracy.qa.Question;
+import com.zerocracy.jstk.Farm;
 import java.io.IOException;
+import java.util.Arrays;
+import javax.json.JsonObject;
 
 /**
- * GitHub message reaction.
+ * React to GitHub event.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
@@ -29,12 +31,41 @@ import java.io.IOException;
 public interface Reaction {
 
     /**
-     * Give an answer to this question.
-     * @param event The event
-     * @param question The question
-     * @return Answer or EMPTY string
+     * Do something about it.
+     * @param farm Farm
+     * @param event Event just happened
      * @throws IOException If fails on I/O
      */
-    String answer(Event event, Question question) throws IOException;
+    void react(Farm farm, JsonObject event) throws IOException;
 
+    /**
+     * Reactions chained.
+     */
+    final class Chain implements Reaction {
+        /**
+         * Reactions.
+         */
+        private final Iterable<Reaction> reactions;
+        /**
+         * Ctor.
+         * @param list All reactions
+         */
+        public Chain(final Iterable<Reaction> list) {
+            this.reactions = list;
+        }
+        /**
+         * Ctor.
+         * @param list All reactions
+         */
+        public Chain(final Reaction... list) {
+            this(Arrays.asList(list));
+        }
+        @Override
+        public void react(final Farm farm, final JsonObject event)
+            throws IOException {
+            for (final Reaction reaction : this.reactions) {
+                reaction.react(farm, event);
+            }
+        }
+    }
 }

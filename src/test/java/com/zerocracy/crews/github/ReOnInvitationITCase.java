@@ -16,21 +16,30 @@
  */
 package com.zerocracy.crews.github;
 
-import com.jcabi.github.Comment;
-import com.zerocracy.jstk.Farm;
+import com.jcabi.github.RtGithub;
+import com.zerocracy.jstk.fake.FkFarm;
+import javax.json.Json;
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
- * He just says hello.
- *
+ * Integration case for {@link ReOnInvitation}.
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class ReHello implements Reply {
+public final class ReOnInvitationITCase {
 
-    @Override
-    public String react(final Farm farm, final Comment.Smart comment) {
-        return "hey!";
+    /**
+     * Accepts all invitations in Github.
+     * @throws Exception If some problem inside
+     */
+    @Test
+    @Ignore
+    public void acceptsThemAll() throws Exception {
+        new ReOnInvitation(
+            new RtGithub("0crat", "--secret--")
+        ).react(new FkFarm(), Json.createObjectBuilder().build());
     }
 
 }
