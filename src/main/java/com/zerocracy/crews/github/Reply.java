@@ -18,6 +18,7 @@ package com.zerocracy.crews.github;
 
 import com.jcabi.github.Comment;
 import com.zerocracy.jstk.Farm;
+import com.zerocracy.pm.Tube;
 import java.io.IOException;
 
 /**
@@ -32,10 +33,11 @@ public interface Reply {
     /**
      * Reply to the comment.
      * @param farm Farm
-     * @param comment Comment in GitHub
-     * @return Text to reply
+     * @param comment Comment
+     * @param tube To answer
      * @throws IOException If fails on I/O
      */
-    String react(Farm farm, Comment.Smart comment) throws IOException;
+    void react(Farm farm, Comment.Smart comment,
+        Tube tube) throws IOException;
 
 }

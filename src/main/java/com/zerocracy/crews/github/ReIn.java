@@ -18,8 +18,8 @@ package com.zerocracy.crews.github;
 
 import com.jcabi.github.Comment;
 import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Item;
-import com.zerocracy.jstk.Project;
+import com.zerocracy.pm.Tube;
+import com.zerocracy.pm.scope.Into;
 import java.io.IOException;
 
 /**
@@ -32,15 +32,16 @@ import java.io.IOException;
 public final class ReIn implements Reply {
 
     @Override
-    public String react(final Farm farm, final Comment.Smart comment)
-        throws IOException {
-        final Project project = farm.find(
-            comment.issue().repo().coordinates().toString()
-        ).iterator().next();
-        try (final Item scope = project.acq("scope.xml")) {
-            scope.path();
-        }
-        return "done, it's in scope";
+    public void react(final Farm farm, final Comment.Smart comment,
+        final Tube tube) throws IOException {
+        farm.deploy(
+            new Into(
+                farm.find(
+                    comment.issue().repo().coordinates().toString()
+                ).iterator().next(),
+                tube
+            )
+        );
     }
 
 }

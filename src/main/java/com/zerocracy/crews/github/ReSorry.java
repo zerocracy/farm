@@ -18,6 +18,8 @@ package com.zerocracy.crews.github;
 
 import com.jcabi.github.Comment;
 import com.zerocracy.jstk.Farm;
+import com.zerocracy.pm.Tube;
+import java.io.IOException;
 
 /**
  * He says sorry.
@@ -29,8 +31,9 @@ import com.zerocracy.jstk.Farm;
 public final class ReSorry implements Reply {
 
     @Override
-    public String react(final Farm farm, final Comment.Smart comment) {
-        return "I'm sorry, I don't understand you :(";
+    public void react(final Farm farm, final Comment.Smart comment,
+        final Tube tube) throws IOException {
+        tube.say("I'm sorry, I didn't understand you.");
     }
 
 }

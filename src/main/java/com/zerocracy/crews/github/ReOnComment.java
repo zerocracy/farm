@@ -49,6 +49,7 @@ public final class ReOnComment implements Reaction {
     /**
      * Ctor.
      * @param ghb Github client
+     * @param rsp Response
      */
     public ReOnComment(final Github ghb, final Response rsp) {
         this.github = ghb;
@@ -56,7 +57,8 @@ public final class ReOnComment implements Reaction {
     }
 
     @Override
-    public void react(final Farm farm, final JsonObject event) throws IOException {
+    public void react(final Farm farm, final JsonObject event)
+        throws IOException {
         final Comment.Smart comment = new Comment.Smart(this.comment(event));
         final String author = comment.author()
             .login().toLowerCase(Locale.ENGLISH);
@@ -69,6 +71,7 @@ public final class ReOnComment implements Reaction {
 
     /**
      * The comment where it happened.
+     * @param json JSON from GitHub
      * @return Comment
      */
     private Comment comment(final JsonObject json) {

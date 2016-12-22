@@ -14,34 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.crews.github;
-
-import com.jcabi.github.Comment;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.pm.Tube;
-import com.zerocracy.pm.scope.Out;
-import java.io.IOException;
 
 /**
- * Remove this GitHub issue from project scope.
+ * Project management.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class ReOut implements Reply {
-
-    @Override
-    public void react(final Farm farm, final Comment.Smart comment,
-        final Tube tube) throws IOException {
-        farm.deploy(
-            new Out(
-                farm.find(
-                    comment.issue().repo().coordinates().toString()
-                ).iterator().next(),
-                tube
-            )
-        );
-    }
-
-}
+package com.zerocracy.pm;

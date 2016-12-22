@@ -14,34 +14,48 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.crews.github;
+package com.zerocracy.pm.scope;
 
-import com.jcabi.github.Comment;
-import com.zerocracy.jstk.Farm;
+import com.zerocracy.jstk.Item;
+import com.zerocracy.jstk.Project;
+import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.Tube;
-import com.zerocracy.pm.scope.Out;
 import java.io.IOException;
 
 /**
- * Remove this GitHub issue from project scope.
+ * The task goes out of scope.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class ReOut implements Reply {
+public final class Out implements Stakeholder {
 
-    @Override
-    public void react(final Farm farm, final Comment.Smart comment,
-        final Tube tube) throws IOException {
-        farm.deploy(
-            new Out(
-                farm.find(
-                    comment.issue().repo().coordinates().toString()
-                ).iterator().next(),
-                tube
-            )
-        );
+    /**
+     * Project.
+     */
+    private final Project project;
+
+    /**
+     * Tube.
+     */
+    private final Tube tube;
+
+    /**
+     * Ctor.
+     * @param pkt Project
+     * @param tbe Tube
+     */
+    public Out(final Project pkt, final Tube tbe) {
+        this.project = pkt;
+        this.tube = tbe;
     }
 
+    @Override
+    public void work() throws IOException {
+        try (final Item scope = this.project.acq("scope.xml")) {
+            scope.path();
+        }
+        this.tube.say("done, it's out");
+    }
 }

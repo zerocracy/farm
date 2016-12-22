@@ -52,7 +52,7 @@ final class ReOnInvitation implements Reaction {
     public void react(final Farm farm, final JsonObject event)
         throws IOException {
         final Request entry = this.github.entry().reset("Accept").header(
-            "Accept", "application/vnd.github.swamp-thing-preview+json"
+            "accept", "application/vnd.github.swamp-thing-preview+json"
         );
         final Iterable<JsonObject> all = new RtPagination<>(
             entry.uri().path("/user/repository_invitations").back(),

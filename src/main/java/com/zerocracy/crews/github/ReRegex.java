@@ -43,6 +43,7 @@ public final class ReRegex implements Response {
 
     /**
      * Ctor.
+     * @param ptn Pattern
      * @param tgt Target
      */
     public ReRegex(final String ptn, final Reply tgt) {
@@ -51,6 +52,7 @@ public final class ReRegex implements Response {
 
     /**
      * Ctor.
+     * @param ptn Pattern
      * @param tgt Target
      */
     public ReRegex(final Pattern ptn, final Reply tgt) {
@@ -63,8 +65,15 @@ public final class ReRegex implements Response {
         throws IOException {
         final Matcher matcher = this.regex.matcher(comment.body());
         if (matcher.matches()) {
-            comment.issue().comments().post(
-                this.origin.react(farm, comment)
+            this.origin.react(
+                farm, comment,
+                message -> comment.issue().comments().post(
+                    String.format(
+                        "> %s\n\n%s",
+                        comment.body(),
+                        message
+                    )
+                )
             );
         }
     }

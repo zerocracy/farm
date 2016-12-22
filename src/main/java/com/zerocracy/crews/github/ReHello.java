@@ -18,6 +18,8 @@ package com.zerocracy.crews.github;
 
 import com.jcabi.github.Comment;
 import com.zerocracy.jstk.Farm;
+import com.zerocracy.pm.Tube;
+import java.io.IOException;
 
 /**
  * He just says hello.
@@ -29,8 +31,9 @@ import com.zerocracy.jstk.Farm;
 public final class ReHello implements Reply {
 
     @Override
-    public String react(final Farm farm, final Comment.Smart comment) {
-        return "hey!";
+    public void react(final Farm farm, final Comment.Smart comment,
+        final Tube tube) throws IOException {
+        tube.say("hey, what's up?");
     }
 
 }
