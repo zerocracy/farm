@@ -64,13 +64,19 @@ final class ReRegex implements Reaction {
     @Override
     public void react(final Farm farm, final SlackMessagePosted event,
         final SlackSession session) throws IOException {
-        final String msg = event.getMessageContent();
+        final String msg = event.getMessageContent().split(" ", 2)[1];
         final Matcher matcher = this.pattern.matcher(msg);
         if (matcher.matches()) {
             this.origin.react(
                 farm, event,
                 message -> session.sendMessage(
-                    event.getChannel(), message
+                    event.getChannel(),
+                    String.format(
+                        "> %s\n@%s %s",
+                        event.getMessageContent(),
+                        event.getSender().getUserName(),
+                        message
+                    )
                 )
             );
         }
