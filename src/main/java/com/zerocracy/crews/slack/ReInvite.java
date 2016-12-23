@@ -45,8 +45,8 @@ final class ReInvite implements Reaction<SlackChannelJoined> {
                 ),
                 "When you're ready, you can start giving me instructions,",
                 "always prefixing your messages with my name.",
-                "If you need help, start from here:",
-                "http://www.0crat.com/help.html"
+                "If you need help, start here:",
+                "http://www.0crat.com/slack.html"
             )
         );
         return true;

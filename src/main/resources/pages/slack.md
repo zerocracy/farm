@@ -1,8 +1,8 @@
 0crat Slack bot understands these commands:
 
-  * `help`: shows most relevant assisting information.
+  * `help` shows most relevant assisting information.
 
-  * `hello`: just says "hi".
+  * `hello` just says "hi".
 
-  * `scope`: full report about project scope.
+  * `scope` prints full project scope report.
 
