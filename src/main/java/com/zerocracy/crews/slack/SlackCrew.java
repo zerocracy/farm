@@ -69,6 +69,7 @@ public final class SlackCrew implements Crew {
     private SlackSession start(final Farm farm) throws IOException {
         final SlackSession ssn =
             SlackSessionFactory.createWebSocketSlackSession(this.token);
+        ssn.connect();
         final Reaction reaction = new ReLogged(
             new ReNotMine(
                 ssn.sessionPersona().getUserName(),
@@ -90,7 +91,6 @@ public final class SlackCrew implements Crew {
                 }
             }
         );
-        ssn.connect();
         Logger.info(
             this, "Slack connected as @%s",
             ssn.sessionPersona().getUserName()
