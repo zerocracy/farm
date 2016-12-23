@@ -36,9 +36,10 @@ interface Reaction {
      * @param farm Farm
      * @param event Event just happened
      * @param session Session
+     * @return TRUE if reacted
      * @throws IOException If fails on I/O
      */
-    void react(Farm farm, SlackMessagePosted event,
+    boolean react(Farm farm, SlackMessagePosted event,
         SlackSession session) throws IOException;
 
     /**
@@ -64,11 +65,16 @@ interface Reaction {
             this(Arrays.asList(list));
         }
         @Override
-        public void react(final Farm farm, final SlackMessagePosted event,
+        public boolean react(final Farm farm, final SlackMessagePosted event,
             final SlackSession session) throws IOException {
+            boolean done = false;
             for (final Reaction reaction : this.reactions) {
-                reaction.react(farm, event, session);
+                done = reaction.react(farm, event, session);
+                if (done) {
+                    break;
+                }
             }
+            return done;
         }
     }
 }

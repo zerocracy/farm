@@ -45,7 +45,7 @@ final class ReLogged implements Reaction {
     }
 
     @Override
-    public void react(final Farm farm, final SlackMessagePosted event,
+    public boolean react(final Farm farm, final SlackMessagePosted event,
         final SlackSession session)
         throws IOException {
         Logger.info(
@@ -55,9 +55,9 @@ final class ReLogged implements Reaction {
             event.getChannel().getName(),
             event.getMessageSubType(),
             event.getSender().getUserName(),
-            event.getMessageContent()
+            event.getMessageContent().replaceAll("\\s", " ")
         );
-        this.origin.react(farm, event, session);
+        return this.origin.react(farm, event, session);
     }
 
 }

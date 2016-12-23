@@ -34,9 +34,10 @@ interface Response {
      * Respond to the comment.
      * @param farm Farm
      * @param comment Comment in GitHub
+     * @return TRUE if reacted
      * @throws IOException If fails on I/O
      */
-    void react(Farm farm, Comment.Smart comment) throws IOException;
+    boolean react(Farm farm, Comment.Smart comment) throws IOException;
 
     /**
      * Reactions chained.
@@ -61,11 +62,16 @@ interface Response {
             this(Arrays.asList(list));
         }
         @Override
-        public void react(final Farm farm, final Comment.Smart comment)
+        public boolean react(final Farm farm, final Comment.Smart comment)
             throws IOException {
+            boolean done = false;
             for (final Response response : this.responses) {
-                response.react(farm, comment);
+                done = response.react(farm, comment);
+                if (done) {
+                    break;
+                }
             }
+            return done;
         }
     }
 }

@@ -52,13 +52,15 @@ final class ReNotMine implements Reaction {
     }
 
     @Override
-    public void react(final Farm farm, final SlackMessagePosted event,
+    public boolean react(final Farm farm, final SlackMessagePosted event,
         final SlackSession session)
         throws IOException {
         final SlackUser sender = event.getSender();
+        boolean done = false;
         if (!this.self.equals(sender.getUserName())) {
-            this.origin.react(farm, event, session);
+            done = this.origin.react(farm, event, session);
         }
+        return done;
     }
 
 }

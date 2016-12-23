@@ -44,14 +44,16 @@ final class ReNotMine implements Response {
     }
 
     @Override
-    public void react(final Farm farm, final Comment.Smart comment)
+    public boolean react(final Farm farm, final Comment.Smart comment)
         throws IOException {
         final String author = comment.author()
             .login().toLowerCase(Locale.ENGLISH);
         final String self = comment.issue().repo().github()
             .users().self().login().toLowerCase(Locale.ENGLISH);
+        boolean done = false;
         if (!author.equals(self)) {
-            this.origin.react(farm, comment);
+            done = this.origin.react(farm, comment);
         }
+        return done;
     }
 }

@@ -61,11 +61,12 @@ final class ReRegex implements Response {
     }
 
     @Override
-    public void react(final Farm farm, final Comment.Smart comment)
+    public boolean react(final Farm farm, final Comment.Smart comment)
         throws IOException {
         final Matcher matcher = this.regex.matcher(
             comment.body().split(" ", 2)[1]
         );
+        boolean done = false;
         if (matcher.matches()) {
             this.origin.react(
                 farm, comment,
@@ -77,6 +78,8 @@ final class ReRegex implements Response {
                     )
                 )
             );
+            done = true;
         }
+        return done;
     }
 }

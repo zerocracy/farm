@@ -44,18 +44,20 @@ final class ReIfDirected implements Reaction {
     }
 
     @Override
-    public void react(final Farm farm, final SlackMessagePosted event,
+    public boolean react(final Farm farm, final SlackMessagePosted event,
         final SlackSession session)
         throws IOException {
         final String prefix = String.format(
             "<@%s> ", session.sessionPersona().getId()
         );
+        boolean done = false;
         // @checkstyle OperatorWrapCheck (5 lines)
         if (event.getMessageContent().startsWith(prefix)
             && event.getMessageSubType() ==
             SlackMessagePosted.MessageSubType.UNKNOWN) {
-            this.origin.react(farm, event, session);
+            done = this.origin.react(farm, event, session);
         }
+        return done;
     }
 
 }
