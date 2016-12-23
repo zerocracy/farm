@@ -58,24 +58,43 @@ public final class SlackCrew implements Crew {
     @Override
     public void deploy(final Farm farm) throws IOException {
         if (this.session.get() == null) {
-            final SlackSession ssn =
-                SlackSessionFactory.createWebSocketSlackSession(this.token);
-            ssn.addMessagePostedListener(
-                (event, sess) -> {
-                    final SlackChannel channel = event.getChannel();
-                    final SlackUser sender = event.getSender();
-                    if (!"0crat".equals(sender.getUserName())) {
-                        sess.sendMessage(channel, "hey");
-                    }
-                }
-            );
-            ssn.connect();
-            this.session.set(ssn);
-            Logger.info(
-                this, "Slack connected as @%s",
-                ssn.sessionPersona().getUserName()
-            );
+            this.session.set(this.start(farm));
         }
+    }
+
+    /**
+     * Create a session.
+     * @param farm The farm
+     * @return The session
+     * @throws IOException If fails
+     */
+    private SlackSession start(final Farm farm) throws IOException {
+        final SlackSession ssn =
+            SlackSessionFactory.createWebSocketSlackSession(this.token);
+        final Reaction reaction = new ReNotMine(
+            ssn.sessionPersona().getUserName(),
+            new Reaction.Chain(
+
+            )
+        );
+        ssn.addMessagePostedListener(
+            (event, sess) -> {
+                try {
+                    reaction.react(farm, event);
+                } catch (final IOException ex) {
+                    throw new IllegalStateException(ex);
+                }
+                final SlackChannel channel = event.getChannel();
+                final SlackUser sender = event.getSender();
+                sess.sendMessage(channel, "hey");
+            }
+        );
+        ssn.connect();
+        Logger.info(
+            this, "Slack connected as @%s",
+            ssn.sessionPersona().getUserName()
+        );
+        return ssn;
     }
 
 }
