@@ -1,10 +1,10 @@
 docker:
   image: yegor256/java8
 assets:
-  settings.xml: teamed/home#assets/zerocracy/settings.xml
-  id_rsa: teamed/home#assets/heroku-key
-  id_rsa.pub: teamed/home#assets/heroku-key.pub
-  s3cfg: teamed/home#assets/s3cfg
+  settings.xml: zerocracy/home#assets/zerocracy/settings.xml
+  id_rsa: zerocracy/home#assets/heroku-key
+  id_rsa.pub: zerocracy/home#assets/heroku-key.pub
+  s3cfg: zerocracy/home#assets/s3cfg
 env:
   MAVEN_OPTS: -XX:MaxPermSize=256m -Xmx1g
 install: |-
