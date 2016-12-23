@@ -14,67 +14,48 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.crews.github;
+package com.zerocracy.crews.slack;
 
-import com.jcabi.github.Comment;
+import com.ullink.slack.simpleslackapi.SlackSession;
+import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.jstk.Farm;
 import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
- * Response if regex matches.
+ * React if the message is directed to me.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-final class ReRegex implements Response {
+final class ReIfDirected implements Reaction {
 
     /**
-     * Regex.
+     * Reaction.
      */
-    private final Pattern regex;
-
-    /**
-     * Reply.
-     */
-    private final Reply origin;
+    private final Reaction origin;
 
     /**
      * Ctor.
-     * @param ptn Pattern
      * @param tgt Target
      */
-    ReRegex(final String ptn, final Reply tgt) {
-        this(Pattern.compile(ptn), tgt);
-    }
-
-    /**
-     * Ctor.
-     * @param ptn Pattern
-     * @param tgt Target
-     */
-    ReRegex(final Pattern ptn, final Reply tgt) {
-        this.regex = ptn;
+    ReIfDirected(final Reaction tgt) {
         this.origin = tgt;
     }
 
     @Override
-    public void react(final Farm farm, final Comment.Smart comment)
+    public void react(final Farm farm, final SlackMessagePosted event,
+        final SlackSession session)
         throws IOException {
-        final Matcher matcher = this.regex.matcher(comment.body());
-        if (matcher.matches()) {
-            this.origin.react(
-                farm, comment,
-                message -> comment.issue().comments().post(
-                    String.format(
-                        "> %s\n\n%s",
-                        comment.body(),
-                        message
-                    )
-                )
-            );
+        final String prefix = String.format(
+            "@%s", session.sessionPersona().getUserName()
+        );
+        // @checkstyle OperatorWrapCheck (5 lines)
+        if (event.getMessageContent().startsWith(prefix)
+            && event.getMessageSubType() ==
+            SlackMessagePosted.MessageSubType.ME_MESSAGE) {
+            this.origin.react(farm, event, session);
         }
     }
+
 }

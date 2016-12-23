@@ -28,7 +28,7 @@ import java.util.Arrays;
  * @version $Id$
  * @since 0.1
  */
-public interface Response {
+interface Response {
 
     /**
      * Respond to the comment.
@@ -50,14 +50,14 @@ public interface Response {
          * Ctor.
          * @param list All responses
          */
-        public Chain(final Iterable<Response> list) {
+        Chain(final Iterable<Response> list) {
             this.responses = list;
         }
         /**
          * Ctor.
          * @param list All responses
          */
-        public Chain(final Response... list) {
+        Chain(final Response... list) {
             this(Arrays.asList(list));
         }
         @Override

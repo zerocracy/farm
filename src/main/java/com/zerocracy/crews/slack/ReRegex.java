@@ -14,27 +14,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.crews.github;
+package com.zerocracy.crews.slack;
 
-import com.jcabi.github.Comment;
+import com.ullink.slack.simpleslackapi.SlackSession;
+import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.jstk.Farm;
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Response if regex matches.
+ * React by regex.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-final class ReRegex implements Response {
+final class ReRegex implements Reaction {
 
     /**
-     * Regex.
+     * Pattern.
      */
-    private final Pattern regex;
+    private final Pattern pattern;
 
     /**
      * Reply.
@@ -44,7 +45,7 @@ final class ReRegex implements Response {
     /**
      * Ctor.
      * @param ptn Pattern
-     * @param tgt Target
+     * @param tgt Reply
      */
     ReRegex(final String ptn, final Reply tgt) {
         this(Pattern.compile(ptn), tgt);
@@ -53,28 +54,26 @@ final class ReRegex implements Response {
     /**
      * Ctor.
      * @param ptn Pattern
-     * @param tgt Target
+     * @param tgt Reply
      */
     ReRegex(final Pattern ptn, final Reply tgt) {
-        this.regex = ptn;
+        this.pattern = ptn;
         this.origin = tgt;
     }
 
     @Override
-    public void react(final Farm farm, final Comment.Smart comment)
-        throws IOException {
-        final Matcher matcher = this.regex.matcher(comment.body());
+    public void react(final Farm farm, final SlackMessagePosted event,
+        final SlackSession session) throws IOException {
+        final String msg = event.getMessageContent();
+        final Matcher matcher = this.pattern.matcher(msg);
         if (matcher.matches()) {
             this.origin.react(
-                farm, comment,
-                message -> comment.issue().comments().post(
-                    String.format(
-                        "> %s\n\n%s",
-                        comment.body(),
-                        message
-                    )
+                farm, event,
+                message -> session.sendMessage(
+                    event.getChannel(), message
                 )
             );
         }
     }
+
 }

@@ -16,6 +16,7 @@
  */
 package com.zerocracy.crews.slack;
 
+import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.SlackUser;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.jstk.Farm;
@@ -28,7 +29,7 @@ import java.io.IOException;
  * @version $Id$
  * @since 0.1
  */
-public final class ReNotMine implements Reaction {
+final class ReNotMine implements Reaction {
 
     /**
      * Self.
@@ -45,17 +46,18 @@ public final class ReNotMine implements Reaction {
      * @param slf Self user
      * @param tgt Target
      */
-    public ReNotMine(final String slf, final Reaction tgt) {
+    ReNotMine(final String slf, final Reaction tgt) {
         this.self = slf;
         this.origin = tgt;
     }
 
     @Override
-    public void react(final Farm farm, final SlackMessagePosted event)
+    public void react(final Farm farm, final SlackMessagePosted event,
+        final SlackSession session)
         throws IOException {
         final SlackUser sender = event.getSender();
         if (!this.self.equals(sender.getUserName())) {
-            this.origin.react(farm, event);
+            this.origin.react(farm, event, session);
         }
     }
 

@@ -28,7 +28,7 @@ import javax.json.JsonObject;
  * @version $Id$
  * @since 0.1
  */
-public interface Reaction {
+interface Reaction {
 
     /**
      * Do something about it.
@@ -50,14 +50,14 @@ public interface Reaction {
          * Ctor.
          * @param list All reactions
          */
-        public Chain(final Iterable<Reaction> list) {
+        Chain(final Iterable<Reaction> list) {
             this.reactions = list;
         }
         /**
          * Ctor.
          * @param list All reactions
          */
-        public Chain(final Reaction... list) {
+        Chain(final Reaction... list) {
             this(Arrays.asList(list));
         }
         @Override

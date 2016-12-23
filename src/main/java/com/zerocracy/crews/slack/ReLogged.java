@@ -14,67 +14,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.crews.github;
+package com.zerocracy.crews.slack;
 
-import com.jcabi.github.Comment;
+import com.jcabi.log.Logger;
+import com.ullink.slack.simpleslackapi.SlackSession;
+import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.jstk.Farm;
 import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
- * Response if regex matches.
+ * Pass through and log.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-final class ReRegex implements Response {
+final class ReLogged implements Reaction {
 
     /**
-     * Regex.
+     * Reaction.
      */
-    private final Pattern regex;
-
-    /**
-     * Reply.
-     */
-    private final Reply origin;
+    private final Reaction origin;
 
     /**
      * Ctor.
-     * @param ptn Pattern
      * @param tgt Target
      */
-    ReRegex(final String ptn, final Reply tgt) {
-        this(Pattern.compile(ptn), tgt);
-    }
-
-    /**
-     * Ctor.
-     * @param ptn Pattern
-     * @param tgt Target
-     */
-    ReRegex(final Pattern ptn, final Reply tgt) {
-        this.regex = ptn;
+    ReLogged(final Reaction tgt) {
         this.origin = tgt;
     }
 
     @Override
-    public void react(final Farm farm, final Comment.Smart comment)
+    public void react(final Farm farm, final SlackMessagePosted event,
+        final SlackSession session)
         throws IOException {
-        final Matcher matcher = this.regex.matcher(comment.body());
-        if (matcher.matches()) {
-            this.origin.react(
-                farm, comment,
-                message -> comment.issue().comments().post(
-                    String.format(
-                        "> %s\n\n%s",
-                        comment.body(),
-                        message
-                    )
-                )
-            );
-        }
+        Logger.info(
+            this,
+            "Slack (channel=%s, sub-type=%s, sender=@%s): \"%s\"",
+            event.getChannel(),
+            event.getMessageSubType(),
+            event.getSender().getUserName(),
+            event.getMessageContent()
+        );
+        this.origin.react(farm, event, session);
     }
+
 }

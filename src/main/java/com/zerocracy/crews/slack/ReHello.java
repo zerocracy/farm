@@ -14,26 +14,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.crews.github;
+package com.zerocracy.crews.slack;
 
-import com.jcabi.github.Comment;
+import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.pm.Tube;
 import java.io.IOException;
 
 /**
- * He says sorry.
+ * Says hello.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-final class ReSorry implements Reply {
+final class ReHello implements Reply {
 
     @Override
-    public void react(final Farm farm, final Comment.Smart comment,
+    public void react(final Farm farm, final SlackMessagePosted event,
         final Tube tube) throws IOException {
-        tube.say("I'm sorry, I didn't understand you.");
+        tube.say("hey, how is it going?");
     }
 
 }

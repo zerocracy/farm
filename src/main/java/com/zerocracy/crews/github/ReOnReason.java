@@ -27,7 +27,7 @@ import javax.json.JsonObject;
  * @version $Id$
  * @since 0.1
  */
-public final class ReOnReason implements Reaction {
+final class ReOnReason implements Reaction {
 
     /**
      * Reason.
@@ -44,7 +44,7 @@ public final class ReOnReason implements Reaction {
      * @param rson Reason
      * @param orgn Original reaction
      */
-    public ReOnReason(final String rson, final Reaction orgn) {
+    ReOnReason(final String rson, final Reaction orgn) {
         this.reason = rson;
         this.origin = orgn;
     }

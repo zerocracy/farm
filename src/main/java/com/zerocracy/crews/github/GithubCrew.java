@@ -57,18 +57,20 @@ public final class GithubCrew implements Crew {
      */
     public GithubCrew(final Github ghb) {
         this.github = ghb;
-        this.reaction = new Reaction.Chain(
-            new ReOnReason("invitation", new ReOnInvitation(ghb)),
-            new ReOnReason(
-                "mention",
-                new ReOnComment(
-                    ghb,
-                    new ReNotMine(
-                        new Response.Chain(
-                            new ReRegex("hello", new ReHello()),
-                            new ReRegex("in", new ReIn()),
-                            new ReRegex("out", new ReOut()),
-                            new ReRegex(".*", new ReSorry())
+        this.reaction = new ReLogged(
+            new Reaction.Chain(
+                new ReOnReason("invitation", new ReOnInvitation(ghb)),
+                new ReOnReason(
+                    "mention",
+                    new ReOnComment(
+                        ghb,
+                        new ReNotMine(
+                            new Response.Chain(
+                                new ReRegex("hello", new ReHello()),
+                                new ReRegex("in", new ReIn()),
+                                new ReRegex("out", new ReOut()),
+                                new ReRegex(".*", new ReSorry())
+                            )
                         )
                     )
                 )

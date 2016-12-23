@@ -16,65 +16,43 @@
  */
 package com.zerocracy.crews.github;
 
-import com.jcabi.github.Comment;
+import com.jcabi.log.Logger;
 import com.zerocracy.jstk.Farm;
 import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import javax.json.JsonObject;
 
 /**
- * Response if regex matches.
+ * Log and pass through.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-final class ReRegex implements Response {
+public final class ReLogged implements Reaction {
 
     /**
-     * Regex.
+     * Reaction.
      */
-    private final Pattern regex;
-
-    /**
-     * Reply.
-     */
-    private final Reply origin;
+    private final Reaction reaction;
 
     /**
      * Ctor.
-     * @param ptn Pattern
-     * @param tgt Target
+     * @param rtn Reaction
      */
-    ReRegex(final String ptn, final Reply tgt) {
-        this(Pattern.compile(ptn), tgt);
-    }
-
-    /**
-     * Ctor.
-     * @param ptn Pattern
-     * @param tgt Target
-     */
-    ReRegex(final Pattern ptn, final Reply tgt) {
-        this.regex = ptn;
-        this.origin = tgt;
+    public ReLogged(final Reaction rtn) {
+        this.reaction = rtn;
     }
 
     @Override
-    public void react(final Farm farm, final Comment.Smart comment)
+    public void react(final Farm farm, final JsonObject event)
         throws IOException {
-        final Matcher matcher = this.regex.matcher(comment.body());
-        if (matcher.matches()) {
-            this.origin.react(
-                farm, comment,
-                message -> comment.issue().comments().post(
-                    String.format(
-                        "> %s\n\n%s",
-                        comment.body(),
-                        message
-                    )
-                )
-            );
-        }
+        Logger.info(
+            this,
+            "GitHub (repo=%s, reason=%s)",
+            event.getJsonObject("repository").getString("full_name"),
+            event.getString("reason")
+        );
+        this.reaction.react(farm, event);
     }
+
 }

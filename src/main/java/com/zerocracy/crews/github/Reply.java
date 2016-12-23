@@ -28,7 +28,7 @@ import java.io.IOException;
  * @version $Id$
  * @since 0.1
  */
-public interface Reply {
+interface Reply {
 
     /**
      * Reply to the comment.

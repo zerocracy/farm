@@ -16,6 +16,7 @@
  */
 package com.zerocracy.crews.slack;
 
+import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.jstk.Farm;
 import java.io.IOException;
@@ -28,15 +29,17 @@ import java.util.Arrays;
  * @version $Id$
  * @since 0.1
  */
-public interface Reaction {
+interface Reaction {
 
     /**
      * Do something about it.
      * @param farm Farm
      * @param event Event just happened
+     * @param session Session
      * @throws IOException If fails on I/O
      */
-    void react(Farm farm, SlackMessagePosted event) throws IOException;
+    void react(Farm farm, SlackMessagePosted event,
+        SlackSession session) throws IOException;
 
     /**
      * Reactions chained.
@@ -50,21 +53,21 @@ public interface Reaction {
          * Ctor.
          * @param list All reactions
          */
-        public Chain(final Iterable<Reaction> list) {
+        Chain(final Iterable<Reaction> list) {
             this.reactions = list;
         }
         /**
          * Ctor.
          * @param list All reactions
          */
-        public Chain(final Reaction... list) {
+        Chain(final Reaction... list) {
             this(Arrays.asList(list));
         }
         @Override
-        public void react(final Farm farm, final SlackMessagePosted event)
-            throws IOException {
+        public void react(final Farm farm, final SlackMessagePosted event,
+            final SlackSession session) throws IOException {
             for (final Reaction reaction : this.reactions) {
-                reaction.react(farm, event);
+                reaction.react(farm, event, session);
             }
         }
     }

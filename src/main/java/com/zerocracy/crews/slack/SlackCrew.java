@@ -17,9 +17,7 @@
 package com.zerocracy.crews.slack;
 
 import com.jcabi.log.Logger;
-import com.ullink.slack.simpleslackapi.SlackChannel;
 import com.ullink.slack.simpleslackapi.SlackSession;
-import com.ullink.slack.simpleslackapi.SlackUser;
 import com.ullink.slack.simpleslackapi.impl.SlackSessionFactory;
 import com.zerocracy.jstk.Crew;
 import com.zerocracy.jstk.Farm;
@@ -71,22 +69,25 @@ public final class SlackCrew implements Crew {
     private SlackSession start(final Farm farm) throws IOException {
         final SlackSession ssn =
             SlackSessionFactory.createWebSocketSlackSession(this.token);
-        final Reaction reaction = new ReNotMine(
-            ssn.sessionPersona().getUserName(),
-            new Reaction.Chain(
-
+        final Reaction reaction = new ReLogged(
+            new ReNotMine(
+                ssn.sessionPersona().getUserName(),
+                new ReIfDirected(
+                    new Reaction.Chain(
+                        new ReRegex("hello", new ReHello()),
+                        new ReRegex("scope", new ReScope()),
+                        new ReRegex(".*", new ReSorry())
+                    )
+                )
             )
         );
         ssn.addMessagePostedListener(
             (event, sess) -> {
                 try {
-                    reaction.react(farm, event);
+                    reaction.react(farm, event, ssn);
                 } catch (final IOException ex) {
                     throw new IllegalStateException(ex);
                 }
-                final SlackChannel channel = event.getChannel();
-                final SlackUser sender = event.getSender();
-                sess.sendMessage(channel, "hey");
             }
         );
         ssn.connect();
