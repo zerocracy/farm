@@ -53,7 +53,7 @@ final class ReIfDirected implements Reaction {
         // @checkstyle OperatorWrapCheck (5 lines)
         if (event.getMessageContent().startsWith(prefix)
             && event.getMessageSubType() ==
-            SlackMessagePosted.MessageSubType.ME_MESSAGE) {
+            SlackMessagePosted.MessageSubType.UNKNOWN) {
             this.origin.react(farm, event, session);
         }
     }
