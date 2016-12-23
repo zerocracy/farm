@@ -99,6 +99,17 @@
             <version>1.1</version>
         </dependency>
         <dependency>
+            <groupId>es.nitaur.markdown</groupId>
+            <artifactId>txtmark</artifactId>
+            <version>0.16</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.velocity</groupId>
+            <artifactId>velocity</artifactId>
+            <version>1.7</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
             <scope>runtime</scope>
@@ -122,8 +133,16 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
         <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.jcabi</groupId>
             <artifactId>jcabi-log</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.jcabi</groupId>
+            <artifactId>jcabi-matchers</artifactId>
         </dependency>
         <dependency>
             <groupId>com.jcabi</groupId>

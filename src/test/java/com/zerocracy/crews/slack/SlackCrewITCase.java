@@ -27,7 +27,7 @@ import org.junit.Test;
  * @version $Id$
  * @since 0.1
  */
-public final class SlackCrewTest {
+public final class SlackCrewITCase {
 
     /**
      * Fetches notifications from Github.

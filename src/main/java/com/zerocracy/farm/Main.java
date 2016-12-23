@@ -26,7 +26,6 @@ import java.io.InputStream;
 import java.util.Properties;
 import org.takes.http.Exit;
 import org.takes.http.FtCli;
-import org.takes.tk.TkText;
 
 /**
  * Main entry point.
@@ -80,10 +79,7 @@ public final class Main {
             ),
             new SlackCrew(props.getProperty("slack.0crat.key"))
         );
-        new FtCli(
-            new TkText("farm.zerocracy.com"),
-            this.arguments
-        ).start(Exit.NEVER);
+        new FtCli(new TkApp(), this.arguments).start(Exit.NEVER);
         Logger.info(this, "Farm is ready");
     }
 
