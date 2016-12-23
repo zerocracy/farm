@@ -70,6 +70,10 @@ public final class SlackCrew implements Crew {
         final SlackSession ssn =
             SlackSessionFactory.createWebSocketSlackSession(this.token);
         ssn.connect();
+        Logger.info(
+            this, "Slack connected as @%s",
+            ssn.sessionPersona().getUserName()
+        );
         final Reaction reaction = new ReLogged(
             new ReNotMine(
                 ssn.sessionPersona().getUserName(),
@@ -90,10 +94,6 @@ public final class SlackCrew implements Crew {
                     throw new IllegalStateException(ex);
                 }
             }
-        );
-        Logger.info(
-            this, "Slack connected as @%s",
-            ssn.sessionPersona().getUserName()
         );
         return ssn;
     }
