@@ -36,9 +36,7 @@ final class ReScope implements Reply {
         final Tube tube) throws IOException {
         farm.deploy(
             new Show(
-                farm.find(
-                    event.getChannel().getId()
-                ).iterator().next(),
+                farm.find(event.getChannel().getId()).iterator().next(),
                 tube
             )
         );
