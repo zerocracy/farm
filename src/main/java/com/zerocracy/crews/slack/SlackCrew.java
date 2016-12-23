@@ -71,8 +71,9 @@ public final class SlackCrew implements Crew {
             SlackSessionFactory.createWebSocketSlackSession(this.token);
         ssn.connect();
         Logger.info(
-            this, "Slack connected as @%s",
-            ssn.sessionPersona().getUserName()
+            this, "Slack connected as @%s/%s",
+            ssn.sessionPersona().getUserName(),
+            ssn.sessionPersona().getId()
         );
         final Reaction reaction = new ReLogged(
             new ReNotMine(

@@ -48,7 +48,7 @@ final class ReIfDirected implements Reaction {
         final SlackSession session)
         throws IOException {
         final String prefix = String.format(
-            "@%s", session.sessionPersona().getUserName()
+            "<@%s> ", session.sessionPersona().getId()
         );
         // @checkstyle OperatorWrapCheck (5 lines)
         if (event.getMessageContent().startsWith(prefix)

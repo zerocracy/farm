@@ -50,8 +50,9 @@ final class ReLogged implements Reaction {
         throws IOException {
         Logger.info(
             this,
-            "Slack (channel=%s, sub-type=%s, sender=@%s): \"%s\"",
-            event.getChannel(),
+            "Slack (channel=%s/%s, sub-type=%s, sender=@%s): \"%s\"",
+            event.getChannel().getId(),
+            event.getChannel().getName(),
             event.getMessageSubType(),
             event.getSender().getUserName(),
             event.getMessageContent()
