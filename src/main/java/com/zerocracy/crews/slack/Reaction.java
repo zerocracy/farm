@@ -17,19 +17,19 @@
 package com.zerocracy.crews.slack;
 
 import com.ullink.slack.simpleslackapi.SlackSession;
-import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
+import com.ullink.slack.simpleslackapi.events.SlackEvent;
 import com.zerocracy.jstk.Farm;
 import java.io.IOException;
-import java.util.Arrays;
 
 /**
  * React to Slack message.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
+ * @param <T> Type of event
  * @since 0.1
  */
-interface Reaction {
+interface Reaction<T extends SlackEvent> {
 
     /**
      * Do something about it.
@@ -39,36 +39,29 @@ interface Reaction {
      * @return TRUE if reacted
      * @throws IOException If fails on I/O
      */
-    boolean react(Farm farm, SlackMessagePosted event,
-        SlackSession session) throws IOException;
+    boolean react(Farm farm, T event, SlackSession session) throws IOException;
 
     /**
      * Reactions chained.
+     * @param <T> Type of event
      */
-    final class Chain implements Reaction {
+    final class Chain<T extends SlackEvent> implements Reaction<T> {
         /**
          * Reactions.
          */
-        private final Iterable<Reaction> reactions;
+        private final Iterable<Reaction<T>> reactions;
         /**
          * Ctor.
          * @param list All reactions
          */
-        Chain(final Iterable<Reaction> list) {
+        Chain(final Iterable<Reaction<T>> list) {
             this.reactions = list;
         }
-        /**
-         * Ctor.
-         * @param list All reactions
-         */
-        Chain(final Reaction... list) {
-            this(Arrays.asList(list));
-        }
         @Override
-        public boolean react(final Farm farm, final SlackMessagePosted event,
+        public boolean react(final Farm farm, final T event,
             final SlackSession session) throws IOException {
             boolean done = false;
-            for (final Reaction reaction : this.reactions) {
+            for (final Reaction<T> reaction : this.reactions) {
                 done = reaction.react(farm, event, session);
                 if (done) {
                     break;

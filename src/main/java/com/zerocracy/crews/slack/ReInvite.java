@@ -17,47 +17,35 @@
 package com.zerocracy.crews.slack;
 
 import com.ullink.slack.simpleslackapi.SlackSession;
-import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
+import com.ullink.slack.simpleslackapi.events.SlackChannelJoined;
 import com.zerocracy.jstk.Farm;
 import java.io.IOException;
 
 /**
- * React if the message is directed to me.
+ * Invite to the channel.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-final class ReIfDirected implements Reaction<SlackMessagePosted> {
-
-    /**
-     * Reaction.
-     */
-    private final Reaction<SlackMessagePosted> origin;
-
-    /**
-     * Ctor.
-     * @param tgt Target
-     */
-    ReIfDirected(final Reaction<SlackMessagePosted> tgt) {
-        this.origin = tgt;
-    }
+final class ReInvite implements Reaction<SlackChannelJoined> {
 
     @Override
-    public boolean react(final Farm farm, final SlackMessagePosted event,
-        final SlackSession session)
-        throws IOException {
-        final String prefix = String.format(
-            "<@%s> ", session.sessionPersona().getId()
+    public boolean react(final Farm farm, final SlackChannelJoined event,
+        final SlackSession session) throws IOException {
+        session.sendMessage(
+            event.getSlackChannel(),
+            String.join(
+                " ",
+                "Thanks for inviting me here. This channel will be",
+                "dedicated to a single project that I will manage for you.",
+                String.format(
+                    "Your project ID is `%s`.",
+                    event.getSlackChannel().getId()
+                )
+            )
         );
-        boolean done = false;
-        // @checkstyle OperatorWrapCheck (5 lines)
-        if (event.getMessageContent().startsWith(prefix)
-            && event.getMessageSubType() ==
-            SlackMessagePosted.MessageSubType.UNKNOWN) {
-            done = this.origin.react(farm, event, session);
-        }
-        return done;
+        return true;
     }
 
 }

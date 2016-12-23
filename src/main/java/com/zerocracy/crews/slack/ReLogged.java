@@ -18,6 +18,7 @@ package com.zerocracy.crews.slack;
 
 import com.jcabi.log.Logger;
 import com.ullink.slack.simpleslackapi.SlackSession;
+import com.ullink.slack.simpleslackapi.events.SlackEvent;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.jstk.Farm;
 import java.io.IOException;
@@ -27,36 +28,47 @@ import java.io.IOException;
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
+ * @param <T> Type of event
  * @since 0.1
  */
-final class ReLogged implements Reaction {
+final class ReLogged<T extends SlackEvent> implements Reaction<T> {
 
     /**
      * Reaction.
      */
-    private final Reaction origin;
+    private final Reaction<T> origin;
 
     /**
      * Ctor.
      * @param tgt Target
      */
-    ReLogged(final Reaction tgt) {
+    ReLogged(final Reaction<T> tgt) {
         this.origin = tgt;
     }
 
     @Override
-    public boolean react(final Farm farm, final SlackMessagePosted event,
-        final SlackSession session)
-        throws IOException {
-        Logger.info(
-            this,
-            "Slack (channel=%s/%s, sub-type=%s, sender=@%s): \"%s\"",
-            event.getChannel().getId(),
-            event.getChannel().getName(),
-            event.getMessageSubType(),
-            event.getSender().getUserName(),
-            event.getMessageContent().replaceAll("\\s", " ")
-        );
+    public boolean react(final Farm farm, final T event,
+        final SlackSession session) throws IOException {
+        if (event instanceof SlackMessagePosted) {
+            final SlackMessagePosted posted =
+                SlackMessagePosted.class.cast(event);
+            Logger.info(
+                this,
+                "Slack (channel=%s/%s, sub-type=%s, sender=@%s): \"%s\"",
+                posted.getChannel().getId(),
+                posted.getChannel().getName(),
+                posted.getMessageSubType(),
+                posted.getSender().getUserName(),
+                posted.getMessageContent().replaceAll("\\s", " ")
+            );
+        } else {
+            Logger.info(
+                this,
+                "Slack %s event: %s",
+                event.getClass().getName(),
+                event.toString()
+            );
+        }
         return this.origin.react(farm, event, session);
     }
 

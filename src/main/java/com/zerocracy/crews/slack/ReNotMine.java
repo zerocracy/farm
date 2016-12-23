@@ -29,35 +29,28 @@ import java.io.IOException;
  * @version $Id$
  * @since 0.1
  */
-final class ReNotMine implements Reaction {
-
-    /**
-     * Self.
-     */
-    private final String self;
+final class ReNotMine implements Reaction<SlackMessagePosted> {
 
     /**
      * Reaction.
      */
-    private final Reaction origin;
+    private final Reaction<SlackMessagePosted> origin;
 
     /**
      * Ctor.
-     * @param slf Self user
      * @param tgt Target
      */
-    ReNotMine(final String slf, final Reaction tgt) {
-        this.self = slf;
+    ReNotMine(final Reaction<SlackMessagePosted> tgt) {
         this.origin = tgt;
     }
 
     @Override
     public boolean react(final Farm farm, final SlackMessagePosted event,
-        final SlackSession session)
-        throws IOException {
+        final SlackSession session) throws IOException {
+        final String self = session.sessionPersona().getUserName();
         final SlackUser sender = event.getSender();
         boolean done = false;
-        if (!this.self.equals(sender.getUserName())) {
+        if (!self.equals(sender.getUserName())) {
             done = this.origin.react(farm, event, session);
         }
         return done;

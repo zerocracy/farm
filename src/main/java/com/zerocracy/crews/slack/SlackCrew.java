@@ -18,10 +18,13 @@ package com.zerocracy.crews.slack;
 
 import com.jcabi.log.Logger;
 import com.ullink.slack.simpleslackapi.SlackSession;
+import com.ullink.slack.simpleslackapi.events.SlackChannelJoined;
+import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.ullink.slack.simpleslackapi.impl.SlackSessionFactory;
 import com.zerocracy.jstk.Crew;
 import com.zerocracy.jstk.Farm;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -33,6 +36,30 @@ import java.util.concurrent.atomic.AtomicReference;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class SlackCrew implements Crew {
+
+    /**
+     * When new message posted.
+     */
+    private static final Reaction<SlackMessagePosted> POSTED = new ReLogged<>(
+        new ReNotMine(
+            new ReIfDirected(
+                new Reaction.Chain<>(
+                    Arrays.asList(
+                        new ReRegex("hello", new ReHello()),
+                        new ReRegex("scope", new ReScope()),
+                        new ReRegex(".*", new ReSorry())
+                    )
+                )
+            )
+        )
+    );
+
+    /**
+     * When joined new channel.
+     */
+    private static final Reaction<SlackChannelJoined> JOINED = new ReLogged<>(
+        new ReInvite()
+    );
 
     /**
      * Session token.
@@ -75,22 +102,19 @@ public final class SlackCrew implements Crew {
             ssn.sessionPersona().getUserName(),
             ssn.sessionPersona().getId()
         );
-        final Reaction reaction = new ReLogged(
-            new ReNotMine(
-                ssn.sessionPersona().getUserName(),
-                new ReIfDirected(
-                    new Reaction.Chain(
-                        new ReRegex("hello", new ReHello()),
-                        new ReRegex("scope", new ReScope()),
-                        new ReRegex(".*", new ReSorry())
-                    )
-                )
-            )
-        );
         ssn.addMessagePostedListener(
             (event, sess) -> {
                 try {
-                    reaction.react(farm, event, ssn);
+                    SlackCrew.POSTED.react(farm, event, ssn);
+                } catch (final IOException ex) {
+                    throw new IllegalStateException(ex);
+                }
+            }
+        );
+        ssn.addChannelJoinedListener(
+            (event, sess) -> {
+                try {
+                    SlackCrew.JOINED.react(farm, event, ssn);
                 } catch (final IOException ex) {
                     throw new IllegalStateException(ex);
                 }

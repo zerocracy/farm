@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
  * @version $Id$
  * @since 0.1
  */
-final class ReRegex implements Reaction {
+final class ReRegex implements Reaction<SlackMessagePosted> {
 
     /**
      * Pattern.
