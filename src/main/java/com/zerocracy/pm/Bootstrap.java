@@ -14,22 +14,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pm.scope;
+package com.zerocracy.pm;
 
-import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
-import com.zerocracy.pm.Tube;
+import com.zerocracy.pm.scope.Wbs;
 import java.io.IOException;
 
 /**
- * Show scope.
+ * Bootstrap a project.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class Show implements Stakeholder {
+public final class Bootstrap implements Stakeholder {
 
     /**
      * Project.
@@ -37,25 +36,15 @@ public final class Show implements Stakeholder {
     private final Project project;
 
     /**
-     * Tube.
-     */
-    private final Tube tube;
-
-    /**
      * Ctor.
      * @param pkt Project
-     * @param tbe Tube
      */
-    public Show(final Project pkt, final Tube tbe) {
+    public Bootstrap(final Project pkt) {
         this.project = pkt;
-        this.tube = tbe;
     }
 
     @Override
     public void work() throws IOException {
-        try (final Item scope = this.project.acq("scope.xml")) {
-            scope.path();
-        }
-        this.tube.say("the scope is empty");
+        new Wbs(this.project).bootstrap();
     }
 }

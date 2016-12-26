@@ -19,22 +19,27 @@ package com.zerocracy.crews.slack;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.jstk.Farm;
+import com.zerocracy.pm.scope.ShowWbs;
 import java.io.IOException;
 
 /**
- * Says sorry.
+ * Show scope.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-final class ReSorry implements Reaction<SlackMessagePosted> {
+final class ReShowWbs implements Reaction<SlackMessagePosted> {
 
     @Override
     public boolean react(final Farm farm, final SlackMessagePosted event,
         final SlackSession session) throws IOException {
-        new SkPerson(event, session).say("I'm sorry, I didn't get it.");
+        farm.deploy(
+            new ShowWbs(
+                new SkProject(farm, event),
+                new SkPerson(event, session)
+            )
+        );
         return true;
     }
-
 }

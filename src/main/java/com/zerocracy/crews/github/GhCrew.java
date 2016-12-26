@@ -39,7 +39,7 @@ import javax.json.JsonObject;
  *  the latest one in the thread.
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-public final class GithubCrew implements Crew {
+public final class GhCrew implements Crew {
 
     /**
      * Github client.
@@ -55,7 +55,7 @@ public final class GithubCrew implements Crew {
      * Ctor.
      * @param ghb Github client
      */
-    public GithubCrew(final Github ghb) {
+    public GhCrew(final Github ghb) {
         this.github = ghb;
         this.reaction = new ReLogged(
             new Reaction.Chain(

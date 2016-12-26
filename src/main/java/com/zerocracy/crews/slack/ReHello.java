@@ -16,9 +16,9 @@
  */
 package com.zerocracy.crews.slack;
 
+import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.jstk.Farm;
-import com.zerocracy.pm.Tube;
 import java.io.IOException;
 
 /**
@@ -28,12 +28,12 @@ import java.io.IOException;
  * @version $Id$
  * @since 0.1
  */
-final class ReHello implements Reply {
+final class ReHello implements Reaction<SlackMessagePosted> {
 
     @Override
-    public void react(final Farm farm, final SlackMessagePosted event,
-        final Tube tube) throws IOException {
-        tube.say("hey, how is it going?");
+    public boolean react(final Farm farm, final SlackMessagePosted event,
+        final SlackSession session) throws IOException {
+        new SkPerson(event, session).say("hey, how is it going?");
+        return true;
     }
-
 }

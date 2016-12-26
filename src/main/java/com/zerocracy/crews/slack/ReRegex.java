@@ -40,14 +40,14 @@ final class ReRegex implements Reaction<SlackMessagePosted> {
     /**
      * Reply.
      */
-    private final Reply origin;
+    private final Reaction<SlackMessagePosted> origin;
 
     /**
      * Ctor.
      * @param ptn Pattern
      * @param tgt Reply
      */
-    ReRegex(final String ptn, final Reply tgt) {
+    ReRegex(final String ptn, final Reaction<SlackMessagePosted> tgt) {
         this(Pattern.compile(ptn), tgt);
     }
 
@@ -56,7 +56,7 @@ final class ReRegex implements Reaction<SlackMessagePosted> {
      * @param ptn Pattern
      * @param tgt Reply
      */
-    ReRegex(final Pattern ptn, final Reply tgt) {
+    ReRegex(final Pattern ptn, final Reaction<SlackMessagePosted> tgt) {
         this.pattern = ptn;
         this.origin = tgt;
     }
@@ -68,18 +68,7 @@ final class ReRegex implements Reaction<SlackMessagePosted> {
         final Matcher matcher = this.pattern.matcher(msg);
         boolean done = false;
         if (matcher.matches()) {
-            this.origin.react(
-                farm, event,
-                message -> session.sendMessage(
-                    event.getChannel(),
-                    String.format(
-                        "> %s\n@%s %s",
-                        event.getMessageContent(),
-                        event.getSender().getUserName(),
-                        message
-                    )
-                )
-            );
+            this.origin.react(farm, event, session);
             done = true;
         }
         return done;

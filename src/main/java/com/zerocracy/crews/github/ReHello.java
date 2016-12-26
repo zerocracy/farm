@@ -18,7 +18,6 @@ package com.zerocracy.crews.github;
 
 import com.jcabi.github.Comment;
 import com.zerocracy.jstk.Farm;
-import com.zerocracy.pm.Tube;
 import java.io.IOException;
 
 /**
@@ -31,9 +30,9 @@ import java.io.IOException;
 final class ReHello implements Reply {
 
     @Override
-    public void react(final Farm farm, final Comment.Smart comment,
-        final Tube tube) throws IOException {
-        tube.say("hey, what's up?");
+    public void react(final Farm farm, final Comment.Smart comment)
+        throws IOException {
+        new GhPerson(comment).say("hey, what's up?");
     }
 
 }

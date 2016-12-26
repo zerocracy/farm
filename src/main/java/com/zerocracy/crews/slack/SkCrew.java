@@ -35,7 +35,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-public final class SlackCrew implements Crew {
+public final class SkCrew implements Crew {
 
     /**
      * When new message posted.
@@ -46,7 +46,7 @@ public final class SlackCrew implements Crew {
                 new Reaction.Chain<>(
                     Arrays.asList(
                         new ReRegex("hello", new ReHello()),
-                        new ReRegex("scope", new ReScope()),
+                        new ReRegex("scope", new ReShowWbs()),
                         new ReRegex(".*", new ReSorry())
                     )
                 )
@@ -75,7 +75,7 @@ public final class SlackCrew implements Crew {
      * Ctor.
      * @param tkn Token
      */
-    public SlackCrew(final String tkn) {
+    public SkCrew(final String tkn) {
         this.token = tkn;
         this.session = new AtomicReference<>();
     }
@@ -105,7 +105,7 @@ public final class SlackCrew implements Crew {
         ssn.addMessagePostedListener(
             (event, sess) -> {
                 try {
-                    SlackCrew.POSTED.react(farm, event, ssn);
+                    SkCrew.POSTED.react(farm, event, ssn);
                 } catch (final IOException ex) {
                     throw new IllegalStateException(ex);
                 }
@@ -114,7 +114,7 @@ public final class SlackCrew implements Crew {
         ssn.addChannelJoinedListener(
             (event, sess) -> {
                 try {
-                    SlackCrew.JOINED.react(farm, event, ssn);
+                    SkCrew.JOINED.react(farm, event, ssn);
                 } catch (final IOException ex) {
                     throw new IllegalStateException(ex);
                 }

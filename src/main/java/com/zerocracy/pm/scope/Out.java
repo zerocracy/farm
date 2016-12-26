@@ -16,10 +16,10 @@
  */
 package com.zerocracy.pm.scope;
 
-import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
-import com.zerocracy.pm.Tube;
+import com.zerocracy.pm.Job;
+import com.zerocracy.pm.Person;
 import java.io.IOException;
 
 /**
@@ -39,23 +39,28 @@ public final class Out implements Stakeholder {
     /**
      * Tube.
      */
-    private final Tube tube;
+    private final Person person;
+
+    /**
+     * Job.
+     */
+    private final Job job;
 
     /**
      * Ctor.
      * @param pkt Project
      * @param tbe Tube
+     * @param jbb Job
      */
-    public Out(final Project pkt, final Tube tbe) {
+    public Out(final Project pkt, final Person tbe, final Job jbb) {
         this.project = pkt;
-        this.tube = tbe;
+        this.person = tbe;
+        this.job = jbb;
     }
 
     @Override
     public void work() throws IOException {
-        try (final Item scope = this.project.acq("scope.xml")) {
-            scope.path();
-        }
-        this.tube.say("done, it's out");
+        new Wbs(this.project).remove(this.job);
+        this.person.say("done, it's out");
     }
 }

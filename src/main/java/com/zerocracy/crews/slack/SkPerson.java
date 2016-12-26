@@ -14,31 +14,51 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.crews.github;
+package com.zerocracy.crews.slack;
 
-import com.jcabi.github.RtGithub;
-import com.zerocracy.jstk.fake.FkFarm;
-import org.junit.Ignore;
-import org.junit.Test;
+import com.ullink.slack.simpleslackapi.SlackSession;
+import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
+import com.zerocracy.pm.Person;
 
 /**
- * Integration case for {@link GithubCrew}.
+ * Person in slack.
+ *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class GithubCrewITCase {
+public final class SkPerson implements Person {
 
     /**
-     * Fetches notifications from Github.
-     * @throws Exception If some problem inside
+     * Event.
      */
-    @Test
-    @Ignore
-    public void fetchesNotifications() throws Exception {
-        new GithubCrew(
-            new RtGithub("0crat", "--secret--")
-        ).deploy(new FkFarm());
+    private final SlackMessagePosted event;
+
+    /**
+     * Session.
+     */
+    private final SlackSession session;
+
+    /**
+     * Ctor.
+     * @param evt Event
+     * @param ssn Session
+     */
+    public SkPerson(final SlackMessagePosted evt, final SlackSession ssn) {
+        this.event = evt;
+        this.session = ssn;
     }
 
+    @Override
+    public void say(final String message) {
+        this.session.sendMessage(
+            this.event.getChannel(),
+            String.format(
+                "> %s%n@%s %s",
+                this.event.getMessageContent(),
+                this.event.getSender().getUserName(),
+                message
+            )
+        );
+    }
 }

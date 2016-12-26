@@ -1,4 +1,5 @@
-/**
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
  * Copyright (c) 2016 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -13,28 +14,16 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
- */
-package com.zerocracy.crews.slack;
-
-import com.ullink.slack.simpleslackapi.SlackSession;
-import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
-import com.zerocracy.jstk.Farm;
-import java.io.IOException;
-
-/**
- * Says sorry.
- *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.1
- */
-final class ReSorry implements Reaction<SlackMessagePosted> {
-
-    @Override
-    public boolean react(final Farm farm, final SlackMessagePosted event,
-        final SlackSession session) throws IOException {
-        new SkPerson(event, session).say("I'm sorry, I didn't get it.");
-        return true;
-    }
-
-}
+ -->
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns="http://www.w3.org/1999/xhtml" version="1.0">
+    <xsl:output method="html" doctype-system="about:legacy-compat"
+        encoding="UTF-8" indent="yes" />
+    <xsl:template match="wbs">
+        <xsl:apply-templates select="job"/>
+    </xsl:template>
+    <xsl:template match="job">
+        <xsl:value-of select="name"/>
+        <xsl:text>&#10;</xsl:text>
+    </xsl:template>
+</xsl:stylesheet>

@@ -16,30 +16,45 @@
  */
 package com.zerocracy.crews.slack;
 
-import com.zerocracy.jstk.fake.FkFarm;
-import java.util.concurrent.TimeUnit;
-import org.junit.Ignore;
-import org.junit.Test;
+import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
+import com.zerocracy.jstk.Farm;
+import com.zerocracy.jstk.Item;
+import com.zerocracy.jstk.Project;
+import java.io.IOException;
 
 /**
- * Integration case for {@link SlackCrew}.
+ * Project in Slack.
+ *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class SlackCrewITCase {
+public final class SkProject implements Project {
 
     /**
-     * Fetches notifications from Github.
-     * @throws Exception If some problem inside
+     * Project.
      */
-    @Test
-    @Ignore
-    public void fetchesNotifications() throws Exception {
-        new SlackCrew(
-            "xoxb-117010373476-nprDjGa5eLcHCBWmtNhG4oDD"
-        ).deploy(new FkFarm());
-        TimeUnit.HOURS.sleep(1L);
+    private final Project origin;
+
+    /**
+     * Ctor.
+     * @param farm Farm
+     * @param event Event
+     * @throws IOException If fails
+     */
+    public SkProject(final Farm farm, final SlackMessagePosted event)
+        throws IOException {
+        this.origin = farm.find(
+            String.format(
+                "id:%s",
+                event.getChannel().getId()
+            )
+        ).iterator().next();
+    }
+
+    @Override
+    public Item acq(final String file) throws IOException {
+        return this.origin.acq(file);
     }
 
 }

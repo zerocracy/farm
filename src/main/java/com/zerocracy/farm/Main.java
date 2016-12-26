@@ -18,8 +18,8 @@ package com.zerocracy.farm;
 
 import com.jcabi.github.RtGithub;
 import com.jcabi.log.Logger;
-import com.zerocracy.crews.github.GithubCrew;
-import com.zerocracy.crews.slack.SlackCrew;
+import com.zerocracy.crews.github.GhCrew;
+import com.zerocracy.crews.slack.SkCrew;
 import com.zerocracy.jstk.fake.FkFarm;
 import java.io.IOException;
 import java.io.InputStream;
@@ -71,13 +71,13 @@ public final class Main {
         }
         new Routine(
             new FkFarm(),
-            new GithubCrew(
+            new GhCrew(
                 new RtGithub(
                     "0crat",
                     props.getProperty("github.0crat.password")
                 )
             ),
-            new SlackCrew(props.getProperty("slack.0crat.key"))
+            new SkCrew(props.getProperty("slack.0crat.key"))
         );
         new FtCli(new TkApp(), this.arguments).start(Exit.NEVER);
         Logger.info(this, "Farm is ready");

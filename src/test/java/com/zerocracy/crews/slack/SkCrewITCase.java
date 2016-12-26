@@ -16,25 +16,30 @@
  */
 package com.zerocracy.crews.slack;
 
-import com.ullink.slack.simpleslackapi.SlackSession;
-import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
-import com.zerocracy.jstk.Farm;
-import java.io.IOException;
+import com.zerocracy.jstk.fake.FkFarm;
+import java.util.concurrent.TimeUnit;
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
- * Says sorry.
- *
+ * Integration case for {@link SkCrew}.
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-final class ReSorry implements Reaction<SlackMessagePosted> {
+public final class SkCrewITCase {
 
-    @Override
-    public boolean react(final Farm farm, final SlackMessagePosted event,
-        final SlackSession session) throws IOException {
-        new SkPerson(event, session).say("I'm sorry, I didn't get it.");
-        return true;
+    /**
+     * Fetches notifications from Github.
+     * @throws Exception If some problem inside
+     */
+    @Test
+    @Ignore
+    public void fetchesNotifications() throws Exception {
+        new SkCrew(
+            "xoxb-117010373476-nprDjGa5eLcHCBWmtNhG4oDD"
+        ).deploy(new FkFarm());
+        TimeUnit.HOURS.sleep(1L);
     }
 
 }

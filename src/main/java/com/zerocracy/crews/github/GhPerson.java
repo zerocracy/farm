@@ -14,27 +14,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.crews.slack;
+package com.zerocracy.crews.github;
 
-import com.ullink.slack.simpleslackapi.SlackSession;
-import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
-import com.zerocracy.jstk.Farm;
+import com.jcabi.github.Comment;
+import com.zerocracy.pm.Person;
 import java.io.IOException;
 
 /**
- * Says sorry.
+ * Person in GitHub.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-final class ReSorry implements Reaction<SlackMessagePosted> {
+final class GhPerson implements Person {
+
+    /**
+     * Comment.
+     */
+    private final Comment comment;
+
+    /**
+     * Ctor.
+     * @param cmt Comment
+     */
+    GhPerson(final Comment cmt) {
+        this.comment = cmt;
+    }
 
     @Override
-    public boolean react(final Farm farm, final SlackMessagePosted event,
-        final SlackSession session) throws IOException {
-        new SkPerson(event, session).say("I'm sorry, I didn't get it.");
-        return true;
+    public void say(final String message) throws IOException {
+        this.comment.issue().comments().post(
+            String.format(
+                "> %s%n%n%s",
+                new Comment.Smart(this.comment).body(),
+                message
+            )
+        );
     }
 
 }

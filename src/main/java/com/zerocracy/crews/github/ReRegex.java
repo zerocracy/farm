@@ -68,16 +68,7 @@ final class ReRegex implements Response {
         );
         boolean done = false;
         if (matcher.matches()) {
-            this.origin.react(
-                farm, comment,
-                message -> comment.issue().comments().post(
-                    String.format(
-                        "> %s\n\n%s",
-                        comment.body(),
-                        message
-                    )
-                )
-            );
+            this.origin.react(farm, comment);
             done = true;
         }
         return done;

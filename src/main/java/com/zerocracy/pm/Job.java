@@ -14,32 +14,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.crews.slack;
+package com.zerocracy.pm;
 
-import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.pm.Tube;
-import com.zerocracy.pm.scope.Show;
 import java.io.IOException;
 
 /**
- * Show scope.
+ * Job.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-final class ReScope implements Reply {
+public interface Job {
 
-    @Override
-    public void react(final Farm farm, final SlackMessagePosted event,
-        final Tube tube) throws IOException {
-        farm.deploy(
-            new Show(
-                farm.find(event.getChannel().getId()).iterator().next(),
-                tube
-            )
-        );
+    /**
+     * Its unique name.
+     * @return Name
+     * @throws IOException If fails on I/O
+     */
+    String name() throws IOException;
+
+    /**
+     * Fake job.
+     */
+    final class Fake implements Job {
+        @Override
+        public String name() {
+            return "yegor256/pdd#1";
+        }
     }
 
 }

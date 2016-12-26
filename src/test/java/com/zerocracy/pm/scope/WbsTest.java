@@ -14,27 +14,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.crews.slack;
+package com.zerocracy.pm.scope;
 
-import com.ullink.slack.simpleslackapi.SlackSession;
-import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
-import com.zerocracy.jstk.Farm;
-import java.io.IOException;
+import com.zerocracy.jstk.fake.FkProject;
+import com.zerocracy.pm.Job;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Test;
 
 /**
- * Says sorry.
- *
+ * Test case for {@link Wbs}.
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-final class ReSorry implements Reaction<SlackMessagePosted> {
+public final class WbsTest {
 
-    @Override
-    public boolean react(final Farm farm, final SlackMessagePosted event,
-        final SlackSession session) throws IOException {
-        new SkPerson(event, session).say("I'm sorry, I didn't get it.");
-        return true;
+    /**
+     * Adds and removes jobs.
+     * @throws Exception If some problem inside
+     */
+    @Test
+    public void addsAndRemovesJobs() throws Exception {
+        final Wbs wbs = new Wbs(new FkProject());
+        wbs.bootstrap();
+        final Job job = new Job.Fake();
+        wbs.add(job);
+        MatcherAssert.assertThat(
+            wbs.print(),
+            Matchers.containsString(job.name())
+        );
+        wbs.remove(job);
     }
 
 }

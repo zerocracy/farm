@@ -14,30 +14,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.crews.slack;
+package com.zerocracy.pm.scope;
 
-import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.pm.Tube;
+import com.zerocracy.jstk.Project;
+import com.zerocracy.jstk.Stakeholder;
+import com.zerocracy.pm.Person;
 import java.io.IOException;
 
 /**
- * React to Slack message.
+ * Show scope.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-interface Reply {
+public final class ShowWbs implements Stakeholder {
 
     /**
-     * Do something about it.
-     * @param farm Farm
-     * @param event Event just happened
-     * @param tube The tube
-     * @throws IOException If fails on I/O
+     * Project.
      */
-    void react(Farm farm, SlackMessagePosted event, Tube tube)
-        throws IOException;
+    private final Project project;
 
+    /**
+     * Tube.
+     */
+    private final Person person;
+
+    /**
+     * Ctor.
+     * @param pkt Project
+     * @param tbe Tube
+     */
+    public ShowWbs(final Project pkt, final Person tbe) {
+        this.project = pkt;
+        this.person = tbe;
+    }
+
+    @Override
+    public void work() throws IOException {
+        this.person.say(
+            String.format(
+                "This is what we have in WBS at the moment:%n%n```%n%s%n```",
+                new Wbs(this.project).print()
+            )
+        );
+    }
 }

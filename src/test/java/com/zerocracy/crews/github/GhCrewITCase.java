@@ -14,24 +14,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pm;
+package com.zerocracy.crews.github;
 
-import java.io.IOException;
+import com.jcabi.github.RtGithub;
+import com.zerocracy.jstk.fake.FkFarm;
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
- * Tube to GitHub.
- *
+ * Integration case for {@link GhCrew}.
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public interface Tube {
+public final class GhCrewITCase {
 
     /**
-     * Say something.
-     * @param message Message
-     * @throws IOException If fails on I/O
+     * Fetches notifications from Github.
+     * @throws Exception If some problem inside
      */
-    void say(String message) throws IOException;
+    @Test
+    @Ignore
+    public void fetchesNotifications() throws Exception {
+        new GhCrew(
+            new RtGithub("0crat", "--secret--")
+        ).deploy(new FkFarm());
+    }
 
 }
