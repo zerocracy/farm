@@ -63,13 +63,14 @@ final class ReRegex implements Response {
     @Override
     public boolean react(final Farm farm, final Comment.Smart comment)
         throws IOException {
-        final Matcher matcher = this.regex.matcher(
-            comment.body().split(" ", 2)[1]
-        );
+        final String[] parts = comment.body().split(" ", 2);
         boolean done = false;
-        if (matcher.matches()) {
-            this.origin.react(farm, comment);
-            done = true;
+        if (parts.length > 1) {
+            final Matcher matcher = this.regex.matcher(parts[1]);
+            if (matcher.matches()) {
+                this.origin.react(farm, comment);
+                done = true;
+            }
         }
         return done;
     }
