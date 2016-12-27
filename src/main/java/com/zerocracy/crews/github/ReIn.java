@@ -18,8 +18,10 @@ package com.zerocracy.crews.github;
 
 import com.jcabi.github.Comment;
 import com.zerocracy.jstk.Farm;
+import com.zerocracy.pm.StkByRoles;
 import com.zerocracy.pm.scope.Into;
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * Add this GitHub issue to project scope.
@@ -34,10 +36,15 @@ final class ReIn implements Reply {
     public void react(final Farm farm, final Comment.Smart comment)
         throws IOException {
         farm.deploy(
-            new Into(
+            new StkByRoles(
                 new GhProject(farm, comment),
                 new GhPerson(comment),
-                new GhJob(comment.issue())
+                Arrays.asList("PO", "ARC"),
+                new Into(
+                    new GhProject(farm, comment),
+                    new GhPerson(comment),
+                    new GhJob(comment.issue())
+                )
             )
         );
     }

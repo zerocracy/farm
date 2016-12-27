@@ -14,26 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.crews.slack;
-
-import com.ullink.slack.simpleslackapi.SlackSession;
-import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
-import com.zerocracy.jstk.Farm;
 
 /**
- * Says sorry.
+ * Human resource management.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-final class ReSorry implements Reaction<SlackMessagePosted> {
-
-    @Override
-    public boolean react(final Farm farm, final SlackMessagePosted event,
-        final SlackSession session) {
-        new SkPerson(event, session).say("I'm sorry, I didn't get it.");
-        return true;
-    }
-
-}
+package com.zerocracy.pm.hr;

@@ -18,6 +18,7 @@ package com.zerocracy.pm;
 
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.zerocracy.jstk.Item;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -40,6 +41,15 @@ public final class Xocument {
      * File.
      */
     private final Path file;
+
+    /**
+     * Ctor.
+     * @param item Item
+     * @throws IOException If fails
+     */
+    public Xocument(final Item item) throws IOException {
+        this(item.path());
+    }
 
     /**
      * Ctor.

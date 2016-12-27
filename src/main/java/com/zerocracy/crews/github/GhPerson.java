@@ -43,6 +43,14 @@ final class GhPerson implements Person {
     }
 
     @Override
+    public String name() throws IOException {
+        return String.format(
+            "github:%s",
+            new Comment.Smart(this.comment).author().login()
+        );
+    }
+
+    @Override
     public void say(final String message) throws IOException {
         this.comment.issue().comments().post(
             String.format(

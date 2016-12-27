@@ -28,6 +28,13 @@ import java.io.IOException;
 public interface Person {
 
     /**
+     * Name (coordinates).
+     * @return Unique name of that person
+     * @throws IOException If fails on I/O
+     */
+    String name() throws IOException;
+
+    /**
      * Say something to him.
      * @param message Message
      * @throws IOException If fails on I/O
