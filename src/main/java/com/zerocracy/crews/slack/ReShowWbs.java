@@ -19,8 +19,10 @@ package com.zerocracy.crews.slack;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.jstk.Farm;
+import com.zerocracy.pm.StkByRoles;
 import com.zerocracy.pm.scope.ShowWbs;
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * Show scope.
@@ -35,9 +37,14 @@ final class ReShowWbs implements Reaction<SlackMessagePosted> {
     public boolean react(final Farm farm, final SlackMessagePosted event,
         final SlackSession session) throws IOException {
         farm.deploy(
-            new ShowWbs(
+            new StkByRoles(
                 new SkProject(farm, event),
-                new SkPerson(event, session)
+                new SkPerson(event, session),
+                Arrays.asList("PO", "ARC"),
+                new ShowWbs(
+                    new SkProject(farm, event),
+                    new SkPerson(event, session)
+                )
             )
         );
         return true;
