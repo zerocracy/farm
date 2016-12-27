@@ -90,11 +90,13 @@ final class ReOnComment implements Reaction {
             )
         );
         return new Comment.Smart(
-            issue.comments().get(
-                Integer.parseInt(
-                    StringUtils.substringAfterLast(
-                        subject.getString("latest_comment_url"),
-                        "/"
+            new SafeComment(
+                issue.comments().get(
+                    Integer.parseInt(
+                        StringUtils.substringAfterLast(
+                            subject.getString("latest_comment_url"),
+                            "/"
+                        )
                     )
                 )
             )
