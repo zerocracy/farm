@@ -49,7 +49,7 @@ final class AsyncFarm implements Farm {
     AsyncFarm(final Farm farm) {
         this.origin = farm;
         this.service = Executors.newFixedThreadPool(
-            Runtime.getRuntime().availableProcessors() >> 2
+            Runtime.getRuntime().availableProcessors() << 2
         );
     }
 
