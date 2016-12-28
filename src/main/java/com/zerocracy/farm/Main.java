@@ -70,12 +70,14 @@ public final class Main {
             props.load(input);
         }
         new Routine(
-            new SyncFarm(
-                new S3Farm(
-                    new Region.Simple(
-                        props.getProperty("s3.key"),
-                        props.getProperty("s3.secret")
-                    ).bucket(props.getProperty("s3.bucket"))
+            new AsyncFarm(
+                new SyncFarm(
+                    new S3Farm(
+                        new Region.Simple(
+                            props.getProperty("s3.key"),
+                            props.getProperty("s3.secret")
+                        ).bucket(props.getProperty("s3.bucket"))
+                    )
                 )
             ),
             new GhCrew(

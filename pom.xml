@@ -215,6 +215,23 @@
     </build>
     <profiles>
         <profile>
+            <id>qulice</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.qulice</groupId>
+                        <artifactId>qulice-maven-plugin</artifactId>
+                        <configuration>
+                            <excludes combine.children="append">
+                                <exclude>findbugs:.*</exclude>
+                            </excludes>
+                            <license>file:${basedir}/LICENSE.txt</license>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
             <id>heroku</id>
             <activation>
                 <file><exists>pom.xml</exists></file>
