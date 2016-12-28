@@ -16,7 +16,6 @@
  */
 package com.zerocracy.farm;
 
-import com.jcabi.aspects.Tv;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
@@ -49,7 +48,9 @@ final class AsyncFarm implements Farm {
      */
     AsyncFarm(final Farm farm) {
         this.origin = farm;
-        this.service = Executors.newFixedThreadPool(Tv.FOUR);
+        this.service = Executors.newFixedThreadPool(
+            Runtime.getRuntime().availableProcessors() >> 2
+        );
     }
 
     @Override
