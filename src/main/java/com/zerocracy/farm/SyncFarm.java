@@ -14,39 +14,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pm;
+package com.zerocracy.farm;
 
+import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
-import com.zerocracy.pm.hr.Team;
-import com.zerocracy.pm.scope.Wbs;
 import java.io.IOException;
 
 /**
- * Bootstrap a project.
+ * Synchronized farm.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class Bootstrap implements Stakeholder {
+final class SyncFarm implements Farm {
 
     /**
-     * Project.
+     * Original farm.
      */
-    private final Project project;
+    private final Farm origin;
 
     /**
      * Ctor.
-     * @param pkt Project
+     * @param farm Original farm
      */
-    public Bootstrap(final Project pkt) {
-        this.project = pkt;
+    SyncFarm(final Farm farm) {
+        this.origin = farm;
     }
 
     @Override
-    public void work() throws IOException {
-        new Wbs(this.project).bootstrap();
-        new Team(this.project).bootstrap();
+    public Iterable<Project> find(final String query) throws IOException {
+        synchronized (this.origin) {
+            return this.origin.find(query);
+        }
+    }
+
+    @Override
+    public void deploy(final Stakeholder stakeholder) throws IOException {
+        synchronized (this.origin) {
+            this.origin.deploy(stakeholder);
+        }
     }
 }

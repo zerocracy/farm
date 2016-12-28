@@ -45,7 +45,7 @@ final class GhProject implements Project {
     GhProject(final Farm farm, final Comment comment) throws IOException {
         this.origin = farm.find(
             String.format(
-                "github:%s",
+                "github=%s",
                 comment.issue().repo().coordinates().toString()
             )
         ).iterator().next();

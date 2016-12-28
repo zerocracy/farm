@@ -18,9 +18,9 @@ package com.zerocracy.farm;
 
 import com.jcabi.github.RtGithub;
 import com.jcabi.log.Logger;
+import com.jcabi.s3.Region;
 import com.zerocracy.crews.github.GhCrew;
 import com.zerocracy.crews.slack.SkCrew;
-import com.zerocracy.jstk.fake.FkFarm;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -70,7 +70,14 @@ public final class Main {
             props.load(input);
         }
         new Routine(
-            new FkFarm(),
+            new SyncFarm(
+                new S3Farm(
+                    new Region.Simple(
+                        props.getProperty("s3.key"),
+                        props.getProperty("s3.secret")
+                    ).bucket(props.getProperty("s3.bucket"))
+                )
+            ),
             new GhCrew(
                 new RtGithub(
                     "0crat",

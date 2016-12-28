@@ -14,39 +14,50 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pm;
+package com.zerocracy.farm;
 
+import com.jcabi.s3.Bucket;
+import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.Stakeholder;
-import com.zerocracy.pm.hr.Team;
-import com.zerocracy.pm.scope.Wbs;
-import java.io.IOException;
 
 /**
- * Bootstrap a project.
+ * Project in S3.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class Bootstrap implements Stakeholder {
+final class S3Project implements Project {
 
     /**
-     * Project.
+     * S3 bucket.
      */
-    private final Project project;
+    private final Bucket bucket;
+
+    /**
+     * Path in the bucket.
+     */
+    private final String prefix;
 
     /**
      * Ctor.
-     * @param pkt Project
+     * @param bkt Bucket
+     * @param pfx Prefix
      */
-    public Bootstrap(final Project pkt) {
-        this.project = pkt;
+    S3Project(final Bucket bkt, final String pfx) {
+        this.bucket = bkt;
+        this.prefix = pfx;
     }
 
     @Override
-    public void work() throws IOException {
-        new Wbs(this.project).bootstrap();
-        new Team(this.project).bootstrap();
+    public Item acq(final String file) {
+        return new S3Item(
+            this.bucket.ocket(
+                String.format(
+                    "%s%s", this.prefix, file
+                )
+            )
+        );
     }
+
 }

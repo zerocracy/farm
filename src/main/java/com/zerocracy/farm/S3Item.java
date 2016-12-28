@@ -14,47 +14,63 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.crews.slack;
+package com.zerocracy.farm;
 
-import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
-import com.zerocracy.jstk.Farm;
+import com.jcabi.s3.Ocket;
 import com.zerocracy.jstk.Item;
-import com.zerocracy.jstk.Project;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * Project in Slack.
+ * Item in S3.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class SkProject implements Project {
+final class S3Item implements Item {
 
     /**
-     * Project.
+     * S3 ocket.
      */
-    private final Project origin;
+    private final Ocket ocket;
+
+    /**
+     * File.
+     */
+    private final AtomicReference<Path> temp;
 
     /**
      * Ctor.
-     * @param farm Farm
-     * @param event Event
-     * @throws IOException If fails
+     * @param okt Ocket
      */
-    public SkProject(final Farm farm, final SlackMessagePosted event)
-        throws IOException {
-        this.origin = farm.find(
-            String.format(
-                "id=%s",
-                event.getChannel().getId()
-            )
-        ).iterator().next();
+    S3Item(final Ocket okt) {
+        this.ocket = okt;
+        this.temp = new AtomicReference<>();
     }
 
     @Override
-    public Item acq(final String file) throws IOException {
-        return this.origin.acq(file);
+    public Path path() throws IOException {
+        if (this.temp.get() == null) {
+            final Path path = Files.createTempFile("zerocracy", ".bin");
+            this.temp.set(path);
+            this.ocket.read(
+                Files.newOutputStream(
+                    path,
+                    StandardOpenOption.CREATE_NEW
+                )
+            );
+        }
+        return this.temp.get();
     }
 
+    @Override
+    public void close() throws IOException {
+        if (this.temp.get() != null) {
+            Files.delete(this.temp.get());
+        }
+    }
 }
