@@ -45,7 +45,7 @@ public final class SkCrew implements Crew {
             new ReIfDirected(
                 new Reaction.Chain<>(
                     Arrays.asList(
-                        new ReRegex("hello", new ReHello()),
+                        new ReRegex("hello|hi|hey", new ReHello()),
                         new ReRegex("wbs", new ReShowWbs()),
                         new ReRegex(".*", new ReSorry())
                     )

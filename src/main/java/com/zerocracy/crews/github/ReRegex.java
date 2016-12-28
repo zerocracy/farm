@@ -47,7 +47,10 @@ final class ReRegex implements Response {
      * @param tgt Target
      */
     ReRegex(final String ptn, final Reply tgt) {
-        this(Pattern.compile(ptn), tgt);
+        this(
+            Pattern.compile(ptn, Pattern.CASE_INSENSITIVE),
+            tgt
+        );
     }
 
     /**

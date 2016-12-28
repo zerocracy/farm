@@ -48,7 +48,10 @@ final class ReRegex implements Reaction<SlackMessagePosted> {
      * @param tgt Reply
      */
     ReRegex(final String ptn, final Reaction<SlackMessagePosted> tgt) {
-        this(Pattern.compile(ptn), tgt);
+        this(
+            Pattern.compile(ptn, Pattern.CASE_INSENSITIVE),
+            tgt
+        );
     }
 
     /**
