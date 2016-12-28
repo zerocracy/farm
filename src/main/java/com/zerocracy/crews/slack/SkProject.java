@@ -32,29 +32,42 @@ import java.io.IOException;
 public final class SkProject implements Project {
 
     /**
-     * Project.
+     * Farm.
      */
-    private final Project origin;
+    private final Farm farm;
+
+    /**
+     * Event.
+     */
+    private final SlackMessagePosted event;
 
     /**
      * Ctor.
-     * @param farm Farm
-     * @param event Event
-     * @throws IOException If fails
+     * @param frm Farm
+     * @param evt Event
      */
-    public SkProject(final Farm farm, final SlackMessagePosted event)
-        throws IOException {
-        this.origin = farm.find(
-            String.format(
-                "id=%s",
-                event.getChannel().getId()
-            )
-        ).iterator().next();
+    public SkProject(final Farm frm, final SlackMessagePosted evt) {
+        this.farm = frm;
+        this.event = evt;
     }
 
     @Override
     public Item acq(final String file) throws IOException {
-        return this.origin.acq(file);
+        return this.project().acq(file);
+    }
+
+    /**
+     * Make it.
+     * @return Project
+     * @throws IOException If fails
+     */
+    private Project project() throws IOException {
+        return this.farm.find(
+            String.format(
+                "id=%s",
+                this.event.getChannel().getId()
+            )
+        ).iterator().next();
     }
 
 }

@@ -32,27 +32,42 @@ import java.io.IOException;
 final class GhProject implements Project {
 
     /**
-     * Project.
+     * Farm.
      */
-    private final Project origin;
+    private final Farm farm;
+
+    /**
+     * Comment.
+     */
+    private final Comment comment;
 
     /**
      * Ctor.
-     * @param farm Farm
-     * @param comment Comment
-     * @throws IOException If I/O files
+     * @param frm Farm
+     * @param cmt Comment
      */
-    GhProject(final Farm farm, final Comment comment) throws IOException {
-        this.origin = farm.find(
-            String.format(
-                "ref.github=%s",
-                comment.issue().repo().coordinates().toString()
-            )
-        ).iterator().next();
+    GhProject(final Farm frm, final Comment cmt) {
+        this.farm = frm;
+        this.comment = cmt;
     }
 
     @Override
     public Item acq(final String file) throws IOException {
-        return this.origin.acq(file);
+        return this.project().acq(file);
     }
+
+    /**
+     * Make it.
+     * @return Project
+     * @throws IOException If I/O files
+     */
+    private Project project() throws IOException {
+        return this.farm.find(
+            String.format(
+                "ref.github=%s",
+                this.comment.issue().repo().coordinates().toString()
+            )
+        ).iterator().next();
+    }
+
 }
