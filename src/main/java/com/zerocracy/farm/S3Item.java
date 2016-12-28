@@ -54,15 +54,19 @@ final class S3Item implements Item {
 
     @Override
     public Path path() throws IOException {
-        if (this.temp.get() == null) {
-            final Path path = Files.createTempFile("zerocracy", ".bin");
-            this.temp.set(path);
-            this.ocket.read(
-                Files.newOutputStream(
-                    path,
-                    StandardOpenOption.CREATE_NEW
-                )
-            );
+        synchronized (this.temp) {
+            if (this.temp.get() == null) {
+                final Path path = Files.createTempFile("zerocracy", ".bin");
+                this.temp.set(path);
+                if (this.ocket.exists()) {
+                    this.ocket.read(
+                        Files.newOutputStream(
+                            path,
+                            StandardOpenOption.CREATE_NEW
+                        )
+                    );
+                }
+            }
         }
         return this.temp.get();
     }
