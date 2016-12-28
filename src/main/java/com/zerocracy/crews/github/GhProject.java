@@ -21,6 +21,7 @@ import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
+import java.util.Iterator;
 
 /**
  * Surrogate project.
@@ -62,12 +63,22 @@ final class GhProject implements Project {
      * @throws IOException If I/O files
      */
     private Project project() throws IOException {
-        return this.farm.find(
+        final Iterator<Project> list = this.farm.find(
             String.format(
                 "ref.github=%s",
                 this.comment.issue().repo().coordinates().toString()
             )
-        ).iterator().next();
+        ).iterator();
+        if (!list.hasNext()) {
+            throw new IllegalStateException(
+                String.join(
+                    " ",
+                    "I'm not managing this GitHub repository.",
+                    "You have to contact me in Slack first."
+                )
+            );
+        }
+        return list.next();
     }
 
 }

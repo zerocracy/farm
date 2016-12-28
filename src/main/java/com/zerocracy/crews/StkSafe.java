@@ -65,8 +65,9 @@ public final class StkSafe implements Stakeholder {
                 this.person.say(
                     String.join(
                         "\n",
-                        "I can't do it for technical reasons, I'm sorry.",
-                        "Please, email this to bug@0crat.com:\n\n```",
+                        "I can't do it for technical reasons, I'm very sorry.",
+                        // @checkstyle LineLength (1 line)
+                        "If you don't know what to do, email this to bug@0crat.com:\n\n```",
                         baos.toString(StandardCharsets.UTF_8),
                         "```"
                     )
