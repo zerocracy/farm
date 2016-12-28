@@ -54,7 +54,7 @@ final class S3Item implements Item {
 
     @Override
     public Path path() throws IOException {
-        synchronized (this.temp) {
+        synchronized (this.ocket) {
             if (this.temp.get() == null) {
                 final Path path = Files.createTempFile("zerocracy", ".bin");
                 this.temp.set(path);
