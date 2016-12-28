@@ -17,6 +17,7 @@
 package com.zerocracy.crews.github;
 
 import com.jcabi.github.Comment;
+import com.zerocracy.crews.StkSafe;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.pm.StkByRoles;
 import com.zerocracy.pm.scope.Out;
@@ -36,14 +37,17 @@ final class ReOut implements Reply {
     public void react(final Farm farm, final Comment.Smart comment)
         throws IOException {
         farm.deploy(
-            new StkByRoles(
-                new GhProject(farm, comment),
+            new StkSafe(
                 new GhPerson(comment),
-                Arrays.asList("PO", "ARC"),
-                new Out(
+                new StkByRoles(
                     new GhProject(farm, comment),
                     new GhPerson(comment),
-                    new GhJob(comment.issue())
+                    Arrays.asList("PO", "ARC"),
+                    new Out(
+                        new GhProject(farm, comment),
+                        new GhPerson(comment),
+                        new GhJob(comment.issue())
+                    )
                 )
             )
         );
