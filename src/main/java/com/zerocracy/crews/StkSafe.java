@@ -19,7 +19,9 @@ package com.zerocracy.crews;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.Person;
 import java.io.IOException;
-import org.apache.commons.lang3.exception.ExceptionUtils;
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
+import org.apache.commons.io.output.ByteArrayOutputStream;
 
 /**
  * Stakeholder that reports about failures.
@@ -57,16 +59,19 @@ public final class StkSafe implements Stakeholder {
             this.origin.work();
             // @checkstyle IllegalCatchCheck (1 line)
         } catch (final Throwable ex) {
-            this.person.say(
-                String.join(
-                    " ",
-                    "I failed, I'm sorry.",
-                    "Please, email this to bug@0crat.com:\n\n```",
-                    ExceptionUtils.getStackTrace(ex),
-                    "\n",
-                    "```"
-                )
-            );
+            try (final ByteArrayOutputStream baos =
+                new ByteArrayOutputStream()) {
+                ex.printStackTrace(new PrintStream(baos));
+                this.person.say(
+                    String.join(
+                        "\n",
+                        "I can't do it for technical reasons, I'm sorry.",
+                        "Please, email this to bug@0crat.com:\n\n```",
+                        baos.toString(StandardCharsets.UTF_8),
+                        "```"
+                    )
+                );
+            }
             throw new IOException(ex);
         }
     }
