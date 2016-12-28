@@ -46,7 +46,7 @@ public final class SkCrew implements Crew {
                 new Reaction.Chain<>(
                     Arrays.asList(
                         new ReRegex("hello", new ReHello()),
-                        new ReRegex("scope", new ReShowWbs()),
+                        new ReRegex("wbs", new ReShowWbs()),
                         new ReRegex(".*", new ReSorry())
                     )
                 )
