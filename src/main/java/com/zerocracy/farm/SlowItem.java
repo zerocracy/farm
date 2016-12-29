@@ -16,50 +16,48 @@
  */
 package com.zerocracy.farm;
 
-import com.jcabi.s3.Bucket;
+import com.jcabi.aspects.Async;
 import com.zerocracy.jstk.Item;
-import com.zerocracy.jstk.Project;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.concurrent.TimeUnit;
 
 /**
- * Project in S3.
+ * Item that doesn't close immediately.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-final class S3Project implements Project {
+final class SlowItem implements Item {
 
     /**
-     * S3 bucket.
+     * Original item.
      */
-    private final Bucket bucket;
-
-    /**
-     * Path in the bucket.
-     */
-    private final String prefix;
+    private final Item origin;
 
     /**
      * Ctor.
-     * @param bkt Bucket
-     * @param pfx Prefix
+     * @param item Original item
      */
-    S3Project(final Bucket bkt, final String pfx) {
-        this.bucket = bkt;
-        this.prefix = pfx;
+    SlowItem(final Item item) {
+        this.origin = item;
     }
 
     @Override
-    public Item acq(final String file) {
-        return new SlowItem(
-            new S3Item(
-                this.bucket.ocket(
-                    String.format(
-                        "%s%s", this.prefix, file
-                    )
-                )
-            )
-        );
+    public Path path() throws IOException {
+        return this.origin.path();
     }
 
+    @Override
+    @Async
+    public void close() throws IOException {
+        try {
+            TimeUnit.SECONDS.sleep(1L);
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException(ex);
+        }
+        this.origin.close();
+    }
 }
