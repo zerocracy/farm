@@ -16,7 +16,6 @@
  */
 package com.zerocracy.farm;
 
-import com.jcabi.aspects.Tv;
 import com.jcabi.s3.Bucket;
 import com.jcabi.s3.Ocket;
 import com.jcabi.xml.StrictXML;
@@ -33,6 +32,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.w3c.dom.Node;
 import org.xembly.Directives;
@@ -56,6 +57,13 @@ final class S3Farm implements Farm {
     );
 
     /**
+     * Query pattern.
+     */
+    private static final Pattern QUERY = Pattern.compile(
+        "|\\s*([a-z.]+)\\s*=\\s*([^\\s]+)\\s*"
+    );
+
+    /**
      * S3 bucket.
      */
     private final Bucket bucket;
@@ -70,30 +78,32 @@ final class S3Farm implements Farm {
 
     @Override
     public Iterable<Project> find(final String query) throws IOException {
-        final Collection<Project> list = new LinkedList<>();
-        if (query.startsWith("id=")) {
-            final String pid = query.substring(3);
-            list.addAll(this.findByXPath(String.format("id=%s", pid)));
-            if (list.isEmpty()) {
-                list.add(this.bootstrap(pid));
-            }
-        } else if (query.startsWith("ref.github=")) {
-            list.addAll(
-                this.findByXPath(
-                    String.format(
-                        "ref[@rel='github']=%s",
-                        query.substring(Tv.SEVEN)
-                    )
-                )
-            );
-        } else if (query.isEmpty()) {
-            list.addAll(this.findByXPath(""));
-        } else {
+        final Matcher matcher = S3Farm.QUERY.matcher(query);
+        if (!matcher.matches()) {
             throw new IllegalArgumentException(
                 String.format(
                     "Can't understand you: \"%s\"", query
                 )
             );
+        }
+        final Collection<Project> list = new LinkedList<>();
+        if ("id".equals(matcher.group(1))) {
+            final String pid = matcher.group(2);
+            list.addAll(this.findByXPath(String.format("id = '%s'", pid)));
+            if (list.isEmpty()) {
+                list.add(this.bootstrap(pid));
+            }
+        } else if ("ref.github".equals(matcher.group(1))) {
+            list.addAll(
+                this.findByXPath(
+                    String.format(
+                        "ref[@rel='github']=%s",
+                        matcher.group(2)
+                    )
+                )
+            );
+        } else if (query.isEmpty()) {
+            list.addAll(this.findByXPath(""));
         }
         return list;
     }
@@ -144,7 +154,9 @@ final class S3Farm implements Farm {
                 S3Farm.SCHEMA
             ).toString()
         );
-        final Project project = this.find(pid).iterator().next();
+        final Project project = this.find(
+            String.format("id=%s", pid)
+        ).iterator().next();
         new Bootstrap(project).work();
         return project;
     }
@@ -164,7 +176,7 @@ final class S3Farm implements Farm {
      */
     private static String prefix(final String pid) {
         return String.format(
-            "%tY/%1$tm/%s",
+            "%tY/%1$tm/%s/",
             new Date(),
             pid
         );
