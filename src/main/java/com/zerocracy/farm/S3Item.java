@@ -16,6 +16,7 @@
  */
 package com.zerocracy.farm;
 
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.jcabi.s3.Ocket;
 import com.zerocracy.jstk.Item;
 import java.io.IOException;
@@ -62,7 +63,7 @@ final class S3Item implements Item {
                     this.ocket.read(
                         Files.newOutputStream(
                             path,
-                            StandardOpenOption.CREATE_NEW
+                            StandardOpenOption.CREATE
                         )
                     );
                 }
@@ -73,8 +74,16 @@ final class S3Item implements Item {
 
     @Override
     public void close() throws IOException {
-        if (this.temp.get() != null) {
-            Files.delete(this.temp.get());
+        synchronized (this.ocket) {
+            if (this.temp.get() != null) {
+                this.ocket.write(
+                    Files.newInputStream(this.temp.get()),
+                    new ObjectMetadata()
+                );
+                Files.delete(this.temp.get());
+                this.temp.set(null);
+            }
         }
     }
+
 }

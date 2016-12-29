@@ -65,11 +65,13 @@ public final class Xocument {
      * @throws IOException If fails
      */
     public void bootstrap(final String root) throws IOException {
-        Files.write(
-            this.file,
-            String.format("<%s/>", root).getBytes(StandardCharsets.UTF_8),
-            StandardOpenOption.CREATE
-        );
+        if (!Files.exists(this.file) || Files.size(this.file) == 0L) {
+            Files.write(
+                this.file,
+                String.format("<%s/>", root).getBytes(StandardCharsets.UTF_8),
+                StandardOpenOption.CREATE
+            );
+        }
     }
 
     /**

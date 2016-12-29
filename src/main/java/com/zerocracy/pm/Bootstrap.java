@@ -37,16 +37,34 @@ public final class Bootstrap implements Stakeholder {
     private final Project project;
 
     /**
+     * Person.
+     */
+    private final Person person;
+
+    /**
      * Ctor.
      * @param pkt Project
+     * @param prn Person
      */
-    public Bootstrap(final Project pkt) {
+    public Bootstrap(final Project pkt, final Person prn) {
         this.project = pkt;
+        this.person = prn;
     }
 
     @Override
     public void work() throws IOException {
         new Wbs(this.project).bootstrap();
         new Team(this.project).bootstrap();
+        this.person.say(
+            String.join(
+                " ",
+                "Thanks for inviting me here. This channel will be",
+                "dedicated to a single project that I will manage for you.",
+                "When you're ready, you can start giving me instructions,",
+                "always prefixing your messages with my name.",
+                "If you need help, start here:",
+                "http://www.0crat.com/help.html"
+            )
+        );
     }
 }

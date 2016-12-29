@@ -18,7 +18,9 @@ package com.zerocracy.crews.slack;
 
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackChannelJoined;
+import com.zerocracy.crews.StkSafe;
 import com.zerocracy.jstk.Farm;
+import com.zerocracy.pm.Bootstrap;
 import java.io.IOException;
 
 /**
@@ -33,20 +35,13 @@ final class ReInvite implements Reaction<SlackChannelJoined> {
     @Override
     public boolean react(final Farm farm, final SlackChannelJoined event,
         final SlackSession session) throws IOException {
-        session.sendMessage(
-            event.getSlackChannel(),
-            String.join(
-                " ",
-                "Thanks for inviting me here. This channel will be",
-                "dedicated to a single project that I will manage for you.",
-                String.format(
-                    "Your project ID is `%s`.",
-                    event.getSlackChannel().getId()
-                ),
-                "When you're ready, you can start giving me instructions,",
-                "always prefixing your messages with my name.",
-                "If you need help, start here:",
-                "http://www.0crat.com/slack.html"
+        farm.deploy(
+            new StkSafe(
+                new SkAnonPerson(event.getSlackChannel(), session),
+                new Bootstrap(
+                    new SkProject(farm, event.getSlackChannel()),
+                    new SkAnonPerson(event.getSlackChannel(), session)
+                )
             )
         );
         return true;

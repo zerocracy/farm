@@ -25,7 +25,6 @@ import com.jcabi.xml.XSDDocument;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
-import com.zerocracy.pm.Bootstrap;
 import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -154,11 +153,7 @@ final class S3Farm implements Farm {
                 S3Farm.SCHEMA
             ).toString()
         );
-        final Project project = this.find(
-            String.format("id=%s", pid)
-        ).iterator().next();
-        new Bootstrap(project).work();
-        return project;
+        return this.find(String.format("id=%s", pid)).iterator().next();
     }
 
     /**

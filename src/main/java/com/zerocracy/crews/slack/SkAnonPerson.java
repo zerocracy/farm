@@ -17,67 +17,47 @@
 package com.zerocracy.crews.slack;
 
 import com.ullink.slack.simpleslackapi.SlackChannel;
-import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Item;
-import com.zerocracy.jstk.Project;
-import java.io.IOException;
+import com.ullink.slack.simpleslackapi.SlackSession;
+import com.zerocracy.pm.Person;
 
 /**
- * Project in Slack.
+ * Person in slack channel, without a name.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class SkProject implements Project {
+public final class SkAnonPerson implements Person {
 
     /**
-     * Farm.
-     */
-    private final Farm farm;
-
-    /**
-     * Slack channel.
+     * Channel.
      */
     private final SlackChannel channel;
 
     /**
-     * Ctor.
-     * @param frm Farm
-     * @param evt Event
+     * Session.
      */
-    public SkProject(final Farm frm, final SlackMessagePosted evt) {
-        this(frm, evt.getChannel());
-    }
+    private final SlackSession session;
 
     /**
      * Ctor.
-     * @param frm Farm
-     * @param cnl Channel
+     * @param cnl Slack channel
+     * @param ssn Session
      */
-    public SkProject(final Farm frm, final SlackChannel cnl) {
-        this.farm = frm;
+    public SkAnonPerson(final SlackChannel cnl, final SlackSession ssn) {
         this.channel = cnl;
+        this.session = ssn;
     }
 
     @Override
-    public Item acq(final String file) throws IOException {
-        return this.project().acq(file);
+    public String name() {
+        throw new IllegalStateException(
+            "This person has no name"
+        );
     }
 
-    /**
-     * Make it.
-     * @return Project
-     * @throws IOException If fails
-     */
-    private Project project() throws IOException {
-        return this.farm.find(
-            String.format(
-                "id=%s",
-                this.channel.getId()
-            )
-        ).iterator().next();
+    @Override
+    public void say(final String message) {
+        this.session.sendMessage(this.channel, message);
     }
-
 }
