@@ -55,18 +55,16 @@ final class S3Item implements Item {
 
     @Override
     public Path path() throws IOException {
-        synchronized (this.ocket) {
-            if (this.temp.get() == null) {
-                final Path path = Files.createTempFile("zerocracy", ".bin");
-                this.temp.set(path);
-                if (this.ocket.exists()) {
-                    this.ocket.read(
-                        Files.newOutputStream(
-                            path,
-                            StandardOpenOption.CREATE
-                        )
-                    );
-                }
+        if (this.temp.get() == null) {
+            final Path path = Files.createTempFile("zerocracy", ".bin");
+            this.temp.set(path);
+            if (this.ocket.exists()) {
+                this.ocket.read(
+                    Files.newOutputStream(
+                        path,
+                        StandardOpenOption.CREATE
+                    )
+                );
             }
         }
         return this.temp.get();
@@ -74,15 +72,13 @@ final class S3Item implements Item {
 
     @Override
     public void close() throws IOException {
-        synchronized (this.ocket) {
-            if (this.temp.get() != null) {
-                this.ocket.write(
-                    Files.newInputStream(this.temp.get()),
-                    new ObjectMetadata()
-                );
-                Files.delete(this.temp.get());
-                this.temp.set(null);
-            }
+        if (this.temp.get() != null) {
+            this.ocket.write(
+                Files.newInputStream(this.temp.get()),
+                new ObjectMetadata()
+            );
+            Files.delete(this.temp.get());
+            this.temp.set(null);
         }
     }
 

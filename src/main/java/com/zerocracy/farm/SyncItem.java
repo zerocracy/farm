@@ -16,52 +16,45 @@
  */
 package com.zerocracy.farm;
 
-import com.jcabi.s3.Bucket;
+import com.jcabi.aspects.Async;
 import com.zerocracy.jstk.Item;
-import com.zerocracy.jstk.Project;
+import java.io.IOException;
+import java.nio.file.Path;
 
 /**
- * Project in S3.
+ * Synchronized and thread safe item.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-final class S3Project implements Project {
+final class SyncItem implements Item {
 
     /**
-     * S3 bucket.
+     * Original item.
      */
-    private final Bucket bucket;
-
-    /**
-     * Path in the bucket.
-     */
-    private final String prefix;
+    private final Item origin;
 
     /**
      * Ctor.
-     * @param bkt Bucket
-     * @param pfx Prefix
+     * @param item Original item
      */
-    S3Project(final Bucket bkt, final String pfx) {
-        this.bucket = bkt;
-        this.prefix = pfx;
+    SyncItem(final Item item) {
+        this.origin = item;
     }
 
     @Override
-    public Item acq(final String file) {
-        return new SlowItem(
-            new SyncItem(
-                new S3Item(
-                    this.bucket.ocket(
-                        String.format(
-                            "%s%s", this.prefix, file
-                        )
-                    )
-                )
-            )
-        );
+    public Path path() throws IOException {
+        synchronized (this.origin) {
+            return this.origin.path();
+        }
     }
 
+    @Override
+    @Async
+    public void close() throws IOException {
+        synchronized (this.origin) {
+            this.origin.close();
+        }
+    }
 }
