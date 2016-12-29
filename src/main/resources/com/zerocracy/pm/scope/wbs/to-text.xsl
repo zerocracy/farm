@@ -19,7 +19,10 @@
     xmlns="http://www.w3.org/1999/xhtml" version="1.0">
     <xsl:output method="html" doctype-system="about:legacy-compat"
         encoding="UTF-8" indent="yes" />
-    <xsl:template match="wbs">
+    <xsl:template match="wbs[not(job)]">
+        <xsl:text>It's empty, no jobs.</xsl:text>
+    </xsl:template>
+    <xsl:template match="wbs[job]">
         <xsl:apply-templates select="job"/>
     </xsl:template>
     <xsl:template match="job">
