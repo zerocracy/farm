@@ -17,31 +17,40 @@
 package com.zerocracy.crews.slack;
 
 import com.ullink.slack.simpleslackapi.SlackSession;
-import com.ullink.slack.simpleslackapi.events.SlackChannelJoined;
+import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
+import com.zerocracy.crews.StkSafe;
 import com.zerocracy.jstk.Farm;
+import com.zerocracy.pm.StkByRoles;
+import com.zerocracy.pm.hr.ShowRoles;
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
- * Invite to the channel.
+ * Show roles.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-final class ReInvite implements Reaction<SlackChannelJoined> {
+final class ReShowRoles implements Reaction<SlackMessagePosted> {
 
     @Override
-    public boolean react(final Farm farm, final SlackChannelJoined event,
+    public boolean react(final Farm farm, final SlackMessagePosted event,
         final SlackSession session) throws IOException {
-        session.sendMessage(
-            event.getSlackChannel(),
-            String.join(
-                " ",
-                "Thanks for inviting me here.",
-                "To start, please post `@0crat bootstrap`."
+        farm.deploy(
+            new StkSafe(
+                new SkPerson(event, session),
+                new StkByRoles(
+                    new SkProject(farm, event),
+                    new SkPerson(event, session),
+                    Arrays.asList("PO", "ARC"),
+                    new ShowRoles(
+                        new SkProject(farm, event),
+                        new SkPerson(event, session)
+                    )
+                )
             )
         );
         return true;
     }
-
 }

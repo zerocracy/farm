@@ -17,28 +17,31 @@
 package com.zerocracy.crews.slack;
 
 import com.ullink.slack.simpleslackapi.SlackSession;
-import com.ullink.slack.simpleslackapi.events.SlackChannelJoined;
+import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
+import com.zerocracy.crews.StkSafe;
 import com.zerocracy.jstk.Farm;
+import com.zerocracy.pm.Bootstrap;
 import java.io.IOException;
 
 /**
- * Invite to the channel.
+ * Bootstrap this project.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-final class ReInvite implements Reaction<SlackChannelJoined> {
+final class ReBootstrap implements Reaction<SlackMessagePosted> {
 
     @Override
-    public boolean react(final Farm farm, final SlackChannelJoined event,
+    public boolean react(final Farm farm, final SlackMessagePosted event,
         final SlackSession session) throws IOException {
-        session.sendMessage(
-            event.getSlackChannel(),
-            String.join(
-                " ",
-                "Thanks for inviting me here.",
-                "To start, please post `@0crat bootstrap`."
+        farm.deploy(
+            new StkSafe(
+                new SkPerson(event, session),
+                new Bootstrap(
+                    new SkProject(farm, event),
+                    new SkPerson(event, session)
+                )
             )
         );
         return true;

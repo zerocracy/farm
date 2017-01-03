@@ -60,7 +60,7 @@ public final class Wbs {
      */
     public void bootstrap() throws IOException {
         try (final Item wbs = this.item()) {
-            new Xocument(wbs.path()).bootstrap("wbs");
+            new Xocument(wbs.path()).bootstrap("wbs", "pm/scope/wbs");
         }
     }
 

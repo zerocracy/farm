@@ -18,7 +18,7 @@ package com.zerocracy.pm;
 
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
-import com.zerocracy.pm.hr.Team;
+import com.zerocracy.pm.hr.Roles;
 import java.io.IOException;
 
 /**
@@ -68,7 +68,7 @@ public final class StkByRoles implements Stakeholder {
 
     @Override
     public void work() throws IOException {
-        if (new Team(this.project).hasRole(this.person, this.roles)) {
+        if (this.has()) {
             this.origin.work();
         } else {
             this.person.say(
@@ -78,5 +78,23 @@ public final class StkByRoles implements Stakeholder {
                 )
             );
         }
+    }
+
+    /**
+     * Has one of that required roles.
+     * @return TRUE if he has
+     * @throws IOException If fails
+     */
+    private boolean has() throws IOException {
+        final Roles rls = new Roles(this.project);
+        final String name = this.person.name();
+        boolean has = false;
+        for (final String role : this.roles) {
+            if (rls.hasRole(name, role)) {
+                has = true;
+                break;
+            }
+        }
+        return has;
     }
 }

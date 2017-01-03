@@ -14,22 +14,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pm;
+package com.zerocracy.pm.scope;
 
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
+import com.zerocracy.pm.Person;
 import com.zerocracy.pm.hr.Roles;
-import com.zerocracy.pm.scope.Wbs;
 import java.io.IOException;
 
 /**
- * Bootstrap a project.
+ * Assign role to a person.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class Bootstrap implements Stakeholder {
+public final class Assign implements Stakeholder {
 
     /**
      * Project.
@@ -37,32 +37,44 @@ public final class Bootstrap implements Stakeholder {
     private final Project project;
 
     /**
-     * Person.
+     * Tube.
      */
     private final Person person;
 
     /**
+     * Role.
+     */
+    private final String role;
+
+    /**
+     * Who to assign it to.
+     */
+    private final String target;
+
+    /**
      * Ctor.
      * @param pkt Project
-     * @param prn Person
+     * @param tbe Tube
+     * @param rle Role to assign
+     * @param who Who to assign to
+     * @checkstyle ParameterNumberCheck (5 lines)
      */
-    public Bootstrap(final Project pkt, final Person prn) {
+    public Assign(final Project pkt, final Person tbe,
+        final String rle, final String who) {
         this.project = pkt;
-        this.person = prn;
+        this.person = tbe;
+        this.role = rle;
+        this.target = who;
     }
 
     @Override
     public void work() throws IOException {
-        new Wbs(this.project).bootstrap();
-        new Roles(this.project).bootstrap();
+        new Roles(this.project).assign(this.target, this.role);
         this.person.say(
-            String.join(
-                " ",
-                "I'm ready to manage a project.",
-                "When you're ready, you can start giving me instructions,",
-                "always prefixing your messages with my name.",
-                "If you need help, start here:",
-                "http://www.0crat.com/help.html"
+            String.format(
+                "Role \"%s\" assigned to \"%s\"",
+                this.role,
+                this.target
             )
         );
     }

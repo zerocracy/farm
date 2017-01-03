@@ -14,34 +14,52 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.crews.slack;
+package com.zerocracy.crews;
 
-import com.ullink.slack.simpleslackapi.SlackSession;
-import com.ullink.slack.simpleslackapi.events.SlackChannelJoined;
-import com.zerocracy.jstk.Farm;
-import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
- * Invite to the channel.
+ * Question in text.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-final class ReInvite implements Reaction<SlackChannelJoined> {
+public final class Question {
 
-    @Override
-    public boolean react(final Farm farm, final SlackChannelJoined event,
-        final SlackSession session) throws IOException {
-        session.sendMessage(
-            event.getSlackChannel(),
-            String.join(
-                " ",
-                "Thanks for inviting me here.",
-                "To start, please post `@0crat bootstrap`."
+    /**
+     * Full text.
+     */
+    private final String text;
+
+    /**
+     * Ctor.
+     * @param txt Text to parse
+     */
+    public Question(final String txt) {
+        this.text = txt;
+    }
+
+    /**
+     * Get argument by name.
+     * @param name The name
+     * @return Value
+     */
+    public String arg(final String name) {
+        final Matcher matcher = Pattern.compile(
+            String.format(
+                "%s\\s*(?:=|is)\\s*`([^`]+)`", name
             )
-        );
-        return true;
+        ).matcher(this.text);
+        if (!matcher.matches()) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "Argument \"%s\" not found in \"%s\"", name, this.text
+                )
+            );
+        }
+        return matcher.group(1);
     }
 
 }

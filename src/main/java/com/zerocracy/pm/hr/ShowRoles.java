@@ -14,22 +14,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pm;
+package com.zerocracy.pm.hr;
 
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
-import com.zerocracy.pm.hr.Roles;
-import com.zerocracy.pm.scope.Wbs;
+import com.zerocracy.pm.Person;
 import java.io.IOException;
 
 /**
- * Bootstrap a project.
+ * Show roles.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class Bootstrap implements Stakeholder {
+public final class ShowRoles implements Stakeholder {
 
     /**
      * Project.
@@ -37,32 +36,26 @@ public final class Bootstrap implements Stakeholder {
     private final Project project;
 
     /**
-     * Person.
+     * Tube.
      */
     private final Person person;
 
     /**
      * Ctor.
      * @param pkt Project
-     * @param prn Person
+     * @param tbe Tube
      */
-    public Bootstrap(final Project pkt, final Person prn) {
+    public ShowRoles(final Project pkt, final Person tbe) {
         this.project = pkt;
-        this.person = prn;
+        this.person = tbe;
     }
 
     @Override
     public void work() throws IOException {
-        new Wbs(this.project).bootstrap();
-        new Roles(this.project).bootstrap();
         this.person.say(
-            String.join(
-                " ",
-                "I'm ready to manage a project.",
-                "When you're ready, you can start giving me instructions,",
-                "always prefixing your messages with my name.",
-                "If you need help, start here:",
-                "http://www.0crat.com/help.html"
+            String.format(
+                "This is a full list of roles at the moment:%n%n```%n%s%n```",
+                new Roles(this.project).print()
             )
         );
     }

@@ -16,23 +16,22 @@
  */
 package com.zerocracy.pm.hr;
 
+import com.jcabi.xml.XMLDocument;
+import com.jcabi.xml.XSLDocument;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
-import com.zerocracy.pm.Person;
 import com.zerocracy.pm.Xocument;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+import org.xembly.Directives;
 
 /**
- * Project team.
+ * Project roles.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class Team {
+public final class Roles {
 
     /**
      * Project.
@@ -43,7 +42,7 @@ public final class Team {
      * Ctor.
      * @param pkt Project
      */
-    public Team(final Project pkt) {
+    public Roles(final Project pkt) {
         this.project = pkt;
     }
 
@@ -53,42 +52,75 @@ public final class Team {
      */
     public void bootstrap() throws IOException {
         try (final Item team = this.item()) {
-            new Xocument(team).bootstrap("team");
+            new Xocument(team).bootstrap("roles", "pm/hr/roles");
+        }
+    }
+
+    /**
+     * Print it to text.
+     * @return Text
+     * @throws IOException If fails
+     */
+    public String print() throws IOException {
+        try (final Item roles = this.item()) {
+            return new XSLDocument(
+                Roles.class.getResource("roles/to-text.xsl")
+            ).applyTo(new XMLDocument(roles.path().toFile()));
+        }
+    }
+
+    /**
+     * Assign role.
+     * @param person The person
+     * @param role The role to assign
+     * @throws IOException If fails
+     */
+    public void assign(final String person, final String role)
+        throws IOException {
+        try (final Item roles = this.item()) {
+            new Xocument(roles.path()).modify(
+                new Directives().xpath("/roles")
+                    .add("role")
+                    .add("person").set(person).up()
+                    .add("name").set(role)
+            );
+        }
+    }
+
+    /**
+     * Resign role.
+     * @param person The person
+     * @param role The role to resign
+     * @throws IOException If fails
+     */
+    public void resign(final String person, final String role)
+        throws IOException {
+        try (final Item roles = this.item()) {
+            new Xocument(roles.path()).modify(
+                new Directives().xpath(
+                    String.format(
+                        "/roles/role[person='%s' and name='%s']",
+                        person, role
+                    )
+                ).remove()
+            );
         }
     }
 
     /**
      * Does he have any of these roles?
      * @param person The person
-     * @param roles Roles to find
+     * @param role Roles to find
      * @return TRUE if it has a role
      * @throws IOException If fails
      */
-    public boolean hasRole(final Person person, final String... roles)
+    public boolean hasRole(final String person, final String role)
         throws IOException {
-        return this.hasRole(person, Arrays.asList(roles));
-    }
-
-    /**
-     * Does he have any of these roles?
-     * @param person The person
-     * @param roles Roles to find
-     * @return TRUE if it has a role
-     * @throws IOException If fails
-     */
-    public boolean hasRole(final Person person, final Iterable<String> roles)
-        throws IOException {
-        try (final Item team = this.item()) {
-            return new Xocument(team).xpath(
+        try (final Item roles = this.item()) {
+            return new Xocument(roles).xpath(
                 String.format(
-                    "/team/member[name='%s' and (%s)]",
-                    person.name(),
-                    String.join(
-                        " or ",
-                        StreamSupport.stream(roles.spliterator(), false)
-                            .map(role -> String.format("roles/role=%s", role))
-                            .collect(Collectors.toList())
-                    )
+                    "/roles/role[person='%s' and name='%s']/text()",
+                    person, role
                 )
             ).iterator().hasNext();
         }
@@ -100,7 +132,7 @@ public final class Team {
      * @throws IOException If fails
      */
     private Item item() throws IOException {
-        return this.project.acq("team.xml");
+        return this.project.acq("roles.xml");
     }
 
 }

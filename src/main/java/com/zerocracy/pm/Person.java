@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pm;
 
+import com.jcabi.log.Logger;
 import java.io.IOException;
 
 /**
@@ -29,6 +30,10 @@ public interface Person {
 
     /**
      * Name (coordinates).
+     *
+     * <p>The name starts with the system, where that person is present,
+     * like "slack:" or "github:".
+     *
      * @return Unique name of that person
      * @throws IOException If fails on I/O
      */
@@ -40,5 +45,19 @@ public interface Person {
      * @throws IOException If fails on I/O
      */
     void say(String message) throws IOException;
+
+    /**
+     * Fake one.
+     */
+    final class Fake implements Person {
+        @Override
+        public String name() {
+            return "github:yegor256";
+        }
+        @Override
+        public void say(final String message) {
+            Logger.info(this, "FakePerson: %s", message);
+        }
+    }
 
 }

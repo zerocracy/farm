@@ -14,50 +14,45 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.crews.slack;
+package com.zerocracy.pm.hr;
 
-import com.ullink.slack.simpleslackapi.SlackChannel;
-import com.ullink.slack.simpleslackapi.SlackSession;
-import com.zerocracy.pm.Person;
+import com.zerocracy.jstk.fake.FkProject;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Test;
 
 /**
- * Person in slack channel, without a name.
- *
+ * Test case for {@link Roles}.
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class SkAnonPerson implements Person {
+public final class RolesTest {
 
     /**
-     * Channel.
+     * Adds and removes roles.
+     * @throws Exception If some problem inside
      */
-    private final SlackChannel channel;
-
-    /**
-     * Session.
-     */
-    private final SlackSession session;
-
-    /**
-     * Ctor.
-     * @param cnl Slack channel
-     * @param ssn Session
-     */
-    public SkAnonPerson(final SlackChannel cnl, final SlackSession ssn) {
-        this.channel = cnl;
-        this.session = ssn;
-    }
-
-    @Override
-    public String name() {
-        throw new IllegalStateException(
-            "This person has no name"
+    @Test
+    public void addsAndRemovesRoles() throws Exception {
+        final Roles roles = new Roles(new FkProject());
+        roles.bootstrap();
+        final String person = "github:yegor256";
+        final String role = "ARC";
+        MatcherAssert.assertThat(
+            roles.hasRole(person, role),
+            Matchers.is(false)
+        );
+        roles.assign(person, role);
+        MatcherAssert.assertThat(
+            roles.hasRole(person, role),
+            Matchers.is(true)
+        );
+        roles.resign(person, role);
+        MatcherAssert.assertThat(
+            roles.hasRole(person, role),
+            Matchers.is(false)
         );
     }
 
-    @Override
-    public void say(final String message) {
-        this.session.sendMessage(this.channel, message);
-    }
 }

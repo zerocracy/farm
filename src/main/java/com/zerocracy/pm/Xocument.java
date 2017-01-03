@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pm;
 
+import com.jcabi.xml.StrictXML;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.zerocracy.jstk.Item;
@@ -36,6 +37,11 @@ import org.xembly.Xembler;
  * @since 0.1
  */
 public final class Xocument {
+
+    /**
+     * Current DATUM version.
+     */
+    private static final String VERSION = "0.2";
 
     /**
      * File.
@@ -62,13 +68,19 @@ public final class Xocument {
     /**
      * Bootstrap it.
      * @param root Root node name
+     * @param xsd Path of XSD
      * @throws IOException If fails
      */
-    public void bootstrap(final String root) throws IOException {
+    public void bootstrap(final String root, final String xsd)
+        throws IOException {
         if (!Files.exists(this.file) || Files.size(this.file) == 0L) {
             Files.write(
                 this.file,
-                String.format("<%s/>", root).getBytes(StandardCharsets.UTF_8),
+                String.format(
+                    // @checkstyle LineLength (1 line)
+                    "<%s xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/zerocracy/datum/%s/%s.xsd'/>",
+                    root, Xocument.VERSION, xsd
+                ).getBytes(StandardCharsets.UTF_8),
                 StandardOpenOption.CREATE
             );
         }
@@ -81,7 +93,7 @@ public final class Xocument {
      * @throws IOException If fails
      */
     public Iterable<String> xpath(final String xpath) throws IOException {
-        final XML xml = new XMLDocument(this.file.toFile());
+        final XML xml = new StrictXML(new XMLDocument(this.file.toFile()));
         return xml.xpath(xpath);
     }
 
@@ -95,7 +107,9 @@ public final class Xocument {
         new Xembler(dirs).applyQuietly(node);
         Files.write(
             this.file,
-            new XMLDocument(node).toString().getBytes(StandardCharsets.UTF_8)
+            new StrictXML(new XMLDocument(node))
+                .toString()
+                .getBytes(StandardCharsets.UTF_8)
         );
     }
 

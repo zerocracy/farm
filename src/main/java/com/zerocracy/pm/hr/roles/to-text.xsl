@@ -1,4 +1,5 @@
-/**
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
  * Copyright (c) 2016 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -13,35 +14,21 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
- */
-package com.zerocracy.crews.slack;
-
-import com.ullink.slack.simpleslackapi.SlackSession;
-import com.ullink.slack.simpleslackapi.events.SlackChannelJoined;
-import com.zerocracy.jstk.Farm;
-import java.io.IOException;
-
-/**
- * Invite to the channel.
- *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.1
- */
-final class ReInvite implements Reaction<SlackChannelJoined> {
-
-    @Override
-    public boolean react(final Farm farm, final SlackChannelJoined event,
-        final SlackSession session) throws IOException {
-        session.sendMessage(
-            event.getSlackChannel(),
-            String.join(
-                " ",
-                "Thanks for inviting me here.",
-                "To start, please post `@0crat bootstrap`."
-            )
-        );
-        return true;
-    }
-
-}
+ -->
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns="http://www.w3.org/1999/xhtml" version="1.0">
+    <xsl:output method="html" doctype-system="about:legacy-compat"
+        encoding="UTF-8" indent="yes" />
+    <xsl:template match="roles[not(role)]">
+        <xsl:text>No roles assigned.</xsl:text>
+    </xsl:template>
+    <xsl:template match="roles[role]">
+        <xsl:apply-templates select="role"/>
+    </xsl:template>
+    <xsl:template match="role">
+        <xsl:value-of select="person"/>
+        <xsl:text>: </xsl:text>
+        <xsl:value-of select="name"/>
+        <xsl:text>&#10;</xsl:text>
+    </xsl:template>
+</xsl:stylesheet>
