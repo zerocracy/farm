@@ -54,7 +54,7 @@ public final class ShowRoles implements Stakeholder {
     public void work() throws IOException {
         this.person.say(
             String.format(
-                "This is a full list of roles at the moment:%n%n```%n%s%n```",
+                "Full list of project roles at the moment:%n%n```%n%s%n```",
                 new Roles(this.project).print()
             )
         );

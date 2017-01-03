@@ -31,6 +31,10 @@ import java.util.concurrent.atomic.AtomicReference;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
+ * @todo #6:30min We don't want to upload objects to S3 every time. We have
+ *  to check first, whether any changes were actually made. Only if they
+ *  were made, we will upload. Otherwise, just delete the file and that's
+ *  it.
  */
 final class S3Item implements Item {
 
