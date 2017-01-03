@@ -35,15 +35,25 @@ public final class WbsTest {
      * @throws Exception If some problem inside
      */
     @Test
+    public void printsJobs() throws Exception {
+        final Wbs wbs = new Wbs(new FkProject());
+        wbs.bootstrap();
+        MatcherAssert.assertThat(
+            wbs.print(),
+            Matchers.containsString("empty")
+        );
+    }
+
+    /**
+     * Adds and removes jobs.
+     * @throws Exception If some problem inside
+     */
+    @Test
     public void addsAndRemovesJobs() throws Exception {
         final Wbs wbs = new Wbs(new FkProject());
         wbs.bootstrap();
         final Job job = new Job.Fake();
         wbs.add(job);
-        MatcherAssert.assertThat(
-            wbs.print(),
-            Matchers.containsString(job.name())
-        );
         wbs.remove(job);
     }
 

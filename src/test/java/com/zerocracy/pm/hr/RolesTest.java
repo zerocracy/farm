@@ -30,6 +30,21 @@ import org.junit.Test;
 public final class RolesTest {
 
     /**
+     * Prints them.
+     * @throws Exception If some problem inside
+     */
+    @Test
+    public void printsRoles() throws Exception {
+        final Roles roles = new Roles(new FkProject());
+        roles.bootstrap();
+        roles.assign("slack:ABC83939", "PO");
+        MatcherAssert.assertThat(
+            roles.print(),
+            Matchers.containsString("PO")
+        );
+    }
+
+    /**
      * Adds and removes roles.
      * @throws Exception If some problem inside
      */

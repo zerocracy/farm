@@ -17,8 +17,7 @@
  -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns="http://www.w3.org/1999/xhtml" version="1.0">
-    <xsl:output method="html" doctype-system="about:legacy-compat"
-        encoding="UTF-8" indent="yes" />
+    <xsl:output method="text"/>
     <xsl:template match="roles[not(role)]">
         <xsl:text>No roles assigned.</xsl:text>
     </xsl:template>
