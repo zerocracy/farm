@@ -55,6 +55,7 @@ public final class Bootstrap implements Stakeholder {
     public void work() throws IOException {
         new Wbs(this.project).bootstrap();
         new Roles(this.project).bootstrap();
+        new Roles(this.project).assign(this.person.name(), "PO");
         this.person.say(
             String.join(
                 " ",
