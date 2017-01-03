@@ -19,7 +19,6 @@ package com.zerocracy.crews.slack;
 import com.jcabi.log.Logger;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackChannelJoined;
-import com.ullink.slack.simpleslackapi.events.SlackChannelLeft;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.ullink.slack.simpleslackapi.impl.SlackSessionFactory;
 import com.zerocracy.jstk.Crew;
@@ -64,13 +63,6 @@ public final class SkCrew implements Crew {
      */
     private static final Reaction<SlackChannelJoined> JOINED = new ReLogged<>(
         new ReInvite()
-    );
-
-    /**
-     * When joined new channel.
-     */
-    private static final Reaction<SlackChannelLeft> LEFT = new ReLogged<>(
-        new ReFarewell()
     );
 
     /**
@@ -127,15 +119,6 @@ public final class SkCrew implements Crew {
             (event, sess) -> {
                 try {
                     SkCrew.JOINED.react(farm, event, ssn);
-                } catch (final IOException ex) {
-                    throw new IllegalStateException(ex);
-                }
-            }
-        );
-        ssn.addChannelLeftListener(
-            (event, sess) -> {
-                try {
-                    SkCrew.LEFT.react(farm, event, ssn);
                 } catch (final IOException ex) {
                     throw new IllegalStateException(ex);
                 }
