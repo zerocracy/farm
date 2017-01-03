@@ -25,7 +25,9 @@
         <xsl:apply-templates select="job"/>
     </xsl:template>
     <xsl:template match="job">
+        <xsl:if test="position() &gt; 1">
+            <xsl:text>&#10;</xsl:text>
+        </xsl:if>
         <xsl:value-of select="name"/>
-        <xsl:text>&#10;</xsl:text>
     </xsl:template>
 </xsl:stylesheet>

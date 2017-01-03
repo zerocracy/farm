@@ -25,9 +25,11 @@
         <xsl:apply-templates select="role"/>
     </xsl:template>
     <xsl:template match="role">
+        <xsl:if test="position() &gt; 1">
+            <xsl:text>&#10;</xsl:text>
+        </xsl:if>
         <xsl:value-of select="person"/>
         <xsl:text>: </xsl:text>
         <xsl:value-of select="name"/>
-        <xsl:text>&#10;</xsl:text>
     </xsl:template>
 </xsl:stylesheet>
