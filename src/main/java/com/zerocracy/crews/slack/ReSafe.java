@@ -20,64 +20,56 @@ import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.jstk.Farm;
 import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
+import org.apache.commons.io.output.ByteArrayOutputStream;
 
 /**
- * React by regex.
+ * Safe reaction.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-final class ReRegex implements Reaction<SlackMessagePosted> {
+final class ReSafe implements Reaction<SlackMessagePosted> {
 
     /**
-     * Pattern.
-     */
-    private final Pattern pattern;
-
-    /**
-     * Reply.
+     * Reaction.
      */
     private final Reaction<SlackMessagePosted> origin;
 
     /**
      * Ctor.
-     * @param ptn Pattern
-     * @param tgt Reply
+     * @param tgt Target
      */
-    ReRegex(final String ptn, final Reaction<SlackMessagePosted> tgt) {
-        this(
-            Pattern.compile(
-                ptn,
-                Pattern.CASE_INSENSITIVE | Pattern.MULTILINE
-            ),
-            tgt
-        );
-    }
-
-    /**
-     * Ctor.
-     * @param ptn Pattern
-     * @param tgt Reply
-     */
-    ReRegex(final Pattern ptn, final Reaction<SlackMessagePosted> tgt) {
-        this.pattern = ptn;
+    ReSafe(final Reaction<SlackMessagePosted> tgt) {
         this.origin = tgt;
     }
 
     @Override
+    @SuppressWarnings("PMD.AvoidCatchingThrowable")
     public boolean react(final Farm farm, final SlackMessagePosted event,
         final SlackSession session) throws IOException {
-        final String msg = event.getMessageContent().split(" ", 2)[1];
-        final Matcher matcher = this.pattern.matcher(msg);
-        boolean done = false;
-        if (matcher.matches()) {
-            this.origin.react(farm, event, session);
-            done = true;
+        try {
+            return this.origin.react(farm, event, session);
+            // @checkstyle IllegalCatchCheck (1 line)
+        } catch (final Throwable ex) {
+            try (final ByteArrayOutputStream baos =
+                new ByteArrayOutputStream()) {
+                ex.printStackTrace(new PrintStream(baos));
+                session.sendMessage(
+                    event.getChannel(),
+                    String.join(
+                        "\n",
+                        "There is a technical failure on my side.",
+                        "Please, email this to bug@0crat.com:\n\n```",
+                        baos.toString(StandardCharsets.UTF_8),
+                        "```"
+                    )
+                );
+            }
+            throw new IOException(ex);
         }
-        return done;
     }
 
 }

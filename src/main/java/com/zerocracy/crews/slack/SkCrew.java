@@ -40,18 +40,20 @@ public final class SkCrew implements Crew {
     /**
      * When new message posted.
      */
-    private static final Reaction<SlackMessagePosted> POSTED = new ReLogged<>(
-        new ReNotMine(
-            new ReIfDirected(
-                new Reaction.Chain<>(
-                    Arrays.asList(
-                        new ReRegex("hello|hi|hey", new ReHello()),
-                        new ReRegex("bootstrap", new ReBootstrap()),
-                        new ReRegex("wbs", new ReShowWbs()),
-                        new ReRegex("roles", new ReShowRoles()),
-                        new ReRegex("assign .*", new ReAssign()),
-                        new ReRegex("resign .*", new ReResign()),
-                        new ReRegex(".*", new ReSorry())
+    private static final Reaction<SlackMessagePosted> POSTED = new ReSafe(
+        new ReLogged<>(
+            new ReNotMine(
+                new ReIfDirected(
+                    new Reaction.Chain<>(
+                        Arrays.asList(
+                            new ReRegex("hello|hi|hey", new ReHello()),
+                            new ReRegex("bootstrap", new ReBootstrap()),
+                            new ReRegex("wbs", new ReShowWbs()),
+                            new ReRegex("roles", new ReShowRoles()),
+                            new ReRegex("assign .*", new ReAssign()),
+                            new ReRegex("resign .*", new ReResign()),
+                            new ReRegex(".*", new ReSorry())
+                        )
                     )
                 )
             )

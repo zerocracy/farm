@@ -45,8 +45,7 @@ final class ReIfDirected implements Reaction<SlackMessagePosted> {
 
     @Override
     public boolean react(final Farm farm, final SlackMessagePosted event,
-        final SlackSession session)
-        throws IOException {
+        final SlackSession session) throws IOException {
         final String prefix = String.format(
             "<@%s> ", session.sessionPersona().getId()
         );
