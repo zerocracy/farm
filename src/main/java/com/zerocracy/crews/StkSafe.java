@@ -57,6 +57,8 @@ public final class StkSafe implements Stakeholder {
     public void work() throws IOException {
         try {
             this.origin.work();
+        } catch (final SoftException ex) {
+            this.person.say(ex.getMessage());
             // @checkstyle IllegalCatchCheck (1 line)
         } catch (final Throwable ex) {
             try (final ByteArrayOutputStream baos =
@@ -76,4 +78,5 @@ public final class StkSafe implements Stakeholder {
             throw new IOException(ex);
         }
     }
+
 }

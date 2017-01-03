@@ -16,52 +16,37 @@
  */
 package com.zerocracy.crews;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.io.IOException;
 
 /**
- * Question in text.
+ * Exception in user actions.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class Question {
+public final class SoftException extends IOException {
 
     /**
-     * Full text.
+     * Serialization marker.
      */
-    private final String text;
+    private static final long serialVersionUID = -6427942021962997442L;
 
     /**
      * Ctor.
-     * @param txt Text to parse
+     * @param cause Cause of it
      */
-    public Question(final String txt) {
-        this.text = txt;
+    public SoftException(final String cause) {
+        super(cause);
     }
 
     /**
-     * Get argument by name.
-     * @param name The name
-     * @return Value
-     * @throws SoftException If fails
+     * Ctor.
+     * @param cause Cause of it
+     * @param thr Throwable
      */
-    public String arg(final String name) throws SoftException {
-        final Matcher matcher = Pattern.compile(
-            String.format(
-                "%s\\s*(?:=|is)\\s*`([^`]+)`", name
-            ),
-            Pattern.CASE_INSENSITIVE | Pattern.MULTILINE
-        ).matcher(this.text);
-        if (!matcher.find()) {
-            throw new SoftException(
-                String.format(
-                    "Argument \"%s\" not found in \"%s\"", name, this.text
-                )
-            );
-        }
-        return matcher.group(1);
+    public SoftException(final String cause, final Throwable thr) {
+        super(cause, thr);
     }
 
 }
