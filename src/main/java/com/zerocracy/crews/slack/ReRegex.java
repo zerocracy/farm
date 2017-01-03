@@ -16,6 +16,7 @@
  */
 package com.zerocracy.crews.slack;
 
+import com.jcabi.log.Logger;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.jstk.Farm;
