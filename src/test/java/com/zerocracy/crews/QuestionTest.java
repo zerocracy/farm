@@ -16,51 +16,35 @@
  */
 package com.zerocracy.crews;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Test;
 
 /**
- * Question in text.
- *
+ * Test case for {@link Question}.
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class Question {
+public final class QuestionTest {
 
     /**
-     * Full text.
+     * Takes arguments out.
+     * @throws Exception If some problem inside
      */
-    private final String text;
-
-    /**
-     * Ctor.
-     * @param txt Text to parse
-     */
-    public Question(final String txt) {
-        this.text = txt;
-    }
-
-    /**
-     * Get argument by name.
-     * @param name The name
-     * @return Value
-     */
-    public String arg(final String name) {
-        final Matcher matcher = Pattern.compile(
-            String.format(
-                "%s\\s*(?:=|is)\\s*`([^`]+)`", name
-            ),
-            Pattern.CASE_INSENSITIVE | Pattern.MULTILINE
-        ).matcher(this.text);
-        if (!matcher.find()) {
-            throw new IllegalArgumentException(
-                String.format(
-                    "Argument \"%s\" not found in \"%s\"", name, this.text
-                )
-            );
-        }
-        return matcher.group(1);
+    @Test
+    public void fetchesArguments() throws Exception {
+        final Question question = new Question(
+            "@0crat assign name is `github:yegor256`, role=`PO`"
+        );
+        MatcherAssert.assertThat(
+            question.arg("name"),
+            Matchers.equalTo("github:yegor256")
+        );
+        MatcherAssert.assertThat(
+            question.arg("role"),
+            Matchers.equalTo("PO")
+        );
     }
 
 }
