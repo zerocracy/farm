@@ -17,6 +17,7 @@
 package com.zerocracy.crews.github;
 
 import com.jcabi.github.Comment;
+import com.zerocracy.crews.SoftException;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
@@ -70,7 +71,7 @@ final class GhProject implements Project {
             )
         ).iterator();
         if (!list.hasNext()) {
-            throw new IllegalStateException(
+            throw new SoftException(
                 String.join(
                     " ",
                     "I'm not managing this GitHub repository.",
