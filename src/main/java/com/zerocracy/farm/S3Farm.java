@@ -109,9 +109,11 @@ final class S3Farm implements Farm {
                 .findByXPath(query)
                 .stream()
                 .map(
-                    prefix -> new SyncProject(
-                        new PoolProject(
-                            new S3Project(this.bucket, prefix)
+                    prefix -> new SlowProject(
+                        new SyncProject(
+                            new PoolProject(
+                                new S3Project(this.bucket, prefix)
+                            )
                         )
                     )
                 )

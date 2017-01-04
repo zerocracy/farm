@@ -43,8 +43,10 @@ public final class S3ProjectTest {
             Files.createTempDirectory("").toFile(),
             "some-bucket"
         );
-        final Project project = new SyncProject(
-            new PoolProject(new S3Project(bucket, ""))
+        final Project project = new SlowProject(
+            new SyncProject(
+                new PoolProject(new S3Project(bucket, ""))
+            )
         );
         new Roles(project).bootstrap();
         final String person = "github:yegor256";

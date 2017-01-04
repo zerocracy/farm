@@ -58,13 +58,11 @@ final class S3Project implements Project {
                 this.prefix
             );
         } else {
-            item = new SlowItem(
-                new SyncItem(
-                    new S3Item(
-                        this.bucket.ocket(
-                            String.format(
-                                "%s%s", this.prefix, file
-                            )
+            item = new SyncItem(
+                new S3Item(
+                    this.bucket.ocket(
+                        String.format(
+                            "%s%s", this.prefix, file
                         )
                     )
                 )

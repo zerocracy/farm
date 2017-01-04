@@ -20,18 +20,18 @@ import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
- * Pool project.
+ * Slow project.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-final class PoolProject implements Project {
+final class SlowProject implements Project {
 
     /**
      * Origin project.
@@ -39,72 +39,52 @@ final class PoolProject implements Project {
     private final Project origin;
 
     /**
-     * Pool of items.
+     * Closing executor.
      */
-    private final Map<String, PoolProject.PoolItem> pool;
+    private final ExecutorService service;
 
     /**
      * Ctor.
      * @param pkt Project
      */
-    PoolProject(final Project pkt) {
+    SlowProject(final Project pkt) {
         this.origin = pkt;
-        this.pool = new HashMap<>(0);
+        this.service = Executors.newCachedThreadPool();
     }
 
     @Override
     public Item acq(final String file) throws IOException {
-        if (!this.pool.containsKey(file)) {
-            this.pool.put(
-                file,
-                new PoolProject.PoolItem(this.origin.acq(file))
-            );
-        }
-        final PoolProject.PoolItem item = this.pool.get(file);
-        item.increment();
-        return item;
+        return new SlowProject.SlowItem(this.origin.acq(file));
     }
 
     /**
      * Item that closes only after all acquirers call close().
      */
-    private static final class PoolItem implements Item {
+    private final class SlowItem implements Item {
         /**
          * Original item.
          */
-        private final Item origin;
-        /**
-         * Counter of requests.
-         */
-        private final AtomicInteger requests;
+        private final Item item;
         /**
          * Ctor.
-         * @param item Original item
+         * @param itm Original item
          */
-        PoolItem(final Item item) {
-            this.origin = item;
-            this.requests = new AtomicInteger();
+        SlowItem(final Item itm) {
+            this.item = itm;
         }
         @Override
         public Path path() throws IOException {
-            return this.origin.path();
+            return this.item.path();
         }
         @Override
-        public void close() throws IOException {
-            if (this.requests.decrementAndGet() == 0) {
-                this.origin.close();
-            }
-            if (this.requests.get() < 0) {
-                throw new IllegalStateException(
-                    "something is wrong, you close() too much"
-                );
-            }
-        }
-        /**
-         * Increment request counter.
-         */
-        public void increment() {
-            this.requests.incrementAndGet();
+        public void close() {
+            SlowProject.this.service.submit(
+                () -> {
+                    TimeUnit.SECONDS.sleep(1L);
+                    this.item.close();
+                    return null;
+                }
+            );
         }
     }
 }
