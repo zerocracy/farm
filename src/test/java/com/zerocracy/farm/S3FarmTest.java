@@ -16,12 +16,20 @@
  */
 package com.zerocracy.farm;
 
+import com.jcabi.aspects.Tv;
 import com.jcabi.s3.Bucket;
 import com.jcabi.s3.mock.MkBucket;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
+import com.zerocracy.pm.hr.Roles;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -58,6 +66,71 @@ public final class S3FarmTest {
             new String(Files.readAllBytes(item.path())),
             Matchers.containsString("hello")
         );
+    }
+
+    /**
+     * S3Farm can make projects safe.
+     * @throws Exception If some problem inside
+     */
+    @Test
+    public void makesProjectsSafe() throws Exception {
+        final Bucket bucket = new MkBucket(
+            Files.createTempDirectory("").toFile(),
+            "the-bucket-3"
+        );
+        final Farm farm = new S3Farm(bucket);
+        final Project project = farm.find("id=ABCR2FE03").iterator().next();
+        new Roles(project).bootstrap();
+        final Roles roles = new Roles(project);
+        for (int idx = 0; idx < Tv.TEN; ++idx) {
+            final String person = String.format("slack:AABBCCDD%d", idx);
+            final String role = "ARC";
+            roles.assign(person, role);
+            MatcherAssert.assertThat(
+                roles.hasRole(person, role),
+                Matchers.is(true)
+            );
+        }
+    }
+
+    /**
+     * S3Farm can make projects thread safe.
+     * @throws Exception If some problem inside
+     */
+    @Test
+    public void makesProjectsThreadSafe() throws Exception {
+        final Bucket bucket = new MkBucket(
+            Files.createTempDirectory("").toFile(),
+            "the-bucket"
+        );
+        final Farm farm = new S3Farm(bucket);
+        final Project project = farm.find("id=ABCZZFE03").iterator().next();
+        new Roles(project).bootstrap();
+        final int threads = Runtime.getRuntime().availableProcessors() << 2;
+        final ExecutorService service = Executors.newFixedThreadPool(threads);
+        final CountDownLatch latch = new CountDownLatch(1);
+        final Collection<Future<Boolean>> futures = new ArrayList<>(threads);
+        final String role = "PO";
+        final Roles roles = new Roles(project);
+        for (int thread = 0; thread < threads; ++thread) {
+            final String person = String.format("slack:ABCDEFS%d", thread);
+            futures.add(
+                service.submit(
+                    () -> {
+                        latch.await();
+                        roles.assign(person, role);
+                        return roles.hasRole(person, role);
+                    }
+                )
+            );
+        }
+        latch.countDown();
+        for (final Future<Boolean> future : futures) {
+            MatcherAssert.assertThat(
+                future.get(),
+                Matchers.is(true)
+            );
+        }
     }
 
 }

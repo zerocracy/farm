@@ -19,9 +19,13 @@ package com.zerocracy.farm;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Semaphore;
 
 /**
- * Synchronous project.
+ * Pool project.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
@@ -35,18 +39,72 @@ final class SyncProject implements Project {
     private final Project origin;
 
     /**
+     * Pool of items.
+     */
+    private final Map<String, SyncProject.Itm> pool;
+
+    /**
      * Ctor.
      * @param pkt Project
      */
     SyncProject(final Project pkt) {
         this.origin = pkt;
+        this.pool = new HashMap<>(0);
     }
 
     @Override
     public Item acq(final String file) throws IOException {
-        synchronized (this.origin) {
-            return this.origin.acq(file);
+        if (!this.pool.containsKey(file)) {
+            this.pool.put(
+                file,
+                new SyncProject.Itm(this.origin.acq(file))
+            );
         }
+        final SyncProject.Itm item = this.pool.get(file);
+        try {
+            item.acquire();
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException(ex);
+        }
+        return item;
     }
 
+    /**
+     * Item that closes only after all acquirers call close().
+     */
+    private static final class Itm implements Item {
+        /**
+         * Original item.
+         */
+        private final Item origin;
+        /**
+         * Semaphore.
+         */
+        private final Semaphore semaphore;
+        /**
+         * Ctor.
+         * @param item Original item
+         */
+        Itm(final Item item) {
+            this.origin = item;
+            this.semaphore = new Semaphore(1);
+        }
+        @Override
+        public Path path() throws IOException {
+            return this.origin.path();
+        }
+        @Override
+        public void close() throws IOException {
+            this.origin.close();
+            this.semaphore.release();
+        }
+        /**
+         * Acquire access.
+         * @throws InterruptedException If fails
+         */
+        public void acquire() throws InterruptedException {
+            this.semaphore.acquire();
+        }
+    }
 }

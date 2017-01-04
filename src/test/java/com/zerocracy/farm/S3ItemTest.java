@@ -16,42 +16,48 @@
  */
 package com.zerocracy.farm;
 
-import com.jcabi.s3.Bucket;
-import com.jcabi.s3.mock.MkBucket;
-import com.zerocracy.jstk.Project;
-import com.zerocracy.pm.hr.Roles;
+import com.jcabi.s3.Ocket;
+import com.jcabi.s3.mock.MkOcket;
+import com.zerocracy.jstk.Item;
+import com.zerocracy.pm.Xocument;
 import java.nio.file.Files;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.xembly.Directives;
 
 /**
- * Test case for {@link S3Project}.
+ * Test case for {@link S3Item}.
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class S3ProjectTest {
+public final class S3ItemTest {
 
     /**
-     * S3Project can modify.
+     * S3Item can modify.
      * @throws Exception If some problem inside
      */
     @Test
-    public void modifiesItems() throws Exception {
-        final Bucket bucket = new MkBucket(
-            Files.createTempDirectory("").toFile(),
-            "some-bucket"
+    public void modifiesFiles() throws Exception {
+        final Ocket ocket = new MkOcket(
+            Files.createTempDirectory("").toFile(), "bucket", "roles.xml"
         );
-        final Project project = new S3Project(bucket, "");
-        new Roles(project).bootstrap();
-        final String person = "github:yegor256";
-        final String role = "PO";
-        new Roles(project).assign(person, role);
-        MatcherAssert.assertThat(
-            new Roles(project).hasRole(person, role),
-            Matchers.is(true)
-        );
+        try (final Item item = new S3Item(ocket)) {
+            new Xocument(item).bootstrap("roles", "pm/hr/roles");
+            new Xocument(item).modify(
+                new Directives().xpath("/roles")
+                    .add("role")
+                    .add("person").set("slack:ABCDEF64").up()
+                    .add("name").set("ARC")
+            );
+        }
+        try (final Item item = new S3Item(ocket)) {
+            MatcherAssert.assertThat(
+                new Xocument(item).xpath("/roles/text()"),
+                Matchers.not(Matchers.emptyIterable())
+            );
+        }
     }
 
 }

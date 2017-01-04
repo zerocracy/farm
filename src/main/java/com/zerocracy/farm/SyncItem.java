@@ -16,7 +16,6 @@
  */
 package com.zerocracy.farm;
 
-import com.jcabi.aspects.Async;
 import com.zerocracy.jstk.Item;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -51,7 +50,6 @@ final class SyncItem implements Item {
     }
 
     @Override
-    @Async
     public void close() throws IOException {
         synchronized (this.origin) {
             this.origin.close();
