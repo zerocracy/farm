@@ -52,7 +52,7 @@ public final class SkCrew implements Crew {
                             new ReRegex("roles", new ReShowRoles()),
                             new ReRegex("assign .*", new ReAssign()),
                             new ReRegex("resign .*", new ReResign()),
-                            new ReRegex("link .*", new ReAssign()),
+                            new ReRegex("link .*", new ReLink()),
                             new ReRegex(".*", new ReSorry())
                         )
                     )

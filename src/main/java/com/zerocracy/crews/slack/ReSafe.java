@@ -18,6 +18,7 @@ package com.zerocracy.crews.slack;
 
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
+import com.zerocracy.crews.SoftException;
 import com.zerocracy.jstk.Farm;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -52,6 +53,8 @@ final class ReSafe implements Reaction<SlackMessagePosted> {
         final SlackSession session) throws IOException {
         try {
             return this.origin.react(farm, event, session);
+        } catch (final SoftException ex) {
+            session.sendMessage(event.getChannel(), ex.getMessage());
             // @checkstyle IllegalCatchCheck (1 line)
         } catch (final Throwable ex) {
             try (final ByteArrayOutputStream baos =
