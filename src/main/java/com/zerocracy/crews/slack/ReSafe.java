@@ -51,8 +51,9 @@ final class ReSafe implements Reaction<SlackMessagePosted> {
     @SuppressWarnings("PMD.AvoidCatchingThrowable")
     public boolean react(final Farm farm, final SlackMessagePosted event,
         final SlackSession session) throws IOException {
+        boolean done = false;
         try {
-            return this.origin.react(farm, event, session);
+            done = this.origin.react(farm, event, session);
         } catch (final SoftException ex) {
             session.sendMessage(event.getChannel(), ex.getMessage());
             // @checkstyle IllegalCatchCheck (1 line)
@@ -73,6 +74,7 @@ final class ReSafe implements Reaction<SlackMessagePosted> {
             }
             throw new IOException(ex);
         }
+        return done;
     }
 
 }
