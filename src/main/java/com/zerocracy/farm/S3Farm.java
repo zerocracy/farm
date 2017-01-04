@@ -108,7 +108,13 @@ final class S3Farm implements Farm {
             return catalog
                 .findByXPath(query)
                 .stream()
-                .map(prefix -> new S3Project(this.bucket, prefix))
+                .map(
+                    prefix -> new SyncProject(
+                        new PoolProject(
+                            new S3Project(this.bucket, prefix)
+                        )
+                    )
+                )
                 .collect(Collectors.toList());
         }
     }

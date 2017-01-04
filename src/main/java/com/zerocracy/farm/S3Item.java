@@ -17,6 +17,7 @@
 package com.zerocracy.farm;
 
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.jcabi.log.Logger;
 import com.jcabi.s3.Ocket;
 import com.zerocracy.jstk.Item;
 import java.io.IOException;
@@ -60,7 +61,7 @@ final class S3Item implements Item {
     @Override
     public Path path() throws IOException {
         if (this.temp.get() == null) {
-            final Path path = Files.createTempFile("zerocracy", ".bin");
+            final Path path = Files.createTempFile("zerocracy-", ".bin");
             this.temp.set(path);
             if (this.ocket.exists()) {
                 this.ocket.read(
@@ -68,6 +69,11 @@ final class S3Item implements Item {
                         path,
                         StandardOpenOption.CREATE
                     )
+                );
+                Logger.info(
+                    this, "loaded %d bytes from %s",
+                    path.toFile().length(),
+                    this.ocket.key()
                 );
             }
         }
@@ -80,6 +86,11 @@ final class S3Item implements Item {
             this.ocket.write(
                 Files.newInputStream(this.temp.get()),
                 new ObjectMetadata()
+            );
+            Logger.info(
+                this, "saved %d bytes to %s",
+                this.temp.get().toFile().length(),
+                this.ocket.key()
             );
             Files.delete(this.temp.get());
             this.temp.set(null);

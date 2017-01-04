@@ -18,45 +18,41 @@ package com.zerocracy.farm;
 
 import com.jcabi.s3.Bucket;
 import com.jcabi.s3.mock.MkBucket;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
+import com.zerocracy.pm.hr.Roles;
 import java.nio.file.Files;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
- * Test case for {@link S3Farm}.
+ * Test case for {@link S3Project}.
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class S3FarmTest {
+public final class S3ProjectTest {
 
     /**
-     * S3Farm can find a project.
+     * S3Project can modify.
      * @throws Exception If some problem inside
      */
     @Test
-    public void findsProject() throws Exception {
+    public void modifiesItems() throws Exception {
         final Bucket bucket = new MkBucket(
             Files.createTempDirectory("").toFile(),
             "some-bucket"
         );
-        final Farm farm = new S3Farm(bucket);
-        farm.find("id = ABCDEF123").iterator().next();
-        final Project project = farm.find("id=ABCDEF123").iterator().next();
-        final Item item = project.acq("test");
-        MatcherAssert.assertThat(
-            item.path().toFile().exists(),
-            Matchers.is(true)
+        final Project project = new SyncProject(
+            new PoolProject(new S3Project(bucket, ""))
         );
-        Files.write(item.path(), "hello, world".getBytes());
-        item.close();
+        new Roles(project).bootstrap();
+        final String person = "github:yegor256";
+        final String role = "PO";
+        new Roles(project).assign(person, role);
         MatcherAssert.assertThat(
-            new String(Files.readAllBytes(item.path())),
-            Matchers.containsString("hello")
+            new Roles(project).hasRole(person, role),
+            Matchers.is(true)
         );
     }
 
