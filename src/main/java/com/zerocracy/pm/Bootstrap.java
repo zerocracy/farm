@@ -54,17 +54,30 @@ public final class Bootstrap implements Stakeholder {
     @Override
     public void work() throws IOException {
         new Wbs(this.project).bootstrap();
-        new Roles(this.project).bootstrap();
-        new Roles(this.project).assign(this.person.name(), "PO");
-        this.person.say(
-            String.join(
-                " ",
-                "I'm ready to manage a project.",
-                "When you're ready, you can start giving me instructions,",
-                "always prefixing your messages with my name.",
-                "If you need help, start here:",
-                "http://www.0crat.com/help.html"
-            )
-        );
+        final Roles roles = new Roles(this.project);
+        roles.bootstrap();
+        final String role = "PO";
+        if (roles.hasRole(this.person.name(), role)) {
+            this.person.say(
+                String.join(
+                    " ",
+                    "This project seems to be under my management already.",
+                    "If you have questions, try this link:",
+                    "http://www.0crat.com/help.html or email me."
+                )
+            );
+        } else {
+            roles.assign(this.person.name(), role);
+            this.person.say(
+                String.join(
+                    " ",
+                    "I'm ready to manage a project.",
+                    "When you're ready, you can start giving me instructions,",
+                    "always prefixing your messages with my name.",
+                    "If you need help, start here:",
+                    "http://www.0crat.com/help.html"
+                )
+            );
+        }
     }
 }

@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pm;
 
+import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.jstk.fake.FkProject;
 import org.junit.Test;
 
@@ -33,7 +34,11 @@ public final class BootstrapTest {
      */
     @Test
     public void bootstrapsProjects() throws Exception {
-        new Bootstrap(new FkProject(), new Person.Fake()).work();
+        final Stakeholder stk = new Bootstrap(
+            new FkProject(), new Person.Fake()
+        );
+        stk.work();
+        stk.work();
     }
 
 }
