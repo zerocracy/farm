@@ -14,49 +14,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.farm;
+package com.zerocracy.pmo;
 
-import com.jcabi.s3.Bucket;
-import com.jcabi.s3.mock.MkBucket;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Item;
-import com.zerocracy.jstk.Project;
-import java.nio.file.Files;
+import com.zerocracy.jstk.fake.FkItem;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
- * Test case for {@link TkApp}.
+ * Test case for {@link Catalog}.
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class S3FarmTest {
+public final class CatalogTest {
 
     /**
-     * S3Farm can find a project.
+     * Adds and finds projects.
      * @throws Exception If some problem inside
      */
     @Test
-    public void findsProject() throws Exception {
-        final Bucket bucket = new MkBucket(
-            Files.createTempDirectory("").toFile(),
-            "some-bucket"
-        );
-        final Farm farm = new S3Farm(bucket);
-        farm.find("id = ABCDEF123").iterator().next();
-        final Project project = farm.find("id=ABCDEF123").iterator().next();
-        final Item item = project.acq("test");
+    public void addsAndFindsProjects() throws Exception {
+        final Catalog catalog = new Catalog(new FkItem());
+        catalog.bootstrap();
+        final String pid = "67WE3343P";
+        final String prefix = "2016/11/67WE3343P/";
+        catalog.add(pid, prefix);
         MatcherAssert.assertThat(
-            item.path().toFile().exists(),
-            Matchers.is(true)
-        );
-        Files.write(item.path(), "hello, world".getBytes());
-        item.close();
-        MatcherAssert.assertThat(
-            new String(Files.readAllBytes(item.path())),
-            Matchers.containsString("hello")
+            catalog.findByXPath("id='67WE3343P'"),
+            Matchers.not(Matchers.emptyIterable())
         );
     }
 

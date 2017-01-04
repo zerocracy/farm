@@ -51,17 +51,26 @@ final class S3Project implements Project {
 
     @Override
     public Item acq(final String file) {
-        return new SlowItem(
-            new SyncItem(
-                new S3Item(
-                    this.bucket.ocket(
-                        String.format(
-                            "%s%s", this.prefix, file
+        final Item item;
+        if ("../catalog.xml".equals(file)) {
+            item = new CatalogItem(
+                new SyncItem(new S3Item(this.bucket.ocket("catalog.xml"))),
+                this.prefix
+            );
+        } else {
+            item = new SlowItem(
+                new SyncItem(
+                    new S3Item(
+                        this.bucket.ocket(
+                            String.format(
+                                "%s%s", this.prefix, file
+                            )
                         )
                     )
                 )
-            )
-        );
+            );
+        }
+        return item;
     }
 
 }

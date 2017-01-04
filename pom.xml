@@ -131,10 +131,12 @@
         <dependency>
             <groupId>com.jcabi</groupId>
             <artifactId>jcabi-s3</artifactId>
+            <version>0.12</version>
         </dependency>
         <dependency>
             <groupId>com.jcabi</groupId>
             <artifactId>jcabi-xml</artifactId>
+            <version>0.18</version>
         </dependency>
         <dependency>
             <groupId>com.jcabi.incubator</groupId>

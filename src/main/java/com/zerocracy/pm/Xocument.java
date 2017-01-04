@@ -19,12 +19,14 @@ package com.zerocracy.pm;
 import com.jcabi.xml.StrictXML;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.jcabi.xml.XSL;
 import com.zerocracy.jstk.Item;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.Collection;
 import org.w3c.dom.Node;
 import org.xembly.Directive;
 import org.xembly.Xembler;
@@ -41,7 +43,7 @@ public final class Xocument {
     /**
      * Current DATUM version.
      */
-    private static final String VERSION = "0.2";
+    private static final String VERSION = "0.3";
 
     /**
      * File.
@@ -78,7 +80,7 @@ public final class Xocument {
                 this.file,
                 String.format(
                     // @checkstyle LineLength (1 line)
-                    "<%s xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/zerocracy/datum/%s/%s.xsd'/>",
+                    "<%s xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/zerocracy/datum/%s/xsd/%s.xsd'/>",
                     root, Xocument.VERSION, xsd
                 ).getBytes(StandardCharsets.UTF_8),
                 StandardOpenOption.CREATE
@@ -92,7 +94,7 @@ public final class Xocument {
      * @return Found texts
      * @throws IOException If fails
      */
-    public Iterable<String> xpath(final String xpath) throws IOException {
+    public Collection<String> xpath(final String xpath) throws IOException {
         final XML xml = new StrictXML(new XMLDocument(this.file.toFile()));
         return xml.xpath(xpath);
     }
@@ -110,6 +112,20 @@ public final class Xocument {
             new StrictXML(new XMLDocument(node))
                 .toString()
                 .getBytes(StandardCharsets.UTF_8)
+        );
+    }
+
+    /**
+     * Apply XSL to it.
+     * @param xsl XSL to apply
+     * @throws IOException If fails
+     */
+    public void apply(final XSL xsl) throws IOException {
+        Files.write(
+            this.file,
+            new StrictXML(
+                xsl.transform(new XMLDocument(this.file.toFile()))
+            ).toString().getBytes(StandardCharsets.UTF_8)
         );
     }
 

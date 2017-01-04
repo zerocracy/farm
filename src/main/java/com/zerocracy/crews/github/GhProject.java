@@ -66,7 +66,7 @@ final class GhProject implements Project {
     private Project project() throws IOException {
         final Iterator<Project> list = this.farm.find(
             String.format(
-                "ref.github=%s",
+                "link.github=%s",
                 this.comment.issue().repo().coordinates().toString()
             )
         ).iterator();

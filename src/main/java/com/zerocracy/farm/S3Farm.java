@@ -17,26 +17,17 @@
 package com.zerocracy.farm;
 
 import com.jcabi.s3.Bucket;
-import com.jcabi.s3.Ocket;
-import com.jcabi.xml.StrictXML;
-import com.jcabi.xml.XMLDocument;
-import com.jcabi.xml.XSD;
-import com.jcabi.xml.XSDDocument;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
+import com.zerocracy.pmo.Catalog;
 import java.io.IOException;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import org.w3c.dom.Node;
-import org.xembly.Directives;
-import org.xembly.Xembler;
 
 /**
  * Farm in S3.
@@ -47,13 +38,6 @@ import org.xembly.Xembler;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 final class S3Farm implements Farm {
-
-    /**
-     * XSD for the list.
-     */
-    private static final XSD SCHEMA = XSDDocument.make(
-        S3Farm.class.getResourceAsStream("list.xsd")
-    );
 
     /**
      * Query pattern.
@@ -92,11 +76,11 @@ final class S3Farm implements Farm {
             if (list.isEmpty()) {
                 list.add(this.bootstrap(pid));
             }
-        } else if ("ref.github".equals(matcher.group(1))) {
+        } else if ("link.github".equals(matcher.group(1))) {
             list.addAll(
                 this.findByXPath(
                     String.format(
-                        "ref[@rel='github']=%s",
+                        "link[@rel='github' and @href='%s']",
                         matcher.group(2)
                     )
                 )
@@ -120,10 +104,13 @@ final class S3Farm implements Farm {
      */
     private Collection<Project> findByXPath(final String query)
         throws IOException {
-        return new XMLDocument(this.ocket().read())
-            .xpath(String.format("//project[%s]/prefix/text()", query)).stream()
-            .map(prefix -> new S3Project(this.bucket, prefix))
-            .collect(Collectors.toList());
+        try (final Catalog catalog = this.catalog()) {
+            return catalog
+                .findByXPath(query)
+                .stream()
+                .map(prefix -> new S3Project(this.bucket, prefix))
+                .collect(Collectors.toList());
+        }
     }
 
     /**
@@ -133,35 +120,23 @@ final class S3Farm implements Farm {
      * @throws IOException If fails
      */
     private Project bootstrap(final String pid) throws IOException {
-        final Ocket.Text ocket = this.ocket();
-        final Node node = new StrictXML(
-            new XMLDocument(ocket.read()),
-            S3Farm.SCHEMA
-        ).node();
-        new Xembler(
-            new Directives()
-                .xpath("/projects").add("project")
-                .add("id").set(pid).up()
-                .add("created")
-                .set(ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT))
-                .up()
-                .add("prefix").set(S3Farm.prefix(pid))
-        ).applyQuietly(node);
-        ocket.write(
-            new StrictXML(
-                new XMLDocument(node),
-                S3Farm.SCHEMA
-            ).toString()
-        );
+        try (final Catalog catalog = this.catalog()) {
+            catalog.add(pid, S3Farm.prefix(pid));
+        }
         return this.find(String.format("id=%s", pid)).iterator().next();
     }
 
     /**
-     * Make an ocket.
-     * @return Ocket
+     * Make a catalog.
+     * @return Catalog
+     * @throws IOException If fails
      */
-    private Ocket.Text ocket() {
-        return new Ocket.Text(this.bucket.ocket("list.xml"));
+    private Catalog catalog() throws IOException {
+        final Catalog catalog = new Catalog(
+            new S3Item(this.bucket.ocket("catalog.xml"))
+        );
+        catalog.bootstrap();
+        return catalog;
     }
 
     /**
