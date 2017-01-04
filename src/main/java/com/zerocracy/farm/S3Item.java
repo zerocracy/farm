@@ -83,10 +83,9 @@ final class S3Item implements Item {
     @Override
     public void close() throws IOException {
         if (this.temp.get() != null) {
-            this.ocket.write(
-                Files.newInputStream(this.temp.get()),
-                new ObjectMetadata()
-            );
+            final ObjectMetadata meta = new ObjectMetadata();
+            meta.setContentLength(this.temp.get().toFile().length());
+            this.ocket.write(Files.newInputStream(this.temp.get()), meta);
             Logger.info(
                 this, "saved %d bytes to %s",
                 this.temp.get().toFile().length(),
