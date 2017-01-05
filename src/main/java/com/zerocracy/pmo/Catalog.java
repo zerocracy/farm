@@ -72,6 +72,7 @@ public final class Catalog implements Closeable {
                 .xpath("/catalog")
                 .add("project")
                 .attr("id", pid)
+                .add("parent").set("PMO").up()
                 .add("created")
                 .set(ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT))
                 .up()

@@ -29,11 +29,7 @@ import java.io.IOException;
 public interface Person {
 
     /**
-     * Name (coordinates).
-     *
-     * <p>The name starts with the system, where that person is present,
-     * like "slack:" or "github:".
-     *
+     * User ID (from Slack).
      * @return Unique name of that person
      * @throws IOException If fails on I/O
      */

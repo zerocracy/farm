@@ -22,39 +22,43 @@ import com.zerocracy.jstk.Farm;
 import java.io.IOException;
 
 /**
- * React if the message is directed to me.
+ * React if the message is in direct channel with me.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-final class ReIfDirected implements Reaction<SlackMessagePosted> {
+final class ReIfDirect implements Reaction<SlackMessagePosted> {
 
     /**
      * Reaction.
      */
-    private final Reaction<SlackMessagePosted> origin;
+    private final Reaction<SlackMessagePosted> left;
+
+    /**
+     * Reaction.
+     */
+    private final Reaction<SlackMessagePosted> right;
 
     /**
      * Ctor.
-     * @param tgt Target
+     * @param lft If TRUE (direct message to me)
+     * @param rht If FALSE (just a message in channel)
      */
-    ReIfDirected(final Reaction<SlackMessagePosted> tgt) {
-        this.origin = tgt;
+    ReIfDirect(final Reaction<SlackMessagePosted> lft,
+        final Reaction<SlackMessagePosted> rht) {
+        this.left = lft;
+        this.right = rht;
     }
 
     @Override
     public boolean react(final Farm farm, final SlackMessagePosted event,
         final SlackSession session) throws IOException {
-        final String prefix = String.format(
-            "<@%s> ", session.sessionPersona().getId()
-        );
-        boolean done = false;
-        // @checkstyle OperatorWrapCheck (5 lines)
-        if (event.getMessageContent().startsWith(prefix)
-            && event.getMessageSubType() ==
-            SlackMessagePosted.MessageSubType.UNKNOWN) {
-            done = this.origin.react(farm, event, session);
+        final boolean done;
+        if (event.getChannel().isDirect()) {
+            done = this.left.react(farm, event, session);
+        } else {
+            done = this.right.react(farm, event, session);
         }
         return done;
     }

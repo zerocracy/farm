@@ -43,7 +43,7 @@ public final class Xocument {
     /**
      * Current DATUM version.
      */
-    private static final String VERSION = "0.5.2";
+    private static final String VERSION = "0.6";
 
     /**
      * File.
