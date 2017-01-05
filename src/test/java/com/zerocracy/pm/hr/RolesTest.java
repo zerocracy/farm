@@ -37,10 +37,12 @@ public final class RolesTest {
     public void printsRoles() throws Exception {
         final Roles roles = new Roles(new FkProject());
         roles.bootstrap();
-        roles.assign("slack:ABC83939", "PO");
+        final String person = "ABC8393D";
+        roles.assign(person, "PO");
+        roles.assign(person, "DEV");
         MatcherAssert.assertThat(
             roles.print(),
-            Matchers.containsString("PO")
+            Matchers.containsString("ABC8393D: PO, DEV")
         );
     }
 
@@ -52,7 +54,7 @@ public final class RolesTest {
     public void addsAndRemovesRoles() throws Exception {
         final Roles roles = new Roles(new FkProject());
         roles.bootstrap();
-        final String person = "github:yegor256";
+        final String person = "ABC8393F";
         final String role = "ARC";
         MatcherAssert.assertThat(
             roles.hasRole(person, role),

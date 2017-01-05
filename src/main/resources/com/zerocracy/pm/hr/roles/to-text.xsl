@@ -18,18 +18,24 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns="http://www.w3.org/1999/xhtml" version="1.0">
     <xsl:output method="text"/>
-    <xsl:template match="roles[not(role)]">
+    <xsl:template match="/roles[not(person)]">
         <xsl:text>No roles assigned.</xsl:text>
     </xsl:template>
-    <xsl:template match="roles[role]">
+    <xsl:template match="/roles[person]">
+        <xsl:apply-templates select="person"/>
+    </xsl:template>
+    <xsl:template match="person">
+        <xsl:if test="position() &gt; 1">
+            <xsl:text>&#10;</xsl:text>
+        </xsl:if>
+        <xsl:value-of select="@id"/>
+        <xsl:text>: </xsl:text>
         <xsl:apply-templates select="role"/>
     </xsl:template>
     <xsl:template match="role">
         <xsl:if test="position() &gt; 1">
-            <xsl:text>&#10;</xsl:text>
+            <xsl:text>, </xsl:text>
         </xsl:if>
-        <xsl:value-of select="person"/>
-        <xsl:text>: </xsl:text>
-        <xsl:value-of select="name"/>
+        <xsl:value-of select="."/>
     </xsl:template>
 </xsl:stylesheet>

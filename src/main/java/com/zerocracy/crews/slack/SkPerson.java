@@ -51,10 +51,7 @@ public final class SkPerson implements Person {
 
     @Override
     public String name() {
-        return String.format(
-            "slack:%s",
-            this.event.getSender().getId()
-        );
+        return this.event.getSender().getId();
     }
 
     @Override

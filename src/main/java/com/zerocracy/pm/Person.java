@@ -52,7 +52,7 @@ public interface Person {
     final class Fake implements Person {
         @Override
         public String name() {
-            return "github:yegor256";
+            return "ABCZZFE03";
         }
         @Override
         public void say(final String message) {

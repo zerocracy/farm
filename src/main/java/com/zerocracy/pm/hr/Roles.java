@@ -79,10 +79,23 @@ public final class Roles {
         throws IOException {
         try (final Item roles = this.item()) {
             new Xocument(roles.path()).modify(
-                new Directives().xpath("/roles")
+                new Directives()
+                    .xpath(
+                        String.format(
+                            "/roles[not(person[@id='%s'])]",
+                            person
+                        )
+                    )
+                    .add("person")
+                    .attr("id", person)
+                    .xpath(
+                        String.format(
+                            "/roles/person[@id='%s']",
+                            person
+                        )
+                    )
                     .add("role")
-                    .add("person").set(person).up()
-                    .add("name").set(role)
+                    .set(role)
             );
         }
     }
@@ -96,13 +109,23 @@ public final class Roles {
     public void resign(final String person, final String role)
         throws IOException {
         try (final Item roles = this.item()) {
-            new Xocument(roles.path()).modify(
-                new Directives().xpath(
-                    String.format(
-                        "/roles/role[person='%s' and name='%s']",
-                        person, role
+            final Xocument xoc = new Xocument(roles.path());
+            xoc.modify(
+                new Directives()
+                    .xpath(
+                        String.format(
+                            "/roles/person[@id='%s']/role[.='%s']",
+                            person, role
+                        )
                     )
-                ).remove()
+                    .remove()
+                    .xpath(
+                        String.format(
+                            "/roles/person[@id='%s' and not(role)]",
+                            person
+                        )
+                    )
+                    .remove()
             );
         }
     }
@@ -119,7 +142,7 @@ public final class Roles {
         try (final Item roles = this.item()) {
             return new Xocument(roles).xpath(
                 String.format(
-                    "/roles/role[person='%s' and name='%s']/text()",
+                    "/roles/person[@id='%s' and role='%s']/text()",
                     person, role
                 )
             ).iterator().hasNext();

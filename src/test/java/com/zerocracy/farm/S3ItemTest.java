@@ -19,6 +19,7 @@ package com.zerocracy.farm;
 import com.jcabi.s3.Ocket;
 import com.jcabi.s3.mock.MkOcket;
 import com.zerocracy.jstk.Item;
+import com.zerocracy.pm.Person;
 import com.zerocracy.pm.Xocument;
 import java.nio.file.Files;
 import org.hamcrest.MatcherAssert;
@@ -47,9 +48,9 @@ public final class S3ItemTest {
             new Xocument(item).bootstrap("roles", "pm/hr/roles");
             new Xocument(item).modify(
                 new Directives().xpath("/roles")
-                    .add("role")
-                    .add("person").set("slack:ABCDEF64").up()
-                    .add("name").set("ARC")
+                    .add("person")
+                    .attr("id", new Person.Fake().name())
+                    .add("role").set("ARC")
             );
         }
         try (final Item item = new S3Item(ocket)) {

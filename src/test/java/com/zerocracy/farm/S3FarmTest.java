@@ -83,7 +83,7 @@ public final class S3FarmTest {
         new Roles(project).bootstrap();
         final Roles roles = new Roles(project);
         for (int idx = 0; idx < Tv.TEN; ++idx) {
-            final String person = String.format("slack:AABBCCDD%d", idx);
+            final String person = String.format("AABBCCDD%d", idx);
             final String role = "ARC";
             roles.assign(person, role);
             MatcherAssert.assertThat(
@@ -113,7 +113,7 @@ public final class S3FarmTest {
         final String role = "PO";
         final Roles roles = new Roles(project);
         for (int thread = 0; thread < threads; ++thread) {
-            final String person = String.format("slack:ABCDEFS%d", thread);
+            final String person = String.format("ABCDEFS%d", thread);
             futures.add(
                 service.submit(
                     () -> {
