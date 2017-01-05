@@ -54,6 +54,7 @@ public final class CatalogItemTest {
             new Xocument(citem.path()).modify(
                 new Directives()
                     .xpath("/catalog/project")
+                    .addIf("links")
                     .add("link")
                     .attr("rel", "github")
                     .attr("href", "yegor256/pdd")
@@ -64,14 +65,14 @@ public final class CatalogItemTest {
         )) {
             MatcherAssert.assertThat(
                 new Xocument(citem.path()).xpath(
-                    "//project/link[@rel]/@href"
+                    "//project/links/link[@rel]/@href"
                 ),
                 Matchers.not(Matchers.emptyIterable())
             );
         }
         MatcherAssert.assertThat(
             new Xocument(item.path()).xpath(
-                "//project[not(link)]/@id"
+                "//project[not(links/link)]/@id"
             ),
             Matchers.not(Matchers.emptyIterable())
         );

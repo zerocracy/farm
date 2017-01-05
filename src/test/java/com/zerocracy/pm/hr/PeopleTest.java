@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pmo;
+package com.zerocracy.pm.hr;
 
 import com.zerocracy.jstk.fake.FkProject;
 import org.hamcrest.MatcherAssert;

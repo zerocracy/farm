@@ -14,19 +14,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pmo;
+package com.zerocracy.pm.hr;
 
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.Xocument;
 import java.io.IOException;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import org.xembly.Directives;
 
 /**
- * All users.
+ * Data about people.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
@@ -53,7 +50,7 @@ public final class People {
      */
     public void bootstrap() throws IOException {
         try (final Item item = this.item()) {
-            new Xocument(item.path()).bootstrap("people", "pmo/people");
+            new Xocument(item.path()).bootstrap("people", "pm/hr/people");
         }
     }
 
@@ -76,26 +73,19 @@ public final class People {
                 new Directives()
                     .xpath(
                         String.format(
-                            "/people[not(user[@id='%s'])]",
+                            "/people[not(person[@id='%s'])]",
                             uid
                         )
                     )
-                    .add("user")
+                    .add("person")
                     .attr("id", uid)
                     .xpath(
                         String.format(
-                            "/people/user[@id='%s']",
+                            "/people/person[@id='%s']",
                             uid
                         )
                     )
-                    .add("created")
-                    .set(
-                        ZonedDateTime.now().format(
-                            DateTimeFormatter.ISO_INSTANT
-                        )
-                    )
-                    .up()
-                    .add("prefix").set(People.prefix(uid)).up()
+                    .addIf("links")
                     .add("link")
                     .attr("rel", rel)
                     .attr("href", alias)
@@ -115,7 +105,7 @@ public final class People {
         try (final Item item = this.item()) {
             return new Xocument(item).xpath(
                 String.format(
-                    "/people/user[link[@rel='%s' and @href='%s']]/@id",
+                    "/people/person[links/link[@rel='%s' and @href='%s']]/@id",
                     rel, alias
                 )
             );
@@ -128,20 +118,7 @@ public final class People {
      * @throws IOException If fails
      */
     private Item item() throws IOException {
-        return this.project.acq("../people.xml");
-    }
-
-    /**
-     * Create prefix from UID.
-     * @param uid User ID
-     * @return Prefix to use
-     */
-    private static String prefix(final String uid) {
-        return String.format(
-            "users/%tY/%1$tm/%s/",
-            new Date(),
-            uid
-        );
+        return this.project.acq("people.xml");
     }
 
 }

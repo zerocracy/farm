@@ -73,6 +73,7 @@ public final class Link implements Stakeholder {
             new Xocument(item.path()).modify(
                 new Directives()
                     .xpath("/catalog/project")
+                    .addIf("links")
                     .add("link")
                     .attr("rel", this.rel)
                     .attr("href", this.href)
