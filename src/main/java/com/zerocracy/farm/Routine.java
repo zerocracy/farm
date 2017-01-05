@@ -45,6 +45,11 @@ final class Routine implements Runnable {
     private final Farm farm;
 
     /**
+     * Start.
+     */
+    private final long started;
+
+    /**
      * Ctor.
      * @param crws Crews
      * @param frm Farm
@@ -52,6 +57,7 @@ final class Routine implements Runnable {
     Routine(final Farm frm, final Crew... crws) {
         this.crews = Arrays.asList(crws);
         this.farm = frm;
+        this.started = System.currentTimeMillis();
     }
 
     @Override
@@ -68,8 +74,10 @@ final class Routine implements Runnable {
             throw new IllegalStateException(ex);
         }
         Logger.info(
-            this, "%d crews in %[ms]s",
-            total, System.currentTimeMillis() - start
+            this, "%d crews in %[ms]s (alive for %[ms]s)",
+            total,
+            System.currentTimeMillis() - start,
+            System.currentTimeMillis() - this.started
         );
     }
 
