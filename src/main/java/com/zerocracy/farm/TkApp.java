@@ -18,6 +18,7 @@ package com.zerocracy.farm;
 
 import com.github.rjeschke.txtmark.Configuration;
 import com.github.rjeschke.txtmark.Processor;
+import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.IOUtils;
@@ -26,7 +27,6 @@ import org.takes.facets.fork.FkRegex;
 import org.takes.facets.fork.TkFork;
 import org.takes.facets.fork.TkRegex;
 import org.takes.rs.RsVelocity;
-import org.takes.tk.TkHtml;
 import org.takes.tk.TkWrap;
 
 /**
@@ -40,23 +40,40 @@ import org.takes.tk.TkWrap;
 final class TkApp extends TkWrap {
 
     /**
+     * When we started.
+     */
+    private static final long STARTED = System.currentTimeMillis();
+
+    /**
      * Ctor.
+     * @param version App version
      * @throws IOException If fails
      */
-    TkApp() throws IOException {
-        super(TkApp.make());
+    TkApp(final String version) throws IOException {
+        super(TkApp.make(version));
     }
 
     /**
      * Ctor.
+     * @param version App version
      * @return Takes
      */
-    private static Take make() {
+    private static Take make(final String version) {
         return new TkFork(
             new FkRegex("/robots.txt", ""),
             new FkRegex(
                 "/",
-                new TkHtml(TkApp.class.getResource("/html/index.html"))
+                (Take) req -> new RsVelocity(
+                    TkApp.class.getResource("/html/index.html"),
+                    new RsVelocity.Pair("version", version),
+                    new RsVelocity.Pair(
+                        "alive",
+                        Logger.format(
+                            "%[ms]s",
+                            System.currentTimeMillis() - TkApp.STARTED
+                        )
+                    )
+                )
             ),
             new FkRegex(
                 "/([a-z\\-]+)\\.html",

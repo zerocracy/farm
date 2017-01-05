@@ -88,7 +88,10 @@ public final class Main {
             ),
             new SkCrew(props.getProperty("slack.0crat.key"))
         );
-        new FtCli(new TkApp(), this.arguments).start(Exit.NEVER);
+        new FtCli(
+            new TkApp(props.getProperty("version")),
+            this.arguments
+        ).start(Exit.NEVER);
         Logger.info(this, "Farm is ready");
     }
 
