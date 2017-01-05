@@ -49,7 +49,7 @@ public final class S3ItemTest {
             new Xocument(item).modify(
                 new Directives().xpath("/roles")
                     .add("person")
-                    .attr("id", new Person.Fake().name())
+                    .attr("id", new Person.Fake().uid())
                     .add("role").set("ARC")
             );
         }

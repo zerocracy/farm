@@ -48,7 +48,7 @@ final class ReResign implements Reaction<SlackMessagePosted> {
                     new Resign(
                         new SkProject(farm, event),
                         new SkPerson(event, session),
-                        new Question(event.getMessageContent()).arg("name"),
+                        new Question(event.getMessageContent()).arg("uid"),
                         new Question(event.getMessageContent()).arg("role")
                     )
                 )

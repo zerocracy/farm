@@ -69,7 +69,7 @@ public final class Xocument {
 
     /**
      * Bootstrap it.
-     * @param root Root node name
+     * @param root Root node uid
      * @param xsd Path of XSD
      * @throws IOException If fails
      */

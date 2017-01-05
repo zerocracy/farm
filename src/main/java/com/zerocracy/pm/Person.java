@@ -30,10 +30,10 @@ public interface Person {
 
     /**
      * User ID (from Slack).
-     * @return Unique name of that person
+     * @return Unique uid of that person
      * @throws IOException If fails on I/O
      */
-    String name() throws IOException;
+    String uid() throws IOException;
 
     /**
      * Say something to him.
@@ -47,7 +47,7 @@ public interface Person {
      */
     final class Fake implements Person {
         @Override
-        public String name() {
+        public String uid() {
             return "ABCZZFE03";
         }
         @Override

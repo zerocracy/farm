@@ -102,7 +102,7 @@ public final class Wbs {
             new Xocument(wbs.path()).modify(
                 new Directives().xpath(
                     String.format(
-                        "/wbs/job[name='%s']", job.name()
+                        "/wbs/job[uid='%s']", job.name()
                     )
                 ).remove()
             );

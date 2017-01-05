@@ -28,7 +28,7 @@ import java.io.IOException;
 public interface Job {
 
     /**
-     * Its unique name.
+     * Its unique uid.
      * @return Name
      * @throws IOException If fails on I/O
      */

@@ -47,7 +47,7 @@ public final class S3ProjectTest {
         );
         final Project project = new S3Project(bucket, "");
         new Roles(project).bootstrap();
-        final String person = new Person.Fake().name();
+        final String person = new Person.Fake().uid();
         final String role = "PO";
         new Roles(project).assign(person, role);
         MatcherAssert.assertThat(

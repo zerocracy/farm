@@ -50,7 +50,7 @@ public final class SkPerson implements Person {
     }
 
     @Override
-    public String name() {
+    public String uid() {
         return this.event.getSender().getId();
     }
 

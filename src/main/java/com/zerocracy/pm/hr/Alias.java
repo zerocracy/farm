@@ -68,11 +68,11 @@ public final class Alias implements Stakeholder {
 
     @Override
     public void work() throws IOException {
-        new People(this.project).link(this.person.name(), this.rel, this.href);
+        new People(this.project).link(this.person.uid(), this.rel, this.href);
         this.person.say(
             String.format(
                 "Alias added to \"%s\": rel=`%s`, href=`%s`",
-                this.person.name(),
+                this.person.uid(),
                 this.rel,
                 this.href
             )

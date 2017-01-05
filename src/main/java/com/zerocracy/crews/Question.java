@@ -42,8 +42,8 @@ public final class Question {
     }
 
     /**
-     * Get argument by name.
-     * @param name The name
+     * Get argument by uid.
+     * @param name The uid
      * @return Value
      * @throws SoftException If fails
      */

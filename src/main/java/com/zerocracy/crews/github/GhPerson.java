@@ -54,7 +54,7 @@ final class GhPerson implements Person {
     }
 
     @Override
-    public String name() throws IOException {
+    public String uid() throws IOException {
         final Iterator<String> list = new People(this.project).find(
             "github", new Comment.Smart(this.comment).author().login()
         ).iterator();

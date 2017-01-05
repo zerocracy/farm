@@ -75,7 +75,7 @@ public final class Bootstrap implements Stakeholder {
         final Roles roles = new Roles(this.project);
         roles.bootstrap();
         final String role = "PO";
-        if (roles.hasRole(this.person.name(), role)) {
+        if (roles.hasRole(this.person.uid(), role)) {
             this.person.say(
                 String.join(
                     " ",
@@ -85,13 +85,13 @@ public final class Bootstrap implements Stakeholder {
                 )
             );
         } else {
-            roles.assign(this.person.name(), role);
+            roles.assign(this.person.uid(), role);
             this.person.say(
                 String.join(
                     " ",
                     "I'm ready to manage a project.",
                     "When you're ready, you can start giving me instructions,",
-                    "always prefixing your messages with my name.",
+                    "always prefixing your messages with my uid.",
                     "If you need help, start here:",
                     "http://www.0crat.com/help.html"
                 )

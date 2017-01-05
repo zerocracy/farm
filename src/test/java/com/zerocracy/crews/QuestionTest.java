@@ -35,10 +35,10 @@ public final class QuestionTest {
     @Test
     public void fetchesArguments() throws Exception {
         final Question question = new Question(
-            "@0crat assign name is `github:yegor256`, role=`PO`"
+            "@0crat assign uid is `github:yegor256`, role=`PO`"
         );
         MatcherAssert.assertThat(
-            question.arg("name"),
+            question.arg("uid"),
             Matchers.equalTo("github:yegor256")
         );
         MatcherAssert.assertThat(
