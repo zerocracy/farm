@@ -21,6 +21,7 @@ import com.jcabi.s3.mock.MkBucket;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.Person;
 import com.zerocracy.pm.hr.Roles;
+import com.zerocracy.pmo.Catalog;
 import java.nio.file.Files;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -51,6 +52,28 @@ public final class S3ProjectTest {
         new Roles(project).assign(person, role);
         MatcherAssert.assertThat(
             new Roles(project).hasRole(person, role),
+            Matchers.is(true)
+        );
+    }
+
+    /**
+     * S3Project can fetch a catalog.
+     * @throws Exception If some problem inside
+     */
+    @Test
+    public void fetchesCatalog() throws Exception {
+        final Bucket bucket = new MkBucket(
+            Files.createTempDirectory("").toFile(),
+            "some-bucket-2"
+        );
+        try (final Catalog catalog = new Catalog(
+            new S3Item(bucket.ocket("catalog.xml"))
+        )) {
+            catalog.bootstrap();
+        }
+        final Project project = new S3Project(bucket, "2016/12/YTRIUOURE");
+        MatcherAssert.assertThat(
+            project.acq("../catalog.xml").path().toFile().exists(),
             Matchers.is(true)
         );
     }

@@ -56,7 +56,7 @@ final class S3Project implements Project {
         if ("../catalog.xml".equals(file)) {
             item = new CatalogItem(
                 new SyncItem(new S3Item(this.bucket.ocket("catalog.xml"))),
-                String.format("/catalog/project[prefix!=%s]", this.prefix)
+                String.format("/catalog/project[prefix!='%s']", this.prefix)
             );
         } else if (file.startsWith("../")) {
             item = new SyncItem(
