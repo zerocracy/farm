@@ -72,7 +72,7 @@ public final class PingTest {
      */
     @Test
     public void rendersAllPossibleUrls() throws Exception {
-        final Take take = new TkApp();
+        final Take take = new TkApp("0.1");
         MatcherAssert.assertThat(
             this.url,
             take.act(new RqFake("INFO", this.url)),

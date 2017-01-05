@@ -43,7 +43,7 @@ public final class TkAppTest {
      */
     @Test
     public void rendersHomePage() throws Exception {
-        final Take take = new TkApp();
+        final Take take = new TkApp("0.1");
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
                 new RsPrint(
@@ -69,7 +69,7 @@ public final class TkAppTest {
      */
     @Test
     public void rendersHomePageViaHttp() throws Exception {
-        final Take app = new TkApp();
+        final Take app = new TkApp("0.2");
         new FtRemote(app).exec(
             home -> new JdkRequest(home)
                 .fetch()
