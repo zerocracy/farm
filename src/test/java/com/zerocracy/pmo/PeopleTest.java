@@ -16,31 +16,33 @@
  */
 package com.zerocracy.pmo;
 
-import com.zerocracy.jstk.fake.FkItem;
+import com.zerocracy.jstk.fake.FkProject;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
- * Test case for {@link Catalog}.
+ * Test case for {@link People}.
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class CatalogTest {
+public final class PeopleTest {
 
     /**
-     * Adds and finds projects.
+     * Adds and finds people.
      * @throws Exception If some problem inside
      */
     @Test
-    public void addsAndFindsProjects() throws Exception {
-        final Catalog catalog = new Catalog(new FkItem());
-        catalog.bootstrap();
-        final String pid = "67WE3343P";
-        catalog.add(pid);
+    public void addsAndFindsPeople() throws Exception {
+        final People people = new People(new FkProject());
+        people.bootstrap();
+        final String uid = "U67WE3343P";
+        final String rel = "github";
+        final String alias = "yegor256";
+        people.link(uid, rel, alias);
         MatcherAssert.assertThat(
-            catalog.findByXPath("@id='67WE3343P'"),
+            people.find(rel, alias),
             Matchers.not(Matchers.emptyIterable())
         );
     }

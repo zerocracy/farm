@@ -23,7 +23,6 @@ import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pmo.Catalog;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -72,7 +71,7 @@ final class S3Farm implements Farm {
         final Collection<Project> list = new LinkedList<>();
         if ("id".equals(matcher.group(1))) {
             final String pid = matcher.group(2);
-            list.addAll(this.findByXPath(String.format("id = '%s'", pid)));
+            list.addAll(this.findByXPath(String.format("@id = '%s'", pid)));
             if (list.isEmpty()) {
                 list.add(this.bootstrap(pid));
             }
@@ -125,7 +124,7 @@ final class S3Farm implements Farm {
      */
     private Project bootstrap(final String pid) throws IOException {
         try (final Catalog catalog = this.catalog()) {
-            catalog.add(pid, S3Farm.prefix(pid));
+            catalog.add(pid);
         }
         return this.find(String.format("id=%s", pid)).iterator().next();
     }
@@ -141,19 +140,6 @@ final class S3Farm implements Farm {
         );
         catalog.bootstrap();
         return catalog;
-    }
-
-    /**
-     * Create prefix from PID.
-     * @param pid Project ID
-     * @return Prefix to use
-     */
-    private static String prefix(final String pid) {
-        return String.format(
-            "%tY/%1$tm/%s/",
-            new Date(),
-            pid
-        );
     }
 
 }

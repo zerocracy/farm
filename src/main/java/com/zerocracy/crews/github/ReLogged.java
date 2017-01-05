@@ -28,7 +28,7 @@ import javax.json.JsonObject;
  * @version $Id$
  * @since 0.1
  */
-public final class ReLogged implements Reaction {
+final class ReLogged implements Reaction {
 
     /**
      * Reaction.
@@ -39,7 +39,7 @@ public final class ReLogged implements Reaction {
      * Ctor.
      * @param rtn Reaction
      */
-    public ReLogged(final Reaction rtn) {
+    ReLogged(final Reaction rtn) {
         this.reaction = rtn;
     }
 

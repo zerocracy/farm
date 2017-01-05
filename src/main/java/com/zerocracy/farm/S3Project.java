@@ -16,6 +16,7 @@
  */
 package com.zerocracy.farm;
 
+import com.jcabi.aspects.Tv;
 import com.jcabi.s3.Bucket;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
@@ -55,7 +56,13 @@ final class S3Project implements Project {
         if ("../catalog.xml".equals(file)) {
             item = new CatalogItem(
                 new SyncItem(new S3Item(this.bucket.ocket("catalog.xml"))),
-                this.prefix
+                String.format("/catalog/project[prefix!=%s]", this.prefix)
+            );
+        } else if (file.startsWith("../")) {
+            item = new SyncItem(
+                new S3Item(
+                    this.bucket.ocket(file.substring(Tv.THREE))
+                )
             );
         } else {
             item = new SyncItem(

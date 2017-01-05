@@ -32,7 +32,10 @@ final class ReHello implements Reply {
     @Override
     public void react(final Farm farm, final Comment.Smart comment)
         throws IOException {
-        new GhPerson(comment).say("hey, what's up?");
+        new GhPerson(
+            new GhProject(farm, comment),
+            comment
+        ).say("hey, what's up?");
     }
 
 }

@@ -40,15 +40,17 @@ public final class CatalogItemTest {
     @Test
     public void modifiesProject() throws Exception {
         final Item item = new FkItem();
-        final Catalog catalog = new Catalog(item);
-        catalog.bootstrap();
-        catalog.add("34EA54SW9", "2017/01/34EA54SW9/");
-        catalog.add("34EA54S87", "2017/01/34EA54S87/");
-        final String pfx = "2017/01/34EA54SZZ/";
-        catalog.add("34EA54SZZ", pfx);
-        final String prefix = "2017/01/44EAFFPW3/";
-        catalog.add("44EAFFPW3", prefix);
-        try (final Item citem = new CatalogItem(item, prefix)) {
+        final String pid = "34EA54SZZ";
+        try (final Catalog catalog = new Catalog(item)) {
+            catalog.bootstrap();
+            catalog.add("34EA54SW9");
+            catalog.add("34EA54S87");
+            catalog.add(pid);
+            catalog.add("34EA54S8F");
+        }
+        try (final Item citem = new CatalogItem(
+            item, String.format("//project[@id!='%s']", pid)
+        )) {
             new Xocument(citem.path()).modify(
                 new Directives()
                     .xpath("/catalog/project")
@@ -57,7 +59,9 @@ public final class CatalogItemTest {
                     .attr("href", "yegor256/pdd")
             );
         }
-        try (final Item citem = new CatalogItem(item, prefix)) {
+        try (final Item citem = new CatalogItem(
+            item, String.format("//project[@id!='%s' ]", pid)
+        )) {
             MatcherAssert.assertThat(
                 new Xocument(citem.path()).xpath(
                     "//project/link[@rel]/@href"
@@ -65,14 +69,12 @@ public final class CatalogItemTest {
                 Matchers.not(Matchers.emptyIterable())
             );
         }
-        try (final Item citem = new CatalogItem(item, pfx)) {
-            MatcherAssert.assertThat(
-                new Xocument(citem.path()).xpath(
-                    "//project[not(link)]/id/text()"
-                ),
-                Matchers.not(Matchers.emptyIterable())
-            );
-        }
+        MatcherAssert.assertThat(
+            new Xocument(item.path()).xpath(
+                "//project[not(link)]/@id"
+            ),
+            Matchers.not(Matchers.emptyIterable())
+        );
     }
 
 }

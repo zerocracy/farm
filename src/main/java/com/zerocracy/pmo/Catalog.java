@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
+import java.util.Date;
 import org.xembly.Directives;
 
 /**
@@ -63,31 +64,44 @@ public final class Catalog implements Closeable {
     /**
      * Create a project with the given ID.
      * @param pid Project ID
-     * @param prefix Prefix
      * @throws IOException If fails
      */
-    public void add(final String pid, final String prefix) throws IOException {
+    public void add(final String pid) throws IOException {
         new Xocument(this.item.path()).modify(
             new Directives()
-                .xpath("/catalog").add("project")
-                .add("id").set(pid).up()
+                .xpath("/catalog")
+                .add("project")
+                .attr("id", pid)
                 .add("created")
                 .set(ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT))
                 .up()
-                .add("prefix").set(prefix)
+                .add("prefix").set(Catalog.prefix(pid))
         );
     }
 
     /**
      * Find a project by XPath query.
      * @param query XPath query
-     * @return Prefixes found, if found
+     * @return PIDs found, if found
      * @throws IOException If fails
      */
     public Collection<String> findByXPath(final String query)
         throws IOException {
         return new Xocument(this.item).xpath(
             String.format("//project[%s]/prefix/text()", query)
+        );
+    }
+
+    /**
+     * Create prefix from PID.
+     * @param pid Project ID
+     * @return Prefix to use
+     */
+    private static String prefix(final String pid) {
+        return String.format(
+            "%tY/%1$tm/%s/",
+            new Date(),
+            pid
         );
     }
 

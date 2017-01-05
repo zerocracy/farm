@@ -20,7 +20,7 @@
     <xsl:output method="xml"/>
     <xsl:param name="path"/>
     <xsl:variable name="after" select="document($path)/catalog/project"/>
-    <xsl:template match="project[$after/id=id]">
+    <xsl:template match="project[$after/@id=@id]">
         <xsl:copy-of select="$after"/>
     </xsl:template>
     <xsl:template match="node()|@*">

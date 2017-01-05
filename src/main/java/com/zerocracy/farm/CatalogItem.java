@@ -50,9 +50,9 @@ final class CatalogItem implements Item {
     private final Item item;
 
     /**
-     * Prefix in catalog.
+     * XPath query.
      */
-    private final String prefix;
+    private final String xpath;
 
     /**
      * Temp catalog.
@@ -62,11 +62,11 @@ final class CatalogItem implements Item {
     /**
      * Ctor.
      * @param itm Item
-     * @param pfx Prefix
+     * @param path XPath of projects to DELETE
      */
-    CatalogItem(final Item itm, final String pfx) {
+    CatalogItem(final Item itm, final String path) {
         this.item = itm;
-        this.prefix = pfx;
+        this.xpath = path;
         this.temp = new S3Item(new Ocket.Empty());
     }
 
@@ -79,9 +79,7 @@ final class CatalogItem implements Item {
                 StandardCopyOption.REPLACE_EXISTING
             );
             new Xocument(path).modify(
-                new Directives().xpath(
-                    String.format("/catalog/project[prefix!='%s']", this.prefix)
-                ).remove()
+                new Directives().xpath(this.xpath).remove()
             );
         }
         return path;
