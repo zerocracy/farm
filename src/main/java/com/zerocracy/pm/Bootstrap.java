@@ -18,6 +18,7 @@ package com.zerocracy.pm;
 
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
+import com.zerocracy.pm.hr.People;
 import com.zerocracy.pm.hr.Roles;
 import com.zerocracy.pm.scope.Wbs;
 import java.io.IOException;
@@ -53,7 +54,24 @@ public final class Bootstrap implements Stakeholder {
 
     @Override
     public void work() throws IOException {
+        this.scope();
+        this.staff();
+    }
+
+    /**
+     * Bootstrap Scope.
+     * @throws IOException If fails
+     */
+    private void scope() throws IOException {
         new Wbs(this.project).bootstrap();
+    }
+
+    /**
+     * Bootstrap HR.
+     * @throws IOException If fails
+     */
+    private void staff() throws IOException {
+        new People(this.project).bootstrap();
         final Roles roles = new Roles(this.project);
         roles.bootstrap();
         final String role = "PO";
