@@ -18,13 +18,11 @@ package com.zerocracy.crews.slack;
 
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
-import com.zerocracy.StkByRoles;
 import com.zerocracy.crews.Question;
 import com.zerocracy.crews.StkSafe;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.pmo.Alias;
 import java.io.IOException;
-import java.util.Arrays;
 
 /**
  * Add an alias to the user.
@@ -41,16 +39,11 @@ final class ReAlias implements Reaction<SlackMessagePosted> {
         farm.deploy(
             new StkSafe(
                 new SkPerson(event, session),
-                new StkByRoles(
-                    new SkProject(farm, event),
+                new Alias(
+                    farm.find("@id='PMO'").iterator().next(),
                     new SkPerson(event, session),
-                    Arrays.asList("PO"),
-                    new Alias(
-                        farm.find("@id='PMO'").iterator().next(),
-                        new SkPerson(event, session),
-                        new Question(event.getMessageContent()).arg("rel"),
-                        new Question(event.getMessageContent()).arg("href")
-                    )
+                    new Question(event.getMessageContent()).arg("rel"),
+                    new Question(event.getMessageContent()).arg("href")
                 )
             )
         );
