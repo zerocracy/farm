@@ -20,7 +20,6 @@ import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.hr.Roles;
 import com.zerocracy.pm.scope.Wbs;
-import com.zerocracy.pmo.People;
 import java.io.IOException;
 
 /**
@@ -71,7 +70,6 @@ public final class Bootstrap implements Stakeholder {
      * @throws IOException If fails
      */
     private void staff() throws IOException {
-        new People(this.project).bootstrap();
         final Roles roles = new Roles(this.project);
         roles.bootstrap();
         final String role = "PO";
