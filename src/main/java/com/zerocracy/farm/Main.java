@@ -87,7 +87,7 @@ public final class Main {
                 )
             ),
             new SkCrew(props.getProperty("slack.0crat.key"))
-        );
+        ).start();
         new FtCli(
             new TkApp(props.getProperty("version")),
             this.arguments

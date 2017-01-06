@@ -16,12 +16,14 @@
  */
 package com.zerocracy.farm;
 
-import com.jcabi.aspects.ScheduleWithFixedDelay;
 import com.jcabi.log.Logger;
+import com.jcabi.log.VerboseThreads;
 import com.zerocracy.jstk.Crew;
 import com.zerocracy.jstk.Farm;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -31,8 +33,12 @@ import java.util.concurrent.TimeUnit;
  * @version $Id$
  * @since 0.1
  */
-@ScheduleWithFixedDelay(delay = 1, unit = TimeUnit.MINUTES)
 final class Routine implements Runnable {
+
+    /**
+     * Service.
+     */
+    private final ScheduledExecutorService service;
 
     /**
      * Crews.
@@ -58,6 +64,18 @@ final class Routine implements Runnable {
         this.crews = Arrays.asList(crws);
         this.farm = frm;
         this.started = System.currentTimeMillis();
+        this.service = Executors.newScheduledThreadPool(
+            1, new VerboseThreads()
+        );
+    }
+
+    /**
+     * Start it.
+     */
+    public void start() {
+        this.service.scheduleWithFixedDelay(
+            this, 0L, 1L, TimeUnit.MINUTES
+        );
     }
 
     @Override
