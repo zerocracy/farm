@@ -43,6 +43,11 @@ import org.xembly.Directives;
 public final class S3Farm implements Farm {
 
     /**
+     * PMO project name.
+     */
+    private static final String PMO = "PMO";
+
+    /**
      * S3 bucket.
      */
     private final Bucket bucket;
@@ -129,7 +134,11 @@ public final class S3Farm implements Farm {
      * @return Item
      */
     private Item item() {
-        return new S3Item(this.bucket.ocket("catalog.xml"));
+        return new S3Item(
+            this.bucket.ocket(
+                String.format("%scatalog.xml", S3Farm.prefix(S3Farm.PMO))
+            )
+        );
     }
 
     /**
@@ -138,11 +147,17 @@ public final class S3Farm implements Farm {
      * @return Prefix to use
      */
     private static String prefix(final String pid) {
-        return String.format(
-            "%tY/%1$tm/%s/",
-            new Date(),
-            pid
-        );
+        final String prefix;
+        if (S3Farm.PMO.equals(pid)) {
+            prefix = "PMO/";
+        } else {
+            prefix = String.format(
+                "%tY/%1$tm/%s/",
+                new Date(),
+                pid
+            );
+        }
+        return prefix;
     }
 
 }
