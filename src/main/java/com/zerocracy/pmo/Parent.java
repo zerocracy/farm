@@ -14,59 +14,66 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.farm;
+package com.zerocracy.pmo;
 
-import com.jcabi.log.VerboseThreads;
-import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
+import com.zerocracy.pm.Person;
 import java.io.IOException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
- * Asynchronous farm.
+ * Set father project.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-final class AsyncFarm implements Farm {
+public final class Parent implements Stakeholder {
 
     /**
-     * Original farm.
+     * Project.
      */
-    private final Farm origin;
+    private final Project project;
 
     /**
-     * Service.
+     * Person.
      */
-    private final ExecutorService service;
+    private final Person person;
+
+    /**
+     * Kid ID to set.
+     */
+    private final String kid;
+
+    /**
+     * Parent ID to set.
+     */
+    private final String father;
 
     /**
      * Ctor.
-     * @param farm Original farm
+     * @param pkt Project
+     * @param prn Person
+     * @param kpid Kid PID
+     * @param pkid Parent ID to set
+     * @checkstyle ParameterNumberCheck (5 lines)
      */
-    AsyncFarm(final Farm farm) {
-        this.origin = farm;
-        this.service = Executors.newFixedThreadPool(
-            Runtime.getRuntime().availableProcessors() << 2,
-            new VerboseThreads(AsyncFarm.class)
-        );
+    public Parent(final Project pkt, final Person prn, final String kpid,
+        final String pkid) {
+        this.project = pkt;
+        this.person = prn;
+        this.kid = kpid;
+        this.father = pkid;
     }
 
     @Override
-    public Iterable<Project> find(final String query) throws IOException {
-        return this.origin.find(query);
-    }
-
-    @Override
-    public void deploy(final Stakeholder stakeholder) {
-        this.service.submit(
-            () -> {
-                this.origin.deploy(stakeholder);
-                return null;
-            }
+    public void work() throws IOException {
+        new Catalog(this.project).parent(this.kid, this.father);
+        this.person.say(
+            String.format(
+                "Done, project `%s` is a child of `%s`",
+                this.kid, this.father
+            )
         );
     }
 }

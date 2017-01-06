@@ -18,9 +18,9 @@ package com.zerocracy.crews.github;
 
 import com.jcabi.github.Comment;
 import com.zerocracy.crews.SoftException;
-import com.zerocracy.jstk.Project;
+import com.zerocracy.jstk.Farm;
 import com.zerocracy.pm.Person;
-import com.zerocracy.pm.hr.People;
+import com.zerocracy.pmo.People;
 import java.io.IOException;
 import java.util.Iterator;
 
@@ -34,9 +34,9 @@ import java.util.Iterator;
 final class GhPerson implements Person {
 
     /**
-     * Project.
+     * Farm.
      */
-    private final Project project;
+    private final Farm farm;
 
     /**
      * Comment.
@@ -45,17 +45,20 @@ final class GhPerson implements Person {
 
     /**
      * Ctor.
-     * @param pkt Project
+     * @param frm Farm
      * @param cmt Comment
      */
-    GhPerson(final Project pkt, final Comment cmt) {
-        this.project = pkt;
+    GhPerson(final Farm frm, final Comment cmt) {
+        this.farm = frm;
         this.comment = cmt;
     }
 
     @Override
     public String uid() throws IOException {
-        final Iterator<String> list = new People(this.project).find(
+        final People people = new People(
+            this.farm.find("@id='PMO'").iterator().next()
+        );
+        final Iterator<String> list = people.find(
             "github", new Comment.Smart(this.comment).author().login()
         ).iterator();
         if (!list.hasNext()) {

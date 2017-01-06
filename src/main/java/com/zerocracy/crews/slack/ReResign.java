@@ -18,10 +18,10 @@ package com.zerocracy.crews.slack;
 
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
+import com.zerocracy.StkByRoles;
 import com.zerocracy.crews.Question;
 import com.zerocracy.crews.StkSafe;
 import com.zerocracy.jstk.Farm;
-import com.zerocracy.pm.StkByRoles;
 import com.zerocracy.pm.scope.Resign;
 import java.io.IOException;
 import java.util.Arrays;

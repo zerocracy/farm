@@ -16,10 +16,17 @@
  */
 package com.zerocracy.pmo;
 
-import com.zerocracy.jstk.fake.FkItem;
+import com.zerocracy.Xocument;
+import com.zerocracy.jstk.Item;
+import com.zerocracy.jstk.Project;
+import com.zerocracy.jstk.fake.FkProject;
+import java.io.IOException;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.xembly.Directives;
 
 /**
  * Test case for {@link Catalog}.
@@ -35,14 +42,43 @@ public final class CatalogTest {
      */
     @Test
     public void addsAndFindsProjects() throws Exception {
-        final Catalog catalog = new Catalog(new FkItem());
-        catalog.bootstrap();
+        final Project project = new FkProject();
         final String pid = "67WE3343P";
-        catalog.add(pid);
-        MatcherAssert.assertThat(
-            catalog.findByXPath("@id='67WE3343P'"),
-            Matchers.not(Matchers.emptyIterable())
-        );
+        try (final Item item = CatalogTest.item(project)) {
+            new Xocument(item.path()).bootstrap("catalog", "pmo/catalog");
+            new Xocument(item.path()).modify(
+                new Directives()
+                    .xpath("/catalog")
+                    .add("project")
+                    .attr("id", pid)
+                    .add("created")
+                    .set(
+                        ZonedDateTime.now().format(
+                            DateTimeFormatter.ISO_INSTANT
+                        )
+                    )
+                    .up()
+                    .add("prefix").set("2017/01/AAAABBBBC/")
+            );
+        }
+        final Catalog catalog = new Catalog(project);
+        catalog.link(pid, "github", "yegor256");
+        try (final Item item = CatalogTest.item(project)) {
+            MatcherAssert.assertThat(
+                new Xocument(item.path()).xpath("//project[links/link]/@id"),
+                Matchers.not(Matchers.emptyIterable())
+            );
+        }
+    }
+
+    /**
+     * Get an item.
+     * @param project Project
+     * @return Item
+     * @throws IOException If fails
+     */
+    private static Item item(final Project project) throws IOException {
+        return project.acq("catalog.xml");
     }
 
 }

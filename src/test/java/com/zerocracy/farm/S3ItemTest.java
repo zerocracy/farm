@@ -18,9 +18,9 @@ package com.zerocracy.farm;
 
 import com.jcabi.s3.Ocket;
 import com.jcabi.s3.mock.MkOcket;
+import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.pm.Person;
-import com.zerocracy.pm.Xocument;
 import java.nio.file.Files;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;

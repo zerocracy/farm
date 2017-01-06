@@ -74,7 +74,7 @@ public final class SkProject implements Project {
     private Project project() throws IOException {
         return this.farm.find(
             String.format(
-                "id=%s",
+                "@id='%s'",
                 this.channel.getId()
             )
         ).iterator().next();

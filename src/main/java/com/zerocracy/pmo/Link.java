@@ -14,13 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pm;
+package com.zerocracy.pmo;
 
-import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
+import com.zerocracy.pm.Person;
 import java.io.IOException;
-import org.xembly.Directives;
 
 /**
  * Attach a resource to the project.
@@ -42,6 +41,11 @@ public final class Link implements Stakeholder {
     private final Person person;
 
     /**
+     * PID.
+     */
+    private final String pid;
+
+    /**
      * LINK rel.
      */
     private final String rel;
@@ -53,36 +57,29 @@ public final class Link implements Stakeholder {
 
     /**
      * Ctor.
-     * @param pkt Project
+     * @param pmo Project
      * @param prn Person
+     * @param pkt Project ID
      * @param ref Reference
      * @param hrf HREF
      * @checkstyle ParameterNumberCheck (5 lines)
      */
-    public Link(final Project pkt, final Person prn, final String ref,
-        final String hrf) {
-        this.project = pkt;
+    public Link(final Project pmo, final Person prn, final String pkt,
+        final String ref, final String hrf) {
+        this.project = pmo;
         this.person = prn;
+        this.pid = pkt;
         this.rel = ref;
         this.href = hrf;
     }
 
     @Override
     public void work() throws IOException {
-        try (final Item item = this.project.acq("../catalog.xml")) {
-            new Xocument(item.path()).modify(
-                new Directives()
-                    .xpath("/catalog/project")
-                    .addIf("links")
-                    .add("link")
-                    .attr("rel", this.rel)
-                    .attr("href", this.href)
-            );
-        }
+        new Catalog(this.project).link(this.pid, this.rel, this.href);
         this.person.say(
             String.format(
-                "Done, the project is linked with rel=`%s` and href=`%s`",
-                this.rel, this.href
+                "Done, project `%s` is linked with rel=`%s` and href=`%s`",
+                this.pid, this.rel, this.href
             )
         );
     }

@@ -18,9 +18,9 @@ package com.zerocracy.pm.hr;
 
 import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSLDocument;
+import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
-import com.zerocracy.pm.Xocument;
 import java.io.IOException;
 import org.xembly.Directives;
 

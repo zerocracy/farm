@@ -53,8 +53,8 @@ public final class S3FarmTest {
             "some-bucket"
         );
         final Farm farm = new S3Farm(bucket);
-        farm.find("id = ABCDEF123").iterator().next();
-        final Project project = farm.find("id=ABCDEF123").iterator().next();
+        farm.find("@id = 'ABCDEF123'").iterator().next();
+        final Project project = farm.find("@id='ABCDEF123'").iterator().next();
         final Item item = project.acq("test");
         MatcherAssert.assertThat(
             item.path().toFile().exists(),
@@ -79,7 +79,7 @@ public final class S3FarmTest {
             "the-bucket-3"
         );
         final Farm farm = new S3Farm(bucket);
-        final Project project = farm.find("id=ABCR2FE03").iterator().next();
+        final Project project = farm.find("@id='ABCR2FE03'").iterator().next();
         new Roles(project).bootstrap();
         final Roles roles = new Roles(project);
         for (int idx = 0; idx < Tv.TEN; ++idx) {
@@ -104,7 +104,7 @@ public final class S3FarmTest {
             "the-bucket"
         );
         final Farm farm = new S3Farm(bucket);
-        final Project project = farm.find("id=ABCZZFE03").iterator().next();
+        final Project project = farm.find("@id='ABCZZFE03'").iterator().next();
         new Roles(project).bootstrap();
         final int threads = Runtime.getRuntime().availableProcessors() << 2;
         final ExecutorService service = Executors.newFixedThreadPool(threads);

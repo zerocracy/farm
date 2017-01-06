@@ -17,16 +17,20 @@
 package com.zerocracy.farm;
 
 import com.jcabi.s3.Bucket;
+import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Farm;
+import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
-import com.zerocracy.pmo.Catalog;
 import java.io.IOException;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
-import java.util.LinkedList;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import org.xembly.Directives;
 
 /**
  * Farm in S3.
@@ -36,14 +40,7 @@ import java.util.stream.Collectors;
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-final class S3Farm implements Farm {
-
-    /**
-     * Query pattern.
-     */
-    private static final Pattern QUERY = Pattern.compile(
-        "|\\s*([a-z.]+)\\s*=\\s*([^\\s]+)\\s*"
-    );
+public final class S3Farm implements Farm {
 
     /**
      * S3 bucket.
@@ -54,40 +51,33 @@ final class S3Farm implements Farm {
      * Ctor.
      * @param bkt Bucket
      */
-    S3Farm(final Bucket bkt) {
+    public S3Farm(final Bucket bkt) {
         this.bucket = bkt;
     }
 
     @Override
-    public Iterable<Project> find(final String query) throws IOException {
-        final Matcher matcher = S3Farm.QUERY.matcher(query);
-        if (!matcher.matches()) {
-            throw new IllegalArgumentException(
-                String.format(
-                    "Can't understand you: \"%s\"", query
-                )
-            );
+    public Iterable<Project> find(final String xpath) throws IOException {
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).bootstrap("catalog", "pmo/catalog");
         }
-        final Collection<Project> list = new LinkedList<>();
-        if ("id".equals(matcher.group(1))) {
-            final String pid = matcher.group(2);
-            list.addAll(this.findByXPath(String.format("@id = '%s'", pid)));
-            if (list.isEmpty()) {
-                list.add(this.bootstrap(pid));
+        Iterable<Project> projects = this.findByXPath(xpath)
+            .stream()
+            .map(
+                prefix -> new SyncProject(
+                    new S3Project(this.bucket, prefix)
+                )
+            )
+            .collect(Collectors.toList());
+        if (!projects.iterator().hasNext()) {
+            final Matcher matcher = Pattern.compile(
+                "\\s*@id\\s*=\\s*'([^']+)'\\s*"
+            ).matcher(xpath);
+            if (matcher.matches()) {
+                this.add(matcher.group(1));
+                projects = this.find(xpath);
             }
-        } else if ("link.github".equals(matcher.group(1))) {
-            list.addAll(
-                this.findByXPath(
-                    String.format(
-                        "link[@rel='github' and @href='%s']",
-                        matcher.group(2)
-                    )
-                )
-            );
-        } else if (query.isEmpty()) {
-            list.addAll(this.findByXPath(""));
         }
-        return list;
+        return projects;
     }
 
     @Override
@@ -96,50 +86,63 @@ final class S3Farm implements Farm {
     }
 
     /**
-     * Find a project by XPath query.
-     * @param query XPath query
-     * @return Projects found, if found
-     * @throws IOException If fails
-     */
-    private Collection<Project> findByXPath(final String query)
-        throws IOException {
-        try (final Catalog catalog = this.catalog()) {
-            return catalog
-                .findByXPath(query)
-                .stream()
-                .map(
-                    prefix -> new SyncProject(
-                        new S3Project(this.bucket, prefix)
-                    )
-                )
-                .collect(Collectors.toList());
-        }
-    }
-
-    /**
      * Create a project with the given ID.
      * @param pid Project ID
-     * @return Projects found, if found
      * @throws IOException If fails
      */
-    private Project bootstrap(final String pid) throws IOException {
-        try (final Catalog catalog = this.catalog()) {
-            catalog.add(pid);
+    private void add(final String pid) throws IOException {
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                new Directives()
+                    .xpath("/catalog")
+                    .add("project")
+                    .attr("id", pid)
+                    .add("created")
+                    .set(
+                        ZonedDateTime.now().format(
+                            DateTimeFormatter.ISO_INSTANT
+                        )
+                    )
+                    .up()
+                    .add("prefix").set(S3Farm.prefix(pid))
+            );
         }
-        return this.find(String.format("id=%s", pid)).iterator().next();
     }
 
     /**
-     * Make a catalog.
-     * @return Catalog
+     * Find a project by XPath query.
+     * @param xpath XPath query
+     * @return Prefixes found, if found
      * @throws IOException If fails
      */
-    private Catalog catalog() throws IOException {
-        final Catalog catalog = new Catalog(
-            new S3Item(this.bucket.ocket("catalog.xml"))
+    private Collection<String> findByXPath(final String xpath)
+        throws IOException {
+        try (final Item item = this.item()) {
+            return new Xocument(item).xpath(
+                String.format("//project[%s]/prefix/text()", xpath)
+            );
+        }
+    }
+
+    /**
+     * The item.
+     * @return Item
+     */
+    private Item item() {
+        return new S3Item(this.bucket.ocket("catalog.xml"));
+    }
+
+    /**
+     * Create prefix from PID.
+     * @param pid Project ID
+     * @return Prefix to use
+     */
+    private static String prefix(final String pid) {
+        return String.format(
+            "%tY/%1$tm/%s/",
+            new Date(),
+            pid
         );
-        catalog.bootstrap();
-        return catalog;
     }
 
 }

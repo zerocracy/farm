@@ -33,7 +33,7 @@ final class ReSorry implements Reply {
     public void react(final Farm farm, final Comment.Smart comment)
         throws IOException {
         new GhPerson(
-            new GhProject(farm, comment),
+            farm,
             comment
         ).say("I'm sorry, I didn't understand you.");
     }

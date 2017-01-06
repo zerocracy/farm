@@ -22,18 +22,18 @@ import com.zerocracy.StkByRoles;
 import com.zerocracy.crews.Question;
 import com.zerocracy.crews.StkSafe;
 import com.zerocracy.jstk.Farm;
-import com.zerocracy.pm.scope.Assign;
+import com.zerocracy.pmo.Parent;
 import java.io.IOException;
 import java.util.Arrays;
 
 /**
- * Assign role to a person.
+ * Set parent.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-final class ReAssign implements Reaction<SlackMessagePosted> {
+final class ReParent implements Reaction<SlackMessagePosted> {
 
     @Override
     public boolean react(final Farm farm, final SlackMessagePosted event,
@@ -45,11 +45,11 @@ final class ReAssign implements Reaction<SlackMessagePosted> {
                     new SkProject(farm, event),
                     new SkPerson(event, session),
                     Arrays.asList("PO"),
-                    new Assign(
-                        new SkProject(farm, event),
+                    new Parent(
+                        farm.find("@id='PMO'").iterator().next(),
                         new SkPerson(event, session),
-                        new Question(event.getMessageContent()).arg("role"),
-                        new Question(event.getMessageContent()).arg("uid")
+                        event.getChannel().getId(),
+                        new Question(event.getMessageContent()).arg("pid")
                     )
                 )
             )

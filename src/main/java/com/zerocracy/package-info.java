@@ -14,52 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.farm;
-
-import com.jcabi.s3.Bucket;
-import com.zerocracy.jstk.Item;
-import com.zerocracy.jstk.Project;
 
 /**
- * Project in S3.
+ * Zerocracy.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-final class S3Project implements Project {
-
-    /**
-     * S3 bucket.
-     */
-    private final Bucket bucket;
-
-    /**
-     * Path in the bucket.
-     */
-    private final String prefix;
-
-    /**
-     * Ctor.
-     * @param bkt Bucket
-     * @param pfx Prefix
-     */
-    S3Project(final Bucket bkt, final String pfx) {
-        this.bucket = bkt;
-        this.prefix = pfx;
-    }
-
-    @Override
-    public Item acq(final String file) {
-        return new SyncItem(
-            new S3Item(
-                this.bucket.ocket(
-                    String.format(
-                        "%s%s", this.prefix, file
-                    )
-                )
-            )
-        );
-    }
-
-}
+package com.zerocracy;

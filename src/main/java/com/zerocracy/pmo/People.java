@@ -14,11 +14,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pm.hr;
+package com.zerocracy.pmo;
 
+import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
-import com.zerocracy.pm.Xocument;
 import java.io.IOException;
 import org.xembly.Directives;
 
@@ -50,7 +50,7 @@ public final class People {
      */
     public void bootstrap() throws IOException {
         try (final Item item = this.item()) {
-            new Xocument(item.path()).bootstrap("people", "pm/hr/people");
+            new Xocument(item.path()).bootstrap("people", "pmo/people");
         }
     }
 

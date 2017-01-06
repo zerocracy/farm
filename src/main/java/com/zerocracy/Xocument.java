@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pm;
+package com.zerocracy;
 
 import com.jcabi.xml.StrictXML;
 import com.jcabi.xml.XML;
@@ -43,7 +43,7 @@ public final class Xocument {
     /**
      * Current DATUM version.
      */
-    private static final String VERSION = "0.6";
+    private static final String VERSION = "0.7";
 
     /**
      * File.

@@ -18,11 +18,11 @@ package com.zerocracy.crews.slack;
 
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
+import com.zerocracy.StkByRoles;
 import com.zerocracy.crews.Question;
 import com.zerocracy.crews.StkSafe;
 import com.zerocracy.jstk.Farm;
-import com.zerocracy.pm.Link;
-import com.zerocracy.pm.StkByRoles;
+import com.zerocracy.pmo.Link;
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -46,8 +46,9 @@ final class ReLink implements Reaction<SlackMessagePosted> {
                     new SkPerson(event, session),
                     Arrays.asList("PO"),
                     new Link(
-                        new SkProject(farm, event),
+                        farm.find("@id='PMO'").iterator().next(),
                         new SkPerson(event, session),
+                        event.getChannel().getId(),
                         new Question(event.getMessageContent()).arg("rel"),
                         new Question(event.getMessageContent()).arg("href")
                     )

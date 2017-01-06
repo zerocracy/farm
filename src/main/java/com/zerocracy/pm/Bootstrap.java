@@ -18,9 +18,9 @@ package com.zerocracy.pm;
 
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
-import com.zerocracy.pm.hr.People;
 import com.zerocracy.pm.hr.Roles;
 import com.zerocracy.pm.scope.Wbs;
+import com.zerocracy.pmo.People;
 import java.io.IOException;
 
 /**

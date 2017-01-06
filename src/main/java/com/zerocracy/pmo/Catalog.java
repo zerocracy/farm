@@ -16,14 +16,10 @@
  */
 package com.zerocracy.pmo;
 
+import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
-import com.zerocracy.pm.Xocument;
-import java.io.Closeable;
+import com.zerocracy.jstk.Project;
 import java.io.IOException;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Collection;
-import java.util.Date;
 import org.xembly.Directives;
 
 /**
@@ -33,77 +29,67 @@ import org.xembly.Directives;
  * @version $Id$
  * @since 0.1
  */
-public final class Catalog implements Closeable {
+public final class Catalog {
 
     /**
-     * Item.
+     * Project.
      */
-    private final Item item;
+    private final Project project;
 
     /**
      * Ctor.
-     * @param itm Item
+     * @param pkt Project
      */
-    public Catalog(final Item itm) {
-        this.item = itm;
-    }
-
-    @Override
-    public void close() throws IOException {
-        this.item.close();
+    public Catalog(final Project pkt) {
+        this.project = pkt;
     }
 
     /**
-     * Bootstrap it.
-     * @throws IOException If fails
-     */
-    public void bootstrap() throws IOException {
-        new Xocument(this.item.path()).bootstrap("catalog", "pmo/catalog");
-    }
-
-    /**
-     * Create a project with the given ID.
+     * Add a link to the project.
      * @param pid Project ID
+     * @param rel REL
+     * @param href HREF
      * @throws IOException If fails
      */
-    public void add(final String pid) throws IOException {
-        new Xocument(this.item.path()).modify(
-            new Directives()
-                .xpath("/catalog")
-                .add("project")
-                .attr("id", pid)
-                .add("parent").set("PMO").up()
-                .add("created")
-                .set(ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT))
-                .up()
-                .add("prefix").set(Catalog.prefix(pid))
-        );
-    }
-
-    /**
-     * Find a project by XPath query.
-     * @param query XPath query
-     * @return PIDs found, if found
-     * @throws IOException If fails
-     */
-    public Collection<String> findByXPath(final String query)
+    public void link(final String pid, final String rel, final String href)
         throws IOException {
-        return new Xocument(this.item).xpath(
-            String.format("//project[%s]/prefix/text()", query)
-        );
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                new Directives()
+                    .xpath(String.format("/catalog/project[@id='%s']", pid))
+                    .addIf("links")
+                    .add("link")
+                    .attr("rel", rel)
+                    .attr("href", href)
+            );
+        }
     }
 
     /**
-     * Create prefix from PID.
+     * Set a parent to the project.
      * @param pid Project ID
-     * @return Prefix to use
+     * @param parent Parent
+     * @throws IOException If fails
      */
-    private static String prefix(final String pid) {
-        return String.format(
-            "%tY/%1$tm/%s/",
-            new Date(),
-            pid
-        );
+    public void parent(final String pid, final String parent)
+        throws IOException {
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                new Directives()
+                    .xpath(String.format("/catalog/project[@id='%s' ]", pid))
+                    .addIf("parent")
+                    .set(parent)
+            );
+        }
+    }
+
+    /**
+     * The item.
+     * @return Item
+     * @throws IOException If fails
+     */
+    private Item item() throws IOException {
+        return this.project.acq("catalog.xml");
     }
 
 }
