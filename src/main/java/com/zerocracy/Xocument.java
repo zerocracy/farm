@@ -72,6 +72,9 @@ public final class Xocument {
      * @param root Root node uid
      * @param xsd Path of XSD
      * @throws IOException If fails
+     * @todo #9:30min Even if the document already exists, we must check
+     *  that it has the right URI of the XSD schema. The most important
+     *  thing is its version. If the URI is wrong, we must update it.
      */
     public void bootstrap(final String root, final String xsd)
         throws IOException {
