@@ -68,6 +68,7 @@ public final class Alias implements Stakeholder {
 
     @Override
     public void work() throws IOException {
+        new People(this.project).bootstrap();
         new People(this.project).link(this.person.uid(), this.rel, this.href);
         this.person.say(
             String.format(
