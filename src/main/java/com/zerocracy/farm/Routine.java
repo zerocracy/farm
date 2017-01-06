@@ -17,6 +17,7 @@
 package com.zerocracy.farm;
 
 import com.jcabi.log.Logger;
+import com.jcabi.log.VerboseRunnable;
 import com.jcabi.log.VerboseThreads;
 import com.zerocracy.jstk.Crew;
 import com.zerocracy.jstk.Farm;
@@ -74,7 +75,8 @@ final class Routine implements Runnable {
      */
     public void start() {
         this.service.scheduleWithFixedDelay(
-            this, 0L, 1L, TimeUnit.MINUTES
+            new VerboseRunnable(this, true, true),
+            0L, 1L, TimeUnit.MINUTES
         );
     }
 
