@@ -20,6 +20,7 @@ import com.github.rjeschke.txtmark.Configuration;
 import com.github.rjeschke.txtmark.Processor;
 import com.jcabi.http.request.JdkRequest;
 import com.jcabi.http.response.JsonResponse;
+import com.jcabi.http.response.RestResponse;
 import com.jcabi.log.Logger;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.pmo.Bots;
@@ -111,6 +112,8 @@ final class TkApp extends TkWrap {
                             )
                             .back()
                             .fetch()
+                            .as(RestResponse.class)
+                            .assertStatus(HttpURLConnection.HTTP_OK)
                             .as(JsonResponse.class)
                             .json()
                             .readObject()
