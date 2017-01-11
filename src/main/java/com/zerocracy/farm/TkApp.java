@@ -120,7 +120,7 @@ final class TkApp extends TkWrap {
                     );
                     return new RsWithStatus(
                         new RsWithHeader(
-                            "Redirect",
+                            "Location",
                             "http://www.zerocracy.com"
                         ),
                         HttpURLConnection.HTTP_SEE_OTHER
