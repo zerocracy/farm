@@ -80,7 +80,7 @@
         <dependency>
             <groupId>com.zerocracy</groupId>
             <artifactId>jstk</artifactId>
-            <version>0.6</version>
+            <version>0.7</version>
         </dependency>
         <dependency>
             <groupId>com.ullink.slack</groupId>
@@ -123,10 +123,6 @@
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.jcabi</groupId>
-            <artifactId>jcabi-aspects</artifactId>
         </dependency>
         <dependency>
             <groupId>com.jcabi</groupId>

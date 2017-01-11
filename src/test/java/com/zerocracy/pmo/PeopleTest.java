@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pmo;
 
+import com.zerocracy.jstk.cash.Cash;
 import com.zerocracy.jstk.fake.FkProject;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -44,6 +45,23 @@ public final class PeopleTest {
         MatcherAssert.assertThat(
             people.find(rel, alias),
             Matchers.not(Matchers.emptyIterable())
+        );
+    }
+
+    /**
+     * Set rate of the user.
+     * @throws Exception If some problem inside
+     */
+    @Test
+    public void setsUserRate() throws Exception {
+        final People people = new People(new FkProject());
+        people.bootstrap();
+        final String uid = "U67ZP3343P";
+        people.link(uid, "slack", "AAA");
+        people.rate(uid, new Cash.S("$50"));
+        MatcherAssert.assertThat(
+            people.rate(uid),
+            Matchers.equalTo(new Cash.S("USD 50"))
         );
     }
 

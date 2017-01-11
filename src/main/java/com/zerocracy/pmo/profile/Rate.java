@@ -14,21 +14,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pmo;
+package com.zerocracy.pmo.profile;
 
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
+import com.zerocracy.jstk.cash.Cash;
 import com.zerocracy.pm.Person;
+import com.zerocracy.pmo.People;
 import java.io.IOException;
 
 /**
- * Add an alias to the user.
+ * Set rate of the user.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class Alias implements Stakeholder {
+public final class Rate implements Stakeholder {
 
     /**
      * Project.
@@ -41,41 +43,31 @@ public final class Alias implements Stakeholder {
     private final Person person;
 
     /**
-     * REL.
+     * Rate.
      */
-    private final String rel;
-
-    /**
-     * Href.
-     */
-    private final String href;
+    private final Cash money;
 
     /**
      * Ctor.
      * @param pkt Project
      * @param tbe Tube
-     * @param ref Ref
-     * @param hrf HREF
-     * @checkstyle ParameterNumberCheck (5 lines)
+     * @param cash Cash value
      */
-    public Alias(final Project pkt, final Person tbe,
-        final String ref, final String hrf) {
+    public Rate(final Project pkt, final Person tbe, final Cash cash) {
         this.project = pkt;
         this.person = tbe;
-        this.rel = ref;
-        this.href = hrf;
+        this.money = cash;
     }
 
     @Override
     public void work() throws IOException {
         new People(this.project).bootstrap();
-        new People(this.project).link(this.person.uid(), this.rel, this.href);
+        new People(this.project).rate(this.person.uid(), this.money);
         this.person.say(
             String.format(
-                "Alias added to \"%s\": rel=`%s`, href=`%s`",
+                "Rate of \"%s\" set to %s",
                 this.person.uid(),
-                this.rel,
-                this.href
+                this.money
             )
         );
     }

@@ -21,6 +21,8 @@ import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackChannelJoined;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.ullink.slack.simpleslackapi.impl.SlackSessionFactory;
+import com.zerocracy.crews.slack.profile.ReAlias;
+import com.zerocracy.crews.slack.profile.ReRate;
 import com.zerocracy.jstk.Crew;
 import com.zerocracy.jstk.Farm;
 import java.io.IOException;
@@ -47,6 +49,7 @@ public final class SkCrew implements Crew {
                     new Reaction.Chain<>(
                         Arrays.asList(
                             new ReRegex("alias .*", new ReAlias()),
+                            new ReRegex("rate .*", new ReRate()),
                             new ReRegex(".*", new ReSorry())
                         )
                     ),

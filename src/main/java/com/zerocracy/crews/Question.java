@@ -42,6 +42,24 @@ public final class Question {
     }
 
     /**
+     * Get argument by position.
+     * @param num Position number (0 for user name)
+     * @return Value
+     * @throws SoftException If fails
+     */
+    public String pos(final int num) throws SoftException {
+        final String[] parts = this.text.split("\\s+");
+        if (parts.length < num) {
+            throw new SoftException(
+                String.format(
+                    "Argument no.%d not found in \"%s\"", num, this.text
+                )
+            );
+        }
+        return parts[num];
+    }
+
+    /**
      * Get argument by uid.
      * @param name The uid
      * @return Value

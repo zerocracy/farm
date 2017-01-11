@@ -14,14 +14,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.crews.slack;
+package com.zerocracy.crews.slack.profile;
 
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.crews.Question;
 import com.zerocracy.crews.StkSafe;
+import com.zerocracy.crews.slack.Reaction;
+import com.zerocracy.crews.slack.SkPerson;
 import com.zerocracy.jstk.Farm;
-import com.zerocracy.pmo.Alias;
+import com.zerocracy.pmo.profile.Alias;
 import java.io.IOException;
 
 /**
@@ -31,7 +33,7 @@ import java.io.IOException;
  * @version $Id$
  * @since 0.1
  */
-final class ReAlias implements Reaction<SlackMessagePosted> {
+public final class ReAlias implements Reaction<SlackMessagePosted> {
 
     @Override
     public boolean react(final Farm farm, final SlackMessagePosted event,

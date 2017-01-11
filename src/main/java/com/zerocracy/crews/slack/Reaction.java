@@ -29,7 +29,7 @@ import java.io.IOException;
  * @param <T> Type of event
  * @since 0.1
  */
-interface Reaction<T extends SlackEvent> {
+public interface Reaction<T extends SlackEvent> {
 
     /**
      * Do something about it.

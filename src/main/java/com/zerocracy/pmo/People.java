@@ -19,6 +19,8 @@ package com.zerocracy.pmo;
 import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
+import com.zerocracy.jstk.cash.Cash;
+import com.zerocracy.jstk.cash.Currency;
 import java.io.IOException;
 import org.xembly.Directives;
 
@@ -51,6 +53,57 @@ public final class People {
     public void bootstrap() throws IOException {
         try (final Item item = this.item()) {
             new Xocument(item.path()).bootstrap("people", "pmo/people");
+        }
+    }
+
+    /**
+     * Set rate.
+     * @param uid User ID
+     * @param rate Rate of the user
+     * @throws IOException If fails
+     */
+    public void rate(final String uid, final Cash rate) throws IOException {
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                new Directives()
+                    .xpath(
+                        String.format(
+                            "/people/person[@id = '%s']",
+                            uid
+                        )
+                    )
+                    .addIf("rate")
+                    .set(rate.exchange(Currency.USD).decimal().toPlainString())
+                    .attr("currency", Currency.USD.code())
+            );
+        }
+    }
+
+    /**
+     * Get user rate.
+     * @param uid User ID
+     * @return Rate of the user
+     * @throws IOException If fails
+     */
+    public Cash rate(final String uid) throws IOException {
+        try (final Item item = this.item()) {
+            return new Cash.S(
+                String.format(
+                    "%s %s",
+                    new Xocument(item.path()).xpath(
+                        String.format(
+                            "/people/person[@id='%s']/rate/@currency",
+                            uid
+                        )
+                    ).iterator().next(),
+                    new Xocument(item.path()).xpath(
+                        String.format(
+                            "/people/person[@id='%s']/rate/text()",
+                            uid
+                        )
+                    ).iterator().next()
+                )
+            );
         }
     }
 
