@@ -25,9 +25,13 @@ import com.zerocracy.crews.slack.profile.ReAlias;
 import com.zerocracy.crews.slack.profile.ReRate;
 import com.zerocracy.jstk.Crew;
 import com.zerocracy.jstk.Farm;
+import com.zerocracy.pmo.Bots;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 
 /**
  * Slack listening crew.
@@ -80,40 +84,43 @@ public final class SkCrew implements Crew {
     );
 
     /**
-     * Session token.
+     * Slack sessions (Bot ID vs. Session).
      */
-    private final String token;
-
-    /**
-     * Slack session.
-     */
-    private final AtomicReference<SlackSession> session;
-
-    /**
-     * Ctor.
-     * @param tkn Token
-     */
-    public SkCrew(final String tkn) {
-        this.token = tkn;
-        this.session = new AtomicReference<>();
-    }
+    private final Map<String, SlackSession> sessions =
+        new HashMap<>(0);
 
     @Override
     public void deploy(final Farm farm) throws IOException {
-        if (this.session.get() == null) {
-            this.session.set(this.start(farm));
+        final Bots bots = new Bots(
+            farm.find("@id='PMO'").iterator().next()
+        );
+        bots.bootstrap();
+        final Collection<String> tokens = new HashSet<>(0);
+        for (final Map.Entry<String, String> bot : bots.tokens()) {
+            tokens.add(bot.getKey());
+            if (this.sessions.containsKey(bot.getKey())) {
+                continue;
+            }
+            this.sessions.put(bot.getKey(), this.start(farm, bot.getValue()));
+        }
+        for (final String bid : this.sessions.keySet()) {
+            if (!tokens.contains(bid)) {
+                this.sessions.remove(bid);
+            }
         }
     }
 
     /**
      * Create a session.
      * @param farm The farm
+     * @param token Token
      * @return The session
      * @throws IOException If fails
      */
-    private SlackSession start(final Farm farm) throws IOException {
+    private SlackSession start(final Farm farm, final String token)
+        throws IOException {
         final SlackSession ssn =
-            SlackSessionFactory.createWebSocketSlackSession(this.token);
+            SlackSessionFactory.createWebSocketSlackSession(token);
         ssn.connect();
         Logger.info(
             this, "Slack connected as @%s/%s",

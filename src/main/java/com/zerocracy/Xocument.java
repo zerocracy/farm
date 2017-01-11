@@ -43,7 +43,7 @@ public final class Xocument {
     /**
      * Current DATUM version.
      */
-    private static final String VERSION = "0.7.1";
+    private static final String VERSION = "0.8";
 
     /**
      * File.
@@ -100,6 +100,17 @@ public final class Xocument {
     public Collection<String> xpath(final String xpath) throws IOException {
         final XML xml = new StrictXML(new XMLDocument(this.file.toFile()));
         return xml.xpath(xpath);
+    }
+
+    /**
+     * Query it.
+     * @param xpath Query string
+     * @return Found nodes
+     * @throws IOException If fails
+     */
+    public Collection<XML> nodes(final String xpath) throws IOException {
+        final XML xml = new StrictXML(new XMLDocument(this.file.toFile()));
+        return xml.nodes(xpath);
     }
 
     /**

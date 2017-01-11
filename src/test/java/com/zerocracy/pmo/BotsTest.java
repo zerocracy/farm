@@ -14,30 +14,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.crews.slack;
+package com.zerocracy.pmo;
 
-import com.zerocracy.jstk.fake.FkFarm;
-import java.util.concurrent.TimeUnit;
-import org.junit.Ignore;
+import com.zerocracy.jstk.fake.FkProject;
+import javax.json.Json;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
- * Integration case for {@link SkCrew}.
+ * Test case for {@link Bots}.
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class SkCrewITCase {
+public final class BotsTest {
 
     /**
-     * Fetches notifications from Github.
+     * Register a new bot.
      * @throws Exception If some problem inside
      */
     @Test
-    @Ignore
-    public void fetchesNotifications() throws Exception {
-        new SkCrew().deploy(new FkFarm());
-        TimeUnit.HOURS.sleep(1L);
+    public void registersBot() throws Exception {
+        final Bots bots = new Bots(new FkProject());
+        bots.bootstrap();
+        bots.register(
+            Json.createReader(
+                this.getClass().getResourceAsStream("slack-bot.json")
+            ).readObject()
+        );
+        MatcherAssert.assertThat(
+            bots.tokens().iterator().next().getKey(),
+            Matchers.is("UTTTTTTTTTTR")
+        );
+        MatcherAssert.assertThat(
+            bots.tokens().iterator().next().getValue(),
+            Matchers.is("xoxb-XXXXXXXXXXXX-TTTTTTTTTTTTTT")
+        );
     }
 
 }

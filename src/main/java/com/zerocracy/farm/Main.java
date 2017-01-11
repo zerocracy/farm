@@ -21,6 +21,7 @@ import com.jcabi.log.Logger;
 import com.jcabi.s3.Region;
 import com.zerocracy.crews.github.GhCrew;
 import com.zerocracy.crews.slack.SkCrew;
+import com.zerocracy.jstk.Farm;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -69,24 +70,25 @@ public final class Main {
             this.getClass().getResourceAsStream("/main.properties")) {
             props.load(input);
         }
-        new Routine(
-            new AsyncFarm(
-                new SyncFarm(
-                    new S3Farm(
-                        new Region.Simple(
-                            props.getProperty("s3.key"),
-                            props.getProperty("s3.secret")
-                        ).bucket(props.getProperty("s3.bucket"))
-                    )
+        final Farm farm = new AsyncFarm(
+            new SyncFarm(
+                new S3Farm(
+                    new Region.Simple(
+                        props.getProperty("s3.key"),
+                        props.getProperty("s3.secret")
+                    ).bucket(props.getProperty("s3.bucket"))
                 )
-            ),
+            )
+        );
+        new Routine(
+            farm,
             new GhCrew(
                 new RtGithub(
                     "0crat",
                     props.getProperty("github.0crat.password")
                 )
             ),
-            new SkCrew(props.getProperty("slack.0crat.key"))
+            new SkCrew()
         ).start();
         new FtCli(
             new TkApp(props.getProperty("version")),
