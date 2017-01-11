@@ -100,7 +100,7 @@ final class TkApp extends TkWrap {
                         farm.find("@id='PMO'").iterator().next()
                     );
                     bots.bootstrap();
-                    bots.register(
+                    final String team = bots.register(
                         new JdkRequest("https://slack.com/api/oauth.access")
                             .uri()
                             .queryParam("client_id", sid)
@@ -121,7 +121,10 @@ final class TkApp extends TkWrap {
                     return new RsWithStatus(
                         new RsWithHeader(
                             "Location",
-                            "http://www.zerocracy.com"
+                            String.format(
+                                "https://%s.slack.com/messages/@0crat/details/",
+                                team
+                            )
                         ),
                         HttpURLConnection.HTTP_SEE_OTHER
                     );

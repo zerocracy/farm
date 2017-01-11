@@ -48,7 +48,17 @@ public final class Question {
      * @throws SoftException If fails
      */
     public String pos(final int num) throws SoftException {
-        final String[] parts = this.text.split("\\s+");
+        final Matcher matcher = Pattern.compile(
+            "<@U[A-Z0-9]+>(?: +(.+))"
+        ).matcher(this.text);
+        if (!matcher.matches()) {
+            throw new SoftException(
+                String.format(
+                    "Can't understand \"%s\"", this.text
+                )
+            );
+        }
+        final String[] parts = matcher.group(1).split("\\s+");
         if (parts.length < num) {
             throw new SoftException(
                 String.format(

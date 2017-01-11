@@ -47,4 +47,23 @@ public final class QuestionTest {
         );
     }
 
+    /**
+     * Takes argument by position.
+     * @throws Exception If some problem inside
+     */
+    @Test
+    public void fetchesArgumentByPosition() throws Exception {
+        final Question question = new Question(
+            "<@U3Q183883> rate $30 now please"
+        );
+        MatcherAssert.assertThat(
+            question.pos(0),
+            Matchers.equalTo("rate")
+        );
+        MatcherAssert.assertThat(
+            question.pos(1),
+            Matchers.equalTo("$30")
+        );
+    }
+
 }

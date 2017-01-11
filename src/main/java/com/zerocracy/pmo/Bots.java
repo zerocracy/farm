@@ -65,9 +65,10 @@ public final class Bots {
     /**
      * Register new bot.
      * @param json JSON from Slack OAuth
+     * @return Team name
      * @throws IOException If fails
      */
-    public void register(final JsonObject json)
+    public String register(final JsonObject json)
         throws IOException {
         final JsonObject bot = json.getJsonObject("bot");
         if (bot == null) {
@@ -79,6 +80,7 @@ public final class Bots {
             );
         }
         final String bid = bot.getString("bot_user_id");
+        final String team = json.getString("team_name");
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()
@@ -99,7 +101,7 @@ public final class Bots {
                     .addIf("access_token")
                     .set(json.getString("access_token")).up()
                     .addIf("team_name")
-                    .set(json.getString("team_name")).up()
+                    .set(team).up()
                     .addIf("team_id")
                     .set(json.getString("team_id")).up()
                     .addIf("bot_access_token")
@@ -112,6 +114,7 @@ public final class Bots {
                     )
             );
         }
+        return team;
     }
 
     /**
