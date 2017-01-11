@@ -52,6 +52,7 @@ public final class SkCrew implements Crew {
                 new ReIfDirect(
                     new Reaction.Chain<>(
                         Arrays.asList(
+                            new ReRegex("hi|hello|hey", new ReHello()),
                             new ReRegex("alias .*", new ReAlias()),
                             new ReRegex("rate .*", new ReRate()),
                             new ReRegex(".*", new ReSorry())
