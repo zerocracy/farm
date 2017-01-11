@@ -18,15 +18,22 @@ package com.zerocracy.farm;
 
 import com.github.rjeschke.txtmark.Configuration;
 import com.github.rjeschke.txtmark.Processor;
+import com.jcabi.http.request.JdkRequest;
+import com.jcabi.http.response.JsonResponse;
 import com.jcabi.log.Logger;
-import java.io.IOException;
+import com.zerocracy.jstk.Farm;
+import com.zerocracy.pmo.Bots;
+import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.IOUtils;
 import org.takes.Take;
 import org.takes.facets.fork.FkRegex;
 import org.takes.facets.fork.TkFork;
 import org.takes.facets.fork.TkRegex;
+import org.takes.rq.RqHref;
 import org.takes.rs.RsVelocity;
+import org.takes.rs.RsWithHeader;
+import org.takes.rs.RsWithStatus;
 import org.takes.tk.TkWrap;
 
 /**
@@ -37,6 +44,7 @@ import org.takes.tk.TkWrap;
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 final class TkApp extends TkWrap {
 
     /**
@@ -46,19 +54,28 @@ final class TkApp extends TkWrap {
 
     /**
      * Ctor.
+     * @param farm Farm
      * @param version App version
-     * @throws IOException If fails
+     * @param sid Slack client_id
+     * @param secret Slack client_secret
+     * @checkstyle ParameterNumberCheck (5 lines)
      */
-    TkApp(final String version) throws IOException {
-        super(TkApp.make(version));
+    TkApp(final Farm farm, final String version, final String sid,
+        final String secret) {
+        super(TkApp.make(farm, version, sid, secret));
     }
 
     /**
      * Ctor.
+     * @param farm Farm
      * @param version App version
+     * @param sid Slack client_id
+     * @param secret Slack client_secret
      * @return Takes
+     * @checkstyle ParameterNumberCheck (5 lines)
      */
-    private static Take make(final String version) {
+    private static Take make(final Farm farm, final String version,
+        final String sid, final String secret) {
         return new TkFork(
             new FkRegex("/robots.txt", ""),
             new FkRegex(
@@ -74,6 +91,34 @@ final class TkApp extends TkWrap {
                         )
                     )
                 )
+            ),
+            new FkRegex(
+                "/slack",
+                (Take) req -> {
+                    new Bots(farm.find("@id='PMO'").iterator().next()).register(
+                        new JdkRequest("https://slack.com/api/oauth.access")
+                            .uri()
+                            .queryParam("client_id", sid)
+                            .queryParam("client_secret", secret)
+                            .queryParam(
+                                "code",
+                                new RqHref.Base(req).href()
+                                    .param("code").iterator().next()
+                            )
+                            .back()
+                            .fetch()
+                            .as(JsonResponse.class)
+                            .json()
+                            .readObject()
+                    );
+                    return new RsWithStatus(
+                        new RsWithHeader(
+                            "Redirect",
+                            "http://www.zerocracy.com"
+                        ),
+                        HttpURLConnection.HTTP_SEE_OTHER
+                    );
+                }
             ),
             new FkRegex(
                 "/([a-z\\-]+)\\.html",

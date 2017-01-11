@@ -20,6 +20,7 @@ import com.jcabi.http.request.JdkRequest;
 import com.jcabi.http.response.RestResponse;
 import com.jcabi.http.response.XmlResponse;
 import com.jcabi.matchers.XhtmlMatchers;
+import com.zerocracy.jstk.fake.FkFarm;
 import java.net.HttpURLConnection;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
@@ -43,7 +44,7 @@ public final class TkAppTest {
      */
     @Test
     public void rendersHomePage() throws Exception {
-        final Take take = new TkApp("0.1");
+        final Take take = new TkApp(new FkFarm(), "0.1", "", "");
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
                 new RsPrint(
@@ -69,7 +70,7 @@ public final class TkAppTest {
      */
     @Test
     public void rendersHomePageViaHttp() throws Exception {
-        final Take app = new TkApp("0.2");
+        final Take app = new TkApp(new FkFarm(), "0.2", "", "");
         new FtRemote(app).exec(
             home -> new JdkRequest(home)
                 .fetch()
