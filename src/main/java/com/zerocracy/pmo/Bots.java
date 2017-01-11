@@ -70,6 +70,14 @@ public final class Bots {
     public void register(final JsonObject json)
         throws IOException {
         final JsonObject bot = json.getJsonObject("bot");
+        if (bot == null) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "can't find bot ID in %s",
+                    json
+                )
+            );
+        }
         final String bid = bot.getString("bot_user_id");
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
