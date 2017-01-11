@@ -70,12 +70,15 @@ final class ReRegex implements Reaction<SlackMessagePosted> {
     @Override
     public boolean react(final Farm farm, final SlackMessagePosted event,
         final SlackSession session) throws IOException {
-        final String msg = event.getMessageContent().split(" ", 2)[1];
-        final Matcher matcher = this.pattern.matcher(msg);
+        final String[] parts = event.getMessageContent().split(" ", 2);
         boolean done = false;
-        if (matcher.matches()) {
-            this.origin.react(farm, event, session);
-            done = true;
+        if (parts.length > 1) {
+            final String msg = parts[1];
+            final Matcher matcher = this.pattern.matcher(msg);
+            if (matcher.matches()) {
+                this.origin.react(farm, event, session);
+                done = true;
+            }
         }
         return done;
     }
