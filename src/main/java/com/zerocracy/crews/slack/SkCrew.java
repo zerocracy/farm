@@ -23,6 +23,7 @@ import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.ullink.slack.simpleslackapi.impl.SlackSessionFactory;
 import com.zerocracy.crews.slack.profile.ReAlias;
 import com.zerocracy.crews.slack.profile.ReRate;
+import com.zerocracy.crews.slack.profile.ReShowRate;
 import com.zerocracy.jstk.Crew;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.pmo.Bots;
@@ -54,7 +55,9 @@ public final class SkCrew implements Crew {
                         Arrays.asList(
                             new ReRegex("hi|hello|hey", new ReHello()),
                             new ReRegex("alias .*", new ReAlias()),
+                            new ReRegex("rate", new ReShowRate()),
                             new ReRegex("rate .*", new ReRate()),
+                            new ReRegex("status .*", new ReRate()),
                             new ReRegex(".*", new ReSorry())
                         )
                     ),
