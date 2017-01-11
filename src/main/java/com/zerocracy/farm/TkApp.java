@@ -95,7 +95,11 @@ final class TkApp extends TkWrap {
             new FkRegex(
                 "/slack",
                 (Take) req -> {
-                    new Bots(farm.find("@id='PMO'").iterator().next()).register(
+                    final Bots bots = new Bots(
+                        farm.find("@id='PMO'").iterator().next()
+                    );
+                    bots.bootstrap();
+                    bots.register(
                         new JdkRequest("https://slack.com/api/oauth.access")
                             .uri()
                             .queryParam("client_id", sid)
