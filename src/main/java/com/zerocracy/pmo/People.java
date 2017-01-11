@@ -16,12 +16,15 @@
  */
 package com.zerocracy.pmo;
 
+import com.jcabi.xml.XML;
 import com.zerocracy.Xocument;
+import com.zerocracy.crews.SoftException;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.cash.Cash;
 import com.zerocracy.jstk.cash.Currency;
 import java.io.IOException;
+import java.util.Iterator;
 import org.xembly.Directives;
 
 /**
@@ -87,21 +90,25 @@ public final class People {
      */
     public Cash rate(final String uid) throws IOException {
         try (final Item item = this.item()) {
+            final Iterator<XML> rates = new Xocument(item.path()).nodes(
+                String.format(
+                    "/people/person[@id='%s']/rate",
+                    uid
+                )
+            ).iterator();
+            if (!rates.hasNext()) {
+                throw new SoftException(
+                    String.format(
+                        "I don't know you (uid=%s)", uid
+                    )
+                );
+            }
+            final XML rate = rates.next();
             return new Cash.S(
                 String.format(
                     "%s %s",
-                    new Xocument(item.path()).xpath(
-                        String.format(
-                            "/people/person[@id='%s']/rate/@currency",
-                            uid
-                        )
-                    ).iterator().next(),
-                    new Xocument(item.path()).xpath(
-                        String.format(
-                            "/people/person[@id='%s']/rate/text()",
-                            uid
-                        )
-                    ).iterator().next()
+                    rate.xpath("@currency").get(0),
+                    rate.xpath("text()").get(0)
                 )
             );
         }
