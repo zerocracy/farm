@@ -99,7 +99,7 @@ public final class People {
             if (!rates.hasNext()) {
                 throw new SoftException(
                     String.format(
-                        "I don't know you (uid=%s)", uid
+                        "Your rate is not set yet (uid=%s)", uid
                     )
                 );
             }
