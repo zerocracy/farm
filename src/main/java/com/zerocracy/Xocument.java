@@ -29,6 +29,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.Collection;
 import org.w3c.dom.Node;
 import org.xembly.Directive;
+import org.xembly.Directives;
 import org.xembly.Xembler;
 
 /**
@@ -84,21 +85,34 @@ public final class Xocument {
      * @param root Root node uid
      * @param xsd Path of XSD
      * @throws IOException If fails
-     * @todo #9:30min Even if the document already exists, we must check
-     *  that it has the right URI of the XSD schema. The most important
-     *  thing is its version. If the URI is wrong, we must update it.
      */
     public void bootstrap(final String root, final String xsd)
         throws IOException {
+        final String uri = String.format(
+            // @checkstyle LineLength (1 line)
+            "https://raw.githubusercontent.com/zerocracy/datum/%s/xsd/%s.xsd",
+            Xocument.VERSION, xsd
+        );
         if (!Files.exists(this.file) || Files.size(this.file) == 0L) {
             Files.write(
                 this.file,
                 String.format(
                     // @checkstyle LineLength (1 line)
-                    "<%s xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/zerocracy/datum/%s/xsd/%s.xsd'/>",
-                    root, Xocument.VERSION, xsd
+                    "<%s xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='%s'/>",
+                    root, uri
                 ).getBytes(StandardCharsets.UTF_8),
                 StandardOpenOption.CREATE
+            );
+        }
+        final XML xml = new XMLDocument(this.file.toFile());
+        final String schema = xml.xpath(
+            String.format("/%s/@xsi:noNamespaceSchemaLocation", root)
+        ).get(0);
+        if (!schema.equals(uri)) {
+            this.modify(
+                new Directives().xpath(String.format("/%s", root)).attr(
+                    "xsi:noNamespaceSchemaLocation", uri
+                )
             );
         }
     }

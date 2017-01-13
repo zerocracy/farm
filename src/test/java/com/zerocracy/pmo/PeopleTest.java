@@ -109,6 +109,7 @@ public final class PeopleTest {
             ).getBytes()
         );
         final People people = new People(project);
+        people.bootstrap();
         people.skill("U74637743829", "java9");
     }
 
