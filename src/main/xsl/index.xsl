@@ -33,13 +33,14 @@
             </p>
             <p>
                 <xsl:value-of select="version/name"/>
+                <xsl:text> | </xsl:text>
                 <xsl:value-of select="alive"/>
             </p>
             <p>
                 <xsl:if test="identity">
                     <xsl:text>@</xsl:text>
                     <xsl:value-of select="identity/login"/>
-                    <xsl:text> </xsl:text>
+                    <xsl:text> | </xsl:text>
                     <a href="{links/link[@rel='takes:logout']/@href}">
                         <xsl:text>exit</xsl:text>
                     </a>
@@ -49,6 +50,13 @@
                         <xsl:text>login</xsl:text>
                     </a>
                 </xsl:if>
+            </p>
+            <p>
+                <xsl:call-template name="millis">
+                    <xsl:with-param name="millis" select="millis"/>
+                </xsl:call-template>
+                <xsl:text> | </xsl:text>
+                <xsl:value-of select="@sla"/>
             </p>
         </div>
     </xsl:template>
