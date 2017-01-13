@@ -44,7 +44,7 @@ final class ReAdd implements Reaction<SlackMessagePosted> {
                 new StkAdd(
                     farm.find("@id='PMO'").iterator().next(),
                     new SkPerson(event, session),
-                    new Question(event.getMessageContent()).pos(1)
+                    new Question(event.getMessageContent()).pos(2)
                 )
             )
         );
