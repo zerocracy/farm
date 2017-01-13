@@ -44,7 +44,7 @@ public final class TkAppTest {
      */
     @Test
     public void rendersHomePage() throws Exception {
-        final Take take = new TkApp(new FkFarm(), "0.1", "", "");
+        final Take take = new TkApp(new FkFarm());
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
                 new RsPrint(
@@ -58,8 +58,8 @@ public final class TkAppTest {
                 ).printBody()
             ),
             XhtmlMatchers.hasXPaths(
-                "/html",
-                "//body"
+                "/xhtml:html",
+                "//xhtml:body"
             )
         );
     }
@@ -70,14 +70,14 @@ public final class TkAppTest {
      */
     @Test
     public void rendersHomePageViaHttp() throws Exception {
-        final Take app = new TkApp(new FkFarm(), "0.2", "", "");
+        final Take app = new TkApp(new FkFarm());
         new FtRemote(app).exec(
             home -> new JdkRequest(home)
                 .fetch()
                 .as(RestResponse.class)
                 .assertStatus(HttpURLConnection.HTTP_OK)
                 .as(XmlResponse.class)
-                .assertXPath("/html/body")
+                .assertXPath("/xhtml:html/xhtml:body")
         );
     }
 

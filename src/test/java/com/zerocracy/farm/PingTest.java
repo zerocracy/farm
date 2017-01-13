@@ -60,8 +60,9 @@ public final class PingTest {
         return Arrays.asList(
             new Object[][] {
                 {"/robots.txt"},
-                {"/slack.html"},
-                {"/github.html"},
+                {"/css/main.css"},
+                {"/xsl/index.xsl"},
+                {"/xsl/layout.xsl"},
                 {"/"},
             }
         );
@@ -73,7 +74,7 @@ public final class PingTest {
      */
     @Test
     public void rendersAllPossibleUrls() throws Exception {
-        final Take take = new TkApp(new FkFarm(), "0.1", "", "");
+        final Take take = new TkApp(new FkFarm());
         MatcherAssert.assertThat(
             this.url,
             take.act(new RqFake("INFO", this.url)),

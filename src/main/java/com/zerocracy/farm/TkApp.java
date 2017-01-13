@@ -16,26 +16,25 @@
  */
 package com.zerocracy.farm;
 
-import com.github.rjeschke.txtmark.Configuration;
-import com.github.rjeschke.txtmark.Processor;
-import com.jcabi.http.request.JdkRequest;
-import com.jcabi.http.response.JsonResponse;
-import com.jcabi.http.response.RestResponse;
-import com.jcabi.log.Logger;
+import com.jcabi.log.VerboseProcess;
 import com.zerocracy.jstk.Farm;
-import com.zerocracy.pmo.Bots;
-import java.net.HttpURLConnection;
-import java.nio.charset.StandardCharsets;
+import java.io.File;
+import java.io.IOException;
 import java.util.Properties;
-import org.apache.commons.io.IOUtils;
 import org.takes.Take;
+import org.takes.facets.flash.TkFlash;
+import org.takes.facets.fork.FkFixed;
+import org.takes.facets.fork.FkHitRefresh;
 import org.takes.facets.fork.FkRegex;
 import org.takes.facets.fork.TkFork;
-import org.takes.facets.fork.TkRegex;
-import org.takes.rq.RqHref;
-import org.takes.rs.RsVelocity;
-import org.takes.rs.RsWithHeader;
-import org.takes.rs.RsWithStatus;
+import org.takes.facets.forward.TkForward;
+import org.takes.tk.TkClasspath;
+import org.takes.tk.TkFiles;
+import org.takes.tk.TkGzip;
+import org.takes.tk.TkMeasured;
+import org.takes.tk.TkVersioned;
+import org.takes.tk.TkWithHeaders;
+import org.takes.tk.TkWithType;
 import org.takes.tk.TkWrap;
 
 /**
@@ -46,113 +45,108 @@ import org.takes.tk.TkWrap;
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 final class TkApp extends TkWrap {
 
     /**
-     * When we started.
-     */
-    private static final long STARTED = System.currentTimeMillis();
-
-    /**
-     * Ctor.
+     * Ctor, for tests mostly.
      * @param farm Farm
-     * @param props Properties
+     * @throws IOException If fails
      */
-    TkApp(final Farm farm, final Properties props) {
-        super(TkApp.make(farm, props));
+    TkApp(final Farm farm) throws IOException {
+        this(farm, new Properties());
     }
 
     /**
      * Ctor.
      * @param farm Farm
-     * @return Takes
+     * @param props Properties
+     * @throws IOException If fails
      */
-    private static Take make(final Farm farm, final Properties props) {
+    TkApp(final Farm farm, final Properties props) throws IOException {
+        super(TkApp.make(farm, props));
+    }
+
+    /**
+     * Make it.
+     * @param farm Farm
+     * @param props Properties
+     * @return Takes
+     * @throws IOException If fails
+     */
+    private static Take make(final Farm farm, final Properties props)
+        throws IOException {
+        return new TkWithHeaders(
+            new TkVersioned(
+                new TkMeasured(
+                    new TkGzip(
+                        new TkFlash(
+                            new TkAppAuth(
+                                new TkForward(
+                                    TkApp.regex(farm, props)
+                                ),
+                                props
+                            )
+                        )
+                    )
+                )
+            ),
+            String.format(
+                "X-Zerocracy-Revision: %s",
+                props.getProperty("build.revision")
+            ),
+            "Vary: Cookie"
+        );
+    }
+
+    /**
+     * Make it.
+     * @param farm Farm
+     * @param props Properties
+     * @return Takes
+     * @throws IOException If fails
+     */
+    private static Take regex(final Farm farm, final Properties props)
+        throws IOException {
         return new TkFork(
+            new FkRegex("/", new TkIndex(props)),
+            new FkRegex("/slack", new TkSlack(farm, props)),
             new FkRegex("/robots.txt", ""),
             new FkRegex(
-                "/",
-                (Take) req -> new RsVelocity(
-                    TkApp.class.getResource("/html/index.html"),
-                    new RsVelocity.Pair(
-                        "version",
-                        props.getProperty("version")
-                    ),
-                    new RsVelocity.Pair(
-                        "alive",
-                        Logger.format(
-                            "%[ms]s",
-                            System.currentTimeMillis() - TkApp.STARTED
-                        )
-                    )
+                "/xsl/[a-z\\-]+\\.xsl",
+                new TkWithType(
+                    TkApp.refresh("./src/main/xsl"),
+                    "text/xsl"
                 )
             ),
             new FkRegex(
-                "/slack",
-                (Take) req -> {
-                    final Bots bots = new Bots(
-                        farm.find("@id='PMO'").iterator().next()
-                    );
-                    bots.bootstrap();
-                    final String team = bots.register(
-                        new JdkRequest("https://slack.com/api/oauth.access")
-                            .uri()
-                            .queryParam(
-                                "client_id",
-                                props.getProperty("slack.client_id")
-                            )
-                            .queryParam(
-                                "client_secret",
-                                props.getProperty("slack.client_secret")
-                            )
-                            .queryParam(
-                                "code",
-                                new RqHref.Base(req).href()
-                                    .param("code").iterator().next()
-                            )
-                            .back()
-                            .fetch()
-                            .as(RestResponse.class)
-                            .assertStatus(HttpURLConnection.HTTP_OK)
-                            .as(JsonResponse.class)
-                            .json()
-                            .readObject()
-                    );
-                    return new RsWithStatus(
-                        new RsWithHeader(
-                            "Location",
-                            String.format(
-                                "https://%s.slack.com/messages/@0crat/details/",
-                                team
-                            )
-                        ),
-                        HttpURLConnection.HTTP_SEE_OTHER
-                    );
-                }
-            ),
-            new FkRegex(
-                "/([a-z\\-]+)\\.html",
-                (TkRegex) req -> new RsVelocity(
-                    TkApp.class.getResource("/layout/page.html"),
-                    new RsVelocity.Pair("title", req.matcher().group(1)),
-                    new RsVelocity.Pair(
-                        "html",
-                        Processor.process(
-                            IOUtils.toString(
-                                TkApp.class.getResource(
-                                    String.format(
-                                        "/pages/%s.md",
-                                        req.matcher().group(1)
-                                    )
-                                ),
-                                StandardCharsets.UTF_8
-                            ),
-                            Configuration.DEFAULT_SAFE
-                        )
-                    )
+                "/css/[a-z]+\\.css",
+                new TkWithType(
+                    TkApp.refresh("./src/main/scss"),
+                    "text/css"
                 )
             )
+        );
+    }
+
+    /**
+     * Hit refresh fork.
+     * @param path Path of files
+     * @return Fork
+     * @throws IOException If fails
+     */
+    private static Take refresh(final String path) throws IOException {
+        return new TkFork(
+            new FkHitRefresh(
+                new File(path),
+                () -> new VerboseProcess(
+                    new ProcessBuilder(
+                        "mvn",
+                        "generate-resources"
+                    )
+                ).stdout(),
+                new TkFiles("./target/classes")
+            ),
+            new FkFixed(new TkClasspath())
         );
     }
 
