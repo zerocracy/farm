@@ -16,8 +16,10 @@
  */
 package com.zerocracy.pmo;
 
+import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.cash.Cash;
 import com.zerocracy.jstk.fake.FkProject;
+import java.nio.file.Files;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -87,6 +89,27 @@ public final class PeopleTest {
             people.skills(uid),
             Matchers.hasItem(skill)
         );
+    }
+
+    /**
+     * Upgrades XSD version automatically.
+     * @throws Exception If some problem inside
+     */
+    @Test
+    public void upgradesXsdAutomatically() throws Exception {
+        final Project project = new FkProject();
+        Files.write(
+            project.acq("people.xml").path(),
+            String.join(
+                "",
+                "<people xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'",
+                " xsi:noNamespaceSchemaLocation='",
+                "https://raw.githubusercontent.com/zerocracy/datum/0.7.1",
+                "/xsd/pmo/people.xsd'/>"
+            ).getBytes()
+        );
+        final People people = new People(project);
+        people.skill("U74637743829", "java9");
     }
 
 }
