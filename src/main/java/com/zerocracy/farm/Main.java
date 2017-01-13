@@ -91,12 +91,7 @@ public final class Main {
             new SkCrew()
         ).start();
         new FtCli(
-            new TkApp(
-                farm,
-                props.getProperty("version"),
-                props.getProperty("slack.client_id"),
-                props.getProperty("slack.client_secret")
-            ),
+            new TkApp(farm, props),
             this.arguments
         ).start(Exit.NEVER);
         Logger.info(this, "Farm is ready");

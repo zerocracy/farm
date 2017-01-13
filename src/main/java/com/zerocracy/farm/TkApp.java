@@ -26,6 +26,7 @@ import com.zerocracy.jstk.Farm;
 import com.zerocracy.pmo.Bots;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
+import java.util.Properties;
 import org.apache.commons.io.IOUtils;
 import org.takes.Take;
 import org.takes.facets.fork.FkRegex;
@@ -56,34 +57,28 @@ final class TkApp extends TkWrap {
     /**
      * Ctor.
      * @param farm Farm
-     * @param version App version
-     * @param sid Slack client_id
-     * @param secret Slack client_secret
-     * @checkstyle ParameterNumberCheck (5 lines)
+     * @param props Properties
      */
-    TkApp(final Farm farm, final String version, final String sid,
-        final String secret) {
-        super(TkApp.make(farm, version, sid, secret));
+    TkApp(final Farm farm, final Properties props) {
+        super(TkApp.make(farm, props));
     }
 
     /**
      * Ctor.
      * @param farm Farm
-     * @param version App version
-     * @param sid Slack client_id
-     * @param secret Slack client_secret
      * @return Takes
-     * @checkstyle ParameterNumberCheck (5 lines)
      */
-    private static Take make(final Farm farm, final String version,
-        final String sid, final String secret) {
+    private static Take make(final Farm farm, final Properties props) {
         return new TkFork(
             new FkRegex("/robots.txt", ""),
             new FkRegex(
                 "/",
                 (Take) req -> new RsVelocity(
                     TkApp.class.getResource("/html/index.html"),
-                    new RsVelocity.Pair("version", version),
+                    new RsVelocity.Pair(
+                        "version",
+                        props.getProperty("version")
+                    ),
                     new RsVelocity.Pair(
                         "alive",
                         Logger.format(
@@ -103,8 +98,14 @@ final class TkApp extends TkWrap {
                     final String team = bots.register(
                         new JdkRequest("https://slack.com/api/oauth.access")
                             .uri()
-                            .queryParam("client_id", sid)
-                            .queryParam("client_secret", secret)
+                            .queryParam(
+                                "client_id",
+                                props.getProperty("slack.client_id")
+                            )
+                            .queryParam(
+                                "client_secret",
+                                props.getProperty("slack.client_secret")
+                            )
                             .queryParam(
                                 "code",
                                 new RqHref.Base(req).href()
