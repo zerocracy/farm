@@ -24,6 +24,7 @@ import com.zerocracy.jstk.cash.Cash;
 import com.zerocracy.jstk.cash.Currency;
 import com.zerocracy.stk.SoftException;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.stream.Collectors;
 import org.xembly.Directives;
@@ -83,7 +84,7 @@ public final class People {
      * @return List of skills
      * @throws IOException If fails
      */
-    public Iterable<String> skills(final String uid) throws IOException {
+    public Collection<String> skills(final String uid) throws IOException {
         try (final Item item = this.item()) {
             return new Xocument(item).xpath(
                 String.format(

@@ -16,11 +16,14 @@
  */
 package com.zerocracy.stk.pmo.profile.skills;
 
+import com.jcabi.aspects.Tv;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.Person;
 import com.zerocracy.pmo.People;
+import com.zerocracy.stk.SoftException;
 import java.io.IOException;
+import java.util.Collection;
 
 /**
  * Add new skill to the user.
@@ -61,6 +64,17 @@ public final class StkAdd implements Stakeholder {
     @Override
     public void work() throws IOException {
         new People(this.project).bootstrap();
+        final Collection<String> skills = new People(this.project).skills(
+            this.person.uid()
+        );
+        if (skills.size() > Tv.FIVE) {
+            throw new SoftException(
+                String.format(
+                    "You've got too many skills already: `%s` (max is five)",
+                    String.join("`, `", skills)
+                )
+            );
+        }
         new People(this.project).skill(this.person.uid(), this.skill);
         this.person.say(
             String.format(
