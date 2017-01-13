@@ -54,14 +54,18 @@ public final class StkShow implements Stakeholder {
     @Override
     public void work() throws IOException {
         new People(this.project).bootstrap();
-        this.person.say(
-            String.format(
-                "Your skills are: `%s`",
-                String.join(
-                    "`, `",
-                    new People(this.project).skills(this.person.uid())
-                )
-            )
+        final Iterable<String> skills = new People(this.project).skills(
+            this.person.uid()
         );
+        if (skills.iterator().hasNext()) {
+            this.person.say(
+                String.format(
+                    "Your skills are: `%s`",
+                    String.join("`, `", skills)
+                )
+            );
+        } else {
+            this.person.say("Your skills are not defined yet");
+        }
     }
 }
