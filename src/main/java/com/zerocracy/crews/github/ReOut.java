@@ -17,12 +17,12 @@
 package com.zerocracy.crews.github;
 
 import com.jcabi.github.Comment;
-import com.zerocracy.StkByRoles;
-import com.zerocracy.crews.StkSafe;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.Person;
-import com.zerocracy.pm.scope.Out;
+import com.zerocracy.stk.StkByRoles;
+import com.zerocracy.stk.StkSafe;
+import com.zerocracy.stk.pm.scope.wbs.StkOut;
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -47,7 +47,7 @@ final class ReOut implements Reply {
                     project,
                     person,
                     Arrays.asList("PO", "ARC"),
-                    new Out(
+                    new StkOut(
                         project,
                         person,
                         new GhJob(comment.issue())

@@ -54,7 +54,7 @@ public interface Reaction<T extends SlackEvent> {
          * Ctor.
          * @param list All reactions
          */
-        Chain(final Iterable<Reaction<T>> list) {
+        public Chain(final Iterable<Reaction<T>> list) {
             this.reactions = list;
         }
         @Override
@@ -70,4 +70,5 @@ public interface Reaction<T extends SlackEvent> {
             return done;
         }
     }
+
 }

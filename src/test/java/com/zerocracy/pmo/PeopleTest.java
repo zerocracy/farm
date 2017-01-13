@@ -42,9 +42,14 @@ public final class PeopleTest {
         final String rel = "github";
         final String alias = "yegor256";
         people.link(uid, rel, alias);
+        people.link(uid, "jira", "http://www.0crat.com/jira");
         MatcherAssert.assertThat(
             people.find(rel, alias),
             Matchers.not(Matchers.emptyIterable())
+        );
+        MatcherAssert.assertThat(
+            people.links(uid),
+            Matchers.hasItem("github:yegor256")
         );
     }
 
@@ -57,11 +62,30 @@ public final class PeopleTest {
         final People people = new People(new FkProject());
         people.bootstrap();
         final String uid = "U67ZP3343P";
-        people.link(uid, "slack", "AAA");
+        people.rate(uid, new Cash.S("$35"));
         people.rate(uid, new Cash.S("$50"));
         MatcherAssert.assertThat(
             people.rate(uid),
             Matchers.equalTo(new Cash.S("USD 50"))
+        );
+    }
+
+    /**
+     * Adds and finds user skills.
+     * @throws Exception If some problem inside
+     */
+    @Test
+    public void setsAndFetchesUserSkills() throws Exception {
+        final People people = new People(new FkProject());
+        people.bootstrap();
+        final String uid = "U67FE3Z43P";
+        final String skill = "java";
+        people.skill(uid, skill);
+        people.skill(uid, "java.spring");
+        people.skill(uid, "ruby");
+        MatcherAssert.assertThat(
+            people.skills(uid),
+            Matchers.hasItem(skill)
         );
     }
 

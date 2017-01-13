@@ -43,7 +43,7 @@ public final class Xocument {
     /**
      * Current DATUM version.
      */
-    private static final String VERSION = "0.8";
+    private static final String VERSION = "0.9";
 
     /**
      * File.
@@ -65,6 +65,18 @@ public final class Xocument {
      */
     public Xocument(final Path path) {
         this.file = path;
+    }
+
+    @Override
+    public String toString() {
+        try {
+            return new String(
+                Files.readAllBytes(this.file),
+                StandardCharsets.UTF_8
+            );
+        } catch (final IOException ex) {
+            throw new IllegalStateException(ex);
+        }
     }
 
     /**

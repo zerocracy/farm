@@ -17,10 +17,10 @@
 package com.zerocracy.crews.github;
 
 import com.jcabi.github.Comment;
-import com.zerocracy.crews.SoftException;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.pm.Person;
 import com.zerocracy.pmo.People;
+import com.zerocracy.stk.SoftException;
 import java.io.IOException;
 import java.util.Iterator;
 

@@ -17,12 +17,12 @@
 package com.zerocracy.crews.github;
 
 import com.jcabi.github.Comment;
-import com.zerocracy.StkByRoles;
-import com.zerocracy.crews.StkSafe;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.Person;
-import com.zerocracy.pm.scope.Into;
+import com.zerocracy.stk.StkByRoles;
+import com.zerocracy.stk.StkSafe;
+import com.zerocracy.stk.pm.scope.wbs.StkInto;
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -47,7 +47,7 @@ final class ReIn implements Reply {
                     project,
                     person,
                     Arrays.asList("PO", "ARC"),
-                    new Into(
+                    new StkInto(
                         project,
                         person,
                         new GhJob(comment.issue())

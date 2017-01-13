@@ -21,9 +21,6 @@ import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackChannelJoined;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.ullink.slack.simpleslackapi.impl.SlackSessionFactory;
-import com.zerocracy.crews.slack.profile.ReAlias;
-import com.zerocracy.crews.slack.profile.ReRate;
-import com.zerocracy.crews.slack.profile.ReShowRate;
 import com.zerocracy.jstk.Crew;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.pmo.Bots;
@@ -54,10 +51,7 @@ public final class SkCrew implements Crew {
                     new Reaction.Chain<>(
                         Arrays.asList(
                             new ReRegex("hi|hello|hey", new ReHello()),
-                            new ReRegex("alias .*", new ReAlias()),
-                            new ReRegex("rate", new ReShowRate()),
-                            new ReRegex("rate .*", new ReRate()),
-                            new ReRegex("status .*", new ReRate()),
+                            new com.zerocracy.crews.slack.profile.ReIndex(),
                             new ReRegex(".*", new ReSorry())
                         )
                     ),
@@ -65,12 +59,7 @@ public final class SkCrew implements Crew {
                         new Reaction.Chain<>(
                             Arrays.asList(
                                 new ReRegex("hello|hi|hey", new ReHello()),
-                                new ReRegex("bootstrap", new ReBootstrap()),
-                                new ReRegex("wbs", new ReShowWbs()),
-                                new ReRegex("roles", new ReShowRoles()),
-                                new ReRegex("assign .*", new ReAssign()),
-                                new ReRegex("resign .*", new ReResign()),
-                                new ReRegex("link .*", new ReLink()),
+                                new com.zerocracy.crews.slack.project.ReIndex(),
                                 new ReRegex(".*", new ReSorry())
                             )
                         )

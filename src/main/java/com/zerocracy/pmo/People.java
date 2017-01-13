@@ -18,13 +18,14 @@ package com.zerocracy.pmo;
 
 import com.jcabi.xml.XML;
 import com.zerocracy.Xocument;
-import com.zerocracy.crews.SoftException;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.cash.Cash;
 import com.zerocracy.jstk.cash.Currency;
+import com.zerocracy.stk.SoftException;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.stream.Collectors;
 import org.xembly.Directives;
 
 /**
@@ -60,6 +61,40 @@ public final class People {
     }
 
     /**
+     * Add new skill.
+     * @param uid User ID
+     * @param skill The skill to add
+     * @throws IOException If fails
+     */
+    public void skill(final String uid, final String skill) throws IOException {
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                People.start(uid)
+                    .addIf("skills")
+                    .add("skill")
+                    .set(skill)
+            );
+        }
+    }
+
+    /**
+     * Get all user skills.
+     * @param uid User ID
+     * @return List of skills
+     * @throws IOException If fails
+     */
+    public Iterable<String> skills(final String uid) throws IOException {
+        try (final Item item = this.item()) {
+            return new Xocument(item).xpath(
+                String.format(
+                    "/people/person[@id='%s']/skills/skill/text()",
+                    uid
+                )
+            );
+        }
+    }
+
+    /**
      * Set rate.
      * @param uid User ID
      * @param rate Rate of the user
@@ -68,13 +103,7 @@ public final class People {
     public void rate(final String uid, final Cash rate) throws IOException {
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
-                new Directives()
-                    .xpath(
-                        String.format(
-                            "/people/person[@id = '%s']",
-                            uid
-                        )
-                    )
+                People.start(uid)
                     .addIf("rate")
                     .set(rate.exchange(Currency.USD).decimal().toPlainString())
                     .attr("currency", Currency.USD.code())
@@ -130,21 +159,7 @@ public final class People {
         final String alias) throws IOException {
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
-                new Directives()
-                    .xpath(
-                        String.format(
-                            "/people[not(person[@id='%s'])]",
-                            uid
-                        )
-                    )
-                    .add("person")
-                    .attr("id", uid)
-                    .xpath(
-                        String.format(
-                            "/people/person[@id='%s']",
-                            uid
-                        )
-                    )
+                People.start(uid)
                     .addIf("links")
                     .add("link")
                     .attr("rel", rel)
@@ -173,6 +188,29 @@ public final class People {
     }
 
     /**
+     * Get all aliases of a user.
+     * @param uid User ID
+     * @return Aliases found
+     * @throws IOException If fails
+     */
+    public Iterable<String> links(final String uid) throws IOException {
+        try (final Item item = this.item()) {
+            return new Xocument(item).nodes(
+                String.format(
+                    "/people/person[@id='%s']/links/link",
+                    uid
+                )
+            ).stream().map(
+                xml -> String.format(
+                    "%s:%s",
+                    xml.xpath("@rel").get(0),
+                    xml.xpath("@href").get(0)
+                )
+            ).collect(Collectors.toList());
+        }
+    }
+
+    /**
      * The item.
      * @return Item
      * @throws IOException If fails
@@ -181,4 +219,27 @@ public final class People {
         return this.project.acq("people.xml");
     }
 
+    /**
+     * Start directives, to make sure this user is in XML.
+     * @param uid User ID
+     * @return Directives
+     */
+    private static Directives start(final String uid) {
+        return new Directives()
+            .xpath(
+                String.format(
+                    "/people[not(person[@id='%s'])]",
+                    uid
+                )
+            )
+            .add("person")
+            .attr("id", uid)
+            .xpath(
+                String.format(
+                    "/people/person[@id='%s']",
+                    uid
+                )
+            )
+            .strict(1);
+    }
 }

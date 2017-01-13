@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
  * @version $Id$
  * @since 0.1
  */
-final class ReRegex implements Reaction<SlackMessagePosted> {
+public final class ReRegex implements Reaction<SlackMessagePosted> {
 
     /**
      * Pattern.
@@ -47,7 +47,7 @@ final class ReRegex implements Reaction<SlackMessagePosted> {
      * @param ptn Pattern
      * @param tgt Reply
      */
-    ReRegex(final String ptn, final Reaction<SlackMessagePosted> tgt) {
+    public ReRegex(final String ptn, final Reaction<SlackMessagePosted> tgt) {
         this(
             Pattern.compile(
                 ptn,
@@ -62,7 +62,7 @@ final class ReRegex implements Reaction<SlackMessagePosted> {
      * @param ptn Pattern
      * @param tgt Reply
      */
-    ReRegex(final Pattern ptn, final Reaction<SlackMessagePosted> tgt) {
+    public ReRegex(final Pattern ptn, final Reaction<SlackMessagePosted> tgt) {
         this.pattern = ptn;
         this.origin = tgt;
     }

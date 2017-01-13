@@ -82,7 +82,7 @@ public final class S3FarmTest {
         final Project project = farm.find("@id='ABCR2FE03'").iterator().next();
         new Roles(project).bootstrap();
         final Roles roles = new Roles(project);
-        for (int idx = 0; idx < Tv.TEN; ++idx) {
+        for (int idx = 0; idx < Tv.FIVE; ++idx) {
             final String person = String.format("AABBCCDD%d", idx);
             final String role = "ARC";
             roles.assign(person, role);

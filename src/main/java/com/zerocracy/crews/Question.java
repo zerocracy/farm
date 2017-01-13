@@ -16,6 +16,7 @@
  */
 package com.zerocracy.crews;
 
+import com.zerocracy.stk.SoftException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

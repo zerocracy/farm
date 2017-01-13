@@ -18,8 +18,8 @@ package com.zerocracy.crews.slack;
 
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
-import com.zerocracy.crews.SoftException;
 import com.zerocracy.jstk.Farm;
+import com.zerocracy.stk.SoftException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;

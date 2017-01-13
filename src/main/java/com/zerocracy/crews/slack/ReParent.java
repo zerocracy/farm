@@ -18,11 +18,11 @@ package com.zerocracy.crews.slack;
 
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
-import com.zerocracy.StkByRoles;
 import com.zerocracy.crews.Question;
-import com.zerocracy.crews.StkSafe;
 import com.zerocracy.jstk.Farm;
-import com.zerocracy.pmo.Parent;
+import com.zerocracy.stk.StkByRoles;
+import com.zerocracy.stk.StkSafe;
+import com.zerocracy.stk.pmo.StkParent;
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -45,7 +45,7 @@ final class ReParent implements Reaction<SlackMessagePosted> {
                     new SkProject(farm, event),
                     new SkPerson(event, session),
                     Arrays.asList("PO"),
-                    new Parent(
+                    new StkParent(
                         farm.find("@id='PMO'").iterator().next(),
                         new SkPerson(event, session),
                         event.getChannel().getId(),
