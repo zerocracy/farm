@@ -22,6 +22,7 @@ import com.zerocracy.crews.slack.Reaction;
 import com.zerocracy.crews.slack.SkPerson;
 import com.zerocracy.crews.slack.SkProject;
 import com.zerocracy.jstk.Farm;
+import com.zerocracy.pmo.Pmo;
 import com.zerocracy.stk.StkByRoles;
 import com.zerocracy.stk.StkSafe;
 import com.zerocracy.stk.pmo.links.StkShow;
@@ -48,7 +49,7 @@ final class ReShow implements Reaction<SlackMessagePosted> {
                     new SkPerson(farm, event, session),
                     Arrays.asList("PO", "ARC"),
                     new StkShow(
-                        new SkProject(farm, event),
+                        new Pmo(farm),
                         new SkPerson(farm, event, session),
                         event.getChannel().getId()
                     )
