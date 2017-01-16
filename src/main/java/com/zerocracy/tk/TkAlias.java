@@ -60,7 +60,7 @@ final class TkAlias implements Take {
         people.bootstrap();
         if (people.find(rel, href).iterator().hasNext()) {
             throw new RsForward(
-                new RsFlash("I know you already, thanks!")
+                new RsFlash("We've been already introduced, thanks!")
             );
         } else {
             people.link(

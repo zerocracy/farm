@@ -36,7 +36,7 @@
         </html>
     </xsl:template>
     <xsl:template match="flash">
-        <p class="flash #{level}">
+        <p class="flash {level}">
             <xsl:value-of select="message"/>
         </p>
     </xsl:template>
