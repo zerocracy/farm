@@ -17,6 +17,7 @@
 package com.zerocracy.crews.ghook;
 
 import com.jcabi.github.Github;
+import com.jcabi.log.Logger;
 import com.zerocracy.jstk.Farm;
 import java.io.IOException;
 import java.util.Arrays;
@@ -55,6 +56,7 @@ final class ReByActions implements Reaction {
     @Override
     public void react(final Farm farm, final Github github,
         final JsonObject event) throws IOException {
+        Logger.info(this, "JSON: %s", event);
         final String field = "action";
         if (!event.isNull(field)
             && this.actions.contains(event.getString(field))) {
