@@ -39,7 +39,8 @@ public final class ReIndex extends ReWrap {
                 Arrays.asList(
                     new ReRegex("bootstrap", new ReBootstrap()),
                     new com.zerocracy.crews.slack.project.wbs.ReIndex(),
-                    new com.zerocracy.crews.slack.project.roles.ReIndex()
+                    new com.zerocracy.crews.slack.project.roles.ReIndex(),
+                    new com.zerocracy.crews.slack.project.links.ReIndex()
                 )
             )
         );
