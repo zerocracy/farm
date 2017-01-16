@@ -55,8 +55,9 @@ final class ReByActions implements Reaction {
     @Override
     public void react(final Farm farm, final Github github,
         final JsonObject event) throws IOException {
-        final String action = event.getString("action");
-        if (action != null && this.actions.contains(action)) {
+        final String field = "action";
+        if (!event.isNull(field)
+            && this.actions.contains(event.getString(field))) {
             this.origin.react(farm, github, event);
         }
     }
