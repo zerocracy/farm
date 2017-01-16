@@ -23,6 +23,7 @@ import com.jcabi.github.Repo;
 import com.zerocracy.crews.github.GhProject;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.pm.hr.Roles;
+import com.zerocracy.stk.SoftException;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Locale;
@@ -49,15 +50,25 @@ final class RePingArchitect implements Reaction {
             event.getJsonObject("issue").getInt("number")
         );
         final Roles roles = new Roles(new GhProject(farm, repo));
-        roles.bootstrap();
-        final Collection<String> arcs = roles.findByRole("ARC");
         final String author = new Issue.Smart(issue).author()
             .login().toLowerCase(Locale.ENGLISH);
-        if (!arcs.isEmpty() && !arcs.contains(author)) {
+        try {
+            roles.bootstrap();
+            final Collection<String> arcs = roles.findByRole("ARC");
+            if (!arcs.isEmpty() && !arcs.contains(author)) {
+                issue.comments().post(
+                    String.format(
+                        "@%s please, pay attention to this issue",
+                        String.join(", @", arcs)
+                    )
+                );
+            }
+        } catch (final SoftException ex) {
             issue.comments().post(
                 String.format(
-                    "@%s please, pay attention to this issue",
-                    String.join(", @", arcs)
+                    // @checkstyle LineLength (1 line)
+                    "@%s I'm not managing this repository, please remove the [webhook](https://github.com/%s/settings/hooks) or contact me in [Slack](http://www.zerocracy.com)",
+                    author, repo.coordinates()
                 )
             );
         }
