@@ -23,6 +23,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Queue;
 import javax.json.Json;
 import javax.json.JsonObject;
+import javax.json.stream.JsonParsingException;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
@@ -56,13 +57,20 @@ final class TkGhook implements Take {
     @Override
     public Response act(final Request req) throws IOException {
         final String body = new RqPrint(req).printBody();
-        this.events.add(
-            Json.createReader(
-                new ByteArrayInputStream(
-                    body.getBytes(StandardCharsets.UTF_8)
-                )
-            ).readObject()
-        );
+        try {
+            this.events.add(
+                Json.createReader(
+                    new ByteArrayInputStream(
+                        body.getBytes(StandardCharsets.UTF_8)
+                    )
+                ).readObject()
+            );
+        } catch (final JsonParsingException ex) {
+            throw new IllegalArgumentException(
+                String.format("Can't parse JSON: %s", body),
+                ex
+            );
+        }
         return new RsWithStatus(
             new RsText(
                 String.format(
