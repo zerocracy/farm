@@ -58,7 +58,7 @@ final class ReByActions implements Reaction {
         final JsonObject event) throws IOException {
         Logger.info(this, "JSON: %s", event);
         final String field = "action";
-        if (!event.isNull(field)
+        if (event.containsKey(field)
             && this.actions.contains(event.getString(field))) {
             this.origin.react(farm, github, event);
         }
