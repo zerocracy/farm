@@ -20,9 +20,11 @@ import com.zerocracy.jstk.Farm;
 import com.zerocracy.pmo.People;
 import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
+import java.util.logging.Level;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
+import org.takes.facets.auth.Identity;
 import org.takes.facets.auth.RqAuth;
 import org.takes.facets.flash.RsFlash;
 import org.takes.facets.forward.RsForward;
@@ -53,6 +55,12 @@ final class TkAlias implements Take {
     @Override
     @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     public Response act(final Request req) throws IOException {
+        final Identity identity = new RqAuth(req).identity();
+        if (identity.equals(Identity.ANONYMOUS)) {
+            throw new RsForward(
+                new RsFlash("You have to login first!", Level.SEVERE)
+            );
+        }
         final RqHref.Smart smart = new RqHref.Smart(new RqHref.Base(req));
         final String rel = smart.single("rel");
         final String href = smart.single("href");
@@ -64,7 +72,7 @@ final class TkAlias implements Take {
             );
         } else {
             people.link(
-                new RqAuth(req).identity().properties().get("login"),
+                .properties().get("login"),
                 rel, href
             );
             throw new RsForward(

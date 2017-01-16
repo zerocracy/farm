@@ -25,9 +25,7 @@ import java.util.Properties;
 import java.util.Queue;
 import javax.json.JsonObject;
 import org.takes.Take;
-import org.takes.facets.auth.TkSecure;
 import org.takes.facets.flash.TkFlash;
-import org.takes.facets.fork.FkAuthenticated;
 import org.takes.facets.fork.FkFixed;
 import org.takes.facets.fork.FkHitRefresh;
 import org.takes.facets.fork.FkRegex;
@@ -108,13 +106,7 @@ public final class TkApp extends TkWrap {
         return new TkFork(
             new FkRegex("/", new TkIndex(props)),
             new FkRegex("/slack", new TkSlack(farm, props)),
-            new FkAuthenticated(
-                new TkSecure(
-                    new TkFork(
-                        new FkRegex("/alias", new TkAlias(farm))
-                    )
-                )
-            ),
+            new FkRegex("/alias", new TkAlias(farm)),
             new FkRegex("/ghook", new TkGhook(events)),
             new FkRegex("/robots.txt", ""),
             new FkRegex(
