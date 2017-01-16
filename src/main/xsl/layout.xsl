@@ -30,6 +30,7 @@
                 <xsl:apply-templates select="." mode="head"/>
             </head>
             <body>
+                <xsl:apply-templates select="flash"/>
                 <xsl:apply-templates select="." mode="body"/>
             </body>
         </html>
