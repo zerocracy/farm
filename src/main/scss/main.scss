@@ -20,6 +20,10 @@
   font-family: 'Nunito', sans-serif;
 }
 
+body {
+  padding: 4em;
+}
+
 .center {
   text-align: center;
   height: 13em;
@@ -37,6 +41,8 @@
 }
 
 .flash {
+  text-align: center;
+
   &.SEVERE { color: red; }
 
   &.INFO { color: green; }
