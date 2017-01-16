@@ -56,7 +56,9 @@ final class TkAlias implements Take {
         final RqHref.Smart smart = new RqHref.Smart(new RqHref.Base(req));
         final String rel = smart.single("rel");
         final String href = smart.single("href");
-        new People(new Pmo(this.farm)).link(
+        final People people = new People(new Pmo(this.farm));
+        people.bootstrap();
+        people.link(
             new RqAuth(req).identity().properties().get("login"),
             rel, href
         );
