@@ -20,9 +20,9 @@ import com.jcabi.github.Coordinates;
 import com.jcabi.github.Github;
 import com.jcabi.github.Issue;
 import com.jcabi.github.Repo;
+import com.zerocracy.crews.github.GhProject;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.pm.hr.Roles;
-import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Locale;
@@ -48,9 +48,9 @@ final class RePingArchitect implements Reaction {
         final Issue issue = repo.issues().get(
             event.getJsonObject("issue").getInt("number")
         );
-        final Collection<String> arcs = new Roles(
-            new Pmo(farm)
-        ).findByRole("ARC");
+        final Roles roles = new Roles(new GhProject(farm, repo));
+        roles.bootstrap();
+        final Collection<String> arcs = roles.findByRole("ARC");
         final String author = new Issue.Smart(issue).author()
             .login().toLowerCase(Locale.ENGLISH);
         if (!arcs.isEmpty() && !arcs.contains(author)) {

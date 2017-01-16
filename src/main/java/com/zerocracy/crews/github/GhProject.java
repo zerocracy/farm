@@ -17,6 +17,7 @@
 package com.zerocracy.crews.github;
 
 import com.jcabi.github.Comment;
+import com.jcabi.github.Repo;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
@@ -31,7 +32,7 @@ import java.util.Iterator;
  * @version $Id$
  * @since 0.1
  */
-final class GhProject implements Project {
+public final class GhProject implements Project {
 
     /**
      * Farm.
@@ -39,18 +40,27 @@ final class GhProject implements Project {
     private final Farm farm;
 
     /**
-     * Comment.
+     * Repo.
      */
-    private final Comment comment;
+    private final Repo repo;
 
     /**
      * Ctor.
      * @param frm Farm
      * @param cmt Comment
      */
-    GhProject(final Farm frm, final Comment cmt) {
+    public GhProject(final Farm frm, final Comment cmt) {
+        this(frm, cmt.issue().repo());
+    }
+
+    /**
+     * Ctor.
+     * @param frm Farm
+     * @param rpo Repo
+     */
+    public GhProject(final Farm frm, final Repo rpo) {
         this.farm = frm;
-        this.comment = cmt;
+        this.repo = rpo;
     }
 
     @Override
@@ -67,7 +77,7 @@ final class GhProject implements Project {
         final Iterator<Project> list = this.farm.find(
             String.format(
                 "links/link[@rel='github' and @href='%s']",
-                this.comment.issue().repo().coordinates().toString()
+                this.repo.coordinates().toString()
             )
         ).iterator();
         if (!list.hasNext()) {
