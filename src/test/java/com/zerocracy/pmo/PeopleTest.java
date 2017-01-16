@@ -40,9 +40,9 @@ public final class PeopleTest {
     public void addsAndFindsPeople() throws Exception {
         final People people = new People(new FkProject());
         people.bootstrap();
-        final String uid = "U67WE3343P";
-        final String rel = "github";
-        final String alias = "yegor256";
+        final String uid = "yegor256";
+        final String rel = "slack";
+        final String alias = "U67WE3343P";
         people.link(uid, rel, alias);
         people.link(uid, "jira", "http://www.0crat.com/jira");
         MatcherAssert.assertThat(
@@ -51,7 +51,7 @@ public final class PeopleTest {
         );
         MatcherAssert.assertThat(
             people.links(uid),
-            Matchers.hasItem("github:yegor256")
+            Matchers.hasItem("slack:U67WE3343P")
         );
     }
 
@@ -63,7 +63,7 @@ public final class PeopleTest {
     public void setsUserRate() throws Exception {
         final People people = new People(new FkProject());
         people.bootstrap();
-        final String uid = "U67ZP3343P";
+        final String uid = "alex-palevsky";
         people.rate(uid, new Cash.S("$35"));
         people.rate(uid, new Cash.S("$50"));
         MatcherAssert.assertThat(
@@ -80,7 +80,7 @@ public final class PeopleTest {
     public void setsAndFetchesUserSkills() throws Exception {
         final People people = new People(new FkProject());
         people.bootstrap();
-        final String uid = "U67FE3Z43P";
+        final String uid = "karato";
         final String skill = "java";
         people.skill(uid, skill);
         people.skill(uid, "java.spring");
@@ -110,7 +110,7 @@ public final class PeopleTest {
         );
         final People people = new People(project);
         people.bootstrap();
-        people.skill("U74637743829", "java9");
+        people.skill("karato90", "java9");
     }
 
 }

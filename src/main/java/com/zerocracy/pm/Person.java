@@ -48,7 +48,7 @@ public interface Person {
     final class Fake implements Person {
         @Override
         public String uid() {
-            return "ABCZZFE03";
+            return "yegor256";
         }
         @Override
         public void say(final String message) {
