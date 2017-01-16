@@ -27,7 +27,8 @@ import javax.json.stream.JsonParsingException;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
-import org.takes.rq.RqPrint;
+import org.takes.rq.form.RqFormBase;
+import org.takes.rq.form.RqFormSmart;
 import org.takes.rs.RsText;
 import org.takes.rs.RsWithStatus;
 
@@ -56,7 +57,9 @@ final class TkGhook implements Take {
 
     @Override
     public Response act(final Request req) throws IOException {
-        final String body = new RqPrint(req).printBody();
+        final String body = new RqFormSmart(
+            new RqFormBase(req)
+        ).single("payload");
         try {
             this.events.add(
                 Json.createReader(

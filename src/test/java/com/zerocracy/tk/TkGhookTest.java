@@ -17,6 +17,8 @@
 package com.zerocracy.tk;
 
 import java.net.HttpURLConnection;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.Queue;
 import javax.json.JsonObject;
@@ -48,7 +50,13 @@ public final class TkGhookTest {
             take.act(
                 new RqWithBody(
                     new RqFake("POST", "/"),
-                    "{\"foo\": \"bar\"}"
+                    String.format(
+                        "payload=%s",
+                        URLEncoder.encode(
+                            "{\"foo\": \"bar\"}",
+                            StandardCharsets.UTF_8.displayName()
+                        )
+                    )
                 )
             ),
             new HmRsStatus(HttpURLConnection.HTTP_OK)
