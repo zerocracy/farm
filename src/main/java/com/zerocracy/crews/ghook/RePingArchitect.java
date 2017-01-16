@@ -67,7 +67,7 @@ final class RePingArchitect implements Reaction {
             issue.comments().post(
                 String.format(
                     // @checkstyle LineLength (1 line)
-                    "@%s I'm not managing this repository, please remove the [webhook](https://github.com/%s/settings/hooks) or contact me in [Slack](http://www.zerocracy.com)",
+                    "@%s I'm not managing this repository, please remove the [webhook](https://github.com/%s/settings/hooks) or contact me in [Slack](http://www.zerocracy.com) //cc @yegor256",
                     author, repo.coordinates()
                 )
             );
