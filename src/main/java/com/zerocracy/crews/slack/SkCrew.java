@@ -114,9 +114,10 @@ public final class SkCrew implements Crew {
             SlackSessionFactory.createWebSocketSlackSession(token);
         ssn.connect();
         Logger.info(
-            this, "Slack connected as @%s/%s",
+            this, "Slack connected as @%s/%s to %s",
             ssn.sessionPersona().getUserName(),
-            ssn.sessionPersona().getId()
+            ssn.sessionPersona().getId(),
+            ssn.getTeam().getName()
         );
         ssn.addMessagePostedListener(
             (event, sess) -> {
