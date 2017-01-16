@@ -29,9 +29,12 @@
     <xsl:template match="page" mode="body">
         <div class="center">
             <p>
-                <img src="http://www.zerocracy.com/logo.svg" class="logo" />
+                <a href="/">
+                    <img src="http://www.zerocracy.com/logo.svg" class="logo" />
+                </a>
             </p>
             <p>
+                <xsl:text>v</xsl:text>
                 <xsl:value-of select="version/name"/>
                 <xsl:text> | </xsl:text>
                 <xsl:value-of select="alive"/>

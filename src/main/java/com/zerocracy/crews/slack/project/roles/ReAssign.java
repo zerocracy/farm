@@ -51,8 +51,8 @@ final class ReAssign implements Reaction<SlackMessagePosted> {
                     new StkAssign(
                         new SkProject(farm, event),
                         new SkPerson(farm, event, session),
-                        new Question(event.getMessageContent()).pos(1),
-                        new Question(event.getMessageContent()).pos(2)
+                        new Question(event.getMessageContent()).pos(2),
+                        new Question(event.getMessageContent()).pos(3)
                     )
                 )
             )
