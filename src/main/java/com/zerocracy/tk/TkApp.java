@@ -106,6 +106,7 @@ public final class TkApp extends TkWrap {
         return new TkFork(
             new FkRegex("/", new TkIndex(props)),
             new FkRegex("/slack", new TkSlack(farm, props)),
+            new FkRegex("/alias", new TkAlias(farm)),
             new FkRegex("/ghook", new TkGhook(events)),
             new FkRegex("/robots.txt", ""),
             new FkRegex(

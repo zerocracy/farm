@@ -16,10 +16,8 @@
  */
 package com.zerocracy.crews.slack.profile;
 
-import com.zerocracy.crews.slack.ReRegex;
 import com.zerocracy.crews.slack.ReWrap;
 import com.zerocracy.crews.slack.Reaction;
-import com.zerocracy.crews.slack.profile.aliases.ReAdd;
 import java.util.Arrays;
 
 /**
@@ -40,8 +38,7 @@ public final class ReIndex extends ReWrap {
                 Arrays.asList(
                     new com.zerocracy.crews.slack.profile.aliases.ReIndex(),
                     new com.zerocracy.crews.slack.profile.rate.ReIndex(),
-                    new com.zerocracy.crews.slack.profile.skills.ReIndex(),
-                    new ReRegex("alias .*", new ReAdd())
+                    new com.zerocracy.crews.slack.profile.skills.ReIndex()
                 )
             )
         );

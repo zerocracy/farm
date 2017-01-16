@@ -43,14 +43,14 @@ final class ReResign implements Reaction<SlackMessagePosted> {
         final SlackSession session) throws IOException {
         farm.deploy(
             new StkSafe(
-                new SkPerson(event, session),
+                new SkPerson(farm, event, session),
                 new StkByRoles(
                     new SkProject(farm, event),
-                    new SkPerson(event, session),
+                    new SkPerson(farm, event, session),
                     Arrays.asList("PO"),
                     new StkResign(
                         new SkProject(farm, event),
-                        new SkPerson(event, session),
+                        new SkPerson(farm, event, session),
                         new Question(event.getMessageContent()).pos(1),
                         new Question(event.getMessageContent()).pos(2)
                     )

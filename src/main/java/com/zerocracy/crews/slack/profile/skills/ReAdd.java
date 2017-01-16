@@ -41,10 +41,10 @@ final class ReAdd implements Reaction<SlackMessagePosted> {
         final SlackSession session) throws IOException {
         farm.deploy(
             new StkSafe(
-                new SkPerson(event, session),
+                new SkPerson(farm, event, session),
                 new StkAdd(
                     new Pmo(farm),
-                    new SkPerson(event, session),
+                    new SkPerson(farm, event, session),
                     new Question(event.getMessageContent()).pos(2)
                 )
             )

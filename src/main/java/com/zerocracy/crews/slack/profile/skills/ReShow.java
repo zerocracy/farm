@@ -40,10 +40,10 @@ final class ReShow implements Reaction<SlackMessagePosted> {
         final SlackSession session) throws IOException {
         farm.deploy(
             new StkSafe(
-                new SkPerson(event, session),
+                new SkPerson(farm, event, session),
                 new StkShow(
                     new Pmo(farm),
-                    new SkPerson(event, session)
+                    new SkPerson(farm, event, session)
                 )
             )
         );

@@ -32,7 +32,7 @@ final class ReSorry implements Reaction<SlackMessagePosted> {
     @Override
     public boolean react(final Farm farm, final SlackMessagePosted event,
         final SlackSession session) {
-        new SkPerson(event, session).say("I'm sorry, I didn't get it.");
+        new SkPerson(farm, event, session).say("I'm sorry, I didn't get it.");
         return true;
     }
 

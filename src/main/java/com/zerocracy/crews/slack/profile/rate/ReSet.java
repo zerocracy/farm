@@ -42,10 +42,10 @@ final class ReSet implements Reaction<SlackMessagePosted> {
         final SlackSession session) throws IOException {
         farm.deploy(
             new StkSafe(
-                new SkPerson(event, session),
+                new SkPerson(farm, event, session),
                 new StkSet(
                     new Pmo(farm),
-                    new SkPerson(event, session),
+                    new SkPerson(farm, event, session),
                     new Cash.S(new Question(event.getMessageContent()).pos(1))
                 )
             )

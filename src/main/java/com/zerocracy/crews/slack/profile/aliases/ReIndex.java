@@ -37,8 +37,7 @@ public final class ReIndex extends ReWrap {
         super(
             new Reaction.Chain<>(
                 Arrays.asList(
-                    new ReRegex("alias(es)?", new ReShow()),
-                    new ReRegex("alias add .*", new ReAdd())
+                    new ReRegex("alias(es)?", new ReShow())
                 )
             )
         );

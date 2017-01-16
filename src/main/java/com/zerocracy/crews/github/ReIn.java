@@ -39,7 +39,7 @@ final class ReIn implements Reply {
     public void react(final Farm farm, final Comment.Smart comment)
         throws IOException {
         final Project project = new GhProject(farm, comment);
-        final Person person = new GhPerson(farm, comment);
+        final Person person = new GhPerson(comment);
         farm.deploy(
             new StkSafe(
                 person,

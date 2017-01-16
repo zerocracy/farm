@@ -40,10 +40,10 @@ public final class ReBootstrap implements Reaction<SlackMessagePosted> {
         final SlackSession session) throws IOException {
         farm.deploy(
             new StkSafe(
-                new SkPerson(event, session),
+                new SkPerson(farm, event, session),
                 new StkBootstrap(
                     new SkProject(farm, event),
-                    new SkPerson(event, session)
+                    new SkPerson(farm, event, session)
                 )
             )
         );

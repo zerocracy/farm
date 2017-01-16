@@ -41,14 +41,14 @@ final class ReParent implements Reaction<SlackMessagePosted> {
         final SlackSession session) throws IOException {
         farm.deploy(
             new StkSafe(
-                new SkPerson(event, session),
+                new SkPerson(farm, event, session),
                 new StkByRoles(
                     new SkProject(farm, event),
-                    new SkPerson(event, session),
+                    new SkPerson(farm, event, session),
                     Arrays.asList("PO"),
                     new StkParent(
                         new Pmo(farm),
-                        new SkPerson(event, session),
+                        new SkPerson(farm, event, session),
                         event.getChannel().getId(),
                         new Question(event.getMessageContent()).arg("pid")
                     )

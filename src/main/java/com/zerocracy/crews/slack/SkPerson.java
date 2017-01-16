@@ -18,7 +18,13 @@ package com.zerocracy.crews.slack;
 
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
+import com.zerocracy.jstk.Farm;
 import com.zerocracy.pm.Person;
+import com.zerocracy.pmo.People;
+import com.zerocracy.stk.SoftException;
+import java.io.IOException;
+import java.util.Iterator;
+import org.takes.misc.Href;
 
 /**
  * Person in slack.
@@ -28,6 +34,11 @@ import com.zerocracy.pm.Person;
  * @since 0.1
  */
 public final class SkPerson implements Person {
+
+    /**
+     * Farm.
+     */
+    private final Farm farm;
 
     /**
      * Event.
@@ -41,17 +52,35 @@ public final class SkPerson implements Person {
 
     /**
      * Ctor.
+     * @param frm Farm
      * @param evt Event
      * @param ssn Session
      */
-    public SkPerson(final SlackMessagePosted evt, final SlackSession ssn) {
+    public SkPerson(final Farm frm, final SlackMessagePosted evt,
+        final SlackSession ssn) {
+        this.farm = frm;
         this.event = evt;
         this.session = ssn;
     }
 
     @Override
-    public String uid() {
-        return this.event.getSender().getId();
+    public String uid() throws IOException {
+        final People people = new People(this.farm);
+        final String rel = "slack";
+        final String href = this.event.getSender().getId();
+        final Iterator<String> list = people.find(rel, href).iterator();
+        if (!list.hasNext()) {
+            throw new SoftException(
+                String.join(
+                    " ",
+                    "I don't know who you are, please click this:",
+                    new Href("http://www.0crat.com/alias")
+                        .with("rel", rel)
+                        .with("href", href)
+                )
+            );
+        }
+        return list.next();
     }
 
     @Override

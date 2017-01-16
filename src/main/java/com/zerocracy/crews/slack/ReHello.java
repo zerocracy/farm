@@ -33,7 +33,7 @@ final class ReHello implements Reaction<SlackMessagePosted> {
     @Override
     public boolean react(final Farm farm, final SlackMessagePosted event,
         final SlackSession session) throws IOException {
-        new SkPerson(event, session).say("hey, how is it going?");
+        new SkPerson(farm, event, session).say("hey, how is it going?");
         return true;
     }
 }
