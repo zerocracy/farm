@@ -78,9 +78,7 @@ public final class StkBootstrap implements Stakeholder {
             this.person.say(
                 String.join(
                     " ",
-                    "This project seems to be under my management already.",
-                    "If you have questions, try this link:",
-                    "http://www.0crat.com/help.html or email me."
+                    "This project seems to be under my management already."
                 )
             );
         } else {
@@ -90,9 +88,7 @@ public final class StkBootstrap implements Stakeholder {
                     " ",
                     "I'm ready to manage a project.",
                     "When you're ready, you can start giving me instructions,",
-                    "always prefixing your messages with my uid.",
-                    "If you need help, start here:",
-                    "http://www.0crat.com/help.html"
+                    "always prefixing your messages with my uid."
                 )
             );
         }
