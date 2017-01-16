@@ -17,64 +17,58 @@
 package com.zerocracy.crews.ghook;
 
 import com.jcabi.github.Github;
-import com.zerocracy.jstk.Crew;
 import com.zerocracy.jstk.Farm;
 import java.io.IOException;
-import java.util.Queue;
+import java.util.Arrays;
 import javax.json.JsonObject;
 
 /**
- * GitHub hook crew.
+ * Reaction.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.7
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-public final class GkCrew implements Crew {
+interface Reaction {
 
     /**
-     * Reaction.
+     * Do something with this JSON event.
+     * @param farm Farm
+     * @param github Github client
+     * @param event JSON event
+     * @throws IOException If fails
      */
-    private static final Reaction REACTION = new Reaction.Chain(
-        new ReByActions(
-            new RePingArchitect(),
-            "opened", "reopened"
-        ),
-        new ReByActions(
-            new ReOpenAgain(),
-            "closed"
-        )
-    );
+    void react(Farm farm, Github github, JsonObject event) throws IOException;
 
     /**
-     * Github client.
+     * Reactions chained.
      */
-    private final Github github;
-
-    /**
-     * Queue of incoming JSON events.
-     */
-    private final Queue<JsonObject> events;
-
-    /**
-     * Ctor.
-     * @param ghb Github client
-     * @param queue Queue
-     */
-    public GkCrew(final Github ghb, final Queue<JsonObject> queue) {
-        this.github = ghb;
-        this.events = queue;
-    }
-
-    @Override
-    public void deploy(final Farm farm) throws IOException {
-        while (true) {
-            final JsonObject json = this.events.poll();
-            if (json == null) {
-                break;
+    final class Chain implements Reaction {
+        /**
+         * Reactions.
+         */
+        private final Iterable<Reaction> reactions;
+        /**
+         * Ctor.
+         * @param list All reactions
+         */
+        Chain(final Iterable<Reaction> list) {
+            this.reactions = list;
+        }
+        /**
+         * Ctor.
+         * @param list All reactions
+         */
+        Chain(final Reaction... list) {
+            this(Arrays.asList(list));
+        }
+        @Override
+        public void react(final Farm farm, final Github github,
+            final JsonObject event) throws IOException {
+            for (final Reaction reaction : this.reactions) {
+                reaction.react(farm, github, event);
             }
-            GkCrew.REACTION.react(farm, this.github, json);
         }
     }
 

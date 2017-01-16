@@ -17,6 +17,7 @@
 package com.zerocracy.pmo;
 
 import com.zerocracy.Xocument;
+import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
@@ -43,6 +44,14 @@ public final class Bots {
      * Project.
      */
     private final Project project;
+
+    /**
+     * Ctor.
+     * @param farm Farm
+     */
+    public Bots(final Farm farm) {
+        this(new Pmo(farm));
+    }
 
     /**
      * Ctor.

@@ -64,9 +64,7 @@ final class TkSlack implements Take {
     @Override
     @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     public Response act(final Request req) throws IOException {
-        final Bots bots = new Bots(
-            this.farm.find("@id='PMO'").iterator().next()
-        );
+        final Bots bots = new Bots(this.farm);
         bots.bootstrap();
         final String team = bots.register(
             new JdkRequest("https://slack.com/api/oauth.access")

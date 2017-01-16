@@ -18,6 +18,7 @@ package com.zerocracy.pmo;
 
 import com.jcabi.xml.XML;
 import com.zerocracy.Xocument;
+import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.cash.Cash;
@@ -42,6 +43,14 @@ public final class People {
      * Project.
      */
     private final Project project;
+
+    /**
+     * Ctor.
+     * @param farm Farm
+     */
+    public People(final Farm farm) {
+        this(new Pmo(farm));
+    }
 
     /**
      * Ctor.

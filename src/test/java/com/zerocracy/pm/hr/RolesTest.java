@@ -72,4 +72,21 @@ public final class RolesTest {
         );
     }
 
+    /**
+     * Finds users by role.
+     * @throws Exception If some problem inside
+     */
+    @Test
+    public void findsUsersByRole() throws Exception {
+        final Roles roles = new Roles(new FkProject());
+        roles.bootstrap();
+        final String uid = "ABC839TTF";
+        final String role = "QA";
+        roles.assign(uid, role);
+        MatcherAssert.assertThat(
+            roles.findByRole(role),
+            Matchers.hasItem(uid)
+        );
+    }
+
 }

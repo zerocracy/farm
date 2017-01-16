@@ -17,65 +17,46 @@
 package com.zerocracy.crews.ghook;
 
 import com.jcabi.github.Github;
-import com.zerocracy.jstk.Crew;
 import com.zerocracy.jstk.Farm;
 import java.io.IOException;
-import java.util.Queue;
+import java.util.Arrays;
+import java.util.Collection;
 import javax.json.JsonObject;
 
 /**
- * GitHub hook crew.
+ * React if it's in the action.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.7
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-public final class GkCrew implements Crew {
+final class ReByActions implements Reaction {
 
     /**
-     * Reaction.
+     * Original reaction.
      */
-    private static final Reaction REACTION = new Reaction.Chain(
-        new ReByActions(
-            new RePingArchitect(),
-            "opened", "reopened"
-        ),
-        new ReByActions(
-            new ReOpenAgain(),
-            "closed"
-        )
-    );
+    private final Reaction origin;
 
     /**
-     * Github client.
+     * Actions.
      */
-    private final Github github;
-
-    /**
-     * Queue of incoming JSON events.
-     */
-    private final Queue<JsonObject> events;
+    private final Collection<String> actions;
 
     /**
      * Ctor.
-     * @param ghb Github client
-     * @param queue Queue
+     * @param rtn Reaction
+     * @param acts Action
      */
-    public GkCrew(final Github ghb, final Queue<JsonObject> queue) {
-        this.github = ghb;
-        this.events = queue;
+    ReByActions(final Reaction rtn, final String... acts) {
+        this.origin = rtn;
+        this.actions = Arrays.asList(acts);
     }
 
     @Override
-    public void deploy(final Farm farm) throws IOException {
-        while (true) {
-            final JsonObject json = this.events.poll();
-            if (json == null) {
-                break;
-            }
-            GkCrew.REACTION.react(farm, this.github, json);
+    public void react(final Farm farm, final Github github,
+        final JsonObject event) throws IOException {
+        if (this.actions.contains(event.getString("action"))) {
+            this.origin.react(farm, github, event);
         }
     }
-
 }

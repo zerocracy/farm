@@ -14,42 +14,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.crews.slack.profile.rate;
+package com.zerocracy.pmo;
 
-import com.ullink.slack.simpleslackapi.SlackSession;
-import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
-import com.zerocracy.crews.Question;
-import com.zerocracy.crews.slack.Reaction;
-import com.zerocracy.crews.slack.SkPerson;
 import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.cash.Cash;
-import com.zerocracy.pmo.Pmo;
-import com.zerocracy.stk.StkSafe;
-import com.zerocracy.stk.pmo.profile.rate.StkSet;
+import com.zerocracy.jstk.Item;
+import com.zerocracy.jstk.Project;
 import java.io.IOException;
 
 /**
- * Set rate of the user.
+ * PMO.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-final class ReSet implements Reaction<SlackMessagePosted> {
+public final class Pmo implements Project {
+
+    /**
+     * Farm.
+     */
+    private final Farm farm;
+
+    /**
+     * Ctor.
+     * @param frm Farm
+     */
+    public Pmo(final Farm frm) {
+        this.farm = frm;
+    }
 
     @Override
-    public boolean react(final Farm farm, final SlackMessagePosted event,
-        final SlackSession session) throws IOException {
-        farm.deploy(
-            new StkSafe(
-                new SkPerson(event, session),
-                new StkSet(
-                    new Pmo(farm),
-                    new SkPerson(event, session),
-                    new Cash.S(new Question(event.getMessageContent()).pos(1))
-                )
-            )
-        );
-        return true;
+    public Item acq(final String file) throws IOException {
+        return this.farm.find("@id='PMO'").iterator().next().acq(file);
     }
+
 }

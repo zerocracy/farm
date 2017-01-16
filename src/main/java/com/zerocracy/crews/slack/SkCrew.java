@@ -84,9 +84,7 @@ public final class SkCrew implements Crew {
 
     @Override
     public void deploy(final Farm farm) throws IOException {
-        final Bots bots = new Bots(
-            farm.find("@id='PMO'").iterator().next()
-        );
+        final Bots bots = new Bots(farm);
         bots.bootstrap();
         final Collection<String> tokens = new HashSet<>(0);
         for (final Map.Entry<String, String> bot : bots.tokens()) {

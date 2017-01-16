@@ -55,9 +55,7 @@ final class GhPerson implements Person {
 
     @Override
     public String uid() throws IOException {
-        final People people = new People(
-            this.farm.find("@id='PMO'").iterator().next()
-        );
+        final People people = new People(this.farm);
         final Iterator<String> list = people.find(
             "github", new Comment.Smart(this.comment).author().login()
         ).iterator();

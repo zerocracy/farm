@@ -21,6 +21,7 @@ import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.crews.slack.Reaction;
 import com.zerocracy.crews.slack.SkPerson;
 import com.zerocracy.jstk.Farm;
+import com.zerocracy.pmo.Pmo;
 import com.zerocracy.stk.StkSafe;
 import com.zerocracy.stk.pmo.profile.skills.StkShow;
 import java.io.IOException;
@@ -41,7 +42,7 @@ final class ReShow implements Reaction<SlackMessagePosted> {
             new StkSafe(
                 new SkPerson(event, session),
                 new StkShow(
-                    farm.find("@id='PMO'").iterator().next(),
+                    new Pmo(farm),
                     new SkPerson(event, session)
                 )
             )

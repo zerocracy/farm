@@ -23,6 +23,7 @@ import com.zerocracy.crews.slack.Reaction;
 import com.zerocracy.crews.slack.SkPerson;
 import com.zerocracy.crews.slack.SkProject;
 import com.zerocracy.jstk.Farm;
+import com.zerocracy.pmo.Pmo;
 import com.zerocracy.stk.StkByRoles;
 import com.zerocracy.stk.StkSafe;
 import com.zerocracy.stk.pmo.StkLink;
@@ -49,7 +50,7 @@ final class ReLink implements Reaction<SlackMessagePosted> {
                     new SkPerson(event, session),
                     Arrays.asList("PO"),
                     new StkLink(
-                        farm.find("@id='PMO'").iterator().next(),
+                        new Pmo(farm),
                         new SkPerson(event, session),
                         event.getChannel().getId(),
                         new Question(event.getMessageContent()).pos(1),

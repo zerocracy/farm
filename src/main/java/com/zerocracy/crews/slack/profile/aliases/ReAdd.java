@@ -22,6 +22,7 @@ import com.zerocracy.crews.Question;
 import com.zerocracy.crews.slack.Reaction;
 import com.zerocracy.crews.slack.SkPerson;
 import com.zerocracy.jstk.Farm;
+import com.zerocracy.pmo.Pmo;
 import com.zerocracy.stk.StkSafe;
 import com.zerocracy.stk.pmo.profile.aliases.StkSet;
 import java.io.IOException;
@@ -42,7 +43,7 @@ public final class ReAdd implements Reaction<SlackMessagePosted> {
             new StkSafe(
                 new SkPerson(event, session),
                 new StkSet(
-                    farm.find("@id='PMO'").iterator().next(),
+                    new Pmo(farm),
                     new SkPerson(event, session),
                     new Question(event.getMessageContent()).pos(1),
                     new Question(event.getMessageContent()).pos(2)
