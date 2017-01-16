@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pmo;
+package com.zerocracy.stk.pmo.links;
 
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
@@ -29,7 +29,7 @@ import java.io.IOException;
  * @version $Id$
  * @since 0.1
  */
-public final class StkLink implements Stakeholder {
+public final class StkAdd implements Stakeholder {
 
     /**
      * Project.
@@ -65,7 +65,7 @@ public final class StkLink implements Stakeholder {
      * @param hrf HREF
      * @checkstyle ParameterNumberCheck (5 lines)
      */
-    public StkLink(final Project pmo, final Person prn, final String pkt,
+    public StkAdd(final Project pmo, final Person prn, final String pkt,
         final String ref, final String hrf) {
         this.project = pmo;
         this.person = prn;

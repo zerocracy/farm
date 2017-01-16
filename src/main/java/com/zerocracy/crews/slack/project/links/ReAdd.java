@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.crews.slack.project;
+package com.zerocracy.crews.slack.project.links;
 
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
@@ -26,7 +26,7 @@ import com.zerocracy.jstk.Farm;
 import com.zerocracy.pmo.Pmo;
 import com.zerocracy.stk.StkByRoles;
 import com.zerocracy.stk.StkSafe;
-import com.zerocracy.stk.pmo.StkLink;
+import com.zerocracy.stk.pmo.links.StkAdd;
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -37,7 +37,7 @@ import java.util.Arrays;
  * @version $Id$
  * @since 0.1
  */
-final class ReLink implements Reaction<SlackMessagePosted> {
+final class ReAdd implements Reaction<SlackMessagePosted> {
 
     @Override
     public boolean react(final Farm farm, final SlackMessagePosted event,
@@ -49,7 +49,7 @@ final class ReLink implements Reaction<SlackMessagePosted> {
                     new SkProject(farm, event),
                     new SkPerson(farm, event, session),
                     Arrays.asList("PO"),
-                    new StkLink(
+                    new StkAdd(
                         new Pmo(farm),
                         new SkPerson(farm, event, session),
                         event.getChannel().getId(),

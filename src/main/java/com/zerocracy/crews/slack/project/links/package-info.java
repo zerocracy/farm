@@ -14,35 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.crews.slack.project;
-
-import com.zerocracy.crews.slack.ReRegex;
-import com.zerocracy.crews.slack.ReWrap;
-import com.zerocracy.crews.slack.Reaction;
-import java.util.Arrays;
 
 /**
- * Project index.
+ * Links.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.1
+ * @since 0.8
  */
-public final class ReIndex extends ReWrap {
-
-    /**
-     * Ctor.
-     */
-    public ReIndex() {
-        super(
-            new Reaction.Chain<>(
-                Arrays.asList(
-                    new ReRegex("bootstrap", new ReBootstrap()),
-                    new com.zerocracy.crews.slack.project.wbs.ReIndex(),
-                    new com.zerocracy.crews.slack.project.roles.ReIndex()
-                )
-            )
-        );
-    }
-
-}
+package com.zerocracy.crews.slack.project.links;

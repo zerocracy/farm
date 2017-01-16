@@ -14,30 +14,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.crews.slack.project.roles;
+package com.zerocracy.crews.slack.project.links;
 
-import com.jcabi.aspects.Tv;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
-import com.zerocracy.crews.Question;
 import com.zerocracy.crews.slack.Reaction;
 import com.zerocracy.crews.slack.SkPerson;
 import com.zerocracy.crews.slack.SkProject;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.stk.StkByRoles;
 import com.zerocracy.stk.StkSafe;
-import com.zerocracy.stk.pm.hr.roles.StkAssign;
+import com.zerocracy.stk.pmo.links.StkShow;
 import java.io.IOException;
 import java.util.Arrays;
 
 /**
- * Assign role to a person.
+ * Show links.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.1
+ * @since 0.8
  */
-final class ReAssign implements Reaction<SlackMessagePosted> {
+final class ReShow implements Reaction<SlackMessagePosted> {
 
     @Override
     public boolean react(final Farm farm, final SlackMessagePosted event,
@@ -48,12 +46,11 @@ final class ReAssign implements Reaction<SlackMessagePosted> {
                 new StkByRoles(
                     new SkProject(farm, event),
                     new SkPerson(farm, event, session),
-                    Arrays.asList("PO"),
-                    new StkAssign(
+                    Arrays.asList("PO", "ARC"),
+                    new StkShow(
                         new SkProject(farm, event),
                         new SkPerson(farm, event, session),
-                        new Question(event.getMessageContent()).pos(2),
-                        new Question(event.getMessageContent()).pos(Tv.THREE)
+                        event.getChannel().getId()
                     )
                 )
             )

@@ -21,6 +21,7 @@ import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
+import java.util.stream.Collectors;
 import org.xembly.Directives;
 
 /**
@@ -71,6 +72,29 @@ public final class Catalog {
                     .attr("rel", rel)
                     .attr("href", href)
             );
+        }
+    }
+
+    /**
+     * Get all project links.
+     * @param pid Project ID
+     * @return Links found
+     * @throws IOException If fails
+     */
+    public Iterable<String> links(final String pid) throws IOException {
+        try (final Item item = this.item()) {
+            return new Xocument(item).nodes(
+                String.format(
+                    "/catalog/project[@id='%s']/links/link",
+                    pid
+                )
+            ).stream().map(
+                xml -> String.format(
+                    "%s:%s",
+                    xml.xpath("@rel").get(0),
+                    xml.xpath("@href").get(0)
+                )
+            ).collect(Collectors.toList());
         }
     }
 
