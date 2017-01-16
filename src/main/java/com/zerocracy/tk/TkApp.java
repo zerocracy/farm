@@ -20,7 +20,10 @@ import com.jcabi.log.VerboseProcess;
 import com.zerocracy.jstk.Farm;
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.Properties;
+import java.util.Queue;
+import javax.json.JsonObject;
 import org.takes.Take;
 import org.takes.facets.flash.TkFlash;
 import org.takes.facets.fork.FkFixed;
@@ -53,48 +56,40 @@ public final class TkApp extends TkWrap {
      * @throws IOException If fails
      */
     TkApp(final Farm farm) throws IOException {
-        this(farm, new Properties());
+        this(farm, new Properties(), new LinkedList<>());
     }
 
     /**
      * Ctor.
      * @param farm Farm
      * @param props Properties
+     * @param events Events to dispatch
      * @throws IOException If fails
      */
-    public TkApp(final Farm farm, final Properties props) throws IOException {
-        super(TkApp.make(farm, props));
-    }
-
-    /**
-     * Make it.
-     * @param farm Farm
-     * @param props Properties
-     * @return Takes
-     * @throws IOException If fails
-     */
-    private static Take make(final Farm farm, final Properties props)
-        throws IOException {
-        return new TkWithHeaders(
-            new TkVersioned(
-                new TkMeasured(
-                    new TkGzip(
-                        new TkFlash(
-                            new TkAppAuth(
-                                new TkForward(
-                                    TkApp.regex(farm, props)
-                                ),
-                                props
+    public TkApp(final Farm farm, final Properties props,
+        final Queue<JsonObject> events) throws IOException {
+        super(
+            new TkWithHeaders(
+                new TkVersioned(
+                    new TkMeasured(
+                        new TkGzip(
+                            new TkFlash(
+                                new TkAppAuth(
+                                    new TkForward(
+                                        TkApp.regex(farm, props, events)
+                                    ),
+                                    props
+                                )
                             )
                         )
                     )
-                )
-            ),
-            String.format(
-                "X-Zerocracy-Revision: %s",
-                props.getProperty("build.revision")
-            ),
-            "Vary: Cookie"
+                ),
+                String.format(
+                    "X-Zerocracy-Revision: %s",
+                    props.getProperty("build.revision")
+                ),
+                "Vary: Cookie"
+            )
         );
     }
 
@@ -102,14 +97,16 @@ public final class TkApp extends TkWrap {
      * Make it.
      * @param farm Farm
      * @param props Properties
+     * @param events Events to dispatch
      * @return Takes
      * @throws IOException If fails
      */
-    private static Take regex(final Farm farm, final Properties props)
-        throws IOException {
+    private static Take regex(final Farm farm, final Properties props,
+        final Queue<JsonObject> events) throws IOException {
         return new TkFork(
             new FkRegex("/", new TkIndex(props)),
             new FkRegex("/slack", new TkSlack(farm, props)),
+            new FkRegex("/ghook", new TkGhook(events)),
             new FkRegex("/robots.txt", ""),
             new FkRegex(
                 "/xsl/[a-z\\-]+\\.xsl",

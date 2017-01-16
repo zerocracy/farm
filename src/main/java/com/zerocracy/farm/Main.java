@@ -16,9 +16,11 @@
  */
 package com.zerocracy.farm;
 
+import com.jcabi.github.Github;
 import com.jcabi.github.RtGithub;
 import com.jcabi.log.Logger;
 import com.jcabi.s3.Region;
+import com.zerocracy.crews.ghook.GkCrew;
 import com.zerocracy.crews.github.GhCrew;
 import com.zerocracy.crews.slack.SkCrew;
 import com.zerocracy.jstk.Farm;
@@ -26,6 +28,9 @@ import com.zerocracy.tk.TkApp;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import javax.json.JsonObject;
 import org.takes.http.Exit;
 import org.takes.http.FtCli;
 
@@ -81,18 +86,21 @@ public final class Main {
                 )
             )
         );
+        final Github github = new RtGithub(
+            "0crat",
+            props.getProperty("github.0crat.password")
+        );
+        final Queue<JsonObject> events = new ConcurrentLinkedQueue<>();
         new Routine(
             farm,
             new GhCrew(
-                new RtGithub(
-                    "0crat",
-                    props.getProperty("github.0crat.password")
-                )
+                github
             ),
-            new SkCrew()
+            new SkCrew(),
+            new GkCrew(github, events)
         ).start();
         new FtCli(
-            new TkApp(farm, props),
+            new TkApp(farm, props, events),
             this.arguments
         ).start(Exit.NEVER);
         Logger.info(this, "Farm is ready");
