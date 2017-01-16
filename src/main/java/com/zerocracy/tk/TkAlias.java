@@ -72,7 +72,7 @@ final class TkAlias implements Take {
             );
         } else {
             people.link(
-                .properties().get("login"),
+                identity.properties().get("login"),
                 rel, href
             );
             throw new RsForward(
