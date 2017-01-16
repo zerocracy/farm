@@ -14,9 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.farm;
+package com.zerocracy.tk;
 
 import com.jcabi.log.Logger;
+import com.zerocracy.farm.RsPage;
 import java.io.IOException;
 import java.util.Properties;
 import org.takes.Request;

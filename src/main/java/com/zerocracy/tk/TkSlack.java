@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.farm;
+package com.zerocracy.tk;
 
 import com.jcabi.http.request.JdkRequest;
 import com.jcabi.http.response.JsonResponse;

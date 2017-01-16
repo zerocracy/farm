@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.farm;
+package com.zerocracy.tk;
 
 import com.jcabi.log.VerboseProcess;
 import com.zerocracy.jstk.Farm;
@@ -45,7 +45,7 @@ import org.takes.tk.TkWrap;
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-final class TkApp extends TkWrap {
+public final class TkApp extends TkWrap {
 
     /**
      * Ctor, for tests mostly.
@@ -62,7 +62,7 @@ final class TkApp extends TkWrap {
      * @param props Properties
      * @throws IOException If fails
      */
-    TkApp(final Farm farm, final Properties props) throws IOException {
+    public TkApp(final Farm farm, final Properties props) throws IOException {
         super(TkApp.make(farm, props));
     }
 

@@ -22,6 +22,7 @@ import com.jcabi.s3.Region;
 import com.zerocracy.crews.github.GhCrew;
 import com.zerocracy.crews.slack.SkCrew;
 import com.zerocracy.jstk.Farm;
+import com.zerocracy.tk.TkApp;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
