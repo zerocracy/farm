@@ -58,18 +58,24 @@ final class TkAlias implements Take {
         final String href = smart.single("href");
         final People people = new People(new Pmo(this.farm));
         people.bootstrap();
-        people.link(
-            new RqAuth(req).identity().properties().get("login"),
-            rel, href
-        );
-        return new RsForward(
-            new RsFlash(
-                String.format(
-                    "Thanks, you've got an alias, @rel='%s', @href='%s'",
-                    rel, href
+        if (people.find(rel, href).iterator().hasNext()) {
+            throw new RsForward(
+                new RsFlash("I know you already, thanks!")
+            );
+        } else {
+            people.link(
+                new RqAuth(req).identity().properties().get("login"),
+                rel, href
+            );
+            throw new RsForward(
+                new RsFlash(
+                    String.format(
+                        "Thanks, you've got an alias, @rel='%s', @href='%s'",
+                        rel, href
+                    )
                 )
-            )
-        );
+            );
+        }
     }
 
 }
