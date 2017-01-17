@@ -64,13 +64,15 @@ final class RePingArchitect implements Reaction {
                 );
             }
         } catch (final SoftException ex) {
-            issue.comments().post(
-                String.format(
-                    // @checkstyle LineLength (1 line)
-                    "@%s I'm not managing this repo, remove the [webhook](https://github.com/%s/settings/hooks) or contact me in [Slack](http://www.zerocracy.com) //cc @yegor256",
-                    author, repo.coordinates()
-                )
-            );
+            if (!"yegor256".equals(author)) {
+                issue.comments().post(
+                    String.format(
+                        // @checkstyle LineLength (1 line)
+                        "@%s I'm not managing this repo, remove the [webhook](https://github.com/%s/settings/hooks) or contact me in [Slack](http://www.zerocracy.com) //cc @yegor256",
+                        author, repo.coordinates()
+                    )
+                );
+            }
         }
     }
 }

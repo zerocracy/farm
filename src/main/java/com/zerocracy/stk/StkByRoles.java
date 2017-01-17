@@ -88,6 +88,7 @@ public final class StkByRoles implements Stakeholder {
      */
     private boolean has() throws IOException {
         final Roles rls = new Roles(this.project);
+        rls.bootstrap();
         final String name = this.person.uid();
         boolean has = false;
         for (final String role : this.roles) {
