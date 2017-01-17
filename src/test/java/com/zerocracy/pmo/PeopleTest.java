@@ -73,6 +73,27 @@ public final class PeopleTest {
     }
 
     /**
+     * Set wallet of the user.
+     * @throws Exception If some problem inside
+     */
+    @Test
+    public void setsUserWallet() throws Exception {
+        final People people = new People(new FkProject());
+        people.bootstrap();
+        final String uid = "yegor256-1";
+        people.wallet(uid, "btc", "68739473849732849732849327");
+        people.wallet(uid, "paypal", "yegor256@gmail.com");
+        MatcherAssert.assertThat(
+            people.wallet(uid),
+            Matchers.startsWith("yegor256@")
+        );
+        MatcherAssert.assertThat(
+            people.bank(uid),
+            Matchers.startsWith("payp")
+        );
+    }
+
+    /**
      * Adds and finds user skills.
      * @throws Exception If some problem inside
      */

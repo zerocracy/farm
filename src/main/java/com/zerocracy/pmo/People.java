@@ -37,6 +37,7 @@ import org.xembly.Directives;
  * @version $Id$
  * @since 0.1
  */
+@SuppressWarnings("PMD.TooManyMethods")
 public final class People {
 
     /**
@@ -150,6 +151,67 @@ public final class People {
                     rate.xpath("text()").get(0)
                 )
             );
+        }
+    }
+
+    /**
+     * Set wallet.
+     * @param uid User ID
+     * @param bank Bank
+     * @param wallet Wallet value
+     * @throws IOException If fails
+     */
+    public void wallet(final String uid, final String bank,
+        final String wallet) throws IOException {
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                People.start(uid)
+                    .addIf("wallet")
+                    .set(wallet)
+                    .attr("bank", bank)
+            );
+        }
+    }
+
+    /**
+     * Get user wallet.
+     * @param uid User ID
+     * @return Wallet of the user
+     * @throws IOException If fails
+     */
+    public String wallet(final String uid) throws IOException {
+        try (final Item item = this.item()) {
+            final Iterator<String> wallet = new Xocument(item.path()).xpath(
+                String.format(
+                    "/people/person[@id='%s']/wallet/text()",
+                    uid
+                )
+            ).iterator();
+            if (!wallet.hasNext()) {
+                throw new SoftException(
+                    String.format(
+                        "Your wallet is not set yet (uid=%s)", uid
+                    )
+                );
+            }
+            return wallet.next();
+        }
+    }
+
+    /**
+     * Get user wallet.
+     * @param uid User ID
+     * @return Wallet of the user
+     * @throws IOException If fails
+     */
+    public String bank(final String uid) throws IOException {
+        try (final Item item = this.item()) {
+            return new Xocument(item.path()).xpath(
+                String.format(
+                    "/people/person[@id='%s']/wallet/@bank",
+                    uid
+                )
+            ).iterator().next();
         }
     }
 

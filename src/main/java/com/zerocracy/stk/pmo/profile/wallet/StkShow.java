@@ -14,35 +14,53 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.crews.slack.profile.skills;
+package com.zerocracy.stk.pmo.profile.wallet;
 
-import com.ullink.slack.simpleslackapi.SlackSession;
-import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
-import com.zerocracy.crews.slack.Reaction;
-import com.zerocracy.crews.slack.SkPerson;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.pmo.Pmo;
-import com.zerocracy.stk.pmo.profile.skills.StkShow;
+import com.zerocracy.jstk.Project;
+import com.zerocracy.jstk.Stakeholder;
+import com.zerocracy.pm.Person;
+import com.zerocracy.pmo.People;
 import java.io.IOException;
 
 /**
- * Show user skills.
+ * Show wallet of the user.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.1
+ * @since 0.9
  */
-public final class ReShow implements Reaction<SlackMessagePosted> {
+public final class StkShow implements Stakeholder {
+
+    /**
+     * Project.
+     */
+    private final Project project;
+
+    /**
+     * Tube.
+     */
+    private final Person person;
+
+    /**
+     * Ctor.
+     * @param pkt Project
+     * @param tbe Tube
+     */
+    public StkShow(final Project pkt, final Person tbe) {
+        this.project = pkt;
+        this.person = tbe;
+    }
 
     @Override
-    public boolean react(final Farm farm, final SlackMessagePosted event,
-        final SlackSession session) throws IOException {
-        farm.deploy(
-            new StkShow(
-                new Pmo(farm),
-                new SkPerson(farm, event, session)
+    public void work() throws IOException {
+        final People people = new People(this.project);
+        people.bootstrap();
+        this.person.say(
+            String.format(
+                "Your wallet is `%s` at \"%s\"",
+                people.wallet(this.person.uid()),
+                people.bank(this.person.uid())
             )
         );
-        return true;
     }
 }

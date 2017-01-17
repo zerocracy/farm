@@ -22,7 +22,6 @@ import com.zerocracy.crews.slack.Reaction;
 import com.zerocracy.crews.slack.SkPerson;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.pmo.Pmo;
-import com.zerocracy.stk.StkSafe;
 import com.zerocracy.stk.pmo.profile.rate.StkShow;
 import java.io.IOException;
 
@@ -39,12 +38,9 @@ public final class ReShow implements Reaction<SlackMessagePosted> {
     public boolean react(final Farm farm, final SlackMessagePosted event,
         final SlackSession session) throws IOException {
         farm.deploy(
-            new StkSafe(
-                new SkPerson(farm, event, session),
-                new StkShow(
-                    new Pmo(farm),
-                    new SkPerson(farm, event, session)
-                )
+            new StkShow(
+                new Pmo(farm),
+                new SkPerson(farm, event, session)
             )
         );
         return true;

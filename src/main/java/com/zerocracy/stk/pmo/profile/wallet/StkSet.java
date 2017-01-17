@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pmo.profile.rate;
+package com.zerocracy.stk.pmo.profile.wallet;
 
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
@@ -23,13 +23,13 @@ import com.zerocracy.pmo.People;
 import java.io.IOException;
 
 /**
- * Show rate of the user.
+ * Set wallet of the user.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.1
+ * @since 0.9
  */
-public final class StkShow implements Stakeholder {
+public final class StkSet implements Stakeholder {
 
     /**
      * Project.
@@ -42,23 +42,42 @@ public final class StkShow implements Stakeholder {
     private final Person person;
 
     /**
+     * Bank.
+     */
+    private final String bank;
+
+    /**
+     * Wallet.
+     */
+    private final String wallet;
+
+    /**
      * Ctor.
      * @param pkt Project
      * @param tbe Tube
+     * @param bnk Bank
+     * @param wlt Wallet
+     * @checkstyle ParameterNumberCheck (5 lines)
      */
-    public StkShow(final Project pkt, final Person tbe) {
+    public StkSet(final Project pkt, final Person tbe, final String bnk,
+        final String wlt) {
         this.project = pkt;
         this.person = tbe;
+        this.bank = bnk;
+        this.wallet = wlt;
     }
 
     @Override
     public void work() throws IOException {
-        final People people = new People(this.project);
-        people.bootstrap();
+        new People(this.project).bootstrap();
+        new People(this.project).wallet(
+            this.person.uid(), this.bank, this.wallet
+        );
         this.person.say(
             String.format(
-                "Your rate is %s",
-                people.rate(this.person.uid())
+                "Wallet of \"%s\" set to `%s:%s`",
+                this.person.uid(),
+                this.bank, this.wallet
             )
         );
     }

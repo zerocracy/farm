@@ -14,33 +14,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.crews.slack.profile.skills;
+package com.zerocracy.crews.slack.profile.wallet;
 
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
+import com.zerocracy.crews.Question;
 import com.zerocracy.crews.slack.Reaction;
 import com.zerocracy.crews.slack.SkPerson;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.pmo.Pmo;
-import com.zerocracy.stk.pmo.profile.skills.StkShow;
+import com.zerocracy.stk.pmo.profile.wallet.StkSet;
 import java.io.IOException;
 
 /**
- * Show user skills.
+ * Set wallet of the user.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class ReShow implements Reaction<SlackMessagePosted> {
+public final class ReSet implements Reaction<SlackMessagePosted> {
 
     @Override
     public boolean react(final Farm farm, final SlackMessagePosted event,
         final SlackSession session) throws IOException {
         farm.deploy(
-            new StkShow(
+            new StkSet(
                 new Pmo(farm),
-                new SkPerson(farm, event, session)
+                new SkPerson(farm, event, session),
+                new Question(event.getMessageContent()).pos(1),
+                new Question(event.getMessageContent()).pos(2)
             )
         );
         return true;

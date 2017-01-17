@@ -22,7 +22,6 @@ import com.zerocracy.crews.slack.Reaction;
 import com.zerocracy.crews.slack.SkPerson;
 import com.zerocracy.crews.slack.SkProject;
 import com.zerocracy.jstk.Farm;
-import com.zerocracy.stk.StkSafe;
 import com.zerocracy.stk.pm.StkBootstrap;
 import java.io.IOException;
 
@@ -39,12 +38,9 @@ public final class ReBootstrap implements Reaction<SlackMessagePosted> {
     public boolean react(final Farm farm, final SlackMessagePosted event,
         final SlackSession session) throws IOException {
         farm.deploy(
-            new StkSafe(
-                new SkPerson(farm, event, session),
-                new StkBootstrap(
-                    new SkProject(farm, event),
-                    new SkPerson(farm, event, session)
-                )
+            new StkBootstrap(
+                new SkProject(farm, event),
+                new SkPerson(farm, event, session)
             )
         );
         return true;

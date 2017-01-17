@@ -99,7 +99,10 @@ public final class SkCrew implements Crew {
         ssn.addMessagePostedListener(
             (event, sess) -> {
                 try {
-                    this.posted.react(farm, event, ssn);
+                    this.posted.react(
+                        new SafeFarm(farm, new SkPerson(farm, event, ssn)),
+                        event, ssn
+                    );
                 } catch (final IOException ex) {
                     throw new IllegalStateException(ex);
                 }

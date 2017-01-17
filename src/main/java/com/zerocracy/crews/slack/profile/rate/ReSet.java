@@ -24,7 +24,6 @@ import com.zerocracy.crews.slack.SkPerson;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.cash.Cash;
 import com.zerocracy.pmo.Pmo;
-import com.zerocracy.stk.StkSafe;
 import com.zerocracy.stk.pmo.profile.rate.StkSet;
 import java.io.IOException;
 
@@ -41,13 +40,10 @@ public final class ReSet implements Reaction<SlackMessagePosted> {
     public boolean react(final Farm farm, final SlackMessagePosted event,
         final SlackSession session) throws IOException {
         farm.deploy(
-            new StkSafe(
+            new StkSet(
+                new Pmo(farm),
                 new SkPerson(farm, event, session),
-                new StkSet(
-                    new Pmo(farm),
-                    new SkPerson(farm, event, session),
-                    new Cash.S(new Question(event.getMessageContent()).pos(1))
-                )
+                new Cash.S(new Question(event.getMessageContent()).pos(1))
             )
         );
         return true;

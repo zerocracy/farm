@@ -14,35 +14,51 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.crews.slack.profile.skills;
+package com.zerocracy.crews.slack;
 
-import com.ullink.slack.simpleslackapi.SlackSession;
-import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
-import com.zerocracy.crews.slack.Reaction;
-import com.zerocracy.crews.slack.SkPerson;
 import com.zerocracy.jstk.Farm;
-import com.zerocracy.pmo.Pmo;
-import com.zerocracy.stk.pmo.profile.skills.StkShow;
+import com.zerocracy.jstk.Project;
+import com.zerocracy.jstk.Stakeholder;
+import com.zerocracy.pm.Person;
+import com.zerocracy.stk.StkSafe;
 import java.io.IOException;
 
 /**
- * Show user skills.
+ * Safe farm.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.1
+ * @since 0.9
  */
-public final class ReShow implements Reaction<SlackMessagePosted> {
+final class SafeFarm implements Farm {
+
+    /**
+     * Original farm.
+     */
+    private final Farm origin;
+
+    /**
+     * Person to complain to.
+     */
+    private final Person person;
+
+    /**
+     * Ctor.
+     * @param frm Farm
+     * @param prn Person
+     */
+    SafeFarm(final Farm frm, final Person prn) {
+        this.origin = frm;
+        this.person = prn;
+    }
 
     @Override
-    public boolean react(final Farm farm, final SlackMessagePosted event,
-        final SlackSession session) throws IOException {
-        farm.deploy(
-            new StkShow(
-                new Pmo(farm),
-                new SkPerson(farm, event, session)
-            )
-        );
-        return true;
+    public Iterable<Project> find(final String query) throws IOException {
+        return this.origin.find(query);
+    }
+
+    @Override
+    public void deploy(final Stakeholder stakeholder) throws IOException {
+        this.origin.deploy(new StkSafe(this.person, stakeholder));
     }
 }

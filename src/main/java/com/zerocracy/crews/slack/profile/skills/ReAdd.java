@@ -23,7 +23,6 @@ import com.zerocracy.crews.slack.Reaction;
 import com.zerocracy.crews.slack.SkPerson;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.pmo.Pmo;
-import com.zerocracy.stk.StkSafe;
 import com.zerocracy.stk.pmo.profile.skills.StkAdd;
 import java.io.IOException;
 
@@ -40,13 +39,10 @@ public final class ReAdd implements Reaction<SlackMessagePosted> {
     public boolean react(final Farm farm, final SlackMessagePosted event,
         final SlackSession session) throws IOException {
         farm.deploy(
-            new StkSafe(
+            new StkAdd(
+                new Pmo(farm),
                 new SkPerson(farm, event, session),
-                new StkAdd(
-                    new Pmo(farm),
-                    new SkPerson(farm, event, session),
-                    new Question(event.getMessageContent()).pos(2)
-                )
+                new Question(event.getMessageContent()).pos(2)
             )
         );
         return true;

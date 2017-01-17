@@ -26,7 +26,6 @@ import com.zerocracy.crews.slack.SkPerson;
 import com.zerocracy.crews.slack.SkProject;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.stk.StkByRoles;
-import com.zerocracy.stk.StkSafe;
 import com.zerocracy.stk.pm.hr.roles.StkAssign;
 import java.io.IOException;
 import java.util.Arrays;
@@ -57,19 +56,16 @@ public final class ReAssign implements Reaction<SlackMessagePosted> {
     public boolean react(final Farm farm, final SlackMessagePosted event,
         final SlackSession session) throws IOException {
         farm.deploy(
-            new StkSafe(
+            new StkByRoles(
+                new SkProject(farm, event),
                 new SkPerson(farm, event, session),
-                new StkByRoles(
+                Arrays.asList("PO"),
+                new StkAssign(
+                    this.github,
                     new SkProject(farm, event),
                     new SkPerson(farm, event, session),
-                    Arrays.asList("PO"),
-                    new StkAssign(
-                        this.github,
-                        new SkProject(farm, event),
-                        new SkPerson(farm, event, session),
-                        new Question(event.getMessageContent()).pos(2),
-                        new Question(event.getMessageContent()).pos(Tv.THREE)
-                    )
+                    new Question(event.getMessageContent()).pos(2),
+                    new Question(event.getMessageContent()).pos(Tv.THREE)
                 )
             )
         );
