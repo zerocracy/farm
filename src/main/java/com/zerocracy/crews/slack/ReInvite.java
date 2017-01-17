@@ -41,7 +41,7 @@ final class ReInvite implements Reaction<SlackChannelJoined> {
                 "To start, please post `@0crat bootstrap`."
             )
         );
-        session.joinChannel(event.getSlackChannel().getId());
+        session.connect();
         return true;
     }
 
