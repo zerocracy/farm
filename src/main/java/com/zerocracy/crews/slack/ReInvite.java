@@ -33,6 +33,8 @@ final class ReInvite implements Reaction<SlackChannelJoined> {
     @Override
     public boolean react(final Farm farm, final SlackChannelJoined event,
         final SlackSession session) throws IOException {
+        session.disconnect();
+        session.connect();
         session.sendMessage(
             event.getSlackChannel(),
             String.join(
@@ -41,8 +43,6 @@ final class ReInvite implements Reaction<SlackChannelJoined> {
                 "To start, please post `@0crat bootstrap`."
             )
         );
-        session.disconnect();
-        session.connect();
         return true;
     }
 
