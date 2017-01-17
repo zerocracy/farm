@@ -63,7 +63,7 @@ public final class SkProject implements Project {
 
     @Override
     public String toString() {
-        return this.channel.getName();
+        return this.channel.getId();
     }
 
     @Override
