@@ -16,11 +16,15 @@
  */
 package com.zerocracy.stk.pm.hr.roles;
 
+import com.jcabi.github.Github;
+import com.jcabi.http.Request;
+import com.jcabi.http.response.RestResponse;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.Person;
 import com.zerocracy.pm.hr.Roles;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 
 /**
  * Assign role to a person.
@@ -30,6 +34,11 @@ import java.io.IOException;
  * @since 0.1
  */
 public final class StkAssign implements Stakeholder {
+
+    /**
+     * Github client.
+     */
+    private final Github github;
 
     /**
      * Project.
@@ -53,14 +62,16 @@ public final class StkAssign implements Stakeholder {
 
     /**
      * Ctor.
+     * @param ghub Github client
      * @param pkt Project
      * @param tbe Tube
      * @param rle Role to assign
      * @param who Who to assign to
      * @checkstyle ParameterNumberCheck (5 lines)
      */
-    public StkAssign(final Project pkt, final Person tbe,
+    public StkAssign(final Github ghub, final Project pkt, final Person tbe,
         final String rle, final String who) {
+        this.github = ghub;
         this.project = pkt;
         this.person = tbe;
         this.role = rle;
@@ -69,6 +80,14 @@ public final class StkAssign implements Stakeholder {
 
     @Override
     public void work() throws IOException {
+        this.github.entry().uri()
+            .path("/user/following")
+            .path(this.target)
+            .back()
+            .method(Request.PUT)
+            .fetch()
+            .as(RestResponse.class)
+            .assertStatus(HttpURLConnection.HTTP_NO_CONTENT);
         new Roles(this.project).assign(this.target, this.role);
         this.person.say(
             String.format(

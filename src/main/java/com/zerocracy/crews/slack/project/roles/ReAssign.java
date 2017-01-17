@@ -17,6 +17,7 @@
 package com.zerocracy.crews.slack.project.roles;
 
 import com.jcabi.aspects.Tv;
+import com.jcabi.github.Github;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.crews.Question;
@@ -39,6 +40,19 @@ import java.util.Arrays;
  */
 public final class ReAssign implements Reaction<SlackMessagePosted> {
 
+    /**
+     * Github.
+     */
+    private final Github github;
+
+    /**
+     * Ctor.
+     * @param ghub Github
+     */
+    public ReAssign(final Github ghub) {
+        this.github = ghub;
+    }
+
     @Override
     public boolean react(final Farm farm, final SlackMessagePosted event,
         final SlackSession session) throws IOException {
@@ -50,6 +64,7 @@ public final class ReAssign implements Reaction<SlackMessagePosted> {
                     new SkPerson(farm, event, session),
                     Arrays.asList("PO"),
                     new StkAssign(
+                        this.github,
                         new SkProject(farm, event),
                         new SkPerson(farm, event, session),
                         new Question(event.getMessageContent()).pos(2),
