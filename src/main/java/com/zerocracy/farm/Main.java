@@ -205,8 +205,8 @@ public final class Main {
                                                 new Reaction.Chain<>(
                                                     Arrays.asList(
                                                         new ReRegex("roles", new com.zerocracy.crews.slack.project.roles.ReShow()),
-                                                        new ReRegex("roles? assign .*", new ReAssign()),
-                                                        new ReRegex("roles? resign .*", new ReResign())
+                                                        new ReRegex("roles? (assign|add) .*", new ReAssign()),
+                                                        new ReRegex("roles? (del|remove|resign) .*", new ReResign())
                                                     )
                                                 ),
                                                 new Reaction.Chain<>(
