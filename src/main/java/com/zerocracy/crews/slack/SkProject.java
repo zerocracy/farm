@@ -62,6 +62,11 @@ public final class SkProject implements Project {
     }
 
     @Override
+    public String toString() {
+        return this.channel.getName();
+    }
+
+    @Override
     public Item acq(final String file) throws IOException {
         return this.project().acq(file);
     }

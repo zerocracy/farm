@@ -64,8 +64,9 @@ public final class StkOut implements Stakeholder {
         new Wbs(this.project).remove(this.job);
         this.person.say(
             String.format(
-                "Done, job \"%s\" is out of scope",
-                this.job.name()
+                "Done, job `%s` is out of \"%s\"",
+                this.job.name(),
+                this.project
             )
         );
     }

@@ -72,9 +72,10 @@ public final class StkResign implements Stakeholder {
         new Roles(this.project).resign(this.target, this.role);
         this.person.say(
             String.format(
-                "Role \"%s\" resigned from \"%s\"",
+                "Role \"%s\" resigned from \"%s\" in \"%s\"",
                 this.role,
-                this.target
+                this.target,
+                this.project
             )
         );
     }

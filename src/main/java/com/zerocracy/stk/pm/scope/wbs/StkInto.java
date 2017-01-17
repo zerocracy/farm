@@ -64,8 +64,8 @@ public final class StkInto implements Stakeholder {
         new Wbs(this.project).add(this.job);
         this.person.say(
             String.format(
-                "Done, job \"%s\" is in scope",
-                this.job.name()
+                "Done, job `%s` is in scope of \"%s\"",
+                this.job.name(), this.project
             )
         );
     }

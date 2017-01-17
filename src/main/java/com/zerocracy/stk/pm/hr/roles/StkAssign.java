@@ -91,9 +91,10 @@ public final class StkAssign implements Stakeholder {
         new Roles(this.project).assign(this.target, this.role);
         this.person.say(
             String.format(
-                "Role \"%s\" assigned to \"%s\"",
+                "Role \"%s\" assigned to \"%s\" in \"%s\"",
                 this.role,
-                this.target
+                this.target,
+                this.project
             )
         );
     }

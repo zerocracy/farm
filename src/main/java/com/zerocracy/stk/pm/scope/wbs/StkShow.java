@@ -55,7 +55,8 @@ public final class StkShow implements Stakeholder {
     public void work() throws IOException {
         this.person.say(
             String.format(
-                "This is what we have in WBS at the moment:%n%n```%n%s%n```",
+                "This is what we have in WBS of \"%s\":%n%n```%n%s%n```",
+                this.project,
                 new Wbs(this.project).print()
             )
         );

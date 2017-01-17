@@ -64,6 +64,15 @@ public final class GhProject implements Project {
     }
 
     @Override
+    public String toString() {
+        try {
+            return this.project().toString();
+        } catch (final IOException ex) {
+            throw new IllegalStateException(ex);
+        }
+    }
+
+    @Override
     public Item acq(final String file) throws IOException {
         return this.project().acq(file);
     }

@@ -55,7 +55,8 @@ public final class StkShow implements Stakeholder {
     public void work() throws IOException {
         this.person.say(
             String.format(
-                "Full list of project roles at the moment:%n%n```%n%s%n```",
+                "Full list of roles in \"%s\":%n%n```%n%s%n```",
+                this.project,
                 new Roles(this.project).print()
             )
         );
