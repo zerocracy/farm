@@ -16,8 +16,6 @@
  */
 package com.zerocracy.stk.pmo.links;
 
-import com.jcabi.github.Coordinates;
-import com.jcabi.github.Github;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.Person;
@@ -25,18 +23,13 @@ import com.zerocracy.pmo.Catalog;
 import java.io.IOException;
 
 /**
- * Attach a resource to the project.
+ * Remove a resource to the project.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class StkAdd implements Stakeholder {
-
-    /**
-     * Github.
-     */
-    private final Github github;
+public final class StkRemove implements Stakeholder {
 
     /**
      * Project.
@@ -65,7 +58,6 @@ public final class StkAdd implements Stakeholder {
 
     /**
      * Ctor.
-     * @param ghub Github
      * @param pmo Project
      * @param prn Person
      * @param pkt Project ID
@@ -73,9 +65,8 @@ public final class StkAdd implements Stakeholder {
      * @param hrf HREF
      * @checkstyle ParameterNumberCheck (5 lines)
      */
-    public StkAdd(final Github ghub, final Project pmo, final Person prn,
+    public StkRemove(final Project pmo, final Person prn,
         final String pkt, final String ref, final String hrf) {
-        this.github = ghub;
         this.project = pmo;
         this.person = prn;
         this.pid = pkt;
@@ -85,15 +76,10 @@ public final class StkAdd implements Stakeholder {
 
     @Override
     public void work() throws IOException {
-        if ("github".equals(this.rel)) {
-            this.github.repos().get(
-                new Coordinates.Simple(this.href)
-            ).stars().star();
-        }
-        new Catalog(this.project).link(this.pid, this.rel, this.href);
+        new Catalog(this.project).unlink(this.pid, this.rel, this.href);
         this.person.say(
             String.format(
-                "Done, project `%s` is linked with rel=`%s` and href=`%s`",
+                "Done, link removed from `%s` to rel=`%s` and href=`%s`",
                 this.pid, this.rel, this.href
             )
         );

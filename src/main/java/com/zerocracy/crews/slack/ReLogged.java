@@ -31,7 +31,7 @@ import java.io.IOException;
  * @param <T> Type of event
  * @since 0.1
  */
-final class ReLogged<T extends SlackEvent> implements Reaction<T> {
+public final class ReLogged<T extends SlackEvent> implements Reaction<T> {
 
     /**
      * Reaction.
@@ -42,7 +42,7 @@ final class ReLogged<T extends SlackEvent> implements Reaction<T> {
      * Ctor.
      * @param tgt Target
      */
-    ReLogged(final Reaction<T> tgt) {
+    public ReLogged(final Reaction<T> tgt) {
         this.origin = tgt;
     }
 

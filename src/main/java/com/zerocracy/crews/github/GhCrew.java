@@ -55,28 +55,11 @@ public final class GhCrew implements Crew {
     /**
      * Ctor.
      * @param ghb Github client
+     * @param rtn Reaction
      */
-    public GhCrew(final Github ghb) {
+    public GhCrew(final Github ghb, final Reaction rtn) {
         this.github = ghb;
-        this.reaction = new ReLogged(
-            new Reaction.Chain(
-                new ReOnReason("invitation", new ReOnInvitation(ghb)),
-                new ReOnReason(
-                    "mention",
-                    new ReOnComment(
-                        ghb,
-                        new ReNotMine(
-                            new Response.Chain(
-                                new ReRegex("hello", new ReHello()),
-                                new ReRegex("in", new ReIn()),
-                                new ReRegex("out", new ReOut()),
-                                new ReRegex(".*", new ReSorry())
-                            )
-                        )
-                    )
-                )
-            )
-        );
+        this.reaction = rtn;
     }
 
     @Override

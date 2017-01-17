@@ -28,7 +28,7 @@ import java.io.IOException;
  * @version $Id$
  * @since 0.1
  */
-final class ReHello implements Reaction<SlackMessagePosted> {
+public final class ReHello implements Reaction<SlackMessagePosted> {
 
     @Override
     public boolean react(final Farm farm, final SlackMessagePosted event,

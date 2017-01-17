@@ -28,7 +28,14 @@ import javax.json.JsonObject;
  * @version $Id$
  * @since 0.1
  */
-interface Reaction {
+public interface Reaction {
+
+    /**
+     * Empty.
+     */
+    Reaction EMPTY = (farm, event) -> {
+        // none
+    };
 
     /**
      * Do something about it.
@@ -50,14 +57,14 @@ interface Reaction {
          * Ctor.
          * @param list All reactions
          */
-        Chain(final Iterable<Reaction> list) {
+        public Chain(final Iterable<Reaction> list) {
             this.reactions = list;
         }
         /**
          * Ctor.
          * @param list All reactions
          */
-        Chain(final Reaction... list) {
+        public Chain(final Reaction... list) {
             this(Arrays.asList(list));
         }
         @Override

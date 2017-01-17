@@ -33,7 +33,7 @@ import javax.json.JsonObject;
  * @version $Id$
  * @since 0.2
  */
-final class ReOnInvitation implements Reaction {
+public final class ReOnInvitation implements Reaction {
 
     /**
      * Github client.
@@ -44,7 +44,7 @@ final class ReOnInvitation implements Reaction {
      * Ctor.
      * @param ghb Github client
      */
-    ReOnInvitation(final Github ghb) {
+    public ReOnInvitation(final Github ghb) {
         this.github = ghb;
     }
 

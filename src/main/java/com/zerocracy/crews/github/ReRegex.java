@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
  * @version $Id$
  * @since 0.1
  */
-final class ReRegex implements Response {
+public final class ReRegex implements Response {
 
     /**
      * Regex.
@@ -46,7 +46,7 @@ final class ReRegex implements Response {
      * @param ptn Pattern
      * @param tgt Target
      */
-    ReRegex(final String ptn, final Reply tgt) {
+    public ReRegex(final String ptn, final Reply tgt) {
         this(
             Pattern.compile(
                 ptn,

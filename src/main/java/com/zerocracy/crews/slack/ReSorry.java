@@ -27,7 +27,7 @@ import com.zerocracy.jstk.Farm;
  * @version $Id$
  * @since 0.1
  */
-final class ReSorry implements Reaction<SlackMessagePosted> {
+public final class ReSorry implements Reaction<SlackMessagePosted> {
 
     @Override
     public boolean react(final Farm farm, final SlackMessagePosted event,

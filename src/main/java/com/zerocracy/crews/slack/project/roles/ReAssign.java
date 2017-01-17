@@ -37,7 +37,7 @@ import java.util.Arrays;
  * @version $Id$
  * @since 0.1
  */
-final class ReAssign implements Reaction<SlackMessagePosted> {
+public final class ReAssign implements Reaction<SlackMessagePosted> {
 
     @Override
     public boolean react(final Farm farm, final SlackMessagePosted event,

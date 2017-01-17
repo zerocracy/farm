@@ -28,7 +28,7 @@ import java.io.IOException;
  * @version $Id$
  * @since 0.1
  */
-final class ReIfAddressed implements Reaction<SlackMessagePosted> {
+public final class ReIfAddressed implements Reaction<SlackMessagePosted> {
 
     /**
      * Reaction.
@@ -39,7 +39,7 @@ final class ReIfAddressed implements Reaction<SlackMessagePosted> {
      * Ctor.
      * @param tgt Target
      */
-    ReIfAddressed(final Reaction<SlackMessagePosted> tgt) {
+    public ReIfAddressed(final Reaction<SlackMessagePosted> tgt) {
         this.origin = tgt;
     }
 

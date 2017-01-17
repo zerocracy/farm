@@ -28,7 +28,7 @@ import java.io.IOException;
  * @version $Id$
  * @since 0.1
  */
-final class ReIfDirect implements Reaction<SlackMessagePosted> {
+public final class ReIfDirect implements Reaction<SlackMessagePosted> {
 
     /**
      * Reaction.
@@ -45,7 +45,7 @@ final class ReIfDirect implements Reaction<SlackMessagePosted> {
      * @param lft If TRUE (direct message to me)
      * @param rht If FALSE (just a message in channel)
      */
-    ReIfDirect(final Reaction<SlackMessagePosted> lft,
+    public ReIfDirect(final Reaction<SlackMessagePosted> lft,
         final Reaction<SlackMessagePosted> rht) {
         this.left = lft;
         this.right = rht;

@@ -22,11 +22,35 @@ import com.jcabi.log.Logger;
 import com.jcabi.s3.Region;
 import com.zerocracy.crews.ghook.GkCrew;
 import com.zerocracy.crews.github.GhCrew;
+import com.zerocracy.crews.github.ReIn;
+import com.zerocracy.crews.github.ReOnComment;
+import com.zerocracy.crews.github.ReOnInvitation;
+import com.zerocracy.crews.github.ReOnReason;
+import com.zerocracy.crews.github.ReOut;
+import com.zerocracy.crews.github.Response;
+import com.zerocracy.crews.slack.ReHello;
+import com.zerocracy.crews.slack.ReIfAddressed;
+import com.zerocracy.crews.slack.ReIfDirect;
+import com.zerocracy.crews.slack.ReLogged;
+import com.zerocracy.crews.slack.ReNotMine;
+import com.zerocracy.crews.slack.ReRegex;
+import com.zerocracy.crews.slack.ReSafe;
+import com.zerocracy.crews.slack.ReSorry;
+import com.zerocracy.crews.slack.Reaction;
 import com.zerocracy.crews.slack.SkCrew;
+import com.zerocracy.crews.slack.profile.aliases.ReShow;
+import com.zerocracy.crews.slack.profile.rate.ReSet;
+import com.zerocracy.crews.slack.profile.skills.ReAdd;
+import com.zerocracy.crews.slack.project.ReBootstrap;
+import com.zerocracy.crews.slack.project.links.ReRemove;
+import com.zerocracy.crews.slack.project.roles.ReAssign;
+import com.zerocracy.crews.slack.project.roles.ReResign;
+import com.zerocracy.jstk.Crew;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.tk.TkApp;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Properties;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -41,7 +65,10 @@ import org.takes.http.FtCli;
  * @version $Id$
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @checkstyle LineLengthCheck (500 lines)
+ * @checkstyle ClassFanOutComplexityCheck (500 lines)
  */
+@SuppressWarnings("PMD.ExcessiveImports")
 public final class Main {
 
     /**
@@ -87,16 +114,35 @@ public final class Main {
             )
         );
         final Github github = new RtGithub(
-            "0crat",
+            props.getProperty("github.0crat.login"),
             props.getProperty("github.0crat.password")
         );
         final Queue<JsonObject> events = new ConcurrentLinkedQueue<>();
         new Routine(
             farm,
             new GhCrew(
-                github
+                github,
+                new com.zerocracy.crews.github.ReLogged(
+                    new com.zerocracy.crews.github.Reaction.Chain(
+                        new ReOnReason("invitation", new ReOnInvitation(github)),
+                        new ReOnReason(
+                            "mention",
+                            new ReOnComment(
+                                github,
+                                new com.zerocracy.crews.github.ReNotMine(
+                                    new Response.Chain(
+                                        new com.zerocracy.crews.github.ReRegex("hello", new com.zerocracy.crews.github.ReHello()),
+                                        new com.zerocracy.crews.github.ReRegex("in", new ReIn()),
+                                        new com.zerocracy.crews.github.ReRegex("out", new ReOut()),
+                                        new com.zerocracy.crews.github.ReRegex(".*", new com.zerocracy.crews.github.ReSorry())
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
             ),
-            new SkCrew(),
+            Main.skcrew(github),
             new GkCrew(github, events)
         ).start();
         new FtCli(
@@ -104,6 +150,83 @@ public final class Main {
             this.arguments
         ).start(Exit.NEVER);
         Logger.info(this, "Farm is ready");
+    }
+
+    /**
+     * Slack crew.
+     * @param github Github
+     * @return Reaction
+     */
+    private static Crew skcrew(final Github github) {
+        return new SkCrew(
+            new ReSafe(
+                new ReLogged<>(
+                    new ReNotMine(
+                        new ReIfDirect(
+                            new Reaction.Chain<>(
+                                Arrays.asList(
+                                    new ReRegex("hi|hello|hey", new ReHello()),
+                                    new Reaction.Chain<>(
+                                        Arrays.asList(
+                                            new Reaction.Chain<>(
+                                                Arrays.asList(
+                                                    new ReRegex("alias(es)?", new ReShow())
+                                                )
+                                            ),
+                                            new Reaction.Chain<>(
+                                                Arrays.asList(
+                                                    new ReRegex("rate", new com.zerocracy.crews.slack.profile.rate.ReShow()),
+                                                    new ReRegex("rate .*", new ReSet())
+                                                )
+                                            ),
+                                            new Reaction.Chain<>(
+                                                Arrays.asList(
+                                                    new ReRegex("skills", new com.zerocracy.crews.slack.profile.skills.ReShow()),
+                                                    new ReRegex("skill add .*", new ReAdd())
+                                                )
+                                            )
+                                        )
+                                    ),
+                                    new ReRegex(".*", new ReSorry())
+                                )
+                            ),
+                            new ReIfAddressed(
+                                new Reaction.Chain<>(
+                                    Arrays.asList(
+                                        new ReRegex("hello|hi|hey", new ReHello()),
+                                        new Reaction.Chain<>(
+                                            Arrays.asList(
+                                                new ReRegex("bootstrap", new ReBootstrap()),
+                                                new Reaction.Chain<>(
+                                                    Arrays.asList(
+                                                        new ReRegex("wbs", new com.zerocracy.crews.slack.project.wbs.ReShow())
+                                                    )
+                                                ),
+                                                new Reaction.Chain<>(
+                                                    Arrays.asList(
+                                                        new ReRegex("roles", new com.zerocracy.crews.slack.project.roles.ReShow()),
+                                                        new ReRegex("roles? assign .*", new ReAssign()),
+                                                        new ReRegex("roles? resign .*", new ReResign())
+                                                    )
+                                                ),
+                                                new Reaction.Chain<>(
+                                                    Arrays.asList(
+                                                        new ReRegex("links?", new com.zerocracy.crews.slack.project.links.ReShow()),
+                                                        new ReRegex("link add .*", new com.zerocracy.crews.slack.project.links.ReAdd(github)),
+                                                        new ReRegex("link (remove|del|delete) .*", new ReRemove())
+                                                    )
+                                                )
+                                            )
+                                        ),
+                                        new ReRegex(".*", new ReSorry())
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        );
     }
 
 }

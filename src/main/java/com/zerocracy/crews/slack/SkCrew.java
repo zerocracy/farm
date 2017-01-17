@@ -25,7 +25,6 @@ import com.zerocracy.jstk.Crew;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.pmo.Bots;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -42,45 +41,23 @@ import java.util.Map;
 public final class SkCrew implements Crew {
 
     /**
-     * When new message posted.
+     * Reaction on post.
      */
-    private static final Reaction<SlackMessagePosted> POSTED = new ReSafe(
-        new ReLogged<>(
-            new ReNotMine(
-                new ReIfDirect(
-                    new Reaction.Chain<>(
-                        Arrays.asList(
-                            new ReRegex("hi|hello|hey", new ReHello()),
-                            new com.zerocracy.crews.slack.profile.ReIndex(),
-                            new ReRegex(".*", new ReSorry())
-                        )
-                    ),
-                    new ReIfAddressed(
-                        new Reaction.Chain<>(
-                            Arrays.asList(
-                                new ReRegex("hello|hi|hey", new ReHello()),
-                                new com.zerocracy.crews.slack.project.ReIndex(),
-                                new ReRegex(".*", new ReSorry())
-                            )
-                        )
-                    )
-                )
-            )
-        )
-    );
-
-    /**
-     * When joined new channel.
-     */
-    private static final Reaction<SlackChannelJoined> JOINED = new ReLogged<>(
-        new ReInvite()
-    );
+    private final Reaction<SlackMessagePosted> posted;
 
     /**
      * Slack sessions (Bot ID vs. Session).
      */
-    private final Map<String, SlackSession> sessions =
-        new HashMap<>(0);
+    private final Map<String, SlackSession> sessions;
+
+    /**
+     * Ctor.
+     * @param ptd Reaction on post
+     */
+    public SkCrew(final Reaction<SlackMessagePosted> ptd) {
+        this.posted = ptd;
+        this.sessions = new HashMap<>(0);
+    }
 
     @Override
     public void deploy(final Farm farm) throws IOException {
@@ -122,7 +99,7 @@ public final class SkCrew implements Crew {
         ssn.addMessagePostedListener(
             (event, sess) -> {
                 try {
-                    SkCrew.POSTED.react(farm, event, ssn);
+                    this.posted.react(farm, event, ssn);
                 } catch (final IOException ex) {
                     throw new IllegalStateException(ex);
                 }
@@ -131,13 +108,23 @@ public final class SkCrew implements Crew {
         ssn.addChannelJoinedListener(
             (event, sess) -> {
                 try {
-                    SkCrew.JOINED.react(farm, event, ssn);
+                    SkCrew.joined().react(farm, event, ssn);
                 } catch (final IOException ex) {
                     throw new IllegalStateException(ex);
                 }
             }
         );
         return ssn;
+    }
+
+    /**
+     * When joined new channel.
+     * @return Reaction
+     */
+    private static Reaction<SlackChannelJoined> joined() {
+        return new ReLogged<>(
+            new ReInvite()
+        );
     }
 
 }

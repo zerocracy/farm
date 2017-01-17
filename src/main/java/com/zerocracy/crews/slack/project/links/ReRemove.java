@@ -14,28 +14,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.crews.slack.project.wbs;
+package com.zerocracy.crews.slack.project.links;
 
+import com.jcabi.aspects.Tv;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
+import com.zerocracy.crews.Question;
 import com.zerocracy.crews.slack.Reaction;
 import com.zerocracy.crews.slack.SkPerson;
 import com.zerocracy.crews.slack.SkProject;
 import com.zerocracy.jstk.Farm;
+import com.zerocracy.pmo.Pmo;
 import com.zerocracy.stk.StkByRoles;
 import com.zerocracy.stk.StkSafe;
-import com.zerocracy.stk.pm.scope.wbs.StkShow;
+import com.zerocracy.stk.pmo.links.StkRemove;
 import java.io.IOException;
 import java.util.Arrays;
 
 /**
- * Show WBS.
+ * Remove some resource from the project.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.1
+ * @since 0.8
  */
-public final class ReShow implements Reaction<SlackMessagePosted> {
+public final class ReRemove implements Reaction<SlackMessagePosted> {
 
     @Override
     public boolean react(final Farm farm, final SlackMessagePosted event,
@@ -46,10 +49,13 @@ public final class ReShow implements Reaction<SlackMessagePosted> {
                 new StkByRoles(
                     new SkProject(farm, event),
                     new SkPerson(farm, event, session),
-                    Arrays.asList("PO", "ARC"),
-                    new StkShow(
-                        new SkProject(farm, event),
-                        new SkPerson(farm, event, session)
+                    Arrays.asList("PO"),
+                    new StkRemove(
+                        new Pmo(farm),
+                        new SkPerson(farm, event, session),
+                        event.getChannel().getId(),
+                        new Question(event.getMessageContent()).pos(2),
+                        new Question(event.getMessageContent()).pos(Tv.THREE)
                     )
                 )
             )

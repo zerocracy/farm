@@ -28,7 +28,7 @@ import java.util.Locale;
  * @version $Id$
  * @since 0.1
  */
-final class ReNotMine implements Response {
+public final class ReNotMine implements Response {
 
     /**
      * Response.
@@ -39,7 +39,7 @@ final class ReNotMine implements Response {
      * Ctor.
      * @param tgt Target
      */
-    ReNotMine(final Response tgt) {
+    public ReNotMine(final Response tgt) {
         this.origin = tgt;
     }
 

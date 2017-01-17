@@ -36,7 +36,7 @@ import java.util.Arrays;
  * @version $Id$
  * @since 0.8
  */
-final class ReShow implements Reaction<SlackMessagePosted> {
+public final class ReShow implements Reaction<SlackMessagePosted> {
 
     @Override
     public boolean react(final Farm farm, final SlackMessagePosted event,

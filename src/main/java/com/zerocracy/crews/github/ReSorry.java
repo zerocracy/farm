@@ -27,7 +27,7 @@ import java.io.IOException;
  * @version $Id$
  * @since 0.1
  */
-final class ReSorry implements Reply {
+public final class ReSorry implements Reply {
 
     @Override
     public void react(final Farm farm, final Comment.Smart comment)

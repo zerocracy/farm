@@ -34,7 +34,7 @@ import org.apache.commons.lang3.StringUtils;
  * @version $Id$
  * @since 0.1
  */
-final class ReOnComment implements Reaction {
+public final class ReOnComment implements Reaction {
 
     /**
      * GitHub client.
@@ -51,7 +51,7 @@ final class ReOnComment implements Reaction {
      * @param ghb Github client
      * @param rsp Response
      */
-    ReOnComment(final Github ghb, final Response rsp) {
+    public ReOnComment(final Github ghb, final Response rsp) {
         this.github = ghb;
         this.response = rsp;
     }

@@ -33,7 +33,7 @@ import java.util.Arrays;
  * @version $Id$
  * @since 0.1
  */
-final class ReIn implements Reply {
+public final class ReIn implements Reply {
 
     @Override
     public void react(final Farm farm, final Comment.Smart comment)

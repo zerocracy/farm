@@ -32,7 +32,7 @@ import org.apache.commons.io.output.ByteArrayOutputStream;
  * @version $Id$
  * @since 0.1
  */
-final class ReSafe implements Reaction<SlackMessagePosted> {
+public final class ReSafe implements Reaction<SlackMessagePosted> {
 
     /**
      * Reaction.
@@ -43,7 +43,7 @@ final class ReSafe implements Reaction<SlackMessagePosted> {
      * Ctor.
      * @param tgt Target
      */
-    ReSafe(final Reaction<SlackMessagePosted> tgt) {
+    public ReSafe(final Reaction<SlackMessagePosted> tgt) {
         this.origin = tgt;
     }
 

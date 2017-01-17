@@ -76,6 +76,32 @@ public final class Catalog {
     }
 
     /**
+     * Remove a link from the project.
+     * @param pid Project ID
+     * @param rel REL
+     * @param href HREF
+     * @throws IOException If fails
+     */
+    public void unlink(final String pid, final String rel, final String href)
+        throws IOException {
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                new Directives()
+                    .xpath(String.format("/catalog/project[@id=  '%s']", pid))
+                    .strict(1)
+                    .xpath(
+                        String.format(
+                            "links/link[@rel='%s' and @href='%s']",
+                            rel, href
+                        )
+                    )
+                    .strict(1)
+                    .remove()
+            );
+        }
+    }
+
+    /**
      * Get all project links.
      * @param pid Project ID
      * @return Links found

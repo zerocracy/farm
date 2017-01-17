@@ -36,7 +36,9 @@ public final class SkCrewITCase {
     @Test
     @Ignore
     public void fetchesNotifications() throws Exception {
-        new SkCrew().deploy(new FkFarm());
+        new SkCrew(
+            (farm, event, session) -> true
+        ).deploy(new FkFarm());
         TimeUnit.HOURS.sleep(1L);
     }
 

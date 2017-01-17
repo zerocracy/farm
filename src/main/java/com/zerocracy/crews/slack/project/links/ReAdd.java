@@ -16,6 +16,8 @@
  */
 package com.zerocracy.crews.slack.project.links;
 
+import com.jcabi.aspects.Tv;
+import com.jcabi.github.Github;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.crews.Question;
@@ -37,7 +39,20 @@ import java.util.Arrays;
  * @version $Id$
  * @since 0.1
  */
-final class ReAdd implements Reaction<SlackMessagePosted> {
+public final class ReAdd implements Reaction<SlackMessagePosted> {
+
+    /**
+     * Github.
+     */
+    private final Github github;
+
+    /**
+     * Ctor.
+     * @param ghub Github
+     */
+    public ReAdd(final Github ghub) {
+        this.github = ghub;
+    }
 
     @Override
     public boolean react(final Farm farm, final SlackMessagePosted event,
@@ -50,11 +65,12 @@ final class ReAdd implements Reaction<SlackMessagePosted> {
                     new SkPerson(farm, event, session),
                     Arrays.asList("PO"),
                     new StkAdd(
+                        this.github,
                         new Pmo(farm),
                         new SkPerson(farm, event, session),
                         event.getChannel().getId(),
-                        new Question(event.getMessageContent()).pos(1),
-                        new Question(event.getMessageContent()).pos(2)
+                        new Question(event.getMessageContent()).pos(2),
+                        new Question(event.getMessageContent()).pos(Tv.THREE)
                     )
                 )
             )

@@ -33,7 +33,7 @@ import java.io.IOException;
  * @version $Id$
  * @since 0.1
  */
-final class ReShow implements Reaction<SlackMessagePosted> {
+public final class ReShow implements Reaction<SlackMessagePosted> {
 
     @Override
     public boolean react(final Farm farm, final SlackMessagePosted event,

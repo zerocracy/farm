@@ -29,7 +29,7 @@ import java.io.IOException;
  * @version $Id$
  * @since 0.1
  */
-final class ReNotMine implements Reaction<SlackMessagePosted> {
+public final class ReNotMine implements Reaction<SlackMessagePosted> {
 
     /**
      * Reaction.
@@ -40,7 +40,7 @@ final class ReNotMine implements Reaction<SlackMessagePosted> {
      * Ctor.
      * @param tgt Target
      */
-    ReNotMine(final Reaction<SlackMessagePosted> tgt) {
+    public ReNotMine(final Reaction<SlackMessagePosted> tgt) {
         this.origin = tgt;
     }
 

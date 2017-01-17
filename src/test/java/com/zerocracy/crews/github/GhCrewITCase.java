@@ -37,7 +37,8 @@ public final class GhCrewITCase {
     @Ignore
     public void fetchesNotifications() throws Exception {
         new GhCrew(
-            new RtGithub("0crat", "--secret--")
+            new RtGithub("0crat", "--secret--"),
+            Reaction.EMPTY
         ).deploy(new FkFarm());
     }
 
