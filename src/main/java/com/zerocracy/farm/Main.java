@@ -181,6 +181,12 @@ public final class Main {
                                             ),
                                             new Reaction.Chain<>(
                                                 Arrays.asList(
+                                                    new ReRegex("wallet", new com.zerocracy.crews.slack.profile.wallet.ReShow()),
+                                                    new ReRegex("wallet .*", new com.zerocracy.crews.slack.profile.wallet.ReSet())
+                                                )
+                                            ),
+                                            new Reaction.Chain<>(
+                                                Arrays.asList(
                                                     new ReRegex("skills", new com.zerocracy.crews.slack.profile.skills.ReShow()),
                                                     new ReRegex("skill add .*", new ReAdd())
                                                 )
