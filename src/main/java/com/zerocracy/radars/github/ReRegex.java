@@ -69,7 +69,7 @@ public final class ReRegex implements Response {
     @Override
     public boolean react(final Farm farm, final Comment.Smart comment)
         throws IOException {
-        final String[] parts = comment.body().split(" ", 2);
+        final String[] parts = comment.body().split("\\s+", 2);
         boolean done = false;
         if (parts.length > 1) {
             final Matcher matcher = this.regex.matcher(parts[1]);

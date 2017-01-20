@@ -16,9 +16,15 @@
  */
 package com.zerocracy.radars;
 
-import com.zerocracy.stk.SoftException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.jcabi.xml.XML;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 /**
  * Question in text.
@@ -30,67 +36,167 @@ import java.util.regex.Pattern;
 public final class Question {
 
     /**
-     * Full text.
+     * XML config.
+     */
+    private final XML config;
+
+    /**
+     * Question text.
      */
     private final String text;
 
     /**
+     * Code found.
+     */
+    private final AtomicReference<String> rcode;
+
+    /**
+     * Help found.
+     */
+    private final AtomicReference<String> rhelp;
+
+    /**
+     * Params found.
+     */
+    private final Map<String, String> rparams;
+
+    /**
      * Ctor.
-     * @param txt Text to parse
+     * @param xml XML config
+     * @param txt Text
      */
-    public Question(final String txt) {
+    public Question(final XML xml, final String txt) {
+        this.config = xml;
         this.text = txt;
+        this.rcode = new AtomicReference<>();
+        this.rhelp = new AtomicReference<>();
+        this.rparams = new HashMap<>(0);
     }
 
     /**
-     * Get argument by position.
-     * @param num Position number (0 for user name)
-     * @return Value
-     * @throws SoftException If fails
+     * Does it match?
+     * @return TRUE if the question was understood
      */
-    public String pos(final int num) throws SoftException {
-        final Matcher matcher = Pattern.compile(
-            "<@U[A-Z0-9]+>(?: +(.+))"
-        ).matcher(this.text);
-        if (!matcher.matches()) {
-            throw new SoftException(
-                String.format(
-                    "Can't understand \"%s\"", this.text
-                )
-            );
-        }
-        final String[] parts = matcher.group(1).split("\\s+");
-        if (parts.length < num) {
-            throw new SoftException(
-                String.format(
-                    "Argument no.%d not found in \"%s\"", num, this.text
-                )
-            );
-        }
-        return parts[num];
+    public boolean matches() {
+        this.start();
+        return this.rcode.get() != null;
     }
 
     /**
-     * Get argument by uid.
-     * @param name The uid
-     * @return Value
-     * @throws SoftException If fails
+     * Get the best help we can give at this moment.
+     * @return Help text
      */
-    public String arg(final String name) throws SoftException {
-        final Matcher matcher = Pattern.compile(
-            String.format(
-                "%s\\s*(?:=|is)\\s*`([^`]+)`", name
-            ),
-            Pattern.CASE_INSENSITIVE | Pattern.MULTILINE
-        ).matcher(this.text);
-        if (!matcher.find()) {
-            throw new SoftException(
-                String.format(
-                    "Argument \"%s\" not found in \"%s\"", name, this.text
-                )
-            );
+    public String help() {
+        return this.rhelp.get();
+    }
+
+    /**
+     * Matching code.
+     * @return The code
+     */
+    public String code() {
+        return this.rcode.get();
+    }
+
+    /**
+     * All matched parameters.
+     * @return Map of params
+     */
+    public Map<String, String> params() {
+        return this.rparams;
+    }
+
+    /**
+     * Parse.
+     */
+    private void start() {
+        this.rcode.set(null);
+        this.parse(
+            this.config.nodes("/question/cmd"),
+            new ArrayList<>(Arrays.asList(this.text.split("\\s+")))
+        );
+    }
+
+    /**
+     * Parse.
+     * @param cmds Commands
+     * @param parts All other parts left
+     */
+    private void parse(final Iterable<XML> cmds, final List<String> parts) {
+        final String part = parts.remove(0);
+        for (final XML cmd : cmds) {
+            if (this.parse(cmd, part, parts)) {
+                break;
+            }
         }
-        return matcher.group(1);
+    }
+
+    /**
+     * Parse.
+     * @param cmd Command
+     * @param part Part
+     * @param parts All other parts left
+     * @return TRUE if parsed
+     */
+    private boolean parse(final XML cmd, final String part,
+        final List<String> parts) {
+        boolean matches = false;
+        if (part.matches(cmd.xpath("regex/text() ").get(0))) {
+            this.rcode.set(cmd.xpath("code/text()").get(0));
+            final Collection<XML> subs = cmd.nodes("cmds/cmd");
+            if (subs.isEmpty()) {
+                this.parseOpts(cmd, part, parts);
+            } else {
+                this.parse(subs, parts);
+            }
+            matches = true;
+        }
+        return matches;
+    }
+
+    /**
+     * Parse.
+     * @param cmd Command
+     * @param part Part
+     * @param parts All other parts left
+     */
+    private void parseOpts(final XML cmd, final String part,
+        final List<String> parts) {
+        final Collection<XML> opts = cmd.nodes("opts/opt");
+        for (final XML opt : opts) {
+            final String name = opt.xpath("name/text() ").get(0);
+            if (parts.isEmpty()) {
+                this.rcode.set(null);
+                this.rhelp.set(
+                    String.format(
+                        "Option \"%s\" is missing in \"%s <%s>\":\n  %s",
+                        name,
+                        part,
+                        String.join(
+                            "> <",
+                            opts.stream().map(
+                                item -> item.xpath("name/text()  ").get(0)
+                            ).collect(Collectors.toList())
+                        ),
+                        String.join(
+                            "\n  ",
+                            opts.stream().map(
+                                item -> String.format(
+                                    "<%s> - %s",
+                                    item.xpath("name/text()").get(0),
+                                    item.xpath("help/text()").get(0)
+                                )
+                            ).collect(Collectors.toList())
+                        )
+                    )
+                );
+                break;
+            }
+            final String param = parts.remove(0);
+            if (param.matches(opt.xpath("regex/text()").get(0))) {
+                this.rparams.put(name, param);
+            }
+        }
     }
 
 }

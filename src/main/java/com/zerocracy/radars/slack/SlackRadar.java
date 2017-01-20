@@ -82,6 +82,7 @@ public final class SlackRadar implements Radar, Take {
      * @param pps Properties
      * @param map Map of sessions
      * @param ptd Reaction on post
+     * @checkstyle ParameterNumberCheck (5 lines)
      */
     public SlackRadar(final Farm frm, final Properties pps,
         final Map<String, SlackSession> map,

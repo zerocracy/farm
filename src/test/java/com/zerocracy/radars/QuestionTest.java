@@ -16,6 +16,7 @@
  */
 package com.zerocracy.radars;
 
+import com.jcabi.xml.XMLDocument;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -29,40 +30,50 @@ import org.junit.Test;
 public final class QuestionTest {
 
     /**
-     * Takes arguments out.
+     * Parses valid text.
      * @throws Exception If some problem inside
      */
     @Test
-    public void fetchesArguments() throws Exception {
+    public void parsesValidText() throws Exception {
         final Question question = new Question(
-            "@0crat assign uid is `github:yegor256`, role=`PO`"
+            new XMLDocument(
+                this.getClass().getResource("slack/q-project.xml")
+            ),
+            "role assign ARC yegor256"
         );
         MatcherAssert.assertThat(
-            question.arg("uid"),
-            Matchers.equalTo("github:yegor256")
+            question.matches(),
+            Matchers.equalTo(true)
         );
         MatcherAssert.assertThat(
-            question.arg("role"),
-            Matchers.equalTo("PO")
+            question.code(),
+            Matchers.equalTo("hr.roles.assign")
+        );
+        MatcherAssert.assertThat(
+            question.params().get("role"),
+            Matchers.equalTo("ARC")
         );
     }
 
     /**
-     * Takes argument by position.
+     * Parses invalid text and builds help.
      * @throws Exception If some problem inside
      */
     @Test
-    public void fetchesArgumentByPosition() throws Exception {
+    public void buildsHelp() throws Exception {
         final Question question = new Question(
-            "<@U3Q183883> rate $30 now please"
+            new XMLDocument(
+                this.getClass().getResource("slack/q-pmo.xml")
+            ),
+            "link add"
         );
         MatcherAssert.assertThat(
-            question.pos(0),
-            Matchers.equalTo("rate")
+            question.matches(),
+            Matchers.equalTo(false)
         );
         MatcherAssert.assertThat(
-            question.pos(1),
-            Matchers.equalTo("$30")
+            question.help(),
+            Matchers.containsString("Option \"rel\" is missing")
         );
     }
 

@@ -46,6 +46,7 @@ public final class ReactiveFarm implements Farm {
     /**
      * Ctor.
      * @param farm Original farm
+     * @param list Stakeholders
      */
     public ReactiveFarm(final Farm farm, final Collection<Stakeholder> list) {
         this.origin = farm;

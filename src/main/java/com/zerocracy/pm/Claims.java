@@ -113,6 +113,7 @@ public final class Claims implements Closeable {
     /**
      * Find claims by XPath term.
      * @param term Search term
+     * @return List of found claims
      * @throws IOException If fails
      */
     public Collection<XML> find(final String term) throws IOException {

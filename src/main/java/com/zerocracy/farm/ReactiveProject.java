@@ -47,6 +47,7 @@ final class ReactiveProject implements Project {
     /**
      * Ctor.
      * @param pkt Project
+     * @param list List of stakeholders
      */
     ReactiveProject(final Project pkt, final Collection<Stakeholder> list) {
         this.origin = pkt;
@@ -84,21 +85,21 @@ final class ReactiveProject implements Project {
         /**
          * Original item.
          */
-        private final Item itm;
+        private final Item original;
         /**
          * Ctor.
          * @param item Original item
          */
         Itm(final Item item) {
-            this.itm = item;
+            this.original = item;
         }
         @Override
         public Path path() throws IOException {
-            return this.itm.path();
+            return this.original.path();
         }
         @Override
         public void close() throws IOException {
-            this.itm.close();
+            this.original.close();
             ReactiveProject.this.run();
         }
     }

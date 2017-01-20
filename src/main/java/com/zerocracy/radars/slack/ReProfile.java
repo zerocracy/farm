@@ -14,39 +14,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.radars.slack.profile.rate;
+package com.zerocracy.radars.slack;
 
+import com.jcabi.xml.XMLDocument;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
 import com.zerocracy.pmo.Pmo;
-import com.zerocracy.radars.slack.Reaction;
-import com.zerocracy.radars.slack.SkPerson;
-import com.zerocracy.radars.slack.SkToken;
+import com.zerocracy.radars.Question;
 import java.io.IOException;
 
 /**
- * Show user rate.
+ * Profile reaction.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class ReShow implements Reaction<SlackMessagePosted> {
+public final class ReProfile implements Reaction<SlackMessagePosted> {
 
     @Override
     public boolean react(final Farm farm, final SlackMessagePosted event,
         final SlackSession session) throws IOException {
-        try (final Claims claims = new Claims(new Pmo(farm)).lock()) {
-            claims.add(
-                new ClaimOut()
-                    .type("profile.rate.show")
-                    .token(new SkToken(event))
-                    .author(new SkPerson(farm, event))
-            );
+        final Question question = new Question(
+            new XMLDocument(this.getClass().getResource("q-profile.xml")),
+            event.getMessageContent().split("\\s+", 2)[1].trim()
+        );
+        if (question.matches()) {
+            try (final Claims claims = new Claims(new Pmo(farm)).lock()) {
+                claims.add(
+                    new ClaimOut()
+                        .type(question.code())
+                        .token(new SkToken(event))
+                        .author(new SkPerson(farm, event))
+                        .params(question.params())
+                );
+            }
         }
-        return true;
+        return question.matches();
     }
+
 }

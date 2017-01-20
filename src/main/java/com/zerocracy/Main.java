@@ -28,11 +28,11 @@ import com.zerocracy.jstk.Farm;
 import com.zerocracy.radars.Radar;
 import com.zerocracy.radars.ghook.GhookRadar;
 import com.zerocracy.radars.github.GithubRadar;
-import com.zerocracy.radars.github.ReIn;
 import com.zerocracy.radars.github.ReOnComment;
 import com.zerocracy.radars.github.ReOnInvitation;
 import com.zerocracy.radars.github.ReOnReason;
-import com.zerocracy.radars.github.ReOut;
+import com.zerocracy.radars.github.ReQuestion;
+import com.zerocracy.radars.github.ReRegex;
 import com.zerocracy.radars.github.Response;
 import com.zerocracy.radars.github.StkNotify;
 import com.zerocracy.radars.slack.ReHello;
@@ -40,18 +40,13 @@ import com.zerocracy.radars.slack.ReIfAddressed;
 import com.zerocracy.radars.slack.ReIfDirect;
 import com.zerocracy.radars.slack.ReLogged;
 import com.zerocracy.radars.slack.ReNotMine;
-import com.zerocracy.radars.slack.ReRegex;
+import com.zerocracy.radars.slack.RePmo;
+import com.zerocracy.radars.slack.ReProfile;
+import com.zerocracy.radars.slack.ReProject;
 import com.zerocracy.radars.slack.ReSafe;
 import com.zerocracy.radars.slack.ReSorry;
 import com.zerocracy.radars.slack.Reaction;
 import com.zerocracy.radars.slack.SlackRadar;
-import com.zerocracy.radars.slack.profile.aliases.ReShow;
-import com.zerocracy.radars.slack.profile.rate.ReSet;
-import com.zerocracy.radars.slack.profile.skills.ReAdd;
-import com.zerocracy.radars.slack.project.ReBootstrap;
-import com.zerocracy.radars.slack.project.links.ReRemove;
-import com.zerocracy.radars.slack.project.roles.ReAssign;
-import com.zerocracy.radars.slack.project.roles.ReResign;
 import com.zerocracy.stk.pmo.StkParent;
 import com.zerocracy.stk.pmo.links.StkAdd;
 import com.zerocracy.stk.pmo.links.StkRemove;
@@ -182,10 +177,9 @@ public final class Main {
                             github,
                             new com.zerocracy.radars.github.ReNotMine(
                                 new Response.Chain(
-                                    new com.zerocracy.radars.github.ReRegex("hello", new com.zerocracy.radars.github.ReHello()),
-                                    new com.zerocracy.radars.github.ReRegex("in", new ReIn()),
-                                    new com.zerocracy.radars.github.ReRegex("out", new ReOut()),
-                                    new com.zerocracy.radars.github.ReRegex(".*", new com.zerocracy.radars.github.ReSorry())
+                                    new ReRegex("hello", new com.zerocracy.radars.github.ReHello()),
+                                    new ReQuestion(),
+                                    new ReRegex(".*", new com.zerocracy.radars.github.ReSorry())
                                 )
                             )
                         )
@@ -222,66 +216,18 @@ public final class Main {
                         new ReIfDirect(
                             new Reaction.Chain<>(
                                 Arrays.asList(
-                                    new ReRegex("hi|hello|hey", new ReHello()),
-                                    new Reaction.Chain<>(
-                                        Arrays.asList(
-                                            new Reaction.Chain<>(
-                                                Arrays.asList(
-                                                    new ReRegex("alias(es)?", new ReShow())
-                                                )
-                                            ),
-                                            new Reaction.Chain<>(
-                                                Arrays.asList(
-                                                    new ReRegex("rate", new com.zerocracy.radars.slack.profile.rate.ReShow()),
-                                                    new ReRegex("rate .*", new ReSet())
-                                                )
-                                            ),
-                                            new Reaction.Chain<>(
-                                                Arrays.asList(
-                                                    new ReRegex("wallet", new com.zerocracy.radars.slack.profile.wallet.ReShow()),
-                                                    new ReRegex("wallet .*", new com.zerocracy.radars.slack.profile.wallet.ReSet())
-                                                )
-                                            ),
-                                            new Reaction.Chain<>(
-                                                Arrays.asList(
-                                                    new ReRegex("skills", new com.zerocracy.radars.slack.profile.skills.ReShow()),
-                                                    new ReRegex("skill add .*", new ReAdd())
-                                                )
-                                            )
-                                        )
-                                    ),
-                                    new ReRegex(".*", new ReSorry())
+                                    new com.zerocracy.radars.slack.ReRegex("hi|hello|hey", new ReHello()),
+                                    new ReProject(),
+                                    new RePmo(),
+                                    new com.zerocracy.radars.slack.ReRegex(".*", new ReSorry())
                                 )
                             ),
                             new ReIfAddressed(
                                 new Reaction.Chain<>(
                                     Arrays.asList(
-                                        new ReRegex("hello|hi|hey", new ReHello()),
-                                        new Reaction.Chain<>(
-                                            Arrays.asList(
-                                                new ReRegex("bootstrap", new ReBootstrap()),
-                                                new Reaction.Chain<>(
-                                                    Arrays.asList(
-                                                        new ReRegex("wbs", new com.zerocracy.radars.slack.project.wbs.ReShow())
-                                                    )
-                                                ),
-                                                new Reaction.Chain<>(
-                                                    Arrays.asList(
-                                                        new ReRegex("roles", new com.zerocracy.radars.slack.project.roles.ReShow()),
-                                                        new ReRegex("roles? (assign|add) .*", new ReAssign()),
-                                                        new ReRegex("roles? (del|remove|resign) .*", new ReResign())
-                                                    )
-                                                ),
-                                                new Reaction.Chain<>(
-                                                    Arrays.asList(
-                                                        new ReRegex("links?", new com.zerocracy.radars.slack.project.links.ReShow()),
-                                                        new ReRegex("link add .*", new com.zerocracy.radars.slack.project.links.ReAdd()),
-                                                        new ReRegex("link (remove|del|delete) .*", new ReRemove())
-                                                    )
-                                                )
-                                            )
-                                        ),
-                                        new ReRegex(".*", new ReSorry())
+                                        new com.zerocracy.radars.slack.ReRegex("hello|hi|hey", new ReHello()),
+                                        new ReProfile(),
+                                        new com.zerocracy.radars.slack.ReRegex(".*", new ReSorry())
                                     )
                                 )
                             )

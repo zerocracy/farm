@@ -17,6 +17,7 @@
 package com.zerocracy.pm;
 
 import java.util.Iterator;
+import java.util.Map;
 import org.xembly.Directive;
 import org.xembly.Directives;
 
@@ -75,6 +76,18 @@ public final class ClaimOut implements Iterable<Directive> {
             .add("param")
             .attr("name", name)
             .set(value).up().up();
+        return this;
+    }
+
+    /**
+     * With these params.
+     * @param map Map of params
+     * @return This
+     */
+    public ClaimOut params(final Map<String, String> map) {
+        for (final Map.Entry<String, String> entry : map.entrySet()) {
+            this.param(entry.getKey(), entry.getValue());
+        }
         return this;
     }
 

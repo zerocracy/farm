@@ -34,6 +34,7 @@ public final class StkBootstrapTest {
      * @throws Exception If some problem inside
      */
     @Test
+    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     public void bootstrapsProjects() throws Exception {
         final Stakeholder stk = new StkBootstrap();
         for (int idx = 0; idx < 2; ++idx) {

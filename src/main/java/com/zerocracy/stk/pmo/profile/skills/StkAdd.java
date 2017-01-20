@@ -47,7 +47,6 @@ public final class StkAdd implements Stakeholder {
         final People people = new People(project).bootstrap();
         final ClaimIn claim = new ClaimIn(xml);
         final String login = claim.param("person");
-        final String skill = claim.param("skill");
         final Collection<String> skills = people.skills(login);
         if (skills.size() > Tv.FIVE) {
             throw new SoftException(
@@ -57,6 +56,7 @@ public final class StkAdd implements Stakeholder {
                 )
             );
         }
+        final String skill = claim.param("skill");
         people.skill(login, skill);
         return claim.reply(
             String.format(

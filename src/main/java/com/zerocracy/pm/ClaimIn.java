@@ -48,7 +48,7 @@ public final class ClaimIn {
     public ClaimOut reply(final String msg) {
         return new ClaimOut()
             .type("notify")
-            .token(this.xml.xpath("token/text()").get(0))
+            .token(this.token())
             .param("message", msg);
     }
 

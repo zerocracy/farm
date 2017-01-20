@@ -1,4 +1,5 @@
-/**
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
  * Copyright (c) 2016 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -13,13 +14,18 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
- */
-
-/**
- * Rate.
- *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.1
- */
-package com.zerocracy.radars.slack.profile.rate;
+ -->
+<question>
+    <cmd>
+        <code>scope.wbs.add</code>
+        <regex>in</regex>
+        <label>in</label>
+        <help>Add job to WBS</help>
+    </cmd>
+    <cmd>
+        <code>scope.wbs.remove</code>
+        <regex>out</regex>
+        <label>out</label>
+        <help>Remove job from WBS</help>
+    </cmd>
+</question>
