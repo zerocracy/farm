@@ -16,11 +16,14 @@
  */
 package com.zerocracy.stk.pmo.profile.skills;
 
+import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
-import com.zerocracy.pm.Person;
+import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pmo.People;
 import java.io.IOException;
+import java.util.Collection;
+import org.xembly.Directive;
 
 /**
  * Show skills of the user.
@@ -31,41 +34,28 @@ import java.io.IOException;
  */
 public final class StkShow implements Stakeholder {
 
-    /**
-     * Project.
-     */
-    private final Project project;
-
-    /**
-     * Tube.
-     */
-    private final Person person;
-
-    /**
-     * Ctor.
-     * @param pkt Project
-     * @param tbe Tube
-     */
-    public StkShow(final Project pkt, final Person tbe) {
-        this.project = pkt;
-        this.person = tbe;
+    @Override
+    public String term() {
+        return "type='profile.skills.show'";
     }
 
     @Override
-    public void work() throws IOException {
-        new People(this.project).bootstrap();
-        final Iterable<String> skills = new People(this.project).skills(
-            this.person.uid()
-        );
+    public Iterable<Directive> process(final Project project,
+        final XML xml) throws IOException {
+        final People people = new People(project).bootstrap();
+        final ClaimIn claim = new ClaimIn(xml);
+        final String login = claim.param("person");
+        final Collection<String> skills = people.skills(login);
+        final String msg;
         if (skills.iterator().hasNext()) {
-            this.person.say(
-                String.format(
-                    "Your skills are: `%s`",
-                    String.join("`, `", skills)
-                )
+            msg = String.format(
+                "Your skills are: `%s`",
+                String.join("`, `", skills)
             );
         } else {
-            this.person.say("Your skills are not defined yet");
+            msg = "Your skills are not defined yet";
         }
+        return claim.reply(msg);
     }
+
 }

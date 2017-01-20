@@ -36,8 +36,7 @@ public final class BotsTest {
      */
     @Test
     public void registersBot() throws Exception {
-        final Bots bots = new Bots(new FkProject());
-        bots.bootstrap();
+        final Bots bots = new Bots(new FkProject()).bootstrap();
         bots.register(
             Json.createReader(
                 this.getClass().getResourceAsStream("slack-bot.json")

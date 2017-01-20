@@ -16,7 +16,6 @@
  */
 package com.zerocracy.tk;
 
-import com.zerocracy.jstk.fake.FkFarm;
 import java.net.HttpURLConnection;
 import java.util.Arrays;
 import java.util.Collection;
@@ -74,7 +73,7 @@ public final class PingTest {
      */
     @Test
     public void rendersAllPossibleUrls() throws Exception {
-        final Take take = new TkApp(new FkFarm());
+        final Take take = new TkApp();
         MatcherAssert.assertThat(
             this.url,
             take.act(new RqFake("INFO", this.url)),

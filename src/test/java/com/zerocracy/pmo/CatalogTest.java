@@ -45,7 +45,7 @@ public final class CatalogTest {
         final Project project = new FkProject();
         final String pid = "67WE3343P";
         try (final Item item = CatalogTest.item(project)) {
-            new Xocument(item.path()).bootstrap("catalog", "pmo/catalog");
+            new Xocument(item.path()).bootstrap("pmo/catalog");
             new Xocument(item.path()).modify(
                 new Directives()
                     .xpath("/catalog")

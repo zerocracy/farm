@@ -16,12 +16,15 @@
  */
 package com.zerocracy.stk;
 
+import com.jcabi.xml.XML;
+import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
-import com.zerocracy.pm.Person;
+import com.zerocracy.pm.ClaimIn;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.xembly.Directive;
 
 /**
  * Stakeholder that reports about failures.
@@ -33,38 +36,38 @@ import org.apache.commons.io.output.ByteArrayOutputStream;
 public final class StkSafe implements Stakeholder {
 
     /**
-     * Person.
-     */
-    private final Person person;
-
-    /**
      * Original stakeholder.
      */
     private final Stakeholder origin;
 
     /**
      * Ctor.
-     * @param prn Person
      * @param stk Original stakeholder
      */
-    public StkSafe(final Person prn, final Stakeholder stk) {
-        this.person = prn;
+    public StkSafe(final Stakeholder stk) {
         this.origin = stk;
     }
 
     @Override
+    public String term() {
+        return this.origin.term();
+    }
+
+    @Override
     @SuppressWarnings("PMD.AvoidCatchingThrowable")
-    public void work() throws IOException {
+    public Iterable<Directive> process(final Project project,
+        final XML xml) throws IOException {
+        Iterable<Directive> dirs;
         try {
-            this.origin.work();
+            dirs = this.origin.process(project, xml);
         } catch (final SoftException ex) {
-            this.person.say(ex.getMessage());
+            dirs = new ClaimIn(xml).reply(ex.getMessage());
             // @checkstyle IllegalCatchCheck (1 line)
         } catch (final Throwable ex) {
             try (final ByteArrayOutputStream baos =
                 new ByteArrayOutputStream()) {
                 ex.printStackTrace(new PrintStream(baos));
-                this.person.say(
+                dirs = new ClaimIn(xml).reply(
                     String.join(
                         "\n",
                         "I can't do it for technical reasons, I'm very sorry.",
@@ -75,8 +78,8 @@ public final class StkSafe implements Stakeholder {
                     )
                 );
             }
-            throw new IOException(ex);
         }
+        return dirs;
     }
 
 }

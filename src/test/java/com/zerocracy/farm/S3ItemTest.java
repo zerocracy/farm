@@ -20,7 +20,6 @@ import com.jcabi.s3.Ocket;
 import com.jcabi.s3.mock.MkOcket;
 import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
-import com.zerocracy.pm.Person;
 import java.nio.file.Files;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -45,11 +44,11 @@ public final class S3ItemTest {
             Files.createTempDirectory("").toFile(), "bucket", "roles.xml"
         );
         try (final Item item = new S3Item(ocket)) {
-            new Xocument(item).bootstrap("roles", "pm/hr/roles");
+            new Xocument(item).bootstrap("pm/hr/roles");
             new Xocument(item).modify(
                 new Directives().xpath("/roles")
                     .add("person")
-                    .attr("id", new Person.Fake().uid())
+                    .attr("id", "yegor256")
                     .add("role").set("ARC")
             );
         }

@@ -49,12 +49,14 @@ public final class Roles {
 
     /**
      * Bootstrap it.
+     * @return Itself
      * @throws IOException If fails
      */
-    public void bootstrap() throws IOException {
+    public Roles bootstrap() throws IOException {
         try (final Item team = this.item()) {
-            new Xocument(team).bootstrap("roles", "pm/hr/roles");
+            new Xocument(team).bootstrap("pm/hr/roles");
         }
+        return this;
     }
 
     /**

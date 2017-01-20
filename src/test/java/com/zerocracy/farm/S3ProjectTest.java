@@ -19,7 +19,6 @@ package com.zerocracy.farm;
 import com.jcabi.s3.Bucket;
 import com.jcabi.s3.mock.MkBucket;
 import com.zerocracy.jstk.Project;
-import com.zerocracy.pm.Person;
 import com.zerocracy.pm.hr.Roles;
 import java.nio.file.Files;
 import org.hamcrest.MatcherAssert;
@@ -46,7 +45,7 @@ public final class S3ProjectTest {
         );
         final Project project = new S3Project(bucket, "");
         new Roles(project).bootstrap();
-        final String person = new Person.Fake().uid();
+        final String person = "yegor256";
         final String role = "PO";
         new Roles(project).assign(person, role);
         MatcherAssert.assertThat(

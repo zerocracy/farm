@@ -16,11 +16,13 @@
  */
 package com.zerocracy.stk.pmo.links;
 
+import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
-import com.zerocracy.pm.Person;
+import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pmo.Catalog;
 import java.io.IOException;
+import org.xembly.Directive;
 
 /**
  * Remove a resource to the project.
@@ -31,57 +33,25 @@ import java.io.IOException;
  */
 public final class StkRemove implements Stakeholder {
 
-    /**
-     * Project.
-     */
-    private final Project project;
-
-    /**
-     * Person.
-     */
-    private final Person person;
-
-    /**
-     * PID.
-     */
-    private final String pid;
-
-    /**
-     * LINK rel.
-     */
-    private final String rel;
-
-    /**
-     * LINK href.
-     */
-    private final String href;
-
-    /**
-     * Ctor.
-     * @param pmo Project
-     * @param prn Person
-     * @param pkt Project ID
-     * @param ref Reference
-     * @param hrf HREF
-     * @checkstyle ParameterNumberCheck (5 lines)
-     */
-    public StkRemove(final Project pmo, final Person prn,
-        final String pkt, final String ref, final String hrf) {
-        this.project = pmo;
-        this.person = prn;
-        this.pid = pkt;
-        this.rel = ref;
-        this.href = hrf;
+    @Override
+    public String term() {
+        return "type='links.add'";
     }
 
     @Override
-    public void work() throws IOException {
-        new Catalog(this.project).unlink(this.pid, this.rel, this.href);
-        this.person.say(
+    public Iterable<Directive> process(final Project project,
+        final XML xml) throws IOException {
+        final ClaimIn claim = new ClaimIn(xml);
+        final String pid = claim.param("project");
+        final String rel = claim.param("rel");
+        final String href = claim.param("href");
+        new Catalog(project).unlink(pid, rel, href);
+        return claim.reply(
             String.format(
                 "Done, link removed from `%s` to rel=`%s` and href=`%s`",
-                this.pid, this.rel, this.href
+                pid, rel, href
             )
         );
     }
+
 }

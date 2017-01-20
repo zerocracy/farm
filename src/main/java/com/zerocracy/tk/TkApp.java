@@ -16,14 +16,13 @@
  */
 package com.zerocracy.tk;
 
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.jcabi.log.VerboseProcess;
-import com.zerocracy.jstk.Farm;
 import java.io.File;
 import java.io.IOException;
-import java.util.LinkedList;
+import java.util.Arrays;
 import java.util.Properties;
-import java.util.Queue;
-import javax.json.JsonObject;
 import org.takes.Take;
 import org.takes.facets.flash.TkFlash;
 import org.takes.facets.fork.FkFixed;
@@ -52,22 +51,20 @@ public final class TkApp extends TkWrap {
 
     /**
      * Ctor, for tests mostly.
-     * @param farm Farm
      * @throws IOException If fails
      */
-    TkApp(final Farm farm) throws IOException {
-        this(farm, new Properties(), new LinkedList<>());
+    TkApp() throws IOException {
+        this(new Properties());
     }
 
     /**
      * Ctor.
-     * @param farm Farm
      * @param props Properties
-     * @param events Events to dispatch
+     * @param forks Additional forks
      * @throws IOException If fails
      */
-    public TkApp(final Farm farm, final Properties props,
-        final Queue<JsonObject> events) throws IOException {
+    public TkApp(final Properties props, final FkRegex... forks)
+        throws IOException {
         super(
             new TkWithHeaders(
                 new TkVersioned(
@@ -76,7 +73,7 @@ public final class TkApp extends TkWrap {
                             new TkFlash(
                                 new TkAppAuth(
                                     new TkForward(
-                                        TkApp.regex(farm, props, events)
+                                        TkApp.regex(props, forks)
                                     ),
                                     props
                                 )
@@ -95,32 +92,35 @@ public final class TkApp extends TkWrap {
 
     /**
      * Make it.
-     * @param farm Farm
      * @param props Properties
-     * @param events Events to dispatch
+     * @param forks Additional forks
      * @return Takes
      * @throws IOException If fails
      */
-    private static Take regex(final Farm farm, final Properties props,
-        final Queue<JsonObject> events) throws IOException {
+    private static Take regex(final Properties props,
+        final FkRegex... forks) throws IOException {
         return new TkFork(
-            new FkRegex("/", new TkIndex(props)),
-            new FkRegex("/slack", new TkSlack(farm, props)),
-            new FkRegex("/alias", new TkAlias(farm)),
-            new FkRegex("/ghook", new TkGhook(events)),
-            new FkRegex("/robots.txt", ""),
-            new FkRegex(
-                "/xsl/[a-z\\-]+\\.xsl",
-                new TkWithType(
-                    TkApp.refresh("./src/main/xsl"),
-                    "text/xsl"
-                )
-            ),
-            new FkRegex(
-                "/css/[a-z]+\\.css",
-                new TkWithType(
-                    TkApp.refresh("./src/main/scss"),
-                    "text/css"
+            Lists.newArrayList(
+                Iterables.concat(
+                    Arrays.asList(forks),
+                    Arrays.asList(
+                        new FkRegex("/", new TkIndex(props)),
+                        new FkRegex("/robots.txt", ""),
+                        new FkRegex(
+                            "/xsl/[a-z\\-]+\\.xsl",
+                            new TkWithType(
+                                TkApp.refresh("./src/main/xsl"),
+                                "text/xsl"
+                            )
+                        ),
+                        new FkRegex(
+                            "/css/[a-z]+\\.css",
+                            new TkWithType(
+                                TkApp.refresh("./src/main/scss"),
+                                "text/css"
+                            )
+                        )
+                    )
                 )
             )
         );

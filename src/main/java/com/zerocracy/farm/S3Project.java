@@ -51,6 +51,13 @@ final class S3Project implements Project {
 
     @Override
     public Item acq(final String file) {
+        if (!file.matches("[a-z\\-]+\\.[a-z]+")) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "Invalid file name: \"%s\"", file
+                )
+            );
+        }
         return new SyncItem(
             new S3Item(
                 this.bucket.ocket(

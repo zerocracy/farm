@@ -16,11 +16,13 @@
  */
 package com.zerocracy.stk.pmo.profile.wallet;
 
+import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
-import com.zerocracy.pm.Person;
+import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pmo.People;
 import java.io.IOException;
+import org.xembly.Directive;
 
 /**
  * Set wallet of the user.
@@ -31,54 +33,27 @@ import java.io.IOException;
  */
 public final class StkSet implements Stakeholder {
 
-    /**
-     * Project.
-     */
-    private final Project project;
-
-    /**
-     * Tube.
-     */
-    private final Person person;
-
-    /**
-     * Bank.
-     */
-    private final String bank;
-
-    /**
-     * Wallet.
-     */
-    private final String wallet;
-
-    /**
-     * Ctor.
-     * @param pkt Project
-     * @param tbe Tube
-     * @param bnk Bank
-     * @param wlt Wallet
-     * @checkstyle ParameterNumberCheck (5 lines)
-     */
-    public StkSet(final Project pkt, final Person tbe, final String bnk,
-        final String wlt) {
-        this.project = pkt;
-        this.person = tbe;
-        this.bank = bnk;
-        this.wallet = wlt;
+    @Override
+    public String term() {
+        return "type='profile.wallet.set'";
     }
 
     @Override
-    public void work() throws IOException {
-        new People(this.project).bootstrap();
-        new People(this.project).wallet(
-            this.person.uid(), this.bank, this.wallet
-        );
-        this.person.say(
+    public Iterable<Directive> process(final Project project,
+        final XML xml) throws IOException {
+        final People people = new People(project).bootstrap();
+        final ClaimIn claim = new ClaimIn(xml);
+        final String login = claim.param("person");
+        final String bank = claim.param("bank");
+        final String wallet = claim.param("wallet");
+        people.wallet(login, bank, wallet);
+        return claim.reply(
             String.format(
                 "Wallet of \"%s\" set to `%s:%s`",
-                this.person.uid(),
-                this.bank, this.wallet
+                login,
+                bank, wallet
             )
         );
     }
+
 }

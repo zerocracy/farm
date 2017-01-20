@@ -16,12 +16,13 @@
  */
 package com.zerocracy.stk.pm.scope.wbs;
 
+import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
-import com.zerocracy.pm.Job;
-import com.zerocracy.pm.Person;
+import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.scope.Wbs;
 import java.io.IOException;
+import org.xembly.Directive;
 
 /**
  * The task goes out of scope.
@@ -32,42 +33,23 @@ import java.io.IOException;
  */
 public final class StkOut implements Stakeholder {
 
-    /**
-     * Project.
-     */
-    private final Project project;
-
-    /**
-     * Tube.
-     */
-    private final Person person;
-
-    /**
-     * Job.
-     */
-    private final Job job;
-
-    /**
-     * Ctor.
-     * @param pkt Project
-     * @param tbe Tube
-     * @param jbb Job
-     */
-    public StkOut(final Project pkt, final Person tbe, final Job jbb) {
-        this.project = pkt;
-        this.person = tbe;
-        this.job = jbb;
+    @Override
+    public String term() {
+        return "type='scope.wbs.remove'";
     }
 
     @Override
-    public void work() throws IOException {
-        new Wbs(this.project).remove(this.job);
-        this.person.say(
+    public Iterable<Directive> process(final Project project,
+        final XML xml) throws IOException {
+        final ClaimIn claim = new ClaimIn(xml);
+        final String job = claim.param("job");
+        new Wbs(project).bootstrap().remove(job);
+        return claim.reply(
             String.format(
                 "Done, job `%s` is out of \"%s\"",
-                this.job.name(),
-                this.project
+                job, project
             )
         );
     }
+
 }

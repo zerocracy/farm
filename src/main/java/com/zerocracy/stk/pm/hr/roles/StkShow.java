@@ -16,11 +16,13 @@
  */
 package com.zerocracy.stk.pm.hr.roles;
 
+import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
-import com.zerocracy.pm.Person;
+import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.hr.Roles;
 import java.io.IOException;
+import org.xembly.Directive;
 
 /**
  * Show roles.
@@ -31,34 +33,22 @@ import java.io.IOException;
  */
 public final class StkShow implements Stakeholder {
 
-    /**
-     * Project.
-     */
-    private final Project project;
-
-    /**
-     * Tube.
-     */
-    private final Person person;
-
-    /**
-     * Ctor.
-     * @param pkt Project
-     * @param tbe Tube
-     */
-    public StkShow(final Project pkt, final Person tbe) {
-        this.project = pkt;
-        this.person = tbe;
+    @Override
+    public String term() {
+        return "type='hr.roles.show'";
     }
 
     @Override
-    public void work() throws IOException {
-        this.person.say(
+    public Iterable<Directive> process(final Project project,
+        final XML xml) throws IOException {
+        final ClaimIn claim = new ClaimIn(xml);
+        return claim.reply(
             String.format(
                 "Full list of roles in \"%s\":%n%n```%n%s%n```",
-                this.project,
-                new Roles(this.project).print()
+                project,
+                new Roles(project).bootstrap().print()
             )
         );
     }
+
 }

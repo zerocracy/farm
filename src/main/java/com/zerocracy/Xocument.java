@@ -27,6 +27,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Collection;
+import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Node;
 import org.xembly.Directive;
 import org.xembly.Directives;
@@ -44,7 +45,7 @@ public final class Xocument {
     /**
      * Current DATUM version.
      */
-    private static final String VERSION = "0.11";
+    private static final String VERSION = "0.12.1";
 
     /**
      * File.
@@ -82,12 +83,13 @@ public final class Xocument {
 
     /**
      * Bootstrap it.
-     * @param root Root node uid
      * @param xsd Path of XSD
+     * @return This
      * @throws IOException If fails
      */
-    public void bootstrap(final String root, final String xsd)
+    public Xocument bootstrap(final String xsd)
         throws IOException {
+        final String root = StringUtils.substringAfterLast(xsd, "/");
         final String uri = String.format(
             // @checkstyle LineLength (1 line)
             "https://raw.githubusercontent.com/zerocracy/datum/%s/xsd/%s.xsd",
@@ -115,6 +117,7 @@ public final class Xocument {
                 )
             );
         }
+        return this;
     }
 
     /**

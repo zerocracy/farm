@@ -28,6 +28,6 @@
         <xsl:if test="position() &gt; 1">
             <xsl:text>&#10;</xsl:text>
         </xsl:if>
-        <xsl:value-of select="name"/>
+        <xsl:value-of select="@id"/>
     </xsl:template>
 </xsl:stylesheet>

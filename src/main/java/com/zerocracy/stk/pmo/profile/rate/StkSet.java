@@ -16,12 +16,14 @@
  */
 package com.zerocracy.stk.pmo.profile.rate;
 
+import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.jstk.cash.Cash;
-import com.zerocracy.pm.Person;
+import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pmo.People;
 import java.io.IOException;
+import org.xembly.Directive;
 
 /**
  * Set rate of the user.
@@ -32,43 +34,26 @@ import java.io.IOException;
  */
 public final class StkSet implements Stakeholder {
 
-    /**
-     * Project.
-     */
-    private final Project project;
-
-    /**
-     * Tube.
-     */
-    private final Person person;
-
-    /**
-     * Rate.
-     */
-    private final Cash money;
-
-    /**
-     * Ctor.
-     * @param pkt Project
-     * @param tbe Tube
-     * @param cash Cash value
-     */
-    public StkSet(final Project pkt, final Person tbe, final Cash cash) {
-        this.project = pkt;
-        this.person = tbe;
-        this.money = cash;
+    @Override
+    public String term() {
+        return "type='profile.rate.set'";
     }
 
     @Override
-    public void work() throws IOException {
-        new People(this.project).bootstrap();
-        new People(this.project).rate(this.person.uid(), this.money);
-        this.person.say(
+    public Iterable<Directive> process(final Project project,
+        final XML xml) throws IOException {
+        final People people = new People(project).bootstrap();
+        final ClaimIn claim = new ClaimIn(xml);
+        final String login = claim.param("person");
+        final Cash rate = new Cash.S(claim.param("rate"));
+        people.rate(login, rate);
+        return claim.reply(
             String.format(
                 "Rate of \"%s\" set to %s",
-                this.person.uid(),
-                this.money
+                login,
+                rate
             )
         );
     }
+
 }

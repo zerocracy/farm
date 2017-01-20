@@ -16,12 +16,14 @@
  */
 package com.zerocracy.stk.pm;
 
+import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
-import com.zerocracy.pm.Person;
+import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.hr.Roles;
 import com.zerocracy.pm.scope.Wbs;
 import java.io.IOException;
+import org.xembly.Directive;
 
 /**
  * Bootstrap a project.
@@ -32,65 +34,29 @@ import java.io.IOException;
  */
 public final class StkBootstrap implements Stakeholder {
 
-    /**
-     * Project.
-     */
-    private final Project project;
-
-    /**
-     * Person.
-     */
-    private final Person person;
-
-    /**
-     * Ctor.
-     * @param pkt Project
-     * @param prn Person
-     */
-    public StkBootstrap(final Project pkt, final Person prn) {
-        this.project = pkt;
-        this.person = prn;
+    @Override
+    public String term() {
+        return "type='bootstrap'";
     }
 
     @Override
-    public void work() throws IOException {
-        this.scope();
-        this.staff();
-    }
-
-    /**
-     * Bootstrap Scope.
-     * @throws IOException If fails
-     */
-    private void scope() throws IOException {
-        new Wbs(this.project).bootstrap();
-    }
-
-    /**
-     * Bootstrap HR.
-     * @throws IOException If fails
-     */
-    private void staff() throws IOException {
-        final Roles roles = new Roles(this.project);
-        roles.bootstrap();
+    public Iterable<Directive> process(final Project project,
+        final XML xml) throws IOException {
+        new Wbs(project).bootstrap();
+        final Roles roles = new Roles(project).bootstrap();
         final String role = "PO";
-        if (roles.hasRole(this.person.uid(), role)) {
-            this.person.say(
-                String.join(
-                    " ",
-                    "This project seems to be under my management already."
-                )
-            );
-        } else {
-            roles.assign(this.person.uid(), role);
-            this.person.say(
-                String.join(
-                    " ",
-                    "I'm ready to manage a project.",
-                    "When you're ready, you can start giving me instructions,",
-                    "always prefixing your messages with my uid."
-                )
-            );
+        final String author = new ClaimIn(xml).author();
+        if (!roles.hasRole(author, role)) {
+            roles.assign(author, role);
         }
+        return new ClaimIn(xml).reply(
+            String.join(
+                " ",
+                "I'm ready to manage a project.",
+                "When you're ready, you can start giving me instructions,",
+                "always prefixing your messages with my uid."
+            )
+        );
     }
+
 }

@@ -17,7 +17,6 @@
 package com.zerocracy.pm.scope;
 
 import com.zerocracy.jstk.fake.FkProject;
-import com.zerocracy.pm.Job;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -36,8 +35,7 @@ public final class WbsTest {
      */
     @Test
     public void printsJobs() throws Exception {
-        final Wbs wbs = new Wbs(new FkProject());
-        wbs.bootstrap();
+        final Wbs wbs = new Wbs(new FkProject()).bootstrap();
         MatcherAssert.assertThat(
             wbs.print(),
             Matchers.containsString("empty")
@@ -50,9 +48,8 @@ public final class WbsTest {
      */
     @Test
     public void addsAndRemovesJobs() throws Exception {
-        final Wbs wbs = new Wbs(new FkProject());
-        wbs.bootstrap();
-        final Job job = new Job.Fake();
+        final Wbs wbs = new Wbs(new FkProject()).bootstrap();
+        final String job = "gh:yegor256/0pdd#3";
         wbs.add(job);
         wbs.remove(job);
     }

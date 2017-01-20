@@ -21,7 +21,6 @@ import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.Stakeholder;
 import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -63,7 +62,7 @@ public final class S3Farm implements Farm {
     @Override
     public Iterable<Project> find(final String xpath) throws IOException {
         try (final Item item = this.item()) {
-            new Xocument(item.path()).bootstrap("catalog", "pmo/catalog");
+            new Xocument(item.path()).bootstrap("pmo/catalog");
         }
         Iterable<Project> projects = this.findByXPath(xpath)
             .stream()
@@ -83,11 +82,6 @@ public final class S3Farm implements Farm {
             }
         }
         return projects;
-    }
-
-    @Override
-    public void deploy(final Stakeholder stakeholder) throws IOException {
-        stakeholder.work();
     }
 
     /**

@@ -16,11 +16,13 @@
  */
 package com.zerocracy.stk.pmo.profile.aliases;
 
+import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
-import com.zerocracy.pm.Person;
+import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pmo.People;
 import java.io.IOException;
+import org.xembly.Directive;
 
 /**
  * Show all aliases.
@@ -31,38 +33,27 @@ import java.io.IOException;
  */
 public final class StkShow implements Stakeholder {
 
-    /**
-     * Project.
-     */
-    private final Project project;
-
-    /**
-     * Tube.
-     */
-    private final Person person;
-
-    /**
-     * Ctor.
-     * @param pkt Project
-     * @param tbe Tube
-     */
-    public StkShow(final Project pkt, final Person tbe) {
-        this.project = pkt;
-        this.person = tbe;
+    @Override
+    public String term() {
+        return "type='profile.aliases.show'";
     }
 
     @Override
-    public void work() throws IOException {
-        new People(this.project).bootstrap();
-        this.person.say(
+    public Iterable<Directive> process(final Project project,
+        final XML xml) throws IOException {
+        final People people = new People(project).bootstrap();
+        final ClaimIn claim = new ClaimIn(xml);
+        final String login = claim.param("person");
+        return claim.reply(
             String.format(
                 "Your ID is `%s`, your aliases are: `%s`",
-                this.person.uid(),
+                login,
                 String.join(
                     "`, `",
-                    new People(this.project).links(this.person.uid())
+                    people.links(login)
                 )
             )
         );
     }
+
 }

@@ -37,7 +37,7 @@ import org.takes.rq.RqHref;
  * @version $Id$
  * @since 0.1
  */
-final class TkAlias implements Take {
+public final class TkAlias implements Take {
 
     /**
      * Farm.
@@ -48,7 +48,7 @@ final class TkAlias implements Take {
      * Ctor.
      * @param frm Farm
      */
-    TkAlias(final Farm frm) {
+    public TkAlias(final Farm frm) {
         this.farm = frm;
     }
 
@@ -64,8 +64,7 @@ final class TkAlias implements Take {
         final RqHref.Smart smart = new RqHref.Smart(new RqHref.Base(req));
         final String rel = smart.single("rel");
         final String href = smart.single("href");
-        final People people = new People(new Pmo(this.farm));
-        people.bootstrap();
+        final People people = new People(new Pmo(this.farm)).bootstrap();
         if (people.find(rel, href).iterator().hasNext()) {
             throw new RsForward(
                 new RsFlash("We've been already introduced, thanks!")

@@ -21,7 +21,6 @@ import com.jcabi.xml.XSLDocument;
 import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
-import com.zerocracy.pm.Job;
 import java.io.IOException;
 import org.xembly.Directives;
 
@@ -56,12 +55,14 @@ public final class Wbs {
 
     /**
      * Bootstrap it.
+     * @return Itself
      * @throws IOException If fails
      */
-    public void bootstrap() throws IOException {
+    public Wbs bootstrap() throws IOException {
         try (final Item wbs = this.item()) {
-            new Xocument(wbs.path()).bootstrap("wbs", "pm/scope/wbs");
+            new Xocument(wbs.path()).bootstrap("pm/scope/wbs");
         }
+        return this;
     }
 
     /**
@@ -82,12 +83,12 @@ public final class Wbs {
      * @param job The job to add
      * @throws IOException If fails
      */
-    public void add(final Job job) throws IOException {
+    public void add(final String job) throws IOException {
         try (final Item wbs = this.item()) {
             new Xocument(wbs.path()).modify(
                 new Directives()
                     .xpath("/wbs")
-                    .add("job").add("name").set(job.name())
+                    .add("job").attr("id", job)
             );
         }
     }
@@ -97,12 +98,12 @@ public final class Wbs {
      * @param job The job to remove
      * @throws IOException If fails
      */
-    public void remove(final Job job) throws IOException {
+    public void remove(final String job) throws IOException {
         try (final Item wbs = this.item()) {
             new Xocument(wbs.path()).modify(
                 new Directives().xpath(
                     String.format(
-                        "/wbs/job[uid='%s']", job.name()
+                        "/wbs/job[uid='%s']", job
                     )
                 ).remove()
             );

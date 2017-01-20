@@ -16,11 +16,13 @@
  */
 package com.zerocracy.stk.pmo;
 
+import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
-import com.zerocracy.pm.Person;
+import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pmo.Catalog;
 import java.io.IOException;
+import org.xembly.Directive;
 
 /**
  * Set father project.
@@ -31,50 +33,24 @@ import java.io.IOException;
  */
 public final class StkParent implements Stakeholder {
 
-    /**
-     * Project.
-     */
-    private final Project project;
-
-    /**
-     * Person.
-     */
-    private final Person person;
-
-    /**
-     * Kid ID to set.
-     */
-    private final String kid;
-
-    /**
-     * Parent ID to set.
-     */
-    private final String father;
-
-    /**
-     * Ctor.
-     * @param pkt Project
-     * @param prn Person
-     * @param kpid Kid PID
-     * @param pkid Parent ID to set
-     * @checkstyle ParameterNumberCheck (5 lines)
-     */
-    public StkParent(final Project pkt, final Person prn, final String kpid,
-        final String pkid) {
-        this.project = pkt;
-        this.person = prn;
-        this.kid = kpid;
-        this.father = pkid;
+    @Override
+    public String term() {
+        return "type='parent.set'";
     }
 
     @Override
-    public void work() throws IOException {
-        new Catalog(this.project).parent(this.kid, this.father);
-        this.person.say(
+    public Iterable<Directive> process(final Project project,
+        final XML xml) throws IOException {
+        final ClaimIn claim = new ClaimIn(xml);
+        final String child = claim.param("child");
+        final String parent = claim.param("parent");
+        new Catalog(project).parent(child, parent);
+        return claim.reply(
             String.format(
                 "Done, project `%s` is a child of `%s`",
-                this.kid, this.father
+                child, parent
             )
         );
     }
+
 }

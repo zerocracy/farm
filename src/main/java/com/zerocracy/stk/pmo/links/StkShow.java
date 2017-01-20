@@ -16,11 +16,13 @@
  */
 package com.zerocracy.stk.pmo.links;
 
+import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
-import com.zerocracy.pm.Person;
+import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pmo.Catalog;
 import java.io.IOException;
+import org.xembly.Directive;
 
 /**
  * Show all links.
@@ -31,43 +33,25 @@ import java.io.IOException;
  */
 public final class StkShow implements Stakeholder {
 
-    /**
-     * Project.
-     */
-    private final Project project;
-
-    /**
-     * Tube.
-     */
-    private final Person person;
-
-    /**
-     * PID.
-     */
-    private final String pid;
-
-    /**
-     * Ctor.
-     * @param pmo Project
-     * @param tbe Tube
-     * @param pkt Project ID
-     */
-    public StkShow(final Project pmo, final Person tbe, final String pkt) {
-        this.project = pmo;
-        this.person = tbe;
-        this.pid = pkt;
+    @Override
+    public String term() {
+        return "type='links.show'";
     }
 
     @Override
-    public void work() throws IOException {
-        this.person.say(
+    public Iterable<Directive> process(final Project project,
+        final XML xml) throws IOException {
+        final ClaimIn claim = new ClaimIn(xml);
+        final String pid = claim.param("project");
+        return claim.reply(
             String.format(
                 "This project is linked with: `%s`",
                 String.join(
                     "`, `",
-                    new Catalog(this.project).links(this.pid)
+                    new Catalog(project).links(pid)
                 )
             )
         );
     }
+
 }

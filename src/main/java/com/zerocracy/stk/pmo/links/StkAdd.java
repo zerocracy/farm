@@ -18,11 +18,13 @@ package com.zerocracy.stk.pmo.links;
 
 import com.jcabi.github.Coordinates;
 import com.jcabi.github.Github;
+import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
-import com.zerocracy.pm.Person;
+import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pmo.Catalog;
 import java.io.IOException;
+import org.xembly.Directive;
 
 /**
  * Attach a resource to the project.
@@ -39,63 +41,37 @@ public final class StkAdd implements Stakeholder {
     private final Github github;
 
     /**
-     * Project.
-     */
-    private final Project project;
-
-    /**
-     * Person.
-     */
-    private final Person person;
-
-    /**
-     * PID.
-     */
-    private final String pid;
-
-    /**
-     * LINK rel.
-     */
-    private final String rel;
-
-    /**
-     * LINK href.
-     */
-    private final String href;
-
-    /**
      * Ctor.
      * @param ghub Github
-     * @param pmo Project
-     * @param prn Person
-     * @param pkt Project ID
-     * @param ref Reference
-     * @param hrf HREF
-     * @checkstyle ParameterNumberCheck (5 lines)
      */
-    public StkAdd(final Github ghub, final Project pmo, final Person prn,
-        final String pkt, final String ref, final String hrf) {
+    public StkAdd(final Github ghub) {
         this.github = ghub;
-        this.project = pmo;
-        this.person = prn;
-        this.pid = pkt;
-        this.rel = ref;
-        this.href = hrf;
     }
 
     @Override
-    public void work() throws IOException {
-        if ("github".equals(this.rel)) {
+    public String term() {
+        return "type='links.add'";
+    }
+
+    @Override
+    public Iterable<Directive> process(final Project project,
+        final XML xml) throws IOException {
+        final ClaimIn claim = new ClaimIn(xml);
+        final String pid = claim.param("project");
+        final String rel = claim.param("rel");
+        final String href = claim.param("href");
+        if ("github".equals(rel)) {
             this.github.repos().get(
-                new Coordinates.Simple(this.href)
+                new Coordinates.Simple(href)
             ).stars().star();
         }
-        new Catalog(this.project).link(this.pid, this.rel, this.href);
-        this.person.say(
+        new Catalog(project).link(pid, rel, href);
+        return claim.reply(
             String.format(
-                "Done, project `%s` is linked with rel=`%s` and href=`%s`",
-                this.pid, this.rel, this.href
+                "Done, the project is linked with rel=`%s` and href=`%s`",
+                rel, href
             )
         );
     }
+
 }

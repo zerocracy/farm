@@ -38,8 +38,7 @@ public final class PeopleTest {
      */
     @Test
     public void addsAndFindsPeople() throws Exception {
-        final People people = new People(new FkProject());
-        people.bootstrap();
+        final People people = new People(new FkProject()).bootstrap();
         final String uid = "yegor256";
         final String rel = "slack";
         final String alias = "U67WE3343P";
@@ -61,8 +60,7 @@ public final class PeopleTest {
      */
     @Test
     public void setsUserRate() throws Exception {
-        final People people = new People(new FkProject());
-        people.bootstrap();
+        final People people = new People(new FkProject()).bootstrap();
         final String uid = "alex-palevsky";
         people.rate(uid, new Cash.S("$35"));
         people.rate(uid, new Cash.S("$50"));
@@ -78,8 +76,7 @@ public final class PeopleTest {
      */
     @Test
     public void setsUserWallet() throws Exception {
-        final People people = new People(new FkProject());
-        people.bootstrap();
+        final People people = new People(new FkProject()).bootstrap();
         final String uid = "yegor256-1";
         people.wallet(uid, "btc", "68739473849732849732849327");
         people.wallet(uid, "paypal", "yegor256@gmail.com");
@@ -99,8 +96,7 @@ public final class PeopleTest {
      */
     @Test
     public void setsAndFetchesUserSkills() throws Exception {
-        final People people = new People(new FkProject());
-        people.bootstrap();
+        final People people = new People(new FkProject()).bootstrap();
         final String uid = "karato";
         final String skill = "java";
         people.skill(uid, skill);
@@ -129,8 +125,7 @@ public final class PeopleTest {
                 "/xsd/pmo/people.xsd'/>"
             ).getBytes()
         );
-        final People people = new People(project);
-        people.bootstrap();
+        final People people = new People(project).bootstrap();
         people.skill("karato90", "java9");
     }
 

@@ -16,11 +16,13 @@
  */
 package com.zerocracy.stk;
 
+import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
-import com.zerocracy.pm.Person;
+import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.hr.Roles;
 import java.io.IOException;
+import org.xembly.Directive;
 
 /**
  * Stakeholder that works only if the person belongs to the given roles.
@@ -30,16 +32,6 @@ import java.io.IOException;
  * @since 0.1
  */
 public final class StkByRoles implements Stakeholder {
-
-    /**
-     * Project.
-     */
-    private final Project project;
-
-    /**
-     * Person.
-     */
-    private final Person person;
 
     /**
      * Roles to allow.
@@ -53,50 +45,55 @@ public final class StkByRoles implements Stakeholder {
 
     /**
      * Ctor.
-     * @param pkt Project
-     * @param prn Person
      * @param list List of roles
      * @param stk Original stakeholder
-     * @checkstyle ParameterNumberCheck (5 lines)
      */
-    public StkByRoles(final Project pkt, final Person prn,
-        final Iterable<String> list, final Stakeholder stk) {
-        this.project = pkt;
-        this.person = prn;
+    public StkByRoles(final Iterable<String> list, final Stakeholder stk) {
         this.roles = list;
         this.origin = stk;
     }
 
     @Override
-    public void work() throws IOException {
-        if (this.has()) {
-            this.origin.work();
+    public String term() {
+        return String.format("(%s) and author", this.origin.term());
+    }
+
+    @Override
+    public Iterable<Directive> process(final Project project,
+        final XML xml) throws IOException {
+        final Iterable<Directive> dirs;
+        if (this.has(project, xml)) {
+            dirs = this.origin.process(project, xml);
         } else {
-            this.person.say(
+            dirs = new ClaimIn(xml).reply(
                 String.format(
                     "You can't do that, unless you have one of these roles: %s",
                     String.join(", ", this.roles)
                 )
             );
         }
+        return dirs;
     }
 
     /**
      * Has one of that required roles.
+     * @param project Project
+     * @param xml Claim
      * @return TRUE if he has
      * @throws IOException If fails
      */
-    private boolean has() throws IOException {
-        final Roles rls = new Roles(this.project);
-        rls.bootstrap();
-        final String name = this.person.uid();
+    private boolean has(final Project project,
+        final XML xml) throws IOException {
+        final Roles rls = new Roles(project).bootstrap();
+        final String login = new ClaimIn(xml).author();
         boolean has = false;
         for (final String role : this.roles) {
-            if (rls.hasRole(name, role)) {
+            if (rls.hasRole(login, role)) {
                 has = true;
                 break;
             }
         }
         return has;
     }
+
 }

@@ -18,7 +18,6 @@ package com.zerocracy.farm;
 
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.Stakeholder;
 import java.io.IOException;
 
 /**
@@ -28,7 +27,7 @@ import java.io.IOException;
  * @version $Id$
  * @since 0.1
  */
-final class SyncFarm implements Farm {
+public final class SyncFarm implements Farm {
 
     /**
      * Original farm.
@@ -39,7 +38,7 @@ final class SyncFarm implements Farm {
      * Ctor.
      * @param farm Original farm
      */
-    SyncFarm(final Farm farm) {
+    public SyncFarm(final Farm farm) {
         this.origin = farm;
     }
 
@@ -50,10 +49,4 @@ final class SyncFarm implements Farm {
         }
     }
 
-    @Override
-    public void deploy(final Stakeholder stakeholder) throws IOException {
-        synchronized (this.origin) {
-            this.origin.deploy(stakeholder);
-        }
-    }
 }

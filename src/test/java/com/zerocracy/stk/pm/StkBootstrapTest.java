@@ -16,9 +16,9 @@
  */
 package com.zerocracy.stk.pm;
 
+import com.jcabi.xml.XMLDocument;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.jstk.fake.FkProject;
-import com.zerocracy.pm.Person;
 import org.junit.Test;
 
 /**
@@ -35,11 +35,15 @@ public final class StkBootstrapTest {
      */
     @Test
     public void bootstrapsProjects() throws Exception {
-        final Stakeholder stk = new StkBootstrap(
-            new FkProject(), new Person.Fake()
-        );
-        stk.work();
-        stk.work();
+        final Stakeholder stk = new StkBootstrap();
+        for (int idx = 0; idx < 2; ++idx) {
+            stk.process(
+                new FkProject(),
+                new XMLDocument(
+                    "<claim><token>X</token><author>yegor</author></claim>"
+                ).nodes("/claim").get(0)
+            );
+        }
     }
 
 }

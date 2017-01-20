@@ -16,11 +16,13 @@
  */
 package com.zerocracy.stk.pm.hr.roles;
 
+import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
-import com.zerocracy.pm.Person;
+import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.hr.Roles;
 import java.io.IOException;
+import org.xembly.Directive;
 
 /**
  * Assign role to a person.
@@ -31,52 +33,26 @@ import java.io.IOException;
  */
 public final class StkResign implements Stakeholder {
 
-    /**
-     * Project.
-     */
-    private final Project project;
-
-    /**
-     * Tube.
-     */
-    private final Person person;
-
-    /**
-     * Role.
-     */
-    private final String role;
-
-    /**
-     * Who to assign it to.
-     */
-    private final String target;
-
-    /**
-     * Ctor.
-     * @param pkt Project
-     * @param tbe Tube
-     * @param rle Role to assign
-     * @param who Who to assign to
-     * @checkstyle ParameterNumberCheck (5 lines)
-     */
-    public StkResign(final Project pkt, final Person tbe,
-        final String rle, final String who) {
-        this.project = pkt;
-        this.person = tbe;
-        this.role = rle;
-        this.target = who;
+    @Override
+    public String term() {
+        return "type='hr.roles.remove'";
     }
 
     @Override
-    public void work() throws IOException {
-        new Roles(this.project).resign(this.target, this.role);
-        this.person.say(
+    public Iterable<Directive> process(final Project project,
+        final XML xml) throws IOException {
+        final ClaimIn claim = new ClaimIn(xml);
+        final String login = claim.param("person");
+        final String role = claim.param("role");
+        new Roles(project).bootstrap().resign(login, role);
+        return claim.reply(
             String.format(
                 "Role \"%s\" resigned from \"%s\" in \"%s\"",
-                this.role,
-                this.target,
-                this.project
+                role,
+                login,
+                project
             )
         );
     }
+
 }

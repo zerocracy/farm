@@ -17,13 +17,15 @@
 package com.zerocracy.stk.pmo.profile.skills;
 
 import com.jcabi.aspects.Tv;
+import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
-import com.zerocracy.pm.Person;
+import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pmo.People;
 import com.zerocracy.stk.SoftException;
 import java.io.IOException;
 import java.util.Collection;
+import org.xembly.Directive;
 
 /**
  * Add new skill to the user.
@@ -34,39 +36,19 @@ import java.util.Collection;
  */
 public final class StkAdd implements Stakeholder {
 
-    /**
-     * Project.
-     */
-    private final Project project;
-
-    /**
-     * Tube.
-     */
-    private final Person person;
-
-    /**
-     * Skill to add.
-     */
-    private final String skill;
-
-    /**
-     * Ctor.
-     * @param pkt Project
-     * @param tbe Tube
-     * @param skl Skill
-     */
-    public StkAdd(final Project pkt, final Person tbe, final String skl) {
-        this.project = pkt;
-        this.person = tbe;
-        this.skill = skl;
+    @Override
+    public String term() {
+        return "type='profile.skills.add'";
     }
 
     @Override
-    public void work() throws IOException {
-        new People(this.project).bootstrap();
-        final Collection<String> skills = new People(this.project).skills(
-            this.person.uid()
-        );
+    public Iterable<Directive> process(final Project project,
+        final XML xml) throws IOException {
+        final People people = new People(project).bootstrap();
+        final ClaimIn claim = new ClaimIn(xml);
+        final String login = claim.param("person");
+        final String skill = claim.param("skill");
+        final Collection<String> skills = people.skills(login);
         if (skills.size() > Tv.FIVE) {
             throw new SoftException(
                 String.format(
@@ -75,13 +57,14 @@ public final class StkAdd implements Stakeholder {
                 )
             );
         }
-        new People(this.project).skill(this.person.uid(), this.skill);
-        this.person.say(
+        people.skill(login, skill);
+        return claim.reply(
             String.format(
                 "New skill \"%s\" added to \"%s\"",
-                this.skill,
-                this.person.uid()
+                skill,
+                login
             )
         );
     }
+
 }

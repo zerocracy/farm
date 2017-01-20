@@ -63,12 +63,14 @@ public final class Bots {
 
     /**
      * Bootstrap it.
+     * @return This
      * @throws IOException If fails
      */
-    public void bootstrap() throws IOException {
+    public Bots bootstrap() throws IOException {
         try (final Item item = this.item()) {
-            new Xocument(item.path()).bootstrap("bots", "pmo/bots");
+            new Xocument(item.path()).bootstrap("pmo/bots");
         }
+        return this;
     }
 
     /**

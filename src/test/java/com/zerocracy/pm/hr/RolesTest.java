@@ -52,8 +52,7 @@ public final class RolesTest {
      */
     @Test
     public void addsAndRemovesRoles() throws Exception {
-        final Roles roles = new Roles(new FkProject());
-        roles.bootstrap();
+        final Roles roles = new Roles(new FkProject()).bootstrap();
         final String person = "davvd";
         final String role = "ARC";
         MatcherAssert.assertThat(
@@ -78,8 +77,7 @@ public final class RolesTest {
      */
     @Test
     public void findsUsersByRole() throws Exception {
-        final Roles roles = new Roles(new FkProject());
-        roles.bootstrap();
+        final Roles roles = new Roles(new FkProject()).bootstrap();
         final String uid = "yegor256";
         final String role = "QA";
         roles.assign(uid, role);
