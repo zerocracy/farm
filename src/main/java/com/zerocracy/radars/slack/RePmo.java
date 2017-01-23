@@ -49,7 +49,7 @@ public final class RePmo implements Reaction<SlackMessagePosted> {
                     new ClaimOut()
                         .type("links.add")
                         .token(new SkToken(event))
-                        .author(new SkPerson(farm, event))
+                        .author(new SkPerson(farm, event).uid())
                         .param(
                             "project",
                             new SkProject(farm, event)

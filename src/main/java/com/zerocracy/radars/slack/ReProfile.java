@@ -48,7 +48,7 @@ public final class ReProfile implements Reaction<SlackMessagePosted> {
                     new ClaimOut()
                         .type(question.code())
                         .token(new SkToken(event))
-                        .author(new SkPerson(farm, event))
+                        .author(new SkPerson(farm, event).uid())
                         .params(question.params())
                 );
             }
