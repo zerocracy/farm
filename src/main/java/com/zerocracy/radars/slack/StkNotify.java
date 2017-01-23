@@ -16,7 +16,9 @@
  */
 package com.zerocracy.radars.slack;
 
+import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
+import com.ullink.slack.simpleslackapi.SlackChannel;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
@@ -57,13 +59,18 @@ public final class StkNotify implements Stakeholder {
         final ClaimIn claim = new ClaimIn(xml);
         final String[] parts = claim.token().split(";");
         final SlackSession session = this.session(parts[1]);
+        final SlackChannel channel = session.findChannelById(parts[1]);
         session.sendMessage(
-            session.findChannelById(parts[1]),
+            channel,
             String.format(
                 "@%s %s",
                 parts[2],
                 claim.param("message")
             )
+        );
+        Logger.info(
+            this, "posted to %s/%s",
+            channel.getName(), channel.getId()
         );
         return Collections.emptyList();
     }
