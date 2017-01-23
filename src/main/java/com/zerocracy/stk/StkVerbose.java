@@ -21,6 +21,7 @@ import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
+import com.zerocracy.pm.ClaimIn;
 import java.io.IOException;
 import org.xembly.Directive;
 
@@ -57,7 +58,8 @@ public final class StkVerbose implements Stakeholder {
         final long start = System.currentTimeMillis();
         final Iterable<Directive> dirs = this.origin.process(project, xml);
         Logger.info(
-            this, "%s returned %d dirs in %[ms]s",
+            this, "%s processed \"%s\", returned %d dirs in %[ms]s",
+            new ClaimIn(xml).type(),
             this.origin.getClass(),
             Iterables.size(dirs),
             System.currentTimeMillis() - start

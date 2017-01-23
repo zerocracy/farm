@@ -53,6 +53,14 @@ public final class ClaimIn {
     }
 
     /**
+     * Get type.
+     * @return Type
+     */
+    public String type() {
+        return this.xml.xpath("type/text()").get(0);
+    }
+
+    /**
      * Get token.
      * @return Token
      */
