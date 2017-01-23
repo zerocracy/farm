@@ -17,6 +17,7 @@
 package com.zerocracy.farm;
 
 import com.jcabi.xml.XML;
+import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
@@ -99,8 +100,12 @@ final class ReactiveProject implements Project {
         }
         @Override
         public void close() throws IOException {
+            final int total = new Xocument(this.path())
+                .xpath("/claims/claim").size();
             this.original.close();
-            ReactiveProject.this.run();
+            if (total > 0) {
+                ReactiveProject.this.run();
+            }
         }
     }
 }
