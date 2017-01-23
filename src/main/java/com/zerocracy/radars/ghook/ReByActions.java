@@ -59,7 +59,11 @@ final class ReByActions implements Reaction {
         final String answer;
         if (event.containsKey(field)
             && this.actions.contains(event.getString(field))) {
-            answer = this.origin.react(farm, github, event);
+            answer = String.format(
+                "%s: %s",
+                event.getString(field),
+                this.origin.react(farm, github, event)
+            );
         } else {
             answer = "We're not interested in this event";
         }

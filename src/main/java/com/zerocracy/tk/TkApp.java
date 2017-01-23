@@ -82,8 +82,10 @@ public final class TkApp extends TkWrap {
                     )
                 ),
                 String.format(
-                    "X-Zerocracy-Revision: %s",
-                    props.getProperty("build.revision")
+                    "X-Zerocracy-Version: %s %s %s",
+                    props.getProperty("build.version"),
+                    props.getProperty("build.revision"),
+                    props.getProperty("build.date")
                 ),
                 "Vary: Cookie"
             )
