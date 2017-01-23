@@ -48,6 +48,10 @@ import com.zerocracy.radars.slack.Reaction;
 import com.zerocracy.radars.slack.SlackRadar;
 import com.zerocracy.stk.StkSafe;
 import com.zerocracy.stk.StkVerbose;
+import com.zerocracy.stk.pm.hr.roles.StkAssign;
+import com.zerocracy.stk.pm.hr.roles.StkResign;
+import com.zerocracy.stk.pm.scope.wbs.StkInto;
+import com.zerocracy.stk.pm.scope.wbs.StkOut;
 import com.zerocracy.stk.pmo.StkParent;
 import com.zerocracy.stk.pmo.links.StkAdd;
 import com.zerocracy.stk.pmo.links.StkRemove;
@@ -136,6 +140,12 @@ public final class Main {
                         new StkShow(),
                         new StkParent(),
                         new StkSet(),
+                        new com.zerocracy.stk.pm.hr.roles.StkShow(),
+                        new StkAssign(github),
+                        new StkResign(),
+                        new com.zerocracy.stk.pm.scope.wbs.StkShow(),
+                        new StkInto(),
+                        new StkOut(),
                         new com.zerocracy.stk.pmo.profile.rate.StkShow(),
                         new com.zerocracy.stk.pmo.profile.wallet.StkSet(),
                         new com.zerocracy.stk.pmo.profile.wallet.StkShow(),
