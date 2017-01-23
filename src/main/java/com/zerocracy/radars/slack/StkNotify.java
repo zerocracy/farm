@@ -60,16 +60,20 @@ public final class StkNotify implements Stakeholder {
         final String[] parts = claim.token().split(";");
         final SlackSession session = this.session(parts[1]);
         final SlackChannel channel = session.findChannelById(parts[1]);
+        final String message = claim.param("message");
         session.sendMessage(
             channel,
             String.format(
                 "@%s %s",
                 parts[2],
-                claim.param("message")
+                message
             )
         );
         Logger.info(
-            this, "posted to %s/%s",
+            this, "@%s posted %d chars to @%s at %s/%s",
+            session.sessionPersona().getUserName(),
+            message.length(),
+            parts[2],
             channel.getName(), channel.getId()
         );
         return Collections.emptyList();
