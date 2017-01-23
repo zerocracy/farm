@@ -116,9 +116,13 @@ public final class S3Farm implements Farm {
      */
     private Collection<String> findByXPath(final String xpath)
         throws IOException {
+        String term = xpath;
+        if (!term.isEmpty()) {
+            term = String.format("[%s]", term);
+        }
         try (final Item item = this.item()) {
             return new Xocument(item).xpath(
-                String.format("//project[%s]/prefix/text()", xpath)
+                String.format("//project%s/prefix/text()", term)
             );
         }
     }
