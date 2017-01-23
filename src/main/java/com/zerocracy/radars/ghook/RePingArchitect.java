@@ -39,7 +39,7 @@ import javax.json.JsonObject;
 final class RePingArchitect implements Reaction {
 
     @Override
-    public void react(final Farm farm, final Github github,
+    public String react(final Farm farm, final Github github,
         final JsonObject event) throws IOException {
         final Repo repo = github.repos().get(
             new Coordinates.Simple(
@@ -52,19 +52,27 @@ final class RePingArchitect implements Reaction {
         final Roles roles = new Roles(new GhProject(farm, repo));
         final String author = new Issue.Smart(issue).author()
             .login().toLowerCase(Locale.ENGLISH);
+        String answer;
         try {
             roles.bootstrap();
             final Collection<String> arcs = roles.findByRole("ARC");
-            if (!arcs.isEmpty() && !arcs.contains(author)) {
+            if (arcs.isEmpty()) {
+                answer = "No architects here";
+            } else if (arcs.contains(author)) {
+                answer = "The architect is speaking";
+            } else {
                 issue.comments().post(
                     String.format(
                         "@%s please, pay attention to this issue",
                         String.join(", @", arcs)
                     )
                 );
+                answer = String.format("Architects notified: %s", arcs);
             }
         } catch (final SoftException ex) {
-            if (!"yegor256".equals(author)) {
+            if ("yegor256".equals(author)) {
+                answer = "It's a ticket from @yegor256";
+            } else {
                 issue.comments().post(
                     String.format(
                         // @checkstyle LineLength (1 line)
@@ -72,7 +80,9 @@ final class RePingArchitect implements Reaction {
                         author, repo.coordinates()
                     )
                 );
+                answer = "This repo is not managed";
             }
         }
+        return answer;
     }
 }

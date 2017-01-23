@@ -20,6 +20,8 @@ import com.jcabi.github.Github;
 import com.zerocracy.jstk.Farm;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedList;
 import javax.json.JsonObject;
 
 /**
@@ -37,9 +39,10 @@ interface Reaction {
      * @param farm Farm
      * @param github Github client
      * @param event JSON event
+     * @return The answer to give back to GitHub
      * @throws IOException If fails
      */
-    void react(Farm farm, Github github, JsonObject event) throws IOException;
+    String react(Farm farm, Github github, JsonObject event) throws IOException;
 
     /**
      * Reactions chained.
@@ -64,11 +67,13 @@ interface Reaction {
             this(Arrays.asList(list));
         }
         @Override
-        public void react(final Farm farm, final Github github,
+        public String react(final Farm farm, final Github github,
             final JsonObject event) throws IOException {
+            final Collection<String> answers = new LinkedList<>();
             for (final Reaction reaction : this.reactions) {
-                reaction.react(farm, github, event);
+                answers.add(reaction.react(farm, github, event));
             }
+            return String.join("; ", answers);
         }
     }
 

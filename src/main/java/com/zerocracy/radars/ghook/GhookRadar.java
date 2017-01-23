@@ -82,14 +82,19 @@ public final class GhookRadar implements Take {
             new RqFormBase(req)
         ).single("payload");
         try {
-            GhookRadar.REACTION.react(
-                this.farm,
-                this.github,
-                Json.createReader(
-                    new ByteArrayInputStream(
-                        body.getBytes(StandardCharsets.UTF_8)
+            return new RsWithStatus(
+                new RsText(
+                    GhookRadar.REACTION.react(
+                        this.farm,
+                        this.github,
+                        Json.createReader(
+                            new ByteArrayInputStream(
+                                body.getBytes(StandardCharsets.UTF_8)
+                            )
+                        ).readObject()
                     )
-                ).readObject()
+                ),
+                HttpURLConnection.HTTP_OK
             );
         } catch (final JsonParsingException ex) {
             throw new IllegalArgumentException(
@@ -97,15 +102,6 @@ public final class GhookRadar implements Take {
                 ex
             );
         }
-        return new RsWithStatus(
-            new RsText(
-                String.format(
-                    "OK, %d chars",
-                    body.length()
-                )
-            ),
-            HttpURLConnection.HTTP_OK
-        );
     }
 
 }

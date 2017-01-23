@@ -36,7 +36,7 @@ import javax.json.JsonObject;
 final class ReOpenAgain implements Reaction {
 
     @Override
-    public void react(final Farm farm, final Github github,
+    public String react(final Farm farm, final Github github,
         final JsonObject event) throws IOException {
         final Repo repo = github.repos().get(
             new Coordinates.Simple(
@@ -53,7 +53,14 @@ final class ReOpenAgain implements Reaction {
         final String closer = new Event.Smart(
             issue.latestEvent(Event.CLOSED)
         ).author().login().toLowerCase(Locale.ENGLISH);
-        if (!author.equals(closer) && !issue.isPull()) {
+        final String answer;
+        if (author.equals(closer)) {
+            answer = String.format(
+                "Ticket author and closer are the same person: %s", author
+            );
+        } else if (issue.isPull()) {
+            answer = "It's a pull request";
+        } else {
             issue.open();
             issue.comments().post(
                 String.format(
@@ -62,7 +69,9 @@ final class ReOpenAgain implements Reaction {
                     closer, author
                 )
             );
+            answer = String.format("Ticket re-opened, %s notified", closer);
         }
+        return answer;
     }
 
 }
