@@ -47,6 +47,7 @@ import com.zerocracy.radars.slack.ReSafe;
 import com.zerocracy.radars.slack.ReSorry;
 import com.zerocracy.radars.slack.Reaction;
 import com.zerocracy.radars.slack.SlackRadar;
+import com.zerocracy.stk.StkSafe;
 import com.zerocracy.stk.pmo.StkParent;
 import com.zerocracy.stk.pmo.links.StkAdd;
 import com.zerocracy.stk.pmo.links.StkRemove;
@@ -60,6 +61,8 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.takes.facets.fork.FkRegex;
 import org.takes.http.Exit;
 import org.takes.http.FtCli;
@@ -124,7 +127,7 @@ public final class Main {
                         ).bucket(props.getProperty("s3.bucket"))
                     )
                 ),
-                Arrays.asList(
+                Stream.of(
                     new StkNotify(github),
                     new com.zerocracy.radars.slack.StkNotify(sessions),
                     new StkAdd(github),
@@ -138,7 +141,7 @@ public final class Main {
                     new com.zerocracy.stk.pmo.profile.skills.StkAdd(),
                     new com.zerocracy.stk.pmo.profile.skills.StkShow(),
                     new com.zerocracy.stk.pmo.profile.aliases.StkShow()
-                )
+                ).map(StkSafe::new).collect(Collectors.toList())
             )
         );
         final GithubRadar ghradar = Main.ghradar(farm, github);
