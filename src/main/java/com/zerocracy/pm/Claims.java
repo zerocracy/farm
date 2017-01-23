@@ -80,6 +80,9 @@ public final class Claims implements Closeable {
      * @throws IOException If fails
      */
     public void add(final Iterable<Directive> dirs) throws IOException {
+        if (!dirs.iterator().hasNext()) {
+            throw new IllegalArgumentException("Empty directives");
+        }
         new Xocument(this.item.get().path()).modify(
             new Directives()
                 .xpath("/claims").add("claim")

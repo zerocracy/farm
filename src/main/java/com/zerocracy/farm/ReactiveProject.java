@@ -25,6 +25,7 @@ import com.zerocracy.pm.Claims;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
+import org.xembly.Directive;
 
 /**
  * Reactive project.
@@ -73,7 +74,10 @@ final class ReactiveProject implements Project {
             for (final Stakeholder stk : this.stakeholders) {
                 for (final XML claim : claims.find(stk.term())) {
                     claims.remove(claim.xpath("@id").get(0));
-                    claims.add(stk.process(this, claim));
+                    final Iterable<Directive> dirs = stk.process(this, claim);
+                    if (dirs.iterator().hasNext()) {
+                        claims.add(dirs);
+                    }
                 }
             }
         }
