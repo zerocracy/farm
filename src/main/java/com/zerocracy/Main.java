@@ -143,8 +143,8 @@ public final class Main {
                         new com.zerocracy.stk.pmo.profile.skills.StkShow(),
                         new com.zerocracy.stk.pmo.profile.aliases.StkShow()
                     )
-                    .map(StkSafe::new)
                     .map(StkVerbose::new)
+                    .map(StkSafe::new)
                     .collect(Collectors.toList())
             )
         );
