@@ -234,7 +234,7 @@
                         <configuration>
                             <excludes combine.children="append">
                                 <exclude>findbugs:.*</exclude>
-                                <exclude>xml:.*/q-[a-z]+\.xml</exclude>
+                                <exclude>xml:.*/q-[a-z\-]+\.xml</exclude>
                             </excludes>
                             <license>file:${basedir}/LICENSE.txt</license>
                         </configuration>

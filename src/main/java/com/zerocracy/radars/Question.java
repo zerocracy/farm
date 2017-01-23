@@ -146,7 +146,7 @@ public final class Question {
             final Collection<XML> subs = cmd.nodes("cmds/cmd");
             if (subs.isEmpty()) {
                 this.parseOpts(cmd, part, parts);
-            } else {
+            } else if (!parts.isEmpty()) {
                 this.parse(subs, parts);
             }
             matches = true;
