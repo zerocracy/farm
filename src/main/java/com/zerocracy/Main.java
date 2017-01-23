@@ -219,8 +219,7 @@ public final class Main {
                             new Reaction.Chain<>(
                                 Arrays.asList(
                                     new com.zerocracy.radars.slack.ReRegex("hi|hello|hey", new ReSay("Hey, how is it going?")),
-                                    new ReProject(),
-                                    new RePmo(),
+                                    new ReProfile(),
                                     new com.zerocracy.radars.slack.ReRegex(".*", new ReSay("Sorry, don't get it"))
                                 )
                             ),
@@ -228,7 +227,8 @@ public final class Main {
                                 new Reaction.Chain<>(
                                     Arrays.asList(
                                         new com.zerocracy.radars.slack.ReRegex("hello|hi|hey", new ReSay("What's up?")),
-                                        new ReProfile(),
+                                        new ReProject(),
+                                        new RePmo(),
                                         new com.zerocracy.radars.slack.ReRegex(".*", new ReSay("Say again..."))
                                     )
                                 )
