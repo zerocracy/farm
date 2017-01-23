@@ -47,6 +47,7 @@ import com.zerocracy.radars.slack.ReSay;
 import com.zerocracy.radars.slack.Reaction;
 import com.zerocracy.radars.slack.SlackRadar;
 import com.zerocracy.stk.StkSafe;
+import com.zerocracy.stk.StkVerbose;
 import com.zerocracy.stk.pmo.StkParent;
 import com.zerocracy.stk.pmo.links.StkAdd;
 import com.zerocracy.stk.pmo.links.StkRemove;
@@ -126,21 +127,25 @@ public final class Main {
                         ).bucket(props.getProperty("s3.bucket"))
                     )
                 ),
-                Stream.of(
-                    new StkNotify(github),
-                    new com.zerocracy.radars.slack.StkNotify(sessions),
-                    new StkAdd(github),
-                    new StkRemove(),
-                    new StkShow(),
-                    new StkParent(),
-                    new StkSet(),
-                    new com.zerocracy.stk.pmo.profile.rate.StkShow(),
-                    new com.zerocracy.stk.pmo.profile.wallet.StkSet(),
-                    new com.zerocracy.stk.pmo.profile.wallet.StkShow(),
-                    new com.zerocracy.stk.pmo.profile.skills.StkAdd(),
-                    new com.zerocracy.stk.pmo.profile.skills.StkShow(),
-                    new com.zerocracy.stk.pmo.profile.aliases.StkShow()
-                ).map(StkSafe::new).collect(Collectors.toList())
+                Stream
+                    .of(
+                        new StkNotify(github),
+                        new com.zerocracy.radars.slack.StkNotify(sessions),
+                        new StkAdd(github),
+                        new StkRemove(),
+                        new StkShow(),
+                        new StkParent(),
+                        new StkSet(),
+                        new com.zerocracy.stk.pmo.profile.rate.StkShow(),
+                        new com.zerocracy.stk.pmo.profile.wallet.StkSet(),
+                        new com.zerocracy.stk.pmo.profile.wallet.StkShow(),
+                        new com.zerocracy.stk.pmo.profile.skills.StkAdd(),
+                        new com.zerocracy.stk.pmo.profile.skills.StkShow(),
+                        new com.zerocracy.stk.pmo.profile.aliases.StkShow()
+                    )
+                    .map(StkSafe::new)
+                    .map(StkVerbose::new)
+                    .collect(Collectors.toList())
             )
         );
         final GithubRadar ghradar = Main.ghradar(farm, github);
