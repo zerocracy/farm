@@ -35,7 +35,6 @@ import com.zerocracy.radars.github.ReQuestion;
 import com.zerocracy.radars.github.ReRegex;
 import com.zerocracy.radars.github.Response;
 import com.zerocracy.radars.github.StkNotify;
-import com.zerocracy.radars.slack.ReHello;
 import com.zerocracy.radars.slack.ReIfAddressed;
 import com.zerocracy.radars.slack.ReIfDirect;
 import com.zerocracy.radars.slack.ReLogged;
@@ -44,7 +43,7 @@ import com.zerocracy.radars.slack.RePmo;
 import com.zerocracy.radars.slack.ReProfile;
 import com.zerocracy.radars.slack.ReProject;
 import com.zerocracy.radars.slack.ReSafe;
-import com.zerocracy.radars.slack.ReSorry;
+import com.zerocracy.radars.slack.ReSay;
 import com.zerocracy.radars.slack.Reaction;
 import com.zerocracy.radars.slack.SlackRadar;
 import com.zerocracy.stk.StkSafe;
@@ -180,9 +179,9 @@ public final class Main {
                             github,
                             new com.zerocracy.radars.github.ReNotMine(
                                 new Response.Chain(
-                                    new ReRegex("hello", new com.zerocracy.radars.github.ReHello()),
+                                    new ReRegex("hello|hey|hi|morning", new com.zerocracy.radars.github.ReSay("Hey, I'm here, what's up?")),
                                     new ReQuestion(),
-                                    new ReRegex(".*", new com.zerocracy.radars.github.ReSorry())
+                                    new ReRegex(".*", new com.zerocracy.radars.github.ReSay("Sorry, didn't understand you"))
                                 )
                             )
                         )
@@ -219,18 +218,18 @@ public final class Main {
                         new ReIfDirect(
                             new Reaction.Chain<>(
                                 Arrays.asList(
-                                    new com.zerocracy.radars.slack.ReRegex("hi|hello|hey", new ReHello()),
+                                    new com.zerocracy.radars.slack.ReRegex("hi|hello|hey", new ReSay("Hey, how is it going?")),
                                     new ReProject(),
                                     new RePmo(),
-                                    new com.zerocracy.radars.slack.ReRegex(".*", new ReSorry())
+                                    new com.zerocracy.radars.slack.ReRegex(".*", new ReSay("Sorry, don't get it"))
                                 )
                             ),
                             new ReIfAddressed(
                                 new Reaction.Chain<>(
                                     Arrays.asList(
-                                        new com.zerocracy.radars.slack.ReRegex("hello|hi|hey", new ReHello()),
+                                        new com.zerocracy.radars.slack.ReRegex("hello|hi|hey", new ReSay("What's up?")),
                                         new ReProfile(),
-                                        new com.zerocracy.radars.slack.ReRegex(".*", new ReSorry())
+                                        new com.zerocracy.radars.slack.ReRegex(".*", new ReSay("Say again..."))
                                     )
                                 )
                             )

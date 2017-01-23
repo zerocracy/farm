@@ -14,29 +14,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.radars.slack;
+package com.zerocracy.radars.github;
 
-import com.ullink.slack.simpleslackapi.SlackSession;
-import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
+import com.jcabi.github.Comment;
 import com.zerocracy.jstk.Farm;
+import java.io.IOException;
 
 /**
- * Says sorry.
+ * He just says hello.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class ReSorry implements Reaction<SlackMessagePosted> {
+public final class ReSay implements Reply {
+
+    /**
+     * The message.
+     */
+    private final String message;
+
+    /**
+     * Ctor.
+     * @param msg The message
+     */
+    public ReSay(final String msg) {
+        this.message = msg;
+    }
 
     @Override
-    public boolean react(final Farm farm, final SlackMessagePosted event,
-        final SlackSession session) {
-        session.sendMessage(
-            event.getChannel(),
-            "I'm sorry, I didn't get it."
-        );
-        return true;
+    public void react(final Farm farm, final Comment.Smart comment)
+        throws IOException {
+        new GhTube(comment).say(this.message);
     }
 
 }
