@@ -65,7 +65,10 @@ final class ReByActions implements Reaction {
                 this.origin.react(farm, github, event)
             );
         } else {
-            answer = "We're not interested in this event";
+            answer = String.format(
+                "We're not interested (%s)",
+                this.actions
+            );
         }
         return answer;
     }
