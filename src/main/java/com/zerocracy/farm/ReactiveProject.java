@@ -101,7 +101,7 @@ final class ReactiveProject implements Project {
         @Override
         public void close() throws IOException {
             final int total = new Xocument(this.path())
-                .xpath("/claims/claim").size();
+                .nodes("/claims/claim").size();
             this.original.close();
             if (total > 0) {
                 ReactiveProject.this.run();
