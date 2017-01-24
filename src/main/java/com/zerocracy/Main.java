@@ -192,9 +192,11 @@ public final class Main {
                         new ReOnComment(
                             github,
                             new com.zerocracy.radars.github.ReNotMine(
-                                new Response.Chain(
-                                    new ReRegex("hello|hey|hi|morning", new com.zerocracy.radars.github.ReSay("Hey, I'm here, what's up?")),
-                                    new ReQuestion()
+                                new com.zerocracy.radars.github.ReIfAddressed(
+                                    new Response.Chain(
+                                        new ReRegex("hello|hey|hi|morning", new com.zerocracy.radars.github.ReSay("Hey, I'm here, what's up?")),
+                                        new ReQuestion()
+                                    )
                                 )
                             )
                         )
