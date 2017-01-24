@@ -40,9 +40,15 @@ public final class ReQuestion implements Response {
     @Override
     public boolean react(final Farm farm, final Comment.Smart comment)
         throws IOException {
+        final String[] parts = comment.body().split("\\s+", 2);
+        if (parts.length < 2) {
+            throw new IllegalArgumentException(
+                String.format("Wrong input: \"%s\"", comment.body())
+            );
+        }
         final Question question = new Question(
             new XMLDocument(this.getClass().getResource("q-github.xml")),
-            comment.body().split("\\s+", 2)[1].trim()
+            parts[1].trim()
         );
         final Project project = new GhProject(farm, comment);
         try (final Claims claims = new Claims(project).lock()) {
