@@ -26,6 +26,9 @@ import com.zerocracy.jstk.Project;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
+ * @todo #17:15min This object doesn't implement method toString(),
+ *  but it should, in order to allow other decorators to re-use it
+ *  and print project name correctly.
  */
 final class S3Project implements Project {
 
