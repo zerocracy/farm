@@ -47,13 +47,14 @@ public final class RePmo implements Reaction<SlackMessagePosted> {
             try (final Claims claims = new Claims(new Pmo(farm)).lock()) {
                 claims.add(
                     new ClaimOut()
-                        .type("links.add")
+                        .type(question.code())
                         .token(new SkToken(event))
                         .author(new SkPerson(farm, event).uid())
                         .param(
                             "project",
                             new SkProject(farm, event)
                         )
+                        .params(question.params())
                 );
             }
         }
