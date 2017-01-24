@@ -68,10 +68,15 @@ public final class StkNotify implements Stakeholder {
         final Issue issue = repo.issues().get(
             Integer.parseInt(parts[2])
         );
-        final Comment comment = issue.comments().get(
-            Integer.parseInt(parts[Tv.THREE])
-        );
-        new GhTube(comment).say(claim.param("message"));
+        final String message = claim.param("message");
+        if (parts.length > Tv.THREE) {
+            final Comment comment = issue.comments().get(
+                Integer.parseInt(parts[Tv.THREE])
+            );
+            new GhTube(comment).say(message);
+        } else {
+            issue.comments().post(message);
+        }
         return Collections.emptyList();
     }
 

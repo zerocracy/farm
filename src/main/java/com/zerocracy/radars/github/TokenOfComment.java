@@ -14,12 +14,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.zerocracy.radars.github;
+
+import com.jcabi.github.Comment;
 
 /**
- * Github Hook.
+ * Token.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.7
+ * @since 0.1
  */
-package com.zerocracy.radars.ghook;
+final class TokenOfComment {
+
+    /**
+     * Comment.
+     */
+    private final Comment comment;
+
+    /**
+     * Ctor.
+     * @param cmt Comment
+     */
+    TokenOfComment(final Comment cmt) {
+        this.comment = cmt;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+            "github;%s;%d;%d",
+            this.comment.issue().repo().coordinates(),
+            this.comment.issue().number(),
+            this.comment.number()
+        );
+    }
+}

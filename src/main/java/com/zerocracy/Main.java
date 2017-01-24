@@ -26,7 +26,7 @@ import com.zerocracy.farm.S3Farm;
 import com.zerocracy.farm.SyncFarm;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.radars.Radar;
-import com.zerocracy.radars.ghook.GhookRadar;
+import com.zerocracy.radars.github.GhookRadar;
 import com.zerocracy.radars.github.GithubRadar;
 import com.zerocracy.radars.github.ReOnComment;
 import com.zerocracy.radars.github.ReOnInvitation;

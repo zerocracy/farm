@@ -14,12 +14,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.zerocracy.radars.github;
+
+import com.jcabi.github.Issue;
 
 /**
- * Github Hook, tests.
+ * Token of issue.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.7
+ * @since 0.1
  */
-package com.zerocracy.radars.ghook;
+final class TokenOfIssue {
+
+    /**
+     * Issue.
+     */
+    private final Issue issue;
+
+    /**
+     * Ctor.
+     * @param iss Issue
+     */
+    TokenOfIssue(final Issue iss) {
+        this.issue = iss;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+            "github;%s;%d",
+            this.issue.repo().coordinates(),
+            this.issue.number()
+        );
+    }
+}

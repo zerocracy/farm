@@ -49,7 +49,7 @@ public final class ReQuestion implements Response {
             claims.add(
                 Iterables.concat(
                     new ClaimOut()
-                        .token(new Token(comment))
+                        .token(new TokenOfComment(comment))
                         .author(new Author(comment.author()))
                         .param("job", new Job(comment.issue())),
                     new ClaimOnQuestion(question)

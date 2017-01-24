@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.radars.ghook;
+package com.zerocracy.radars.github;
 
 import com.jcabi.github.Github;
 import com.zerocracy.jstk.Farm;
@@ -45,13 +45,13 @@ public final class GhookRadar implements Take {
     /**
      * Reaction.
      */
-    private static final Reaction REACTION = new Reaction.Chain(
-        new ReByActions(
-            new RePingArchitect(),
+    private static final Rebound REBOUND = new Rebound.Chain(
+        new RbByActions(
+            new RbPingArchitect(),
             "opened", "reopened"
         ),
-        new ReByActions(
-            new ReOpenAgain(),
+        new RbByActions(
+            new RbOnClose(),
             "closed"
         )
     );
@@ -84,7 +84,7 @@ public final class GhookRadar implements Take {
         try {
             return new RsWithStatus(
                 new RsText(
-                    GhookRadar.REACTION.react(
+                    GhookRadar.REBOUND.react(
                         this.farm,
                         this.github,
                         Json.createReader(

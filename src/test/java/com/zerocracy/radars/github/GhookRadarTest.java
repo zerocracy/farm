@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.radars.ghook;
+package com.zerocracy.radars.github;
 
 import com.jcabi.github.mock.MkGithub;
 import com.zerocracy.jstk.fake.FkFarm;

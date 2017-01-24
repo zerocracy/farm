@@ -14,15 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.radars.ghook;
+package com.zerocracy.radars.github;
 
-import com.jcabi.github.Coordinates;
 import com.jcabi.github.Github;
 import com.jcabi.github.Issue;
-import com.jcabi.github.Repo;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.pm.hr.Roles;
-import com.zerocracy.radars.github.GhProject;
 import com.zerocracy.stk.SoftException;
 import java.io.IOException;
 import java.util.Collection;
@@ -36,20 +33,15 @@ import javax.json.JsonObject;
  * @version $Id$
  * @since 0.7
  */
-final class RePingArchitect implements Reaction {
+final class RbPingArchitect implements Rebound {
 
     @Override
     public String react(final Farm farm, final Github github,
         final JsonObject event) throws IOException {
-        final Repo repo = github.repos().get(
-            new Coordinates.Simple(
-                event.getJsonObject("repository").getString("full_name")
-            )
+        final Issue.Smart issue = new Issue.Smart(
+            new EvtIssue(github, event)
         );
-        final Issue issue = repo.issues().get(
-            event.getJsonObject("issue").getInt("number")
-        );
-        final Roles roles = new Roles(new GhProject(farm, repo));
+        final Roles roles = new Roles(new GhProject(farm, issue.repo()));
         final String author = new Issue.Smart(issue).author()
             .login().toLowerCase(Locale.ENGLISH);
         String answer;
@@ -77,7 +69,7 @@ final class RePingArchitect implements Reaction {
                     String.format(
                         // @checkstyle LineLength (1 line)
                         "@%s I'm not managing this repo, remove the [webhook](https://github.com/%s/settings/hooks) or contact me in [Slack](http://www.zerocracy.com) //cc @yegor256",
-                        author, repo.coordinates()
+                        author, issue.repo().coordinates()
                     )
                 );
                 answer = "This repo is not managed";

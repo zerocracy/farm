@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.radars.ghook;
+package com.zerocracy.radars.github;
 
 import com.jcabi.github.Github;
 import com.zerocracy.jstk.Farm;
@@ -25,14 +25,14 @@ import java.util.LinkedList;
 import javax.json.JsonObject;
 
 /**
- * Reaction.
+ * Rebound.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.7
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-interface Reaction {
+interface Rebound {
 
     /**
      * Do something with this JSON event.
@@ -47,31 +47,31 @@ interface Reaction {
     /**
      * Reactions chained.
      */
-    final class Chain implements Reaction {
+    final class Chain implements Rebound {
         /**
          * Reactions.
          */
-        private final Iterable<Reaction> reactions;
+        private final Iterable<Rebound> reactions;
         /**
          * Ctor.
          * @param list All reactions
          */
-        Chain(final Iterable<Reaction> list) {
+        Chain(final Iterable<Rebound> list) {
             this.reactions = list;
         }
         /**
          * Ctor.
          * @param list All reactions
          */
-        Chain(final Reaction... list) {
+        Chain(final Rebound... list) {
             this(Arrays.asList(list));
         }
         @Override
         public String react(final Farm farm, final Github github,
             final JsonObject event) throws IOException {
             final Collection<String> answers = new LinkedList<>();
-            for (final Reaction reaction : this.reactions) {
-                answers.add(reaction.react(farm, github, event));
+            for (final Rebound rebound : this.reactions) {
+                answers.add(rebound.react(farm, github, event));
             }
             return String.join("; ", answers);
         }

@@ -14,14 +14,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.radars.ghook;
+package com.zerocracy.radars.github;
 
-import com.jcabi.github.Coordinates;
 import com.jcabi.github.Event;
 import com.jcabi.github.Github;
 import com.jcabi.github.Issue;
-import com.jcabi.github.Repo;
 import com.zerocracy.jstk.Farm;
+import com.zerocracy.jstk.Project;
+import com.zerocracy.pm.ClaimOut;
+import com.zerocracy.pm.Claims;
 import java.io.IOException;
 import java.util.Locale;
 import javax.json.JsonObject;
@@ -32,21 +33,15 @@ import javax.json.JsonObject;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.7
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-final class ReOpenAgain implements Reaction {
+final class RbOnClose implements Rebound {
 
     @Override
     public String react(final Farm farm, final Github github,
         final JsonObject event) throws IOException {
-        final Repo repo = github.repos().get(
-            new Coordinates.Simple(
-                event.getJsonObject("repository").getString("full_name")
-            )
-        );
         final Issue.Smart issue = new Issue.Smart(
-            repo.issues().get(
-                event.getJsonObject("issue").getInt("number")
-            )
+            new EvtIssue(github, event)
         );
         final String author = issue.author()
             .login().toLowerCase(Locale.ENGLISH);
@@ -55,8 +50,18 @@ final class ReOpenAgain implements Reaction {
         ).author().login().toLowerCase(Locale.ENGLISH);
         final String answer;
         if (author.equals(closer)) {
+            final Project project = new GhProject(farm, issue.repo());
+            try (final Claims claims = new Claims(project).lock()) {
+                claims.add(
+                    new ClaimOut()
+                        .type("pm.scope.wbs.out")
+                        .token(new TokenOfIssue(issue))
+                        .param("job", new Job(issue))
+                );
+            }
             answer = String.format(
-                "Ticket author and closer are the same person: %s", author
+                "Issue #%d closed by @%s, asked WBS to take it out of scope",
+                issue.number(), author
             );
         } else if (issue.isPull()) {
             answer = "It's a pull request";

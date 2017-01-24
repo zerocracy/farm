@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.radars.ghook;
+package com.zerocracy.radars.github;
 
 import com.jcabi.github.Github;
 import com.zerocracy.jstk.Farm;
@@ -30,12 +30,12 @@ import javax.json.JsonObject;
  * @version $Id$
  * @since 0.7
  */
-final class ReByActions implements Reaction {
+final class RbByActions implements Rebound {
 
     /**
      * Original reaction.
      */
-    private final Reaction origin;
+    private final Rebound origin;
 
     /**
      * Actions.
@@ -47,7 +47,7 @@ final class ReByActions implements Reaction {
      * @param rtn Reaction
      * @param acts Action
      */
-    ReByActions(final Reaction rtn, final String... acts) {
+    RbByActions(final Rebound rtn, final String... acts) {
         this.origin = rtn;
         this.actions = Arrays.asList(acts);
     }
