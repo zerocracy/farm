@@ -87,6 +87,11 @@ public final class Question {
      * @return Help text
      */
     public String help() {
+        if (this.matches()) {
+            throw new IllegalStateException(
+                "The question matches, you can call help()"
+            );
+        }
         return this.rhelp.get();
     }
 
@@ -95,6 +100,11 @@ public final class Question {
      * @return The code
      */
     public String code() {
+        if (!this.matches()) {
+            throw new IllegalStateException(
+                "The question doesn't match, you can call code()"
+            );
+        }
         return this.rcode.get();
     }
 
@@ -103,6 +113,11 @@ public final class Question {
      * @return Map of params
      */
     public Map<String, String> params() {
+        if (!this.matches()) {
+            throw new IllegalStateException(
+                "The question doesn't match, you can call params()"
+            );
+        }
         return this.rparams;
     }
 

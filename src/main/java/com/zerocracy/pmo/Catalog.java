@@ -21,6 +21,7 @@ import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.stream.Collectors;
 import org.xembly.Directives;
 
@@ -107,7 +108,7 @@ public final class Catalog {
      * @return Links found
      * @throws IOException If fails
      */
-    public Iterable<String> links(final String pid) throws IOException {
+    public Collection<String> links(final String pid) throws IOException {
         try (final Item item = this.item()) {
             return new Xocument(item).nodes(
                 String.format(

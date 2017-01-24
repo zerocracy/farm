@@ -195,8 +195,7 @@ public final class Main {
                             new com.zerocracy.radars.github.ReNotMine(
                                 new Response.Chain(
                                     new ReRegex("hello|hey|hi|morning", new com.zerocracy.radars.github.ReSay("Hey, I'm here, what's up?")),
-                                    new ReQuestion(),
-                                    new ReRegex(".*", new com.zerocracy.radars.github.ReSay("Sorry, didn't understand you"))
+                                    new ReQuestion()
                                 )
                             )
                         )
@@ -234,8 +233,7 @@ public final class Main {
                             new Reaction.Chain<>(
                                 Arrays.asList(
                                     new com.zerocracy.radars.slack.ReRegex("hi|hello|hey", new ReSay("Hey, how is it going?")),
-                                    new ReProfile(),
-                                    new com.zerocracy.radars.slack.ReRegex(".*", new ReSay("Sorry, don't get it"))
+                                    new ReProfile()
                                 )
                             ),
                             new ReIfAddressed(
@@ -243,8 +241,7 @@ public final class Main {
                                     Arrays.asList(
                                         new com.zerocracy.radars.slack.ReRegex("hello|hi|hey", new ReSay("What's up?")),
                                         new ReProject(),
-                                        new RePmo(),
-                                        new com.zerocracy.radars.slack.ReRegex(".*", new ReSay("Say again..."))
+                                        new RePmo()
                                     )
                                 )
                             )

@@ -16,6 +16,7 @@
  */
 package com.zerocracy.radars.slack;
 
+import com.google.common.collect.Iterables;
 import com.jcabi.xml.XMLDocument;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
@@ -23,6 +24,7 @@ import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
+import com.zerocracy.radars.ClaimOnQuestion;
 import com.zerocracy.radars.Question;
 import java.io.IOException;
 
@@ -32,6 +34,7 @@ import java.io.IOException;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class ReProject implements Reaction<SlackMessagePosted> {
 
@@ -42,17 +45,16 @@ public final class ReProject implements Reaction<SlackMessagePosted> {
             new XMLDocument(this.getClass().getResource("q-project.xml")),
             event.getMessageContent().split("\\s+", 2)[1].trim()
         );
-        if (question.matches()) {
-            final Project project = new SkProject(farm, event);
-            try (final Claims claims = new Claims(project).lock()) {
-                claims.add(
+        final Project project = new SkProject(farm, event);
+        try (final Claims claims = new Claims(project).lock()) {
+            claims.add(
+                Iterables.concat(
                     new ClaimOut()
-                        .type(question.code())
                         .token(new SkToken(event))
-                        .author(new SkPerson(farm, event).uid())
-                        .params(question.params())
-                );
-            }
+                        .author(new SkPerson(farm, event).uid()),
+                    new ClaimOnQuestion(question)
+                )
+            );
         }
         return question.matches();
     }

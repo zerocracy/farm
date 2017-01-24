@@ -14,44 +14,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pmo.links;
+package com.zerocracy.radars;
 
-import com.jcabi.xml.XML;
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.Stakeholder;
-import com.zerocracy.pm.ClaimIn;
-import com.zerocracy.pmo.Catalog;
-import java.io.IOException;
-import java.util.Collection;
+import com.zerocracy.pm.ClaimOut;
+import java.util.Iterator;
 import org.xembly.Directive;
 
 /**
- * Show all links.
+ * Claim on question.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.8
+ * @since 0.1
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-public final class StkShow implements Stakeholder {
+public final class ClaimOnQuestion implements Iterable<Directive> {
 
-    @Override
-    public String term() {
-        return "type='links.show'";
+    /**
+     * The question.
+     */
+    private final Question question;
+
+    /**
+     * Ctor.
+     * @param qtn Question
+     */
+    public ClaimOnQuestion(final Question qtn) {
+        this.question = qtn;
     }
 
     @Override
-    public Iterable<Directive> process(final Project project,
-        final XML xml) throws IOException {
-        final ClaimIn claim = new ClaimIn(xml);
-        final String pid = claim.param("project");
-        final Collection<String> links = new Catalog(project).links(pid);
-        return claim.reply(
-            String.format(
-                "This project is linked with %d resources: `%s`",
-                links.size(),
-                String.join("`, `", links)
-            )
-        );
+    public Iterator<Directive> iterator() {
+        final Iterator<Directive> iterator;
+        if (this.question.matches()) {
+            iterator = new ClaimOut()
+                .type(this.question.code())
+                .params(this.question.params())
+                .iterator();
+        } else {
+            iterator = new ClaimOut()
+                .type("notify")
+                .param("message", this.question.help())
+                .iterator();
+        }
+        return iterator;
     }
-
 }
