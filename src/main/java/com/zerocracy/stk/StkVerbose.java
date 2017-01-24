@@ -58,9 +58,10 @@ public final class StkVerbose implements Stakeholder {
         final long start = System.currentTimeMillis();
         final Iterable<Directive> dirs = this.origin.process(project, xml);
         Logger.info(
-            this, "%s processed \"%s\", returned %d dirs in %[ms]s",
+            this, "%s processed \"%s/%s\", returned %d dirs in %[ms]s",
             this.origin.getClass(),
             new ClaimIn(xml).type(),
+            new ClaimIn(xml).number(),
             Iterables.size(dirs),
             System.currentTimeMillis() - start
         );

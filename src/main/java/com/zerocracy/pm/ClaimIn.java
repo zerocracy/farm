@@ -53,6 +53,14 @@ public final class ClaimIn {
     }
 
     /**
+     * Get ID.
+     * @return ID
+     */
+    public String number() {
+        return this.xml.xpath("@id").get(0);
+    }
+
+    /**
      * Get type.
      * @return Type
      */

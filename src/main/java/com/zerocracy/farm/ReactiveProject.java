@@ -16,6 +16,7 @@
  */
 package com.zerocracy.farm;
 
+import com.jcabi.aspects.Tv;
 import com.jcabi.xml.XML;
 import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
@@ -25,6 +26,7 @@ import com.zerocracy.pm.Claims;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.xembly.Directive;
 
 /**
@@ -47,6 +49,11 @@ final class ReactiveProject implements Project {
     private final Collection<Stakeholder> stakeholders;
 
     /**
+     * Depth.
+     */
+    private final AtomicInteger depth;
+
+    /**
      * Ctor.
      * @param pkt Project
      * @param list List of stakeholders
@@ -54,6 +61,12 @@ final class ReactiveProject implements Project {
     ReactiveProject(final Project pkt, final Collection<Stakeholder> list) {
         this.origin = pkt;
         this.stakeholders = list;
+        this.depth = new AtomicInteger();
+    }
+
+    @Override
+    public String toString() {
+        return this.origin.toString();
     }
 
     @Override
@@ -70,6 +83,7 @@ final class ReactiveProject implements Project {
      * @throws IOException If fails
      */
     private void run() throws IOException {
+        this.depth.incrementAndGet();
         try (final Claims claims = new Claims(this).lock()) {
             for (final Stakeholder stk : this.stakeholders) {
                 for (final XML claim : claims.find(stk.term())) {
@@ -81,6 +95,7 @@ final class ReactiveProject implements Project {
                 }
             }
         }
+        this.depth.decrementAndGet();
     }
 
     /**
@@ -107,7 +122,7 @@ final class ReactiveProject implements Project {
             final int total = new Xocument(this.path())
                 .nodes("/claims/claim").size();
             this.original.close();
-            if (total > 0) {
+            if (total > 0 && ReactiveProject.this.depth.get() < Tv.TEN) {
                 ReactiveProject.this.run();
             }
         }
