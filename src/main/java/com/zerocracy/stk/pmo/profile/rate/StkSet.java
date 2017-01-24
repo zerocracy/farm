@@ -36,7 +36,7 @@ public final class StkSet implements Stakeholder {
 
     @Override
     public String term() {
-        return "type='profile.rate.set'";
+        return "type='pmo.profile.rate.set'";
     }
 
     @Override

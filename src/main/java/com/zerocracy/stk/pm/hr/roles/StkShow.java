@@ -35,7 +35,7 @@ public final class StkShow implements Stakeholder {
 
     @Override
     public String term() {
-        return "type='hr.roles.show'";
+        return "type='pm.hr.roles.show'";
     }
 
     @Override

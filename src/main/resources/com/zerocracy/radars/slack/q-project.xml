@@ -17,13 +17,57 @@
  -->
 <question>
     <cmd>
-        <code>hr.roles.show</code>
+        <code>pmo.links.show</code>
+        <regex>links?</regex>
+        <label>links</label>
+        <help>Show all resources the project is linked with</help>
+        <cmds>
+            <cmd>
+                <code>pmo.links.add</code>
+                <regex>add|set</regex>
+                <label>add</label>
+                <help>Add a new resource</help>
+                <opts>
+                    <opt>
+                        <name>rel</name>
+                        <regex>[a-z]+</regex>
+                        <help>Kind of resource, e.g. "github"</help>
+                    </opt>
+                    <opt>
+                        <name>href</name>
+                        <regex>.+</regex>
+                        <help>Resource details, for example GitHub repository name</help>
+                    </opt>
+                </opts>
+            </cmd>
+            <cmd>
+                <code>pmo.links.remove</code>
+                <regex>del|delete|remove</regex>
+                <label>remove</label>
+                <help>Remove an existing project resource</help>
+                <opts>
+                    <opt>
+                        <name>rel</name>
+                        <regex>[a-z]+</regex>
+                        <help>Kind of resource, e.g. "github"</help>
+                    </opt>
+                    <opt>
+                        <name>href</name>
+                        <regex>.+</regex>
+                        <help>Resource details, for example GitHub repository name</help>
+                    </opt>
+                </opts>
+            </cmd>
+        </cmds>
+    </cmd>
+    <cmd>
+        <code>pm.hr.roles.show</code>
         <regex>roles?</regex>
         <label>roles</label>
         <help>Show all roles assigned at the moment</help>
         <cmds>
             <cmd>
-                <code>hr.roles.assign</code>
+                <code>pm.hr.roles.assign</code>
                 <regex>assign|add|register</regex>
                 <label>assign</label>
                 <help>Assign new project role</help>
@@ -41,7 +85,7 @@
                 </opts>
             </cmd>
             <cmd>
-                <code>hr.roles.resign</code>
+                <code>pm.hr.roles.resign</code>
                 <regex>resign|remove|unregister</regex>
                 <label>resign</label>
                 <help>Resign a person from a project role</help>
@@ -61,13 +105,13 @@
         </cmds>
     </cmd>
     <cmd>
-        <code>scope.wbs.show</code>
+        <code>pm.scope.wbs.show</code>
         <regex>wbs</regex>
         <label>wbs</label>
         <help>Show the entire WBS</help>
     </cmd>
     <cmd>
-        <code>bootstrap</code>
+        <code>pm.bootstrap</code>
         <regex>bootstrap</regex>
         <label>bootstrap</label>
         <help>Bootstrap the project to initialize all project artifacts</help>

@@ -17,13 +17,13 @@
  -->
 <question>
     <cmd>
-        <code>scope.wbs.add</code>
+        <code>pm.scope.wbs.add</code>
         <regex>in</regex>
         <label>in</label>
         <help>Add job to WBS</help>
     </cmd>
     <cmd>
-        <code>scope.wbs.remove</code>
+        <code>pm.scope.wbs.remove</code>
         <regex>out</regex>
         <label>out</label>
         <help>Remove job from WBS</help>

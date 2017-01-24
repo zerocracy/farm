@@ -35,7 +35,7 @@ public final class StkParent implements Stakeholder {
 
     @Override
     public String term() {
-        return "type='parent.set'";
+        return "type='pmo.parent.set'";
     }
 
     @Override

@@ -39,7 +39,6 @@ import com.zerocracy.radars.slack.ReIfAddressed;
 import com.zerocracy.radars.slack.ReIfDirect;
 import com.zerocracy.radars.slack.ReLogged;
 import com.zerocracy.radars.slack.ReNotMine;
-import com.zerocracy.radars.slack.RePmo;
 import com.zerocracy.radars.slack.ReProfile;
 import com.zerocracy.radars.slack.ReProject;
 import com.zerocracy.radars.slack.ReSafe;
@@ -240,8 +239,7 @@ public final class Main {
                                 new Reaction.Chain<>(
                                     Arrays.asList(
                                         new com.zerocracy.radars.slack.ReRegex("hello|hi|hey", new ReSay("What's up?")),
-                                        new ReProject(),
-                                        new RePmo()
+                                        new ReProject()
                                     )
                                 )
                             )

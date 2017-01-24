@@ -36,7 +36,7 @@ public final class StkBootstrap implements Stakeholder {
 
     @Override
     public String term() {
-        return "type='bootstrap'";
+        return "type='pm.bootstrap'";
     }
 
     @Override

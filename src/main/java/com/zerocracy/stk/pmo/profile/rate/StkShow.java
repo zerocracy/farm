@@ -35,7 +35,7 @@ public final class StkShow implements Stakeholder {
 
     @Override
     public String term() {
-        return "type='profile.rate.show'";
+        return "type='pmo.profile.rate.show'";
     }
 
     @Override

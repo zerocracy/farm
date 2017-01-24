@@ -35,7 +35,7 @@ public final class StkSet implements Stakeholder {
 
     @Override
     public String term() {
-        return "type='profile.wallet.set'";
+        return "type='pmo.profile.wallet.set'";
     }
 
     @Override

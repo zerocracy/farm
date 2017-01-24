@@ -35,7 +35,7 @@ public final class StkRemove implements Stakeholder {
 
     @Override
     public String term() {
-        return "type='links.remove'";
+        return "type='pmo.links.remove'";
     }
 
     @Override

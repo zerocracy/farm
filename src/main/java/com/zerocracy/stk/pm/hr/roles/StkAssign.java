@@ -52,7 +52,7 @@ public final class StkAssign implements Stakeholder {
 
     @Override
     public String term() {
-        return "type='hr.roles.add'";
+        return "type='pm.hr.roles.add'";
     }
 
     @Override

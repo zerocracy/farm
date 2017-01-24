@@ -48,7 +48,7 @@ public final class QuestionTest {
         );
         MatcherAssert.assertThat(
             question.code(),
-            Matchers.equalTo("hr.roles.assign")
+            Matchers.equalTo("pm.hr.roles.assign")
         );
         MatcherAssert.assertThat(
             question.params().get("role"),
@@ -64,9 +64,9 @@ public final class QuestionTest {
     public void buildsHelp() throws Exception {
         final Question question = new Question(
             new XMLDocument(
-                this.getClass().getResource("slack/q-pmo.xml")
+                this.getClass().getResource("slack/q-profile.xml")
             ),
-            "link add"
+            "rate set"
         );
         MatcherAssert.assertThat(
             question.matches(),
@@ -74,7 +74,29 @@ public final class QuestionTest {
         );
         MatcherAssert.assertThat(
             question.help(),
-            Matchers.containsString("Option \"rel\" is missing")
+            Matchers.containsString("Option `rate` is missing")
+        );
+    }
+
+    /**
+     * Parses invalid text and builds help.
+     * @throws Exception If some problem inside
+     */
+    @Test
+    public void buildsHelpOnInvalidCommand() throws Exception {
+        final Question question = new Question(
+            new XMLDocument(
+                this.getClass().getResource("github/q-github.xml")
+            ),
+            "just-a-weird-command"
+        );
+        MatcherAssert.assertThat(
+            question.matches(),
+            Matchers.equalTo(false)
+        );
+        MatcherAssert.assertThat(
+            question.help(),
+            Matchers.containsString("Try one of these")
         );
     }
 
@@ -87,7 +109,6 @@ public final class QuestionTest {
     @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     public void parsesManyValidTexts() throws Exception {
         final String[] files = {
-            "slack/q-pmo-test.xml",
             "slack/q-profile-test.xml",
             "slack/q-project-test.xml",
         };

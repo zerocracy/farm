@@ -35,7 +35,7 @@ public final class StkShow implements Stakeholder {
 
     @Override
     public String term() {
-        return "type='scope.wbs.show'";
+        return "type='pm.scope.wbs.show'";
     }
 
     @Override

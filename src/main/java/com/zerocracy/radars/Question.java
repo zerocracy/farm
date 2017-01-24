@@ -126,6 +126,7 @@ public final class Question {
      */
     private void start() {
         this.rcode.set(null);
+        this.rhelp.set("");
         this.parse(
             this.config.nodes("/question/cmd"),
             new ArrayList<>(Arrays.asList(this.text.split("\\s+")))
@@ -137,12 +138,31 @@ public final class Question {
      * @param cmds Commands
      * @param parts All other parts left
      */
-    private void parse(final Iterable<XML> cmds, final List<String> parts) {
+    private void parse(final Collection<XML> cmds, final List<String> parts) {
         final String part = parts.remove(0);
+        boolean found = false;
         for (final XML cmd : cmds) {
             if (this.parse(cmd, part, parts)) {
+                found = true;
                 break;
             }
+        }
+        if (!found) {
+            this.rhelp.set(
+                String.format(
+                    "Try one of these:\n  * %s",
+                    String.join(
+                        "\n  * ",
+                        cmds.stream().map(
+                            cmd -> String.format(
+                                "`%s` %s",
+                                cmd.xpath("label/text()").get(0),
+                                cmd.xpath("help/text() ").get(0)
+                            )
+                        ).collect(Collectors.toList())
+                    )
+                )
+            );
         }
     }
 
@@ -184,11 +204,11 @@ public final class Question {
                 this.rcode.set(null);
                 this.rhelp.set(
                     String.format(
-                        "Option \"%s\" is missing in \"%s <%s>\":\n  %s",
+                        "Option `%s` is missing in `%s %s`:\n  %s",
                         name,
                         part,
                         String.join(
-                            "> <",
+                            " ",
                             opts.stream().map(
                                 item -> item.xpath("name/text()  ").get(0)
                             ).collect(Collectors.toList())
@@ -197,7 +217,7 @@ public final class Question {
                             "\n  ",
                             opts.stream().map(
                                 item -> String.format(
-                                    "<%s> - %s",
+                                    "`%s`: %s",
                                     item.xpath("name/text()").get(0),
                                     item.xpath("help/text()").get(0)
                                 )

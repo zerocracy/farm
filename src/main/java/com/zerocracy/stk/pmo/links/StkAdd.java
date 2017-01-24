@@ -50,7 +50,7 @@ public final class StkAdd implements Stakeholder {
 
     @Override
     public String term() {
-        return "type='links.add'";
+        return "type='pmo.links.add'";
     }
 
     @Override

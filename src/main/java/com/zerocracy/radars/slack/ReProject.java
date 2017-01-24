@@ -24,6 +24,7 @@ import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
+import com.zerocracy.pmo.Pmo;
 import com.zerocracy.radars.ClaimOnQuestion;
 import com.zerocracy.radars.Question;
 import java.io.IOException;
@@ -45,18 +46,37 @@ public final class ReProject implements Reaction<SlackMessagePosted> {
             new XMLDocument(this.getClass().getResource("q-project.xml")),
             event.getMessageContent().split("\\s+", 2)[1].trim()
         );
-        final Project project = new SkProject(farm, event);
+        final Project project = ReProject.project(question, farm, event);
         try (final Claims claims = new Claims(project).lock()) {
             claims.add(
                 Iterables.concat(
                     new ClaimOut()
                         .token(new SkToken(event))
-                        .author(new SkPerson(farm, event).uid()),
+                        .author(new SkPerson(farm, event).uid())
+                        .param("project", project),
                     new ClaimOnQuestion(question)
                 )
             );
         }
         return question.matches();
+    }
+
+    /**
+     * Create project.
+     * @param question Question
+     * @param farm Farm
+     * @param event Event
+     * @return Project
+     */
+    private static Project project(final Question question, final Farm farm,
+        final SlackMessagePosted event) {
+        final Project project;
+        if (question.matches() && question.code().startsWith("pm.")) {
+            project = new SkProject(farm, event);
+        } else {
+            project = new Pmo(farm);
+        }
+        return project;
     }
 
 }

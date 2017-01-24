@@ -17,19 +17,19 @@
  -->
 <question>
     <cmd>
-        <code>profile.aliases.show</code>
+        <code>pmo.profile.aliases.show</code>
         <regex>alias(es)?</regex>
         <label>aliases</label>
         <help>Show all your currently registered aliases</help>
     </cmd>
     <cmd>
-        <code>profile.rate.show</code>
+        <code>pmo.profile.rate.show</code>
         <regex>rate</regex>
         <label>rate</label>
         <help>Show your current hourly rate</help>
         <cmds>
             <cmd>
-                <code>profile.rate.set</code>
+                <code>pmo.profile.rate.set</code>
                 <regex>set</regex>
                 <label>set</label>
                 <help>Change your current hourly rate</help>
@@ -44,13 +44,13 @@
         </cmds>
     </cmd>
     <cmd>
-        <code>profile.skills.show</code>
+        <code>pmo.profile.skills.show</code>
         <regex>skills?</regex>
         <label>skills</label>
         <help>Show your currently registered technical skills</help>
         <cmds>
             <cmd>
-                <code>profile.skills.add</code>
+                <code>pmo.profile.skills.add</code>
                 <regex>add|set</regex>
                 <label>add</label>
                 <help>Add a new skill</help>
@@ -65,13 +65,13 @@
         </cmds>
     </cmd>
     <cmd>
-        <code>profile.wallet.show</code>
+        <code>pmo.profile.wallet.show</code>
         <regex>wallet</regex>
         <label>wallet</label>
         <help>Show your currently registered wallet (payment details)</help>
         <cmds>
             <cmd>
-                <code>profile.wallet.set</code>
+                <code>pmo.profile.wallet.set</code>
                 <regex>set</regex>
                 <label>set</label>
                 <help>Change your payment information</help>

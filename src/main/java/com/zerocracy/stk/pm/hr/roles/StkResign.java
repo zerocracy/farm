@@ -35,7 +35,7 @@ public final class StkResign implements Stakeholder {
 
     @Override
     public String term() {
-        return "type='hr.roles.remove'";
+        return "type='pm.hr.roles.remove'";
     }
 
     @Override

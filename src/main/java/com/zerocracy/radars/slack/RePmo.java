@@ -45,13 +45,14 @@ public final class RePmo implements Reaction<SlackMessagePosted> {
             new XMLDocument(this.getClass().getResource("q-pmo.xml")),
             event.getMessageContent().split("\\s+", 2)[1].trim()
         );
+        final ClaimOut claim = new ClaimOut()
+            .token(new SkToken(event))
+            .author(new SkPerson(farm, event).uid())
+            .param("project", new SkProject(farm, event));
         try (final Claims claims = new Claims(new Pmo(farm)).lock()) {
             claims.add(
                 Iterables.concat(
-                    new ClaimOut()
-                        .token(new SkToken(event))
-                        .author(new SkPerson(farm, event).uid())
-                        .param("project", new SkProject(farm, event)),
+                    claim,
                     new ClaimOnQuestion(question)
                 )
             );
