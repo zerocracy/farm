@@ -53,6 +53,11 @@ final class SyncProject implements Project {
     }
 
     @Override
+    public String toString() {
+        return this.origin.toString();
+    }
+
+    @Override
     public Item acq(final String file) throws IOException {
         if (!this.pool.containsKey(file)) {
             this.pool.put(
