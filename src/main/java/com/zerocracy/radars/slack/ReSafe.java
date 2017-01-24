@@ -16,6 +16,7 @@
  */
 package com.zerocracy.radars.slack;
 
+import com.jcabi.aspects.Tv;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.jstk.Farm;
@@ -24,6 +25,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Safe reaction.
@@ -67,7 +69,10 @@ public final class ReSafe implements Reaction<SlackMessagePosted> {
                         "\n",
                         "There is a technical failure on my side.",
                         "Please, email this to bug@0crat.com:\n\n```",
-                        baos.toString(StandardCharsets.UTF_8),
+                        StringUtils.abbreviate(
+                            baos.toString(StandardCharsets.UTF_8),
+                            Tv.THOUSAND
+                        ),
                         "```"
                     )
                 );

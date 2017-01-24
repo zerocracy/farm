@@ -16,6 +16,7 @@
  */
 package com.zerocracy.stk;
 
+import com.jcabi.aspects.Tv;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
@@ -25,6 +26,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.apache.commons.lang3.StringUtils;
 import org.xembly.Directive;
 
 /**
@@ -74,7 +76,10 @@ public final class StkSafe implements Stakeholder {
                         "I can't do it for technical reasons, I'm very sorry.",
                         // @checkstyle LineLength (1 line)
                         "If you don't know what to do, email this to bug@0crat.com:\n\n```",
-                        baos.toString(StandardCharsets.UTF_8),
+                        StringUtils.abbreviate(
+                            baos.toString(StandardCharsets.UTF_8),
+                            Tv.THOUSAND
+                        ),
                         "```"
                     )
                 );
