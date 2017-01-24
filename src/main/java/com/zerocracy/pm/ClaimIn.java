@@ -17,6 +17,7 @@
 package com.zerocracy.pm;
 
 import com.jcabi.xml.XML;
+import java.util.Iterator;
 
 /**
  * Claim coming in.
@@ -90,12 +91,22 @@ public final class ClaimIn {
      * @return Param value
      */
     public String param(final String name) {
-        return this.xml.xpath(
+        final Iterator<String> params = this.xml.xpath(
             String.format(
                 "params/param[@name='%s']/text()",
                 name
             )
-        ).get(0);
+        ).iterator();
+        if (!params.hasNext()) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "Parameter \"%s\" not found among: %s",
+                    name,
+                    this.xml.xpath("params/param/@name")
+                )
+            );
+        }
+        return params.next();
     }
 
 }

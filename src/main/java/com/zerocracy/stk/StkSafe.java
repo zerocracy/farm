@@ -16,6 +16,7 @@
  */
 package com.zerocracy.stk;
 
+import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
@@ -76,6 +77,13 @@ public final class StkSafe implements Stakeholder {
                         baos.toString(StandardCharsets.UTF_8),
                         "```"
                     )
+                );
+                Logger.error(
+                    this, "%s failed at \"%s/%s\": %s",
+                    this.origin.getClass().getCanonicalName(),
+                    new ClaimIn(xml).type(),
+                    new ClaimIn(xml).number(),
+                    ex.getLocalizedMessage()
                 );
             }
         }
