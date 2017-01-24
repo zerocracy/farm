@@ -74,7 +74,7 @@ public final class QuestionTest {
         );
         MatcherAssert.assertThat(
             question.help(),
-            Matchers.containsString("Option `rate` is missing")
+            Matchers.containsString("Option `<rate>` is missing")
         );
     }
 

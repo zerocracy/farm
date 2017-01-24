@@ -204,11 +204,11 @@ public final class Question {
                 this.rcode.set(null);
                 this.rhelp.set(
                     String.format(
-                        "Option `%s` is missing in `%s %s`:\n  %s",
+                        "Option `<%s>` is missing in `%s <%s>`:\n  %s",
                         name,
                         part,
                         String.join(
-                            " ",
+                            "> <",
                             opts.stream().map(
                                 item -> item.xpath("name/text()  ").get(0)
                             ).collect(Collectors.toList())
@@ -217,7 +217,7 @@ public final class Question {
                             "\n  ",
                             opts.stream().map(
                                 item -> String.format(
-                                    "`%s`: %s",
+                                    "`<%s>`: %s",
                                     item.xpath("name/text()").get(0),
                                     item.xpath("help/text()").get(0)
                                 )
