@@ -35,7 +35,7 @@ public final class StkOut implements Stakeholder {
 
     @Override
     public String term() {
-        return "type='pm.scope.wbs.remove'";
+        return "type='pm.scope.wbs.out'";
     }
 
     @Override

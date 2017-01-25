@@ -35,7 +35,7 @@ public final class StkInto implements Stakeholder {
 
     @Override
     public String term() {
-        return "type='pm.scope.wbs.add'";
+        return "type='pm.scope.wbs.in'";
     }
 
     @Override

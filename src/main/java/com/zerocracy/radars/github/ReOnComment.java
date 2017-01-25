@@ -65,7 +65,9 @@ public final class ReOnComment implements Reaction {
         final String self = comment.issue().repo().github()
             .users().self().login().toLowerCase(Locale.ENGLISH);
         if (!author.equals(self)) {
-            this.response.react(farm, comment);
+            this.response.react(
+                farm, comment
+            );
         }
     }
 
@@ -89,14 +91,12 @@ public final class ReOnComment implements Reaction {
                 )
             )
         );
-        return new Comment.Smart(
-            new SafeComment(
-                issue.comments().get(
-                    Integer.parseInt(
-                        StringUtils.substringAfterLast(
-                            subject.getString("latest_comment_url"),
-                            "/"
-                        )
+        return new SafeComment(
+            issue.comments().get(
+                Integer.parseInt(
+                    StringUtils.substringAfterLast(
+                        subject.getString("latest_comment_url"),
+                        "/"
                     )
                 )
             )
