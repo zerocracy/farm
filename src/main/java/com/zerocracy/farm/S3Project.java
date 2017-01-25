@@ -19,6 +19,7 @@ package com.zerocracy.farm;
 import com.jcabi.s3.Bucket;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Project in S3.
@@ -53,11 +54,19 @@ final class S3Project implements Project {
     }
 
     @Override
+    public String toString() {
+        return StringUtils.substringAfterLast(
+            StringUtils.stripEnd(this.prefix, "/"),
+            "/"
+        );
+    }
+
+    @Override
     public Item acq(final String file) {
         if (!file.matches("[a-z\\-]+\\.[a-z]+")) {
             throw new IllegalArgumentException(
                 String.format(
-                    "Invalid file name: \"%s\"", file
+                    "Unacceptable file name: \"%s\"", file
                 )
             );
         }
