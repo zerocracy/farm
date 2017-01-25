@@ -21,6 +21,7 @@ import com.jcabi.github.Coordinates;
 import com.jcabi.github.Github;
 import com.jcabi.github.Issue;
 import com.jcabi.github.Repo;
+import com.jcabi.log.Logger;
 import com.zerocracy.jstk.Farm;
 import java.io.IOException;
 import java.util.Locale;
@@ -91,11 +92,13 @@ public final class ReOnComment implements Reaction {
                 )
             )
         );
+        final String latest = subject.getString("latest_comment_url");
+        Logger.info(this, "latest_comment_url: %s", latest);
         return new SafeComment(
             issue.comments().get(
                 Integer.parseInt(
                     StringUtils.substringAfterLast(
-                        subject.getString("latest_comment_url"),
+                        latest,
                         "/"
                     )
                 )
