@@ -46,6 +46,7 @@ import com.zerocracy.radars.slack.ReSay;
 import com.zerocracy.radars.slack.Reaction;
 import com.zerocracy.radars.slack.SlackRadar;
 import com.zerocracy.stk.StkSafe;
+import com.zerocracy.stk.StkTrashBin;
 import com.zerocracy.stk.StkVerbose;
 import com.zerocracy.stk.pm.hr.roles.StkAssign;
 import com.zerocracy.stk.pm.hr.roles.StkResign;
@@ -150,7 +151,8 @@ public final class Main {
                         new com.zerocracy.stk.pmo.profile.wallet.StkShow(),
                         new com.zerocracy.stk.pmo.profile.skills.StkAdd(),
                         new com.zerocracy.stk.pmo.profile.skills.StkShow(),
-                        new com.zerocracy.stk.pmo.profile.aliases.StkShow()
+                        new com.zerocracy.stk.pmo.profile.aliases.StkShow(),
+                        new StkTrashBin("type='ping'")
                     )
                     .map(StkVerbose::new)
                     .map(StkSafe::new)
