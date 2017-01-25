@@ -21,10 +21,11 @@ import com.jcabi.github.Coordinates;
 import com.jcabi.github.Github;
 import com.jcabi.github.Issue;
 import com.jcabi.github.Repo;
-import com.jcabi.log.Logger;
 import com.zerocracy.jstk.Farm;
 import java.io.IOException;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.json.JsonObject;
 import org.apache.commons.lang3.StringUtils;
 
@@ -36,6 +37,13 @@ import org.apache.commons.lang3.StringUtils;
  * @since 0.1
  */
 public final class ReOnComment implements Reaction {
+
+    /**
+     * Issue URL matcher.
+     */
+    private static final Pattern LATEST = Pattern.compile(
+        "https://api\\.github\\.com/repos/[^/]+/[^/]+/issues/comments/(\\d+)"
+    );
 
     /**
      * GitHub client.
@@ -79,6 +87,16 @@ public final class ReOnComment implements Reaction {
      */
     private Comment comment(final JsonObject json) {
         final JsonObject subject = json.getJsonObject("subject");
+        final Matcher matcher = ReOnComment.LATEST.matcher(
+            subject.getString("latest_comment_url")
+        );
+        if (!matcher.matches()) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "The event is not about an issue comment: %s", json
+                )
+            );
+        }
         final Repo repo = this.github.repos().get(
             new Coordinates.Simple(
                 json.getJsonObject("repository").getString("full_name")
@@ -92,16 +110,9 @@ public final class ReOnComment implements Reaction {
                 )
             )
         );
-        final String latest = subject.getString("latest_comment_url");
-        Logger.info(this, "latest_comment_url: %s", latest);
         return new SafeComment(
             issue.comments().get(
-                Integer.parseInt(
-                    StringUtils.substringAfterLast(
-                        latest,
-                        "/"
-                    )
-                )
+                Integer.parseInt(matcher.group(1))
             )
         );
     }
