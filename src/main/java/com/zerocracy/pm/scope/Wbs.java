@@ -87,7 +87,7 @@ public final class Wbs {
     public void add(final String job) throws IOException {
         if (this.exists(job)) {
             throw new SoftException(
-                String.format("Job \"%s\" is already in scope", job)
+                String.format("Job `%s` is already in scope", job)
             );
         }
         try (final Item wbs = this.item()) {
@@ -109,7 +109,7 @@ public final class Wbs {
     public void remove(final String job) throws IOException {
         if (!this.exists(job)) {
             throw new SoftException(
-                String.format("Job \"%s\" is not in scope", job)
+                String.format("Job `%s` is not in scope", job)
             );
         }
         try (final Item wbs = this.item()) {
