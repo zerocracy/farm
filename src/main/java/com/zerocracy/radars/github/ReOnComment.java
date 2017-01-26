@@ -68,53 +68,41 @@ public final class ReOnComment implements Reaction {
     @Override
     public void react(final Farm farm, final JsonObject event)
         throws IOException {
-        final Comment.Smart comment = new Comment.Smart(this.comment(event));
-        final String author = comment.author()
-            .login().toLowerCase(Locale.ENGLISH);
-        final String self = comment.issue().repo().github()
-            .users().self().login().toLowerCase(Locale.ENGLISH);
-        if (!author.equals(self)) {
-            this.response.react(
-                farm, comment
-            );
-        }
-    }
-
-    /**
-     * The comment where it happened.
-     * @param json JSON from GitHub
-     * @return Comment
-     */
-    private Comment comment(final JsonObject json) {
-        final JsonObject subject = json.getJsonObject("subject");
+        final JsonObject subject = event.getJsonObject("subject");
         final Matcher matcher = ReOnComment.LATEST.matcher(
             subject.getString("latest_comment_url")
         );
         if (!matcher.matches()) {
-            throw new IllegalArgumentException(
-                String.format(
-                    "The event is not about an issue comment: %s", json
+            final Repo repo = this.github.repos().get(
+                new Coordinates.Simple(
+                    event.getJsonObject("repository").getString("full_name")
                 )
             );
-        }
-        final Repo repo = this.github.repos().get(
-            new Coordinates.Simple(
-                json.getJsonObject("repository").getString("full_name")
-            )
-        );
-        final Issue issue = repo.issues().get(
-            Integer.parseInt(
-                StringUtils.substringAfterLast(
-                    subject.getString("url"),
-                    "/"
+            final Issue issue = repo.issues().get(
+                Integer.parseInt(
+                    StringUtils.substringAfterLast(
+                        subject.getString("url"),
+                        "/"
+                    )
                 )
-            )
-        );
-        return new SafeComment(
-            issue.comments().get(
-                Integer.parseInt(matcher.group(1))
-            )
-        );
+            );
+            final Comment.Smart comment = new Comment.Smart(
+                new SafeComment(
+                    issue.comments().get(
+                        Integer.parseInt(matcher.group(1))
+                    )
+                )
+            );
+            final String author = comment.author()
+                .login().toLowerCase(Locale.ENGLISH);
+            final String self = comment.issue().repo().github()
+                .users().self().login().toLowerCase(Locale.ENGLISH);
+            if (!author.equals(self)) {
+                this.response.react(
+                    farm, comment
+                );
+            }
+        }
     }
 
 }
