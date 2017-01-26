@@ -21,6 +21,7 @@ import com.jcabi.xml.XSLDocument;
 import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
+import com.zerocracy.stk.SoftException;
 import java.io.IOException;
 import org.xembly.Directives;
 
@@ -84,8 +85,14 @@ public final class Wbs {
      * @throws IOException If fails
      */
     public void add(final String job) throws IOException {
+        if (this.exists(job)) {
+            throw new SoftException(
+                String.format("Job \"%s\" is already in scope", job)
+            );
+        }
         try (final Item wbs = this.item()) {
-            new Xocument(wbs.path()).modify(
+            final Xocument xocument = new Xocument(wbs.path());
+            xocument.modify(
                 new Directives()
                     .xpath(String.format("/wbs[not(job[@id='%s'])]", job))
                     .strict(1)
@@ -100,6 +107,11 @@ public final class Wbs {
      * @throws IOException If fails
      */
     public void remove(final String job) throws IOException {
+        if (!this.exists(job)) {
+            throw new SoftException(
+                String.format("Job \"%s\" is not in scope", job)
+            );
+        }
         try (final Item wbs = this.item()) {
             new Xocument(wbs.path()).modify(
                 new Directives().xpath(
@@ -108,6 +120,20 @@ public final class Wbs {
                     )
                 ).strict(1).remove()
             );
+        }
+    }
+
+    /**
+     * This job exists in WBS?
+     * @param job The job to check
+     * @return TRUE if it exists
+     * @throws IOException If fails
+     */
+    public boolean exists(final String job) throws IOException {
+        try (final Item wbs = this.item()) {
+            return !new Xocument(wbs.path()).nodes(
+                String.format("/wbs/job[@id = '%s']", job)
+            ).isEmpty();
         }
     }
 
