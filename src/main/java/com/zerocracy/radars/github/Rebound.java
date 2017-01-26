@@ -32,7 +32,7 @@ import javax.json.JsonObject;
  * @since 0.7
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-interface Rebound {
+public interface Rebound {
 
     /**
      * Do something with this JSON event.
@@ -56,14 +56,14 @@ interface Rebound {
          * Ctor.
          * @param list All reactions
          */
-        Chain(final Iterable<Rebound> list) {
+        public Chain(final Iterable<Rebound> list) {
             this.reactions = list;
         }
         /**
          * Ctor.
          * @param list All reactions
          */
-        Chain(final Rebound... list) {
+        public Chain(final Rebound... list) {
             this(Arrays.asList(list));
         }
         @Override

@@ -25,14 +25,19 @@ import com.zerocracy.farm.ReactiveFarm;
 import com.zerocracy.farm.S3Farm;
 import com.zerocracy.farm.SyncFarm;
 import com.zerocracy.jstk.Farm;
-import com.zerocracy.radars.Radar;
 import com.zerocracy.radars.github.GhookRadar;
-import com.zerocracy.radars.github.GithubRadar;
+import com.zerocracy.radars.github.GithubFetch;
+import com.zerocracy.radars.github.RbByActions;
+import com.zerocracy.radars.github.RbLogged;
+import com.zerocracy.radars.github.RbOnClose;
+import com.zerocracy.radars.github.RbOnComment;
+import com.zerocracy.radars.github.RbPingArchitect;
 import com.zerocracy.radars.github.ReOnComment;
 import com.zerocracy.radars.github.ReOnInvitation;
 import com.zerocracy.radars.github.ReOnReason;
 import com.zerocracy.radars.github.ReQuestion;
 import com.zerocracy.radars.github.ReRegex;
+import com.zerocracy.radars.github.Rebound;
 import com.zerocracy.radars.github.Response;
 import com.zerocracy.radars.github.StkNotify;
 import com.zerocracy.radars.slack.ReIfAddressed;
@@ -81,7 +86,7 @@ import org.takes.http.FtCli;
  * @checkstyle LineLengthCheck (500 lines)
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
  */
-@SuppressWarnings("PMD.ExcessiveImports")
+@SuppressWarnings({ "PMD.ExcessiveImports", "PMD.ExcessiveMethodLength" })
 public final class Main {
 
     /**
@@ -159,31 +164,7 @@ public final class Main {
                     .collect(Collectors.toList())
             )
         );
-        final GithubRadar ghradar = Main.ghradar(farm, github);
-        final SlackRadar skradar = Main.skradar(farm, props, sessions);
-        try (final Radar chain = new Radar.Chain(ghradar, skradar)) {
-            final GhookRadar gkradar = Main.gkradar(farm, github);
-            chain.start();
-            new FtCli(
-                new TkApp(
-                    props,
-                    new FkRegex("/slack", skradar),
-                    new FkRegex("/alias", new TkAlias(farm)),
-                    new FkRegex("/ghook", gkradar)
-                ),
-                this.arguments
-            ).start(Exit.NEVER);
-        }
-    }
-
-    /**
-     * Github radar.
-     * @param farm Farm
-     * @param github Github client
-     * @return Radar
-     */
-    private static GithubRadar ghradar(final Farm farm, final Github github) {
-        return new GithubRadar(
+        final GithubFetch ghradar = new GithubFetch(
             farm,
             github,
             new com.zerocracy.radars.github.ReLogged(
@@ -206,28 +187,7 @@ public final class Main {
                 )
             )
         );
-    }
-
-    /**
-     * Ghook radar.
-     * @param farm Farm
-     * @param github Github client
-     * @return Radar
-     */
-    private static GhookRadar gkradar(final Farm farm, final Github github) {
-        return new GhookRadar(farm, github);
-    }
-
-    /**
-     * Slack radar.
-     * @param farm Farm
-     * @param props Props
-     * @param sessions Sessions
-     * @return Radar
-     */
-    private static SlackRadar skradar(final Farm farm, final Properties props,
-        final Map<String, SlackSession> sessions) {
-        return new SlackRadar(
+        final SlackRadar skradar = new SlackRadar(
             farm, props, sessions,
             new ReSafe(
                 new ReLogged<>(
@@ -252,6 +212,39 @@ public final class Main {
                 )
             )
         );
+        try {
+            final GhookRadar gkradar = new GhookRadar(
+                farm, github,
+                new RbLogged(
+                    new Rebound.Chain(
+                        new RbByActions(
+                            new RbOnComment(ghradar),
+                            "created"
+                        ),
+                        new RbByActions(
+                            new RbPingArchitect(),
+                            "opened", "reopened"
+                        ),
+                        new RbByActions(
+                            new RbOnClose(),
+                            "closed"
+                        )
+                    )
+                )
+            );
+            skradar.start();
+            new FtCli(
+                new TkApp(
+                    props,
+                    new FkRegex("/slack", skradar),
+                    new FkRegex("/alias", new TkAlias(farm)),
+                    new FkRegex("/ghook", gkradar)
+                ),
+                this.arguments
+            ).start(Exit.NEVER);
+        } finally {
+            skradar.close();
+        }
     }
 
 }

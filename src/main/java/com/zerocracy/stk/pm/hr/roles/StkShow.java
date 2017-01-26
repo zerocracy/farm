@@ -46,7 +46,7 @@ public final class StkShow implements Stakeholder {
             String.format(
                 "Full list of roles in \"%s\":%n%n```%n%s%n```",
                 project,
-                new Roles(project).bootstrap().print()
+                new Roles(project).bootstrap().markdown()
             )
         );
     }

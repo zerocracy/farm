@@ -33,13 +33,13 @@ import javax.json.JsonObject;
  * @version $Id$
  * @since 0.7
  */
-final class RbPingArchitect implements Rebound {
+public final class RbPingArchitect implements Rebound {
 
     @Override
     public String react(final Farm farm, final Github github,
         final JsonObject event) throws IOException {
         final Issue.Smart issue = new Issue.Smart(
-            new EvtIssue(github, event)
+            new IssueOfEvent(github, event)
         );
         final Roles roles = new Roles(new GhProject(farm, issue.repo()));
         final String author = new Issue.Smart(issue).author()

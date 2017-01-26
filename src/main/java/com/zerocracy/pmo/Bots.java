@@ -109,6 +109,7 @@ public final class Bots {
                             bid
                         )
                     )
+                    .strict(1)
                     .addIf("access_token")
                     .set(json.getString("access_token")).up()
                     .addIf("team_name")

@@ -60,14 +60,14 @@ public final class Roles {
     }
 
     /**
-     * Print it to text.
+     * Print it to Markdown.
      * @return Text
      * @throws IOException If fails
      */
-    public String print() throws IOException {
+    public String markdown() throws IOException {
         try (final Item roles = this.item()) {
             return new XSLDocument(
-                Roles.class.getResource("roles/to-text.xsl")
+                Roles.class.getResource("roles/to-markdown.xsl")
             ).applyTo(new XMLDocument(roles.path().toFile()));
         }
     }
@@ -97,6 +97,7 @@ public final class Roles {
                             person
                         )
                     )
+                    .strict(1)
                     .add("role")
                     .set(role)
             );
@@ -121,6 +122,7 @@ public final class Roles {
                             person, role
                         )
                     )
+                    .strict(1)
                     .remove()
                     .xpath(
                         String.format(
@@ -143,9 +145,9 @@ public final class Roles {
     public boolean hasRole(final String person, final String role)
         throws IOException {
         try (final Item roles = this.item()) {
-            return new Xocument(roles).xpath(
+            return new Xocument(roles).nodes(
                 String.format(
-                    "/roles/person[@id='%s' and role='%s']/text()",
+                    "/roles/person[@id='%s' and role='%s']",
                     person, role
                 )
             ).iterator().hasNext();

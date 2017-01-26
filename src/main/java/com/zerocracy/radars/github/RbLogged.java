@@ -14,44 +14,45 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pm.scope;
+package com.zerocracy.radars.github;
 
-import com.zerocracy.jstk.fake.FkProject;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.Test;
+import com.jcabi.github.Github;
+import com.jcabi.log.Logger;
+import com.zerocracy.jstk.Farm;
+import java.io.IOException;
+import javax.json.JsonObject;
 
 /**
- * Test case for {@link Wbs}.
+ * Rebound that logs.
+ *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.1
+ * @since 0.10
  */
-public final class WbsTest {
+public final class RbLogged implements Rebound {
 
     /**
-     * Adds and removes jobs.
-     * @throws Exception If some problem inside
+     * Original reaction.
      */
-    @Test
-    public void printsJobs() throws Exception {
-        final Wbs wbs = new Wbs(new FkProject()).bootstrap();
-        MatcherAssert.assertThat(
-            wbs.markdown(),
-            Matchers.containsString("empty")
+    private final Rebound origin;
+
+    /**
+     * Ctor.
+     * @param rtn Reaction
+     */
+    public RbLogged(final Rebound rtn) {
+        this.origin = rtn;
+    }
+
+    @Override
+    public String react(final Farm farm, final Github github,
+        final JsonObject event) throws IOException {
+        final String answer = this.origin.react(farm, github, event);
+        Logger.info(
+            this,
+            "GitHub event, action=%s",
+            event.getString("action", "?")
         );
+        return answer;
     }
-
-    /**
-     * Adds and removes jobs.
-     * @throws Exception If some problem inside
-     */
-    @Test
-    public void addsAndRemovesJobs() throws Exception {
-        final Wbs wbs = new Wbs(new FkProject()).bootstrap();
-        final String job = "gh:yegor256/0pdd#3";
-        wbs.add(job);
-        wbs.remove(job);
-    }
-
 }

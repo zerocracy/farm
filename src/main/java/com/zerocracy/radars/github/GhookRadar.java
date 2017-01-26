@@ -45,16 +45,7 @@ public final class GhookRadar implements Take {
     /**
      * Reaction.
      */
-    private static final Rebound REBOUND = new Rebound.Chain(
-        new RbByActions(
-            new RbPingArchitect(),
-            "opened", "reopened"
-        ),
-        new RbByActions(
-            new RbOnClose(),
-            "closed"
-        )
-    );
+    private final Rebound rebound;
 
     /**
      * Farm.
@@ -70,10 +61,12 @@ public final class GhookRadar implements Take {
      * Ctor.
      * @param frm Farm
      * @param ghb Github
+     * @param rbd Rebound
      */
-    public GhookRadar(final Farm frm, final Github ghb) {
+    public GhookRadar(final Farm frm, final Github ghb, final Rebound rbd) {
         this.farm = frm;
         this.github = ghb;
+        this.rebound = rbd;
     }
 
     @Override
@@ -84,7 +77,7 @@ public final class GhookRadar implements Take {
         try {
             return new RsWithStatus(
                 new RsText(
-                    GhookRadar.REBOUND.react(
+                    this.rebound.react(
                         this.farm,
                         this.github,
                         Json.createReader(

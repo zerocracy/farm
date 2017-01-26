@@ -30,7 +30,7 @@ import javax.json.JsonObject;
  * @version $Id$
  * @since 0.7
  */
-final class RbByActions implements Rebound {
+public final class RbByActions implements Rebound {
 
     /**
      * Original reaction.
@@ -47,7 +47,7 @@ final class RbByActions implements Rebound {
      * @param rtn Reaction
      * @param acts Action
      */
-    RbByActions(final Rebound rtn, final String... acts) {
+    public RbByActions(final Rebound rtn, final String... acts) {
         this.origin = rtn;
         this.actions = Arrays.asList(acts);
     }
