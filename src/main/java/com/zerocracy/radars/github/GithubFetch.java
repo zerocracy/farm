@@ -16,21 +16,14 @@
  */
 package com.zerocracy.radars.github;
 
-import com.google.common.util.concurrent.MoreExecutors;
 import com.jcabi.github.Github;
 import com.jcabi.github.RtPagination;
 import com.jcabi.http.Request;
 import com.jcabi.http.response.RestResponse;
 import com.jcabi.log.Logger;
-import com.jcabi.log.VerboseRunnable;
-import com.jcabi.log.VerboseThreads;
 import com.zerocracy.jstk.Farm;
-import com.zerocracy.radars.Radar;
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import javax.json.JsonObject;
 
 /**
@@ -46,7 +39,7 @@ import javax.json.JsonObject;
  *  the latest one in the thread.
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-public final class GithubRadar implements Radar, Runnable {
+public final class GithubFetch implements Runnable {
 
     /**
      * Farm.
@@ -64,38 +57,15 @@ public final class GithubRadar implements Radar, Runnable {
     private final Reaction reaction;
 
     /**
-     * Executor.
-     */
-    private final ScheduledExecutorService service;
-
-    /**
      * Ctor.
      * @param frm Farm
      * @param ghb Github client
      * @param rtn Reaction
      */
-    public GithubRadar(final Farm frm, final Github ghb, final Reaction rtn) {
+    public GithubFetch(final Farm frm, final Github ghb, final Reaction rtn) {
         this.farm = frm;
         this.github = ghb;
         this.reaction = rtn;
-        this.service = Executors.newSingleThreadScheduledExecutor(
-            new VerboseThreads()
-        );
-    }
-
-    @Override
-    public void start() {
-        this.service.scheduleWithFixedDelay(
-            new VerboseRunnable(this, true, true),
-            1L, 1L, TimeUnit.MINUTES
-        );
-    }
-
-    @Override
-    public void close() {
-        MoreExecutors.shutdownAndAwaitTermination(
-            this.service, 1L, TimeUnit.MINUTES
-        );
     }
 
     @Override

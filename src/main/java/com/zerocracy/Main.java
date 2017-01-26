@@ -25,9 +25,8 @@ import com.zerocracy.farm.ReactiveFarm;
 import com.zerocracy.farm.S3Farm;
 import com.zerocracy.farm.SyncFarm;
 import com.zerocracy.jstk.Farm;
-import com.zerocracy.radars.Radar;
 import com.zerocracy.radars.github.GhookRadar;
-import com.zerocracy.radars.github.GithubRadar;
+import com.zerocracy.radars.github.GithubFetch;
 import com.zerocracy.radars.github.RbByActions;
 import com.zerocracy.radars.github.RbLogged;
 import com.zerocracy.radars.github.RbOnClose;
@@ -165,7 +164,7 @@ public final class Main {
                     .collect(Collectors.toList())
             )
         );
-        final GithubRadar ghradar = new GithubRadar(
+        final GithubFetch ghradar = new GithubFetch(
             farm,
             github,
             new com.zerocracy.radars.github.ReLogged(
@@ -213,7 +212,7 @@ public final class Main {
                 )
             )
         );
-        try (final Radar chain = new Radar.Chain(ghradar, skradar)) {
+        try {
             final GhookRadar gkradar = new GhookRadar(
                 farm, github,
                 new RbLogged(
@@ -233,7 +232,7 @@ public final class Main {
                     )
                 )
             );
-            chain.start();
+            skradar.start();
             new FtCli(
                 new TkApp(
                     props,
@@ -243,6 +242,8 @@ public final class Main {
                 ),
                 this.arguments
             ).start(Exit.NEVER);
+        } finally {
+            skradar.close();
         }
     }
 
