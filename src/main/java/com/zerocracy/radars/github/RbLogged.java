@@ -29,7 +29,7 @@ import javax.json.JsonObject;
  * @version $Id$
  * @since 0.10
  */
-final class RbLogged implements Rebound {
+public final class RbLogged implements Rebound {
 
     /**
      * Original reaction.
@@ -40,7 +40,7 @@ final class RbLogged implements Rebound {
      * Ctor.
      * @param rtn Reaction
      */
-    RbLogged(final Rebound rtn) {
+    public RbLogged(final Rebound rtn) {
         this.origin = rtn;
     }
 

@@ -33,7 +33,7 @@ import javax.json.JsonObject;
  * @version $Id$
  * @since 0.7
  */
-final class RbPingArchitect implements Rebound {
+public final class RbPingArchitect implements Rebound {
 
     @Override
     public String react(final Farm farm, final Github github,

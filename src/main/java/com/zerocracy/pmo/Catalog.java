@@ -68,6 +68,7 @@ public final class Catalog {
             new Xocument(item.path()).modify(
                 new Directives()
                     .xpath(String.format("/catalog/project[@id='%s']", pid))
+                    .strict(1)
                     .addIf("links")
                     .add("link")
                     .attr("rel", rel)
@@ -137,6 +138,7 @@ public final class Catalog {
             new Xocument(item.path()).modify(
                 new Directives()
                     .xpath(String.format("/catalog/project[@id='%s' ]", pid))
+                    .strict(1)
                     .addIf("parent")
                     .set(parent)
             );

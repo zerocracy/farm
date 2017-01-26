@@ -66,14 +66,14 @@ public final class Wbs {
     }
 
     /**
-     * Print it to text.
+     * Print it to Markdown.
      * @return Text
      * @throws IOException If fails
      */
-    public String print() throws IOException {
+    public String markdown() throws IOException {
         try (final Item wbs = this.item()) {
             return new XSLDocument(
-                Wbs.class.getResource("wbs/to-text.xsl")
+                Wbs.class.getResource("wbs/to-markdown.xsl")
             ).applyTo(new XMLDocument(wbs.path().toFile()));
         }
     }
@@ -103,9 +103,9 @@ public final class Wbs {
             new Xocument(wbs.path()).modify(
                 new Directives().xpath(
                     String.format(
-                        "/wbs/job[uid='%s']", job
+                        "/wbs/job[@id='%s']", job
                     )
-                ).remove()
+                ).strict(1).remove()
             );
         }
     }

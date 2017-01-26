@@ -109,7 +109,7 @@ public final class Claims implements Closeable {
                 String.format(
                     "/claims/claim[@id='%s']", cid
                 )
-            ).remove()
+            ).strict(1).remove()
         );
     }
 

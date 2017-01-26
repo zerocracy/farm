@@ -42,7 +42,11 @@ public final class GhookRadarTest {
      */
     @Test
     public void parsesJson() throws Exception {
-        final Take take = new GhookRadar(new FkFarm(), new MkGithub());
+        final Take take = new GhookRadar(
+            new FkFarm(),
+            new MkGithub(),
+            (farm, github, event) -> "nothing"
+        );
         MatcherAssert.assertThat(
             take.act(
                 new RqWithBody(

@@ -46,7 +46,7 @@ public final class StkShow implements Stakeholder {
             String.format(
                 "This is what we have in WBS of \"%s\":%n%n```%n%s%n```",
                 project,
-                new Wbs(project).print()
+                new Wbs(project).markdown()
             )
         );
     }

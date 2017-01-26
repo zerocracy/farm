@@ -35,7 +35,7 @@ import javax.json.JsonObject;
  * @since 0.7
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-final class RbOnClose implements Rebound {
+public final class RbOnClose implements Rebound {
 
     @Override
     public String react(final Farm farm, final Github github,

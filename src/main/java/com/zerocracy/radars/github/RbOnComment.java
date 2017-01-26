@@ -14,44 +14,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pm.scope;
+package com.zerocracy.radars.github;
 
-import com.zerocracy.jstk.fake.FkProject;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.Test;
+import com.jcabi.github.Github;
+import com.zerocracy.jstk.Farm;
+import javax.json.JsonObject;
 
 /**
- * Test case for {@link Wbs}.
+ * React when a new comment was posted.
+ *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.1
+ * @since 0.9
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-public final class WbsTest {
+public final class RbOnComment implements Rebound {
 
     /**
-     * Adds and removes jobs.
-     * @throws Exception If some problem inside
+     * Runnable to trigger.
      */
-    @Test
-    public void printsJobs() throws Exception {
-        final Wbs wbs = new Wbs(new FkProject()).bootstrap();
-        MatcherAssert.assertThat(
-            wbs.markdown(),
-            Matchers.containsString("empty")
-        );
+    private final Runnable radar;
+
+    /**
+     * Ctor.
+     * @param code The radar
+     */
+    public RbOnComment(final Runnable code) {
+        this.radar = code;
     }
 
-    /**
-     * Adds and removes jobs.
-     * @throws Exception If some problem inside
-     */
-    @Test
-    public void addsAndRemovesJobs() throws Exception {
-        final Wbs wbs = new Wbs(new FkProject()).bootstrap();
-        final String job = "gh:yegor256/0pdd#3";
-        wbs.add(job);
-        wbs.remove(job);
+    @Override
+    public String react(final Farm farm, final Github github,
+        final JsonObject event) {
+        this.radar.run();
+        return "Notification checking triggered";
     }
 
 }
