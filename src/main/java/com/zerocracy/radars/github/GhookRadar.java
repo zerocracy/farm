@@ -45,14 +45,16 @@ public final class GhookRadar implements Take {
     /**
      * Reaction.
      */
-    private static final Rebound REBOUND = new Rebound.Chain(
-        new RbByActions(
-            new RbPingArchitect(),
-            "opened", "reopened"
-        ),
-        new RbByActions(
-            new RbOnClose(),
-            "closed"
+    private static final Rebound REBOUND = new RbLogged(
+        new Rebound.Chain(
+            new RbByActions(
+                new RbPingArchitect(),
+                "opened", "reopened"
+            ),
+            new RbByActions(
+                new RbOnClose(),
+                "closed"
+            )
         )
     );
 

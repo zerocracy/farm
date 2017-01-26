@@ -41,7 +41,7 @@ final class RbOnClose implements Rebound {
     public String react(final Farm farm, final Github github,
         final JsonObject event) throws IOException {
         final Issue.Smart issue = new Issue.Smart(
-            new EvtIssue(github, event)
+            new IssueOfEvent(github, event)
         );
         final String author = issue.author()
             .login().toLowerCase(Locale.ENGLISH);

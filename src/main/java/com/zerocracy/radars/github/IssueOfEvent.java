@@ -33,7 +33,7 @@ import javax.json.JsonObject;
  * @version $Id$
  * @since 0.10
  */
-final class EvtIssue implements Issue {
+final class IssueOfEvent implements Issue {
 
     /**
      * The GitHub.
@@ -50,7 +50,7 @@ final class EvtIssue implements Issue {
      * @param ghb Github
      * @param evt Event
      */
-    EvtIssue(final Github ghb, final JsonObject evt) {
+    IssueOfEvent(final Github ghb, final JsonObject evt) {
         this.github = ghb;
         this.event = evt;
     }
