@@ -72,7 +72,7 @@ public final class ReOnComment implements Reaction {
         final Matcher matcher = ReOnComment.LATEST.matcher(
             subject.getString("latest_comment_url")
         );
-        if (!matcher.matches()) {
+        if (matcher.matches()) {
             final Repo repo = this.github.repos().get(
                 new Coordinates.Simple(
                     event.getJsonObject("repository").getString("full_name")
