@@ -19,7 +19,6 @@ package com.zerocracy;
 import com.jcabi.xml.StrictXML;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
-import com.jcabi.xml.XSL;
 import com.zerocracy.jstk.Item;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -148,28 +147,18 @@ public final class Xocument {
      * @throws IOException If fails
      */
     public void modify(final Iterable<Directive> dirs) throws IOException {
-        final Node node = new XMLDocument(this.file.toFile()).node();
+        final XML before = new XMLDocument(
+            new String(
+                Files.readAllBytes(this.file),
+                StandardCharsets.UTF_8
+            )
+        );
+        final Node node = before.node();
         new Xembler(dirs).applyQuietly(node);
-        Files.write(
-            this.file,
-            new StrictXML(new XMLDocument(node))
-                .toString()
-                .getBytes(StandardCharsets.UTF_8)
-        );
-    }
-
-    /**
-     * Apply XSL to it.
-     * @param xsl XSL to apply
-     * @throws IOException If fails
-     */
-    public void apply(final XSL xsl) throws IOException {
-        Files.write(
-            this.file,
-            new StrictXML(
-                xsl.transform(new XMLDocument(this.file.toFile()))
-            ).toString().getBytes(StandardCharsets.UTF_8)
-        );
+        final String after = new StrictXML(new XMLDocument(node)).toString();
+        if (!before.toString().equals(after)) {
+            Files.write(this.file, after.getBytes(StandardCharsets.UTF_8));
+        }
     }
 
 }

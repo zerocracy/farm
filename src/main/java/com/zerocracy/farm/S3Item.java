@@ -23,7 +23,10 @@ import com.zerocracy.jstk.Item;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.nio.file.attribute.FileTime;
+import java.util.Date;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -61,20 +64,37 @@ final class S3Item implements Item {
     @Override
     public Path path() throws IOException {
         if (this.temp.get() == null) {
-            final Path path = Files.createTempFile("zerocracy-", ".bin");
+            final Path path = Paths.get("/tmp/zerocracy", this.ocket.key());
+            if (path.getParent().toFile().mkdirs()) {
+                Logger.info(
+                    this, "Directory created for %s",
+                    path.toFile().getAbsolutePath()
+                );
+            }
             this.temp.set(path);
             if (this.ocket.exists()) {
-                this.ocket.read(
-                    Files.newOutputStream(
+                final ObjectMetadata meta = this.ocket.meta();
+                if (!Files.exists(path)
+                    || meta.getLastModified().compareTo(
+                        new Date(Files.getLastModifiedTime(path).toMillis())
+                    ) > 0
+                ) {
+                    this.ocket.read(
+                        Files.newOutputStream(
+                            path,
+                            StandardOpenOption.CREATE
+                        )
+                    );
+                    Files.setLastModifiedTime(
                         path,
-                        StandardOpenOption.CREATE
-                    )
-                );
-                Logger.info(
-                    this, "loaded %d bytes from %s",
-                    path.toFile().length(),
-                    this.ocket.key()
-                );
+                        FileTime.fromMillis(meta.getLastModified().getTime())
+                    );
+                    Logger.info(
+                        this, "Loaded %d bytes from %s",
+                        path.toFile().length(),
+                        this.ocket.key()
+                    );
+                }
             }
         }
         return this.temp.get();
@@ -83,15 +103,23 @@ final class S3Item implements Item {
     @Override
     public void close() throws IOException {
         if (this.temp.get() != null) {
-            final ObjectMetadata meta = new ObjectMetadata();
-            meta.setContentLength(this.temp.get().toFile().length());
-            this.ocket.write(Files.newInputStream(this.temp.get()), meta);
-            Logger.info(
-                this, "saved %d bytes to %s",
-                this.temp.get().toFile().length(),
-                this.ocket.key()
-            );
-            Files.delete(this.temp.get());
+            if (!this.ocket.exists()
+                || this.ocket.meta().getLastModified().compareTo(
+                    new Date(
+                        Files.getLastModifiedTime(
+                            this.temp.get()
+                        ).toMillis()
+                    )
+                ) < 0) {
+                final ObjectMetadata meta = new ObjectMetadata();
+                meta.setContentLength(this.temp.get().toFile().length());
+                this.ocket.write(Files.newInputStream(this.temp.get()), meta);
+                Logger.info(
+                    this, "Saved %d bytes to %s",
+                    this.temp.get().toFile().length(),
+                    this.ocket.key()
+                );
+            }
             this.temp.set(null);
         }
     }
