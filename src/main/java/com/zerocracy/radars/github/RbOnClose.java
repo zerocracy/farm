@@ -16,6 +16,7 @@
  */
 package com.zerocracy.radars.github;
 
+import com.jcabi.aspects.RetryOnFailure;
 import com.jcabi.github.Event;
 import com.jcabi.github.Github;
 import com.jcabi.github.Issue;
@@ -28,6 +29,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 import javax.json.JsonObject;
 
 /**
@@ -48,9 +50,7 @@ public final class RbOnClose implements Rebound {
         );
         final String author = issue.author()
             .login().toLowerCase(Locale.ENGLISH);
-        final String closer = new Event.Smart(
-            issue.latestEvent(Event.CLOSED)
-        ).author().login().toLowerCase(Locale.ENGLISH);
+        final String closer = RbOnClose.closer(issue);
         final String answer;
         if (author.equals(closer)) {
             final Project project = new GhProject(farm, issue.repo());
@@ -82,6 +82,19 @@ public final class RbOnClose implements Rebound {
             answer = String.format("Ticket re-opened, %s notified", closer);
         }
         return answer;
+    }
+
+    /**
+     * Get closer's login.
+     * @param issue The issue
+     * @return Login
+     * @throws IOException If fails
+     */
+    @RetryOnFailure(delay = 1, unit = TimeUnit.SECONDS)
+    private static String closer(final Issue.Smart issue) throws IOException {
+        return new Event.Smart(
+            issue.latestEvent(Event.CLOSED)
+        ).author().login().toLowerCase(Locale.ENGLISH);
     }
 
     /**
