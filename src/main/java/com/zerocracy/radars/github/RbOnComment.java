@@ -16,11 +16,14 @@
  */
 package com.zerocracy.radars.github;
 
+import com.jcabi.aspects.Tv;
 import com.jcabi.github.Github;
+import com.jcabi.log.VerboseRunnable;
 import com.jcabi.log.VerboseThreads;
 import com.zerocracy.jstk.Farm;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import javax.json.JsonObject;
 
 /**
@@ -57,7 +60,16 @@ public final class RbOnComment implements Rebound {
     @Override
     public String react(final Farm farm, final Github github,
         final JsonObject event) {
-        this.service.submit(this.radar);
+        this.service.submit(
+            new VerboseRunnable(
+                () -> {
+                    TimeUnit.SECONDS.sleep((long) Tv.FIVE);
+                    this.radar.run();
+                    return null;
+                },
+                true, true
+            )
+        );
         return "Notification checking triggered";
     }
 
