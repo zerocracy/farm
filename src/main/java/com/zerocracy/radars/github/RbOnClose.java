@@ -19,11 +19,14 @@ package com.zerocracy.radars.github;
 import com.jcabi.github.Event;
 import com.jcabi.github.Github;
 import com.jcabi.github.Issue;
+import com.jcabi.github.Label;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Locale;
 import javax.json.JsonObject;
 
@@ -65,6 +68,8 @@ public final class RbOnClose implements Rebound {
             );
         } else if (issue.isPull()) {
             answer = "It's a pull request";
+        } else if (RbOnClose.tagged(issue)) {
+            answer = "It's invalid";
         } else {
             issue.open();
             issue.comments().post(
@@ -77,6 +82,25 @@ public final class RbOnClose implements Rebound {
             answer = String.format("Ticket re-opened, %s notified", closer);
         }
         return answer;
+    }
+
+    /**
+     * This issue is tagged as invalid.
+     * @param issue The issue
+     * @return TRUE if it's invalid
+     */
+    private static boolean tagged(final Issue issue) {
+        final Collection<String> tags = Arrays.asList(
+            "invalid", "duplicate", "wontfix"
+        );
+        boolean tagged = false;
+        for (final Label tag : issue.labels().iterate()) {
+            if (tags.contains(tag.name())) {
+                tagged = true;
+                break;
+            }
+        }
+        return tagged;
     }
 
 }
