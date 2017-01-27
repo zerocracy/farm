@@ -117,26 +117,25 @@ final class S3Item implements Item {
 
     @Override
     public void close() throws IOException {
-        if (this.open.get()) {
-            if (!this.ocket.exists()
-                || this.ocket.meta().getLastModified().compareTo(
-                    new Date(
-                        Files.getLastModifiedTime(
-                            this.temp
-                        ).toMillis()
-                    )
-                ) < 0) {
-                final ObjectMetadata meta = new ObjectMetadata();
-                meta.setContentLength(this.temp.toFile().length());
-                this.ocket.write(Files.newInputStream(this.temp), meta);
-                Logger.info(
-                    this, "Saved %d bytes to %s",
-                    this.temp.toFile().length(),
-                    this.ocket.key()
-                );
-            }
-            this.open.set(false);
+        if (this.open.get() &&
+            (!this.ocket.exists()
+            || this.ocket.meta().getLastModified().compareTo(
+                new Date(
+                    Files.getLastModifiedTime(
+                        this.temp
+                    ).toMillis()
+                )
+            ) < 0)) {
+            final ObjectMetadata meta = new ObjectMetadata();
+            meta.setContentLength(this.temp.toFile().length());
+            this.ocket.write(Files.newInputStream(this.temp), meta);
+            Logger.info(
+                this, "Saved %d bytes to %s",
+                this.temp.toFile().length(),
+                this.ocket.key()
+            );
         }
+        this.open.set(false);
     }
 
 }
