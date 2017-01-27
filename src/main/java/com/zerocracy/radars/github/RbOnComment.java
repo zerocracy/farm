@@ -17,7 +17,10 @@
 package com.zerocracy.radars.github;
 
 import com.jcabi.github.Github;
+import com.jcabi.log.VerboseThreads;
 import com.zerocracy.jstk.Farm;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import javax.json.JsonObject;
 
 /**
@@ -36,17 +39,25 @@ public final class RbOnComment implements Rebound {
     private final Runnable radar;
 
     /**
+     * Service.
+     */
+    private final ExecutorService service;
+
+    /**
      * Ctor.
      * @param code The radar
      */
     public RbOnComment(final Runnable code) {
         this.radar = code;
+        this.service = Executors.newSingleThreadExecutor(
+            new VerboseThreads()
+        );
     }
 
     @Override
     public String react(final Farm farm, final Github github,
         final JsonObject event) {
-        this.radar.run();
+        this.service.submit(this.radar);
         return "Notification checking triggered";
     }
 
