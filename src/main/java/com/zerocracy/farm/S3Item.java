@@ -23,11 +23,10 @@ import com.zerocracy.jstk.Item;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.FileTime;
 import java.util.Date;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Item in S3.
@@ -50,77 +49,93 @@ final class S3Item implements Item {
     /**
      * File.
      */
-    private final AtomicReference<Path> temp;
+    private final Path temp;
+
+    /**
+     * Is it open/acquired?
+     */
+    private final AtomicBoolean open;
 
     /**
      * Ctor.
      * @param okt Ocket
+     * @throws IOException If fails
      */
-    S3Item(final Ocket okt) {
+    S3Item(final Ocket okt) throws IOException {
+        this(okt, Files.createTempDirectory("").resolve(okt.key()));
+    }
+
+    /**
+     * Ctor.
+     * @param okt Ocket
+     * @param tmp Path
+     */
+    S3Item(final Ocket okt, final Path tmp) {
         this.ocket = okt;
-        this.temp = new AtomicReference<>();
+        this.temp = tmp;
+        this.open = new AtomicBoolean(false);
     }
 
     @Override
     public Path path() throws IOException {
-        if (this.temp.get() == null) {
-            final Path path = Paths.get("/tmp/zerocracy", this.ocket.key());
-            if (path.getParent().toFile().mkdirs()) {
+        if (!this.open.get()) {
+            if (this.temp.getParent().toFile().mkdirs()) {
                 Logger.info(
                     this, "Directory created for %s",
-                    path.toFile().getAbsolutePath()
+                    this.temp.toFile().getAbsolutePath()
                 );
             }
-            this.temp.set(path);
             if (this.ocket.exists()) {
                 final ObjectMetadata meta = this.ocket.meta();
-                if (!Files.exists(path)
+                if (!Files.exists(this.temp)
                     || meta.getLastModified().compareTo(
-                        new Date(Files.getLastModifiedTime(path).toMillis())
+                        new Date(
+                            Files.getLastModifiedTime(this.temp).toMillis()
+                        )
                     ) > 0
                 ) {
                     this.ocket.read(
                         Files.newOutputStream(
-                            path,
+                            this.temp,
                             StandardOpenOption.CREATE
                         )
                     );
                     Files.setLastModifiedTime(
-                        path,
+                        this.temp,
                         FileTime.fromMillis(meta.getLastModified().getTime())
                     );
                     Logger.info(
                         this, "Loaded %d bytes from %s",
-                        path.toFile().length(),
+                        this.temp.toFile().length(),
                         this.ocket.key()
                     );
                 }
             }
         }
-        return this.temp.get();
+        return this.temp;
     }
 
     @Override
     public void close() throws IOException {
-        if (this.temp.get() != null) {
+        if (this.open.get()) {
             if (!this.ocket.exists()
                 || this.ocket.meta().getLastModified().compareTo(
                     new Date(
                         Files.getLastModifiedTime(
-                            this.temp.get()
+                            this.temp
                         ).toMillis()
                     )
                 ) < 0) {
                 final ObjectMetadata meta = new ObjectMetadata();
-                meta.setContentLength(this.temp.get().toFile().length());
-                this.ocket.write(Files.newInputStream(this.temp.get()), meta);
+                meta.setContentLength(this.temp.toFile().length());
+                this.ocket.write(Files.newInputStream(this.temp), meta);
                 Logger.info(
                     this, "Saved %d bytes to %s",
-                    this.temp.get().toFile().length(),
+                    this.temp.toFile().length(),
                     this.ocket.key()
                 );
             }
-            this.temp.set(null);
+            this.open.set(false);
         }
     }
 

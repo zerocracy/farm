@@ -19,6 +19,9 @@ package com.zerocracy.farm;
 import com.jcabi.s3.Bucket;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -41,13 +44,30 @@ final class S3Project implements Project {
     private final String prefix;
 
     /**
+     * Path to temporary storage.
+     */
+    private final Path temp;
+
+    /**
      * Ctor.
      * @param bkt Bucket
      * @param pfx Prefix
+     * @throws IOException If fails
      */
-    S3Project(final Bucket bkt, final String pfx) {
+    S3Project(final Bucket bkt, final String pfx) throws IOException {
+        this(bkt, pfx, Files.createTempDirectory(""));
+    }
+
+    /**
+     * Ctor.
+     * @param bkt Bucket
+     * @param pfx Prefix
+     * @param tmp Storage
+     */
+    S3Project(final Bucket bkt, final String pfx, final Path tmp) {
         this.bucket = bkt;
         this.prefix = pfx;
+        this.temp = tmp;
     }
 
     @Override
@@ -67,13 +87,11 @@ final class S3Project implements Project {
                 )
             );
         }
+        final String key = String.format("%s%s", this.prefix, file);
         return new SyncItem(
             new S3Item(
-                this.bucket.ocket(
-                    String.format(
-                        "%s%s", this.prefix, file
-                    )
-                )
+                this.bucket.ocket(key),
+                this.temp.resolve(key)
             )
         );
     }

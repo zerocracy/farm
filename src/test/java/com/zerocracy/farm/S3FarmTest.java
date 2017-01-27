@@ -58,7 +58,7 @@ public final class S3FarmTest {
         final Item item = project.acq("test.xml");
         MatcherAssert.assertThat(
             item.path().toFile().exists(),
-            Matchers.is(true)
+            Matchers.is(false)
         );
         Files.write(item.path(), "hello, world".getBytes());
         item.close();

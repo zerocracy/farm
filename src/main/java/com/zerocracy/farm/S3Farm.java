@@ -22,6 +22,8 @@ import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
@@ -52,11 +54,27 @@ public final class S3Farm implements Farm {
     private final Bucket bucket;
 
     /**
+     * Path to temporary storage.
+     */
+    private final Path temp;
+
+    /**
      * Ctor.
      * @param bkt Bucket
+     * @throws IOException If fails
      */
-    public S3Farm(final Bucket bkt) {
+    public S3Farm(final Bucket bkt) throws IOException {
+        this(bkt, Files.createTempDirectory(""));
+    }
+
+    /**
+     * Ctor.
+     * @param bkt Bucket
+     * @param tmp Temporary storage
+     */
+    public S3Farm(final Bucket bkt, final Path tmp) {
         this.bucket = bkt;
+        this.temp = tmp;
     }
 
     @Override
@@ -68,7 +86,7 @@ public final class S3Farm implements Farm {
             .stream()
             .map(
                 prefix -> new SyncProject(
-                    new S3Project(this.bucket, prefix)
+                    new S3Project(this.bucket, prefix, this.temp)
                 )
             )
             .collect(Collectors.toList());
@@ -135,7 +153,8 @@ public final class S3Farm implements Farm {
         return new S3Item(
             this.bucket.ocket(
                 String.format("%scatalog.xml", S3Farm.prefix(S3Farm.PMO))
-            )
+            ),
+            this.temp.resolve("pmo/catalog.xml")
         );
     }
 
