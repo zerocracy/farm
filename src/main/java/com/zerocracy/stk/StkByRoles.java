@@ -22,6 +22,7 @@ import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.hr.Roles;
 import java.io.IOException;
+import java.util.Arrays;
 import org.xembly.Directive;
 
 /**
@@ -48,7 +49,16 @@ public final class StkByRoles implements Stakeholder {
      * @param list List of roles
      * @param stk Original stakeholder
      */
-    public StkByRoles(final Iterable<String> list, final Stakeholder stk) {
+    public StkByRoles(final Stakeholder stk, final String... list) {
+        this(stk, Arrays.asList(list));
+    }
+
+    /**
+     * Ctor.
+     * @param list List of roles
+     * @param stk Original stakeholder
+     */
+    public StkByRoles(final Stakeholder stk, final Iterable<String> list) {
         this.roles = list;
         this.origin = stk;
     }

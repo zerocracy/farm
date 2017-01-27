@@ -50,6 +50,7 @@ import com.zerocracy.radars.slack.ReSafe;
 import com.zerocracy.radars.slack.ReSay;
 import com.zerocracy.radars.slack.Reaction;
 import com.zerocracy.radars.slack.SlackRadar;
+import com.zerocracy.stk.StkByRoles;
 import com.zerocracy.stk.StkSafe;
 import com.zerocracy.stk.StkTrashBin;
 import com.zerocracy.stk.StkVerbose;
@@ -86,7 +87,13 @@ import org.takes.http.FtCli;
  * @checkstyle LineLengthCheck (500 lines)
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
  */
-@SuppressWarnings({ "PMD.ExcessiveImports", "PMD.ExcessiveMethodLength" })
+@SuppressWarnings(
+    {
+        "PMD.ExcessiveImports",
+        "PMD.ExcessiveMethodLength",
+        "PMD.AvoidDuplicateLiterals"
+    }
+)
 public final class Main {
 
     /**
@@ -140,17 +147,17 @@ public final class Main {
                     .of(
                         new StkNotify(github),
                         new com.zerocracy.radars.slack.StkNotify(sessions),
-                        new StkAdd(github),
-                        new StkRemove(),
-                        new StkShow(),
-                        new StkParent(),
+                        new StkByRoles(new StkAdd(github), "PO"),
+                        new StkByRoles(new StkRemove(), "PO"),
+                        new StkByRoles(new StkShow(), "PO"),
+                        new StkByRoles(new StkParent(), "PO"),
                         new StkSet(),
-                        new com.zerocracy.stk.pm.hr.roles.StkShow(),
-                        new StkAssign(github),
-                        new StkResign(),
-                        new com.zerocracy.stk.pm.scope.wbs.StkShow(),
-                        new StkInto(),
-                        new StkOut(),
+                        new StkByRoles(new com.zerocracy.stk.pm.hr.roles.StkShow(), "PO", "ARC"),
+                        new StkByRoles(new StkAssign(github), "PO"),
+                        new StkByRoles(new StkResign(), "PO"),
+                        new StkByRoles(new com.zerocracy.stk.pm.scope.wbs.StkShow(), "PO", "ARC"),
+                        new StkByRoles(new StkInto(), "PO", "ARC"),
+                        new StkByRoles(new StkOut(), "PO", "ARC"),
                         new com.zerocracy.stk.pmo.profile.rate.StkShow(),
                         new com.zerocracy.stk.pmo.profile.wallet.StkSet(),
                         new com.zerocracy.stk.pmo.profile.wallet.StkShow(),

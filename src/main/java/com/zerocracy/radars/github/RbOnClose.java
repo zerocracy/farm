@@ -90,7 +90,7 @@ public final class RbOnClose implements Rebound {
      * @return Login
      * @throws IOException If fails
      */
-    @RetryOnFailure(delay = 1, unit = TimeUnit.SECONDS)
+    @RetryOnFailure(delay = 1, unit = TimeUnit.SECONDS, verbose = false)
     private static String closer(final Issue.Smart issue) throws IOException {
         return new Event.Smart(
             issue.latestEvent(Event.CLOSED)

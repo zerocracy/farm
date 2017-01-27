@@ -107,7 +107,7 @@ final class SafeComment implements Comment {
      * @return JSON
      * @throws IOException If fails
      */
-    @RetryOnFailure(delay = 1, unit = TimeUnit.SECONDS)
+    @RetryOnFailure(delay = 1, unit = TimeUnit.SECONDS, verbose = false)
     private JsonObject load() throws IOException {
         return this.origin.json();
     }
