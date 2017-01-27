@@ -83,11 +83,10 @@ final class SafeComment implements Comment {
     }
 
     @Override
-    @RetryOnFailure(delay = 1, unit = TimeUnit.SECONDS)
     public JsonObject json() throws IOException {
         JsonObject json;
         try {
-            json = this.origin.json();
+            json = this.load();
         } catch (final AssertionError ex) {
             json = new MkGithub().randomRepo()
                 .issues().create("", "")
@@ -102,4 +101,15 @@ final class SafeComment implements Comment {
         }
         return json;
     }
+
+    /**
+     * Load JSON.
+     * @return JSON
+     * @throws IOException If fails
+     */
+    @RetryOnFailure(delay = 1, unit = TimeUnit.SECONDS)
+    private JsonObject load() throws IOException {
+        return this.origin.json();
+    }
+
 }
