@@ -21,6 +21,7 @@ import com.jcabi.s3.mock.MkOcket;
 import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -41,9 +42,11 @@ public final class S3ItemTest {
     @Test
     public void modifiesFiles() throws Exception {
         final Ocket ocket = new MkOcket(
-            Files.createTempDirectory("").toFile(), "bucket", "roles.xml"
+            Files.createTempDirectory("").toFile(),
+            "bucket", "roles.xml"
         );
-        try (final Item item = new S3Item(ocket)) {
+        final Path temp = Files.createTempFile("", "");
+        try (final Item item = new S3Item(ocket, temp)) {
             new Xocument(item).bootstrap("pm/hr/roles");
             new Xocument(item).modify(
                 new Directives().xpath("/roles")
@@ -52,7 +55,7 @@ public final class S3ItemTest {
                     .add("role").set("ARC")
             );
         }
-        try (final Item item = new S3Item(ocket)) {
+        try (final Item item = new S3Item(ocket, temp)) {
             MatcherAssert.assertThat(
                 new Xocument(item).xpath("/roles/text()"),
                 Matchers.not(Matchers.emptyIterable())
