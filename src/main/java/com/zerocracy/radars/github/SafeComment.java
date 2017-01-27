@@ -16,11 +16,13 @@
  */
 package com.zerocracy.radars.github;
 
+import com.jcabi.aspects.RetryOnFailure;
 import com.jcabi.github.Comment;
 import com.jcabi.github.Issue;
 import com.jcabi.github.mock.MkGithub;
 import com.jcabi.log.Logger;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 import javax.json.JsonObject;
 
 /**
@@ -81,6 +83,7 @@ final class SafeComment implements Comment {
     }
 
     @Override
+    @RetryOnFailure(delay = 1, unit = TimeUnit.SECONDS)
     public JsonObject json() throws IOException {
         JsonObject json;
         try {
@@ -89,7 +92,13 @@ final class SafeComment implements Comment {
             json = new MkGithub().randomRepo()
                 .issues().create("", "")
                 .comments().post("").json();
-            Logger.warn(this, "Failed to fetch comment: %[exception]s", ex);
+            Logger.warn(
+                this, "Comment #%d JSON loading failed at %s/#%d: %s",
+                this.number(),
+                this.issue().repo().coordinates(),
+                this.issue().number(),
+                ex.getLocalizedMessage()
+            );
         }
         return json;
     }
