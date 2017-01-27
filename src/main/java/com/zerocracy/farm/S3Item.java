@@ -85,31 +85,29 @@ final class S3Item implements Item {
                     this.temp.toFile().getAbsolutePath()
                 );
             }
-            if (this.ocket.exists()) {
-                final ObjectMetadata meta = this.ocket.meta();
-                if (!Files.exists(this.temp)
-                    || meta.getLastModified().compareTo(
-                        new Date(
-                            Files.getLastModifiedTime(this.temp).toMillis()
-                        )
-                    ) > 0
-                ) {
-                    this.ocket.read(
-                        Files.newOutputStream(
-                            this.temp,
-                            StandardOpenOption.CREATE
-                        )
-                    );
-                    Files.setLastModifiedTime(
+            if (this.ocket.exists() && (!Files.exists(this.temp)
+                || this.ocket.meta().getLastModified().compareTo(
+                    new Date(
+                        Files.getLastModifiedTime(this.temp).toMillis()
+                    )
+                ) > 0)) {
+                this.ocket.read(
+                    Files.newOutputStream(
                         this.temp,
-                        FileTime.fromMillis(meta.getLastModified().getTime())
-                    );
-                    Logger.info(
-                        this, "Loaded %d bytes from %s",
-                        this.temp.toFile().length(),
-                        this.ocket.key()
-                    );
-                }
+                        StandardOpenOption.CREATE
+                    )
+                );
+                Files.setLastModifiedTime(
+                    this.temp,
+                    FileTime.fromMillis(
+                        this.ocket.meta().getLastModified().getTime()
+                    )
+                );
+                Logger.info(
+                    this, "Loaded %d bytes from %s",
+                    this.temp.toFile().length(),
+                    this.ocket.key()
+                );
             }
         }
         return this.temp;
@@ -117,8 +115,8 @@ final class S3Item implements Item {
 
     @Override
     public void close() throws IOException {
-        if (this.open.get() &&
-            (!this.ocket.exists()
+        if (this.open.get()
+            && (!this.ocket.exists()
             || this.ocket.meta().getLastModified().compareTo(
                 new Date(
                     Files.getLastModifiedTime(
