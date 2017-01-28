@@ -16,16 +16,22 @@
  */
 package com.zerocracy.radars.github;
 
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.jcabi.dynamo.Attributes;
+import com.jcabi.dynamo.Item;
+import com.jcabi.dynamo.QueryValve;
+import com.jcabi.dynamo.Table;
 import com.jcabi.github.Comment;
 import com.jcabi.github.Coordinates;
 import com.jcabi.github.Github;
 import com.jcabi.github.Issue;
 import com.jcabi.github.Repo;
+import com.jcabi.github.Smarts;
 import com.zerocracy.jstk.Farm;
 import java.io.IOException;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javax.json.JsonObject;
 import org.apache.commons.lang3.StringUtils;
 
@@ -39,11 +45,14 @@ import org.apache.commons.lang3.StringUtils;
 public final class ReOnComment implements Reaction {
 
     /**
-     * Issue URL matcher.
+     * Hash of Dynamo table.
      */
-    private static final Pattern LATEST = Pattern.compile(
-        "https://api\\.github\\.com/repos/[^/]+/[^/]+/issues/comments/(\\d+)"
-    );
+    private static final String HASH = "issue";
+
+    /**
+     * Since attribute of Dynamo table.
+     */
+    private static final String ATTR = "since";
 
     /**
      * GitHub client.
@@ -56,53 +65,106 @@ public final class ReOnComment implements Reaction {
     private final Response response;
 
     /**
+     * Dynamo table.
+     */
+    private final Table table;
+
+    /**
      * Ctor.
      * @param ghb Github client
      * @param rsp Response
+     * @param tbl Table
      */
-    public ReOnComment(final Github ghb, final Response rsp) {
+    public ReOnComment(final Github ghb, final Response rsp, final Table tbl) {
         this.github = ghb;
         this.response = rsp;
+        this.table = tbl;
     }
 
     @Override
     public void react(final Farm farm, final JsonObject event)
         throws IOException {
         final JsonObject subject = event.getJsonObject("subject");
-        final Matcher matcher = ReOnComment.LATEST.matcher(
-            subject.getString("latest_comment_url")
+        final Repo repo = this.github.repos().get(
+            new Coordinates.Simple(
+                event.getJsonObject("repository").getString("full_name")
+            )
         );
-        if (matcher.matches()) {
-            final Repo repo = this.github.repos().get(
-                new Coordinates.Simple(
-                    event.getJsonObject("repository").getString("full_name")
+        final Issue issue = repo.issues().get(
+            Integer.parseInt(
+                StringUtils.substringAfterLast(
+                    subject.getString("url"),
+                    "/"
                 )
-            );
-            final Issue issue = repo.issues().get(
-                Integer.parseInt(
-                    StringUtils.substringAfterLast(
-                        subject.getString("url"),
-                        "/"
-                    )
-                )
-            );
-            final Comment.Smart comment = new Comment.Smart(
-                new SafeComment(
-                    issue.comments().get(
-                        Integer.parseInt(matcher.group(1))
-                    )
-                )
-            );
-            final String author = comment.author()
-                .login().toLowerCase(Locale.ENGLISH);
-            final String self = comment.issue().repo().github()
-                .users().self().login().toLowerCase(Locale.ENGLISH);
-            if (!author.equals(self)) {
-                this.response.react(
-                    farm, comment
-                );
-            }
+            )
+        );
+        final Iterable<Comment.Smart> comments = new Smarts<>(
+            issue.comments().iterate(this.since(issue))
+        );
+        for (final Comment.Smart comment : comments) {
+            this.send(farm, comment);
         }
+    }
+
+    /**
+     * Since when we should ask.
+     * @param issue The issue
+     * @return Date since when
+     * @throws IOException If fails
+     */
+    private Date since(final Issue issue) throws IOException {
+        final Iterator<Item> items = this.table
+            .frame()
+            .through(new QueryValve().withLimit(1))
+            .where(ReOnComment.HASH, ReOnComment.name(issue))
+            .iterator();
+        final long since;
+        if (items.hasNext()) {
+            since = Long.parseLong(items.next().get(ReOnComment.ATTR).getN());
+        } else {
+            since = 0L;
+        }
+        return new Date(since);
+    }
+
+    /**
+     * Send this comment through.
+     * @param farm Farm
+     * @param comment The comment
+     * @throws IOException If fails
+     */
+    private void send(final Farm farm, final Comment.Smart comment)
+        throws IOException {
+        final String author = comment.author()
+            .login().toLowerCase(Locale.ENGLISH);
+        final String self = comment.issue().repo().github()
+            .users().self().login().toLowerCase(Locale.ENGLISH);
+        if (!author.equals(self)) {
+            this.response.react(farm, comment);
+        }
+        this.table.put(
+            new Attributes()
+                .with(ReOnComment.HASH, ReOnComment.name(comment.issue()))
+                .with(
+                    ReOnComment.ATTR,
+                    new AttributeValue().withN(
+                        Long.toString(comment.createdAt().getTime())
+                    )
+                )
+        );
+    }
+
+    /**
+     * Create issue name.
+     * @param issue The name
+     * @return Name
+     */
+    private static String name(final Issue issue) {
+        return String.format(
+            "%s#%d",
+            issue.repo().coordinates(),
+            issue.number()
+        );
     }
 
 }

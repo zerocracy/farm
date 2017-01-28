@@ -28,6 +28,22 @@
         <xsl:if test="position() &gt; 1">
             <xsl:text>&#10;</xsl:text>
         </xsl:if>
-        <xsl:value-of select="@id"/>
+        <xsl:apply-templates select="@id"/>
+    </xsl:template>
+    <xsl:template match="@id">
+        <xsl:choose>
+            <xsl:when test="starts-with(@id,'gh:')">
+                <xsl:variable name="repo" select="substring-before(substring-after(@id,'gh:'),'#')"/>
+                <xsl:variable name="issue" select="substring-after(@id,'#')"/>
+                <a href="https://github.com/{$repo}/issues/{$issue}">
+                    <xsl:value-of select="$repo"/>
+                    <xsl:text>#</xsl:text>
+                    <xsl:value-of select="$issue"/>
+                </a>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:value-of select="@id"/>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
 </xsl:stylesheet>

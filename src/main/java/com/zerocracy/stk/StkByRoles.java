@@ -77,8 +77,12 @@ public final class StkByRoles implements Stakeholder {
         } else {
             dirs = new ClaimIn(xml).reply(
                 String.format(
-                    "You can't do that, unless you have one of these roles: %s",
-                    String.join(", ", this.roles)
+                    // @checkstyle LineLength (1 line)
+                    "You can't do that, unless you have one of these roles: %s. Your current roles are: %s",
+                    String.join(", ", this.roles),
+                    new Roles(project).bootstrap().allRoles(
+                        new ClaimIn(xml).author()
+                    )
                 )
             );
         }

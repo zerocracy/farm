@@ -44,7 +44,7 @@ public final class StkShow implements Stakeholder {
         final ClaimIn claim = new ClaimIn(xml);
         return claim.reply(
             String.format(
-                "This is what we have in WBS of \"%s\":%n%n```%n%s%n```",
+                "This is what we have in WBS of \"%s\":%n%n%s",
                 project,
                 new Wbs(project).markdown()
             )

@@ -172,6 +172,23 @@ public final class Roles {
     }
 
     /**
+     * Find all roles of a given user.
+     * @param login The login
+     * @return List of user roles
+     * @throws IOException If fails
+     */
+    public Collection<String> allRoles(final String login) throws IOException {
+        try (final Item roles = this.item()) {
+            return new Xocument(roles).xpath(
+                String.format(
+                    "/roles/person[@id='%s']/role/text()",
+                    login
+                )
+            );
+        }
+    }
+
+    /**
      * The item.
      * @return Item
      * @throws IOException If fails

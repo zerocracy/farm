@@ -16,6 +16,8 @@
  */
 package com.zerocracy;
 
+import com.jcabi.dynamo.Credentials;
+import com.jcabi.dynamo.retry.ReRegion;
 import com.jcabi.github.Github;
 import com.jcabi.github.RtGithub;
 import com.jcabi.s3.Region;
@@ -188,7 +190,15 @@ public final class Main {
                                         new ReQuestion()
                                     )
                                 )
-                            )
+                            ),
+                            new ReRegion(
+                                new com.jcabi.dynamo.Region.Simple(
+                                    new Credentials.Simple(
+                                        props.getProperty("dynamo.key"),
+                                        props.getProperty("dynamo.secret")
+                                    )
+                                )
+                            ).table("0crat-github")
                         )
                     )
                 )

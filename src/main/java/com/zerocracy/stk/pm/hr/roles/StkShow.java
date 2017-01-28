@@ -44,7 +44,7 @@ public final class StkShow implements Stakeholder {
         final ClaimIn claim = new ClaimIn(xml);
         return claim.reply(
             String.format(
-                "Full list of roles in \"%s\":%n%n```%n%s%n```",
+                "Full list of roles in \"%s\":%n%n%s",
                 project,
                 new Roles(project).bootstrap().markdown()
             )
