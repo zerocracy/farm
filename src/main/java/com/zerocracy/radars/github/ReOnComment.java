@@ -120,7 +120,9 @@ public final class ReOnComment implements Reaction {
             .iterator();
         final long since;
         if (items.hasNext()) {
-            since = Long.parseLong(items.next().get(ReOnComment.ATTR).getN());
+            since = Long.parseLong(
+                items.next().get(ReOnComment.ATTR).getN()
+            ) + 1L;
         } else {
             since = 0L;
         }
@@ -149,6 +151,12 @@ public final class ReOnComment implements Reaction {
                     ReOnComment.ATTR,
                     new AttributeValue().withN(
                         Long.toString(comment.createdAt().getTime())
+                    )
+                )
+                .with(
+                    "comment-seen",
+                    new AttributeValue().withN(
+                        Integer.toString(comment.number())
                     )
                 )
         );
