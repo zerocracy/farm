@@ -32,11 +32,6 @@ import javax.json.JsonObject;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
- * @todo #3:30min Current implementation has a big flaw -- it reads
- *  the last message in an issue, not the one posted by the user. Thus,
- *  if there were a few messages after the original one, we will lose
- *  them all together with the original one and will process just
- *  the latest one in the thread.
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class GithubFetch implements Runnable {
