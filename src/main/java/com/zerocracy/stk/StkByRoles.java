@@ -23,6 +23,7 @@ import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.hr.Roles;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
 import org.xembly.Directive;
 
 /**
@@ -75,18 +76,39 @@ public final class StkByRoles implements Stakeholder {
         if (this.has(project, xml)) {
             dirs = this.origin.process(project, xml);
         } else {
-            dirs = new ClaimIn(xml).reply(
-                String.format(
-                    // @checkstyle LineLength (1 line)
-                    "You can't do that, unless you have one of these roles: %s. Your current roles are: %s",
-                    String.join(", ", this.roles),
-                    new Roles(project).bootstrap().allRoles(
-                        new ClaimIn(xml).author()
+            final Collection<String> mine =
+                new Roles(project).bootstrap().allRoles(
+                    new ClaimIn(xml).author()
+                );
+            if (mine.isEmpty()) {
+                dirs = new ClaimIn(xml).reply(
+                    String.format(
+                        // @checkstyle LineLength (1 line)
+                        "You need to have one of these roles in order to do this: %s. I'm sorry to say this, but at the moment you've got no roles in this project.",
+                        StkByRoles.join(this.roles)
                     )
-                )
-            );
+                );
+            } else {
+                dirs = new ClaimIn(xml).reply(
+                    String.format(
+                        // @checkstyle LineLength (1 line)
+                        "You can't do that, unless you have one of these roles: %s. Your current roles are: %s.",
+                        StkByRoles.join(this.roles),
+                        StkByRoles.join(mine)
+                    )
+                );
+            }
         }
         return dirs;
+    }
+
+    /**
+     * Join by comma.
+     * @param items Items
+     * @return Joined
+     */
+    private static String join(final Iterable<String> items) {
+        return String.join(", ", items);
     }
 
     /**
