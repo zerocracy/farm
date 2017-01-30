@@ -157,6 +157,7 @@ public final class Main {
                         new StkByRoles(new com.zerocracy.stk.pm.scope.wbs.StkShow(), "PO", "ARC"),
                         new StkByRoles(new StkInto(), "PO", "ARC"),
                         new StkByRoles(new StkOut(), "PO", "ARC"),
+                        new StkByRoles(new com.zerocracy.stk.pm.scope.wbs.StkAssign(), "PO", "ARC"),
                         new com.zerocracy.stk.pmo.profile.rate.StkShow(),
                         new com.zerocracy.stk.pmo.profile.wallet.StkSet(),
                         new com.zerocracy.stk.pmo.profile.wallet.StkShow(),
