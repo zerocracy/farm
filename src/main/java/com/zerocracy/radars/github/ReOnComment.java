@@ -17,6 +17,7 @@
 package com.zerocracy.radars.github;
 
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.google.common.collect.Iterables;
 import com.jcabi.dynamo.Attributes;
 import com.jcabi.dynamo.Item;
 import com.jcabi.dynamo.QueryValve;
@@ -33,9 +34,6 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Locale;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 import javax.json.JsonObject;
 import org.apache.commons.lang3.StringUtils;
 
@@ -140,19 +138,21 @@ public final class ReOnComment implements Reaction {
             since = 0L;
             seen = 0;
         }
-        final Stream<Comment> found = StreamSupport
-            .stream(
-                issue.comments().iterate(new Date(since)).spliterator(),
-                false
-            )
-            .filter(comment -> comment.number() > seen);
-        found.forEach(
-            comment -> Logger.info(
-                this, "Found #%d (since=%d, seen=%d)",
-                comment.number(), since, seen
-            )
+        final Iterable<Comment> found = Iterables.filter(
+            issue.comments().iterate(new Date(since)),
+            comment -> comment.number() > seen
         );
-        return found.collect(Collectors.toList());
+        Iterables.all(
+            found,
+            comment -> {
+                Logger.info(
+                    this, "Found #%d (since=%d, seen=%d)",
+                    comment.number(), since, seen
+                );
+                return false;
+            }
+        );
+        return found;
     }
 
     /**
