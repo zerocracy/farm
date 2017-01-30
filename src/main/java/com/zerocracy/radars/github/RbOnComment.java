@@ -16,12 +16,14 @@
  */
 package com.zerocracy.radars.github;
 
+import com.jcabi.aspects.Tv;
 import com.jcabi.github.Github;
 import com.jcabi.log.VerboseRunnable;
 import com.jcabi.log.VerboseThreads;
 import com.zerocracy.jstk.Farm;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import javax.json.JsonObject;
 
 /**
@@ -60,7 +62,11 @@ public final class RbOnComment implements Rebound {
         final JsonObject event) {
         this.service.submit(
             new VerboseRunnable(
-                this.radar,
+                () -> {
+                    TimeUnit.SECONDS.sleep((long) Tv.FIVE);
+                    this.radar.run();
+                    return null;
+                },
                 true, true
             )
         );

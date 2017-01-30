@@ -18,7 +18,7 @@
 <question>
     <cmd>
         <code>hello</code>
-        <regex>hi|hello|morning|good morning</regex>
+        <regex>hi|hello|hey|morning|good morning</regex>
         <label>hello</label>
         <help>Just say hello</help>
     </cmd>
