@@ -19,6 +19,8 @@ package com.zerocracy;
 import com.jcabi.xml.StrictXML;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.jcabi.xml.XSL;
+import com.jcabi.xml.XSLDocument;
 import com.zerocracy.jstk.Item;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -45,6 +47,13 @@ public final class Xocument {
      * Current DATUM version.
      */
     private static final String VERSION = "0.13";
+
+    /**
+     * Compressing XSL.
+     */
+    private static final XSL COMPRESS = XSLDocument.make(
+        Xocument.class.getResource("compress.xsl")
+    );
 
     /**
      * File.
@@ -155,7 +164,9 @@ public final class Xocument {
         );
         final Node node = before.node();
         new Xembler(dirs).applyQuietly(node);
-        final String after = new StrictXML(new XMLDocument(node)).toString();
+        final String after = new StrictXML(
+            Xocument.COMPRESS.transform(new XMLDocument(node))
+        ).toString();
         if (!before.toString().equals(after)) {
             Files.write(this.file, after.getBytes(StandardCharsets.UTF_8));
         }
