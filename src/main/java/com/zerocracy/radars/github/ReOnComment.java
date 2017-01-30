@@ -106,12 +106,27 @@ public final class ReOnComment implements Reaction {
                 )
             )
         );
+        final long start = System.currentTimeMillis();
         final Iterable<Comment.Smart> comments = new Smarts<>(
             this.comments(issue)
         );
         for (final Comment.Smart comment : comments) {
             this.send(farm, comment);
         }
+        Logger.info(
+            this, "Comments found in %s#%d and processed in %[ms]s: #%s",
+            issue.repo().coordinates(),
+            issue.number(),
+            System.currentTimeMillis() - start,
+            String.join(
+                ", #",
+                () -> StreamSupport
+                    .stream(comments.spliterator(), false)
+                    .<CharSequence>map(
+                        comment -> String.format("%d", comment.number())
+                    ).iterator()
+            )
+        );
     }
 
     /**
@@ -137,25 +152,10 @@ public final class ReOnComment implements Reaction {
             // @checkstyle MagicNumber (1 line)
             seen = 276041067;
         }
-        final Iterable<Comment> found = Iterables.filter(
+        return Iterables.filter(
             issue.comments().iterate(new Date(since)),
             comment -> comment.number() > seen
         );
-        Logger.info(
-            this, "Comments found in %s#%d: #%s (since=%d, seen=%d)",
-            issue.repo().coordinates(),
-            issue.number(),
-            String.join(
-                ", #",
-                () -> StreamSupport
-                    .stream(found.spliterator(), false)
-                    .<CharSequence>map(
-                        comment -> String.format("%d", comment.number())
-                    ).iterator()
-            ),
-            since, seen
-        );
-        return found;
     }
 
     /**

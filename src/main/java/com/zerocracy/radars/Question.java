@@ -159,7 +159,7 @@ public final class Question {
                                 cmd.xpath("label/text()").get(0),
                                 cmd.xpath("help/text() ").get(0)
                             )
-                        ).collect(Collectors.toList())
+                        ).sorted().collect(Collectors.toList())
                     )
                 )
             );
@@ -217,11 +217,11 @@ public final class Question {
                             "\n  ",
                             opts.stream().map(
                                 item -> String.format(
-                                    "`<%s>`: %s",
+                                    "* `<%s>`: %s",
                                     item.xpath("name/text()").get(0),
                                     item.xpath("help/text()").get(0)
                                 )
-                            ).collect(Collectors.toList())
+                            ).sorted().collect(Collectors.toList())
                         )
                     )
                 );
