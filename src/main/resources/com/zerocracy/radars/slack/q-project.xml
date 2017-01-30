@@ -17,6 +17,12 @@
  -->
 <question>
     <cmd>
+        <code>hello</code>
+        <regex>hi|hello|morning|good morning</regex>
+        <label>hello</label>
+        <help>Just say hello</help>
+    </cmd>
+    <cmd>
         <code>pmo.links.show</code>
         <regex>links?</regex>
         <label>links</label>

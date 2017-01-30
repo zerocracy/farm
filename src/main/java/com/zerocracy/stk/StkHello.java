@@ -14,38 +14,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.radars.github;
+package com.zerocracy.stk;
 
-import com.jcabi.github.Comment;
-import com.zerocracy.jstk.Farm;
-import java.io.IOException;
+import com.jcabi.xml.XML;
+import com.zerocracy.jstk.Project;
+import com.zerocracy.jstk.Stakeholder;
+import com.zerocracy.pm.ClaimIn;
+import org.xembly.Directive;
 
 /**
- * He just says hello.
+ * Just say hello.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.1
+ * @since 0.10
  */
-public final class ReSay implements Reply {
+public final class StkHello implements Stakeholder {
 
-    /**
-     * The message.
-     */
-    private final String message;
-
-    /**
-     * Ctor.
-     * @param msg The message
-     */
-    public ReSay(final String msg) {
-        this.message = msg;
+    @Override
+    public String term() {
+        return "type='hello'";
     }
 
     @Override
-    public void react(final Farm farm, final Comment.Smart comment)
-        throws IOException {
-        new GhTube(comment).say(this.message);
+    public Iterable<Directive> process(final Project project, final XML xml) {
+        return new ClaimIn(xml).reply(
+            "Hey, what's up, how is it going?"
+        );
     }
 
 }

@@ -17,6 +17,12 @@
  -->
 <question>
     <cmd>
+        <code>hello</code>
+        <regex>hi|hello|morning|good morning</regex>
+        <label>hello</label>
+        <help>Just say hello</help>
+    </cmd>
+    <cmd>
         <code>pm.scope.wbs.in</code>
         <regex>in</regex>
         <label>in</label>

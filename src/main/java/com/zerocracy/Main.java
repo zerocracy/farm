@@ -38,9 +38,7 @@ import com.zerocracy.radars.github.ReOnComment;
 import com.zerocracy.radars.github.ReOnInvitation;
 import com.zerocracy.radars.github.ReOnReason;
 import com.zerocracy.radars.github.ReQuestion;
-import com.zerocracy.radars.github.ReRegex;
 import com.zerocracy.radars.github.Rebound;
-import com.zerocracy.radars.github.Response;
 import com.zerocracy.radars.github.StkNotify;
 import com.zerocracy.radars.slack.ReIfAddressed;
 import com.zerocracy.radars.slack.ReIfDirect;
@@ -49,10 +47,9 @@ import com.zerocracy.radars.slack.ReNotMine;
 import com.zerocracy.radars.slack.ReProfile;
 import com.zerocracy.radars.slack.ReProject;
 import com.zerocracy.radars.slack.ReSafe;
-import com.zerocracy.radars.slack.ReSay;
-import com.zerocracy.radars.slack.Reaction;
 import com.zerocracy.radars.slack.SlackRadar;
 import com.zerocracy.stk.StkByRoles;
+import com.zerocracy.stk.StkHello;
 import com.zerocracy.stk.StkSafe;
 import com.zerocracy.stk.StkTrashBin;
 import com.zerocracy.stk.StkVerbose;
@@ -69,7 +66,6 @@ import com.zerocracy.tk.TkAlias;
 import com.zerocracy.tk.TkApp;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
@@ -149,6 +145,7 @@ public final class Main {
                     .of(
                         new StkNotify(github),
                         new com.zerocracy.radars.slack.StkNotify(sessions),
+                        new StkHello(),
                         new StkByRoles(new StkAdd(github), "PO"),
                         new StkByRoles(new StkRemove(), "PO"),
                         new StkByRoles(new StkShow(), "PO"),
@@ -179,19 +176,9 @@ public final class Main {
                 new ReLogged<>(
                     new ReNotMine(
                         new ReIfDirect(
-                            new Reaction.Chain<>(
-                                Arrays.asList(
-                                    new com.zerocracy.radars.slack.ReRegex("hi|hello|hey", new ReSay("Hey, how is it going?")),
-                                    new ReProfile()
-                                )
-                            ),
+                            new ReProfile(),
                             new ReIfAddressed(
-                                new Reaction.Chain<>(
-                                    Arrays.asList(
-                                        new com.zerocracy.radars.slack.ReRegex("hello|hi|hey", new ReSay("What's up?")),
-                                        new ReProject()
-                                    )
-                                )
+                                new ReProject()
                             )
                         )
                     )
@@ -218,10 +205,7 @@ public final class Main {
                                                     new com.zerocracy.radars.github.ReSafe(
                                                         new com.zerocracy.radars.github.ReNotMine(
                                                             new com.zerocracy.radars.github.ReIfAddressed(
-                                                                new Response.Chain(
-                                                                    new ReRegex("hello|hey|hi|morning", new com.zerocracy.radars.github.ReSay("Hey, I'm here, what's up?")),
-                                                                    new ReQuestion()
-                                                                )
+                                                                new ReQuestion()
                                                             )
                                                         )
                                                     ),
