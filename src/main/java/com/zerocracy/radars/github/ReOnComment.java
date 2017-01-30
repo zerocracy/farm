@@ -17,6 +17,7 @@
 package com.zerocracy.radars.github;
 
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.jcabi.dynamo.Attributes;
 import com.jcabi.dynamo.Item;
@@ -139,15 +140,18 @@ public final class ReOnComment implements Reaction {
             issue.comments().iterate(new Date(since)),
             comment -> comment.number() > seen
         );
-        Iterables.all(
-            found,
-            comment -> {
-                Logger.info(
-                    this, "Found #%d (since=%d, seen=%d)",
-                    comment.number(), since, seen
-                );
-                return true;
-            }
+        Logger.info(
+            this, "Found #%s (since=%d, seen=%d)",
+            String.join(
+                ", #",
+                Iterables.transform(
+                    found,
+                    (Function<Comment, CharSequence>) input -> Integer.toString(
+                        input.number()
+                    )
+                )
+            ),
+            since, seen
         );
         return found;
     }
