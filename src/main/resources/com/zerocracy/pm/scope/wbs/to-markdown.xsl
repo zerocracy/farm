@@ -40,9 +40,9 @@
     </xsl:template>
     <xsl:template match="@id">
         <xsl:choose>
-            <xsl:when test="starts-with(@id,'gh:')">
-                <xsl:variable name="repo" select="substring-before(substring-after(@id,'gh:'),'#')"/>
-                <xsl:variable name="issue" select="substring-after(@id,'#')"/>
+            <xsl:when test="starts-with(.,'gh:')">
+                <xsl:variable name="repo" select="substring-before(substring-after(.,'gh:'),'#')"/>
+                <xsl:variable name="issue" select="substring-after(.,'#')"/>
                 <xsl:text>[</xsl:text>
                 <xsl:value-of select="$repo"/>
                 <xsl:text>#</xsl:text>
@@ -54,7 +54,7 @@
                 <xsl:text>)</xsl:text>
             </xsl:when>
             <xsl:otherwise>
-                <xsl:value-of select="@id"/>
+                <xsl:value-of select="."/>
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>

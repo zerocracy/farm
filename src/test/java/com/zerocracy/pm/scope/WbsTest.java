@@ -30,15 +30,18 @@ import org.junit.Test;
 public final class WbsTest {
 
     /**
-     * Adds and removes jobs.
+     * Prints WBS.
      * @throws Exception If some problem inside
      */
     @Test
-    public void printsJobs() throws Exception {
+    public void printsWbs() throws Exception {
         final Wbs wbs = new Wbs(new FkProject()).bootstrap();
+        final String job = "gh:yegor256/0pdd#44";
+        wbs.add(job);
+        wbs.assign(job, "alex-palevsky");
         MatcherAssert.assertThat(
             wbs.markdown(),
-            Matchers.containsString("empty")
+            Matchers.containsString("[yegor256/0pdd#44]")
         );
     }
 
