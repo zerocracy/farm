@@ -105,6 +105,7 @@ final class S3Item implements Item {
                     this.ocket.key()
                 );
             }
+            this.open.set(true);
         }
         return this.temp;
     }
@@ -114,11 +115,7 @@ final class S3Item implements Item {
         if (this.open.get()
             && (!this.ocket.exists()
             || this.ocket.meta().getLastModified().compareTo(
-                new Date(
-                    Files.getLastModifiedTime(
-                        this.temp
-                    ).toMillis()
-                )
+                new Date(Files.getLastModifiedTime(this.temp).toMillis())
             ) < 0)) {
             final ObjectMetadata meta = new ObjectMetadata();
             meta.setContentLength(this.temp.toFile().length());
