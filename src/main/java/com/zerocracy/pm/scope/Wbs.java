@@ -114,11 +114,7 @@ public final class Wbs {
         }
         try (final Item wbs = this.item()) {
             new Xocument(wbs.path()).modify(
-                new Directives().xpath(
-                    String.format(
-                        "/wbs/job[@id = '%s' ]", job
-                    )
-                ).strict(1).remove()
+                new Directives().xpath(Wbs.xpath(job)).strict(1).remove()
             );
         }
     }
@@ -131,9 +127,7 @@ public final class Wbs {
      */
     public boolean exists(final String job) throws IOException {
         try (final Item wbs = this.item()) {
-            return !new Xocument(wbs.path()).nodes(
-                String.format("/wbs/job[@id = '%s']", job)
-            ).isEmpty();
+            return !new Xocument(wbs.path()).nodes(Wbs.xpath(job)).isEmpty();
         }
     }
 
@@ -154,7 +148,7 @@ public final class Wbs {
             final Xocument xocument = new Xocument(wbs.path());
             xocument.modify(
                 new Directives()
-                    .xpath(String.format("/wbs/job[@id='%s'  ]", job))
+                    .xpath(Wbs.xpath(job))
                     .strict(1)
                     .addIf("performer")
                     .set(login)
@@ -182,6 +176,15 @@ public final class Wbs {
                     .remove()
             );
         }
+    }
+
+    /**
+     * XPath to find a job.
+     * @param job The job
+     * @return XPath
+     */
+    private static String xpath(final String job) {
+        return String.format("/wbs/job[@id='%s']", job);
     }
 
     /**
