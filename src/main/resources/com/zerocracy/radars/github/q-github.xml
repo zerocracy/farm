@@ -28,4 +28,17 @@
         <label>out</label>
         <help>Remove job from WBS</help>
     </cmd>
+    <cmd>
+        <code>pm.scope.wbs.assign</code>
+        <regex>assign</regex>
+        <label>assign</label>
+        <help>Assign a performer to the task</help>
+        <opts>
+            <opt>
+                <name>login</name>
+                <regex>me|@[a-zA-Z0-9\-]+</regex>
+                <help>"me" or GitHub login of the person to assign</help>
+            </opt>
+        </opts>
+    </cmd>
 </question>

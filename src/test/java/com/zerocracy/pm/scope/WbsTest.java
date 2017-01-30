@@ -54,4 +54,16 @@ public final class WbsTest {
         wbs.remove(job);
     }
 
+    /**
+     * Assigns a performer and resigns.
+     * @throws Exception If some problem inside
+     */
+    @Test
+    public void assignsAndResigns() throws Exception {
+        final Wbs wbs = new Wbs(new FkProject()).bootstrap();
+        final String job = "gh:yegor256/0pdd#13";
+        wbs.add(job);
+        wbs.assign(job, "yegor256");
+    }
+
 }

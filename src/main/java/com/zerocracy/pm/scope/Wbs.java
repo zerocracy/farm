@@ -116,7 +116,7 @@ public final class Wbs {
             new Xocument(wbs.path()).modify(
                 new Directives().xpath(
                     String.format(
-                        "/wbs/job[@id='%s']", job
+                        "/wbs/job[@id = '%s' ]", job
                     )
                 ).strict(1).remove()
             );
@@ -134,6 +134,53 @@ public final class Wbs {
             return !new Xocument(wbs.path()).nodes(
                 String.format("/wbs/job[@id = '%s']", job)
             ).isEmpty();
+        }
+    }
+
+    /**
+     * Assign job to performer.
+     * @param job The job to assign
+     * @param login The login of the user
+     * @throws IOException If fails
+     */
+    public void assign(final String job, final String login)
+        throws IOException {
+        if (!this.exists(job)) {
+            throw new SoftException(
+                String.format("Job `%s` doesn't exist, can't assign", job)
+            );
+        }
+        try (final Item wbs = this.item()) {
+            final Xocument xocument = new Xocument(wbs.path());
+            xocument.modify(
+                new Directives()
+                    .xpath(String.format("/wbs/job[@id='%s'  ]", job))
+                    .strict(1)
+                    .addIf("performer")
+                    .set(login)
+            );
+        }
+    }
+
+    /**
+     * Resign current job performer.
+     * @param job The job to touch
+     * @throws IOException If fails
+     */
+    public void resign(final String job) throws IOException {
+        if (!this.exists(job)) {
+            throw new SoftException(
+                String.format("Job `%s` doesn't exist, can't resign", job)
+            );
+        }
+        try (final Item wbs = this.item()) {
+            final Xocument xocument = new Xocument(wbs.path());
+            xocument.modify(
+                new Directives()
+                    .xpath(String.format("/wbs/job[@id='%s']/performer", job))
+                    .strict(1)
+                    .remove()
+            );
         }
     }
 
