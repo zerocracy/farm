@@ -128,12 +128,9 @@ public final class ReOnComment implements Reaction {
         final long since;
         final int seen;
         if (items.hasNext()) {
-            since = Long.parseLong(
-                items.next().get(ReOnComment.DATE).getN()
-            );
-            seen = Integer.parseInt(
-                items.next().get(ReOnComment.NUMBER).getN()
-            );
+            final Item item = items.next();
+            since = Long.parseLong(item.get(ReOnComment.DATE).getN());
+            seen = Integer.parseInt(item.get(ReOnComment.NUMBER).getN());
         } else {
             since = 0L;
             seen = 0;
