@@ -28,11 +28,13 @@ import com.jcabi.github.Github;
 import com.jcabi.github.Issue;
 import com.jcabi.github.Repo;
 import com.jcabi.github.Smarts;
+import com.jcabi.log.Logger;
 import com.zerocracy.jstk.Farm;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.stream.StreamSupport;
 import javax.json.JsonObject;
 import org.apache.commons.lang3.StringUtils;
 
@@ -135,10 +137,25 @@ public final class ReOnComment implements Reaction {
             // @checkstyle MagicNumber (1 line)
             seen = 276041067;
         }
-        return Iterables.filter(
+        final Iterable<Comment> found = Iterables.filter(
             issue.comments().iterate(new Date(since)),
             comment -> comment.number() > seen
         );
+        Logger.info(
+            this, "Comments found in %s#%d: #%s (since=%d, seen=%d)",
+            issue.repo().coordinates(),
+            issue.number(),
+            String.join(
+                ", #",
+                () -> StreamSupport
+                    .stream(found.spliterator(), false)
+                    .<CharSequence>map(
+                        comment -> String.format("%d", comment.number())
+                    ).iterator()
+            ),
+            since, seen
+        );
+        return found;
     }
 
     /**
