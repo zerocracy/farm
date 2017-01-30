@@ -29,6 +29,7 @@ import javax.json.JsonObject;
  * @version $Id$
  * @since 0.10
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class RbLogged implements Rebound {
 
     /**
@@ -47,12 +48,63 @@ public final class RbLogged implements Rebound {
     @Override
     public String react(final Farm farm, final Github github,
         final JsonObject event) throws IOException {
+        final long start = System.currentTimeMillis();
         final String answer = this.origin.react(farm, github, event);
         Logger.info(
             this,
-            "GitHub event, action=%s",
-            event.getString("action", "?")
+            "GitHub event, %s, %s, %s, %[ms]s",
+            RbLogged.action(event),
+            RbLogged.repository(event),
+            RbLogged.issue(event),
+            System.currentTimeMillis() - start
         );
         return answer;
+    }
+
+    /**
+     * Action.
+     * @param json JSON event
+     * @return Action
+     */
+    private static String action(final JsonObject json) {
+        final String text;
+        if (json.containsKey("action")) {
+            text = json.getString("action");
+        } else {
+            text = "no action";
+        }
+        return text;
+    }
+
+    /**
+     * Repository.
+     * @param json JSON event
+     * @return Repository
+     */
+    private static String repository(final JsonObject json) {
+        final String text;
+        if (json.containsKey("repository")) {
+            text = json.getJsonObject("repository").getString("full_name");
+        } else {
+            text = "no repo";
+        }
+        return text;
+    }
+
+    /**
+     * Repository.
+     * @param json JSON event
+     * @return Repository
+     */
+    private static String issue(final JsonObject json) {
+        final String text;
+        if (json.containsKey("issue")) {
+            text = Integer.toString(
+                json.getJsonObject("issue").getInt("number")
+            );
+        } else {
+            text = "no issue";
+        }
+        return text;
     }
 }
