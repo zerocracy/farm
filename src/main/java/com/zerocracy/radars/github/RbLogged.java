@@ -99,7 +99,8 @@ public final class RbLogged implements Rebound {
     private static String issue(final JsonObject json) {
         final String text;
         if (json.containsKey("issue")) {
-            text = Integer.toString(
+            text = String.format(
+                "#%d",
                 json.getJsonObject("issue").getInt("number")
             );
         } else {
