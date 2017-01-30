@@ -134,7 +134,8 @@ public final class ReOnComment implements Reaction {
             seen = Integer.parseInt(item.get(ReOnComment.NUMBER).getN());
         } else {
             since = 0L;
-            seen = 0;
+            // @checkstyle MagicNumber (1 line)
+            seen = 276041067;
         }
         final Iterable<Comment> found = Iterables.filter(
             issue.comments().iterate(new Date(since)),
