@@ -146,7 +146,7 @@ public final class ReOnComment implements Reaction {
                     this, "Found #%d (since=%d, seen=%d)",
                     comment.number(), since, seen
                 );
-                return false;
+                return true;
             }
         );
         return found;
