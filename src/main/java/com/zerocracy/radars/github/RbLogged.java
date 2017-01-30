@@ -69,7 +69,7 @@ public final class RbLogged implements Rebound {
     private static String action(final JsonObject json) {
         final String text;
         if (json.containsKey("action")) {
-            text = json.getString("action");
+            text = String.format("[%s]", json.getString("action"));
         } else {
             text = "no action";
         }

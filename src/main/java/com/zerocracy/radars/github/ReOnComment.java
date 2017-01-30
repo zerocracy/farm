@@ -114,16 +114,17 @@ public final class ReOnComment implements Reaction {
             this.send(farm, comment);
         }
         Logger.info(
-            this, "Comments found in %s#%d and processed in %[ms]s: #%s",
+            this, "%d comments found in %s#%d and processed in %[ms]s: %s",
+            Iterables.size(comments),
             issue.repo().coordinates(),
             issue.number(),
             System.currentTimeMillis() - start,
             String.join(
-                ", #",
+                ", ",
                 () -> StreamSupport
                     .stream(comments.spliterator(), false)
                     .<CharSequence>map(
-                        comment -> String.format("%d", comment.number())
+                        comment -> String.format("#%d", comment.number())
                     ).iterator()
             )
         );

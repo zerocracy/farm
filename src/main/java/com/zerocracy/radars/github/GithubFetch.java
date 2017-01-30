@@ -20,7 +20,6 @@ import com.jcabi.github.Github;
 import com.jcabi.github.RtPagination;
 import com.jcabi.http.Request;
 import com.jcabi.http.response.RestResponse;
-import com.jcabi.log.Logger;
 import com.zerocracy.jstk.Farm;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -81,18 +80,13 @@ public final class GithubFetch implements Runnable {
             .uri().path("/notifications").back();
         final Iterable<JsonObject> events =
             new RtPagination<>(req, RtPagination.COPYING);
-        int total = 0;
         for (final JsonObject event : events) {
             this.reaction.react(this.farm, event);
-            ++total;
         }
         req.method(Request.PUT)
             .body().set("{}").back()
             .fetch()
             .as(RestResponse.class)
             .assertStatus(HttpURLConnection.HTTP_RESET);
-        if (total > 0) {
-            Logger.info(this, "%d notifications from GitHub", total);
-        }
     }
 }
