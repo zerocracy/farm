@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Properties;
 import org.takes.Take;
+import org.takes.facets.fallback.FbLog4j;
+import org.takes.facets.fallback.TkFallback;
 import org.takes.facets.flash.TkFlash;
 import org.takes.facets.fork.FkFixed;
 import org.takes.facets.fork.FkHitRefresh;
@@ -66,28 +68,31 @@ public final class TkApp extends TkWrap {
     public TkApp(final Properties props, final FkRegex... forks)
         throws IOException {
         super(
-            new TkWithHeaders(
-                new TkVersioned(
-                    new TkMeasured(
-                        new TkGzip(
-                            new TkFlash(
-                                new TkAppAuth(
-                                    new TkForward(
-                                        TkApp.regex(props, forks)
-                                    ),
-                                    props
+            new TkFallback(
+                new TkWithHeaders(
+                    new TkVersioned(
+                        new TkMeasured(
+                            new TkGzip(
+                                new TkFlash(
+                                    new TkAppAuth(
+                                        new TkForward(
+                                            TkApp.regex(props, forks)
+                                        ),
+                                        props
+                                    )
                                 )
                             )
                         )
-                    )
+                    ),
+                    String.format(
+                        "X-Zerocracy-Version: %s %s %s",
+                        props.getProperty("build.version"),
+                        props.getProperty("build.revision"),
+                        props.getProperty("build.date")
+                    ),
+                    "Vary: Cookie"
                 ),
-                String.format(
-                    "X-Zerocracy-Version: %s %s %s",
-                    props.getProperty("build.version"),
-                    props.getProperty("build.revision"),
-                    props.getProperty("build.date")
-                ),
-                "Vary: Cookie"
+                new FbLog4j()
             )
         );
     }
