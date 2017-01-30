@@ -66,7 +66,7 @@ public final class StkNotify implements Stakeholder {
             String.format(
                 "@%s %s",
                 parts[2],
-                message
+                message.replaceAll("\\[([^]]+)]\\(([^)]+)\\)", "<\2!\1>")
             )
         );
         Logger.info(

@@ -141,7 +141,7 @@ public final class Wbs {
         throws IOException {
         if (!this.exists(job)) {
             throw new SoftException(
-                String.format("Job `%s` doesn't exist, can't assign", job)
+                String.format("Job `%s` is not in scope, can't assign", job)
             );
         }
         try (final Item wbs = this.item()) {
@@ -164,7 +164,7 @@ public final class Wbs {
     public void resign(final String job) throws IOException {
         if (!this.exists(job)) {
             throw new SoftException(
-                String.format("Job `%s` doesn't exist, can't resign", job)
+                String.format("Job `%s` is not in scope, can't resign", job)
             );
         }
         try (final Item wbs = this.item()) {
