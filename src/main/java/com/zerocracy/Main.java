@@ -173,37 +173,6 @@ public final class Main {
                     .collect(Collectors.toList())
             )
         );
-        final GithubFetch ghradar = new GithubFetch(
-            farm,
-            github,
-            new com.zerocracy.radars.github.ReLogged(
-                new com.zerocracy.radars.github.Reaction.Chain(
-                    new ReOnReason("invitation", new ReOnInvitation(github)),
-                    new ReOnReason(
-                        "mention",
-                        new ReOnComment(
-                            github,
-                            new com.zerocracy.radars.github.ReNotMine(
-                                new com.zerocracy.radars.github.ReIfAddressed(
-                                    new Response.Chain(
-                                        new ReRegex("hello|hey|hi|morning", new com.zerocracy.radars.github.ReSay("Hey, I'm here, what's up?")),
-                                        new ReQuestion()
-                                    )
-                                )
-                            ),
-                            new ReRegion(
-                                new com.jcabi.dynamo.Region.Simple(
-                                    new Credentials.Simple(
-                                        props.getProperty("dynamo.key"),
-                                        props.getProperty("dynamo.secret")
-                                    )
-                                )
-                            ).table("0crat-github")
-                        )
-                    )
-                )
-            )
-        );
         final SlackRadar skradar = new SlackRadar(
             farm, props, sessions,
             new ReSafe(
@@ -235,7 +204,39 @@ public final class Main {
                 new RbLogged(
                     new Rebound.Chain(
                         new RbByActions(
-                            new RbOnComment(ghradar),
+                            new RbOnComment(
+                                new GithubFetch(
+                                    farm,
+                                    github,
+                                    new com.zerocracy.radars.github.ReLogged(
+                                        new com.zerocracy.radars.github.Reaction.Chain(
+                                            new ReOnReason("invitation", new ReOnInvitation(github)),
+                                            new ReOnReason(
+                                                "mention",
+                                                new ReOnComment(
+                                                    github,
+                                                    new com.zerocracy.radars.github.ReNotMine(
+                                                        new com.zerocracy.radars.github.ReIfAddressed(
+                                                            new Response.Chain(
+                                                                new ReRegex("hello|hey|hi|morning", new com.zerocracy.radars.github.ReSay("Hey, I'm here, what's up?")),
+                                                                new ReQuestion()
+                                                            )
+                                                        )
+                                                    ),
+                                                    new ReRegion(
+                                                        new com.jcabi.dynamo.Region.Simple(
+                                                            new Credentials.Simple(
+                                                                props.getProperty("dynamo.key"),
+                                                                props.getProperty("dynamo.secret")
+                                                            )
+                                                        )
+                                                    ).table("0crat-github")
+                                                )
+                                            )
+                                        )
+                                    )
+                                )
+                            ),
                             "created"
                         ),
                         new RbByActions(

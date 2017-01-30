@@ -27,11 +27,15 @@ import com.jcabi.github.Github;
 import com.jcabi.github.Issue;
 import com.jcabi.github.Repo;
 import com.jcabi.github.Smarts;
+import com.jcabi.log.Logger;
 import com.zerocracy.jstk.Farm;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 import javax.json.JsonObject;
 import org.apache.commons.lang3.StringUtils;
 
@@ -50,9 +54,14 @@ public final class ReOnComment implements Reaction {
     private static final String HASH = "issue";
 
     /**
-     * Since attribute of Dynamo table.
+     * Dynamo attribute with the date of the most recently seen comment.
      */
-    private static final String ATTR = "since";
+    private static final String DATE = "since";
+
+    /**
+     * Dynamo attribute with the number of a comment already seen.
+     */
+    private static final String NUMBER = "comment-seen";
 
     /**
      * GitHub client.
@@ -99,7 +108,7 @@ public final class ReOnComment implements Reaction {
             )
         );
         final Iterable<Comment.Smart> comments = new Smarts<>(
-            issue.comments().iterate(this.since(issue))
+            this.comments(issue)
         );
         for (final Comment.Smart comment : comments) {
             this.send(farm, comment);
@@ -107,26 +116,43 @@ public final class ReOnComment implements Reaction {
     }
 
     /**
-     * Since when we should ask.
+     * Fetch most recent not-yet-seen comments.
      * @param issue The issue
-     * @return Date since when
+     * @return Comments
      * @throws IOException If fails
      */
-    private Date since(final Issue issue) throws IOException {
+    private Iterable<Comment> comments(final Issue issue) throws IOException {
         final Iterator<Item> items = this.table
             .frame()
             .through(new QueryValve().withLimit(1))
             .where(ReOnComment.HASH, ReOnComment.name(issue))
             .iterator();
         final long since;
+        final int seen;
         if (items.hasNext()) {
             since = Long.parseLong(
-                items.next().get(ReOnComment.ATTR).getN()
-            ) + 1L;
+                items.next().get(ReOnComment.DATE).getN()
+            );
+            seen = Integer.parseInt(
+                items.next().get(ReOnComment.NUMBER).getN()
+            );
         } else {
             since = 0L;
+            seen = 0;
         }
-        return new Date(since);
+        final Stream<Comment> found = StreamSupport
+            .stream(
+                issue.comments().iterate(new Date(since)).spliterator(),
+                false
+            )
+            .filter(comment -> comment.number() > seen);
+        found.forEach(
+            comment -> Logger.info(
+                this, "Found #%d (since=%d, seen=%d)",
+                comment.number(), since, seen
+            )
+        );
+        return found.collect(Collectors.toList());
     }
 
     /**
@@ -148,13 +174,13 @@ public final class ReOnComment implements Reaction {
             new Attributes()
                 .with(ReOnComment.HASH, ReOnComment.name(comment.issue()))
                 .with(
-                    ReOnComment.ATTR,
+                    ReOnComment.DATE,
                     new AttributeValue().withN(
                         Long.toString(comment.createdAt().getTime())
                     )
                 )
                 .with(
-                    "comment-seen",
+                    ReOnComment.NUMBER,
                     new AttributeValue().withN(
                         Integer.toString(comment.number())
                     )
