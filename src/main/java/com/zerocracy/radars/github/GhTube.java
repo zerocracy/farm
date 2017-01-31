@@ -16,8 +16,10 @@
  */
 package com.zerocracy.radars.github;
 
+import com.jcabi.aspects.Tv;
 import com.jcabi.github.Comment;
 import java.io.IOException;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Tube to GitHub.
@@ -49,8 +51,15 @@ final class GhTube {
     public void say(final String msg) throws IOException {
         this.comment.issue().comments().post(
             String.format(
-                "> %s%n%n%s",
-                new Comment.Smart(this.comment).body(),
+                // @checkstyle LineLength (1 line)
+                "> %s ([here](https://github.com/%s/issues/%d#issuecomment-%d))%n%n%s",
+                StringUtils.abbreviate(
+                    new Comment.Smart(this.comment).body(),
+                    Tv.HUNDRED
+                ).replaceAll("\\s+", " "),
+                this.comment.issue().repo().coordinates(),
+                this.comment.issue().number(),
+                this.comment.number(),
                 msg
             )
         );

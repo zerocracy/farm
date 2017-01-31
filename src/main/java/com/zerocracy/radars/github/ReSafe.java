@@ -65,7 +65,7 @@ public final class ReSafe implements Response {
                 comment.issue().comments().post(
                     String.join(
                         "\n",
-                        "There is a technical failure on my side.",
+                        "There is an unrecoverable failure on my side.",
                         "Please, email this to bug@0crat.com:\n\n```",
                         StringUtils.abbreviate(
                             baos.toString(StandardCharsets.UTF_8),
