@@ -100,9 +100,10 @@ final class S3Item implements Item {
                     )
                 );
                 Logger.info(
-                    this, "Loaded %d bytes from %s",
+                    this, "Loaded %d bytes from %s to %s",
                     this.temp.toFile().length(),
-                    this.ocket.key()
+                    this.ocket.key(),
+                    this.temp
                 );
             }
             this.open.set(true);
@@ -117,9 +118,10 @@ final class S3Item implements Item {
             meta.setContentLength(this.temp.toFile().length());
             this.ocket.write(Files.newInputStream(this.temp), meta);
             Logger.info(
-                this, "Saved %d bytes to %s",
+                this, "Saved %d bytes to %s from %s",
                 this.temp.toFile().length(),
-                this.ocket.key()
+                this.ocket.key(),
+                this.temp
             );
         }
         this.open.set(false);
@@ -139,8 +141,8 @@ final class S3Item implements Item {
             throw new IllegalStateException(
                 String.format(
                     // @checkstyle LineLength (1 line)
-                    "Remote version (%s) is more recent than local one (%s), can't upload",
-                    remote, local
+                    "Remote version (%s) of \"%s\" is more recent than local one (%s) at \"%s\", can't upload",
+                    remote, this.ocket.key(), local, this.temp
                 )
             );
         }
