@@ -17,7 +17,7 @@
 package com.zerocracy.farm;
 
 import com.jcabi.s3.Ocket;
-import com.jcabi.s3.mock.MkOcket;
+import com.jcabi.s3.fake.FkOcket;
 import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
 import java.nio.file.Files;
@@ -41,7 +41,7 @@ public final class S3ItemTest {
      */
     @Test
     public void modifiesFiles() throws Exception {
-        final Ocket ocket = new MkOcket(
+        final Ocket ocket = new FkOcket(
             Files.createTempDirectory("").toFile(),
             "bucket", "roles.xml"
         );

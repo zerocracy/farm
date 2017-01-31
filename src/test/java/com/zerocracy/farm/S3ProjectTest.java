@@ -17,7 +17,7 @@
 package com.zerocracy.farm;
 
 import com.jcabi.s3.Bucket;
-import com.jcabi.s3.mock.MkBucket;
+import com.jcabi.s3.fake.FkBucket;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.hr.Roles;
 import java.nio.file.Files;
@@ -39,7 +39,7 @@ public final class S3ProjectTest {
      */
     @Test
     public void modifiesItems() throws Exception {
-        final Bucket bucket = new MkBucket(
+        final Bucket bucket = new FkBucket(
             Files.createTempDirectory("").toFile(),
             "some-bucket"
         );

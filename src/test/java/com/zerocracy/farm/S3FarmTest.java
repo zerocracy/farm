@@ -18,7 +18,7 @@ package com.zerocracy.farm;
 
 import com.jcabi.aspects.Tv;
 import com.jcabi.s3.Bucket;
-import com.jcabi.s3.mock.MkBucket;
+import com.jcabi.s3.fake.FkBucket;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
@@ -48,7 +48,7 @@ public final class S3FarmTest {
      */
     @Test
     public void findsProject() throws Exception {
-        final Bucket bucket = new MkBucket(
+        final Bucket bucket = new FkBucket(
             Files.createTempDirectory("").toFile(),
             "some-bucket"
         );
@@ -74,7 +74,7 @@ public final class S3FarmTest {
      */
     @Test
     public void makesProjectsSafe() throws Exception {
-        final Bucket bucket = new MkBucket(
+        final Bucket bucket = new FkBucket(
             Files.createTempDirectory("").toFile(),
             "the-bucket-3"
         );
@@ -99,7 +99,7 @@ public final class S3FarmTest {
      */
     @Test
     public void makesProjectsThreadSafe() throws Exception {
-        final Bucket bucket = new MkBucket(
+        final Bucket bucket = new FkBucket(
             Files.createTempDirectory("").toFile(),
             "the-bucket"
         );

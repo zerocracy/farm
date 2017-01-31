@@ -112,11 +112,7 @@ final class S3Item implements Item {
 
     @Override
     public void close() throws IOException {
-        if (this.open.get()
-            && (!this.ocket.exists()
-            || this.ocket.meta().getLastModified().compareTo(
-                new Date(Files.getLastModifiedTime(this.temp).toMillis())
-            ) < 0)) {
+        if (this.open.get() && (!this.ocket.exists() || this.dirty())) {
             final ObjectMetadata meta = new ObjectMetadata();
             meta.setContentLength(this.temp.toFile().length());
             this.ocket.write(Files.newInputStream(this.temp), meta);
@@ -127,6 +123,28 @@ final class S3Item implements Item {
             );
         }
         this.open.set(false);
+    }
+
+    /**
+     * Do we really need to save it now to S3?
+     * @return TRUE if it has to be uploaded
+     * @throws IOException If fails
+     */
+    private boolean dirty() throws IOException {
+        final Date local = new Date(
+            Files.getLastModifiedTime(this.temp).toMillis()
+        );
+        final Date remote = this.ocket.meta().getLastModified();
+        if (remote.compareTo(local) > 0) {
+            throw new IllegalStateException(
+                String.format(
+                    // @checkstyle LineLength (1 line)
+                    "Remote version (%s) is more recent than local one (%s), can't upload",
+                    remote, local
+                )
+            );
+        }
+        return !remote.equals(local);
     }
 
 }
