@@ -34,10 +34,12 @@ import com.zerocracy.radars.github.RbLogged;
 import com.zerocracy.radars.github.RbOnClose;
 import com.zerocracy.radars.github.RbOnComment;
 import com.zerocracy.radars.github.RbPingArchitect;
+import com.zerocracy.radars.github.RbTweet;
 import com.zerocracy.radars.github.ReOnComment;
 import com.zerocracy.radars.github.ReOnInvitation;
 import com.zerocracy.radars.github.ReOnReason;
 import com.zerocracy.radars.github.ReQuestion;
+import com.zerocracy.radars.github.Reaction;
 import com.zerocracy.radars.github.Rebound;
 import com.zerocracy.radars.github.StkNotify;
 import com.zerocracy.radars.slack.ReIfAddressed;
@@ -186,6 +188,14 @@ public final class Main {
                 )
             )
         );
+        final com.jcabi.dynamo.Region dynamo = new ReRegion(
+            new com.jcabi.dynamo.Region.Simple(
+                new Credentials.Simple(
+                    props.getProperty("dynamo.key"),
+                    props.getProperty("dynamo.secret")
+                )
+            )
+        );
         try {
             final GhookRadar gkradar = new GhookRadar(
                 farm, github,
@@ -197,7 +207,7 @@ public final class Main {
                                     farm,
                                     github,
                                     new com.zerocracy.radars.github.ReLogged(
-                                        new com.zerocracy.radars.github.Reaction.Chain(
+                                        new Reaction.Chain(
                                             new ReOnReason("invitation", new ReOnInvitation(github)),
                                             new ReOnReason(
                                                 "mention",
@@ -210,14 +220,7 @@ public final class Main {
                                                             )
                                                         )
                                                     ),
-                                                    new ReRegion(
-                                                        new com.jcabi.dynamo.Region.Simple(
-                                                            new Credentials.Simple(
-                                                                props.getProperty("dynamo.key"),
-                                                                props.getProperty("dynamo.secret")
-                                                            )
-                                                        )
-                                                    ).table("0crat-github")
+                                                    dynamo.table("0crat-github")
                                                 )
                                             )
                                         )
@@ -233,6 +236,13 @@ public final class Main {
                         new RbByActions(
                             new RbOnClose(),
                             "closed"
+                        ),
+                        new RbTweet(
+                            dynamo.table("0crat-tweets"),
+                            props.getProperty("twitter.key"),
+                            props.getProperty("twitter.secret"),
+                            props.getProperty("twitter.token"),
+                            props.getProperty("twitter.tsecret")
                         )
                     )
                 )
