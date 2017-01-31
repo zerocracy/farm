@@ -82,11 +82,7 @@ final class S3Item implements Item {
                 );
             }
             if (this.ocket.exists() && (!Files.exists(this.temp)
-                || this.ocket.meta().getLastModified().compareTo(
-                    new Date(
-                        Files.getLastModifiedTime(this.temp).toMillis()
-                    )
-                ) > 0)) {
+                || this.expired())) {
                 this.ocket.read(
                     Files.newOutputStream(
                         this.temp,
@@ -117,10 +113,13 @@ final class S3Item implements Item {
         if (this.open.get() && (!this.ocket.exists() || this.dirty())) {
             final ObjectMetadata meta = new ObjectMetadata();
             meta.setContentLength(this.temp.toFile().length());
-            meta.setLastModified(
-                new Date(Files.getLastModifiedTime(this.temp).toMillis())
-            );
             this.ocket.write(Files.newInputStream(this.temp), meta);
+            Files.setLastModifiedTime(
+                this.temp,
+                FileTime.fromMillis(
+                    this.ocket.meta().getLastModified().getTime()
+                )
+            );
             Logger.info(
                 this, "Saved %d bytes to %s from %s (%s)",
                 this.temp.toFile().length(),
@@ -130,6 +129,19 @@ final class S3Item implements Item {
             );
         }
         this.open.set(false);
+    }
+
+    /**
+     * Local version is expired?
+     * @return TRUE if local one is expired
+     * @throws IOException If fails
+     */
+    private boolean expired() throws IOException {
+        final Date local = new Date(
+            Files.getLastModifiedTime(this.temp).toMillis()
+        );
+        final Date remote = this.ocket.meta().getLastModified();
+        return remote.compareTo(local) > 0;
     }
 
     /**
