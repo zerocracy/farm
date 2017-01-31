@@ -167,13 +167,6 @@ public final class ReOnComment implements Reaction {
      */
     private void send(final Farm farm, final Comment.Smart comment)
         throws IOException {
-        final String author = comment.author()
-            .login().toLowerCase(Locale.ENGLISH);
-        final String self = comment.issue().repo().github()
-            .users().self().login().toLowerCase(Locale.ENGLISH);
-        if (!author.equals(self)) {
-            this.response.react(farm, comment);
-        }
         this.table.put(
             new Attributes()
                 .with(ReOnComment.HASH, ReOnComment.name(comment.issue()))
@@ -190,6 +183,13 @@ public final class ReOnComment implements Reaction {
                     )
                 )
         );
+        final String author = comment.author()
+            .login().toLowerCase(Locale.ENGLISH);
+        final String self = comment.issue().repo().github()
+            .users().self().login().toLowerCase(Locale.ENGLISH);
+        if (!author.equals(self)) {
+            this.response.react(farm, comment);
+        }
     }
 
     /**
