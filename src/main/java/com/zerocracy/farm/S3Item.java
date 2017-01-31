@@ -123,6 +123,12 @@ final class S3Item implements Item {
                 this.ocket.key(),
                 this.temp
             );
+            Files.setLastModifiedTime(
+                this.temp,
+                FileTime.fromMillis(
+                    this.ocket.meta().getLastModified().getTime()
+                )
+            );
         }
         this.open.set(false);
     }
