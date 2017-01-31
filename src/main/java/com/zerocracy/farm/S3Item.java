@@ -154,15 +154,6 @@ final class S3Item implements Item {
             Files.getLastModifiedTime(this.temp).toMillis()
         );
         final Date remote = this.ocket.meta().getLastModified();
-        if (remote.compareTo(local) > 0) {
-            throw new IllegalStateException(
-                String.format(
-                    // @checkstyle LineLength (1 line)
-                    "Remote version (%s) of \"%s\" is more recent than local one (%s) at \"%s\", can't upload",
-                    remote, this.ocket.key(), local, this.temp
-                )
-            );
-        }
         return !remote.equals(local);
     }
 
