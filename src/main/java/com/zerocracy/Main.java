@@ -137,9 +137,11 @@ public final class Main {
             new ReactiveFarm(
                 new SyncFarm(
                     new S3Farm(
-                        new Region.Simple(
-                            props.getProperty("s3.key"),
-                            props.getProperty("s3.secret")
+                        new com.jcabi.s3.retry.ReRegion(
+                            new Region.Simple(
+                                props.getProperty("s3.key"),
+                                props.getProperty("s3.secret")
+                            )
                         ).bucket(props.getProperty("s3.bucket"))
                     )
                 ),
