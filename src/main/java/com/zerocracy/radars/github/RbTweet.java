@@ -115,7 +115,7 @@ public final class RbTweet implements Rebound {
             try {
                 tweet = this.twitter.updateStatus(
                     String.format(
-                        "I started to work with https://github.com/%s",
+                        "We started to work with https://github.com/%s",
                         repo.coordinates()
                     )
                 ).getId();
