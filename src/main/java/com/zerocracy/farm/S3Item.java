@@ -100,10 +100,11 @@ final class S3Item implements Item {
                     )
                 );
                 Logger.info(
-                    this, "Loaded %d bytes from %s to %s",
+                    this, "Loaded %d bytes from %s to %s (%s)",
                     this.temp.toFile().length(),
                     this.ocket.key(),
-                    this.temp
+                    this.temp,
+                    Files.getLastModifiedTime(this.temp)
                 );
             }
             this.open.set(true);
@@ -116,18 +117,16 @@ final class S3Item implements Item {
         if (this.open.get() && (!this.ocket.exists() || this.dirty())) {
             final ObjectMetadata meta = new ObjectMetadata();
             meta.setContentLength(this.temp.toFile().length());
+            meta.setLastModified(
+                new Date(Files.getLastModifiedTime(this.temp).toMillis())
+            );
             this.ocket.write(Files.newInputStream(this.temp), meta);
             Logger.info(
-                this, "Saved %d bytes to %s from %s",
+                this, "Saved %d bytes to %s from %s (%s)",
                 this.temp.toFile().length(),
                 this.ocket.key(),
-                this.temp
-            );
-            Files.setLastModifiedTime(
                 this.temp,
-                FileTime.fromMillis(
-                    this.ocket.meta().getLastModified().getTime()
-                )
+                Files.getLastModifiedTime(this.temp)
             );
         }
         this.open.set(false);
