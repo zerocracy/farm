@@ -55,7 +55,7 @@ public final class StkByXpath implements Stakeholder {
     @Override
     public Iterable<Directive> process(final Project project,
         final XML xml) throws IOException {
-        final String query = String.format("*[%s]", this.xpath);
+        final String query = String.format("/claim[%s]", this.xpath);
         final Iterable<Directive> dirs;
         if (xml.nodes(query).isEmpty()) {
             dirs = Collections.emptyList();
