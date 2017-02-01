@@ -52,14 +52,16 @@ public final class StkVerbose implements Stakeholder {
         final XML xml) throws IOException {
         final long start = System.currentTimeMillis();
         final Iterable<Directive> dirs = this.origin.process(project, xml);
-        Logger.info(
-            this, "\"%s/%s\" in %s: %d dirs in %[ms]s",
-            new ClaimIn(xml).type(),
-            new ClaimIn(xml).number(),
-            project,
-            Iterables.size(dirs),
-            System.currentTimeMillis() - start
-        );
+        if (dirs.iterator().hasNext()) {
+            Logger.info(
+                this, "\"%s/%s\" in %s: %d dirs in %[ms]s",
+                new ClaimIn(xml).type(),
+                new ClaimIn(xml).number(),
+                project,
+                Iterables.size(dirs),
+                System.currentTimeMillis() - start
+            );
+        }
         return dirs;
     }
 
