@@ -50,7 +50,7 @@ public final class ReactiveProjectTest {
             }
         );
         try (final Claims claims = new Claims(project).lock()) {
-            claims.add(new ClaimOut().type("hello"));
+            claims.add(new ClaimOut().type("hello").token("tt"));
         }
         try (final Claims claims = new Claims(project).lock()) {
             MatcherAssert.assertThat(
@@ -74,7 +74,7 @@ public final class ReactiveProjectTest {
             }
         );
         try (final Claims claims = new Claims(project).lock()) {
-            claims.add(new ClaimOut().type("bye"));
+            claims.add(new ClaimOut().type("bye").token("xx"));
         }
     }
 

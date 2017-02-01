@@ -95,17 +95,27 @@ final class ReactiveProject implements Project {
     private void run() throws IOException {
         this.depth.incrementAndGet();
         try (final Claims claims = new Claims(this).lock()) {
-            for (final Stakeholder stk : this.stakeholders) {
-                for (final XML claim : claims.iterate()) {
-                    claims.remove(claim.xpath("@id").get(0));
-                    final Iterable<Directive> dirs = stk.process(this, claim);
-                    if (dirs.iterator().hasNext()) {
-                        claims.add(dirs);
-                    }
-                }
+            for (final XML claim : claims.iterate()) {
+                this.run(claims, claim);
             }
         }
         this.depth.decrementAndGet();
+    }
+
+    /**
+     * Run single claim.
+     * @param claims Claims
+     * @param claim The claim to run
+     * @throws IOException If fails
+     */
+    private void run(final Claims claims, final XML claim) throws IOException {
+        for (final Stakeholder stk : this.stakeholders) {
+            final Iterable<Directive> response = stk.process(this, claim);
+            if (response.iterator().hasNext()) {
+                claims.add(response);
+            }
+        }
+        claims.remove(claim.xpath("@id").get(0));
     }
 
     /**

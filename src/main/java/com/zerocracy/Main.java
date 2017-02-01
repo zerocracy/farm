@@ -55,7 +55,6 @@ import com.zerocracy.stk.StkByXpath;
 import com.zerocracy.stk.StkChain;
 import com.zerocracy.stk.StkHello;
 import com.zerocracy.stk.StkSafe;
-import com.zerocracy.stk.StkTrashBin;
 import com.zerocracy.stk.StkVerbose;
 import com.zerocracy.stk.github.StkNotify;
 import com.zerocracy.stk.pm.hr.roles.StkAssign;
@@ -245,10 +244,6 @@ public final class Main {
                         new StkByXpath(
                             "not(author) and type='pm.scope.wbs.out'",
                             new StkOut()
-                        ),
-                        new StkByType(
-                            "ping",
-                            new StkTrashBin()
                         )
                     )
                     .map(StkVerbose::new)
