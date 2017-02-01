@@ -25,6 +25,7 @@ import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.Claims;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.xembly.Directive;
@@ -52,6 +53,15 @@ final class ReactiveProject implements Project {
      * Depth.
      */
     private final AtomicInteger depth;
+
+    /**
+     * Ctor.
+     * @param pkt Project
+     * @param list List of stakeholders
+     */
+    ReactiveProject(final Project pkt, final Stakeholder... list) {
+        this(pkt, Arrays.asList(list));
+    }
 
     /**
      * Ctor.
