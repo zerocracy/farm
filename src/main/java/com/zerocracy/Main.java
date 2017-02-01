@@ -242,13 +242,13 @@ public final class Main {
                             ),
                             "PO", "ARC"
                         ),
-                        new StkByType(
-                            "ping",
-                            new StkTrashBin()
-                        ),
                         new StkByXpath(
                             "not(author) and type='pm.scope.wbs.out'",
                             new StkOut()
+                        ),
+                        new StkByType(
+                            "ping",
+                            new StkTrashBin()
                         )
                     )
                     .map(StkVerbose::new)
