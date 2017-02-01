@@ -86,6 +86,14 @@ public final class ClaimIn {
     }
 
     /**
+     * Author exists.
+     * @return TRUE if author exists
+     */
+    public boolean hasAuthor() {
+        return !this.xml.nodes("author").isEmpty();
+    }
+
+    /**
      * Get param by name.
      * @param name Param name
      * @return Param value

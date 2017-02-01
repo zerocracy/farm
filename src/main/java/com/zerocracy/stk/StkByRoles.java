@@ -115,14 +115,19 @@ public final class StkByRoles implements Stakeholder {
      */
     private boolean has(final Project project,
         final XML xml) throws IOException {
-        final Roles rls = new Roles(project).bootstrap();
-        final String login = new ClaimIn(xml).author();
         boolean has = false;
-        for (final String role : this.roles) {
-            if (rls.hasRole(login, role)) {
-                has = true;
-                break;
+        final ClaimIn claim = new ClaimIn(xml);
+        if (claim.hasAuthor()) {
+            final String login = claim.author();
+            final Roles rls = new Roles(project).bootstrap();
+            for (final String role : this.roles) {
+                if (rls.hasRole(login, role)) {
+                    has = true;
+                    break;
+                }
             }
+        } else {
+            has = true;
         }
         return has;
     }
