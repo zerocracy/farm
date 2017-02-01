@@ -41,7 +41,6 @@ import com.zerocracy.radars.github.ReOnReason;
 import com.zerocracy.radars.github.ReQuestion;
 import com.zerocracy.radars.github.Reaction;
 import com.zerocracy.radars.github.Rebound;
-import com.zerocracy.radars.github.StkNotify;
 import com.zerocracy.radars.slack.ReIfAddressed;
 import com.zerocracy.radars.slack.ReIfDirect;
 import com.zerocracy.radars.slack.ReLogged;
@@ -58,6 +57,7 @@ import com.zerocracy.stk.StkHello;
 import com.zerocracy.stk.StkSafe;
 import com.zerocracy.stk.StkTrashBin;
 import com.zerocracy.stk.StkVerbose;
+import com.zerocracy.stk.github.StkNotify;
 import com.zerocracy.stk.pm.hr.roles.StkAssign;
 import com.zerocracy.stk.pm.hr.roles.StkResign;
 import com.zerocracy.stk.pm.scope.wbs.StkInto;
@@ -157,7 +157,7 @@ public final class Main {
                         ),
                         new StkByXpath(
                             "type='notify' and starts-with(token, 'slack;')",
-                            new com.zerocracy.radars.slack.StkNotify(sessions)
+                            new com.zerocracy.stk.slack.StkNotify(sessions)
                         ),
                         new StkByType("hello", new StkHello()),
                         new StkByRoles(

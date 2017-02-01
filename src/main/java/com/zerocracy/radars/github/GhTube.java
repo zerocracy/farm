@@ -18,6 +18,7 @@ package com.zerocracy.radars.github;
 
 import com.jcabi.aspects.Tv;
 import com.jcabi.github.Comment;
+import com.jcabi.log.Logger;
 import java.io.IOException;
 import org.apache.commons.lang3.StringUtils;
 
@@ -28,7 +29,7 @@ import org.apache.commons.lang3.StringUtils;
  * @version $Id$
  * @since 0.8
  */
-final class GhTube {
+public final class GhTube {
 
     /**
      * Original Github comment.
@@ -39,7 +40,7 @@ final class GhTube {
      * Ctor.
      * @param cmt Comment
      */
-    GhTube(final Comment cmt) {
+    public GhTube(final Comment cmt) {
         this.comment = cmt;
     }
 
@@ -62,6 +63,11 @@ final class GhTube {
                 this.comment.number(),
                 msg
             )
+        );
+        Logger.info(
+            this, "GitHub comment at %s#%d",
+            this.comment.issue().repo().coordinates(),
+            this.comment.issue().number()
         );
     }
 

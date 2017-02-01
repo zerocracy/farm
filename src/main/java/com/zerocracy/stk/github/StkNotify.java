@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.radars.github;
+package com.zerocracy.stk.github;
 
 import com.jcabi.aspects.Tv;
 import com.jcabi.github.Comment;
@@ -26,6 +26,7 @@ import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
+import com.zerocracy.radars.github.GhTube;
 import java.io.IOException;
 import java.util.Collections;
 import org.xembly.Directive;
