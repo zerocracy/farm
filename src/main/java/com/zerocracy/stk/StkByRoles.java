@@ -126,8 +126,6 @@ public final class StkByRoles implements Stakeholder {
                     break;
                 }
             }
-        } else {
-            has = true;
         }
         return has;
     }
