@@ -31,24 +31,6 @@ import org.xembly.Directive;
  */
 public final class StkTrashBin implements Stakeholder {
 
-    /**
-     * The term.
-     */
-    private final String xpath;
-
-    /**
-     * Ctor.
-     * @param term XPath term
-     */
-    public StkTrashBin(final String term) {
-        this.xpath = term;
-    }
-
-    @Override
-    public String term() {
-        return this.xpath;
-    }
-
     @Override
     public Iterable<Directive> process(final Project project, final XML xml) {
         return Collections.emptyList();

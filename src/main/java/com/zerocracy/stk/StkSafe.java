@@ -52,11 +52,6 @@ public final class StkSafe implements Stakeholder {
     }
 
     @Override
-    public String term() {
-        return this.origin.term();
-    }
-
-    @Override
     @SuppressWarnings("PMD.AvoidCatchingThrowable")
     public Iterable<Directive> process(final Project project,
         final XML xml) throws IOException {

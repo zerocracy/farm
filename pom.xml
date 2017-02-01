@@ -80,7 +80,7 @@
         <dependency>
             <groupId>com.zerocracy</groupId>
             <artifactId>jstk</artifactId>
-            <version>0.8</version>
+            <version>0.9</version>
         </dependency>
         <dependency>
             <groupId>com.ullink.slack</groupId>

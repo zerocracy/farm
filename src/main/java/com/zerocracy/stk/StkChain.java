@@ -14,52 +14,57 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pmo.profile.skills;
+package com.zerocracy.stk;
 
-import com.jcabi.aspects.Tv;
 import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
-import com.zerocracy.pm.ClaimIn;
-import com.zerocracy.pmo.People;
-import com.zerocracy.stk.SoftException;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedList;
 import org.xembly.Directive;
 
 /**
- * Add new skill to the user.
+ * Chain of stakeholders.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class StkAdd implements Stakeholder {
+public final class StkChain implements Stakeholder {
+
+    /**
+     * Stakeholders.
+     */
+    private final Iterable<Stakeholder> list;
+
+    /**
+     * Ctor.
+     * @param lst List of stakeholders
+     */
+    public StkChain(final Stakeholder... lst) {
+        this(Arrays.asList(lst));
+    }
+
+    /**
+     * Ctor.
+     * @param lst List of stakeholders
+     */
+    public StkChain(final Iterable<Stakeholder> lst) {
+        this.list = lst;
+    }
 
     @Override
     public Iterable<Directive> process(final Project project,
         final XML xml) throws IOException {
-        final People people = new People(project).bootstrap();
-        final ClaimIn claim = new ClaimIn(xml);
-        final String login = claim.param("person");
-        final Collection<String> skills = people.skills(login);
-        if (skills.size() > Tv.FIVE) {
-            throw new SoftException(
-                String.format(
-                    "You've got too many skills already: `%s` (max is five)",
-                    String.join("`, `", skills)
-                )
-            );
+        final Collection<Directive> dirs = new LinkedList<>();
+        for (final Stakeholder stk : this.list) {
+            for (final Directive dir : stk.process(project, xml)) {
+                dirs.add(dir);
+            }
         }
-        final String skill = claim.param("skill");
-        people.skill(login, skill);
-        return claim.reply(
-            String.format(
-                "New skill \"%s\" added to \"%s\"",
-                skill,
-                login
-            )
-        );
+        return dirs;
     }
 
 }

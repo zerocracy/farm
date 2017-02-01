@@ -16,7 +16,6 @@
  */
 package com.zerocracy.farm;
 
-import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.jstk.fake.FkProject;
@@ -27,7 +26,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
-import org.xembly.Directive;
 
 /**
  * Test case for {@link ReactiveProject}.
@@ -46,17 +44,9 @@ public final class ReactiveProjectTest {
         final AtomicBoolean done = new AtomicBoolean();
         final Project project = new ReactiveProject(
             new FkProject(),
-            new Stakeholder() {
-                @Override
-                public String term() {
-                    return "type='hello'";
-                }
-                @Override
-                public Iterable<Directive> process(final Project pkt,
-                    final XML xml) {
-                    done.set(true);
-                    return Collections.emptyList();
-                }
+            (Stakeholder) (pkt, xml) -> {
+                done.set(true);
+                return Collections.emptyList();
             }
         );
         try (final Claims claims = new Claims(project).lock()) {
@@ -64,7 +54,7 @@ public final class ReactiveProjectTest {
         }
         try (final Claims claims = new Claims(project).lock()) {
             MatcherAssert.assertThat(
-                claims.find("type = 'hello'"),
+                claims.iterate(),
                 Matchers.hasSize(0)
             );
         }
@@ -79,16 +69,8 @@ public final class ReactiveProjectTest {
     public void throwsIfStakeholderFails() throws Exception {
         final Project project = new ReactiveProject(
             new FkProject(),
-            new Stakeholder() {
-                @Override
-                public String term() {
-                    return "type='bye'";
-                }
-                @Override
-                public Iterable<Directive> process(final Project pkt,
-                    final XML xml) {
-                    throw new IllegalArgumentException("oops...");
-                }
+            (Stakeholder) (pkt, xml) -> {
+                throw new IllegalArgumentException("oops...");
             }
         );
         try (final Claims claims = new Claims(project).lock()) {

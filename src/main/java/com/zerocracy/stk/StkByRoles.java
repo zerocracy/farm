@@ -65,11 +65,6 @@ public final class StkByRoles implements Stakeholder {
     }
 
     @Override
-    public String term() {
-        return String.format("(%s) and author", this.origin.term());
-    }
-
-    @Override
     public Iterable<Directive> process(final Project project,
         final XML xml) throws IOException {
         final Iterable<Directive> dirs;

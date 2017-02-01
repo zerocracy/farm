@@ -38,7 +38,7 @@ public final class ClaimsTest {
         try (final Claims claims = new Claims(new FkProject()).lock()) {
             claims.add(new ClaimOut().token("test;test").type("just.type"));
             MatcherAssert.assertThat(
-                claims.find("").iterator().next().xpath("token/text()").get(0),
+                claims.iterate().iterator().next().xpath("token/text()").get(0),
                 Matchers.startsWith("test;")
             );
         }

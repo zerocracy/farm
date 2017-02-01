@@ -34,11 +34,6 @@ import org.xembly.Directive;
 public final class StkRemove implements Stakeholder {
 
     @Override
-    public String term() {
-        return "type='pmo.links.remove'";
-    }
-
-    @Override
     public Iterable<Directive> process(final Project project,
         final XML xml) throws IOException {
         final ClaimIn claim = new ClaimIn(xml);

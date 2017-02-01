@@ -96,7 +96,7 @@ final class ReactiveProject implements Project {
         this.depth.incrementAndGet();
         try (final Claims claims = new Claims(this).lock()) {
             for (final Stakeholder stk : this.stakeholders) {
-                for (final XML claim : claims.find(stk.term())) {
+                for (final XML claim : claims.iterate()) {
                     claims.remove(claim.xpath("@id").get(0));
                     final Iterable<Directive> dirs = stk.process(this, claim);
                     if (dirs.iterator().hasNext()) {

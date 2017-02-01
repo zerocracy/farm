@@ -53,11 +53,6 @@ public final class StkNotify implements Stakeholder {
     }
 
     @Override
-    public String term() {
-        return "type='notify' and starts-with(token, 'github;')";
-    }
-
-    @Override
     public Iterable<Directive> process(final Project project, final XML xml)
         throws IOException {
         final ClaimIn claim = new ClaimIn(xml);

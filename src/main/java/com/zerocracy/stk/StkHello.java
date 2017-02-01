@@ -32,11 +32,6 @@ import org.xembly.Directive;
 public final class StkHello implements Stakeholder {
 
     @Override
-    public String term() {
-        return "type='hello'";
-    }
-
-    @Override
     public Iterable<Directive> process(final Project project, final XML xml) {
         return new ClaimIn(xml).reply(
             "Hey, what's up, how is it going?"

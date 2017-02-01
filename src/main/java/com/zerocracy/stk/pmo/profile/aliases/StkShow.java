@@ -34,11 +34,6 @@ import org.xembly.Directive;
 public final class StkShow implements Stakeholder {
 
     @Override
-    public String term() {
-        return "type='pmo.profile.aliases.show'";
-    }
-
-    @Override
     public Iterable<Directive> process(final Project project,
         final XML xml) throws IOException {
         final People people = new People(project).bootstrap();

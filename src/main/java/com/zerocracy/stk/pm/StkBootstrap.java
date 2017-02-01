@@ -35,11 +35,6 @@ import org.xembly.Directive;
 public final class StkBootstrap implements Stakeholder {
 
     @Override
-    public String term() {
-        return "type='pm.bootstrap'";
-    }
-
-    @Override
     public Iterable<Directive> process(final Project project,
         final XML xml) throws IOException {
         new Wbs(project).bootstrap();

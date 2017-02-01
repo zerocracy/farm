@@ -34,11 +34,6 @@ import org.xembly.Directive;
 public final class StkParent implements Stakeholder {
 
     @Override
-    public String term() {
-        return "type='pmo.parent.set'";
-    }
-
-    @Override
     public Iterable<Directive> process(final Project project,
         final XML xml) throws IOException {
         final ClaimIn claim = new ClaimIn(xml);

@@ -51,6 +51,9 @@ import com.zerocracy.radars.slack.ReProject;
 import com.zerocracy.radars.slack.ReSafe;
 import com.zerocracy.radars.slack.SlackRadar;
 import com.zerocracy.stk.StkByRoles;
+import com.zerocracy.stk.StkByType;
+import com.zerocracy.stk.StkByXpath;
+import com.zerocracy.stk.StkChain;
 import com.zerocracy.stk.StkHello;
 import com.zerocracy.stk.StkSafe;
 import com.zerocracy.stk.StkTrashBin;
@@ -86,6 +89,7 @@ import org.takes.http.FtCli;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @checkstyle LineLengthCheck (500 lines)
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
+ * @checkstyle MethodLengthCheck (500 lines)
  */
 @SuppressWarnings(
     {
@@ -147,28 +151,98 @@ public final class Main {
                 ),
                 Stream
                     .of(
-                        new StkNotify(github),
-                        new com.zerocracy.radars.slack.StkNotify(sessions),
-                        new StkHello(),
-                        new StkByRoles(new StkAdd(github), "PO"),
-                        new StkByRoles(new StkRemove(), "PO"),
-                        new StkByRoles(new StkShow(), "PO"),
-                        new StkByRoles(new StkParent(), "PO"),
-                        new StkSet(),
-                        new StkByRoles(new com.zerocracy.stk.pm.hr.roles.StkShow(), "PO", "ARC"),
-                        new StkByRoles(new StkAssign(github), "PO"),
-                        new StkByRoles(new StkResign(), "PO"),
-                        new StkByRoles(new com.zerocracy.stk.pm.scope.wbs.StkShow(), "PO", "ARC"),
-                        new StkByRoles(new StkInto(), "PO", "ARC"),
-                        new StkByRoles(new StkOut(), "PO", "ARC"),
-                        new StkByRoles(new com.zerocracy.stk.pm.scope.wbs.StkAssign(), "PO", "ARC"),
-                        new com.zerocracy.stk.pmo.profile.rate.StkShow(),
-                        new com.zerocracy.stk.pmo.profile.wallet.StkSet(),
-                        new com.zerocracy.stk.pmo.profile.wallet.StkShow(),
-                        new com.zerocracy.stk.pmo.profile.skills.StkAdd(),
-                        new com.zerocracy.stk.pmo.profile.skills.StkShow(),
-                        new com.zerocracy.stk.pmo.profile.aliases.StkShow(),
-                        new StkTrashBin("type='ping'")
+                        new StkByXpath(
+                            "type='notify' and starts-with(token, 'github;')",
+                            new StkNotify(github)
+                        ),
+                        new StkByXpath(
+                            "type='notify' and starts-with(token, 'slack;')",
+                            new com.zerocracy.radars.slack.StkNotify(sessions)
+                        ),
+                        new StkByType("hello", new StkHello()),
+                        new StkByRoles(
+                            new StkChain(
+                                new StkByType(
+                                    "pmo.links.add",
+                                    new StkAdd(github)
+                                ),
+                                new StkByType(
+                                    "pmo.links.remove",
+                                    new StkRemove()
+                                ),
+                                new StkByType(
+                                    "pmo.links.show",
+                                    new StkShow()
+                                ),
+                                new StkByType(
+                                    "pmo.parent.set",
+                                    new StkParent()
+                                ),
+                                new StkByType(
+                                    "pm.hr.roles.add",
+                                    new StkAssign(github)
+                                ),
+                                new StkByType(
+                                    "pm.hr.roles.remove",
+                                    new StkResign()
+                                )
+                            ),
+                            "PO"
+                        ),
+                        new StkByType(
+                            "pmo.profile.rate.set",
+                            new StkSet()
+                        ),
+                        new StkByType(
+                            "pmo.profile.rate.show",
+                            new com.zerocracy.stk.pmo.profile.rate.StkShow()
+                        ),
+                        new StkByType(
+                            "pmo.profile.wallet.set",
+                            new com.zerocracy.stk.pmo.profile.wallet.StkSet()
+                        ),
+                        new StkByType(
+                            "pmo.profile.wallet.show",
+                            new com.zerocracy.stk.pmo.profile.wallet.StkShow()
+                        ),
+                        new StkByType(
+                            "pmo.profile.skills.add",
+                            new com.zerocracy.stk.pmo.profile.skills.StkAdd()
+                        ),
+                        new StkByType(
+                            "pmo.profile.skills.show",
+                            new com.zerocracy.stk.pmo.profile.skills.StkShow()
+                        ),
+                        new StkByType(
+                            "pmo.profile.aliases.show",
+                            new com.zerocracy.stk.pmo.profile.aliases.StkShow()
+                        ),
+                        new StkByRoles(
+                            new StkChain(
+                                new StkByType(
+                                    "pm.hr.roles.show",
+                                    new com.zerocracy.stk.pm.hr.roles.StkShow()
+                                ),
+                                new StkByType(
+                                    "pm.scope.wbs.show",
+                                    new com.zerocracy.stk.pm.scope.wbs.StkShow()
+                                ),
+                                new StkByType(
+                                    "pm.scope.wbs.in",
+                                    new StkInto()
+                                ),
+                                new StkByType(
+                                    "pm.scope.wbs.out",
+                                    new StkOut()
+                                ),
+                                new StkByType(
+                                    "pm.scope.wbs.assign",
+                                    new com.zerocracy.stk.pm.scope.wbs.StkAssign()
+                                )
+                            ),
+                            "PO", "ARC"
+                        ),
+                        new StkTrashBin()
                     )
                     .map(StkVerbose::new)
                     .map(StkSafe::new)

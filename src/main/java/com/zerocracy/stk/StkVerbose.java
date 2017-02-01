@@ -48,11 +48,6 @@ public final class StkVerbose implements Stakeholder {
     }
 
     @Override
-    public String term() {
-        return this.origin.term();
-    }
-
-    @Override
     public Iterable<Directive> process(final Project project,
         final XML xml) throws IOException {
         final long start = System.currentTimeMillis();

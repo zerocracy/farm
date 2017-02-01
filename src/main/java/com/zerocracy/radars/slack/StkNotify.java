@@ -50,11 +50,6 @@ public final class StkNotify implements Stakeholder {
     }
 
     @Override
-    public String term() {
-        return "type='notify' and starts-with(token, 'slack;')";
-    }
-
-    @Override
     public Iterable<Directive> process(final Project project, final XML xml) {
         final ClaimIn claim = new ClaimIn(xml);
         final String[] parts = claim.token().split(";");

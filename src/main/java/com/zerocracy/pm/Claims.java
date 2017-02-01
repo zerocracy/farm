@@ -114,19 +114,12 @@ public final class Claims implements Closeable {
     }
 
     /**
-     * Find claims by XPath term.
-     * @param term Search term
-     * @return List of found claims
+     * Iterate them all.
+     * @return List of all claims
      * @throws IOException If fails
      */
-    public Collection<XML> find(final String term) throws IOException {
-        String xpath = term;
-        if (!xpath.isEmpty()) {
-            xpath = String.format("[%s]", xpath);
-        }
-        return new Xocument(this.item.get().path()).nodes(
-            String.format("/claims/claim%s", xpath)
-        );
+    public Collection<XML> iterate() throws IOException {
+        return new Xocument(this.item.get().path()).nodes("/claims/claim");
     }
 
 }
