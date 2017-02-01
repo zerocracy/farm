@@ -24,6 +24,7 @@ import com.zerocracy.pm.hr.Roles;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import org.xembly.Directive;
 
 /**
@@ -67,14 +68,13 @@ public final class StkByRoles implements Stakeholder {
     @Override
     public Iterable<Directive> process(final Project project,
         final XML xml) throws IOException {
+        final ClaimIn claim = new ClaimIn(xml);
         final Iterable<Directive> dirs;
         if (this.has(project, xml)) {
             dirs = this.origin.process(project, xml);
-        } else {
+        } else if (claim.hasAuthor()) {
             final Collection<String> mine =
-                new Roles(project).bootstrap().allRoles(
-                    new ClaimIn(xml).author()
-                );
+                new Roles(project).bootstrap().allRoles(claim.author());
             if (mine.isEmpty()) {
                 dirs = new ClaimIn(xml).reply(
                     String.format(
@@ -93,6 +93,8 @@ public final class StkByRoles implements Stakeholder {
                     )
                 );
             }
+        } else {
+            dirs = Collections.emptyList();
         }
         return dirs;
     }
