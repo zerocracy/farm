@@ -34,12 +34,12 @@ import org.xembly.Directive;
 public final class StkParent implements Stakeholder {
 
     @Override
-    public Iterable<Directive> process(final Project project,
+    public Iterable<Directive> process(final Project pmo,
         final XML xml) throws IOException {
         final ClaimIn claim = new ClaimIn(xml);
         final String child = claim.param("child");
         final String parent = claim.param("parent");
-        new Catalog(project).parent(child, parent);
+        new Catalog(pmo).parent(child, parent);
         return claim.reply(
             String.format(
                 "Done, project `%s` is a child of `%s`.",

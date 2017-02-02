@@ -34,9 +34,9 @@ import org.xembly.Directive;
 public final class StkShow implements Stakeholder {
 
     @Override
-    public Iterable<Directive> process(final Project project,
+    public Iterable<Directive> process(final Project pmo,
         final XML xml) throws IOException {
-        final People people = new People(project).bootstrap();
+        final People people = new People(pmo).bootstrap();
         final ClaimIn claim = new ClaimIn(xml);
         final String login = claim.param("person");
         return claim.reply(
