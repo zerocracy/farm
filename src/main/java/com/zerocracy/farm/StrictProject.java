@@ -28,6 +28,7 @@ import java.util.regex.Pattern;
  * @version $Id$
  * @since 0.1
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 final class StrictProject implements Project {
 
     /**
@@ -36,6 +37,7 @@ final class StrictProject implements Project {
     private static final Pattern PMO = Pattern.compile(
         String.join(
             "|",
+            "(claims\\.xml)",
             "(catalog\\.xml)",
             "(bots\\.xml)",
             "(people\\.xml)"
