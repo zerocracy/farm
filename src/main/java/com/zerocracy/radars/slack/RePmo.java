@@ -16,12 +16,10 @@
  */
 package com.zerocracy.radars.slack;
 
-import com.google.common.collect.Iterables;
 import com.jcabi.xml.XMLDocument;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.jstk.Farm;
-import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
 import com.zerocracy.pmo.Pmo;
 import com.zerocracy.radars.ClaimOnQuestion;
@@ -45,16 +43,13 @@ public final class RePmo implements Reaction<SlackMessagePosted> {
             new XMLDocument(this.getClass().getResource("q-pmo.xml")),
             event.getMessageContent().split("\\s+", 2)[1].trim()
         );
-        final ClaimOut claim = new ClaimOut()
-            .token(new SkToken(event))
-            .author(new SkPerson(farm, event).uid())
-            .param("project", new SkProject(farm, event));
         try (final Claims claims = new Claims(new Pmo(farm)).lock()) {
             claims.add(
-                Iterables.concat(
-                    claim,
-                    new ClaimOnQuestion(question)
-                )
+                new ClaimOnQuestion(question)
+                    .claim()
+                    .token(new SkToken(event))
+                    .author(new SkPerson(farm, event).uid())
+                    .param("project", new SkProject(farm, event))
             );
         }
         return question.matches();

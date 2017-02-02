@@ -16,12 +16,10 @@
  */
 package com.zerocracy.radars.github;
 
-import com.google.common.collect.Iterables;
 import com.jcabi.github.Comment;
 import com.jcabi.xml.XMLDocument;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
-import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
 import com.zerocracy.radars.ClaimOnQuestion;
 import com.zerocracy.radars.Question;
@@ -53,13 +51,11 @@ public final class ReQuestion implements Response {
         final Project project = new GhProject(farm, comment);
         try (final Claims claims = new Claims(project).lock()) {
             claims.add(
-                Iterables.concat(
-                    new ClaimOut()
-                        .token(new TokenOfComment(comment))
-                        .author(new Author(comment.author()))
-                        .param("job", new Job(comment.issue())),
-                    new ClaimOnQuestion(question)
-                )
+                new ClaimOnQuestion(question)
+                    .claim()
+                    .token(new TokenOfComment(comment))
+                    .author(new Author(comment.author()))
+                    .param("job", new Job(comment.issue()))
             );
         }
         return question.matches();

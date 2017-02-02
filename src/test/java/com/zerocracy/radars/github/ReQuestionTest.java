@@ -14,48 +14,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.radars;
+package com.zerocracy.radars.github;
 
-import com.zerocracy.pm.ClaimOut;
+import com.jcabi.github.Comment;
+import com.jcabi.github.Github;
+import com.jcabi.github.Issue;
+import com.jcabi.github.Repo;
+import com.jcabi.github.Repos;
+import com.jcabi.github.mock.MkGithub;
+import com.zerocracy.jstk.fake.FkFarm;
+import org.junit.Test;
 
 /**
- * Claim on question.
- *
+ * Test case for {@link ReQuestion}.
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.1
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @since 0.10
  */
-public final class ClaimOnQuestion {
+public final class ReQuestionTest {
 
     /**
-     * The question.
+     * ReQuestion can parse question.
+     * @throws Exception If some problem inside
      */
-    private final Question question;
-
-    /**
-     * Ctor.
-     * @param qtn Question
-     */
-    public ClaimOnQuestion(final Question qtn) {
-        this.question = qtn;
-    }
-
-    /**
-     * Build claim.
-     * @return Claim
-     */
-    public ClaimOut claim() {
-        final ClaimOut claim;
-        if (this.question.matches()) {
-            claim = new ClaimOut()
-                .type(this.question.code())
-                .params(this.question.params());
-        } else {
-            claim = new ClaimOut()
-                .type("notify")
-                .param("message", this.question.help());
-        }
-        return claim;
+    @Test
+    public void parsesQuestion() throws Exception {
+        final Github github = new MkGithub("jeff");
+        final Repo repo = github.repos().create(
+            new Repos.RepoCreate("test", false)
+        );
+        final Issue issue = new Issue.Smart(
+            repo.issues().create("first title", "")
+        );
+        final Comment comment = issue.comments().post("@0crat hello");
+        new ReQuestion().react(new FkFarm(), new Comment.Smart(comment));
     }
 }

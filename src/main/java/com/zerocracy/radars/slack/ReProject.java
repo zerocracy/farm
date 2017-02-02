@@ -16,13 +16,11 @@
  */
 package com.zerocracy.radars.slack;
 
-import com.google.common.collect.Iterables;
 import com.jcabi.xml.XMLDocument;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
-import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
 import com.zerocracy.pmo.Pmo;
 import com.zerocracy.radars.ClaimOnQuestion;
@@ -49,13 +47,11 @@ public final class ReProject implements Reaction<SlackMessagePosted> {
         final Project project = ReProject.project(question, farm, event);
         try (final Claims claims = new Claims(project).lock()) {
             claims.add(
-                Iterables.concat(
-                    new ClaimOut()
-                        .token(new SkToken(event))
-                        .author(new SkPerson(farm, event).uid())
-                        .param("project", project),
-                    new ClaimOnQuestion(question)
-                )
+                new ClaimOnQuestion(question)
+                    .claim()
+                    .token(new SkToken(event))
+                    .author(new SkPerson(farm, event).uid())
+                    .param("project", project)
             );
         }
         return question.matches();

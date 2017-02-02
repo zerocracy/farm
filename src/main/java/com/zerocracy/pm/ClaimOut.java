@@ -18,6 +18,7 @@ package com.zerocracy.pm;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import org.xembly.Directive;
@@ -35,7 +36,22 @@ public final class ClaimOut implements Iterable<Directive> {
     /**
      * Directives.
      */
-    private final Directives dirs = new Directives();
+    private final Directives dirs;
+
+    /**
+     * Ctor.
+     */
+    public ClaimOut() {
+        this(Collections.emptyList());
+    }
+
+    /**
+     * Ctor.
+     * @param list List of dirs, if any
+     */
+    public ClaimOut(final Iterable<Directive> list) {
+        this.dirs = new Directives(list);
+    }
 
     /**
      * With this type.
@@ -77,7 +93,8 @@ public final class ClaimOut implements Iterable<Directive> {
         this.dirs.addIf("params")
             .add("param")
             .attr("name", name)
-            .set(value).up().up();
+            .set(value)
+            .up().up();
         return this;
     }
 
@@ -106,6 +123,7 @@ public final class ClaimOut implements Iterable<Directive> {
             )
             .up()
             .append(this.dirs)
+            .up()
             .iterator();
     }
 
