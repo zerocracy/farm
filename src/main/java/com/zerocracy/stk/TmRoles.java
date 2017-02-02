@@ -18,23 +18,20 @@ package com.zerocracy.stk;
 
 import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.hr.Roles;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import org.xembly.Directive;
 
 /**
- * Stakeholder that works only if the person belongs to the given roles.
+ * Term to match by roles.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class StkByRoles implements Stakeholder {
+public final class TmRoles implements Term {
 
     /**
      * Roles to allow.
@@ -42,61 +39,56 @@ public final class StkByRoles implements Stakeholder {
     private final Iterable<String> roles;
 
     /**
-     * Original stakeholder.
-     */
-    private final Stakeholder origin;
-
-    /**
      * Ctor.
      * @param list List of roles
-     * @param stk Original stakeholder
      */
-    public StkByRoles(final Stakeholder stk, final String... list) {
-        this(stk, Arrays.asList(list));
+    public TmRoles(final String... list) {
+        this(Arrays.asList(list));
     }
 
     /**
      * Ctor.
      * @param list List of roles
-     * @param stk Original stakeholder
      */
-    public StkByRoles(final Stakeholder stk, final Iterable<String> list) {
+    public TmRoles(final Iterable<String> list) {
         this.roles = list;
-        this.origin = stk;
     }
 
     @Override
-    public Iterable<Directive> process(final Project project,
+    public boolean fits(final Project project,
         final XML xml) throws IOException {
-        final ClaimIn claim = new ClaimIn(xml);
-        final Iterable<Directive> dirs;
         if (this.has(project, xml)) {
-            dirs = this.origin.process(project, xml);
-        } else if (claim.hasAuthor()) {
+            return true;
+        }
+        final ClaimIn claim = new ClaimIn(xml);
+        if (claim.hasAuthor()) {
             final Collection<String> mine =
                 new Roles(project).bootstrap().allRoles(claim.author());
             if (mine.isEmpty()) {
-                dirs = new ClaimIn(xml).reply(
+                throw new SoftException(
                     String.format(
                         // @checkstyle LineLength (1 line)
                         "You need to have one of these roles in order to do this: %s. I'm sorry to say this, but at the moment you've got no roles in this project.",
-                        StkByRoles.join(this.roles)
-                    )
-                );
-            } else {
-                dirs = new ClaimIn(xml).reply(
-                    String.format(
-                        // @checkstyle LineLength (1 line)
-                        "You can't do that, unless you have one of these roles: %s. Your current roles are: %s.",
-                        StkByRoles.join(this.roles),
-                        StkByRoles.join(mine)
+                        TmRoles.join(this.roles)
                     )
                 );
             }
-        } else {
-            dirs = Collections.emptyList();
+            throw new SoftException(
+                String.format(
+                    // @checkstyle LineLength (1 line)
+                    "You can't do that, unless you have one of these roles: %s. Your current roles are: %s.",
+                    TmRoles.join(this.roles),
+                    TmRoles.join(mine)
+                )
+            );
         }
-        return dirs;
+        throw new SoftException(
+            String.format(
+                // @checkstyle LineLength (1 line)
+                "You're not allowed to do this, you need one of these roles: %s",
+                TmRoles.join(this.roles)
+            )
+        );
     }
 
     /**

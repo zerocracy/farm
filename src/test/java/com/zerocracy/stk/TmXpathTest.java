@@ -17,35 +17,33 @@
 package com.zerocracy.stk;
 
 import com.jcabi.xml.XMLDocument;
-import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.jstk.fake.FkProject;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
- * Test case for {@link StkByXpath}.
+ * Test case for {@link TmXpath}.
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.10
  */
-public final class StkByXpathTest {
+public final class TmXpathTest {
 
     /**
      * Passes through.
      * @throws Exception If some problem inside
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void passesThrough() throws Exception {
-        final Stakeholder stk = new StkByXpath(
-            "type='test'",
-            (project, xml) -> {
-                throw new IllegalArgumentException("has to be");
-            }
-        );
-        stk.process(
-            new FkProject(),
-            new XMLDocument(
-                "<claims><claim><type>test</type></claim></claims>"
-            ).nodes("/claims/claim").get(0)
+        MatcherAssert.assertThat(
+            new TmXpath("type='test'").fits(
+                new FkProject(),
+                new XMLDocument(
+                    "<claims><claim><type>test</type></claim></claims>"
+                ).nodes("/claims/claim").get(0)
+            ),
+            Matchers.is(true)
         );
     }
 
@@ -55,17 +53,14 @@ public final class StkByXpathTest {
      */
     @Test
     public void ignoresWhatDoesntMatch() throws Exception {
-        final Stakeholder stk = new StkByXpath(
-            "type='bye'",
-            (project, xml) -> {
-                throw new IllegalArgumentException("should not happen");
-            }
-        );
-        stk.process(
-            new FkProject(),
-            new XMLDocument(
-                "<claims><claim><type>hello</type></claim></claims>"
-            ).nodes("/claims/claim ").get(0)
+        MatcherAssert.assertThat(
+            new TmXpath("type='bye'").fits(
+                new FkProject(),
+                new XMLDocument(
+                    "<claims><claim><type>hello</type></claim></claims>"
+                ).nodes("/claims/claim ").get(0)
+            ),
+            Matchers.is(false)
         );
     }
 

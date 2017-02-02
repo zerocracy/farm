@@ -49,14 +49,17 @@ import com.zerocracy.radars.slack.ReProfile;
 import com.zerocracy.radars.slack.ReProject;
 import com.zerocracy.radars.slack.ReSafe;
 import com.zerocracy.radars.slack.SlackRadar;
-import com.zerocracy.stk.StkByRoles;
-import com.zerocracy.stk.StkByType;
-import com.zerocracy.stk.StkByXpath;
-import com.zerocracy.stk.StkChain;
+import com.zerocracy.stk.StkByTerm;
 import com.zerocracy.stk.StkHello;
 import com.zerocracy.stk.StkSafe;
 import com.zerocracy.stk.StkVerbose;
+import com.zerocracy.stk.TmOr;
+import com.zerocracy.stk.TmRoles;
+import com.zerocracy.stk.TmType;
+import com.zerocracy.stk.TmXpath;
 import com.zerocracy.stk.github.StkNotify;
+import com.zerocracy.stk.github.StkSetAssignee;
+import com.zerocracy.stk.pm.StkBootstrap;
 import com.zerocracy.stk.pm.hr.roles.StkAssign;
 import com.zerocracy.stk.pm.hr.roles.StkResign;
 import com.zerocracy.stk.pm.scope.wbs.StkInto;
@@ -150,100 +153,112 @@ public final class Main {
                 ),
                 Stream
                     .of(
-                        new StkByXpath(
-                            "type='notify' and starts-with(token, 'github;')",
-                            new StkNotify(github)
+                        new StkByTerm(
+                            new StkNotify(github),
+                            new TmXpath("type='notify' and starts-with(token, 'github;')")
                         ),
-                        new StkByXpath(
-                            "type='notify' and starts-with(token, 'slack;')",
-                            new com.zerocracy.stk.slack.StkNotify(sessions)
+                        new StkByTerm(
+                            new com.zerocracy.stk.slack.StkNotify(sessions),
+                            new TmXpath("type='notify' and starts-with(token, 'slack;')")
                         ),
-                        new StkByType("hello", new StkHello()),
-                        new StkByRoles(
-                            new StkChain(
-                                new StkByType(
-                                    "pmo.links.add",
-                                    new StkAdd(github)
-                                ),
-                                new StkByType(
-                                    "pmo.links.remove",
-                                    new StkRemove()
-                                ),
-                                new StkByType(
-                                    "pmo.links.show",
-                                    new StkShow()
-                                ),
-                                new StkByType(
-                                    "pmo.parent.set",
-                                    new StkParent()
-                                ),
-                                new StkByType(
-                                    "pm.hr.roles.add",
-                                    new StkAssign(github)
-                                ),
-                                new StkByType(
-                                    "pm.hr.roles.remove",
-                                    new StkResign()
-                                )
-                            ),
-                            "PO"
+                        new StkByTerm(
+                            new StkHello(),
+                            new TmType("hello")
                         ),
-                        new StkByType(
-                            "pmo.profile.rate.set",
-                            new StkSet()
+                        new StkByTerm(
+                            new StkBootstrap(),
+                            new TmType("pm.bootstrap")
                         ),
-                        new StkByType(
-                            "pmo.profile.rate.show",
-                            new com.zerocracy.stk.pmo.profile.rate.StkShow()
+                        new StkByTerm(
+                            new StkAdd(github),
+                            new TmType("pmo.links.add"),
+                            new TmRoles("PO")
                         ),
-                        new StkByType(
-                            "pmo.profile.wallet.set",
-                            new com.zerocracy.stk.pmo.profile.wallet.StkSet()
+                        new StkByTerm(
+                            new StkRemove(),
+                            new TmType("pmo.links.remove"),
+                            new TmRoles("PO")
                         ),
-                        new StkByType(
-                            "pmo.profile.wallet.show",
-                            new com.zerocracy.stk.pmo.profile.wallet.StkShow()
+                        new StkByTerm(
+                            new StkShow(),
+                            new TmType("pmo.links.show"),
+                            new TmRoles("PO")
                         ),
-                        new StkByType(
-                            "pmo.profile.skills.add",
-                            new com.zerocracy.stk.pmo.profile.skills.StkAdd()
+                        new StkByTerm(
+                            new StkParent(),
+                            new TmType("pmo.parent.set"),
+                            new TmRoles("PO")
                         ),
-                        new StkByType(
-                            "pmo.profile.skills.show",
-                            new com.zerocracy.stk.pmo.profile.skills.StkShow()
+                        new StkByTerm(
+                            new StkSet(),
+                            new TmType("pmo.profile.rate.set")
                         ),
-                        new StkByType(
-                            "pmo.profile.aliases.show",
-                            new com.zerocracy.stk.pmo.profile.aliases.StkShow()
+                        new StkByTerm(
+                            new com.zerocracy.stk.pmo.profile.rate.StkShow(),
+                            new TmType("pmo.profile.rate.show")
                         ),
-                        new StkByRoles(
-                            new StkChain(
-                                new StkByType(
-                                    "pm.hr.roles.show",
-                                    new com.zerocracy.stk.pm.hr.roles.StkShow()
-                                ),
-                                new StkByType(
-                                    "pm.scope.wbs.show",
-                                    new com.zerocracy.stk.pm.scope.wbs.StkShow()
-                                ),
-                                new StkByType(
-                                    "pm.scope.wbs.in",
-                                    new StkInto()
-                                ),
-                                new StkByType(
-                                    "pm.scope.wbs.out",
-                                    new StkOut()
-                                ),
-                                new StkByType(
-                                    "pm.scope.wbs.assign",
-                                    new com.zerocracy.stk.pm.scope.wbs.StkAssign()
-                                )
-                            ),
-                            "PO", "ARC"
+                        new StkByTerm(
+                            new com.zerocracy.stk.pmo.profile.wallet.StkSet(),
+                            new TmType("pmo.profile.wallet.set")
                         ),
-                        new StkByXpath(
-                            "not(author) and type='pm.scope.wbs.out'",
-                            new StkOut()
+                        new StkByTerm(
+                            new com.zerocracy.stk.pmo.profile.wallet.StkShow(),
+                            new TmType("pmo.profile.wallet.show")
+                        ),
+                        new StkByTerm(
+                            new com.zerocracy.stk.pmo.profile.skills.StkAdd(),
+                            new TmType("pmo.profile.skills.add")
+                        ),
+                        new StkByTerm(
+                            new com.zerocracy.stk.pmo.profile.skills.StkShow(),
+                            new TmType("pmo.profile.skills.show")
+                        ),
+                        new StkByTerm(
+                            new com.zerocracy.stk.pmo.profile.aliases.StkShow(),
+                            new TmType("pmo.profile.aliases.show")
+                        ),
+                        new StkByTerm(
+                            new StkAssign(github),
+                            new TmType("pm.hr.roles.add"),
+                            new TmRoles("PO")
+                        ),
+                        new StkByTerm(
+                            new StkResign(),
+                            new TmType("pm.hr.roles.remove"),
+                            new TmRoles("PO")
+                        ),
+                        new StkByTerm(
+                            new com.zerocracy.stk.pm.hr.roles.StkShow(),
+                            new TmType("pm.hr.roles.show"),
+                            new TmRoles("PO", "ARC")
+                        ),
+                        new StkByTerm(
+                            new com.zerocracy.stk.pm.scope.wbs.StkShow(),
+                            new TmType("pm.scope.wbs.show"),
+                            new TmRoles("PO", "ARC")
+                        ),
+                        new StkByTerm(
+                            new StkInto(),
+                            new TmType("pm.scope.wbs.in"),
+                            new TmRoles("PO", "ARC")
+                        ),
+                        new StkByTerm(
+                            new StkOut(),
+                            new TmType("pm.scope.wbs.out"),
+                            new TmOr(
+                                new TmXpath("not(author)"),
+                                new TmRoles("PO", "ARC")
+                            )
+                        ),
+                        new StkByTerm(
+                            new com.zerocracy.stk.pm.scope.wbs.StkAssign(),
+                            new TmType("pm.scope.wbs.assign"),
+                            new TmRoles("PO", "ARC")
+                        ),
+                        new StkByTerm(
+                            new StkSetAssignee(github),
+                            new TmType("pm.scope.wbs.assign"),
+                            new TmXpath("params/param[@name='job' and starts-with(.,'gh:')]")
                         )
                     )
                     .map(StkVerbose::new)

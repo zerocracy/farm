@@ -14,55 +14,60 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk;
+package com.zerocracy.stk.github;
 
+import com.jcabi.github.Github;
+import com.jcabi.github.Issue;
+import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
+import com.zerocracy.pm.ClaimIn;
+import com.zerocracy.radars.github.Job;
 import java.io.IOException;
 import java.util.Collections;
 import org.xembly.Directive;
 
 /**
- * Stakeholder that works only if this XPath is there.
+ * Set assignee in GitHub.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.10
  */
-public final class StkByXpath implements Stakeholder {
+public final class StkSetAssignee implements Stakeholder {
 
     /**
-     * XPath to match.
+     * Github client.
      */
-    private final String xpath;
-
-    /**
-     * Original stakeholder.
-     */
-    private final Stakeholder origin;
+    private final Github github;
 
     /**
      * Ctor.
-     * @param path Type to match
-     * @param stk Original stakeholder
+     * @param ghb Github client
      */
-    public StkByXpath(final String path, final Stakeholder stk) {
-        this.xpath = path;
-        this.origin = stk;
+    public StkSetAssignee(final Github ghb) {
+        this.github = ghb;
     }
 
     @Override
-    public Iterable<Directive> process(final Project project,
-        final XML xml) throws IOException {
-        final String query = String.format("/claim[%s]", this.xpath);
-        final Iterable<Directive> dirs;
-        if (xml.nodes(query).isEmpty()) {
-            dirs = Collections.emptyList();
-        } else {
-            dirs = this.origin.process(project, xml);
+    public Iterable<Directive> process(final Project project, final XML xml)
+        throws IOException {
+        final ClaimIn claim = new ClaimIn(xml);
+        final Issue issue = new Job.Issue(this.github, claim.param("job"));
+        final String login = claim.param("login");
+        try {
+            new Issue.Smart(issue).assign(login);
+        } catch (final AssertionError ex) {
+            Logger.warn(
+                this, "Failed to assign @%s to %s#%d: %s",
+                login,
+                issue.repo().coordinates(),
+                issue.number(),
+                ex.getLocalizedMessage()
+            );
         }
-        return dirs;
+        return Collections.emptyList();
     }
 
 }

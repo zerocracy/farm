@@ -18,46 +18,50 @@ package com.zerocracy.stk;
 
 import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.Stakeholder;
 import java.io.IOException;
-import org.xembly.Directive;
+import java.util.Arrays;
 
 /**
- * Stakeholder that works only if this particular type is there.
+ * Term for OR.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.10
  */
-public final class StkByType implements Stakeholder {
+public final class TmOr implements Term {
 
     /**
-     * Type to match.
+     * Terms.
      */
-    private final String type;
-
-    /**
-     * Original stakeholder.
-     */
-    private final Stakeholder origin;
+    private final Iterable<Term> terms;
 
     /**
      * Ctor.
-     * @param tpe Type to match
-     * @param stk Original stakeholder
+     * @param list List of terms
      */
-    public StkByType(final String tpe, final Stakeholder stk) {
-        this.type = tpe;
-        this.origin = stk;
+    public TmOr(final Term... list) {
+        this(Arrays.asList(list));
+    }
+
+    /**
+     * Ctor.
+     * @param list List of terms
+     */
+    public TmOr(final Iterable<Term> list) {
+        this.terms = list;
     }
 
     @Override
-    public Iterable<Directive> process(final Project project,
+    public boolean fits(final Project project,
         final XML xml) throws IOException {
-        return new StkByXpath(
-            String.format("type='%s'", this.type),
-            this.origin
-        ).process(project, xml);
+        boolean fits = false;
+        for (final Term term : this.terms) {
+            if (term.fits(project, xml)) {
+                fits = true;
+                break;
+            }
+        }
+        return fits;
     }
 
 }

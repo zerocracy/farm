@@ -14,34 +14,54 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pm;
+package com.zerocracy.stk;
 
-import com.zerocracy.jstk.fake.FkProject;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.Test;
+import com.jcabi.xml.XML;
+import com.zerocracy.jstk.Project;
+import java.io.IOException;
+import java.util.Arrays;
 
 /**
- * Test case for {@link Claims}.
+ * Term for AND.
+ *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.9
+ * @since 0.10
  */
-public final class ClaimsTest {
+public final class TmAnd implements Term {
 
     /**
-     * Adds and removes claims.
-     * @throws Exception If some problem inside
+     * Terms.
      */
-    @Test
-    public void addsAndRemovesClaims() throws Exception {
-        try (final Claims claims = new Claims(new FkProject()).lock()) {
-            claims.add(new ClaimOut().token("test;test").type("hello"));
-            MatcherAssert.assertThat(
-                claims.iterate().iterator().next().xpath("token/text()").get(0),
-                Matchers.startsWith("test;")
-            );
+    private final Iterable<Term> terms;
+
+    /**
+     * Ctor.
+     * @param list List of terms
+     */
+    public TmAnd(final Term... list) {
+        this(Arrays.asList(list));
+    }
+
+    /**
+     * Ctor.
+     * @param list List of terms
+     */
+    public TmAnd(final Iterable<Term> list) {
+        this.terms = list;
+    }
+
+    @Override
+    public boolean fits(final Project project,
+        final XML xml) throws IOException {
+        boolean fits = true;
+        for (final Term term : this.terms) {
+            if (!term.fits(project, xml)) {
+                fits = false;
+                break;
+            }
         }
+        return fits;
     }
 
 }

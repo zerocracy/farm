@@ -14,34 +14,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pm;
+package com.zerocracy.stk;
 
-import com.zerocracy.jstk.fake.FkProject;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.Test;
+import com.jcabi.xml.XML;
+import com.zerocracy.jstk.Project;
 
 /**
- * Test case for {@link Claims}.
+ * Term to match by XPath.
+ *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.9
+ * @since 0.10
  */
-public final class ClaimsTest {
+public final class TmXpath implements Term {
 
     /**
-     * Adds and removes claims.
-     * @throws Exception If some problem inside
+     * XPath to match.
      */
-    @Test
-    public void addsAndRemovesClaims() throws Exception {
-        try (final Claims claims = new Claims(new FkProject()).lock()) {
-            claims.add(new ClaimOut().token("test;test").type("hello"));
-            MatcherAssert.assertThat(
-                claims.iterate().iterator().next().xpath("token/text()").get(0),
-                Matchers.startsWith("test;")
-            );
-        }
+    private final String xpath;
+
+    /**
+     * Ctor.
+     * @param path Type to match
+     */
+    public TmXpath(final String path) {
+        this.xpath = path;
+    }
+
+    @Override
+    public boolean fits(final Project project, final XML xml) {
+        return !xml.nodes(
+            String.format("/claim[%s]", this.xpath)
+        ).isEmpty();
     }
 
 }

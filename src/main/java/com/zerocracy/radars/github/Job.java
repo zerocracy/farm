@@ -16,7 +16,17 @@
  */
 package com.zerocracy.radars.github;
 
-import com.jcabi.github.Issue;
+import com.jcabi.github.Comments;
+import com.jcabi.github.Coordinates;
+import com.jcabi.github.Event;
+import com.jcabi.github.Github;
+import com.jcabi.github.IssueLabels;
+import com.jcabi.github.Repo;
+import java.io.IOException;
+import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import javax.json.JsonObject;
 
 /**
  * Job in GitHub.
@@ -25,26 +35,117 @@ import com.jcabi.github.Issue;
  * @version $Id$
  * @since 0.1
  */
-final class Job {
+public final class Job {
+
+    /**
+     * Pattern to match.
+     */
+    private static final Pattern PTN = Pattern.compile(
+        "gh:([a-z0-9\\-.]+/[a-z0-9\\-.]+)#(\\d+)"
+    );
 
     /**
      * Issue.
      */
-    private final Issue issue;
+    private final com.jcabi.github.Issue issue;
 
     /**
      * Ctor.
      * @param iss Issue
      */
-    Job(final Issue iss) {
+    public Job(final com.jcabi.github.Issue iss) {
         this.issue = iss;
     }
 
     @Override
     public String toString() {
         return String.format(
-            "gh:%s#%d", this.issue.repo().coordinates(),
+            "gh:%s#%d",
+            this.issue.repo().coordinates()
+                .toString().toLowerCase(Locale.ENGLISH),
             this.issue.number()
         );
+    }
+
+    /**
+     * Reverse.
+     */
+    public static final class Issue implements com.jcabi.github.Issue {
+        /**
+         * The GitHub.
+         */
+        private final Github github;
+        /**
+         * The text presentation of it.
+         */
+        private final String label;
+        /**
+         * Ctor.
+         * @param ghb Github
+         * @param txt Label
+         */
+        public Issue(final Github ghb, final String txt) {
+            this.github = ghb;
+            this.label = txt;
+        }
+        @Override
+        public Repo repo() {
+            return this.issue().repo();
+        }
+        @Override
+        public int number() {
+            return this.issue().number();
+        }
+        @Override
+        public Comments comments() {
+            return this.issue().comments();
+        }
+        @Override
+        public IssueLabels labels() {
+            return this.issue().labels();
+        }
+        @Override
+        public Iterable<Event> events() throws IOException {
+            return this.issue().events();
+        }
+        @Override
+        public boolean exists() throws IOException {
+            return this.issue().exists();
+        }
+        @Override
+        public void patch(final JsonObject json) throws IOException {
+            this.issue().patch(json);
+        }
+        @Override
+        public JsonObject json() throws IOException {
+            return this.issue().json();
+        }
+        @Override
+        public int compareTo(final com.jcabi.github.Issue obj) {
+            return this.issue().compareTo(obj);
+        }
+        /**
+         * Make an issue.
+         * @return Issue
+         */
+        private com.jcabi.github.Issue issue() {
+            final Matcher matcher = Job.PTN.matcher(this.label);
+            if (!matcher.matches()) {
+                throw new IllegalArgumentException(
+                    String.format(
+                        "Invalid GitHub job label: \"%s\"",
+                        this.label
+                    )
+                );
+            }
+            final Repo repo = this.github.repos().get(
+                new Coordinates.Simple(
+                    matcher.group(1)
+                )
+            );
+            return repo.issues().get(
+                Integer.parseInt(matcher.group(2))
+            );
+        }
     }
 }

@@ -14,34 +14,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pm;
+package com.zerocracy.stk;
 
-import com.zerocracy.jstk.fake.FkProject;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.Test;
+import com.jcabi.xml.XML;
+import com.zerocracy.jstk.Project;
+import java.io.IOException;
 
 /**
- * Test case for {@link Claims}.
+ * Term for SktByTerms.
+ *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.9
+ * @since 0.10
  */
-public final class ClaimsTest {
+public interface Term {
 
     /**
-     * Adds and removes claims.
-     * @throws Exception If some problem inside
+     * This claim fits in?
+     * @param project The project
+     * @param xml The XML with claim
+     * @return TRUE if it fits
+     * @throws IOException If fails
      */
-    @Test
-    public void addsAndRemovesClaims() throws Exception {
-        try (final Claims claims = new Claims(new FkProject()).lock()) {
-            claims.add(new ClaimOut().token("test;test").type("hello"));
-            MatcherAssert.assertThat(
-                claims.iterate().iterator().next().xpath("token/text()").get(0),
-                Matchers.startsWith("test;")
-            );
-        }
-    }
+    boolean fits(Project project, XML xml) throws IOException;
 
 }
