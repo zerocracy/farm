@@ -20,6 +20,7 @@ import com.jcabi.xml.XMLDocument;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.jstk.Farm;
+import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.Claims;
 import com.zerocracy.pmo.Pmo;
@@ -66,13 +67,23 @@ public final class ReProject implements Reaction<SlackMessagePosted> {
      */
     private static Project project(final Question question, final Farm farm,
         final SlackMessagePosted event) {
-        final Project project;
-        if (question.matches() && question.code().startsWith("pm.")) {
-            project = new SkProject(farm, event);
+        final Project project = new SkProject(farm, event);
+        final Project output;
+        if (question.code().startsWith("pmo.")) {
+            final Project pmo = new Pmo(farm);
+            output = file -> {
+                final Item item;
+                if ("roles.xml".equals(file)) {
+                    item = pmo.acq(file);
+                } else {
+                    item = project.acq(file);
+                }
+                return item;
+            };
         } else {
-            project = new Pmo(farm);
+            output = project;
         }
-        return project;
+        return output;
     }
 
 }
