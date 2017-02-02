@@ -44,6 +44,11 @@ public final class Pmo implements Project {
     }
 
     @Override
+    public String toString() {
+        return "PMO";
+    }
+
+    @Override
     public Item acq(final String file) throws IOException {
         return this.farm.find("@id='PMO'").iterator().next().acq(file);
     }
