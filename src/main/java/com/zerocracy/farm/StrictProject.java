@@ -67,13 +67,20 @@ final class StrictProject implements Project {
     private final boolean ispmo;
 
     /**
+     * Prefix.
+     */
+    private final String prefix;
+
+    /**
      * Ctor.
      * @param pkt Project
      * @param pmo Is it PMO?
+     * @param pfx Prefix
      */
-    StrictProject(final Project pkt, final boolean pmo) {
+    StrictProject(final Project pkt, final boolean pmo, final String pfx) {
         this.origin = pkt;
         this.ispmo = pmo;
+        this.prefix = pfx;
     }
 
     @Override
@@ -86,14 +93,16 @@ final class StrictProject implements Project {
         if (this.ispmo && !StrictProject.PMO.matcher(file).matches()) {
             throw new IllegalArgumentException(
                 String.format(
-                    "File \"%s\" is not accessible in PMO", file
+                    "File \"%s\" is not accessible in \"%s\"",
+                    file, this.prefix
                 )
             );
         }
         if (!this.ispmo && !StrictProject.PROJECT.matcher(file).matches()) {
             throw new IllegalArgumentException(
                 String.format(
-                    "File \"%s\" is not accessible in a regular project", file
+                    "File \"%s\" is not allowed in project \"%s\"",
+                    file, this.prefix
                 )
             );
         }
