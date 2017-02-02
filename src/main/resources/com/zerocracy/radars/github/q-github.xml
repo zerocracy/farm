@@ -35,7 +35,7 @@
         <help>Remove this issue from scope (WBS)</help>
     </cmd>
     <cmd>
-        <code>pm.scope.wbs.assign</code>
+        <code>pm.in.orders.start</code>
         <regex>assign</regex>
         <label>assign</label>
         <help>Assign a performer to this issue</help>
@@ -48,7 +48,7 @@
         </opts>
     </cmd>
     <cmd>
-        <code>pm.scope.wbs.resign</code>
+        <code>pm.in.orders.stop</code>
         <regex>resign|reject</regex>
         <label>resign</label>
         <help>Resign from this issue</help>

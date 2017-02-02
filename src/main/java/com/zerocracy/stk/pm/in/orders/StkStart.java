@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.scope.wbs;
+package com.zerocracy.stk.pm.in.orders;
 
 import com.google.common.collect.Iterables;
 import com.jcabi.xml.XML;
@@ -22,7 +22,7 @@ import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.ClaimOut;
-import com.zerocracy.pm.scope.Wbs;
+import com.zerocracy.pm.in.Orders;
 import java.io.IOException;
 import org.xembly.Directive;
 
@@ -33,7 +33,7 @@ import org.xembly.Directive;
  * @version $Id$
  * @since 0.10
  */
-public final class StkAssign implements Stakeholder {
+public final class StkStart implements Stakeholder {
 
     @Override
     @SuppressWarnings("PMD.AvoidDuplicateLiterals")
@@ -45,10 +45,10 @@ public final class StkAssign implements Stakeholder {
         if ("me".equals(login)) {
             login = claim.author();
         }
-        new Wbs(project).bootstrap().assign(job, login);
+        new Orders(project).bootstrap().assign(job, login);
         return Iterables.concat(
             new ClaimOut()
-                .type("pm.scope.wbs.assigned")
+                .type("pm.in.orders.started")
                 .param("job", job)
                 .param("login", login),
             claim.reply(

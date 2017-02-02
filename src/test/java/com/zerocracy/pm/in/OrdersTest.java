@@ -14,46 +14,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pm.scope;
+package com.zerocracy.pm.in;
 
 import com.zerocracy.jstk.fake.FkProject;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
- * Test case for {@link Wbs}.
+ * Test case for {@link Orders}.
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.1
+ * @since 0.10
  */
-public final class WbsTest {
+public final class OrdersTest {
 
     /**
-     * Prints WBS.
+     * Assigns a performer and resigns.
      * @throws Exception If some problem inside
      */
     @Test
-    public void printsWbs() throws Exception {
-        final Wbs wbs = new Wbs(new FkProject()).bootstrap();
-        final String job = "gh:yegor256/0pdd#44";
-        wbs.add(job);
-        MatcherAssert.assertThat(
-            wbs.markdown(),
-            Matchers.containsString("[yegor256/0pdd#44]")
-        );
-    }
-
-    /**
-     * Adds and removes jobs.
-     * @throws Exception If some problem inside
-     */
-    @Test
-    public void addsAndRemovesJobs() throws Exception {
-        final Wbs wbs = new Wbs(new FkProject()).bootstrap();
-        final String job = "gh:yegor256/0pdd#3";
-        wbs.add(job);
-        wbs.remove(job);
+    public void assignsAndResigns() throws Exception {
+        final Orders orders = new Orders(new FkProject()).bootstrap();
+        final String job = "gh:yegor256/0pdd#13";
+        orders.assign(job, "yegor256");
     }
 
 }

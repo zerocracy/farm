@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.scope.wbs;
+package com.zerocracy.stk.pm.in.orders;
 
 import com.google.common.collect.Iterables;
 import com.jcabi.xml.XML;
@@ -22,7 +22,7 @@ import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.ClaimOut;
-import com.zerocracy.pm.scope.Wbs;
+import com.zerocracy.pm.in.Orders;
 import java.io.IOException;
 import org.xembly.Directive;
 
@@ -33,7 +33,7 @@ import org.xembly.Directive;
  * @version $Id$
  * @since 0.10
  */
-public final class StkResign implements Stakeholder {
+public final class StkStop implements Stakeholder {
 
     @Override
     @SuppressWarnings("PMD.AvoidDuplicateLiterals")
@@ -41,12 +41,12 @@ public final class StkResign implements Stakeholder {
         final XML xml) throws IOException {
         final ClaimIn claim = new ClaimIn(xml);
         final String job = claim.param("job");
-        final Wbs wbs = new Wbs(project).bootstrap();
-        final String performer = wbs.performer(job);
-        wbs.resign(job);
+        final Orders orders = new Orders(project).bootstrap();
+        final String performer = orders.performer(job);
+        orders.resign(job);
         return Iterables.concat(
             new ClaimOut()
-                .type("pm.scope.wbs.resigned")
+                .type("pm.in.orders.stopped")
                 .param("job", job)
                 .param("login", performer)
                 .param("author", claim.author()),

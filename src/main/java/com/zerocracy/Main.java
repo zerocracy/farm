@@ -63,6 +63,8 @@ import com.zerocracy.stk.github.StkSetAssignee;
 import com.zerocracy.stk.pm.StkBootstrap;
 import com.zerocracy.stk.pm.hr.roles.StkAssign;
 import com.zerocracy.stk.pm.hr.roles.StkResign;
+import com.zerocracy.stk.pm.in.orders.StkStart;
+import com.zerocracy.stk.pm.in.orders.StkStop;
 import com.zerocracy.stk.pm.scope.wbs.StkInto;
 import com.zerocracy.stk.pm.scope.wbs.StkOut;
 import com.zerocracy.stk.pmo.StkParent;
@@ -252,22 +254,22 @@ public final class Main {
                             )
                         ),
                         new StkByTerm(
-                            new com.zerocracy.stk.pm.scope.wbs.StkAssign(),
-                            new TmType("pm.scope.wbs.assign"),
+                            new StkStart(),
+                            new TmType("pm.in.orders.start"),
                             new TmRoles("PO", "ARC")
                         ),
                         new StkByTerm(
                             new StkSetAssignee(github),
-                            new TmType("pm.scope.wbs.assigned"),
+                            new TmType("pm.in.orders.started"),
                             new TmXpath("params/param[@name='job' and starts-with(.,'gh:')]")
                         ),
                         new StkByTerm(
-                            new com.zerocracy.stk.pm.scope.wbs.StkResign(),
-                            new TmType("pm.scope.wbs.resign")
+                            new StkStop(),
+                            new TmType("pm.in.orders.stop")
                         ),
                         new StkByTerm(
                             new StkRemoveAssignee(github),
-                            new TmType("pm.scope.wbs.resigned"),
+                            new TmType("pm.in.orders.stopped"),
                             new TmXpath("params/param[@name='job' and starts-with(.,'gh:')]")
                         )
                     )
