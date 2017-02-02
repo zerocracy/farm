@@ -28,11 +28,12 @@
         <xsl:if test="position() &gt; 1">
             <xsl:text>&#10;</xsl:text>
         </xsl:if>
-        <a href="https://github.com/{@id}">
-            <xsl:text>@</xsl:text>
-            <xsl:value-of select="@id"/>
-        </a>
-        <xsl:text>: </xsl:text>
+        <xsl:text>  * [</xsl:text>
+        <xsl:text>@</xsl:text>
+        <xsl:value-of select="@id"/>
+        <xsl:text>](https://github.com/</xsl:text>
+        <xsl:value-of select="@id"/>
+        <xsl:text>): </xsl:text>
         <xsl:apply-templates select="role"/>
     </xsl:template>
     <xsl:template match="role">

@@ -42,7 +42,7 @@ public final class RolesTest {
         roles.assign(person, "DEV");
         MatcherAssert.assertThat(
             roles.markdown(),
-            Matchers.containsString("alex-palevsky: PO, DEV")
+            Matchers.containsString("alex-palevsky): PO, DEV")
         );
     }
 

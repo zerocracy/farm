@@ -28,6 +28,7 @@
         <xsl:if test="position() &gt; 1">
             <xsl:text>&#10;</xsl:text>
         </xsl:if>
+        <xsl:text>  * </xsl:text>
         <xsl:apply-templates select="@id"/>
         <xsl:if test="performer">
             <xsl:text>: [</xsl:text>

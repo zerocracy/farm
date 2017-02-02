@@ -68,8 +68,8 @@ public final class TmRoles implements Term {
                 throw new SoftException(
                     String.format(
                         // @checkstyle LineLength (1 line)
-                        "You need to have one of these roles in order to do this: %s. I'm sorry to say this, but at the moment you've got no roles in this project.",
-                        TmRoles.join(this.roles)
+                        "You need to have one of these roles in order to do this: %s. I'm sorry to say this, but at the moment you've got no roles in this project (your GitHub login is \"%s\").",
+                        TmRoles.join(this.roles), claim.author()
                     )
                 );
             }
@@ -85,7 +85,7 @@ public final class TmRoles implements Term {
         throw new SoftException(
             String.format(
                 // @checkstyle LineLength (1 line)
-                "You're not allowed to do this, you need one of these roles: %s",
+                "You're not allowed to do this, you need one of these roles: %s.",
                 TmRoles.join(this.roles)
             )
         );
