@@ -67,7 +67,7 @@ public final class StkAssign implements Stakeholder {
         new Roles(project).bootstrap().assign(login, role);
         return claim.reply(
             String.format(
-                "Role \"%s\" assigned to \"%s\" in \"%s\"",
+                "Role \"%s\" assigned to \"%s\" in \"%s\".",
                 role,
                 login,
                 project

@@ -41,7 +41,7 @@ public final class StkShow implements Stakeholder {
         final String login = claim.param("person");
         return claim.reply(
             String.format(
-                "Your ID is `%s`, your aliases are: `%s`",
+                "Your ID is `%s`, your aliases are: `%s`.",
                 login,
                 String.join(
                     "`, `",

@@ -42,7 +42,7 @@ public final class StkResign implements Stakeholder {
         new Roles(project).bootstrap().resign(login, role);
         return claim.reply(
             String.format(
-                "Role \"%s\" resigned from \"%s\" in \"%s\"",
+                "Role \"%s\" resigned from \"%s\" in \"%s\".",
                 role,
                 login,
                 project

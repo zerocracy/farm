@@ -42,7 +42,7 @@ public final class StkParent implements Stakeholder {
         new Catalog(project).parent(child, parent);
         return claim.reply(
             String.format(
-                "Done, project `%s` is a child of `%s`",
+                "Done, project `%s` is a child of `%s`.",
                 child, parent
             )
         );

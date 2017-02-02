@@ -43,7 +43,7 @@ public final class StkRemove implements Stakeholder {
         new Catalog(project).unlink(pid, rel, href);
         return claim.reply(
             String.format(
-                "Done, link removed from `%s` to rel=`%s` and href=`%s`",
+                "Done, link removed from `%s` to rel=`%s` and href=`%s`.",
                 pid, rel, href
             )
         );

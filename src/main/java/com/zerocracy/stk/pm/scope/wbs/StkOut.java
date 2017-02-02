@@ -41,7 +41,7 @@ public final class StkOut implements Stakeholder {
         new Wbs(project).bootstrap().remove(job);
         return claim.reply(
             String.format(
-                "Done, job `%s` is out of \"%s\"",
+                "Done, job `%s` is out of \"%s\".",
                 job, project
             )
         );

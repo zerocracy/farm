@@ -41,7 +41,7 @@ public final class StkShow implements Stakeholder {
         final String login = claim.param("person");
         return claim.reply(
             String.format(
-                "Your wallet is `%s` at \"%s\"",
+                "Your wallet is `%s` at \"%s\".",
                 people.wallet(login),
                 people.bank(login)
             )

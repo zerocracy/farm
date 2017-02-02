@@ -14,43 +14,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pmo.profile.skills;
+package com.zerocracy.stk.pm.scope.wbs;
 
+import com.google.common.collect.Iterables;
 import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
-import com.zerocracy.pmo.People;
+import com.zerocracy.pm.ClaimOut;
+import com.zerocracy.pm.scope.Wbs;
 import java.io.IOException;
-import java.util.Collection;
 import org.xembly.Directive;
 
 /**
- * Show skills of the user.
+ * Resign from a task.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.1
+ * @since 0.10
  */
-public final class StkShow implements Stakeholder {
+public final class StkResign implements Stakeholder {
 
     @Override
+    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     public Iterable<Directive> process(final Project project,
         final XML xml) throws IOException {
-        final People people = new People(project).bootstrap();
         final ClaimIn claim = new ClaimIn(xml);
-        final String login = claim.param("person");
-        final Collection<String> skills = people.skills(login);
-        final String msg;
-        if (skills.iterator().hasNext()) {
-            msg = String.format(
-                "Your skills are: `%s`.",
-                String.join("`, `", skills)
-            );
-        } else {
-            msg = "Your skills are not defined yet.";
-        }
-        return claim.reply(msg);
+        final String job = claim.param("job");
+        final Wbs wbs = new Wbs(project).bootstrap();
+        final String performer = wbs.performer(job);
+        wbs.resign(job);
+        return Iterables.concat(
+            new ClaimOut()
+                .type("pm.scope.wbs.resigned")
+                .param("job", job)
+                .param("login", performer)
+                .param("author", claim.author()),
+            claim.reply(
+                String.format(
+                    "Done, @%s resigned from `%s`.",
+                    performer, job
+                )
+            )
+        );
     }
 
 }

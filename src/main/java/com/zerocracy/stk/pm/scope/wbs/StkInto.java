@@ -41,7 +41,7 @@ public final class StkInto implements Stakeholder {
         new Wbs(project).bootstrap().add(job);
         return claim.reply(
             String.format(
-                "Done, job `%s` is in scope of \"%s\"",
+                "Done, job `%s` is in scope of \"%s\".",
                 job, project
             )
         );

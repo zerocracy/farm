@@ -58,6 +58,7 @@ import com.zerocracy.stk.TmRoles;
 import com.zerocracy.stk.TmType;
 import com.zerocracy.stk.TmXpath;
 import com.zerocracy.stk.github.StkNotify;
+import com.zerocracy.stk.github.StkRemoveAssignee;
 import com.zerocracy.stk.github.StkSetAssignee;
 import com.zerocracy.stk.pm.StkBootstrap;
 import com.zerocracy.stk.pm.hr.roles.StkAssign;
@@ -258,6 +259,15 @@ public final class Main {
                         new StkByTerm(
                             new StkSetAssignee(github),
                             new TmType("pm.scope.wbs.assigned"),
+                            new TmXpath("params/param[@name='job' and starts-with(.,'gh:')]")
+                        ),
+                        new StkByTerm(
+                            new com.zerocracy.stk.pm.scope.wbs.StkResign(),
+                            new TmType("pm.scope.wbs.resign")
+                        ),
+                        new StkByTerm(
+                            new StkRemoveAssignee(github),
+                            new TmType("pm.scope.wbs.resigned"),
                             new TmXpath("params/param[@name='job' and starts-with(.,'gh:')]")
                         )
                     )

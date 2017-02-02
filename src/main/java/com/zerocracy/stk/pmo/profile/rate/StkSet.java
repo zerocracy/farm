@@ -44,7 +44,7 @@ public final class StkSet implements Stakeholder {
         people.rate(login, rate);
         return claim.reply(
             String.format(
-                "Rate of \"%s\" set to %s",
+                "Rate of \"%s\" set to %s.",
                 login,
                 rate
             )

@@ -26,19 +26,19 @@
         <code>pm.scope.wbs.in</code>
         <regex>in</regex>
         <label>in</label>
-        <help>Add job to WBS</help>
+        <help>Register this issue in scope (WBS)</help>
     </cmd>
     <cmd>
         <code>pm.scope.wbs.out</code>
         <regex>out</regex>
         <label>out</label>
-        <help>Remove job from WBS</help>
+        <help>Remove this issue from scope (WBS)</help>
     </cmd>
     <cmd>
         <code>pm.scope.wbs.assign</code>
         <regex>assign</regex>
         <label>assign</label>
-        <help>Assign a performer to the task</help>
+        <help>Assign a performer to this issue</help>
         <opts>
             <opt>
                 <name>login</name>
@@ -46,5 +46,11 @@
                 <help>"me" or GitHub login of the person to assign</help>
             </opt>
         </opts>
+    </cmd>
+    <cmd>
+        <code>pm.scope.wbs.resign</code>
+        <regex>resign|reject</regex>
+        <label>resign</label>
+        <help>Resign from this issue</help>
     </cmd>
 </question>

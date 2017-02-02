@@ -53,7 +53,7 @@ public final class StkAssign implements Stakeholder {
                 .param("login", login),
             claim.reply(
                 String.format(
-                    "Done, job `%s` assigned to @%s",
+                    "Done, job `%s` assigned to @%s.",
                     job, login
                 )
             )

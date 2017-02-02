@@ -44,7 +44,7 @@ public final class StkSet implements Stakeholder {
         people.wallet(login, bank, wallet);
         return claim.reply(
             String.format(
-                "Wallet of \"%s\" set to `%s:%s`",
+                "Wallet of \"%s\" set to `%s:%s`.",
                 login,
                 bank, wallet
             )

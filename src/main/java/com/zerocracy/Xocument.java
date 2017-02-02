@@ -27,7 +27,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.util.Collection;
+import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Node;
 import org.xembly.Directive;
@@ -134,7 +134,7 @@ public final class Xocument {
      * @return Found texts
      * @throws IOException If fails
      */
-    public Collection<String> xpath(final String xpath) throws IOException {
+    public List<String> xpath(final String xpath) throws IOException {
         final XML xml = new StrictXML(new XMLDocument(this.file.toFile()));
         return xml.xpath(xpath);
     }
@@ -145,7 +145,7 @@ public final class Xocument {
      * @return Found nodes
      * @throws IOException If fails
      */
-    public Collection<XML> nodes(final String xpath) throws IOException {
+    public List<XML> nodes(final String xpath) throws IOException {
         final XML xml = new StrictXML(new XMLDocument(this.file.toFile()));
         return xml.nodes(xpath);
     }

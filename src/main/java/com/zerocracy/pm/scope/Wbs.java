@@ -39,6 +39,7 @@ import org.xembly.Directives;
  * @version $Id$
  * @since 0.1
  */
+@SuppressWarnings("PMD.TooManyMethods")
 public final class Wbs {
 
     /**
@@ -175,6 +176,55 @@ public final class Wbs {
                     .strict(1)
                     .remove()
             );
+        }
+    }
+
+    /**
+     * Job is assigned.
+     * @param job The job
+     * @return TRUE if assigned
+     * @throws IOException If fails of it there is no assignee
+     */
+    public boolean assigned(final String job) throws IOException {
+        if (!this.exists(job)) {
+            throw new SoftException(
+                String.format(
+                    "Job `%s` is not in scope, can't check assignee", job
+                )
+            );
+        }
+        try (final Item wbs = this.item()) {
+            return !new Xocument(wbs.path()).nodes(
+                String.format("/wbs/job[@id= '%s']/performer", job)
+            ).isEmpty();
+        }
+    }
+
+    /**
+     * Get job assignee.
+     * @param job The job
+     * @return Performer GitHub login
+     * @throws IOException If fails of it there is no assignee
+     */
+    public String performer(final String job) throws IOException {
+        if (!this.exists(job)) {
+            throw new SoftException(
+                String.format(
+                    "Job `%s` is not in scope, can't get assignee", job
+                )
+            );
+        }
+        if (!this.assigned(job)) {
+            throw new SoftException(
+                String.format(
+                    "Job `%s` is not assigned, can't get assignee", job
+                )
+            );
+        }
+        try (final Item wbs = this.item()) {
+            return new Xocument(wbs.path()).xpath(
+                String.format("/wbs/job[@id='%s']/performer/text()", job)
+            ).get(0);
         }
     }
 

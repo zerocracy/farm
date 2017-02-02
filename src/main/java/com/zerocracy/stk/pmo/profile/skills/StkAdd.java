@@ -46,7 +46,7 @@ public final class StkAdd implements Stakeholder {
         if (skills.size() > Tv.FIVE) {
             throw new SoftException(
                 String.format(
-                    "You've got too many skills already: `%s` (max is five)",
+                    "You've got too many skills already: `%s` (max is five).",
                     String.join("`, `", skills)
                 )
             );
@@ -55,7 +55,7 @@ public final class StkAdd implements Stakeholder {
         people.skill(login, skill);
         return claim.reply(
             String.format(
-                "New skill \"%s\" added to \"%s\"",
+                "New skill \"%s\" added to \"%s\".",
                 skill,
                 login
             )

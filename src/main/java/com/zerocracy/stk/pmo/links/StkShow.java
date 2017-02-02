@@ -42,7 +42,7 @@ public final class StkShow implements Stakeholder {
         final Collection<String> links = new Catalog(project).links(pid);
         return claim.reply(
             String.format(
-                "This project is linked with %d resources: `%s`",
+                "This project is linked with %d resources: `%s`.",
                 links.size(),
                 String.join("`, `", links)
             )

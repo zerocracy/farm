@@ -41,7 +41,7 @@ public final class StkShow implements Stakeholder {
         final String login = claim.param("person");
         return claim.reply(
             String.format(
-                "Your rate is %s",
+                "Your rate is %s.",
                 people.rate(login)
             )
         );

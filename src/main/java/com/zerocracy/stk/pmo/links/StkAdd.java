@@ -63,7 +63,7 @@ public final class StkAdd implements Stakeholder {
         new Catalog(project).link(pid, rel, href);
         return claim.reply(
             String.format(
-                "Done, the project is linked with rel=`%s` and href=`%s`",
+                "Done, the project is linked with rel=`%s` and href=`%s`.",
                 rel, href
             )
         );
