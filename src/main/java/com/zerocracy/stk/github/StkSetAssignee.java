@@ -55,7 +55,10 @@ public final class StkSetAssignee implements Stakeholder {
         throws IOException {
         final ClaimIn claim = new ClaimIn(xml);
         final Issue issue = new Job.Issue(this.github, claim.param("job"));
-        final String login = claim.param("login");
+        String login = claim.param("login");
+        if ("me".equals(login)) {
+            login = claim.author();
+        }
         try {
             new Issue.Smart(issue).assign(login);
         } catch (final AssertionError ex) {
