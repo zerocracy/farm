@@ -74,9 +74,9 @@ public final class ReProject implements Reaction<SlackMessagePosted> {
             output = file -> {
                 final Item item;
                 if ("roles.xml".equals(file)) {
-                    item = pmo.acq(file);
-                } else {
                     item = project.acq(file);
+                } else {
+                    item = pmo.acq(file);
                 }
                 return item;
             };
