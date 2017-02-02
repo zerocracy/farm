@@ -17,6 +17,7 @@
 package com.zerocracy.radars.github;
 
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.jcabi.dynamo.Attributes;
 import com.jcabi.dynamo.Item;
@@ -154,7 +155,10 @@ public final class ReOnComment implements Reaction {
             seen = 276041067;
         }
         return Iterables.filter(
-            issue.comments().iterate(new Date(since)),
+            Iterables.transform(
+                issue.comments().iterate(new Date(since)),
+                (Function<Comment, Comment>) SafeComment::new
+            ),
             comment -> comment.number() > seen
         );
     }

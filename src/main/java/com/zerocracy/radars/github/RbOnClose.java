@@ -17,6 +17,7 @@
 package com.zerocracy.radars.github;
 
 import com.jcabi.aspects.RetryOnFailure;
+import com.jcabi.aspects.Tv;
 import com.jcabi.github.Event;
 import com.jcabi.github.Github;
 import com.jcabi.github.Issue;
@@ -90,7 +91,7 @@ public final class RbOnClose implements Rebound {
      * @return Login
      * @throws IOException If fails
      */
-    @RetryOnFailure(delay = 1, unit = TimeUnit.SECONDS, verbose = false)
+    @RetryOnFailure(delay = Tv.FIVE, unit = TimeUnit.SECONDS, verbose = false)
     private static String closer(final Issue.Smart issue) throws IOException {
         return new Event.Smart(
             issue.latestEvent(Event.CLOSED)
