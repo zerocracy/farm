@@ -55,7 +55,7 @@ public final class S3FarmTest {
         final Farm farm = new S3Farm(bucket);
         farm.find("@id = 'ABCDEF123'").iterator().next();
         final Project project = farm.find("@id='ABCDEF123'").iterator().next();
-        final Item item = project.acq("test.xml");
+        final Item item = project.acq("roles.xml");
         MatcherAssert.assertThat(
             item.path().toFile().exists(),
             Matchers.is(false)

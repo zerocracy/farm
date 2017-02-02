@@ -23,6 +23,8 @@ import com.zerocracy.pm.hr.Roles;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * Term to match by roles.
@@ -68,9 +70,8 @@ public final class TmRoles implements Term {
                 throw new SoftException(
                     String.format(
                         // @checkstyle LineLength (1 line)
-                        "You need to have one of these roles in order to do this: %s. I'm sorry to say this, but at the moment you've got no roles in \"%s\" project (your GitHub login is \"%s\").",
+                        "You need to have one of these roles in order to do what you're trying to do: %s. I'm sorry to say this, but at the moment you've got no roles in this project (your GitHub login is \"%s\").",
                         TmRoles.join(this.roles),
-                        project.toString(),
                         claim.author()
                     )
                 );
@@ -99,7 +100,12 @@ public final class TmRoles implements Term {
      * @return Joined
      */
     private static String join(final Iterable<String> items) {
-        return String.join(", ", items);
+        return String.join(
+            ", ",
+            StreamSupport.stream(items.spliterator(), false).map(
+                item -> String.format("`%s`", item)
+            ).collect(Collectors.toList())
+        );
     }
 
     /**

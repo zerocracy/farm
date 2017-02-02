@@ -85,8 +85,11 @@ public final class S3Farm implements Farm {
         Iterable<Project> projects = this.findByXPath(xpath)
             .stream()
             .map(
-                prefix -> new SyncProject(
-                    new S3Project(this.bucket, prefix, this.temp)
+                prefix -> new StrictProject(
+                    new SyncProject(
+                        new S3Project(this.bucket, prefix, this.temp)
+                    ),
+                    prefix.equals(S3Farm.prefix(S3Farm.PMO))
                 )
             )
             .collect(Collectors.toList());
