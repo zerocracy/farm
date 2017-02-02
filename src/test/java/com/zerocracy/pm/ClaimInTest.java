@@ -62,14 +62,14 @@ public final class ClaimInTest {
         );
         MatcherAssert.assertThat(
             new Xembler(
-                new Directives().add("claim").append(
+                new Directives().add("claims").append(
                     claim.reply("hello")
                 )
             ).xmlQuietly(),
             XhtmlMatchers.hasXPaths(
-                "/claim[type='notify']",
-                "/claim[token='X']",
-                "/claim/params/param[@name='message' and .='hello']"
+                "/claims/claim[type='notify']",
+                "/claims/claim[token='X']",
+                "/claims/claim/params/param[@name='message' and .='hello']"
             )
         );
     }

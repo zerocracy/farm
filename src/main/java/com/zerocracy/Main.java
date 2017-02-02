@@ -257,7 +257,7 @@ public final class Main {
                         ),
                         new StkByTerm(
                             new StkSetAssignee(github),
-                            new TmType("pm.scope.wbs.assign"),
+                            new TmType("pm.scope.wbs.assigned"),
                             new TmXpath("params/param[@name='job' and starts-with(.,'gh:')]")
                         )
                     )

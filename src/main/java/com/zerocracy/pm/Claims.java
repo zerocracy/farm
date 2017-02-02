@@ -22,8 +22,6 @@ import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.Closeable;
 import java.io.IOException;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicReference;
 import org.xembly.Directive;
@@ -75,7 +73,7 @@ public final class Claims implements Closeable {
     }
 
     /**
-     * Add new claim.
+     * Add new directives.
      * @param dirs Directives
      * @throws IOException If fails
      */
@@ -84,17 +82,7 @@ public final class Claims implements Closeable {
             throw new IllegalArgumentException("Empty directives");
         }
         new Xocument(this.item.get().path()).modify(
-            new Directives()
-                .xpath("/claims").add("claim")
-                .attr("id", System.nanoTime() % (long) Integer.MAX_VALUE)
-                .add("created")
-                .set(
-                    ZonedDateTime.now().format(
-                        DateTimeFormatter.ISO_INSTANT
-                    )
-                )
-                .up()
-                .append(dirs)
+            new Directives().xpath("/claims").append(dirs)
         );
     }
 

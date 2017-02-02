@@ -20,9 +20,11 @@ import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
+import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.scope.Wbs;
 import java.io.IOException;
 import org.xembly.Directive;
+import org.xembly.Directives;
 
 /**
  * Assign a performer.
@@ -34,6 +36,7 @@ import org.xembly.Directive;
 public final class StkAssign implements Stakeholder {
 
     @Override
+    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     public Iterable<Directive> process(final Project project,
         final XML xml) throws IOException {
         final ClaimIn claim = new ClaimIn(xml);
@@ -43,12 +46,21 @@ public final class StkAssign implements Stakeholder {
             login = claim.author();
         }
         new Wbs(project).bootstrap().assign(job, login);
-        return claim.reply(
-            String.format(
-                "Done, job `%s` assigned to @%s",
-                job, login
+        return new Directives()
+            .append(
+                new ClaimOut()
+                    .type("pm.scope.wbs.assigned")
+                    .param("job", job)
+                    .param("login", login)
             )
-        );
+            .append(
+                claim.reply(
+                    String.format(
+                        "Done, job `%s` assigned to @%s",
+                        job, login
+                    )
+                )
+            );
     }
 
 }

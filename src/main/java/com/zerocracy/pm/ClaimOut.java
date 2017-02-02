@@ -16,6 +16,8 @@
  */
 package com.zerocracy.pm;
 
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.Map;
 import org.xembly.Directive;
@@ -93,7 +95,18 @@ public final class ClaimOut implements Iterable<Directive> {
 
     @Override
     public Iterator<Directive> iterator() {
-        return this.dirs.iterator();
+        return new Directives()
+            .add("claim")
+            .attr("id", System.nanoTime() % (long) Integer.MAX_VALUE)
+            .add("created")
+            .set(
+                ZonedDateTime.now().format(
+                    DateTimeFormatter.ISO_INSTANT
+                )
+            )
+            .up()
+            .append(this.dirs)
+            .iterator();
     }
 
 }
