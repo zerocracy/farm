@@ -53,13 +53,20 @@ final class UplinkedProject implements Project {
     private final Farm farm;
 
     /**
+     * Is it PMO?
+     */
+    private final boolean ispmo;
+
+    /**
      * Ctor.
      * @param pkt Project
      * @param frm Farm
+     * @param pmo Is it PMO?
      */
-    UplinkedProject(final Project pkt, final Farm frm) {
+    UplinkedProject(final Project pkt, final Farm frm, final boolean pmo) {
         this.origin = pkt;
         this.farm = frm;
+        this.ispmo = pmo;
     }
 
     @Override
@@ -70,10 +77,10 @@ final class UplinkedProject implements Project {
     @Override
     public Item acq(final String file) throws IOException {
         final Item item;
-        if (UplinkedProject.FILES.contains(file)) {
-            item = new Pmo(this.farm).acq(file);
-        } else {
+        if (this.ispmo || !UplinkedProject.FILES.contains(file)) {
             item = this.origin.acq(file);
+        } else {
+            item = new Pmo(this.farm).acq(file);
         }
         return item;
     }

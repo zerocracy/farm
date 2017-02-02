@@ -93,7 +93,8 @@ public final class S3Farm implements Farm {
                         prefix.equals(S3Farm.prefix(S3Farm.PMO)),
                         prefix
                     ),
-                    this
+                    this,
+                    prefix.equals(S3Farm.prefix(S3Farm.PMO))
                 )
             )
             .collect(Collectors.toList());
