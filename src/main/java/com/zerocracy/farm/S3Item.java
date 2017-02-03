@@ -86,7 +86,8 @@ final class S3Item implements Item {
                 this.ocket.read(
                     Files.newOutputStream(
                         this.temp,
-                        StandardOpenOption.CREATE
+                        StandardOpenOption.CREATE,
+                        StandardOpenOption.TRUNCATE_EXISTING
                     )
                 );
                 Files.setLastModifiedTime(

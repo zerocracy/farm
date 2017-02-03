@@ -75,22 +75,24 @@ public final class S3ItemTest {
             "bucket-1", "wbs.xml"
         );
         final Path temp = Files.createTempFile("", "");
+        final String before;
         try (final Item item = new S3Item(ocket, temp)) {
             new Xocument(item).bootstrap("pm/scope/wbs");
+            before = new Xocument(item).toString();
             new Xocument(item).modify(
                 new Directives().xpath("/wbs")
                     .add("job")
                     .attr("id", "gh:yegor256/pdd#1")
             );
         }
-        new Ocket.Text(ocket).write("<wbs/>");
+        new Ocket.Text(ocket).write(before);
         Files.setLastModifiedTime(
             ocket.file().toPath(),
             FileTime.fromMillis(Long.MAX_VALUE)
         );
         try (final Item item = new S3Item(ocket, temp)) {
             MatcherAssert.assertThat(
-                new Xocument(item).nodes("/wbs"),
+                new Xocument(item).nodes("/wbs[not(job)]"),
                 Matchers.not(Matchers.emptyIterable())
             );
         }
