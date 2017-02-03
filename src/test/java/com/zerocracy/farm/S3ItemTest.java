@@ -22,6 +22,7 @@ import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.FileTime;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -58,6 +59,38 @@ public final class S3ItemTest {
         try (final Item item = new S3Item(ocket, temp)) {
             MatcherAssert.assertThat(
                 new Xocument(item).xpath("/roles/text()"),
+                Matchers.not(Matchers.emptyIterable())
+            );
+        }
+    }
+
+    /**
+     * S3Item can refresh from server.
+     * @throws Exception If some problem inside
+     */
+    @Test
+    public void refreshesFilesOnServer() throws Exception {
+        final FkOcket ocket = new FkOcket(
+            Files.createTempDirectory("").toFile(),
+            "bucket-1", "wbs.xml"
+        );
+        final Path temp = Files.createTempFile("", "");
+        try (final Item item = new S3Item(ocket, temp)) {
+            new Xocument(item).bootstrap("pm/scope/wbs");
+            new Xocument(item).modify(
+                new Directives().xpath("/wbs")
+                    .add("job")
+                    .attr("id", "gh:yegor256/pdd#1")
+            );
+        }
+        new Ocket.Text(ocket).write("<wbs/>");
+        Files.setLastModifiedTime(
+            ocket.file().toPath(),
+            FileTime.fromMillis(Long.MAX_VALUE)
+        );
+        try (final Item item = new S3Item(ocket, temp)) {
+            MatcherAssert.assertThat(
+                new Xocument(item).nodes("/wbs"),
                 Matchers.not(Matchers.emptyIterable())
             );
         }
