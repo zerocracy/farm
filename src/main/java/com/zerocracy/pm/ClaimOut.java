@@ -123,7 +123,7 @@ public final class ClaimOut implements Iterable<Directive> {
 
     @Override
     public Iterator<Directive> iterator() {
-        return this.dirs.iterator();
+        return new Directives().append(this.dirs).up().iterator();
     }
 
     /**
