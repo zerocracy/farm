@@ -23,6 +23,7 @@ import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 import org.xembly.Directives;
 
 /**
@@ -155,12 +156,12 @@ public final class Roles {
     }
 
     /**
-     * Find user IDs by the given role.
+     * Find GitHub logins by the given role.
      * @param role Role to find
-     * @return List of user IDs
+     * @return List of GitHub logins
      * @throws IOException If fails
      */
-    public Collection<String> findByRole(final String role) throws IOException {
+    public List<String> findByRole(final String role) throws IOException {
         try (final Item roles = this.item()) {
             return new Xocument(roles).xpath(
                 String.format(

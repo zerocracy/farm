@@ -26,6 +26,7 @@ import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.radars.github.Job;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Locale;
 import org.xembly.Directive;
 
 /**
@@ -62,11 +63,19 @@ public final class StkRemoveAssignee implements Stakeholder {
                 this, "Issue %s#%d doesn't have an assignee",
                 issue.repo().coordinates(), issue.number()
             );
-        } else {
+        } else if (claim.param("login").equals(
+            issue.assignee().login().toLowerCase(Locale.ENGLISH)
+        )) {
             issue.assign("");
             Logger.info(
                 this, "Issue %s#%d lost an assignee",
                 issue.repo().coordinates(), issue.number()
+            );
+        } else {
+            Logger.info(
+                this, "Issue %s#%d has a different assignee already: @%s",
+                issue.repo().coordinates(), issue.number(),
+                issue.assignee().login()
             );
         }
         return Collections.emptyList();

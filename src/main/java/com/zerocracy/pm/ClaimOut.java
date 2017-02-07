@@ -16,9 +16,9 @@
  */
 package com.zerocracy.pm;
 
+import com.zerocracy.jstk.Project;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import org.xembly.Directive;
@@ -42,7 +42,18 @@ public final class ClaimOut implements Iterable<Directive> {
      * Ctor.
      */
     public ClaimOut() {
-        this(Collections.emptyList());
+        this(
+            new Directives()
+                .add("claim")
+                .attr("id", System.nanoTime() % (long) Integer.MAX_VALUE)
+                .add("created")
+                .set(
+                    ZonedDateTime.now().format(
+                        DateTimeFormatter.ISO_INSTANT
+                    )
+                )
+                .up()
+        );
     }
 
     /**
@@ -112,19 +123,109 @@ public final class ClaimOut implements Iterable<Directive> {
 
     @Override
     public Iterator<Directive> iterator() {
-        return new Directives()
-            .add("claim")
-            .attr("id", System.nanoTime() % (long) Integer.MAX_VALUE)
-            .add("created")
-            .set(
-                ZonedDateTime.now().format(
-                    DateTimeFormatter.ISO_INSTANT
-                )
-            )
-            .up()
-            .append(this.dirs)
-            .up()
-            .iterator();
+        return this.dirs.iterator();
+    }
+
+    /**
+     * Notify.
+     */
+    public static final class Notify implements Iterable<Directive> {
+        /**
+         * Token.
+         */
+        private final String token;
+        /**
+         * Message.
+         */
+        private final String msg;
+        /**
+         * Ctor.
+         * @param tkn Token
+         * @param message Message
+         */
+        public Notify(final String tkn,
+            final String message) {
+            this.token = tkn;
+            this.msg = message;
+        }
+        @Override
+        public Iterator<Directive> iterator() {
+            return new ClaimOut()
+                .type("notify")
+                .token(this.token)
+                .param("message", this.msg)
+                .iterator();
+        }
+    }
+
+    /**
+     * Message to user.
+     */
+    public static final class ToUser implements Iterable<Directive> {
+        /**
+         * Project.
+         */
+        private final Project project;
+        /**
+         * Login.
+         */
+        private final String login;
+        /**
+         * Message.
+         */
+        private final String msg;
+        /**
+         * Ctor.
+         * @param pkt Project
+         * @param user GitHub login
+         * @param message Message
+         */
+        public ToUser(final Project pkt, final String user,
+            final String message) {
+            this.project = pkt;
+            this.login = user;
+            this.msg = message;
+        }
+        @Override
+        public Iterator<Directive> iterator() {
+            return new ClaimOut.Notify(
+                String.format(
+                    "slack;%s;%s",
+                    this.project, this.login
+                ),
+                this.msg
+            ).iterator();
+        }
+    }
+
+    /**
+     * Message to project.
+     */
+    public static final class ToProject implements Iterable<Directive> {
+        /**
+         * Project.
+         */
+        private final Project project;
+        /**
+         * Message.
+         */
+        private final String msg;
+        /**
+         * Ctor.
+         * @param pkt Project
+         * @param message Message
+         */
+        public ToProject(final Project pkt, final String message) {
+            this.project = pkt;
+            this.msg = message;
+        }
+        @Override
+        public Iterator<Directive> iterator() {
+            return new ClaimOut.Notify(
+                String.format("slack;%s", this.project),
+                this.msg
+            ).iterator();
+        }
     }
 
 }

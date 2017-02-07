@@ -16,47 +16,65 @@
  */
 package com.zerocracy.stk.pm.in.orders;
 
-import com.google.common.collect.Iterables;
 import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
-import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.ClaimOut;
+import com.zerocracy.pm.hr.Roles;
 import com.zerocracy.pm.in.Orders;
+import com.zerocracy.pm.scope.Wbs;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 import org.xembly.Directive;
+import org.xembly.Directives;
 
 /**
- * Resign from a task.
+ * Find a performer and suggest an order creation.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.10
  */
-public final class StkStop implements Stakeholder {
+public final class StkConfide implements Stakeholder {
 
     @Override
-    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     public Iterable<Directive> process(final Project project,
         final XML xml) throws IOException {
-        final ClaimIn claim = new ClaimIn(xml);
-        final String job = claim.param("job");
-        final Orders orders = new Orders(project).bootstrap();
-        final String performer = orders.performer(job);
-        orders.resign(job);
-        return Iterables.concat(
-            new ClaimOut()
-                .type("pm.in.orders.stopped")
+        final Wbs wbs = new Wbs(project);
+        final Orders orders = new Orders(project);
+        final Directives dirs = new Directives();
+        for (final String job : wbs.iterate()) {
+            if (orders.assigned(job)) {
+                dirs.append(StkConfide.assign(project, job));
+            }
+        }
+        return dirs;
+    }
+
+    /**
+     * Assign one job.
+     * @param project Project
+     * @param job The job
+     * @return Dirs or empty
+     * @throws IOException If fails
+     */
+    private static Iterable<Directive> assign(final Project project,
+        final String job) throws IOException {
+        final Roles roles = new Roles(project);
+        final List<String> logins = roles.findByRole("DEV");
+        Collections.shuffle(logins);
+        final Iterable<Directive> dirs;
+        if (logins.isEmpty()) {
+            dirs = Collections.emptyList();
+        } else {
+            final String login = logins.get(0);
+            dirs = new ClaimOut()
+                .type("pm.in.orders.start")
                 .param("job", job)
-                .param("login", performer)
-                .param("author", claim.author()),
-            claim.reply(
-                String.format(
-                    "@%s resigned from `%s`, please stop working.",
-                    performer, job
-                )
-            )
-        );
+                .param("login", login);
+        }
+        return dirs;
     }
 
 }

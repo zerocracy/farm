@@ -47,10 +47,11 @@ public final class ClaimIn {
      * @return OutClaim
      */
     public ClaimOut reply(final String msg) {
-        return new ClaimOut()
-            .type("notify")
-            .token(this.token())
-            .param("message", msg);
+        return new ClaimOut(
+            new ClaimOut.Notify(
+                this.token(), msg
+            )
+        );
     }
 
     /**

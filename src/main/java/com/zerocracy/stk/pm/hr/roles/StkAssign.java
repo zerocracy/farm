@@ -54,7 +54,7 @@ public final class StkAssign implements Stakeholder {
     public Iterable<Directive> process(final Project project,
         final XML xml) throws IOException {
         final ClaimIn claim = new ClaimIn(xml);
-        final String login = claim.param("person");
+        final String login = claim.param("login");
         this.github.entry().uri()
             .path("/user/following")
             .path(login)

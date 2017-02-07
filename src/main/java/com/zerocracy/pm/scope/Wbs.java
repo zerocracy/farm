@@ -23,6 +23,7 @@ import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.stk.SoftException;
 import java.io.IOException;
+import java.util.Collection;
 import org.xembly.Directives;
 
 /**
@@ -129,6 +130,17 @@ public final class Wbs {
     public boolean exists(final String job) throws IOException {
         try (final Item wbs = this.item()) {
             return !new Xocument(wbs.path()).nodes(Wbs.xpath(job)).isEmpty();
+        }
+    }
+
+    /**
+     * List all jobs.
+     * @return List of all jobs
+     * @throws IOException If fails
+     */
+    public Collection<String> iterate() throws IOException {
+        try (final Item wbs = this.item()) {
+            return new Xocument(wbs.path()).xpath("/wbs/job/@id");
         }
     }
 

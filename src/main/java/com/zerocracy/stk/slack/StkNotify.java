@@ -16,6 +16,7 @@
  */
 package com.zerocracy.stk.slack;
 
+import com.jcabi.aspects.Tv;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.ullink.slack.simpleslackapi.SlackChannel;
@@ -54,23 +55,40 @@ public final class StkNotify implements Stakeholder {
         final ClaimIn claim = new ClaimIn(xml);
         final String[] parts = claim.token().split(";");
         final SlackSession session = this.session(parts[1]);
-        final SlackChannel channel = session.findChannelById(parts[1]);
-        final String message = claim.param("message");
-        session.sendMessage(
-            channel,
-            String.format(
-                "@%s %s",
-                parts[2],
-                message.replaceAll("\\[([^]]+)]\\(([^)]+)\\)", "<$2|$1>")
-            )
+        final String message = claim.param("message").replaceAll(
+            "\\[([^]]+)]\\(([^)]+)\\)", "<$2|$1>"
         );
-        Logger.info(
-            this, "@%s posted %d chars to @%s at %s/%s",
-            session.sessionPersona().getUserName(),
-            message.length(),
-            parts[2],
-            channel.getName(), channel.getId()
-        );
+        if (parts.length > Tv.THREE && "direct".equals(parts[Tv.THREE])) {
+            session.sendMessage(
+                session.openDirectMessageChannel(
+                    session.findUserByUserName(parts[2])
+                ).getReply().getSlackChannel(),
+                message
+            );
+        } else {
+            final SlackChannel channel = session.findChannelById(parts[1]);
+            if (parts.length > 2) {
+                session.sendMessage(
+                    channel,
+                    String.format("@%s %s", parts[2], message)
+                );
+                Logger.info(
+                    this, "@%s posted %d chars to @%s at %s/%s",
+                    session.sessionPersona().getUserName(),
+                    message.length(),
+                    parts[2],
+                    channel.getName(), channel.getId()
+                );
+            } else {
+                session.sendMessage(channel, message);
+                Logger.info(
+                    this, "@%s posted %d chars at %s/%s",
+                    session.sessionPersona().getUserName(),
+                    message.length(),
+                    channel.getName(), channel.getId()
+                );
+            }
+        }
         return Collections.emptyList();
     }
 

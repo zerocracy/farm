@@ -16,6 +16,7 @@
  */
 package com.zerocracy.radars.slack;
 
+import com.jcabi.aspects.Tv;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 
 /**
@@ -42,10 +43,14 @@ public final class SkToken {
 
     @Override
     public String toString() {
-        return String.format(
-            "slack;%s;%s",
-            this.event.getChannel().getId(),
-            this.event.getSender().getUserName()
-        );
+        final StringBuilder txt = new StringBuilder(Tv.HUNDRED);
+        txt.append("slack;")
+            .append(this.event.getChannel().getId())
+            .append(';')
+            .append(this.event.getSender().getUserName());
+        if (this.event.getChannel().isDirect()) {
+            txt.append(";direct");
+        }
+        return txt.toString();
     }
 }

@@ -14,38 +14,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.hr.roles;
+package com.zerocracy.stk.pm.in.orders;
 
+import com.google.common.collect.Iterables;
 import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
-import com.zerocracy.pm.hr.Roles;
+import com.zerocracy.pm.ClaimOut;
 import java.io.IOException;
 import org.xembly.Directive;
 
 /**
- * Assign role to a person.
+ * Order just started.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.1
+ * @since 0.10
  */
-public final class StkResign implements Stakeholder {
+public final class StkStarted implements Stakeholder {
 
     @Override
     public Iterable<Directive> process(final Project project,
         final XML xml) throws IOException {
         final ClaimIn claim = new ClaimIn(xml);
         final String login = claim.param("login");
-        final String role = claim.param("role");
-        new Roles(project).bootstrap().resign(login, role);
-        return claim.reply(
-            String.format(
-                "Role \"%s\" resigned from \"%s\" in \"%s\".",
-                role,
+        final String job = claim.param("job");
+        return Iterables.concat(
+            new ClaimOut.ToUser(
+                project,
                 login,
-                project
+                String.format(
+                    "You've been selected as a performer for job `%s`.",
+                    job
+                )
+            ),
+            new ClaimOut.ToProject(
+                project,
+                String.format(
+                    "Job `%s` was assigned to [@%s](https://github.com/%1$s).",
+                    job, login
+                )
             )
         );
     }

@@ -63,7 +63,9 @@ import com.zerocracy.stk.github.StkSetAssignee;
 import com.zerocracy.stk.pm.StkBootstrap;
 import com.zerocracy.stk.pm.hr.roles.StkAssign;
 import com.zerocracy.stk.pm.hr.roles.StkResign;
+import com.zerocracy.stk.pm.in.orders.StkConfide;
 import com.zerocracy.stk.pm.in.orders.StkStart;
+import com.zerocracy.stk.pm.in.orders.StkStarted;
 import com.zerocracy.stk.pm.in.orders.StkStop;
 import com.zerocracy.stk.pm.scope.wbs.StkInto;
 import com.zerocracy.stk.pm.scope.wbs.StkOut;
@@ -254,9 +256,20 @@ public final class Main {
                             )
                         ),
                         new StkByTerm(
+                            new StkConfide(),
+                            new TmOr(
+                                new TmType("ping"),
+                                new TmType("pm.scope.wbs.in")
+                            )
+                        ),
+                        new StkByTerm(
                             new StkStart(),
                             new TmType("pm.in.orders.start"),
                             new TmRoles("PO", "ARC")
+                        ),
+                        new StkByTerm(
+                            new StkStarted(),
+                            new TmType("pm.in.orders.started")
                         ),
                         new StkByTerm(
                             new StkSetAssignee(github),
