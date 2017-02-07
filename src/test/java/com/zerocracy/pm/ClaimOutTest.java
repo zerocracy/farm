@@ -39,8 +39,11 @@ public final class ClaimOutTest {
         try (final Claims claims = new Claims(new FkProject()).lock()) {
             claims.add(
                 Iterables.concat(
-                    new ClaimOut().type("hello"),
-                    new ClaimOut().type("ping")
+                    new ClaimOut.Notify(
+                        "token",
+                        "hello, world"
+                    ),
+                    new ClaimOut().type("hello")
                 )
             );
             MatcherAssert.assertThat(

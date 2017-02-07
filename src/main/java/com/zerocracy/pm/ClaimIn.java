@@ -18,6 +18,7 @@ package com.zerocracy.pm;
 
 import com.jcabi.xml.XML;
 import java.util.Iterator;
+import org.xembly.Directive;
 
 /**
  * Claim coming in.
@@ -46,11 +47,9 @@ public final class ClaimIn {
      * @param msg The message to reply with
      * @return OutClaim
      */
-    public ClaimOut reply(final String msg) {
-        return new ClaimOut(
-            new ClaimOut.Notify(
-                this.token(), msg
-            )
+    public Iterable<Directive> reply(final String msg) {
+        return new ClaimOut.Notify(
+            this.token(), msg
         );
     }
 
