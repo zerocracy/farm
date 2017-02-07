@@ -16,7 +16,10 @@
  */
 package com.zerocracy.radars;
 
+import com.jcabi.xml.StrictXML;
 import com.jcabi.xml.XML;
+import com.jcabi.xml.XSD;
+import com.jcabi.xml.XSDDocument;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -34,6 +37,13 @@ import java.util.stream.Collectors;
  * @since 0.1
  */
 public final class Question {
+
+    /**
+     * Schema.
+     */
+    private static final XSD SCHEMA = XSDDocument.make(
+        Question.class.getResourceAsStream("question.xsd")
+    );
 
     /**
      * XML config.
@@ -66,7 +76,7 @@ public final class Question {
      * @param txt Text
      */
     public Question(final XML xml, final String txt) {
-        this.config = xml;
+        this.config = new StrictXML(xml, Question.SCHEMA);
         this.text = txt;
         this.rcode = new AtomicReference<>();
         this.rhelp = new AtomicReference<>();

@@ -73,7 +73,7 @@
         <help>Show all roles assigned at the moment</help>
         <cmds>
             <cmd>
-                <code>pm.hr.roles.assign</code>
+                <code>pm.hr.roles.add</code>
                 <regex>assign|add|register</regex>
                 <label>assign</label>
                 <help>Assign new project role</help>
@@ -91,7 +91,7 @@
                 </opts>
             </cmd>
             <cmd>
-                <code>pm.hr.roles.resign</code>
+                <code>pm.hr.roles.remove</code>
                 <regex>resign|remove|unregister</regex>
                 <label>resign</label>
                 <help>Resign a person from a project role</help>

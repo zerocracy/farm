@@ -48,7 +48,7 @@ public final class QuestionTest {
         );
         MatcherAssert.assertThat(
             question.code(),
-            Matchers.equalTo("pm.hr.roles.assign")
+            Matchers.equalTo("pm.hr.roles.add")
         );
         MatcherAssert.assertThat(
             question.params().get("role"),
