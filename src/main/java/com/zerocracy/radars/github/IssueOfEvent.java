@@ -110,8 +110,10 @@ final class IssueOfEvent implements Issue {
                 this.event.getJsonObject("repository").getString("full_name")
             )
         );
-        return repo.issues().get(
-            this.event.getJsonObject("issue").getInt("number")
+        return new SafeIssue(
+            repo.issues().get(
+                this.event.getJsonObject("issue").getInt("number")
+            )
         );
     }
 
