@@ -259,7 +259,7 @@ public final class Main {
                             new StkConfide(),
                             new TmOr(
                                 new TmType("ping"),
-                                new TmType("pm.scope.wbs.in")
+                                new TmType("pm.scope.wbs.added")
                             )
                         ),
                         new StkByTerm(

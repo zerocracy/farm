@@ -16,10 +16,12 @@
  */
 package com.zerocracy.stk.pm.scope.wbs;
 
+import com.google.common.collect.Iterables;
 import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
+import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.scope.Wbs;
 import java.io.IOException;
 import org.xembly.Directive;
@@ -39,11 +41,14 @@ public final class StkOut implements Stakeholder {
         final ClaimIn claim = new ClaimIn(xml);
         final String job = claim.param("job");
         new Wbs(project).bootstrap().remove(job);
-        return claim.reply(
-            String.format(
-                "Done, job `%s` is out of \"%s\".",
-                job, project
-            )
+        return Iterables.concat(
+            claim.reply(
+                String.format(
+                    "Job `%s` is out of \"%s\".",
+                    job, project
+                )
+            ),
+            new ClaimOut().type("pm.scope.wbs.removed")
         );
     }
 
