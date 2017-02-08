@@ -56,17 +56,27 @@ public final class StkSafe implements Stakeholder {
     @SuppressWarnings("PMD.AvoidCatchingThrowable")
     public Iterable<Directive> process(final Project project,
         final XML xml) throws IOException {
-        Iterable<Directive> dirs;
+        final ClaimIn claim = new ClaimIn(xml);
+        Iterable<Directive> dirs = Collections.emptyList();
         try {
             dirs = this.origin.process(project, xml);
         } catch (final SoftException ex) {
-            dirs = new ClaimIn(xml).reply(ex.getMessage());
+            if (claim.hasToken()) {
+                dirs = new ClaimIn(xml).reply(ex.getMessage());
+            } else {
+                Logger.error(
+                    this, "%s soft failure at \"%s/%s\": %s",
+                    this.origin.getClass().getCanonicalName(),
+                    new ClaimIn(xml).type(),
+                    new ClaimIn(xml).number(),
+                    ex.getLocalizedMessage()
+                );
+            }
             // @checkstyle IllegalCatchCheck (1 line)
         } catch (final Throwable ex) {
             try (final ByteArrayOutputStream baos =
                 new ByteArrayOutputStream()) {
                 ex.printStackTrace(new PrintStream(baos));
-                final ClaimIn claim = new ClaimIn(xml);
                 if (claim.hasToken()) {
                     dirs = claim.reply(
                         String.join(
@@ -82,8 +92,6 @@ public final class StkSafe implements Stakeholder {
                             "```"
                         )
                     );
-                } else {
-                    dirs = Collections.emptyList();
                 }
                 Logger.error(
                     this, "%s failed at \"%s/%s\": %s",
