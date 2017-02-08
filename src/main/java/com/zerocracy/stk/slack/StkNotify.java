@@ -24,9 +24,7 @@ import com.ullink.slack.simpleslackapi.SlackSession;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
-import java.util.Collections;
 import java.util.Map;
-import org.xembly.Directive;
 
 /**
  * Notify in Slack.
@@ -51,7 +49,7 @@ public final class StkNotify implements Stakeholder {
     }
 
     @Override
-    public Iterable<Directive> process(final Project project, final XML xml) {
+    public void process(final Project project, final XML xml) {
         final ClaimIn claim = new ClaimIn(xml);
         final String[] parts = claim.token().split(";");
         final SlackSession session = this.session(parts[1]);
@@ -89,7 +87,6 @@ public final class StkNotify implements Stakeholder {
                 );
             }
         }
-        return Collections.emptyList();
     }
 
     /**

@@ -14,44 +14,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pmo.profile.aliases;
+package com.zerocracy.stk;
 
 import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.Claims;
-import com.zerocracy.pmo.People;
 import java.io.IOException;
 
 /**
- * Show all aliases.
+ * Stakeholder that wipes the claim.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.1
+ * @since 0.10
  */
-public final class StkShow implements Stakeholder {
+public final class StkWipe implements Stakeholder {
+
+    /**
+     * Original stakeholder.
+     */
+    private final Stakeholder origin;
+
+    /**
+     * Ctor.
+     * @param stk Original stakeholder
+     */
+    public StkWipe(final Stakeholder stk) {
+        this.origin = stk;
+    }
 
     @Override
-    public void process(final Project pmo,
+    public void process(final Project project,
         final XML xml) throws IOException {
-        final People people = new People(pmo).bootstrap();
-        final ClaimIn claim = new ClaimIn(xml);
-        final String login = claim.param("person");
-        try (final Claims claims = new Claims(pmo).lock()) {
-            claims.add(
-                claim.reply(
-                    String.format(
-                        "Your ID is `%s`, your aliases are: `%s`.",
-                        login,
-                        String.join(
-                            "`, `",
-                            people.links(login)
-                        )
-                    )
-                )
-            );
+        this.origin.process(project, xml);
+        try (final Claims claims = new Claims(project).lock()) {
+            claims.remove(new ClaimIn(xml).number());
         }
     }
 

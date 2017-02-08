@@ -61,15 +61,19 @@ public final class Claims implements Closeable {
      * @throws IOException If fails
      */
     public Claims lock() throws IOException {
-        this.item.set(this.project.acq("claims.xml"));
-        new Xocument(this.item.get().path()).bootstrap("pm/claims");
+        if (this.item.get() == null) {
+            this.item.set(this.project.acq("claims.xml"));
+            new Xocument(this.item.get().path()).bootstrap("pm/claims");
+        }
         return this;
     }
 
     @Override
     public void close() throws IOException {
-        this.item.get().close();
-        this.item.set(null);
+        if (this.item.get() != null) {
+            this.item.get().close();
+            this.item.set(null);
+        }
     }
 
     /**

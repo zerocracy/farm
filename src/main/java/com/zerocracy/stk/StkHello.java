@@ -20,7 +20,8 @@ import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
-import org.xembly.Directive;
+import com.zerocracy.pm.Claims;
+import java.io.IOException;
 
 /**
  * Just say hello.
@@ -32,10 +33,15 @@ import org.xembly.Directive;
 public final class StkHello implements Stakeholder {
 
     @Override
-    public Iterable<Directive> process(final Project project, final XML xml) {
-        return new ClaimIn(xml).reply(
-            "Hey, what's up, how is it going?"
-        );
+    public void process(final Project project, final XML xml)
+        throws IOException {
+        try (final Claims claims = new Claims(project).lock()) {
+            claims.add(
+                new ClaimIn(xml).reply(
+                    "Hey, what's up, how is it going?"
+                )
+            );
+        }
     }
 
 }

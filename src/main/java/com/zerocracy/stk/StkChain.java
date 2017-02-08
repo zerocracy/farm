@@ -21,8 +21,6 @@ import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import java.io.IOException;
 import java.util.Arrays;
-import org.xembly.Directive;
-import org.xembly.Directives;
 
 /**
  * Chain of stakeholders.
@@ -55,13 +53,11 @@ public final class StkChain implements Stakeholder {
     }
 
     @Override
-    public Iterable<Directive> process(final Project project,
+    public void process(final Project project,
         final XML xml) throws IOException {
-        final Directives dirs = new Directives();
         for (final Stakeholder stk : this.list) {
-            dirs.push().append(stk.process(project, xml)).pop();
+            stk.process(project, xml);
         }
-        return dirs;
     }
 
 }

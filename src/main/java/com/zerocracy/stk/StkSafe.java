@@ -22,13 +22,12 @@ import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
+import com.zerocracy.pm.Claims;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang3.StringUtils;
-import org.xembly.Directive;
 
 /**
  * Stakeholder that reports about failures.
@@ -54,15 +53,16 @@ public final class StkSafe implements Stakeholder {
 
     @Override
     @SuppressWarnings("PMD.AvoidCatchingThrowable")
-    public Iterable<Directive> process(final Project project,
+    public void process(final Project project,
         final XML xml) throws IOException {
         final ClaimIn claim = new ClaimIn(xml);
-        Iterable<Directive> dirs = Collections.emptyList();
         try {
-            dirs = this.origin.process(project, xml);
+            this.origin.process(project, xml);
         } catch (final SoftException ex) {
             if (claim.hasToken()) {
-                dirs = new ClaimIn(xml).reply(ex.getMessage());
+                try (final Claims claims = new Claims(project).lock()) {
+                    claims.add(new ClaimIn(xml).reply(ex.getMessage()));
+                }
             } else {
                 Logger.error(
                     this, "%s soft failure at \"%s/%s\": %s",
@@ -74,35 +74,47 @@ public final class StkSafe implements Stakeholder {
             }
             // @checkstyle IllegalCatchCheck (1 line)
         } catch (final Throwable ex) {
-            try (final ByteArrayOutputStream baos =
-                new ByteArrayOutputStream()) {
-                ex.printStackTrace(new PrintStream(baos));
-                if (claim.hasToken()) {
-                    dirs = claim.reply(
-                        String.join(
-                            "\n",
-                            "I can't do it for technical reasons,",
-                            " I'm very sorry.",
-                            // @checkstyle LineLength (1 line)
-                            "If you don't know what to do, email this to bug@0crat.com:\n\n```",
-                            StringUtils.abbreviate(
-                                baos.toString(StandardCharsets.UTF_8),
-                                Tv.THOUSAND
-                            ),
-                            "```"
+            if (claim.hasToken()) {
+                try (final Claims claims = new Claims(project).lock()) {
+                    claims.add(
+                        claim.reply(
+                            String.join(
+                                "\n",
+                                "I can't do it for technical reasons,",
+                                " I'm very sorry.",
+                                // @checkstyle LineLength (1 line)
+                                "If you don't know what to do, email this to bug@0crat.com:\n\n```",
+                                StkSafe.print(ex),
+                                "```"
+                            )
                         )
                     );
                 }
-                Logger.error(
-                    this, "%s failed at \"%s/%s\": %s",
-                    this.origin.getClass().getCanonicalName(),
-                    new ClaimIn(xml).type(),
-                    new ClaimIn(xml).number(),
-                    ex.getLocalizedMessage()
-                );
             }
+            Logger.error(
+                this, "%s failed at \"%s/%s\": %s",
+                this.origin.getClass().getCanonicalName(),
+                new ClaimIn(xml).type(),
+                new ClaimIn(xml).number(),
+                ex.getLocalizedMessage()
+            );
         }
-        return dirs;
+    }
+
+    /**
+     * Print exception to string.
+     * @param error The error
+     * @return Text
+     * @throws IOException If fails
+     */
+    private static String print(final Throwable error) throws IOException {
+        try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            error.printStackTrace(new PrintStream(baos));
+            return StringUtils.abbreviate(
+                baos.toString(StandardCharsets.UTF_8),
+                Tv.THOUSAND
+            );
+        }
     }
 
 }

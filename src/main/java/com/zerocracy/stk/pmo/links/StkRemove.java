@@ -20,9 +20,9 @@ import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
+import com.zerocracy.pm.Claims;
 import com.zerocracy.pmo.Catalog;
 import java.io.IOException;
-import org.xembly.Directive;
 
 /**
  * Remove a resource to the project.
@@ -34,19 +34,23 @@ import org.xembly.Directive;
 public final class StkRemove implements Stakeholder {
 
     @Override
-    public Iterable<Directive> process(final Project project,
+    public void process(final Project project,
         final XML xml) throws IOException {
         final ClaimIn claim = new ClaimIn(xml);
         final String pid = claim.param("project");
         final String rel = claim.param("rel");
         final String href = claim.param("href");
         new Catalog(project).unlink(pid, rel, href);
-        return claim.reply(
-            String.format(
-                "Done, link removed from `%s` to rel=`%s` and href=`%s`.",
-                pid, rel, href
-            )
-        );
+        try (final Claims claims = new Claims(project).lock()) {
+            claims.add(
+                claim.reply(
+                    String.format(
+                        "Link removed from `%s` to rel=`%s` and href=`%s`.",
+                        pid, rel, href
+                    )
+                )
+            );
+        }
     }
 
 }

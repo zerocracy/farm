@@ -19,9 +19,9 @@ package com.zerocracy.farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.jstk.fake.FkProject;
+import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
-import java.util.Collections;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -46,7 +46,9 @@ public final class ReactiveProjectTest {
             new FkProject(),
             (Stakeholder) (pkt, xml) -> {
                 done.set(true);
-                return Collections.emptyList();
+                try (final Claims claims = new Claims(pkt).lock()) {
+                    claims.remove(new ClaimIn(xml).number());
+                }
             }
         );
         try (final Claims claims = new Claims(project).lock()) {

@@ -27,6 +27,7 @@ import com.zerocracy.farm.ReactiveFarm;
 import com.zerocracy.farm.S3Farm;
 import com.zerocracy.farm.SyncFarm;
 import com.zerocracy.jstk.Farm;
+import com.zerocracy.jstk.fake.FkStakeholder;
 import com.zerocracy.radars.github.GhookRadar;
 import com.zerocracy.radars.github.GithubFetch;
 import com.zerocracy.radars.github.RbByActions;
@@ -52,6 +53,7 @@ import com.zerocracy.radars.slack.SlackRadar;
 import com.zerocracy.stk.StkByTerm;
 import com.zerocracy.stk.StkHello;
 import com.zerocracy.stk.StkSafe;
+import com.zerocracy.stk.StkWipe;
 import com.zerocracy.stk.TmOr;
 import com.zerocracy.stk.TmRoles;
 import com.zerocracy.stk.TmType;
@@ -166,88 +168,88 @@ public final class Main {
                             new TmXpath("type='notify' and starts-with(token, 'slack;')")
                         ),
                         new StkByTerm(
-                            new StkHello(),
+                            new StkWipe(new StkHello()),
                             new TmType("hello")
                         ),
                         new StkByTerm(
-                            new StkBootstrap(),
+                            new StkWipe(new StkBootstrap()),
                             new TmType("pm.bootstrap")
                         ),
                         new StkByTerm(
-                            new StkAdd(github),
+                            new StkWipe(new StkAdd(github)),
                             new TmType("pmo.links.add"),
                             new TmRoles("PO")
                         ),
                         new StkByTerm(
-                            new StkRemove(),
+                            new StkWipe(new StkRemove()),
                             new TmType("pmo.links.remove"),
                             new TmRoles("PO")
                         ),
                         new StkByTerm(
-                            new StkShow(),
+                            new StkWipe(new StkShow()),
                             new TmType("pmo.links.show"),
                             new TmRoles("PO")
                         ),
                         new StkByTerm(
-                            new StkParent(),
+                            new StkWipe(new StkParent()),
                             new TmType("pmo.parent.set"),
                             new TmRoles("PO")
                         ),
                         new StkByTerm(
-                            new StkSet(),
+                            new StkWipe(new StkSet()),
                             new TmType("pmo.profile.rate.set")
                         ),
                         new StkByTerm(
-                            new com.zerocracy.stk.pmo.profile.rate.StkShow(),
+                            new StkWipe(new com.zerocracy.stk.pmo.profile.rate.StkShow()),
                             new TmType("pmo.profile.rate.show")
                         ),
                         new StkByTerm(
-                            new com.zerocracy.stk.pmo.profile.wallet.StkSet(),
+                            new StkWipe(new com.zerocracy.stk.pmo.profile.wallet.StkSet()),
                             new TmType("pmo.profile.wallet.set")
                         ),
                         new StkByTerm(
-                            new com.zerocracy.stk.pmo.profile.wallet.StkShow(),
+                            new StkWipe(new com.zerocracy.stk.pmo.profile.wallet.StkShow()),
                             new TmType("pmo.profile.wallet.show")
                         ),
                         new StkByTerm(
-                            new com.zerocracy.stk.pmo.profile.skills.StkAdd(),
+                            new StkWipe(new com.zerocracy.stk.pmo.profile.skills.StkAdd()),
                             new TmType("pmo.profile.skills.add")
                         ),
                         new StkByTerm(
-                            new com.zerocracy.stk.pmo.profile.skills.StkShow(),
+                            new StkWipe(new com.zerocracy.stk.pmo.profile.skills.StkShow()),
                             new TmType("pmo.profile.skills.show")
                         ),
                         new StkByTerm(
-                            new com.zerocracy.stk.pmo.profile.aliases.StkShow(),
+                            new StkWipe(new com.zerocracy.stk.pmo.profile.aliases.StkShow()),
                             new TmType("pmo.profile.aliases.show")
                         ),
                         new StkByTerm(
-                            new StkAssign(github),
+                            new StkWipe(new StkAssign(github)),
                             new TmType("pm.hr.roles.add"),
                             new TmRoles("PO")
                         ),
                         new StkByTerm(
-                            new StkResign(),
+                            new StkWipe(new StkResign()),
                             new TmType("pm.hr.roles.remove"),
                             new TmRoles("PO")
                         ),
                         new StkByTerm(
-                            new com.zerocracy.stk.pm.hr.roles.StkShow(),
+                            new StkWipe(new com.zerocracy.stk.pm.hr.roles.StkShow()),
                             new TmType("pm.hr.roles.show"),
                             new TmRoles("PO", "ARC")
                         ),
                         new StkByTerm(
-                            new com.zerocracy.stk.pm.scope.wbs.StkShow(),
+                            new StkWipe(new com.zerocracy.stk.pm.scope.wbs.StkShow()),
                             new TmType("pm.scope.wbs.show"),
                             new TmRoles("PO", "ARC")
                         ),
                         new StkByTerm(
-                            new StkInto(),
+                            new StkWipe(new StkInto()),
                             new TmType("pm.scope.wbs.in"),
                             new TmRoles("PO", "ARC")
                         ),
                         new StkByTerm(
-                            new StkOut(),
+                            new StkWipe(new StkOut()),
                             new TmType("pm.scope.wbs.out"),
                             new TmOr(
                                 new TmXpath("not(author)"),
@@ -262,7 +264,7 @@ public final class Main {
                             )
                         ),
                         new StkByTerm(
-                            new StkStart(),
+                            new StkWipe(new StkStart()),
                             new TmType("pm.in.orders.start"),
                             new TmRoles("PO", "ARC")
                         ),
@@ -276,13 +278,22 @@ public final class Main {
                             new TmXpath("params/param[@name='job' and starts-with(.,'gh:')]")
                         ),
                         new StkByTerm(
-                            new StkStop(),
+                            new StkWipe(new StkStop()),
                             new TmType("pm.in.orders.stop")
                         ),
                         new StkByTerm(
                             new StkRemoveAssignee(github),
                             new TmType("pm.in.orders.stopped"),
                             new TmXpath("params/param[@name='job' and starts-with(.,'gh:')]")
+                        ),
+                        new StkByTerm(
+                            new StkWipe(new FkStakeholder()),
+                            new TmOr(
+                                new TmType("pm.scope.wbs.added"),
+                                new TmType("pm.scope.wbs.removed"),
+                                new TmType("pm.in.orders.started"),
+                                new TmType("pm.in.orders.stopped")
+                            )
                         )
                     )
                     .map(StkSafe::new)

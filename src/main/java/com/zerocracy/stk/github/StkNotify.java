@@ -28,8 +28,6 @@ import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.radars.github.GhTube;
 import java.io.IOException;
-import java.util.Collections;
-import org.xembly.Directive;
 
 /**
  * Notify in GitHub.
@@ -54,7 +52,7 @@ public final class StkNotify implements Stakeholder {
     }
 
     @Override
-    public Iterable<Directive> process(final Project project, final XML xml)
+    public void process(final Project project, final XML xml)
         throws IOException {
         final ClaimIn claim = new ClaimIn(xml);
         final String[] parts = claim.token().split(";");
@@ -73,7 +71,6 @@ public final class StkNotify implements Stakeholder {
         } else {
             issue.comments().post(message);
         }
-        return Collections.emptyList();
     }
 
 }

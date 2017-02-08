@@ -25,8 +25,6 @@ import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.radars.github.Job;
 import java.io.IOException;
-import java.util.Collections;
-import org.xembly.Directive;
 
 /**
  * Set assignee in GitHub.
@@ -51,7 +49,7 @@ public final class StkSetAssignee implements Stakeholder {
     }
 
     @Override
-    public Iterable<Directive> process(final Project project, final XML xml)
+    public void process(final Project project, final XML xml)
         throws IOException {
         final ClaimIn claim = new ClaimIn(xml);
         final Issue issue = new Job.Issue(this.github, claim.param("job"));
@@ -67,7 +65,6 @@ public final class StkSetAssignee implements Stakeholder {
                 ex.getLocalizedMessage()
             );
         }
-        return Collections.emptyList();
     }
 
 }

@@ -21,9 +21,9 @@ import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.jstk.cash.Cash;
 import com.zerocracy.pm.ClaimIn;
+import com.zerocracy.pm.Claims;
 import com.zerocracy.pmo.People;
 import java.io.IOException;
-import org.xembly.Directive;
 
 /**
  * Set rate of the user.
@@ -35,20 +35,24 @@ import org.xembly.Directive;
 public final class StkSet implements Stakeholder {
 
     @Override
-    public Iterable<Directive> process(final Project pmo,
+    public void process(final Project pmo,
         final XML xml) throws IOException {
         final People people = new People(pmo).bootstrap();
         final ClaimIn claim = new ClaimIn(xml);
         final String login = claim.param("person");
         final Cash rate = new Cash.S(claim.param("rate"));
         people.rate(login, rate);
-        return claim.reply(
-            String.format(
-                "Rate of \"%s\" set to %s.",
-                login,
-                rate
-            )
-        );
+        try (final Claims claims = new Claims(pmo).lock()) {
+            claims.add(
+                claim.reply(
+                    String.format(
+                        "Rate of \"%s\" set to %s.",
+                        login,
+                        rate
+                    )
+                )
+            );
+        }
     }
 
 }

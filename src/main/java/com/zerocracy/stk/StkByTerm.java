@@ -21,8 +21,6 @@ import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collections;
-import org.xembly.Directive;
 
 /**
  * Stakeholder that works only if condition is true.
@@ -63,15 +61,11 @@ public final class StkByTerm implements Stakeholder {
     }
 
     @Override
-    public Iterable<Directive> process(final Project project,
+    public void process(final Project project,
         final XML xml) throws IOException {
-        final Iterable<Directive> dirs;
         if (this.term.fits(project, xml)) {
-            dirs = this.origin.process(project, xml);
-        } else {
-            dirs = Collections.emptyList();
+            this.origin.process(project, xml);
         }
-        return dirs;
     }
 
 }

@@ -20,10 +20,10 @@ import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
+import com.zerocracy.pm.Claims;
 import com.zerocracy.pmo.People;
 import java.io.IOException;
 import java.util.Collection;
-import org.xembly.Directive;
 
 /**
  * Show skills of the user.
@@ -35,7 +35,7 @@ import org.xembly.Directive;
 public final class StkShow implements Stakeholder {
 
     @Override
-    public Iterable<Directive> process(final Project pmo,
+    public void process(final Project pmo,
         final XML xml) throws IOException {
         final People people = new People(pmo).bootstrap();
         final ClaimIn claim = new ClaimIn(xml);
@@ -50,7 +50,11 @@ public final class StkShow implements Stakeholder {
         } else {
             msg = "Your skills are not defined yet.";
         }
-        return claim.reply(msg);
+        try (final Claims claims = new Claims(pmo).lock()) {
+            claims.add(
+                claim.reply(msg)
+            );
+        }
     }
 
 }

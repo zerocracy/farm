@@ -16,15 +16,14 @@
  */
 package com.zerocracy.stk.pm.scope.wbs;
 
-import com.google.common.collect.Iterables;
 import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.ClaimOut;
+import com.zerocracy.pm.Claims;
 import com.zerocracy.pm.scope.Wbs;
 import java.io.IOException;
-import org.xembly.Directive;
 
 /**
  * The task goes out of scope.
@@ -36,20 +35,19 @@ import org.xembly.Directive;
 public final class StkOut implements Stakeholder {
 
     @Override
-    public Iterable<Directive> process(final Project project,
+    public void process(final Project project,
         final XML xml) throws IOException {
         final ClaimIn claim = new ClaimIn(xml);
         final String job = claim.param("job");
         new Wbs(project).bootstrap().remove(job);
-        return Iterables.concat(
-            claim.reply(
-                String.format(
-                    "Job `%s` is out of \"%s\".",
-                    job, project
-                )
-            ),
-            new ClaimOut().type("pm.scope.wbs.removed")
-        );
+        try (final Claims claims = new Claims(project).lock()) {
+            claims.add(
+                claim.reply(String.format("Job `%s` is out of scope.", job))
+            );
+            claims.add(
+                new ClaimOut().type("pm.scope.wbs.removed")
+            );
+        }
     }
 
 }

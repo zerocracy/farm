@@ -20,9 +20,9 @@ import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
+import com.zerocracy.pm.Claims;
 import com.zerocracy.pmo.People;
 import java.io.IOException;
-import org.xembly.Directive;
 
 /**
  * Set wallet of the user.
@@ -34,7 +34,7 @@ import org.xembly.Directive;
 public final class StkSet implements Stakeholder {
 
     @Override
-    public Iterable<Directive> process(final Project pmo,
+    public void process(final Project pmo,
         final XML xml) throws IOException {
         final People people = new People(pmo).bootstrap();
         final ClaimIn claim = new ClaimIn(xml);
@@ -42,13 +42,17 @@ public final class StkSet implements Stakeholder {
         final String bank = claim.param("bank");
         final String wallet = claim.param("wallet");
         people.wallet(login, bank, wallet);
-        return claim.reply(
-            String.format(
-                "Wallet of \"%s\" set to `%s:%s`.",
-                login,
-                bank, wallet
-            )
-        );
+        try (final Claims claims = new Claims(pmo).lock()) {
+            claims.add(
+                claim.reply(
+                    String.format(
+                        "Wallet of \"%s\" set to `%s:%s`.",
+                        login,
+                        bank, wallet
+                    )
+                )
+            );
+        }
     }
 
 }

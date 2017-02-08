@@ -16,14 +16,13 @@
  */
 package com.zerocracy.stk.pm.in.orders;
 
-import com.google.common.collect.Iterables;
 import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.ClaimOut;
+import com.zerocracy.pm.Claims;
 import java.io.IOException;
-import org.xembly.Directive;
 
 /**
  * Order just started.
@@ -35,28 +34,33 @@ import org.xembly.Directive;
 public final class StkStarted implements Stakeholder {
 
     @Override
-    public Iterable<Directive> process(final Project project,
+    public void process(final Project project,
         final XML xml) throws IOException {
         final ClaimIn claim = new ClaimIn(xml);
         final String login = claim.param("login");
         final String job = claim.param("job");
-        return Iterables.concat(
-            new ClaimOut.ToUser(
-                project,
-                login,
-                String.format(
-                    "You've been selected as a performer for job `%s`.",
-                    job
+        try (final Claims claims = new Claims(project).lock()) {
+            claims.add(
+                new ClaimOut.ToUser(
+                    project,
+                    login,
+                    String.format(
+                        "You've been selected as a performer for job `%s`.",
+                        job
+                    )
                 )
-            ),
-            new ClaimOut.ToProject(
-                project,
-                String.format(
-                    "Job `%s` was assigned to [@%s](https://github.com/%1$s).",
-                    job, login
+            );
+            claims.add(
+                new ClaimOut.ToProject(
+                    project,
+                    String.format(
+                        // @checkstyle LineLength (1 line)
+                        "Job `%s` was assigned to [@%s](https://github.com/%1$s).",
+                        job, login
+                    )
                 )
-            )
-        );
+            );
+        }
     }
 
 }

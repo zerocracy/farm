@@ -22,9 +22,9 @@ import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
+import com.zerocracy.pm.Claims;
 import com.zerocracy.pmo.Catalog;
 import java.io.IOException;
-import org.xembly.Directive;
 
 /**
  * Attach a resource to the project.
@@ -49,7 +49,7 @@ public final class StkAdd implements Stakeholder {
     }
 
     @Override
-    public Iterable<Directive> process(final Project project,
+    public void process(final Project project,
         final XML xml) throws IOException {
         final ClaimIn claim = new ClaimIn(xml);
         final String pid = claim.param("project");
@@ -61,12 +61,16 @@ public final class StkAdd implements Stakeholder {
             ).stars().star();
         }
         new Catalog(project).link(pid, rel, href);
-        return claim.reply(
-            String.format(
-                "Done, the project is linked with rel=`%s` and href=`%s`.",
-                rel, href
-            )
-        );
+        try (final Claims claims = new Claims(project).lock()) {
+            claims.add(
+                claim.reply(
+                    String.format(
+                        "The project is linked with rel=`%s` and href=`%s`.",
+                        rel, href
+                    )
+                )
+            );
+        }
     }
 
 }

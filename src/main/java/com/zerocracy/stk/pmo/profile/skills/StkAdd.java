@@ -21,11 +21,11 @@ import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
+import com.zerocracy.pm.Claims;
 import com.zerocracy.pmo.People;
 import com.zerocracy.stk.SoftException;
 import java.io.IOException;
 import java.util.Collection;
-import org.xembly.Directive;
 
 /**
  * Add new skill to the user.
@@ -37,7 +37,7 @@ import org.xembly.Directive;
 public final class StkAdd implements Stakeholder {
 
     @Override
-    public Iterable<Directive> process(final Project pmo,
+    public void process(final Project pmo,
         final XML xml) throws IOException {
         final People people = new People(pmo).bootstrap();
         final ClaimIn claim = new ClaimIn(xml);
@@ -53,13 +53,17 @@ public final class StkAdd implements Stakeholder {
         }
         final String skill = claim.param("skill");
         people.skill(login, skill);
-        return claim.reply(
-            String.format(
-                "New skill \"%s\" added to \"%s\".",
-                skill,
-                login
-            )
-        );
+        try (final Claims claims = new Claims(pmo).lock()) {
+            claims.add(
+                claim.reply(
+                    String.format(
+                        "New skill \"%s\" added to \"%s\".",
+                        skill,
+                        login
+                    )
+                )
+            );
+        }
     }
 
 }

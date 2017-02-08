@@ -16,15 +16,14 @@
  */
 package com.zerocracy.stk.pm.in.orders;
 
-import com.google.common.collect.Iterables;
 import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.ClaimOut;
+import com.zerocracy.pm.Claims;
 import com.zerocracy.pm.in.Orders;
 import java.io.IOException;
-import org.xembly.Directive;
 
 /**
  * Resign from a task.
@@ -37,26 +36,30 @@ public final class StkStop implements Stakeholder {
 
     @Override
     @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-    public Iterable<Directive> process(final Project project,
+    public void process(final Project project,
         final XML xml) throws IOException {
         final ClaimIn claim = new ClaimIn(xml);
         final String job = claim.param("job");
         final Orders orders = new Orders(project).bootstrap();
         final String performer = orders.performer(job);
         orders.resign(job);
-        return Iterables.concat(
-            new ClaimOut()
-                .type("pm.in.orders.stopped")
-                .param("job", job)
-                .param("login", performer)
-                .param("author", claim.author()),
-            claim.reply(
-                String.format(
-                    "@%s resigned from `%s`, please stop working.",
-                    performer, job
+        try (final Claims claims = new Claims(project).lock()) {
+            claims.add(
+                new ClaimOut()
+                    .type("pm.in.orders.stopped")
+                    .param("job", job)
+                    .param("login", performer)
+                    .param("author", claim.author())
+            );
+            claims.add(
+                claim.reply(
+                    String.format(
+                        "@%s resigned from `%s`, please stop working.",
+                        performer, job
+                    )
                 )
-            )
-        );
+            );
+        }
     }
 
 }

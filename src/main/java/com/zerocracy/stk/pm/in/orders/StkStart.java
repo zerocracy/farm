@@ -16,15 +16,14 @@
  */
 package com.zerocracy.stk.pm.in.orders;
 
-import com.google.common.collect.Iterables;
 import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.ClaimOut;
+import com.zerocracy.pm.Claims;
 import com.zerocracy.pm.in.Orders;
 import java.io.IOException;
-import org.xembly.Directive;
 
 /**
  * Assign a performer.
@@ -37,7 +36,7 @@ public final class StkStart implements Stakeholder {
 
     @Override
     @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-    public Iterable<Directive> process(final Project project,
+    public void process(final Project project,
         final XML xml) throws IOException {
         final ClaimIn claim = new ClaimIn(xml);
         final String job = claim.param("job");
@@ -46,18 +45,22 @@ public final class StkStart implements Stakeholder {
             login = claim.author();
         }
         new Orders(project).bootstrap().assign(job, login);
-        return Iterables.concat(
-            new ClaimOut()
-                .type("pm.in.orders.started")
-                .param("job", job)
-                .param("login", login),
-            claim.reply(
-                String.format(
-                    "Job `%s` assigned to @%s, please go ahead.",
-                    job, login
+        try (final Claims claims = new Claims(project).lock()) {
+            claims.add(
+                new ClaimOut()
+                    .type("pm.in.orders.started")
+                    .param("job", job)
+                    .param("login", login)
+            );
+            claims.add(
+                claim.reply(
+                    String.format(
+                        "Job `%s` assigned to @%s, please go ahead.",
+                        job, login
+                    )
                 )
-            )
-        );
+            );
+        }
     }
 
 }

@@ -20,9 +20,9 @@ import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
+import com.zerocracy.pm.Claims;
 import com.zerocracy.pm.hr.Roles;
 import java.io.IOException;
-import org.xembly.Directive;
 
 /**
  * Assign role to a person.
@@ -34,20 +34,24 @@ import org.xembly.Directive;
 public final class StkResign implements Stakeholder {
 
     @Override
-    public Iterable<Directive> process(final Project project,
+    public void process(final Project project,
         final XML xml) throws IOException {
         final ClaimIn claim = new ClaimIn(xml);
         final String login = claim.param("login");
         final String role = claim.param("role");
         new Roles(project).bootstrap().resign(login, role);
-        return claim.reply(
-            String.format(
-                "Role \"%s\" resigned from \"%s\" in \"%s\".",
-                role,
-                login,
-                project
-            )
-        );
+        try (final Claims claims = new Claims(project).lock()) {
+            claims.add(
+                claim.reply(
+                    String.format(
+                        "Role \"%s\" resigned from \"%s\" in \"%s\".",
+                        role,
+                        login,
+                        project
+                    )
+                )
+            );
+        }
     }
 
 }

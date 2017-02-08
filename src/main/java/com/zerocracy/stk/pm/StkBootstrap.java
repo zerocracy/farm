@@ -20,10 +20,10 @@ import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
+import com.zerocracy.pm.Claims;
 import com.zerocracy.pm.hr.Roles;
 import com.zerocracy.pm.scope.Wbs;
 import java.io.IOException;
-import org.xembly.Directive;
 
 /**
  * Bootstrap a project.
@@ -35,7 +35,7 @@ import org.xembly.Directive;
 public final class StkBootstrap implements Stakeholder {
 
     @Override
-    public Iterable<Directive> process(final Project project,
+    public void process(final Project project,
         final XML xml) throws IOException {
         new Wbs(project).bootstrap();
         final Roles roles = new Roles(project).bootstrap();
@@ -44,14 +44,18 @@ public final class StkBootstrap implements Stakeholder {
         if (!roles.hasRole(author, role)) {
             roles.assign(author, role);
         }
-        return new ClaimIn(xml).reply(
-            String.join(
-                " ",
-                "I'm ready to manage a project.",
-                "When you're ready, you can start giving me instructions,",
-                "always prefixing your messages with my uid."
-            )
-        );
+        try (final Claims claims = new Claims(project).lock()) {
+            claims.add(
+                new ClaimIn(xml).reply(
+                    String.join(
+                        " ",
+                        "I'm ready to manage a project.",
+                        "When you're ready, you can start giving me commands,",
+                        "always prefixing your messages with my name."
+                    )
+                )
+            );
+        }
     }
 
 }

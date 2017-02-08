@@ -25,9 +25,7 @@ import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.radars.github.Job;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Locale;
-import org.xembly.Directive;
 
 /**
  * Remove assignee in GitHub.
@@ -52,7 +50,7 @@ public final class StkRemoveAssignee implements Stakeholder {
     }
 
     @Override
-    public Iterable<Directive> process(final Project project, final XML xml)
+    public void process(final Project project, final XML xml)
         throws IOException {
         final ClaimIn claim = new ClaimIn(xml);
         final Issue.Smart issue = new Issue.Smart(
@@ -78,7 +76,6 @@ public final class StkRemoveAssignee implements Stakeholder {
                 issue.assignee().login()
             );
         }
-        return Collections.emptyList();
     }
 
 }

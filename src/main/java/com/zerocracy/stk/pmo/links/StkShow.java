@@ -20,10 +20,10 @@ import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
+import com.zerocracy.pm.Claims;
 import com.zerocracy.pmo.Catalog;
 import java.io.IOException;
 import java.util.Collection;
-import org.xembly.Directive;
 
 /**
  * Show all links.
@@ -35,18 +35,22 @@ import org.xembly.Directive;
 public final class StkShow implements Stakeholder {
 
     @Override
-    public Iterable<Directive> process(final Project project,
+    public void process(final Project project,
         final XML xml) throws IOException {
         final ClaimIn claim = new ClaimIn(xml);
         final String pid = claim.param("project");
         final Collection<String> links = new Catalog(project).links(pid);
-        return claim.reply(
-            String.format(
-                "This project is linked with %d resources: `%s`.",
-                links.size(),
-                String.join("`, `", links)
-            )
-        );
+        try (final Claims claims = new Claims(project).lock()) {
+            claims.add(
+                claim.reply(
+                    String.format(
+                        "This project is linked with %d resources: `%s`.",
+                        links.size(),
+                        String.join("`, `", links)
+                    )
+                )
+            );
+        }
     }
 
 }
