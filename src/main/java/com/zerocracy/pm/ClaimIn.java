@@ -86,6 +86,14 @@ public final class ClaimIn {
     }
 
     /**
+     * Token exists.
+     * @return TRUE if token exists
+     */
+    public boolean hasToken() {
+        return !this.xml.nodes("token").isEmpty();
+    }
+
+    /**
      * Author exists.
      * @return TRUE if author exists
      */

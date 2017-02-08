@@ -25,6 +25,7 @@ import com.zerocracy.pm.ClaimIn;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang3.StringUtils;
 import org.xembly.Directive;
@@ -65,19 +66,25 @@ public final class StkSafe implements Stakeholder {
             try (final ByteArrayOutputStream baos =
                 new ByteArrayOutputStream()) {
                 ex.printStackTrace(new PrintStream(baos));
-                dirs = new ClaimIn(xml).reply(
-                    String.join(
-                        "\n",
-                        "I can't do it for technical reasons, I'm very sorry.",
-                        // @checkstyle LineLength (1 line)
-                        "If you don't know what to do, email this to bug@0crat.com:\n\n```",
-                        StringUtils.abbreviate(
-                            baos.toString(StandardCharsets.UTF_8),
-                            Tv.THOUSAND
-                        ),
-                        "```"
-                    )
-                );
+                final ClaimIn claim = new ClaimIn(xml);
+                if (claim.hasToken()) {
+                    dirs = claim.reply(
+                        String.join(
+                            "\n",
+                            "I can't do it for technical reasons,",
+                            " I'm very sorry.",
+                            // @checkstyle LineLength (1 line)
+                            "If you don't know what to do, email this to bug@0crat.com:\n\n```",
+                            StringUtils.abbreviate(
+                                baos.toString(StandardCharsets.UTF_8),
+                                Tv.THOUSAND
+                            ),
+                            "```"
+                        )
+                    );
+                } else {
+                    dirs = Collections.emptyList();
+                }
                 Logger.error(
                     this, "%s failed at \"%s/%s\": %s",
                     this.origin.getClass().getCanonicalName(),
