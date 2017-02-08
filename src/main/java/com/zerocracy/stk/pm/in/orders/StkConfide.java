@@ -45,7 +45,7 @@ public final class StkConfide implements Stakeholder {
         final Orders orders = new Orders(project);
         final Directives dirs = new Directives();
         for (final String job : wbs.iterate()) {
-            if (orders.assigned(job)) {
+            if (!orders.assigned(job)) {
                 dirs.append(StkConfide.assign(project, job));
             }
         }
