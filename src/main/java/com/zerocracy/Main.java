@@ -52,7 +52,6 @@ import com.zerocracy.radars.slack.SlackRadar;
 import com.zerocracy.stk.StkByTerm;
 import com.zerocracy.stk.StkHello;
 import com.zerocracy.stk.StkSafe;
-import com.zerocracy.stk.StkVerbose;
 import com.zerocracy.stk.TmOr;
 import com.zerocracy.stk.TmRoles;
 import com.zerocracy.stk.TmType;
@@ -286,7 +285,6 @@ public final class Main {
                             new TmXpath("params/param[@name='job' and starts-with(.,'gh:')]")
                         )
                     )
-                    .map(StkVerbose::new)
                     .map(StkSafe::new)
                     .collect(Collectors.toList())
             )

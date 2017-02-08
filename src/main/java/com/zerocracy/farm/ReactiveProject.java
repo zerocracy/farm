@@ -17,11 +17,13 @@
 package com.zerocracy.farm;
 
 import com.jcabi.aspects.Tv;
+import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
+import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.Claims;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -105,17 +107,25 @@ final class ReactiveProject implements Project {
     /**
      * Run single claim.
      * @param claims Claims
-     * @param claim The claim to run
+     * @param xml The claim to run
      * @throws IOException If fails
      */
-    private void run(final Claims claims, final XML claim) throws IOException {
+    private void run(final Claims claims, final XML xml) throws IOException {
+        final long start = System.currentTimeMillis();
         for (final Stakeholder stk : this.stakeholders) {
-            final Iterable<Directive> response = stk.process(this, claim);
+            final Iterable<Directive> response = stk.process(this, xml);
             if (response.iterator().hasNext()) {
                 claims.add(response);
             }
         }
-        claims.remove(claim.xpath("@id").get(0));
+        final ClaimIn claim = new ClaimIn(xml);
+        claims.remove(xml.xpath("@id").get(0));
+        Logger.info(
+            this, "%s in %s in %[ms]s",
+            claim.type(),
+            this.toString(),
+            System.currentTimeMillis() - start
+        );
     }
 
     /**
