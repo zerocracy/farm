@@ -44,7 +44,10 @@ public final class TmType implements Term {
     @Override
     public boolean fits(final Project project, final XML xml) {
         return new TmXpath(
-            String.format("type='%s'", this.type)
+            String.format(
+                "matches(type,'%s')",
+                this.type.replace(".", "\\.").replace("*", "[^\\.]+")
+            )
         ).fits(project, xml);
     }
 

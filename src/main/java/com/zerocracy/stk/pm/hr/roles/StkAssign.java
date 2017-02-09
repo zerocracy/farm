@@ -23,6 +23,7 @@ import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
+import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
 import com.zerocracy.pm.hr.Roles;
 import java.io.IOException;
@@ -51,6 +52,7 @@ public final class StkAssign implements Stakeholder {
     }
 
     @Override
+    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     public void process(final Project project,
         final XML xml) throws IOException {
         final ClaimIn claim = new ClaimIn(xml);
@@ -69,12 +71,16 @@ public final class StkAssign implements Stakeholder {
             claims.add(
                 claim.reply(
                     String.format(
-                        "Role \"%s\" assigned to \"%s\" in \"%s\".",
-                        role,
-                        login,
-                        project
+                        "Role \"%s\" assigned to \"%s\".",
+                        role, login
                     )
                 )
+            );
+            claims.add(
+                new ClaimOut()
+                    .type("pm.hr.roles.added")
+                    .param("role", role)
+                    .param("login", login)
             );
         }
     }
