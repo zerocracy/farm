@@ -68,6 +68,14 @@ public final class Orders {
      */
     public void assign(final String job, final String login)
         throws IOException {
+        if (this.assigned(job)) {
+            throw new SoftException(
+                String.format(
+                    "Job `%s` already assigned to @%s",
+                    job, login
+                )
+            );
+        }
         try (final Item wbs = this.item()) {
             final Xocument xocument = new Xocument(wbs.path());
             xocument.modify(
@@ -95,6 +103,14 @@ public final class Orders {
      * @throws IOException If fails
      */
     public void resign(final String job) throws IOException {
+        if (this.assigned(job)) {
+            throw new SoftException(
+                String.format(
+                    "Job `%s` is not assigned to anyone",
+                    job
+                )
+            );
+        }
         try (final Item wbs = this.item()) {
             final Xocument xocument = new Xocument(wbs.path());
             xocument.modify(

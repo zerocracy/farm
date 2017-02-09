@@ -65,10 +65,11 @@ public final class StkSafe implements Stakeholder {
                 }
             } else {
                 Logger.error(
-                    this, "%s soft failure at \"%s/%s\": %s",
+                    this, "%s soft failure at \"%s/%s\" in \"%s\": %s",
                     this.origin.getClass().getCanonicalName(),
                     new ClaimIn(xml).type(),
                     new ClaimIn(xml).number(),
+                    project,
                     ex.getLocalizedMessage()
                 );
             }
@@ -92,10 +93,11 @@ public final class StkSafe implements Stakeholder {
                 }
             }
             Logger.error(
-                this, "%s failed at \"%s/%s\": %s",
+                this, "%s failed at \"%s/%s\" in \"%s\": %s",
                 this.origin.getClass().getCanonicalName(),
                 new ClaimIn(xml).type(),
                 new ClaimIn(xml).number(),
+                project,
                 ex.getLocalizedMessage()
             );
         }

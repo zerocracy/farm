@@ -129,10 +129,6 @@ final class ReactiveProject implements Project {
             final XML xml = list.next();
             final long start = System.currentTimeMillis();
             final ClaimIn claim = new ClaimIn(xml);
-            Logger.info(
-                this, "Found \"%s/%d\" at \"%s\"",
-                claim.type(), claim.number(), this.toString()
-            );
             for (final Stakeholder stk : this.stakeholders) {
                 stk.process(this, xml);
             }
