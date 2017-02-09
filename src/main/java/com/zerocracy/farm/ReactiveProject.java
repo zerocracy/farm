@@ -18,6 +18,7 @@ package com.zerocracy.farm;
 
 import com.google.common.collect.Iterators;
 import com.jcabi.aspects.Tv;
+import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
@@ -98,12 +99,18 @@ final class ReactiveProject implements Project {
         this.depth.incrementAndGet();
         final Collection<String> seen = new HashSet<>(0);
         try (final Claims claims = new Claims(this).lock()) {
+            int cycle = 0;
             while (true) {
                 final Iterator<XML> list = Iterators.filter(
                     claims.iterate().iterator(),
                     input -> !seen.contains(input.xpath("@id ").get(0))
                 );
                 if (!list.hasNext()) {
+                    break;
+                }
+                ++cycle;
+                if (cycle > Tv.TEN) {
+                    Logger.warn(this, "Too many cycles");
                     break;
                 }
                 final XML xml = list.next();

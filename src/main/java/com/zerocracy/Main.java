@@ -287,6 +287,7 @@ public final class Main {
                         new StkByTerm(
                             new StkWipe(new FkStakeholder()),
                             new TmOr(
+                                new TmType("ping"),
                                 new TmType("pm.scope.wbs.added"),
                                 new TmType("pm.scope.wbs.removed"),
                                 new TmType("pm.in.orders.started"),
