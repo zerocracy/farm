@@ -23,9 +23,9 @@ import com.jcabi.github.RtGithub;
 import com.jcabi.s3.Region;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.zerocracy.farm.PingFarm;
-import com.zerocracy.farm.reactive.ReactiveFarm;
 import com.zerocracy.farm.S3Farm;
 import com.zerocracy.farm.SyncFarm;
+import com.zerocracy.farm.reactive.RvFarm;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.fake.FkStakeholder;
 import com.zerocracy.radars.github.GhookRadar;
@@ -146,7 +146,7 @@ public final class Main {
         );
         final Map<String, SlackSession> sessions = new ConcurrentHashMap<>(0);
         final Farm farm = new PingFarm(
-            new ReactiveFarm(
+            new RvFarm(
                 new SyncFarm(
                     new S3Farm(
                         new com.jcabi.s3.retry.ReRegion(

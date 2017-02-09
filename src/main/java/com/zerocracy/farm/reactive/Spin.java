@@ -21,16 +21,12 @@ import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseRunnable;
 import com.jcabi.log.VerboseThreads;
 import com.jcabi.xml.XML;
-import com.zerocracy.Xocument;
-import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.Claims;
 import java.io.Closeable;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -40,18 +36,18 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Reactive project.
+ * Spin that processes all claims in a project.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-final class ReactiveProject implements Project, Runnable, Closeable {
+final class Spin implements Runnable, Closeable {
 
     /**
-     * Origin project.
+     * The project.
      */
-    private final Project origin;
+    private final Project project;
 
     /**
      * List of stakeholders.
@@ -73,34 +69,26 @@ final class ReactiveProject implements Project, Runnable, Closeable {
      * @param pkt Project
      * @param list List of stakeholders
      */
-    ReactiveProject(final Project pkt, final Stakeholder... list) {
-        this(pkt, Arrays.asList(list));
-    }
-
-    /**
-     * Ctor.
-     * @param pkt Project
-     * @param list List of stakeholders
-     */
-    ReactiveProject(final Project pkt, final Collection<Stakeholder> list) {
-        this.origin = pkt;
+    Spin(final Project pkt, final Collection<Stakeholder> list) {
+        this.project = pkt;
         this.stakeholders = list;
         this.alive = new AtomicBoolean();
         this.service = Executors.newSingleThreadExecutor(new VerboseThreads());
     }
 
-    @Override
-    public String toString() {
-        return this.origin.toString();
+    /**
+     * Ping it.
+     */
+    public void ping() {
+        if (!this.alive.get() && !this.service.isShutdown()) {
+            this.alive.set(true);
+            this.service.submit(new VerboseRunnable(this, true, true));
+        }
     }
 
     @Override
-    public Item acq(final String file) throws IOException {
-        Item item = this.origin.acq(file);
-        if ("claims.xml".equals(file)) {
-            item = new ReactiveProject.Itm(item);
-        }
-        return item;
+    public String toString() {
+        return this.project.toString();
     }
 
     @Override
@@ -153,7 +141,7 @@ final class ReactiveProject implements Project, Runnable, Closeable {
      */
     private boolean next(final Collection<Long> seen) throws IOException {
         final Iterator<XML> list;
-        try (final Claims claims = new Claims(this.origin).lock()) {
+        try (final Claims claims = new Claims(this.project).lock()) {
             list = Iterators.filter(
                 claims.iterate().iterator(),
                 claim -> !seen.contains(new ClaimIn(claim).number())
@@ -165,7 +153,7 @@ final class ReactiveProject implements Project, Runnable, Closeable {
             final long start = System.currentTimeMillis();
             final ClaimIn claim = new ClaimIn(xml);
             for (final Stakeholder stk : this.stakeholders) {
-                stk.process(this, xml);
+                stk.process(this.project, xml);
             }
             seen.add(claim.number());
             more = true;
@@ -178,40 +166,4 @@ final class ReactiveProject implements Project, Runnable, Closeable {
         return more;
     }
 
-    /**
-     * Item that triggers stakeholders.
-     */
-    private final class Itm implements Item {
-        /**
-         * Original item.
-         */
-        private final Item original;
-        /**
-         * Ctor.
-         * @param item Original item
-         */
-        Itm(final Item item) {
-            this.original = item;
-        }
-        @Override
-        public Path path() throws IOException {
-            return this.original.path();
-        }
-        @Override
-        public void close() throws IOException {
-            final int total = new Xocument(this.path())
-                .nodes("/claims/claim").size();
-            this.original.close();
-            if (total > 0 && !ReactiveProject.this.alive.get()
-                && !ReactiveProject.this.service.isShutdown()) {
-                ReactiveProject.this.alive.set(true);
-                ReactiveProject.this.service.submit(
-                    new VerboseRunnable(
-                        ReactiveProject.this,
-                        true, true
-                    )
-                );
-            }
-        }
-    }
 }

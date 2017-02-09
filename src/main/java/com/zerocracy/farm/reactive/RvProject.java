@@ -16,49 +16,72 @@
  */
 package com.zerocracy.farm.reactive;
 
-import com.zerocracy.jstk.Farm;
+import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 /**
- * Reactive farm.
+ * Reactive project.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public final class ReactiveFarm implements Farm {
+final class RvProject implements Project {
 
     /**
-     * Original farm.
+     * Origin project.
      */
-    private final Farm origin;
+    private final Project origin;
 
     /**
-     * List of stakeholders.
+     * The spin.
      */
-    private final Collection<Stakeholder> stakeholders;
+    private final Spin spin;
 
     /**
      * Ctor.
-     * @param farm Original farm
-     * @param list Stakeholders
+     * @param pkt Project
+     * @param list List of stakeholders
      */
-    public ReactiveFarm(final Farm farm, final Collection<Stakeholder> list) {
-        this.origin = farm;
-        this.stakeholders = list;
+    RvProject(final Project pkt, final Stakeholder... list) {
+        this(pkt, Arrays.asList(list));
+    }
+
+    /**
+     * Ctor.
+     * @param pkt Project
+     * @param list List of stakeholders
+     */
+    RvProject(final Project pkt, final Collection<Stakeholder> list) {
+        this(pkt, new Spin(pkt, list));
+    }
+
+    /**
+     * Ctor.
+     * @param pkt Project
+     * @param spn Spin
+     */
+    RvProject(final Project pkt, final Spin spn) {
+        this.origin = pkt;
+        this.spin = spn;
     }
 
     @Override
-    public Iterable<Project> find(final String query) throws IOException {
-        return StreamSupport
-            .stream(this.origin.find(query).spliterator(), false)
-            .map(p -> new ReactiveProject(p, this.stakeholders))
-            .collect(Collectors.toList());
+    public String toString() {
+        return this.origin.toString();
+    }
+
+    @Override
+    public Item acq(final String file) throws IOException {
+        Item item = this.origin.acq(file);
+        if ("claims.xml".equals(file)) {
+            item = new RvItem(item, this.spin);
+        }
+        return item;
     }
 
 }

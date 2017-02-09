@@ -22,18 +22,19 @@ import com.zerocracy.jstk.fake.FkProject;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
 import com.zerocracy.stk.StkWipe;
+import java.util.Collections;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
- * Test case for {@link ReactiveProject}.
+ * Test case for {@link RvProject}.
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.11
  */
-public final class ReactiveProjectTest {
+public final class RvProjectTest {
 
     /**
      * ReactiveProject can close claims.
@@ -42,14 +43,16 @@ public final class ReactiveProjectTest {
     @Test
     public void closesClaims() throws Exception {
         final AtomicBoolean done = new AtomicBoolean();
-        final ReactiveProject project = new ReactiveProject(
-            new FkProject(),
-            new StkWipe((pkt, xml) -> done.set(true))
+        final Project raw = new FkProject();
+        final Spin spin = new Spin(
+            raw,
+            Collections.singletonList(new StkWipe((pkt, xml) -> done.set(true)))
         );
+        final RvProject project = new RvProject(raw, spin);
         try (final Claims claims = new Claims(project).lock()) {
             claims.add(new ClaimOut().type("hello").token("tt"));
         }
-        project.close();
+        spin.close();
         try (final Claims claims = new Claims(project).lock()) {
             MatcherAssert.assertThat(
                 claims.iterate(),
@@ -65,7 +68,7 @@ public final class ReactiveProjectTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void throwsIfStakeholderFails() throws Exception {
-        final Project project = new ReactiveProject(
+        final Project project = new RvProject(
             new FkProject(),
             (Stakeholder) (pkt, xml) -> {
                 throw new IllegalArgumentException("oops...");
