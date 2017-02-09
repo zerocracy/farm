@@ -288,10 +288,10 @@ public final class Main {
                             new StkWipe(new FkStakeholder()),
                             new TmOr(
                                 new TmType("ping"),
-                                new TmType("pm.scope.wbs.added"),
-                                new TmType("pm.scope.wbs.removed"),
-                                new TmType("pm.in.orders.started"),
-                                new TmType("pm.in.orders.stopped")
+                                new TmType("**.added"),
+                                new TmType("**.removed"),
+                                new TmType("**.started"),
+                                new TmType("**.stopped")
                             )
                         )
                     )

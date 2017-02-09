@@ -42,13 +42,14 @@ public final class ReactiveProjectTest {
     @Test
     public void closesClaims() throws Exception {
         final AtomicBoolean done = new AtomicBoolean();
-        final Project project = new ReactiveProject(
+        final ReactiveProject project = new ReactiveProject(
             new FkProject(),
             new StkWipe((pkt, xml) -> done.set(true))
         );
         try (final Claims claims = new Claims(project).lock()) {
             claims.add(new ClaimOut().type("hello").token("tt"));
         }
+        project.close();
         try (final Claims claims = new Claims(project).lock()) {
             MatcherAssert.assertThat(
                 claims.iterate(),

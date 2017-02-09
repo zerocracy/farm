@@ -17,8 +17,9 @@
 package com.zerocracy.farm;
 
 import com.google.common.collect.Iterators;
-import com.jcabi.aspects.Tv;
 import com.jcabi.log.Logger;
+import com.jcabi.log.VerboseRunnable;
+import com.jcabi.log.VerboseThreads;
 import com.jcabi.xml.XML;
 import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
@@ -26,13 +27,17 @@ import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.Claims;
+import java.io.Closeable;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Reactive project.
@@ -41,7 +46,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @version $Id$
  * @since 0.1
  */
-final class ReactiveProject implements Project {
+final class ReactiveProject implements Project, Runnable, Closeable {
 
     /**
      * Origin project.
@@ -54,9 +59,14 @@ final class ReactiveProject implements Project {
     private final Collection<Stakeholder> stakeholders;
 
     /**
-     * Depth.
+     * Is it running now?
      */
-    private final AtomicInteger depth;
+    private final AtomicBoolean alive;
+
+    /**
+     * Service to run.
+     */
+    private final ExecutorService service;
 
     /**
      * Ctor.
@@ -75,7 +85,8 @@ final class ReactiveProject implements Project {
     ReactiveProject(final Project pkt, final Collection<Stakeholder> list) {
         this.origin = pkt;
         this.stakeholders = list;
-        this.depth = new AtomicInteger();
+        this.alive = new AtomicBoolean();
+        this.service = Executors.newSingleThreadExecutor(new VerboseThreads());
     }
 
     @Override
@@ -92,22 +103,46 @@ final class ReactiveProject implements Project {
         return item;
     }
 
+    @Override
+    public void close() {
+        this.service.shutdown();
+        while (this.alive.get()) {
+            try {
+                TimeUnit.SECONDS.sleep(1L);
+            } catch (final InterruptedException ex) {
+                Thread.currentThread().interrupt();
+                throw new IllegalStateException(ex);
+            }
+        }
+    }
+
+    @Override
+    public void run() {
+        try {
+            this.process();
+        } catch (final IOException ex) {
+            throw new IllegalStateException(ex);
+        }
+        this.alive.set(false);
+    }
+
     /**
-     * Run through all claims in the project.
+     * Process them all.
      * @throws IOException If fails
      */
-    private void run() throws IOException {
-        this.depth.incrementAndGet();
+    private void process() throws IOException {
+        final long start = System.currentTimeMillis();
         final Collection<Long> seen = new HashSet<>(0);
-        int cycle = 0;
-        while (this.next(seen)) {
-            ++cycle;
-            if (cycle > Tv.TEN) {
-                Logger.warn(this, "Too many cycles");
+        while (true) {
+            if (!this.next(seen)) {
                 break;
             }
         }
-        this.depth.decrementAndGet();
+        Logger.info(
+            this, "Seen %d claims in \"%s\", %[ms]s",
+            seen.size(), this.toString(),
+            System.currentTimeMillis() - start
+        );
     }
 
     /**
@@ -167,8 +202,15 @@ final class ReactiveProject implements Project {
             final int total = new Xocument(this.path())
                 .nodes("/claims/claim").size();
             this.original.close();
-            if (total > 0 && ReactiveProject.this.depth.get() < Tv.TEN) {
-                ReactiveProject.this.run();
+            if (total > 0 && !ReactiveProject.this.alive.get()
+                && !ReactiveProject.this.service.isShutdown()) {
+                ReactiveProject.this.alive.set(true);
+                ReactiveProject.this.service.submit(
+                    new VerboseRunnable(
+                        ReactiveProject.this,
+                        true, true
+                    )
+                );
             }
         }
     }

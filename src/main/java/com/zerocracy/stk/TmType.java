@@ -46,7 +46,10 @@ public final class TmType implements Term {
         return new TmXpath(
             String.format(
                 "matches(type,'%s')",
-                this.type.replace(".", "\\.").replace("*", "[^\\.]+")
+                this.type
+                    .replace(".", "\\.")
+                    .replace("**", ".+")
+                    .replace("*", "[^\\.]+")
             )
         ).fits(project, xml);
     }
