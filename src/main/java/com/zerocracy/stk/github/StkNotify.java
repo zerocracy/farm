@@ -16,18 +16,24 @@
  */
 package com.zerocracy.stk.github;
 
+import com.google.common.collect.Lists;
 import com.jcabi.aspects.Tv;
+import com.jcabi.github.Bulk;
 import com.jcabi.github.Comment;
 import com.jcabi.github.Coordinates;
 import com.jcabi.github.Github;
 import com.jcabi.github.Issue;
 import com.jcabi.github.Repo;
+import com.jcabi.github.Smarts;
 import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.radars.github.GhTube;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Notify in GitHub.
@@ -59,8 +65,10 @@ public final class StkNotify implements Stakeholder {
         final Repo repo = this.github.repos().get(
             new Coordinates.Simple(parts[1])
         );
-        final Issue issue = repo.issues().get(
-            Integer.parseInt(parts[2])
+        final Issue issue = StkNotify.safe(
+            repo.issues().get(
+                Integer.parseInt(parts[2])
+            )
         );
         final String message = claim.param("message");
         if (parts.length > Tv.THREE) {
@@ -73,4 +81,52 @@ public final class StkNotify implements Stakeholder {
         }
     }
 
+    /**
+     * Return issue if it's safe to post there.
+     * @param issue Original issue
+     * @return Issue that is safe
+     * @throws IOException If fails
+     */
+    private static Issue safe(final Issue issue) throws IOException {
+        final List<Comment.Smart> comments = Lists.newArrayList(
+            new Bulk<>(
+                new Smarts<>(
+                    issue.comments().iterate(new Date(0L))
+                )
+            )
+        );
+        Collections.reverse(comments);
+        if (StkNotify.over(issue, comments)) {
+            throw new IllegalStateException(
+                String.format(
+                    "Can't post anything to %s#%d, too many comments already",
+                    issue.repo().coordinates(), issue.number()
+                )
+            );
+        }
+        return issue;
+    }
+
+    /**
+     * TRUE if too many already.
+     * @param issue Original issue
+     * @param list List of comments
+     * @return TRUE if over limit
+     * @throws IOException If fails
+     */
+    private static boolean over(final Issue issue,
+        final List<Comment.Smart> list) throws IOException {
+        final String self = issue.repo().github().users().self().login();
+        boolean over = false;
+        for (int idx = 0; idx < list.size(); ++idx) {
+            if (idx >= Tv.FIVE) {
+                over = true;
+                break;
+            }
+            if (!list.get(idx).author().login().equalsIgnoreCase(self)) {
+                break;
+            }
+        }
+        return over;
+    }
 }
