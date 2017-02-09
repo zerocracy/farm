@@ -103,7 +103,7 @@ public final class Orders {
      * @throws IOException If fails
      */
     public void resign(final String job) throws IOException {
-        if (this.assigned(job)) {
+        if (!this.assigned(job)) {
             throw new SoftException(
                 String.format(
                     "Job `%s` is not assigned to anyone",

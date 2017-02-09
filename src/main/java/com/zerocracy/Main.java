@@ -23,7 +23,7 @@ import com.jcabi.github.RtGithub;
 import com.jcabi.s3.Region;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.zerocracy.farm.PingFarm;
-import com.zerocracy.farm.ReactiveFarm;
+import com.zerocracy.farm.reactive.ReactiveFarm;
 import com.zerocracy.farm.S3Farm;
 import com.zerocracy.farm.SyncFarm;
 import com.zerocracy.jstk.Farm;

@@ -61,7 +61,11 @@ public final class StkSafe implements Stakeholder {
         } catch (final SoftException ex) {
             if (claim.hasToken()) {
                 try (final Claims claims = new Claims(project).lock()) {
-                    claims.add(new ClaimIn(xml).reply(ex.getMessage()));
+                    claims.add(
+                        new ClaimIn(xml).reply(
+                            String.format("Oops! %s", ex.getMessage())
+                        )
+                    );
                 }
             } else {
                 Logger.error(
