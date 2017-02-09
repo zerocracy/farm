@@ -160,11 +160,11 @@ public final class Main {
                 Stream
                     .of(
                         new StkByTerm(
-                            new StkNotify(github),
+                            new StkWipe(new StkNotify(github)),
                             new TmXpath("type='notify' and starts-with(token, 'github;')")
                         ),
                         new StkByTerm(
-                            new com.zerocracy.stk.slack.StkNotify(sessions),
+                            new StkWipe(new com.zerocracy.stk.slack.StkNotify(sessions)),
                             new TmXpath("type='notify' and starts-with(token, 'slack;')")
                         ),
                         new StkByTerm(

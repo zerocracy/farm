@@ -190,7 +190,7 @@ public final class ClaimOut implements Iterable<Directive> {
         public Iterator<Directive> iterator() {
             return new ClaimOut.Notify(
                 String.format(
-                    "slack;%s;%s",
+                    "slack;%s;%s;direct",
                     this.project, this.login
                 ),
                 this.msg
