@@ -61,6 +61,7 @@ public final class StkSafe implements Stakeholder {
         } catch (final SoftException ex) {
             if (claim.hasToken()) {
                 try (final Claims claims = new Claims(project).lock()) {
+                    claims.remove(claim.number());
                     claims.add(
                         new ClaimIn(xml).reply(
                             String.format("Oops! %s", ex.getMessage())
@@ -81,6 +82,7 @@ public final class StkSafe implements Stakeholder {
         } catch (final Throwable ex) {
             if (claim.hasToken()) {
                 try (final Claims claims = new Claims(project).lock()) {
+                    claims.remove(claim.number());
                     claims.add(
                         claim.reply(
                             String.join(

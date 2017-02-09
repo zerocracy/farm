@@ -45,7 +45,7 @@ public final class StkStarted implements Stakeholder {
                     project,
                     login,
                     String.format(
-                        "You've been selected as a performer for job `%s`.",
+                        "Job `%s` was assigned to you a minute ago.",
                         job
                     )
                 )

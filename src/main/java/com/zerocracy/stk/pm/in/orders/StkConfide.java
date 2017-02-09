@@ -67,7 +67,7 @@ public final class StkConfide implements Stakeholder {
                     new ClaimOut.ToUser(
                         project, login,
                         String.format(
-                            "You were assigned to `%s` because I love you.",
+                            "The job `%s` will be yours, because I love you.",
                             job
                         )
                     )
