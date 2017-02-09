@@ -251,10 +251,7 @@ public final class Main {
                         new StkByTerm(
                             new StkWipe(new StkOut()),
                             new TmType("pm.scope.wbs.out"),
-                            new TmOr(
-                                new TmXpath("not(author)"),
-                                new TmRoles("PO", "ARC")
-                            )
+                            new TmRoles("PO", "ARC")
                         ),
                         new StkByTerm(
                             new StkConfide(),

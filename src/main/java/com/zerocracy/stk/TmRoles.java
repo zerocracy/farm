@@ -128,6 +128,8 @@ public final class TmRoles implements Term {
                     break;
                 }
             }
+        } else {
+            has = true;
         }
         return has;
     }
