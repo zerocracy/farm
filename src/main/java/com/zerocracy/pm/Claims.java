@@ -95,11 +95,11 @@ public final class Claims implements Closeable {
      * @param cid Claim ID
      * @throws IOException If fails
      */
-    public void remove(final String cid) throws IOException {
+    public void remove(final long cid) throws IOException {
         new Xocument(this.item.get().path()).modify(
             new Directives().xpath(
                 String.format(
-                    "/claims/claim[@id='%s']", cid
+                    "/claims/claim[@id='%d']", cid
                 )
             ).strict(1).remove()
         );

@@ -24,6 +24,7 @@ import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
+import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.Claims;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -97,30 +98,46 @@ final class ReactiveProject implements Project {
      */
     private void run() throws IOException {
         this.depth.incrementAndGet();
-        final Collection<String> seen = new HashSet<>(0);
+        final Collection<Long> seen = new HashSet<>(0);
+        int cycle = 0;
+        while (this.next(seen)) {
+            ++cycle;
+            if (cycle > Tv.TEN) {
+                Logger.warn(this, "Too many cycles");
+                break;
+            }
+        }
+        this.depth.decrementAndGet();
+    }
+
+    /**
+     * Try again.
+     * @param seen Numbers we've seen already
+     * @return TRUE if we should check once again
+     * @throws IOException If fails
+     */
+    private boolean next(final Collection<Long> seen) throws IOException {
+        boolean more = false;
         try (final Claims claims = new Claims(this).lock()) {
-            int cycle = 0;
-            while (true) {
-                final Iterator<XML> list = Iterators.filter(
-                    claims.iterate().iterator(),
-                    input -> !seen.contains(input.xpath("@id ").get(0))
-                );
-                if (!list.hasNext()) {
-                    break;
-                }
-                ++cycle;
-                if (cycle > Tv.TEN) {
-                    Logger.warn(this, "Too many cycles");
-                    break;
-                }
+            final Iterator<XML> list = Iterators.filter(
+                claims.iterate().iterator(),
+                input -> !seen.contains(new ClaimIn(input).number())
+            );
+            if (list.hasNext()) {
                 final XML xml = list.next();
                 for (final Stakeholder stk : this.stakeholders) {
                     stk.process(this, xml);
                 }
-                seen.add(xml.xpath("@id").get(0));
+                final ClaimIn claim = new ClaimIn(xml);
+                seen.add(claim.number());
+                more = true;
+                Logger.info(
+                    this, "Seen \"%s/%d\" at \"%s\"",
+                    claim.type(), claim.number(), this.toString()
+                );
             }
         }
-        this.depth.decrementAndGet();
+        return more;
     }
 
     /**
