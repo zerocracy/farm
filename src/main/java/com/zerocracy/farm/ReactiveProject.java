@@ -117,31 +117,32 @@ final class ReactiveProject implements Project {
      * @throws IOException If fails
      */
     private boolean next(final Collection<Long> seen) throws IOException {
-        boolean more = false;
-        try (final Claims claims = new Claims(this).lock()) {
-            final Iterator<XML> list = Iterators.filter(
+        final Iterator<XML> list;
+        try (final Claims claims = new Claims(this.origin).lock()) {
+            list = Iterators.filter(
                 claims.iterate().iterator(),
-                input -> !seen.contains(new ClaimIn(input).number())
+                claim -> !seen.contains(new ClaimIn(claim).number())
             );
-            if (list.hasNext()) {
-                final XML xml = list.next();
-                final long start = System.currentTimeMillis();
-                final ClaimIn claim = new ClaimIn(xml);
-                Logger.info(
-                    this, "Found \"%s/%d\" at \"%s\"",
-                    claim.type(), claim.number(), this.toString()
-                );
-                for (final Stakeholder stk : this.stakeholders) {
-                    stk.process(this, xml);
-                }
-                seen.add(claim.number());
-                more = true;
-                Logger.info(
-                    this, "Seen \"%s/%d\" at \"%s\", %[ms]s",
-                    claim.type(), claim.number(), this.toString(),
-                    System.currentTimeMillis() - start
-                );
+        }
+        boolean more = false;
+        if (list.hasNext()) {
+            final XML xml = list.next();
+            final long start = System.currentTimeMillis();
+            final ClaimIn claim = new ClaimIn(xml);
+            Logger.info(
+                this, "Found \"%s/%d\" at \"%s\"",
+                claim.type(), claim.number(), this.toString()
+            );
+            for (final Stakeholder stk : this.stakeholders) {
+                stk.process(this, xml);
             }
+            seen.add(claim.number());
+            more = true;
+            Logger.info(
+                this, "Seen \"%s/%d\" at \"%s\", %[ms]s",
+                claim.type(), claim.number(), this.toString(),
+                System.currentTimeMillis() - start
+            );
         }
         return more;
     }

@@ -64,6 +64,15 @@ public final class StkConfide implements Stakeholder {
             final String login = logins.get(0);
             try (final Claims claims = new Claims(project).lock()) {
                 claims.add(
+                    new ClaimOut.ToUser(
+                        project, login,
+                        String.format(
+                            "You were assigned to `%s` because I love you.",
+                            job
+                        )
+                    )
+                );
+                claims.add(
                     new ClaimOut()
                         .type("pm.in.orders.start")
                         .param("job", job)

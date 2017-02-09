@@ -23,6 +23,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Pool project.
@@ -109,7 +110,11 @@ final class SyncProject implements Project {
          * @throws InterruptedException If fails
          */
         public void acquire() throws InterruptedException {
-            this.semaphore.acquire();
+            if (!this.semaphore.tryAcquire(1L, TimeUnit.MINUTES)) {
+                throw new IllegalStateException(
+                    String.format("Failed to acquire %s", this.origin)
+                );
+            }
         }
     }
 }

@@ -16,6 +16,7 @@
  */
 package com.zerocracy.stk;
 
+import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
@@ -49,9 +50,14 @@ public final class StkWipe implements Stakeholder {
     public void process(final Project project,
         final XML xml) throws IOException {
         this.origin.process(project, xml);
+        final ClaimIn claim = new ClaimIn(xml);
         try (final Claims claims = new Claims(project).lock()) {
-            claims.remove(new ClaimIn(xml).number());
+            claims.remove(claim.number());
         }
+        Logger.info(
+            this, "Wiped \"%s/%d\" in \"%s\"",
+            claim.type(), claim.number(), project
+        );
     }
 
 }
