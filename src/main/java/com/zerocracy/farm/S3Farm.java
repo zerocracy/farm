@@ -87,9 +87,7 @@ public final class S3Farm implements Farm {
             .map(
                 prefix -> new UplinkedProject(
                     new StrictProject(
-                        new SyncProject(
-                            new S3Project(this.bucket, prefix, this.temp)
-                        ),
+                        new S3Project(this.bucket, prefix, this.temp),
                         prefix.equals(S3Farm.prefix(S3Farm.PMO)),
                         prefix
                     ),

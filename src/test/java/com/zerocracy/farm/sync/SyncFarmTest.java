@@ -14,74 +14,68 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.farm;
+package com.zerocracy.farm.sync;
 
-import com.jcabi.aspects.Tv;
 import com.jcabi.s3.Bucket;
 import com.jcabi.s3.fake.FkBucket;
+import com.zerocracy.farm.S3Farm;
 import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.hr.Roles;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
- * Test case for {@link S3Farm}.
+ * Test case for {@link SyncFarm}.
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.1
+ * @since 0.10
  */
-public final class S3FarmTest {
+public final class SyncFarmTest {
 
     /**
-     * S3Farm can find a project.
+     * SyncFarm can make projects thread safe.
      * @throws Exception If some problem inside
      */
     @Test
-    public void findsProject() throws Exception {
+    public void makesProjectsThreadSafe() throws Exception {
         final Bucket bucket = new FkBucket(
             Files.createTempDirectory("").toFile(),
-            "some-bucket"
+            "the-bucket"
         );
-        final Farm farm = new S3Farm(bucket);
-        farm.find("@id = 'ABCDEF123'").iterator().next();
-        final Project project = farm.find("@id='ABCDEF123'").iterator().next();
-        final Item item = project.acq("roles.xml");
-        MatcherAssert.assertThat(
-            item.path().toFile().exists(),
-            Matchers.is(false)
-        );
-        Files.write(item.path(), "hello, world".getBytes());
-        item.close();
-        MatcherAssert.assertThat(
-            new String(Files.readAllBytes(item.path())),
-            Matchers.containsString("hello")
-        );
-    }
-
-    /**
-     * S3Farm can make projects safe.
-     * @throws Exception If some problem inside
-     */
-    @Test
-    public void makesProjectsSafe() throws Exception {
-        final Bucket bucket = new FkBucket(
-            Files.createTempDirectory("").toFile(),
-            "the-bucket-3"
-        );
-        final Farm farm = new S3Farm(bucket);
-        final Project project = farm.find("@id='ABCR2FE03'").iterator().next();
+        final Farm farm = new SyncFarm(new S3Farm(bucket));
+        final Project project = farm.find("@id='ABCZZFE03'").iterator().next();
         new Roles(project).bootstrap();
+        final int threads = Runtime.getRuntime().availableProcessors() << 2;
+        final ExecutorService service = Executors.newFixedThreadPool(threads);
+        final CountDownLatch latch = new CountDownLatch(1);
+        final Collection<Future<Boolean>> futures = new ArrayList<>(threads);
+        final String role = "PO";
         final Roles roles = new Roles(project);
-        for (int idx = 0; idx < Tv.FIVE; ++idx) {
-            final String person = String.format("yegor%d", idx);
-            final String role = "ARC";
-            roles.assign(person, role);
+        for (int thread = 0; thread < threads; ++thread) {
+            final String person = String.format("jeff%d", thread);
+            futures.add(
+                service.submit(
+                    () -> {
+                        latch.await();
+                        roles.assign(person, role);
+                        return roles.hasRole(person, role);
+                    }
+                )
+            );
+        }
+        latch.countDown();
+        for (final Future<Boolean> future : futures) {
             MatcherAssert.assertThat(
-                roles.hasRole(person, role),
+                future.get(),
                 Matchers.is(true)
             );
         }

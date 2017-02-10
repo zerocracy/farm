@@ -88,11 +88,9 @@ final class S3Project implements Project {
             );
         }
         final String key = String.format("%s%s", this.prefix, file);
-        return new SyncItem(
-            new S3Item(
-                this.bucket.ocket(key),
-                this.temp.resolve(key)
-            )
+        return new S3Item(
+            this.bucket.ocket(key),
+            this.temp.resolve(key)
         );
     }
 

@@ -14,45 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.farm;
-
-import com.zerocracy.jstk.Item;
-import java.io.IOException;
-import java.nio.file.Path;
 
 /**
- * Synchronized and thread safe item.
+ * Cost management.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.1
+ * @since 0.10
  */
-final class SyncItem implements Item {
-
-    /**
-     * Original item.
-     */
-    private final Item origin;
-
-    /**
-     * Ctor.
-     * @param item Original item
-     */
-    SyncItem(final Item item) {
-        this.origin = item;
-    }
-
-    @Override
-    public Path path() throws IOException {
-        synchronized (this.origin) {
-            return this.origin.path();
-        }
-    }
-
-    @Override
-    public void close() throws IOException {
-        synchronized (this.origin) {
-            this.origin.close();
-        }
-    }
-}
+package com.zerocracy.pm.cost;
