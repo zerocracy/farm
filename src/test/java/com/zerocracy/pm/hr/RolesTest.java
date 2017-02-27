@@ -35,8 +35,7 @@ public final class RolesTest {
      */
     @Test
     public void printsRoles() throws Exception {
-        final Roles roles = new Roles(new FkProject());
-        roles.bootstrap();
+        final Roles roles = new Roles(new FkProject()).bootstrap();
         final String person = "alex-palevsky";
         roles.assign(person, "PO");
         roles.assign(person, "DEV");

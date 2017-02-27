@@ -14,29 +14,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk;
+package com.zerocracy.farm.reactive;
 
 import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
-import com.zerocracy.pm.ClaimIn;
+import groovy.lang.Binding;
+import groovy.lang.GroovyShell;
 import java.io.IOException;
+import java.nio.file.Path;
 
 /**
- * Just say hello.
+ * Stakeholder in Groovy.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.10
  */
-public final class StkHello implements Stakeholder {
+final class GroovyStakeholder implements Stakeholder {
+
+    /**
+     * Path.
+     */
+    private final Path path;
+
+    /**
+     * Ctor.
+     * @param file File with Groovy script
+     */
+    GroovyStakeholder(final Path file) {
+        this.path = file;
+    }
 
     @Override
-    public void process(final Project project, final XML xml)
+    public void process(final Project project, final XML claim)
         throws IOException {
-        new ClaimIn(xml).reply(
-            "Hey, what's up, how is it going?"
-        ).postTo(project);
+        final Binding binding = new Binding();
+        binding.setVariable("project", project);
+        binding.setVariable("claim", claim);
+        final GroovyShell shell = new GroovyShell(binding);
+        shell.evaluate(this.path.toFile());
     }
 
 }

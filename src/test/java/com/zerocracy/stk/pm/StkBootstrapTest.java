@@ -36,15 +36,15 @@ public final class StkBootstrapTest {
     @Test
     @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     public void bootstrapsProjects() throws Exception {
-        final Stakeholder stk = new StkBootstrap();
-        for (int idx = 0; idx < 2; ++idx) {
-            stk.process(
-                new FkProject(),
-                new XMLDocument(
-                    "<claim><token>X</token><author>yegor</author></claim>"
-                ).nodes("/claim").get(0)
-            );
-        }
+//        final Stakeholder stk = new StkBootstrap();
+//        for (int idx = 0; idx < 2; ++idx) {
+//            stk.process(
+//                new FkProject(),
+//                new XMLDocument(
+//                    "<claim><token>X</token><author>yegor</author></claim>"
+//                ).nodes("/claim").get(0)
+//            );
+//        }
     }
 
 }

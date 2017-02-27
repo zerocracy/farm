@@ -14,29 +14,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk;
+package com.zerocracy.stk.pmo.profile.rate;
 
 import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
+import com.zerocracy.jstk.cash.Cash;
 import com.zerocracy.pm.ClaimIn;
+import com.zerocracy.pmo.People;
 import java.io.IOException;
 
 /**
- * Just say hello.
+ * Set rate of the user.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.10
+ * @since 0.1
  */
-public final class StkHello implements Stakeholder {
+public final class StkSet implements Stakeholder {
 
     @Override
-    public void process(final Project project, final XML xml)
-        throws IOException {
-        new ClaimIn(xml).reply(
-            "Hey, what's up, how is it going?"
-        ).postTo(project);
+    public void process(final Project pmo,
+        final XML xml) throws IOException {
+        final People people = new People(pmo).bootstrap();
+        final ClaimIn claim = new ClaimIn(xml);
+        final String login = claim.param("person");
+        final Cash rate = new Cash.S(claim.param("rate"));
+        people.rate(login, rate);
+        claim.reply(
+            String.format(
+                "Rate of \"%s\" set to %s.",
+                login,
+                rate
+            )
+        ).postTo(pmo);
     }
 
 }

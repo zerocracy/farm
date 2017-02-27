@@ -16,66 +16,55 @@
  */
 package com.zerocracy.farm.reactive;
 
+import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.fake.FkProject;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
-import java.util.Collections;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
- * Test case for {@link RvProject}.
+ * Test case for {@link Brigade}.
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.11
  */
-public final class RvProjectTest {
+public final class BrigadeTest {
 
     /**
-     * ReactiveProject can close claims.
+     * Brigade can parse Groovy.
      * @throws Exception If some problem inside
      */
     @Test
-    public void closesClaims() throws Exception {
-        final AtomicBoolean done = new AtomicBoolean();
-        final Project raw = new FkProject();
-        final Spin spin = new Spin(
-            raw,
-            Collections.singletonList((pkt, xml) -> done.set(true))
+    public void parsesGroovy() throws Exception {
+        final Path path = Files.createTempDirectory("");
+        final Path file = path.resolve("a/b/c/test.groovy");
+        file.getParent().toFile().mkdirs();
+        Files.write(
+            file,
+            String.join(
+                "\n",
+                "import com.zerocracy.pm.ClaimOut",
+                "new ClaimOut().type('one more').postTo(project)"
+            ).getBytes()
         );
-        final RvProject project = new RvProject(raw, spin);
+        final Project project = new FkProject();
+        new ClaimOut().type("just some fun").postTo(project);
+        final XML xml;
         try (final Claims claims = new Claims(project).lock()) {
-            claims.add(new ClaimOut().type("hello").token("tt"));
+            xml = claims.iterate().iterator().next();
         }
-        spin.close();
+        final Brigade brigade = new Brigade().append(path);
+        brigade.process(project, xml);
         try (final Claims claims = new Claims(project).lock()) {
             MatcherAssert.assertThat(
                 claims.iterate(),
-                Matchers.hasSize(0)
+                Matchers.hasSize(2)
             );
-        }
-        MatcherAssert.assertThat(done.get(), Matchers.is(true));
-    }
-
-    /**
-     * ReactiveProject can throw an exception when stakeholder fails.
-     * @throws Exception If some problem inside
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void throwsIfStakeholderFails() throws Exception {
-        final Project project = new RvProject(
-            new FkProject(),
-            Collections.singletonList(
-                (pkt, xml) -> {
-                    throw new IllegalArgumentException("oops...");
-                }
-            )
-        );
-        try (final Claims claims = new Claims(project).lock()) {
-            claims.add(new ClaimOut().type("bye").token("xx"));
         }
     }
 

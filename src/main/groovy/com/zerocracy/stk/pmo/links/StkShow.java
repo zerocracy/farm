@@ -14,28 +14,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk;
+package com.zerocracy.stk.pmo.links;
 
 import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
+import com.zerocracy.pmo.Catalog;
 import java.io.IOException;
+import java.util.Collection;
 
 /**
- * Just say hello.
+ * Show all links.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.10
+ * @since 0.8
  */
-public final class StkHello implements Stakeholder {
+public final class StkShow implements Stakeholder {
 
     @Override
-    public void process(final Project project, final XML xml)
-        throws IOException {
-        new ClaimIn(xml).reply(
-            "Hey, what's up, how is it going?"
+    public void process(final Project project,
+        final XML xml) throws IOException {
+        final ClaimIn claim = new ClaimIn(xml);
+        final String pid = claim.param("project");
+        final Collection<String> links = new Catalog(project).links(pid);
+        claim.reply(
+            String.format(
+                "This project is linked with %d resources: `%s`.",
+                links.size(),
+                String.join("`, `", links)
+            )
         ).postTo(project);
     }
 

@@ -18,9 +18,7 @@ package com.zerocracy.farm.reactive;
 
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.Stakeholder;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -39,25 +37,25 @@ public final class RvFarm implements Farm {
     private final Farm origin;
 
     /**
-     * List of stakeholders.
+     * Brigade.
      */
-    private final Collection<Stakeholder> stakeholders;
+    private final Brigade brigade;
 
     /**
      * Ctor.
      * @param farm Original farm
-     * @param list Stakeholders
+     * @param bgd Stakeholders
      */
-    public RvFarm(final Farm farm, final Collection<Stakeholder> list) {
+    public RvFarm(final Farm farm, final Brigade bgd) {
         this.origin = farm;
-        this.stakeholders = list;
+        this.brigade = bgd;
     }
 
     @Override
     public Iterable<Project> find(final String query) throws IOException {
         return StreamSupport
             .stream(this.origin.find(query).spliterator(), false)
-            .map(p -> new RvProject(p, this.stakeholders))
+            .map(p -> new RvProject(p, this.brigade))
             .collect(Collectors.toList());
     }
 

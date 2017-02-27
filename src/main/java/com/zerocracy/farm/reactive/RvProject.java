@@ -20,7 +20,6 @@ import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collection;
 
 /**
@@ -45,19 +44,19 @@ final class RvProject implements Project {
     /**
      * Ctor.
      * @param pkt Project
-     * @param list List of stakeholders
+     * @param list List of them
      */
-    RvProject(final Project pkt, final Stakeholder... list) {
-        this(pkt, Arrays.asList(list));
+    RvProject(final Project pkt, final Collection<Stakeholder> list) {
+        this(pkt, new Brigade(list));
     }
 
     /**
      * Ctor.
      * @param pkt Project
-     * @param list List of stakeholders
+     * @param brigade Brigade
      */
-    RvProject(final Project pkt, final Collection<Stakeholder> list) {
-        this(pkt, new Spin(pkt, list));
+    RvProject(final Project pkt, final Brigade brigade) {
+        this(pkt, new Spin(pkt, brigade));
     }
 
     /**

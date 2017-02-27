@@ -17,6 +17,7 @@
 package com.zerocracy.pm;
 
 import com.zerocracy.jstk.Project;
+import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
@@ -65,11 +66,21 @@ public final class ClaimOut implements Iterable<Directive> {
     }
 
     /**
+     * Post it to the project.
+     * @param project Project
+     */
+    public void postTo(final Project project) throws IOException {
+        try (final Claims claims = new Claims(project).lock()) {
+            claims.add(this);
+        }
+    }
+
+    /**
      * With this type.
      * @param type The type
      * @return This
      */
-    public ClaimOut type(final Object type) {
+    public ClaimOut type(final String type) {
         this.dirs.add("type").set(type).up();
         return this;
     }
@@ -143,15 +154,24 @@ public final class ClaimOut implements Iterable<Directive> {
          * @param tkn Token
          * @param message Message
          */
-        public Notify(final String tkn,
-            final String message) {
+        public Notify(final String tkn, final String message) {
             this.token = tkn;
             this.msg = message;
         }
         @Override
         public Iterator<Directive> iterator() {
+            final String type;
+            if (this.token.startsWith("slack;")) {
+                type = "notify in slack";
+            } else if (this.token.startsWith("github;")) {
+                type = "notify in github";
+            } else {
+                throw new IllegalArgumentException(
+                    String.format("Unknown token: \"%s\"", this.token)
+                );
+            }
             return new ClaimOut()
-                .type("notify")
+                .type(type)
                 .token(this.token)
                 .param("message", this.msg)
                 .iterator();

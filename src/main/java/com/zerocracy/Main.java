@@ -24,10 +24,10 @@ import com.jcabi.s3.Region;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.zerocracy.farm.PingFarm;
 import com.zerocracy.farm.S3Farm;
+import com.zerocracy.farm.reactive.Brigade;
 import com.zerocracy.farm.reactive.RvFarm;
 import com.zerocracy.farm.sync.SyncFarm;
 import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.fake.FkStakeholder;
 import com.zerocracy.radars.github.GhookRadar;
 import com.zerocracy.radars.github.GithubFetch;
 import com.zerocracy.radars.github.RbByActions;
@@ -50,40 +50,14 @@ import com.zerocracy.radars.slack.ReProfile;
 import com.zerocracy.radars.slack.ReProject;
 import com.zerocracy.radars.slack.ReSafe;
 import com.zerocracy.radars.slack.SlackRadar;
-import com.zerocracy.stk.StkByTerm;
-import com.zerocracy.stk.StkHello;
-import com.zerocracy.stk.StkSafe;
-import com.zerocracy.stk.StkWipe;
-import com.zerocracy.stk.TmOr;
-import com.zerocracy.stk.TmRoles;
-import com.zerocracy.stk.TmType;
-import com.zerocracy.stk.TmXpath;
-import com.zerocracy.stk.github.StkNotify;
-import com.zerocracy.stk.github.StkRemoveAssignee;
-import com.zerocracy.stk.github.StkSetAssignee;
-import com.zerocracy.stk.pm.StkBootstrap;
-import com.zerocracy.stk.pm.hr.roles.StkAssign;
-import com.zerocracy.stk.pm.hr.roles.StkResign;
-import com.zerocracy.stk.pm.in.orders.StkConfide;
-import com.zerocracy.stk.pm.in.orders.StkStart;
-import com.zerocracy.stk.pm.in.orders.StkStarted;
-import com.zerocracy.stk.pm.in.orders.StkStop;
-import com.zerocracy.stk.pm.scope.wbs.StkInto;
-import com.zerocracy.stk.pm.scope.wbs.StkOut;
-import com.zerocracy.stk.pmo.StkParent;
-import com.zerocracy.stk.pmo.links.StkAdd;
-import com.zerocracy.stk.pmo.links.StkRemove;
-import com.zerocracy.stk.pmo.links.StkShow;
-import com.zerocracy.stk.pmo.profile.rate.StkSet;
 import com.zerocracy.tk.TkAlias;
 import com.zerocracy.tk.TkApp;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.takes.facets.fork.FkRegex;
 import org.takes.http.Exit;
 import org.takes.http.FtCli;
@@ -157,146 +131,7 @@ public final class Main {
                         ).bucket(props.getProperty("s3.bucket"))
                     )
                 ),
-                Stream
-                    .of(
-                        new StkByTerm(
-                            new StkWipe(new StkNotify(github)),
-                            new TmXpath("type='notify' and starts-with(token, 'github;')")
-                        ),
-                        new StkByTerm(
-                            new StkWipe(new com.zerocracy.stk.slack.StkNotify(sessions)),
-                            new TmXpath("type='notify' and starts-with(token, 'slack;')")
-                        ),
-                        new StkByTerm(
-                            new StkWipe(new StkHello()),
-                            new TmType("hello")
-                        ),
-                        new StkByTerm(
-                            new StkWipe(new StkBootstrap()),
-                            new TmType("pm.bootstrap")
-                        ),
-                        new StkByTerm(
-                            new StkWipe(new StkAdd(github)),
-                            new TmType("pmo.links.add"),
-                            new TmRoles("PO")
-                        ),
-                        new StkByTerm(
-                            new StkWipe(new StkRemove()),
-                            new TmType("pmo.links.remove"),
-                            new TmRoles("PO")
-                        ),
-                        new StkByTerm(
-                            new StkWipe(new StkShow()),
-                            new TmType("pmo.links.show"),
-                            new TmRoles("PO")
-                        ),
-                        new StkByTerm(
-                            new StkWipe(new StkParent()),
-                            new TmType("pmo.parent.set"),
-                            new TmRoles("PO")
-                        ),
-                        new StkByTerm(
-                            new StkWipe(new StkSet()),
-                            new TmType("pmo.profile.rate.set")
-                        ),
-                        new StkByTerm(
-                            new StkWipe(new com.zerocracy.stk.pmo.profile.rate.StkShow()),
-                            new TmType("pmo.profile.rate.show")
-                        ),
-                        new StkByTerm(
-                            new StkWipe(new com.zerocracy.stk.pmo.profile.wallet.StkSet()),
-                            new TmType("pmo.profile.wallet.set")
-                        ),
-                        new StkByTerm(
-                            new StkWipe(new com.zerocracy.stk.pmo.profile.wallet.StkShow()),
-                            new TmType("pmo.profile.wallet.show")
-                        ),
-                        new StkByTerm(
-                            new StkWipe(new com.zerocracy.stk.pmo.profile.skills.StkAdd()),
-                            new TmType("pmo.profile.skills.add")
-                        ),
-                        new StkByTerm(
-                            new StkWipe(new com.zerocracy.stk.pmo.profile.skills.StkShow()),
-                            new TmType("pmo.profile.skills.show")
-                        ),
-                        new StkByTerm(
-                            new StkWipe(new com.zerocracy.stk.pmo.profile.aliases.StkShow()),
-                            new TmType("pmo.profile.aliases.show")
-                        ),
-                        new StkByTerm(
-                            new StkWipe(new StkAssign(github)),
-                            new TmType("pm.hr.roles.add"),
-                            new TmRoles("PO")
-                        ),
-                        new StkByTerm(
-                            new StkWipe(new StkResign()),
-                            new TmType("pm.hr.roles.remove"),
-                            new TmRoles("PO")
-                        ),
-                        new StkByTerm(
-                            new StkWipe(new com.zerocracy.stk.pm.hr.roles.StkShow()),
-                            new TmType("pm.hr.roles.show"),
-                            new TmRoles("PO", "ARC")
-                        ),
-                        new StkByTerm(
-                            new StkWipe(new com.zerocracy.stk.pm.scope.wbs.StkShow()),
-                            new TmType("pm.scope.wbs.show"),
-                            new TmRoles("PO", "ARC")
-                        ),
-                        new StkByTerm(
-                            new StkWipe(new StkInto()),
-                            new TmType("pm.scope.wbs.in"),
-                            new TmRoles("PO", "ARC")
-                        ),
-                        new StkByTerm(
-                            new StkWipe(new StkOut()),
-                            new TmType("pm.scope.wbs.out"),
-                            new TmRoles("PO", "ARC")
-                        ),
-                        new StkByTerm(
-                            new StkConfide(),
-                            new TmOr(
-                                new TmType("ping"),
-                                new TmType("pm.scope.wbs.*"),
-                                new TmType("pm.hr.roles.*")
-                            )
-                        ),
-                        new StkByTerm(
-                            new StkWipe(new StkStart()),
-                            new TmType("pm.in.orders.start"),
-                            new TmRoles("PO", "ARC")
-                        ),
-                        new StkByTerm(
-                            new StkStarted(),
-                            new TmType("pm.in.orders.started")
-                        ),
-                        new StkByTerm(
-                            new StkSetAssignee(github),
-                            new TmType("pm.in.orders.started"),
-                            new TmXpath("params/param[@name='job' and starts-with(.,'gh:')]")
-                        ),
-                        new StkByTerm(
-                            new StkWipe(new StkStop()),
-                            new TmType("pm.in.orders.stop")
-                        ),
-                        new StkByTerm(
-                            new StkRemoveAssignee(github),
-                            new TmType("pm.in.orders.stopped"),
-                            new TmXpath("params/param[@name='job' and starts-with(.,'gh:')]")
-                        ),
-                        new StkByTerm(
-                            new StkWipe(new FkStakeholder()),
-                            new TmOr(
-                                new TmType("ping"),
-                                new TmType("**.added"),
-                                new TmType("**.removed"),
-                                new TmType("**.started"),
-                                new TmType("**.stopped")
-                            )
-                        )
-                    )
-                    .map(StkSafe::new)
-                    .collect(Collectors.toList())
+                new Brigade().append(Paths.get("/tmp"))
             )
         );
         final SlackRadar skradar = new SlackRadar(

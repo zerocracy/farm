@@ -16,7 +16,6 @@
  */
 package com.zerocracy.farm.reactive;
 
-import com.google.common.collect.Iterators;
 import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseRunnable;
 import com.jcabi.log.VerboseThreads;
@@ -28,8 +27,8 @@ import com.zerocracy.pm.Claims;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -52,7 +51,7 @@ final class Spin implements Runnable, Closeable {
     /**
      * List of stakeholders.
      */
-    private final Collection<Stakeholder> stakeholders;
+    private final Brigade brigade;
 
     /**
      * Is it running now?
@@ -70,8 +69,17 @@ final class Spin implements Runnable, Closeable {
      * @param list List of stakeholders
      */
     Spin(final Project pkt, final Collection<Stakeholder> list) {
+        this(pkt, new Brigade(list));
+    }
+
+    /**
+     * Ctor.
+     * @param pkt Project
+     * @param bgd Brigade
+     */
+    Spin(final Project pkt, final Brigade bgd) {
         this.project = pkt;
-        this.stakeholders = list;
+        this.brigade = bgd;
         this.alive = new AtomicBoolean();
         this.service = Executors.newSingleThreadExecutor(new VerboseThreads());
     }
@@ -120,50 +128,57 @@ final class Spin implements Runnable, Closeable {
      */
     private void process() throws IOException {
         final long start = System.currentTimeMillis();
-        final Collection<Long> seen = new HashSet<>(0);
+        int total = 0;
         while (true) {
-            if (!this.next(seen)) {
+            final Iterator<XML> found = this.find().iterator();
+            if (!found.hasNext()) {
                 break;
             }
+            this.process(found.next());
+            ++total;
         }
-        Logger.info(
-            this, "Seen %d claims in \"%s\", %[ms]s",
-            seen.size(), this.toString(),
-            System.currentTimeMillis() - start
-        );
-    }
-
-    /**
-     * Try again.
-     * @param seen Numbers we've seen already
-     * @return TRUE if we should check once again
-     * @throws IOException If fails
-     */
-    private boolean next(final Collection<Long> seen) throws IOException {
-        final Iterator<XML> list;
-        try (final Claims claims = new Claims(this.project).lock()) {
-            list = Iterators.filter(
-                claims.iterate().iterator(),
-                claim -> !seen.contains(new ClaimIn(claim).number())
-            );
-        }
-        boolean more = false;
-        if (list.hasNext()) {
-            final XML xml = list.next();
-            final long start = System.currentTimeMillis();
-            final ClaimIn claim = new ClaimIn(xml);
-            for (final Stakeholder stk : this.stakeholders) {
-                stk.process(this.project, xml);
-            }
-            seen.add(claim.number());
-            more = true;
+        if (total > 0) {
             Logger.info(
-                this, "Seen \"%s/%d\" at \"%s\", %[ms]s",
-                claim.type(), claim.number(), this.toString(),
+                this, "Seen %d claims in \"%s\", %[ms]s",
+                total, this.toString(),
                 System.currentTimeMillis() - start
             );
         }
-        return more;
+    }
+
+    /**
+     * Find the next claim.
+     * @return Empty or not
+     * @throws IOException If fails
+     */
+    private Iterable<XML> find() throws IOException {
+        final Collection<XML> found = new LinkedList<>();
+        try (final Claims claims = new Claims(this.project).lock()) {
+            final Iterator<XML> list = claims.iterate().iterator();
+            if (list.hasNext()) {
+                found.add(list.next());
+            }
+        }
+        return found;
+    }
+
+    /**
+     * Process it.
+     * @param xml The claim
+     * @throws IOException If fails
+     */
+    private void process(final XML xml) throws IOException {
+        final long start = System.currentTimeMillis();
+        final ClaimIn claim = new ClaimIn(xml);
+        this.brigade.process(this.project, xml);
+        try (final Claims claims = new Claims(this.project).lock()) {
+            claims.remove(claim.number());
+        }
+        Logger.info(
+            this, "Seen \"%s/%d\" at \"%s\", %[ms]s",
+            claim.type(), claim.number(), this.toString(),
+            System.currentTimeMillis() - start
+        );
     }
 
 }

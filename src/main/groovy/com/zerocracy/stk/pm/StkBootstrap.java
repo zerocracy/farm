@@ -14,28 +14,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk;
+package com.zerocracy.stk.pm;
 
 import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
+import com.zerocracy.pm.hr.Roles;
+import com.zerocracy.pm.scope.Wbs;
 import java.io.IOException;
 
 /**
- * Just say hello.
+ * Bootstrap a project.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.10
+ * @since 0.1
  */
-public final class StkHello implements Stakeholder {
+public final class StkBootstrap implements Stakeholder {
 
     @Override
-    public void process(final Project project, final XML xml)
-        throws IOException {
+    public void process(final Project project,
+        final XML xml) throws IOException {
+        new Wbs(project).bootstrap();
+        final Roles roles = new Roles(project).bootstrap();
+        final String role = "PO";
+        final String author = new ClaimIn(xml).author();
+        if (!roles.hasRole(author, role)) {
+            roles.assign(author, role);
+        }
         new ClaimIn(xml).reply(
-            "Hey, what's up, how is it going?"
+            String.join(
+                " ",
+                "I'm ready to manage a project.",
+                "When you're ready, you can start giving me commands,",
+                "always prefixing your messages with my name."
+            )
         ).postTo(project);
     }
 

@@ -14,29 +14,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk;
+package com.zerocracy.stk.pmo.profile.wallet;
 
 import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
+import com.zerocracy.pmo.People;
 import java.io.IOException;
 
 /**
- * Just say hello.
+ * Set wallet of the user.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.10
+ * @since 0.9
  */
-public final class StkHello implements Stakeholder {
+public final class StkSet implements Stakeholder {
 
     @Override
-    public void process(final Project project, final XML xml)
-        throws IOException {
-        new ClaimIn(xml).reply(
-            "Hey, what's up, how is it going?"
-        ).postTo(project);
+    public void process(final Project pmo,
+        final XML xml) throws IOException {
+        final People people = new People(pmo).bootstrap();
+        final ClaimIn claim = new ClaimIn(xml);
+        final String login = claim.param("person");
+        final String bank = claim.param("bank");
+        final String wallet = claim.param("wallet");
+        people.wallet(login, bank, wallet);
+        claim.reply(
+            String.format(
+                "Wallet of \"%s\" set to `%s:%s`.",
+                login,
+                bank, wallet
+            )
+        ).postTo(pmo);
     }
 
 }

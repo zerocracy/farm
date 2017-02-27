@@ -14,28 +14,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk;
+package com.zerocracy.stk.pmo.links;
 
 import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
+import com.zerocracy.pmo.Catalog;
 import java.io.IOException;
 
 /**
- * Just say hello.
+ * Remove a resource to the project.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.10
+ * @since 0.1
  */
-public final class StkHello implements Stakeholder {
+public final class StkRemove implements Stakeholder {
 
     @Override
-    public void process(final Project project, final XML xml)
-        throws IOException {
-        new ClaimIn(xml).reply(
-            "Hey, what's up, how is it going?"
+    public void process(final Project project,
+        final XML xml) throws IOException {
+        final ClaimIn claim = new ClaimIn(xml);
+        final String pid = claim.param("project");
+        final String rel = claim.param("rel");
+        final String href = claim.param("href");
+        new Catalog(project).unlink(pid, rel, href);
+        claim.reply(
+            String.format(
+                "Link removed from `%s` to rel=`%s` and href=`%s`.",
+                pid, rel, href
+            )
         ).postTo(project);
     }
 

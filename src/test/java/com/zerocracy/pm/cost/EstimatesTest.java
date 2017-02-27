@@ -14,29 +14,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk;
+package com.zerocracy.pm.cost;
 
-import com.jcabi.xml.XML;
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.Stakeholder;
-import com.zerocracy.pm.ClaimIn;
-import java.io.IOException;
+import com.zerocracy.jstk.cash.Cash;
+import com.zerocracy.jstk.fake.FkProject;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Test;
 
 /**
- * Just say hello.
- *
+ * Test case for {@link Estimates}.
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.10
  */
-public final class StkHello implements Stakeholder {
+public final class EstimatesTest {
 
-    @Override
-    public void process(final Project project, final XML xml)
-        throws IOException {
-        new ClaimIn(xml).reply(
-            "Hey, what's up, how is it going?"
-        ).postTo(project);
+    /**
+     * Estimates them.
+     * @throws Exception If some problem inside
+     */
+    @Test
+    public void estimatesJobs() throws Exception {
+        final Estimates estimates = new Estimates(new FkProject()).bootstrap();
+        final String job = "gh:yegor256/pdd#4";
+        estimates.update(job, new Cash.S("$45"));
+        MatcherAssert.assertThat(
+            estimates.get(job),
+            Matchers.equalTo(new Cash.S("$45.00"))
+        );
     }
 
 }

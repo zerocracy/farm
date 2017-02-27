@@ -14,29 +14,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk;
+package com.zerocracy.stk.pmo;
 
 import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
+import com.zerocracy.pmo.Catalog;
 import java.io.IOException;
 
 /**
- * Just say hello.
+ * Set father project.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.10
+ * @since 0.1
  */
-public final class StkHello implements Stakeholder {
+public final class StkParent implements Stakeholder {
 
     @Override
-    public void process(final Project project, final XML xml)
-        throws IOException {
-        new ClaimIn(xml).reply(
-            "Hey, what's up, how is it going?"
-        ).postTo(project);
+    public void process(final Project pmo,
+        final XML xml) throws IOException {
+        final ClaimIn claim = new ClaimIn(xml);
+        final String child = claim.param("child");
+        final String parent = claim.param("parent");
+        new Catalog(pmo).parent(child, parent);
+        claim.reply(
+            String.format(
+                "Done, project `%s` is a child of `%s`.",
+                child, parent
+            )
+        ).postTo(pmo);
     }
 
 }

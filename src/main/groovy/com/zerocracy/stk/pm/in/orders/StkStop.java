@@ -14,29 +14,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk;
+package com.zerocracy.stk.pm.in.orders;
 
 import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
+import com.zerocracy.pm.ClaimOut;
+import com.zerocracy.pm.in.Orders;
 import java.io.IOException;
 
 /**
- * Just say hello.
+ * Resign from a task.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.10
  */
-public final class StkHello implements Stakeholder {
+public final class StkStop implements Stakeholder {
 
     @Override
-    public void process(final Project project, final XML xml)
-        throws IOException {
-        new ClaimIn(xml).reply(
-            "Hey, what's up, how is it going?"
+    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
+    public void process(final Project project,
+        final XML xml) throws IOException {
+        final ClaimIn claim = new ClaimIn(xml);
+        final String job = claim.param("job");
+        final Orders orders = new Orders(project).bootstrap();
+        final String performer = orders.performer(job);
+        orders.resign(job);
+        claim.reply(
+            String.format(
+                "@%s resigned from `%s`, please stop working.",
+                performer, job
+            )
         ).postTo(project);
+        new ClaimOut().type(StkConfide.class).postTo(project);
     }
 
 }
