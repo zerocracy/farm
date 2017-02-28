@@ -23,7 +23,6 @@ import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.cash.Cash;
 import com.zerocracy.jstk.cash.Currency;
-import com.zerocracy.stk.SoftException;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;

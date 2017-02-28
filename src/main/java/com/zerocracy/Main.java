@@ -26,8 +26,10 @@ import com.zerocracy.farm.PingFarm;
 import com.zerocracy.farm.S3Farm;
 import com.zerocracy.farm.reactive.Brigade;
 import com.zerocracy.farm.reactive.RvFarm;
+import com.zerocracy.farm.reactive.StkGroovy;
 import com.zerocracy.farm.sync.SyncFarm;
 import com.zerocracy.jstk.Farm;
+import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.radars.github.GhookRadar;
 import com.zerocracy.radars.github.GithubFetch;
 import com.zerocracy.radars.github.RbByActions;
@@ -50,14 +52,16 @@ import com.zerocracy.radars.slack.ReProfile;
 import com.zerocracy.radars.slack.ReProject;
 import com.zerocracy.radars.slack.ReSafe;
 import com.zerocracy.radars.slack.SlackRadar;
+import com.zerocracy.stk.StkSafe;
 import com.zerocracy.tk.TkAlias;
 import com.zerocracy.tk.TkApp;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 import org.takes.facets.fork.FkRegex;
 import org.takes.http.Exit;
 import org.takes.http.FtCli;
@@ -119,6 +123,30 @@ public final class Main {
             props.getProperty("github.0crat.password")
         );
         final Map<String, SlackSession> sessions = new ConcurrentHashMap<>(0);
+        final Stakeholder[] stakeholders = {
+            new StkGroovy("pm/hr/roles/show-all-roles.groovy"),
+            new StkGroovy("pm/comm/notify.groovy"),
+            new StkGroovy(
+                "pm/comm/notify-in-slack.groovy",
+                new StkGroovy.Pair("sessions", sessions)
+            ),
+            new StkGroovy(
+                "pm/comm/notify-in-github.groovy",
+                new StkGroovy.Pair("github", github)
+            ),
+            new StkGroovy(
+                "pm/in/orders/set-assignee.groovy",
+                new StkGroovy.Pair("github", github)
+            ),
+            new StkGroovy(
+                "pm/in/orders/remove-assignee.groovy",
+                new StkGroovy.Pair("github", github)
+            ),
+            new StkGroovy(
+                "pm/hr/roles/follow-on-github.groovy",
+                new StkGroovy.Pair("github", github)
+            )
+        };
         final Farm farm = new PingFarm(
             new RvFarm(
                 new SyncFarm(
@@ -131,7 +159,11 @@ public final class Main {
                         ).bucket(props.getProperty("s3.bucket"))
                     )
                 ),
-                new Brigade().append(Paths.get("/tmp"))
+                new Brigade(
+                    Arrays.stream(stakeholders)
+                        .map(StkSafe::new)
+                        .collect(Collectors.toList())
+                )
             )
         );
         final SlackRadar skradar = new SlackRadar(

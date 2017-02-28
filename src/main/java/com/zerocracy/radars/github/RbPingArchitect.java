@@ -20,7 +20,6 @@ import com.jcabi.github.Github;
 import com.jcabi.github.Issue;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.pm.hr.Roles;
-import com.zerocracy.stk.SoftException;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Locale;

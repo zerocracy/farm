@@ -17,7 +17,9 @@
 package com.zerocracy.pm;
 
 import com.jcabi.xml.XML;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Claim coming in.
@@ -52,6 +54,19 @@ public final class ClaimIn {
                 this.token(), msg
             )
         );
+    }
+
+    /**
+     * Make a copy.
+     * @return OutClaim
+     */
+    public ClaimOut copy() {
+        final ClaimOut out = new ClaimOut();
+        out.type(this.type());
+        out.token(this.token());
+        out.author(this.author());
+        out.params(this.params());
+        return out;
     }
 
     /**
@@ -124,6 +139,21 @@ public final class ClaimIn {
             );
         }
         return params.next();
+    }
+
+    /**
+     * Get all params.
+     * @return All params
+     */
+    public Map<String, String> params() {
+        final Map<String, String> map = new HashMap<>(0);
+        for (final XML param : this.xml.nodes("params/param")) {
+            map.put(
+                param.xpath("@name").get(0),
+                param.xpath("text()").get(0)
+            );
+        }
+        return map;
     }
 
 }

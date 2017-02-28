@@ -21,7 +21,6 @@ import com.jcabi.xml.XSLDocument;
 import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
-import com.zerocracy.stk.SoftException;
 import java.io.IOException;
 import java.util.Collection;
 import org.xembly.Directives;

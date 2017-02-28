@@ -14,56 +14,58 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.farm.reactive;
+package com.zerocracy.farm.assumptions;
 
 import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.Stakeholder;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
 
 /**
- * Brigade of stakeholders.
+ * Assumptions for stakeholder.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.10
+ * @since 0.11
  */
-public final class Brigade {
+public final class Assume {
 
     /**
-     * Full list.
+     * Project.
      */
-    private final Collection<Stakeholder> list;
+    private final Project project;
 
     /**
-     * Ctor.
-     * @param lst List of stakeholders
+     * Claim.
      */
-    public Brigade(final Stakeholder... lst) {
-        this(Arrays.asList(lst));
-    }
+    private final XML xml;
 
     /**
      * Ctor.
-     * @param lst List of stakeholders
+     * @param pkt Project
+     * @param claim Claim
      */
-    public Brigade(final Collection<Stakeholder> lst) {
-        this.list = lst;
+    public Assume(final Project pkt, final XML claim) {
+        this.project = pkt;
+        this.xml = claim;
     }
 
     /**
-     * Process this claim.
-     * @param project Project
-     * @param xml XML to process
-     * @throws IOException If fails
+     * Roles.
+     * @param type Type to apply
      */
-    public void process(final Project project, final XML xml)
-        throws IOException {
-        for (final Stakeholder stk : this.list) {
-            stk.process(project, xml);
-        }
+    public AeType type(final String type) {
+        return new AeType(
+            this.project, this.xml, type
+        );
+    }
+
+    /**
+     * Roles.
+     * @param roles List of roles
+     */
+    public AeRoles roles(final String... roles) {
+        return new AeRoles(
+            this.project, this.xml, roles
+        );
     }
 
 }

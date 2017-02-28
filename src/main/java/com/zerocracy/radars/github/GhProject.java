@@ -21,7 +21,6 @@ import com.jcabi.github.Repo;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
-import com.zerocracy.stk.SoftException;
 import java.io.IOException;
 import java.util.Iterator;
 

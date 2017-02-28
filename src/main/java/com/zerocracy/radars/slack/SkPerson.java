@@ -19,7 +19,6 @@ package com.zerocracy.radars.slack;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.pmo.People;
-import com.zerocracy.stk.SoftException;
 import java.io.IOException;
 import java.util.Iterator;
 import org.takes.misc.Href;

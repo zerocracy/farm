@@ -58,7 +58,9 @@ public final class BrigadeTest {
         try (final Claims claims = new Claims(project).lock()) {
             xml = claims.iterate().iterator().next();
         }
-        final Brigade brigade = new Brigade().append(path);
+        final Brigade brigade = new Brigade(
+            new StkGroovy(file)
+        );
         brigade.process(project, xml);
         try (final Claims claims = new Claims(project).lock()) {
             MatcherAssert.assertThat(
