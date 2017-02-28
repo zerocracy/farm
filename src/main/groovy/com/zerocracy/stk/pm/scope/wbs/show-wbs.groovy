@@ -22,7 +22,7 @@ import com.zerocracy.pm.scope.Wbs
 assume.type('show WBS').exact()
 assume.roles('PO').exist()
 
-final ClaimIn claim = new ClaimIn(xml)
+ClaimIn claim = new ClaimIn(xml)
 claim.reply(
   String.format(
     "This is what we have in WBS:%n%n%s",

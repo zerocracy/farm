@@ -24,9 +24,9 @@ assume.type('bootstrap').exact()
 assume.roles('PO').exist()
 
 new Wbs(project).bootstrap()
-final Roles roles = new Roles(project).bootstrap()
-final String role = "PO"
-final String author = new ClaimIn(xml).author()
+Roles roles = new Roles(project).bootstrap()
+String role = "PO"
+String author = new ClaimIn(xml).author()
 if (!roles.hasRole(author, role)) {
   roles.assign(author, role)
 }

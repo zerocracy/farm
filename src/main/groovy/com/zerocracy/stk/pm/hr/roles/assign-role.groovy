@@ -23,9 +23,9 @@ import com.zerocracy.pm.hr.Roles
 assume.type('Assign role').exact()
 assume.roles('ARC', 'PO').exist()
 
-final ClaimIn claim = new ClaimIn(xml)
-final String login = claim.param('login')
-final String role = claim.param('role')
+ClaimIn claim = new ClaimIn(xml)
+String login = claim.param('login')
+String role = claim.param('role')
 new Roles(project).bootstrap().assign(login, role)
 claim.reply(
   String.format(

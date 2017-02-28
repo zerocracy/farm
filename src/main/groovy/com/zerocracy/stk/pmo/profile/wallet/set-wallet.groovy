@@ -21,11 +21,11 @@ import com.zerocracy.pmo.People
 
 assume.type('set wallet').exact()
 
-final People people = new People(pmo).bootstrap()
-final ClaimIn claim = new ClaimIn(xml)
-final String login = claim.param("person")
-final String bank = claim.param("bank")
-final String wallet = claim.param("wallet")
+People people = new People(pmo).bootstrap()
+ClaimIn claim = new ClaimIn(xml)
+String login = claim.param("person")
+String bank = claim.param("bank")
+String wallet = claim.param("wallet")
 people.wallet(login, bank, wallet)
 claim.reply(
   String.format(

@@ -24,8 +24,8 @@ import com.zerocracy.pm.scope.Wbs
 
 assume.type('Ping').exact()
 
-final Wbs wbs = new Wbs(project)
-final Orders orders = new Orders(project)
+Wbs wbs = new Wbs(project)
+Orders orders = new Orders(project)
 for (String job : wbs.iterate()) {
   if (!orders.assigned(job)) {
     this.assign(project, job)
@@ -33,11 +33,11 @@ for (String job : wbs.iterate()) {
 }
 
 static void assign(Project project, String job) {
-  final Roles roles = new Roles(project)
-  final List<String> logins = roles.findByRole('DEV')
+  Roles roles = new Roles(project)
+  List<String> logins = roles.findByRole('DEV')
   Collections.shuffle(logins)
   if (!logins.empty) {
-    final String login = logins[0]
+    String login = logins[0]
     new ClaimOut()
       .type('Start order')
       .param('job', job)

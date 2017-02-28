@@ -24,10 +24,10 @@ import com.zerocracy.pm.ClaimIn
 
 assume.type('Notify in Slack').exact()
 
-final ClaimIn claim = new ClaimIn(xml)
-final String[] parts = claim.token().split(';')
-final SlackSession session = this.session(parts[1])
-final String message = claim.param('message').replaceAll(
+ClaimIn claim = new ClaimIn(xml)
+String[] parts = claim.token().split(';')
+SlackSession session = this.session(parts[1])
+String message = claim.param('message').replaceAll(
   '\\[([^]]+)]\\(([^)]+)\\)', '<$2|$1>'
 )
 if (parts.length > Tv.THREE && 'direct' == parts[Tv.THREE]) {
@@ -38,7 +38,7 @@ if (parts.length > Tv.THREE && 'direct' == parts[Tv.THREE]) {
     message
   )
 } else {
-  final SlackChannel channel = session.findChannelById(parts[1]);
+  SlackChannel channel = session.findChannelById(parts[1]);
   if (parts.length > 2) {
     session.sendMessage(
       channel,
@@ -62,8 +62,8 @@ if (parts.length > Tv.THREE && 'direct' == parts[Tv.THREE]) {
   }
 }
 
-SlackSession session(final String channel) {
-  for (final SlackSession session : sessions.values()) {
+SlackSession session(String channel) {
+  for (SlackSession session : sessions.values()) {
     if (session.findChannelById(channel) != null) {
       return session
     }

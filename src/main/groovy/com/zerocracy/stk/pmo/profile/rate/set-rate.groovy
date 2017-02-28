@@ -23,10 +23,10 @@ import com.zerocracy.pmo.People
 assume.type('set rate').exact()
 assume.roles('ARC', 'PO').exist()
 
-final People people = new People(pmo).bootstrap()
-final ClaimIn claim = new ClaimIn(xml)
-final String login = claim.param("person")
-final Cash rate = new Cash.S(claim.param("rate"))
+People people = new People(pmo).bootstrap()
+ClaimIn claim = new ClaimIn(xml)
+String login = claim.param("person")
+Cash rate = new Cash.S(claim.param("rate"))
 people.rate(login, rate)
 claim.reply(
   String.format(

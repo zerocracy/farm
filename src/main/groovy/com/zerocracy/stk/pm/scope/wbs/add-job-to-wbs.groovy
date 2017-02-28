@@ -22,8 +22,8 @@ import com.zerocracy.pm.scope.Wbs
 assume.type('add job to WBS').exact()
 assume.roles('ARC', 'PO').exist()
 
-final ClaimIn claim = new ClaimIn(xml)
-final String job = claim.param("job")
+ClaimIn claim = new ClaimIn(xml)
+String job = claim.param("job")
 new Wbs(project).bootstrap().add(job)
 claim.reply(
   String.format("Job `%s` is in scope.", job)

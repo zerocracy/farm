@@ -22,10 +22,10 @@ import com.zerocracy.pm.in.Orders
 assume.type('stop order').exact()
 assume.roles('ARC', 'PO').exist()
 
-final ClaimIn claim = new ClaimIn(xml)
-final String job = claim.param("job")
-final Orders orders = new Orders(project).bootstrap()
-final String performer = orders.performer(job)
+ClaimIn claim = new ClaimIn(xml)
+String job = claim.param("job")
+Orders orders = new Orders(project).bootstrap()
+String performer = orders.performer(job)
 orders.resign(job)
 claim.reply(
   String.format(

@@ -23,10 +23,10 @@ import com.zerocracy.pmo.Catalog
 assume.type('add link').exact()
 assume.roles('PO').exist()
 
-final ClaimIn claim = new ClaimIn(xml)
-final String pid = claim.param("project")
-final String rel = claim.param("rel")
-final String href = claim.param("href")
+ClaimIn claim = new ClaimIn(xml)
+String pid = claim.param("project")
+String rel = claim.param("rel")
+String href = claim.param("href")
 if ('github' == rel) {
   github.repos().get(
     new Coordinates.Simple(href)

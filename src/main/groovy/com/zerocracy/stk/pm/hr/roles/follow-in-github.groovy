@@ -23,8 +23,8 @@ import com.zerocracy.pm.ClaimOut
 
 assume.type('Role was assigned').exact()
 
-final ClaimIn claim = new ClaimIn(xml)
-final String login = claim.param('login')
+ClaimIn claim = new ClaimIn(xml)
+String login = claim.param('login')
 github.entry().uri()
   .path('/user/following')
   .path(login)

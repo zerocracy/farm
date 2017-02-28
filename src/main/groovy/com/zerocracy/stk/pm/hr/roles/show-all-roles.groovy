@@ -22,7 +22,7 @@ import com.zerocracy.pm.hr.Roles
 assume.type('Show all roles').exact()
 assume.roles('ARC', 'PO').exist()
 
-final ClaimIn claim = new ClaimIn(xml)
+ClaimIn claim = new ClaimIn(xml)
 claim.reply(
   String.format(
     'Full list of roles in "%s":%n%n%s',

@@ -24,9 +24,9 @@ import com.zerocracy.radars.github.Job
 
 assume.type('Job assigned in GitHub').exact()
 
-final ClaimIn claim = new ClaimIn(xml)
-final Issue issue = new Job.Issue(github, claim.param('job'))
-final String login = claim.param('login')
+ClaimIn claim = new ClaimIn(xml)
+Issue issue = new Job.Issue(github, claim.param('job'))
+String login = claim.param('login')
 try {
   new Issue.Smart(issue).assign(login)
   new ClaimOut()
@@ -35,7 +35,7 @@ try {
     .param('repo', issue.repo().coordinates())
     .param('issue', issue.number())
     .postTo(project)
-} catch (final AssertionError ex) {
+} catch (AssertionError ex) {
   Logger.warn(
     this, 'Failed to assign @%s to %s#%d: %s',
     login,

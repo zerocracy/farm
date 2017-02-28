@@ -21,9 +21,9 @@ import com.zerocracy.pmo.People
 
 assume.type('show wallet').exact()
 
-final People people = new People(pmo).bootstrap()
-final ClaimIn claim = new ClaimIn(xml)
-final String login = claim.param("person")
+People people = new People(pmo).bootstrap()
+ClaimIn claim = new ClaimIn(xml)
+String login = claim.param("person")
 claim.reply(
   String.format(
     "Your wallet is `%s` at \"%s\".",

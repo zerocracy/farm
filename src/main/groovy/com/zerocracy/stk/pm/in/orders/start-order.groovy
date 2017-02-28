@@ -23,8 +23,8 @@ import com.zerocracy.pm.in.Orders
 assume.type('start order').exact()
 assume.roles('ARC', 'PO').exist()
 
-final ClaimIn claim = new ClaimIn(xml)
-final String job = claim.param("job")
+ClaimIn claim = new ClaimIn(xml)
+String job = claim.param("job")
 String login = claim.param("login")
 if ('me' == login) {
   login = claim.author()

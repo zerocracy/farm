@@ -22,9 +22,9 @@ import com.zerocracy.pmo.Catalog
 assume.type('show links').exact()
 assume.roles('PO').exist()
 
-final ClaimIn claim = new ClaimIn(xml)
-final String pid = claim.param("project")
-final Collection<String> links = new Catalog(project).links(pid)
+ClaimIn claim = new ClaimIn(xml)
+String pid = claim.param("project")
+Collection<String> links = new Catalog(project).links(pid)
 claim.reply(
   String.format(
     "This project is linked with %d resources: `%s`.",

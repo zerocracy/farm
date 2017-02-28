@@ -21,11 +21,11 @@ import com.zerocracy.pmo.People
 
 assume.type('show skills').exact()
 
-final People people = new People(pmo).bootstrap()
-final ClaimIn claim = new ClaimIn(xml)
-final String login = claim.param("person")
-final Collection<String> skills = people.skills(login)
-final String msg
+People people = new People(pmo).bootstrap()
+ClaimIn claim = new ClaimIn(xml)
+String login = claim.param("person")
+Collection<String> skills = people.skills(login)
+String msg
 if (skills.iterator().hasNext()) {
   msg = String.format(
     "Your skills are: `%s`.",

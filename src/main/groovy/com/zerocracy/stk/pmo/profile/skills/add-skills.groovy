@@ -23,10 +23,10 @@ import com.zerocracy.pmo.People
 
 assume.type('add skills').exact()
 
-final People people = new People(pmo).bootstrap()
-final ClaimIn claim = new ClaimIn(xml)
-final String login = claim.param("person")
-final Collection<String> skills = people.skills(login)
+People people = new People(pmo).bootstrap()
+ClaimIn claim = new ClaimIn(xml)
+String login = claim.param("person")
+Collection<String> skills = people.skills(login)
 if (skills.size() > Tv.FIVE) {
   throw new SoftException(
     String.format(
@@ -35,7 +35,7 @@ if (skills.size() > Tv.FIVE) {
     )
   )
 }
-final String skill = claim.param("skill")
+String skill = claim.param("skill")
 people.skill(login, skill)
 claim.reply(
   String.format(

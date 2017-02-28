@@ -41,7 +41,7 @@ Issue issue = this.safe(
 )
 String message = claim.param('message')
 if (parts.length > Tv.THREE) {
-  final Comment comment = issue.comments().get(
+  Comment comment = issue.comments().get(
     Integer.parseInt(parts[Tv.THREE])
   )
   new GhTube(comment).say(message)

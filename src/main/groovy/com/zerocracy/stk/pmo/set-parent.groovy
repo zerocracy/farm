@@ -22,9 +22,9 @@ import com.zerocracy.pmo.Catalog
 assume.type('set parent project').exact()
 assume.roles('PO').exist()
 
-final ClaimIn claim = new ClaimIn(xml)
-final String child = claim.param("child")
-final String parent = claim.param("parent")
+ClaimIn claim = new ClaimIn(xml)
+String child = claim.param("child")
+String parent = claim.param("parent")
 new Catalog(pmo).parent(child, parent)
 claim.reply(
   String.format(
