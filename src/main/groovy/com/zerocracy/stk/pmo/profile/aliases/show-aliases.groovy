@@ -23,13 +23,13 @@ assume.type('show aliases').exact()
 
 People people = new People(pmo).bootstrap()
 ClaimIn claim = new ClaimIn(xml)
-String login = claim.param("person")
+String login = claim.param('person')
 claim.reply(
   String.format(
-    "Your ID is `%s`, your aliases are: `%s`.",
+    'Your ID is `%s`, your aliases are: `%s`.',
     login,
     String.join(
-      "`, `",
+      '`, `',
       people.links(login)
     )
   )

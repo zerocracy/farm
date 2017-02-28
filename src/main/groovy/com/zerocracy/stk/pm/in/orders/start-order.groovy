@@ -24,15 +24,15 @@ assume.type('start order').exact()
 assume.roles('ARC', 'PO').exist()
 
 ClaimIn claim = new ClaimIn(xml)
-String job = claim.param("job")
-String login = claim.param("login")
+String job = claim.param('job')
+String login = claim.param('login')
 if ('me' == login) {
   login = claim.author()
 }
 new Orders(project).bootstrap().assign(job, login)
 claim.reply(
   String.format(
-    "Job `%s` assigned to @%s, please go ahead.",
+    'Job `%s` assigned to @%s, please go ahead.',
     job, login
   )
 ).postTo(project)
@@ -41,7 +41,7 @@ new ClaimOut(
     project,
     login,
     String.format(
-      "Job `%s` was assigned to you a minute ago.",
+      'Job `%s` was assigned to you a minute ago.',
       job
     )
   )
@@ -51,7 +51,7 @@ new ClaimOut(
     project,
     String.format(
       // @checkstyle LineLength (1 line)
-      "Job `%s` was assigned to [@%s](https://github.com/%1$s).",
+      'Job `%s` was assigned to [@%s](https://github.com/%1$s).',
       job, login
     )
   )

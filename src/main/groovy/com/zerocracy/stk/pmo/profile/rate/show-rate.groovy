@@ -23,10 +23,10 @@ assume.type('show rate').exact()
 
 People people = new People(pmo).bootstrap()
 ClaimIn claim = new ClaimIn(xml)
-String login = claim.param("person")
+String login = claim.param('person')
 claim.reply(
   String.format(
-    "Your rate is %s.",
+    'Your rate is %s.',
     people.rate(login)
   )
 ).postTo(pmo)

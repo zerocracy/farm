@@ -25,7 +25,7 @@ assume.roles('PO').exist()
 ClaimIn claim = new ClaimIn(xml)
 claim.reply(
   String.format(
-    "This is what we have in WBS:%n%n%s",
+    'This is what we have in WBS:%n%n%s',
     new Wbs(project).markdown()
   )
 ).postTo(project)

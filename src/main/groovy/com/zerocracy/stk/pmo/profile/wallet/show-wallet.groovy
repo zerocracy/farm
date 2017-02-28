@@ -23,10 +23,10 @@ assume.type('show wallet').exact()
 
 People people = new People(pmo).bootstrap()
 ClaimIn claim = new ClaimIn(xml)
-String login = claim.param("person")
+String login = claim.param('person')
 claim.reply(
   String.format(
-    "Your wallet is `%s` at \"%s\".",
+    'Your wallet is `%s` at "%s".',
     people.wallet(login),
     people.bank(login)
   )

@@ -23,12 +23,12 @@ assume.type('show links').exact()
 assume.roles('PO').exist()
 
 ClaimIn claim = new ClaimIn(xml)
-String pid = claim.param("project")
+String pid = claim.param('project')
 Collection<String> links = new Catalog(project).links(pid)
 claim.reply(
   String.format(
-    "This project is linked with %d resources: `%s`.",
+    'This project is linked with %d resources: `%s`.',
     links.size(),
-    String.join("`, `", links)
+    String.join('`, `', links)
   )
 ).postTo(project)

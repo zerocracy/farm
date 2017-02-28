@@ -23,15 +23,15 @@ assume.type('show skills').exact()
 
 People people = new People(pmo).bootstrap()
 ClaimIn claim = new ClaimIn(xml)
-String login = claim.param("person")
+String login = claim.param('person')
 Collection<String> skills = people.skills(login)
 String msg
 if (skills.iterator().hasNext()) {
   msg = String.format(
-    "Your skills are: `%s`.",
-    String.join("`, `", skills)
+    'Your skills are: `%s`.',
+    String.join('`, `', skills)
   )
 } else {
-  msg = "Your skills are not defined yet.";
+  msg = 'Your skills are not defined yet.';
 }
 claim.reply(msg).postTo(pmo)

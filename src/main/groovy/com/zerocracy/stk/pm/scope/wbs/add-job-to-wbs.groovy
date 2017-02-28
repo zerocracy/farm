@@ -23,8 +23,8 @@ assume.type('add job to WBS').exact()
 assume.roles('ARC', 'PO').exist()
 
 ClaimIn claim = new ClaimIn(xml)
-String job = claim.param("job")
+String job = claim.param('job')
 new Wbs(project).bootstrap().add(job)
 claim.reply(
-  String.format("Job `%s` is in scope.", job)
+  String.format('Job `%s` is in scope.', job)
 ).postTo(project)

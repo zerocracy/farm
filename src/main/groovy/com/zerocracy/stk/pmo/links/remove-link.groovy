@@ -23,13 +23,13 @@ assume.type('remove link').exact()
 assume.roles('PO').exist()
 
 ClaimIn claim = new ClaimIn(xml)
-String pid = claim.param("project")
-String rel = claim.param("rel")
-String href = claim.param("href")
+String pid = claim.param('project')
+String rel = claim.param('rel')
+String href = claim.param('href')
 new Catalog(project).unlink(pid, rel, href)
 claim.reply(
   String.format(
-    "Link removed from `%s` to rel=`%s` and href=`%s`.",
+    'Link removed from `%s` to rel=`%s` and href=`%s`.',
     pid, rel, href
   )
 ).postTo(project)

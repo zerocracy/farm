@@ -24,9 +24,9 @@ assume.type('add link').exact()
 assume.roles('PO').exist()
 
 ClaimIn claim = new ClaimIn(xml)
-String pid = claim.param("project")
-String rel = claim.param("rel")
-String href = claim.param("href")
+String pid = claim.param('project')
+String rel = claim.param('rel')
+String href = claim.param('href')
 if ('github' == rel) {
   github.repos().get(
     new Coordinates.Simple(href)
@@ -35,7 +35,7 @@ if ('github' == rel) {
 new Catalog(project).link(pid, rel, href)
 claim.reply(
   String.format(
-    "The project is linked with rel=`%s` and href=`%s`.",
+    'The project is linked with rel=`%s` and href=`%s`.',
     rel, href
   )
 ).postTo(project)

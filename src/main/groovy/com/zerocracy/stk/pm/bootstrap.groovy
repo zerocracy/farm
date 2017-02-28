@@ -25,16 +25,16 @@ assume.roles('PO').exist()
 
 new Wbs(project).bootstrap()
 Roles roles = new Roles(project).bootstrap()
-String role = "PO"
+String role = 'PO'
 String author = new ClaimIn(xml).author()
 if (!roles.hasRole(author, role)) {
   roles.assign(author, role)
 }
 new ClaimIn(xml).reply(
   String.join(
-    " ",
-    "I'm ready to manage a project.",
-    "When you're ready, you can start giving me commands,",
-    "always prefixing your messages with my name."
+    ' ',
+    'I\'m ready to manage a project.',
+    'When you\'re ready, you can start giving me commands,',
+    'always prefixing your messages with my name.'
   )
 ).postTo(project)

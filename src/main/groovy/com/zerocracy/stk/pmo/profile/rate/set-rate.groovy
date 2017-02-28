@@ -25,12 +25,12 @@ assume.roles('ARC', 'PO').exist()
 
 People people = new People(pmo).bootstrap()
 ClaimIn claim = new ClaimIn(xml)
-String login = claim.param("person")
-Cash rate = new Cash.S(claim.param("rate"))
+String login = claim.param('person')
+Cash rate = new Cash.S(claim.param('rate'))
 people.rate(login, rate)
 claim.reply(
   String.format(
-    "Rate of \"%s\" set to %s.",
+    'Rate of "%s" set to %s.',
     login,
     rate
   )

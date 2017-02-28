@@ -23,8 +23,8 @@ assume.type('remove job from WBS').exact()
 assume.roles('ARC', 'PO').exist()
 
 ClaimIn claim = new ClaimIn(xml)
-String job = claim.param("job")
+String job = claim.param('job')
 new Wbs(project).bootstrap().remove(job)
 claim.reply(
-  String.format("Job `%s` is out of scope.", job)
+  String.format('Job `%s` is out of scope.', job)
 ).postTo(project)
