@@ -24,11 +24,11 @@ ClaimIn claim = new ClaimIn(xml)
 String[] parts = claim.token().split(';')
 if (parts[0] == 'slack') {
   claim.copy()
-    .type('notify in Slack')
+    .type('Notify in Slack')
     .postTo(project)
 } else if (parts[0] == 'github') {
   claim.copy()
-    .type('notify in GitHub')
+    .type('Notify in GitHub')
     .postTo(project)
 } else {
   throw new IllegalStateException(

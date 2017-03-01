@@ -19,7 +19,7 @@ package com.zerocracy.stk.pm.scope.wbs
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.scope.Wbs
 
-assume.type('remove job from WBS').exact()
+assume.type('Remove job from WBS').exact()
 assume.roles('ARC', 'PO').exist()
 
 ClaimIn claim = new ClaimIn(xml)

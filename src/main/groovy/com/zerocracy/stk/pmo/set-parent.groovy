@@ -19,7 +19,7 @@ package com.zerocracy.stk.pmo
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Catalog
 
-assume.type('set parent project').exact()
+assume.type('Set parent project').exact()
 assume.roles('PO').exist()
 
 ClaimIn claim = new ClaimIn(xml)

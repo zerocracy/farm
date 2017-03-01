@@ -19,7 +19,7 @@ package com.zerocracy.stk.pmo.profile.aliases
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.People
 
-assume.type('show aliases').exact()
+assume.type('Show aliases').exact()
 
 People people = new People(pmo).bootstrap()
 ClaimIn claim = new ClaimIn(xml)

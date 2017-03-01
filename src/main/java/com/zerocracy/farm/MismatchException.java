@@ -14,29 +14,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk;
+package com.zerocracy.farm;
 
-import com.jcabi.xml.XML;
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.Stakeholder;
-import com.zerocracy.pm.ClaimIn;
 import java.io.IOException;
 
 /**
- * Just say hello.
+ * When type is not the right one.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.10
+ * @since 0.11
  */
-public final class StkHello implements Stakeholder {
+public final class MismatchException extends IOException {
 
-    @Override
-    public void process(final Project project, final XML xml)
-        throws IOException {
-        new ClaimIn(xml).reply(
-            "Hey, what's up, how is it going?"
-        ).postTo(project);
+    /**
+     * Serialization marker.
+     */
+    private static final long serialVersionUID = -6427949021762997442L;
+
+    /**
+     * Ctor.
+     * @param cause Cause of it
+     */
+    public MismatchException(final String cause) {
+        super(cause);
+    }
+
+    /**
+     * Ctor.
+     * @param cause Cause of it
+     * @param thr Throwable
+     */
+    public MismatchException(final String cause, final Throwable thr) {
+        super(cause, thr);
     }
 
 }

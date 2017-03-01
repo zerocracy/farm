@@ -19,7 +19,7 @@ package com.zerocracy.stk.pm.scope.wbs
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.scope.Wbs
 
-assume.type('show WBS').exact()
+assume.type('Show WBS').exact()
 assume.roles('PO').exist()
 
 ClaimIn claim = new ClaimIn(xml)

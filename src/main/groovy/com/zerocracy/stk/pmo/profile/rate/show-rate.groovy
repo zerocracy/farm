@@ -19,7 +19,7 @@ package com.zerocracy.stk.pmo.profile.rate
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.People
 
-assume.type('show rate').exact()
+assume.type('Show rate').exact()
 
 People people = new People(pmo).bootstrap()
 ClaimIn claim = new ClaimIn(xml)

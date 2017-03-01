@@ -21,7 +21,7 @@ import com.zerocracy.jstk.SoftException
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.People
 
-assume.type('add skills').exact()
+assume.type('Add skills').exact()
 
 People people = new People(pmo).bootstrap()
 ClaimIn claim = new ClaimIn(xml)

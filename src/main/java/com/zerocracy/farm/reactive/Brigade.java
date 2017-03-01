@@ -17,6 +17,7 @@
 package com.zerocracy.farm.reactive;
 
 import com.jcabi.xml.XML;
+import com.zerocracy.farm.MismatchException;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import java.io.IOException;
@@ -62,7 +63,23 @@ public final class Brigade {
     public void process(final Project project, final XML xml)
         throws IOException {
         for (final Stakeholder stk : this.list) {
+            Brigade.process(stk, project, xml);
+        }
+    }
+
+    /**
+     * Process this claim.
+     * @param stk Stakeholder
+     * @param project Project
+     * @param xml XML to process
+     * @throws IOException If fails
+     */
+    public static void process(final Stakeholder stk, final Project project,
+        final XML xml) throws IOException {
+        try {
             stk.process(project, xml);
+        } catch (final MismatchException ex) {
+            // ignore it
         }
     }
 

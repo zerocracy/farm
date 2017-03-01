@@ -20,7 +20,7 @@ import com.jcabi.github.Coordinates
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Catalog
 
-assume.type('add link').exact()
+assume.type('Add link').exact()
 assume.roles('PO').exist()
 
 ClaimIn claim = new ClaimIn(xml)

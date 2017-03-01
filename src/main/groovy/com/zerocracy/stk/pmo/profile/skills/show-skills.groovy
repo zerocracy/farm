@@ -19,7 +19,7 @@ package com.zerocracy.stk.pmo.profile.skills
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.People
 
-assume.type('show skills').exact()
+assume.type('Show skills').exact()
 
 People people = new People(pmo).bootstrap()
 ClaimIn claim = new ClaimIn(xml)

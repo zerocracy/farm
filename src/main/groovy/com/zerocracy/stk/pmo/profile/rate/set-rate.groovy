@@ -20,7 +20,7 @@ import com.zerocracy.jstk.cash.Cash
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.People
 
-assume.type('set rate').exact()
+assume.type('Set rate').exact()
 assume.roles('ARC', 'PO').exist()
 
 People people = new People(pmo).bootstrap()

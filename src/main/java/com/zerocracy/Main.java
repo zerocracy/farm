@@ -52,7 +52,7 @@ import com.zerocracy.radars.slack.ReProfile;
 import com.zerocracy.radars.slack.ReProject;
 import com.zerocracy.radars.slack.ReSafe;
 import com.zerocracy.radars.slack.SlackRadar;
-import com.zerocracy.stk.StkSafe;
+import com.zerocracy.farm.StkSafe;
 import com.zerocracy.tk.TkAlias;
 import com.zerocracy.tk.TkApp;
 import java.io.IOException;
@@ -124,7 +124,18 @@ public final class Main {
         );
         final Map<String, SlackSession> sessions = new ConcurrentHashMap<>(0);
         final Stakeholder[] stakeholders = {
-            new StkGroovy("pm/hr/roles/show-all-roles.groovy"),
+            new StkGroovy("pmo/links/add-link.groovy"),
+            new StkGroovy("pmo/links/remove-link.groovy"),
+            new StkGroovy("pmo/links/show-all-links.groovy"),
+            new StkGroovy("pmo/profile/aliases/show-aliases.groovy"),
+            new StkGroovy("pmo/profile/rate/set-rate.groovy"),
+            new StkGroovy("pmo/profile/rate/show-rate.groovy"),
+            new StkGroovy("pmo/profile/skills/add-skills.groovy"),
+            new StkGroovy("pmo/profile/skills/show-skills.groovy"),
+            new StkGroovy("pmo/profile/wallet/set-wallet.groovy"),
+            new StkGroovy("pmo/profile/wallet/show-wallet.groovy"),
+            new StkGroovy("pmo/set-parent.groovy"),
+            new StkGroovy("pm/bootstrap.groovy"),
             new StkGroovy("pm/comm/notify.groovy"),
             new StkGroovy(
                 "pm/comm/notify-in-slack.groovy",
@@ -134,6 +145,16 @@ public final class Main {
                 "pm/comm/notify-in-github.groovy",
                 new StkGroovy.Pair("github", github)
             ),
+            new StkGroovy("pm/hr/roles/show-all-roles.groovy"),
+            new StkGroovy("pm/hr/roles/assign-role.groovy"),
+            new StkGroovy("pm/hr/roles/resign-role.groovy"),
+            new StkGroovy(
+                "pm/hr/roles/follow-on-github.groovy",
+                new StkGroovy.Pair("github", github)
+            ),
+            new StkGroovy("pm/in/confide-performer.groovy"),
+            new StkGroovy("pm/in/start-order.groovy"),
+            new StkGroovy("pm/in/stop-order.groovy"),
             new StkGroovy(
                 "pm/in/orders/set-assignee.groovy",
                 new StkGroovy.Pair("github", github)
@@ -142,10 +163,9 @@ public final class Main {
                 "pm/in/orders/remove-assignee.groovy",
                 new StkGroovy.Pair("github", github)
             ),
-            new StkGroovy(
-                "pm/hr/roles/follow-on-github.groovy",
-                new StkGroovy.Pair("github", github)
-            )
+            new StkGroovy("pm/scope/add-job-to-wbs.groovy"),
+            new StkGroovy("pm/scope/remove-job-from-wbs.groovy"),
+            new StkGroovy("pm/scope/show-wbs.groovy"),
         };
         final Farm farm = new PingFarm(
             new RvFarm(

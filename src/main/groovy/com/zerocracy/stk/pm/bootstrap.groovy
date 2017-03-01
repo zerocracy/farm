@@ -20,7 +20,7 @@ import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.hr.Roles
 import com.zerocracy.pm.scope.Wbs
 
-assume.type('bootstrap').exact()
+assume.type('Bootstrap').exact()
 assume.roles('PO').exist()
 
 new Wbs(project).bootstrap()

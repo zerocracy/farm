@@ -19,7 +19,7 @@ package com.zerocracy.stk.pmo.profile.wallet
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.People
 
-assume.type('set wallet').exact()
+assume.type('Set wallet').exact()
 
 People people = new People(pmo).bootstrap()
 ClaimIn claim = new ClaimIn(xml)

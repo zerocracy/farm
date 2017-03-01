@@ -19,7 +19,7 @@ package com.zerocracy.stk.pmo.links
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Catalog
 
-assume.type('remove link').exact()
+assume.type('Remove link').exact()
 assume.roles('PO').exist()
 
 ClaimIn claim = new ClaimIn(xml)

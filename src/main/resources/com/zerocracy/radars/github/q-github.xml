@@ -17,25 +17,25 @@
  -->
 <question>
     <cmd>
-        <code>hello</code>
+        <code>Hello</code>
         <regex>hi|hello|hey|morning|good morning</regex>
         <label>hello</label>
         <help>Just say hello</help>
     </cmd>
     <cmd>
-        <code>pm.scope.wbs.in</code>
+        <code>Add job to WBS</code>
         <regex>in</regex>
         <label>in</label>
         <help>Register this issue in scope (WBS)</help>
     </cmd>
     <cmd>
-        <code>pm.scope.wbs.out</code>
+        <code>Remove job from WBS</code>
         <regex>out</regex>
         <label>out</label>
         <help>Remove this issue from scope (WBS)</help>
     </cmd>
     <cmd>
-        <code>pm.in.orders.start</code>
+        <code>Start order</code>
         <regex>assign</regex>
         <label>assign</label>
         <help>Assign a performer to this issue</help>
@@ -48,7 +48,7 @@
         </opts>
     </cmd>
     <cmd>
-        <code>pm.in.orders.stop</code>
+        <code>Stop order</code>
         <regex>resign|reject</regex>
         <label>resign</label>
         <help>Resign from this issue</help>

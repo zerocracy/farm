@@ -14,12 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.zerocracy.stk
 
-/**
- * Stakeholders, tests.
- *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.1
- */
-package com.zerocracy.stk;
+import com.zerocracy.pm.ClaimIn
+
+assume.type('Hello').exact()
+
+new ClaimIn(xml).reply(
+  "Hey, what's up, how is it going?"
+).postTo(project)

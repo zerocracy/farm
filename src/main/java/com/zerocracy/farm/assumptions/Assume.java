@@ -53,9 +53,7 @@ public final class Assume {
      * @param type Type to apply
      */
     public AeType type(final String type) {
-        return new AeType(
-            this.project, this.xml, type
-        );
+        return new AeType(this.xml, type);
     }
 
     /**

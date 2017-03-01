@@ -19,6 +19,7 @@ package com.zerocracy.radars.github;
 import com.jcabi.aspects.Tv;
 import com.jcabi.github.Comment;
 import com.zerocracy.jstk.Farm;
+import com.zerocracy.jstk.SoftException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;

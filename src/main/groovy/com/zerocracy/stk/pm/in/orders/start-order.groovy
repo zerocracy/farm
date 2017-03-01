@@ -20,7 +20,7 @@ import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.in.Orders
 
-assume.type('start order').exact()
+assume.type('Start order').exact()
 assume.roles('ARC', 'PO').exist()
 
 ClaimIn claim = new ClaimIn(xml)

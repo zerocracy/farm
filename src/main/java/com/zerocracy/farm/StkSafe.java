@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk;
+package com.zerocracy.farm;
 
 import com.jcabi.aspects.Tv;
 import com.jcabi.log.Logger;
@@ -59,6 +59,8 @@ public final class StkSafe implements Stakeholder {
         final ClaimIn claim = new ClaimIn(xml);
         try {
             this.origin.process(project, xml);
+        } catch (final MismatchException ex) {
+            throw ex;
         } catch (final SoftException ex) {
             if (claim.hasToken()) {
                 try (final Claims claims = new Claims(project).lock()) {

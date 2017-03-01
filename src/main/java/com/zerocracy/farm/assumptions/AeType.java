@@ -17,8 +17,7 @@
 package com.zerocracy.farm.assumptions;
 
 import com.jcabi.xml.XML;
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.SoftException;
+import com.zerocracy.farm.MismatchException;
 import com.zerocracy.pm.ClaimIn;
 import java.util.Locale;
 
@@ -32,11 +31,6 @@ import java.util.Locale;
 public final class AeType {
 
     /**
-     * Project.
-     */
-    private final Project project;
-
-    /**
      * Claim.
      */
     private final XML xml;
@@ -48,26 +42,24 @@ public final class AeType {
 
     /**
      * Ctor.
-     * @param pkt Project
      * @param claim Claim
      * @param tpe Type
      */
-    public AeType(final Project pkt, final XML claim, final String tpe) {
-        this.project = pkt;
+    public AeType(final XML claim, final String tpe) {
         this.xml = claim;
         this.type = tpe;
     }
 
     /**
      * Equals.
-     * @throws SoftException If doesn't match
+     * @throws MismatchException If doesn't match
      */
-    public void exact() throws SoftException {
+    public void exact() throws MismatchException {
         final String input = new ClaimIn(this.xml)
             .type().toLowerCase(Locale.ENGLISH);
         final String expected = this.type.toLowerCase(Locale.ENGLISH);
         if (!input.equals(expected)) {
-            throw new SoftException(
+            throw new MismatchException(
                 String.format(
                     "Type \"%s\" is not mine, I'm expecting \"%s\"",
                     input, expected

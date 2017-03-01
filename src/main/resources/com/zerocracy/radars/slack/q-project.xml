@@ -17,19 +17,19 @@
  -->
 <question>
     <cmd>
-        <code>hello</code>
+        <code>Hello</code>
         <regex>hi|hello|hey|morning|good morning</regex>
         <label>hello</label>
         <help>Just say hello</help>
     </cmd>
     <cmd>
-        <code>pmo.links.show</code>
+        <code>Show links</code>
         <regex>links?</regex>
         <label>links</label>
         <help>Show all resources the project is linked with</help>
         <cmds>
             <cmd>
-                <code>pmo.links.add</code>
+                <code>Add link</code>
                 <regex>add|set</regex>
                 <label>add</label>
                 <help>Add a new resource</help>
@@ -47,7 +47,7 @@
                 </opts>
             </cmd>
             <cmd>
-                <code>pmo.links.remove</code>
+                <code>Remove link</code>
                 <regex>del|delete|remove</regex>
                 <label>remove</label>
                 <help>Remove an existing project resource</help>
@@ -67,13 +67,13 @@
         </cmds>
     </cmd>
     <cmd>
-        <code>pm.hr.roles.show</code>
+        <code>Show roles</code>
         <regex>roles?</regex>
         <label>roles</label>
         <help>Show all roles assigned at the moment</help>
         <cmds>
             <cmd>
-                <code>pm.hr.roles.add</code>
+                <code>Add role</code>
                 <regex>assign|add|register</regex>
                 <label>assign</label>
                 <help>Assign new project role</help>
@@ -91,7 +91,7 @@
                 </opts>
             </cmd>
             <cmd>
-                <code>pm.hr.roles.remove</code>
+                <code>Remove role</code>
                 <regex>resign|remove|unregister</regex>
                 <label>resign</label>
                 <help>Resign a person from a project role</help>
@@ -111,13 +111,13 @@
         </cmds>
     </cmd>
     <cmd>
-        <code>pm.scope.wbs.show</code>
+        <code>Show WBS</code>
         <regex>wbs</regex>
         <label>wbs</label>
         <help>Show the entire WBS</help>
     </cmd>
     <cmd>
-        <code>pm.bootstrap</code>
+        <code>Bootstrap</code>
         <regex>bootstrap</regex>
         <label>bootstrap</label>
         <help>Bootstrap the project to initialize all project artifacts</help>

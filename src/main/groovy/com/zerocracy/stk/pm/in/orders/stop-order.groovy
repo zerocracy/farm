@@ -19,7 +19,7 @@ package com.zerocracy.stk.pm.in.orders
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.in.Orders
 
-assume.type('stop order').exact()
+assume.type('Stop order').exact()
 assume.roles('ARC', 'PO').exist()
 
 ClaimIn claim = new ClaimIn(xml)
