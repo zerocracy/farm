@@ -124,6 +124,7 @@ public final class Main {
         );
         final Map<String, SlackSession> sessions = new ConcurrentHashMap<>(0);
         final Stakeholder[] stakeholders = {
+            new StkGroovy("hello.groovy"),
             new StkGroovy("pmo/links/add-link.groovy"),
             new StkGroovy("pmo/links/remove-link.groovy"),
             new StkGroovy("pmo/links/show-all-links.groovy"),
