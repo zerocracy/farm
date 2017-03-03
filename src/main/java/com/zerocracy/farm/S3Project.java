@@ -72,10 +72,11 @@ final class S3Project implements Project {
 
     @Override
     public String toString() {
-        return StringUtils.substringAfterLast(
-            StringUtils.stripEnd(this.prefix, "/"),
-            "/"
-        );
+        String name = StringUtils.stripEnd(this.prefix, "/");
+        if (name.contains("/")) {
+            name = StringUtils.substringAfterLast(name, "/");
+        }
+        return name;
     }
 
     @Override

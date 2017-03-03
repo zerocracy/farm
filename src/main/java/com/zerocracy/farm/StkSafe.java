@@ -107,12 +107,12 @@ public final class StkSafe implements Stakeholder {
                 }
             }
             Logger.error(
-                this, "%s failed at \"%s/%s\" in \"%s\": %s",
+                this, "%s failed at \"%s/%s\" in \"%s\": %[exception]s",
                 this.origin.getClass().getCanonicalName(),
                 new ClaimIn(xml).type(),
                 new ClaimIn(xml).number(),
                 project,
-                ex.getLocalizedMessage()
+                ex
             );
         }
     }
