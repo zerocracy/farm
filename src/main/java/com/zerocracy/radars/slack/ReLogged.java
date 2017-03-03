@@ -54,7 +54,9 @@ public final class ReLogged<T extends SlackEvent> implements Reaction<T> {
                 SlackMessagePosted.class.cast(event);
             Logger.info(
                 this,
-                "Slack (channel=%s/%s/%s, sub-type=%s, sender=@%s/%s): \"%s\"",
+                // @checkstyle LineLength (1 line)
+                "Slack (channel=%s/%s/%s/%s, sub-type=%s, sender=@%s/%s): \"%s\"",
+                session.getTeam().getName(),
                 posted.getChannel().getId(),
                 posted.getChannel().getName(),
                 Boolean.toString(posted.getChannel().isDirect()).charAt(0),
