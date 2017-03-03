@@ -63,8 +63,12 @@ public final class ClaimIn {
     public ClaimOut copy() {
         final ClaimOut out = new ClaimOut();
         out.type(this.type());
-        out.token(this.token());
-        out.author(this.author());
+        if (this.hasToken()) {
+            out.token(this.token());
+        }
+        if (this.hasAuthor()) {
+            out.author(this.author());
+        }
         out.params(this.params());
         return out;
     }
