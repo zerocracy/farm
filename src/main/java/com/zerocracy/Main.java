@@ -125,17 +125,17 @@ public final class Main {
         final Map<String, SlackSession> sessions = new ConcurrentHashMap<>(0);
         final Stakeholder[] stakeholders = {
             new StkGroovy("hello.groovy"),
-            new StkGroovy("pmo/links/add-link.groovy"),
-            new StkGroovy("pmo/links/remove-link.groovy"),
-            new StkGroovy("pmo/links/show-all-links.groovy"),
-            new StkGroovy("pmo/profile/aliases/show-aliases.groovy"),
-            new StkGroovy("pmo/profile/rate/set-rate.groovy"),
-            new StkGroovy("pmo/profile/rate/show-rate.groovy"),
-            new StkGroovy("pmo/profile/skills/add-skills.groovy"),
-            new StkGroovy("pmo/profile/skills/show-skills.groovy"),
-            new StkGroovy("pmo/profile/wallet/set-wallet.groovy"),
-            new StkGroovy("pmo/profile/wallet/show-wallet.groovy"),
-            new StkGroovy("pmo/set-parent.groovy"),
+            new StkGroovy("pmo/links/add_link.groovy"),
+            new StkGroovy("pmo/links/remove_link.groovy"),
+            new StkGroovy("pmo/links/show_all_links.groovy"),
+            new StkGroovy("pmo/profile/aliases/show_aliases.groovy"),
+            new StkGroovy("pmo/profile/rate/set_rate.groovy"),
+            new StkGroovy("pmo/profile/rate/show_rate.groovy"),
+            new StkGroovy("pmo/profile/skills/add_skills.groovy"),
+            new StkGroovy("pmo/profile/skills/show_skills.groovy"),
+            new StkGroovy("pmo/profile/wallet/set_wallet.groovy"),
+            new StkGroovy("pmo/profile/wallet/show_wallet.groovy"),
+            new StkGroovy("pmo/set_parent.groovy"),
             new StkGroovy("pm/bootstrap.groovy"),
             new StkGroovy("pm/comm/notify.groovy"),
             new StkGroovy(
@@ -143,30 +143,30 @@ public final class Main {
                 new StkGroovy.Pair("sessions", sessions)
             ),
             new StkGroovy(
-                "pm/comm/notify-in-github.groovy",
+                "pm/comm/notify_in_github.groovy",
                 new StkGroovy.Pair("github", github)
             ),
-            new StkGroovy("pm/hr/roles/show-all-roles.groovy"),
-            new StkGroovy("pm/hr/roles/assign-role.groovy"),
-            new StkGroovy("pm/hr/roles/resign-role.groovy"),
+            new StkGroovy("pm/hr/roles/show_all_roles.groovy"),
+            new StkGroovy("pm/hr/roles/assign_role.groovy"),
+            new StkGroovy("pm/hr/roles/resign_role.groovy"),
             new StkGroovy(
-                "pm/hr/roles/follow-in-github.groovy",
+                "pm/hr/roles/follow_in_github.groovy",
                 new StkGroovy.Pair("github", github)
             ),
-            new StkGroovy("pm/in/orders/confide-performer.groovy"),
-            new StkGroovy("pm/in/orders/start-order.groovy"),
-            new StkGroovy("pm/in/orders/stop-order.groovy"),
+            new StkGroovy("pm/in/orders/confide_performer.groovy"),
+            new StkGroovy("pm/in/orders/start_order.groovy"),
+            new StkGroovy("pm/in/orders/stop_order.groovy"),
             new StkGroovy(
-                "pm/in/orders/set-assignee.groovy",
+                "pm/in/orders/set_assignee.groovy",
                 new StkGroovy.Pair("github", github)
             ),
             new StkGroovy(
-                "pm/in/orders/remove-assignee.groovy",
+                "pm/in/orders/remove_assignee.groovy",
                 new StkGroovy.Pair("github", github)
             ),
-            new StkGroovy("pm/scope/wbs/add-job-to-wbs.groovy"),
-            new StkGroovy("pm/scope/wbs/remove-job-from-wbs.groovy"),
-            new StkGroovy("pm/scope/wbs/show-wbs.groovy"),
+            new StkGroovy("pm/scope/wbs/add_job_to_wbs.groovy"),
+            new StkGroovy("pm/scope/wbs/remove_job_from_wbs.groovy"),
+            new StkGroovy("pm/scope/wbs/show_wbs.groovy"),
         };
         final Farm farm = new PingFarm(
             new RvFarm(
