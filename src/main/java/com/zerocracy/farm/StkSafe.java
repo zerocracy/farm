@@ -53,14 +53,19 @@ public final class StkSafe implements Stakeholder {
     }
 
     @Override
-    @SuppressWarnings("PMD.AvoidCatchingThrowable")
+    @SuppressWarnings(
+        {
+            "PMD.AvoidCatchingThrowable",
+            "PMD.AvoidRethrowingException"
+        }
+    )
     public void process(final Project project,
         final XML xml) throws IOException {
         final ClaimIn claim = new ClaimIn(xml);
         try {
             this.origin.process(project, xml);
         } catch (final MismatchException ex) {
-            throw new SoftException("Just a mismatch", ex);
+            throw ex;
         } catch (final SoftException ex) {
             if (claim.hasToken()) {
                 try (final Claims claims = new Claims(project).lock()) {
