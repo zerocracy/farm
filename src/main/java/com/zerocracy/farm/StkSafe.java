@@ -23,7 +23,6 @@ import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.SoftException;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
-import com.zerocracy.pm.Claims;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
@@ -68,14 +67,9 @@ public final class StkSafe implements Stakeholder {
             throw ex;
         } catch (final SoftException ex) {
             if (claim.hasToken()) {
-                try (final Claims claims = new Claims(project).lock()) {
-                    claims.remove(claim.number());
-                    claims.add(
-                        new ClaimIn(xml).reply(
-                            String.format("Oops! %s", ex.getMessage())
-                        )
-                    );
-                }
+                new ClaimIn(xml).reply(
+                    String.format("Oops! %s", ex.getMessage())
+                ).postTo(project);
             } else {
                 Logger.error(
                     this, "%s soft failure at \"%s/%s\" in \"%s\": %s",
@@ -89,22 +83,17 @@ public final class StkSafe implements Stakeholder {
             // @checkstyle IllegalCatchCheck (1 line)
         } catch (final Throwable ex) {
             if (claim.hasToken()) {
-                try (final Claims claims = new Claims(project).lock()) {
-                    claims.remove(claim.number());
-                    claims.add(
-                        claim.reply(
-                            String.join(
-                                "\n",
-                                "I can't do it for technical reasons,",
-                                " I'm very sorry.",
-                                // @checkstyle LineLength (1 line)
-                                "If you don't know what to do, email this to bug@0crat.com:\n\n```",
-                                StkSafe.print(ex),
-                                "```"
-                            )
-                        )
-                    );
-                }
+                claim.reply(
+                    String.join(
+                        "\n",
+                        "I can't do it for technical reasons,",
+                        " I'm very sorry.",
+                        // @checkstyle LineLength (1 line)
+                        "If you don't know what to do, email this to bug@0crat.com:\n\n```",
+                        StkSafe.print(ex),
+                        "```"
+                    )
+                ).postTo(project);
             }
             Logger.error(
                 this, "%s failed at \"%s/%s\" in \"%s\": %[exception]s",

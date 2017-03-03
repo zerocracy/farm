@@ -75,7 +75,7 @@ SlackSession session(String channel) {
   )
 }
 
-boolean exists(SlackSession session, String channel) {
+static boolean exists(SlackSession session, String channel) {
   for (SlackChannel opt : session.channels) {
     if (opt.id == channel) {
       return true
