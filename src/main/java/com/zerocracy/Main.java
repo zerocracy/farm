@@ -139,7 +139,7 @@ public final class Main {
             new StkGroovy("pm/bootstrap.groovy"),
             new StkGroovy("pm/comm/notify.groovy"),
             new StkGroovy(
-                "pm/comm/notify-in-slack.groovy",
+                "pm/comm/notify_in_slack.groovy",
                 new StkGroovy.Pair("sessions", sessions)
             ),
             new StkGroovy(
