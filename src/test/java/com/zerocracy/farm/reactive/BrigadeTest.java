@@ -70,4 +70,28 @@ public final class BrigadeTest {
         }
     }
 
+    /**
+     * Brigade can parse Groovy script from resources.
+     * @throws Exception If some problem inside
+     */
+    @Test
+    public void parsesGroovyScript() throws Exception {
+        final Project project = new FkProject();
+        new ClaimOut().type("hello").token("notoken").postTo(project);
+        final XML xml;
+        try (final Claims claims = new Claims(project).lock()) {
+            xml = claims.iterate().iterator().next();
+        }
+        final Brigade brigade = new Brigade(
+            new StkGroovy("hello.groovy")
+        );
+        brigade.process(project, xml);
+        try (final Claims claims = new Claims(project).lock()) {
+            MatcherAssert.assertThat(
+                claims.iterate(),
+                Matchers.hasSize(2)
+            );
+        }
+    }
+
 }

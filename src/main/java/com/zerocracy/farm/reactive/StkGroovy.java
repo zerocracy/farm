@@ -18,6 +18,7 @@ package com.zerocracy.farm.reactive;
 
 import com.jcabi.xml.XML;
 import com.zerocracy.Xocument;
+import com.zerocracy.farm.assumptions.Assume;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import groovy.lang.Binding;
@@ -82,7 +83,8 @@ public final class StkGroovy implements Stakeholder {
     public void process(final Project project, final XML claim) {
         final Binding binding = new Binding();
         binding.setVariable("project", project);
-        binding.setVariable("claim", claim);
+        binding.setVariable("xml", claim);
+        binding.setVariable("assume", new Assume(project, claim));
         for (final StkGroovy.Pair pair : this.pairs) {
             pair.applyTo(binding);
         }
@@ -96,7 +98,7 @@ public final class StkGroovy implements Stakeholder {
      * @return Source
      */
     private static GroovyCodeSource src(final String name) {
-        final String path = String.format("stk/%s", name);
+        final String path = String.format("/com/zerocracy/stk/%s", name);
         final URL url = Xocument.class.getResource(path);
         if (url == null) {
             throw new IllegalArgumentException(
