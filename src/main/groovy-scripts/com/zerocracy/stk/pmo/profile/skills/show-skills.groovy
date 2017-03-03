@@ -32,6 +32,6 @@ if (skills.iterator().hasNext()) {
     String.join('`, `', skills)
   )
 } else {
-  msg = 'Your skills are not defined yet.';
+  msg = 'Your skills are not defined yet.'
 }
 claim.reply(msg).postTo(pmo)

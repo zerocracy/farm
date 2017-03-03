@@ -16,7 +16,6 @@
  */
 package com.zerocracy.stk.pm.comm
 
-import com.jcabi.aspects.Tv
 import com.jcabi.log.Logger
 import com.ullink.slack.simpleslackapi.SlackChannel
 import com.ullink.slack.simpleslackapi.SlackSession
@@ -30,7 +29,7 @@ SlackSession session = this.session(parts[1])
 String message = claim.param('message').replaceAll(
   '\\[([^]]+)]\\(([^)]+)\\)', '<$2|$1>'
 )
-if (parts.length > Tv.THREE && 'direct' == parts[Tv.THREE]) {
+if (parts.length > 3 && 'direct' == parts[3]) {
   session.sendMessage(
     session.openDirectMessageChannel(
       session.findUserByUserName(parts[2])
@@ -38,7 +37,7 @@ if (parts.length > Tv.THREE && 'direct' == parts[Tv.THREE]) {
     message
   )
 } else {
-  SlackChannel channel = session.findChannelById(parts[1]);
+  SlackChannel channel = session.findChannelById(parts[1])
   if (parts.length > 2) {
     session.sendMessage(
       channel,
@@ -52,7 +51,7 @@ if (parts.length > Tv.THREE && 'direct' == parts[Tv.THREE]) {
       channel.name, channel.id
     )
   } else {
-    session.sendMessage(channel, message);
+    session.sendMessage(channel, message)
     Logger.info(
       this, '@%s posted %d chars at %s/%s',
       session.sessionPersona().userName,

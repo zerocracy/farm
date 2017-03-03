@@ -74,12 +74,12 @@ public final class Brigade {
      * @param xml XML to process
      * @throws IOException If fails
      */
-    public static void process(final Stakeholder stk, final Project project,
+    private static void process(final Stakeholder stk, final Project project,
         final XML xml) throws IOException {
         try {
             stk.process(project, xml);
         } catch (final MismatchException ex) {
-            // ignore it
+            assert ex != null;
         }
     }
 

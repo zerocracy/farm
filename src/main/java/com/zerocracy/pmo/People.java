@@ -23,7 +23,6 @@ import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.SoftException;
 import com.zerocracy.jstk.cash.Cash;
-import com.zerocracy.jstk.cash.Currency;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
@@ -118,8 +117,7 @@ public final class People {
             new Xocument(item.path()).modify(
                 People.start(uid)
                     .addIf("rate")
-                    .set(rate.exchange(Currency.USD).decimal().toPlainString())
-                    .attr("currency", Currency.USD.code())
+                    .set(rate)
             );
         }
     }
@@ -146,13 +144,7 @@ public final class People {
                 );
             }
             final XML rate = rates.next();
-            return new Cash.S(
-                String.format(
-                    "%s %s",
-                    rate.xpath("@currency").get(0),
-                    rate.xpath("text()").get(0)
-                )
-            );
+            return new Cash.S(rate.xpath("text()").get(0));
         }
     }
 

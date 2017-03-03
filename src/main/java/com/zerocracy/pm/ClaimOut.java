@@ -68,6 +68,7 @@ public final class ClaimOut implements Iterable<Directive> {
     /**
      * Post it to the project.
      * @param project Project
+     * @throws IOException If fails
      */
     public void postTo(final Project project) throws IOException {
         try (final Claims claims = new Claims(project).lock()) {
@@ -160,18 +161,8 @@ public final class ClaimOut implements Iterable<Directive> {
         }
         @Override
         public Iterator<Directive> iterator() {
-            final String type;
-            if (this.token.startsWith("slack;")) {
-                type = "notify in slack";
-            } else if (this.token.startsWith("github;")) {
-                type = "notify in github";
-            } else {
-                throw new IllegalArgumentException(
-                    String.format("Unknown token: \"%s\"", this.token)
-                );
-            }
             return new ClaimOut()
-                .type(type)
+                .type("notify")
                 .token(this.token)
                 .param("message", this.msg)
                 .iterator();

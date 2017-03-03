@@ -60,23 +60,4 @@ public final class RvProjectTest {
         MatcherAssert.assertThat(done.get(), Matchers.is(true));
     }
 
-    /**
-     * ReactiveProject can throw an exception when stakeholder fails.
-     * @throws Exception If some problem inside
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void throwsIfStakeholderFails() throws Exception {
-        final Project project = new RvProject(
-            new FkProject(),
-            Collections.singletonList(
-                (pkt, xml) -> {
-                    throw new IllegalArgumentException("oops...");
-                }
-            )
-        );
-        try (final Claims claims = new Claims(project).lock()) {
-            claims.add(new ClaimOut().type("bye").token("xx"));
-        }
-    }
-
 }

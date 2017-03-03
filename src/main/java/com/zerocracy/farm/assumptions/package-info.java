@@ -14,58 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.farm.assumptions;
-
-import com.jcabi.xml.XML;
-import com.zerocracy.jstk.Project;
 
 /**
- * Assumptions for stakeholder.
+ * Assumptions.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.11
+ * @since 0.1
  */
-public final class Assume {
-
-    /**
-     * Project.
-     */
-    private final Project project;
-
-    /**
-     * Claim.
-     */
-    private final XML xml;
-
-    /**
-     * Ctor.
-     * @param pkt Project
-     * @param claim Claim
-     */
-    public Assume(final Project pkt, final XML claim) {
-        this.project = pkt;
-        this.xml = claim;
-    }
-
-    /**
-     * Roles.
-     * @param type Type to apply
-     * @return Assumption
-     */
-    public AeType type(final String type) {
-        return new AeType(this.xml, type);
-    }
-
-    /**
-     * Roles.
-     * @param roles List of roles
-     * @return Assumption
-     */
-    public AeRoles roles(final String... roles) {
-        return new AeRoles(
-            this.project, this.xml, roles
-        );
-    }
-
-}
+package com.zerocracy.farm.assumptions;

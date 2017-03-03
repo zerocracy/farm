@@ -83,6 +83,7 @@ public final class S3ItemTest {
                 new Directives().xpath("/wbs")
                     .add("job")
                     .attr("id", "gh:yegor256/pdd#1")
+                    .add("created").set("2016-12-29T09:03:21.684Z")
             );
         }
         new Ocket.Text(ocket).write(before);

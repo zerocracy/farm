@@ -17,10 +17,10 @@
  -->
 <xs:schema version="SNAPSHOT" xmlns:xs="http://www.w3.org/2001/XMLSchema"
     elementFormDefault="qualified" attributeFormDefault="unqualified">
-    <xs:include schemaLocation="http://datum.zerocracy.com/0.18.2/xsd/pm/claims.xsd"/>
+    <xs:include schemaLocation="http://datum.zerocracy.com/0.21/xsd/pm/claims.xsd"/>
     <xs:complexType name="cmd">
         <xs:all>
-            <xs:element name="code" minOccurs="1" maxOccurs="1" type="type"/>
+            <xs:element name="code" minOccurs="1" maxOccurs="1" type="xs:string"/>
             <xs:element name="regex" minOccurs="1" maxOccurs="1" type="xs:string"/>
             <xs:element name="label" minOccurs="0" maxOccurs="1" type="xs:string"/>
             <xs:element name="help" minOccurs="0" maxOccurs="1" type="xs:string"/>

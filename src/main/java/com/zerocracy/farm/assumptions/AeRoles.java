@@ -67,39 +67,40 @@ public final class AeRoles {
      * @throws IOException If fails
      */
     public void exist() throws IOException {
-        if (!this.has()) {
-            final ClaimIn claim = new ClaimIn(this.xml);
-            if (claim.hasAuthor()) {
-                final Collection<String> mine = new Roles(this.project)
-                    .bootstrap()
-                    .allRoles(claim.author());
-                if (mine.isEmpty()) {
-                    throw new SoftException(
-                        String.format(
-                            // @checkstyle LineLength (1 line)
-                            "You need to have one of these roles in order to do what you're trying to do: %s. I'm sorry to say this, but at the moment you've got no roles in this project (your GitHub login is \"%s\").",
-                            String.join(", ", this.roles),
-                            claim.author()
-                        )
-                    );
-                }
+        if (this.has()) {
+            return;
+        }
+        final ClaimIn claim = new ClaimIn(this.xml);
+        if (claim.hasAuthor()) {
+            final Collection<String> mine = new Roles(this.project)
+                .bootstrap()
+                .allRoles(claim.author());
+            if (mine.isEmpty()) {
                 throw new SoftException(
                     String.format(
                         // @checkstyle LineLength (1 line)
-                        "You can't do that, unless you have one of these roles: %s. Your current roles are: %s.",
+                        "You need to have one of these roles in order to do what you're trying to do: %s. I'm sorry to say this, but at the moment you've got no roles in this project (your GitHub login is \"%s\").",
                         String.join(", ", this.roles),
-                        String.join(", ", mine)
+                        claim.author()
                     )
                 );
             }
             throw new SoftException(
                 String.format(
                     // @checkstyle LineLength (1 line)
-                    "You're not allowed to do this, you need one of these roles: %s.",
-                    String.join(", ", this.roles)
+                    "You can't do that, unless you have one of these roles: %s. Your current roles are: %s.",
+                    String.join(", ", this.roles),
+                    String.join(", ", mine)
                 )
             );
         }
+        throw new SoftException(
+            String.format(
+                // @checkstyle LineLength (1 line)
+                "You're not allowed to do this, you need one of these roles: %s.",
+                String.join(", ", this.roles)
+            )
+        );
     }
 
     /**
@@ -112,7 +113,7 @@ public final class AeRoles {
         final ClaimIn claim = new ClaimIn(this.xml);
         if (claim.hasAuthor()) {
             final String login = claim.author();
-            final Roles rls = new Roles(project).bootstrap();
+            final Roles rls = new Roles(this.project).bootstrap();
             for (final String role : this.roles) {
                 if (rls.hasRole(login, role)) {
                     has = true;

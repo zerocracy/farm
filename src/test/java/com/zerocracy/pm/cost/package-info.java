@@ -14,27 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.hr.roles
 
-import com.jcabi.http.Request
-import com.jcabi.http.response.RestResponse
-import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
-
-assume.type('Role was assigned').exact()
-
-ClaimIn claim = new ClaimIn(xml)
-String login = claim.param('login')
-github.entry().uri()
-  .path('/user/following')
-  .path(login)
-  .back()
-  .method(Request.PUT)
-  .fetch()
-  .as(RestResponse.class)
-  .assertStatus(HttpURLConnection.HTTP_NO_CONTENT)
-
-new ClaimOut()
-  .type('GitHub user was followed')
-  .param('login', login)
-  .postTo(project)
+/**
+ * Cost management, tests.
+ *
+ * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @version $Id$
+ * @since 0.10
+ */
+package com.zerocracy.pm.cost;

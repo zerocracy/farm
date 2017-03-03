@@ -60,7 +60,7 @@ public final class StkSafe implements Stakeholder {
         try {
             this.origin.process(project, xml);
         } catch (final MismatchException ex) {
-            throw ex;
+            throw new SoftException("Just a mismatch", ex);
         } catch (final SoftException ex) {
             if (claim.hasToken()) {
                 try (final Claims claims = new Claims(project).lock()) {

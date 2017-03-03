@@ -119,6 +119,7 @@ public final class StkGroovy implements Stakeholder {
         }
         /**
          * Apply to the binding.
+         * @param binding Binding
          */
         public void applyTo(final Binding binding) {
             binding.setProperty(this.name, this.object);

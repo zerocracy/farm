@@ -202,7 +202,8 @@
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
-            <scope>runtime</scope>
+            <version>1.8.9</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -258,22 +259,6 @@
                         <target>1.8</target>
                     </configuration>
                 </plugin>
-                <plugin>
-                    <groupId>org.codehaus.gmavenplus</groupId>
-                    <artifactId>gmavenplus-plugin</artifactId>
-                    <dependencies>
-        <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjrt</artifactId>
-            <version>1.8.9</version>
-        </dependency>
-                        <dependency>
-                            <groupId>com.sun.jersey</groupId>
-                            <artifactId>jersey-core</artifactId>
-                            <version>1.19</version>
-                        </dependency>
-                    </dependencies>
-                </plugin>
             </plugins>
         </pluginManagement>
     </build>
@@ -288,6 +273,7 @@
                         <configuration>
                             <excludes combine.children="append">
                                 <exclude>findbugs:.*</exclude>
+                                <exclude>codenarc:**/*</exclude>
                                 <exclude>xml:.*/q-[a-z\-]+\.xml</exclude>
                             </excludes>
                             <license>file:${basedir}/LICENSE.txt</license>

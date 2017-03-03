@@ -73,10 +73,10 @@ public final class Estimates {
             final Xocument xocument = new Xocument(wbs.path());
             xocument.modify(
                 new Directives()
-                    .xpath(String.format("/estimates/job[@id= '%s']", job))
+                    .xpath(String.format("/estimates/order[@id= '%s']", job))
                     .remove()
                     .xpath("/estimates")
-                    .add("job")
+                    .add("order")
                     .attr("id", job)
                     .add("created")
                     .set(
@@ -109,7 +109,9 @@ public final class Estimates {
         try (final Item wbs = this.item()) {
             return new Cash.S(
                 new Xocument(wbs.path()).xpath(
-                    String.format("/estimates/job[@id='%s']/cash/text()", job)
+                    String.format(
+                        "/estimates/order[@id='%s']/cash/text()", job
+                    )
                 ).get(0)
             );
         }
@@ -124,7 +126,7 @@ public final class Estimates {
     public boolean exists(final String job) throws IOException {
         try (final Item wbs = this.item()) {
             return !new Xocument(wbs.path()).nodes(
-                String.format("/estimates/job[@id='%s']", job)
+                String.format("/estimates/order[@id='%s']", job)
             ).isEmpty();
         }
     }
