@@ -24,6 +24,7 @@ import groovy.lang.Binding;
 import groovy.lang.GroovyCodeSource;
 import groovy.lang.GroovyShell;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
@@ -53,14 +54,7 @@ public final class StkGroovy implements Stakeholder {
      * @param list Params
      */
     public StkGroovy(final String path, final StkGroovy.Pair... list) {
-        this(
-            new GroovyCodeSource(
-                Xocument.class.getResource(
-                    String.format("stk/%s", path)
-                )
-            ),
-            list
-        );
+        this(StkGroovy.src(path), list);
     }
 
     /**
@@ -94,6 +88,22 @@ public final class StkGroovy implements Stakeholder {
         }
         final GroovyShell shell = new GroovyShell(binding);
         shell.evaluate(this.source);
+    }
+
+    /**
+     * Build it.
+     * @param name Path in resources
+     * @return Source
+     */
+    private static GroovyCodeSource src(final String name) {
+        final String path = String.format("stk/%s", name);
+        final URL url = Xocument.class.getResource(path);
+        if (url == null) {
+            throw new IllegalArgumentException(
+                String.format("Can't find \"%s\" in classpath", path)
+            );
+        }
+        return new GroovyCodeSource(url);
     }
 
     /**
