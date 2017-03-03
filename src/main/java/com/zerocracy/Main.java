@@ -149,7 +149,7 @@ public final class Main {
             new StkGroovy("pm/hr/roles/assign-role.groovy"),
             new StkGroovy("pm/hr/roles/resign-role.groovy"),
             new StkGroovy(
-                "pm/hr/roles/follow-on-github.groovy",
+                "pm/hr/roles/follow-in-github.groovy",
                 new StkGroovy.Pair("github", github)
             ),
             new StkGroovy("pm/in/confide-performer.groovy"),
