@@ -63,7 +63,7 @@ if (parts.length > 3 && 'direct' == parts[3]) {
 
 SlackSession session(String channel) {
   for (SlackSession session : sessions.values()) {
-    if (session.findChannelById(channel) != null) {
+    if (this.exists(session, channel)) {
       return session
     }
   }
@@ -74,4 +74,14 @@ SlackSession session(String channel) {
     )
   )
 }
+
+boolean exists(SlackSession session, String channel) {
+  for (SlackChannel opt : session.channels) {
+    if (opt.id == channel) {
+      return true
+    }
+  }
+  false
+}
+
 
