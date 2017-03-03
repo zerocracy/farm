@@ -58,13 +58,18 @@ public final class Brigade {
      * Process this claim.
      * @param project Project
      * @param xml XML to process
+     * @return How many stakeholders were interested
      * @throws IOException If fails
      */
-    public void process(final Project project, final XML xml)
+    public int process(final Project project, final XML xml)
         throws IOException {
+        int total = 0;
         for (final Stakeholder stk : this.list) {
-            Brigade.process(stk, project, xml);
+            if (Brigade.process(stk, project, xml)) {
+                ++total;
+            }
         }
+        return total;
     }
 
     /**
@@ -72,15 +77,19 @@ public final class Brigade {
      * @param stk Stakeholder
      * @param project Project
      * @param xml XML to process
+     * @return TRUE if this one was interested
      * @throws IOException If fails
      */
-    private static void process(final Stakeholder stk, final Project project,
+    private static boolean process(final Stakeholder stk, final Project project,
         final XML xml) throws IOException {
+        boolean done;
         try {
             stk.process(project, xml);
+            done = true;
         } catch (final MismatchException ex) {
-            assert ex != null;
+            done = false;
         }
+        return done;
     }
 
 }

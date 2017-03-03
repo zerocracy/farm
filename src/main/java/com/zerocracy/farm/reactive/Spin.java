@@ -140,7 +140,7 @@ final class Spin implements Runnable, Closeable {
         if (total > 0) {
             Logger.info(
                 this, "Seen %d claims in \"%s\", %[ms]s",
-                total, this.toString(),
+                total, this.project.toString(),
                 System.currentTimeMillis() - start
             );
         }
@@ -170,13 +170,14 @@ final class Spin implements Runnable, Closeable {
     private void process(final XML xml) throws IOException {
         final long start = System.currentTimeMillis();
         final ClaimIn claim = new ClaimIn(xml);
-        this.brigade.process(this.project, xml);
+        final int total = this.brigade.process(this.project, xml);
         try (final Claims claims = new Claims(this.project).lock()) {
             claims.remove(claim.number());
         }
         Logger.info(
-            this, "Seen \"%s/%d\" at \"%s\", %[ms]s",
-            claim.type(), claim.number(), this.toString(),
+            this, "Seen \"%s/%d\" at \"%s\" by %d, %[ms]s",
+            claim.type(), claim.number(), this.project.toString(),
+            total,
             System.currentTimeMillis() - start
         );
     }
