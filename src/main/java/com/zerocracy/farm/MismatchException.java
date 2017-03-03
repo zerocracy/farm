@@ -40,13 +40,4 @@ public final class MismatchException extends IOException {
         super(cause);
     }
 
-    /**
-     * Ctor.
-     * @param cause Cause of it
-     * @param thr Throwable
-     */
-    public MismatchException(final String cause, final Throwable thr) {
-        super(cause, thr);
-    }
-
 }
