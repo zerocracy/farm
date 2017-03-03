@@ -32,6 +32,7 @@ import org.xembly.Directives;
  * @version $Id$
  * @since 0.9
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class ClaimOut implements Iterable<Directive> {
 
     /**
@@ -82,7 +83,12 @@ public final class ClaimOut implements Iterable<Directive> {
      * @return This
      */
     public ClaimOut type(final String type) {
-        this.dirs.add("type").set(type).up();
+        this.dirs
+            .push()
+            .xpath("type")
+            .remove()
+            .pop()
+            .add("type").set(type).up();
         return this;
     }
 
@@ -92,7 +98,12 @@ public final class ClaimOut implements Iterable<Directive> {
      * @return This
      */
     public ClaimOut token(final Object token) {
-        this.dirs.add("token").set(token).up();
+        this.dirs
+            .push()
+            .xpath("token")
+            .remove()
+            .pop()
+            .add("token").set(token).up();
         return this;
     }
 
@@ -102,7 +113,12 @@ public final class ClaimOut implements Iterable<Directive> {
      * @return This
      */
     public ClaimOut author(final Object author) {
-        this.dirs.add("author").set(author).up();
+        this.dirs
+            .push()
+            .xpath("author")
+            .remove()
+            .pop()
+            .add("author").set(author).up();
         return this;
     }
 
@@ -113,7 +129,8 @@ public final class ClaimOut implements Iterable<Directive> {
      * @return This
      */
     public ClaimOut param(final String name, final Object value) {
-        this.dirs.addIf("params")
+        this.dirs
+            .addIf("params")
             .add("param")
             .attr("name", name)
             .set(value)
