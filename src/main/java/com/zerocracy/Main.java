@@ -152,9 +152,9 @@ public final class Main {
                 "pm/hr/roles/follow-in-github.groovy",
                 new StkGroovy.Pair("github", github)
             ),
-            new StkGroovy("pm/in/confide-performer.groovy"),
-            new StkGroovy("pm/in/start-order.groovy"),
-            new StkGroovy("pm/in/stop-order.groovy"),
+            new StkGroovy("pm/in/orders/confide-performer.groovy"),
+            new StkGroovy("pm/in/orders/start-order.groovy"),
+            new StkGroovy("pm/in/orders/stop-order.groovy"),
             new StkGroovy(
                 "pm/in/orders/set-assignee.groovy",
                 new StkGroovy.Pair("github", github)
@@ -163,9 +163,9 @@ public final class Main {
                 "pm/in/orders/remove-assignee.groovy",
                 new StkGroovy.Pair("github", github)
             ),
-            new StkGroovy("pm/scope/add-job-to-wbs.groovy"),
-            new StkGroovy("pm/scope/remove-job-from-wbs.groovy"),
-            new StkGroovy("pm/scope/show-wbs.groovy"),
+            new StkGroovy("pm/scope/wbs/add-job-to-wbs.groovy"),
+            new StkGroovy("pm/scope/wbs/remove-job-from-wbs.groovy"),
+            new StkGroovy("pm/scope/wbs/show-wbs.groovy"),
         };
         final Farm farm = new PingFarm(
             new RvFarm(
