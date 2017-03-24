@@ -23,6 +23,12 @@
         <help>Just say hello</help>
     </cmd>
     <cmd>
+        <code>Version</code>
+        <regex>version|ver</regex>
+        <label>version</label>
+        <help>Print current version of the bot</help>
+    </cmd>
+    <cmd>
         <code>Show links</code>
         <regex>links?</regex>
         <label>links</label>

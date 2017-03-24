@@ -125,6 +125,18 @@ public final class Main {
         final Map<String, SlackSession> sessions = new ConcurrentHashMap<>(0);
         final Stakeholder[] stakeholders = {
             new StkGroovy("hello.groovy"),
+            new StkGroovy(
+                "version.groovy",
+                new StkGroovy.Pair(
+                    "version", props.getProperty("build.version")
+                ),
+                new StkGroovy.Pair(
+                    "revision", props.getProperty("build.revision")
+                ),
+                new StkGroovy.Pair(
+                    "date", props.getProperty("build.date")
+                )
+            ),
             new StkGroovy("project/links/add_link.groovy"),
             new StkGroovy("project/links/remove_link.groovy"),
             new StkGroovy("project/links/show_all_links.groovy"),
