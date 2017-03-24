@@ -23,7 +23,7 @@ import com.zerocracy.pmo.People
 
 assume.type('Add skills').exact()
 
-People people = new People(pmo).bootstrap()
+People people = new People(project).bootstrap()
 ClaimIn claim = new ClaimIn(xml)
 String login = claim.param('person')
 Collection<String> skills = people.skills(login)
@@ -43,4 +43,4 @@ claim.reply(
     skill,
     login
   )
-).postTo(pmo)
+).postTo(project)

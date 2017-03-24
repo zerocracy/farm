@@ -34,7 +34,7 @@ String[] parts = claim.token().split(';')
 Repo repo = github.repos().get(
   new Coordinates.Simple(parts[1])
 )
-Issue issue = this.safe(
+Issue issue = safe(
   repo.issues().get(
     Integer.parseInt(parts[2])
   )
@@ -58,7 +58,7 @@ static Issue safe(Issue issue) {
     )
   )
   Collections.reverse(comments)
-  if (this.over(issue, comments)) {
+  if (over(issue, comments)) {
     throw new IllegalStateException(
       String.format(
         'Can\'t post anything to %s#%d, too many comments already',

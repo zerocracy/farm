@@ -25,10 +25,10 @@ assume.roles('PO').exist()
 ClaimIn claim = new ClaimIn(xml)
 String child = claim.param('child')
 String parent = claim.param('parent')
-new Catalog(pmo).parent(child, parent)
+new Catalog(project).parent(child, parent)
 claim.reply(
   String.format(
     'Done, project `%s` is a child of `%s`.',
     child, parent
   )
-).postTo(pmo)
+).postTo(project)

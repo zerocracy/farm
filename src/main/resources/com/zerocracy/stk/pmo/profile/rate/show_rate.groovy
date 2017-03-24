@@ -21,7 +21,7 @@ import com.zerocracy.pmo.People
 
 assume.type('Show rate').exact()
 
-People people = new People(pmo).bootstrap()
+People people = new People(project).bootstrap()
 ClaimIn claim = new ClaimIn(xml)
 String login = claim.param('person')
 claim.reply(
@@ -29,4 +29,4 @@ claim.reply(
     'Your rate is %s.',
     people.rate(login)
   )
-).postTo(pmo)
+).postTo(project)

@@ -28,7 +28,7 @@ Wbs wbs = new Wbs(project)
 Orders orders = new Orders(project)
 for (String job : wbs.iterate()) {
   if (!orders.assigned(job)) {
-    this.assign(project, job)
+    assign(project, job)
   }
 }
 

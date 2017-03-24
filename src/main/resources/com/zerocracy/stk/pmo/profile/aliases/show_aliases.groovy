@@ -21,7 +21,7 @@ import com.zerocracy.pmo.People
 
 assume.type('Show aliases').exact()
 
-People people = new People(pmo).bootstrap()
+People people = new People(project).bootstrap()
 ClaimIn claim = new ClaimIn(xml)
 String login = claim.param('person')
 claim.reply(
@@ -33,4 +33,4 @@ claim.reply(
       people.links(login)
     )
   )
-).postTo(pmo)
+).postTo(project)

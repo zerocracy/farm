@@ -160,7 +160,7 @@ public final class S3Farm implements Farm {
             this.bucket.ocket(
                 String.format("%scatalog.xml", S3Farm.prefix(S3Farm.PMO))
             ),
-            this.temp.resolve("pmo/catalog.xml")
+            this.temp.resolve("project/catalog.xml")
         );
     }
 

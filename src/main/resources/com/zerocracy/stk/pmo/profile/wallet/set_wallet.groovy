@@ -21,7 +21,7 @@ import com.zerocracy.pmo.People
 
 assume.type('Set wallet').exact()
 
-People people = new People(pmo).bootstrap()
+People people = new People(project).bootstrap()
 ClaimIn claim = new ClaimIn(xml)
 String login = claim.param('person')
 String bank = claim.param('bank')
@@ -33,4 +33,4 @@ claim.reply(
     login,
     bank, wallet
   )
-).postTo(pmo)
+).postTo(project)

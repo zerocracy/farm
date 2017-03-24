@@ -179,7 +179,7 @@ public final class ClaimOut implements Iterable<Directive> {
         @Override
         public Iterator<Directive> iterator() {
             return new ClaimOut()
-                .type("notify")
+                .type("Notify")
                 .token(this.token)
                 .param("message", this.msg)
                 .iterator();

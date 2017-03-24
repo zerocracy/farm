@@ -122,7 +122,7 @@ public final class PeopleTest {
                 "<people xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'",
                 " xsi:noNamespaceSchemaLocation='",
                 "https://raw.githubusercontent.com/zerocracy/datum/0.7.1",
-                "/xsd/pmo/people.xsd'/>"
+                "/xsd/project/people.xsd'/>"
             ).getBytes()
         );
         final People people = new People(project).bootstrap();

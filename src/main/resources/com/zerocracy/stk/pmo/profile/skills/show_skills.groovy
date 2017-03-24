@@ -21,7 +21,7 @@ import com.zerocracy.pmo.People
 
 assume.type('Show skills').exact()
 
-People people = new People(pmo).bootstrap()
+People people = new People(project).bootstrap()
 ClaimIn claim = new ClaimIn(xml)
 String login = claim.param('person')
 Collection<String> skills = people.skills(login)
@@ -34,4 +34,4 @@ if (skills.iterator().hasNext()) {
 } else {
   msg = 'Your skills are not defined yet.'
 }
-claim.reply(msg).postTo(pmo)
+claim.reply(msg).postTo(project)

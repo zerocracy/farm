@@ -63,7 +63,7 @@ if (parts.length > 3 && 'direct' == parts[3]) {
 
 SlackSession session(String channel) {
   for (SlackSession session : sessions.values()) {
-    if (this.belongsTo(session, channel)) {
+    if (belongsTo(session, channel)) {
       return session
     }
   }

@@ -175,7 +175,7 @@ final class Spin implements Runnable, Closeable {
             claims.remove(claim.number());
         }
         Logger.info(
-            this, "Seen \"%s/%d\" at \"%s\" by %d, %[ms]s",
+            this, "Seen \"%s/%d\" at \"%s\" by %d stk, %[ms]s",
             claim.type(), claim.number(), this.project.toString(),
             total,
             System.currentTimeMillis() - start

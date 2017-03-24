@@ -67,7 +67,7 @@ public final class ClaimInTest {
                 )
             ).xmlQuietly(),
             XhtmlMatchers.hasXPaths(
-                "/claims/claim[type='notify']",
+                "/claims/claim[type='Notify']",
                 "/claims/claim[token='X']",
                 "/claims/claim/params/param[@name='message' and .='hello']"
             )
