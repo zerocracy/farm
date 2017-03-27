@@ -89,7 +89,7 @@ public final class StkSafe implements Stakeholder {
                         "I can't do it for technical reasons,",
                         " I'm very sorry.",
                         // @checkstyle LineLength (1 line)
-                        "If you don't know what to do, email this to bug@0crat.com:\n\n```",
+                        "If you don't know what to do, submit it [here](https://github.com/zerocracy/help):\n\n```",
                         StkSafe.print(ex),
                         "```"
                     )

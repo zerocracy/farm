@@ -66,7 +66,8 @@ public final class ReSafe implements Response {
                     String.join(
                         "\n",
                         "There is an unrecoverable failure on my side.",
-                        "Please, email this to bug@0crat.com:\n\n```",
+                        "Please, submit it",
+                        "[here](https://github.com/zerocracy/help):\n\n```",
                         StringUtils.abbreviate(
                             baos.toString(StandardCharsets.UTF_8),
                             Tv.THOUSAND
