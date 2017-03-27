@@ -97,7 +97,7 @@ final class SyncProject implements Project {
          */
         Itm(final Item item) {
             this.origin = item;
-            this.semaphore = new Semaphore(1);
+            this.semaphore = new Semaphore(1, true);
         }
         @Override
         public Path path() throws IOException {
