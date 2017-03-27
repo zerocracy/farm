@@ -19,7 +19,7 @@ package com.zerocracy.stk.pm.hr.roles
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.hr.Roles
 
-assume.type('Show all roles').exact()
+assume.type('Show roles').exact()
 assume.roles('ARC', 'PO').exist()
 
 ClaimIn claim = new ClaimIn(xml)

@@ -174,6 +174,14 @@ final class Spin implements Runnable, Closeable {
         try (final Claims claims = new Claims(this.project).lock()) {
             claims.remove(claim.number());
         }
+        if (total == 0 && claim.hasToken()) {
+            throw new IllegalStateException(
+                String.format(
+                    "Failed to process \"%s\", no stakeholders",
+                    claim.type()
+                )
+            );
+        }
         Logger.info(
             this, "Seen \"%s/%d\" at \"%s\" by %d stk, %[ms]s",
             claim.type(), claim.number(), this.project.toString(),
