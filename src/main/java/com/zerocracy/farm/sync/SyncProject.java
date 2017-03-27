@@ -106,7 +106,7 @@ final class SyncProject implements Project {
         @Override
         public void close() throws IOException {
             this.origin.close();
-            Logger.info(this, "ACQ: released %s", this.origin);
+            Logger.info(this, "ACQ: released %s at %s", this.origin, this);
             this.semaphore.release();
         }
         /**
@@ -119,7 +119,7 @@ final class SyncProject implements Project {
                     String.format("Failed to acquire %s", this.origin)
                 );
             }
-            Logger.info(this, "ACQ: acquired %s", this.origin);
+            Logger.info(this, "ACQ: acquired %s at %s", this.origin, this);
         }
     }
 }
