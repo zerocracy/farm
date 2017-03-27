@@ -130,15 +130,8 @@ final class Spin implements Runnable, Closeable {
     private void process() throws IOException {
         final long start = System.currentTimeMillis();
         int total = 0;
-        try (final Claims claims = new Claims(this.project).lock()) {
-            while (true) {
-                final Iterator<XML> found = claims.iterate().iterator();
-                if (!found.hasNext()) {
-                    break;
-                }
-                this.process(found.next());
-                ++total;
-            }
+        while (this.next()) {
+            ++total;
         }
         if (total > 0) {
             Logger.info(
@@ -147,6 +140,24 @@ final class Spin implements Runnable, Closeable {
                 System.currentTimeMillis() - start
             );
         }
+    }
+
+    /**
+     * One step forward.
+     * @return TRUE if we need more tries
+     * @throws IOException If fails
+     */
+    private boolean next() throws IOException {
+        final Iterator<XML> found;
+        try (final Claims claims = new Claims(this.project).lock()) {
+            found = claims.iterate().iterator();
+        }
+        boolean more = false;
+        if (found.hasNext()) {
+            this.process(found.next());
+            more = true;
+        }
+        return more;
     }
 
     /**
