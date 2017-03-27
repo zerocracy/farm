@@ -16,9 +16,12 @@
  */
 package com.zerocracy.farm.sync;
 
+import com.jcabi.log.Logger;
 import com.zerocracy.jstk.Item;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Synchronized and thread safe item.
@@ -35,11 +38,17 @@ final class SyncItem implements Item {
     private final Item origin;
 
     /**
+     * Semaphore.
+     */
+    private final Semaphore semaphore;
+
+    /**
      * Ctor.
      * @param item Original item
      */
     SyncItem(final Item item) {
         this.origin = item;
+        this.semaphore = new Semaphore(1, true);
     }
 
     @Override
@@ -58,6 +67,22 @@ final class SyncItem implements Item {
     public void close() throws IOException {
         synchronized (this.origin) {
             this.origin.close();
+            Logger.info(this, "ACQ: released %s at %s", this.origin, this);
+            this.semaphore.release();
         }
     }
+
+    /**
+     * Acquire access.
+     * @throws InterruptedException If fails
+     */
+    public void acquire() throws InterruptedException {
+        if (!this.semaphore.tryAcquire(1L, TimeUnit.MINUTES)) {
+            throw new IllegalStateException(
+                String.format("Failed to acquire %s", this.origin)
+            );
+        }
+        Logger.info(this, "ACQ: acquired %s at %s", this.origin, this);
+    }
+
 }

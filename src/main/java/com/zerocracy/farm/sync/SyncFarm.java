@@ -20,6 +20,8 @@ import com.google.common.collect.Iterables;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Synchronized farm.
@@ -36,11 +38,17 @@ public final class SyncFarm implements Farm {
     private final Farm origin;
 
     /**
+     * Pool of items.
+     */
+    private final Map<String, SyncItem> pool;
+
+    /**
      * Ctor.
      * @param farm Original farm
      */
     public SyncFarm(final Farm farm) {
         this.origin = farm;
+        this.pool = new HashMap<>(0);
     }
 
     @Override
@@ -48,7 +56,7 @@ public final class SyncFarm implements Farm {
         synchronized (this.origin) {
             return Iterables.transform(
                 this.origin.find(query),
-                SyncProject::new
+                pkt -> new SyncProject(pkt, this.pool)
             );
         }
     }

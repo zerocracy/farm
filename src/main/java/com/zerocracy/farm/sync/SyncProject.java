@@ -16,15 +16,10 @@
  */
 package com.zerocracy.farm.sync;
 
-import com.jcabi.log.Logger;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Pool project.
@@ -32,6 +27,10 @@ import java.util.concurrent.TimeUnit;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
+ * @todo #43:30min At the moment this pool of items will never be
+ *  cleaned. They will get into the pool but will never be removed.
+ *  There has to be some mechanism to implement that cache
+ *  cleaning. Otherwise, we'll hit out-of-memory, sooner or later.
  */
 final class SyncProject implements Project {
 
@@ -43,15 +42,16 @@ final class SyncProject implements Project {
     /**
      * Pool of items.
      */
-    private final Map<String, SyncProject.Itm> pool;
+    private final Map<String, SyncItem> pool;
 
     /**
      * Ctor.
      * @param pkt Project
+     * @param map Pool of items
      */
-    SyncProject(final Project pkt) {
+    SyncProject(final Project pkt, final Map<String, SyncItem> map) {
         this.origin = pkt;
-        this.pool = new HashMap<>(0);
+        this.pool = map;
     }
 
     @Override
@@ -61,65 +61,25 @@ final class SyncProject implements Project {
 
     @Override
     public Item acq(final String file) throws IOException {
+        final String location = String.format(
+            "%s %s", this.origin, file
+        );
         synchronized (this.pool) {
-            if (!this.pool.containsKey(file)) {
+            if (!this.pool.containsKey(location)) {
                 this.pool.put(
-                    file,
-                    new SyncProject.Itm(this.origin.acq(file))
+                    location,
+                    new SyncItem(this.origin.acq(file))
                 );
             }
         }
-        final SyncProject.Itm item = this.pool.get(file);
+        final SyncItem item = this.pool.get(location);
         try {
             item.acquire();
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
             throw new IllegalStateException(ex);
         }
-        return new SyncItem(item);
+        return item;
     }
 
-    /**
-     * Item that closes only after all acquirers call close().
-     */
-    private static final class Itm implements Item {
-        /**
-         * Original item.
-         */
-        private final Item origin;
-        /**
-         * Semaphore.
-         */
-        private final Semaphore semaphore;
-        /**
-         * Ctor.
-         * @param item Original item
-         */
-        Itm(final Item item) {
-            this.origin = item;
-            this.semaphore = new Semaphore(1, true);
-        }
-        @Override
-        public Path path() throws IOException {
-            return this.origin.path();
-        }
-        @Override
-        public void close() throws IOException {
-            this.origin.close();
-            Logger.info(this, "ACQ: released %s at %s", this.origin, this);
-            this.semaphore.release();
-        }
-        /**
-         * Acquire access.
-         * @throws InterruptedException If fails
-         */
-        public void acquire() throws InterruptedException {
-            if (!this.semaphore.tryAcquire(1L, TimeUnit.MINUTES)) {
-                throw new IllegalStateException(
-                    String.format("Failed to acquire %s", this.origin)
-                );
-            }
-            Logger.info(this, "ACQ: acquired %s at %s", this.origin, this);
-        }
-    }
 }
