@@ -16,7 +16,6 @@
  */
 package com.zerocracy.farm.sync;
 
-import com.jcabi.log.Logger;
 import com.zerocracy.jstk.Item;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -67,7 +66,6 @@ final class SyncItem implements Item {
     public void close() throws IOException {
         synchronized (this.origin) {
             this.origin.close();
-            Logger.info(this, "ACQ: released %s at %s", this.origin, this);
             this.semaphore.release();
         }
     }
@@ -82,7 +80,6 @@ final class SyncItem implements Item {
                 String.format("Failed to acquire %s", this.origin)
             );
         }
-        Logger.info(this, "ACQ: acquired %s at %s", this.origin, this);
     }
 
 }

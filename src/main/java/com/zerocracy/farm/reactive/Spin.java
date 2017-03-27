@@ -28,7 +28,6 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -131,13 +130,15 @@ final class Spin implements Runnable, Closeable {
     private void process() throws IOException {
         final long start = System.currentTimeMillis();
         int total = 0;
-        while (true) {
-            final Iterator<XML> found = this.find().iterator();
-            if (!found.hasNext()) {
-                break;
+        try (final Claims claims = new Claims(this.project).lock()) {
+            while (true) {
+                final Iterator<XML> found = claims.iterate().iterator();
+                if (!found.hasNext()) {
+                    break;
+                }
+                this.process(found.next());
+                ++total;
             }
-            this.process(found.next());
-            ++total;
         }
         if (total > 0) {
             Logger.info(
@@ -146,22 +147,6 @@ final class Spin implements Runnable, Closeable {
                 System.currentTimeMillis() - start
             );
         }
-    }
-
-    /**
-     * Find the next claim.
-     * @return Empty or not
-     * @throws IOException If fails
-     */
-    private Iterable<XML> find() throws IOException {
-        final Collection<XML> found = new LinkedList<>();
-        try (final Claims claims = new Claims(this.project).lock()) {
-            final Iterator<XML> list = claims.iterate().iterator();
-            if (list.hasNext()) {
-                found.add(list.next());
-            }
-        }
-        return found;
     }
 
     /**
