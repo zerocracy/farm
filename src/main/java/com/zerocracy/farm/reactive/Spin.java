@@ -170,8 +170,10 @@ final class Spin implements Runnable, Closeable {
         final long start = System.currentTimeMillis();
         final ClaimIn claim = new ClaimIn(xml);
         final int total = this.brigade.process(this.project, xml);
+        final int left;
         try (final Claims claims = new Claims(this.project).lock()) {
             claims.remove(claim.number());
+            left = claims.iterate().size();
         }
         if (total == 0 && claim.hasToken()) {
             throw new IllegalStateException(
@@ -182,8 +184,9 @@ final class Spin implements Runnable, Closeable {
             );
         }
         Logger.info(
-            this, "Seen \"%s/%d\" at \"%s\" by %d stk, %[ms]s",
-            claim.type(), claim.number(), this.project.toString(),
+            this, "Seen \"%s/%d/%d\" at \"%s\" by %d stk, %[ms]s",
+            claim.type(), claim.number(), left,
+            this.project.toString(),
             total,
             System.currentTimeMillis() - start
         );
