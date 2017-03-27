@@ -61,11 +61,13 @@ final class SyncProject implements Project {
 
     @Override
     public Item acq(final String file) throws IOException {
-        if (!this.pool.containsKey(file)) {
-            this.pool.put(
-                file,
-                new SyncProject.Itm(this.origin.acq(file))
-            );
+        synchronized (this.pool) {
+            if (!this.pool.containsKey(file)) {
+                this.pool.put(
+                    file,
+                    new SyncProject.Itm(this.origin.acq(file))
+                );
+            }
         }
         final SyncProject.Itm item = this.pool.get(file);
         try {
@@ -104,8 +106,8 @@ final class SyncProject implements Project {
         @Override
         public void close() throws IOException {
             this.origin.close();
-            this.semaphore.release();
             Logger.info(this, "ACQ: released %s", this.origin);
+            this.semaphore.release();
         }
         /**
          * Acquire access.
