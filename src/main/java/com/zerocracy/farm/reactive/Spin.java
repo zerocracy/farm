@@ -81,7 +81,9 @@ final class Spin implements Runnable, Closeable {
         this.project = pkt;
         this.brigade = bgd;
         this.alive = new AtomicBoolean();
-        this.service = Executors.newSingleThreadExecutor(new VerboseThreads());
+        this.service = Executors.newSingleThreadExecutor(
+            new VerboseThreads("spin")
+        );
     }
 
     /**

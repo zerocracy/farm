@@ -73,6 +73,11 @@ final class S3Item implements Item {
     }
 
     @Override
+    public String toString() {
+        return this.ocket.toString();
+    }
+
+    @Override
     public Path path() throws IOException {
         if (!this.open.get()) {
             if (this.temp.getParent().toFile().mkdirs()) {

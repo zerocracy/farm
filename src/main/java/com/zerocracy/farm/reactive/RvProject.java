@@ -18,9 +18,7 @@ package com.zerocracy.farm.reactive;
 
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.Stakeholder;
 import java.io.IOException;
-import java.util.Collection;
 
 /**
  * Reactive project.
@@ -40,15 +38,6 @@ final class RvProject implements Project {
      * The spin.
      */
     private final Spin spin;
-
-    /**
-     * Ctor.
-     * @param pkt Project
-     * @param list List of them
-     */
-    RvProject(final Project pkt, final Collection<Stakeholder> list) {
-        this(pkt, new Brigade(list));
-    }
 
     /**
      * Ctor.

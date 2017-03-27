@@ -16,6 +16,7 @@
  */
 package com.zerocracy.farm.sync;
 
+import com.jcabi.log.Logger;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
@@ -104,6 +105,7 @@ final class SyncProject implements Project {
         public void close() throws IOException {
             this.origin.close();
             this.semaphore.release();
+            Logger.info(this, "ACQ: released %s", this.origin);
         }
         /**
          * Acquire access.
@@ -115,6 +117,7 @@ final class SyncProject implements Project {
                     String.format("Failed to acquire %s", this.origin)
                 );
             }
+            Logger.info(this, "ACQ: acquired %s", this.origin);
         }
     }
 }

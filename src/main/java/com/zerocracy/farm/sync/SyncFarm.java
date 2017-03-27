@@ -16,7 +16,6 @@
  */
 package com.zerocracy.farm.sync;
 
-import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
@@ -49,7 +48,7 @@ public final class SyncFarm implements Farm {
         synchronized (this.origin) {
             return Iterables.transform(
                 this.origin.find(query),
-                (Function<Project, Project>) SyncProject::new
+                SyncProject::new
             );
         }
     }

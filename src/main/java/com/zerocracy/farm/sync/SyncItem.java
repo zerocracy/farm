@@ -43,6 +43,11 @@ final class SyncItem implements Item {
     }
 
     @Override
+    public String toString() {
+        return this.origin.toString();
+    }
+
+    @Override
     public Path path() throws IOException {
         synchronized (this.origin) {
             return this.origin.path();

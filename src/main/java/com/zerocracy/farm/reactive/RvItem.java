@@ -33,7 +33,7 @@ final class RvItem implements Item {
     /**
      * Original item.
      */
-    private final Item original;
+    private final Item origin;
 
     /**
      * The spin.
@@ -46,20 +46,25 @@ final class RvItem implements Item {
      * @param spn Spin
      */
     RvItem(final Item item, final Spin spn) {
-        this.original = item;
+        this.origin = item;
         this.spin = spn;
     }
 
     @Override
+    public String toString() {
+        return this.origin.toString();
+    }
+
+    @Override
     public Path path() throws IOException {
-        return this.original.path();
+        return this.origin.path();
     }
 
     @Override
     public void close() throws IOException {
         final int total = new Xocument(this.path())
             .nodes("/claims/claim").size();
-        this.original.close();
+        this.origin.close();
         if (total > 0) {
             this.spin.ping();
         }
