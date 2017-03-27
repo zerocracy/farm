@@ -52,20 +52,21 @@ public final class SyncFarmTest {
             "the-bucket"
         );
         final Farm farm = new SyncFarm(new S3Farm(bucket));
-        final Project project = farm.find("@id='ABCZZFE03'").iterator().next();
-        new Roles(project).bootstrap();
         final int threads = Runtime.getRuntime().availableProcessors() << 2;
         final ExecutorService service = Executors.newFixedThreadPool(threads);
         final CountDownLatch latch = new CountDownLatch(1);
         final Collection<Future<Boolean>> futures = new ArrayList<>(threads);
         final String role = "PO";
-        final Roles roles = new Roles(project);
         for (int thread = 0; thread < threads; ++thread) {
             final String person = String.format("jeff%d", thread);
             futures.add(
                 service.submit(
                     () -> {
                         latch.await();
+                        final Project project =
+                            farm.find("@id='ABCZZFE03'").iterator().next();
+                        final Roles roles = new Roles(project);
+                        roles.bootstrap();
                         roles.assign(person, role);
                         return roles.hasRole(person, role);
                     }
