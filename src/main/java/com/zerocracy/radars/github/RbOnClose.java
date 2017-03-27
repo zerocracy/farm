@@ -25,7 +25,6 @@ import com.jcabi.github.Label;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.ClaimOut;
-import com.zerocracy.pm.Claims;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
@@ -55,14 +54,11 @@ public final class RbOnClose implements Rebound {
         final String answer;
         if (author.equals(closer)) {
             final Project project = new GhProject(farm, issue.repo());
-            try (final Claims claims = new Claims(project).lock()) {
-                claims.add(
-                    new ClaimOut()
-                        .type("pm.scope.wbs.out")
-                        .token(new TokenOfIssue(issue))
-                        .param("job", new Job(issue))
-                );
-            }
+            new ClaimOut()
+                .type("pm.scope.wbs.out")
+                .token(new TokenOfIssue(issue))
+                .param("job", new Job(issue))
+                .postTo(project);
             answer = String.format(
                 "Issue #%d closed by @%s, asked WBS to take it out of scope",
                 issue.number(), author

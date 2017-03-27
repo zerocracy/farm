@@ -21,7 +21,6 @@ import com.jcabi.aspects.Tv;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.ClaimOut;
-import com.zerocracy.pm.Claims;
 import java.io.IOException;
 
 /**
@@ -69,9 +68,7 @@ public final class PingFarm implements Runnable, Farm {
      * @throws IOException If fails
      */
     private static void ping(final Project project) throws IOException {
-        try (final Claims claims = new Claims(project).lock()) {
-            claims.add(new ClaimOut().type("ping"));
-        }
+        new ClaimOut().type("ping").postTo(project);
     }
 
 }

@@ -167,6 +167,7 @@ final class Spin implements Runnable, Closeable {
      * @param xml The claim
      * @throws IOException If fails
      */
+    @SuppressWarnings("PMD.PrematureDeclaration")
     private void process(final XML xml) throws IOException {
         final long start = System.currentTimeMillis();
         final ClaimIn claim = new ClaimIn(xml);
