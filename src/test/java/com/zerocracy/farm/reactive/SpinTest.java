@@ -16,12 +16,15 @@
  */
 package com.zerocracy.farm.reactive;
 
+import com.jcabi.aspects.Tv;
+import com.jcabi.log.VerboseRunnable;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.jstk.fake.FkProject;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
-import com.zerocracy.pm.hr.Roles;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -41,19 +44,37 @@ public final class SpinTest {
     @Test
     public void processes() throws Exception {
         final Project project = new FkProject();
-        new ClaimOut().type("just some fun").postTo(project);
+        final AtomicInteger total = new AtomicInteger(Tv.TEN);
+        final CountDownLatch latch = new CountDownLatch(1);
         final Brigade brigade = new Brigade(
-            (Stakeholder) (pkt, claim) -> new Roles(pkt).bootstrap()
+            (Stakeholder) (pkt, claim) -> total.decrementAndGet()
         );
+        new ClaimOut().type("first").postTo(project);
+        final Thread thread = new Thread(
+            new VerboseRunnable(
+                () -> {
+                    final int max = total.get();
+                    latch.await();
+                    for (int idx = 0; idx < max; ++idx) {
+                        new ClaimOut().type("next").postTo(project);
+                    }
+                    return null;
+                }
+            )
+        );
+        thread.start();
         try (final Spin spin = new Spin(project, brigade)) {
-            spin.run();
+            latch.countDown();
+            spin.ping();
         }
+        thread.join();
         try (final Claims claims = new Claims(project).lock()) {
             MatcherAssert.assertThat(
                 claims.iterate(),
                 Matchers.hasSize(0)
             );
         }
+        MatcherAssert.assertThat(total.get(), Matchers.equalTo(0));
     }
 
 }

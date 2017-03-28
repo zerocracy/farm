@@ -49,6 +49,11 @@ public final class ClaimIn {
      * @return OutClaim
      */
     public ClaimOut reply(final String msg) {
+        if (!this.hasToken()) {
+            throw new IllegalArgumentException(
+                "There is no token, can't reply"
+            );
+        }
         return new ClaimOut(
             new ClaimOut.Notify(
                 this.token(), msg
