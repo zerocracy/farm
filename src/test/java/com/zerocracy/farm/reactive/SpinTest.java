@@ -18,11 +18,16 @@ package com.zerocracy.farm.reactive;
 
 import com.jcabi.aspects.Tv;
 import com.jcabi.log.VerboseRunnable;
+import com.jcabi.s3.Bucket;
+import com.jcabi.s3.fake.FkBucket;
+import com.zerocracy.farm.S3Farm;
+import com.zerocracy.farm.sync.SyncFarm;
+import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
-import com.zerocracy.jstk.fake.FkProject;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
+import java.nio.file.Files;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.hamcrest.MatcherAssert;
@@ -34,6 +39,7 @@ import org.junit.Test;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.11
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class SpinTest {
 
@@ -43,8 +49,13 @@ public final class SpinTest {
      */
     @Test
     public void processes() throws Exception {
-        final Project project = new FkProject();
-        final AtomicInteger total = new AtomicInteger(Tv.TEN);
+        final Bucket bucket = new FkBucket(
+            Files.createTempDirectory("").toFile(),
+            "the-bucket"
+        );
+        final Farm farm = new SyncFarm(new S3Farm(bucket));
+        final Project project = farm.find("@id='ABCZZFE03'").iterator().next();
+        final AtomicInteger total = new AtomicInteger(Tv.FIVE);
         final CountDownLatch latch = new CountDownLatch(1);
         final Brigade brigade = new Brigade(
             (Stakeholder) (pkt, claim) -> total.decrementAndGet()
@@ -74,7 +85,7 @@ public final class SpinTest {
                 Matchers.hasSize(0)
             );
         }
-        MatcherAssert.assertThat(total.get(), Matchers.equalTo(0));
+        MatcherAssert.assertThat(total.get(), Matchers.equalTo(-1));
     }
 
 }
