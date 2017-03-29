@@ -16,6 +16,7 @@
  */
 package com.zerocracy.farm.reactive;
 
+import com.jcabi.aspects.Tv;
 import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseRunnable;
 import com.jcabi.log.VerboseThreads;
@@ -26,6 +27,7 @@ import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.Claims;
 import java.io.Closeable;
 import java.io.IOException;
+import java.security.SecureRandom;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
@@ -81,7 +83,12 @@ final class Spin implements Runnable, Closeable {
         this.brigade = bgd;
         this.alive = new AtomicBoolean();
         this.service = Executors.newSingleThreadExecutor(
-            new VerboseThreads("spin")
+            new VerboseThreads(
+                String.format(
+                    "spin-%d",
+                    new SecureRandom().nextInt(Tv.HUNDRED)
+                )
+            )
         );
     }
 
