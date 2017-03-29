@@ -20,6 +20,7 @@ import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import java.util.regex.Pattern;
+import lombok.EqualsAndHashCode;
 
 /**
  * PMO project.
@@ -28,6 +29,7 @@ import java.util.regex.Pattern;
  * @version $Id$
  * @since 0.1
  */
+@EqualsAndHashCode(of = "origin")
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 final class StrictProject implements Project {
 

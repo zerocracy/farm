@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import lombok.EqualsAndHashCode;
 
 /**
  * Project that can fetch files from PMO.
@@ -33,6 +34,7 @@ import java.util.stream.Stream;
  * @version $Id$
  * @since 0.1
  */
+@EqualsAndHashCode(of = "origin")
 final class UplinkedProject implements Project {
 
     /**
