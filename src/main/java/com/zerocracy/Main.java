@@ -137,7 +137,10 @@ public final class Main {
                     "date", props.getProperty("build.date")
                 )
             ),
-            new StkGroovy("pmo/links/add_link.groovy"),
+            new StkGroovy(
+                "pmo/links/add_link.groovy",
+                new StkGroovy.Pair("github", github)
+            ),
             new StkGroovy("pmo/links/remove_link.groovy"),
             new StkGroovy("pmo/links/show_all_links.groovy"),
             new StkGroovy("pmo/profile/aliases/show_aliases.groovy"),
