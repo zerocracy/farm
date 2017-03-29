@@ -19,6 +19,8 @@ package com.zerocracy.farm.reactive;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -42,6 +44,11 @@ public final class RvFarm implements Farm {
     private final Brigade brigade;
 
     /**
+     * Pool of projects.
+     */
+    private final Map<Project, Project> pool;
+
+    /**
      * Ctor.
      * @param farm Original farm
      * @param bgd Stakeholders
@@ -49,13 +56,21 @@ public final class RvFarm implements Farm {
     public RvFarm(final Farm farm, final Brigade bgd) {
         this.origin = farm;
         this.brigade = bgd;
+        this.pool = new HashMap<>(0);
     }
 
     @Override
     public Iterable<Project> find(final String query) throws IOException {
         return StreamSupport
             .stream(this.origin.find(query).spliterator(), false)
-            .map(p -> new RvProject(p, this.brigade))
+            .map(
+                p -> {
+                    if (!this.pool.containsKey(p)) {
+                        this.pool.put(p, new RvProject(p, this.brigade));
+                    }
+                    return this.pool.get(p);
+                }
+            )
             .collect(Collectors.toList());
     }
 
