@@ -25,6 +25,7 @@ import com.zerocracy.farm.sync.SyncFarm;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
+import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
 import java.nio.file.Files;
@@ -46,6 +47,7 @@ public final class SpinTest {
     /**
      * Spin can work.
      * @throws Exception If some problem inside
+     * @checkstyle ExecutableStatementCountCheck (200 lines)
      */
     @Test
     public void processes() throws Exception {
@@ -55,19 +57,24 @@ public final class SpinTest {
         );
         final Farm farm = new SyncFarm(new S3Farm(bucket));
         final Project project = farm.find("@id='ABCZZFE03'").iterator().next();
-        final AtomicInteger total = new AtomicInteger(Tv.FIVE);
+        final AtomicInteger done = new AtomicInteger(0);
         final CountDownLatch latch = new CountDownLatch(1);
         final Brigade brigade = new Brigade(
-            (Stakeholder) (pkt, claim) -> total.decrementAndGet()
+            (Stakeholder) (pkt, claim) -> {
+                done.incrementAndGet();
+                if (new ClaimIn(claim).type().startsWith("nex")) {
+                    new ClaimIn(claim).reply("the answer").postTo(project);
+                }
+            }
         );
         new ClaimOut().type("first").postTo(project);
+        final int max = Tv.FIVE;
         final Thread thread = new Thread(
             new VerboseRunnable(
                 () -> {
-                    final int max = total.get();
                     latch.await();
                     for (int idx = 0; idx < max; ++idx) {
-                        new ClaimOut().type("next").postTo(project);
+                        new ClaimOut().token("t").type("next").postTo(project);
                     }
                     return null;
                 }
@@ -85,7 +92,7 @@ public final class SpinTest {
                 Matchers.hasSize(0)
             );
         }
-        MatcherAssert.assertThat(total.get(), Matchers.equalTo(-1));
+        MatcherAssert.assertThat(done.get(), Matchers.equalTo((max << 1) + 1));
     }
 
 }

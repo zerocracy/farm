@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pm;
 
+import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
@@ -24,6 +25,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 import org.xembly.Directive;
 import org.xembly.Directives;
 
@@ -111,7 +113,16 @@ public final class Claims implements Closeable {
      * @throws IOException If fails
      */
     public Collection<XML> iterate() throws IOException {
-        return new Xocument(this.item.get().path()).nodes("/claims/claim");
+        final Collection<XML> list =
+            new Xocument(this.item.get().path()).nodes("/claims/claim");
+        Logger.info(
+            this,
+            "claims found: %s",
+            list.stream().map(
+                input -> input.xpath("@id").get(0)
+            ).collect(Collectors.toList())
+        );
+        return list;
     }
 
 }
