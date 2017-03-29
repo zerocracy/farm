@@ -60,6 +60,11 @@
                     </a>
                 </xsl:if>
             </p>
+            <p>
+                <a href="http://www.sixnines.io/h/2b3a">
+                    <img src="http://www.sixnines.io/b/2b3a"/>
+                </a>
+            </p>
         </div>
     </xsl:template>
 </xsl:stylesheet>
