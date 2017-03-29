@@ -169,6 +169,7 @@ final class Spin implements Runnable, Closeable {
     private void process(final XML xml) throws IOException {
         final long start = System.currentTimeMillis();
         final ClaimIn claim = new ClaimIn(xml);
+        Logger.info(this, "processing: %d", claim.number());
         final int total = this.brigade.process(this.project, xml);
         final int left;
         try (final Claims claims = new Claims(this.project).lock()) {
