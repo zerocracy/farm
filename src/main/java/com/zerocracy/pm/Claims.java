@@ -117,7 +117,8 @@ public final class Claims implements Closeable {
             new Xocument(this.item.get().path()).nodes("/claims/claim");
         Logger.info(
             this,
-            "claims found: %s",
+            "claims found in %s: %s",
+            this.project,
             list.stream().map(
                 input -> input.xpath("@id").get(0)
             ).collect(Collectors.toList())
