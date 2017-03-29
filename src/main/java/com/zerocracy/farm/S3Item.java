@@ -27,6 +27,7 @@ import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.FileTime;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicBoolean;
+import lombok.EqualsAndHashCode;
 
 /**
  * Item in S3.
@@ -35,6 +36,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @version $Id$
  * @since 0.1
  */
+@EqualsAndHashCode(of = "ocket")
 final class S3Item implements Item {
 
     /**

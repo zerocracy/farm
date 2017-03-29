@@ -22,6 +22,7 @@ import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -31,6 +32,7 @@ import org.apache.commons.lang3.StringUtils;
  * @version $Id$
  * @since 0.1
  */
+@EqualsAndHashCode(of = "prefix")
 final class S3Project implements Project {
 
     /**

@@ -20,6 +20,7 @@ import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import java.util.Map;
+import lombok.EqualsAndHashCode;
 
 /**
  * Pool project.
@@ -32,6 +33,7 @@ import java.util.Map;
  *  There has to be some mechanism to implement that cache
  *  cleaning. Otherwise, we'll hit out-of-memory, sooner or later.
  */
+@EqualsAndHashCode(of = "origin")
 final class SyncProject implements Project {
 
     /**

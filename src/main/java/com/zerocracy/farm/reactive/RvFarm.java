@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+import lombok.EqualsAndHashCode;
 
 /**
  * Reactive farm.
@@ -31,6 +32,7 @@ import java.util.stream.StreamSupport;
  * @version $Id$
  * @since 0.1
  */
+@EqualsAndHashCode(of = "origin")
 public final class RvFarm implements Farm {
 
     /**

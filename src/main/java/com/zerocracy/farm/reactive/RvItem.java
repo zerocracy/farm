@@ -20,6 +20,7 @@ import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
 import java.io.IOException;
 import java.nio.file.Path;
+import lombok.EqualsAndHashCode;
 
 /**
  * Reactive item.
@@ -28,6 +29,7 @@ import java.nio.file.Path;
  * @version $Id$
  * @since 0.10
  */
+@EqualsAndHashCode(of = "origin")
 final class RvItem implements Item {
 
     /**

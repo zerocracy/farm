@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+import lombok.EqualsAndHashCode;
 
 /**
  * Synchronized and thread safe item.
@@ -29,6 +30,7 @@ import java.util.concurrent.TimeUnit;
  * @version $Id$
  * @since 0.1
  */
+@EqualsAndHashCode(of = "origin")
 final class SyncItem implements Item {
 
     /**

@@ -31,6 +31,7 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import lombok.EqualsAndHashCode;
 import org.xembly.Directives;
 
 /**
@@ -41,6 +42,7 @@ import org.xembly.Directives;
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@EqualsAndHashCode(of = "bucket")
 public final class S3Farm implements Farm {
 
     /**

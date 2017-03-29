@@ -22,6 +22,7 @@ import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.EqualsAndHashCode;
 
 /**
  * Synchronized farm.
@@ -30,6 +31,7 @@ import java.util.Map;
  * @version $Id$
  * @since 0.1
  */
+@EqualsAndHashCode(of = "origin")
 public final class SyncFarm implements Farm {
 
     /**

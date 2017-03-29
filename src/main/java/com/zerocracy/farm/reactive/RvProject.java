@@ -19,6 +19,7 @@ package com.zerocracy.farm.reactive;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
+import lombok.EqualsAndHashCode;
 
 /**
  * Reactive project.
@@ -27,6 +28,7 @@ import java.io.IOException;
  * @version $Id$
  * @since 0.1
  */
+@EqualsAndHashCode(of = "origin")
 final class RvProject implements Project {
 
     /**
