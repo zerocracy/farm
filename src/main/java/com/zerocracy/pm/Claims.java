@@ -105,6 +105,7 @@ public final class Claims implements Closeable {
                 )
             ).strict(1).remove()
         );
+        Logger.info(this, "claim removed: %d", cid);
     }
 
     /**
