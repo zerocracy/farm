@@ -55,7 +55,7 @@ public final class RbOnClose implements Rebound {
         if (author.equals(closer)) {
             final Project project = new GhProject(farm, issue.repo());
             new ClaimOut()
-                .type("pm.scope.wbs.out")
+                .type("Remove job from WBS")
                 .token(new TokenOfIssue(issue))
                 .param("job", new Job(issue))
                 .postTo(project);
