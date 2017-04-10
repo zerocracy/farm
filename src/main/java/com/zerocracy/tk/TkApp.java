@@ -27,6 +27,7 @@ import org.takes.facets.flash.TkFlash;
 import org.takes.facets.fork.FkRegex;
 import org.takes.facets.fork.TkFork;
 import org.takes.facets.forward.TkForward;
+import org.takes.misc.Href;
 import org.takes.tk.TkGzip;
 import org.takes.tk.TkMeasured;
 import org.takes.tk.TkRedirect;
@@ -81,7 +82,10 @@ public final class TkApp extends TkWrap {
                                                             new FkRegex(
                                                                 "/invite",
                                                                 new TkRedirect(
-                                                                    "https://slack.com/oauth/authorize?scope=bot&amp;client_id=116853003427.116859136003"
+                                                                    new Href("https://slack.com/oauth/authorize")
+                                                                        .with("scope", "bot")
+                                                                        .with("client_id", props.getProperty("slack.client_id"))
+                                                                        .toString()
                                                                 )
                                                             ),
                                                             new FkRegex(
