@@ -18,22 +18,15 @@ package com.zerocracy.tk;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.jcabi.log.VerboseProcess;
-import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Properties;
-import org.takes.Take;
 import org.takes.facets.fallback.FbLog4j;
 import org.takes.facets.fallback.TkFallback;
 import org.takes.facets.flash.TkFlash;
-import org.takes.facets.fork.FkFixed;
-import org.takes.facets.fork.FkHitRefresh;
 import org.takes.facets.fork.FkRegex;
 import org.takes.facets.fork.TkFork;
 import org.takes.facets.forward.TkForward;
-import org.takes.tk.TkClasspath;
-import org.takes.tk.TkFiles;
 import org.takes.tk.TkGzip;
 import org.takes.tk.TkMeasured;
 import org.takes.tk.TkRedirect;
@@ -78,7 +71,37 @@ public final class TkApp extends TkWrap {
                                 new TkFlash(
                                     new TkAppAuth(
                                         new TkForward(
-                                            TkApp.regex(props, forks)
+                                            new TkFork(
+                                                Lists.newArrayList(
+                                                    Iterables.concat(
+                                                        Arrays.asList(forks),
+                                                        Arrays.asList(
+                                                            new FkRegex("/", new TkIndex(props)),
+                                                            new FkRegex("/robots.txt", ""),
+                                                            new FkRegex(
+                                                                "/invite",
+                                                                new TkRedirect(
+                                                                    "https://slack.com/oauth/authorize?scope=bot&amp;client_id=116853003427.116859136003"
+                                                                )
+                                                            ),
+                                                            new FkRegex(
+                                                                "/xsl/[a-z\\-]+\\.xsl",
+                                                                new TkWithType(
+                                                                    new TkRefresh("./src/main/xsl"),
+                                                                    "text/xsl"
+                                                                )
+                                                            ),
+                                                            new FkRegex(
+                                                                "/css/[a-z]+\\.css",
+                                                                new TkWithType(
+                                                                    new TkRefresh("./src/main/scss"),
+                                                                    "text/css"
+                                                                )
+                                                            )
+                                                        )
+                                                    )
+                                                )
+                                            )
                                         ),
                                         props
                                     )
@@ -96,70 +119,6 @@ public final class TkApp extends TkWrap {
                 ),
                 new FbLog4j()
             )
-        );
-    }
-
-    /**
-     * Make it.
-     * @param props Properties
-     * @param forks Additional forks
-     * @return Takes
-     * @throws IOException If fails
-     */
-    private static Take regex(final Properties props,
-        final FkRegex... forks) throws IOException {
-        return new TkFork(
-            Lists.newArrayList(
-                Iterables.concat(
-                    Arrays.asList(forks),
-                    Arrays.asList(
-                        new FkRegex("/", new TkIndex(props)),
-                        new FkRegex("/robots.txt", ""),
-                        new FkRegex(
-                            "/invite",
-                            new TkRedirect(
-                                "https://slack.com/oauth/authorize?scope=bot&amp;client_id=116853003427.116859136003"
-                            )
-                        ),
-                        new FkRegex(
-                            "/xsl/[a-z\\-]+\\.xsl",
-                            new TkWithType(
-                                TkApp.refresh("./src/main/xsl"),
-                                "text/xsl"
-                            )
-                        ),
-                        new FkRegex(
-                            "/css/[a-z]+\\.css",
-                            new TkWithType(
-                                TkApp.refresh("./src/main/scss"),
-                                "text/css"
-                            )
-                        )
-                    )
-                )
-            )
-        );
-    }
-
-    /**
-     * Hit refresh fork.
-     * @param path Path of files
-     * @return Fork
-     * @throws IOException If fails
-     */
-    private static Take refresh(final String path) throws IOException {
-        return new TkFork(
-            new FkHitRefresh(
-                new File(path),
-                () -> new VerboseProcess(
-                    new ProcessBuilder(
-                        "mvn",
-                        "generate-resources"
-                    )
-                ).stdout(),
-                new TkFiles("./target/classes")
-            ),
-            new FkFixed(new TkClasspath())
         );
     }
 
