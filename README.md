@@ -6,16 +6,7 @@
 
 Stakeholders' Farm.
 
-It is routine manager of Java stakeholders. On each run it performs
-this simple algorithm:
-
-  * Picks the next `crew` from the list
-  * `crew.deploy(farm)`
-  * The `crew` finds projects: `list = farm.find('?')`
-  * `list.forEach(p -> farm.employ(stk))`, where `stk` is runnable
-
-Ideally, all of that should happen in parallel threads, to enable
-high throughput and concurrency.
+It's a manager of Java stakeholders.
 
 ## License
 

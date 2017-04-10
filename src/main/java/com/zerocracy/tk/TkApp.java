@@ -36,6 +36,7 @@ import org.takes.tk.TkClasspath;
 import org.takes.tk.TkFiles;
 import org.takes.tk.TkGzip;
 import org.takes.tk.TkMeasured;
+import org.takes.tk.TkRedirect;
 import org.takes.tk.TkVersioned;
 import org.takes.tk.TkWithHeaders;
 import org.takes.tk.TkWithType;
@@ -48,6 +49,7 @@ import org.takes.tk.TkWrap;
  * @version $Id$
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @checkstyle LineLength (500 lines)
  */
 public final class TkApp extends TkWrap {
 
@@ -113,6 +115,12 @@ public final class TkApp extends TkWrap {
                     Arrays.asList(
                         new FkRegex("/", new TkIndex(props)),
                         new FkRegex("/robots.txt", ""),
+                        new FkRegex(
+                            "/invite",
+                            new TkRedirect(
+                                "https://slack.com/oauth/authorize?scope=bot&amp;client_id=116853003427.116859136003"
+                            )
+                        ),
                         new FkRegex(
                             "/xsl/[a-z\\-]+\\.xsl",
                             new TkWithType(
