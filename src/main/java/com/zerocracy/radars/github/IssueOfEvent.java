@@ -104,16 +104,27 @@ final class IssueOfEvent implements Issue {
      * Make an issue.
      * @return Issue
      */
+    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     private Issue issue() {
-        final Repo repo = this.github.repos().get(
-            new Coordinates.Simple(
-                this.event.getJsonObject("repository").getString("full_name")
-            )
-        );
+        final int num;
+        if (this.event.containsKey("issue")) {
+            num = this.event.getJsonObject("issue").getInt("number");
+        } else if (this.event.containsKey("pull_request")) {
+            num = this.event.getJsonObject("pull_request").getInt("number");
+        } else {
+            throw new IllegalStateException(
+                String.format(
+                    "Can't find issue number in %s", this.event
+                )
+            );
+        }
         return new SafeIssue(
-            repo.issues().get(
-                this.event.getJsonObject("issue").getInt("number")
-            )
+            this.github.repos().get(
+                new Coordinates.Simple(
+                    this.event.getJsonObject("repository")
+                        .getString("full_name")
+                )
+            ).issues().get(num)
         );
     }
 

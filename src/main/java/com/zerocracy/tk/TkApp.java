@@ -84,7 +84,7 @@ public final class TkApp extends TkWrap {
                                                                 new TkRedirect(
                                                                     new Href("https://slack.com/oauth/authorize")
                                                                         .with("scope", "bot")
-                                                                        .with("client_id", props.getProperty("slack.client_id"))
+                                                                        .with("client_id", props.getProperty("slack.client_id", ""))
                                                                         .toString()
                                                                 )
                                                             ),
