@@ -53,12 +53,22 @@ public final class RbPingArchitect implements Rebound {
             } else if (arcs.contains(author)) {
                 answer = "The architect is speaking";
             } else {
-                issue.comments().post(
-                    String.format(
-                        "@%s please, pay attention to this issue",
-                        String.join(", @", arcs)
-                    )
-                );
+                final String intro = String.join(", @", arcs);
+                if (issue.isPull()) {
+                    issue.comments().post(
+                        String.format(
+                            "@%s please, pay attention to this pull request",
+                            intro
+                        )
+                    );
+                } else {
+                    issue.comments().post(
+                        String.format(
+                            "@%s please, pay attention to this issue",
+                            intro
+                        )
+                    );
+                }
                 answer = String.format("Architects notified: %s", arcs);
             }
         } catch (final SoftException ex) {
