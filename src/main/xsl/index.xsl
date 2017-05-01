@@ -34,22 +34,30 @@
                 </a>
             </p>
             <p>
-                <xsl:text>v</xsl:text>
-                <xsl:value-of select="version/name"/>
-                <xsl:text> | </xsl:text>
-                <xsl:value-of select="alive"/>
-                <xsl:text> | </xsl:text>
-                <xsl:call-template name="millis">
-                    <xsl:with-param name="millis" select="millis"/>
-                </xsl:call-template>
-                <xsl:text> | </xsl:text>
-                <xsl:value-of select="@sla"/>
+                <span title="Current version of the bot">
+                    <xsl:text>v</xsl:text>
+                    <xsl:value-of select="version/name"/>
+                </span>
+                <xsl:text> &#183; </xsl:text>
+                <span title="The time since the last restart">
+                    <xsl:value-of select="alive"/>
+                </span>
+                <xsl:text> &#183; </xsl:text>
+                <span title="The time server took to generate this page">
+                    <xsl:call-template name="millis">
+                        <xsl:with-param name="millis" select="millis"/>
+                    </xsl:call-template>
+                </span>
+                <xsl:text> &#183; </xsl:text>
+                <span title="Load average at the server">
+                    <xsl:value-of select="@sla"/>
+                </span>
             </p>
             <p>
                 <xsl:if test="identity">
                     <xsl:text>@</xsl:text>
                     <xsl:value-of select="identity/login"/>
-                    <xsl:text> | </xsl:text>
+                    <xsl:text> &#183; </xsl:text>
                     <a href="{links/link[@rel='takes:logout']/@href}">
                         <xsl:text>exit</xsl:text>
                     </a>
@@ -62,7 +70,7 @@
             </p>
             <p>
                 <a href="http://www.sixnines.io/h/2b3a">
-                    <img src="http://www.sixnines.io/b/2b3a"/>
+                    <img src="http://www.sixnines.io/b/2b3a?style=flat"/>
                 </a>
             </p>
         </div>
