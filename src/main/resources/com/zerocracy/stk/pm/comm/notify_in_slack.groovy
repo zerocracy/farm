@@ -83,5 +83,3 @@ static boolean belongsTo(SlackSession session, String channel) {
   }
   false
 }
-
-

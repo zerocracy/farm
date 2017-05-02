@@ -17,19 +17,13 @@
 package com.zerocracy.farm.reactive;
 
 import com.jcabi.aspects.Tv;
-import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseRunnable;
 import com.jcabi.log.VerboseThreads;
-import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
-import com.zerocracy.pm.ClaimIn;
-import com.zerocracy.pm.Claims;
 import java.io.Closeable;
-import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -42,7 +36,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @version $Id$
  * @since 0.1
  */
-final class Spin implements Runnable, Closeable {
+final class Spin implements Closeable {
 
     /**
      * The project.
@@ -98,7 +92,12 @@ final class Spin implements Runnable, Closeable {
     public void ping() {
         if (!this.alive.get() && !this.service.isShutdown()) {
             this.alive.set(true);
-            this.service.submit(new VerboseRunnable(this, true, true));
+            this.service.submit(
+                new VerboseRunnable(
+                    new Spinner(this.project, this.brigade, this.alive),
+                    true, true
+                )
+            );
         }
     }
 
@@ -118,85 +117,6 @@ final class Spin implements Runnable, Closeable {
                 throw new IllegalStateException(ex);
             }
         }
-    }
-
-    @Override
-    public void run() {
-        try {
-            this.process();
-        } catch (final IOException ex) {
-            throw new IllegalStateException(ex);
-        }
-        this.alive.set(false);
-    }
-
-    /**
-     * Process them all.
-     * @throws IOException If fails
-     */
-    private void process() throws IOException {
-        final long start = System.currentTimeMillis();
-        int total = 0;
-        while (this.next()) {
-            ++total;
-        }
-        if (total > 0) {
-            Logger.info(
-                this, "Seen %d claims in \"%s\", %[ms]s",
-                total, this.project.toString(),
-                System.currentTimeMillis() - start
-            );
-        }
-    }
-
-    /**
-     * One step forward.
-     * @return TRUE if we need more tries
-     * @throws IOException If fails
-     */
-    private boolean next() throws IOException {
-        final Iterator<XML> found;
-        try (final Claims claims = new Claims(this.project).lock()) {
-            found = claims.iterate().iterator();
-        }
-        boolean more = false;
-        if (found.hasNext()) {
-            this.process(found.next());
-            more = true;
-        }
-        return more;
-    }
-
-    /**
-     * Process it.
-     * @param xml The claim
-     * @throws IOException If fails
-     */
-    @SuppressWarnings("PMD.PrematureDeclaration")
-    private void process(final XML xml) throws IOException {
-        final long start = System.currentTimeMillis();
-        final ClaimIn claim = new ClaimIn(xml);
-        final int total = this.brigade.process(this.project, xml);
-        final int left;
-        try (final Claims claims = new Claims(this.project).lock()) {
-            claims.remove(claim.number());
-            left = claims.iterate().size();
-        }
-        if (total == 0 && claim.hasToken()) {
-            throw new IllegalStateException(
-                String.format(
-                    "Failed to process \"%s\", no stakeholders",
-                    claim.type()
-                )
-            );
-        }
-        Logger.info(
-            this, "Seen \"%s/%d/%d\" at \"%s\" by %d stk, %[ms]s",
-            claim.type(), claim.number(), left,
-            this.project.toString(),
-            total,
-            System.currentTimeMillis() - start
-        );
     }
 
 }

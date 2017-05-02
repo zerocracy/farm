@@ -20,7 +20,7 @@ import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.hr.Roles
 
-assume.type('resign role').exact()
+assume.type('Resign role').exact()
 assume.roles('ARC', 'PO').exist()
 
 ClaimIn claim = new ClaimIn(xml)
