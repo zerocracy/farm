@@ -35,6 +35,7 @@ import java.util.Properties;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.takes.facets.fallback.FbChain;
 import org.takes.facets.fallback.FbLog4j;
+import org.takes.facets.fallback.FbStatus;
 import org.takes.facets.fallback.TkFallback;
 import org.takes.facets.flash.TkFlash;
 import org.takes.facets.fork.FkRegex;
@@ -42,6 +43,7 @@ import org.takes.facets.fork.TkFork;
 import org.takes.facets.forward.TkForward;
 import org.takes.misc.Href;
 import org.takes.misc.Opt;
+import org.takes.rs.RsText;
 import org.takes.rs.RsVelocity;
 import org.takes.rs.RsWithStatus;
 import org.takes.rs.RsWithType;
@@ -140,20 +142,20 @@ public final class TkApp extends TkWrap {
                     "Vary: Cookie"
                 ),
                 new FbChain(
-//                    new FbStatus(
-//                        HttpURLConnection.HTTP_NOT_FOUND,
-//                        new RsWithStatus(
-//                            new RsText("Page not found"),
-//                            HttpURLConnection.HTTP_NOT_FOUND
-//                        )
-//                    ),
-//                    new FbStatus(
-//                        HttpURLConnection.HTTP_BAD_REQUEST,
-//                        new RsWithStatus(
-//                            new RsText("Bad request"),
-//                            HttpURLConnection.HTTP_BAD_REQUEST
-//                        )
-//                    ),
+                    new FbStatus(
+                        HttpURLConnection.HTTP_NOT_FOUND,
+                        new RsWithStatus(
+                            new RsText("Page not found"),
+                            HttpURLConnection.HTTP_NOT_FOUND
+                        )
+                    ),
+                    new FbStatus(
+                        HttpURLConnection.HTTP_BAD_REQUEST,
+                        new RsWithStatus(
+                            new RsText("Bad request"),
+                            HttpURLConnection.HTTP_BAD_REQUEST
+                        )
+                    ),
                     req -> {
                         final Postman postman = new Postman.Default(
                             new SMTP(
@@ -175,20 +177,22 @@ public final class TkApp extends TkWrap {
                                 .with(
                                     new EnPlain(
                                         String.format(
-                                            "Hi,\n\n%s: %s\n%s\n\n--\n0crat",
-                                            req.throwable().getClass().getCanonicalName(),
-                                            req.throwable().getLocalizedMessage(),
-                                            ExceptionUtils.getStackTrace(req.throwable())
+                                            "Hi,\n\n%s\n\n--\n0crat\n%s %s %s",
+                                            ExceptionUtils.getStackTrace(req.throwable()),
+                                            props.getProperty("build.version"),
+                                            props.getProperty("build.revision"),
+                                            props.getProperty("build.date")
                                         )
                                     )
                                 )
                                 .with(
                                     new EnHTML(
                                         String.format(
-                                            "<html><body><p>Hi,</p><pre>%s: %s\n%s</pre><p>--<br/>0crat</p></body></html>",
-                                            req.throwable().getClass().getCanonicalName(),
-                                            req.throwable().getLocalizedMessage(),
-                                            ExceptionUtils.getStackTrace(req.throwable())
+                                            "<html><body><p>Hi,</p><p>There was a problem:</p><pre>%s</pre><p>--<br/>0crat<br/>%s %s %s</p></body></html>",
+                                            ExceptionUtils.getStackTrace(req.throwable()),
+                                            props.getProperty("build.version"),
+                                            props.getProperty("build.revision"),
+                                            props.getProperty("build.date")
                                         )
                                     )
                                 )
