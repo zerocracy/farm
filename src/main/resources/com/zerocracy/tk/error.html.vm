@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta charset="utf-8"/>
+        <title>0crat: error</title>
+        <meta name="description" content="Internal application error"/>
+        <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+        <link rel="shortcut icon" href="http://www.zerocracy.com/logo.png"/>
+        <link rel="stylesheet" href="/css/main.css"/>
+        <title>Internal application error</title>
+    </head>
+    <body>
+        <h1>Internal application error</h1>
+        <p>${version}, ${revision}</p>
+        <pre>${error}</pre>
+    </body>
+</html>

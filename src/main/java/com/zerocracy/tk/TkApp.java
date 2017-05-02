@@ -19,15 +19,24 @@ package com.zerocracy.tk;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.util.Arrays;
 import java.util.Properties;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.takes.facets.fallback.FbChain;
 import org.takes.facets.fallback.FbLog4j;
+import org.takes.facets.fallback.FbStatus;
 import org.takes.facets.fallback.TkFallback;
 import org.takes.facets.flash.TkFlash;
 import org.takes.facets.fork.FkRegex;
 import org.takes.facets.fork.TkFork;
 import org.takes.facets.forward.TkForward;
 import org.takes.misc.Href;
+import org.takes.misc.Opt;
+import org.takes.rs.RsText;
+import org.takes.rs.RsVelocity;
+import org.takes.rs.RsWithStatus;
+import org.takes.rs.RsWithType;
 import org.takes.tk.TkGzip;
 import org.takes.tk.TkMeasured;
 import org.takes.tk.TkRedirect;
@@ -45,6 +54,7 @@ import org.takes.tk.TkWrap;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @checkstyle LineLength (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class TkApp extends TkWrap {
 
     /**
@@ -121,7 +131,46 @@ public final class TkApp extends TkWrap {
                     ),
                     "Vary: Cookie"
                 ),
-                new FbLog4j()
+                new FbChain(
+                    new FbStatus(
+                        HttpURLConnection.HTTP_NOT_FOUND,
+                        new RsWithStatus(
+                            new RsText("Page not found"),
+                            HttpURLConnection.HTTP_NOT_FOUND
+                        )
+                    ),
+                    new FbStatus(
+                        HttpURLConnection.HTTP_BAD_REQUEST,
+                        new RsWithStatus(
+                            new RsText("Bad request"),
+                            HttpURLConnection.HTTP_BAD_REQUEST
+                        )
+                    ),
+                    req -> new Opt.Single<>(
+                        new RsWithStatus(
+                            new RsWithType(
+                                new RsVelocity(
+                                    TkApp.class.getResource("error.html.vm"),
+                                    new RsVelocity.Pair(
+                                        "error",
+                                        ExceptionUtils.getStackTrace(req.throwable())
+                                    ),
+                                    new RsVelocity.Pair(
+                                        "version",
+                                        props.getProperty("build.version")
+                                    ),
+                                    new RsVelocity.Pair(
+                                        "revision",
+                                        props.getProperty("build.revision")
+                                    )
+                                ),
+                                "text/html"
+                            ),
+                            HttpURLConnection.HTTP_INTERNAL_ERROR
+                        )
+                    ),
+                    new FbLog4j()
+                )
             )
         );
     }

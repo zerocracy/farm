@@ -25,7 +25,6 @@
                 <meta name="description" content="Project managers that never sleep, fail, or miss anything"/>
                 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
                 <link rel="shortcut icon" href="http://www.zerocracy.com/logo.png"/>
-                <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet"/>
                 <link rel="stylesheet" href="/css/main.css"/>
                 <xsl:apply-templates select="." mode="head"/>
             </head>
