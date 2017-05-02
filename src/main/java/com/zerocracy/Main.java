@@ -41,9 +41,7 @@ import com.zerocracy.farm.reactive.RvFarm;
 import com.zerocracy.farm.reactive.StkGroovy;
 import com.zerocracy.farm.sync.SyncFarm;
 import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
-import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.radars.github.GhookRadar;
 import com.zerocracy.radars.github.GithubFetch;
 import com.zerocracy.radars.github.RbByActions;
@@ -68,11 +66,10 @@ import com.zerocracy.radars.slack.ReSafe;
 import com.zerocracy.radars.slack.SlackRadar;
 import com.zerocracy.tk.TkAlias;
 import com.zerocracy.tk.TkApp;
+import com.zerocracy.tk.TkPing;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
@@ -80,11 +77,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.takes.Take;
 import org.takes.facets.fork.FkRegex;
 import org.takes.http.Exit;
 import org.takes.http.FtCli;
-import org.takes.rs.RsText;
 
 /**
  * Main entry point.
@@ -302,17 +297,7 @@ public final class Main {
                     new FkRegex("/slack", skradar),
                     new FkRegex("/alias", new TkAlias(farm)),
                     new FkRegex("/ghook", gkradar),
-                    new FkRegex(
-                        "/ping",
-                        (Take) req -> {
-                            final Collection<String> done = new LinkedList<>();
-                            for (final Project project : farm.find("")) {
-                                new ClaimOut().type("ping").postTo(project);
-                                done.add(project.toString());
-                            }
-                            return new RsText(String.join(";", done));
-                        }
-                    )
+                    new FkRegex("/ping", new TkPing(farm))
                 ),
                 this.arguments
             ).start(Exit.NEVER);
