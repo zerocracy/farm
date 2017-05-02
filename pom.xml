@@ -140,12 +140,12 @@
         <dependency>
             <groupId>com.jcabi</groupId>
             <artifactId>jcabi-email</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>javax.mail</groupId>
-            <artifactId>mailapi</artifactId>
-            <version>1.4.3</version>
-            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.mail</groupId>
+                    <artifactId>mail</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.sun.mail</groupId>
@@ -157,6 +157,7 @@
             <groupId>org.apache.velocity</groupId>
             <artifactId>velocity</artifactId>
             <version>1.7</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>com.jcabi</groupId>

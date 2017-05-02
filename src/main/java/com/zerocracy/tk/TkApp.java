@@ -63,8 +63,9 @@ import org.takes.tk.TkWrap;
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @checkstyle LineLength (500 lines)
+ * @checkstyle ClassFanOutComplexityCheck (500 lines)
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({ "PMD.AvoidDuplicateLiterals", "PMD.ExcessiveImports" })
 public final class TkApp extends TkWrap {
 
     /**
@@ -163,8 +164,9 @@ public final class TkApp extends TkWrap {
                                     props.getProperty("smtp.username"),
                                     props.getProperty("smtp.password")
                                 ).access(
-                                    new Protocol.SMTP(props.getProperty("smtp.host"),
-                                    Integer.parseInt(props.getProperty("smtp.port"))
+                                    new Protocol.SMTP(
+                                        props.getProperty("smtp.host"),
+                                        Integer.parseInt(props.getProperty("smtp.port"))
                                     )
                                 )
                             )

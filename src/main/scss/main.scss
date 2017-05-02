@@ -30,6 +30,11 @@ pre {
   font-family: monospace;
 }
 
+p,
+pre {
+  margin: .5em 0;
+}
+
 .center {
   text-align: center;
   height: 13em;
@@ -39,10 +44,6 @@ pre {
   left: 0;
   right: 0;
   margin: auto;
-
-  p {
-    margin: .5em 0;
-  }
 }
 
 .logo {

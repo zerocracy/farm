@@ -22,7 +22,6 @@ import com.jcabi.github.Github;
 import com.jcabi.github.RtGithub;
 import com.jcabi.s3.Region;
 import com.ullink.slack.simpleslackapi.SlackSession;
-import com.zerocracy.farm.PingFarm;
 import com.zerocracy.farm.S3Farm;
 import com.zerocracy.farm.StkSafe;
 import com.zerocracy.farm.reactive.Brigade;
@@ -30,7 +29,9 @@ import com.zerocracy.farm.reactive.RvFarm;
 import com.zerocracy.farm.reactive.StkGroovy;
 import com.zerocracy.farm.sync.SyncFarm;
 import com.zerocracy.jstk.Farm;
+import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
+import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.radars.github.GhookRadar;
 import com.zerocracy.radars.github.GithubFetch;
 import com.zerocracy.radars.github.RbByActions;
@@ -58,13 +59,17 @@ import com.zerocracy.tk.TkApp;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+import org.takes.Take;
 import org.takes.facets.fork.FkRegex;
 import org.takes.http.Exit;
 import org.takes.http.FtCli;
+import org.takes.rs.RsText;
 
 /**
  * Main entry point.
@@ -183,23 +188,21 @@ public final class Main {
             new StkGroovy("pm/scope/wbs/remove_job_from_wbs.groovy"),
             new StkGroovy("pm/scope/wbs/show_wbs.groovy"),
         };
-        final Farm farm = new PingFarm(
-            new RvFarm(
-                new SyncFarm(
-                    new S3Farm(
-                        new com.jcabi.s3.retry.ReRegion(
-                            new Region.Simple(
-                                props.getProperty("s3.key"),
-                                props.getProperty("s3.secret")
-                            )
-                        ).bucket(props.getProperty("s3.bucket"))
-                    )
-                ),
-                new Brigade(
-                    Arrays.stream(stakeholders)
-                        .map(StkSafe::new)
-                        .collect(Collectors.toList())
+        final Farm farm = new RvFarm(
+            new SyncFarm(
+                new S3Farm(
+                    new com.jcabi.s3.retry.ReRegion(
+                        new Region.Simple(
+                            props.getProperty("s3.key"),
+                            props.getProperty("s3.secret")
+                        )
+                    ).bucket(props.getProperty("s3.bucket"))
                 )
+            ),
+            new Brigade(
+                Arrays.stream(stakeholders)
+                    .map(StkSafe::new)
+                    .collect(Collectors.toList())
             )
         );
         final SlackRadar skradar = new SlackRadar(
@@ -282,7 +285,18 @@ public final class Main {
                     props,
                     new FkRegex("/slack", skradar),
                     new FkRegex("/alias", new TkAlias(farm)),
-                    new FkRegex("/ghook", gkradar)
+                    new FkRegex("/ghook", gkradar),
+                    new FkRegex(
+                        "/ping",
+                        (Take) req -> {
+                            final Collection<String> done = new LinkedList<>();
+                            for (final Project project : farm.find("")) {
+                                new ClaimOut().type("ping").postTo(project);
+                                done.add(project.toString());
+                            }
+                            return new RsText(String.join(";", done));
+                        }
+                    )
                 ),
                 this.arguments
             ).start(Exit.NEVER);
