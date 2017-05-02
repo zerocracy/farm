@@ -79,6 +79,11 @@ public final class Brigade {
      * @param xml XML to process
      * @return TRUE if this one was interested
      * @throws IOException If fails
+     * @todo #47:30min We have to predict that exceptions, in order
+     *  to optimize performance. No need to try to process each and
+     *  every stakeholder for every claim. We must learn which of them
+     *  throw on which types of claims and avoid sending them more of
+     *  the same type.
      */
     private static boolean process(final Stakeholder stk, final Project project,
         final XML xml) throws IOException {
