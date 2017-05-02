@@ -16,11 +16,21 @@
  */
 package com.zerocracy;
 
-import com.jcabi.aspects.Tv;
 import com.jcabi.dynamo.Credentials;
 import com.jcabi.dynamo.retry.ReRegion;
+import com.jcabi.email.Envelope;
+import com.jcabi.email.Postman;
+import com.jcabi.email.Protocol;
+import com.jcabi.email.Token;
+import com.jcabi.email.enclosure.EnHTML;
+import com.jcabi.email.enclosure.EnPlain;
+import com.jcabi.email.stamp.StRecipient;
+import com.jcabi.email.stamp.StSender;
+import com.jcabi.email.stamp.StSubject;
+import com.jcabi.email.wire.SMTP;
 import com.jcabi.github.Github;
 import com.jcabi.github.RtGithub;
+import com.jcabi.log.VerboseRunnable;
 import com.jcabi.log.VerboseThreads;
 import com.jcabi.s3.Region;
 import com.ullink.slack.simpleslackapi.SlackSession;
@@ -60,7 +70,6 @@ import com.zerocracy.tk.TkAlias;
 import com.zerocracy.tk.TkApp;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -68,7 +77,9 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.takes.Take;
 import org.takes.facets.fork.FkRegex;
 import org.takes.http.Exit;
@@ -208,14 +219,7 @@ public final class Main {
                     .map(StkSafe::new)
                     .collect(Collectors.toList())
             ),
-            Executors.newSingleThreadExecutor(
-                new VerboseThreads(
-                    String.format(
-                        "spin-%d",
-                        new SecureRandom().nextInt(Tv.HUNDRED)
-                    )
-                )
-            )
+            Executors.newSingleThreadExecutor(new Main.MailThreads(props))
         );
         final SlackRadar skradar = new SlackRadar(
             farm, props, sessions,
@@ -314,6 +318,97 @@ public final class Main {
             ).start(Exit.NEVER);
         } finally {
             skradar.close();
+        }
+    }
+
+    /**
+     * Factory with threads that mail all exceptions.
+     */
+    private static class MailThreads implements ThreadFactory {
+        /**
+         * Original factory.
+         */
+        private final ThreadFactory origin;
+        /**
+         * Props.
+         */
+        private final Properties props;
+        /**
+         * Ctor.
+         * @param pps Props
+         */
+        MailThreads(final Properties pps) {
+            this.props = pps;
+            this.origin = new VerboseThreads();
+        }
+        @Override
+        @SuppressWarnings("PMD.AvoidCatchingThrowable")
+        public Thread newThread(final Runnable runnable) {
+            return this.origin.newThread(
+                new VerboseRunnable(
+                    () -> {
+                        try {
+                            runnable.run();
+                            // @checkstyle IllegalCatchCheck (1 line)
+                        } catch (final Throwable ex) {
+                            this.mail(ex);
+                            throw ex;
+                        }
+                    },
+                    true, true
+                )
+            );
+        }
+        /**
+         * Send this error by email.
+         * @param error The error
+         */
+        private void mail(final Throwable error) {
+            final Postman postman = new Postman.Default(
+                new SMTP(
+                    new Token(
+                        this.props.getProperty("smtp.username"),
+                        this.props.getProperty("smtp.password")
+                    ).access(
+                        new Protocol.SMTP(
+                            this.props.getProperty("smtp.host"),
+                            Integer.parseInt(this.props.getProperty("smtp.port"))
+                        )
+                    )
+                )
+            );
+            try {
+                postman.send(
+                    new Envelope.MIME()
+                        .with(new StSender("0crat <no-reply@0crat.com>"))
+                        .with(new StRecipient("0crat admin <bugs@0crat.com>"))
+                        .with(new StSubject(error.getLocalizedMessage()))
+                        .with(
+                            new EnPlain(
+                                String.format(
+                                    "Hi,\n\n%s\n\n--\n0crat\n%s %s %s",
+                                    ExceptionUtils.getStackTrace(error),
+                                    this.props.getProperty("build.version"),
+                                    this.props.getProperty("build.revision"),
+                                    this.props.getProperty("build.date")
+                                )
+                            )
+                        )
+                        .with(
+                            new EnHTML(
+                                String.format(
+                                    "<html><body><p>Hi,</p><p>There was a problem:</p><pre>%s</pre><p>--<br/>0crat<br/>%s %s %s</p></body></html>",
+                                    ExceptionUtils.getStackTrace(error),
+                                    this.props.getProperty("build.version"),
+                                    this.props.getProperty("build.revision"),
+                                    this.props.getProperty("build.date")
+                                )
+                            )
+                        )
+                );
+            } catch (final IOException ioex) {
+                throw new IllegalStateException(ioex);
+            }
         }
     }
 

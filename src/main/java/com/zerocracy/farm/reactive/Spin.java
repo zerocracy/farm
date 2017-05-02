@@ -16,7 +16,6 @@
  */
 package com.zerocracy.farm.reactive;
 
-import com.jcabi.log.VerboseRunnable;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import java.io.Closeable;
@@ -85,10 +84,7 @@ final class Spin implements Closeable {
         if (!this.alive.get() && !this.service.isShutdown()) {
             this.alive.set(true);
             this.service.submit(
-                new VerboseRunnable(
-                    new Spinner(this.project, this.brigade, this.alive),
-                    true, true
-                )
+                new Spinner(this.project, this.brigade, this.alive)
             );
         }
     }
