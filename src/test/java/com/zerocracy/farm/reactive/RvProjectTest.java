@@ -21,6 +21,7 @@ import com.zerocracy.jstk.fake.FkProject;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
 import java.util.Collections;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -44,7 +45,8 @@ public final class RvProjectTest {
         final Project raw = new FkProject();
         final Spin spin = new Spin(
             raw,
-            Collections.singletonList((pkt, xml) -> done.set(true))
+            Collections.singletonList((pkt, xml) -> done.set(true)),
+            Executors.newSingleThreadExecutor()
         );
         final RvProject project = new RvProject(raw, spin);
         try (final Claims claims = new Claims(project).lock()) {

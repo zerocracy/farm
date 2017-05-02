@@ -16,16 +16,12 @@
  */
 package com.zerocracy.farm.reactive;
 
-import com.jcabi.aspects.Tv;
 import com.jcabi.log.VerboseRunnable;
-import com.jcabi.log.VerboseThreads;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import java.io.Closeable;
-import java.security.SecureRandom;
 import java.util.Collection;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -62,28 +58,24 @@ final class Spin implements Closeable {
      * Ctor.
      * @param pkt Project
      * @param list List of stakeholders
+     * @param svc Service
      */
-    Spin(final Project pkt, final Collection<Stakeholder> list) {
-        this(pkt, new Brigade(list));
+    Spin(final Project pkt, final Collection<Stakeholder> list,
+        final ExecutorService svc) {
+        this(pkt, new Brigade(list), svc);
     }
 
     /**
      * Ctor.
      * @param pkt Project
      * @param bgd Brigade
+     * @param svc Service
      */
-    Spin(final Project pkt, final Brigade bgd) {
+    Spin(final Project pkt, final Brigade bgd, final ExecutorService svc) {
         this.project = pkt;
         this.brigade = bgd;
         this.alive = new AtomicBoolean();
-        this.service = Executors.newSingleThreadExecutor(
-            new VerboseThreads(
-                String.format(
-                    "spin-%d",
-                    new SecureRandom().nextInt(Tv.HUNDRED)
-                )
-            )
-        );
+        this.service = svc;
     }
 
     /**

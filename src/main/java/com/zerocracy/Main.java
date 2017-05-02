@@ -16,10 +16,12 @@
  */
 package com.zerocracy;
 
+import com.jcabi.aspects.Tv;
 import com.jcabi.dynamo.Credentials;
 import com.jcabi.dynamo.retry.ReRegion;
 import com.jcabi.github.Github;
 import com.jcabi.github.RtGithub;
+import com.jcabi.log.VerboseThreads;
 import com.jcabi.s3.Region;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.zerocracy.farm.S3Farm;
@@ -58,12 +60,14 @@ import com.zerocracy.tk.TkAlias;
 import com.zerocracy.tk.TkApp;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import org.takes.Take;
 import org.takes.facets.fork.FkRegex;
@@ -203,6 +207,14 @@ public final class Main {
                 Arrays.stream(stakeholders)
                     .map(StkSafe::new)
                     .collect(Collectors.toList())
+            ),
+            Executors.newSingleThreadExecutor(
+                new VerboseThreads(
+                    String.format(
+                        "spin-%d",
+                        new SecureRandom().nextInt(Tv.HUNDRED)
+                    )
+                )
             )
         );
         final SlackRadar skradar = new SlackRadar(

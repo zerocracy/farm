@@ -19,6 +19,7 @@ package com.zerocracy.farm.reactive;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
 import lombok.EqualsAndHashCode;
 
 /**
@@ -45,9 +46,11 @@ final class RvProject implements Project {
      * Ctor.
      * @param pkt Project
      * @param brigade Brigade
+     * @param svc Service
      */
-    RvProject(final Project pkt, final Brigade brigade) {
-        this(pkt, new Spin(pkt, brigade));
+    RvProject(final Project pkt, final Brigade brigade,
+        final ExecutorService svc) {
+        this(pkt, new Spin(pkt, brigade, svc));
     }
 
     /**

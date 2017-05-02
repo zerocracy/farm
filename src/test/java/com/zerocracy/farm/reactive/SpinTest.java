@@ -30,6 +30,7 @@ import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
 import java.nio.file.Files;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -81,7 +82,8 @@ public final class SpinTest {
             )
         );
         thread.start();
-        try (final Spin spin = new Spin(project, brigade)) {
+        try (final Spin spin =
+            new Spin(project, brigade, Executors.newSingleThreadExecutor())) {
             latch.countDown();
             spin.ping();
         }
