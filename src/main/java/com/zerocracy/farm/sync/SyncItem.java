@@ -16,6 +16,7 @@
  */
 package com.zerocracy.farm.sync;
 
+import com.jcabi.aspects.Tv;
 import com.zerocracy.jstk.Item;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -77,7 +78,7 @@ final class SyncItem implements Item {
      * @throws InterruptedException If fails
      */
     public void acquire() throws InterruptedException {
-        if (!this.semaphore.tryAcquire(1L, TimeUnit.MINUTES)) {
+        if (!this.semaphore.tryAcquire((long) Tv.TEN, TimeUnit.SECONDS)) {
             throw new IllegalStateException(
                 String.format("Failed to acquire %s", this.origin)
             );
