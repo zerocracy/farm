@@ -16,6 +16,7 @@
  */
 package com.zerocracy.tk;
 
+import com.jcabi.log.Logger;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.ClaimIn;
@@ -59,6 +60,7 @@ public final class TkPing implements Take {
     @Override
     public Response act(final Request req) throws IOException {
         final Collection<String> done = new LinkedList<>();
+        final long start = System.currentTimeMillis();
         final ClaimOut out = new ClaimOut().type(TkPing.TYPE);
         for (final Project project : this.farm.find("")) {
             if (TkPing.needs(project)) {
@@ -68,7 +70,14 @@ public final class TkPing implements Take {
                 done.add(String.format("%s/not", project.toString()));
             }
         }
-        return new RsText(String.join("; ", done));
+        return new RsText(
+            Logger.format(
+                "%d in %[ms]s: %s",
+                done.size(),
+                System.currentTimeMillis() - start,
+                String.join("; ", done)
+            )
+        );
     }
 
     /**
