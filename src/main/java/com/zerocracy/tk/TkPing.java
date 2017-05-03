@@ -64,6 +64,8 @@ public final class TkPing implements Take {
             if (TkPing.needs(project)) {
                 out.postTo(project);
                 done.add(project.toString());
+            } else {
+                done.add(String.format("%s/not", project.toString()));
             }
         }
         return new RsText(String.join("; ", done));
