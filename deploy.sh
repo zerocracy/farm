@@ -2,6 +2,7 @@
 set -e
 
 cd $(dirname $0)
+mvn clean install -Pqulice
 cp /code/home/assets/zerocracy/settings.xml .
 git add settings.xml
 git commit -m 'settings.xml for heroku'
