@@ -59,6 +59,7 @@ import com.zerocracy.radars.github.Rebound;
 import com.zerocracy.radars.slack.ReIfAddressed;
 import com.zerocracy.radars.slack.ReIfDirect;
 import com.zerocracy.radars.slack.ReLogged;
+import com.zerocracy.radars.slack.ReMailed;
 import com.zerocracy.radars.slack.ReNotMine;
 import com.zerocracy.radars.slack.ReProfile;
 import com.zerocracy.radars.slack.ReProject;
@@ -219,13 +220,16 @@ public final class Main {
         );
         final SlackRadar skradar = new SlackRadar(
             farm, props, sessions,
-            new ReSafe(
-                new ReLogged<>(
-                    new ReNotMine(
-                        new ReIfDirect(
-                            new ReProfile(),
-                            new ReIfAddressed(
-                                new ReProject()
+            new ReMailed(
+                props,
+                new ReSafe(
+                    new ReLogged<>(
+                        new ReNotMine(
+                            new ReIfDirect(
+                                new ReProfile(),
+                                new ReIfAddressed(
+                                    new ReProject()
+                                )
                             )
                         )
                     )
