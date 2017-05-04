@@ -158,6 +158,7 @@ public final class Main {
             ),
             new StkGroovy("pmo/links/remove_link.groovy"),
             new StkGroovy("pmo/links/show_all_links.groovy"),
+            new StkGroovy("pmo/profile/invite_friend.groovy"),
             new StkGroovy("pmo/profile/aliases/show_aliases.groovy"),
             new StkGroovy("pmo/profile/rate/set_rate.groovy"),
             new StkGroovy("pmo/profile/rate/show_rate.groovy"),
