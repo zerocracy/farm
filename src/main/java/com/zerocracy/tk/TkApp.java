@@ -101,7 +101,7 @@ public final class TkApp extends TkWrap {
                                                             new FkRegex("/", new TkIndex(props)),
                                                             new FkRegex("/robots.txt", ""),
                                                             new FkRegex(
-                                                                "/invite",
+                                                                "/invite_friend",
                                                                 new TkRedirect(
                                                                     new Href("https://slack.com/oauth/authorize")
                                                                         .with("scope", "bot")

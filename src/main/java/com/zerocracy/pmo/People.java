@@ -36,13 +36,13 @@ import org.xembly.Directives;
  * @version $Id$
  * @since 0.1
  */
-@SuppressWarnings("PMD.TooManyMethods")
+@SuppressWarnings({ "PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals" })
 public final class People {
 
     /**
      * Project.
      */
-    private final Project project;
+    private final Project pmo;
 
     /**
      * Ctor.
@@ -57,7 +57,7 @@ public final class People {
      * @param pkt Project
      */
     public People(final Project pkt) {
-        this.project = pkt;
+        this.pmo = pkt;
     }
 
     /**
@@ -70,6 +70,57 @@ public final class People {
             new Xocument(item.path()).bootstrap("pmo/people");
         }
         return this;
+    }
+
+    /**
+     * Touch this dude.
+     * @param uid User ID
+     * @throws IOException If fails
+     */
+    public void touch(final String uid) throws IOException {
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                People.start(uid)
+            );
+        }
+    }
+
+    /**
+     * Invite that person and set a mentor.
+     * @param uid User ID
+     * @param mentor User ID of the mentor
+     * @throws IOException If fails
+     */
+    public void invite(final String uid, final String mentor)
+        throws IOException {
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                People.start(uid)
+                    .push()
+                    .xpath("mentor")
+                    .strict(0)
+                    .pop()
+                    .add("mentor")
+                    .set(mentor)
+            );
+        }
+    }
+
+    /**
+     * This person has a mentor?
+     * @param uid User ID
+     * @return TRUE if he has a mentor
+     * @throws IOException If fails
+     */
+    public boolean hasMentor(final String uid) throws IOException {
+        try (final Item item = this.item()) {
+            return !new Xocument(item.path()).nodes(
+                String.format(
+                    "/people/person[@id='%s']/mentor",
+                    uid
+                )
+            ).isEmpty();
+        }
     }
 
     /**
@@ -282,7 +333,7 @@ public final class People {
      * @throws IOException If fails
      */
     private Item item() throws IOException {
-        return this.project.acq("people.xml");
+        return this.pmo.acq("people.xml");
     }
 
     /**
@@ -300,6 +351,10 @@ public final class People {
             )
             .add("person")
             .attr("id", uid)
+            .add("links")
+            .add("link")
+            .attr("rel", "github")
+            .attr("href", uid)
             .xpath(
                 String.format(
                     "/people/person[@id='%s']",

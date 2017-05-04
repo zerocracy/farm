@@ -46,7 +46,7 @@ public final class Xocument {
     /**
      * Current DATUM version.
      */
-    private static final String VERSION = "0.21";
+    private static final String VERSION = "0.22";
 
     /**
      * Compressing XSL.

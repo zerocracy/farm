@@ -17,6 +17,9 @@
 package com.zerocracy.radars.github;
 
 import com.jcabi.github.User;
+import com.zerocracy.jstk.Farm;
+import com.zerocracy.pmo.GoodPeople;
+import com.zerocracy.pmo.People;
 import java.io.IOException;
 import java.util.Locale;
 
@@ -30,22 +33,32 @@ import java.util.Locale;
 final class Author {
 
     /**
+     * Farm.
+     */
+    private final Farm farm;
+
+    /**
      * User.
      */
     private final User user;
 
     /**
      * Ctor.
+     * @param frm The farm
      * @param usr User
      */
-    Author(final User usr) {
+    Author(final Farm frm, final User usr) {
+        this.farm = frm;
         this.user = usr;
     }
 
     @Override
     public String toString() {
         try {
-            return this.user.login().toLowerCase(Locale.ENGLISH);
+            final People people = new People(this.farm).bootstrap();
+            final String uid = this.user.login().toLowerCase(Locale.ENGLISH);
+            people.touch(uid);
+            return new GoodPeople(new People(this.farm)).get("github", uid);
         } catch (final IOException ex) {
             throw new IllegalStateException(ex);
         }

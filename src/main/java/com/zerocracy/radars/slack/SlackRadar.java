@@ -67,7 +67,7 @@ public final class SlackRadar implements Radar, Take {
     private final Reaction<SlackMessagePosted> posted;
 
     /**
-     * Reaction on invite.
+     * Reaction on invite_friend.
      */
     private final Reaction<SlackChannelJoined> joined;
 

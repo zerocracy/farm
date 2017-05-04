@@ -14,22 +14,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pmo.links
+package com.zerocracy.stk.pmo.profile
 
+import com.zerocracy.jstk.SoftException
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pmo.Catalog
+import com.zerocracy.pmo.People
 
-assume.type('Remove link').exact()
-assume.roles('PO').exist()
+assume.type('Invite a friend').exact()
 
 ClaimIn claim = new ClaimIn(xml)
-String pid = claim.param('pmo')
-String rel = claim.param('rel')
-String href = claim.param('href')
-new Catalog(project).unlink(pid, rel, href)
+String login = claim.param('login')
+People people = new People(project)
+if (people.hasMentor(login)) {
+  throw new SoftException(
+    "`@${login}` is already with us."
+  )
+}
+people.invite(claim.author(), login)
 claim.reply(
   String.format(
-    'Link removed from `%s` to rel=`%s` and href=`%s`.',
-    pid, rel, href
+    'Thanks, `@%s` can now work work with us, and you are the mentor.',
+    login
   )
 ).postTo(project)

@@ -37,7 +37,7 @@ public final class Catalog {
     /**
      * Project.
      */
-    private final Project project;
+    private final Project pmo;
 
     /**
      * Ctor.
@@ -52,11 +52,11 @@ public final class Catalog {
      * @param pkt Project
      */
     public Catalog(final Project pkt) {
-        this.project = pkt;
+        this.pmo = pkt;
     }
 
     /**
-     * Add a link to the project.
+     * Add a link to the pmo.
      * @param pid Project ID
      * @param rel REL
      * @param href HREF
@@ -78,7 +78,7 @@ public final class Catalog {
     }
 
     /**
-     * Remove a link from the project.
+     * Remove a link from the pmo.
      * @param pid Project ID
      * @param rel REL
      * @param href HREF
@@ -104,7 +104,7 @@ public final class Catalog {
     }
 
     /**
-     * Get all project links.
+     * Get all pmo links.
      * @param pid Project ID
      * @return Links found
      * @throws IOException If fails
@@ -127,7 +127,7 @@ public final class Catalog {
     }
 
     /**
-     * Set a parent to the project.
+     * Set a parent to the pmo.
      * @param pid Project ID
      * @param parent Parent
      * @throws IOException If fails
@@ -151,7 +151,7 @@ public final class Catalog {
      * @throws IOException If fails
      */
     private Item item() throws IOException {
-        return this.project.acq("catalog.xml");
+        return this.pmo.acq("catalog.xml");
     }
 
 }

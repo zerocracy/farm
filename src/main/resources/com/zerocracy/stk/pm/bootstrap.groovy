@@ -33,7 +33,7 @@ if (!roles.hasRole(author, role)) {
 new ClaimIn(xml).reply(
   String.join(
     ' ',
-    'I\'m ready to manage a project.',
+    'I\'m ready to manage a pmo.',
     'When you\'re ready, you can start giving me commands,',
     'always prefixing your messages with my name.'
   )

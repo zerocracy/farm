@@ -24,7 +24,7 @@ assume.type('Add link').exact()
 assume.roles('PO').exist()
 
 ClaimIn claim = new ClaimIn(xml)
-String pid = claim.param('project')
+String pid = claim.param('pmo')
 String rel = claim.param('rel')
 String href = claim.param('href')
 if ('github' == rel) {
@@ -35,7 +35,7 @@ if ('github' == rel) {
 new Catalog(project).link(pid, rel, href)
 claim.reply(
   String.format(
-    'The project is linked with rel=`%s` and href=`%s`.',
+    'The pmo is linked with rel=`%s` and href=`%s`.',
     rel, href
   )
 ).postTo(project)

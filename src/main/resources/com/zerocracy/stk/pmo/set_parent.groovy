@@ -19,7 +19,7 @@ package com.zerocracy.stk.pmo
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Catalog
 
-assume.type('Set parent project').exact()
+assume.type('Set parent pmo').exact()
 assume.roles('PO').exist()
 
 ClaimIn claim = new ClaimIn(xml)
@@ -28,7 +28,7 @@ String parent = claim.param('parent')
 new Catalog(project).parent(child, parent)
 claim.reply(
   String.format(
-    'Done, project `%s` is a child of `%s`.',
+    'Done, pmo `%s` is a child of `%s`.',
     child, parent
   )
 ).postTo(project)

@@ -22,7 +22,9 @@ import com.jcabi.github.Issue;
 import com.jcabi.github.Repo;
 import com.jcabi.github.Repos;
 import com.jcabi.github.mock.MkGithub;
+import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.fake.FkFarm;
+import com.zerocracy.pmo.People;
 import org.junit.Test;
 
 /**
@@ -39,7 +41,8 @@ public final class ReQuestionTest {
      */
     @Test
     public void parsesQuestion() throws Exception {
-        final Github github = new MkGithub("jeff");
+        final String uid = "jeff";
+        final Github github = new MkGithub(uid);
         final Repo repo = github.repos().create(
             new Repos.RepoCreate("test", false)
         );
@@ -47,6 +50,8 @@ public final class ReQuestionTest {
             repo.issues().create("first title", "")
         );
         final Comment comment = issue.comments().post("@0crat hello");
-        new ReQuestion().react(new FkFarm(), new Comment.Smart(comment));
+        final Farm farm = new FkFarm();
+        new People(farm).bootstrap().invite(uid, "yegor256");
+        new ReQuestion().react(farm, new Comment.Smart(comment));
     }
 }

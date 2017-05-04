@@ -43,7 +43,7 @@ public final class Bots {
     /**
      * Project.
      */
-    private final Project project;
+    private final Project pmo;
 
     /**
      * Ctor.
@@ -58,7 +58,7 @@ public final class Bots {
      * @param pkt Project
      */
     public Bots(final Project pkt) {
-        this.project = pkt;
+        this.pmo = pkt;
     }
 
     /**
@@ -156,7 +156,7 @@ public final class Bots {
      * @throws IOException If fails
      */
     private Item item() throws IOException {
-        return this.project.acq("bots.xml");
+        return this.pmo.acq("bots.xml");
     }
 
 }
