@@ -16,7 +16,10 @@
  */
 package com.zerocracy.tk;
 
+import com.jcabi.aspects.Tv;
+import com.jcabi.http.request.JdkRequest;
 import com.jcabi.log.Logger;
+import com.jcabi.log.VerboseRunnable;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.ClaimIn;
@@ -25,9 +28,11 @@ import com.zerocracy.pm.Claims;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.concurrent.TimeUnit;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
+import org.takes.rq.RqHref;
 import org.takes.rs.RsText;
 
 /**
@@ -63,6 +68,11 @@ public final class TkPing implements Take {
         final long start = System.currentTimeMillis();
         final ClaimOut out = new ClaimOut().type(TkPing.TYPE);
         for (final Project project : this.farm.find("")) {
+            if (System.currentTimeMillis() - start >
+                TimeUnit.SECONDS.toMillis((long) Tv.FIVE)) {
+                done.add(TkPing.ping(req));
+                break;
+            }
             if (TkPing.needs(project)) {
                 out.postTo(project);
                 done.add(project.toString());
@@ -92,6 +102,24 @@ public final class TkPing implements Take {
                 input -> new ClaimIn(input).type().equals(TkPing.TYPE)
             );
         }
+    }
+
+    /**
+     * Ping itself.
+     * @return Status
+     */
+    private static String ping(final Request req) {
+        new Thread(
+            new VerboseRunnable(
+                () -> {
+                    new JdkRequest(
+                        new RqHref.Base(req).href().toString()
+                    ).fetch();
+                    return null;
+                }
+            )
+        ).start();
+        return "ping";
     }
 
 }
