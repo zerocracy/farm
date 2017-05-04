@@ -41,6 +41,7 @@ import org.takes.rs.RsText;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.10
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class TkPing implements Take {
 
@@ -68,8 +69,8 @@ public final class TkPing implements Take {
         final long start = System.currentTimeMillis();
         final ClaimOut out = new ClaimOut().type(TkPing.TYPE);
         for (final Project project : this.farm.find("")) {
-            if (System.currentTimeMillis() - start >
-                TimeUnit.SECONDS.toMillis((long) Tv.FIVE)) {
+            if (System.currentTimeMillis() - start
+                > TimeUnit.SECONDS.toMillis((long) Tv.FIVE)) {
                 done.add(TkPing.ping(req));
                 break;
             }
@@ -106,6 +107,7 @@ public final class TkPing implements Take {
 
     /**
      * Ping itself.
+     * @param req Request received
      * @return Status
      */
     private static String ping(final Request req) {
