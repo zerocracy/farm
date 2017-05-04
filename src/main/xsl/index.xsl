@@ -54,17 +54,21 @@
                 </span>
             </p>
             <p>
-                <xsl:if test="identity">
-                    <xsl:text>@</xsl:text>
-                    <xsl:value-of select="identity/login"/>
+                <xsl:if test="identity">\
+                    <span title="GitHub user currently logged in">
+                        <xsl:text>@</xsl:text>
+                        <xsl:value-of select="identity/login"/>
+                    </span>
                     <xsl:text> &#183; </xsl:text>
-                    <a href="{links/link[@rel='takes:logout']/@href}">
-                        <xsl:text>exit</xsl:text>
+                    <a href="{links/link[@rel='takes:logout']/@href}"
+                        title="Log out">
+                        <xsl:text>Exit</xsl:text>
                     </a>
                 </xsl:if>
                 <xsl:if test="not(identity)">
-                    <a href="{links/link[@rel='takes:github']/@href}">
-                        <xsl:text>login</xsl:text>
+                    <a href="{links/link[@rel='takes:github']/@href}"
+                        title="Log in using your GitHub account">
+                        <xsl:text>Login</xsl:text>
                     </a>
                 </xsl:if>
             </p>
