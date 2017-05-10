@@ -86,10 +86,9 @@ public final class StkSafe implements Stakeholder {
                 claim.reply(
                     String.join(
                         "\n",
-                        "I can't do it for technical reasons,",
-                        " I'm very sorry.",
+                        "I can't do it for technical reasons, I'm very sorry.",
                         // @checkstyle LineLength (1 line)
-                        "If you don't know what to do, submit it [here](https://github.com/zerocracy/help):\n\n```",
+                        "If you don't know what to do, submit this error as a ticket [here](https://github.com/zerocracy/datum):\n\n```",
                         StkSafe.print(ex),
                         "```"
                     )

@@ -69,7 +69,7 @@ public final class ReSafe implements Reaction<SlackMessagePosted> {
                         "\n",
                         "There is an unrecoverable failure on my side.",
                         "Please, submit it",
-                        "[here](https://github.com/zerocracy/help):\n\n```",
+                        "[here](https://github.com/zerocracy/datum):\n\n```",
                         StringUtils.abbreviate(
                             baos.toString(StandardCharsets.UTF_8),
                             Tv.THOUSAND
