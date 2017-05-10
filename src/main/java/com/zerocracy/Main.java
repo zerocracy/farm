@@ -35,6 +35,7 @@ import com.jcabi.log.VerboseThreads;
 import com.jcabi.s3.Region;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.zerocracy.farm.S3Farm;
+import com.zerocracy.farm.StkMailed;
 import com.zerocracy.farm.StkSafe;
 import com.zerocracy.farm.reactive.Brigade;
 import com.zerocracy.farm.reactive.RvFarm;
@@ -213,6 +214,7 @@ public final class Main {
             ),
             new Brigade(
                 Arrays.stream(stakeholders)
+                    .map(stk -> new StkMailed(props, stk))
                     .map(StkSafe::new)
                     .collect(Collectors.toList())
             ),

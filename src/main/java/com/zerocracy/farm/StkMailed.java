@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.radars.slack;
+package com.zerocracy.farm;
 
 import com.jcabi.email.Envelope;
 import com.jcabi.email.Postman;
@@ -26,23 +26,24 @@ import com.jcabi.email.stamp.StRecipient;
 import com.jcabi.email.stamp.StSender;
 import com.jcabi.email.stamp.StSubject;
 import com.jcabi.email.wire.SMTP;
-import com.ullink.slack.simpleslackapi.SlackSession;
-import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
-import com.zerocracy.jstk.Farm;
+import com.jcabi.xml.XML;
+import com.zerocracy.jstk.Project;
+import com.zerocracy.jstk.SoftException;
+import com.zerocracy.jstk.Stakeholder;
 import java.io.IOException;
 import java.util.Properties;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 /**
- * Mailed if exception.
+ * Stakeholder that mails failures.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.11
+ * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public final class ReMailed implements Reaction<SlackMessagePosted> {
+public final class StkMailed implements Stakeholder {
 
     /**
      * Properties.
@@ -50,31 +51,37 @@ public final class ReMailed implements Reaction<SlackMessagePosted> {
     private final Properties props;
 
     /**
-     * Reaction.
+     * Original stakeholder.
      */
-    private final Reaction<SlackMessagePosted> origin;
+    private final Stakeholder origin;
 
     /**
      * Ctor.
      * @param pps Properties
-     * @param tgt Target
+     * @param stk Original stakeholder
      */
-    public ReMailed(final Properties pps,
-        final Reaction<SlackMessagePosted> tgt) {
+    public StkMailed(final Properties pps, final Stakeholder stk) {
         this.props = pps;
-        this.origin = tgt;
+        this.origin = stk;
     }
 
     @Override
-    @SuppressWarnings("PMD.AvoidCatchingThrowable")
-    public boolean react(final Farm farm, final SlackMessagePosted event,
-        final SlackSession session) throws IOException {
+    @SuppressWarnings(
+        {
+            "PMD.AvoidCatchingThrowable",
+            "PMD.AvoidRethrowingException"
+        }
+    )
+    public void process(final Project project,
+        final XML xml) throws IOException {
         try {
-            return this.origin.react(farm, event, session);
+            this.origin.process(project, xml);
+        } catch (final MismatchException | SoftException ex) {
+            throw ex;
             // @checkstyle IllegalCatchCheck (1 line)
         } catch (final Throwable ex) {
             this.send(ex);
-            throw new IOException(ex);
+            throw ex;
         }
     }
 
