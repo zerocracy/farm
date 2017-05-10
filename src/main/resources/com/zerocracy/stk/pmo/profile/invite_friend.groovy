@@ -30,7 +30,7 @@ if (people.hasMentor(login)) {
     "`@${login}` is already with us."
   )
 }
-people.invite(claim.author(), login)
+people.invite(login, claim.author())
 claim.reply(
   String.format(
     'Thanks, `@%s` can now work work with us, and you are the mentor.',

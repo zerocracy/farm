@@ -129,4 +129,21 @@ public final class PeopleTest {
         people.skill("karato90", "java9");
     }
 
+    /**
+     * Invites a friend.
+     * @throws Exception If some problem inside
+     */
+    @Test
+    public void invitesFriend() throws Exception {
+        final People people = new People(new FkProject()).bootstrap();
+        final String uid = "jack";
+        final String friend = "friend";
+        people.invite(friend, uid);
+        people.invite("another-friend", uid);
+        MatcherAssert.assertThat(
+            people.hasMentor(friend),
+            Matchers.is(true)
+        );
+    }
+
 }
