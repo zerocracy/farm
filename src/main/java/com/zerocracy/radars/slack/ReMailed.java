@@ -26,6 +26,7 @@ import com.jcabi.email.stamp.StRecipient;
 import com.jcabi.email.stamp.StSender;
 import com.jcabi.email.stamp.StSubject;
 import com.jcabi.email.wire.SMTP;
+import com.jcabi.log.Logger;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.jstk.Farm;
@@ -125,6 +126,10 @@ public final class ReMailed implements Reaction<SlackMessagePosted> {
                         )
                     )
                 )
+        );
+        Logger.info(
+            this, "%s emailed to admin: \"%s\"",
+            error.getClass(), error.getLocalizedMessage()
         );
     }
 
