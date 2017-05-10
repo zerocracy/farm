@@ -215,7 +215,7 @@ public final class Main {
             new Brigade(
                 Arrays.stream(stakeholders)
                     .map(stk -> new StkMailed(props, stk))
-                    .map(StkSafe::new)
+                    .map(stk -> new StkSafe(props, stk))
                     .collect(Collectors.toList())
             ),
             Executors.newSingleThreadExecutor(new Main.MailThreads(props))

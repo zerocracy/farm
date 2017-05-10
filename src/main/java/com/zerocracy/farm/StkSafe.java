@@ -26,6 +26,7 @@ import com.zerocracy.pm.ClaimIn;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Properties;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang3.StringUtils;
 
@@ -39,15 +40,22 @@ import org.apache.commons.lang3.StringUtils;
 public final class StkSafe implements Stakeholder {
 
     /**
+     * Properties.
+     */
+    private final Properties props;
+
+    /**
      * Original stakeholder.
      */
     private final Stakeholder origin;
 
     /**
      * Ctor.
+     * @param pps Properties
      * @param stk Original stakeholder
      */
-    public StkSafe(final Stakeholder stk) {
+    public StkSafe(final Properties pps, final Stakeholder stk) {
+        this.props = pps;
         this.origin = stk;
     }
 
@@ -89,7 +97,7 @@ public final class StkSafe implements Stakeholder {
                         "I can't do it for technical reasons, I'm very sorry.",
                         // @checkstyle LineLength (1 line)
                         "If you don't know what to do, submit this error as a ticket [here](https://github.com/zerocracy/datum):\n\n```",
-                        StkSafe.print(ex),
+                        this.print(ex),
                         "```"
                     )
                 ).postTo(project);
@@ -111,12 +119,18 @@ public final class StkSafe implements Stakeholder {
      * @return Text
      * @throws IOException If fails
      */
-    private static String print(final Throwable error) throws IOException {
+    private String print(final Throwable error) throws IOException {
         try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             error.printStackTrace(new PrintStream(baos));
-            return StringUtils.abbreviate(
-                baos.toString(StandardCharsets.UTF_8),
-                Tv.THOUSAND
+            return String.format(
+                "%s %s %s\n%s",
+                this.props.getProperty("build.version"),
+                this.props.getProperty("build.revision"),
+                this.props.getProperty("build.date"),
+                StringUtils.abbreviate(
+                    baos.toString(StandardCharsets.UTF_8),
+                    Tv.THOUSAND
+                )
             );
         }
     }

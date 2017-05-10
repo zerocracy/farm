@@ -64,10 +64,10 @@ public final class ReSafe implements Response {
                 ex.printStackTrace(new PrintStream(baos));
                 comment.issue().comments().post(
                     String.join(
-                        "\n",
+                        " ",
                         "There is an unrecoverable failure on my side.",
-                        "Please, submit it",
-                        "[here](https://github.com/zerocracy/datum):\n\n```",
+                        " Please, submit it",
+                        " [here](https://github.com/zerocracy/datum):\n\n```",
                         StringUtils.abbreviate(
                             baos.toString(StandardCharsets.UTF_8),
                             Tv.THOUSAND
