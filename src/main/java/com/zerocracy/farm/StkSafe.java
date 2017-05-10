@@ -93,12 +93,13 @@ public final class StkSafe implements Stakeholder {
             if (claim.hasToken()) {
                 claim.reply(
                     String.join(
-                        "\n",
+                        "",
                         "I can't do it for technical reasons, I'm very sorry.",
-                        // @checkstyle LineLength (1 line)
-                        "If you don't know what to do, submit this error as a ticket [here](https://github.com/zerocracy/datum):\n\n```",
+                        " If you don't know what to do,",
+                        " submit this error as a ticket",
+                        " [here](https://github.com/zerocracy/datum):\n\n```\n",
                         this.print(ex),
-                        "```"
+                        "\n```"
                     )
                 ).postTo(project);
             }

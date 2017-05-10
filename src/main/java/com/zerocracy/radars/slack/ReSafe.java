@@ -66,15 +66,15 @@ public final class ReSafe implements Reaction<SlackMessagePosted> {
                 session.sendMessage(
                     event.getChannel(),
                     String.join(
-                        "\n",
+                        "",
                         "There is an unrecoverable failure on my side.",
-                        "Please, submit it",
-                        "[here](https://github.com/zerocracy/datum):\n\n```",
+                        " Please, submit it",
+                        " [here](https://github.com/zerocracy/datum):\n\n```\n",
                         StringUtils.abbreviate(
                             baos.toString(StandardCharsets.UTF_8),
                             Tv.THOUSAND
                         ),
-                        "```"
+                        "\n```"
                     )
                 );
             }
