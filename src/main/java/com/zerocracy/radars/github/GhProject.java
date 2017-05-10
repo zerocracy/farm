@@ -24,6 +24,7 @@ import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.SoftException;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.Locale;
 
 /**
  * Surrogate project.
@@ -83,18 +84,22 @@ public final class GhProject implements Project {
      * @throws IOException If I/O files
      */
     private Project project() throws IOException {
+        final String name = this.repo.coordinates().toString().toLowerCase(
+            Locale.ENGLISH
+        );
         final Iterator<Project> list = this.farm.find(
             String.format(
                 "links/link[@rel='github' and @href='%s']",
-                this.repo.coordinates().toString()
+                name
             )
         ).iterator();
         if (!list.hasNext()) {
             throw new SoftException(
                 String.join(
-                    " ",
-                    "I'm not managing this GitHub repository.",
-                    "You have to contact me in Slack first."
+                    "",
+                    "I'm not managing this GitHub repository (",
+                    name,
+                    "). You have to contact me in Slack first."
                 )
             );
         }
