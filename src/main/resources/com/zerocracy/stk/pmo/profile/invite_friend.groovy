@@ -33,7 +33,7 @@ if (people.hasMentor(login)) {
 people.invite(login, claim.author())
 claim.reply(
   String.format(
-    'Thanks, `@%s` can now work work with us, and you are the mentor.',
+    'Thanks, `@%s` can now work with us, and you are the mentor.',
     login
   )
 ).postTo(project)

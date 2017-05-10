@@ -52,15 +52,15 @@ final class Author {
         this.user = usr;
     }
 
-    @Override
-    public String toString() {
-        try {
-            final People people = new People(this.farm).bootstrap();
-            final String uid = this.user.login().toLowerCase(Locale.ENGLISH);
-            people.touch(uid);
-            return new GoodPeople(new People(this.farm)).get("github", uid);
-        } catch (final IOException ex) {
-            throw new IllegalStateException(ex);
-        }
+    /**
+     * Get his GitHub login.
+     * @return Login
+     * @throws IOException If fails
+     */
+    public String login() throws IOException {
+        final People people = new People(this.farm).bootstrap();
+        final String uid = this.user.login().toLowerCase(Locale.ENGLISH);
+        people.touch(uid);
+        return new GoodPeople(new People(this.farm)).get("github", uid);
     }
 }

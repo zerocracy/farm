@@ -51,7 +51,7 @@ public final class ReQuestion implements Response {
         new ClaimOnQuestion(question)
             .claim()
             .token(new TokenOfComment(comment))
-            .author(new Author(farm, comment.author()))
+            .author(new Author(farm, comment.author()).login())
             .param("job", new Job(comment.issue()))
             .postTo(project);
         return question.matches();
