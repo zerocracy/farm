@@ -22,7 +22,7 @@ import com.zerocracy.pm.ClaimIn;
 import java.util.Locale;
 
 /**
- * Assume tyope.
+ * Assume type.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$

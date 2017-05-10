@@ -17,6 +17,7 @@
 package com.zerocracy.farm.assumptions;
 
 import com.jcabi.xml.XML;
+import com.zerocracy.farm.MismatchException;
 import com.zerocracy.jstk.Project;
 
 /**
@@ -46,6 +47,16 @@ public final class Assume {
     public Assume(final Project pkt, final XML claim) {
         this.project = pkt;
         this.xml = claim;
+    }
+
+    /**
+     * It's not a PMO.
+     * @throws MismatchException If this is PMO
+     */
+    public void notPmo() throws MismatchException {
+        if ("PMO".equals(this.project.toString())) {
+            throw new MismatchException("This is PMO");
+        }
     }
 
     /**

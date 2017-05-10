@@ -23,6 +23,7 @@ import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.scope.Wbs
 
 assume.type('Ping').exact()
+assume.notPmo()
 
 Wbs wbs = new Wbs(project)
 Orders orders = new Orders(project)
