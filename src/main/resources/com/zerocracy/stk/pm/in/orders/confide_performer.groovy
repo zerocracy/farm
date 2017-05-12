@@ -41,11 +41,13 @@ static void assign(Project project, String job) {
     String login = logins[0]
     new ClaimOut()
       .type('Start order')
+      .token("job;${job}")
       .param('job', job)
       .param('login', login)
       .postTo(project)
     new ClaimOut()
       .type('Performer was confided')
+      .token("job;${job}")
       .param('login', login)
       .param('job', job)
       .param('reason', 'Because I love you')
