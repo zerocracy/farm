@@ -16,16 +16,19 @@
  */
 package com.zerocracy.stk.pm.scope.wbs
 
+import com.jcabi.xml.XML
+import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.scope.Wbs
 
-assume.type('Show WBS').exact()
-assume.roles('PO').exist()
-
-ClaimIn claim = new ClaimIn(xml)
-claim.reply(
-  String.format(
-    'This is what we have in WBS:%n%n%s',
-    new Wbs(project).markdown()
-  )
-).postTo(project)
+def exec(Project project, XML xml) {
+  assume.type('Show WBS').exact()
+  assume.roles('PO').exist()
+  ClaimIn claim = new ClaimIn(xml)
+  claim.reply(
+    String.format(
+      'This is what we have in WBS:%n%n%s',
+      new Wbs(project).markdown()
+    )
+  ).postTo(project)
+}

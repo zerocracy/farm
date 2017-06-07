@@ -18,29 +18,32 @@ package com.zerocracy.stk.pm.in.orders
 
 import com.jcabi.github.Issue
 import com.jcabi.log.Logger
+import com.jcabi.xml.XML
+import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.radars.github.Job
 
-assume.type('Job assigned in GitHub').exact()
-
-ClaimIn claim = new ClaimIn(xml)
-Issue issue = new Job.Issue(github, claim.param('job'))
-String login = claim.param('login')
-try {
-  new Issue.Smart(issue).assign(login)
-  new ClaimOut()
-    .type('GitHub issue got an assignee')
-    .param('login', login)
-    .param('repo', issue.repo().coordinates())
-    .param('issue', issue.number())
-    .postTo(project)
-} catch (AssertionError ex) {
-  Logger.warn(
-    this, 'Failed to assign @%s to %s#%d: %s',
-    login,
-    issue.repo().coordinates(),
-    issue.number(),
-    ex.localizedMessage
-  )
+def exec(Project project, XML xml) {
+  assume.type('Job assigned in GitHub').exact()
+  ClaimIn claim = new ClaimIn(xml)
+  Issue issue = new Job.Issue(github, claim.param('job'))
+  String login = claim.param('login')
+  try {
+    new Issue.Smart(issue).assign(login)
+    new ClaimOut()
+      .type('GitHub issue got an assignee')
+      .param('login', login)
+      .param('repo', issue.repo().coordinates())
+      .param('issue', issue.number())
+      .postTo(project)
+  } catch (AssertionError ex) {
+    Logger.warn(
+      this, 'Failed to assign @%s to %s#%d: %s',
+      login,
+      issue.repo().coordinates(),
+      issue.number(),
+      ex.localizedMessage
+    )
+  }
 }

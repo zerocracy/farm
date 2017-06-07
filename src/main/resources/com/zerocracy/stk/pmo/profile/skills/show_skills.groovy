@@ -16,22 +16,25 @@
  */
 package com.zerocracy.stk.pmo.profile.skills
 
+import com.jcabi.xml.XML
+import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.People
 
-assume.type('Show skills').exact()
-
-People people = new People(project).bootstrap()
-ClaimIn claim = new ClaimIn(xml)
-String login = claim.param('person')
-Collection<String> skills = people.skills(login)
-String msg
-if (skills.iterator().hasNext()) {
-  msg = String.format(
-    'Your skills are: `%s`.',
-    String.join('`, `', skills)
-  )
-} else {
-  msg = 'Your skills are not defined yet.'
+def exec(Project project, XML xml) {
+  assume.type('Show skills').exact()
+  People people = new People(project).bootstrap()
+  ClaimIn claim = new ClaimIn(xml)
+  String login = claim.param('person')
+  Collection<String> skills = people.skills(login)
+  String msg
+  if (skills.iterator().hasNext()) {
+    msg = String.format(
+      'Your skills are: `%s`.',
+      String.join('`, `', skills)
+    )
+  } else {
+    msg = 'Your skills are not defined yet.'
+  }
+  claim.reply(msg).postTo(project)
 }
-claim.reply(msg).postTo(project)

@@ -16,20 +16,23 @@
  */
 package com.zerocracy.stk.pmo.links
 
+import com.jcabi.xml.XML
+import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Catalog
 
-assume.type('Remove link').exact()
-assume.roles('PO').exist()
-
-ClaimIn claim = new ClaimIn(xml)
-String pid = claim.param('pmo')
-String rel = claim.param('rel')
-String href = claim.param('href')
-new Catalog(project).unlink(pid, rel, href)
-claim.reply(
-  String.format(
-    'Link removed from `%s` to rel=`%s` and href=`%s`.',
-    pid, rel, href
-  )
-).postTo(project)
+def exec(Project project, XML xml) {
+  assume.type('Remove link').exact()
+  assume.roles('PO').exist()
+  ClaimIn claim = new ClaimIn(xml)
+  String pid = claim.param('pmo')
+  String rel = claim.param('rel')
+  String href = claim.param('href')
+  new Catalog(project).unlink(pid, rel, href)
+  claim.reply(
+    String.format(
+      'Link removed from `%s` to rel=`%s` and href=`%s`.',
+      pid, rel, href
+    )
+  ).postTo(project)
+}

@@ -16,13 +16,18 @@
  */
 package com.zerocracy.stk
 
-import com.zerocracy.pm.ClaimIn
+import com.jcabi.xml.XML
 import com.zerocracy.ext.ExtProperties
+import com.zerocracy.farm.Assume
+import com.zerocracy.jstk.Project
+import com.zerocracy.pm.ClaimIn
 
-assume.type('Version').exact()
-
-props = new ExtProperties().asValue()
-
-new ClaimIn(xml).reply(
-  "My version is `${version}`, rev.`${revision}`, built on ${date}"
-).postTo(project)
+def exec(Project project, XML xml) {
+  new Assume(project, xml).type('Version')
+  def props = new ExtProperties().asValue()
+  new ClaimIn(xml).reply(
+    """My version is `${props.getProperty('build.version')}`, 
+ rev.`${props.getProperty('build.revision')}`, 
+ built on ${props.getProperty('build.date')}"""
+  ).postTo(project)
+}

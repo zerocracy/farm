@@ -24,31 +24,34 @@ import com.jcabi.github.Coordinates
 import com.jcabi.github.Issue
 import com.jcabi.github.Repo
 import com.jcabi.github.Smarts
+import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
+import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.ext.ExtGithub
 import com.zerocracy.radars.github.GhTube
 
-new Assume(project, xml).type('Notify in GitHub').exact()
-
-ClaimIn claim = new ClaimIn(xml)
-String[] parts = claim.token().split(';')
-Repo repo = new ExtGithub(project).asValue().repos().get(
-  new Coordinates.Simple(parts[1])
-)
-Issue issue = safe(
-  repo.issues().get(
-    Integer.parseInt(parts[2])
+def exec(Project project, XML xml) {
+  new Assume(project, xml).type('Notify in GitHub')
+  ClaimIn claim = new ClaimIn(xml)
+  String[] parts = claim.token().split(';')
+  Repo repo = new ExtGithub(project).asValue().repos().get(
+    new Coordinates.Simple(parts[1])
   )
-)
-String message = claim.param('message')
-if (parts.length > Tv.THREE) {
-  Comment comment = issue.comments().get(
-    Integer.parseInt(parts[Tv.THREE])
+  Issue issue = safe(
+    repo.issues().get(
+      Integer.parseInt(parts[2])
+    )
   )
-  new GhTube(comment).say(message)
-} else {
-  issue.comments().post(message)
+  String message = claim.param('message')
+  if (parts.length > Tv.THREE) {
+    Comment comment = issue.comments().get(
+      Integer.parseInt(parts[Tv.THREE])
+    )
+    new GhTube(comment).say(message)
+  } else {
+    issue.comments().post(message)
+  }
 }
 
 static Issue safe(Issue issue) {

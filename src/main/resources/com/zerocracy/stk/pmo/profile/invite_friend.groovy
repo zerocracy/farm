@@ -16,24 +16,27 @@
  */
 package com.zerocracy.stk.pmo.profile
 
+import com.jcabi.xml.XML
+import com.zerocracy.jstk.Project
 import com.zerocracy.jstk.SoftException
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.People
 
-assume.type('Invite a friend').exact()
-
-ClaimIn claim = new ClaimIn(xml)
-String login = claim.param('login')
-People people = new People(project)
-if (people.hasMentor(login)) {
-  throw new SoftException(
-    "`@${login}` is already with us."
-  )
+def exec(Project project, XML xml) {
+  assume.type('Invite a friend').exact()
+  ClaimIn claim = new ClaimIn(xml)
+  String login = claim.param('login')
+  People people = new People(project)
+  if (people.hasMentor(login)) {
+    throw new SoftException(
+      "`@${login}` is already with us."
+    )
+  }
+  people.invite(login, claim.author())
+  claim.reply(
+    String.format(
+      'Thanks, `@%s` can now work with us, and you are the mentor.',
+      login
+    )
+  ).postTo(project)
 }
-people.invite(login, claim.author())
-claim.reply(
-  String.format(
-    'Thanks, `@%s` can now work with us, and you are the mentor.',
-    login
-  )
-).postTo(project)

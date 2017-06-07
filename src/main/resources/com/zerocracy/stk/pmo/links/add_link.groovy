@@ -17,25 +17,29 @@
 package com.zerocracy.stk.pmo.links
 
 import com.jcabi.github.Coordinates
+import com.jcabi.xml.XML
+import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Catalog
 
-assume.type('Add link').exact()
-assume.roles('PO').exist()
+def exec(Project project, XML xml) {
+  assume.type('Add link').exact()
+  assume.roles('PO').exist()
 
-ClaimIn claim = new ClaimIn(xml)
-String pid = claim.param('pmo')
-String rel = claim.param('rel')
-String href = claim.param('href')
-if ('github' == rel) {
-  github.repos().get(
-    new Coordinates.Simple(href)
-  ).stars().star()
+  ClaimIn claim = new ClaimIn(xml)
+  String pid = claim.param('pmo')
+  String rel = claim.param('rel')
+  String href = claim.param('href')
+  if ('github' == rel) {
+    github.repos().get(
+      new Coordinates.Simple(href)
+    ).stars().star()
+  }
+  new Catalog(project).link(pid, rel, href)
+  claim.reply(
+    String.format(
+      'The pmo is linked with rel=`%s` and href=`%s`.',
+      rel, href
+    )
+  ).postTo(project)
 }
-new Catalog(project).link(pid, rel, href)
-claim.reply(
-  String.format(
-    'The pmo is linked with rel=`%s` and href=`%s`.',
-    rel, href
-  )
-).postTo(project)

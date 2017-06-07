@@ -16,17 +16,20 @@
  */
 package com.zerocracy.stk.pm.hr.roles
 
+import com.jcabi.xml.XML
+import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.hr.Roles
 
-assume.type('Show roles').exact()
-assume.roles('ARC', 'PO').exist()
-
-ClaimIn claim = new ClaimIn(xml)
-claim.reply(
-  String.format(
-    'Full list of roles in "%s":%n%n%s',
-    project,
-    new Roles(project).bootstrap().markdown()
-  )
-).postTo(project)
+def exec(Project project, XML xml) {
+  assume.type('Show roles').exact()
+  assume.roles('ARC', 'PO').exist()
+  ClaimIn claim = new ClaimIn(xml)
+  claim.reply(
+    String.format(
+      'Full list of roles in "%s":%n%n%s',
+      project,
+      new Roles(project).bootstrap().markdown()
+    )
+  ).postTo(project)
+}

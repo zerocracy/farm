@@ -56,15 +56,8 @@ public final class BundlesTest {
     /**
      * Name of the bundle.
      */
-    private final String bundle;
-
-    /**
-     * Ctor.
-     * @param name Bundle name
-     */
-    public BundlesTest(final String name) {
-        this.bundle = name;
-    }
+    @Parameterized.Parameter
+    public String bundle;
 
     @Parameterized.Parameters
     public static Collection<Object[]> bundles() {

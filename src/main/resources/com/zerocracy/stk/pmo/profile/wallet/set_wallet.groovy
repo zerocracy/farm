@@ -16,21 +16,24 @@
  */
 package com.zerocracy.stk.pmo.profile.wallet
 
+import com.jcabi.xml.XML
+import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.People
 
-assume.type('Set wallet').exact()
-
-People people = new People(project).bootstrap()
-ClaimIn claim = new ClaimIn(xml)
-String login = claim.param('person')
-String bank = claim.param('bank')
-String wallet = claim.param('wallet')
-people.wallet(login, bank, wallet)
-claim.reply(
-  String.format(
-    'Wallet of "%s" set to `%s:%s`.',
-    login,
-    bank, wallet
-  )
-).postTo(project)
+def exec(Project project, XML xml) {
+  assume.type('Set wallet').exact()
+  People people = new People(project).bootstrap()
+  ClaimIn claim = new ClaimIn(xml)
+  String login = claim.param('person')
+  String bank = claim.param('bank')
+  String wallet = claim.param('wallet')
+  people.wallet(login, bank, wallet)
+  claim.reply(
+    String.format(
+      'Wallet of "%s" set to `%s:%s`.',
+      login,
+      bank, wallet
+    )
+  ).postTo(project)
+}

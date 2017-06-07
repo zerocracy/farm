@@ -16,19 +16,22 @@
  */
 package com.zerocracy.stk.pmo
 
+import com.jcabi.xml.XML
+import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Catalog
 
-assume.type('Set parent project').exact()
-assume.roles('PO').exist()
-
-ClaimIn claim = new ClaimIn(xml)
-String child = claim.param('child')
-String parent = claim.param('parent')
-new Catalog(project).parent(child, parent)
-claim.reply(
-  String.format(
-    'Done, project `%s` is a child of `%s`.',
-    child, parent
-  )
-).postTo(project)
+def exec(Project project, XML xml) {
+  assume.type('Set parent project').exact()
+  assume.roles('PO').exist()
+  ClaimIn claim = new ClaimIn(xml)
+  String child = claim.param('child')
+  String parent = claim.param('parent')
+  new Catalog(project).parent(child, parent)
+  claim.reply(
+    String.format(
+      'Done, project `%s` is a child of `%s`.',
+      child, parent
+    )
+  ).postTo(project)
+}

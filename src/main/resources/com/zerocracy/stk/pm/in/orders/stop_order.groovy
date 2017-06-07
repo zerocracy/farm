@@ -16,20 +16,24 @@
  */
 package com.zerocracy.stk.pm.in.orders
 
+import com.jcabi.xml.XML
+import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.in.Orders
 
-assume.type('Stop order').exact()
-assume.roles('ARC', 'PO').exist()
+def exec(Project project, XML xml) {
+  assume.type('Stop order').exact()
+  assume.roles('ARC', 'PO').exist()
 
-ClaimIn claim = new ClaimIn(xml)
-String job = claim.param('job')
-Orders orders = new Orders(project).bootstrap()
-String performer = orders.performer(job)
-orders.resign(job)
-claim.reply(
-  String.format(
-    '@%s resigned from `%s`, please stop working.',
-    performer, job
-  )
-).postTo(project)
+  ClaimIn claim = new ClaimIn(xml)
+  String job = claim.param('job')
+  Orders orders = new Orders(project).bootstrap()
+  String performer = orders.performer(job)
+  orders.resign(job)
+  claim.reply(
+    String.format(
+      '@%s resigned from `%s`, please stop working.',
+      performer, job
+    )
+  ).postTo(project)
+}

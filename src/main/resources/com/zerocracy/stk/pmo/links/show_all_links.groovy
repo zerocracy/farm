@@ -16,19 +16,22 @@
  */
 package com.zerocracy.stk.pmo.links
 
+import com.jcabi.xml.XML
+import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Catalog
 
-assume.type('Show links').exact()
-assume.roles('PO').exist()
-
-ClaimIn claim = new ClaimIn(xml)
-String pid = claim.param('pmo')
-Collection<String> links = new Catalog(project).links(pid)
-claim.reply(
-  String.format(
-    'This pmo is linked with %d resources: `%s`.',
-    links.size(),
-    String.join('`, `', links)
-  )
-).postTo(project)
+def exec(Project project, XML xml) {
+  assume.type('Show links').exact()
+  assume.roles('PO').exist()
+  ClaimIn claim = new ClaimIn(xml)
+  String pid = claim.param('pmo')
+  Collection<String> links = new Catalog(project).links(pid)
+  claim.reply(
+    String.format(
+      'This pmo is linked with %d resources: `%s`.',
+      links.size(),
+      String.join('`, `', links)
+    )
+  ).postTo(project)
+}

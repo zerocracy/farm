@@ -27,6 +27,7 @@ import org.cactoos.io.BytesAsInput;
 import org.cactoos.io.FileAsOutput;
 import org.cactoos.io.LengthOfInput;
 import org.cactoos.io.PathAsInput;
+import org.cactoos.io.ResourceAsInput;
 import org.cactoos.io.TeeInput;
 import org.cactoos.text.TextAsBytes;
 import org.hamcrest.MatcherAssert;
@@ -57,7 +58,9 @@ public final class BrigadeTest {
                         String.join(
                             "\n",
                             "import com.zerocracy.pm.ClaimOut",
-                            "new ClaimOut().type('one more').postTo(project)"
+                            "def exec(project, xml) {",
+                            "new ClaimOut().type('one more').postTo(project)",
+                            "}"
                         )
                     )
                 ),
@@ -96,7 +99,7 @@ public final class BrigadeTest {
         }
         final Brigade brigade = new Brigade(
             new StkGroovy(
-                new BytesAsInput(new TextAsBytes("hello.groovy"))
+                new ResourceAsInput("com/zerocracy/stk/hello.groovy")
             )
         );
         brigade.process(project, xml);

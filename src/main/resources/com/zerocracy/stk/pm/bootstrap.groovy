@@ -16,25 +16,28 @@
  */
 package com.zerocracy.stk.pm
 
+import com.jcabi.xml.XML
+import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.hr.Roles
 import com.zerocracy.pm.scope.Wbs
 
-assume.type('Bootstrap').exact()
-assume.roles('PO').exist()
-
-new Wbs(project).bootstrap()
-Roles roles = new Roles(project).bootstrap()
-String role = 'PO'
-String author = new ClaimIn(xml).author()
-if (!roles.hasRole(author, role)) {
-  roles.assign(author, role)
+def exec(Project project, XML xml) {
+  assume.type('Bootstrap').exact()
+  assume.roles('PO').exist()
+  new Wbs(project).bootstrap()
+  Roles roles = new Roles(project).bootstrap()
+  String role = 'PO'
+  String author = new ClaimIn(xml).author()
+  if (!roles.hasRole(author, role)) {
+    roles.assign(author, role)
+  }
+  new ClaimIn(xml).reply(
+    String.join(
+      ' ',
+      'I\'m ready to manage a pmo.',
+      'When you\'re ready, you can start giving me commands,',
+      'always prefixing your messages with my name.'
+    )
+  ).postTo(project)
 }
-new ClaimIn(xml).reply(
-  String.join(
-    ' ',
-    'I\'m ready to manage a pmo.',
-    'When you\'re ready, you can start giving me commands,',
-    'always prefixing your messages with my name.'
-  )
-).postTo(project)

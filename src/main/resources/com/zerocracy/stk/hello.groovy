@@ -16,10 +16,14 @@
  */
 package com.zerocracy.stk
 
+import com.jcabi.xml.XML
+import com.zerocracy.farm.Assume
+import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 
-assume.type('Hello').exact()
-
-new ClaimIn(xml).reply(
-  "Hey, what's up, how is it going?"
-).postTo(project)
+def exec(Project project, XML xml) {
+  new Assume(project, xml).type('Hello')
+  new ClaimIn(xml).reply(
+    "Hey, what's up, how is it going?"
+  ).postTo(project)
+}

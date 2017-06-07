@@ -18,38 +18,41 @@ package com.zerocracy.stk.pm.in.orders
 
 import com.jcabi.github.Issue
 import com.jcabi.log.Logger
+import com.jcabi.xml.XML
+import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.radars.github.Job
 
-assume.type('Job resigned in GitHub').exact()
-
-ClaimIn claim = new ClaimIn(xml)
-Issue.Smart issue = new Issue.Smart(
-  new Job.Issue(github, claim.param('job'))
-)
-String login = claim.param('login')
-if (issue.json().isNull('assignee')) {
-  Logger.info(
-    this, 'Issue %s#%d doesn\'t have an assignee',
-    issue.repo().coordinates(), issue.number()
+def exec(Project project, XML xml) {
+  assume.type('Job resigned in GitHub').exact()
+  ClaimIn claim = new ClaimIn(xml)
+  Issue.Smart issue = new Issue.Smart(
+    new Job.Issue(github, claim.param('job'))
   )
-} else if (login == issue.assignee().login().toLowerCase(Locale.ENGLISH)) {
-  issue.assign('')
-  new ClaimOut()
-    .type('GitHub issue lost an assignee')
-    .param('login', login)
-    .param('repo', issue.repo().coordinates())
-    .param('issue', issue.number())
-    .postTo(project)
-  Logger.info(
-    this, 'Issue %s#%d lost an assignee',
-    issue.repo().coordinates(), issue.number()
-  )
-} else {
-  Logger.info(
-    this, 'Issue %s#%d has a different assignee already: @%s',
-    issue.repo().coordinates(), issue.number(),
-    issue.assignee().login()
-  )
+  String login = claim.param('login')
+  if (issue.json().isNull('assignee')) {
+    Logger.info(
+      this, 'Issue %s#%d doesn\'t have an assignee',
+      issue.repo().coordinates(), issue.number()
+    )
+  } else if (login == issue.assignee().login().toLowerCase(Locale.ENGLISH)) {
+    issue.assign('')
+    new ClaimOut()
+      .type('GitHub issue lost an assignee')
+      .param('login', login)
+      .param('repo', issue.repo().coordinates())
+      .param('issue', issue.number())
+      .postTo(project)
+    Logger.info(
+      this, 'Issue %s#%d lost an assignee',
+      issue.repo().coordinates(), issue.number()
+    )
+  } else {
+    Logger.info(
+      this, 'Issue %s#%d has a different assignee already: @%s',
+      issue.repo().coordinates(), issue.number(),
+      issue.assignee().login()
+    )
+  }
 }

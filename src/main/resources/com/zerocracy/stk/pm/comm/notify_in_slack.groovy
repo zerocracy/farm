@@ -17,48 +17,52 @@
 package com.zerocracy.stk.pm.comm
 
 import com.jcabi.log.Logger
+import com.jcabi.xml.XML
 import com.ullink.slack.simpleslackapi.SlackChannel
 import com.ullink.slack.simpleslackapi.SlackSession
+import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.ext.ExtSlack
 
-assume.type('Notify in Slack').exact()
+def exec(Project project, XML xml) {
+  assume.type('Notify in Slack').exact()
 
-ClaimIn claim = new ClaimIn(xml)
-String[] parts = claim.token().split(';')
-SlackSession session = session(parts[1])
-String message = claim.param('message').replaceAll(
-  '\\[([^]]+)]\\(([^)]+)\\)', '<$2|$1>'
-)
-if (parts.length > 3 && 'direct' == parts[3]) {
-  session.sendMessage(
-    session.openDirectMessageChannel(
-      session.findUserByUserName(parts[2])
-    ).reply.slackChannel,
-    message
+  ClaimIn claim = new ClaimIn(xml)
+  String[] parts = claim.token().split(';')
+  SlackSession session = session(parts[1])
+  String message = claim.param('message').replaceAll(
+    '\\[([^]]+)]\\(([^)]+)\\)', '<$2|$1>'
   )
-} else {
-  SlackChannel channel = session.findChannelById(parts[1])
-  if (parts.length > 2) {
+  if (parts.length > 3 && 'direct' == parts[3]) {
     session.sendMessage(
-      channel,
-      String.format('@%s %s', parts[2], message)
-    )
-    Logger.info(
-      this, '@%s posted %d chars to @%s at %s/%s',
-      session.sessionPersona().userName,
-      message.length(),
-      parts[2],
-      channel.name, channel.id
+      session.openDirectMessageChannel(
+        session.findUserByUserName(parts[2])
+      ).reply.slackChannel,
+      message
     )
   } else {
-    session.sendMessage(channel, message)
-    Logger.info(
-      this, '@%s posted %d chars at %s/%s',
-      session.sessionPersona().userName,
-      message.length(),
-      channel.name, channel.id
-    )
+    SlackChannel channel = session.findChannelById(parts[1])
+    if (parts.length > 2) {
+      session.sendMessage(
+        channel,
+        String.format('@%s %s', parts[2], message)
+      )
+      Logger.info(
+        this, '@%s posted %d chars to @%s at %s/%s',
+        session.sessionPersona().userName,
+        message.length(),
+        parts[2],
+        channel.name, channel.id
+      )
+    } else {
+      session.sendMessage(channel, message)
+      Logger.info(
+        this, '@%s posted %d chars at %s/%s',
+        session.sessionPersona().userName,
+        message.length(),
+        channel.name, channel.id
+      )
+    }
   }
 }
 

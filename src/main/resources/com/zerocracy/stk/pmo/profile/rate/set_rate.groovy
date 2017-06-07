@@ -16,22 +16,25 @@
  */
 package com.zerocracy.stk.pmo.profile.rate
 
+import com.jcabi.xml.XML
+import com.zerocracy.jstk.Project
 import com.zerocracy.jstk.cash.Cash
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.People
 
-assume.type('Set rate').exact()
-assume.roles('ARC', 'PO').exist()
-
-People people = new People(project).bootstrap()
-ClaimIn claim = new ClaimIn(xml)
-String login = claim.param('person')
-Cash rate = new Cash.S(claim.param('rate'))
-people.rate(login, rate)
-claim.reply(
-  String.format(
-    'Rate of "%s" set to %s.',
-    login,
-    rate
-  )
-).postTo(project)
+def exec(Project project, XML xml) {
+  assume.type('Set rate').exact()
+  assume.roles('ARC', 'PO').exist()
+  People people = new People(project).bootstrap()
+  ClaimIn claim = new ClaimIn(xml)
+  String login = claim.param('person')
+  Cash rate = new Cash.S(claim.param('rate'))
+  people.rate(login, rate)
+  claim.reply(
+    String.format(
+      'Rate of "%s" set to %s.',
+      login,
+      rate
+    )
+  ).postTo(project)
+}

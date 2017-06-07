@@ -16,41 +16,44 @@
  */
 package com.zerocracy.stk.pm.comm
 
+import com.jcabi.xml.XML
+import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 
-assume.type('Notify').exact()
-
-ClaimIn claim = new ClaimIn(xml)
-String[] parts = claim.token().split(';')
-if (parts[0] == 'slack') {
-  claim.copy()
-    .type('Notify in Slack')
-    .postTo(project)
-} else if (parts[0] == 'github') {
-  claim.copy()
-    .type('Notify in GitHub')
-    .postTo(project)
-} else if (parts[0] == 'job') {
-  String[] job = parts[1].split(':')
-  if (job[0] == 'gh') {
-    String[] coords = job[1].split('#')
+def exec(Project project, XML xml) {
+  assume.type('Notify').exact()
+  ClaimIn claim = new ClaimIn(xml)
+  String[] parts = claim.token().split(';')
+  if (parts[0] == 'slack') {
+    claim.copy()
+      .type('Notify in Slack')
+      .postTo(project)
+  } else if (parts[0] == 'github') {
     claim.copy()
       .type('Notify in GitHub')
-      .token("github;${coords[0]};${coords[1]}")
       .postTo(project)
+  } else if (parts[0] == 'job') {
+    String[] job = parts[1].split(':')
+    if (job[0] == 'gh') {
+      String[] coords = job[1].split('#')
+      claim.copy()
+        .type('Notify in GitHub')
+        .token("github;${coords[0]};${coords[1]}")
+        .postTo(project)
+    } else {
+      throw new IllegalStateException(
+        String.format(
+          'I don\'t know how to notify job "%s"',
+          parts[1]
+        )
+      )
+    }
   } else {
     throw new IllegalStateException(
       String.format(
-        'I don\'t know how to notify job "%s"',
-        parts[1]
+        'I don\'t know how to notify "%s"',
+        parts[0]
       )
     )
   }
-} else {
-  throw new IllegalStateException(
-    String.format(
-      'I don\'t know how to notify "%s"',
-      parts[0]
-    )
-  )
 }
