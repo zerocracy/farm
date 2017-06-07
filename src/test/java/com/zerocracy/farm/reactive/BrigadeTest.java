@@ -23,6 +23,12 @@ import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import org.cactoos.io.BytesAsInput;
+import org.cactoos.io.FileAsOutput;
+import org.cactoos.io.LengthOfInput;
+import org.cactoos.io.PathAsInput;
+import org.cactoos.io.TeeInput;
+import org.cactoos.text.TextAsBytes;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -44,14 +50,20 @@ public final class BrigadeTest {
         final Path path = Files.createTempDirectory("");
         final Path file = path.resolve("a/b/c/test.groovy");
         file.getParent().toFile().mkdirs();
-        Files.write(
-            file,
-            String.join(
-                "\n",
-                "import com.zerocracy.pm.ClaimOut",
-                "new ClaimOut().type('one more').postTo(project)"
-            ).getBytes()
-        );
+        new LengthOfInput(
+            new TeeInput(
+                new BytesAsInput(
+                    new TextAsBytes(
+                        String.join(
+                            "\n",
+                            "import com.zerocracy.pm.ClaimOut",
+                            "new ClaimOut().type('one more').postTo(project)"
+                        )
+                    )
+                ),
+                new FileAsOutput(file.toFile())
+            )
+        ).asValue();
         final Project project = new FkProject();
         new ClaimOut().type("just some fun").postTo(project);
         final XML xml;
@@ -59,7 +71,7 @@ public final class BrigadeTest {
             xml = claims.iterate().iterator().next();
         }
         final Brigade brigade = new Brigade(
-            new StkGroovy(file)
+            new StkGroovy(new PathAsInput(file))
         );
         brigade.process(project, xml);
         try (final Claims claims = new Claims(project).lock()) {
@@ -83,7 +95,9 @@ public final class BrigadeTest {
             xml = claims.iterate().iterator().next();
         }
         final Brigade brigade = new Brigade(
-            new StkGroovy("hello.groovy")
+            new StkGroovy(
+                new BytesAsInput(new TextAsBytes("hello.groovy"))
+            )
         );
         brigade.process(project, xml);
         try (final Claims claims = new Claims(project).lock()) {

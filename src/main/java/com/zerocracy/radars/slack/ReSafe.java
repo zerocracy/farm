@@ -22,10 +22,9 @@ import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.SoftException;
 import java.io.IOException;
-import java.io.PrintStream;
-import java.nio.charset.StandardCharsets;
-import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang3.StringUtils;
+import org.cactoos.text.BytesAsText;
+import org.cactoos.text.ThrowableAsBytes;
 
 /**
  * Safe reaction.
@@ -60,24 +59,22 @@ public final class ReSafe implements Reaction<SlackMessagePosted> {
             session.sendMessage(event.getChannel(), ex.getMessage());
             // @checkstyle IllegalCatchCheck (1 line)
         } catch (final Throwable ex) {
-            try (final ByteArrayOutputStream baos =
-                new ByteArrayOutputStream()) {
-                ex.printStackTrace(new PrintStream(baos));
-                session.sendMessage(
-                    event.getChannel(),
-                    String.join(
-                        "",
-                        "There is an unrecoverable failure on my side.",
-                        " Please, submit it",
-                        " [here](https://github.com/zerocracy/datum):\n\n```\n",
-                        StringUtils.abbreviate(
-                            baos.toString(StandardCharsets.UTF_8),
-                            Tv.THOUSAND
-                        ),
-                        "\n```"
-                    )
-                );
-            }
+            session.sendMessage(
+                event.getChannel(),
+                String.join(
+                    "",
+                    "There is an unrecoverable failure on my side.",
+                    " Please, submit it",
+                    " [here](https://github.com/zerocracy/datum):\n\n```\n",
+                    StringUtils.abbreviate(
+                        new BytesAsText(
+                            new ThrowableAsBytes(ex)
+                        ).asString(),
+                        Tv.THOUSAND
+                    ),
+                    "\n```"
+                )
+            );
             throw new IOException(ex);
         }
         return done;

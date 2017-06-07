@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.farm.assumptions;
+package com.zerocracy.farm;
 
 import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
@@ -22,17 +22,17 @@ import com.zerocracy.jstk.SoftException;
 import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.hr.Roles;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Locale;
 
 /**
- * Assume roles.
+ * Assumptions for stakeholder.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.11
  */
-public final class AeRoles {
+public final class Assume {
 
     /**
      * Project.
@@ -45,29 +45,49 @@ public final class AeRoles {
     private final XML xml;
 
     /**
-     * Roles.
-     */
-    private final Collection<String> roles;
-
-    /**
      * Ctor.
      * @param pkt Project
      * @param claim Claim
-     * @param list List of roles
      */
-    public AeRoles(final Project pkt, final XML claim,
-        final String... list) {
+    public Assume(final Project pkt, final XML claim) {
         this.project = pkt;
         this.xml = claim;
-        this.roles = Arrays.asList(list);
+    }
+
+    /**
+     * It's not a PMO.
+     * @throws MismatchException If this is PMO
+     */
+    public void notPmo() throws MismatchException {
+        if ("PMO".equals(this.project.toString())) {
+            throw new MismatchException("This is PMO");
+        }
+    }
+
+    /**
+     * Equals.
+     * @throws MismatchException If doesn't match
+     */
+    public void type(final String type) throws MismatchException {
+        final String input = new ClaimIn(this.xml)
+            .type().toLowerCase(Locale.ENGLISH);
+        final String expected = type.toLowerCase(Locale.ENGLISH);
+        if (!input.equals(expected)) {
+            throw new MismatchException(
+                String.format(
+                    "Type \"%s\" is not mine, I'm expecting \"%s\"",
+                    input, expected
+                )
+            );
+        }
     }
 
     /**
      * At least one role is present.
      * @throws IOException If fails
      */
-    public void exist() throws IOException {
-        if (this.has()) {
+    public void roles(final String... roles) throws IOException {
+        if (this.hasRoles(roles)) {
             return;
         }
         final ClaimIn claim = new ClaimIn(this.xml);
@@ -80,7 +100,7 @@ public final class AeRoles {
                     String.format(
                         // @checkstyle LineLength (1 line)
                         "You need to have one of these roles in order to do what you're trying to do: %s. I'm sorry to say this, but at the moment you've got no roles in this project (your GitHub login is \"%s\").",
-                        String.join(", ", this.roles),
+                        String.join(", ", roles),
                         claim.author()
                     )
                 );
@@ -89,7 +109,7 @@ public final class AeRoles {
                 String.format(
                     // @checkstyle LineLength (1 line)
                     "You can't do that, unless you have one of these roles: %s. Your current roles are: %s.",
-                    String.join(", ", this.roles),
+                    String.join(", ", roles),
                     String.join(", ", mine)
                 )
             );
@@ -98,7 +118,7 @@ public final class AeRoles {
             String.format(
                 // @checkstyle LineLength (1 line)
                 "You're not allowed to do this, you need one of these roles: %s.",
-                String.join(", ", this.roles)
+                String.join(", ", roles)
             )
         );
     }
@@ -108,13 +128,13 @@ public final class AeRoles {
      * @return TRUE if he has
      * @throws IOException If fails
      */
-    private boolean has() throws IOException {
+    private boolean hasRoles(final String... roles) throws IOException {
         boolean has = false;
         final ClaimIn claim = new ClaimIn(this.xml);
         if (claim.hasAuthor()) {
             final String login = claim.author();
             final Roles rls = new Roles(this.project).bootstrap();
-            for (final String role : this.roles) {
+            for (final String role : roles) {
                 if (rls.hasRole(login, role)) {
                     has = true;
                     break;

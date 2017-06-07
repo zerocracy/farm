@@ -14,56 +14,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.farm.assumptions;
+package com.zerocracy.farm.shortcut;
 
-import com.jcabi.xml.XML;
-import com.zerocracy.farm.MismatchException;
-import com.zerocracy.pm.ClaimIn;
-import java.util.Locale;
+import com.zerocracy.jstk.Farm;
+import com.zerocracy.jstk.Project;
+import java.io.IOException;
+import lombok.EqualsAndHashCode;
+import org.cactoos.list.TransformedIterable;
 
 /**
- * Assume type.
+ * Farm with shortcuts.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.11
  */
-public final class AeType {
+@EqualsAndHashCode(of = "origin")
+public final class ScFarm implements Farm {
 
     /**
-     * Claim.
+     * Original farm.
      */
-    private final XML xml;
-
-    /**
-     * Type.
-     */
-    private final String type;
+    private final Farm origin;
 
     /**
      * Ctor.
-     * @param claim Claim
-     * @param tpe Type
+     * @param farm Original farm
      */
-    public AeType(final XML claim, final String tpe) {
-        this.xml = claim;
-        this.type = tpe;
+    public ScFarm(final Farm farm) {
+        this.origin = farm;
     }
 
-    /**
-     * Equals.
-     * @throws MismatchException If doesn't match
-     */
-    public void exact() throws MismatchException {
-        final String input = new ClaimIn(this.xml)
-            .type().toLowerCase(Locale.ENGLISH);
-        final String expected = this.type.toLowerCase(Locale.ENGLISH);
-        if (!input.equals(expected)) {
-            throw new MismatchException(
-                String.format(
-                    "Type \"%s\" is not mine, I'm expecting \"%s\"",
-                    input, expected
-                )
+    @Override
+    public Iterable<Project> find(final String query) throws IOException {
+        synchronized (this.origin) {
+            return new TransformedIterable<>(
+                this.origin.find(query),
+                pkt -> new ScProject(pkt, this)
             );
         }
     }

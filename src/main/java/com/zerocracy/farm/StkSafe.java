@@ -19,16 +19,17 @@ package com.zerocracy.farm;
 import com.jcabi.aspects.Tv;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
+import com.zerocracy.ext.ExtProperties;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.SoftException;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
 import java.io.IOException;
-import java.io.PrintStream;
-import java.nio.charset.StandardCharsets;
 import java.util.Properties;
-import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang3.StringUtils;
+import org.cactoos.text.BytesAsText;
+import org.cactoos.text.FormattedText;
+import org.cactoos.text.ThrowableAsBytes;
 
 /**
  * Stakeholder that reports about failures.
@@ -48,6 +49,15 @@ public final class StkSafe implements Stakeholder {
      * Original stakeholder.
      */
     private final Stakeholder origin;
+
+    /**
+     * Ctor.
+     * @param stk Original stakeholder
+     * @throws IOException If fails
+     */
+    public StkSafe(final Stakeholder stk) throws IOException {
+        this(new ExtProperties().asValue(), stk);
+    }
 
     /**
      * Ctor.
@@ -98,7 +108,18 @@ public final class StkSafe implements Stakeholder {
                         " If you don't know what to do,",
                         " submit this error as a ticket",
                         " [here](https://github.com/zerocracy/datum):\n\n```\n",
-                        this.print(ex),
+                        new FormattedText(
+                            "%s %s %s\n%s",
+                            this.props.getProperty("build.version"),
+                            this.props.getProperty("build.revision"),
+                            this.props.getProperty("build.date"),
+                            StringUtils.abbreviate(
+                                new BytesAsText(
+                                    new ThrowableAsBytes(ex)
+                                ).asString(),
+                                Tv.THOUSAND
+                            )
+                        ).asString(),
                         "\n```"
                     )
                 ).postTo(project);
@@ -110,28 +131,6 @@ public final class StkSafe implements Stakeholder {
                 new ClaimIn(xml).number(),
                 project,
                 ex
-            );
-        }
-    }
-
-    /**
-     * Print exception to string.
-     * @param error The error
-     * @return Text
-     * @throws IOException If fails
-     */
-    private String print(final Throwable error) throws IOException {
-        try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-            error.printStackTrace(new PrintStream(baos));
-            return String.format(
-                "%s %s %s\n%s",
-                this.props.getProperty("build.version"),
-                this.props.getProperty("build.revision"),
-                this.props.getProperty("build.date"),
-                StringUtils.abbreviate(
-                    baos.toString(StandardCharsets.UTF_8),
-                    Tv.THOUSAND
-                )
             );
         }
     }

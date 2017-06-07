@@ -14,69 +14,59 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.farm.assumptions;
+package com.zerocracy.ext;
 
-import com.jcabi.xml.XML;
-import com.zerocracy.farm.MismatchException;
+import com.jcabi.aspects.Cacheable;
+import com.jcabi.github.Github;
+import com.jcabi.github.RtGithub;
+import com.zerocracy.Xocument;
+import com.zerocracy.jstk.Farm;
+import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
+import com.zerocracy.pmo.Pmo;
+import java.io.IOException;
+import org.cactoos.Scalar;
 
 /**
- * Assumptions for stakeholder.
+ * GitHub server connector.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.11
+ * @since 0.7
  */
-public final class Assume {
+public final class ExtGithub implements Scalar<Github> {
 
     /**
-     * Project.
+     * PMO.
      */
-    private final Project project;
+    private final Project pmo;
 
     /**
-     * Claim.
+     * Ctor.
+     * @param farm Farm
      */
-    private final XML xml;
+    public ExtGithub(final Farm farm) {
+        this(new Pmo(farm));
+    }
 
     /**
      * Ctor.
      * @param pkt Project
-     * @param claim Claim
      */
-    public Assume(final Project pkt, final XML claim) {
-        this.project = pkt;
-        this.xml = claim;
+    public ExtGithub(final Project pkt) {
+        this.pmo = pkt;
     }
 
-    /**
-     * It's not a PMO.
-     * @throws MismatchException If this is PMO
-     */
-    public void notPmo() throws MismatchException {
-        if ("PMO".equals(this.project.toString())) {
-            throw new MismatchException("This is PMO");
+    @Override
+    @Cacheable(forever = true)
+    public Github asValue() throws IOException {
+        try (final Item item = this.pmo.acq("../ext.xml")) {
+            final Xocument xoc = new Xocument(item);
+            return new RtGithub(
+                xoc.xpath("/ext/github/login/text()").get(0),
+                xoc.xpath("/ext/github/password/text()").get(0)
+            );
         }
-    }
-
-    /**
-     * Roles.
-     * @param type Type to apply
-     * @return Assumption
-     */
-    public AeType type(final String type) {
-        return new AeType(this.xml, type);
-    }
-
-    /**
-     * Roles.
-     * @param roles List of roles
-     * @return Assumption
-     */
-    public AeRoles roles(final String... roles) {
-        return new AeRoles(
-            this.project, this.xml, roles
-        );
     }
 
 }

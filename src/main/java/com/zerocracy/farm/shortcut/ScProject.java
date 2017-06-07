@@ -14,56 +14,59 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.farm.reactive;
+package com.zerocracy.farm.shortcut;
 
-import com.jcabi.xml.XML;
+import com.zerocracy.jstk.Farm;
+import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.Stakeholder;
-import groovy.lang.Binding;
-import groovy.lang.GroovyShell;
+import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
-import org.cactoos.Input;
-import org.cactoos.io.InputAsBytes;
-import org.cactoos.text.BytesAsText;
-import org.cactoos.text.FormattedText;
+import lombok.EqualsAndHashCode;
 
 /**
- * Stakeholder in Groovy.
+ * Project that understands shortcuts.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.10
+ * @since 0.11
  */
-public final class StkGroovy implements Stakeholder {
+@EqualsAndHashCode(of = "origin")
+final class ScProject implements Project {
 
     /**
-     * Input.
+     * Origin project.
      */
-    private final Input input;
+    private final Project origin;
+
+    /**
+     * Farm.
+     */
+    private final Farm farm;
 
     /**
      * Ctor.
-     * @param src Input
+     * @param pkt Project
+     * @param frm Farm
      */
-    public StkGroovy(final Input src) {
-        this.input = src;
+    ScProject(final Project pkt, final Farm frm) {
+        this.origin = pkt;
+        this.farm = frm;
     }
 
     @Override
-    public void process(final Project project, final XML claim)
-        throws IOException {
-        final Binding binding = new Binding();
-        binding.setVariable("p", project);
-        binding.setVariable("x", claim);
-        final GroovyShell shell = new GroovyShell(binding);
-        shell.evaluate(
-            new FormattedText(
-                "%s\n\nexec(p, x)\n",
-                new BytesAsText(
-                    new InputAsBytes(this.input)
-                ).asString()
-            ).asString()
-        );
+    public String toString() {
+        return this.origin.toString();
+    }
+
+    @Override
+    public Item acq(final String file) throws IOException {
+        final Item item;
+        if (file.startsWith("../")) {
+            item = new Pmo(this.farm).acq(file.substring(3));
+        } else {
+            item = this.origin.acq(file);
+        }
+        return item;
     }
 
 }

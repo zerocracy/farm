@@ -14,27 +14,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.radars.slack;
+package com.zerocracy.ext;
 
-import com.ullink.slack.simpleslackapi.SlackSession;
-import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
-import com.zerocracy.ThrowableToEmail;
-import com.zerocracy.jstk.Farm;
+import com.jcabi.aspects.Cacheable;
+import com.jcabi.dynamo.Credentials;
+import com.jcabi.dynamo.Region;
+import com.jcabi.dynamo.retry.ReRegion;
 import java.io.IOException;
 import java.util.Properties;
-import org.cactoos.func.FuncWithCallback;
-import org.cactoos.func.UncheckedFunc;
+import org.cactoos.Scalar;
 
 /**
- * Mailed if exception.
+ * DynamoDB server connector.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.11
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @since 0.7
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public final class ReMailed implements Reaction<SlackMessagePosted> {
+public final class ExtDynamo implements Scalar<Region> {
 
     /**
      * Properties.
@@ -42,30 +39,31 @@ public final class ReMailed implements Reaction<SlackMessagePosted> {
     private final Properties props;
 
     /**
-     * Reaction.
+     * Ctor.
+     * @throws IOException If fails
      */
-    private final Reaction<SlackMessagePosted> origin;
+    public ExtDynamo() throws IOException {
+        this(new ExtProperties().asValue());
+    }
 
     /**
      * Ctor.
      * @param pps Properties
-     * @param tgt Target
      */
-    public ReMailed(final Properties pps,
-        final Reaction<SlackMessagePosted> tgt) {
+    public ExtDynamo(final Properties pps) {
         this.props = pps;
-        this.origin = tgt;
     }
 
-    @Override
-    public boolean react(final Farm farm, final SlackMessagePosted event,
-        final SlackSession session) throws IOException {
-        return new UncheckedFunc<>(
-            new FuncWithCallback<Boolean, Boolean>(
-                input -> this.origin.react(farm, event, session),
-                new ThrowableToEmail()
+    @Cacheable(forever = true)
+    public Region asValue() {
+        return new ReRegion(
+            new Region.Simple(
+                new Credentials.Simple(
+                    this.props.getProperty("dynamo.key"),
+                    this.props.getProperty("dynamo.secret")
+                )
             )
-        ).apply(true);
+        );
     }
 
 }

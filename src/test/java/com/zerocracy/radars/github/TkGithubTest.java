@@ -16,7 +16,6 @@
  */
 package com.zerocracy.radars.github;
 
-import com.jcabi.github.mock.MkGithub;
 import com.zerocracy.jstk.fake.FkFarm;
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
@@ -29,12 +28,12 @@ import org.takes.rq.RqFake;
 import org.takes.rq.RqWithBody;
 
 /**
- * Test case for {@link GhookRadar}.
+ * Test case for {@link TkGithub}.
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.7
  */
-public final class GhookRadarTest {
+public final class TkGithubTest {
 
     /**
      * TkGhook can parse JSON.
@@ -42,9 +41,8 @@ public final class GhookRadarTest {
      */
     @Test
     public void parsesJson() throws Exception {
-        final Take take = new GhookRadar(
+        final Take take = new TkGithub(
             new FkFarm(),
-            new MkGithub(),
             (farm, github, event) -> "nothing"
         );
         MatcherAssert.assertThat(

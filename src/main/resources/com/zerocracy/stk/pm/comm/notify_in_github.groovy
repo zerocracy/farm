@@ -24,14 +24,16 @@ import com.jcabi.github.Coordinates
 import com.jcabi.github.Issue
 import com.jcabi.github.Repo
 import com.jcabi.github.Smarts
+import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
+import com.zerocracy.ext.ExtGithub
 import com.zerocracy.radars.github.GhTube
 
-assume.type('Notify in GitHub').exact()
+new Assume(project, xml).type('Notify in GitHub').exact()
 
 ClaimIn claim = new ClaimIn(xml)
 String[] parts = claim.token().split(';')
-Repo repo = github.repos().get(
+Repo repo = new ExtGithub(project).asValue().repos().get(
   new Coordinates.Simple(parts[1])
 )
 Issue issue = safe(

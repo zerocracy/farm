@@ -29,7 +29,7 @@ import lombok.EqualsAndHashCode;
  * @version $Id$
  * @since 0.1
  * @todo #43:30min At the moment this pool of items will never be
- *  cleaned. They will get into the pool but will never be removed.
+ *  cleaned. They will asValue into the pool but will never be removed.
  *  There has to be some mechanism to implement that cache
  *  cleaning. Otherwise, we'll hit out-of-memory, sooner or later.
  */

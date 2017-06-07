@@ -21,10 +21,9 @@ import com.jcabi.github.Comment;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.SoftException;
 import java.io.IOException;
-import java.io.PrintStream;
-import java.nio.charset.StandardCharsets;
-import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang3.StringUtils;
+import org.cactoos.text.BytesAsText;
+import org.cactoos.text.ThrowableAsBytes;
 
 /**
  * Safe Reaction on GitHub comment.
@@ -59,23 +58,21 @@ public final class ReSafe implements Response {
             comment.issue().comments().post(ex.getLocalizedMessage());
             // @checkstyle IllegalCatchCheck (1 line)
         } catch (final Throwable ex) {
-            try (final ByteArrayOutputStream baos =
-                new ByteArrayOutputStream()) {
-                ex.printStackTrace(new PrintStream(baos));
-                comment.issue().comments().post(
-                    String.join(
-                        "",
-                        "There is an unrecoverable failure on my side.",
-                        " Please, submit it",
-                        " [here](https://github.com/zerocracy/datum):\n\n```\n",
-                        StringUtils.abbreviate(
-                            baos.toString(StandardCharsets.UTF_8),
-                            Tv.THOUSAND
-                        ),
-                        "\n```"
-                    )
-                );
-            }
+            comment.issue().comments().post(
+                String.join(
+                    "",
+                    "There is an unrecoverable failure on my side.",
+                    " Please, submit it",
+                    " [here](https://github.com/zerocracy/datum):\n\n```\n",
+                    StringUtils.abbreviate(
+                        new BytesAsText(
+                            new ThrowableAsBytes(ex)
+                        ).asString(),
+                        Tv.THOUSAND
+                    ),
+                    "\n```"
+                )
+            );
             throw new IOException(ex);
         }
         return done;

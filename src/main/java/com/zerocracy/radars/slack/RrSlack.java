@@ -17,9 +17,6 @@
 package com.zerocracy.radars.slack;
 
 import com.jcabi.aspects.Async;
-import com.jcabi.http.request.JdkRequest;
-import com.jcabi.http.response.JsonResponse;
-import com.jcabi.http.response.RestResponse;
 import com.jcabi.log.Logger;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackChannelJoined;
@@ -27,19 +24,13 @@ import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.ullink.slack.simpleslackapi.impl.SlackSessionFactory;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.pmo.Bots;
-import com.zerocracy.radars.Radar;
+import com.zerocracy.ext.ExtProperties;
+import com.zerocracy.ext.ExtSlack;
 import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
-import org.takes.Request;
-import org.takes.Response;
-import org.takes.Take;
-import org.takes.rq.RqHref;
-import org.takes.rs.RsWithHeader;
-import org.takes.rs.RsWithStatus;
 
 /**
  * Slack listening radar.
@@ -49,17 +40,12 @@ import org.takes.rs.RsWithStatus;
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-public final class SlackRadar implements Radar, Take {
+public final class RrSlack implements AutoCloseable {
 
     /**
      * Farm.
      */
     private final Farm farm;
-
-    /**
-     * Properties.
-     */
-    private final Properties props;
 
     /**
      * Reaction on post.
@@ -79,16 +65,48 @@ public final class SlackRadar implements Radar, Take {
     /**
      * Ctor.
      * @param frm Farm
-     * @param pps Properties
+     * @throws IOException If fails
+     */
+    public RrSlack(final Farm frm) throws IOException {
+        this(frm, new ExtProperties().asValue());
+    }
+
+    /**
+     * Ctor.
+     * @param frm Farm
+     * @param props Properties
+     */
+    public RrSlack(final Farm frm, final Properties props) {
+        this(
+            frm,
+            new ExtSlack().asValue(),
+            new ReMailed(
+                props,
+                new ReSafe(
+                    new ReLogged<>(
+                        new ReNotMine(
+                            new ReIfDirect(
+                                new ReProfile(),
+                                new ReIfAddressed(
+                                    new ReProject()
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        );
+    }
+
+    /**
+     * Ctor.
+     * @param frm Farm
      * @param map Map of sessions
      * @param ptd Reaction on post
-     * @checkstyle ParameterNumberCheck (5 lines)
      */
-    public SlackRadar(final Farm frm, final Properties pps,
-        final Map<String, SlackSession> map,
+    RrSlack(final Farm frm, final Map<String, SlackSession> map,
         final Reaction<SlackMessagePosted> ptd) {
         this.farm = frm;
-        this.props = pps;
         this.posted = ptd;
         this.joined = new ReLogged<>(
             new ReInvite()
@@ -96,65 +114,12 @@ public final class SlackRadar implements Radar, Take {
         this.sessions = map;
     }
 
-    @Override
-    public void start() throws IOException {
-        this.refresh();
-    }
-
-    @Override
-    public void close() throws IOException {
-        for (final SlackSession session : this.sessions.values()) {
-            session.disconnect();
-        }
-    }
-
-    @Override
-    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-    public Response act(final Request req) throws IOException {
-        final Bots bots = new Bots(this.farm).bootstrap();
-        final String team = bots.register(
-            new JdkRequest("https://slack.com/api/oauth.access")
-                .uri()
-                .queryParam(
-                    "client_id",
-                    this.props.getProperty("slack.client_id")
-                )
-                .queryParam(
-                    "client_secret",
-                    this.props.getProperty("slack.client_secret")
-                )
-                .queryParam(
-                    "code",
-                    new RqHref.Base(req).href()
-                        .param("code").iterator().next()
-                )
-                .back()
-                .fetch()
-                .as(RestResponse.class)
-                .assertStatus(HttpURLConnection.HTTP_OK)
-                .as(JsonResponse.class)
-                .json()
-                .readObject()
-        );
-        this.refresh();
-        return new RsWithStatus(
-            new RsWithHeader(
-                "Location",
-                String.format(
-                    "https://%s.slack.com/messages/@0crat/details/",
-                    team
-                )
-            ),
-            HttpURLConnection.HTTP_SEE_OTHER
-        );
-    }
-
     /**
      * Refresh all connections for all bots.
      * @throws IOException If fails
      */
     @Async
-    private void refresh() throws IOException {
+    public void refresh() throws IOException {
         final Bots bots = new Bots(this.farm).bootstrap();
         final Collection<String> tokens = new HashSet<>(0);
         for (final Map.Entry<String, String> bot : bots.tokens()) {
@@ -168,6 +133,13 @@ public final class SlackRadar implements Radar, Take {
             if (!tokens.contains(bid)) {
                 this.sessions.remove(bid);
             }
+        }
+    }
+
+    @Override
+    public void close() throws IOException {
+        for (final SlackSession session : this.sessions.values()) {
+            session.disconnect();
         }
     }
 

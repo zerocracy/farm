@@ -17,8 +17,11 @@
 package com.zerocracy.stk
 
 import com.zerocracy.pm.ClaimIn
+import com.zerocracy.ext.ExtProperties
 
 assume.type('Version').exact()
+
+props = new ExtProperties().asValue()
 
 new ClaimIn(xml).reply(
   "My version is `${version}`, rev.`${revision}`, built on ${date}"

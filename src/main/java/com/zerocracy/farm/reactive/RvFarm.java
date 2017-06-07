@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import lombok.EqualsAndHashCode;
@@ -55,6 +56,15 @@ public final class RvFarm implements Farm {
      * Service.
      */
     private final ExecutorService service;
+
+    /**
+     * Ctor.
+     * @param farm Original farm
+     * @param bgd Stakeholders
+     */
+    public RvFarm(final Farm farm, final Brigade bgd) {
+        this(farm, bgd, Executors.newSingleThreadExecutor());
+    }
 
     /**
      * Ctor.

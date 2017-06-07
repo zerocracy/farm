@@ -22,7 +22,6 @@ import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collection;
 
 /**
  * Brigade of stakeholders.
@@ -36,7 +35,7 @@ public final class Brigade {
     /**
      * Full list.
      */
-    private final Collection<Stakeholder> list;
+    private final Iterable<Stakeholder> list;
 
     /**
      * Ctor.
@@ -50,7 +49,7 @@ public final class Brigade {
      * Ctor.
      * @param lst List of stakeholders
      */
-    public Brigade(final Collection<Stakeholder> lst) {
+    public Brigade(final Iterable<Stakeholder> lst) {
         this.list = lst;
     }
 

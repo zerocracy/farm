@@ -28,6 +28,7 @@ import com.jcabi.email.stamp.StRecipient;
 import com.jcabi.email.stamp.StSender;
 import com.jcabi.email.stamp.StSubject;
 import com.jcabi.email.wire.SMTP;
+import com.zerocracy.ext.ExtProperties;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.Arrays;
@@ -69,11 +70,12 @@ import org.takes.tk.TkWrap;
 public final class TkApp extends TkWrap {
 
     /**
-     * Ctor, for tests mostly.
+     * Ctor.
+     * @param forks Additional forks
      * @throws IOException If fails
      */
-    TkApp() throws IOException {
-        this(new Properties());
+    public TkApp(final FkRegex... forks) throws IOException {
+        this(new ExtProperties().asValue(), forks);
     }
 
     /**

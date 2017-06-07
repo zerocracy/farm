@@ -14,21 +14,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pmo
+package com.zerocracy.ext;
 
-import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pmo.Catalog
+import com.jcabi.aspects.Cacheable;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+import org.cactoos.Scalar;
+import org.cactoos.io.ResourceAsInput;
 
-assume.type('Set parent project').exact()
-assume.roles('PO').exist()
+/**
+ * Properties.
+ *
+ * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @version $Id$
+ * @since 0.11
+ */
+public final class ExtProperties implements Scalar<Properties> {
 
-ClaimIn claim = new ClaimIn(xml)
-String child = claim.param('child')
-String parent = claim.param('parent')
-new Catalog(project).parent(child, parent)
-claim.reply(
-  String.format(
-    'Done, project `%s` is a child of `%s`.',
-    child, parent
-  )
-).postTo(project)
+    @Override
+    @Cacheable(forever = true)
+    public Properties asValue() throws IOException {
+        final Properties props = new Properties();
+        try (final InputStream input =
+            new ResourceAsInput("main.properties").stream()) {
+            props.load(input);
+        }
+        return props;
+    }
+
+}

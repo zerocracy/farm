@@ -14,21 +14,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pmo
+package com.zerocracy.bundles.notify_in_github
 
-import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pmo.Catalog
+import com.jcabi.github.Comment
+import com.jcabi.github.Coordinates
+import com.zerocracy.ext.ExtGithub
+import com.zerocracy.jstk.Project
 
-assume.type('Set parent project').exact()
-assume.roles('PO').exist()
-
-ClaimIn claim = new ClaimIn(xml)
-String child = claim.param('child')
-String parent = claim.param('parent')
-new Catalog(project).parent(child, parent)
-claim.reply(
-  String.format(
-    'Done, project `%s` is a child of `%s`.',
-    child, parent
-  )
-).postTo(project)
+def exec(Project project) {
+  def github = new ExtGithub(project).asValue()
+  def repo = github.repos().get(new Coordinates.Simple('test/test'))
+  def issue = repo.issues().get(1)
+  assert 'hi' == new Comment.Smart(
+    issue.comments().iterate(new Date()).iterator().next()
+  ).body()
+}

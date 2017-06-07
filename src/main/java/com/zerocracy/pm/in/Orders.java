@@ -146,7 +146,7 @@ public final class Orders {
         if (!this.assigned(job)) {
             throw new SoftException(
                 String.format(
-                    "Job `%s` is not assigned, can't get performer", job
+                    "Job `%s` is not assigned, can't asValue performer", job
                 )
             );
         }

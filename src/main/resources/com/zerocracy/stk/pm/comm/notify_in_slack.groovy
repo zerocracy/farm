@@ -20,12 +20,13 @@ import com.jcabi.log.Logger
 import com.ullink.slack.simpleslackapi.SlackChannel
 import com.ullink.slack.simpleslackapi.SlackSession
 import com.zerocracy.pm.ClaimIn
+import com.zerocracy.ext.ExtSlack
 
 assume.type('Notify in Slack').exact()
 
 ClaimIn claim = new ClaimIn(xml)
 String[] parts = claim.token().split(';')
-SlackSession session = this.session(parts[1])
+SlackSession session = session(parts[1])
 String message = claim.param('message').replaceAll(
   '\\[([^]]+)]\\(([^)]+)\\)', '<$2|$1>'
 )
@@ -61,8 +62,8 @@ if (parts.length > 3 && 'direct' == parts[3]) {
   }
 }
 
-SlackSession session(String channel) {
-  for (SlackSession session : sessions.values()) {
+static SlackSession session(String channel) {
+  for (SlackSession session : new ExtSlack().asValue().values()) {
     if (belongsTo(session, channel)) {
       return session
     }

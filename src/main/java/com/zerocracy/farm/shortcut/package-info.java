@@ -14,21 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pmo
 
-import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pmo.Catalog
-
-assume.type('Set parent project').exact()
-assume.roles('PO').exist()
-
-ClaimIn claim = new ClaimIn(xml)
-String child = claim.param('child')
-String parent = claim.param('parent')
-new Catalog(project).parent(child, parent)
-claim.reply(
-  String.format(
-    'Done, project `%s` is a child of `%s`.',
-    child, parent
-  )
-).postTo(project)
+/**
+ * Farm with shortcuts.
+ *
+ * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @version $Id$
+ * @since 0.11
+ */
+package com.zerocracy.farm.shortcut;
