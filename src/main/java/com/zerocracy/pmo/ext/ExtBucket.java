@@ -14,33 +14,55 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.ext;
+package com.zerocracy.pmo.ext;
 
 import com.jcabi.aspects.Cacheable;
+import com.jcabi.s3.Bucket;
+import com.jcabi.s3.Region;
+import com.jcabi.s3.retry.ReRegion;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Properties;
 import org.cactoos.Scalar;
-import org.cactoos.io.ResourceAsInput;
 
 /**
- * Properties.
+ * S3 Bucket.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.11
  */
-public final class ExtProperties implements Scalar<Properties> {
+public final class ExtBucket implements Scalar<Bucket> {
+
+    /**
+     * Properties.
+     */
+    private final Properties props;
+
+    /**
+     * Ctor.
+     * @throws IOException If fails
+     */
+    public ExtBucket() throws IOException {
+        this(new ExtProperties().asValue());
+    }
+
+    /**
+     * Ctor.
+     * @param pps Properties
+     */
+    public ExtBucket(final Properties pps) {
+        this.props = pps;
+    }
 
     @Override
     @Cacheable(forever = true)
-    public Properties asValue() throws IOException {
-        final Properties props = new Properties();
-        try (final InputStream input =
-            new ResourceAsInput("main.properties").stream()) {
-            props.load(input);
-        }
-        return props;
+    public Bucket asValue() {
+        return new ReRegion(
+            new Region.Simple(
+                this.props.getProperty("s3.key"),
+                this.props.getProperty("s3.secret")
+            )
+        ).bucket(this.props.getProperty("s3.bucket"));
     }
 
 }

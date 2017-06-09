@@ -17,15 +17,14 @@
 package com.zerocracy.bundles.notify_in_github
 
 import com.jcabi.github.Repos
-import com.zerocracy.ext.ExtGithub
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimOut
+import com.zerocracy.pmo.ext.ExtGithub
 
 def exec(Project project) {
   def github = new ExtGithub(project).asValue()
-  def repo = github.repos().create(new Repos.RepoCreate("test/test", false))
+  def repo = github.repos().create(new Repos.RepoCreate("test", false))
   def issue = repo.issues().create("hello, world", "")
-  println 'hello'
   new ClaimOut()
     .type("hello")
     .token("github;${repo.coordinates()};${issue.number()}")

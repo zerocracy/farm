@@ -30,10 +30,6 @@ import org.junit.Test;
  */
 public final class BotsTest {
 
-    /**
-     * Register a new bot.
-     * @throws Exception If some problem inside
-     */
     @Test
     public void registersBot() throws Exception {
         final Bots bots = new Bots(new FkProject()).bootstrap();

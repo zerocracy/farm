@@ -29,10 +29,6 @@ import org.junit.Test;
  */
 public final class ClaimsTest {
 
-    /**
-     * Adds and removes claims.
-     * @throws Exception If some problem inside
-     */
     @Test
     public void addsAndRemovesClaims() throws Exception {
         try (final Claims claims = new Claims(new FkProject()).lock()) {

@@ -22,7 +22,7 @@ import com.ullink.slack.simpleslackapi.SlackChannel
 import com.ullink.slack.simpleslackapi.SlackSession
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.ext.ExtSlack
+import com.zerocracy.pmo.ext.ExtSlack
 
 def exec(Project project, XML xml) {
   assume.type('Notify in Slack').exact()

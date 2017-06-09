@@ -29,10 +29,6 @@ import org.junit.Test;
  */
 public final class WbsTest {
 
-    /**
-     * Prints WBS.
-     * @throws Exception If some problem inside
-     */
     @Test
     public void printsWbs() throws Exception {
         final Wbs wbs = new Wbs(new FkProject()).bootstrap();
@@ -44,10 +40,6 @@ public final class WbsTest {
         );
     }
 
-    /**
-     * Adds and removes jobs.
-     * @throws Exception If some problem inside
-     */
     @Test
     public void addsAndRemovesJobs() throws Exception {
         final Wbs wbs = new Wbs(new FkProject()).bootstrap();

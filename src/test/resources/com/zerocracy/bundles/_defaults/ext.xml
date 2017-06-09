@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ext xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/zerocracy/datum/0.23/xsd/pmo/ext.xsd">
+    <system id="github">
+        <prop id="login">test</prop>
+        <prop id="password">test</prop>
+    </system>
+</ext>

@@ -36,10 +36,6 @@ import org.junit.Test;
  */
 public final class S3FarmTest {
 
-    /**
-     * S3Farm can find a project.
-     * @throws Exception If some problem inside
-     */
     @Test
     public void findsProject() throws Exception {
         final Bucket bucket = new FkBucket(
@@ -62,10 +58,6 @@ public final class S3FarmTest {
         );
     }
 
-    /**
-     * S3Farm can make projects safe.
-     * @throws Exception If some problem inside
-     */
     @Test
     public void makesProjectsSafe() throws Exception {
         final Bucket bucket = new FkBucket(

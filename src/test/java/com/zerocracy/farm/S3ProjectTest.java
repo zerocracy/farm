@@ -36,10 +36,6 @@ import org.xembly.Directives;
  */
 public final class S3ProjectTest {
 
-    /**
-     * S3Project can modify.
-     * @throws Exception If some problem inside
-     */
     @Test
     public void modifiesItems() throws Exception {
         final Bucket bucket = new FkBucket(
@@ -57,10 +53,6 @@ public final class S3ProjectTest {
         );
     }
 
-    /**
-     * S3Project can modify from two entry points.
-     * @throws Exception If some problem inside
-     */
     @Test
     public void modifiesItemsTwoEntryPoints() throws Exception {
         final Bucket bucket = new FkBucket(

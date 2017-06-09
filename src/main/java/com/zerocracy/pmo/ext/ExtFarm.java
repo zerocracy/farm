@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.ext;
+package com.zerocracy.pmo.ext;
 
 import com.jcabi.aspects.Cacheable;
 import com.jcabi.log.VerboseRunnable;
@@ -24,7 +24,6 @@ import com.zerocracy.farm.StkSafe;
 import com.zerocracy.farm.reactive.Brigade;
 import com.zerocracy.farm.reactive.RvFarm;
 import com.zerocracy.farm.reactive.StkGroovy;
-import com.zerocracy.farm.shortcut.ScFarm;
 import com.zerocracy.farm.sync.SyncFarm;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
@@ -32,15 +31,16 @@ import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.jstk.fake.FkFarm;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.TreeSet;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.regex.Pattern;
 import org.cactoos.Scalar;
 import org.cactoos.func.FuncAsRunnable;
 import org.cactoos.func.FuncWithCallback;
+import org.cactoos.func.IoCheckedFunc;
 import org.cactoos.func.ProcAsFunc;
 import org.cactoos.func.RunnableAsFunc;
-import org.cactoos.func.UncheckedFunc;
 import org.cactoos.io.ResourceAsInput;
 import org.cactoos.list.TransformedIterable;
 import org.reflections.Reflections;
@@ -80,21 +80,19 @@ public final class ExtFarm implements Scalar<Farm> {
     public Farm asValue() throws IOException {
         final ThreadFactory factory = new VerboseThreads();
         final Properties props = new ExtProperties().asValue();
-        return new ScFarm(
-            new RvFarm(
-                new SyncFarm(this.origin),
-                new Brigade(ExtFarm.stakeholders()),
-                Executors.newSingleThreadExecutor(
-                    rnb -> factory.newThread(
-                        new VerboseRunnable(
-                            new FuncAsRunnable(
-                                new FuncWithCallback<>(
-                                    new RunnableAsFunc<>(rnb),
-                                    new ThrowableToEmail(props)
-                                )
-                            ),
-                            true, true
-                        )
+        return new RvFarm(
+            new SyncFarm(this.origin),
+            new Brigade(ExtFarm.stakeholders()),
+            Executors.newSingleThreadExecutor(
+                rnb -> factory.newThread(
+                    new VerboseRunnable(
+                        new FuncAsRunnable(
+                            new FuncWithCallback<>(
+                                new RunnableAsFunc<>(rnb),
+                                new ThrowableToEmail(props)
+                            )
+                        ),
+                        true, true
                     )
                 )
             )
@@ -103,17 +101,17 @@ public final class ExtFarm implements Scalar<Farm> {
 
     public static Iterable<Stakeholder> stakeholders() {
         return new TransformedIterable<>(
-            new Reflections(
-                "com.zerocracy.stk", new ResourcesScanner()
-            ).getResources(Pattern.compile(".*\\.groovy")),
+            new TreeSet<>(
+                new Reflections(
+                    "com.zerocracy.stk", new ResourcesScanner()
+                ).getResources(Pattern.compile(".*\\.groovy"))
+            ),
             path -> new StkSafe(
-                (project, xml) -> new UncheckedFunc<>(
+                (project, xml) -> new IoCheckedFunc<>(
                     new FuncWithCallback<Project, Boolean>(
                         new ProcAsFunc<>(
                             pkt -> new StkGroovy(
-                                new ResourceAsInput(
-                                    String.format("/%s", path)
-                                )
+                                new ResourceAsInput(path)
                             ).process(pkt, xml)
                         ),
                         new ThrowableToEmail()

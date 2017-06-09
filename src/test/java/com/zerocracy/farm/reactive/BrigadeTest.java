@@ -42,10 +42,6 @@ import org.junit.Test;
  */
 public final class BrigadeTest {
 
-    /**
-     * Brigade can parse Groovy.
-     * @throws Exception If some problem inside
-     */
     @Test
     public void parsesGroovy() throws Exception {
         final Path path = Files.createTempDirectory("");
@@ -85,10 +81,6 @@ public final class BrigadeTest {
         }
     }
 
-    /**
-     * Brigade can parse Groovy script from resources.
-     * @throws Exception If some problem inside
-     */
     @Test
     public void parsesGroovyScript() throws Exception {
         final Project project = new FkProject();

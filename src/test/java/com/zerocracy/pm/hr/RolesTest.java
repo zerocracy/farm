@@ -29,10 +29,6 @@ import org.junit.Test;
  */
 public final class RolesTest {
 
-    /**
-     * Prints them.
-     * @throws Exception If some problem inside
-     */
     @Test
     public void printsRoles() throws Exception {
         final Roles roles = new Roles(new FkProject()).bootstrap();
@@ -45,10 +41,6 @@ public final class RolesTest {
         );
     }
 
-    /**
-     * Adds and removes roles.
-     * @throws Exception If some problem inside
-     */
     @Test
     public void addsAndRemovesRoles() throws Exception {
         final Roles roles = new Roles(new FkProject()).bootstrap();
@@ -70,10 +62,6 @@ public final class RolesTest {
         );
     }
 
-    /**
-     * Finds users by role.
-     * @throws Exception If some problem inside
-     */
     @Test
     public void findsUsersByRole() throws Exception {
         final Roles roles = new Roles(new FkProject()).bootstrap();

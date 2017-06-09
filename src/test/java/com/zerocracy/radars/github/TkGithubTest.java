@@ -35,10 +35,6 @@ import org.takes.rq.RqWithBody;
  */
 public final class TkGithubTest {
 
-    /**
-     * TkGhook can parse JSON.
-     * @throws Exception If some problem inside
-     */
     @Test
     public void parsesJson() throws Exception {
         final Take take = new TkGithub(

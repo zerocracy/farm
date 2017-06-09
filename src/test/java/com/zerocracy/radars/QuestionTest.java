@@ -30,10 +30,6 @@ import org.junit.Test;
  */
 public final class QuestionTest {
 
-    /**
-     * Parses valid text.
-     * @throws Exception If some problem inside
-     */
     @Test
     public void parsesValidText() throws Exception {
         final Question question = new Question(
@@ -56,10 +52,6 @@ public final class QuestionTest {
         );
     }
 
-    /**
-     * Parses invalid text and builds help.
-     * @throws Exception If some problem inside
-     */
     @Test
     public void buildsHelp() throws Exception {
         final Question question = new Question(
@@ -78,10 +70,6 @@ public final class QuestionTest {
         );
     }
 
-    /**
-     * Parses invalid text and builds help.
-     * @throws Exception If some problem inside
-     */
     @Test
     public void buildsHelpOnInvalidCommand() throws Exception {
         final Question question = new Question(
@@ -100,11 +88,7 @@ public final class QuestionTest {
         );
     }
 
-    /**
-     * Test many links.
-     * @throws Exception If some problem inside
-     * @checkstyle NestedForDepthCheck (150 lines)
-     */
+    // @checkstyle NestedForDepthCheck (150 lines)
     @Test
     @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     public void parsesManyValidTexts() throws Exception {

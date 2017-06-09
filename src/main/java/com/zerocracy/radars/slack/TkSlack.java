@@ -21,7 +21,7 @@ import com.jcabi.http.response.JsonResponse;
 import com.jcabi.http.response.RestResponse;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.pmo.Bots;
-import com.zerocracy.ext.ExtProperties;
+import com.zerocracy.pmo.ext.ExtProperties;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.Properties;

@@ -27,7 +27,7 @@ import com.jcabi.email.stamp.StSender;
 import com.jcabi.email.stamp.StSubject;
 import com.jcabi.email.wire.SMTP;
 import com.jcabi.log.Logger;
-import com.zerocracy.ext.ExtProperties;
+import com.zerocracy.pmo.ext.ExtProperties;
 import java.io.IOException;
 import java.util.Properties;
 import org.cactoos.Func;
@@ -70,11 +70,7 @@ public final class ThrowableToEmail implements Func<Throwable, Boolean> {
     public Boolean apply(final Throwable error) throws Exception {
         final String port = this.props.getProperty("smtp.port");
         if (!port.matches("[0-9]+")) {
-            Logger.warn(
-                this, "Won't mail %s, we're testing: %s",
-                error.getClass().getCanonicalName(),
-                error.getLocalizedMessage()
-            );
+            Logger.warn(this, "%s", error.getLocalizedMessage());
             return true;
         }
         final Postman postman = new Postman.Default(

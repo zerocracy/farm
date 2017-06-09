@@ -35,10 +35,6 @@ import org.junit.Test;
  */
 public final class RvProjectTest {
 
-    /**
-     * ReactiveProject can close claims.
-     * @throws Exception If some problem inside
-     */
     @Test
     public void closesClaims() throws Exception {
         final AtomicBoolean done = new AtomicBoolean();

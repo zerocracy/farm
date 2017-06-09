@@ -14,45 +14,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.farm.shortcut;
+package com.zerocracy.pmo.ext;
 
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Project;
-import java.io.IOException;
-import lombok.EqualsAndHashCode;
-import org.cactoos.list.TransformedIterable;
+import com.jcabi.aspects.Cacheable;
+import com.ullink.slack.simpleslackapi.SlackSession;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import org.cactoos.Scalar;
 
 /**
- * Farm with shortcuts.
+ * Slack sessions.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.11
  */
-@EqualsAndHashCode(of = "origin")
-public final class ScFarm implements Farm {
+public final class ExtSlack implements Scalar<Map<String, SlackSession>> {
 
     /**
-     * Original farm.
+     * Sessions.
      */
-    private final Farm origin;
+    private final Map<String, SlackSession> map;
 
     /**
      * Ctor.
-     * @param farm Original farm
      */
-    public ScFarm(final Farm farm) {
-        this.origin = farm;
+    public ExtSlack() {
+        this.map = new ConcurrentHashMap<>(0);
     }
 
     @Override
-    public Iterable<Project> find(final String query) throws IOException {
-        synchronized (this.origin) {
-            return new TransformedIterable<>(
-                this.origin.find(query),
-                pkt -> new ScProject(pkt, this)
-            );
-        }
+    @Cacheable(forever = true)
+    public Map<String, SlackSession> asValue() {
+        return this.map;
     }
 
 }

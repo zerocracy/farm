@@ -27,10 +27,6 @@ import org.junit.Test;
  */
 public final class OrdersTest {
 
-    /**
-     * Assigns a performer and resigns.
-     * @throws Exception If some problem inside
-     */
     @Test
     public void assignsAndResigns() throws Exception {
         final Orders orders = new Orders(new FkProject()).bootstrap();

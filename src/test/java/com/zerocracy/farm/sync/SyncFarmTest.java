@@ -41,10 +41,6 @@ import org.junit.Test;
  */
 public final class SyncFarmTest {
 
-    /**
-     * SyncFarm can make projects thread safe.
-     * @throws Exception If some problem inside
-     */
     @Test
     @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     public void makesProjectsThreadSafe() throws Exception {

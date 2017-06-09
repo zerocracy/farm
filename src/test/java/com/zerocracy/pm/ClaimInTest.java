@@ -32,10 +32,6 @@ import org.xembly.Xembler;
  */
 public final class ClaimInTest {
 
-    /**
-     * Reads parts of XML.
-     * @throws Exception If some problem inside
-     */
     @Test
     public void readsParts() throws Exception {
         final ClaimIn claim = new ClaimIn(
@@ -49,10 +45,6 @@ public final class ClaimInTest {
         );
     }
 
-    /**
-     * Builds ClaimOut.
-     * @throws Exception If some problem inside
-     */
     @Test
     public void buildsClaimOut() throws Exception {
         final ClaimIn claim = new ClaimIn(

@@ -30,10 +30,6 @@ import org.junit.Test;
  */
 public final class ClaimOutTest {
 
-    /**
-     * Chains them.
-     * @throws Exception If some problem inside
-     */
     @Test
     public void chainsThem() throws Exception {
         try (final Claims claims = new Claims(new FkProject()).lock()) {

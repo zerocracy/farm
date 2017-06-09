@@ -35,10 +35,6 @@ import org.junit.Test;
  */
 public final class ReQuestionTest {
 
-    /**
-     * ReQuestion can parse question.
-     * @throws Exception If some problem inside
-     */
     @Test
     public void parsesQuestion() throws Exception {
         final String uid = "jeff";

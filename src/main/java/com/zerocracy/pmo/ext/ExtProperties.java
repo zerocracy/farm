@@ -14,39 +14,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.ext;
+package com.zerocracy.pmo.ext;
 
 import com.jcabi.aspects.Cacheable;
-import com.ullink.slack.simpleslackapi.SlackSession;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 import org.cactoos.Scalar;
+import org.cactoos.io.ResourceAsInput;
 
 /**
- * Slack sessions.
+ * Properties.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.11
  */
-public final class ExtSlack implements Scalar<Map<String, SlackSession>> {
-
-    /**
-     * Sessions.
-     */
-    private final Map<String, SlackSession> map;
-
-    /**
-     * Ctor.
-     */
-    public ExtSlack() {
-        this.map = new ConcurrentHashMap<>(0);
-    }
+public final class ExtProperties implements Scalar<Properties> {
 
     @Override
     @Cacheable(forever = true)
-    public Map<String, SlackSession> asValue() {
-        return this.map;
+    public Properties asValue() throws IOException {
+        final Properties props = new Properties();
+        try (final InputStream input =
+            new ResourceAsInput("main.properties").stream()) {
+            props.load(input);
+        }
+        return props;
     }
 
 }

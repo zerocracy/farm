@@ -16,8 +16,8 @@
  */
 package com.zerocracy;
 
-import com.zerocracy.ext.ExtBucket;
-import com.zerocracy.ext.ExtFarm;
+import com.zerocracy.pmo.ext.ExtBucket;
+import com.zerocracy.pmo.ext.ExtFarm;
 import com.zerocracy.farm.S3Farm;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.radars.github.TkGithub;

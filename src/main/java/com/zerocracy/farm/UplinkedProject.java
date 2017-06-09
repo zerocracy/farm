@@ -23,9 +23,9 @@ import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import lombok.EqualsAndHashCode;
+import org.cactoos.list.ArrayAsIterable;
+import org.cactoos.list.IterableAsList;
 
 /**
  * Project that can fetch files from PMO.
@@ -41,7 +41,13 @@ final class UplinkedProject implements Project {
      * Files to fetch from PMO.
      */
     private static final Collection<String> FILES = new HashSet<>(
-        Stream.of("catalog.xml", "people.xml").collect(Collectors.toList())
+        new IterableAsList<>(
+            new ArrayAsIterable<>(
+                "ext.xml",
+                "catalog.xml",
+                "people.xml"
+            )
+        )
     );
 
     /**

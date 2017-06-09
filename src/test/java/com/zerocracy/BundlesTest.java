@@ -16,23 +16,24 @@
  */
 package com.zerocracy;
 
-import com.zerocracy.ext.ExtFarm;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.ClaimOut;
+import com.zerocracy.pm.Claims;
+import com.zerocracy.pmo.ext.ExtFarm;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import java.io.IOException;
-import java.net.URL;
 import java.util.Collection;
+import org.cactoos.Input;
 import org.cactoos.func.AlwaysTrueFunc;
 import org.cactoos.io.InputAsBytes;
 import org.cactoos.io.LengthOfInput;
 import org.cactoos.io.PathAsOutput;
 import org.cactoos.io.ResourceAsInput;
 import org.cactoos.io.TeeInput;
-import org.cactoos.io.UrlAsInput;
+import org.cactoos.list.EndlessIterable;
 import org.cactoos.list.IterableAsBoolean;
 import org.cactoos.list.IterableAsList;
 import org.cactoos.list.TransformedIterable;
@@ -53,9 +54,6 @@ import org.reflections.scanners.ResourcesScanner;
 @RunWith(Parameterized.class)
 public final class BundlesTest {
 
-    /**
-     * Name of the bundle.
-     */
     @Parameterized.Parameter
     public String bundle;
 
@@ -79,20 +77,31 @@ public final class BundlesTest {
         final Project project = farm.find("id=12345").iterator().next();
         new IterableAsBoolean<>(
             new Reflections(
-                this.bundle.replace("/", "."), new ResourcesScanner()
+                this.bundle.replace("/", "."),
+                new ResourcesScanner()
             ).getResources(p -> p.endsWith(".xml")),
             new AlwaysTrueFunc<>(
                 path -> {
-                    final String file =
-                        path.substring(path.lastIndexOf('/') + 1);
-                    try (final Item item = project.acq(file)) {
-                        new LengthOfInput(
-                            new TeeInput(
-                                new ResourceAsInput(path),
-                                new PathAsOutput(item.path())
-                            )
-                        ).asValue();
-                    }
+                    BundlesTest.save(
+                        project,
+                        new ResourceAsInput(path),
+                        path.substring(path.lastIndexOf('/') + 1)
+                    );
+                }
+            )
+        ).asValue();
+        new IterableAsBoolean<>(
+            new Reflections(
+                "com.zerocracy.bundles._defaults",
+                new ResourcesScanner()
+            ).getResources(p -> p.endsWith(".xml")),
+            new AlwaysTrueFunc<>(
+                path -> {
+                    BundlesTest.save(
+                        project,
+                        new ResourceAsInput(path),
+                        path.substring(path.lastIndexOf('/') + 1)
+                    );
                 }
             )
         ).asValue();
@@ -101,33 +110,55 @@ public final class BundlesTest {
             project
         );
         new ClaimOut().type("ping").postTo(project);
+        new IterableAsBoolean<>(
+            new EndlessIterable<>(1),
+            x -> {
+                try (final Claims claims = new Claims(project).lock()) {
+                    return !claims.iterate().isEmpty();
+                }
+            }
+        ).asValue();
         BundlesTest.script(
             String.format("%s/_after.groovy", this.bundle),
             project
         );
     }
 
+    private static void save(final Project project, final Input input,
+        final String file) throws IOException {
+        try (final Item item
+            = project.acq(file.substring(file.lastIndexOf('/') + 1))) {
+            new LengthOfInput(
+                new TeeInput(
+                    input,
+                    new PathAsOutput(item.path())
+                )
+            ).asValue();
+        }
+    }
+
     private static void script(final String script, final Project project)
         throws IOException {
-        final URL res = BundlesTest.class.getResource(script);
-        if (res == null) {
-            System.out.println("script not found: " + script);
-        }
-        if (res != null) {
-            final Binding binding = new Binding();
-            binding.setVariable("p", project);
-            final GroovyShell shell = new GroovyShell(binding);
-            shell.evaluate(
-                new FormattedText(
-                    "%s\n\nexec(p)\n",
-                    new BytesAsText(
-                        new InputAsBytes(
-                            new UrlAsInput(res)
+        final Binding binding = new Binding();
+        binding.setVariable("p", project);
+        final GroovyShell shell = new GroovyShell(binding);
+        shell.evaluate(
+            new FormattedText(
+                "%s\n\nexec(p)\n",
+                new BytesAsText(
+                    new InputAsBytes(
+                        new ResourceAsInput(
+                            script,
+                            String.join(
+                                "\n",
+                                "import com.zerocracy.jstk.Project",
+                                "def exec(Project p) { /* none */ }"
+                            )
                         )
-                    ).asString()
+                    )
                 ).asString()
-            );
-        }
+            ).asString()
+        );
     }
 
 }

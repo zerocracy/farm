@@ -42,14 +42,10 @@ import org.junit.Test;
  * @version $Id$
  * @since 0.11
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @checkstyle ExecutableStatementCountCheck (200 lines)
  */
 public final class SpinTest {
 
-    /**
-     * Spin can work.
-     * @throws Exception If some problem inside
-     * @checkstyle ExecutableStatementCountCheck (200 lines)
-     */
     @Test
     public void processes() throws Exception {
         final Bucket bucket = new FkBucket(

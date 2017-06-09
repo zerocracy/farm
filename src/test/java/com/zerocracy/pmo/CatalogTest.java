@@ -36,10 +36,6 @@ import org.xembly.Directives;
  */
 public final class CatalogTest {
 
-    /**
-     * Adds and finds projects.
-     * @throws Exception If some problem inside
-     */
     @Test
     public void addsAndFindsProjects() throws Exception {
         final Project project = new FkProject();
@@ -71,12 +67,6 @@ public final class CatalogTest {
         }
     }
 
-    /**
-     * Get an item.
-     * @param project Project
-     * @return Item
-     * @throws IOException If fails
-     */
     private static Item item(final Project project) throws IOException {
         return project.acq("catalog.xml");
     }

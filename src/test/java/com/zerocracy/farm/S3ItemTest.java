@@ -36,10 +36,6 @@ import org.xembly.Directives;
  */
 public final class S3ItemTest {
 
-    /**
-     * S3Item can modify.
-     * @throws Exception If some problem inside
-     */
     @Test
     public void modifiesFiles() throws Exception {
         final Ocket ocket = new FkOcket(
@@ -64,10 +60,6 @@ public final class S3ItemTest {
         }
     }
 
-    /**
-     * S3Item can refresh from server.
-     * @throws Exception If some problem inside
-     */
     @Test
     public void refreshesFilesOnServer() throws Exception {
         final FkOcket ocket = new FkOcket(

@@ -33,10 +33,6 @@ import org.xembly.Directives;
  */
 public final class S3ItemITCase {
 
-    /**
-     * S3Item can modify a real S3 item.
-     * @throws Exception If some problem inside
-     */
     @Test
     public void modifiesFiles() throws Exception {
         final Ocket ocket = new Region.Simple(

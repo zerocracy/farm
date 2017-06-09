@@ -28,7 +28,7 @@ import com.jcabi.email.stamp.StRecipient;
 import com.jcabi.email.stamp.StSender;
 import com.jcabi.email.stamp.StSubject;
 import com.jcabi.email.wire.SMTP;
-import com.zerocracy.ext.ExtProperties;
+import com.zerocracy.pmo.ext.ExtProperties;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.Arrays;

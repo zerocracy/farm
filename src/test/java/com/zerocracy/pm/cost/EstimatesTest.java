@@ -30,10 +30,6 @@ import org.junit.Test;
  */
 public final class EstimatesTest {
 
-    /**
-     * Estimates them.
-     * @throws Exception If some problem inside
-     */
     @Test
     public void estimatesJobs() throws Exception {
         final Estimates estimates = new Estimates(new FkProject()).bootstrap();

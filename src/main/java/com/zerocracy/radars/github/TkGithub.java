@@ -18,9 +18,9 @@ package com.zerocracy.radars.github;
 
 import com.jcabi.dynamo.Region;
 import com.zerocracy.jstk.Farm;
-import com.zerocracy.ext.ExtDynamo;
-import com.zerocracy.ext.ExtGithub;
-import com.zerocracy.ext.ExtProperties;
+import com.zerocracy.pmo.ext.ExtDynamo;
+import com.zerocracy.pmo.ext.ExtGithub;
+import com.zerocracy.pmo.ext.ExtProperties;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;

@@ -14,30 +14,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.ext;
+package com.zerocracy.pmo;
 
-import com.jcabi.aspects.Cacheable;
-import com.jcabi.github.Github;
-import com.jcabi.github.RtGithub;
 import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
-import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
-import org.cactoos.Scalar;
 
 /**
- * GitHub server connector.
+ * External data.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.7
+ * @since 0.11
  */
-public final class ExtGithub implements Scalar<Github> {
+public final class Ext {
 
     /**
-     * PMO.
+     * Project.
      */
     private final Project pmo;
 
@@ -45,7 +40,7 @@ public final class ExtGithub implements Scalar<Github> {
      * Ctor.
      * @param farm Farm
      */
-    public ExtGithub(final Farm farm) {
+    public Ext(final Farm farm) {
         this(new Pmo(farm));
     }
 
@@ -53,20 +48,47 @@ public final class ExtGithub implements Scalar<Github> {
      * Ctor.
      * @param pkt Project
      */
-    public ExtGithub(final Project pkt) {
+    public Ext(final Project pkt) {
         this.pmo = pkt;
     }
 
-    @Override
-    @Cacheable(forever = true)
-    public Github asValue() throws IOException {
-        try (final Item item = this.pmo.acq("../ext.xml")) {
-            final Xocument xoc = new Xocument(item);
-            return new RtGithub(
-                xoc.xpath("/ext/github/login/text()").get(0),
-                xoc.xpath("/ext/github/password/text()").get(0)
-            );
+    /**
+     * Bootstrap it.
+     * @return Itself
+     * @throws IOException If fails
+     */
+    public Ext bootstrap() throws IOException {
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).bootstrap("pmo/ext");
         }
+        return this;
+    }
+
+    /**
+     * Get one property.
+     * @param system The server
+     * @param prop Connectivity parameter
+     * @throws IOException If fails
+     */
+    public String prop(final String system, final String prop)
+        throws IOException {
+        try (final Item item = this.item()) {
+            return new Xocument(item.path()).xpath(
+                String.format(
+                    "/ext/system[@id='%s']/prop[@id='%s']/text()",
+                    system, prop
+                )
+            ).get(0);
+        }
+    }
+
+    /**
+     * The item.
+     * @return Item
+     * @throws IOException If fails
+     */
+    private Item item() throws IOException {
+        return this.pmo.acq("ext.xml");
     }
 
 }

@@ -14,59 +14,63 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.farm.shortcut;
+package com.zerocracy.pmo.ext;
 
+import com.jcabi.aspects.Cacheable;
+import com.jcabi.github.Github;
+import com.jcabi.github.RtGithub;
+import com.jcabi.github.mock.MkGithub;
 import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
+import com.zerocracy.pmo.Ext;
 import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
 import lombok.EqualsAndHashCode;
+import org.cactoos.Scalar;
 
 /**
- * Project that understands shortcuts.
+ * GitHub server connector.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.11
+ * @since 0.7
  */
-@EqualsAndHashCode(of = "origin")
-final class ScProject implements Project {
+@EqualsAndHashCode(of = "pmo")
+public final class ExtGithub implements Scalar<Github> {
 
     /**
-     * Origin project.
+     * PMO.
      */
-    private final Project origin;
+    private final Project pmo;
 
     /**
-     * Farm.
+     * Ctor.
+     * @param farm Farm
      */
-    private final Farm farm;
+    public ExtGithub(final Farm farm) {
+        this(new Pmo(farm));
+    }
 
     /**
      * Ctor.
      * @param pkt Project
-     * @param frm Farm
      */
-    ScProject(final Project pkt, final Farm frm) {
-        this.origin = pkt;
-        this.farm = frm;
+    public ExtGithub(final Project pkt) {
+        this.pmo = pkt;
     }
 
     @Override
-    public String toString() {
-        return this.origin.toString();
-    }
-
-    @Override
-    public Item acq(final String file) throws IOException {
-        final Item item;
-        if (file.startsWith("../")) {
-            item = new Pmo(this.farm).acq(file.substring(3));
+    @Cacheable(forever = true)
+    public Github asValue() throws IOException {
+        final Ext ext = new Ext(this.pmo).bootstrap();
+        final String login = ext.prop("github", "login");
+        final Github github;
+        if ("test".equals(login)) {
+            github = new MkGithub(login);
         } else {
-            item = this.origin.acq(file);
+            github = new RtGithub(login, ext.prop("github", "password"));
         }
-        return item;
+        return github;
     }
 
 }

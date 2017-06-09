@@ -37,23 +37,9 @@ import org.takes.rq.RqFake;
 @RunWith(Parameterized.class)
 public final class PingTest {
 
-    /**
-     * The URL to ping.
-     */
-    private final transient String url;
+    @Parameterized.Parameter
+    public String url;
 
-    /**
-     * Ctor.
-     * @param addr The URL to test
-     */
-    public PingTest(final String addr) {
-        this.url = addr;
-    }
-
-    /**
-     * Params for JUnit.
-     * @return Parameters
-     */
     @Parameterized.Parameters
     public static Collection<Object[]> params() {
         return Arrays.asList(
@@ -67,10 +53,6 @@ public final class PingTest {
         );
     }
 
-    /**
-     * App can render the URL.
-     * @throws Exception If some problem inside
-     */
     @Test
     public void rendersAllPossibleUrls() throws Exception {
         final Take take = new TkApp();

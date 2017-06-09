@@ -30,10 +30,6 @@ import org.junit.Test;
  */
 public final class ReOnInvitationITCase {
 
-    /**
-     * Accepts all invitations in Github.
-     * @throws Exception If some problem inside
-     */
     @Test
     @Ignore
     public void acceptsThemAll() throws Exception {

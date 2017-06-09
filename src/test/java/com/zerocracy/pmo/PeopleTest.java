@@ -32,10 +32,6 @@ import org.junit.Test;
  */
 public final class PeopleTest {
 
-    /**
-     * Adds and finds people.
-     * @throws Exception If some problem inside
-     */
     @Test
     public void addsAndFindsPeople() throws Exception {
         final People people = new People(new FkProject()).bootstrap();
@@ -54,10 +50,6 @@ public final class PeopleTest {
         );
     }
 
-    /**
-     * Set rate of the user.
-     * @throws Exception If some problem inside
-     */
     @Test
     public void setsUserRate() throws Exception {
         final People people = new People(new FkProject()).bootstrap();
@@ -70,10 +62,6 @@ public final class PeopleTest {
         );
     }
 
-    /**
-     * Set wallet of the user.
-     * @throws Exception If some problem inside
-     */
     @Test
     public void setsUserWallet() throws Exception {
         final People people = new People(new FkProject()).bootstrap();
@@ -90,10 +78,6 @@ public final class PeopleTest {
         );
     }
 
-    /**
-     * Adds and finds user skills.
-     * @throws Exception If some problem inside
-     */
     @Test
     public void setsAndFetchesUserSkills() throws Exception {
         final People people = new People(new FkProject()).bootstrap();
@@ -108,10 +92,6 @@ public final class PeopleTest {
         );
     }
 
-    /**
-     * Upgrades XSD version automatically.
-     * @throws Exception If some problem inside
-     */
     @Test
     public void upgradesXsdAutomatically() throws Exception {
         final Project project = new FkProject();
@@ -129,10 +109,6 @@ public final class PeopleTest {
         people.skill("karato90", "java9");
     }
 
-    /**
-     * Invites a friend.
-     * @throws Exception If some problem inside
-     */
     @Test
     public void invitesFriend() throws Exception {
         final People people = new People(new FkProject()).bootstrap();

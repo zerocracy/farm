@@ -19,7 +19,7 @@ package com.zerocracy.farm;
 import com.jcabi.aspects.Tv;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
-import com.zerocracy.ext.ExtProperties;
+import com.zerocracy.pmo.ext.ExtProperties;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.SoftException;
 import com.zerocracy.jstk.Stakeholder;
