@@ -17,12 +17,13 @@
 package com.zerocracy.stk.pmo.profile.wallet
 
 import com.jcabi.xml.XML
+import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.People
 
 def exec(Project project, XML xml) {
-  assume.type('Set wallet').exact()
+  new Assume(project, xml).type('Set wallet')
   People people = new People(project).bootstrap()
   ClaimIn claim = new ClaimIn(xml)
   String login = claim.param('person')

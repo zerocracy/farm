@@ -17,14 +17,15 @@
 package com.zerocracy.stk.pm
 
 import com.jcabi.xml.XML
+import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.hr.Roles
 import com.zerocracy.pm.scope.Wbs
 
 def exec(Project project, XML xml) {
-  assume.type('Bootstrap').exact()
-  assume.roles('PO').exist()
+  new Assume(project, xml).type('Bootstrap')
+  new Assume(project, xml).roles('PO')
   new Wbs(project).bootstrap()
   Roles roles = new Roles(project).bootstrap()
   String role = 'PO'

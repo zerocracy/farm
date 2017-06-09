@@ -17,13 +17,14 @@
 package com.zerocracy.stk.pmo.links
 
 import com.jcabi.xml.XML
+import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Catalog
 
 def exec(Project project, XML xml) {
-  assume.type('Remove link').exact()
-  assume.roles('PO').exist()
+  new Assume(project, xml).type('Remove link')
+  new Assume(project, xml).roles('PO')
   ClaimIn claim = new ClaimIn(xml)
   String pid = claim.param('pmo')
   String rel = claim.param('rel')

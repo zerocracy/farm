@@ -17,12 +17,13 @@
 package com.zerocracy.stk.pmo.profile.rate
 
 import com.jcabi.xml.XML
+import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.People
 
 def exec(Project project, XML xml) {
-  assume.type('Show rate').exact()
+  new Assume(project, xml).type('Show rate')
   People people = new People(project).bootstrap()
   ClaimIn claim = new ClaimIn(xml)
   String login = claim.param('person')

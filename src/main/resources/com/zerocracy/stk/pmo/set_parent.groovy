@@ -17,13 +17,14 @@
 package com.zerocracy.stk.pmo
 
 import com.jcabi.xml.XML
+import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Catalog
 
 def exec(Project project, XML xml) {
-  assume.type('Set parent project').exact()
-  assume.roles('PO').exist()
+  new Assume(project, xml).type('Set parent project')
+  new Assume(project, xml).roles('PO')
   ClaimIn claim = new ClaimIn(xml)
   String child = claim.param('child')
   String parent = claim.param('parent')

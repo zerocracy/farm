@@ -26,6 +26,7 @@ import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.concurrent.TimeUnit;
 import org.cactoos.Input;
 import org.cactoos.func.AlwaysTrueFunc;
 import org.cactoos.io.InputAsBytes;
@@ -113,6 +114,7 @@ public final class BundlesTest {
         new IterableAsBoolean<>(
             new EndlessIterable<>(1),
             x -> {
+                TimeUnit.SECONDS.sleep(1L);
                 try (final Claims claims = new Claims(project).lock()) {
                     return !claims.iterate().isEmpty();
                 }

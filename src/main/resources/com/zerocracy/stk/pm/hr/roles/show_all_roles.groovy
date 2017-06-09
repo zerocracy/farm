@@ -17,13 +17,14 @@
 package com.zerocracy.stk.pm.hr.roles
 
 import com.jcabi.xml.XML
+import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.hr.Roles
 
 def exec(Project project, XML xml) {
-  assume.type('Show roles').exact()
-  assume.roles('ARC', 'PO').exist()
+  new Assume(project, xml).type('Show roles')
+  new Assume(project, xml).roles('ARC', 'PO').exist()
   ClaimIn claim = new ClaimIn(xml)
   claim.reply(
     String.format(

@@ -17,13 +17,14 @@
 package com.zerocracy.stk.pm.scope.wbs
 
 import com.jcabi.xml.XML
+import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.scope.Wbs
 
 def exec(Project project, XML xml) {
-  assume.type('Show WBS').exact()
-  assume.roles('PO').exist()
+  new Assume(project, xml).type('Show WBS')
+  new Assume(project, xml).roles('PO')
   ClaimIn claim = new ClaimIn(xml)
   claim.reply(
     String.format(

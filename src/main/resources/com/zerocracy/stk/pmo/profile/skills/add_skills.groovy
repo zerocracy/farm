@@ -18,13 +18,14 @@ package com.zerocracy.stk.pmo.profile.skills
 
 import com.jcabi.aspects.Tv
 import com.jcabi.xml.XML
+import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.jstk.SoftException
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.People
 
 def exec(Project project, XML xml) {
-  assume.type('Add skills').exact()
+  new Assume(project, xml).type('Add skills')
   People people = new People(project).bootstrap()
   ClaimIn claim = new ClaimIn(xml)
   String login = claim.param('person')

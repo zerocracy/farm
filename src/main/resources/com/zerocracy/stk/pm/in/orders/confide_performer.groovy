@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pm.in.orders
 
 import com.jcabi.xml.XML
+import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.hr.Roles
@@ -24,9 +25,9 @@ import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.scope.Wbs
 
 def exec(Project project, XML xml) {
-  assume.type('Ping').exact()
-  assume.notPmo()
-  Wbs wbs = new Wbs(project)
+  new Assume(project, xml).type('Ping')
+  new Assume(project, xml).notPmo()
+  Wbs wbs = new Wbs(project).bootstrap()
   Orders orders = new Orders(project)
   for (String job : wbs.iterate()) {
     if (!orders.assigned(job)) {

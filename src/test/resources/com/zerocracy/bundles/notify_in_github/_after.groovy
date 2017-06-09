@@ -25,7 +25,7 @@ def exec(Project project) {
   def github = new ExtGithub(project).asValue()
   def repo = github.repos().get(new Coordinates.Simple('test/test'))
   def issue = repo.issues().get(1)
-  assert 'hi' == new Comment.Smart(
+  assert 'Hey, what\'s up, how is it going?' == new Comment.Smart(
     issue.comments().iterate(new Date()).iterator().next()
   ).body()
 }

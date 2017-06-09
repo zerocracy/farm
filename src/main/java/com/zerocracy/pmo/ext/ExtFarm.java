@@ -20,6 +20,7 @@ import com.jcabi.aspects.Cacheable;
 import com.jcabi.log.VerboseRunnable;
 import com.jcabi.log.VerboseThreads;
 import com.zerocracy.ThrowableToEmail;
+import com.zerocracy.farm.MismatchException;
 import com.zerocracy.farm.StkSafe;
 import com.zerocracy.farm.reactive.Brigade;
 import com.zerocracy.farm.reactive.RvFarm;
@@ -111,10 +112,16 @@ public final class ExtFarm implements Scalar<Farm> {
                     new FuncWithCallback<Project, Boolean>(
                         new ProcAsFunc<>(
                             pkt -> new StkGroovy(
-                                new ResourceAsInput(path)
+                                new ResourceAsInput(path),
+                                path
                             ).process(pkt, xml)
                         ),
-                        new ThrowableToEmail()
+                        error -> {
+                            if (error instanceof MismatchException) {
+                                throw MismatchException.class.cast(error);
+                            }
+                            return new ThrowableToEmail().apply(error);
+                        }
                     )
                 ).apply(project)
             )

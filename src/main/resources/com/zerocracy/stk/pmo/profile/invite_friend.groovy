@@ -17,13 +17,14 @@
 package com.zerocracy.stk.pmo.profile
 
 import com.jcabi.xml.XML
+import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.jstk.SoftException
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.People
 
 def exec(Project project, XML xml) {
-  assume.type('Invite a friend').exact()
+  new Assume(project, xml).type('Invite a friend')
   ClaimIn claim = new ClaimIn(xml)
   String login = claim.param('login')
   People people = new People(project)

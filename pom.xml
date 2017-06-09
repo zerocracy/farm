@@ -292,6 +292,12 @@
                         <target>1.8</target>
                     </configuration>
                 </plugin>
+                <plugin>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <configuration>
+                        <parallel>none</parallel>
+                    </configuration>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>

@@ -19,15 +19,17 @@ package com.zerocracy.stk.pm.hr.roles
 import com.jcabi.http.Request
 import com.jcabi.http.response.RestResponse
 import com.jcabi.xml.XML
+import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
+import com.zerocracy.pmo.ext.ExtGithub
 
 def exec(Project project, XML xml) {
-  assume.type('Role was assigned').exact()
+  new Assume(project, xml).type('Role was assigned')
   ClaimIn claim = new ClaimIn(xml)
   String login = claim.param('login')
-  github.entry().uri()
+  new ExtGithub(project).asValue().entry().uri()
     .path('/user/following')
     .path(login)
     .back()

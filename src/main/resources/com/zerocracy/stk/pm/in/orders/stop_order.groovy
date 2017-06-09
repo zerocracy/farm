@@ -17,14 +17,14 @@
 package com.zerocracy.stk.pm.in.orders
 
 import com.jcabi.xml.XML
+import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.in.Orders
 
 def exec(Project project, XML xml) {
-  assume.type('Stop order').exact()
-  assume.roles('ARC', 'PO').exist()
-
+  new Assume(project, xml).type('Stop order')
+  new Assume(project, xml).roles('ARC', 'PO')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
   Orders orders = new Orders(project).bootstrap()

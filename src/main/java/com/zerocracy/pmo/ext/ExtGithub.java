@@ -26,7 +26,10 @@ import com.zerocracy.pmo.Ext;
 import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
 import lombok.EqualsAndHashCode;
+import org.cactoos.Func;
 import org.cactoos.Scalar;
+import org.cactoos.func.IoCheckedFunc;
+import org.cactoos.func.StickyFunc;
 
 /**
  * GitHub server connector.
@@ -37,6 +40,13 @@ import org.cactoos.Scalar;
  */
 @EqualsAndHashCode(of = "pmo")
 public final class ExtGithub implements Scalar<Github> {
+
+    /**
+     * Cached test repos.
+     */
+    private static final Func<String, Github> FAKES = new StickyFunc<>(
+        MkGithub::new
+    );
 
     /**
      * PMO.
@@ -66,7 +76,7 @@ public final class ExtGithub implements Scalar<Github> {
         final String login = ext.prop("github", "login");
         final Github github;
         if ("test".equals(login)) {
-            github = new MkGithub(login);
+            github = new IoCheckedFunc<>(ExtGithub.FAKES).apply(login);
         } else {
             github = new RtGithub(login, ext.prop("github", "password"));
         }

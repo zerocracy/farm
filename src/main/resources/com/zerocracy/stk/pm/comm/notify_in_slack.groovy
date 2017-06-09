@@ -20,13 +20,13 @@ import com.jcabi.log.Logger
 import com.jcabi.xml.XML
 import com.ullink.slack.simpleslackapi.SlackChannel
 import com.ullink.slack.simpleslackapi.SlackSession
+import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.ext.ExtSlack
 
 def exec(Project project, XML xml) {
-  assume.type('Notify in Slack').exact()
-
+  new Assume(project, xml).type('Notify in Slack')
   ClaimIn claim = new ClaimIn(xml)
   String[] parts = claim.token().split(';')
   SlackSession session = session(parts[1])

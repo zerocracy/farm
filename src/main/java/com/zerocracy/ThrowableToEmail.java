@@ -33,6 +33,7 @@ import java.util.Properties;
 import org.cactoos.Func;
 import org.cactoos.text.BytesAsText;
 import org.cactoos.text.ThrowableAsBytes;
+import org.cactoos.text.UncheckedText;
 
 /**
  * Func that mails the exception.
@@ -66,11 +67,10 @@ public final class ThrowableToEmail implements Func<Throwable, Boolean> {
     }
 
     @Override
-    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-    public Boolean apply(final Throwable error) throws Exception {
+    public Boolean apply(final Throwable error) throws IOException {
         final String port = this.props.getProperty("smtp.port");
         if (!port.matches("[0-9]+")) {
-            Logger.warn(this, "%s", error.getLocalizedMessage());
+            Logger.warn(this, "%[exception]s", error);
             return true;
         }
         final Postman postman = new Postman.Default(
@@ -86,6 +86,12 @@ public final class ThrowableToEmail implements Func<Throwable, Boolean> {
                 )
             )
         );
+        final String version = String.format(
+            "%s %s %s",
+            this.props.getProperty("build.version"),
+            this.props.getProperty("build.revision"),
+            this.props.getProperty("build.date")
+        );
         postman.send(
             new Envelope.MIME()
                 .with(new StSender("0crat <no-reply@0crat.com>"))
@@ -94,13 +100,13 @@ public final class ThrowableToEmail implements Func<Throwable, Boolean> {
                 .with(
                     new EnPlain(
                         String.format(
-                            "Hi,\n\n%s\n\n--\n0crat\n%s %s %s",
-                            new BytesAsText(
-                                new ThrowableAsBytes(error)
+                            "Hi,\n\n%s\n\n--\n0crat\n%s",
+                            new UncheckedText(
+                                new BytesAsText(
+                                    new ThrowableAsBytes(error)
+                                )
                             ).asString(),
-                            this.props.getProperty("build.version"),
-                            this.props.getProperty("build.revision"),
-                            this.props.getProperty("build.date")
+                            version
                         )
                     )
                 )
@@ -108,18 +114,18 @@ public final class ThrowableToEmail implements Func<Throwable, Boolean> {
                     new EnHTML(
                         String.format(
                             // @checkstyle LineLength (1 line)
-                            "<html><body><p>Hi,</p><p>There was a problem:</p><pre>%s</pre><p>--<br/>0crat<br/>%s %s %s</p></body></html>",
-                            new BytesAsText(
-                                new ThrowableAsBytes(error)
+                            "<html><body><p>Hi,</p><p>There was a problem:</p><pre>%s</pre><p>--<br/>0crat<br/>%s</p></body></html>",
+                            new UncheckedText(
+                                new BytesAsText(
+                                    new ThrowableAsBytes(error)
+                                )
                             ).asString(),
-                            this.props.getProperty("build.version"),
-                            this.props.getProperty("build.revision"),
-                            this.props.getProperty("build.date")
+                            version
                         )
                     )
                 )
         );
-        return true;
+        throw new IllegalStateException(error);
     }
 
 }

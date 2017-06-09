@@ -42,11 +42,26 @@ public final class StkGroovy implements Stakeholder {
     private final Input input;
 
     /**
+     * Label.
+     */
+    private final String label;
+
+    /**
      * Ctor.
      * @param src Input
      */
     public StkGroovy(final Input src) {
+        this(src, "script");
+    }
+
+    /**
+     * Ctor.
+     * @param src Input
+     * @param lbl Label
+     */
+    public StkGroovy(final Input src, final String lbl) {
         this.input = src;
+        this.label = lbl;
     }
 
     @Override
@@ -62,7 +77,8 @@ public final class StkGroovy implements Stakeholder {
                 new BytesAsText(
                     new InputAsBytes(this.input)
                 ).asString()
-            ).asString()
+            ).asString(),
+            this.label
         );
     }
 

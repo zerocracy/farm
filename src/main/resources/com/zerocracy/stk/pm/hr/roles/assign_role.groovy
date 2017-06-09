@@ -17,14 +17,15 @@
 package com.zerocracy.stk.pm.hr.roles
 
 import com.jcabi.xml.XML
+import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.hr.Roles
 
 def exec(Project project, XML xml) {
-  assume.type('Assign role').exact()
-  assume.roles('ARC', 'PO').exist()
+  new Assume(project, xml).type('Assign role')
+  new Assume(project, xml).roles('ARC', 'PO').exist()
   ClaimIn claim = new ClaimIn(xml)
   String login = claim.param('login')
   String role = claim.param('role')
