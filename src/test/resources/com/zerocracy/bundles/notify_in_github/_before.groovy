@@ -29,4 +29,8 @@ def exec(Project project) {
     .type("hello")
     .token("github;${repo.coordinates()};${issue.number()}")
     .postTo(project)
+  new ClaimOut()
+    .type("version")
+    .token("github;${repo.coordinates()};${issue.number()}")
+    .postTo(project)
 }
