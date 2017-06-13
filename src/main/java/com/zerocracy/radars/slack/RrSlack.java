@@ -24,13 +24,11 @@ import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.ullink.slack.simpleslackapi.impl.SlackSessionFactory;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.pmo.Bots;
-import com.zerocracy.pmo.ext.ExtProperties;
 import com.zerocracy.pmo.ext.ExtSlack;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * Slack listening radar.
@@ -65,23 +63,12 @@ public final class RrSlack implements AutoCloseable {
     /**
      * Ctor.
      * @param frm Farm
-     * @throws IOException If fails
      */
-    public RrSlack(final Farm frm) throws IOException {
-        this(frm, new ExtProperties().asValue());
-    }
-
-    /**
-     * Ctor.
-     * @param frm Farm
-     * @param props Properties
-     */
-    public RrSlack(final Farm frm, final Properties props) {
+    public RrSlack(final Farm frm) {
         this(
             frm,
             new ExtSlack().asValue(),
             new ReMailed(
-                props,
                 new ReSafe(
                     new ReLogged<>(
                         new ReNotMine(

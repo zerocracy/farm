@@ -33,7 +33,8 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.Arrays;
 import java.util.Properties;
-import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.cactoos.text.BytesAsText;
+import org.cactoos.text.ThrowableAsBytes;
 import org.takes.facets.fallback.FbChain;
 import org.takes.facets.fallback.FbLog4j;
 import org.takes.facets.fallback.FbStatus;
@@ -83,6 +84,7 @@ public final class TkApp extends TkWrap {
      * @param props Properties
      * @param forks Additional forks
      * @throws IOException If fails
+     * @checkstyle MethodLengthCheck (500 lines)
      */
     public TkApp(final Properties props, final FkRegex... forks)
         throws IOException {
@@ -182,7 +184,11 @@ public final class TkApp extends TkWrap {
                                     new EnPlain(
                                         String.format(
                                             "Hi,\n\n%s\n\n--\n0crat\n%s %s %s",
-                                            ExceptionUtils.getStackTrace(req.throwable()),
+                                            new BytesAsText(
+                                                new ThrowableAsBytes(
+                                                    req.throwable()
+                                                )
+                                            ).asString(),
                                             props.getProperty("build.version"),
                                             props.getProperty("build.revision"),
                                             props.getProperty("build.date")
@@ -193,7 +199,11 @@ public final class TkApp extends TkWrap {
                                     new EnHTML(
                                         String.format(
                                             "<html><body><p>Hi,</p><p>There was a problem:</p><pre>%s</pre><p>--<br/>0crat<br/>%s %s %s</p></body></html>",
-                                            ExceptionUtils.getStackTrace(req.throwable()),
+                                            new BytesAsText(
+                                                new ThrowableAsBytes(
+                                                    req.throwable()
+                                                )
+                                            ).asString(),
                                             props.getProperty("build.version"),
                                             props.getProperty("build.revision"),
                                             props.getProperty("build.date")
@@ -211,7 +221,11 @@ public final class TkApp extends TkWrap {
                                     TkApp.class.getResource("error.html.vm"),
                                     new RsVelocity.Pair(
                                         "error",
-                                        ExceptionUtils.getStackTrace(req.throwable())
+                                        new BytesAsText(
+                                            new ThrowableAsBytes(
+                                                req.throwable()
+                                            )
+                                        ).asString()
                                     ),
                                     new RsVelocity.Pair(
                                         "version",

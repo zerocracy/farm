@@ -21,7 +21,6 @@ import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.ThrowableToEmail;
 import com.zerocracy.jstk.Farm;
 import java.io.IOException;
-import java.util.Properties;
 import org.cactoos.func.FuncWithCallback;
 import org.cactoos.func.UncheckedFunc;
 
@@ -37,23 +36,15 @@ import org.cactoos.func.UncheckedFunc;
 public final class ReMailed implements Reaction<SlackMessagePosted> {
 
     /**
-     * Properties.
-     */
-    private final Properties props;
-
-    /**
      * Reaction.
      */
     private final Reaction<SlackMessagePosted> origin;
 
     /**
      * Ctor.
-     * @param pps Properties
      * @param tgt Target
      */
-    public ReMailed(final Properties pps,
-        final Reaction<SlackMessagePosted> tgt) {
-        this.props = pps;
+    public ReMailed(final Reaction<SlackMessagePosted> tgt) {
         this.origin = tgt;
     }
 

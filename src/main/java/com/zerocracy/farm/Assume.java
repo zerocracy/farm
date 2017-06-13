@@ -66,6 +66,7 @@ public final class Assume {
 
     /**
      * Equals.
+     * @param type The type to compare with
      * @throws MismatchException If doesn't match
      */
     public void type(final String type) throws MismatchException {
@@ -84,6 +85,7 @@ public final class Assume {
 
     /**
      * At least one role is present.
+     * @param roles The roles
      * @throws IOException If fails
      */
     public void roles(final String... roles) throws IOException {
@@ -125,6 +127,7 @@ public final class Assume {
 
     /**
      * Has one of that required roles.
+     * @param roles Roles
      * @return TRUE if he has
      * @throws IOException If fails
      */

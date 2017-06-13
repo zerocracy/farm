@@ -29,6 +29,10 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
+import org.cactoos.io.InputAsBytes;
+import org.cactoos.io.PathAsInput;
+import org.cactoos.text.BytesAsText;
+import org.cactoos.text.UncheckedText;
 import org.w3c.dom.Node;
 import org.xembly.Directive;
 import org.xembly.Directives;
@@ -40,6 +44,7 @@ import org.xembly.Xembler;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class Xocument {
 
@@ -79,14 +84,13 @@ public final class Xocument {
 
     @Override
     public String toString() {
-        try {
-            return new String(
-                Files.readAllBytes(this.file),
-                StandardCharsets.UTF_8
-            );
-        } catch (final IOException ex) {
-            throw new IllegalStateException(ex);
-        }
+        return new UncheckedText(
+            new BytesAsText(
+                new InputAsBytes(
+                    new PathAsInput(this.file)
+                )
+            )
+        ).asString();
     }
 
     /**
@@ -156,12 +160,7 @@ public final class Xocument {
      * @throws IOException If fails
      */
     public void modify(final Iterable<Directive> dirs) throws IOException {
-        final XML before = new XMLDocument(
-            new String(
-                Files.readAllBytes(this.file),
-                StandardCharsets.UTF_8
-            )
-        );
+        final XML before = new XMLDocument(this.toString());
         final Node node = before.node();
         new Xembler(dirs).applyQuietly(node);
         final String after = new StrictXML(

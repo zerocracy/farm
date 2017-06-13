@@ -16,7 +16,9 @@
  */
 package com.zerocracy.radars.github;
 
+import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.fake.FkFarm;
+import com.zerocracy.pmo.Ext;
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -32,14 +34,18 @@ import org.takes.rq.RqWithBody;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.7
+ * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class TkGithubTest {
 
     @Test
     public void parsesJson() throws Exception {
+        final Farm farm = new FkFarm();
+        final Ext ext = new Ext(farm).bootstrap();
+        ext.set("github", "login", "test");
         final Take take = new TkGithub(
-            new FkFarm(),
-            (farm, github, event) -> "nothing"
+            farm,
+            (frm, github, event) -> "nothing"
         );
         MatcherAssert.assertThat(
             take.act(

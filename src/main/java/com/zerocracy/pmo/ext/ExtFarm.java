@@ -53,7 +53,9 @@ import org.reflections.scanners.ResourcesScanner;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.11
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.ExcessiveImports")
 public final class ExtFarm implements Scalar<Farm> {
 
     /**
@@ -100,7 +102,11 @@ public final class ExtFarm implements Scalar<Farm> {
         );
     }
 
-    public static Iterable<Stakeholder> stakeholders() {
+    /**
+     * List of stakeholders.
+     * @return Stakeholders
+     */
+    private static Iterable<Stakeholder> stakeholders() {
         return new TransformedIterable<>(
             new TreeSet<>(
                 new Reflections(

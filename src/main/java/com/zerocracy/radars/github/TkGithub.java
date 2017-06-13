@@ -43,6 +43,7 @@ import org.takes.rs.RsWithStatus;
  * @version $Id$
  * @since 0.7
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @checkstyle ClassFanOutComplexityCheck (500 lines)
  */
 public final class TkGithub implements Take {
 

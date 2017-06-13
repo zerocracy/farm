@@ -21,6 +21,11 @@ import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
+import java.util.AbstractMap;
+import java.util.Map;
+import org.cactoos.list.TransformedIterable;
+import org.cactoos.map.IterableAsMap;
+import org.xembly.Directives;
 
 /**
  * External data.
@@ -68,9 +73,10 @@ public final class Ext {
      * Get one property.
      * @param system The server
      * @param prop Connectivity parameter
+     * @return The value
      * @throws IOException If fails
      */
-    public String prop(final String system, final String prop)
+    public String get(final String system, final String prop)
         throws IOException {
         try (final Item item = this.item()) {
             return new Xocument(item.path()).xpath(
@@ -80,6 +86,73 @@ public final class Ext {
                 )
             ).get(0);
         }
+    }
+
+    /**
+     * Get all properties of the system.
+     * @param system The server
+     * @return The props
+     * @throws IOException If fails
+     */
+    public Map<String, String> get(final String system) throws IOException {
+        try (final Item item = this.item()) {
+            return new IterableAsMap<>(
+                new TransformedIterable<>(
+                    new Xocument(item.path()).nodes(
+                        String.format(
+                            "/ext/system[@id='%s']/prop",
+                            system
+                        )
+                    ),
+                    xml -> new AbstractMap.SimpleEntry<>(
+                        xml.xpath("@id").get(0),
+                        xml.xpath("text()").get(0)
+                    )
+                )
+            );
+        }
+    }
+
+    /**
+     * Set one property.
+     * @param system The server
+     * @param prop Connectivity parameter
+     * @param value Value to set
+     * @return This
+     * @throws IOException If fails
+     */
+    public Ext set(final String system, final String prop,
+        final String value) throws IOException {
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                new Directives()
+                    .xpath(
+                        String.format(
+                            "/ext[not(system/@id='%s')]",
+                            system
+                        )
+                    )
+                    .add("system")
+                    .attr("id", system)
+                    .xpath(
+                        String.format(
+                            "/ext/system[@id='%s']/prop[@id='%s']",
+                            system, prop
+                        )
+                    )
+                    .remove()
+                    .xpath(
+                        String.format(
+                            "/ext/system[@id='%s']",
+                            system
+                        )
+                    )
+                    .add("prop")
+                    .attr("id", prop)
+                    .set(value)
+            );
+        }
+        return this;
     }
 
     /**

@@ -25,6 +25,7 @@ import com.zerocracy.jstk.Project;
 import com.zerocracy.pmo.Ext;
 import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
+import java.util.Map;
 import lombok.EqualsAndHashCode;
 import org.cactoos.Func;
 import org.cactoos.Scalar;
@@ -73,12 +74,13 @@ public final class ExtGithub implements Scalar<Github> {
     @Cacheable(forever = true)
     public Github asValue() throws IOException {
         final Ext ext = new Ext(this.pmo).bootstrap();
-        final String login = ext.prop("github", "login");
+        final Map<String, String> props = ext.get("github");
+        final String login = props.get("login");
         final Github github;
         if ("test".equals(login)) {
             github = new IoCheckedFunc<>(ExtGithub.FAKES).apply(login);
         } else {
-            github = new RtGithub(login, ext.prop("github", "password"));
+            github = new RtGithub(login, props.get("password"));
         }
         return github;
     }

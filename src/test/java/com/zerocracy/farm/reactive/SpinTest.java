@@ -43,6 +43,7 @@ import org.junit.Test;
  * @since 0.11
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @checkstyle ExecutableStatementCountCheck (200 lines)
+ * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class SpinTest {
 

@@ -14,20 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk
 
-import com.jcabi.xml.XML
-import com.zerocracy.pmo.ext.ExtProperties
-import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Project
-import com.zerocracy.pm.ClaimIn
-
-def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Version')
-  def props = new ExtProperties().asValue()
-  new ClaimIn(xml).reply(
-    """My version is `${props.getProperty('build.version')}`,
- rev.`${props.getProperty('build.revision')}`,
- built on ${props.getProperty('build.date')}"""
-  ).postTo(project)
-}
+/**
+ * Externals.
+ *
+ * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @version $Id$
+ * @since 0.11
+ */
+package com.zerocracy.pmo.ext;

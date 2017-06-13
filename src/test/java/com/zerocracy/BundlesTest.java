@@ -51,6 +51,10 @@ import org.reflections.scanners.ResourcesScanner;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.11
+ * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle JavadocVariableCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @checkstyle VisibilityModifierCheck (500 lines)
  */
 @RunWith(Parameterized.class)
 public final class BundlesTest {
@@ -66,7 +70,7 @@ public final class BundlesTest {
                     "com.zerocracy.bundles", new ResourcesScanner()
                 ).getResources(p -> p.endsWith("claims.xml")),
                 path -> new Object[]{
-                    path.substring(0, path.indexOf("/claims.xml"))
+                    path.substring(0, path.indexOf("/claims.xml")),
                 }
             )
         );
@@ -77,10 +81,7 @@ public final class BundlesTest {
         final Farm farm = new ExtFarm().asValue();
         final Project project = farm.find("id=12345").iterator().next();
         new IterableAsBoolean<>(
-            new Reflections(
-                this.bundle.replace("/", "."),
-                new ResourcesScanner()
-            ).getResources(p -> p.endsWith(".xml")),
+            BundlesTest.resources(this.bundle.replace("/", ".")),
             new AlwaysTrueFunc<>(
                 path -> {
                     BundlesTest.save(
@@ -92,10 +93,7 @@ public final class BundlesTest {
             )
         ).asValue();
         new IterableAsBoolean<>(
-            new Reflections(
-                "com.zerocracy.bundles._defaults",
-                new ResourcesScanner()
-            ).getResources(p -> p.endsWith(".xml")),
+            BundlesTest.resources("com.zerocracy.bundles._defaults"),
             new AlwaysTrueFunc<>(
                 path -> {
                     BundlesTest.save(
@@ -126,10 +124,17 @@ public final class BundlesTest {
         );
     }
 
+    private static Iterable<String> resources(final String pkg) {
+        return new Reflections(
+            pkg,
+            new ResourcesScanner()
+        ).getResources(p -> p.endsWith(".xml"));
+    }
+
     private static void save(final Project project, final Input input,
         final String file) throws IOException {
-        try (final Item item
-            = project.acq(file.substring(file.lastIndexOf('/') + 1))) {
+        try (final Item item =
+            project.acq(file.substring(file.lastIndexOf('/') + 1))) {
             new LengthOfInput(
                 new TeeInput(
                     input,
@@ -154,7 +159,7 @@ public final class BundlesTest {
                             String.join(
                                 "\n",
                                 "import com.zerocracy.jstk.Project",
-                                "def exec(Project p) { /* none */ }"
+                                "def exec(Project p) {}"
                             )
                         )
                     )

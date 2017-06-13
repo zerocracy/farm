@@ -33,6 +33,9 @@ import org.takes.rq.RqFake;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
+ * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle JavadocVariableCheck (500 lines)
+ * @checkstyle VisibilityModifierCheck (500 lines)
  */
 @RunWith(Parameterized.class)
 public final class PingTest {

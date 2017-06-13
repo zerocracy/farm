@@ -27,6 +27,7 @@ import org.junit.Test;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.10
+ * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class EstimatesTest {
 

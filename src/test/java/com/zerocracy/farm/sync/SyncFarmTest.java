@@ -29,6 +29,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import org.cactoos.list.IterableAsBoolean;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -38,6 +39,7 @@ import org.junit.Test;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.10
+ * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class SyncFarmTest {
 
@@ -71,12 +73,13 @@ public final class SyncFarmTest {
             );
         }
         latch.countDown();
-        for (final Future<Boolean> future : futures) {
-            MatcherAssert.assertThat(
-                future.get(),
-                Matchers.is(true)
-            );
-        }
+        MatcherAssert.assertThat(
+            new IterableAsBoolean<>(
+                futures,
+                Future::get
+            ).asValue(),
+            Matchers.is(true)
+        );
     }
 
 }

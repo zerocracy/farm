@@ -32,6 +32,7 @@ import org.junit.Test;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.11
+ * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class RvProjectTest {
 

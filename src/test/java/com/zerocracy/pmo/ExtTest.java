@@ -32,11 +32,12 @@ import org.junit.Test;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
+ * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class ExtTest {
 
     @Test
-    public void fetchedProps() throws Exception {
+    public void fetchesProps() throws Exception {
         final Project project = new FkProject();
         try (final Item item = project.acq("ext.xml")) {
             new LengthOfInput(
@@ -57,8 +58,22 @@ public final class ExtTest {
             ).asValue();
         }
         MatcherAssert.assertThat(
-            new Ext(project).bootstrap().prop("github", "login"),
+            new Ext(project).bootstrap().get("github", "login"),
             Matchers.equalTo("yegor256")
+        );
+    }
+
+    @Test
+    public void setsProps() throws Exception {
+        final String system = "slack";
+        final String prop = "username";
+        final String value = "jeff";
+        MatcherAssert.assertThat(
+            new Ext(new FkProject())
+                .bootstrap()
+                .set(system, prop, value)
+                .get(system, prop),
+            Matchers.equalTo(value)
         );
     }
 

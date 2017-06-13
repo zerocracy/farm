@@ -54,6 +54,7 @@ public final class ExtDynamo implements Scalar<Region> {
         this.props = pps;
     }
 
+    @Override
     @Cacheable(forever = true)
     public Region asValue() {
         return new ReRegion(
