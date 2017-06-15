@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.notify_in_github
+package com.zerocracy.bundles.notifies_in_github
 
 import com.jcabi.github.Repos
 import com.zerocracy.jstk.Project

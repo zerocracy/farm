@@ -16,13 +16,18 @@
  */
 package com.zerocracy.farm.reactive;
 
+import com.jcabi.log.VerboseRunnable;
+import com.zerocracy.ThrowableToEmail;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import java.io.Closeable;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import org.cactoos.func.FuncAsProc;
+import org.cactoos.func.RunnableWithFallback;
 
 /**
  * Spin that processes all claims in a project.
@@ -80,11 +85,16 @@ final class Spin implements Closeable {
     /**
      * Ping it.
      */
-    public void ping() {
+    public void ping() throws IOException {
         if (!this.alive.get() && !this.service.isShutdown()) {
             this.alive.set(true);
             this.service.submit(
-                new Spinner(this.project, this.brigade, this.alive)
+                new VerboseRunnable(
+                    new RunnableWithFallback(
+                        new Spinner(this.project, this.brigade, this.alive),
+                        new FuncAsProc<>(new ThrowableToEmail())
+                    )
+                )
             );
         }
     }

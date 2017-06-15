@@ -19,41 +19,16 @@ package com.zerocracy.stk.pm.in.orders
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
-import com.zerocracy.pm.ClaimOut
-import com.zerocracy.pm.hr.Roles
-import com.zerocracy.pm.in.Orders
-import com.zerocracy.pm.scope.Wbs
+import com.zerocracy.pm.ClaimIn
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Ping')
-  new Assume(project, xml).notPmo()
-  Wbs wbs = new Wbs(project).bootstrap()
-  Orders orders = new Orders(project).bootstrap()
-  for (String job : wbs.iterate()) {
-    if (!orders.assigned(job)) {
-      assign(project, job)
-    }
-  }
-}
-
-static void assign(Project project, String job) {
-  Roles roles = new Roles(project)
-  List<String> logins = roles.findByRole('DEV')
-  Collections.shuffle(logins)
-  if (!logins.empty) {
-    String login = logins[0]
-    new ClaimOut()
-      .type('Start order')
-      .token("job;${job}")
-      .param('job', job)
-      .param('login', login)
-      .postTo(project)
-    new ClaimOut()
-      .type('Performer was confided')
-      .token("job;${job}")
-      .param('login', login)
-      .param('job', job)
-      .param('reason', 'Because I love you')
-      .postTo(project)
-  }
+  new Assume(project, xml).type('Performer was confided')
+  ClaimIn claim = new ClaimIn(xml)
+  String reason = claim.param('reason')
+  claim.reply(
+    String.format(
+      'You got this job because of this: %s',
+      reason
+    )
+  ).postTo(project)
 }

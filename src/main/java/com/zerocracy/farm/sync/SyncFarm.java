@@ -16,13 +16,13 @@
  */
 package com.zerocracy.farm.sync;
 
-import com.google.common.collect.Iterables;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.EqualsAndHashCode;
+import org.cactoos.list.TransformedIterable;
 
 /**
  * Synchronized farm.
@@ -56,7 +56,7 @@ public final class SyncFarm implements Farm {
     @Override
     public Iterable<Project> find(final String query) throws IOException {
         synchronized (this.origin) {
-            return Iterables.transform(
+            return new TransformedIterable<>(
                 this.origin.find(query),
                 pkt -> new SyncProject(pkt, this.pool)
             );

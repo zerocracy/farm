@@ -29,11 +29,19 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
+import org.cactoos.Func;
+import org.cactoos.func.StickyFunc;
+import org.cactoos.func.UncheckedFunc;
 import org.cactoos.io.InputAsBytes;
+import org.cactoos.io.InputAsLSInput;
 import org.cactoos.io.PathAsInput;
+import org.cactoos.io.StickyInput;
+import org.cactoos.io.UrlAsInput;
 import org.cactoos.text.BytesAsText;
 import org.cactoos.text.UncheckedText;
 import org.w3c.dom.Node;
+import org.w3c.dom.ls.LSInput;
+import org.w3c.dom.ls.LSResourceResolver;
 import org.xembly.Directive;
 import org.xembly.Directives;
 import org.xembly.Xembler;
@@ -59,6 +67,31 @@ public final class Xocument {
     private static final XSL COMPRESS = XSLDocument.make(
         Xocument.class.getResource("compress.xsl")
     );
+
+    /**
+     * Locator of XSD resources.
+     */
+    private static final Func<String, LSInput> LOCATOR = new StickyFunc<>(
+        (Func<String, LSInput>) loc -> {
+            final String[] parts = loc.split(" ");
+            return new InputAsLSInput(
+                new StickyInput(new UrlAsInput(parts[3])),
+                parts[2], parts[3], parts[4]
+            );
+        }
+    );
+
+    /**
+     * Resolver.
+     */
+    private static final LSResourceResolver RESOLVER =
+        (type, namespace, pid, sid, base) ->
+            new UncheckedFunc<>(Xocument.LOCATOR).apply(
+                String.format(
+                    "%s %s %s %s %s",
+                    type, namespace, pid, sid, base
+                )
+            );
 
     /**
      * File.
@@ -139,7 +172,10 @@ public final class Xocument {
      * @throws IOException If fails
      */
     public List<String> xpath(final String xpath) throws IOException {
-        final XML xml = new StrictXML(new XMLDocument(this.file.toFile()));
+        final XML xml = new StrictXML(
+            new XMLDocument(this.file.toFile()),
+            Xocument.RESOLVER
+        );
         return xml.xpath(xpath);
     }
 
@@ -150,7 +186,10 @@ public final class Xocument {
      * @throws IOException If fails
      */
     public List<XML> nodes(final String xpath) throws IOException {
-        final XML xml = new StrictXML(new XMLDocument(this.file.toFile()));
+        final XML xml = new StrictXML(
+            new XMLDocument(this.file.toFile()),
+            Xocument.RESOLVER
+        );
         return xml.nodes(xpath);
     }
 
@@ -164,7 +203,8 @@ public final class Xocument {
         final Node node = before.node();
         new Xembler(dirs).applyQuietly(node);
         final String after = new StrictXML(
-            Xocument.COMPRESS.transform(new XMLDocument(node))
+            Xocument.COMPRESS.transform(new XMLDocument(node)),
+            Xocument.RESOLVER
         ).toString();
         if (!before.toString().equals(after)) {
             Files.write(this.file, after.getBytes(StandardCharsets.UTF_8));

@@ -23,8 +23,8 @@ import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import java.util.AbstractMap;
 import java.util.Map;
+import org.cactoos.list.IterableAsMap;
 import org.cactoos.list.TransformedIterable;
-import org.cactoos.map.IterableAsMap;
 import org.xembly.Directives;
 
 /**

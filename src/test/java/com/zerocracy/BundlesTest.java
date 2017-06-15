@@ -114,6 +114,7 @@ public final class BundlesTest {
             x -> {
                 TimeUnit.SECONDS.sleep(1L);
                 try (final Claims claims = new Claims(project).lock()) {
+//                    System.out.println(claims.iterate());
                     return !claims.iterate().isEmpty();
                 }
             }

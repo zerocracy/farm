@@ -78,7 +78,7 @@ final class SyncItem implements Item {
      * @throws InterruptedException If fails
      */
     public void acquire() throws InterruptedException {
-        if (!this.semaphore.tryAcquire((long) Tv.TEN, TimeUnit.SECONDS)) {
+        if (!this.semaphore.tryAcquire((long) Tv.TWENTY, TimeUnit.SECONDS)) {
             throw new IllegalStateException(
                 String.format("Failed to acquire %s", this.origin)
             );

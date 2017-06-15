@@ -14,18 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.notify_in_github
+package com.zerocracy.bundles.notifies_in_github
 
-import com.jcabi.github.Comment
-import com.jcabi.github.Coordinates
-import com.zerocracy.pmo.ext.ExtGithub
 import com.zerocracy.jstk.Project
+import com.zerocracy.pm.in.Orders
 
 def exec(Project project) {
-  def github = new ExtGithub(project).asValue()
-  def repo = github.repos().get(new Coordinates.Simple('test/test'))
-  def issue = repo.issues().get(1)
-  assert 'Hey, what\'s up, how is it going?' == new Comment.Smart(
-    issue.comments().iterate(new Date()).iterator().next()
-  ).body()
+  def orders = new Orders(project).bootstrap()
+  assert orders.performer('gh:test/test#1') == 'yegor256'
 }

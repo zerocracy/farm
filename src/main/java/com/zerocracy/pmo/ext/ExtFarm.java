@@ -38,7 +38,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.regex.Pattern;
 import org.cactoos.Scalar;
 import org.cactoos.func.FuncAsRunnable;
-import org.cactoos.func.FuncWithCallback;
+import org.cactoos.func.FuncWithFallback;
 import org.cactoos.func.IoCheckedFunc;
 import org.cactoos.func.ProcAsFunc;
 import org.cactoos.func.RunnableAsFunc;
@@ -90,7 +90,7 @@ public final class ExtFarm implements Scalar<Farm> {
                 rnb -> factory.newThread(
                     new VerboseRunnable(
                         new FuncAsRunnable(
-                            new FuncWithCallback<>(
+                            new FuncWithFallback<>(
                                 new RunnableAsFunc<>(rnb),
                                 new ThrowableToEmail(props)
                             )
@@ -115,7 +115,7 @@ public final class ExtFarm implements Scalar<Farm> {
             ),
             path -> new StkSafe(
                 (project, xml) -> new IoCheckedFunc<>(
-                    new FuncWithCallback<Project, Boolean>(
+                    new FuncWithFallback<Project, Boolean>(
                         new ProcAsFunc<>(
                             pkt -> new StkGroovy(
                                 new ResourceAsInput(path),
