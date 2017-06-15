@@ -40,6 +40,9 @@ public final class ExtProperties implements Scalar<Properties> {
             new ResourceAsInput("main.properties").stream()) {
             props.load(input);
         }
+        if (this.getClass().getResource("/org/junit/Test.class") != null) {
+            props.setProperty("testing", "true");
+        }
         return props;
     }
 

@@ -30,8 +30,6 @@ import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.jstk.fake.FkFarm;
-import java.io.IOException;
-import java.util.Properties;
 import java.util.TreeSet;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -80,9 +78,8 @@ public final class ExtFarm implements Scalar<Farm> {
 
     @Override
     @Cacheable(forever = true)
-    public Farm asValue() throws IOException {
+    public Farm asValue() {
         final ThreadFactory factory = new VerboseThreads();
-        final Properties props = new ExtProperties().asValue();
         return new RvFarm(
             new SyncFarm(this.origin),
             new Brigade(ExtFarm.stakeholders()),
@@ -92,7 +89,7 @@ public final class ExtFarm implements Scalar<Farm> {
                         new FuncAsRunnable(
                             new FuncWithFallback<>(
                                 new RunnableAsFunc<>(rnb),
-                                new ThrowableToEmail(props)
+                                new ThrowableToEmail()
                             )
                         ),
                         true, true

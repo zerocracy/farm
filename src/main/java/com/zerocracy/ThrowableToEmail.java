@@ -45,52 +45,31 @@ import org.cactoos.text.UncheckedText;
  */
 public final class ThrowableToEmail implements Func<Throwable, Boolean> {
 
-    /**
-     * Properties.
-     */
-    private final Properties props;
-
-    /**
-     * Ctor.
-     * @throws IOException If fails
-     */
-    public ThrowableToEmail() throws IOException {
-        this(new ExtProperties().asValue());
-    }
-
-    /**
-     * Ctor.
-     * @param pps Props
-     */
-    public ThrowableToEmail(final Properties pps) {
-        this.props = pps;
-    }
-
     @Override
     public Boolean apply(final Throwable error) throws IOException {
-        final String port = this.props.getProperty("smtp.port");
-        if (!port.matches("[0-9]+")) {
+        final Properties props = new ExtProperties().asValue();
+        if (props.containsKey("testing")) {
             Logger.warn(this, "%[exception]s", error);
             return true;
         }
         final Postman postman = new Postman.Default(
             new SMTP(
                 new Token(
-                    this.props.getProperty("smtp.username"),
-                    this.props.getProperty("smtp.password")
+                    props.getProperty("smtp.username"),
+                    props.getProperty("smtp.password")
                 ).access(
                     new Protocol.SMTP(
-                        this.props.getProperty("smtp.host"),
-                        Integer.parseInt(port)
+                        props.getProperty("smtp.host"),
+                        Integer.parseInt(props.getProperty("smtp.port"))
                     )
                 )
             )
         );
         final String version = String.format(
             "%s %s %s",
-            this.props.getProperty("build.version"),
-            this.props.getProperty("build.revision"),
-            this.props.getProperty("build.date")
+            props.getProperty("build.version"),
+            props.getProperty("build.revision"),
+            props.getProperty("build.date")
         );
         postman.send(
             new Envelope.MIME()
