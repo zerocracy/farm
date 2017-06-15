@@ -16,6 +16,7 @@
  */
 package com.zerocracy;
 
+import com.jcabi.aspects.Cacheable;
 import com.jcabi.xml.StrictXML;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
@@ -54,6 +55,7 @@ import org.xembly.Xembler;
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.ExcessiveImports")
 public final class Xocument {
 
     /**
@@ -67,31 +69,6 @@ public final class Xocument {
     private static final XSL COMPRESS = XSLDocument.make(
         Xocument.class.getResource("compress.xsl")
     );
-
-    /**
-     * Locator of XSD resources.
-     */
-    private static final Func<String, LSInput> LOCATOR = new StickyFunc<>(
-        (Func<String, LSInput>) loc -> {
-            final String[] parts = loc.split(" ");
-            return new InputAsLSInput(
-                new StickyInput(new UrlAsInput(parts[3])),
-                parts[2], parts[3], parts[4]
-            );
-        }
-    );
-
-    /**
-     * Resolver.
-     */
-    private static final LSResourceResolver RESOLVER =
-        (type, namespace, pid, sid, base) ->
-            new UncheckedFunc<>(Xocument.LOCATOR).apply(
-                String.format(
-                    "%s %s %s %s %s",
-                    type, namespace, pid, sid, base
-                )
-            );
 
     /**
      * File.
@@ -174,7 +151,7 @@ public final class Xocument {
     public List<String> xpath(final String xpath) throws IOException {
         final XML xml = new StrictXML(
             new XMLDocument(this.file.toFile()),
-            Xocument.RESOLVER
+            Xocument.resolver()
         );
         return xml.xpath(xpath);
     }
@@ -188,7 +165,7 @@ public final class Xocument {
     public List<XML> nodes(final String xpath) throws IOException {
         final XML xml = new StrictXML(
             new XMLDocument(this.file.toFile()),
-            Xocument.RESOLVER
+            Xocument.resolver()
         );
         return xml.nodes(xpath);
     }
@@ -204,11 +181,37 @@ public final class Xocument {
         new Xembler(dirs).applyQuietly(node);
         final String after = new StrictXML(
             Xocument.COMPRESS.transform(new XMLDocument(node)),
-            Xocument.RESOLVER
+            Xocument.resolver()
         ).toString();
         if (!before.toString().equals(after)) {
             Files.write(this.file, after.getBytes(StandardCharsets.UTF_8));
         }
+    }
+
+    /**
+     * The resolver.
+     * @return Resolver
+     */
+    @Cacheable(forever = true)
+    private static LSResourceResolver resolver() {
+        final Func<String, LSInput> locator = new StickyFunc<>(
+            loc -> {
+                final String[] parts = loc.split(" ");
+                return new InputAsLSInput(
+                    // @checkstyle MagicNumber (2 lines)
+                    new StickyInput(new UrlAsInput(parts[3])),
+                    parts[2], parts[3], parts[4]
+                );
+            }
+        );
+        return (type, namespace, pid, sid, base) -> new UncheckedFunc<>(
+            locator
+        ).apply(
+            String.format(
+                "%s %s %s %s %s",
+                type, namespace, pid, sid, base
+            )
+        );
     }
 
 }

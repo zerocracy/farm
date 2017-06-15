@@ -84,6 +84,7 @@ final class Spin implements Closeable {
 
     /**
      * Ping it.
+     * @throws IOException If fails
      */
     public void ping() throws IOException {
         if (!this.alive.get() && !this.service.isShutdown()) {
