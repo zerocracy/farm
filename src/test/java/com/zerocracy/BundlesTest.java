@@ -19,9 +19,10 @@ package com.zerocracy;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
+import com.zerocracy.jstk.fake.FkFarm;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
-import com.zerocracy.pmo.ext.ExtFarm;
+import com.zerocracy.farm.SmartFarm;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import java.io.IOException;
@@ -78,7 +79,7 @@ public final class BundlesTest {
 
     @Test
     public void oneBundleWorksFine() throws IOException {
-        final Farm farm = new ExtFarm().asValue();
+        final Farm farm = new SmartFarm(new FkFarm()).asValue();
         final Project project = farm.find("id=12345").iterator().next();
         new IterableAsBoolean<>(
             BundlesTest.resources(this.bundle.replace("/", ".")),

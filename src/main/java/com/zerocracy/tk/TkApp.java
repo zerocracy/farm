@@ -18,17 +18,7 @@ package com.zerocracy.tk;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.jcabi.email.Envelope;
-import com.jcabi.email.Postman;
-import com.jcabi.email.Protocol;
-import com.jcabi.email.Token;
-import com.jcabi.email.enclosure.EnHTML;
-import com.jcabi.email.enclosure.EnPlain;
-import com.jcabi.email.stamp.StRecipient;
-import com.jcabi.email.stamp.StSender;
-import com.jcabi.email.stamp.StSubject;
-import com.jcabi.email.wire.SMTP;
-import com.zerocracy.pmo.ext.ExtProperties;
+import com.zerocracy.ThrowableToEmail;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.Arrays;
@@ -69,15 +59,6 @@ import org.takes.tk.TkWrap;
  */
 @SuppressWarnings({ "PMD.AvoidDuplicateLiterals", "PMD.ExcessiveImports" })
 public final class TkApp extends TkWrap {
-
-    /**
-     * Ctor.
-     * @param forks Additional forks
-     * @throws IOException If fails
-     */
-    public TkApp(final FkRegex... forks) throws IOException {
-        this(new ExtProperties().asValue(), forks);
-    }
 
     /**
      * Ctor.
@@ -162,55 +143,7 @@ public final class TkApp extends TkWrap {
                         )
                     ),
                     req -> {
-                        final Postman postman = new Postman.Default(
-                            new SMTP(
-                                new Token(
-                                    props.getProperty("smtp.username"),
-                                    props.getProperty("smtp.password")
-                                ).access(
-                                    new Protocol.SMTP(
-                                        props.getProperty("smtp.host"),
-                                        Integer.parseInt(props.getProperty("smtp.port"))
-                                    )
-                                )
-                            )
-                        );
-                        postman.send(
-                            new Envelope.MIME()
-                                .with(new StSender("0crat <no-reply@0crat.com>"))
-                                .with(new StRecipient("0crat admin <bugs@0crat.com>"))
-                                .with(new StSubject(req.throwable().getLocalizedMessage()))
-                                .with(
-                                    new EnPlain(
-                                        String.format(
-                                            "Hi,\n\n%s\n\n--\n0crat\n%s %s %s",
-                                            new BytesAsText(
-                                                new ThrowableAsBytes(
-                                                    req.throwable()
-                                                )
-                                            ).asString(),
-                                            props.getProperty("build.version"),
-                                            props.getProperty("build.revision"),
-                                            props.getProperty("build.date")
-                                        )
-                                    )
-                                )
-                                .with(
-                                    new EnHTML(
-                                        String.format(
-                                            "<html><body><p>Hi,</p><p>There was a problem:</p><pre>%s</pre><p>--<br/>0crat<br/>%s %s %s</p></body></html>",
-                                            new BytesAsText(
-                                                new ThrowableAsBytes(
-                                                    req.throwable()
-                                                )
-                                            ).asString(),
-                                            props.getProperty("build.version"),
-                                            props.getProperty("build.revision"),
-                                            props.getProperty("build.date")
-                                        )
-                                    )
-                                )
-                        );
+                        new ThrowableToEmail(props).apply(req.throwable());
                         return new Opt.Empty<>();
                     },
                     new FbLog4j(),

@@ -18,7 +18,7 @@ package com.zerocracy.bundles.notifies_in_github
 
 import com.jcabi.github.Comment
 import com.jcabi.github.Coordinates
-import com.zerocracy.pmo.ext.ExtGithub
+import com.zerocracy.entry.ExtGithub
 import com.zerocracy.jstk.Project
 
 def exec(Project project) {

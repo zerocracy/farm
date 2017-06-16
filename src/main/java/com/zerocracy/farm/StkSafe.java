@@ -23,7 +23,6 @@ import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.SoftException;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
-import com.zerocracy.pmo.ext.ExtProperties;
 import java.io.IOException;
 import java.util.Properties;
 import org.apache.commons.lang3.StringUtils;
@@ -49,15 +48,6 @@ public final class StkSafe implements Stakeholder {
      * Original stakeholder.
      */
     private final Stakeholder origin;
-
-    /**
-     * Ctor.
-     * @param stk Original stakeholder
-     * @throws IOException If fails
-     */
-    public StkSafe(final Stakeholder stk) throws IOException {
-        this(new ExtProperties().asValue(), stk);
-    }
 
     /**
      * Ctor.

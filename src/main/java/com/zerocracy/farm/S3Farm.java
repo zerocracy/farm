@@ -30,8 +30,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import lombok.EqualsAndHashCode;
+import org.cactoos.list.TransformedIterable;
 import org.xembly.Directives;
 
 /**
@@ -84,20 +84,18 @@ public final class S3Farm implements Farm {
         try (final Item item = this.item()) {
             new Xocument(item.path()).bootstrap("pmo/catalog");
         }
-        Iterable<Project> projects = this.findByXPath(xpath)
-            .stream()
-            .map(
-                prefix -> new UplinkedProject(
-                    new StrictProject(
-                        new S3Project(this.bucket, prefix, this.temp),
-                        prefix.equals(S3Farm.prefix(S3Farm.PMO)),
-                        prefix
-                    ),
-                    this,
-                    prefix.equals(S3Farm.prefix(S3Farm.PMO))
-                )
+        Iterable<Project> projects = new TransformedIterable<>(
+            this.findByXPath(xpath),
+            prefix -> new UplinkedProject(
+                new StrictProject(
+                    new S3Project(this.bucket, prefix, this.temp),
+                    prefix.equals(S3Farm.prefix(S3Farm.PMO)),
+                    prefix
+                ),
+                this,
+                prefix.equals(S3Farm.prefix(S3Farm.PMO))
             )
-            .collect(Collectors.toList());
+        );
         if (!projects.iterator().hasNext()) {
             final Matcher matcher = Pattern.compile(
                 "\\s*@id\\s*=\\s*'([^']+)'\\s*"

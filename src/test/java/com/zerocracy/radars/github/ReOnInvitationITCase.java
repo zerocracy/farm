@@ -16,8 +16,9 @@
  */
 package com.zerocracy.radars.github;
 
-import com.jcabi.github.RtGithub;
+import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.fake.FkFarm;
+import com.zerocracy.pmo.Ext;
 import javax.json.Json;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -34,9 +35,11 @@ public final class ReOnInvitationITCase {
     @Test
     @Ignore
     public void acceptsThemAll() throws Exception {
-        new ReOnInvitation(
-            new RtGithub("0crat", "--secret--")
-        ).react(new FkFarm(), Json.createObjectBuilder().build());
+        final Farm farm = new FkFarm();
+        new Ext(farm)
+            .set("github", "login", "0crat")
+            .set("github", "password", "--secret--");
+        new ReOnInvitation().react(farm, Json.createObjectBuilder().build());
     }
 
 }

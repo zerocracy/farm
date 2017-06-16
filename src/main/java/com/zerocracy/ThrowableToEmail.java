@@ -27,7 +27,6 @@ import com.jcabi.email.stamp.StSender;
 import com.jcabi.email.stamp.StSubject;
 import com.jcabi.email.wire.SMTP;
 import com.jcabi.log.Logger;
-import com.zerocracy.pmo.ext.ExtProperties;
 import java.io.IOException;
 import java.util.Properties;
 import org.cactoos.Func;
@@ -45,31 +44,43 @@ import org.cactoos.text.UncheckedText;
  */
 public final class ThrowableToEmail implements Func<Throwable, Boolean> {
 
+    /**
+     * Props.
+     */
+    private final Properties props;
+
+    /**
+     * Ctor.
+     * @param pps Props
+     */
+    public ThrowableToEmail(final Properties pps) {
+        this.props = pps;
+    }
+
     @Override
     public Boolean apply(final Throwable error) throws IOException {
-        final Properties props = new ExtProperties().asValue();
-        if (props.containsKey("testing")) {
+        if (this.props.containsKey("testing")) {
             Logger.warn(this, "%[exception]s", error);
             return true;
         }
         final Postman postman = new Postman.Default(
             new SMTP(
                 new Token(
-                    props.getProperty("smtp.username"),
-                    props.getProperty("smtp.password")
+                    this.props.getProperty("smtp.username"),
+                    this.props.getProperty("smtp.password")
                 ).access(
                     new Protocol.SMTP(
-                        props.getProperty("smtp.host"),
-                        Integer.parseInt(props.getProperty("smtp.port"))
+                        this.props.getProperty("smtp.host"),
+                        Integer.parseInt(this.props.getProperty("smtp.port"))
                     )
                 )
             )
         );
         final String version = String.format(
             "%s %s %s",
-            props.getProperty("build.version"),
-            props.getProperty("build.revision"),
-            props.getProperty("build.date")
+            this.props.getProperty("build.version"),
+            this.props.getProperty("build.revision"),
+            this.props.getProperty("build.date")
         );
         postman.send(
             new Envelope.MIME()

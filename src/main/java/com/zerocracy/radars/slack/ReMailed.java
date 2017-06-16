@@ -54,7 +54,7 @@ public final class ReMailed implements Reaction<SlackMessagePosted> {
         return new UncheckedFunc<>(
             new FuncWithFallback<Boolean, Boolean>(
                 input -> this.origin.react(farm, event, session),
-                new ThrowableToEmail()
+                new ThrowableToEmail(props)
             )
         ).apply(true);
     }

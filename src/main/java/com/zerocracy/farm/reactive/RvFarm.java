@@ -23,9 +23,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 import lombok.EqualsAndHashCode;
+import org.cactoos.func.SyncFunc;
+import org.cactoos.list.TransformedIterable;
 
 /**
  * Reactive farm.
@@ -82,20 +82,19 @@ public final class RvFarm implements Farm {
 
     @Override
     public Iterable<Project> find(final String query) throws IOException {
-        return StreamSupport
-            .stream(this.origin.find(query).spliterator(), false)
-            .map(
+        return new TransformedIterable<>(
+            this.origin.find(query),
+            new SyncFunc<>(
                 p -> {
                     if (!this.pool.containsKey(p)) {
                         this.pool.put(
-                            p,
-                            new RvProject(p, this.brigade, this.service)
+                            p, new RvProject(p, this.brigade, this.service)
                         );
                     }
                     return this.pool.get(p);
                 }
             )
-            .collect(Collectors.toList());
+        );
     }
 
 }

@@ -19,7 +19,7 @@ package com.zerocracy.bundles.notifies_in_github
 import com.jcabi.github.Repos
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimOut
-import com.zerocracy.pmo.ext.ExtGithub
+import com.zerocracy.entry.ExtGithub
 
 def exec(Project project) {
   def github = new ExtGithub(project).asValue()

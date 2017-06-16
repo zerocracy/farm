@@ -14,12 +14,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy;
+package com.zerocracy.entry;
 
 import com.zerocracy.farm.S3Farm;
+import com.zerocracy.farm.SmartFarm;
 import com.zerocracy.jstk.Farm;
-import com.zerocracy.pmo.ext.ExtBucket;
-import com.zerocracy.pmo.ext.ExtFarm;
 import com.zerocracy.radars.github.TkGithub;
 import com.zerocracy.radars.slack.RrSlack;
 import com.zerocracy.radars.slack.TkSlack;
@@ -68,18 +67,32 @@ public final class Main {
      * @throws IOException If fails on I/O
      */
     public void exec() throws IOException {
-        final Farm farm = new ExtFarm(
-            new S3Farm(
-                new ExtBucket().asValue()
-            )
+        final Farm farm = new SmartFarm(
+            new S3Farm(new ExtBucket().asValue())
         ).asValue();
-        try (final RrSlack radar = new RrSlack(farm)) {
+        try (final RrSlack radar = new RrSlack(farm, new ExtSlack().asValue())) {
             radar.refresh();
             new FtCli(
                 new TkApp(
-                    new FkRegex("/slack", new TkSlack(farm, radar)),
+                    new ExtProperties().asValue(),
+                    new FkRegex(
+                        "/slack",
+                        new TkSlack(
+                            farm,
+                            new ExtProperties().asValue(),
+                            radar
+                        )
+                    ),
                     new FkRegex("/alias", new TkAlias(farm)),
-                    new FkRegex("/ghook", new TkGithub(farm)),
+                    new FkRegex(
+                        "/ghook",
+                        new TkGithub(
+                            farm,
+                            new ExtGithub(farm).asValue(),
+                            new ExtDynamo().asValue(),
+                            new ExtProperties().asValue()
+                        )
+                    ),
                     new FkRegex("/ping", new TkPing(farm))
                 ),
                 this.arguments

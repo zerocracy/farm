@@ -14,39 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pmo.ext;
-
-import com.jcabi.aspects.Cacheable;
-import com.ullink.slack.simpleslackapi.SlackSession;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import org.cactoos.Scalar;
 
 /**
- * Slack sessions.
+ * Entrance.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.11
  */
-public final class ExtSlack implements Scalar<Map<String, SlackSession>> {
-
-    /**
-     * Sessions.
-     */
-    private final Map<String, SlackSession> map;
-
-    /**
-     * Ctor.
-     */
-    public ExtSlack() {
-        this.map = new ConcurrentHashMap<>(0);
-    }
-
-    @Override
-    @Cacheable(forever = true)
-    public Map<String, SlackSession> asValue() {
-        return this.map;
-    }
-
-}
+package com.zerocracy.entry;

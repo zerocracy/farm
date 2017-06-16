@@ -14,14 +14,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pmo.ext;
+package com.zerocracy.farm;
 
-import com.jcabi.aspects.Cacheable;
 import com.jcabi.log.VerboseRunnable;
 import com.jcabi.log.VerboseThreads;
 import com.zerocracy.ThrowableToEmail;
-import com.zerocracy.farm.MismatchException;
-import com.zerocracy.farm.StkSafe;
 import com.zerocracy.farm.reactive.Brigade;
 import com.zerocracy.farm.reactive.RvFarm;
 import com.zerocracy.farm.reactive.StkGroovy;
@@ -29,7 +26,6 @@ import com.zerocracy.farm.sync.SyncFarm;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
-import com.zerocracy.jstk.fake.FkFarm;
 import java.util.TreeSet;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -46,7 +42,7 @@ import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
 
 /**
- * Farm bag.
+ * Smart farm.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
@@ -54,7 +50,7 @@ import org.reflections.scanners.ResourcesScanner;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.ExcessiveImports")
-public final class ExtFarm implements Scalar<Farm> {
+public final class SmartFarm implements Scalar<Farm> {
 
     /**
      * Original farm.
@@ -63,33 +59,25 @@ public final class ExtFarm implements Scalar<Farm> {
 
     /**
      * Ctor.
-     */
-    public ExtFarm() {
-        this(new FkFarm());
-    }
-
-    /**
-     * Ctor.
      * @param frm Original
      */
-    public ExtFarm(final Farm frm) {
+    public SmartFarm(final Farm frm) {
         this.origin = frm;
     }
 
     @Override
-    @Cacheable(forever = true)
     public Farm asValue() {
         final ThreadFactory factory = new VerboseThreads();
         return new RvFarm(
             new SyncFarm(this.origin),
-            new Brigade(ExtFarm.stakeholders()),
+            new Brigade(SmartFarm.stakeholders()),
             Executors.newSingleThreadExecutor(
                 rnb -> factory.newThread(
                     new VerboseRunnable(
                         new FuncAsRunnable(
                             new FuncWithFallback<>(
                                 new RunnableAsFunc<>(rnb),
-                                new ThrowableToEmail()
+                                new ThrowableToEmail(props)
                             )
                         ),
                         true, true
@@ -123,7 +111,7 @@ public final class ExtFarm implements Scalar<Farm> {
                             if (error instanceof MismatchException) {
                                 throw MismatchException.class.cast(error);
                             }
-                            return new ThrowableToEmail().apply(error);
+                            return new ThrowableToEmail(props).apply(error);
                         }
                     )
                 ).apply(project)

@@ -23,7 +23,7 @@ import com.ullink.slack.simpleslackapi.SlackSession
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pmo.ext.ExtSlack
+import com.zerocracy.entry.ExtSlack
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Notify in Slack')

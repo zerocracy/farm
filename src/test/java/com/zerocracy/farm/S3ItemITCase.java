@@ -22,6 +22,7 @@ import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.xembly.Directives;
 
@@ -35,6 +36,7 @@ import org.xembly.Directives;
 public final class S3ItemITCase {
 
     @Test
+    @Ignore
     public void modifiesFiles() throws Exception {
         final Ocket ocket = new Region.Simple(
             "AKIAIVWDGPW27GZ76BEQ",

@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pmo.ext;
+package com.zerocracy.entry;
 
 import com.jcabi.aspects.Cacheable;
 import com.jcabi.dynamo.Credentials;
@@ -31,37 +31,17 @@ import org.cactoos.Scalar;
  * @version $Id$
  * @since 0.7
  */
-public final class ExtDynamo implements Scalar<Region> {
-
-    /**
-     * Properties.
-     */
-    private final Properties props;
-
-    /**
-     * Ctor.
-     * @throws IOException If fails
-     */
-    public ExtDynamo() throws IOException {
-        this(new ExtProperties().asValue());
-    }
-
-    /**
-     * Ctor.
-     * @param pps Properties
-     */
-    public ExtDynamo(final Properties pps) {
-        this.props = pps;
-    }
+final class ExtDynamo implements Scalar<Region> {
 
     @Override
     @Cacheable(forever = true)
-    public Region asValue() {
+    public Region asValue() throws IOException {
+        final Properties props = new ExtProperties().asValue();
         return new ReRegion(
             new Region.Simple(
                 new Credentials.Simple(
-                    this.props.getProperty("dynamo.key"),
-                    this.props.getProperty("dynamo.secret")
+                    props.getProperty("dynamo.key"),
+                    props.getProperty("dynamo.secret")
                 )
             )
         );

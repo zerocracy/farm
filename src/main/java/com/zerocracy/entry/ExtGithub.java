@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pmo.ext;
+package com.zerocracy.entry;
 
 import com.jcabi.aspects.Cacheable;
 import com.jcabi.github.Github;
@@ -40,7 +40,7 @@ import org.cactoos.func.StickyFunc;
  * @since 0.7
  */
 @EqualsAndHashCode(of = "pmo")
-public final class ExtGithub implements Scalar<Github> {
+final class ExtGithub implements Scalar<Github> {
 
     /**
      * Cached test repos.

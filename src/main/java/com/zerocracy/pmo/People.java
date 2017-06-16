@@ -26,7 +26,7 @@ import com.zerocracy.jstk.cash.Cash;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.stream.Collectors;
+import org.cactoos.list.TransformedIterable;
 import org.xembly.Directives;
 
 /**
@@ -312,18 +312,19 @@ public final class People {
      */
     public Iterable<String> links(final String uid) throws IOException {
         try (final Item item = this.item()) {
-            return new Xocument(item).nodes(
-                String.format(
-                    "/people/person[@id='%s']/links/link",
-                    uid
-                )
-            ).stream().map(
+            return new TransformedIterable<>(
+                new Xocument(item).nodes(
+                    String.format(
+                        "/people/person[@id='%s']/links/link",
+                        uid
+                    )
+                ),
                 xml -> String.format(
                     "%s:%s",
                     xml.xpath("@rel").get(0),
                     xml.xpath("@href").get(0)
                 )
-            ).collect(Collectors.toList());
+            );
         }
     }
 

@@ -17,10 +17,8 @@
 package com.zerocracy.radars.github;
 
 import com.jcabi.dynamo.Region;
+import com.jcabi.github.Github;
 import com.zerocracy.jstk.Farm;
-import com.zerocracy.pmo.ext.ExtDynamo;
-import com.zerocracy.pmo.ext.ExtGithub;
-import com.zerocracy.pmo.ext.ExtProperties;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -58,44 +56,40 @@ public final class TkGithub implements Take {
     private final Farm farm;
 
     /**
-     * Ctor.
-     * @param frm Farm
-     * @throws IOException If fails
+     * Github.
      */
-    public TkGithub(final Farm frm) throws IOException {
-        this(frm, new ExtDynamo().asValue(), new ExtProperties().asValue());
-    }
+    private final Github github;
 
     /**
      * Ctor.
      * @param frm Farm
+     * @param ghub Github
      * @param dynamo DynamoDB
      * @param props Properties
      * @throws IOException If fails
      */
-    public TkGithub(final Farm frm, final Region dynamo,
+    public TkGithub(final Farm frm, final Github ghub, final Region dynamo,
         final Properties props) throws IOException {
         this(
             frm,
+            ghub,
             new RbLogged(
                 new Rebound.Chain(
                     new RbByActions(
                         new RbOnComment(
                             new GithubFetch(
                                 frm,
-                                new ExtGithub(frm).asValue(),
+                                ghub,
                                 new ReLogged(
                                     new Reaction.Chain(
                                         new ReOnReason(
                                             "invitation",
-                                            new ReOnInvitation(
-                                                new ExtGithub(frm).asValue()
-                                            )
+                                            new ReOnInvitation(ghub)
                                         ),
                                         new ReOnReason(
                                             "mention",
                                             new ReOnComment(
-                                                new ExtGithub(frm).asValue(),
+                                                ghub,
                                                 new ReSafe(
                                                     new ReNotMine(
                                                         new ReIfAddressed(
@@ -135,10 +129,12 @@ public final class TkGithub implements Take {
     /**
      * Ctor.
      * @param frm Farm
+     * @param ghub Github
      * @param rbd Rebound
      */
-    public TkGithub(final Farm frm, final Rebound rbd) {
+    public TkGithub(final Farm frm, final Github ghub, final Rebound rbd) {
         this.farm = frm;
+        this.github = ghub;
         this.rebound = rbd;
     }
 
@@ -152,7 +148,7 @@ public final class TkGithub implements Take {
                 new RsText(
                     this.rebound.react(
                         this.farm,
-                        new ExtGithub(this.farm).asValue(),
+                        this.github,
                         Json.createReader(
                             new ByteArrayInputStream(
                                 body.getBytes(StandardCharsets.UTF_8)

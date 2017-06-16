@@ -21,7 +21,6 @@ import com.jcabi.http.response.JsonResponse;
 import com.jcabi.http.response.RestResponse;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.pmo.Bots;
-import com.zerocracy.pmo.ext.ExtProperties;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.Properties;
@@ -56,16 +55,6 @@ public final class TkSlack implements Take {
      * Radar.
      */
     private final RrSlack radar;
-
-    /**
-     * Ctor.
-     * @param frm Farm
-     * @param rdr Radar
-     * @throws IOException If fails
-     */
-    public TkSlack(final Farm frm, final RrSlack rdr) throws IOException {
-        this(frm, new ExtProperties().asValue(), rdr);
-    }
 
     /**
      * Ctor.

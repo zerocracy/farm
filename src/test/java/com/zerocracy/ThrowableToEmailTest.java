@@ -33,7 +33,7 @@ public final class ThrowableToEmailTest {
     @Test
     public void modifiesItems() throws Exception {
         MatcherAssert.assertThat(
-            new ThrowableToEmail().apply(new IOException("oops")),
+            new ThrowableToEmail(props).apply(new IOException("oops")),
             Matchers.is(true)
         );
     }

@@ -24,7 +24,6 @@ import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.ullink.slack.simpleslackapi.impl.SlackSessionFactory;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.pmo.Bots;
-import com.zerocracy.pmo.ext.ExtSlack;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
@@ -63,11 +62,12 @@ public final class RrSlack implements AutoCloseable {
     /**
      * Ctor.
      * @param frm Farm
+     * @param map Sessions
      */
-    public RrSlack(final Farm frm) {
+    public RrSlack(final Farm frm, final Map<String, SlackSession> map) {
         this(
             frm,
-            new ExtSlack().asValue(),
+            map,
             new ReMailed(
                 new ReSafe(
                     new ReLogged<>(

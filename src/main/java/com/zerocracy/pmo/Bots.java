@@ -25,9 +25,8 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 import javax.json.JsonObject;
+import org.cactoos.list.TransformedIterable;
 import org.xembly.Directives;
 
 /**
@@ -136,17 +135,15 @@ public final class Bots {
      */
     public Iterable<Map.Entry<String, String>> tokens() throws IOException {
         try (final Item item = this.item()) {
-            return StreamSupport.stream(
+            return new TransformedIterable<>(
                 new Xocument(item.path()).nodes(
                     "/bots/bot"
-                ).spliterator(),
-                false
-            ).map(
+                ),
                 node -> new HashMap.SimpleEntry<>(
                     node.xpath("@id").get(0),
                     node.xpath("bot_access_token/text()").get(0)
                 )
-            ).collect(Collectors.toList());
+            );
         }
     }
 

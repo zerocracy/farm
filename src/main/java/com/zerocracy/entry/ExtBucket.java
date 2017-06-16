@@ -14,12 +14,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.zerocracy.entry;
+
+import com.jcabi.aspects.Cacheable;
+import com.jcabi.s3.Bucket;
+import com.jcabi.s3.Region;
+import com.jcabi.s3.retry.ReRegion;
+import java.io.IOException;
+import java.util.Properties;
+import org.cactoos.Scalar;
 
 /**
- * Externals.
+ * S3 Bucket.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.11
  */
-package com.zerocracy.pmo.ext;
+final class ExtBucket implements Scalar<Bucket> {
+
+    @Override
+    @Cacheable(forever = true)
+    public Bucket asValue() throws IOException {
+        final Properties props = new ExtProperties().asValue();
+        return new ReRegion(
+            new Region.Simple(
+                props.getProperty("s3.key"),
+                props.getProperty("s3.secret")
+            )
+        ).bucket(props.getProperty("s3.bucket"));
+    }
+
+}

@@ -17,14 +17,14 @@
 package com.zerocracy.stk
 
 import com.jcabi.xml.XML
-import com.zerocracy.pmo.ext.ExtProperties
+import com.zerocracy.entry.ExtProperties
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Version')
-  def props = new ExtProperties().asValue()
+  Properties props = new ExtProperties().asValue()
   new ClaimIn(xml).reply(
     """My version is `${props.getProperty('build.version')}`,
  rev.`${props.getProperty('build.revision')}`,

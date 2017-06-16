@@ -26,8 +26,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
+import org.cactoos.list.IterableAsList;
+import org.cactoos.list.TransformedIterable;
 
 /**
  * Question in text.
@@ -163,13 +165,18 @@ public final class Question {
                     "Try one of these:\n  * %s",
                     String.join(
                         "\n  * ",
-                        cmds.stream().map(
-                            cmd -> String.format(
-                                "`%s` %s",
-                                cmd.xpath("label/text()").get(0),
-                                cmd.xpath("help/text() ").get(0)
+                        new TreeSet<>(
+                            new IterableAsList<CharSequence>(
+                                new TransformedIterable<>(
+                                    cmds,
+                                    cmd -> String.format(
+                                        "`%s` %s",
+                                        cmd.xpath("label/text()").get(0),
+                                        cmd.xpath("help/text() ").get(0)
+                                    )
+                                )
                             )
-                        ).sorted().collect(Collectors.toList())
+                        )
                     )
                 )
             );
@@ -219,19 +226,23 @@ public final class Question {
                         part,
                         String.join(
                             "> <",
-                            opts.stream().map(
+                            new TransformedIterable<>(
+                                opts,
                                 item -> item.xpath("name/text()  ").get(0)
-                            ).collect(Collectors.toList())
+                            )
                         ),
                         String.join(
                             "\n  ",
-                            opts.stream().map(
-                                item -> String.format(
-                                    "* `<%s>`: %s",
-                                    item.xpath("name/text()").get(0),
-                                    item.xpath("help/text()").get(0)
+                            new SortedIterable<CharSequence>(
+                                new TransformedIterable<>(
+                                    opts,
+                                    item -> String.format(
+                                        "* `<%s>`: %s",
+                                        item.xpath("name/text()").get(0),
+                                        item.xpath("help/text()").get(0)
+                                    )
                                 )
-                            ).sorted().collect(Collectors.toList())
+                            )
                         )
                     )
                 );
