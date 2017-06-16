@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import lombok.EqualsAndHashCode;
 import org.cactoos.func.SyncFunc;
 import org.cactoos.list.TransformedIterable;
@@ -56,15 +55,6 @@ public final class RvFarm implements Farm {
      * Service.
      */
     private final ExecutorService service;
-
-    /**
-     * Ctor.
-     * @param farm Original farm
-     * @param bgd Stakeholders
-     */
-    public RvFarm(final Farm farm, final Brigade bgd) {
-        this(farm, bgd, Executors.newSingleThreadExecutor());
-    }
 
     /**
      * Ctor.

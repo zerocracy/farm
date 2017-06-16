@@ -19,6 +19,7 @@ package com.zerocracy.tk;
 import java.net.HttpURLConnection;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Properties;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -58,7 +59,7 @@ public final class PingTest {
 
     @Test
     public void rendersAllPossibleUrls() throws Exception {
-        final Take take = new TkApp();
+        final Take take = new TkApp(new Properties());
         MatcherAssert.assertThat(
             this.url,
             take.act(new RqFake("INFO", this.url)),

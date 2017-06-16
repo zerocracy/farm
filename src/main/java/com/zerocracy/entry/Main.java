@@ -68,9 +68,12 @@ public final class Main {
      */
     public void exec() throws IOException {
         final Farm farm = new SmartFarm(
-            new S3Farm(new ExtBucket().asValue())
+            new S3Farm(new ExtBucket().asValue()),
+            new ExtProperties().asValue()
         ).asValue();
-        try (final RrSlack radar = new RrSlack(farm, new ExtSlack().asValue())) {
+        try (final RrSlack radar = new RrSlack(
+            farm, new ExtSlack().asValue(), new ExtProperties().asValue()
+        )) {
             radar.refresh();
             new FtCli(
                 new TkApp(

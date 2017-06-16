@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * Slack listening radar.
@@ -63,8 +64,10 @@ public final class RrSlack implements AutoCloseable {
      * Ctor.
      * @param frm Farm
      * @param map Sessions
+     * @param props Properties
      */
-    public RrSlack(final Farm frm, final Map<String, SlackSession> map) {
+    public RrSlack(final Farm frm, final Map<String, SlackSession> map,
+        final Properties props) {
         this(
             frm,
             map,
@@ -80,7 +83,8 @@ public final class RrSlack implements AutoCloseable {
                             )
                         )
                     )
-                )
+                ),
+                props
             )
         );
     }

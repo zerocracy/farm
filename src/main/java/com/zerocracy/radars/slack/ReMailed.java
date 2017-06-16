@@ -20,7 +20,7 @@ import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.ThrowableToEmail;
 import com.zerocracy.jstk.Farm;
-import java.io.IOException;
+import java.util.Properties;
 import org.cactoos.func.FuncWithFallback;
 import org.cactoos.func.UncheckedFunc;
 
@@ -36,6 +36,11 @@ import org.cactoos.func.UncheckedFunc;
 public final class ReMailed implements Reaction<SlackMessagePosted> {
 
     /**
+     * Properties.
+     */
+    private final Properties props;
+
+    /**
      * Reaction.
      */
     private final Reaction<SlackMessagePosted> origin;
@@ -43,18 +48,21 @@ public final class ReMailed implements Reaction<SlackMessagePosted> {
     /**
      * Ctor.
      * @param tgt Target
+     * @param pps Properties
      */
-    public ReMailed(final Reaction<SlackMessagePosted> tgt) {
+    public ReMailed(final Reaction<SlackMessagePosted> tgt,
+        final Properties pps) {
         this.origin = tgt;
+        this.props = pps;
     }
 
     @Override
     public boolean react(final Farm farm, final SlackMessagePosted event,
-        final SlackSession session) throws IOException {
+        final SlackSession session) {
         return new UncheckedFunc<>(
             new FuncWithFallback<Boolean, Boolean>(
                 input -> this.origin.react(farm, event, session),
-                new ThrowableToEmail(props)
+                new ThrowableToEmail(this.props)
             )
         ).apply(true);
     }

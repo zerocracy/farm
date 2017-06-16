@@ -16,9 +16,9 @@
  */
 package com.zerocracy.radars.github;
 
+import com.jcabi.github.mock.MkGithub;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.fake.FkFarm;
-import com.zerocracy.pmo.Ext;
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -41,10 +41,9 @@ public final class TkGithubTest {
     @Test
     public void parsesJson() throws Exception {
         final Farm farm = new FkFarm();
-        final Ext ext = new Ext(farm).bootstrap();
-        ext.set("github", "login", "test");
         final Take take = new TkGithub(
             farm,
+            new MkGithub(),
             (frm, github, event) -> "nothing"
         );
         MatcherAssert.assertThat(

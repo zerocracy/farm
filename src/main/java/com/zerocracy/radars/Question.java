@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicReference;
 import org.cactoos.list.IterableAsList;
+import org.cactoos.list.SortedIterable;
 import org.cactoos.list.TransformedIterable;
 
 /**
@@ -233,7 +234,7 @@ public final class Question {
                         ),
                         String.join(
                             "\n  ",
-                            new SortedIterable<CharSequence>(
+                            new SortedIterable<String>(
                                 new TransformedIterable<>(
                                     opts,
                                     item -> String.format(

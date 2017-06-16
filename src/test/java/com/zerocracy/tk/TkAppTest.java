@@ -21,6 +21,7 @@ import com.jcabi.http.response.RestResponse;
 import com.jcabi.http.response.XmlResponse;
 import com.jcabi.matchers.XhtmlMatchers;
 import java.net.HttpURLConnection;
+import java.util.Properties;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 import org.takes.Take;
@@ -40,7 +41,7 @@ public final class TkAppTest {
 
     @Test
     public void rendersHomePage() throws Exception {
-        final Take take = new TkApp();
+        final Take take = new TkApp(new Properties());
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
                 new RsPrint(
@@ -62,7 +63,7 @@ public final class TkAppTest {
 
     @Test
     public void rendersHomePageViaHttp() throws Exception {
-        final Take app = new TkApp();
+        final Take app = new TkApp(new Properties());
         new FtRemote(app).exec(
             home -> new JdkRequest(home)
                 .fetch()

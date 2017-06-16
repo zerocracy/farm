@@ -27,6 +27,7 @@ import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import org.cactoos.Input;
 import org.cactoos.func.AlwaysTrueFunc;
@@ -79,7 +80,10 @@ public final class BundlesTest {
 
     @Test
     public void oneBundleWorksFine() throws IOException {
-        final Farm farm = new SmartFarm(new FkFarm()).asValue();
+        final Farm farm = new SmartFarm(
+            new FkFarm(),
+            new Properties()
+        ).asValue();
         final Project project = farm.find("id=12345").iterator().next();
         new IterableAsBoolean<>(
             BundlesTest.resources(this.bundle.replace("/", ".")),

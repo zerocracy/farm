@@ -16,6 +16,7 @@
  */
 package com.zerocracy.radars.github;
 
+import com.jcabi.github.mock.MkGithub;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.fake.FkFarm;
 import com.zerocracy.pmo.Ext;
@@ -39,7 +40,9 @@ public final class ReOnInvitationITCase {
         new Ext(farm)
             .set("github", "login", "0crat")
             .set("github", "password", "--secret--");
-        new ReOnInvitation().react(farm, Json.createObjectBuilder().build());
+        new ReOnInvitation(new MkGithub()).react(
+            farm, Json.createObjectBuilder().build()
+        );
     }
 
 }

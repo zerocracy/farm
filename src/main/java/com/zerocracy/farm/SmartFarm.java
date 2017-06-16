@@ -26,6 +26,7 @@ import com.zerocracy.farm.sync.SyncFarm;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
+import java.util.Properties;
 import java.util.TreeSet;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -58,11 +59,17 @@ public final class SmartFarm implements Scalar<Farm> {
     private final Farm origin;
 
     /**
+     * Properties.
+     */
+    private final Properties props;
+
+    /**
      * Ctor.
      * @param frm Original
      */
-    public SmartFarm(final Farm frm) {
+    public SmartFarm(final Farm frm, final Properties pps) {
         this.origin = frm;
+        this.props = pps;
     }
 
     @Override
@@ -70,14 +77,14 @@ public final class SmartFarm implements Scalar<Farm> {
         final ThreadFactory factory = new VerboseThreads();
         return new RvFarm(
             new SyncFarm(this.origin),
-            new Brigade(SmartFarm.stakeholders()),
+            new Brigade(this.stakeholders()),
             Executors.newSingleThreadExecutor(
                 rnb -> factory.newThread(
                     new VerboseRunnable(
                         new FuncAsRunnable(
                             new FuncWithFallback<>(
                                 new RunnableAsFunc<>(rnb),
-                                new ThrowableToEmail(props)
+                                new ThrowableToEmail(this.props)
                             )
                         ),
                         true, true
@@ -91,7 +98,7 @@ public final class SmartFarm implements Scalar<Farm> {
      * List of stakeholders.
      * @return Stakeholders
      */
-    private static Iterable<Stakeholder> stakeholders() {
+    private Iterable<Stakeholder> stakeholders() {
         return new TransformedIterable<>(
             new TreeSet<>(
                 new Reflections(
@@ -99,6 +106,7 @@ public final class SmartFarm implements Scalar<Farm> {
                 ).getResources(Pattern.compile(".*\\.groovy"))
             ),
             path -> new StkSafe(
+                this.props,
                 (project, xml) -> new IoCheckedFunc<>(
                     new FuncWithFallback<Project, Boolean>(
                         new ProcAsFunc<>(
@@ -107,11 +115,11 @@ public final class SmartFarm implements Scalar<Farm> {
                                 path
                             ).process(pkt, xml)
                         ),
-                        error -> {
-                            if (error instanceof MismatchException) {
-                                throw MismatchException.class.cast(error);
+                        exp -> {
+                            if (exp instanceof MismatchException) {
+                                throw MismatchException.class.cast(exp);
                             }
-                            return new ThrowableToEmail(props).apply(error);
+                            return new ThrowableToEmail(this.props).apply(exp);
                         }
                     )
                 ).apply(project)

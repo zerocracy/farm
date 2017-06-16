@@ -17,6 +17,7 @@
 package com.zerocracy;
 
 import java.io.IOException;
+import java.util.Properties;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -33,7 +34,9 @@ public final class ThrowableToEmailTest {
     @Test
     public void modifiesItems() throws Exception {
         MatcherAssert.assertThat(
-            new ThrowableToEmail(props).apply(new IOException("oops")),
+            new ThrowableToEmail(
+                new Properties()
+            ).apply(new IOException("oops")),
             Matchers.is(true)
         );
     }
