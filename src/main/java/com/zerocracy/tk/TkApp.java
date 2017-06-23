@@ -16,13 +16,13 @@
  */
 package com.zerocracy.tk;
 
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import com.zerocracy.ThrowableToEmail;
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.util.Arrays;
 import java.util.Properties;
+import org.cactoos.list.ArrayAsIterable;
+import org.cactoos.list.ConcatIterable;
+import org.cactoos.list.IterableAsList;
 import org.cactoos.text.BytesAsText;
 import org.cactoos.text.ThrowableAsBytes;
 import org.takes.facets.fallback.FbChain;
@@ -31,6 +31,7 @@ import org.takes.facets.fallback.FbStatus;
 import org.takes.facets.fallback.TkFallback;
 import org.takes.facets.flash.TkFlash;
 import org.takes.facets.fork.FkRegex;
+import org.takes.facets.fork.Fork;
 import org.takes.facets.fork.TkFork;
 import org.takes.facets.forward.TkForward;
 import org.takes.misc.Href;
@@ -79,10 +80,10 @@ public final class TkApp extends TkWrap {
                                     new TkAppAuth(
                                         new TkForward(
                                             new TkFork(
-                                                Lists.newArrayList(
-                                                    Iterables.concat(
-                                                        Arrays.asList(forks),
-                                                        Arrays.asList(
+                                                new IterableAsList<>(
+                                                    new ConcatIterable<Fork>(
+                                                        new ArrayAsIterable<>(forks),
+                                                        new ArrayAsIterable<>(
                                                             new FkRegex("/", new TkIndex(props)),
                                                             new FkRegex("/robots.txt", ""),
                                                             new FkRegex(

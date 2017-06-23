@@ -16,11 +16,12 @@
  */
 package com.zerocracy.pm;
 
-import com.google.common.collect.Iterables;
 import com.zerocracy.jstk.fake.FkProject;
+import org.cactoos.list.ConcatIterable;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.xembly.Directive;
 
 /**
  * Test case for {@link ClaimOut}.
@@ -35,7 +36,7 @@ public final class ClaimOutTest {
     public void chainsThem() throws Exception {
         try (final Claims claims = new Claims(new FkProject()).lock()) {
             claims.add(
-                Iterables.concat(
+                new ConcatIterable<Directive>(
                     new ClaimOut.Notify(
                         "token",
                         "hello, world"

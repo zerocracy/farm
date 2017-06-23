@@ -17,8 +17,6 @@
 package com.zerocracy.radars.github;
 
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
-import com.google.common.base.Function;
-import com.google.common.collect.Iterables;
 import com.jcabi.dynamo.Attributes;
 import com.jcabi.dynamo.Item;
 import com.jcabi.dynamo.QueryValve;
@@ -38,6 +36,9 @@ import java.util.Locale;
 import java.util.stream.StreamSupport;
 import javax.json.JsonObject;
 import org.apache.commons.lang3.StringUtils;
+import org.cactoos.list.FilteredIterable;
+import org.cactoos.list.LengthOfIterable;
+import org.cactoos.list.MappedIterable;
 
 /**
  * Reaction on GitHub comment.
@@ -45,6 +46,7 @@ import org.apache.commons.lang3.StringUtils;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class ReOnComment implements Reaction {
 
@@ -116,7 +118,7 @@ public final class ReOnComment implements Reaction {
         }
         Logger.info(
             this, "%d comments found in %s#%d and processed in %[ms]s: %s",
-            Iterables.size(comments),
+            new LengthOfIterable(comments).asValue(),
             issue.repo().coordinates(),
             issue.number(),
             System.currentTimeMillis() - start,
@@ -154,10 +156,10 @@ public final class ReOnComment implements Reaction {
             // @checkstyle MagicNumber (1 line)
             seen = 276041067;
         }
-        return Iterables.filter(
-            Iterables.transform(
+        return new FilteredIterable<>(
+            new MappedIterable<>(
                 issue.comments().iterate(new Date(since)),
-                (Function<Comment, Comment>) SafeComment::new
+                SafeComment::new
             ),
             comment -> comment.number() > seen
         );
