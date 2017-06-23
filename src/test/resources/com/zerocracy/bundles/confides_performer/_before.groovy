@@ -16,12 +16,13 @@
  */
 package com.zerocracy.bundles.confides_performer
 
+import com.jcabi.github.Github
 import com.jcabi.github.Repos
+import com.jcabi.xml.XML
 import com.zerocracy.jstk.Project
-import com.zerocracy.entry.ExtGithub
 
-def exec(Project project) {
-  def github = new ExtGithub(project).asValue()
+def exec(Project project, XML xml) {
+  Github github = binding.variables.github
   def repo = github.repos().create(new Repos.RepoCreate("test", false))
   repo.issues().create("hello, world", "")
 }

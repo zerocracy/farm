@@ -26,7 +26,7 @@ import com.zerocracy.jstk.cash.Cash;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
-import org.cactoos.list.TransformedIterable;
+import org.cactoos.list.MappedIterable;
 import org.xembly.Directives;
 
 /**
@@ -312,7 +312,7 @@ public final class People {
      */
     public Iterable<String> links(final String uid) throws IOException {
         try (final Item item = this.item()) {
-            return new TransformedIterable<>(
+            return new MappedIterable<>(
                 new Xocument(item).nodes(
                     String.format(
                         "/people/person[@id='%s']/links/link",

@@ -66,10 +66,10 @@ public final class TkGithub implements Take {
      * @param ghub Github
      * @param dynamo DynamoDB
      * @param props Properties
-     * @throws IOException If fails
+     * @checkstyle ParameterNumberCheck (5 lines)
      */
     public TkGithub(final Farm frm, final Github ghub, final Region dynamo,
-        final Properties props) throws IOException {
+        final Properties props) {
         this(
             frm,
             ghub,

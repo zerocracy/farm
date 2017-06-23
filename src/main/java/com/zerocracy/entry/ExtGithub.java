@@ -19,18 +19,10 @@ package com.zerocracy.entry;
 import com.jcabi.aspects.Cacheable;
 import com.jcabi.github.Github;
 import com.jcabi.github.RtGithub;
-import com.jcabi.github.mock.MkGithub;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Project;
-import com.zerocracy.pmo.Ext;
-import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
-import java.util.Map;
+import java.util.Properties;
 import lombok.EqualsAndHashCode;
-import org.cactoos.Func;
 import org.cactoos.Scalar;
-import org.cactoos.func.IoCheckedFunc;
-import org.cactoos.func.StickyFunc;
 
 /**
  * GitHub server connector.
@@ -39,50 +31,17 @@ import org.cactoos.func.StickyFunc;
  * @version $Id$
  * @since 0.7
  */
-@EqualsAndHashCode(of = "pmo")
+@EqualsAndHashCode
 final class ExtGithub implements Scalar<Github> {
-
-    /**
-     * Cached test repos.
-     */
-    private static final Func<String, Github> FAKES = new StickyFunc<>(
-        MkGithub::new
-    );
-
-    /**
-     * PMO.
-     */
-    private final Project pmo;
-
-    /**
-     * Ctor.
-     * @param farm Farm
-     */
-    public ExtGithub(final Farm farm) {
-        this(new Pmo(farm));
-    }
-
-    /**
-     * Ctor.
-     * @param pkt Project
-     */
-    public ExtGithub(final Project pkt) {
-        this.pmo = pkt;
-    }
 
     @Override
     @Cacheable(forever = true)
     public Github asValue() throws IOException {
-        final Ext ext = new Ext(this.pmo).bootstrap();
-        final Map<String, String> props = ext.get("github");
-        final String login = props.get("login");
-        final Github github;
-        if ("test".equals(login)) {
-            github = new IoCheckedFunc<>(ExtGithub.FAKES).apply(login);
-        } else {
-            github = new RtGithub(login, props.get("password"));
-        }
-        return github;
+        final Properties props = new ExtProperties().asValue();
+        return new RtGithub(
+            props.getProperty("github.0crat.login"),
+            props.getProperty("github.0crat.password")
+        );
     }
 
 }

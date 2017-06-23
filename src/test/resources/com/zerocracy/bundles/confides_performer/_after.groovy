@@ -14,12 +14,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.notifies_in_github
+package com.zerocracy.bundles.confides_performer
 
+import com.jcabi.xml.XML
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.in.Orders
 
-def exec(Project project) {
+def exec(Project project, XML xml) {
   def orders = new Orders(project).bootstrap()
   assert orders.performer('gh:test/test#1') == 'yegor256'
 }

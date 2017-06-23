@@ -14,34 +14,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.entry;
+package com.zerocracy.stk.pm.comm
 
-import com.jcabi.aspects.Cacheable;
-import java.io.IOException;
-import java.util.Properties;
-import org.cactoos.Scalar;
-import org.cactoos.io.InputAsProperties;
-import org.cactoos.io.ResourceAsInput;
+import com.jcabi.xml.XML
+import com.zerocracy.farm.Assume
+import com.zerocracy.jstk.Project
+import com.zerocracy.pm.ClaimIn
 
-/**
- * Properties.
- *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.11
- */
-final class ExtProperties implements Scalar<Properties> {
-
-    @Override
-    @Cacheable(forever = true)
-    public Properties asValue() throws IOException {
-        final Properties props = new InputAsProperties(
-            new ResourceAsInput("main.properties")
-        ).asValue();
-        if (this.getClass().getResource("/org/junit/Test.class") != null) {
-            props.setProperty("testing", "true");
-        }
-        return props;
-    }
-
+def exec(Project project, XML xml) {
+  new Assume(project, xml).type('Notify project')
+  ClaimIn claim = new ClaimIn(xml)
+  claim.copy()
+    .type('Notify in Slack')
+    .token("slack;${project};direct")
+    .postTo(project)
 }

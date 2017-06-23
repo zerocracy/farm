@@ -22,7 +22,6 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Catalog
-import com.zerocracy.entry.ExtGithub
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Add link')
@@ -32,7 +31,7 @@ def exec(Project project, XML xml) {
   String rel = claim.param('rel')
   String href = claim.param('href')
   if ('github' == rel) {
-    new ExtGithub(project).asValue().repos().get(
+    binding.variables.github.repos().get(
       new Coordinates.Simple(href)
     ).stars().star()
   }

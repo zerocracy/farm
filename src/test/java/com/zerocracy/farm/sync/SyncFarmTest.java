@@ -29,7 +29,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import org.cactoos.list.IterableAsBoolean;
+import org.cactoos.Func;
+import org.cactoos.func.And;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -74,9 +75,9 @@ public final class SyncFarmTest {
         }
         latch.countDown();
         MatcherAssert.assertThat(
-            new IterableAsBoolean<>(
+            new And(
                 futures,
-                Future::get
+                (Func<Future<Boolean>, Boolean>) Future::get
             ).asValue(),
             Matchers.is(true)
         );

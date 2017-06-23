@@ -28,9 +28,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicReference;
-import org.cactoos.list.IterableAsList;
+import org.cactoos.list.MappedIterable;
 import org.cactoos.list.SortedIterable;
-import org.cactoos.list.TransformedIterable;
+import org.cactoos.list.StickyList;
 
 /**
  * Question in text.
@@ -167,8 +167,8 @@ public final class Question {
                     String.join(
                         "\n  * ",
                         new TreeSet<>(
-                            new IterableAsList<CharSequence>(
-                                new TransformedIterable<>(
+                            new StickyList<CharSequence>(
+                                new MappedIterable<>(
                                     cmds,
                                     cmd -> String.format(
                                         "`%s` %s",
@@ -213,6 +213,7 @@ public final class Question {
      * @param part Part
      * @param parts All other parts left
      */
+    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     private void parseOpts(final XML cmd, final String part,
         final List<String> parts) {
         final Collection<XML> opts = cmd.nodes("opts/opt");
@@ -227,7 +228,7 @@ public final class Question {
                         part,
                         String.join(
                             "> <",
-                            new TransformedIterable<>(
+                            new MappedIterable<>(
                                 opts,
                                 item -> item.xpath("name/text()  ").get(0)
                             )
@@ -235,7 +236,7 @@ public final class Question {
                         String.join(
                             "\n  ",
                             new SortedIterable<String>(
-                                new TransformedIterable<>(
+                                new MappedIterable<>(
                                     opts,
                                     item -> String.format(
                                         "* `<%s>`: %s",

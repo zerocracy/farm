@@ -39,24 +39,16 @@ def exec(Project project, XML xml) {
       job, login
     )
   ).postTo(project)
-  new ClaimOut(
-    new ClaimOut.ToUser(
-      project,
-      login,
-      String.format(
-        'Job `%s` was assigned to you a minute ago.',
-        job
-      )
+  new ClaimOut()
+    .type('Notify user')
+    .param('login', login)
+    .param('message', "Job `${job}` was assigned to you a minute ago.")
+    .postTo(project)
+  new ClaimOut()
+    .type('Notify project')
+    .param(
+      'message',
+      "Job `${job}` was assigned to [@${login}](https://github.com/%1\$s)."
     )
-  ).postTo(project)
-  new ClaimOut(
-    new ClaimOut.ToProject(
-      project,
-      String.format(
-        // @checkstyle LineLength (1 line)
-        'Job `%s` was assigned to [@%s](https://github.com/%1$s).',
-        job, login
-      )
-    )
-  ).postTo(project)
+    .postTo(project)
 }

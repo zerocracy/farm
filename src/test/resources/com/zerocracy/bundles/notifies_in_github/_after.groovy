@@ -18,11 +18,12 @@ package com.zerocracy.bundles.notifies_in_github
 
 import com.jcabi.github.Comment
 import com.jcabi.github.Coordinates
-import com.zerocracy.entry.ExtGithub
+import com.jcabi.github.Github
+import com.jcabi.xml.XML
 import com.zerocracy.jstk.Project
 
-def exec(Project project) {
-  def github = new ExtGithub(project).asValue()
+def exec(Project project, XML xml) {
+  Github github = binding.variables.github
   def repo = github.repos().get(new Coordinates.Simple('test/test'))
   def issue = repo.issues().get(1)
   assert 'Hey, what\'s up, how is it going?' == new Comment.Smart(

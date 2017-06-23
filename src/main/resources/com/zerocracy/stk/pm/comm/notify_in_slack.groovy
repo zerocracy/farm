@@ -23,16 +23,19 @@ import com.ullink.slack.simpleslackapi.SlackSession
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.entry.ExtSlack
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Notify in Slack')
   ClaimIn claim = new ClaimIn(xml)
   String[] parts = claim.token().split(';')
-  SlackSession session = session(parts[1])
   String message = claim.param('message').replaceAll(
     '\\[([^]]+)]\\(([^)]+)\\)', '<$2|$1>'
   )
+  if (binding.variables.properties.containsKey('testing')) {
+    Logger.info(this, 'Message to Slack [%s]: %s', claim.token(), message)
+    return
+  }
+  SlackSession session = session(parts[1])
   if (parts.length > 3 && 'direct' == parts[3]) {
     session.sendMessage(
       session.openDirectMessageChannel(
@@ -66,8 +69,8 @@ def exec(Project project, XML xml) {
   }
 }
 
-static SlackSession session(String channel) {
-  for (SlackSession session : new ExtSlack().asValue().values()) {
+SlackSession session(String channel) {
+  for (SlackSession session : binding.variables.slack.values()) {
     if (belongsTo(session, channel)) {
       return session
     }

@@ -31,7 +31,7 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.EqualsAndHashCode;
-import org.cactoos.list.TransformedIterable;
+import org.cactoos.list.MappedIterable;
 import org.xembly.Directives;
 
 /**
@@ -84,7 +84,7 @@ public final class S3Farm implements Farm {
         try (final Item item = this.item()) {
             new Xocument(item.path()).bootstrap("pmo/catalog");
         }
-        Iterable<Project> projects = new TransformedIterable<>(
+        Iterable<Project> projects = new MappedIterable<>(
             this.findByXPath(xpath),
             prefix -> new UplinkedProject(
                 new StrictProject(

@@ -17,9 +17,13 @@
 package com.zerocracy;
 
 import java.io.IOException;
-import java.util.Properties;
+import java.util.AbstractMap;
+import org.cactoos.Func;
+import org.cactoos.func.FuncAsMatcher;
+import org.cactoos.list.MapAsProperties;
+import org.cactoos.text.BytesAsText;
+import org.cactoos.text.ThrowableAsBytes;
 import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
@@ -28,6 +32,7 @@ import org.junit.Test;
  * @version $Id$
  * @since 0.11
  * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class ThrowableToEmailTest {
 
@@ -35,9 +40,24 @@ public final class ThrowableToEmailTest {
     public void modifiesItems() throws Exception {
         MatcherAssert.assertThat(
             new ThrowableToEmail(
-                new Properties()
-            ).apply(new IOException("oops")),
-            Matchers.is(true)
+                new MapAsProperties(
+                    new AbstractMap.SimpleEntry<>(
+                        "testing", "true"
+                    )
+                ).asValue()
+            ),
+            new FuncAsMatcher<>(
+                (Func<Func<Throwable, Boolean>, Boolean>) func -> {
+                    try {
+                        func.apply(new IOException("hello, world!"));
+                        throw new AssertionError("Exception expected");
+                    } catch (final IllegalStateException ex) {
+                        return new BytesAsText(
+                            new ThrowableAsBytes(ex)
+                        ).asString().contains("hello");
+                    }
+                }
+            )
         );
     }
 

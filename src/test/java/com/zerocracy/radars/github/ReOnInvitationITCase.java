@@ -17,9 +17,7 @@
 package com.zerocracy.radars.github;
 
 import com.jcabi.github.mock.MkGithub;
-import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.fake.FkFarm;
-import com.zerocracy.pmo.Ext;
 import javax.json.Json;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -36,12 +34,8 @@ public final class ReOnInvitationITCase {
     @Test
     @Ignore
     public void acceptsThemAll() throws Exception {
-        final Farm farm = new FkFarm();
-        new Ext(farm)
-            .set("github", "login", "0crat")
-            .set("github", "password", "--secret--");
         new ReOnInvitation(new MkGithub()).react(
-            farm, Json.createObjectBuilder().build()
+            new FkFarm(), Json.createObjectBuilder().build()
         );
     }
 

@@ -26,6 +26,7 @@ import com.zerocracy.farm.sync.SyncFarm;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
+import java.util.Map;
 import java.util.Properties;
 import java.util.TreeSet;
 import java.util.concurrent.Executors;
@@ -38,7 +39,7 @@ import org.cactoos.func.IoCheckedFunc;
 import org.cactoos.func.ProcAsFunc;
 import org.cactoos.func.RunnableAsFunc;
 import org.cactoos.io.ResourceAsInput;
-import org.cactoos.list.TransformedIterable;
+import org.cactoos.list.MappedIterable;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
 
@@ -64,12 +65,21 @@ public final class SmartFarm implements Scalar<Farm> {
     private final Properties props;
 
     /**
+     * Deps.
+     */
+    private final Map<String, Object> deps;
+
+    /**
      * Ctor.
      * @param frm Original
+     * @param pps Properties
+     * @param dps Deps
      */
-    public SmartFarm(final Farm frm, final Properties pps) {
+    public SmartFarm(final Farm frm, final Properties pps,
+        final Map<String, Object> dps) {
         this.origin = frm;
         this.props = pps;
+        this.deps = dps;
     }
 
     @Override
@@ -99,7 +109,7 @@ public final class SmartFarm implements Scalar<Farm> {
      * @return Stakeholders
      */
     private Iterable<Stakeholder> stakeholders() {
-        return new TransformedIterable<>(
+        return new MappedIterable<>(
             new TreeSet<>(
                 new Reflections(
                     "com.zerocracy.stk", new ResourcesScanner()
@@ -112,7 +122,7 @@ public final class SmartFarm implements Scalar<Farm> {
                         new ProcAsFunc<>(
                             pkt -> new StkGroovy(
                                 new ResourceAsInput(path),
-                                path
+                                path, this.deps
                             ).process(pkt, xml)
                         ),
                         exp -> {

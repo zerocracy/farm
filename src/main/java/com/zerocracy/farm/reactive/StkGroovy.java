@@ -22,7 +22,11 @@ import com.zerocracy.jstk.Stakeholder;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import org.cactoos.Input;
+import org.cactoos.func.And;
+import org.cactoos.func.UncheckedScalar;
 import org.cactoos.io.InputAsBytes;
 import org.cactoos.text.BytesAsText;
 import org.cactoos.text.FormattedText;
@@ -47,21 +51,29 @@ public final class StkGroovy implements Stakeholder {
     private final String label;
 
     /**
+     * Deps.
+     */
+    private final Map<String, Object> deps;
+
+    /**
      * Ctor.
      * @param src Input
      */
     public StkGroovy(final Input src) {
-        this(src, "script");
+        this(src, "script", new HashMap<>(0));
     }
 
     /**
      * Ctor.
      * @param src Input
      * @param lbl Label
+     * @param dps Dependencies
      */
-    public StkGroovy(final Input src, final String lbl) {
+    public StkGroovy(final Input src, final String lbl,
+        final Map<String, Object> dps) {
         this.input = src;
         this.label = lbl;
+        this.deps = dps;
     }
 
     @Override
@@ -70,6 +82,14 @@ public final class StkGroovy implements Stakeholder {
         final Binding binding = new Binding();
         binding.setVariable("p", project);
         binding.setVariable("x", claim);
+        new UncheckedScalar<>(
+            new And(
+                this.deps.entrySet(),
+                ent -> {
+                    binding.setVariable(ent.getKey(), ent.getValue());
+                }
+            )
+        ).asValue();
         final GroovyShell shell = new GroovyShell(binding);
         shell.evaluate(
             new FormattedText(

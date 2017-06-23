@@ -60,9 +60,19 @@ public final class ThrowableToEmail implements Func<Throwable, Boolean> {
     @Override
     public Boolean apply(final Throwable error) throws IOException {
         if (this.props.containsKey("testing")) {
-            Logger.warn(this, "%[exception]s", error);
-            return true;
+            Logger.warn(this, "%s", error.getLocalizedMessage());
+        } else {
+            this.send(error);
         }
+        throw new IllegalStateException(error);
+    }
+
+    /**
+     * Send email.
+     * @param error The error
+     * @throws IOException If fails
+     */
+    private void send(final Throwable error) throws IOException {
         final Postman postman = new Postman.Default(
             new SMTP(
                 new Token(
@@ -115,7 +125,6 @@ public final class ThrowableToEmail implements Func<Throwable, Boolean> {
                     )
                 )
         );
-        throw new IllegalStateException(error);
     }
 
 }

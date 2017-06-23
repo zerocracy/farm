@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import lombok.EqualsAndHashCode;
 import org.cactoos.func.SyncFunc;
-import org.cactoos.list.TransformedIterable;
+import org.cactoos.list.MappedIterable;
 
 /**
  * Reactive farm.
@@ -72,7 +72,7 @@ public final class RvFarm implements Farm {
 
     @Override
     public Iterable<Project> find(final String query) throws IOException {
-        return new TransformedIterable<>(
+        return new MappedIterable<>(
             this.origin.find(query),
             new SyncFunc<>(
                 p -> {

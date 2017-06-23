@@ -16,32 +16,36 @@
  */
 package com.zerocracy;
 
+import com.jcabi.aspects.Tv;
+import com.jcabi.github.mock.MkGithub;
+import com.ullink.slack.simpleslackapi.SlackSession;
+import com.zerocracy.farm.SmartFarm;
+import com.zerocracy.farm.reactive.StkGroovy;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.fake.FkFarm;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
-import com.zerocracy.farm.SmartFarm;
-import groovy.lang.Binding;
-import groovy.lang.GroovyShell;
 import java.io.IOException;
+import java.util.AbstractMap;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import org.cactoos.Input;
-import org.cactoos.func.AlwaysTrueFunc;
-import org.cactoos.io.InputAsBytes;
+import org.cactoos.func.And;
 import org.cactoos.io.LengthOfInput;
 import org.cactoos.io.PathAsOutput;
 import org.cactoos.io.ResourceAsInput;
 import org.cactoos.io.TeeInput;
 import org.cactoos.list.EndlessIterable;
-import org.cactoos.list.IterableAsBoolean;
-import org.cactoos.list.IterableAsList;
-import org.cactoos.list.TransformedIterable;
-import org.cactoos.text.BytesAsText;
-import org.cactoos.text.FormattedText;
+import org.cactoos.list.LimitedIterable;
+import org.cactoos.list.MapAsProperties;
+import org.cactoos.list.MappedIterable;
+import org.cactoos.list.StickyList;
+import org.cactoos.list.StickyMap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -58,16 +62,17 @@ import org.reflections.scanners.ResourcesScanner;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @checkstyle VisibilityModifierCheck (500 lines)
  */
+@SuppressWarnings("PMD.ExcessiveImports")
 @RunWith(Parameterized.class)
 public final class BundlesTest {
 
     @Parameterized.Parameter
     public String bundle;
 
-    @Parameterized.Parameters
+    @Parameterized.Parameters(name = "{0}")
     public static Collection<Object[]> bundles() {
-        return new IterableAsList<>(
-            new TransformedIterable<>(
+        return new StickyList<>(
+            new MappedIterable<>(
                 new Reflections(
                     "com.zerocracy.bundles", new ResourcesScanner()
                 ).getResources(p -> p.endsWith("claims.xml")),
@@ -79,43 +84,56 @@ public final class BundlesTest {
     }
 
     @Test
-    public void oneBundleWorksFine() throws IOException {
-        final Farm farm = new SmartFarm(
-            new FkFarm(),
-            new Properties()
-        ).asValue();
-        final Project project = farm.find("id=12345").iterator().next();
-        new IterableAsBoolean<>(
-            BundlesTest.resources(this.bundle.replace("/", ".")),
-            new AlwaysTrueFunc<>(
-                path -> {
-                    BundlesTest.save(
-                        project,
-                        new ResourceAsInput(path),
-                        path.substring(path.lastIndexOf('/') + 1)
-                    );
-                }
+    public void oneBundleWorksFine() throws Exception {
+        final Properties props = new MapAsProperties(
+            new AbstractMap.SimpleEntry<>(
+                "testing", "true"
             )
         ).asValue();
-        new IterableAsBoolean<>(
-            BundlesTest.resources("com.zerocracy.bundles._defaults"),
-            new AlwaysTrueFunc<>(
-                path -> {
-                    BundlesTest.save(
-                        project,
-                        new ResourceAsInput(path),
-                        path.substring(path.lastIndexOf('/') + 1)
-                    );
-                }
+        // @checkstyle DiamondOperatorCheck (1 line)
+        final Map<String, Object> deps = new StickyMap<String, Object>(
+            new AbstractMap.SimpleEntry<>(
+                "github", new MkGithub("test")
+            ),
+            new AbstractMap.SimpleEntry<>(
+                "slack", new HashMap<String, SlackSession>()
+            ),
+            new AbstractMap.SimpleEntry<>(
+                "properties", props
             )
-        ).asValue();
-        BundlesTest.script(
-            String.format("%s/_before.groovy", this.bundle),
-            project
         );
+        final Farm farm = new SmartFarm(new FkFarm(), props, deps).asValue();
+        final Project project = farm.find("id=12345").iterator().next();
+        new And(
+            BundlesTest.resources(this.bundle.replace("/", ".")),
+            path -> {
+                BundlesTest.save(
+                    project,
+                    new ResourceAsInput(path),
+                    path.substring(path.lastIndexOf('/') + 1)
+                );
+            }
+        ).asValue();
+        new And(
+            BundlesTest.resources("com.zerocracy.bundles._defaults"),
+            path -> {
+                BundlesTest.save(
+                    project,
+                    new ResourceAsInput(path),
+                    path.substring(path.lastIndexOf('/') + 1)
+                );
+            }
+        ).asValue();
+        new StkGroovy(
+            new ResourceAsInput(
+                String.format("%s/_before.groovy", this.bundle)
+            ),
+            "before",
+            deps
+        ).process(project, null);
         new ClaimOut().type("ping").postTo(project);
-        new IterableAsBoolean<>(
-            new EndlessIterable<>(1),
+        new And(
+            new LimitedIterable<>(new EndlessIterable<>(1), Tv.TWENTY),
             x -> {
                 TimeUnit.SECONDS.sleep(1L);
                 try (final Claims claims = new Claims(project).lock()) {
@@ -123,10 +141,13 @@ public final class BundlesTest {
                 }
             }
         ).asValue();
-        BundlesTest.script(
-            String.format("%s/_after.groovy", this.bundle),
-            project
-        );
+        new StkGroovy(
+            new ResourceAsInput(
+                String.format("%s/_after.groovy", this.bundle)
+            ),
+            "after",
+            deps
+        ).process(project, null);
     }
 
     private static Iterable<String> resources(final String pkg) {
@@ -147,30 +168,6 @@ public final class BundlesTest {
                 )
             ).asValue();
         }
-    }
-
-    private static void script(final String script, final Project project)
-        throws IOException {
-        final Binding binding = new Binding();
-        binding.setVariable("p", project);
-        final GroovyShell shell = new GroovyShell(binding);
-        shell.evaluate(
-            new FormattedText(
-                "%s\n\nexec(p)\n",
-                new BytesAsText(
-                    new InputAsBytes(
-                        new ResourceAsInput(
-                            script,
-                            String.join(
-                                "\n",
-                                "import com.zerocracy.jstk.Project",
-                                "def exec(Project p) {}"
-                            )
-                        )
-                    )
-                ).asString()
-            ).asString()
-        );
     }
 
 }

@@ -16,6 +16,7 @@
  */
 package com.zerocracy.stk.pm.in.orders
 
+import com.jcabi.github.Github
 import com.jcabi.github.Issue
 import com.jcabi.log.Logger
 import com.jcabi.xml.XML
@@ -23,14 +24,14 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
-import com.zerocracy.entry.ExtGithub
 import com.zerocracy.radars.github.Job
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Job resigned in GitHub')
   ClaimIn claim = new ClaimIn(xml)
+  Github github = binding.variables.github
   Issue.Smart issue = new Issue.Smart(
-    new Job.Issue(new ExtGithub(project).asValue(), claim.param('job'))
+    new Job.Issue(github, claim.param('job'))
   )
   String login = claim.param('login')
   if (issue.json().isNull('assignee')) {

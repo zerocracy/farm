@@ -16,10 +16,11 @@
  */
 package com.zerocracy.bundles.modifies_wbs
 
+import com.jcabi.xml.XML
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.scope.Wbs
 
-def exec(Project project) {
+def exec(Project project, XML xml) {
   def wbs = new Wbs(project).bootstrap()
   assert wbs.exists('gh:test/test#1')
 }

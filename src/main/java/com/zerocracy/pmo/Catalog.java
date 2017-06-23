@@ -22,8 +22,8 @@ import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import java.util.Collection;
-import org.cactoos.list.IterableAsList;
-import org.cactoos.list.TransformedIterable;
+import org.cactoos.list.MappedIterable;
+import org.cactoos.list.StickyList;
 import org.xembly.Directives;
 
 /**
@@ -112,8 +112,8 @@ public final class Catalog {
      */
     public Collection<String> links(final String pid) throws IOException {
         try (final Item item = this.item()) {
-            return new IterableAsList<>(
-                new TransformedIterable<>(
+            return new StickyList<>(
+                new MappedIterable<>(
                     new Xocument(item).nodes(
                         String.format(
                             "/catalog/project[@id='%s']/links/link",
