@@ -73,24 +73,27 @@ public final class ThrowableToEmail implements Func<Throwable, Boolean> {
      * @throws IOException If fails
      */
     private void send(final Throwable error) throws IOException {
+        final String host = this.props.getProperty("smtp.host");
+        final int port = Integer.parseInt(this.props.getProperty("smtp.port"));
+        final Protocol proto;
+        if ("smtps".equals(this.props.getProperty("smtp.protocol"))) {
+            proto = new Protocol.SMTPS(host, port);
+        } else {
+            proto = new Protocol.SMTP(host, port);
+        }
         final Postman postman = new Postman.Default(
             new SMTP(
                 new Token(
                     this.props.getProperty("smtp.username"),
                     this.props.getProperty("smtp.password")
-                ).access(
-                    new Protocol.SMTP(
-                        this.props.getProperty("smtp.host"),
-                        Integer.parseInt(this.props.getProperty("smtp.port"))
-                    )
-                )
+                ).access(proto)
             )
         );
         final String version = String.format(
             "%s %s %s",
-            this.props.getProperty("build.version"),
-            this.props.getProperty("build.revision"),
-            this.props.getProperty("build.date")
+            this.props.getProperty("build.version", "-"),
+            this.props.getProperty("build.revision", "-"),
+            this.props.getProperty("build.date", "-")
         );
         postman.send(
             new Envelope.MIME()
