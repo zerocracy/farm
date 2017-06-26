@@ -21,6 +21,9 @@
         encoding="UTF-8" indent="yes" />
     <xsl:strip-space elements="*"/>
     <xsl:include href="/xsl/layout.xsl"/>
+    <xsl:include href="/org/takes/rs/xe/millis.xsl"/>
+    <xsl:include href="/org/takes/rs/xe/memory.xsl"/>
+    <xsl:include href="/org/takes/rs/xe/sla.xsl"/>
     <xsl:template match="page" mode="head">
         <title>
             <xsl:text>0crat</xsl:text>
@@ -43,15 +46,17 @@
                     <xsl:value-of select="alive"/>
                 </span>
                 <xsl:text> &#183; </xsl:text>
-                <span title="The time server took to generate this page">
-                    <xsl:call-template name="millis">
-                        <xsl:with-param name="millis" select="millis"/>
-                    </xsl:call-template>
-                </span>
+                <xsl:call-template name="takes_millis">
+                    <xsl:with-param name="millis" select="millis"/>
+                </xsl:call-template>
                 <xsl:text> &#183; </xsl:text>
-                <span title="Load average at the server">
-                    <xsl:value-of select="@sla"/>
-                </span>
+                <xsl:call-template name="takes_sla">
+                    <xsl:with-param name="sla" select="@sla"/>
+                </xsl:call-template>
+                <xsl:text> &#183; </xsl:text>
+                <xsl:call-template name="takes_memory">
+                    <xsl:with-param name="memory" select="memory"/>
+                </xsl:call-template>
             </p>
             <p>
                 <xsl:if test="identity">\

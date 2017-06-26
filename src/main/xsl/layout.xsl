@@ -17,6 +17,7 @@
  -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns="http://www.w3.org/1999/xhtml" version="1.0">
+    <xsl:include href="/org/takes/facets/flash/flash.xsl"/>
     <xsl:template match="/page">
         <html lang="en">
             <head>
@@ -29,34 +30,11 @@
                 <xsl:apply-templates select="." mode="head"/>
             </head>
             <body>
-                <xsl:apply-templates select="flash"/>
+                <xsl:call-template name="takes_flash">
+                    <xsl:with-param name="flash" select="flash"/>
+                </xsl:call-template>
                 <xsl:apply-templates select="." mode="body"/>
             </body>
         </html>
-    </xsl:template>
-    <xsl:template match="flash">
-        <p class="flash {level}">
-            <xsl:value-of select="message"/>
-        </p>
-    </xsl:template>
-    <xsl:template name="millis">
-        <xsl:param name="millis"/>
-        <xsl:choose>
-            <xsl:when test="not($millis)">
-                <xsl:text>?</xsl:text>
-            </xsl:when>
-            <xsl:when test="$millis &gt; 60000">
-                <xsl:value-of select="format-number($millis div 60000, '0')"/>
-                <xsl:text>min</xsl:text>
-            </xsl:when>
-            <xsl:when test="$millis &gt; 1000">
-                <xsl:value-of select="format-number($millis div 1000, '0.0')"/>
-                <xsl:text>s</xsl:text>
-            </xsl:when>
-            <xsl:otherwise>
-                <xsl:value-of select="format-number($millis, '0')"/>
-                <xsl:text>ms</xsl:text>
-            </xsl:otherwise>
-        </xsl:choose>
     </xsl:template>
 </xsl:stylesheet>
