@@ -14,25 +14,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pm.in;
+package com.zerocracy.pm.staff;
 
-import com.zerocracy.jstk.fake.FkProject;
-import org.junit.Test;
+import java.io.IOException;
 
 /**
- * Test case for {@link Orders}.
+ * Voter.
+ *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.10
- * @checkstyle JavadocMethodCheck (500 lines)
+ * @since 0.12
  */
-public final class OrdersTest {
+public interface Voter {
 
-    @Test
-    public void assignsAndResigns() throws Exception {
-        final Orders orders = new Orders(new FkProject()).bootstrap();
-        final String job = "gh:yegor256/0pdd#13";
-        orders.assign(job, "yegor256", "just for fun");
-    }
+    /**
+     * Vote.
+     * @param login GitHub login of the user
+     * @param log Log of the vote, if any
+     * @return Points to give to him (0..1)
+     * @throws IOException If fails
+     */
+    double vote(String login, StringBuilder log) throws IOException;
 
 }

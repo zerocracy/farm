@@ -64,7 +64,7 @@ public final class BrigadeTest {
                 ),
                 new FileAsOutput(file.toFile())
             )
-        ).asValue();
+        ).value();
         final Project project = new FkProject();
         new ClaimOut().type("just some fun").postTo(project);
         final XML xml;

@@ -18,6 +18,7 @@ deploy:
     s3cmd --no-progress put zc-farm.xml --config=../s3cfg s3://pdd.teamed.io/zc-farm.xml
 release:
   script: |
+    [[ "${tag}" =~ ^[0-9]+(\.[0-9]+)*$ ]] || exit -1
     mvn versions:set "-DnewVersion=${tag}"
     git commit -am "${tag}"
     cp ../settings.xml settings.xml

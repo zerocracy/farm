@@ -83,7 +83,7 @@ public final class SmartFarm implements Scalar<Farm> {
     }
 
     @Override
-    public Farm asValue() {
+    public Farm value() {
         final ThreadFactory factory = new VerboseThreads();
         return new RvFarm(
             new SyncFarm(this.origin),

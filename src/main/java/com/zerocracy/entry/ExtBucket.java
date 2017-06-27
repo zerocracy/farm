@@ -35,8 +35,8 @@ final class ExtBucket implements Scalar<Bucket> {
 
     @Override
     @Cacheable(forever = true)
-    public Bucket asValue() throws IOException {
-        final Properties props = new ExtProperties().asValue();
+    public Bucket value() throws IOException {
+        final Properties props = new ExtProperties().value();
         return new ReRegion(
             new Region.Simple(
                 props.getProperty("s3.key"),

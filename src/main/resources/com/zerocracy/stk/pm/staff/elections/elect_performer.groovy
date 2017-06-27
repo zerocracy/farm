@@ -14,41 +14,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.in.orders
+package com.zerocracy.stk.pm.staff.elections
 
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimOut
-import com.zerocracy.pm.in.Orders
+import com.zerocracy.pm.hr.Roles
 import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pm.staff.Elections
+import com.zerocracy.pm.staff.voters.NoRoom
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Ping')
   new Assume(project, xml).notPmo()
   Wbs wbs = new Wbs(project).bootstrap()
-  Orders orders = new Orders(project).bootstrap()
-  Elections elections = new Elections(project).bootstrap()
-  for (String job : wbs.iterate()) {
-    if (!orders.assigned(job) && elections.elected(job)) {
-      def winner = elections.winner(job)
-      def reason = elections.reason(job)
-      new ClaimOut()
-        .type('Start order')
-        .token("job;${job}")
-        .param('job', job)
-        .param('login', winner)
-        .param('reason', reason)
-        .postTo(project)
-      new ClaimOut()
-        .type('Performer was confided')
-        .token("job;${job}")
-        .param('login', winner)
-        .param('job', job)
-        .param('reason', reason)
-        .postTo(project)
+  Roles roles = new Roles(project).bootstrap()
+  List<String> logins = roles.findByRole('DEV')
+  if (!logins.empty) {
+    Elections elections = new Elections(project).bootstrap()
+    for (String job : wbs.iterate()) {
+      def elected = elections.elect(
+        job, logins,
+        [
+          (new NoRoom()): -100
+        ]
+      )
+      if (elected) {
+        new ClaimOut()
+          .type('Performer was elected')
+          .param('login', elections.winner(job))
+          .param('job', job)
+          .param('reason', elections.reason(job))
+          .postTo(project)
+      }
     }
   }
 }
-

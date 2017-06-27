@@ -75,24 +75,24 @@ public final class Main {
      */
     @SuppressWarnings("unchecked")
     public void exec() throws IOException {
-        final Properties props = new ExtProperties().asValue();
-        final Map<String, SlackSession> slack = new ExtSlack().asValue();
-        final Github github = new ExtGithub().asValue();
-        final Region dynamo = new ExtDynamo().asValue();
+        final Properties props = new ExtProperties().value();
+        final Map<String, SlackSession> slack = new ExtSlack().value();
+        final Github github = new ExtGithub().value();
+        final Region dynamo = new ExtDynamo().value();
         final Farm farm = new SmartFarm(
-            new S3Farm(new ExtBucket().asValue()),
+            new S3Farm(new ExtBucket().value()),
             props,
             new StickyMap<>(
                 new AbstractMap.SimpleEntry<>("properties", props),
                 new AbstractMap.SimpleEntry<>("slack", slack),
                 new AbstractMap.SimpleEntry<>("github", github)
             )
-        ).asValue();
+        ).value();
         try (final RrSlack radar = new RrSlack(farm, slack, props)) {
             radar.refresh();
             new FtCli(
                 new TkApp(
-                    new ExtProperties().asValue(),
+                    new ExtProperties().value(),
                     new FkRegex("/slack", new TkSlack(farm, props, radar)),
                     new FkRegex("/alias", new TkAlias(farm)),
                     new FkRegex(

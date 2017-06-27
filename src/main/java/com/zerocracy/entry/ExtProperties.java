@@ -34,10 +34,10 @@ final class ExtProperties implements Scalar<Properties> {
 
     @Override
     @Cacheable(forever = true)
-    public Properties asValue() throws IOException {
+    public Properties value() throws IOException {
         final Properties props = new InputAsProperties(
             new ResourceAsInput("main.properties")
-        ).asValue();
+        ).value();
         if (this.getClass().getResource("/org/junit/Test.class") != null) {
             props.setProperty("testing", "true");
         }

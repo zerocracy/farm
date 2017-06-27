@@ -25,10 +25,8 @@ import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.fake.FkFarm;
-import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
 import java.io.IOException;
-import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,6 +41,7 @@ import org.cactoos.io.TeeInput;
 import org.cactoos.list.EndlessIterable;
 import org.cactoos.list.LimitedIterable;
 import org.cactoos.list.MapAsProperties;
+import org.cactoos.list.MapEntry;
 import org.cactoos.list.MappedIterable;
 import org.cactoos.list.StickyList;
 import org.cactoos.list.StickyMap;
@@ -86,23 +85,15 @@ public final class BundlesTest {
     @Test
     public void oneBundleWorksFine() throws Exception {
         final Properties props = new MapAsProperties(
-            new AbstractMap.SimpleEntry<>(
-                "testing", "true"
-            )
-        ).asValue();
+            new MapEntry<>("testing", "true")
+        ).value();
         // @checkstyle DiamondOperatorCheck (1 line)
         final Map<String, Object> deps = new StickyMap<String, Object>(
-            new AbstractMap.SimpleEntry<>(
-                "github", new MkGithub("test")
-            ),
-            new AbstractMap.SimpleEntry<>(
-                "slack", new HashMap<String, SlackSession>()
-            ),
-            new AbstractMap.SimpleEntry<>(
-                "properties", props
-            )
+            new MapEntry<>("github", new MkGithub("test")),
+            new MapEntry<>("slack", new HashMap<String, SlackSession>(0)),
+            new MapEntry<>("properties", props)
         );
-        final Farm farm = new SmartFarm(new FkFarm(), props, deps).asValue();
+        final Farm farm = new SmartFarm(new FkFarm(), props, deps).value();
         final Project project = farm.find("id=12345").iterator().next();
         new And(
             BundlesTest.resources(this.bundle.replace("/", ".")),
@@ -113,7 +104,7 @@ public final class BundlesTest {
                     path.substring(path.lastIndexOf('/') + 1)
                 );
             }
-        ).asValue();
+        ).value();
         new And(
             BundlesTest.resources("com.zerocracy.bundles._defaults"),
             path -> {
@@ -123,7 +114,7 @@ public final class BundlesTest {
                     path.substring(path.lastIndexOf('/') + 1)
                 );
             }
-        ).asValue();
+        ).value();
         new StkGroovy(
             new ResourceAsInput(
                 String.format("%s/_before.groovy", this.bundle)
@@ -131,7 +122,6 @@ public final class BundlesTest {
             "before",
             deps
         ).process(project, null);
-        new ClaimOut().type("ping").postTo(project);
         new And(
             new LimitedIterable<>(new EndlessIterable<>(1), Tv.TWENTY),
             x -> {
@@ -140,7 +130,7 @@ public final class BundlesTest {
                     return !claims.iterate().isEmpty();
                 }
             }
-        ).asValue();
+        ).value();
         new StkGroovy(
             new ResourceAsInput(
                 String.format("%s/_after.groovy", this.bundle)
@@ -166,7 +156,7 @@ public final class BundlesTest {
                     input,
                     new PathAsOutput(item.path())
                 )
-            ).asValue();
+            ).value();
         }
     }
 

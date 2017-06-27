@@ -35,8 +35,8 @@ final class ExtDynamo implements Scalar<Region> {
 
     @Override
     @Cacheable(forever = true)
-    public Region asValue() throws IOException {
-        final Properties props = new ExtProperties().asValue();
+    public Region value() throws IOException {
+        final Properties props = new ExtProperties().value();
         return new ReRegion(
             new Region.Simple(
                 new Credentials.Simple(

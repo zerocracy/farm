@@ -64,10 +64,11 @@ public final class Orders {
      * Assign job to performer.
      * @param job The job to assign
      * @param login The login of the user
+     * @param reason The reason of this order
      * @throws IOException If fails
      */
-    public void assign(final String job, final String login)
-        throws IOException {
+    public void assign(final String job, final String login,
+        final String reason) throws IOException {
         if (this.assigned(job)) {
             throw new SoftException(
                 String.format(
@@ -93,6 +94,9 @@ public final class Orders {
                     .up()
                     .add("performer")
                     .set(login)
+                    .up()
+                    .add("reason")
+                    .set(reason)
             );
         }
     }

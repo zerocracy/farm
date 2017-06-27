@@ -16,6 +16,7 @@
  */
 package com.zerocracy.farm.sync;
 
+import com.jcabi.log.VerboseThreads;
 import com.jcabi.s3.Bucket;
 import com.jcabi.s3.fake.FkBucket;
 import com.zerocracy.farm.S3Farm;
@@ -53,7 +54,9 @@ public final class SyncFarmTest {
         );
         final Farm farm = new SyncFarm(new S3Farm(bucket));
         final int threads = Runtime.getRuntime().availableProcessors() << 2;
-        final ExecutorService service = Executors.newFixedThreadPool(threads);
+        final ExecutorService service = Executors.newFixedThreadPool(
+            threads, new VerboseThreads()
+        );
         final CountDownLatch latch = new CountDownLatch(1);
         final Collection<Future<Boolean>> futures = new ArrayList<>(threads);
         final String role = "PO";
@@ -78,7 +81,7 @@ public final class SyncFarmTest {
             new And(
                 futures,
                 (Func<Future<Boolean>, Boolean>) Future::get
-            ).asValue(),
+            ).value(),
             Matchers.is(true)
         );
     }

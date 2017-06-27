@@ -17,6 +17,7 @@
 package com.zerocracy;
 
 import com.jcabi.aspects.Cacheable;
+import com.jcabi.aspects.Tv;
 import com.jcabi.xml.StrictXML;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
@@ -32,13 +33,22 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.cactoos.Func;
 import org.cactoos.func.StickyFunc;
+import org.cactoos.func.Ternary;
 import org.cactoos.func.UncheckedFunc;
+import org.cactoos.func.UncheckedScalar;
 import org.cactoos.io.InputAsBytes;
 import org.cactoos.io.InputAsLSInput;
+import org.cactoos.io.LengthOfInput;
 import org.cactoos.io.PathAsInput;
+import org.cactoos.io.PathAsOutput;
 import org.cactoos.io.StickyInput;
+import org.cactoos.io.TeeInput;
 import org.cactoos.io.UrlAsInput;
+import org.cactoos.list.ReducedIterable;
+import org.cactoos.list.ReverseIterable;
+import org.cactoos.list.StickyList;
 import org.cactoos.text.BytesAsText;
+import org.cactoos.text.SplitText;
 import org.cactoos.text.UncheckedText;
 import org.w3c.dom.Node;
 import org.w3c.dom.ls.LSInput;
@@ -54,6 +64,7 @@ import org.xembly.Xembler;
  * @version $Id$
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @checkstyle ClassFanOutComplexityCheck (500 lines)
  */
 @SuppressWarnings("PMD.ExcessiveImports")
 public final class Xocument {
@@ -61,7 +72,7 @@ public final class Xocument {
     /**
      * Current DATUM version.
      */
-    private static final String VERSION = "0.23";
+    private static final String VERSION = "0.24.1";
 
     /**
      * Compressing XSL.
@@ -112,10 +123,8 @@ public final class Xocument {
     public Xocument bootstrap(final String xsd)
         throws IOException {
         final String root = StringUtils.substringAfterLast(xsd, "/");
-        final String uri = String.format(
-            // @checkstyle LineLength (1 line)
-            "https://raw.githubusercontent.com/zerocracy/datum/%s/xsd/%s.xsd",
-            Xocument.VERSION, xsd
+        final String uri = Xocument.url(
+            String.format("/%s/xsd/%s.xsd", Xocument.VERSION, xsd)
         );
         if (!Files.exists(this.file) || Files.size(this.file) == 0L) {
             Files.write(
@@ -128,7 +137,7 @@ public final class Xocument {
                 StandardOpenOption.CREATE
             );
         }
-        final XML xml = new XMLDocument(this.file.toFile());
+        final XML xml = this.upgraded(new XMLDocument(this.file.toFile()), xsd);
         final String schema = xml.xpath(
             String.format("/%s/@xsi:noNamespaceSchemaLocation", root)
         ).get(0);
@@ -184,8 +193,112 @@ public final class Xocument {
             Xocument.resolver()
         ).toString();
         if (!before.toString().equals(after)) {
-            Files.write(this.file, after.getBytes(StandardCharsets.UTF_8));
+            new LengthOfInput(
+                new TeeInput(after, new PathAsOutput(this.file))
+            ).value();
         }
+    }
+
+    /**
+     * Upgrade if necessary.
+     * @param xml XML to upgrade
+     * @param xsd Path to XSD, eg "pm/scope/wbs"
+     * @return Upgraded
+     * @throws IOException If fails
+     */
+    public XML upgraded(final XML xml, final String xsd) throws IOException {
+        final String version = new UncheckedScalar<>(
+            new Ternary<String>(
+                xml.xpath("/*/@version"),
+                List::isEmpty,
+                xpath -> "0.0",
+                xpath -> xpath.get(0)
+            )
+        ).value();
+        final XML after;
+        if (version.equals(Xocument.VERSION)) {
+            after = xml;
+        } else {
+            after = new UncheckedScalar<>(
+                new ReducedIterable<>(
+                    new ReverseIterable<>(
+                        new StickyList<>(
+                            new SplitText(
+                                new BytesAsText(
+                                    new UrlAsInput(
+                                        Xocument.url(
+                                            String.format(
+                                                "/latest/upgrades/%s/list",
+                                                xsd
+                                            )
+                                        )
+                                    )
+                                ),
+                                "\n"
+                            )
+                        )
+                    ),
+                    xml,
+                    (input, line) -> {
+                        XML output = input;
+                        final String[] parts = line.split(" ");
+                        if (Xocument.compare(parts[0], version) > 0) {
+                            output = XSLDocument.make(
+                                new UrlAsInput(
+                                    Xocument.url(
+                                        String.format(
+                                            "/latest/%s",
+                                            parts[1]
+                                        )
+                                    )
+                                ).stream()
+                            ).transform(input);
+                        }
+                        return output;
+                    }
+                )
+            ).value();
+            new LengthOfInput(
+                new TeeInput(after.toString(), new PathAsOutput(this.file))
+            ).value();
+        }
+        return after;
+    }
+
+    /**
+     * Build URL.
+     * @param path Path
+     * @return URL
+     */
+    private static String url(final String path) {
+        return String.format(
+            "http://datum.zerocracy.com/%s",
+            path
+        );
+    }
+
+    /**
+     * Compare two versions.
+     * @param left Left version
+     * @param right Right version
+     * @return Result (>0 if left is bigger than right)
+     */
+    private static int compare(final String left, final String right) {
+        return Integer.compare(Xocument.num(left), Xocument.num(right));
+    }
+
+    /**
+     * Version as a number.
+     * @param ver Version
+     * @return The number
+     */
+    private static int num(final String ver) {
+        final String[] parts = ver.split("\\.");
+        int sum = 0;
+        for (int idx = parts.length - 1; idx >= 0; --idx) {
+            sum += Integer.parseInt(parts[idx]) << (idx << Tv.THREE);
+        }
+        return sum;
     }
 
     /**

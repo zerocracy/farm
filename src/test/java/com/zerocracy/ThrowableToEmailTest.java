@@ -50,7 +50,7 @@ public final class ThrowableToEmailTest {
                     new AbstractMap.SimpleEntry<>(
                         "testing", "true"
                     )
-                ).asValue()
+                ).value()
             ),
             new FuncAsMatcher<>(
                 (Func<Func<Throwable, Boolean>, Boolean>) func -> {
@@ -71,7 +71,7 @@ public final class ThrowableToEmailTest {
     public void sendsEmailToRealSmtpServer() throws Exception {
         final int port = new RetryScalar<>(
             ThrowableToEmailTest::reserve
-        ).asValue();
+        ).value();
         final GreenMailOperations mail = new GreenMail(
             new ServerSetup(port, null, ServerSetup.PROTOCOL_SMTP)
         );
@@ -87,7 +87,7 @@ public final class ThrowableToEmailTest {
                         "smtp.host=127.0.0.1",
                         String.format("smtp.port=%d", port)
                     )
-                ).asValue()
+                ).value()
             ),
             new FuncAsMatcher<>(
                 (Func<Func<Throwable, Boolean>, Boolean>) func -> {

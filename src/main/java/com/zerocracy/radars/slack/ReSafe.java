@@ -23,6 +23,8 @@ import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.SoftException;
 import java.io.IOException;
 import org.apache.commons.lang3.StringUtils;
+import org.cactoos.func.FuncWithFallback;
+import org.cactoos.func.IoCheckedFunc;
 import org.cactoos.text.BytesAsText;
 import org.cactoos.text.ThrowableAsBytes;
 
@@ -49,35 +51,43 @@ public final class ReSafe implements Reaction<SlackMessagePosted> {
     }
 
     @Override
-    @SuppressWarnings("PMD.AvoidCatchingThrowable")
     public boolean react(final Farm farm, final SlackMessagePosted event,
         final SlackSession session) throws IOException {
-        boolean done = false;
-        try {
-            done = this.origin.react(farm, event, session);
-        } catch (final SoftException ex) {
-            session.sendMessage(event.getChannel(), ex.getMessage());
-            // @checkstyle IllegalCatchCheck (1 line)
-        } catch (final Throwable ex) {
-            session.sendMessage(
-                event.getChannel(),
-                String.join(
-                    "",
-                    "There is an unrecoverable failure on my side.",
-                    " Please, submit it",
-                    " [here](https://github.com/zerocracy/datum):\n\n```\n",
-                    StringUtils.abbreviate(
-                        new BytesAsText(
-                            new ThrowableAsBytes(ex)
-                        ).asString(),
-                        Tv.THOUSAND
-                    ),
-                    "\n```"
-                )
-            );
-            throw new IOException(ex);
-        }
-        return done;
+        return new IoCheckedFunc<>(
+            new FuncWithFallback<Boolean, Boolean>(
+                smart -> {
+                    boolean result = false;
+                    try {
+                        result = this.origin.react(farm, event, session);
+                    } catch (final SoftException ex) {
+                        session.sendMessage(
+                            event.getChannel(), ex.getMessage()
+                        );
+                    }
+                    return result;
+                },
+                throwable -> {
+                    session.sendMessage(
+                        event.getChannel(),
+                        String.join(
+                            "",
+                            "There is an unrecoverable failure on my side.",
+                            " Please, submit it",
+                            " [here](https://github.com/zerocracy/datum):",
+                            "\n\n```\n",
+                            StringUtils.abbreviate(
+                                new BytesAsText(
+                                    new ThrowableAsBytes(throwable)
+                                ).asString(),
+                                Tv.THOUSAND
+                            ),
+                            "\n```"
+                        )
+                    );
+                    throw new IOException(throwable);
+                }
+            )
+        ).apply(true);
     }
 
 }

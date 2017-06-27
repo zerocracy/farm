@@ -14,14 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.confides_performer
 
-import com.jcabi.xml.XML
-import com.zerocracy.jstk.Project
-import com.zerocracy.pm.ClaimIn
-
-def exec(Project project, XML xml) {
-  if (new ClaimIn(xml).type() == 'Notify in Slack') {
-
-  }
-}
+/**
+ * Voters.
+ *
+ * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @version $Id$
+ * @since 0.12
+ */
+package com.zerocracy.pm.staff.voters;

@@ -89,7 +89,7 @@ public final class StkGroovy implements Stakeholder {
                     binding.setVariable(ent.getKey(), ent.getValue());
                 }
             )
-        ).asValue();
+        ).value();
         final GroovyShell shell = new GroovyShell(binding);
         shell.evaluate(
             new FormattedText(

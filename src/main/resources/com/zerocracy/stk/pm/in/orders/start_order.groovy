@@ -32,7 +32,7 @@ def exec(Project project, XML xml) {
   if ('me' == login) {
     login = claim.author()
   }
-  new Orders(project).bootstrap().assign(job, login)
+  new Orders(project).bootstrap().assign(job, login, claim.param('reason'))
   claim.reply(
     String.format(
       'Job `%s` assigned to @%s, please go ahead.',

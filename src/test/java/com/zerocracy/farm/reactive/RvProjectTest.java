@@ -16,6 +16,7 @@
  */
 package com.zerocracy.farm.reactive;
 
+import com.jcabi.log.VerboseThreads;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.fake.FkProject;
 import com.zerocracy.pm.ClaimOut;
@@ -43,7 +44,7 @@ public final class RvProjectTest {
         final Spin spin = new Spin(
             raw,
             Collections.singletonList((pkt, xml) -> done.set(true)),
-            Executors.newSingleThreadExecutor()
+            Executors.newSingleThreadExecutor(new VerboseThreads())
         );
         final RvProject project = new RvProject(raw, spin);
         try (final Claims claims = new Claims(project).lock()) {

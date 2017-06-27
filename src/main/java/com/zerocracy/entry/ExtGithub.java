@@ -36,8 +36,8 @@ final class ExtGithub implements Scalar<Github> {
 
     @Override
     @Cacheable(forever = true)
-    public Github asValue() throws IOException {
-        final Properties props = new ExtProperties().asValue();
+    public Github value() throws IOException {
+        final Properties props = new ExtProperties().value();
         return new RtGithub(
             props.getProperty("github.0crat.login"),
             props.getProperty("github.0crat.password")

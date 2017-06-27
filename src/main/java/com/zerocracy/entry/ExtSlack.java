@@ -45,7 +45,7 @@ final class ExtSlack implements Scalar<Map<String, SlackSession>> {
 
     @Override
     @Cacheable(forever = true)
-    public Map<String, SlackSession> asValue() {
+    public Map<String, SlackSession> value() {
         return this.map;
     }
 

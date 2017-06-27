@@ -118,7 +118,7 @@ public final class ReOnComment implements Reaction {
         }
         Logger.info(
             this, "%d comments found in %s#%d and processed in %[ms]s: %s",
-            new LengthOfIterable(comments).asValue(),
+            new LengthOfIterable(comments).value(),
             issue.repo().coordinates(),
             issue.number(),
             System.currentTimeMillis() - start,
