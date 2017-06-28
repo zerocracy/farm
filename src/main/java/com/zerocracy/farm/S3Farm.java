@@ -88,9 +88,7 @@ public final class S3Farm implements Farm {
             this.findByXPath(xpath),
             prefix -> new UplinkedProject(
                 new StrictProject(
-                    new S3Project(this.bucket, prefix, this.temp),
-                    prefix.equals(S3Farm.prefix(S3Farm.PMO)),
-                    prefix
+                    new S3Project(this.bucket, prefix, this.temp)
                 ),
                 this,
                 prefix.equals(S3Farm.prefix(S3Farm.PMO))
