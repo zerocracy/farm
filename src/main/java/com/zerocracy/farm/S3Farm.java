@@ -90,8 +90,7 @@ public final class S3Farm implements Farm {
                 new StrictProject(
                     new S3Project(this.bucket, prefix, this.temp)
                 ),
-                this,
-                prefix.equals(S3Farm.prefix(S3Farm.PMO))
+                this
             )
         );
         if (!projects.iterator().hasNext()) {

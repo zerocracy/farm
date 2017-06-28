@@ -69,20 +69,13 @@ final class UplinkedProject implements Project {
     private final Farm farm;
 
     /**
-     * Is it PMO?
-     */
-    private final boolean ispmo;
-
-    /**
      * Ctor.
      * @param pkt Project
      * @param frm Farm
-     * @param pmo Is it PMO?
      */
-    UplinkedProject(final Project pkt, final Farm frm, final boolean pmo) {
+    UplinkedProject(final Project pkt, final Farm frm) {
         this.origin = pkt;
         this.farm = frm;
-        this.ispmo = pmo;
     }
 
     @Override
@@ -94,7 +87,7 @@ final class UplinkedProject implements Project {
     public Item acq(final String file) throws IOException {
         return new IoCheckedScalar<>(
             new Ternary<>(
-                () -> !this.ispmo && new Or(
+                () -> !"PMO".equals(this.origin.toString()) && new Or(
                     new MappedIterable<>(
                         UplinkedProject.FILES,
                         pattern -> () -> pattern.matcher(file).matches()
