@@ -105,16 +105,6 @@ public final class BundlesTest {
                 );
             }
         ).value();
-        new And(
-            BundlesTest.resources("com.zerocracy.bundles._defaults"),
-            path -> {
-                BundlesTest.save(
-                    project,
-                    new ResourceAsInput(path),
-                    path.substring(path.lastIndexOf('/') + 1)
-                );
-            }
-        ).value();
         new StkGroovy(
             new ResourceAsInput(
                 String.format("%s/_before.groovy", this.bundle)

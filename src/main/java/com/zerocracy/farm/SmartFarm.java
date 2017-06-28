@@ -85,8 +85,15 @@ public final class SmartFarm implements Scalar<Farm> {
     @Override
     public Farm value() {
         final ThreadFactory factory = new VerboseThreads();
+        final Farm farm = new SyncFarm(this.origin);
         return new RvFarm(
-            new SyncFarm(this.origin),
+            s -> new MappedIterable<>(
+                farm.find(s),
+                project -> new UplinkedProject(
+                    new StrictProject(project),
+                    farm
+                )
+            ),
             new Brigade(this.stakeholders()),
             Executors.newSingleThreadExecutor(
                 rnb -> factory.newThread(

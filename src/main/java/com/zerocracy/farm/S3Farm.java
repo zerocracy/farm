@@ -86,12 +86,7 @@ public final class S3Farm implements Farm {
         }
         Iterable<Project> projects = new MappedIterable<>(
             this.findByXPath(xpath),
-            prefix -> new UplinkedProject(
-                new StrictProject(
-                    new S3Project(this.bucket, prefix, this.temp)
-                ),
-                this
-            )
+            prefix -> new S3Project(this.bucket, prefix, this.temp)
         );
         if (!projects.iterator().hasNext()) {
             final Matcher matcher = Pattern.compile(
