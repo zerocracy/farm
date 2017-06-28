@@ -26,11 +26,11 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Show links')
   new Assume(project, xml).roles('PO')
   ClaimIn claim = new ClaimIn(xml)
-  String pid = claim.param('pmo')
+  String pid = claim.param('project')
   Collection<String> links = new Catalog(project).links(pid)
   claim.reply(
     String.format(
-      'This pmo is linked with %d resources: `%s`.',
+      'This project is linked with %d resources: `%s`.',
       links.size(),
       String.join('`, `', links)
     )

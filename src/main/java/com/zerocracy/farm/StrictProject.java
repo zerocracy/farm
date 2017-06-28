@@ -43,7 +43,7 @@ final class StrictProject implements Project {
             "(catalog\\.xml)",
             "(bots\\.xml)",
             "(people\\.xml)",
-            "(ext\\.xml)"
+            "(agenda/[a-zA-Z0-9-]+\\.xml)"
         )
     );
 
@@ -81,7 +81,8 @@ final class StrictProject implements Project {
      * @param pmo Is it PMO?
      * @param pfx Prefix
      */
-    StrictProject(final Project pkt, final boolean pmo, final String pfx) {
+    StrictProject(final Project pkt, final boolean pmo,
+        final String pfx) {
         this.origin = pkt;
         this.ispmo = pmo;
         this.prefix = pfx;

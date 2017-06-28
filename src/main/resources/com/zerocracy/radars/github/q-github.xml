@@ -54,7 +54,7 @@
         </opts>
     </cmd>
     <cmd>
-        <code>Stop order</code>
+        <code>Cancel order</code>
         <regex>resign|reject</regex>
         <label>resign</label>
         <help>Resign from this issue</help>

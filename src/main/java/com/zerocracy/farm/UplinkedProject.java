@@ -23,7 +23,13 @@ import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.regex.Pattern;
 import lombok.EqualsAndHashCode;
+import org.cactoos.func.IoCheckedScalar;
+import org.cactoos.func.Or;
+import org.cactoos.func.Ternary;
+import org.cactoos.list.ArrayAsIterable;
+import org.cactoos.list.MappedIterable;
 import org.cactoos.list.StickyList;
 
 /**
@@ -39,11 +45,16 @@ final class UplinkedProject implements Project {
     /**
      * Files to fetch from PMO.
      */
-    private static final Collection<String> FILES = new HashSet<>(
+    private static final Collection<Pattern> FILES = new HashSet<>(
         new StickyList<>(
-            "ext.xml",
-            "catalog.xml",
-            "people.xml"
+            new MappedIterable<>(
+                new ArrayAsIterable<>(
+                    "agenda/[a-zA-Z0-9-]+\\.xml",
+                    "catalog\\.xml",
+                    "people\\.xml"
+                ),
+                Pattern::compile
+            )
         )
     );
 
@@ -81,13 +92,18 @@ final class UplinkedProject implements Project {
 
     @Override
     public Item acq(final String file) throws IOException {
-        final Item item;
-        if (this.ispmo || !UplinkedProject.FILES.contains(file)) {
-            item = this.origin.acq(file);
-        } else {
-            item = new Pmo(this.farm).acq(file);
-        }
-        return item;
+        return new IoCheckedScalar<>(
+            new Ternary<>(
+                () -> !this.ispmo && new Or(
+                    new MappedIterable<>(
+                        UplinkedProject.FILES,
+                        pattern -> () -> pattern.matcher(file).matches()
+                    )
+                ).value(),
+                () -> new Pmo(this.farm).acq(file),
+                () -> this.origin.acq(file)
+            )
+        ).value();
     }
 
 }

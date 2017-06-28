@@ -16,7 +16,12 @@
  */
 package com.zerocracy.pm.staff.voters;
 
+import com.jcabi.aspects.Tv;
+import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.staff.Voter;
+import com.zerocracy.pmo.Agenda;
+import java.io.IOException;
+import org.cactoos.list.LengthOfIterable;
 
 /**
  * Says "yes" when there is no room for this developer.
@@ -27,9 +32,40 @@ import com.zerocracy.pm.staff.Voter;
  */
 public final class NoRoom implements Voter {
 
+    /**
+     * Current project.
+     */
+    private final Project project;
+
+    /**
+     * Ctor.
+     * @param pkt Current project
+     */
+    public NoRoom(final Project pkt) {
+        this.project = pkt;
+    }
+
     @Override
-    public double vote(final String login, final StringBuilder log) {
-        return 0.0d;
+    public double vote(final String login, final StringBuilder log)
+        throws IOException {
+        final long total = new LengthOfIterable(
+            new Agenda(this.project, login).bootstrap().jobs()
+        ).value();
+        final double rate;
+        if (total > (long) Tv.FIVE) {
+            rate = 1.0d;
+            log.append(String.format("There are %d open jobs already", total));
+        } else if (total > 1L) {
+            rate = 0.0d;
+            log.append(String.format("There are just %d open jobs", total));
+        } else if (total == 1L) {
+            rate = 0.0d;
+            log.append("There is just one open jobs");
+        } else {
+            rate = 0.0d;
+            log.append("There are no jobs yet");
+        }
+        return rate;
     }
 
 }

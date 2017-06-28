@@ -27,7 +27,7 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Add link')
   new Assume(project, xml).roles('PO')
   ClaimIn claim = new ClaimIn(xml)
-  String pid = claim.param('pmo')
+  String pid = claim.param('project')
   String rel = claim.param('rel')
   String href = claim.param('href')
   if ('github' == rel) {
@@ -38,7 +38,7 @@ def exec(Project project, XML xml) {
   new Catalog(project).link(pid, rel, href)
   claim.reply(
     String.format(
-      'The pmo is linked with rel=`%s` and href=`%s`.',
+      'The project is linked with rel=`%s` and href=`%s`.',
       rel, href
     )
   ).postTo(project)

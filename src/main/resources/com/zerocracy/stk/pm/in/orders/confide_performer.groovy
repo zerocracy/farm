@@ -41,13 +41,6 @@ def exec(Project project, XML xml) {
         .param('login', winner)
         .param('reason', reason)
         .postTo(project)
-      new ClaimOut()
-        .type('Performer was confided')
-        .token("job;${job}")
-        .param('login', winner)
-        .param('job', job)
-        .param('reason', reason)
-        .postTo(project)
     }
   }
 }

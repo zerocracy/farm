@@ -32,7 +32,8 @@ def exec(Project project, XML xml) {
   if ('me' == login) {
     login = claim.author()
   }
-  new Orders(project).bootstrap().assign(job, login, claim.param('reason'))
+  String reason = claim.param('reason')
+  new Orders(project).bootstrap().assign(job, login, reason)
   claim.reply(
     String.format(
       'Job `%s` assigned to @%s, please go ahead.',
@@ -40,15 +41,9 @@ def exec(Project project, XML xml) {
     )
   ).postTo(project)
   new ClaimOut()
-    .type('Notify user')
+    .type('Order was given')
+    .param('job', job)
     .param('login', login)
-    .param('message', "Job `${job}` was assigned to you a minute ago.")
-    .postTo(project)
-  new ClaimOut()
-    .type('Notify project')
-    .param(
-      'message',
-      "Job `${job}` was assigned to [@${login}](https://github.com/%1\$s)."
-    )
+    .param('reason', reason)
     .postTo(project)
 }

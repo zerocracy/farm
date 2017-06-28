@@ -29,6 +29,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.cactoos.Func;
@@ -38,6 +40,7 @@ import org.cactoos.func.UncheckedFunc;
 import org.cactoos.func.UncheckedScalar;
 import org.cactoos.io.InputAsBytes;
 import org.cactoos.io.InputAsLSInput;
+import org.cactoos.io.InputWithFallback;
 import org.cactoos.io.LengthOfInput;
 import org.cactoos.io.PathAsInput;
 import org.cactoos.io.PathAsOutput;
@@ -72,7 +75,7 @@ public final class Xocument {
     /**
      * Current DATUM version.
      */
-    private static final String VERSION = "0.24.1";
+    private static final String VERSION = "0.25";
 
     /**
      * Compressing XSL.
@@ -129,10 +132,20 @@ public final class Xocument {
         if (!Files.exists(this.file) || Files.size(this.file) == 0L) {
             Files.write(
                 this.file,
-                String.format(
-                    // @checkstyle LineLength (1 line)
-                    "<%s xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='%s'/>",
-                    root, uri
+                String.join(
+                    " ",
+                    String.format("<%s", root),
+                    String.format("version='%s'", Xocument.VERSION),
+                    String.format(
+                        "updated='%s'",
+                        ZonedDateTime.now().format(
+                            DateTimeFormatter.ISO_INSTANT
+                        )
+                    ),
+                    "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'",
+                    String.format(
+                        "xsi:noNamespaceSchemaLocation='%s'/>", uri
+                    )
                 ).getBytes(StandardCharsets.UTF_8),
                 StandardOpenOption.CREATE
             );
@@ -189,7 +202,9 @@ public final class Xocument {
         final Node node = before.node();
         new Xembler(dirs).applyQuietly(node);
         final String after = new StrictXML(
-            Xocument.COMPRESS.transform(new XMLDocument(node)),
+            Xocument.COMPRESS.with(
+                "version", Xocument.VERSION
+            ).transform(new XMLDocument(node)),
             Xocument.resolver()
         ).toString();
         if (!before.toString().equals(after)) {
@@ -225,11 +240,13 @@ public final class Xocument {
                         new StickyList<>(
                             new SplitText(
                                 new BytesAsText(
-                                    new UrlAsInput(
-                                        Xocument.url(
-                                            String.format(
-                                                "/latest/upgrades/%s/list",
-                                                xsd
+                                    new InputWithFallback(
+                                        new UrlAsInput(
+                                            Xocument.url(
+                                                String.format(
+                                                    "/latest/upgrades/%s/list",
+                                                    xsd
+                                                )
                                             )
                                         )
                                     )

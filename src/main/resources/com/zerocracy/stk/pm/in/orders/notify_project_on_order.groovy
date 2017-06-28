@@ -20,15 +20,21 @@ import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pm.ClaimOut
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Performer was confided')
+  new Assume(project, xml).type('Order was given')
   ClaimIn claim = new ClaimIn(xml)
-  String reason = claim.param('reason')
-  claim.reply(
-    String.format(
-      'You got this job because of this: %s',
-      reason
+  String job = claim.param('job')
+  String login = claim.param('login')
+  new ClaimOut()
+    .type('Notify project')
+    .param(
+      'message',
+      """Job `${job}` was assigned
+      to [@${login}](https://github.com/%1\$s):
+      ${claim.param('reason')}
+      """
     )
-  ).postTo(project)
+    .postTo(project)
 }

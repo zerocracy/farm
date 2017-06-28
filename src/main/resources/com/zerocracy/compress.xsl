@@ -16,9 +16,21 @@
  * SOFTWARE.
  -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-    xmlns="http://www.w3.org/1999/xhtml" version="1.0">
+    xmlns="http://www.w3.org/1999/xhtml" version="2.0">
     <xsl:output method="xml" indent="no" />
     <xsl:strip-space elements="*"/>
+    <xsl:param name="version"/>
+    <xsl:template match="/*">
+        <xsl:copy>
+            <xsl:attribute name="version">
+                <xsl:value-of select="$version"/>
+            </xsl:attribute>
+            <xsl:attribute name="updated">
+                <xsl:value-of select="format-dateTime(current-dateTime(),'[Y]-[M00]-[D00]T[H00]:[m00]:[s00]')"/>
+            </xsl:attribute>
+            <xsl:apply-templates select="node()|(@* except (@version|@updated))"/>
+        </xsl:copy>
+    </xsl:template>
     <xsl:template match="node()|@*">
         <xsl:copy>
             <xsl:apply-templates select="node()|@*"/>

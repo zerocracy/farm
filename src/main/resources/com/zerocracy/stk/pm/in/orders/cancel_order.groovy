@@ -23,7 +23,7 @@ import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.in.Orders
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Stop order')
+  new Assume(project, xml).type('Cancel order')
   new Assume(project, xml).roles('ARC', 'PO')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')

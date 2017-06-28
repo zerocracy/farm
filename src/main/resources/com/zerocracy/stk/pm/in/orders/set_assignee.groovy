@@ -27,12 +27,14 @@ import com.zerocracy.pm.ClaimOut
 import com.zerocracy.radars.github.Job
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Job assigned in GitHub')
+  new Assume(project, xml).type('Order was given')
   ClaimIn claim = new ClaimIn(xml)
+  String job = claim.param('job')
+  if (!job.startsWith('gh:')) {
+    return
+  }
   Github github = binding.variables.github
-  Issue issue = new Job.Issue(
-    github, claim.param('job')
-  )
+  Issue issue = new Job.Issue(github, job)
   String login = claim.param('login')
   try {
     new Issue.Smart(issue).assign(login)

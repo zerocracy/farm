@@ -37,7 +37,7 @@ def exec(Project project, XML xml) {
       def elected = elections.elect(
         job, logins,
         [
-          (new NoRoom()): -100
+          (new NoRoom(project)): -100
         ]
       )
       if (elected) {

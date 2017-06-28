@@ -27,15 +27,17 @@ import com.zerocracy.pm.ClaimOut
 import com.zerocracy.radars.github.Job
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Job resigned in GitHub')
+  new Assume(project, xml).type('Order was cancelled')
   ClaimIn claim = new ClaimIn(xml)
+  String job = claim.param('job')
+  if (!job.startsWith('gh:')) {
+    return
+  }
   Github github = binding.variables.github
-  Issue.Smart issue = new Issue.Smart(
-    new Job.Issue(github, claim.param('job'))
-  )
+  Issue.Smart issue = new Issue.Smart(new Job.Issue(github, job))
   String login = claim.param('login')
   if (issue.json().isNull('assignee')) {
-    Logger.info(
+    Logger.warn(
       this, 'Issue %s#%d doesn\'t have an assignee',
       issue.repo().coordinates(), issue.number()
     )
@@ -47,12 +49,8 @@ def exec(Project project, XML xml) {
       .param('repo', issue.repo().coordinates())
       .param('issue', issue.number())
       .postTo(project)
-    Logger.info(
-      this, 'Issue %s#%d lost an assignee',
-      issue.repo().coordinates(), issue.number()
-    )
   } else {
-    Logger.info(
+    Logger.warn(
       this, 'Issue %s#%d has a different assignee already: @%s',
       issue.repo().coordinates(), issue.number(),
       issue.assignee().login()

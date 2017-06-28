@@ -26,7 +26,7 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Remove link')
   new Assume(project, xml).roles('PO')
   ClaimIn claim = new ClaimIn(xml)
-  String pid = claim.param('pmo')
+  String pid = claim.param('project')
   String rel = claim.param('rel')
   String href = claim.param('href')
   new Catalog(project).unlink(pid, rel, href)

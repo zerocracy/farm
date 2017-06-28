@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.scope.wbs
+package com.zerocracy.stk.pm.in.orders
 
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
@@ -22,22 +22,18 @@ import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.in.Orders
-import com.zerocracy.pm.scope.Wbs
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Remove job from WBS')
-  new Assume(project, xml).roles('ARC', 'PO')
+  new Assume(project, xml).type('Finish order')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
-  new Wbs(project).bootstrap().remove(job)
-  claim.reply(
-    String.format('Job `%s` is out of scope.', job)
-  ).postTo(project)
   Orders orders = new Orders(project).bootstrap()
-  if (orders.assigned(job)) {
-    new ClaimOut()
-      .type('Finish order')
-      .param('job', job)
-      .postTo(project)
-  }
+  String login = orders.performer(job)
+  orders.resign(job)
+  // pay him
+  new ClaimOut()
+    .type('Order was finished')
+    .param('job', job)
+    .param('login', login)
+    .postTo(project)
 }

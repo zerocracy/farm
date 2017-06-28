@@ -36,7 +36,7 @@ def exec(Project project, XML xml) {
   new ClaimIn(xml).reply(
     String.join(
       ' ',
-      'I\'m ready to manage a pmo.',
+      'I\'m ready to manage a project.',
       'When you\'re ready, you can start giving me commands,',
       'always prefixing your messages with my name.'
     )
