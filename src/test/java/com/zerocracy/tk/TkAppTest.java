@@ -20,6 +20,7 @@ import com.jcabi.http.request.JdkRequest;
 import com.jcabi.http.response.RestResponse;
 import com.jcabi.http.response.XmlResponse;
 import com.jcabi.matchers.XhtmlMatchers;
+import com.zerocracy.jstk.fake.FkFarm;
 import java.net.HttpURLConnection;
 import java.util.Properties;
 import org.hamcrest.MatcherAssert;
@@ -36,12 +37,13 @@ import org.takes.rs.RsPrint;
  * @version $Id$
  * @since 0.1
  * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class TkAppTest {
 
     @Test
     public void rendersHomePage() throws Exception {
-        final Take take = new TkApp(new Properties());
+        final Take take = new TkApp(new Properties(), new FkFarm());
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
                 new RsPrint(
@@ -63,7 +65,7 @@ public final class TkAppTest {
 
     @Test
     public void rendersHomePageViaHttp() throws Exception {
-        final Take app = new TkApp(new Properties());
+        final Take app = new TkApp(new Properties(), new FkFarm());
         new FtRemote(app).exec(
             home -> new JdkRequest(home)
                 .fetch()

@@ -17,6 +17,8 @@
 package com.zerocracy.tk;
 
 import com.zerocracy.ThrowableToEmail;
+import com.zerocracy.jstk.Farm;
+import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.Properties;
@@ -64,12 +66,13 @@ public final class TkApp extends TkWrap {
     /**
      * Ctor.
      * @param props Properties
+     * @param farm The farm
      * @param forks Additional forks
      * @throws IOException If fails
      * @checkstyle MethodLengthCheck (500 lines)
      */
-    public TkApp(final Properties props, final FkRegex... forks)
-        throws IOException {
+    public TkApp(final Properties props, final Farm farm,
+        final FkRegex... forks) throws IOException {
         super(
             new TkFallback(
                 new TkWithHeaders(
@@ -86,6 +89,10 @@ public final class TkApp extends TkWrap {
                                                         new ArrayAsIterable<>(
                                                             new FkRegex("/", new TkIndex(props)),
                                                             new FkRegex("/robots.txt", ""),
+                                                            new FkRegex(
+                                                                "/u/([a-zA-Z0-9-]+)",
+                                                                new TkProfile(props, new Pmo(farm))
+                                                            ),
                                                             new FkRegex(
                                                                 "/invite_friend",
                                                                 new TkRedirect(

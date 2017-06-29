@@ -93,6 +93,7 @@ public final class Main {
             new FtCli(
                 new TkApp(
                     new ExtProperties().value(),
+                    farm,
                     new FkRegex("/slack", new TkSlack(farm, props, radar)),
                     new FkRegex("/alias", new TkAlias(farm)),
                     new FkRegex(
