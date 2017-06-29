@@ -90,6 +90,7 @@ final class S3Item implements Item {
             }
             if (this.ocket.exists() && (!Files.exists(this.temp)
                 || this.expired())) {
+                final long start = System.currentTimeMillis();
                 this.ocket.read(
                     Files.newOutputStream(
                         this.temp,
@@ -104,11 +105,12 @@ final class S3Item implements Item {
                     )
                 );
                 Logger.info(
-                    this, "Loaded %d bytes from %s to %s (%s)",
+                    this, "Loaded %d bytes from %s to %s (%s) in %[ms]s",
                     this.temp.toFile().length(),
                     this.ocket.key(),
                     this.temp,
-                    Files.getLastModifiedTime(this.temp)
+                    Files.getLastModifiedTime(this.temp),
+                    System.currentTimeMillis() - start
                 );
             }
             this.open.set(true);
@@ -120,6 +122,7 @@ final class S3Item implements Item {
     public void close() throws IOException {
         if (this.open.get() && (!this.ocket.exists() || this.dirty())) {
             final ObjectMetadata meta = new ObjectMetadata();
+            final long start = System.currentTimeMillis();
             meta.setContentLength(this.temp.toFile().length());
             this.ocket.write(Files.newInputStream(this.temp), meta);
             Files.setLastModifiedTime(
@@ -129,11 +132,12 @@ final class S3Item implements Item {
                 )
             );
             Logger.info(
-                this, "Saved %d bytes to %s from %s (%s)",
+                this, "Saved %d bytes to %s from %s (%s) in %[ms]s",
                 this.temp.toFile().length(),
                 this.ocket.key(),
                 this.temp,
-                Files.getLastModifiedTime(this.temp)
+                Files.getLastModifiedTime(this.temp),
+                System.currentTimeMillis() - start
             );
         }
         this.open.set(false);
