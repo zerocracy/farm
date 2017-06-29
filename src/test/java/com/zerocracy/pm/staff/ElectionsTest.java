@@ -85,4 +85,22 @@ public final class ElectionsTest {
         );
     }
 
+    @Test
+    public void removesElection() throws Exception {
+        final Elections elections = new Elections(new FkProject()).bootstrap();
+        final String job = "gh:test/test#3";
+        elections.elect(
+            job,
+            new StickyList<>("myfriend"),
+            new StickyMap<Voter, Integer>(
+                new MapEntry<>(
+                    (login, log) -> 1.0d / (double) login.length(),
+                    1
+                )
+            )
+        );
+        elections.remove(job);
+        MatcherAssert.assertThat(elections.elected(job), Matchers.is(false));
+    }
+
 }

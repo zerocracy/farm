@@ -99,7 +99,7 @@ public final class Elections {
                 .attr("id", job)
                 .xpath(
                     String.format(
-                        "/elections/job[@id='%s']",
+                        "/elections/job[@id='%s' ]",
                         job
                     )
                 )
@@ -137,6 +137,24 @@ public final class Elections {
             elected = false;
         }
         return elected;
+    }
+
+    /**
+     * Remove the entire election for the job.
+     * @param job The job
+     * @throws IOException If fails
+     */
+    public void remove(final String job) throws IOException {
+        try (final Item roles = this.item()) {
+            new Xocument(roles).modify(
+                new Directives().xpath(
+                    String.format(
+                        "/elections/job[@id='%s']",
+                        job
+                    )
+                ).remove()
+            );
+        }
     }
 
     /**

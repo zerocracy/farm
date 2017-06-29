@@ -25,7 +25,7 @@ import com.zerocracy.pm.hr.Roles
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Resign role')
-  new Assume(project, xml).roles('ARC', 'PO').exist()
+  new Assume(project, xml).roles('ARC', 'PO')
   ClaimIn claim = new ClaimIn(xml)
   String login = claim.param('login')
   String role = claim.param('role')

@@ -19,8 +19,12 @@ package com.zerocracy.bundles.confides_performer
 import com.jcabi.xml.XML
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.in.Orders
+import com.zerocracy.pm.staff.Elections
 
 def exec(Project project, XML xml) {
+  def job = 'gh:test/test#1'
   def orders = new Orders(project).bootstrap()
-  assert orders.performer('gh:test/test#1') == 'yegor256'
+  assert orders.performer(job) == 'yegor256'
+  def elections = new Elections(project).bootstrap()
+  assert !elections.elected(job)
 }
