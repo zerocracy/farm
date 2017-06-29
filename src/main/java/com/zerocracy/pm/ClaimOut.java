@@ -131,6 +131,10 @@ public final class ClaimOut implements Iterable<Directive> {
     public ClaimOut param(final String name, final Object value) {
         this.dirs
             .addIf("params")
+            .push()
+            .xpath(String.format("param[@name='%s']", name))
+            .remove()
+            .pop()
             .add("param")
             .attr("name", name)
             .set(value)
