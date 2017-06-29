@@ -20,26 +20,18 @@ import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
-import com.zerocracy.pm.in.Orders
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Start order')
+  new Assume(project, xml).type('Request order start')
+  new Assume(project, xml).roles('ARC', 'PO')
   ClaimIn claim = new ClaimIn(xml)
-  String job = claim.param('job')
   String login = claim.param('login')
-  String reason = claim.param('reason')
-  new Orders(project).bootstrap().assign(job, login, reason)
-  claim.reply(
-    String.format(
-      'Job `%s` assigned to @%s, please go ahead.',
-      job, login
-    )
-  ).postTo(project)
-  new ClaimOut()
-    .type('Order was given')
-    .param('job', job)
+  if ('me' == login) {
+    login = claim.author()
+  }
+  claim.copy()
+    .type('Start order')
     .param('login', login)
-    .param('reason', reason)
+    .param('reason', 'Per request')
     .postTo(project)
 }

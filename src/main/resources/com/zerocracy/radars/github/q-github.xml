@@ -41,7 +41,7 @@
         <help>Remove this issue from scope (WBS)</help>
     </cmd>
     <cmd>
-        <code>Start order</code>
+        <code>Request order start</code>
         <regex>assign</regex>
         <label>assign</label>
         <help>Assign a performer to this issue</help>
