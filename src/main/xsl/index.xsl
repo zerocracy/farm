@@ -59,7 +59,7 @@
                 </xsl:call-template>
             </p>
             <p>
-                <xsl:if test="identity">\
+                <xsl:if test="identity">
                     <span title="GitHub user currently logged in">
                         <xsl:text>@</xsl:text>
                         <xsl:value-of select="identity/login"/>
