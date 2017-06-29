@@ -49,6 +49,7 @@ final class UplinkedProject implements Project {
         new StickyList<>(
             new MappedIterable<>(
                 new ArrayAsIterable<>(
+                    "awards/[a-zA-Z0-9-]+\\.xml",
                     "agenda/[a-zA-Z0-9-]+\\.xml",
                     "catalog\\.xml",
                     "people\\.xml"

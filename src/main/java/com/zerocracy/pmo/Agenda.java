@@ -79,6 +79,20 @@ public final class Agenda {
     }
 
     /**
+     * This job exists in the agenda?
+     * @param job The job
+     * @return TRUE if exists
+     * @throws IOException If fails
+     */
+    public boolean exists(final String job) throws IOException {
+        try (final Item item = this.item()) {
+            return !new Xocument(item.path()).nodes(
+                String.format("/agenda/order[@job= '%s']", job)
+            ).isEmpty();
+        }
+    }
+
+    /**
      * Add an order to the agenda.
      * @param job Job ID
      * @param href HREF of the ticket
