@@ -20,6 +20,7 @@ import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.SoftException;
+import com.zerocracy.pm.scope.Wbs;
 import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -74,6 +75,14 @@ public final class Orders {
                 String.format(
                     "Job `%s` already assigned to @%s, can't assign to @%s",
                     job, this.performer(job), login
+                )
+            );
+        }
+        if (!new Wbs(this.project).bootstrap().exists(job)) {
+            throw new SoftException(
+                String.format(
+                    "Job `%s` doesn't exist in WBS, can't create order",
+                    job
                 )
             );
         }
