@@ -22,7 +22,6 @@
         <html lang="en">
             <head>
                 <meta charset="utf-8"/>
-                <title>0crat</title>
                 <meta name="description" content="Project managers that never sleep, fail, or miss anything"/>
                 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
                 <link rel="shortcut icon" href="http://www.zerocracy.com/logo.png"/>

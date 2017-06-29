@@ -23,15 +23,20 @@
     <xsl:include href="/xsl/layout.xsl"/>
     <xsl:template match="page" mode="head">
         <title>
+            <xsl:text>@</xsl:text>
             <xsl:value-of select="login"/>
         </title>
     </xsl:template>
     <xsl:template match="page" mode="body">
         <div class="center">
             <p>
+                <xsl:text>@</xsl:text>
                 <xsl:value-of select="login"/>
             </p>
             <p>
+                <xsl:if test="points &gt;= 0">
+                    <xsl:text>+</xsl:text>
+                </xsl:if>
                 <xsl:value-of select="points"/>
             </p>
         </div>
