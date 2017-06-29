@@ -16,7 +16,6 @@
  */
 package com.zerocracy.entry;
 
-import com.jcabi.aspects.Cacheable;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -44,7 +43,6 @@ final class ExtSlack implements Scalar<Map<String, SlackSession>> {
     }
 
     @Override
-    @Cacheable(forever = true)
     public Map<String, SlackSession> value() {
         return this.map;
     }

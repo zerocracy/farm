@@ -16,7 +16,6 @@
  */
 package com.zerocracy.radars.slack;
 
-import com.jcabi.aspects.Async;
 import com.jcabi.log.Logger;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackChannelJoined;
@@ -109,7 +108,6 @@ public final class RrSlack implements AutoCloseable {
      * Refresh all connections for all bots.
      * @throws IOException If fails
      */
-    @Async
     public void refresh() throws IOException {
         final Bots bots = new Bots(this.farm).bootstrap();
         final Collection<String> tokens = new HashSet<>(0);

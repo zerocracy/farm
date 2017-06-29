@@ -19,11 +19,13 @@ package com.zerocracy.radars.slack;
 import com.jcabi.http.request.JdkRequest;
 import com.jcabi.http.response.JsonResponse;
 import com.jcabi.http.response.RestResponse;
+import com.jcabi.log.VerboseThreads;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.pmo.Bots;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.Properties;
+import org.cactoos.func.AsyncFunc;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
@@ -97,7 +99,12 @@ public final class TkSlack implements Take {
                 .json()
                 .readObject()
         );
-        this.radar.refresh();
+        new AsyncFunc<Boolean, Boolean>(
+            input -> {
+                this.radar.refresh();
+            },
+            new VerboseThreads()
+        ).apply(true);
         return new RsWithStatus(
             new RsWithHeader(
                 "Location",
