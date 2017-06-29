@@ -56,7 +56,7 @@ public final class TkSlack implements Take {
     /**
      * Radar.
      */
-    private final RrSlack radar;
+    private final SlackRadar radar;
 
     /**
      * Ctor.
@@ -65,7 +65,7 @@ public final class TkSlack implements Take {
      * @param rdr Radar
      */
     public TkSlack(final Farm frm, final Properties pps,
-        final RrSlack rdr) {
+        final SlackRadar rdr) {
         this.farm = frm;
         this.props = pps;
         this.radar = rdr;

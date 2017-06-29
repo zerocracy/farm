@@ -23,7 +23,7 @@ import com.zerocracy.farm.S3Farm;
 import com.zerocracy.farm.SmartFarm;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.radars.github.TkGithub;
-import com.zerocracy.radars.slack.RrSlack;
+import com.zerocracy.radars.slack.SlackRadar;
 import com.zerocracy.radars.slack.TkSlack;
 import com.zerocracy.tk.TkAlias;
 import com.zerocracy.tk.TkApp;
@@ -88,7 +88,7 @@ public final class Main {
                 new AbstractMap.SimpleEntry<>("github", github)
             )
         ).value();
-        try (final RrSlack radar = new RrSlack(farm, slack, props)) {
+        try (final SlackRadar radar = new SlackRadar(farm, slack, props)) {
             radar.refresh();
             new FtCli(
                 new TkApp(

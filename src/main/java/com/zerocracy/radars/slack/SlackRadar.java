@@ -37,7 +37,7 @@ import java.util.Properties;
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-public final class RrSlack implements AutoCloseable {
+public final class SlackRadar implements AutoCloseable {
 
     /**
      * Farm.
@@ -65,7 +65,7 @@ public final class RrSlack implements AutoCloseable {
      * @param map Sessions
      * @param props Properties
      */
-    public RrSlack(final Farm frm, final Map<String, SlackSession> map,
+    public SlackRadar(final Farm frm, final Map<String, SlackSession> map,
         final Properties props) {
         this(
             frm,
@@ -94,7 +94,7 @@ public final class RrSlack implements AutoCloseable {
      * @param map Map of sessions
      * @param ptd Reaction on post
      */
-    RrSlack(final Farm frm, final Map<String, SlackSession> map,
+    SlackRadar(final Farm frm, final Map<String, SlackSession> map,
         final Reaction<SlackMessagePosted> ptd) {
         this.farm = frm;
         this.posted = ptd;
@@ -109,18 +109,20 @@ public final class RrSlack implements AutoCloseable {
      * @throws IOException If fails
      */
     public void refresh() throws IOException {
-        final Bots bots = new Bots(this.farm).bootstrap();
-        final Collection<String> tokens = new HashSet<>(0);
-        for (final Map.Entry<String, String> bot : bots.tokens()) {
-            tokens.add(bot.getKey());
-            if (this.sessions.containsKey(bot.getKey())) {
-                continue;
+        synchronized (this.sessions) {
+            final Bots bots = new Bots(this.farm).bootstrap();
+            final Collection<String> tokens = new HashSet<>(0);
+            for (final Map.Entry<String, String> bot : bots.tokens()) {
+                tokens.add(bot.getKey());
+                if (this.sessions.containsKey(bot.getKey())) {
+                    continue;
+                }
+                this.sessions.put(bot.getKey(), this.start(bot.getValue()));
             }
-            this.sessions.put(bot.getKey(), this.start(bot.getValue()));
-        }
-        for (final String bid : this.sessions.keySet()) {
-            if (!tokens.contains(bid)) {
-                this.sessions.remove(bid);
+            for (final String bid : this.sessions.keySet()) {
+                if (!tokens.contains(bid)) {
+                    this.sessions.remove(bid);
+                }
             }
         }
     }
