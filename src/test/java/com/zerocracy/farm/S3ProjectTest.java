@@ -22,6 +22,7 @@ import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.hr.Roles;
+import com.zerocracy.pmo.Agenda;
 import java.nio.file.Files;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -43,14 +44,14 @@ public final class S3ProjectTest {
             Files.createTempDirectory("").toFile(),
             "some-bucket"
         );
-        final Project project = new S3Project(bucket, "");
-        new Roles(project).bootstrap();
+        final Project project = new S3Project(bucket, "A1B2C3D4F");
         final String person = "yegor256";
-        final String role = "PO";
-        new Roles(project).assign(person, role);
+        new Agenda(project, person).bootstrap();
+        final String job = "gh:test/test#1";
+        new Agenda(project, person).add(job, "https://github.com/test");
         MatcherAssert.assertThat(
-            new Roles(project).hasRole(person, role),
-            Matchers.is(true)
+            new Agenda(project, person).jobs(),
+            Matchers.hasItem(job)
         );
     }
 

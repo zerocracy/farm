@@ -83,7 +83,7 @@ final class S3Project implements Project {
 
     @Override
     public Item acq(final String file) {
-        if (!file.matches("[a-z/]+\\.[a-z]+")) {
+        if (!file.matches("[a-z0-9\\-/]+\\.[a-z]+")) {
             throw new IllegalArgumentException(
                 String.format(
                     "Unacceptable file name: \"%s\"", file
