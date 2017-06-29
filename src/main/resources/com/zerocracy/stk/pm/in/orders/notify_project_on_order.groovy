@@ -31,10 +31,8 @@ def exec(Project project, XML xml) {
     .type('Notify project')
     .param(
       'message',
-      """Job `${job}` was assigned
-      to [@${login}](https://github.com/%1\$s):
-      ${claim.param('reason')}
-      """
+      "Job `${job}` was assigned to @${login}:\n"
+      + "```\n${claim.param('reason')}\n```"
     )
     .postTo(project)
 }

@@ -29,17 +29,27 @@ def exec(Project project, XML xml) {
   String job = claim.param('job')
   String login = claim.param('login')
   String reason = claim.param('reason')
-  new Orders(project).bootstrap().assign(job, login, reason)
-  claim.reply(
-    String.format(
-      'Job `%s` assigned to @%s, please go ahead.',
-      job, login
-    )
-  ).postTo(project)
-  new ClaimOut()
-    .type('Order was given')
-    .param('job', job)
-    .param('login', login)
-    .param('reason', reason)
-    .postTo(project)
+  Orders orders = new Orders(project).bootstrap()
+  if (orders.assigned(job)) {
+    claim.reply(
+      String.format(
+        'Job `%s` is already assigned to @%s, sorry.',
+        job, orders.performer(job)
+      )
+    ).postTo(project)
+  } else {
+    orders.assign(job, login, reason)
+    claim.reply(
+      String.format(
+        'Job `%s` assigned to @%s, please go ahead.',
+        job, login
+      )
+    ).postTo(project)
+    new ClaimOut()
+      .type('Order was given')
+      .param('job', job)
+      .param('login', login)
+      .param('reason', reason)
+      .postTo(project)
+  }
 }

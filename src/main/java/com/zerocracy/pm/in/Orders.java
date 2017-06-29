@@ -72,8 +72,8 @@ public final class Orders {
         if (this.assigned(job)) {
             throw new SoftException(
                 String.format(
-                    "Job `%s` already assigned to @%s",
-                    job, login
+                    "Job `%s` already assigned to @%s, can't assign to @%s",
+                    job, this.performer(job), login
                 )
             );
         }

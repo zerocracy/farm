@@ -25,11 +25,13 @@ import com.zerocracy.pm.ClaimOut
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Order was given')
   ClaimIn claim = new ClaimIn(xml)
-  String job = claim.param('job')
-  String login = claim.param('login')
   new ClaimOut()
     .type('Notify user')
-    .param('login', login)
-    .param('message', "Job `${job}` was assigned to you a minute ago: ")
+    .param('login', claim.param('login'))
+    .param(
+      'message',
+      "Job `${claim.param('job')}` was assigned to you a minute ago:\n"
+      + "```\n${claim.param('reason')}\n```"
+    )
     .postTo(project)
 }

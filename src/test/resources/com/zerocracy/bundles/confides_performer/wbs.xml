@@ -4,4 +4,7 @@
     <job id="gh:test/test#1">
         <created>2017-03-27T11:18:09.228Z</created>
     </job>
+    <job id="gh:test/test#2">
+        <created>2017-03-27T11:18:09.228Z</created>
+    </job>
 </wbs>

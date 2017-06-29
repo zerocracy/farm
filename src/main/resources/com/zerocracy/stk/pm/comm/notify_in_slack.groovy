@@ -36,7 +36,7 @@ def exec(Project project, XML xml) {
     return
   }
   SlackSession session = session(parts[1])
-  if (parts.length > 3 && 'direct' == parts[3]) {
+  if (parts.length > 3) {
     session.sendMessage(
       session.openDirectMessageChannel(
         session.findUserByUserName(parts[2])

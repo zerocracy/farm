@@ -25,6 +25,7 @@ def exec(Project project, XML xml) {
   def job = 'gh:test/test#1'
   def orders = new Orders(project).bootstrap()
   assert orders.performer(job) == 'yegor256'
+  assert orders.performer('gh:test/test#2') == 'yegor256'
   def elections = new Elections(project).bootstrap()
   assert !elections.elected(job)
 }
