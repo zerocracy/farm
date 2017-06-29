@@ -22,6 +22,7 @@ import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.in.Orders
+import com.zerocracy.pm.scope.Wbs
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Request order start')
@@ -31,6 +32,14 @@ def exec(Project project, XML xml) {
   String job = claim.param('job')
   if ('me' == login) {
     login = claim.author()
+  }
+  Wbs wbs = new Wbs(project).bootstrap()
+  if (!wbs.exists(job)) {
+    wbs.add(job)
+    new ClaimOut()
+      .type('Job was added to WBS')
+      .param('job', job)
+      .postTo(project)
   }
   Orders orders = new Orders(project).bootstrap()
   if (orders.assigned(job)) {

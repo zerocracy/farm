@@ -16,7 +16,9 @@
  */
 package com.zerocracy.pm.in;
 
+import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.fake.FkProject;
+import com.zerocracy.pm.scope.Wbs;
 import org.junit.Test;
 
 /**
@@ -30,8 +32,10 @@ public final class OrdersTest {
 
     @Test
     public void assignsAndResigns() throws Exception {
-        final Orders orders = new Orders(new FkProject()).bootstrap();
+        final Project project = new FkProject();
+        final Orders orders = new Orders(project).bootstrap();
         final String job = "gh:yegor256/0pdd#13";
+        new Wbs(project).bootstrap().add(job);
         orders.assign(job, "yegor256", "just for fun");
     }
 

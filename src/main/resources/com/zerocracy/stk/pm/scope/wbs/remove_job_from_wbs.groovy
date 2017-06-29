@@ -40,4 +40,8 @@ def exec(Project project, XML xml) {
       .param('job', job)
       .postTo(project)
   }
+  new ClaimOut()
+    .type('Job removed from WBS')
+    .param('job', job)
+    .postTo(project)
 }
