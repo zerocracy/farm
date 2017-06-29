@@ -77,8 +77,8 @@ SlackSession session(String channel) {
   }
   throw new IllegalArgumentException(
     String.format(
-      'Can\'t find Slack session for channel "%s"',
-      channel
+      'Can\'t find Slack session for channel "%s", among %d session(s)',
+      channel, binding.variables.slack.size()
     )
   )
 }
