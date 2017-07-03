@@ -54,6 +54,7 @@ public final class PingTest {
                 {"/xsl/index.xsl"},
                 {"/xsl/layout.xsl"},
                 {"/"},
+                {"/ping"},
                 {"/u/yegor256"},
             }
         );

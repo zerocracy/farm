@@ -88,6 +88,7 @@ public final class TkApp extends TkWrap {
                                                         new ArrayAsIterable<>(forks),
                                                         new ArrayAsIterable<>(
                                                             new FkRegex("/", new TkIndex(props)),
+                                                            new FkRegex("/ping", new TkPing(farm)),
                                                             new FkRegex("/robots.txt", ""),
                                                             new FkRegex(
                                                                 "/u/([a-zA-Z0-9-]+)",

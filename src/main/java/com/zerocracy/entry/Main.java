@@ -27,7 +27,6 @@ import com.zerocracy.radars.slack.SlackRadar;
 import com.zerocracy.radars.slack.TkSlack;
 import com.zerocracy.tk.TkAlias;
 import com.zerocracy.tk.TkApp;
-import com.zerocracy.tk.TkPing;
 import java.io.IOException;
 import java.util.AbstractMap;
 import java.util.Map;
@@ -99,8 +98,7 @@ public final class Main {
                     new FkRegex(
                         "/ghook",
                         new TkGithub(farm, github, dynamo, props)
-                    ),
-                    new FkRegex("/run", new TkPing(farm))
+                    )
                 ),
                 this.arguments
             ).start(Exit.NEVER);
