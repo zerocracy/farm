@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
+import org.cactoos.list.FilteredIterable;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
@@ -99,9 +100,10 @@ public final class TkPing implements Take {
      */
     private static boolean needs(final Project project) throws IOException {
         try (final Claims claims = new Claims(project).lock()) {
-            return claims.iterate().stream().noneMatch(
+            return !new FilteredIterable<>(
+                claims.iterate(),
                 input -> new ClaimIn(input).type().equals(TkPing.TYPE)
-            );
+            ).iterator().hasNext();
         }
     }
 
@@ -115,7 +117,10 @@ public final class TkPing implements Take {
             new VerboseRunnable(
                 () -> {
                     new JdkRequest(
-                        new RqHref.Base(req).href().toString()
+                        new RqHref.Base(req)
+                            .href()
+                            .with("loop", "yes")
+                            .toString()
                     ).fetch();
                     return null;
                 }
