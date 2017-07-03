@@ -89,7 +89,7 @@
         <code>Show roles</code>
         <regex>roles?</regex>
         <label>roles</label>
-        <help>Show all roles assigned at the moment</help>
+        <help>Show all roles assigned at the moment, add and remove them</help>
         <cmds>
             <cmd>
                 <code>Add role</code>
@@ -100,7 +100,7 @@
                     <opt>
                         <name>role</name>
                         <regex>[A-Z]{2,4}</regex>
-                        <help>Project role, all caps, e.g. ARC or PO</help>
+                        <help>Project role, all caps, e.g. ARC, PO or DEV</help>
                     </opt>
                     <opt>
                         <name>login</name>
