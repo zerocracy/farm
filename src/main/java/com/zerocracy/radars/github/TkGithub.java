@@ -16,6 +16,7 @@
  */
 package com.zerocracy.radars.github;
 
+import com.jcabi.aspects.ScheduleWithFixedDelay;
 import com.jcabi.dynamo.Region;
 import com.jcabi.github.Github;
 import com.zerocracy.jstk.Farm;
@@ -26,6 +27,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 import javax.json.Json;
 import javax.json.stream.JsonParsingException;
+import org.cactoos.func.UncheckedProc;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
@@ -43,7 +45,8 @@ import org.takes.rs.RsWithStatus;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
  */
-public final class TkGithub implements Take {
+@ScheduleWithFixedDelay
+public final class TkGithub implements Take, Runnable {
 
     /**
      * Reaction.
@@ -82,10 +85,6 @@ public final class TkGithub implements Take {
                                 ghub,
                                 new ReLogged(
                                     new Reaction.Chain(
-                                        new ReOnReason(
-                                            "invitation",
-                                            new ReOnInvitation(ghub)
-                                        ),
                                         new ReOnReason(
                                             "mention",
                                             new ReOnComment(
@@ -166,4 +165,10 @@ public final class TkGithub implements Take {
         }
     }
 
+    @Override
+    public void run() {
+        new UncheckedProc<>(
+            new AcceptInvitations(this.github)
+        ).exec(true);
+    }
 }

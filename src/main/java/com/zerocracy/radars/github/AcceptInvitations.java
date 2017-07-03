@@ -21,10 +21,10 @@ import com.jcabi.github.RtPagination;
 import com.jcabi.http.Request;
 import com.jcabi.http.response.RestResponse;
 import com.jcabi.log.Logger;
-import com.zerocracy.jstk.Farm;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import javax.json.JsonObject;
+import org.cactoos.Proc;
 
 /**
  * On GitHub invitations.
@@ -33,7 +33,7 @@ import javax.json.JsonObject;
  * @version $Id$
  * @since 0.2
  */
-public final class ReOnInvitation implements Reaction {
+public final class AcceptInvitations implements Proc<Boolean> {
 
     /**
      * Github client.
@@ -44,13 +44,12 @@ public final class ReOnInvitation implements Reaction {
      * Ctor.
      * @param ghb Github client
      */
-    public ReOnInvitation(final Github ghb) {
+    public AcceptInvitations(final Github ghb) {
         this.github = ghb;
     }
 
     @Override
-    public void react(final Farm farm, final JsonObject event)
-        throws IOException {
+    public void exec(final Boolean input) throws IOException {
         final Request entry = this.github.entry().reset("Accept").header(
             "accept", "application/vnd.github.swamp-thing-preview+json"
         );
