@@ -109,7 +109,7 @@ public final class SlackRadar implements AutoCloseable {
      * @throws IOException If fails
      */
     public void refresh() throws IOException {
-        synchronized (this.sessions) {
+        synchronized (this.farm) {
             final Bots bots = new Bots(this.farm).bootstrap();
             final Collection<String> tokens = new HashSet<>(0);
             for (final Map.Entry<String, String> bot : bots.tokens()) {

@@ -25,6 +25,7 @@ import com.zerocracy.farm.reactive.StkGroovy;
 import com.zerocracy.farm.sync.SyncFarm;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
+import com.zerocracy.jstk.SoftException;
 import com.zerocracy.jstk.Stakeholder;
 import java.util.Map;
 import java.util.Properties;
@@ -135,6 +136,9 @@ public final class SmartFarm implements Scalar<Farm> {
                         exp -> {
                             if (exp instanceof MismatchException) {
                                 throw MismatchException.class.cast(exp);
+                            }
+                            if (exp instanceof SoftException) {
+                                throw SoftException.class.cast(exp);
                             }
                             return new ThrowableToEmail(this.props).apply(exp);
                         }

@@ -19,6 +19,7 @@ package com.zerocracy.farm;
 import com.jcabi.aspects.Tv;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
+import com.zerocracy.ThrowableToEmail;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.SoftException;
 import com.zerocracy.jstk.Stakeholder;
@@ -31,7 +32,7 @@ import org.cactoos.text.FormattedText;
 import org.cactoos.text.ThrowableAsBytes;
 
 /**
- * Stakeholder that reports about failures.
+ * Stakeholder that reports about failures and doesn't fail ever.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
@@ -114,6 +115,7 @@ public final class StkSafe implements Stakeholder {
                     )
                 ).postTo(project);
             }
+            new ThrowableToEmail(this.props).apply(ex);
             Logger.error(
                 this, "%s failed at \"%s/%s\" in \"%s\": %[exception]s",
                 this.origin.getClass().getCanonicalName(),
