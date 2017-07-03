@@ -113,13 +113,15 @@ public final class TkPing implements Take {
      * @return Status
      */
     private static String ping(final Request req) {
+        final String arg = "loop";
         new Thread(
             new VerboseRunnable(
                 () -> {
                     new JdkRequest(
                         new RqHref.Base(req)
                             .href()
-                            .with("loop", "yes")
+                            .without(arg)
+                            .with(arg, "yes")
                             .toString()
                     ).fetch();
                     return null;
