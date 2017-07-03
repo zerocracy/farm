@@ -92,7 +92,7 @@
         <help>Show all roles assigned at the moment, add and remove them</help>
         <cmds>
             <cmd>
-                <code>Add role</code>
+                <code>Assign role</code>
                 <regex>assign|add|register</regex>
                 <label>assign</label>
                 <help>Assign new project role</help>

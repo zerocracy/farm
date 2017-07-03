@@ -45,7 +45,7 @@ public final class QuestionTest {
         );
         MatcherAssert.assertThat(
             question.code(),
-            Matchers.equalTo("Add role")
+            Matchers.equalTo("Assign role")
         );
         MatcherAssert.assertThat(
             question.params().get("role"),
