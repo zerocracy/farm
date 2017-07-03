@@ -28,16 +28,16 @@ import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
- * Test case for {@link Spin}.
+ * Test case for {@link Flush}.
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.11
@@ -45,18 +45,14 @@ import org.junit.Test;
  * @checkstyle ExecutableStatementCountCheck (200 lines)
  * @checkstyle JavadocMethodCheck (500 lines)
  */
-public final class SpinTest {
+public final class FlushTest {
 
     @Test
     public void processes() throws Exception {
-        final Bucket bucket = new FkBucket(
-            Files.createTempDirectory("").toFile(),
-            "the-bucket"
-        );
-        final Farm farm = new SyncFarm(new S3Farm(bucket));
-        final Project project = farm.find("@id='ABCZZFE03'").iterator().next();
+        final Project project = FlushTest.project();
         final AtomicInteger done = new AtomicInteger(0);
         final CountDownLatch latch = new CountDownLatch(1);
+        final int max = Tv.FIVE;
         final Brigade brigade = new Brigade(
             (Stakeholder) (pkt, claim) -> {
                 done.incrementAndGet();
@@ -66,7 +62,6 @@ public final class SpinTest {
             }
         );
         new ClaimOut().type("first").postTo(project);
-        final int max = Tv.FIVE;
         final Thread thread = new Thread(
             new VerboseRunnable(
                 () -> {
@@ -79,10 +74,9 @@ public final class SpinTest {
             )
         );
         thread.start();
-        try (final Spin spin =
-            new Spin(project, brigade, Executors.newSingleThreadExecutor())) {
+        try (final Flush flush = new Flush(project, brigade)) {
             latch.countDown();
-            spin.ping();
+            flush.run();
         }
         thread.join();
         try (final Claims claims = new Claims(project).lock()) {
@@ -92,6 +86,20 @@ public final class SpinTest {
             );
         }
         MatcherAssert.assertThat(done.get(), Matchers.equalTo((max << 1) + 1));
+    }
+
+    /**
+     * Fake project.
+     * @return Project
+     * @throws IOException If fails
+     */
+    private static Project project() throws IOException {
+        final Bucket bucket = new FkBucket(
+            Files.createTempDirectory("").toFile(),
+            "the-bucket"
+        );
+        final Farm farm = new SyncFarm(new S3Farm(bucket));
+        return farm.find("@id='ABCZZFE03'").iterator().next();
     }
 
 }

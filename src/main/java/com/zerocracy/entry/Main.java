@@ -100,7 +100,7 @@ public final class Main {
                         "/ghook",
                         new TkGithub(farm, github, dynamo, props)
                     ),
-                    new FkRegex("/ping", new TkPing(farm))
+                    new FkRegex("/run", new TkPing(farm))
                 ),
                 this.arguments
             ).start(Exit.NEVER);

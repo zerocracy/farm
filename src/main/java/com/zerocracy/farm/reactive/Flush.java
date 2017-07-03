@@ -16,22 +16,28 @@
  */
 package com.zerocracy.farm.reactive;
 
+import com.jcabi.log.Logger;
+import com.jcabi.log.VerboseRunnable;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import java.io.Closeable;
 import java.util.Collection;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import org.cactoos.func.FuncAsRunnable;
+import org.cactoos.func.ProcAsFunc;
 
 /**
- * Spin that processes all claims in a project.
+ * The activity of cleaning the list of claims and processing
+ * them all.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-final class Spin implements Closeable {
+final class Flush implements Runnable, Closeable {
 
     /**
      * The project.
@@ -59,7 +65,7 @@ final class Spin implements Closeable {
      * @param list List of stakeholders
      * @param svc Service
      */
-    Spin(final Project pkt, final Collection<Stakeholder> list,
+    Flush(final Project pkt, final Collection<Stakeholder> list,
         final ExecutorService svc) {
         this(pkt, new Brigade(list), svc);
     }
@@ -68,23 +74,39 @@ final class Spin implements Closeable {
      * Ctor.
      * @param pkt Project
      * @param bgd Brigade
-     * @param svc Service
      */
-    Spin(final Project pkt, final Brigade bgd, final ExecutorService svc) {
-        this.project = pkt;
-        this.brigade = bgd;
-        this.alive = new AtomicBoolean();
-        this.service = svc;
+    Flush(final Project pkt, final Brigade bgd) {
+        this(pkt, bgd, Executors.newSingleThreadExecutor());
     }
 
     /**
-     * Ping it.
+     * Ctor.
+     * @param pkt Project
+     * @param bgd Brigade
+     * @param svc Service
      */
-    public void ping() {
-        if (!this.alive.get() && !this.service.isShutdown()) {
-            this.alive.set(true);
+    Flush(final Project pkt, final Brigade bgd, final ExecutorService svc) {
+        this.project = pkt;
+        this.brigade = bgd;
+        this.service = svc;
+        this.alive = new AtomicBoolean();
+    }
+
+    @Override
+    public void run() {
+        if (!this.service.isShutdown() && !this.alive.getAndSet(true)) {
             this.service.submit(
-                new Spinner(this.project, this.brigade, this.alive)
+                new RunnableWithTrigger(
+                    new VerboseRunnable(
+                        new FuncAsRunnable(
+                            new ProcAsFunc<>(
+                                new FlushAction(this.project, this.brigade)
+                            )
+                        ),
+                        true, true
+                    ),
+                    this.alive
+                )
             );
         }
     }
@@ -104,6 +126,7 @@ final class Spin implements Closeable {
                 Thread.currentThread().interrupt();
                 throw new IllegalStateException(ex);
             }
+            Logger.info(this, "Waiting for the Flush to close");
         }
     }
 

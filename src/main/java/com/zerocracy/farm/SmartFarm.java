@@ -16,8 +16,6 @@
  */
 package com.zerocracy.farm;
 
-import com.jcabi.log.VerboseRunnable;
-import com.jcabi.log.VerboseThreads;
 import com.zerocracy.ThrowableToEmail;
 import com.zerocracy.farm.reactive.Brigade;
 import com.zerocracy.farm.reactive.RvFarm;
@@ -30,15 +28,11 @@ import com.zerocracy.jstk.Stakeholder;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeSet;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 import java.util.regex.Pattern;
 import org.cactoos.Scalar;
-import org.cactoos.func.FuncAsRunnable;
 import org.cactoos.func.FuncWithFallback;
 import org.cactoos.func.IoCheckedFunc;
 import org.cactoos.func.ProcAsFunc;
-import org.cactoos.func.RunnableAsFunc;
 import org.cactoos.io.ResourceAsInput;
 import org.cactoos.list.MappedIterable;
 import org.reflections.Reflections;
@@ -85,7 +79,6 @@ public final class SmartFarm implements Scalar<Farm> {
 
     @Override
     public Farm value() {
-        final ThreadFactory factory = new VerboseThreads();
         final Farm farm = new SyncFarm(this.origin);
         return new RvFarm(
             s -> new MappedIterable<>(
@@ -95,20 +88,7 @@ public final class SmartFarm implements Scalar<Farm> {
                     farm
                 )
             ),
-            new Brigade(this.stakeholders()),
-            Executors.newSingleThreadExecutor(
-                rnb -> factory.newThread(
-                    new VerboseRunnable(
-                        new FuncAsRunnable(
-                            new FuncWithFallback<>(
-                                new RunnableAsFunc<>(rnb),
-                                new ThrowableToEmail(this.props)
-                            )
-                        ),
-                        true, true
-                    )
-                )
-            )
+            new Brigade(this.stakeholders())
         );
     }
 

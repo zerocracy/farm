@@ -41,16 +41,16 @@ public final class RvProjectTest {
     public void closesClaims() throws Exception {
         final AtomicBoolean done = new AtomicBoolean();
         final Project raw = new FkProject();
-        final Spin spin = new Spin(
+        final Flush flush = new Flush(
             raw,
             Collections.singletonList((pkt, xml) -> done.set(true)),
             Executors.newSingleThreadExecutor(new VerboseThreads())
         );
-        final RvProject project = new RvProject(raw, spin);
+        final RvProject project = new RvProject(raw, flush);
         try (final Claims claims = new Claims(project).lock()) {
             claims.add(new ClaimOut().type("hello").token("tt"));
         }
-        spin.close();
+        flush.close();
         try (final Claims claims = new Claims(project).lock()) {
             MatcherAssert.assertThat(
                 claims.iterate(),

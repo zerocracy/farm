@@ -92,9 +92,9 @@ public final class TkPing implements Take {
     }
 
     /**
-     * This project needs a ping.
+     * This project needs a run.
      * @param project The project
-     * @return TRUE if needs a ping
+     * @return TRUE if needs a run
      * @throws IOException If fails
      */
     private static boolean needs(final Project project) throws IOException {
@@ -121,7 +121,7 @@ public final class TkPing implements Take {
                 }
             )
         ).start();
-        return "ping";
+        return "run";
     }
 
 }

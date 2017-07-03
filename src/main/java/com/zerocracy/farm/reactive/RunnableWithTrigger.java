@@ -16,53 +16,41 @@
  */
 package com.zerocracy.farm.reactive;
 
-import com.zerocracy.jstk.Item;
-import com.zerocracy.jstk.Project;
-import java.io.IOException;
-import lombok.EqualsAndHashCode;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Reactive project.
+ * Spinner for the spin.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.1
+ * @since 0.10
  */
-@EqualsAndHashCode(of = "origin")
-final class RvProject implements Project {
+final class RunnableWithTrigger implements Runnable {
 
     /**
-     * Origin project.
+     * The runnable.
      */
-    private final Project origin;
+    private final Runnable runnable;
 
     /**
-     * The spin.
+     * Is it running now?
      */
-    private final Flush flush;
+    private final AtomicBoolean alive;
 
     /**
      * Ctor.
-     * @param pkt Project
-     * @param spn Spin
+     * @param rnb Runnable
+     * @param alv Alive flag
      */
-    RvProject(final Project pkt, final Flush spn) {
-        this.origin = pkt;
-        this.flush = spn;
+    RunnableWithTrigger(final Runnable rnb, final AtomicBoolean alv) {
+        this.runnable = rnb;
+        this.alive = alv;
     }
 
     @Override
-    public String toString() {
-        return this.origin.toString();
-    }
-
-    @Override
-    public Item acq(final String file) throws IOException {
-        Item item = this.origin.acq(file);
-        if ("claims.xml".equals(file)) {
-            item = new RvItem(item, this.flush);
-        }
-        return item;
+    public void run() {
+        this.runnable.run();
+        this.alive.set(false);
     }
 
 }

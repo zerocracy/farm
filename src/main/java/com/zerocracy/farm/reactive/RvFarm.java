@@ -21,9 +21,8 @@ import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import lombok.EqualsAndHashCode;
-import org.cactoos.func.SyncFunc;
 import org.cactoos.list.MappedIterable;
 
 /**
@@ -52,37 +51,29 @@ public final class RvFarm implements Farm {
     private final Map<Project, Project> pool;
 
     /**
-     * Service.
-     */
-    private final ExecutorService service;
-
-    /**
      * Ctor.
      * @param farm Original farm
      * @param bgd Stakeholders
-     * @param svc Service
      */
-    public RvFarm(final Farm farm, final Brigade bgd,
-        final ExecutorService svc) {
+    public RvFarm(final Farm farm, final Brigade bgd) {
         this.origin = farm;
         this.brigade = bgd;
         this.pool = new HashMap<>(0);
-        this.service = svc;
     }
 
     @Override
     public Iterable<Project> find(final String query) throws IOException {
         return new MappedIterable<>(
             this.origin.find(query),
-            new SyncFunc<>(
-                p -> {
-                    if (!this.pool.containsKey(p)) {
-                        this.pool.put(
-                            p, new RvProject(p, this.brigade, this.service)
-                        );
-                    }
-                    return this.pool.get(p);
-                }
+            p -> this.pool.computeIfAbsent(
+                p,
+                pkt -> new RvProject(
+                    pkt,
+                    new Flush(
+                        pkt, this.brigade,
+                        Executors.newSingleThreadExecutor()
+                    )
+                )
             )
         );
     }

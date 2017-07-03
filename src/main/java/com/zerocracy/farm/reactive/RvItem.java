@@ -40,16 +40,16 @@ final class RvItem implements Item {
     /**
      * The spin.
      */
-    private final Spin spin;
+    private final Flush flush;
 
     /**
      * Ctor.
      * @param item Original item
      * @param spn Spin
      */
-    RvItem(final Item item, final Spin spn) {
+    RvItem(final Item item, final Flush spn) {
         this.origin = item;
-        this.spin = spn;
+        this.flush = spn;
     }
 
     @Override
@@ -68,7 +68,7 @@ final class RvItem implements Item {
             .nodes("/claims/claim").size();
         this.origin.close();
         if (total > 0) {
-            this.spin.ping();
+            this.flush.run();
         }
     }
 

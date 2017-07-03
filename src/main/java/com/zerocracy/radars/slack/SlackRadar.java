@@ -114,10 +114,10 @@ public final class SlackRadar implements AutoCloseable {
             final Collection<String> tokens = new HashSet<>(0);
             for (final Map.Entry<String, String> bot : bots.tokens()) {
                 tokens.add(bot.getKey());
-                if (this.sessions.containsKey(bot.getKey())) {
-                    continue;
-                }
-                this.sessions.put(bot.getKey(), this.start(bot.getValue()));
+                this.sessions.computeIfAbsent(
+                    bot.getKey(),
+                    key -> this.start(bot.getValue())
+                );
             }
             for (final String bid : this.sessions.keySet()) {
                 if (!tokens.contains(bid)) {
@@ -138,12 +138,15 @@ public final class SlackRadar implements AutoCloseable {
      * Create a session.
      * @param token Token
      * @return The session
-     * @throws IOException If fails
      */
-    private SlackSession start(final String token) throws IOException {
+    private SlackSession start(final String token) {
         final SlackSession ssn =
             SlackSessionFactory.createWebSocketSlackSession(token);
-        ssn.connect();
+        try {
+            ssn.connect();
+        } catch (final IOException ex) {
+            throw new IllegalStateException(ex);
+        }
         Logger.info(
             this, "Slack connected as @%s/%s to %s",
             ssn.sessionPersona().getUserName(),

@@ -23,16 +23,16 @@ import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.Claims;
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.concurrent.atomic.AtomicBoolean;
+import org.cactoos.Proc;
 
 /**
- * Spinner for the spin.
+ * The action that happens in the {@link Flush}.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.10
  */
-final class Spinner implements Runnable {
+final class FlushAction implements Proc<Boolean> {
 
     /**
      * The project.
@@ -45,67 +45,32 @@ final class Spinner implements Runnable {
     private final Brigade brigade;
 
     /**
-     * Is it running now?
-     */
-    private final AtomicBoolean alive;
-
-    /**
      * Ctor.
      * @param pkt Project
      * @param bgd Brigade
-     * @param alv Alive flag
      */
-    Spinner(final Project pkt, final Brigade bgd, final AtomicBoolean alv) {
+    FlushAction(final Project pkt, final Brigade bgd) {
         this.project = pkt;
         this.brigade = bgd;
-        this.alive = alv;
     }
 
     @Override
-    public void run() {
-        try {
-            this.process();
-        } catch (final IOException ex) {
-            throw new IllegalStateException(ex);
+    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
+    public void exec(final Boolean input) throws Exception {
+        while (true) {
+            final Iterator<XML> found;
+            try (final Claims claims = new Claims(this.project).lock()) {
+                found = claims.iterate().iterator();
+            }
+            boolean more = false;
+            if (found.hasNext()) {
+                this.process(found.next());
+                more = true;
+            }
+            if (!more) {
+                break;
+            }
         }
-        this.alive.set(false);
-    }
-
-    /**
-     * Process them all.
-     * @throws IOException If fails
-     */
-    private void process() throws IOException {
-        final long start = System.currentTimeMillis();
-        int total = 0;
-        while (this.next()) {
-            ++total;
-        }
-        if (total > 0) {
-            Logger.info(
-                this, "Seen %d claims in \"%s\", %[ms]s",
-                total, this.project.toString(),
-                System.currentTimeMillis() - start
-            );
-        }
-    }
-
-    /**
-     * One step forward.
-     * @return TRUE if we need more tries
-     * @throws IOException If fails
-     */
-    private boolean next() throws IOException {
-        final Iterator<XML> found;
-        try (final Claims claims = new Claims(this.project).lock()) {
-            found = claims.iterate().iterator();
-        }
-        boolean more = false;
-        if (found.hasNext()) {
-            this.process(found.next());
-            more = true;
-        }
-        return more;
     }
 
     /**
