@@ -19,26 +19,34 @@ package com.zerocracy.stk.pm
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
+import com.zerocracy.jstk.SoftException
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.hr.Roles
-import com.zerocracy.pm.scope.Wbs
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Bootstrap')
-  new Assume(project, xml).roles('PO')
-  new Wbs(project).bootstrap()
   Roles roles = new Roles(project).bootstrap()
+  ClaimIn claim = new ClaimIn(xml)
+  String author = claim.author()
   String role = 'PO'
-  String author = new ClaimIn(xml).author()
-  if (!roles.hasRole(author, role)) {
+  if (roles.isEmpty()) {
     roles.assign(author, role)
-  }
-  new ClaimIn(xml).reply(
-    String.join(
-      ' ',
-      'I\'m ready to manage a project.',
-      'When you\'re ready, you can start giving me commands,',
-      'always prefixing your messages with my name.'
+    claim.reply(
+      String.join(
+        ' ',
+        'I\'m ready to manage a project.',
+        'When you\'re ready, you can start giving me commands,',
+        'always prefixing your messages with my name.'
+      )
+    ).postTo(project)
+  } else {
+    if (roles.hasRole(author, role)) {
+      throw new SoftException(
+        'This project is already ready to go'
+      )
+    }
+    throw new SoftException(
+      'You are not a product owner here, cannot bootstrap it'
     )
-  ).postTo(project)
+  }
 }

@@ -2,6 +2,11 @@
 <claims xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/zerocracy/datum/0.22/xsd/pm/claims.xsd">
     <claim id="1">
+        <type>Bootstrap</type>
+        <created>2016-12-29T09:03:21.684Z</created>
+        <author>yegor256</author>
+    </claim>
+    <claim id="2">
         <type>Add job to WBS</type>
         <created>2016-12-29T09:03:21.684Z</created>
         <author>yegor256</author>
@@ -10,7 +15,7 @@
             <param name="job">gh:test/test#1</param>
         </params>
     </claim>
-    <claim id="2">
+    <claim id="3">
         <type>Add job to WBS</type>
         <created>2016-12-29T09:03:23.684Z</created>
         <author>yegor256</author>
@@ -19,13 +24,13 @@
             <param name="job">gh:test/test#2</param>
         </params>
     </claim>
-    <claim id="3">
+    <claim id="4">
         <type>Show WBS</type>
         <created>2016-12-29T09:03:32.684Z</created>
         <author>yegor256</author>
         <token>github;test/test;1</token>
     </claim>
-    <claim id="4">
+    <claim id="5">
         <type>Remove job from WBS</type>
         <created>2016-12-29T09:03:21.684Z</created>
         <author>yegor256</author>

@@ -61,6 +61,17 @@ public final class Roles {
     }
 
     /**
+     * Does it have any roles?
+     * @return TRUE if it has some roles
+     * @throws IOException If fails
+     */
+    public boolean isEmpty() throws IOException {
+        try (final Item roles = this.item()) {
+            return new Xocument(roles).nodes("/roles/person").isEmpty();
+        }
+    }
+
+    /**
      * Print it to Markdown.
      * @return Text
      * @throws IOException If fails
