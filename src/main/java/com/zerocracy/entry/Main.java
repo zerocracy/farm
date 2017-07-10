@@ -75,6 +75,11 @@ public final class Main {
     @SuppressWarnings("unchecked")
     public void exec() throws IOException {
         final Properties props = new ExtProperties().value();
+        if (props.containsKey("testing")) {
+            throw new IllegalStateException(
+                "Hey, we are in the testing mode!"
+            );
+        }
         final Map<String, SlackSession> slack = new ExtSlack().value();
         final Github github = new ExtGithub().value();
         final Region dynamo = new ExtDynamo().value();
