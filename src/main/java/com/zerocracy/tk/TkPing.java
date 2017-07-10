@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.cactoos.Func;
 import org.cactoos.func.AsyncFunc;
 import org.cactoos.list.FilteredIterable;
 import org.takes.Request;
@@ -93,8 +94,8 @@ public final class TkPing implements Take {
         return new RsText(
             Logger.format(
                 "%d (%d) in %[ms]s: %s",
-                this.total.decrementAndGet(),
                 done.size(),
+                this.total.decrementAndGet(),
                 System.currentTimeMillis() - start,
                 String.join("; ", done)
             )
@@ -125,18 +126,16 @@ public final class TkPing implements Take {
         final String out;
         if (this.total.get() < Tv.THREE) {
             final String arg = "loop";
-            new AsyncFunc<Integer, Integer>(
-                idx -> {
-                    return new JdkRequest(
-                        new RqHref.Base(req)
-                            .href()
-                            .without(arg)
-                            .with(arg, idx)
-                            .toString()
-                    ).fetch().status();
-                }
+            new AsyncFunc<>(
+                (Func<Integer, Integer>) idx -> new JdkRequest(
+                    new RqHref.Base(req)
+                        .href()
+                        .without(arg)
+                        .with(arg, idx)
+                        .toString()
+                ).fetch().status()
             ).apply(this.total.get());
-            out = "run";
+            out = "re-ping";
         } else {
             out = String.format("Too many: %d", this.total.get());
         }
