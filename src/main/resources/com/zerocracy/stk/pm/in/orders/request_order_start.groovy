@@ -28,7 +28,7 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Request order start')
   new Assume(project, xml).roles('ARC', 'PO')
   ClaimIn claim = new ClaimIn(xml)
-  String login = claim.param('login')
+  String login = claim.param('login').replaceAll('^@', '')
   String job = claim.param('job')
   if ('me' == login) {
     login = claim.author()

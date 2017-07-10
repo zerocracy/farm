@@ -115,15 +115,21 @@ public final class ThrowableToEmail implements Func<Throwable, Boolean> {
                 )
                 .with(
                     new EnHTML(
-                        String.format(
-                            // @checkstyle LineLength (1 line)
-                            "<html><body><p>Hi,</p><p>There was a problem:</p><pre>%s</pre><p>--<br/>0crat<br/>%s</p></body></html>",
+                        String.join(
+                            "",
+                            "<html><body><p>Hi,</p>",
+                            "<p>There was a problem (<a ",
+                            "href='https://github.com/zerocracy/farm/issues'>",
+                            "submit it</a>):</p>",
+                            "<pre>",
                             new UncheckedText(
                                 new BytesAsText(
                                     new ThrowableAsBytes(error)
                                 )
                             ).asString(),
-                            version
+                            "</pre><p>--<br/>0crat<br/>",
+                            version,
+                            "</p></body></html>"
                         )
                     )
                 )
