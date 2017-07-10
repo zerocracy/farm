@@ -91,14 +91,10 @@ public final class ThrowableToEmailTest {
             ),
             new FuncAsMatcher<>(
                 (Func<Func<Throwable, Boolean>, Boolean>) func -> {
-                    try {
-                        func.apply(new IOException("hey you!"));
-                        throw new AssertionError("Exception expected here");
-                    } catch (final IllegalStateException ex) {
-                        return new BytesAsText(
-                            new ThrowableAsBytes(ex)
-                        ).asString().contains("you");
-                    }
+                    func.apply(new IOException("hey you!"));
+                    return mail.getReceivedMessages()[0].getSubject().contains(
+                        "you!"
+                    );
                 }
             )
         );

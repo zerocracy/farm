@@ -59,8 +59,7 @@ public final class ThrowableToEmail implements Func<Throwable, Boolean> {
 
     @Override
     public Boolean apply(final Throwable error) throws IOException {
-        if (this.props.containsKey("testing")
-            || !this.props.containsKey("smtp")) {
+        if (this.props.containsKey("testing")) {
             Logger.warn(this, "(TESTING!) %s", error.getLocalizedMessage());
             throw new IllegalStateException(error);
         }
