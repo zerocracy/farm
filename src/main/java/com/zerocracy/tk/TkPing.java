@@ -19,7 +19,6 @@ package com.zerocracy.tk;
 import com.jcabi.aspects.Tv;
 import com.jcabi.http.request.JdkRequest;
 import com.jcabi.log.Logger;
-import com.jcabi.log.VerboseRunnable;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.ClaimIn;
@@ -29,6 +28,8 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import org.cactoos.func.AsyncFunc;
 import org.cactoos.list.FilteredIterable;
 import org.takes.Request;
 import org.takes.Response;
@@ -57,22 +58,29 @@ public final class TkPing implements Take {
     private final Farm farm;
 
     /**
+     * Ping counter.
+     */
+    private final AtomicInteger total;
+
+    /**
      * Ctor.
      * @param frm Farm
      */
     public TkPing(final Farm frm) {
         this.farm = frm;
+        this.total = new AtomicInteger();
     }
 
     @Override
     public Response act(final Request req) throws IOException {
+        this.total.incrementAndGet();
         final Collection<String> done = new LinkedList<>();
         final long start = System.currentTimeMillis();
         final ClaimOut out = new ClaimOut().type(TkPing.TYPE);
         for (final Project project : this.farm.find("")) {
             if (System.currentTimeMillis() - start
                 > TimeUnit.SECONDS.toMillis((long) Tv.FIVE)) {
-                done.add(TkPing.ping(req));
+                done.add(this.ping(req));
                 break;
             }
             if (TkPing.needs(project)) {
@@ -84,7 +92,8 @@ public final class TkPing implements Take {
         }
         return new RsText(
             Logger.format(
-                "%d in %[ms]s: %s",
+                "%d (%d) in %[ms]s: %s",
+                this.total.decrementAndGet(),
                 done.size(),
                 System.currentTimeMillis() - start,
                 String.join("; ", done)
@@ -112,23 +121,26 @@ public final class TkPing implements Take {
      * @param req Request received
      * @return Status
      */
-    private static String ping(final Request req) {
-        final String arg = "loop";
-        new Thread(
-            new VerboseRunnable(
-                () -> {
-                    new JdkRequest(
+    private String ping(final Request req) {
+        final String out;
+        if (this.total.get() < Tv.THREE) {
+            final String arg = "loop";
+            new AsyncFunc<Integer, Integer>(
+                idx -> {
+                    return new JdkRequest(
                         new RqHref.Base(req)
                             .href()
                             .without(arg)
-                            .with(arg, "yes")
+                            .with(arg, idx)
                             .toString()
-                    ).fetch();
-                    return null;
+                    ).fetch().status();
                 }
-            )
-        ).start();
-        return "run";
+            ).apply(this.total.get());
+            out = "run";
+        } else {
+            out = String.format("Too many: %d", this.total.get());
+        }
+        return out;
     }
 
 }
