@@ -110,7 +110,7 @@
                 </opts>
             </cmd>
             <cmd>
-                <code>Remove role</code>
+                <code>Resign role</code>
                 <regex>resign|remove|unregister</regex>
                 <label>resign</label>
                 <help>Resign a person from a project role</help>
