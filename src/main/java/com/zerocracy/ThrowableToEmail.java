@@ -20,12 +20,12 @@ import com.jcabi.email.Envelope;
 import com.jcabi.email.Postman;
 import com.jcabi.email.Protocol;
 import com.jcabi.email.Token;
-import com.jcabi.email.enclosure.EnHTML;
+import com.jcabi.email.enclosure.EnHtml;
 import com.jcabi.email.enclosure.EnPlain;
 import com.jcabi.email.stamp.StRecipient;
 import com.jcabi.email.stamp.StSender;
 import com.jcabi.email.stamp.StSubject;
-import com.jcabi.email.wire.SMTP;
+import com.jcabi.email.wire.Smtp;
 import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.util.Properties;
@@ -77,12 +77,12 @@ public final class ThrowableToEmail implements Func<Throwable, Boolean> {
         final int port = Integer.parseInt(this.props.getProperty("smtp.port"));
         final Protocol proto;
         if ("smtps".equals(this.props.getProperty("smtp.protocol"))) {
-            proto = new Protocol.SMTPS(host, port);
+            proto = new Protocol.Smtps(host, port);
         } else {
-            proto = new Protocol.SMTP(host, port);
+            proto = new Protocol.Smtp(host, port);
         }
         final Postman postman = new Postman.Default(
-            new SMTP(
+            new Smtp(
                 new Token(
                     this.props.getProperty("smtp.username"),
                     this.props.getProperty("smtp.password")
@@ -96,7 +96,7 @@ public final class ThrowableToEmail implements Func<Throwable, Boolean> {
             this.props.getProperty("build.date", "-")
         );
         postman.send(
-            new Envelope.MIME()
+            new Envelope.Mime()
                 .with(new StSender("0crat <no-reply@0crat.com>"))
                 .with(new StRecipient("0crat admin <bugs@0crat.com>"))
                 .with(new StSubject(error.getLocalizedMessage()))
@@ -114,7 +114,7 @@ public final class ThrowableToEmail implements Func<Throwable, Boolean> {
                     )
                 )
                 .with(
-                    new EnHTML(
+                    new EnHtml(
                         String.join(
                             "",
                             "<html><body><p>Hi,</p>",
