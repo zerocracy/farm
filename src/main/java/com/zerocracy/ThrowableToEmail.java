@@ -89,51 +89,63 @@ public final class ThrowableToEmail implements Func<Throwable, Boolean> {
                 ).access(proto)
             )
         );
+        postman.send(this.envelope(error));
+    }
+
+    /**
+     * Make an envelope.
+     * @param error The error
+     * @return Envelope
+     */
+    private Envelope envelope(final Throwable error) {
         final String version = String.format(
             "%s %s %s",
             this.props.getProperty("build.version", "-"),
             this.props.getProperty("build.revision", "-"),
             this.props.getProperty("build.date", "-")
         );
-        postman.send(
-            new Envelope.Mime()
-                .with(new StSender("0crat <no-reply@0crat.com>"))
-                .with(new StRecipient("0crat admin <bugs@0crat.com>"))
-                .with(new StSubject(error.getLocalizedMessage()))
-                .with(
-                    new EnPlain(
-                        String.format(
-                            "Hi,\n\n%s\n\n--\n0crat\n%s",
-                            new UncheckedText(
-                                new BytesAsText(
-                                    new ThrowableAsBytes(error)
-                                )
-                            ).asString(),
-                            version
-                        )
+        Envelope.Mime env = new Envelope.Mime()
+            .with(new StSender("0crat <no-reply@0crat.com>"))
+            .with(new StRecipient("0crat admin <bugs@0crat.com>"))
+            .with(
+                new EnPlain(
+                    String.format(
+                        "Hi,\n\n%s\n\n--\n0crat\n%s",
+                        new UncheckedText(
+                            new BytesAsText(
+                                new ThrowableAsBytes(error)
+                            )
+                        ).asString(),
+                        version
                     )
                 )
-                .with(
-                    new EnHtml(
-                        String.join(
-                            "",
-                            "<html><body><p>Hi,</p>",
-                            "<p>There was a problem (<a ",
-                            "href='https://github.com/zerocracy/farm/issues'>",
-                            "submit it</a>):</p>",
-                            "<pre>",
-                            new UncheckedText(
-                                new BytesAsText(
-                                    new ThrowableAsBytes(error)
-                                )
-                            ).asString(),
-                            "</pre><p>--<br/>0crat<br/>",
-                            version,
-                            "</p></body></html>"
-                        )
+            )
+            .with(
+                new EnHtml(
+                    String.join(
+                        "",
+                        "<html><body><p>Hi,</p>",
+                        "<p>There was a problem (<a ",
+                        "href='https://github.com/zerocracy/farm/issues'>",
+                        "submit it</a>):</p>",
+                        "<pre>",
+                        new UncheckedText(
+                            new BytesAsText(
+                                new ThrowableAsBytes(error)
+                            )
+                        ).asString(),
+                        "</pre><p>--<br/>0crat<br/>",
+                        version,
+                        "</p></body></html>"
                     )
                 )
-        );
+            );
+        if (error.getLocalizedMessage() == null) {
+            env = env.with(new StSubject(error.getClass().getCanonicalName()));
+        } else {
+            env = env.with(new StSubject(error.getLocalizedMessage()));
+        }
+        return env;
     }
 
 }
