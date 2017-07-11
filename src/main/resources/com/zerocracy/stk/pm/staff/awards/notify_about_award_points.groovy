@@ -35,7 +35,10 @@ def exec(Project project, XML xml) {
     .token(login)
     .param(
       'message',
-      "You got ${points} in job `${job}`, your total is ${awards.total()}"
+      String.format(
+        'You got %+d points in `%s`, your total is %+d',
+        points, job, awards.total()
+      )
     )
     .postTo(project)
   new ClaimOut()
@@ -43,7 +46,10 @@ def exec(Project project, XML xml) {
     .token(job)
     .param(
       'message',
-      "${points} awarded to @${login}, total is ${awards.total()}"
+      String.format(
+        '%+d points just awarded to @%s, total is %+d',
+        points, login, awards.total()
+      )
     )
     .postTo(project)
 }
