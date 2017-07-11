@@ -14,40 +14,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.radars.slack;
+package com.zerocracy.stk.pm.comm
 
-import com.jcabi.aspects.Tv;
-import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
+import com.jcabi.xml.XML
+import com.zerocracy.farm.Assume
+import com.zerocracy.jstk.Project
+import com.zerocracy.pm.ClaimIn
 
-/**
- * Slack Token.
- *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.1
- */
-public final class SkToken {
+// The token must look like: gh:zerocracy/farm#123
 
-    /**
-     * Event.
-     */
-    private final SlackMessagePosted event;
-
-    /**
-     * Ctor.
-     * @param evt Event
-     */
-    public SkToken(final SlackMessagePosted evt) {
-        this.event = evt;
-    }
-
-    @Override
-    public String toString() {
-        return new StringBuilder(Tv.HUNDRED)
-            .append("slack;")
-            .append(this.event.getChannel().getId())
-            .append(';')
-            .append(this.event.getSender().getUserName())
-            .toString();
-    }
+def exec(Project project, XML xml) {
+  new Assume(project, xml).type('Notify job')
+  ClaimIn claim = new ClaimIn(xml)
+  String[] parts = claim.token().split(':')
+  if (parts[0] == 'gh') {
+    String[] coords = parts[1].split('#')
+    claim.copy()
+      .type('Notify in GitHub')
+      .token("${coords[0]};${coords[1]}")
+      .postTo(project)
+  } else {
+    throw new IllegalStateException(
+      String.format(
+        'I don\'t know how to notify job "%s"',
+        parts[1]
+      )
+    )
+  }
 }

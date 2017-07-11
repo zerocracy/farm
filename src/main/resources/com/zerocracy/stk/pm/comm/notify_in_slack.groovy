@@ -24,6 +24,8 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 
+// Token must look like: C43789437;yegor256
+
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Notify in Slack')
   ClaimIn claim = new ClaimIn(xml)
@@ -35,26 +37,26 @@ def exec(Project project, XML xml) {
     Logger.info(this, 'Message to Slack [%s]: %s', claim.token(), message)
     return
   }
-  SlackSession session = session(parts[1])
-  if (parts.length > 3) {
+  SlackSession session = session(parts[0])
+  if (parts.length > 2) {
     session.sendMessage(
       session.openDirectMessageChannel(
-        session.findUserByUserName(parts[2])
+        session.findUserByUserName(parts[1])
       ).reply.slackChannel,
       message
     )
   } else {
-    SlackChannel channel = session.findChannelById(parts[1])
-    if (parts.length > 2) {
+    SlackChannel channel = session.findChannelById(parts[0])
+    if (parts.length > 1) {
       session.sendMessage(
         channel,
-        String.format('@%s %s', parts[2], message)
+        String.format('@%s %s', parts[1], message)
       )
       Logger.info(
         this, '@%s posted %d chars to @%s at %s/%s',
         session.sessionPersona().userName,
         message.length(),
-        parts[2],
+        parts[1],
         channel.name, channel.id
       )
     } else {

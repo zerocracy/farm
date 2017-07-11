@@ -44,6 +44,7 @@ public final class ReProfile implements Reaction<SlackMessagePosted> {
         );
         new ClaimOnQuestion(question)
             .claim()
+            .type("Notify in Slack")
             .token(new SkToken(event))
             .author(new SkPerson(farm, event).uid())
             .postTo(new Pmo(farm));

@@ -31,23 +31,28 @@ import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.radars.github.GhTube
 
+// Token must look like: zerocracy/farm;123;6
+//   - repository coordinates
+//   - issue number
+//   - comment number inside the issue (optional)
+
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Notify in GitHub')
   ClaimIn claim = new ClaimIn(xml)
   String[] parts = claim.token().split(';')
   Github github = binding.variables.github
   Repo repo = github.repos().get(
-    new Coordinates.Simple(parts[1])
+    new Coordinates.Simple(parts[0])
   )
   Issue issue = safe(
     repo.issues().get(
-      Integer.parseInt(parts[2])
+      Integer.parseInt(parts[1])
     )
   )
   String message = claim.param('message')
-  if (parts.length > Tv.THREE) {
+  if (parts.length > 2) {
     Comment comment = issue.comments().get(
-      Integer.parseInt(parts[Tv.THREE])
+      Integer.parseInt(parts[2])
     )
     new GhTube(comment).say(message)
   } else {

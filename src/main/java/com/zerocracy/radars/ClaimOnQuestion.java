@@ -52,9 +52,7 @@ public final class ClaimOnQuestion {
                 .type(this.question.code())
                 .params(this.question.params());
         } else {
-            claim = new ClaimOut()
-                .type("notify")
-                .param("message", this.question.help());
+            claim = new ClaimOut().param("message", this.question.help());
         }
         return claim;
     }

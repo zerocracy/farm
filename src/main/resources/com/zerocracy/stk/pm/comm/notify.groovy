@@ -24,31 +24,22 @@ import com.zerocracy.pm.ClaimIn
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Notify')
   ClaimIn claim = new ClaimIn(xml)
-  String[] parts = claim.token().split(';')
+  String[] parts = claim.token().split(';', 2)
   if (parts[0] == 'slack') {
     claim.copy()
       .type('Notify in Slack')
+      .token(parts[1])
       .postTo(project)
   } else if (parts[0] == 'github') {
     claim.copy()
       .type('Notify in GitHub')
+      .token(parts[1])
       .postTo(project)
   } else if (parts[0] == 'job') {
-    String[] job = parts[1].split(':')
-    if (job[0] == 'gh') {
-      String[] coords = job[1].split('#')
-      claim.copy()
-        .type('Notify in GitHub')
-        .token("github;${coords[0]};${coords[1]}")
-        .postTo(project)
-    } else {
-      throw new IllegalStateException(
-        String.format(
-          'I don\'t know how to notify job "%s"',
-          parts[1]
-        )
-      )
-    }
+    claim.copy()
+      .type('Notify job')
+      .token(parts[1])
+      .postTo(project)
   } else {
     throw new IllegalStateException(
       String.format(

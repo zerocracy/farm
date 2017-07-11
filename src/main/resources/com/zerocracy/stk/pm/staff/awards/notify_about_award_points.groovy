@@ -14,20 +14,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.comm
+package com.zerocracy.stk.pm.staff.awards
 
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
-
-// The token must look like: yegor256
+import com.zerocracy.pm.ClaimOut
+import com.zerocracy.pmo.Awards
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Notify user')
+  new Assume(project, xml).type('Award points were added')
   ClaimIn claim = new ClaimIn(xml)
-  claim.copy()
-    .type('Notify in Slack')
-    .token("slack;${project};${claim.token()}")
+  String job = claim.param('job')
+  String login = claim.param('login')
+  Integer points = Integer.parseInt(claim.param('points'))
+  Awards awards = new Awards(project, login).bootstrap()
+  new ClaimOut()
+    .type('Notify user')
+    .token(login)
+    .param(
+      'message',
+      "You got ${points} in job `${job}`, your total is ${awards.total()}"
+    )
+    .postTo(project)
+  new ClaimOut()
+    .type('Notify job')
+    .token(job)
+    .param(
+      'message',
+      "${points} awarded to @${login}, total is ${awards.total()}"
+    )
     .postTo(project)
 }

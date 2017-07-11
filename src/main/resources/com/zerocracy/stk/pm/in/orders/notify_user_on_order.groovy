@@ -27,7 +27,7 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   new ClaimOut()
     .type('Notify user')
-    .param('login', claim.param('login'))
+    .token(claim.param('login'))
     .param(
       'message',
       "Job `${claim.param('job')}` was assigned to you a minute ago:\n"
