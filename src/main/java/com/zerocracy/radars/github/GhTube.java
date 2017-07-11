@@ -53,7 +53,7 @@ public final class GhTube {
         this.comment.issue().comments().post(
             String.format(
                 // @checkstyle LineLength (1 line)
-                "> %s ([here](https://github.com/%s/issues/%d#issuecomment-%d))%n%n%s",
+                "> %s ([here](https://github.com/%s/issues/%d#issuecomment-%d))%n%n@%s %s",
                 StringUtils.abbreviate(
                     new Comment.Smart(this.comment).body(),
                     Tv.HUNDRED
@@ -61,6 +61,7 @@ public final class GhTube {
                 this.comment.issue().repo().coordinates(),
                 this.comment.issue().number(),
                 this.comment.number(),
+                new Comment.Smart(this.comment).author(),
                 msg
             )
         );
