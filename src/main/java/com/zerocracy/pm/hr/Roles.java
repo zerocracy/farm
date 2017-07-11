@@ -148,6 +148,23 @@ public final class Roles {
     }
 
     /**
+     * Does he have any roles?
+     * @param person The person
+     * @return TRUE if it has any role
+     * @throws IOException If fails
+     */
+    public boolean hasAnyRole(final String person) throws IOException {
+        try (final Item roles = this.item()) {
+            return new Xocument(roles).nodes(
+                String.format(
+                    "/roles/person[@id = '%s']",
+                    person
+                )
+            ).iterator().hasNext();
+        }
+    }
+
+    /**
      * Does he have any of these roles?
      * @param person The person
      * @param role Roles to find
