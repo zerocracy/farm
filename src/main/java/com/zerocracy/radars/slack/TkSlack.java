@@ -34,7 +34,7 @@ import org.takes.rs.RsWithHeader;
 import org.takes.rs.RsWithStatus;
 
 /**
- * Slack listening take.
+ * Slack authentication entry point.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
@@ -88,8 +88,7 @@ public final class TkSlack implements Take {
                 )
                 .queryParam(
                     "code",
-                    new RqHref.Base(req).href()
-                        .param("code").iterator().next()
+                    new RqHref.Smart(new RqHref.Base(req)).single("code")
                 )
                 .back()
                 .fetch()

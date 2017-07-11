@@ -53,7 +53,7 @@ public final class ClaimOnQuestion {
                 .params(this.question.params());
         } else {
             claim = new ClaimOut()
-                .token("Notify")
+                .type("Notify")
                 .param("message", this.question.help());
         }
         return claim;
