@@ -61,7 +61,7 @@ public final class GhTube {
                 this.comment.issue().repo().coordinates(),
                 this.comment.issue().number(),
                 this.comment.number(),
-                new Comment.Smart(this.comment).author(),
+                new Comment.Smart(this.comment).author().login(),
                 msg
             )
         );
