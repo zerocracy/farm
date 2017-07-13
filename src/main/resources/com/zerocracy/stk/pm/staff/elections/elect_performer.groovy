@@ -20,7 +20,7 @@ import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimOut
-import com.zerocracy.pm.hr.Roles
+import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pm.staff.Elections
 import com.zerocracy.pm.staff.voters.NoRoom

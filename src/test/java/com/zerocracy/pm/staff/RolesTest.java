@@ -14,9 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pm.hr;
+package com.zerocracy.pm.staff;
 
 import com.zerocracy.jstk.fake.FkProject;
+import com.zerocracy.pm.staff.Roles;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;

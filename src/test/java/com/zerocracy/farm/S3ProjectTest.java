@@ -21,7 +21,7 @@ import com.jcabi.s3.fake.FkBucket;
 import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
-import com.zerocracy.pm.hr.Roles;
+import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.pmo.Agenda;
 import java.nio.file.Files;
 import org.hamcrest.MatcherAssert;
@@ -67,7 +67,7 @@ public final class S3ProjectTest {
         final String role = "ARC";
         try (final Item item = project.acq(file)) {
             try (final Item sub = project.acq(file)) {
-                new Xocument(sub).bootstrap("pm/hr/roles");
+                new Xocument(sub).bootstrap("pm/staff/roles");
             }
             new Xocument(item).modify(
                 new Directives().xpath("/roles")

@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pm.hr;
+package com.zerocracy.pm.staff;
 
 import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSLDocument;
@@ -55,7 +55,7 @@ public final class Roles {
      */
     public Roles bootstrap() throws IOException {
         try (final Item team = this.item()) {
-            new Xocument(team).bootstrap("pm/hr/roles");
+            new Xocument(team).bootstrap("pm/staff/roles");
         }
         return this;
     }

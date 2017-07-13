@@ -22,7 +22,7 @@ import com.jcabi.s3.fake.FkBucket;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
-import com.zerocracy.pm.hr.Roles;
+import com.zerocracy.pm.staff.Roles;
 import java.nio.file.Files;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -51,7 +51,6 @@ public final class S3FarmTest {
             item.path().toFile().exists(),
             Matchers.is(false)
         );
-        Files.write(item.path(), "hello, world".getBytes());
         item.close();
         MatcherAssert.assertThat(
             new String(Files.readAllBytes(item.path())),

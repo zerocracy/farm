@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <roles xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/zerocracy/datum/0.22/xsd/pm/hr/roles.xsd">
+    xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/zerocracy/datum/0.22/xsd/pm/staff/roles.xsd">
     <person id="yegor256">
         <role>PO</role>
     </person>
