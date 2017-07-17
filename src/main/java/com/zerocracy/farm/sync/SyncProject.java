@@ -16,25 +16,37 @@
  */
 package com.zerocracy.farm.sync;
 
+import com.jcabi.log.VerboseThreads;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import lombok.EqualsAndHashCode;
+import org.cactoos.func.And;
+import org.cactoos.func.False;
+import org.cactoos.func.FuncAsRunnable;
+import org.cactoos.func.Ternary;
+import org.cactoos.func.UncheckedScalar;
+import org.cactoos.list.LimitedIterable;
+import org.cactoos.list.MappedIterable;
+import org.cactoos.list.SortedIterable;
 
 /**
  * Pool project.
- *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
- * @todo #43:30min At the moment this pool of items will never be
- *  cleaned. They will asValue into the pool but will never be removed.
- *  There has to be some mechanism to implement that cache
- *  cleaning. Otherwise, we'll hit out-of-memory, sooner or later.
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @EqualsAndHashCode(of = "origin")
 final class SyncProject implements Project {
+
+    /**
+     * Default max pool size.
+     */
+    private static final int DEFAULT_THRESHOLD = 50;
 
     /**
      * Origin project.
@@ -47,13 +59,71 @@ final class SyncProject implements Project {
     private final Map<String, SyncItem> pool;
 
     /**
+     * Max pool size.
+     */
+    private final int threshold;
+
+    /**
+     * A cleaner.
+     */
+    private final Executor cleaner;
+
+    /**
+     * Clean action.
+     */
+    private final Runnable clean;
+
+    /**
      * Ctor.
      * @param pkt Project
      * @param map Pool of items
      */
     SyncProject(final Project pkt, final Map<String, SyncItem> map) {
+        this(pkt, map, SyncProject.DEFAULT_THRESHOLD);
+    }
+
+    /**
+     * Ctor.
+     * @param pkt Project
+     * @param map Pool of items
+     * @param threshold Max pool size
+     */
+    SyncProject(
+        final Project pkt,
+        final Map<String, SyncItem> map,
+        final int threshold
+    ) {
         this.origin = pkt;
         this.pool = map;
+        this.threshold = threshold;
+        this.cleaner = Executors.newFixedThreadPool(1, new VerboseThreads());
+        this.clean = new FuncAsRunnable(
+            none -> new Ternary<>(
+                () -> this.pool.size() > this.threshold,
+                () -> {
+                    synchronized (this.pool) {
+                        return new UncheckedScalar<>(
+                            new And(
+                                new LimitedIterable<>(
+                                    new SortedIterable<CmpEntry<String,
+                                        SyncItem>>(
+                                        new MappedIterable<>(
+                                            this.pool.entrySet(),
+                                            CmpEntry::new
+                                        )
+                                    ),
+                                    this.pool.size() - this.threshold
+                                ),
+                                entry -> {
+                                    this.pool.remove(entry.getKey());
+                                }
+                            )
+                        ).value();
+                    }
+                },
+                new False()
+            ).value()
+        );
     }
 
     @Override
@@ -81,7 +151,9 @@ final class SyncProject implements Project {
             Thread.currentThread().interrupt();
             throw new IllegalStateException(ex);
         }
+        if (this.pool.size() > this.threshold) {
+            this.cleaner.execute(this.clean);
+        }
         return item;
     }
-
 }
