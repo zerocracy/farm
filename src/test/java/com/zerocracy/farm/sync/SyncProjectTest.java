@@ -22,16 +22,16 @@ import com.zerocracy.jstk.fake.FkProject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import org.cactoos.ScalarHasValue;
 import org.cactoos.func.And;
 import org.cactoos.list.ArrayAsIterable;
 import org.cactoos.list.MappedIterable;
+import org.cactoos.list.RepeatIterable;
 import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
  * Test case for {@link SyncProject}.
- *
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.12
@@ -41,12 +41,12 @@ public final class SyncProjectTest {
 
     @Test
     public void cleanUp() throws Exception {
-        final int threshol = 1;
+        final int threshold = 1;
         final Map<String, SyncItem> pool = new HashMap<>();
         final SyncProject project = new SyncProject(
             new FkProject(),
             pool,
-            threshol
+            threshold
         );
         new And(
             new MappedIterable<>(
@@ -55,11 +55,16 @@ public final class SyncProjectTest {
             ),
             Item::close
         ).value();
-        TimeUnit.MILLISECONDS.sleep(Tv.HUNDRED);
         MatcherAssert.assertThat(
             "SyncProject did not clean item's pool",
-            pool.keySet(),
-            Matchers.hasSize(threshol)
+            new And(
+                new RepeatIterable<>(0, Tv.TWENTY),
+                x -> {
+                    TimeUnit.MICROSECONDS.sleep(1L);
+                    return pool.size() != threshold;
+                }
+            ),
+            new ScalarHasValue<>(false)
         );
     }
 }

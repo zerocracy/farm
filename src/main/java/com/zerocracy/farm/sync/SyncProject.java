@@ -16,17 +16,16 @@
  */
 package com.zerocracy.farm.sync;
 
-import com.jcabi.log.VerboseThreads;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import java.util.Map;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import lombok.EqualsAndHashCode;
+import org.cactoos.Proc;
 import org.cactoos.func.And;
+import org.cactoos.func.AsyncFunc;
 import org.cactoos.func.False;
-import org.cactoos.func.FuncAsRunnable;
+import org.cactoos.func.FuncAsProc;
 import org.cactoos.func.Ternary;
 import org.cactoos.func.UncheckedScalar;
 import org.cactoos.list.LimitedIterable;
@@ -64,14 +63,9 @@ final class SyncProject implements Project {
     private final int threshold;
 
     /**
-     * A cleaner.
-     */
-    private final Executor cleaner;
-
-    /**
      * Clean action.
      */
-    private final Runnable clean;
+    private final Proc<Void> clean;
 
     /**
      * Ctor.
@@ -96,34 +90,31 @@ final class SyncProject implements Project {
         this.origin = pkt;
         this.pool = map;
         this.threshold = threshold;
-        this.cleaner = Executors.newFixedThreadPool(1, new VerboseThreads());
-        this.clean = new FuncAsRunnable(
-            none -> new Ternary<>(
-                () -> this.pool.size() > this.threshold,
-                () -> {
-                    synchronized (this.pool) {
-                        return new UncheckedScalar<>(
-                            new And(
-                                new LimitedIterable<>(
-                                    new SortedIterable<CmpEntry<String,
-                                        SyncItem>>(
-                                        new MappedIterable<>(
-                                            this.pool.entrySet(),
-                                            CmpEntry::new
-                                        )
-                                    ),
-                                    this.pool.size() - this.threshold
+        this.clean = none -> new Ternary<>(
+            () -> this.pool.size() > threshold,
+            () -> {
+                synchronized (this.pool) {
+                    return new UncheckedScalar<>(
+                        new And(
+                            new LimitedIterable<>(
+                                new SortedIterable<CmpEntry<String,
+                                    SyncItem>>(
+                                    new MappedIterable<>(
+                                        this.pool.entrySet(),
+                                        CmpEntry::new
+                                    )
                                 ),
-                                entry -> {
-                                    this.pool.remove(entry.getKey());
-                                }
+                                this.pool.size() - this.threshold
+                            ),
+                            new FuncAsProc<>(
+                                entry -> this.pool.remove(entry.getKey())
                             )
-                        ).value();
-                    }
-                },
-                new False()
-            ).value()
-        );
+                        )
+                    ).value();
+                }
+            },
+            new False()
+        ).value();
     }
 
     @Override
@@ -152,7 +143,7 @@ final class SyncProject implements Project {
             throw new IllegalStateException(ex);
         }
         if (this.pool.size() > this.threshold) {
-            this.cleaner.execute(this.clean);
+            new AsyncFunc<>(this.clean).apply(null);
         }
         return item;
     }
