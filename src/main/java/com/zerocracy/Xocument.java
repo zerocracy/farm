@@ -16,7 +16,6 @@
  */
 package com.zerocracy;
 
-import com.jcabi.aspects.Cacheable;
 import com.jcabi.aspects.Tv;
 import com.jcabi.xml.StrictXML;
 import com.jcabi.xml.XML;
@@ -33,18 +32,13 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
-import org.cactoos.Func;
-import org.cactoos.func.StickyFunc;
 import org.cactoos.func.Ternary;
-import org.cactoos.func.UncheckedFunc;
 import org.cactoos.func.UncheckedScalar;
 import org.cactoos.io.InputAsBytes;
-import org.cactoos.io.InputAsLSInput;
 import org.cactoos.io.InputWithFallback;
 import org.cactoos.io.LengthOfInput;
 import org.cactoos.io.PathAsInput;
 import org.cactoos.io.PathAsOutput;
-import org.cactoos.io.StickyInput;
 import org.cactoos.io.TeeInput;
 import org.cactoos.io.UrlAsInput;
 import org.cactoos.list.ReducedIterable;
@@ -54,7 +48,6 @@ import org.cactoos.text.BytesAsText;
 import org.cactoos.text.SplitText;
 import org.cactoos.text.UncheckedText;
 import org.w3c.dom.Node;
-import org.w3c.dom.ls.LSInput;
 import org.w3c.dom.ls.LSResourceResolver;
 import org.xembly.Directive;
 import org.xembly.Directives;
@@ -83,6 +76,11 @@ public final class Xocument {
     private static final XSL COMPRESS = XSLDocument.make(
         Xocument.class.getResource("compress.xsl")
     );
+
+    /**
+     * XSD resolver.
+     */
+    private static final LSResourceResolver RESOLVER = new XsdResolver();
 
     /**
      * File.
@@ -173,7 +171,7 @@ public final class Xocument {
     public List<String> xpath(final String xpath) throws IOException {
         final XML xml = new StrictXML(
             new XMLDocument(this.file.toFile()),
-            Xocument.resolver()
+            Xocument.RESOLVER
         );
         return xml.xpath(xpath);
     }
@@ -187,7 +185,7 @@ public final class Xocument {
     public List<XML> nodes(final String xpath) throws IOException {
         final XML xml = new StrictXML(
             new XMLDocument(this.file.toFile()),
-            Xocument.resolver()
+            Xocument.RESOLVER
         );
         return xml.nodes(xpath);
     }
@@ -205,7 +203,7 @@ public final class Xocument {
             Xocument.COMPRESS.with(
                 "version", Xocument.VERSION
             ).transform(new XMLDocument(node)),
-            Xocument.resolver()
+            Xocument.RESOLVER
         ).toString();
         if (!before.toString().equals(after)) {
             new LengthOfInput(
@@ -316,32 +314,6 @@ public final class Xocument {
             sum += Integer.parseInt(parts[idx]) << (idx << Tv.THREE);
         }
         return sum;
-    }
-
-    /**
-     * The resolver.
-     * @return Resolver
-     */
-    @Cacheable(forever = true)
-    private static LSResourceResolver resolver() {
-        final Func<String, LSInput> locator = new StickyFunc<>(
-            loc -> {
-                final String[] parts = loc.split(" ");
-                return new InputAsLSInput(
-                    // @checkstyle MagicNumber (2 lines)
-                    new StickyInput(new UrlAsInput(parts[3])),
-                    parts[2], parts[3], parts[4]
-                );
-            }
-        );
-        return (type, namespace, pid, sid, base) -> new UncheckedFunc<>(
-            locator
-        ).apply(
-            String.format(
-                "%s %s %s %s %s",
-                type, namespace, pid, sid, base
-            )
-        );
     }
 
 }
