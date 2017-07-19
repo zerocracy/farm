@@ -49,7 +49,7 @@ public final class XsdResolverTest {
                         "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'",
                         "xsi:noNamespaceSchemaLocation=  ",
                         // @checkstyle LineLengthCheck (1 line)
-                        "'http://datum.zerocracy.com/0.26/xsd/pm/hr/roles.xsd'/>"
+                        "'http://datum.zerocracy.com/0.27/xsd/pm/staff/roles.xsd'/>"
                     )
                 ),
                 new XsdResolver()
@@ -66,7 +66,7 @@ public final class XsdResolverTest {
                 "<roles updated='2017-07-12T12:00:00' version='2'",
                 "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'",
                 "xsi:noNamespaceSchemaLocation =",
-                "'http://datum.zerocracy.com/0.26/xsd/pm/hr/roles.xsd' />"
+                "'http://datum.zerocracy.com/0.27/xsd/pm/staff/roles.xsd' />"
             )
         );
         MatcherAssert.assertThat(
@@ -100,7 +100,7 @@ public final class XsdResolverTest {
                 new InputStreamAsInput(
                     new XsdResolver().resolveResource(
                         "-", "-", "-",
-                        "http://datum.zerocracy.com/0.26/xsd/pm/hr/types.xsd",
+                        "http://datum.zerocracy.com/0.27/xsd/pm/staff/types.xsd",
                         "-"
                     ).getByteStream()
                 )
@@ -118,7 +118,7 @@ public final class XsdResolverTest {
                         new XsdResolver().resolveResource(
                             "-", "-", "-",
                             // @checkstyle LineLengthCheck (1 line)
-                            "http://datum.zerocracy.com/0.26/xsd/pm/hr/roles.xsd",
+                            "http://datum.zerocracy.com/0.27/xsd/pm/staff/roles.xsd",
                             "-"
                         ).getCharacterStream(),
                         StandardCharsets.UTF_8
