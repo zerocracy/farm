@@ -21,7 +21,12 @@ import com.zerocracy.farm.MismatchException;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 
 /**
  * Brigade of stakeholders.
@@ -37,6 +42,8 @@ public final class Brigade {
      */
     private final Iterable<Stakeholder> list;
 
+    private final Map<String, List<Stakeholder>> cache;
+
     /**
      * Ctor.
      * @param lst List of stakeholders
@@ -51,6 +58,7 @@ public final class Brigade {
      */
     public Brigade(final Iterable<Stakeholder> lst) {
         this.list = lst;
+        this.cache = new HashMap<>();
     }
 
     /**
@@ -63,9 +71,16 @@ public final class Brigade {
     public int process(final Project project, final XML xml)
         throws IOException {
         int total = 0;
+        final String key = xml.xpath("/claim/type/text()").get(0);
+        this.cache.putIfAbsent(key, new ArrayList<>());
         for (final Stakeholder stk : this.list) {
+            if (this.cache.get(key).contains(stk)) {
+                continue;
+            }
             if (Brigade.process(stk, project, xml)) {
                 ++total;
+            } else {
+                this.cache.get(key).add(stk);
             }
         }
         return total;

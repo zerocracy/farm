@@ -25,10 +25,6 @@ import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.SoftException;
 import com.zerocracy.jstk.Stakeholder;
-import java.util.Map;
-import java.util.Properties;
-import java.util.TreeSet;
-import java.util.regex.Pattern;
 import org.cactoos.Scalar;
 import org.cactoos.func.FuncWithFallback;
 import org.cactoos.func.IoCheckedFunc;
@@ -37,6 +33,10 @@ import org.cactoos.io.ResourceAsInput;
 import org.cactoos.list.MappedIterable;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
+import java.util.Map;
+import java.util.Properties;
+import java.util.TreeSet;
+import java.util.regex.Pattern;
 
 /**
  * Smart farm.
@@ -104,6 +104,7 @@ public final class SmartFarm implements Scalar<Farm> {
                 ).getResources(Pattern.compile(".*\\.groovy"))
             ),
             path -> new StkSafe(
+                path,
                 this.props,
                 (project, xml) -> new IoCheckedFunc<>(
                     new FuncWithFallback<Project, Boolean>(
