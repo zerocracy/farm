@@ -27,7 +27,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 /**
  * Brigade of stakeholders.
  *
@@ -42,6 +41,9 @@ public final class Brigade {
      */
     private final Iterable<Stakeholder> list;
 
+    /**
+     * A "cache" of stakeholders.
+     */
     private final Map<String, List<Stakeholder>> cache;
 
     /**
@@ -72,7 +74,7 @@ public final class Brigade {
         throws IOException {
         int total = 0;
         final String key = xml.xpath("/claim/type/text()").get(0);
-        this.cache.putIfAbsent(key, new ArrayList<>());
+        this.cache.putIfAbsent(key, new ArrayList<>(0));
         for (final Stakeholder stk : this.list) {
             if (this.cache.get(key).contains(stk)) {
                 continue;
@@ -95,7 +97,7 @@ public final class Brigade {
      * @throws IOException If fails
      */
     private static boolean process(final Stakeholder stk, final Project project,
-        final XML xml) throws IOException {
+            final XML xml) throws IOException {
         boolean done;
         try {
             stk.process(project, xml);
