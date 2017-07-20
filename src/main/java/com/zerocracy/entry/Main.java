@@ -27,6 +27,7 @@ import com.zerocracy.radars.slack.SlackRadar;
 import com.zerocracy.radars.slack.TkSlack;
 import com.zerocracy.tk.TkAlias;
 import com.zerocracy.tk.TkApp;
+import io.sentry.Sentry;
 import java.io.IOException;
 import java.util.AbstractMap;
 import java.util.Map;
@@ -80,6 +81,7 @@ public final class Main {
                 "Hey, we are in the testing mode!"
             );
         }
+        Sentry.init(props.getProperty("sentry.dsn", ""));
         final Map<String, SlackSession> slack = new ExtSlack().value();
         final Github github = new ExtGithub().value();
         final Region dynamo = new ExtDynamo().value();
@@ -92,7 +94,7 @@ public final class Main {
                 new AbstractMap.SimpleEntry<>("github", github)
             )
         ).value();
-        try (final SlackRadar radar = new SlackRadar(farm, slack, props)) {
+        try (final SlackRadar radar = new SlackRadar(farm, slack)) {
             radar.refresh();
             new FtCli(
                 new TkApp(

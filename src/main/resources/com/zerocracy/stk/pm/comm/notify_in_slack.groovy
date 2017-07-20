@@ -33,18 +33,20 @@ def exec(Project project, XML xml) {
   String message = claim.param('message').replaceAll(
     '\\[([^]]+)]\\(([^)]+)\\)', '<$2|$1>'
   )
-  if (binding.variables.properties.containsKey('testing')) {
+  if (binding.variables.properties.containsKey('testing')
+    && !binding.variables.properties.containsKey('slack_testing')) {
     Logger.info(this, 'Message to Slack [%s]: %s', claim.token(), message)
     return
   }
   SlackSession session = session(parts[0])
   if (parts.length > 2) {
-    session.sendMessage(
-      session.openDirectMessageChannel(
-        session.findUserByUserName(parts[1])
-      ).reply.slackChannel,
-      message
-    )
+    final user = session.findUserByUserName(parts[1])
+    if (user != null) {
+      session.sendMessage(
+        session.openDirectMessageChannel(user).reply.slackChannel,
+        message
+      )
+    }
   } else {
     SlackChannel channel = session.findChannelById(parts[0])
     if (parts.length > 1) {
