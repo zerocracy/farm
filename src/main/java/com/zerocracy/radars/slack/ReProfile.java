@@ -43,7 +43,7 @@ public final class ReProfile implements Reaction<SlackMessagePosted> {
     ) throws IOException {
         final Question question = new Question(
             new XMLDocument(this.getClass().getResource("q-profile.xml")),
-            event.getMessageContent().split("\\s+", 2)[1].trim()
+            new DirectMessage(event.getMessageContent()).asString()
         );
         new ClaimOnQuestion(question)
             .claim()

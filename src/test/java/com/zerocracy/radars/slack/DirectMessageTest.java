@@ -14,10 +14,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.slack_direct_message
+package com.zerocracy.radars.slack;
 
-import com.jcabi.xml.XML
-import com.zerocracy.jstk.Project
+import org.cactoos.TextHasString;
+import org.hamcrest.MatcherAssert;
+import org.junit.Test;
 
-def exec(Project project, XML xml) {
+/**
+ * Test case for {@link DirectMessage}.
+ * @author Kirill (g4s8.public@gmail.com)
+ * @version $Id$
+ * @since 0.13
+ * @checkstyle JavadocMethodCheck (500 lines)
+ */
+public final class DirectMessageTest {
+
+    @Test
+    public void withMentionTest() throws Exception {
+        MatcherAssert.assertThat(
+            "Didn't skip mention",
+            new DirectMessage("@0crat version"),
+            new TextHasString("version")
+        );
+    }
+
+    @Test
+    public void withoutMentionTest() throws Exception {
+        final String msg = "hello";
+        MatcherAssert.assertThat(
+            "Changed origin message",
+            new DirectMessage(msg),
+            new TextHasString(msg)
+        );
+    }
 }
