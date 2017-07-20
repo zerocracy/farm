@@ -23,6 +23,8 @@ import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.hr.Roles
 import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pm.staff.Elections
+import com.zerocracy.pm.staff.bans.FkBans
+import com.zerocracy.pm.staff.voters.Banned
 import com.zerocracy.pm.staff.voters.NoRoom
 
 def exec(Project project, XML xml) {
@@ -37,7 +39,8 @@ def exec(Project project, XML xml) {
       def elected = elections.elect(
         job, logins,
         [
-          (new NoRoom(project)): -100
+          (new NoRoom(project)): -100,
+          (new Banned(job, new FkBans())): -1000
         ]
       )
       if (elected) {
