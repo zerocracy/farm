@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.hr.roles
+package com.zerocracy.stk.pm.staff.roles
 
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
@@ -24,20 +24,20 @@ import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.staff.Roles
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Assign role')
+  new Assume(project, xml).type('Resign role')
   new Assume(project, xml).roles('ARC', 'PO')
   ClaimIn claim = new ClaimIn(xml)
   String login = claim.param('login')
   String role = claim.param('role')
-  new Roles(project).bootstrap().assign(login, role)
+  new Roles(project).bootstrap().resign(login, role)
   claim.reply(
     String.format(
-      'Role "%s" assigned to "%s".',
+      'Role "%s" resigned from "%s".',
       role, login
     )
   ).postTo(project)
   new ClaimOut()
-    .type('role was assigned')
+    .type('Role was resigned')
     .param('login', login)
     .param('role', role)
     .postTo(project)

@@ -51,6 +51,7 @@ public final class S3FarmTest {
             item.path().toFile().exists(),
             Matchers.is(false)
         );
+        Files.write(item.path(), "hello, world".getBytes());
         item.close();
         MatcherAssert.assertThat(
             new String(Files.readAllBytes(item.path())),
