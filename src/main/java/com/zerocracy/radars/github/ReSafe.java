@@ -22,6 +22,7 @@ import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.SoftException;
 import java.io.IOException;
 import org.apache.commons.lang3.StringUtils;
+import org.cactoos.Proc;
 import org.cactoos.func.FuncWithFallback;
 import org.cactoos.func.IoCheckedFunc;
 import org.cactoos.text.BytesAsText;
@@ -65,7 +66,7 @@ public final class ReSafe implements Response {
                     }
                     return result;
                 },
-                throwable -> {
+                (Proc<Throwable>) throwable -> {
                     comment.issue().comments().post(
                         String.join(
                             "",
