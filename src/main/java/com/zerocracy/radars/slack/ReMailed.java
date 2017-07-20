@@ -18,9 +18,11 @@ package com.zerocracy.radars.slack;
 
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
-import com.zerocracy.ThrowableToEmail;
 import com.zerocracy.jstk.Farm;
+import io.sentry.Sentry;
 import java.util.Properties;
+import org.cactoos.Func;
+import org.cactoos.Proc;
 import org.cactoos.func.FuncWithFallback;
 import org.cactoos.func.UncheckedFunc;
 
@@ -32,13 +34,7 @@ import org.cactoos.func.UncheckedFunc;
  * @since 0.11
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class ReMailed implements Reaction<SlackMessagePosted> {
-
-    /**
-     * Properties.
-     */
-    private final Properties props;
 
     /**
      * Reaction.
@@ -48,12 +44,9 @@ public final class ReMailed implements Reaction<SlackMessagePosted> {
     /**
      * Ctor.
      * @param tgt Target
-     * @param pps Properties
      */
-    public ReMailed(final Reaction<SlackMessagePosted> tgt,
-        final Properties pps) {
+    public ReMailed(final Reaction<SlackMessagePosted> tgt) {
         this.origin = tgt;
-        this.props = pps;
     }
 
     @Override
@@ -61,8 +54,18 @@ public final class ReMailed implements Reaction<SlackMessagePosted> {
         final SlackSession session) {
         return new UncheckedFunc<>(
             new FuncWithFallback<Boolean, Boolean>(
-                input -> this.origin.react(farm, event, session),
-                new ThrowableToEmail(this.props)
+                new Func<Boolean, Boolean>() {
+                    @Override
+                    public Boolean apply(final Boolean input) throws Exception {
+                        return ReMailed.this.origin.react(farm, event, session);
+                    }
+                },
+                new Proc<Throwable>() {
+                    @Override
+                    public void exec(final Throwable input) throws Exception {
+                        Sentry.capture(input);
+                    }
+                }
             )
         ).apply(true);
     }
