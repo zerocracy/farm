@@ -20,9 +20,8 @@ import com.jcabi.xml.StrictXML;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSLDocument;
-import java.nio.charset.StandardCharsets;
-import org.apache.commons.io.input.ReaderInputStream;
 import org.cactoos.io.InputStreamAsInput;
+import org.cactoos.io.ReaderAsInput;
 import org.cactoos.text.BytesAsText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -113,16 +112,12 @@ public final class XsdResolverTest {
     public void resolvesBasicXsdAsCharStream() throws Exception {
         MatcherAssert.assertThat(
             new BytesAsText(
-                new InputStreamAsInput(
-                    new ReaderInputStream(
-                        new XsdResolver().resolveResource(
-                            "-", "-", "-",
-                            // @checkstyle LineLengthCheck (1 line)
-                            "http://datum.zerocracy.com/0.26/xsd/pm/hr/roles.xsd",
-                            "-"
-                        ).getCharacterStream(),
-                        StandardCharsets.UTF_8
-                    )
+                new ReaderAsInput(
+                    new XsdResolver().resolveResource(
+                        "-", "-", "-",
+                        "http://datum.zerocracy.com/0.26/xsd/pm/hr/roles.xsd",
+                        "-"
+                    ).getCharacterStream()
                 )
             ).asString(),
             Matchers.endsWith(":schema>\n")
