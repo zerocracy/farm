@@ -26,7 +26,7 @@ import com.zerocracy.radars.Question;
 import java.io.IOException;
 
 /**
- * Profile reaction.
+ * Direct profile reaction.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
@@ -36,8 +36,11 @@ import java.io.IOException;
 public final class ReProfile implements Reaction<SlackMessagePosted> {
 
     @Override
-    public boolean react(final Farm farm, final SlackMessagePosted event,
-        final SlackSession session) throws IOException {
+    public boolean react(
+        final Farm farm,
+        final SlackMessagePosted event,
+        final SlackSession session
+    ) throws IOException {
         final Question question = new Question(
             new XMLDocument(this.getClass().getResource("q-profile.xml")),
             event.getMessageContent().split("\\s+", 2)[1].trim()
