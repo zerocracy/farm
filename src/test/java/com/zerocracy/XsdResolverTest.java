@@ -20,9 +20,8 @@ import com.jcabi.xml.StrictXML;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSLDocument;
-import java.nio.charset.StandardCharsets;
-import org.apache.commons.io.input.ReaderInputStream;
 import org.cactoos.io.InputStreamAsInput;
+import org.cactoos.io.ReaderAsInput;
 import org.cactoos.text.BytesAsText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -64,7 +63,7 @@ public final class XsdResolverTest {
             String.join(
                 " ",
                 "<roles updated='2017-07-12T12:00:00' version='2'",
-                "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'",
+                "xmlns:xsi=   'http://www.w3.org/2001/XMLSchema-instance'",
                 "xsi:noNamespaceSchemaLocation =",
                 "'http://datum.zerocracy.com/0.26/xsd/pm/hr/roles.xsd' />"
             )
@@ -113,19 +112,15 @@ public final class XsdResolverTest {
     public void resolvesBasicXsdAsCharStream() throws Exception {
         MatcherAssert.assertThat(
             new BytesAsText(
-                new InputStreamAsInput(
-                    new ReaderInputStream(
-                        new XsdResolver().resolveResource(
-                            "-", "-", "-",
-                            // @checkstyle LineLengthCheck (1 line)
-                            "http://datum.zerocracy.com/0.26/xsd/pm/hr/roles.xsd",
-                            "-"
-                        ).getCharacterStream(),
-                        StandardCharsets.UTF_8
-                    )
+                new ReaderAsInput(
+                    new XsdResolver().resolveResource(
+                        "-", "-", "-",
+                        "http://datum.zerocracy.com/0.26/xsd/pm/hr/roles.xsd",
+                        "-"
+                    ).getCharacterStream()
                 )
             ).asString(),
-            Matchers.endsWith("</xs:schema>\n")
+            Matchers.endsWith(":schema>\n")
         );
     }
 

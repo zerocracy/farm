@@ -26,8 +26,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import org.cactoos.func.FuncAsRunnable;
-import org.cactoos.func.ProcAsFunc;
+import org.cactoos.func.RunnableOf;
 
 /**
  * The activity of cleaning the list of claims and processing
@@ -98,10 +97,8 @@ final class Flush implements Runnable, Closeable {
             this.service.submit(
                 new RunnableWithTrigger(
                     new VerboseRunnable(
-                        new FuncAsRunnable(
-                            new ProcAsFunc<>(
-                                new FlushAction(this.project, this.brigade)
-                            )
+                        new RunnableOf<>(
+                            new FlushAction(this.project, this.brigade)
                         ),
                         true, true
                     ),
