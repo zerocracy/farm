@@ -18,9 +18,10 @@ package com.zerocracy.radars.slack;
 
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
-import com.zerocracy.ThrowableToEmail;
 import com.zerocracy.jstk.Farm;
-import java.util.Properties;
+import io.sentry.Sentry;
+import org.cactoos.Func;
+import org.cactoos.Proc;
 import org.cactoos.func.FuncWithFallback;
 import org.cactoos.func.UncheckedFunc;
 
@@ -32,13 +33,7 @@ import org.cactoos.func.UncheckedFunc;
  * @since 0.11
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class ReMailed implements Reaction<SlackMessagePosted> {
-
-    /**
-     * Properties.
-     */
-    private final Properties props;
 
     /**
      * Reaction.
@@ -48,21 +43,20 @@ public final class ReMailed implements Reaction<SlackMessagePosted> {
     /**
      * Ctor.
      * @param tgt Target
-     * @param pps Properties
      */
-    public ReMailed(final Reaction<SlackMessagePosted> tgt,
-        final Properties pps) {
+    public ReMailed(final Reaction<SlackMessagePosted> tgt) {
         this.origin = tgt;
-        this.props = pps;
     }
 
     @Override
     public boolean react(final Farm farm, final SlackMessagePosted event,
         final SlackSession session) {
         return new UncheckedFunc<>(
-            new FuncWithFallback<Boolean, Boolean>(
-                input -> this.origin.react(farm, event, session),
-                new ThrowableToEmail(this.props)
+            new FuncWithFallback<>(
+                (Func<Boolean, Boolean>) input -> this.origin.react(
+                    farm, event, session
+                ),
+                (Proc<Throwable>) Sentry::capture
             )
         ).apply(true);
     }

@@ -16,9 +16,9 @@
  */
 package com.zerocracy.tk;
 
-import com.zerocracy.ThrowableToEmail;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.pmo.Pmo;
+import io.sentry.Sentry;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.Properties;
@@ -152,7 +152,7 @@ public final class TkApp extends TkWrap {
                         )
                     ),
                     req -> {
-                        new ThrowableToEmail(props).apply(req.throwable());
+                        Sentry.capture(req.throwable());
                         return new Opt.Empty<>();
                     },
                     new FbLog4j(),
