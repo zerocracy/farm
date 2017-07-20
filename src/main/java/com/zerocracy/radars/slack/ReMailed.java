@@ -20,7 +20,6 @@ import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.jstk.Farm;
 import io.sentry.Sentry;
-import java.util.Properties;
 import org.cactoos.Func;
 import org.cactoos.Proc;
 import org.cactoos.func.FuncWithFallback;
@@ -53,19 +52,11 @@ public final class ReMailed implements Reaction<SlackMessagePosted> {
     public boolean react(final Farm farm, final SlackMessagePosted event,
         final SlackSession session) {
         return new UncheckedFunc<>(
-            new FuncWithFallback<Boolean, Boolean>(
-                new Func<Boolean, Boolean>() {
-                    @Override
-                    public Boolean apply(final Boolean input) throws Exception {
-                        return ReMailed.this.origin.react(farm, event, session);
-                    }
-                },
-                new Proc<Throwable>() {
-                    @Override
-                    public void exec(final Throwable input) throws Exception {
-                        Sentry.capture(input);
-                    }
-                }
+            new FuncWithFallback<>(
+                (Func<Boolean, Boolean>) input -> this.origin.react(
+                    farm, event, session
+                ),
+                (Proc<Throwable>) Sentry::capture
             )
         ).apply(true);
     }
