@@ -64,7 +64,7 @@ public final class XsdResolverTest {
             String.join(
                 " ",
                 "<roles updated='2017-07-12T12:00:00' version='2'",
-                "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'",
+                "xmlns:xsi=   'http://www.w3.org/2001/XMLSchema-instance'",
                 "xsi:noNamespaceSchemaLocation =",
                 "'http://datum.zerocracy.com/0.26/xsd/pm/hr/roles.xsd' />"
             )
@@ -125,7 +125,7 @@ public final class XsdResolverTest {
                     )
                 )
             ).asString(),
-            Matchers.endsWith("</xs:schema>\n")
+            Matchers.endsWith(":schema>\n")
         );
     }
 
