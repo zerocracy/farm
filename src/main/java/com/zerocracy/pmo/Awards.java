@@ -36,7 +36,7 @@ public final class Awards {
     /**
      * Project.
      */
-    private final Project project;
+    private final Project pmo;
 
     /**
      * Login of the person.
@@ -49,7 +49,7 @@ public final class Awards {
      * @param user The user
      */
     public Awards(final Project pkt, final String user) {
-        this.project = pkt;
+        this.pmo = pkt;
         this.login = user;
     }
 
@@ -90,7 +90,7 @@ public final class Awards {
                     )
                     .up()
                     .add("project")
-                    .set(this.project.toString())
+                    .set(this.pmo.toString())
                     .up()
                     .add("reason")
                     .set(reason)
@@ -122,7 +122,7 @@ public final class Awards {
      * @throws IOException If fails
      */
     private Item item() throws IOException {
-        return this.project.acq(
+        return this.pmo.acq(
             String.format("awards/%s.xml", this.login)
         );
     }
