@@ -35,6 +35,7 @@ import org.junit.Test;
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class XsdResolverTest {
 
     @Test
@@ -99,6 +100,7 @@ public final class XsdResolverTest {
                 new InputStreamAsInput(
                     new XsdResolver().resolveResource(
                         "-", "-", "-",
+                        // @checkstyle LineLength (1 line)
                         "http://datum.zerocracy.com/0.27/xsd/pm/staff/types.xsd",
                         "-"
                     ).getByteStream()
@@ -115,6 +117,7 @@ public final class XsdResolverTest {
                 new ReaderAsInput(
                     new XsdResolver().resolveResource(
                         "-", "-", "-",
+                        // @checkstyle LineLength (1 line)
                         "http://datum.zerocracy.com/0.27/xsd/pm/staff/roles.xsd",
                         "-"
                     ).getCharacterStream()

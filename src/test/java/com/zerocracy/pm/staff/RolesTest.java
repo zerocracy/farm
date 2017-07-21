@@ -17,7 +17,6 @@
 package com.zerocracy.pm.staff;
 
 import com.zerocracy.jstk.fake.FkProject;
-import com.zerocracy.pm.staff.Roles;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
