@@ -34,20 +34,25 @@
         </p>
         <p>
             <xsl:text>Total points: </xsl:text>
-            <a href="/{identity/login}/awards">
-                <xsl:if test="awards &gt;= 0">
-                    <xsl:text>+</xsl:text>
-                </xsl:if>
-                <xsl:value-of select="awards"/>
-            </a>
-            <xsl:text>.</xsl:text>
+            <xsl:if test="points &gt;= 0">
+                <xsl:text>+</xsl:text>
+            </xsl:if>
+            <xsl:value-of select="points"/>
         </p>
-        <p>
-            <xsl:text>Total jobs: </xsl:text>
-            <a href="/{identity/login}/agenda">
-                <xsl:value-of select="agenda"/>
-            </a>
-            <xsl:text>.</xsl:text>
-        </p>
+        <xsl:if test="awards/award">
+            <p>
+                <xsl:text>Recent </xsl:text>
+                <xsl:value-of select="count(awards/award)"/>
+                <xsl:text> awards:</xsl:text>
+            </p>
+            <p>
+                <xsl:for-each select="awards/award">
+                    <xsl:if test="position() &gt; 1">
+                        <br/>
+                    </xsl:if>
+                    <xsl:value-of select="."/>
+                </xsl:for-each>
+            </p>
+        </xsl:if>
     </xsl:template>
 </xsl:stylesheet>

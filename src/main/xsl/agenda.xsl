@@ -23,8 +23,7 @@
     <xsl:include href="/xsl/layout.xsl"/>
     <xsl:template match="page" mode="head">
         <title>
-            <xsl:text>@</xsl:text>
-            <xsl:value-of select="identity/login"/>
+            <xsl:text>agenda</xsl:text>
         </title>
     </xsl:template>
     <xsl:template match="page" mode="body">
@@ -32,22 +31,25 @@
             <xsl:text>@</xsl:text>
             <xsl:value-of select="identity/login"/>
         </p>
-        <p>
-            <xsl:text>Total points: </xsl:text>
-            <a href="/{identity/login}/awards">
-                <xsl:if test="awards &gt;= 0">
-                    <xsl:text>+</xsl:text>
-                </xsl:if>
-                <xsl:value-of select="awards"/>
-            </a>
-            <xsl:text>.</xsl:text>
-        </p>
-        <p>
-            <xsl:text>Total jobs: </xsl:text>
-            <a href="/{identity/login}/agenda">
-                <xsl:value-of select="agenda"/>
-            </a>
-            <xsl:text>.</xsl:text>
-        </p>
+        <xsl:if test="agenda/job">
+            <p>
+                <xsl:text>There are </xsl:text>
+                <xsl:value-of select="count(agenda/job)"/>
+                <xsl:text> jobs assigned to you:</xsl:text>
+            </p>
+            <p>
+                <xsl:for-each select="agenda/job">
+                    <xsl:if test="position() &gt; 1">
+                        <br/>
+                    </xsl:if>
+                    <xsl:value-of select="."/>
+                </xsl:for-each>
+            </p>
+        </xsl:if>
+        <xsl:if test="not(agenda/job)">
+            <p>
+                <xsl:text>There are no jobs for you yet.</xsl:text>
+            </p>
+        </xsl:if>
     </xsl:template>
 </xsl:stylesheet>
