@@ -67,7 +67,7 @@ public final class TkAwards implements TkRegex {
                 "awards",
                 new XeTransform<>(
                     new Awards(
-                        this.pmo, new RqLogin(this.pmo, req).value()
+                        this.pmo, new RqSecureLogin(this.pmo, req).value()
                     ).bootstrap().iterate(),
                     obj -> new XeAppend("award", obj)
                 )

@@ -46,7 +46,7 @@ public final class TkProfileTest {
             new RsPrint(
                 take.act(new RqFake("GET", "/u/yegor256"))
             ).printBody(),
-            Matchers.containsString("User \"yegor256\" not found")
+            Matchers.containsString("User \"@yegor256\" not found")
         );
     }
 

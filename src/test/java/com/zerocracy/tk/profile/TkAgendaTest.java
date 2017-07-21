@@ -45,8 +45,8 @@ public final class TkAgendaTest {
         MatcherAssert.assertThat(
             new RsPrint(
                 take.act(new RqFake("GET", "/u/yegor256/agenda"))
-            ).printBody(),
-            Matchers.containsString("User \"yegor256\" not found")
+            ).print(),
+            Matchers.containsString("User \"@yegor256\" not found")
         );
     }
 

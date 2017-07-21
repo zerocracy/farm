@@ -53,7 +53,7 @@
     </xsl:template>
     <xsl:template match="details">
         <p>
-            <xsl:text>Rate:</xsl:text>
+            <xsl:text>Rate: </xsl:text>
             <xsl:value-of select="rate"/>
             <xsl:text>, wallet: </xsl:text>
             <code>
@@ -61,10 +61,7 @@
             </code>
             <xsl:text> at </xsl:text>
             <xsl:value-of select="bank"/>
-            <xsl:text>, skills: </xsl:text>
-            <xsl:value-of select="wallet"/>
-            <xsl:text>, links: </xsl:text>
-            <xsl:value-of select="wallet"/>
+            <xsl:text>.</xsl:text>
         </p>
         <p>
             <xsl:text>Skills: </xsl:text>

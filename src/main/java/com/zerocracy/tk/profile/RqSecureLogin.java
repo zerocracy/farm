@@ -17,11 +17,12 @@
 package com.zerocracy.tk.profile;
 
 import com.zerocracy.jstk.Project;
-import com.zerocracy.pmo.People;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import org.cactoos.Scalar;
 import org.takes.HttpException;
+import org.takes.facets.auth.Identity;
+import org.takes.facets.auth.RqAuth;
 import org.takes.facets.fork.RqRegex;
 
 /**
@@ -32,7 +33,7 @@ import org.takes.facets.fork.RqRegex;
  * @since 0.12
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-final class RqLogin implements Scalar<String> {
+final class RqSecureLogin implements Scalar<String> {
 
     /**
      * PMO.
@@ -49,19 +50,19 @@ final class RqLogin implements Scalar<String> {
      * @param pkt Project
      * @param req Request
      */
-    RqLogin(final Project pkt, final RqRegex req) {
+    RqSecureLogin(final Project pkt, final RqRegex req) {
         this.pmo = pkt;
         this.request = req;
     }
 
     @Override
     public String value() throws IOException {
-        final String login = this.request.matcher().group(1);
-        final People people = new People(this.pmo).bootstrap();
-        if (!people.find("github", login).iterator().hasNext()) {
+        final String login = new RqLogin(this.pmo, this.request).value();
+        final Identity identity = new RqAuth(this.request).identity();
+        if (!identity.properties().get("login").equals(login)) {
             throw new HttpException(
                 HttpURLConnection.HTTP_NOT_FOUND,
-                String.format("User \"@%s\" not found", login)
+                String.format("Only \"@%s\" is allowed to see this page", login)
             );
         }
         return login;

@@ -67,7 +67,7 @@ public final class TkAgenda implements TkRegex {
                 "agenda",
                 new XeTransform<>(
                     new Agenda(
-                        this.pmo, new RqLogin(this.pmo, req).value()
+                        this.pmo, new RqSecureLogin(this.pmo, req).value()
                     ).bootstrap().jobs(),
                     obj -> new XeAppend("job", obj)
                 )

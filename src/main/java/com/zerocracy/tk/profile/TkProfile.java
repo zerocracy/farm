@@ -85,7 +85,6 @@ public final class TkProfile implements TkRegex {
                             people.skills(login),
                             skill -> new XeAppend("skill", skill)
                         )
-
                     ),
                     new XeAppend(
                         "links",
