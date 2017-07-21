@@ -27,6 +27,7 @@ import org.cactoos.list.ConcatIterable;
 import org.cactoos.list.IterableAsList;
 import org.cactoos.text.BytesAsText;
 import org.cactoos.text.ThrowableAsBytes;
+import org.takes.facets.fallback.Fallback;
 import org.takes.facets.fallback.FbChain;
 import org.takes.facets.fallback.FbLog4j;
 import org.takes.facets.fallback.FbStatus;
@@ -139,9 +140,11 @@ public final class TkApp extends TkWrap {
                 new FbChain(
                     new FbStatus(
                         HttpURLConnection.HTTP_NOT_FOUND,
-                        new RsWithStatus(
-                            new RsText("Page not found"),
-                            HttpURLConnection.HTTP_NOT_FOUND
+                        (Fallback) req -> new Opt.Single<>(
+                            new RsWithStatus(
+                                new RsText(req.throwable().getMessage()),
+                                req.code()
+                            )
                         )
                     ),
                     new FbStatus(

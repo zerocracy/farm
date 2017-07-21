@@ -22,6 +22,7 @@ import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import org.cactoos.list.MappedIterable;
 import org.xembly.Directives;
 
 /**
@@ -112,6 +113,28 @@ public final class Awards {
                 new Xocument(item.path()).xpath(
                     "sum(/awards/award/points/text())"
                 ).get(0)
+            );
+        }
+    }
+
+    /**
+     * Iterate them all.
+     * @return All awards, line by line
+     * @throws IOException If fails
+     */
+    public Iterable<String> iterate() throws IOException {
+        try (final Item item = this.item()) {
+            return new MappedIterable<>(
+                new Xocument(item.path()).nodes(
+                    "/awards/award"
+                ),
+                node -> String.format(
+                    "%+d %s %s %s",
+                    Integer.parseInt(node.xpath("points/text()").get(0)),
+                    node.xpath("added/text()").get(0),
+                    node.xpath("job/text()").get(0),
+                    node.xpath("reason/text()").get(0)
+                )
             );
         }
     }

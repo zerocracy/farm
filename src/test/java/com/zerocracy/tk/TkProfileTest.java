@@ -16,59 +16,53 @@
  */
 package com.zerocracy.tk;
 
+import com.jcabi.matchers.XhtmlMatchers;
+import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.fake.FkFarm;
-import java.net.HttpURLConnection;
-import java.util.Arrays;
-import java.util.Collection;
+import com.zerocracy.pmo.People;
 import java.util.Properties;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import org.takes.Take;
-import org.takes.facets.hamcrest.HmRsStatus;
 import org.takes.rq.RqFake;
+import org.takes.rs.RsPrint;
 
 /**
- * Test case for {@link TkApp}.
+ * Test case for {@link TkProfile}.
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.1
+ * @since 0.13
  * @checkstyle JavadocMethodCheck (500 lines)
- * @checkstyle JavadocVariableCheck (500 lines)
- * @checkstyle VisibilityModifierCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@RunWith(Parameterized.class)
-public final class PingTest {
+public final class TkProfileTest {
 
-    @Parameterized.Parameter
-    public String url;
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> params() {
-        return Arrays.asList(
-            new Object[][] {
-                {"/robots.txt"},
-                {"/css/main.css"},
-                {"/xsl/index.xsl"},
-                {"/xsl/layout.xsl"},
-                {"/"},
-                {"/ping"},
-            }
+    @Test
+    public void rejectsOnUnknownUser() throws Exception {
+        final Take take = new TkApp(new Properties(), new FkFarm());
+        MatcherAssert.assertThat(
+            new RsPrint(
+                take.act(new RqFake("GET", "/u/yegor256"))
+            ).printBody(),
+            Matchers.containsString("User \"yegor256\" not found")
         );
     }
 
     @Test
-    public void rendersAllPossibleUrls() throws Exception {
-        final Take take = new TkApp(new Properties(), new FkFarm());
+    public void rendersHomePage() throws Exception {
+        final Farm farm = new FkFarm();
+        new People(farm).bootstrap().touch("jeff");
+        final Take take = new TkApp(new Properties(), farm);
         MatcherAssert.assertThat(
-            this.url,
-            take.act(new RqFake("INFO", this.url)),
-            Matchers.not(
-                new HmRsStatus(
-                    HttpURLConnection.HTTP_NOT_FOUND
-                )
+            XhtmlMatchers.xhtml(
+                new RsPrint(
+                    take.act(new RqFake("HEAD", "/u/jeff"))
+                ).printBody()
+            ),
+            XhtmlMatchers.hasXPaths(
+                "/xhtml:html",
+                "//xhtml:body"
             )
         );
     }

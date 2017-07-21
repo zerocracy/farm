@@ -27,6 +27,7 @@ import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
 import org.takes.rs.xe.XeAppend;
+import org.takes.rs.xe.XeTransform;
 
 /**
  * User profile page.
@@ -68,17 +69,20 @@ final class TkProfile implements TkRegex {
                 String.format("User \"%s\" not found", login)
             );
         }
+        final Awards awards = new Awards(
+            this.pmo, req.matcher().group(1)
+        ).bootstrap();
         return new RsPage(
             this.props,
             "/xsl/profile.xsl",
             req,
             new XeAppend("login", login),
+            new XeAppend("points", Integer.toString(awards.total())),
             new XeAppend(
-                "points",
-                Integer.toString(
-                    new Awards(
-                        this.pmo, req.matcher().group(1)
-                    ).bootstrap().total()
+                "awards",
+                new XeTransform<>(
+                    awards.iterate(),
+                    obj -> new XeAppend("award", obj)
                 )
             )
         );
