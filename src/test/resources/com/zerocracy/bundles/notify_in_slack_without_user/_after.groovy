@@ -14,31 +14,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.hr.roles
+package com.zerocracy.bundles.notify_in_slack_without_user
 
 import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
+import com.ullink.slack.simpleslackapi.SlackSession
+import com.ullink.slack.simpleslackapi.SlackUser
 import com.zerocracy.jstk.Project
-import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
-import com.zerocracy.pm.hr.Roles
+import org.mockito.Mockito
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Assign role')
-  new Assume(project, xml).roles('ARC', 'PO')
-  ClaimIn claim = new ClaimIn(xml)
-  String login = claim.param('login')
-  String role = claim.param('role')
-  new Roles(project).bootstrap().assign(login, role)
-  claim.reply(
-    String.format(
-      'Role "%s" assigned to "%s".',
-      role, login
-    )
-  ).postTo(project)
-  new ClaimOut()
-    .type('role was assigned')
-    .param('login', login)
-    .param('role', role)
-    .postTo(project)
+  final channelId = 'C123'
+  final SlackSession session = binding.variables.slack.get(channelId)
+  Mockito.verify(
+    session,
+    Mockito.never()
+  ).openDirectMessageChannel(Mockito.<SlackUser>any())
 }
