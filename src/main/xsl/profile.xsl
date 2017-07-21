@@ -32,9 +32,10 @@
             <xsl:text>@</xsl:text>
             <xsl:value-of select="identity/login"/>
         </p>
+        <xsl:apply-templates select="details"/>
         <p>
             <xsl:text>Total points: </xsl:text>
-            <a href="/{identity/login}/awards">
+            <a href="/u/{identity/login}/awards">
                 <xsl:if test="awards &gt;= 0">
                     <xsl:text>+</xsl:text>
                 </xsl:if>
@@ -44,9 +45,45 @@
         </p>
         <p>
             <xsl:text>Total jobs: </xsl:text>
-            <a href="/{identity/login}/agenda">
+            <a href="/u/{identity/login}/agenda">
                 <xsl:value-of select="agenda"/>
             </a>
+            <xsl:text>.</xsl:text>
+        </p>
+    </xsl:template>
+    <xsl:template match="details">
+        <p>
+            <xsl:text>Rate:</xsl:text>
+            <xsl:value-of select="rate"/>
+            <xsl:text>, wallet: </xsl:text>
+            <code>
+                <xsl:value-of select="wallet"/>
+            </code>
+            <xsl:text> at </xsl:text>
+            <xsl:value-of select="bank"/>
+            <xsl:text>, skills: </xsl:text>
+            <xsl:value-of select="wallet"/>
+            <xsl:text>, links: </xsl:text>
+            <xsl:value-of select="wallet"/>
+        </p>
+        <p>
+            <xsl:text>Skills: </xsl:text>
+            <xsl:for-each select="skills/skill">
+                <xsl:if test="position() &gt; 1">
+                    <xsl:text>, </xsl:text>
+                </xsl:if>
+                <xsl:value-of select="."/>
+            </xsl:for-each>
+            <xsl:text>.</xsl:text>
+        </p>
+        <p>
+            <xsl:text>Links: </xsl:text>
+            <xsl:for-each select="links/link">
+                <xsl:if test="position() &gt; 1">
+                    <xsl:text>, </xsl:text>
+                </xsl:if>
+                <xsl:value-of select="."/>
+            </xsl:for-each>
             <xsl:text>.</xsl:text>
         </p>
     </xsl:template>

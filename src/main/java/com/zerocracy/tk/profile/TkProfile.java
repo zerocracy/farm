@@ -19,14 +19,18 @@ package com.zerocracy.tk.profile;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pmo.Agenda;
 import com.zerocracy.pmo.Awards;
+import com.zerocracy.pmo.People;
 import com.zerocracy.tk.RsPage;
 import java.io.IOException;
 import java.util.Properties;
 import org.cactoos.list.LengthOfIterable;
 import org.takes.Response;
+import org.takes.facets.auth.RqAuth;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
 import org.takes.rs.xe.XeAppend;
+import org.takes.rs.xe.XeTransform;
+import org.takes.rs.xe.XeWhen;
 
 /**
  * User profile page.
@@ -61,10 +65,37 @@ public final class TkProfile implements TkRegex {
     @Override
     public Response act(final RqRegex req) throws IOException {
         final String login = new RqLogin(this.pmo, req).value();
+        final People people = new People(this.pmo).bootstrap();
         return new RsPage(
             this.props,
             "/xsl/profile.xsl",
             req,
+            new XeWhen(
+                login.equals(
+                    new RqAuth(req).identity().properties().get("login")
+                ),
+                new XeAppend(
+                    "details",
+                    new XeAppend("rate", people.rate(login).toString()),
+                    new XeAppend("wallet", people.wallet(login)),
+                    new XeAppend("bank", people.bank(login)),
+                    new XeAppend(
+                        "skills",
+                        new XeTransform<>(
+                            people.skills(login),
+                            skill -> new XeAppend("skill", skill)
+                        )
+
+                    ),
+                    new XeAppend(
+                        "links",
+                        new XeTransform<>(
+                            people.links(login),
+                            link -> new XeAppend("link", link)
+                        )
+                    )
+                )
+            ),
             new XeAppend(
                 "awards",
                 Integer.toString(

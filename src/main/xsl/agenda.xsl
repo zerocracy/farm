@@ -35,20 +35,20 @@
             <p>
                 <xsl:text>There are </xsl:text>
                 <xsl:value-of select="count(agenda/job)"/>
-                <xsl:text> jobs assigned to you:</xsl:text>
+                <xsl:text> jobs assigned to you at the moment:</xsl:text>
             </p>
-            <p>
+            <pre>
                 <xsl:for-each select="agenda/job">
                     <xsl:if test="position() &gt; 1">
-                        <br/>
+                        <xsl:text>&#10;</xsl:text>
                     </xsl:if>
                     <xsl:value-of select="."/>
                 </xsl:for-each>
-            </p>
+            </pre>
         </xsl:if>
         <xsl:if test="not(agenda/job)">
             <p>
-                <xsl:text>There are no jobs for you yet.</xsl:text>
+                <xsl:text>There are no jobs for you at the moment.</xsl:text>
             </p>
         </xsl:if>
     </xsl:template>

@@ -32,13 +32,6 @@
             <xsl:text>@</xsl:text>
             <xsl:value-of select="identity/login"/>
         </p>
-        <p>
-            <xsl:text>Total points: </xsl:text>
-            <xsl:if test="points &gt;= 0">
-                <xsl:text>+</xsl:text>
-            </xsl:if>
-            <xsl:value-of select="points"/>
-        </p>
         <xsl:if test="awards/award">
             <p>
                 <xsl:text>Recent </xsl:text>
@@ -48,10 +41,15 @@
             <p>
                 <xsl:for-each select="awards/award">
                     <xsl:if test="position() &gt; 1">
-                        <br/>
+                        <xsl:text>&#10;</xsl:text>
                     </xsl:if>
                     <xsl:value-of select="."/>
                 </xsl:for-each>
+            </p>
+        </xsl:if>
+        <xsl:if test="not(awards/award)">
+            <p>
+                <xsl:text>There are no awards yet.</xsl:text>
             </p>
         </xsl:if>
     </xsl:template>
