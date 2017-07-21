@@ -43,7 +43,7 @@ public final class S3ItemITCase {
             "-- secret --"
         ).bucket("data.0crat.com").ocket("test.xml");
         try (final Item item = new S3Item(ocket)) {
-            new Xocument(item).bootstrap("pm/hr/roles");
+            new Xocument(item).bootstrap("pm/staff/roles");
             new Xocument(item).modify(
                 new Directives().xpath("/roles")
                     .add("person")

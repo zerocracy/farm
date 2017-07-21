@@ -45,7 +45,7 @@ public final class S3ItemTest {
         );
         final Path temp = Files.createTempFile("", "");
         try (final Item item = new S3Item(ocket, temp)) {
-            new Xocument(item).bootstrap("pm/hr/roles");
+            new Xocument(item).bootstrap("pm/staff/roles");
             new Xocument(item).modify(
                 new Directives().xpath("/roles")
                     .add("person")

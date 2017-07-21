@@ -22,6 +22,7 @@ import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import org.cactoos.list.MappedIterable;
 import org.xembly.Directives;
 
 /**
@@ -36,7 +37,7 @@ public final class Awards {
     /**
      * Project.
      */
-    private final Project project;
+    private final Project pmo;
 
     /**
      * Login of the person.
@@ -49,7 +50,7 @@ public final class Awards {
      * @param user The user
      */
     public Awards(final Project pkt, final String user) {
-        this.project = pkt;
+        this.pmo = pkt;
         this.login = user;
     }
 
@@ -90,7 +91,7 @@ public final class Awards {
                     )
                     .up()
                     .add("project")
-                    .set(this.project.toString())
+                    .set(this.pmo.toString())
                     .up()
                     .add("reason")
                     .set(reason)
@@ -117,12 +118,34 @@ public final class Awards {
     }
 
     /**
+     * Iterate them all.
+     * @return All awards, line by line
+     * @throws IOException If fails
+     */
+    public Iterable<String> iterate() throws IOException {
+        try (final Item item = this.item()) {
+            return new MappedIterable<>(
+                new Xocument(item.path()).nodes(
+                    "/awards/award"
+                ),
+                node -> String.format(
+                    "%+d %s %s %s",
+                    Integer.parseInt(node.xpath("points/text()").get(0)),
+                    node.xpath("added/text()").get(0),
+                    node.xpath("job/text()").get(0),
+                    node.xpath("reason/text()").get(0)
+                )
+            );
+        }
+    }
+
+    /**
      * The item.
      * @return Item
      * @throws IOException If fails
      */
     private Item item() throws IOException {
-        return this.project.acq(
+        return this.pmo.acq(
             String.format("awards/%s.xml", this.login)
         );
     }

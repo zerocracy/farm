@@ -22,7 +22,7 @@ import com.jcabi.s3.fake.FkBucket;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
-import com.zerocracy.pm.hr.Roles;
+import com.zerocracy.pm.staff.Roles;
 import java.nio.file.Files;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;

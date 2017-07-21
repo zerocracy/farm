@@ -20,7 +20,7 @@ import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.SoftException;
 import com.zerocracy.pm.ClaimIn;
-import com.zerocracy.pm.hr.Roles;
+import com.zerocracy.pm.staff.Roles;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Locale;

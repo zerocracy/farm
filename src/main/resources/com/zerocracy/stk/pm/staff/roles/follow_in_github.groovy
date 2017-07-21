@@ -14,23 +14,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.hr.roles
+package com.zerocracy.stk.pm.staff.roles
 
+import com.jcabi.github.Github
+import com.jcabi.http.Request
+import com.jcabi.http.response.RestResponse
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.hr.Roles
+import com.zerocracy.pm.ClaimOut
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Show roles')
-  new Assume(project, xml).roles('ARC', 'PO')
+  new Assume(project, xml).type('Role was assigned')
   ClaimIn claim = new ClaimIn(xml)
-  claim.reply(
-    String.format(
-      'Full list of roles in "%s":%n%n%s',
-      project,
-      new Roles(project).bootstrap().markdown()
-    )
-  ).postTo(project)
+  String login = claim.param('login')
+  Github github = binding.variables.github
+  github.entry().uri()
+    .path('/user/following')
+    .path(login)
+    .back()
+    .method(Request.PUT)
+    .fetch()
+    .as(RestResponse)
+    .assertStatus(HttpURLConnection.HTTP_NO_CONTENT)
+  new ClaimOut()
+    .type('GitHub user was followed')
+    .param('login', login)
+    .postTo(project)
 }

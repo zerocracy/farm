@@ -14,32 +14,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.hr.roles
+package com.zerocracy.bundles.notify_in_slack_without_user
 
-import com.jcabi.github.Github
-import com.jcabi.http.Request
-import com.jcabi.http.response.RestResponse
 import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
+import com.ullink.slack.simpleslackapi.SlackSession
+import com.ullink.slack.simpleslackapi.SlackUser
 import com.zerocracy.jstk.Project
-import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
+import org.mockito.Mockito
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Role was assigned')
-  ClaimIn claim = new ClaimIn(xml)
-  String login = claim.param('login')
-  Github github = binding.variables.github
-  github.entry().uri()
-    .path('/user/following')
-    .path(login)
-    .back()
-    .method(Request.PUT)
-    .fetch()
-    .as(RestResponse)
-    .assertStatus(HttpURLConnection.HTTP_NO_CONTENT)
-  new ClaimOut()
-    .type('GitHub user was followed')
-    .param('login', login)
-    .postTo(project)
+  final channelId = 'C123'
+  final SlackSession session = binding.variables.slack.get(channelId)
+  Mockito.verify(
+    session,
+    Mockito.never()
+  ).openDirectMessageChannel(Mockito.<SlackUser>any())
 }
