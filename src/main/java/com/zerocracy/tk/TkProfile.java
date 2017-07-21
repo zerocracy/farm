@@ -18,8 +18,11 @@ package com.zerocracy.tk;
 
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pmo.Awards;
+import com.zerocracy.pmo.People;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.util.Properties;
+import org.takes.HttpException;
 import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
@@ -57,11 +60,19 @@ final class TkProfile implements TkRegex {
 
     @Override
     public Response act(final RqRegex req) throws IOException {
+        final String login = req.matcher().group(1);
+        final People people = new People(this.pmo).bootstrap();
+        if (!people.find("github", login).iterator().hasNext()) {
+            throw new HttpException(
+                HttpURLConnection.HTTP_NOT_FOUND,
+                String.format("User \"%s\" not found", login)
+            );
+        }
         return new RsPage(
             this.props,
             "/xsl/profile.xsl",
             req,
-            new XeAppend("login", req.matcher().group(1)),
+            new XeAppend("login", login),
             new XeAppend(
                 "points",
                 Integer.toString(
