@@ -37,10 +37,6 @@ import org.cactoos.io.ResourceAsInput;
 import org.cactoos.list.MappedIterable;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
-import java.util.Map;
-import java.util.Properties;
-import java.util.TreeSet;
-import java.util.regex.Pattern;
 
 /**
  * Smart farm.
@@ -130,5 +126,4 @@ public final class SmartFarm implements Scalar<Farm> {
             )
         );
     }
-
 }

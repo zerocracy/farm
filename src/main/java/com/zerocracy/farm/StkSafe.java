@@ -26,12 +26,11 @@ import com.zerocracy.pm.ClaimIn;
 import io.sentry.Sentry;
 import java.io.IOException;
 import java.util.Properties;
+import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.StringUtils;
 import org.cactoos.text.BytesAsText;
 import org.cactoos.text.FormattedText;
 import org.cactoos.text.ThrowableAsBytes;
-import java.io.IOException;
-import java.util.Properties;
 
 /**
  * Stakeholder that reports about failures and doesn't fail ever.
