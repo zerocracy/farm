@@ -97,7 +97,7 @@ public final class Brigade {
      * @throws IOException If fails
      */
     private static boolean process(final Stakeholder stk, final Project project,
-            final XML xml) throws IOException {
+        final XML xml) throws IOException {
         boolean done;
         try {
             stk.process(project, xml);
