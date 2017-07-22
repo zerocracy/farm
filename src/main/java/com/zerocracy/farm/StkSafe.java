@@ -55,6 +55,12 @@ public final class StkSafe implements Stakeholder {
     /**
      * Stakeholder unique identifier.
      */
+    @SuppressWarnings(
+        {
+            "PMD.SingularField",
+            "PMD.UnusedPrivateField"
+        }
+    )
     private final String identifier;
 
     /**
@@ -63,7 +69,8 @@ public final class StkSafe implements Stakeholder {
      * @param pps Properties
      * @param stk Original stakeholder
      */
-    public StkSafe(final String id, final Properties pps, final Stakeholder stk) {
+    public StkSafe(final String id, final Properties pps,
+        final Stakeholder stk) {
         this.identifier = id;
         this.props = pps;
         this.origin = stk;
