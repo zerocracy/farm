@@ -40,7 +40,6 @@ import org.takes.Take;
 import org.takes.rq.RqHref;
 import org.takes.rs.RsText;
 
-
 /**
  * Ping all projects.
  *
