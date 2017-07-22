@@ -40,6 +40,11 @@ def exec(Project project, XML xml) {
       .type('Notify job')
       .token(parts[1])
       .postTo(project)
+  } else if (parts[0] == 'test') {
+    claim.copy()
+      .type('Notify test')
+      .token(parts[1])
+      .postTo(project)
   } else {
     throw new IllegalStateException(
       String.format(

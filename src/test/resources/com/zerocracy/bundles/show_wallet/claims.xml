@@ -6,8 +6,8 @@
     <claim id="1">
         <created>2017-07-21T20:32:19.716Z</created>
         <type>Show wallet</type>
-        <token>slack;C123;user42</token>
-        <author>user42</author>
+        <token>test;C123;user42</token>
+        <author>yegor256</author>
     </claim>
     <claim id="2">
         <created>2017-07-21T20:32:22.145Z</created>

@@ -59,7 +59,8 @@ final class StrictProject implements Project {
             "(elections\\.xml)",
             "(wbs\\.xml)",
             "(orders\\.xml)",
-            "(bans\\.xml)"
+            "(bans\\.xml)",
+            "(test\\.txt)"
         )
     );
 

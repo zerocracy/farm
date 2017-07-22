@@ -14,13 +14,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.show_wallet
+package com.zerocracy.stk.pm.comm
 
 import com.jcabi.xml.XML
+import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
+import com.zerocracy.pm.ClaimIn
+// notify test: print message to text file
 
-def exec(Project project, XML xml) {
+static exec(Project project, XML xml) {
+  new Assume(project, xml).type('Notify test')
   project.acq('test.txt').withAutoCloseable {
-    item -> assert item.path().toFile().newReader().readLine() == 'Your wallet is `yegor256@gmail.com` at "paypal".'
+    item -> item.path().toFile().write(
+      new ClaimIn(xml).param('message')
+    )
   }
 }

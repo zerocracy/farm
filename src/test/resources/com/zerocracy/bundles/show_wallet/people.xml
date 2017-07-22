@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<people xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/zerocracy/datum/0.28/xsd/pmo/people.xsd"
+    version="1"
+    updated="2016-12-29T09:03:21.684Z">
+    <person id="yegor256">
+        <name>Yegor Bugayenko</name>
+        <mentor>yegor256</mentor>
+        <rate>£30.50</rate>
+        <wallet bank="paypal">yegor256@gmail.com</wallet>
+        <email>yegor256@gmail.com</email>
+        <links>
+            <link rel="slack" href="7YYZZT99S"/>
+        </links>
+    </person>
+</people>
