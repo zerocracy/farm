@@ -23,7 +23,7 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
-import com.zerocracy.pm.hr.Roles
+import com.zerocracy.pm.staff.Roles
 import com.zerocracy.radars.github.Job
 
 def exec(Project project, XML xml) {

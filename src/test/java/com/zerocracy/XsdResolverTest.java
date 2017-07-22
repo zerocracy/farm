@@ -20,9 +20,8 @@ import com.jcabi.xml.StrictXML;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSLDocument;
-import java.nio.charset.StandardCharsets;
-import org.apache.commons.io.input.ReaderInputStream;
 import org.cactoos.io.InputStreamAsInput;
+import org.cactoos.io.ReaderAsInput;
 import org.cactoos.text.BytesAsText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -36,6 +35,7 @@ import org.junit.Test;
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class XsdResolverTest {
 
     @Test
@@ -49,7 +49,7 @@ public final class XsdResolverTest {
                         "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'",
                         "xsi:noNamespaceSchemaLocation=  ",
                         // @checkstyle LineLengthCheck (1 line)
-                        "'http://datum.zerocracy.com/0.26/xsd/pm/hr/roles.xsd'/>"
+                        "'http://datum.zerocracy.com/0.27/xsd/pm/staff/roles.xsd'/>"
                     )
                 ),
                 new XsdResolver()
@@ -66,7 +66,7 @@ public final class XsdResolverTest {
                 "<roles updated='2017-07-12T12:00:00' version='2'",
                 "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'",
                 "xsi:noNamespaceSchemaLocation =",
-                "'http://datum.zerocracy.com/0.26/xsd/pm/hr/roles.xsd' />"
+                "'http://datum.zerocracy.com/0.27/xsd/pm/staff/roles.xsd' />"
             )
         );
         MatcherAssert.assertThat(
@@ -100,7 +100,8 @@ public final class XsdResolverTest {
                 new InputStreamAsInput(
                     new XsdResolver().resolveResource(
                         "-", "-", "-",
-                        "http://datum.zerocracy.com/0.26/xsd/pm/hr/types.xsd",
+                        // @checkstyle LineLength (1 line)
+                        "http://datum.zerocracy.com/0.27/xsd/pm/staff/types.xsd",
                         "-"
                     ).getByteStream()
                 )
@@ -113,19 +114,16 @@ public final class XsdResolverTest {
     public void resolvesBasicXsdAsCharStream() throws Exception {
         MatcherAssert.assertThat(
             new BytesAsText(
-                new InputStreamAsInput(
-                    new ReaderInputStream(
-                        new XsdResolver().resolveResource(
-                            "-", "-", "-",
-                            // @checkstyle LineLengthCheck (1 line)
-                            "http://datum.zerocracy.com/0.26/xsd/pm/hr/roles.xsd",
-                            "-"
-                        ).getCharacterStream(),
-                        StandardCharsets.UTF_8
-                    )
+                new ReaderAsInput(
+                    new XsdResolver().resolveResource(
+                        "-", "-", "-",
+                        // @checkstyle LineLength (1 line)
+                        "http://datum.zerocracy.com/0.27/xsd/pm/staff/roles.xsd",
+                        "-"
+                    ).getCharacterStream()
                 )
             ).asString(),
-            Matchers.endsWith("</xs:schema>\n")
+            Matchers.endsWith(":schema>\n")
         );
     }
 

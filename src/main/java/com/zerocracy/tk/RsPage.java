@@ -53,7 +53,7 @@ import org.takes.rs.xe.XeWhen;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.ExcessiveImports")
-final class RsPage extends RsWrap {
+public final class RsPage extends RsWrap {
 
     /**
      * Ctor.
@@ -64,7 +64,7 @@ final class RsPage extends RsWrap {
      * @throws IOException If fails
      * @checkstyle ParameterNumberCheck (5 lines)
      */
-    RsPage(final Properties props, final String xsl,
+    public RsPage(final Properties props, final String xsl,
         final Request req, final XeSource... src) throws IOException {
         this(props, xsl, req, Arrays.asList(src));
     }
@@ -78,7 +78,7 @@ final class RsPage extends RsWrap {
      * @throws IOException If fails
      * @checkstyle ParameterNumberCheck (5 lines)
      */
-    RsPage(final Properties props, final String xsl, final Request req,
+    public RsPage(final Properties props, final String xsl, final Request req,
         final Iterable<XeSource> src) throws IOException {
         super(RsPage.make(props, xsl, req, src));
     }

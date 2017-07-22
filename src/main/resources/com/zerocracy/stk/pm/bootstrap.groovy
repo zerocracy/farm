@@ -21,7 +21,7 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.jstk.SoftException
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.hr.Roles
+import com.zerocracy.pm.staff.Roles
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Bootstrap')

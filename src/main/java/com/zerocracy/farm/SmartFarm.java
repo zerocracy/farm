@@ -16,7 +16,6 @@
  */
 package com.zerocracy.farm;
 
-import com.zerocracy.ThrowableToEmail;
 import com.zerocracy.farm.reactive.Brigade;
 import com.zerocracy.farm.reactive.RvFarm;
 import com.zerocracy.farm.reactive.StkGroovy;
@@ -25,10 +24,15 @@ import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.SoftException;
 import com.zerocracy.jstk.Stakeholder;
+import io.sentry.Sentry;
+import java.util.Map;
+import java.util.Properties;
+import java.util.TreeSet;
+import java.util.regex.Pattern;
+import org.cactoos.Proc;
 import org.cactoos.Scalar;
 import org.cactoos.func.FuncWithFallback;
 import org.cactoos.func.IoCheckedFunc;
-import org.cactoos.func.ProcAsFunc;
 import org.cactoos.io.ResourceAsInput;
 import org.cactoos.list.MappedIterable;
 import org.reflections.Reflections;
@@ -108,12 +112,10 @@ public final class SmartFarm implements Scalar<Farm> {
                 this.props,
                 (project, xml) -> new IoCheckedFunc<>(
                     new FuncWithFallback<Project, Boolean>(
-                        new ProcAsFunc<>(
-                            pkt -> new StkGroovy(
-                                new ResourceAsInput(path),
-                                path, this.deps
-                            ).process(pkt, xml)
-                        ),
+                        (Proc<Project>) pkt -> new StkGroovy(
+                            new ResourceAsInput(path),
+                            path, this.deps
+                        ).process(pkt, xml),
                         exp -> {
                             if (exp instanceof MismatchException) {
                                 throw MismatchException.class.cast(exp);
@@ -121,7 +123,7 @@ public final class SmartFarm implements Scalar<Farm> {
                             if (exp instanceof SoftException) {
                                 throw SoftException.class.cast(exp);
                             }
-                            return new ThrowableToEmail(this.props).apply(exp);
+                            Sentry.capture(exp);
                         }
                     )
                 ).apply(project)

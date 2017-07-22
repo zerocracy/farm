@@ -36,7 +36,7 @@ public final class Agenda {
     /**
      * Project.
      */
-    private final Project project;
+    private final Project pmo;
 
     /**
      * Login of the person.
@@ -49,7 +49,7 @@ public final class Agenda {
      * @param user The user
      */
     public Agenda(final Project pkt, final String user) {
-        this.project = pkt;
+        this.pmo = pkt;
         this.login = user;
     }
 
@@ -117,7 +117,7 @@ public final class Agenda {
                     )
                     .up()
                     .add("project")
-                    .set(this.project.toString())
+                    .set(this.pmo.toString())
             );
         }
     }
@@ -144,7 +144,7 @@ public final class Agenda {
      * @throws IOException If fails
      */
     private Item item() throws IOException {
-        return this.project.acq(
+        return this.pmo.acq(
             String.format("agenda/%s.xml", this.login)
         );
     }

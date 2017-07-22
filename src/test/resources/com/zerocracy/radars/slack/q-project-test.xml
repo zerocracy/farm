@@ -22,7 +22,7 @@
     </cmd>
     <cmd>
         <text>roles</text>
-        <code>hr.roles.show</code>
+        <code>staff.roles.show</code>
     </cmd>
     <cmd>
         <text>links</text>

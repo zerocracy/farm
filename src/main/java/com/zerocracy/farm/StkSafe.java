@@ -19,12 +19,13 @@ package com.zerocracy.farm;
 import com.jcabi.aspects.Tv;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
-import com.zerocracy.ThrowableToEmail;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.SoftException;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
-import lombok.EqualsAndHashCode;
+import io.sentry.Sentry;
+import java.io.IOException;
+import java.util.Properties;
 import org.apache.commons.lang3.StringUtils;
 import org.cactoos.text.BytesAsText;
 import org.cactoos.text.FormattedText;
@@ -124,7 +125,7 @@ public final class StkSafe implements Stakeholder {
                     )
                 ).postTo(project);
             }
-            new ThrowableToEmail(this.props).apply(ex);
+            Sentry.capture(ex);
             Logger.error(
                 this, "%s failed at \"%s/%s\" in \"%s\": %[exception]s",
                 this.origin.getClass().getCanonicalName(),
