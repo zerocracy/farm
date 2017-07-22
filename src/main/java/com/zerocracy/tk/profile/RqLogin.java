@@ -14,31 +14,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.tk;
+package com.zerocracy.tk.profile;
 
 import com.zerocracy.jstk.Project;
-import com.zerocracy.pmo.Awards;
+import com.zerocracy.pmo.People;
 import java.io.IOException;
-import java.util.Properties;
-import org.takes.Response;
+import java.net.HttpURLConnection;
+import org.cactoos.Scalar;
+import org.takes.HttpException;
 import org.takes.facets.fork.RqRegex;
-import org.takes.facets.fork.TkRegex;
-import org.takes.rs.xe.XeAppend;
 
 /**
- * User profile page.
+ * User login from the request.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.12
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-final class TkProfile implements TkRegex {
-
-    /**
-     * Properties.
-     */
-    private final Properties props;
+final class RqLogin implements Scalar<String> {
 
     /**
      * PMO.
@@ -46,31 +40,30 @@ final class TkProfile implements TkRegex {
     private final Project pmo;
 
     /**
-     * Ctor.
-     * @param pps Properties
-     * @param pkt Project
+     * RqRegex.
      */
-    TkProfile(final Properties pps, final Project pkt) {
-        this.props = pps;
+    private final RqRegex request;
+
+    /**
+     * Ctor.
+     * @param pkt Project
+     * @param req Request
+     */
+    RqLogin(final Project pkt, final RqRegex req) {
         this.pmo = pkt;
+        this.request = req;
     }
 
     @Override
-    public Response act(final RqRegex req) throws IOException {
-        return new RsPage(
-            this.props,
-            "/xsl/profile.xsl",
-            req,
-            new XeAppend("login", req.matcher().group(1)),
-            new XeAppend(
-                "points",
-                Integer.toString(
-                    new Awards(
-                        this.pmo, req.matcher().group(1)
-                    ).bootstrap().total()
-                )
-            )
-        );
+    public String value() throws IOException {
+        final String login = this.request.matcher().group(1);
+        final People people = new People(this.pmo).bootstrap();
+        if (!people.find("github", login).iterator().hasNext()) {
+            throw new HttpException(
+                HttpURLConnection.HTTP_NOT_FOUND,
+                String.format("User \"@%s\" not found", login)
+            );
+        }
+        return login;
     }
-
 }

@@ -60,10 +60,12 @@
             </p>
             <p>
                 <xsl:if test="identity">
-                    <span title="GitHub user currently logged in">
-                        <xsl:text>@</xsl:text>
-                        <xsl:value-of select="identity/login"/>
-                    </span>
+                    <a href="/u/{identity/login}">
+                        <span title="GitHub user currently logged in">
+                            <xsl:text>@</xsl:text>
+                            <xsl:value-of select="identity/login"/>
+                        </span>
+                    </a>
                     <xsl:text> &#183; </xsl:text>
                     <a href="{links/link[@rel='takes:logout']/@href}"
                         title="Log out">

@@ -14,23 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.hr.roles
 
-import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Project
-import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.hr.Roles
-
-def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Show roles')
-  new Assume(project, xml).roles('ARC', 'PO')
-  ClaimIn claim = new ClaimIn(xml)
-  claim.reply(
-    String.format(
-      'Full list of roles in "%s":%n%n%s',
-      project,
-      new Roles(project).bootstrap().markdown()
-    )
-  ).postTo(project)
-}
+/**
+ * Profile front, tests.
+ *
+ * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @version $Id$
+ * @since 0.12
+ */
+package com.zerocracy.tk.profile;

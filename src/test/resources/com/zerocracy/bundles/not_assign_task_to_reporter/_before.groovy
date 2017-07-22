@@ -14,31 +14,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.hr.roles
+package com.zerocracy.bundles.not_assign_task_to_reporter
 
+import com.jcabi.github.Github
+import com.jcabi.github.Repos
 import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
-import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
-import com.zerocracy.pm.hr.Roles
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Resign role')
-  new Assume(project, xml).roles('ARC', 'PO')
-  ClaimIn claim = new ClaimIn(xml)
-  String login = claim.param('login')
-  String role = claim.param('role')
-  new Roles(project).bootstrap().resign(login, role)
-  claim.reply(
-    String.format(
-      'Role "%s" resigned from "%s".',
-      role, login
-    )
-  ).postTo(project)
-  new ClaimOut()
-    .type('Role was resigned')
-    .param('login', login)
-    .param('role', role)
-    .postTo(project)
+  Github github = binding.variables.github
+  def repo = github.repos().create(new Repos.RepoCreate("farm", false))
+  repo.issues().create("BundlesTest failing on master", "")
 }
