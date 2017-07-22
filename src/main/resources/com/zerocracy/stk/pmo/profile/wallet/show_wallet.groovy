@@ -26,7 +26,7 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Show wallet')
   People people = new People(project).bootstrap()
   ClaimIn claim = new ClaimIn(xml)
-  String login = claim.param('person')
+  String login = claim.author()
   claim.reply(
     String.format(
       'Your wallet is `%s` at "%s".',
