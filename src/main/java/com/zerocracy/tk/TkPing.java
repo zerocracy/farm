@@ -27,6 +27,8 @@ import com.zerocracy.pm.Claims;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.Func;
@@ -37,6 +39,7 @@ import org.takes.Response;
 import org.takes.Take;
 import org.takes.rq.RqHref;
 import org.takes.rs.RsText;
+
 
 /**
  * Ping all projects.
@@ -52,6 +55,11 @@ public final class TkPing implements Take {
      * The type.
      */
     private static final String TYPE = "Ping";
+
+    /**
+     * Executor service.
+     */
+    private final ExecutorService executor;
 
     /**
      * Farm.
@@ -70,6 +78,7 @@ public final class TkPing implements Take {
     public TkPing(final Farm frm) {
         this.farm = frm;
         this.total = new AtomicInteger();
+        this.executor = Executors.newSingleThreadExecutor();
     }
 
     @Override
@@ -133,7 +142,8 @@ public final class TkPing implements Take {
                         .without(arg)
                         .with(arg, idx)
                         .toString()
-                ).fetch().status()
+                ).fetch().status(),
+                this.executor
             ).apply(this.total.get());
             out = "re-ping";
         } else {
