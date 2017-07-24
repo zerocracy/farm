@@ -35,8 +35,8 @@ import org.cactoos.io.InputAsBytes;
 import org.cactoos.text.BytesAsText;
 
 /**
- *
  * Stakeholder in Groovy.
+ *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.10
