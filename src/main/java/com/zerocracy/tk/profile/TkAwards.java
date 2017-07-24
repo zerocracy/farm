@@ -63,7 +63,7 @@ public final class TkAwards implements TkRegex {
             this.props,
             "/xsl/awards.xsl",
             req,
-            new XeAppend(
+            () -> new XeAppend(
                 "awards",
                 new XeTransform<>(
                     new Awards(

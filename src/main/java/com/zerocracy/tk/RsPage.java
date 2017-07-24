@@ -19,6 +19,8 @@ package com.zerocracy.tk;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Properties;
+import org.cactoos.Scalar;
+import org.cactoos.list.MappedIterable;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.facets.auth.Identity;
@@ -64,8 +66,9 @@ public final class RsPage extends RsWrap {
      * @throws IOException If fails
      * @checkstyle ParameterNumberCheck (5 lines)
      */
+    @SafeVarargs
     public RsPage(final Properties props, final String xsl,
-        final Request req, final XeSource... src) throws IOException {
+        final Request req, final Scalar<XeSource>... src) throws IOException {
         this(props, xsl, req, Arrays.asList(src));
     }
 
@@ -79,7 +82,7 @@ public final class RsPage extends RsWrap {
      * @checkstyle ParameterNumberCheck (5 lines)
      */
     public RsPage(final Properties props, final String xsl, final Request req,
-        final Iterable<XeSource> src) throws IOException {
+        final Iterable<Scalar<XeSource>> src) throws IOException {
         super(RsPage.make(props, xsl, req, src));
     }
 
@@ -94,13 +97,14 @@ public final class RsPage extends RsWrap {
      * @checkstyle ParameterNumberCheck (5 lines)
      */
     private static Response make(final Properties props, final String xsl,
-        final Request req, final Iterable<XeSource> src) throws IOException {
+        final Request req, final Iterable<Scalar<XeSource>> src)
+        throws IOException {
         final Response raw = new RsXembly(
             new XeStylesheet(xsl),
             new XeAppend(
                 "page",
                 new XeMillis(false),
-                new XeChain(src),
+                new XeChain(new MappedIterable<>(src, Scalar::value)),
                 new XeLinkHome(req),
                 new XeLinkSelf(req),
                 new XeDate(),

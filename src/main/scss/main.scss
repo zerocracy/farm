@@ -13,7 +13,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-@import url("https://fonts.googleapis.com/css?family=Nunito");
+@import url("https://fonts.googleapis.com/css?family=Nunito|Fira+Mono");
 
 * {
   border: 0;
@@ -27,7 +27,7 @@ body {
 }
 
 pre {
-  font-family: monospace;
+  font-family: 'Fira Mono', monospace;
 }
 
 p,
@@ -51,12 +51,37 @@ pre {
   height: 128px;
 }
 
+.inner-logo {
+  width: 64px;
+  height: 64px;
+}
+
 .flash {
   text-align: center;
 
-  &.SEVERE { color: red; }
+  &.flash-SEVERE { color: red; }
 
-  &.INFO { color: green; }
+  &.flash-INFO { color: green; }
 
-  &.WARNING { color: orange; }
+  &.flash-WARNING { color: orange; }
+}
+
+.sla {
+
+  &.sla-critical { color: red; }
+
+  &.sla-high { color: orange; }
+
+  &.sla-normal { color: green; }
+}
+
+.millis {
+
+  &.millis-dead { color: red; }
+
+  &.millis-slow { color: orange; }
+
+  &.millis-normal { color: inherit; }
+
+  &.millis-fast { color: green; }
 }

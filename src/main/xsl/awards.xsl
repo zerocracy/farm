@@ -23,25 +23,25 @@
     <xsl:include href="/xsl/inner-layout.xsl"/>
     <xsl:template match="page" mode="head">
         <title>
-            <xsl:text>@</xsl:text>
+            <xsl:text>awards: @</xsl:text>
             <xsl:value-of select="identity/login"/>
         </title>
     </xsl:template>
-    <xsl:template match="inner-page">
+    <xsl:template match="page" mode="inner">
         <xsl:if test="awards/award">
             <p>
                 <xsl:text>Recent </xsl:text>
                 <xsl:value-of select="count(awards/award)"/>
                 <xsl:text> awards:</xsl:text>
             </p>
-            <p>
+            <pre>
                 <xsl:for-each select="awards/award">
                     <xsl:if test="position() &gt; 1">
                         <xsl:text>&#10;</xsl:text>
                     </xsl:if>
                     <xsl:value-of select="."/>
                 </xsl:for-each>
-            </p>
+            </pre>
         </xsl:if>
         <xsl:if test="not(awards/award)">
             <p>
