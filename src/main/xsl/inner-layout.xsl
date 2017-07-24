@@ -39,7 +39,7 @@
         <xsl:apply-templates select="page" mode="inner"/>
         <p>
             <xsl:text>&#8212;</xsl:text>
-            <br>&nbsp;</br>
+            <br>&#160;</br>
             <span title="Current version of the bot">
                 <xsl:text>v</xsl:text>
                 <xsl:value-of select="version/name"/>
