@@ -56,7 +56,9 @@ public final class BrigadeTest {
                         String.join(
                             "\n",
                             "import com.zerocracy.pm.ClaimOut",
-                            "def exec(project, xml) {",
+                            "import com.jcabi.xml.XML",
+                            "import com.zerocracy.jstk.Project",
+                            "def exec(Project project, XML xml) {",
                             "new ClaimOut().type('one more').postTo(project)",
                             "}"
                         )

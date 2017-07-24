@@ -16,12 +16,16 @@
  */
 package com.zerocracy.farm.reactive;
 
+import com.jcabi.aspects.Cacheable;
 import com.jcabi.xml.XML;
+import com.zerocracy.farm.MismatchException;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import groovy.lang.Binding;
-import groovy.lang.GroovyShell;
+import groovy.lang.GroovyClassLoader;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import org.cactoos.Input;
@@ -29,11 +33,10 @@ import org.cactoos.func.And;
 import org.cactoos.func.UncheckedScalar;
 import org.cactoos.io.InputAsBytes;
 import org.cactoos.text.BytesAsText;
-import org.cactoos.text.FormattedText;
 
 /**
- * Stakeholder in Groovy.
  *
+ * Stakeholder in Groovy.
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.10
@@ -80,8 +83,6 @@ public final class StkGroovy implements Stakeholder {
     public void process(final Project project, final XML claim)
         throws IOException {
         final Binding binding = new Binding();
-        binding.setVariable("p", project);
-        binding.setVariable("x", claim);
         new UncheckedScalar<>(
             new And(
                 this.deps.entrySet(),
@@ -90,16 +91,32 @@ public final class StkGroovy implements Stakeholder {
                 }
             )
         ).value();
-        final GroovyShell shell = new GroovyShell(binding);
-        shell.evaluate(
-            new FormattedText(
-                "%s\n\nexec(p, x)\n",
+
+        final Class<?> clazz = this.script();
+        try {
+            final Constructor<?> constructor = clazz.getConstructor(
+                Binding.class
+            );
+            final Object instance = constructor.newInstance(binding);
+            clazz.getMethod("exec", Project.class, XML.class).
+                invoke(instance, project, claim);
+        } catch (final IllegalAccessException | NoSuchMethodException |
+            InstantiationException | InvocationTargetException exp) {
+            if (exp.getCause() instanceof MismatchException) {
+                throw MismatchException.class.cast(exp.getCause());
+            }
+            throw new RuntimeException(exp);
+        }
+    }
+
+    @Cacheable(forever = true)
+    private Class<?> script() throws IOException {
+        try (final GroovyClassLoader loader = new GroovyClassLoader()) {
+            return loader.parseClass(
                 new BytesAsText(
                     new InputAsBytes(this.input)
                 ).asString()
-            ).asString(),
-            this.label
-        );
+            );
+        }
     }
-
 }
