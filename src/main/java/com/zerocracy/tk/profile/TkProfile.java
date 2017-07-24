@@ -70,7 +70,7 @@ public final class TkProfile implements TkRegex {
             this.props,
             "/xsl/profile.xsl",
             req,
-            new XeWhen(
+            () -> new XeWhen(
                 login.equals(
                     new RqAuth(req).identity().properties().get("login")
                 ),
@@ -95,13 +95,13 @@ public final class TkProfile implements TkRegex {
                     )
                 )
             ),
-            new XeAppend(
+            () -> new XeAppend(
                 "awards",
                 Integer.toString(
                     new Awards(this.pmo, login).bootstrap().total()
                 )
             ),
-            new XeAppend(
+            () -> new XeAppend(
                 "agenda",
                 Integer.toString(
                     new LengthOfIterable(

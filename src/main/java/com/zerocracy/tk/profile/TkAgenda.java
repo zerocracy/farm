@@ -63,7 +63,7 @@ public final class TkAgenda implements TkRegex {
             this.props,
             "/xsl/agenda.xsl",
             req,
-            new XeAppend(
+            () -> new XeAppend(
                 "agenda",
                 new XeTransform<>(
                     new Agenda(

@@ -20,18 +20,14 @@
     <xsl:output method="html" doctype-system="about:legacy-compat"
         encoding="UTF-8" indent="yes" />
     <xsl:strip-space elements="*"/>
-    <xsl:include href="/xsl/layout.xsl"/>
+    <xsl:include href="/xsl/inner-layout.xsl"/>
     <xsl:template match="page" mode="head">
         <title>
             <xsl:text>@</xsl:text>
             <xsl:value-of select="identity/login"/>
         </title>
     </xsl:template>
-    <xsl:template match="page" mode="body">
-        <p>
-            <xsl:text>@</xsl:text>
-            <xsl:value-of select="identity/login"/>
-        </p>
+    <xsl:template match="page" mode="inner">
         <xsl:apply-templates select="details"/>
         <p>
             <xsl:text>Total points: </xsl:text>

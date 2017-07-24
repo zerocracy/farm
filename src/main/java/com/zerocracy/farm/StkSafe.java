@@ -26,6 +26,7 @@ import com.zerocracy.pm.ClaimIn;
 import io.sentry.Sentry;
 import java.io.IOException;
 import java.util.Properties;
+import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.StringUtils;
 import org.cactoos.text.BytesAsText;
 import org.cactoos.text.FormattedText;
@@ -38,6 +39,7 @@ import org.cactoos.text.ThrowableAsBytes;
  * @version $Id$
  * @since 0.1
  */
+@EqualsAndHashCode(of = "identifier")
 public final class StkSafe implements Stakeholder {
 
     /**
@@ -51,11 +53,25 @@ public final class StkSafe implements Stakeholder {
     private final Stakeholder origin;
 
     /**
+     * Stakeholder unique identifier.
+     */
+    @SuppressWarnings(
+        {
+            "PMD.SingularField",
+            "PMD.UnusedPrivateField"
+        }
+    )
+    private final String identifier;
+
+    /**
      * Ctor.
+     * @param id Identifier
      * @param pps Properties
      * @param stk Original stakeholder
      */
-    public StkSafe(final Properties pps, final Stakeholder stk) {
+    public StkSafe(final String id, final Properties pps,
+        final Stakeholder stk) {
+        this.identifier = id;
         this.props = pps;
         this.origin = stk;
     }
@@ -126,5 +142,4 @@ public final class StkSafe implements Stakeholder {
             );
         }
     }
-
 }

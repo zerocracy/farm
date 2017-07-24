@@ -104,6 +104,7 @@ public final class SmartFarm implements Scalar<Farm> {
                 ).getResources(Pattern.compile(".*\\.groovy"))
             ),
             path -> new StkSafe(
+                path,
                 this.props,
                 (project, xml) -> new IoCheckedFunc<>(
                     new FuncWithFallback<Project, Boolean>(
@@ -125,5 +126,4 @@ public final class SmartFarm implements Scalar<Farm> {
             )
         );
     }
-
 }
