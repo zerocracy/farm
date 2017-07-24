@@ -23,7 +23,7 @@
     <xsl:include href="/xsl/inner-layout.xsl"/>
     <xsl:template match="page" mode="head">
         <title>
-            <xsl:text>@</xsl:text>
+            <xsl:text>awards: @</xsl:text>
             <xsl:value-of select="identity/login"/>
         </title>
     </xsl:template>
