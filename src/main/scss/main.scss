@@ -59,9 +59,29 @@ pre {
 .flash {
   text-align: center;
 
-  &.SEVERE { color: red; }
+  &.flash-SEVERE { color: red; }
 
-  &.INFO { color: green; }
+  &.flash-INFO { color: green; }
 
-  &.WARNING { color: orange; }
+  &.flash-WARNING { color: orange; }
+}
+
+.sla {
+
+  &.sla-critical { color: red; }
+
+  &.sla-high { color: orange; }
+
+  &.sla-normal { color: green; }
+}
+
+.millis {
+
+  &.millis-dead { color: red; }
+
+  &.millis-slow { color: orange; }
+
+  &.millis-normal { color: inherit; }
+
+  &.millis-fast { color: green; }
 }
