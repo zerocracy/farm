@@ -26,7 +26,7 @@
             <xsl:text>agenda</xsl:text>
         </title>
     </xsl:template>
-    <xsl:template match="inner-page">
+    <xsl:template match="page" mode="inner">
         <xsl:if test="agenda/job">
             <p>
                 <xsl:text>There are </xsl:text>

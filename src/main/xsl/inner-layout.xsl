@@ -36,25 +36,23 @@
                 <xsl:value-of select="identity/login"/>
             </a>
         </p>
-        <xsl:apply-templates select="inner-page"/>
+        <xsl:apply-templates select="page" mode="inner"/>
         <p>
+            <xsl:text>&#8212;</xsl:text>
+            <br>&nbsp;</br>
             <span title="Current version of the bot">
                 <xsl:text>v</xsl:text>
                 <xsl:value-of select="version/name"/>
             </span>
-            <xsl:text> | </xsl:text>
-            <span title="The time since the last restart">
-                <xsl:value-of select="alive"/>
-            </span>
-            <xsl:text> | </xsl:text>
+            <xsl:text> &#183; </xsl:text>
             <xsl:call-template name="takes_millis">
                 <xsl:with-param name="millis" select="millis"/>
             </xsl:call-template>
-            <xsl:text> | </xsl:text>
+            <xsl:text> &#183; </xsl:text>
             <xsl:call-template name="takes_sla">
                 <xsl:with-param name="sla" select="@sla"/>
             </xsl:call-template>
-            <xsl:text> | </xsl:text>
+            <xsl:text> &#183; </xsl:text>
             <xsl:call-template name="takes_memory">
                 <xsl:with-param name="memory" select="memory"/>
             </xsl:call-template>

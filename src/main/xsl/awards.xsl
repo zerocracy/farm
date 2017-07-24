@@ -27,7 +27,7 @@
             <xsl:value-of select="identity/login"/>
         </title>
     </xsl:template>
-    <xsl:template match="inner-page">
+    <xsl:template match="page" mode="inner">
         <xsl:if test="awards/award">
             <p>
                 <xsl:text>Recent </xsl:text>
