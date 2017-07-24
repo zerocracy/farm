@@ -17,16 +17,15 @@
 @import url("//cdn.rawgit.com/yegor256/tacit/gh-pages/tacit-0.8.1.min.css");
 
 * {
-  border: 0;
   font-family: 'Nunito', sans-serif;
-  font-size: 18px;
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
 }
 
 body {
   padding: 4em;
+}
+
+section {
+  width: 100%;
 }
 
 .center {
