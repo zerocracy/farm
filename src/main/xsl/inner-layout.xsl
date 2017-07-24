@@ -26,6 +26,11 @@
     <xsl:include href="/org/takes/rs/xe/sla.xsl"/>
     <xsl:template match="page" mode="body">
         <p>
+            <a href="/">
+                <img src="http://www.zerocracy.com/logo.svg" class="inner-logo" />
+            </a>
+        </p>
+        <p>
             <a href="/u/{identity/login}">
                 <xsl:text>@</xsl:text>
                 <xsl:value-of select="identity/login"/>
