@@ -16,8 +16,6 @@
  */
 package com.zerocracy.pm.staff;
 
-import com.jcabi.xml.XMLDocument;
-import com.jcabi.xml.XSLDocument;
 import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
@@ -71,19 +69,6 @@ public final class Roles {
     public boolean isEmpty() throws IOException {
         try (final Item roles = this.item()) {
             return new Xocument(roles).nodes("/roles/person").isEmpty();
-        }
-    }
-
-    /**
-     * Print it to Markdown.
-     * @return Text
-     * @throws IOException If fails
-     */
-    public String markdown() throws IOException {
-        try (final Item roles = this.item()) {
-            return new XSLDocument(
-                Roles.class.getResource("roles/to-markdown.xsl")
-            ).applyTo(new XMLDocument(roles.path().toFile()));
         }
     }
 

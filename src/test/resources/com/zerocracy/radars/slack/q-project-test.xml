@@ -17,14 +17,6 @@
  -->
 <test target="slack/q-project.xml">
     <cmd>
-        <text>wbs</text>
-        <code>scope.wbs.show</code>
-    </cmd>
-    <cmd>
-        <text>roles</text>
-        <code>staff.roles.show</code>
-    </cmd>
-    <cmd>
         <text>links</text>
         <code>links.show</code>
     </cmd>
