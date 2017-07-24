@@ -13,7 +13,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-@import url("https://fonts.googleapis.com/css?family=Nunito");
+@import url("https://fonts.googleapis.com/css?family=Nunito|Fira+Mono");
 
 * {
   border: 0;
@@ -27,7 +27,7 @@ body {
 }
 
 pre {
-  font-family: monospace;
+  font-family: 'Fira Mono', monospace;
 }
 
 p,

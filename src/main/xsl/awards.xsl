@@ -34,14 +34,14 @@
                 <xsl:value-of select="count(awards/award)"/>
                 <xsl:text> awards:</xsl:text>
             </p>
-            <p>
+            <pre>
                 <xsl:for-each select="awards/award">
                     <xsl:if test="position() &gt; 1">
                         <xsl:text>&#10;</xsl:text>
                     </xsl:if>
                     <xsl:value-of select="."/>
                 </xsl:for-each>
-            </p>
+            </pre>
         </xsl:if>
         <xsl:if test="not(awards/award)">
             <p>
