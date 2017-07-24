@@ -13,7 +13,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-@import url("//fonts.googleapis.com/css?family=Nunito|Fira+Mono");
+@import url("//fonts.googleapis.com/css?family=Nunito");
 @import url("//cdn.rawgit.com/yegor256/tacit/gh-pages/tacit-0.8.1.min.css");
 
 * {
@@ -29,14 +29,18 @@ section {
 }
 
 .center {
-  text-align: center;
   height: 13em;
+  width: 28em;
   position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
   margin: auto;
+
+  p {
+    text-align: center;
+  }
 }
 
 .logo {
