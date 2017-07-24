@@ -36,10 +36,11 @@
                 <xsl:value-of select="identity/login"/>
             </a>
         </p>
-        <xsl:apply-templates select="page" mode="inner"/>
+        <xsl:apply-templates select="." mode="inner"/>
         <p>
-            <xsl:text>&#8212;</xsl:text>
-            <br>&#160;</br>
+            <span style="display:block;">
+                <xsl:text>&#8212;</xsl:text>
+            </span>
             <span title="Current version of the bot">
                 <xsl:text>v</xsl:text>
                 <xsl:value-of select="version/name"/>
