@@ -17,25 +17,21 @@
  -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns="http://www.w3.org/1999/xhtml" version="1.0">
-    <xsl:include href="/org/takes/facets/flash/flash.xsl"/>
-    <xsl:template match="/page">
-        <html lang="en">
-            <head>
-                <meta charset="utf-8"/>
-                <meta name="description" content="Project managers that never sleep, fail, or miss anything"/>
-                <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-                <link rel="shortcut icon" href="http://www.zerocracy.com/logo.png"/>
-                <link rel="stylesheet" href="/css/main.css"/>
-                <xsl:apply-templates select="." mode="head"/>
-            </head>
-            <body>
-                <xsl:if test="flash">
-                    <xsl:call-template name="takes_flash">
-                        <xsl:with-param name="flash" select="flash"/>
-                    </xsl:call-template>
-                </xsl:if>
-                <xsl:apply-templates select="." mode="body"/>
-            </body>
-        </html>
+    <xsl:output method="html" doctype-system="about:legacy-compat"
+        encoding="UTF-8" indent="yes" />
+    <xsl:strip-space elements="*"/>
+    <xsl:include href="/xsl/inner-layout.xsl"/>
+    <xsl:template match="page" mode="head">
+        <title>
+            <xsl:value-of select="project"/>
+        </title>
+    </xsl:template>
+    <xsl:template match="page" mode="inner">
+        <p>
+            <xsl:value-of select="artifact"/>
+            <xsl:text> at </xsl:text>
+            <xsl:value-of select="project"/>
+        </p>
+        <xsl:value-of select="xml" disable-output-escaping="yes"/>
     </xsl:template>
 </xsl:stylesheet>

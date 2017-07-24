@@ -14,31 +14,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.tk.profile;
+package com.zerocracy.tk.project;
 
+import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
+import com.zerocracy.pm.staff.Roles;
+import com.zerocracy.pmo.Catalog;
+import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import org.cactoos.Scalar;
 import org.takes.HttpException;
-import org.takes.facets.auth.Identity;
 import org.takes.facets.auth.RqAuth;
 import org.takes.facets.fork.RqRegex;
 
 /**
- * User login from the request.
+ * Project from the request.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.12
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-final class RqSecureLogin implements Scalar<String> {
+final class RqProject implements Scalar<Project> {
 
     /**
-     * PMO.
+     * Farm.
      */
-    private final Project pmo;
+    private final Farm farm;
 
     /**
      * RqRegex.
@@ -47,24 +50,39 @@ final class RqSecureLogin implements Scalar<String> {
 
     /**
      * Ctor.
-     * @param pkt Project
+     * @param frm Farm
      * @param req Request
      */
-    RqSecureLogin(final Project pkt, final RqRegex req) {
-        this.pmo = pkt;
+    RqProject(final Farm frm, final RqRegex req) {
+        this.farm = frm;
         this.request = req;
     }
 
     @Override
-    public String value() throws IOException {
-        final String login = new RqLogin(this.pmo, this.request).value();
-        final Identity identity = new RqAuth(this.request).identity();
-        if (!identity.properties().get("login").equals(login)) {
+    public Project value() throws IOException {
+        final String name = this.request.matcher().group(1);
+        final Catalog catalog = new Catalog(new Pmo(this.farm)).bootstrap();
+        if (catalog.links(name).isEmpty()) {
             throw new HttpException(
-                HttpURLConnection.HTTP_FORBIDDEN,
-                String.format("Only \"@%s\" is allowed to see this page", login)
+                HttpURLConnection.HTTP_NOT_FOUND,
+                String.format("Project \"%s\" not found", name)
             );
         }
-        return login;
+        final Project project = this.farm.find(
+            String.format("@id='%s'", name)
+        ).iterator().next();
+        final String login = new RqAuth(this.request)
+            .identity().properties().get("login");
+        final Roles roles = new Roles(project).bootstrap();
+        if (!roles.hasRole(login, "ARC", "PO")) {
+            throw new HttpException(
+                HttpURLConnection.HTTP_FORBIDDEN,
+                String.format(
+                    "@%s must either be a PO or an ARC to view these documents",
+                    login
+                )
+            );
+        }
+        return project;
     }
 }

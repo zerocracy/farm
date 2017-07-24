@@ -69,6 +69,7 @@ public final class RolesTest {
         final String uid = "yegor256";
         final String role = "QA";
         roles.assign(uid, role);
+        roles.assign(uid, "TST");
         MatcherAssert.assertThat(
             roles.findByRole(role),
             Matchers.hasItem(uid)

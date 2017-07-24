@@ -21,6 +21,8 @@ import com.zerocracy.pmo.Pmo;
 import com.zerocracy.tk.profile.TkAgenda;
 import com.zerocracy.tk.profile.TkAwards;
 import com.zerocracy.tk.profile.TkProfile;
+import com.zerocracy.tk.project.TkArtifact;
+import com.zerocracy.tk.project.TkProject;
 import io.sentry.Sentry;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -36,6 +38,7 @@ import org.takes.facets.fallback.FbLog4j;
 import org.takes.facets.fallback.FbStatus;
 import org.takes.facets.fallback.TkFallback;
 import org.takes.facets.flash.TkFlash;
+import org.takes.facets.fork.FkAuthenticated;
 import org.takes.facets.fork.FkRegex;
 import org.takes.facets.fork.Fork;
 import org.takes.facets.fork.TkFork;
@@ -94,17 +97,29 @@ public final class TkApp extends TkWrap {
                                                             new FkRegex("/", new TkIndex(props)),
                                                             new FkRegex("/ping", new TkPing(farm)),
                                                             new FkRegex("/robots.txt", ""),
-                                                            new FkRegex(
-                                                                "/u/([a-zA-Z0-9-]+)/awards",
-                                                                new TkAwards(props, new Pmo(farm))
-                                                            ),
-                                                            new FkRegex(
-                                                                "/u/([a-zA-Z0-9-]+)/agenda",
-                                                                new TkAgenda(props, new Pmo(farm))
-                                                            ),
-                                                            new FkRegex(
-                                                                "/u/([a-zA-Z0-9-]+)",
-                                                                new TkProfile(props, new Pmo(farm))
+                                                            new FkAuthenticated(
+                                                                new TkFork(
+                                                                    new FkRegex(
+                                                                        "/p/([A-Z0-9]{9})",
+                                                                        new TkProject(props, farm)
+                                                                    ),
+                                                                    new FkRegex(
+                                                                        "/a/([A-Z0-9]{9})",
+                                                                        new TkArtifact(props, farm)
+                                                                    ),
+                                                                    new FkRegex(
+                                                                        "/u/([a-zA-Z0-9-]+)/awards",
+                                                                        new TkAwards(props, new Pmo(farm))
+                                                                    ),
+                                                                    new FkRegex(
+                                                                        "/u/([a-zA-Z0-9-]+)/agenda",
+                                                                        new TkAgenda(props, new Pmo(farm))
+                                                                    ),
+                                                                    new FkRegex(
+                                                                        "/u/([a-zA-Z0-9-]+)",
+                                                                        new TkProfile(props, new Pmo(farm))
+                                                                    )
+                                                                )
                                                             ),
                                                             new FkRegex(
                                                                 "/invite_friend",
@@ -156,13 +171,6 @@ public final class TkApp extends TkWrap {
                                 new RsText(req.throwable().getMessage()),
                                 req.code()
                             )
-                        )
-                    ),
-                    new FbStatus(
-                        HttpURLConnection.HTTP_BAD_REQUEST,
-                        new RsWithStatus(
-                            new RsText("Bad request"),
-                            HttpURLConnection.HTTP_BAD_REQUEST
                         )
                     ),
                     req -> {

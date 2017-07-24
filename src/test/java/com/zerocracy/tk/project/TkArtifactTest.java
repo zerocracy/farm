@@ -14,12 +14,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.tk.profile;
+package com.zerocracy.tk.project;
 
 import com.jcabi.matchers.XhtmlMatchers;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.fake.FkFarm;
-import com.zerocracy.pmo.People;
+import com.zerocracy.pm.staff.Roles;
+import com.zerocracy.pmo.Catalog;
+import com.zerocracy.pmo.Pmo;
 import com.zerocracy.tk.TkApp;
 import java.util.Properties;
 import org.hamcrest.MatcherAssert;
@@ -30,33 +32,43 @@ import org.takes.rq.RqWithHeaders;
 import org.takes.rs.RsPrint;
 
 /**
- * Test case for {@link TkProfile}.
+ * Test case for {@link TkArtifact}.
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.13
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-public final class TkProfileTest {
+public final class TkArtifactTest {
 
     @Test
     public void rendersHomePage() throws Exception {
         final Farm farm = new FkFarm();
-        new People(farm).bootstrap().touch("yegor256");
+        final Catalog catalog = new Catalog(new Pmo(farm)).bootstrap();
+        final String pid = "A1B2C3D4F";
+        catalog.add(pid, String.format("2017/07/%s/", pid));
+        catalog.link(pid, "github", "test/test");
+        final Roles roles = new Roles(
+            farm.find(String.format("@id='%s'", pid)).iterator().next()
+        ).bootstrap();
+        roles.assign("yegor256", "PO");
         final Take take = new TkApp(new Properties(), farm);
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
                 new RsPrint(
                     take.act(
                         new RqWithHeaders(
-                            new RqFake("GET", "/u/yegor256/agenda"),
+                            new RqFake(
+                                "GET",
+                                String.format("/a/%s?a=pm/staff/roles", pid)
+                            ),
                             // @checkstyle LineLength (1 line)
                             "Cookie: PsCookie=0975A5A5-F6DB193E-AF18000A-75726E3A-74657374-3A310005-6C6F6769-6E000879-65676F72-323536AE"
                         )
                     )
                 ).printBody()
             ),
-            XhtmlMatchers.hasXPaths("//xhtml:body")
+            XhtmlMatchers.hasXPaths("//xhtml:table")
         );
     }
 

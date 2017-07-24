@@ -14,57 +14,60 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.tk.profile;
+package com.zerocracy.tk.project;
 
+import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
+import com.zerocracy.tk.RsPage;
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import org.cactoos.Scalar;
-import org.takes.HttpException;
-import org.takes.facets.auth.Identity;
-import org.takes.facets.auth.RqAuth;
+import java.util.Properties;
+import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
+import org.takes.facets.fork.TkRegex;
+import org.takes.rs.xe.XeAppend;
 
 /**
- * User login from the request.
+ * Project page.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.12
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-final class RqSecureLogin implements Scalar<String> {
+public final class TkProject implements TkRegex {
 
     /**
-     * PMO.
+     * Properties.
      */
-    private final Project pmo;
+    private final Properties props;
 
     /**
-     * RqRegex.
+     * Farm.
      */
-    private final RqRegex request;
+    private final Farm farm;
 
     /**
      * Ctor.
-     * @param pkt Project
-     * @param req Request
+     * @param pps Properties
+     * @param frm Farm
      */
-    RqSecureLogin(final Project pkt, final RqRegex req) {
-        this.pmo = pkt;
-        this.request = req;
+    public TkProject(final Properties pps, final Farm frm) {
+        this.props = pps;
+        this.farm = frm;
     }
 
     @Override
-    public String value() throws IOException {
-        final String login = new RqLogin(this.pmo, this.request).value();
-        final Identity identity = new RqAuth(this.request).identity();
-        if (!identity.properties().get("login").equals(login)) {
-            throw new HttpException(
-                HttpURLConnection.HTTP_FORBIDDEN,
-                String.format("Only \"@%s\" is allowed to see this page", login)
-            );
-        }
-        return login;
+    public Response act(final RqRegex req) throws IOException {
+        final Project project = new RqProject(this.farm, req).value();
+        return new RsPage(
+            this.props,
+            "/xsl/project.xsl",
+            req,
+            () -> new XeAppend(
+                "project",
+                project.toString()
+            )
+        );
     }
+
 }

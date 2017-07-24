@@ -17,22 +17,18 @@
 package com.zerocracy.farm;
 
 import com.jcabi.s3.Bucket;
-import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
+import com.zerocracy.pmo.Catalog;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Collection;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.EqualsAndHashCode;
+import org.cactoos.list.ArrayAsIterable;
 import org.cactoos.list.MappedIterable;
-import org.xembly.Directives;
 
 /**
  * Farm in S3.
@@ -44,11 +40,6 @@ import org.xembly.Directives;
  */
 @EqualsAndHashCode(of = "bucket")
 public final class S3Farm implements Farm {
-
-    /**
-     * PMO project name.
-     */
-    private static final String PMO = "PMO";
 
     /**
      * S3 bucket.
@@ -81,98 +72,46 @@ public final class S3Farm implements Farm {
 
     @Override
     public Iterable<Project> find(final String xpath) throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).bootstrap("pmo/catalog");
-        }
-        Iterable<Project> projects = new MappedIterable<>(
-            this.findByXPath(xpath),
-            prefix -> new S3Project(this.bucket, prefix, this.temp)
-        );
-        if (!projects.iterator().hasNext()) {
-            final Matcher matcher = Pattern.compile(
-                "\\s*@id\\s*=\\s*'([^']+)'\\s*"
-            ).matcher(xpath);
-            if (matcher.matches()) {
-                this.add(matcher.group(1));
-                projects = this.find(xpath);
+        Iterable<Project> found;
+        if ("@id='PMO'".equals(xpath)) {
+            found = new ArrayAsIterable<>(
+                new S3Project(this.bucket, "PMO/", this.temp)
+            );
+        } else {
+            final Catalog catalog = new Catalog(this).bootstrap();
+            found = new MappedIterable<>(
+                catalog.findByXPath(xpath),
+                prefix -> new S3Project(this.bucket, prefix, this.temp)
+            );
+            if (!found.iterator().hasNext()) {
+                found = this.force(catalog, xpath);
             }
         }
-        return projects;
+        return found;
     }
 
     /**
-     * Create a project with the given ID.
-     * @param pid Project ID
+     * Make sure it exists and return it.
+     * @param catalog The catalog
+     * @param xpath The XPath
+     * @return List of found projects
      * @throws IOException If fails
      */
-    private void add(final String pid) throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
-                new Directives()
-                    .xpath("/catalog")
-                    .add("project")
-                    .attr("id", pid)
-                    .add("created")
-                    .set(
-                        ZonedDateTime.now().format(
-                            DateTimeFormatter.ISO_INSTANT
-                        )
-                    )
-                    .up()
-                    .add("prefix").set(S3Farm.prefix(pid))
+    private Iterable<Project> force(final Catalog catalog,
+        final String xpath) throws IOException {
+        final Matcher matcher = Pattern.compile(
+            "\\s*@id\\s*=\\s*'([^']+)'\\s*"
+        ).matcher(xpath);
+        if (!matcher.matches()) {
+            throw new IllegalStateException(
+                String.format("Can't find anything with %s", xpath)
             );
         }
-    }
-
-    /**
-     * Find a project by XPath query.
-     * @param xpath XPath query
-     * @return Prefixes found, if found
-     * @throws IOException If fails
-     */
-    private Collection<String> findByXPath(final String xpath)
-        throws IOException {
-        String term = xpath;
-        if (!term.isEmpty()) {
-            term = String.format("[%s]", term);
-        }
-        try (final Item item = this.item()) {
-            return new Xocument(item).xpath(
-                String.format("//project%s/prefix/text()", term)
-            );
-        }
-    }
-
-    /**
-     * The item.
-     * @return Item
-     */
-    private Item item() {
-        return new S3Item(
-            this.bucket.ocket(
-                String.format("%scatalog.xml", S3Farm.prefix(S3Farm.PMO))
-            ),
-            this.temp.resolve("project/catalog.xml")
+        final String pid = matcher.group(1);
+        catalog.add(
+            pid, String.format("%tY/%1$tm/%s/", new Date(), pid)
         );
-    }
-
-    /**
-     * Create prefix from PID.
-     * @param pid Project ID
-     * @return Prefix to use
-     */
-    private static String prefix(final String pid) {
-        final String prefix;
-        if (S3Farm.PMO.equals(pid)) {
-            prefix = "PMO/";
-        } else {
-            prefix = String.format(
-                "%tY/%1$tm/%s/",
-                new Date(),
-                pid
-            );
-        }
-        return prefix;
+        return this.find(xpath);
     }
 
 }

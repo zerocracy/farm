@@ -24,6 +24,9 @@ import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+import org.cactoos.list.ArrayAsIterable;
+import org.cactoos.list.MappedIterable;
+import org.cactoos.text.JoinedText;
 import org.xembly.Directives;
 
 /**
@@ -167,17 +170,24 @@ public final class Roles {
     /**
      * Does he have any of these roles?
      * @param person The person
-     * @param role Roles to find
+     * @param list Roles to find
      * @return TRUE if it has a role
      * @throws IOException If fails
      */
-    public boolean hasRole(final String person, final String role)
+    public boolean hasRole(final String person, final String... list)
         throws IOException {
         try (final Item roles = this.item()) {
             return new Xocument(roles).nodes(
                 String.format(
-                    "/roles/person[@id='%s' and role='%s']",
-                    person, role
+                    "/roles/person[@id='%s' and (%s)]",
+                    person,
+                    new JoinedText(
+                        " or ",
+                        new MappedIterable<>(
+                            new ArrayAsIterable<>(list),
+                            role -> String.format("role='%s'", role)
+                        )
+                    ).asString()
                 )
             ).iterator().hasNext();
         }
