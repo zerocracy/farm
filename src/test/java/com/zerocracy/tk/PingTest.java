@@ -64,7 +64,7 @@ public final class PingTest {
         final Take take = new TkApp(new Properties(), new FkFarm());
         MatcherAssert.assertThat(
             this.url,
-            take.act(new RqFake("INFO", this.url)),
+            take.act(new RqFake("GET", this.url)),
             Matchers.not(
                 new HmRsStatus(
                     HttpURLConnection.HTTP_NOT_FOUND

@@ -97,6 +97,29 @@ public final class TkApp extends TkWrap {
                                                             new FkRegex("/", new TkIndex(props)),
                                                             new FkRegex("/ping", new TkPing(farm)),
                                                             new FkRegex("/robots.txt", ""),
+                                                            new FkRegex(
+                                                                "/xsl/[a-z\\-]+\\.xsl",
+                                                                new TkWithType(
+                                                                    new TkRefresh("./src/main/xsl"),
+                                                                    "text/xsl"
+                                                                )
+                                                            ),
+                                                            new FkRegex(
+                                                                "/css/[a-z]+\\.css",
+                                                                new TkWithType(
+                                                                    new TkRefresh("./src/main/scss"),
+                                                                    "text/css"
+                                                                )
+                                                            ),
+                                                            new FkRegex(
+                                                                "/invite_friend",
+                                                                new TkRedirect(
+                                                                    new Href("https://slack.com/oauth/authorize")
+                                                                        .with("scope", "bot")
+                                                                        .with("client_id", props.getProperty("slack.client_id", ""))
+                                                                        .toString()
+                                                                )
+                                                            ),
                                                             new FkAuthenticated(
                                                                 new TkFork(
                                                                     new FkRegex(
@@ -119,29 +142,6 @@ public final class TkApp extends TkWrap {
                                                                         "/u/([a-zA-Z0-9-]+)",
                                                                         new TkProfile(props, new Pmo(farm))
                                                                     )
-                                                                )
-                                                            ),
-                                                            new FkRegex(
-                                                                "/invite_friend",
-                                                                new TkRedirect(
-                                                                    new Href("https://slack.com/oauth/authorize")
-                                                                        .with("scope", "bot")
-                                                                        .with("client_id", props.getProperty("slack.client_id", ""))
-                                                                        .toString()
-                                                                )
-                                                            ),
-                                                            new FkRegex(
-                                                                "/xsl/[a-z\\-]+\\.xsl",
-                                                                new TkWithType(
-                                                                    new TkRefresh("./src/main/xsl"),
-                                                                    "text/xsl"
-                                                                )
-                                                            ),
-                                                            new FkRegex(
-                                                                "/css/[a-z]+\\.css",
-                                                                new TkWithType(
-                                                                    new TkRefresh("./src/main/scss"),
-                                                                    "text/css"
                                                                 )
                                                             )
                                                         )
