@@ -25,9 +25,9 @@ import org.cactoos.Proc;
 import org.cactoos.func.And;
 import org.cactoos.func.AsyncFunc;
 import org.cactoos.func.False;
-import org.cactoos.func.FuncAsProc;
+import org.cactoos.func.ProcOf;
+import org.cactoos.func.SyncScalar;
 import org.cactoos.func.Ternary;
-import org.cactoos.func.UncheckedScalar;
 import org.cactoos.list.LimitedIterable;
 import org.cactoos.list.MappedIterable;
 import org.cactoos.list.SortedIterable;
@@ -36,8 +36,8 @@ import org.cactoos.list.SortedIterable;
  * Pool project.
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @since 0.1
  */
 @EqualsAndHashCode(of = "origin")
 final class SyncProject implements Project {
@@ -90,30 +90,24 @@ final class SyncProject implements Project {
         this.origin = pkt;
         this.pool = map;
         this.threshold = threshold;
-        this.clean = none -> new Ternary<>(
-            () -> this.pool.size() > threshold,
-            () -> {
-                synchronized (this.pool) {
-                    return new UncheckedScalar<>(
-                        new And(
-                            new LimitedIterable<>(
-                                new SortedIterable<CmpEntry<String,
-                                    SyncItem>>(
-                                    new MappedIterable<>(
-                                        this.pool.entrySet(),
-                                        CmpEntry::new
-                                    )
-                                ),
-                                this.pool.size() - this.threshold
-                            ),
-                            new FuncAsProc<>(
-                                entry -> this.pool.remove(entry.getKey())
+        this.clean = none -> new SyncScalar<>(
+            new Ternary<>(
+                () -> this.pool.size() > threshold,
+                new And(
+                    new LimitedIterable<>(
+                        new SortedIterable<CmpEntry<String, SyncItem>>(
+                            new MappedIterable<>(
+                                this.pool.entrySet(),
+                                CmpEntry::new
                             )
-                        )
-                    ).value();
-                }
-            },
-            new False()
+                        ),
+                        this.pool.size() - this.threshold
+                    ),
+                    new ProcOf<>(e -> this.pool.remove(e.getKey()))
+                ),
+                new False()
+            ),
+            this.pool
         ).value();
     }
 

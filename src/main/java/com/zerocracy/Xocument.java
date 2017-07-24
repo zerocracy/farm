@@ -24,6 +24,8 @@ import com.jcabi.xml.XSL;
 import com.jcabi.xml.XSLDocument;
 import com.zerocracy.jstk.Item;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -35,12 +37,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.cactoos.func.Ternary;
 import org.cactoos.func.UncheckedScalar;
 import org.cactoos.io.InputAsBytes;
+import org.cactoos.io.InputOf;
 import org.cactoos.io.InputWithFallback;
 import org.cactoos.io.LengthOfInput;
-import org.cactoos.io.PathAsInput;
 import org.cactoos.io.PathAsOutput;
 import org.cactoos.io.TeeInput;
-import org.cactoos.io.UrlAsInput;
 import org.cactoos.list.ReducedIterable;
 import org.cactoos.list.ReverseIterable;
 import org.cactoos.list.StickyList;
@@ -55,12 +56,11 @@ import org.xembly.Xembler;
 
 /**
  * XML document.
- *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
+ * @since 0.1
  */
 @SuppressWarnings("PMD.ExcessiveImports")
 public final class Xocument {
@@ -109,7 +109,7 @@ public final class Xocument {
         return new UncheckedText(
             new BytesAsText(
                 new InputAsBytes(
-                    new PathAsInput(this.file)
+                    new InputOf(this.file)
                 )
             )
         ).asString();
@@ -126,7 +126,7 @@ public final class Xocument {
         final String root = StringUtils.substringAfterLast(xsd, "/");
         final String uri = Xocument.url(
             String.format("/%s/xsd/%s.xsd", Xocument.VERSION, xsd)
-        );
+        ).toString();
         if (!Files.exists(this.file) || Files.size(this.file) == 0L) {
             Files.write(
                 this.file,
@@ -239,7 +239,7 @@ public final class Xocument {
                             new SplitText(
                                 new BytesAsText(
                                     new InputWithFallback(
-                                        new UrlAsInput(
+                                        new InputOf(
                                             Xocument.url(
                                                 String.format(
                                                     "/latest/upgrades/%s/list",
@@ -259,7 +259,7 @@ public final class Xocument {
                         final String[] parts = line.split(" ");
                         if (Xocument.compare(parts[0], version) > 0) {
                             output = XSLDocument.make(
-                                new UrlAsInput(
+                                new InputOf(
                                     Xocument.url(
                                         String.format(
                                             "/latest/%s",
@@ -284,11 +284,14 @@ public final class Xocument {
      * Build URL.
      * @param path Path
      * @return URL
+     * @throws MalformedURLException If invalid path
      */
-    private static String url(final String path) {
-        return String.format(
-            "http://datum.zerocracy.com/%s",
-            path
+    private static URL url(final String path) throws MalformedURLException {
+        return new URL(
+            String.format(
+                "http://datum.zerocracy.com/%s",
+                path
+            )
         );
     }
 
