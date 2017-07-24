@@ -28,9 +28,13 @@
     </xsl:template>
     <xsl:template match="page" mode="inner">
         <p>
-            <xsl:value-of select="artifact"/>
+            <code>
+                <xsl:value-of select="artifact"/>
+            </code>
             <xsl:text> at </xsl:text>
-            <xsl:value-of select="project"/>
+            <a href="/p/{project}">
+                <xsl:value-of select="project"/>
+            </a>
         </p>
         <xsl:value-of select="xml" disable-output-escaping="yes"/>
     </xsl:template>

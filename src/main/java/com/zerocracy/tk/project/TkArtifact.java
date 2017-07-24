@@ -73,6 +73,7 @@ public final class TkArtifact implements TkRegex {
             this.props,
             "/xsl/artifact.xsl",
             req,
+            () -> new XeAppend("project", project.toString()),
             () -> new XeAppend("artifact", artifact),
             () -> new XeAppend(
                 "xml",
