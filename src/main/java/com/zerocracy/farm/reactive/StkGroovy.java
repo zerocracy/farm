@@ -93,7 +93,6 @@ public final class StkGroovy implements Stakeholder {
                 }
             )
         ).value();
-
         final Class<?> clazz = this.script();
         try {
             final Constructor<?> constructor = clazz.getConstructor(

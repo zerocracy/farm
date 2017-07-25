@@ -19,10 +19,9 @@ package com.zerocracy.tk.profile;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pmo.People;
 import java.io.IOException;
-import java.net.HttpURLConnection;
 import org.cactoos.Scalar;
-import org.takes.HttpException;
 import org.takes.facets.fork.RqRegex;
+import org.takes.facets.forward.RsFailure;
 
 /**
  * User login from the request.
@@ -59,8 +58,7 @@ final class RqLogin implements Scalar<String> {
         final String login = this.request.matcher().group(1);
         final People people = new People(this.pmo).bootstrap();
         if (!people.find("github", login).iterator().hasNext()) {
-            throw new HttpException(
-                HttpURLConnection.HTTP_NOT_FOUND,
+            throw new RsFailure(
                 String.format("User \"@%s\" not found", login)
             );
         }

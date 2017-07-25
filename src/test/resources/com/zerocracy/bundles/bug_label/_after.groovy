@@ -14,38 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.cost
+package com.zerocracy.bundles.bug_label
 
-import com.jcabi.github.Github
-import com.jcabi.github.Issue
 import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
-import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
-import com.zerocracy.pm.staff.Roles
-import com.zerocracy.radars.github.Job
+import com.zerocracy.pm.scope.Wbs
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Job was added to WBS')
-  ClaimIn claim = new ClaimIn(xml)
-  String job = claim.param('job')
-  if (!job.startsWith('gh:')) {
-    return
-  }
-  Github github = binding.variables.github
-  Issue.Smart issue = new Issue.Smart(new Job.Issue(github, job))
-  Roles roles = new Roles(project).bootstrap()
-  String author = issue.author().login().toLowerCase(Locale.ENGLISH)
-  if (!roles.hasAnyRole(author)) {
-    return
-  }
-  // here we must pay
-  new ClaimOut()
-    .type('Payment was made')
-    .param('job', job)
-    .param('login', author)
-    .param('reason', 'Bug was reported')
-    .param('minutes', 15)
-    .postTo(project)
+  assert new Wbs(project).bootstrap().exists('gh:test/bugs#1')
 }

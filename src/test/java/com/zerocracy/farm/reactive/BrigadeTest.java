@@ -23,10 +23,9 @@ import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import org.cactoos.io.BytesAsInput;
 import org.cactoos.io.FileAsOutput;
+import org.cactoos.io.InputOf;
 import org.cactoos.io.LengthOfInput;
-import org.cactoos.io.PathAsInput;
 import org.cactoos.io.ResourceAsInput;
 import org.cactoos.io.TeeInput;
 import org.cactoos.text.TextAsBytes;
@@ -51,7 +50,7 @@ public final class BrigadeTest {
         file.getParent().toFile().mkdirs();
         new LengthOfInput(
             new TeeInput(
-                new BytesAsInput(
+                new InputOf(
                     new TextAsBytes(
                         String.join(
                             "\n",
@@ -74,7 +73,7 @@ public final class BrigadeTest {
             xml = claims.iterate().iterator().next();
         }
         final Brigade brigade = new Brigade(
-            new StkGroovy(new PathAsInput(file), "brigadetest-parsesgroovy")
+            new StkGroovy(new InputOf(file), "brigadetest-parsesgroovy")
         );
         brigade.process(project, xml);
         try (final Claims claims = new Claims(project).lock()) {

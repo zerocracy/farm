@@ -27,6 +27,7 @@ import io.sentry.Sentry;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.Properties;
+import java.util.regex.Pattern;
 import org.cactoos.list.ArrayAsIterable;
 import org.cactoos.list.ConcatIterable;
 import org.cactoos.list.IterableAsList;
@@ -37,11 +38,14 @@ import org.takes.facets.fallback.FbChain;
 import org.takes.facets.fallback.FbLog4j;
 import org.takes.facets.fallback.FbStatus;
 import org.takes.facets.fallback.TkFallback;
+import org.takes.facets.flash.RsFlash;
 import org.takes.facets.flash.TkFlash;
+import org.takes.facets.fork.FkAnonymous;
 import org.takes.facets.fork.FkAuthenticated;
 import org.takes.facets.fork.FkRegex;
 import org.takes.facets.fork.Fork;
 import org.takes.facets.fork.TkFork;
+import org.takes.facets.forward.RsForward;
 import org.takes.facets.forward.TkForward;
 import org.takes.misc.Href;
 import org.takes.misc.Opt;
@@ -118,6 +122,26 @@ public final class TkApp extends TkWrap {
                                                                         .with("scope", "bot")
                                                                         .with("client_id", props.getProperty("slack.client_id", ""))
                                                                         .toString()
+                                                                )
+                                                            ),
+                                                            new FkAnonymous(
+                                                                new TkFork(
+                                                                    new FkRegex(
+                                                                        Pattern.compile("/p/.+"),
+                                                                        () -> {
+                                                                            throw new RsForward(
+                                                                                new RsFlash("You must be logged in to see project details.")
+                                                                            );
+                                                                        }
+                                                                    ),
+                                                                    new FkRegex(
+                                                                        Pattern.compile("/u/.+"),
+                                                                        () -> {
+                                                                            throw new RsForward(
+                                                                                new RsFlash("You must be logged in to see user details.")
+                                                                            );
+                                                                        }
+                                                                    )
                                                                 )
                                                             ),
                                                             new FkAuthenticated(
