@@ -17,7 +17,6 @@
 package com.zerocracy.tk.project;
 
 import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Project;
 import com.zerocracy.tk.RsPage;
 import java.io.IOException;
 import java.util.Properties;
@@ -58,14 +57,13 @@ public final class TkProject implements TkRegex {
 
     @Override
     public Response act(final RqRegex req) throws IOException {
-        final Project project = new RqProject(this.farm, req).value();
         return new RsPage(
             this.props,
             "/xsl/project.xsl",
             req,
             () -> new XeAppend(
                 "project",
-                project.toString()
+                new RqProject(this.farm, req).value().toString()
             )
         );
     }
