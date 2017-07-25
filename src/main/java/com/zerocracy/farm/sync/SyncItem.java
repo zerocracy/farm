@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import lombok.EqualsAndHashCode;
 
 /**
@@ -32,7 +33,7 @@ import lombok.EqualsAndHashCode;
  * @since 0.1
  */
 @EqualsAndHashCode(of = "origin")
-final class SyncItem implements Item {
+final class SyncItem implements Item, Comparable<SyncItem> {
 
     /**
      * Original item.
@@ -45,12 +46,18 @@ final class SyncItem implements Item {
     private final Semaphore semaphore;
 
     /**
+     * Item acquire statistics.
+     */
+    private final AtomicInteger statistics;
+
+    /**
      * Ctor.
      * @param item Original item
      */
     SyncItem(final Item item) {
         this.origin = item;
         this.semaphore = new Semaphore(1, true);
+        this.statistics = new AtomicInteger();
     }
 
     @Override
@@ -83,6 +90,11 @@ final class SyncItem implements Item {
                 String.format("Failed to acquire %s", this.origin)
             );
         }
+        this.statistics.incrementAndGet();
     }
 
+    @Override
+    public int compareTo(final SyncItem other) {
+        return this.statistics.get() - other.statistics.get();
+    }
 }
