@@ -27,9 +27,8 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
   String login = claim.param('login')
-  // here we pay
   new ClaimOut()
-    .type('Payment was made')
+    .type('Make payment')
     .param('job', job)
     .param('login', login)
     .param('reason', 'Order was successfully finished')

@@ -17,15 +17,13 @@
 package com.zerocracy.tk.profile;
 
 import com.zerocracy.jstk.Project;
-import com.zerocracy.pmo.Awards;
 import com.zerocracy.tk.RsPage;
+import com.zerocracy.tk.XeXsl;
 import java.io.IOException;
 import java.util.Properties;
 import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
-import org.takes.rs.xe.XeAppend;
-import org.takes.rs.xe.XeTransform;
 
 /**
  * User agenda page.
@@ -63,14 +61,13 @@ public final class TkAwards implements TkRegex {
             this.props,
             "/xsl/awards.xsl",
             req,
-            () -> new XeAppend(
-                "awards",
-                new XeTransform<>(
-                    new Awards(
-                        this.pmo, new RqSecureLogin(this.pmo, req).value()
-                    ).bootstrap().iterate(),
-                    obj -> new XeAppend("award", obj)
-                )
+            () -> new XeXsl(
+                this.pmo,
+                String.format(
+                    "awards/%s.xml",
+                    new RqSecureLogin(this.pmo, req).value()
+                ),
+                "pmo/awards.xsl"
             )
         );
     }

@@ -107,6 +107,28 @@ public final class Roles {
     }
 
     /**
+     * Resign all roles.
+     * @param person The person
+     * @throws IOException If fails
+     */
+    public void resign(final String person) throws IOException {
+        try (final Item roles = this.item()) {
+            final Xocument xoc = new Xocument(roles.path());
+            xoc.modify(
+                new Directives()
+                    .xpath(
+                        String.format(
+                            "/roles/person[ @id='%s']",
+                            person
+                        )
+                    )
+                    .strict(1)
+                    .remove()
+            );
+        }
+    }
+
+    /**
      * Resign role.
      * @param person The person
      * @param role The role to resign

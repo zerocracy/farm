@@ -14,27 +14,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.staff.awards
+package com.zerocracy.stk.pmo.profile
 
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
+import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
+import com.zerocracy.jstk.SoftException
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
-import com.zerocracy.pmo.Awards
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Make payment')
+  new Assume(project, xml).type('Apply to a project')
   ClaimIn claim = new ClaimIn(xml)
-  String job = claim.param('job')
-  String login = claim.param('login')
-  int minutes = Integer.parseInt(claim.param('minutes'))
-  Awards awards = new Awards(project, login).bootstrap()
-  awards.add(minutes, job, claim.param('reason'))
+  Farm farm = binding.variables.farm
+  String pid = claim.param('project')
+  Iterable<Project> projects = farm.find("@id='${pid}'")
+  if (!projects.iterator().hasNext()) {
+    throw new SoftException(
+      "Project \"${pid}\" doesn't exist."
+    )
+  }
   new ClaimOut()
-    .type('Award points were added')
-    .param('job', job)
-    .param('login', login)
-    .param('points', minutes)
-    .postTo(project)
+    .type('Notify project')
+    .param(
+      'message',
+      "@${claim.author()} wants to join you guys:" +
+      " [profile](http://www.0crat.com/u/${claim.author()})." +
+      " If you want to add @${claim.author()} to the project, just" +
+      " assign them `DEV` role and that's it."
+    )
+    .postTo(projects[0])
+  claim.reply(
+    "Project `${pid}` was notified about your desire to join them."
+  ).postTo(project)
 }

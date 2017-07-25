@@ -17,7 +17,8 @@
 package com.zerocracy.tk.project;
 
 import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Project;
+import com.zerocracy.pmo.Catalog;
+import com.zerocracy.pmo.Pmo;
 import com.zerocracy.tk.RsPage;
 import java.io.IOException;
 import java.util.Properties;
@@ -25,6 +26,8 @@ import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
 import org.takes.rs.xe.XeAppend;
+import org.takes.rs.xe.XeChain;
+import org.takes.rs.xe.XeTransform;
 
 /**
  * Project page.
@@ -58,15 +61,27 @@ public final class TkProject implements TkRegex {
 
     @Override
     public Response act(final RqRegex req) throws IOException {
-        final Project project = new RqProject(this.farm, req).value();
         return new RsPage(
             this.props,
             "/xsl/project.xsl",
             req,
-            () -> new XeAppend(
-                "project",
-                project.toString()
-            )
+            () -> {
+                final String pid = new RqProject(this.farm, req)
+                    .value().toString();
+                return new XeChain(
+                    new XeAppend(
+                        "project",
+                        new RqProject(this.farm, req).value().toString()
+                    ),
+                    new XeAppend(
+                        "links",
+                        new XeTransform<>(
+                            new Catalog(new Pmo(this.farm)).links(pid),
+                            link -> new XeAppend("link", link)
+                        )
+                    )
+                );
+            }
         );
     }
 

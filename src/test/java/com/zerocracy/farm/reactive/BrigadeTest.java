@@ -23,12 +23,10 @@ import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import org.cactoos.io.FileAsOutput;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.LengthOfInput;
 import org.cactoos.io.ResourceAsInput;
 import org.cactoos.io.TeeInput;
-import org.cactoos.text.TextAsBytes;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -50,20 +48,16 @@ public final class BrigadeTest {
         file.getParent().toFile().mkdirs();
         new LengthOfInput(
             new TeeInput(
-                new InputOf(
-                    new TextAsBytes(
-                        String.join(
-                            "\n",
-                            "import com.zerocracy.pm.ClaimOut",
-                            "import com.jcabi.xml.XML",
-                            "import com.zerocracy.jstk.Project",
-                            "def exec(Project project, XML xml) {",
-                            "new ClaimOut().type('one more').postTo(project)",
-                            "}"
-                        )
-                    )
+                String.join(
+                    "\n",
+					"import com.zerocracy.pm.ClaimOut",
+                    "import com.jcabi.xml.XML",
+                    "import com.zerocracy.pm.ClaimOut",
+                    "def exec(Project project, XML xml) {",
+                    "new ClaimOut().type('one more').postTo(project)",
+                    "}"
                 ),
-                new FileAsOutput(file.toFile())
+                file.toFile()
             )
         ).value();
         final Project project = new FkProject();

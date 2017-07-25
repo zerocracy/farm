@@ -29,7 +29,19 @@
     <xsl:template match="page" mode="inner">
         <p>
             <xsl:text>Project: </xsl:text>
-            <xsl:value-of select="project"/>
+            <code>
+                <xsl:value-of select="project"/>
+            </code>
+            <xsl:text>.</xsl:text>
+        </p>
+        <p>
+            <xsl:text>Links: </xsl:text>
+            <xsl:for-each select="links/link">
+                <xsl:if test="position() &gt; 1">
+                    <xsl:text>, </xsl:text>
+                </xsl:if>
+                <xsl:value-of select="."/>
+            </xsl:for-each>
             <xsl:text>.</xsl:text>
         </p>
         <p>
