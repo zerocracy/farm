@@ -38,6 +38,7 @@ import org.takes.facets.fallback.FbLog4j;
 import org.takes.facets.fallback.FbStatus;
 import org.takes.facets.fallback.TkFallback;
 import org.takes.facets.flash.TkFlash;
+import org.takes.facets.fork.FkAnonymous;
 import org.takes.facets.fork.FkAuthenticated;
 import org.takes.facets.fork.FkRegex;
 import org.takes.facets.fork.Fork;
@@ -49,6 +50,7 @@ import org.takes.rs.RsText;
 import org.takes.rs.RsVelocity;
 import org.takes.rs.RsWithStatus;
 import org.takes.rs.RsWithType;
+import org.takes.tk.TkFailure;
 import org.takes.tk.TkGzip;
 import org.takes.tk.TkMeasured;
 import org.takes.tk.TkRedirect;
@@ -118,6 +120,18 @@ public final class TkApp extends TkWrap {
                                                                         .with("scope", "bot")
                                                                         .with("client_id", props.getProperty("slack.client_id", ""))
                                                                         .toString()
+                                                                )
+                                                            ),
+                                                            new FkAnonymous(
+                                                                new TkFork(
+                                                                    new FkRegex(
+                                                                        "/p/.+",
+                                                                        new TkFailure("You must be logged in to see project details.")
+                                                                    ),
+                                                                    new FkRegex(
+                                                                        "/u/.+",
+                                                                        new TkFailure("You must be logged in to see user details.")
+                                                                    )
                                                                 )
                                                             ),
                                                             new FkAuthenticated(
