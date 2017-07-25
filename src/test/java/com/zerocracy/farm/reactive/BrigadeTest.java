@@ -74,7 +74,7 @@ public final class BrigadeTest {
             xml = claims.iterate().iterator().next();
         }
         final Brigade brigade = new Brigade(
-            new StkGroovy(new PathAsInput(file))
+            new StkGroovy(new PathAsInput(file), "brigadetest-parsesgroovy")
         );
         brigade.process(project, xml);
         try (final Claims claims = new Claims(project).lock()) {
@@ -95,7 +95,8 @@ public final class BrigadeTest {
         }
         final Brigade brigade = new Brigade(
             new StkGroovy(
-                new ResourceAsInput("com/zerocracy/stk/hello.groovy")
+                new ResourceAsInput("com/zerocracy/stk/hello.groovy"),
+                "brigadetest-parsesgroovyscript"
             )
         );
         brigade.process(project, xml);

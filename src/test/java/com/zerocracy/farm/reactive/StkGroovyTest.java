@@ -57,7 +57,7 @@ public final class StkGroovyTest {
                     )
                 )
             ),
-            "script",
+            "stkgroovytest-parsesgroovy",
             new StickyMap<String, Object>(
                 new AbstractMap.SimpleEntry<>(
                     "dep", "hello dude"

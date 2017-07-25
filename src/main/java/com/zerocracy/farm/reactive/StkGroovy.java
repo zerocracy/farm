@@ -28,6 +28,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.EqualsAndHashCode;
 import org.cactoos.Input;
 import org.cactoos.func.And;
 import org.cactoos.func.UncheckedScalar;
@@ -41,6 +42,7 @@ import org.cactoos.text.BytesAsText;
  * @version $Id$
  * @since 0.10
  */
+@EqualsAndHashCode(of = "label")
 public final class StkGroovy implements Stakeholder {
 
     /**
@@ -62,8 +64,8 @@ public final class StkGroovy implements Stakeholder {
      * Ctor.
      * @param src Input
      */
-    public StkGroovy(final Input src) {
-        this(src, "script", new HashMap<>(0));
+    public StkGroovy(final Input src, final String lbl) {
+        this(src, lbl, new HashMap<>(0));
     }
 
     /**
@@ -104,6 +106,9 @@ public final class StkGroovy implements Stakeholder {
             InstantiationException | InvocationTargetException exp) {
             if (exp.getCause() instanceof MismatchException) {
                 throw MismatchException.class.cast(exp.getCause());
+            }
+            if (exp.getCause() instanceof IllegalStateException) {
+                throw IllegalStateException.class.cast(exp.getCause());
             }
             throw new RuntimeException(exp);
         }
