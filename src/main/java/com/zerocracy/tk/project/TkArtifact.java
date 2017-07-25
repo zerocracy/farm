@@ -16,16 +16,11 @@
  */
 package com.zerocracy.tk.project;
 
-import com.jcabi.xml.XML;
-import com.jcabi.xml.XMLDocument;
-import com.jcabi.xml.XSL;
-import com.jcabi.xml.XSLDocument;
 import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.tk.RsPage;
+import com.zerocracy.tk.XeXsl;
 import java.io.IOException;
-import java.net.URI;
 import java.util.Properties;
 import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
@@ -75,37 +70,12 @@ public final class TkArtifact implements TkRegex {
             req,
             () -> new XeAppend("project", project.toString()),
             () -> new XeAppend("artifact", artifact),
-            () -> new XeAppend(
-                "xml",
-                TkArtifact.xml(project, artifact)
-                    .nodes("/xhtml:html/xhtml:body")
-                    .get(0).toString()
+            () -> new XeXsl(
+                project,
+                String.format("%s.xml", artifact.replaceAll("^.+/", "")),
+                String.format("%s.xsl", artifact)
             )
         );
-    }
-
-    /**
-     * Render XML.
-     * @param project The project
-     * @param artifact Name of artifact
-     * @return XML
-     * @throws IOException If fails
-     */
-    private static XML xml(final Project project, final String artifact)
-        throws IOException {
-        final String tail = artifact.replaceAll("^.+/", "");
-        try (final Item item = project.acq(String.format("%s.xml", tail))) {
-            final XML xml = new XMLDocument(item.path().toFile());
-            final XSL xsl = new XSLDocument(
-                URI.create(
-                    String.format(
-                        "http://datum.zerocracy.com/latest/xsl/%s.xsl",
-                        artifact
-                    )
-                )
-            );
-            return xsl.transform(xml);
-        }
     }
 
 }
