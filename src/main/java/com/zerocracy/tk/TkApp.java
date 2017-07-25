@@ -27,6 +27,7 @@ import io.sentry.Sentry;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.Properties;
+import java.util.regex.Pattern;
 import org.cactoos.list.ArrayAsIterable;
 import org.cactoos.list.ConcatIterable;
 import org.cactoos.list.IterableAsList;
@@ -37,13 +38,14 @@ import org.takes.facets.fallback.FbChain;
 import org.takes.facets.fallback.FbLog4j;
 import org.takes.facets.fallback.FbStatus;
 import org.takes.facets.fallback.TkFallback;
+import org.takes.facets.flash.RsFlash;
 import org.takes.facets.flash.TkFlash;
 import org.takes.facets.fork.FkAnonymous;
 import org.takes.facets.fork.FkAuthenticated;
 import org.takes.facets.fork.FkRegex;
 import org.takes.facets.fork.Fork;
 import org.takes.facets.fork.TkFork;
-import org.takes.facets.forward.RsFailure;
+import org.takes.facets.forward.RsForward;
 import org.takes.facets.forward.TkForward;
 import org.takes.misc.Href;
 import org.takes.misc.Opt;
@@ -51,7 +53,6 @@ import org.takes.rs.RsText;
 import org.takes.rs.RsVelocity;
 import org.takes.rs.RsWithStatus;
 import org.takes.rs.RsWithType;
-import org.takes.tk.TkFailure;
 import org.takes.tk.TkGzip;
 import org.takes.tk.TkMeasured;
 import org.takes.tk.TkRedirect;
@@ -126,12 +127,20 @@ public final class TkApp extends TkWrap {
                                                             new FkAnonymous(
                                                                 new TkFork(
                                                                     new FkRegex(
-                                                                        "/p/.+",
-                                                                        new RsFailure("You must be logged in to see project details.")
+                                                                        Pattern.compile("/p/.+"),
+                                                                        () -> {
+                                                                            throw new RsForward(
+                                                                                new RsFlash("You must be logged in to see project details.")
+                                                                            );
+                                                                        }
                                                                     ),
                                                                     new FkRegex(
-                                                                        "/u/.+",
-                                                                        new TkFailure("You must be logged in to see user details.")
+                                                                        Pattern.compile("/u/.+"),
+                                                                        () -> {
+                                                                            throw new RsForward(
+                                                                                new RsFlash("You must be logged in to see user details.")
+                                                                            );
+                                                                        }
                                                                     )
                                                                 )
                                                             ),
