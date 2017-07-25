@@ -85,6 +85,8 @@ public final class Main {
         final String dsn = props.getProperty("sentry.dsn", "");
         if (StringUtils.isNotBlank(dsn)) {
             Sentry.init(dsn);
+        } else {
+            Sentry.init();
         }
         final Map<String, SlackSession> slack = new ExtSlack().value();
         final Github github = new ExtGithub().value();
