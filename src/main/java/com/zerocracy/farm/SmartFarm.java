@@ -16,6 +16,7 @@
  */
 package com.zerocracy.farm;
 
+import com.jcabi.aspects.Cacheable;
 import com.zerocracy.farm.reactive.Brigade;
 import com.zerocracy.farm.reactive.RvFarm;
 import com.zerocracy.farm.reactive.StkGroovy;
@@ -80,11 +81,12 @@ public final class SmartFarm implements Scalar<Farm> {
     }
 
     @Override
+    @Cacheable(forever = true)
     public Farm value() {
         final Farm farm = new SyncFarm(this.origin);
         return new RvFarm(
-            s -> new MappedIterable<>(
-                farm.find(s),
+            query -> new MappedIterable<>(
+                farm.find(query),
                 project -> new UplinkedProject(
                     new StrictProject(project),
                     farm
@@ -115,7 +117,7 @@ public final class SmartFarm implements Scalar<Farm> {
                             path,
                             new StickyMap<String, Object>(
                                 this.deps,
-                                new MapEntry<>("farm", this)
+                                new MapEntry<>("farm", this.value())
                             )
                         ).process(pkt, xml),
                         exp -> {
