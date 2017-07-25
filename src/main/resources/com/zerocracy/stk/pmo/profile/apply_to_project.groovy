@@ -45,4 +45,7 @@ def exec(Project project, XML xml) {
       " assign them `DEV` role and that's it."
     )
     .postTo(projects[0])
+  claim.reply(
+    "Project `${pid}` was notified about your desire to join them."
+  )
 }

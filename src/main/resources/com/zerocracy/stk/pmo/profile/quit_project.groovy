@@ -39,4 +39,7 @@ def exec(Project project, XML xml) {
     .type('Resign all roles')
     .param('login', claim.author())
     .postTo(projects[0])
+  claim.reply(
+    "You are not in the project `${pid}` anymore."
+  )
 }
