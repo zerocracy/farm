@@ -47,5 +47,5 @@ def exec(Project project, XML xml) {
     .postTo(projects[0])
   claim.reply(
     "Project `${pid}` was notified about your desire to join them."
-  )
+  ).postTo(project)
 }

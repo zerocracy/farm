@@ -41,5 +41,5 @@ def exec(Project project, XML xml) {
     .postTo(projects[0])
   claim.reply(
     "You are not in the project `${pid}` anymore."
-  )
+  ).postTo(project)
 }
