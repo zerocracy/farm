@@ -16,6 +16,7 @@
  */
 package com.zerocracy.farm;
 
+import com.jcabi.log.Logger;
 import com.zerocracy.farm.reactive.Brigade;
 import com.zerocracy.farm.reactive.RvFarm;
 import com.zerocracy.farm.reactive.StkGroovy;
@@ -119,6 +120,11 @@ public final class SmartFarm implements Scalar<Farm> {
                             if (exp instanceof SoftException) {
                                 throw SoftException.class.cast(exp);
                             }
+                            Logger.error(
+                                this,
+                                "Error: %s",
+                                exp.getLocalizedMessage()
+                            );
                             Sentry.capture(exp);
                         }
                     )

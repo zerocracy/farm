@@ -16,6 +16,7 @@
  */
 package com.zerocracy.radars.slack;
 
+import com.jcabi.log.Logger;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.jstk.Farm;
@@ -56,7 +57,14 @@ public final class ReMailed implements Reaction<SlackMessagePosted> {
                 (Func<Boolean, Boolean>) input -> this.origin.react(
                     farm, event, session
                 ),
-                (Proc<Throwable>) Sentry::capture
+                (Proc<Throwable>) throwable -> {
+                    Logger.error(
+                        this,
+                        "Error: %s",
+                        throwable.getLocalizedMessage()
+                    );
+                    Sentry.capture(throwable);
+                }
             )
         ).apply(true);
     }

@@ -16,6 +16,7 @@
  */
 package com.zerocracy.tk;
 
+import com.jcabi.log.Logger;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.pmo.Pmo;
 import com.zerocracy.tk.profile.TkAgenda;
@@ -174,6 +175,11 @@ public final class TkApp extends TkWrap {
                         )
                     ),
                     req -> {
+                        Logger.error(
+                            req,
+                            "Error: %s",
+                            req.throwable().getLocalizedMessage()
+                        );
                         Sentry.capture(req.throwable());
                         return new Opt.Empty<>();
                     },
