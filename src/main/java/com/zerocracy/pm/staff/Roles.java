@@ -16,14 +16,16 @@
  */
 package com.zerocracy.pm.staff;
 
-import com.jcabi.xml.XMLDocument;
-import com.jcabi.xml.XSLDocument;
 import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
+import org.cactoos.list.ArrayAsIterable;
+import org.cactoos.list.MappedIterable;
+import org.cactoos.text.JoinedText;
 import org.xembly.Directives;
 
 /**
@@ -72,19 +74,6 @@ public final class Roles {
     }
 
     /**
-     * Print it to Markdown.
-     * @return Text
-     * @throws IOException If fails
-     */
-    public String markdown() throws IOException {
-        try (final Item roles = this.item()) {
-            return new XSLDocument(
-                Roles.class.getResource("roles/to-markdown.xsl")
-            ).applyTo(new XMLDocument(roles.path().toFile()));
-        }
-    }
-
-    /**
      * Assign role.
      * @param person The person
      * @param role The role to assign
@@ -93,25 +82,48 @@ public final class Roles {
     public void assign(final String person, final String role)
         throws IOException {
         try (final Item roles = this.item()) {
+            final String login = person.toLowerCase(Locale.ENGLISH);
             new Xocument(roles.path()).modify(
                 new Directives()
                     .xpath(
                         String.format(
                             "/roles[not(person[@id='%s'])]",
-                            person
+                            login
                         )
                     )
                     .add("person")
-                    .attr("id", person)
+                    .attr("id", login)
                     .xpath(
                         String.format(
                             "/roles/person[@id='%s']",
-                            person
+                            login
                         )
                     )
                     .strict(1)
                     .add("role")
                     .set(role)
+            );
+        }
+    }
+
+    /**
+     * Resign all roles.
+     * @param person The person
+     * @throws IOException If fails
+     */
+    public void resign(final String person) throws IOException {
+        try (final Item roles = this.item()) {
+            final Xocument xoc = new Xocument(roles.path());
+            xoc.modify(
+                new Directives()
+                    .xpath(
+                        String.format(
+                            "/roles/person[ @id='%s']",
+                            person
+                        )
+                    )
+                    .strict(1)
+                    .remove()
             );
         }
     }
@@ -167,17 +179,24 @@ public final class Roles {
     /**
      * Does he have any of these roles?
      * @param person The person
-     * @param role Roles to find
+     * @param list Roles to find
      * @return TRUE if it has a role
      * @throws IOException If fails
      */
-    public boolean hasRole(final String person, final String role)
+    public boolean hasRole(final String person, final String... list)
         throws IOException {
         try (final Item roles = this.item()) {
             return new Xocument(roles).nodes(
                 String.format(
-                    "/roles/person[@id='%s' and role='%s']",
-                    person, role
+                    "/roles/person[@id='%s' and (%s)]",
+                    person,
+                    new JoinedText(
+                        " or ",
+                        new MappedIterable<>(
+                            new ArrayAsIterable<>(list),
+                            role -> String.format("role='%s'", role)
+                        )
+                    ).asString()
                 )
             ).iterator().hasNext();
         }

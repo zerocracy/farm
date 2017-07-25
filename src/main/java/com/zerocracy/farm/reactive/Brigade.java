@@ -21,7 +21,11 @@ import com.zerocracy.farm.MismatchException;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Brigade of stakeholders.
@@ -38,6 +42,11 @@ public final class Brigade {
     private final Iterable<Stakeholder> list;
 
     /**
+     * A "cache" of stakeholders.
+     */
+    private final Map<String, List<Stakeholder>> cache;
+
+    /**
      * Ctor.
      * @param lst List of stakeholders
      */
@@ -51,6 +60,7 @@ public final class Brigade {
      */
     public Brigade(final Iterable<Stakeholder> lst) {
         this.list = lst;
+        this.cache = new HashMap<>();
     }
 
     /**
@@ -63,9 +73,16 @@ public final class Brigade {
     public int process(final Project project, final XML xml)
         throws IOException {
         int total = 0;
+        final String key = xml.xpath("/claim/type/text()").get(0);
+        this.cache.putIfAbsent(key, new ArrayList<>(0));
         for (final Stakeholder stk : this.list) {
+            if (this.cache.get(key).contains(stk)) {
+                continue;
+            }
             if (Brigade.process(stk, project, xml)) {
                 ++total;
+            } else {
+                this.cache.get(key).add(stk);
             }
         }
         return total;
@@ -78,11 +95,6 @@ public final class Brigade {
      * @param xml XML to process
      * @return TRUE if this one was interested
      * @throws IOException If fails
-     * @todo #47:30min We have to predict that exceptions, in order
-     *  to optimize performance. No need to try to process each and
-     *  every stakeholder for every claim. We must learn which of them
-     *  throw on which types of claims and avoid sending them more of
-     *  the same type.
      */
     private static boolean process(final Stakeholder stk, final Project project,
         final XML xml) throws IOException {

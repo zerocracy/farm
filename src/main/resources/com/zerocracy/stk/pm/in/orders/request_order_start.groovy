@@ -63,6 +63,6 @@ def exec(Project project, XML xml) {
   claim.copy()
     .type('Start order')
     .param('login', login)
-    .param('reason', 'Per request')
+    .param('reason', "Per request of @${claim.author()}.")
     .postTo(project)
 }

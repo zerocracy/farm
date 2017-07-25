@@ -14,26 +14,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.tk;
+package com.zerocracy.tk.profile;
 
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pmo.Awards;
+import com.zerocracy.tk.RsPage;
 import java.io.IOException;
 import java.util.Properties;
 import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
 import org.takes.rs.xe.XeAppend;
+import org.takes.rs.xe.XeTransform;
 
 /**
- * User profile page.
+ * User agenda page.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.12
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-final class TkProfile implements TkRegex {
+public final class TkAwards implements TkRegex {
 
     /**
      * Properties.
@@ -50,7 +52,7 @@ final class TkProfile implements TkRegex {
      * @param pps Properties
      * @param pkt Project
      */
-    TkProfile(final Properties pps, final Project pkt) {
+    public TkAwards(final Properties pps, final Project pkt) {
         this.props = pps;
         this.pmo = pkt;
     }
@@ -59,15 +61,15 @@ final class TkProfile implements TkRegex {
     public Response act(final RqRegex req) throws IOException {
         return new RsPage(
             this.props,
-            "/xsl/profile.xsl",
+            "/xsl/awards.xsl",
             req,
-            new XeAppend("login", req.matcher().group(1)),
-            new XeAppend(
-                "points",
-                Integer.toString(
+            () -> new XeAppend(
+                "awards",
+                new XeTransform<>(
                     new Awards(
-                        this.pmo, req.matcher().group(1)
-                    ).bootstrap().total()
+                        this.pmo, new RqSecureLogin(this.pmo, req).value()
+                    ).bootstrap().iterate(),
+                    obj -> new XeAppend("award", obj)
                 )
             )
         );

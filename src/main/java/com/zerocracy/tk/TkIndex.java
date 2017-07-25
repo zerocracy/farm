@@ -58,7 +58,7 @@ final class TkIndex implements Take {
             this.properties,
             "/xsl/index.xsl",
             req,
-            new XeAppend(
+            () -> new XeAppend(
                 "alive",
                 Logger.format(
                     "%[ms]s",
