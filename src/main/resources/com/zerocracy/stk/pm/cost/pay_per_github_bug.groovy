@@ -36,7 +36,7 @@ def exec(Project project, XML xml) {
   Github github = binding.variables.github
   Issue.Smart issue = new Issue.Smart(new Job.Issue(github, job))
   Roles roles = new Roles(project).bootstrap()
-  String author = issue.author()
+  String author = issue.author().login().toLowerCase(Locale.ENGLISH)
   if (!roles.hasAnyRole(author)) {
     return
   }
