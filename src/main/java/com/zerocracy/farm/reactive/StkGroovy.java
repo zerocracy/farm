@@ -63,7 +63,7 @@ public final class StkGroovy implements Stakeholder {
     /**
      * Ctor.
      * @param src Input
-	 * @param lbl Label
+     * @param lbl Label
      */
     public StkGroovy(final Input src, final String lbl) {
         this(src, lbl, new HashMap<>(0));
@@ -100,8 +100,8 @@ public final class StkGroovy implements Stakeholder {
                 Binding.class
             );
             final Object instance = constructor.newInstance(binding);
-            clazz.getMethod("exec", Project.class, XML.class).
-                invoke(instance, project, claim);
+            clazz.getMethod("exec", Project.class, XML.class)
+                .invoke(instance, project, claim);
         } catch (final IllegalAccessException | NoSuchMethodException
             | InstantiationException | InvocationTargetException exp) {
             if (exp.getCause() instanceof MismatchException) {

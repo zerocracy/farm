@@ -50,7 +50,7 @@ public final class BrigadeTest {
             new TeeInput(
                 String.join(
                     "\n",
-					"import com.zerocracy.jstk.Project",
+                    "import com.zerocracy.jstk.Project",
                     "import com.jcabi.xml.XML",
                     "import com.zerocracy.pm.ClaimOut",
                     "def exec(Project project, XML xml) {",
