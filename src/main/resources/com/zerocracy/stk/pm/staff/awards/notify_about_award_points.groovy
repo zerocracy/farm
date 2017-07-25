@@ -37,7 +37,7 @@ def exec(Project project, XML xml) {
       'message',
       String.format(
         'You got %+d points in `%s`, your total is'
-        + ' [%+d](http://www.0crat.com/u/%s/awards)',
+        + ' [%+d](http://www.0crat.com/u/%s/awards).',
         points, job, awards.total(), login
       )
     )
@@ -49,7 +49,7 @@ def exec(Project project, XML xml) {
       'message',
       String.format(
         '%+d points just awarded to @%s, total is'
-        + ' [%+d](http://www.0crat.com/u/%s)',
+        + ' [%+d](http://www.0crat.com/u/%s).',
         points, login, awards.total(), login
       )
     )
