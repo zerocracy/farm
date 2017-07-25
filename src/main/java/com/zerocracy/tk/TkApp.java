@@ -43,6 +43,7 @@ import org.takes.facets.fork.FkAuthenticated;
 import org.takes.facets.fork.FkRegex;
 import org.takes.facets.fork.Fork;
 import org.takes.facets.fork.TkFork;
+import org.takes.facets.forward.RsFailure;
 import org.takes.facets.forward.TkForward;
 import org.takes.misc.Href;
 import org.takes.misc.Opt;
@@ -126,7 +127,7 @@ public final class TkApp extends TkWrap {
                                                                 new TkFork(
                                                                     new FkRegex(
                                                                         "/p/.+",
-                                                                        new TkFailure("You must be logged in to see project details.")
+                                                                        new RsFailure("You must be logged in to see project details.")
                                                                     ),
                                                                     new FkRegex(
                                                                         "/u/.+",
