@@ -34,7 +34,9 @@ import org.cactoos.Scalar;
 import org.cactoos.func.FuncWithFallback;
 import org.cactoos.func.IoCheckedFunc;
 import org.cactoos.io.ResourceAsInput;
+import org.cactoos.list.MapEntry;
 import org.cactoos.list.MappedIterable;
+import org.cactoos.list.StickyMap;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
 
@@ -110,7 +112,11 @@ public final class SmartFarm implements Scalar<Farm> {
                     new FuncWithFallback<Project, Boolean>(
                         (Proc<Project>) pkt -> new StkGroovy(
                             new ResourceAsInput(path),
-                            path, this.deps
+                            path,
+                            new StickyMap<String, Object>(
+                                this.deps,
+                                new MapEntry<>("farm", this)
+                            )
                         ).process(pkt, xml),
                         exp -> {
                             if (exp instanceof MismatchException) {
