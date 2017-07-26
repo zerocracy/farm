@@ -53,7 +53,7 @@ final class TmBotSession implements TmSession {
     @Override
     public void reply(final TmResponse response) throws IOException {
         try {
-            this.bot.sendMessage(
+            this.sender.sendMessage(
                 new SendMessage()
                     .setChatId(this.chat)
                     .setText(response.text())
@@ -66,7 +66,7 @@ final class TmBotSession implements TmSession {
     @Override
     public String bot() throws IOException {
         try {
-            return this.bot.getMe().getUserName();
+            return this.sender.getMe().getUserName();
         } catch (final TelegramApiException err) {
             throw new IOException(err);
         }
