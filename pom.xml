@@ -277,6 +277,11 @@
             <version>1.5.5</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.telegram</groupId>
+            <artifactId>telegrambots</artifactId>
+            <version>3.2</version>
+        </dependency>
     </dependencies>
     <build>
         <pluginManagement>
