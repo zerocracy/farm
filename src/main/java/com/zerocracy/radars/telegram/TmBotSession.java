@@ -32,7 +32,7 @@ final class TmBotSession implements TmSession {
     /**
      * Telegram bot.
      */
-    private final DefaultAbsSender bot;
+    private final DefaultAbsSender sender;
 
     /**
      * Chat id.
@@ -41,11 +41,11 @@ final class TmBotSession implements TmSession {
 
     /**
      * Ctor.
-     * @param bot A bot
+     * @param sender A bot
      * @param chat Chat id
      */
-    TmBotSession(final DefaultAbsSender bot, final long chat) {
-        this.bot = bot;
+    TmBotSession(final DefaultAbsSender sender, final long chat) {
+        this.sender = sender;
         this.chat = chat;
     }
 
