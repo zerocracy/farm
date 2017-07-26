@@ -16,18 +16,18 @@
  */
 package com.zerocracy;
 
+import java.net.URL;
 import org.cactoos.Func;
 import org.cactoos.func.StickyFunc;
 import org.cactoos.func.UncheckedFunc;
 import org.cactoos.io.InputAsLSInput;
+import org.cactoos.io.InputOf;
 import org.cactoos.io.StickyInput;
-import org.cactoos.io.UrlAsInput;
 import org.w3c.dom.ls.LSInput;
 import org.w3c.dom.ls.LSResourceResolver;
 
 /**
  * XML document.
- *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.12
@@ -43,8 +43,12 @@ public final class XsdResolver implements LSResourceResolver {
             loc -> {
                 final String[] parts = loc.split(" ");
                 return new InputAsLSInput(
-                    // @checkstyle MagicNumber (2 lines)
-                    new StickyInput(new UrlAsInput(parts[3])),
+                    // @checkstyle MagicNumber (6 lines)
+                    new StickyInput(
+                        new InputOf(
+                            new URL(parts[3])
+                        )
+                    ),
                     parts[2], parts[3], parts[4]
                 );
             }

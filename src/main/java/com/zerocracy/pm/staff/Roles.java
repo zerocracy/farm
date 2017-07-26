@@ -22,6 +22,7 @@ import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import org.cactoos.list.ArrayAsIterable;
 import org.cactoos.list.MappedIterable;
 import org.cactoos.text.JoinedText;
@@ -81,25 +82,48 @@ public final class Roles {
     public void assign(final String person, final String role)
         throws IOException {
         try (final Item roles = this.item()) {
+            final String login = person.toLowerCase(Locale.ENGLISH);
             new Xocument(roles.path()).modify(
                 new Directives()
                     .xpath(
                         String.format(
                             "/roles[not(person[@id='%s'])]",
-                            person
+                            login
                         )
                     )
                     .add("person")
-                    .attr("id", person)
+                    .attr("id", login)
                     .xpath(
                         String.format(
                             "/roles/person[@id='%s']",
-                            person
+                            login
                         )
                     )
                     .strict(1)
                     .add("role")
                     .set(role)
+            );
+        }
+    }
+
+    /**
+     * Resign all roles.
+     * @param person The person
+     * @throws IOException If fails
+     */
+    public void resign(final String person) throws IOException {
+        try (final Item roles = this.item()) {
+            final Xocument xoc = new Xocument(roles.path());
+            xoc.modify(
+                new Directives()
+                    .xpath(
+                        String.format(
+                            "/roles/person[ @id='%s']",
+                            person
+                        )
+                    )
+                    .strict(1)
+                    .remove()
             );
         }
     }

@@ -21,9 +21,8 @@ import com.zerocracy.jstk.fake.FkProject;
 import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.Claims;
 import java.util.AbstractMap;
-import org.cactoos.io.BytesAsInput;
+import org.cactoos.io.InputOf;
 import org.cactoos.list.StickyMap;
-import org.cactoos.text.TextAsBytes;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -42,17 +41,15 @@ public final class StkGroovyTest {
     public void parsesGroovy() throws Exception {
         final Project project = new FkProject();
         new StkGroovy(
-            new BytesAsInput(
-                new TextAsBytes(
-                    String.join(
-                        "\n",
-                        "import com.zerocracy.pm.ClaimOut",
-                        "def exec(project, xml) {",
-                        "new ClaimOut()",
-                        "  .type(binding.variables.dep)",
-                        "  .postTo(project)",
-                        "}"
-                    )
+            new InputOf(
+                String.join(
+                    "\n",
+                    "import com.zerocracy.pm.ClaimOut",
+                    "def exec(project, xml) {",
+                    "new ClaimOut()",
+                    "  .type(binding.variables.dep)",
+                    "  .postTo(project)",
+                    "}"
                 )
             ),
             "script",

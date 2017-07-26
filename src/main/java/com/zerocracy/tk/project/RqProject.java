@@ -22,11 +22,10 @@ import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.pmo.Catalog;
 import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
-import java.net.HttpURLConnection;
 import org.cactoos.Scalar;
-import org.takes.HttpException;
 import org.takes.facets.auth.RqAuth;
 import org.takes.facets.fork.RqRegex;
+import org.takes.facets.forward.RsFailure;
 
 /**
  * Project from the request.
@@ -63,8 +62,7 @@ final class RqProject implements Scalar<Project> {
         final String name = this.request.matcher().group(1);
         final Catalog catalog = new Catalog(new Pmo(this.farm)).bootstrap();
         if (catalog.links(name).isEmpty()) {
-            throw new HttpException(
-                HttpURLConnection.HTTP_NOT_FOUND,
+            throw new RsFailure(
                 String.format("Project \"%s\" not found", name)
             );
         }
@@ -75,8 +73,7 @@ final class RqProject implements Scalar<Project> {
             .identity().properties().get("login");
         final Roles roles = new Roles(project).bootstrap();
         if (!roles.hasRole(login, "ARC", "PO")) {
-            throw new HttpException(
-                HttpURLConnection.HTTP_FORBIDDEN,
+            throw new RsFailure(
                 String.format(
                     "@%s must either be a PO or an ARC to view these documents",
                     login
