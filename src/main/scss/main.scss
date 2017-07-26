@@ -13,12 +13,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-@import url("https://fonts.googleapis.com/css?family=Nunito|Fira+Mono");
+@import url("//fonts.googleapis.com/css?family=Nunito");
+@import url("//cdn.rawgit.com/yegor256/tacit/gh-pages/tacit-0.8.1.min.css");
 
 * {
-  border: 0;
-  padding: 0;
-  margin: 0;
   font-family: 'Nunito', sans-serif;
 }
 
@@ -26,24 +24,23 @@ body {
   padding: 4em;
 }
 
-pre {
-  font-family: 'Fira Mono', monospace;
-}
-
-p,
-pre {
-  margin: .5em 0;
+section {
+  width: 100%;
 }
 
 .center {
-  text-align: center;
   height: 13em;
+  width: 28em;
   position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
   margin: auto;
+
+  p {
+    text-align: center;
+  }
 }
 
 .logo {

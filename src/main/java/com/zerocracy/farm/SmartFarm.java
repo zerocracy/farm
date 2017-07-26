@@ -16,6 +16,8 @@
  */
 package com.zerocracy.farm;
 
+import com.jcabi.aspects.Cacheable;
+import com.jcabi.log.Logger;
 import com.zerocracy.farm.reactive.Brigade;
 import com.zerocracy.farm.reactive.RvFarm;
 import com.zerocracy.farm.reactive.StkGroovy;
@@ -24,7 +26,6 @@ import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.SoftException;
 import com.zerocracy.jstk.Stakeholder;
-import io.sentry.Sentry;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeSet;
@@ -34,7 +35,9 @@ import org.cactoos.Scalar;
 import org.cactoos.func.FuncWithFallback;
 import org.cactoos.func.IoCheckedFunc;
 import org.cactoos.io.ResourceAsInput;
+import org.cactoos.list.MapEntry;
 import org.cactoos.list.MappedIterable;
+import org.cactoos.list.StickyMap;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
 
@@ -78,11 +81,12 @@ public final class SmartFarm implements Scalar<Farm> {
     }
 
     @Override
+    @Cacheable(forever = true)
     public Farm value() {
         final Farm farm = new SyncFarm(this.origin);
         return new RvFarm(
-            s -> new MappedIterable<>(
-                farm.find(s),
+            query -> new MappedIterable<>(
+                farm.find(query),
                 project -> new UplinkedProject(
                     new StrictProject(project),
                     farm
@@ -110,7 +114,11 @@ public final class SmartFarm implements Scalar<Farm> {
                     new FuncWithFallback<Project, Boolean>(
                         (Proc<Project>) pkt -> new StkGroovy(
                             new ResourceAsInput(path),
-                            path, this.deps
+                            path,
+                            new StickyMap<String, Object>(
+                                this.deps,
+                                new MapEntry<>("farm", this.value())
+                            )
                         ).process(pkt, xml),
                         exp -> {
                             if (exp instanceof MismatchException) {
@@ -119,7 +127,11 @@ public final class SmartFarm implements Scalar<Farm> {
                             if (exp instanceof SoftException) {
                                 throw SoftException.class.cast(exp);
                             }
-                            Sentry.capture(exp);
+                            Logger.error(
+                                this,
+                                "$[exception]s",
+                                exp
+                            );
                         }
                     )
                 ).apply(project)

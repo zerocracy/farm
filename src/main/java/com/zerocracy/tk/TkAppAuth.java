@@ -22,7 +22,6 @@ import org.takes.Take;
 import org.takes.facets.auth.PsByFlag;
 import org.takes.facets.auth.PsChain;
 import org.takes.facets.auth.PsCookie;
-import org.takes.facets.auth.PsFake;
 import org.takes.facets.auth.PsLogout;
 import org.takes.facets.auth.TkAuth;
 import org.takes.facets.auth.codecs.CcCompact;
@@ -74,9 +73,6 @@ final class TkAppAuth extends TkWrap {
                 new FkFixed(take)
             ),
             new PsChain(
-                new PsFake(
-                    props.getProperty("xor.key", "").startsWith("${")
-                ),
                 new PsByFlag(
                     new PsByFlag.Pair(
                         PsGithub.class.getSimpleName(),

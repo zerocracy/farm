@@ -29,10 +29,14 @@
                 <xsl:apply-templates select="." mode="head"/>
             </head>
             <body>
-                <xsl:call-template name="takes_flash">
-                    <xsl:with-param name="flash" select="flash"/>
-                </xsl:call-template>
-                <xsl:apply-templates select="." mode="body"/>
+                <section>
+                    <xsl:if test="flash">
+                        <xsl:call-template name="takes_flash">
+                            <xsl:with-param name="flash" select="flash"/>
+                        </xsl:call-template>
+                    </xsl:if>
+                    <xsl:apply-templates select="." mode="body"/>
+                </section>
             </body>
         </html>
     </xsl:template>

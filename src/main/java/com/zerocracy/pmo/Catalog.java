@@ -21,6 +21,8 @@ import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import org.cactoos.list.MappedIterable;
 import org.cactoos.list.StickyList;
@@ -54,6 +56,63 @@ public final class Catalog {
      */
     public Catalog(final Project pkt) {
         this.pmo = pkt;
+    }
+
+    /**
+     * Bootstrap it.
+     * @return Itself
+     * @throws IOException If fails
+     */
+    public Catalog bootstrap() throws IOException {
+        try (final Item team = this.item()) {
+            new Xocument(team).bootstrap("pmo/catalog");
+        }
+        return this;
+    }
+
+    /**
+     * Create a project with the given ID.
+     * @param pid Project ID
+     * @param prefix The prefix
+     * @throws IOException If fails
+     */
+    public void add(final String pid, final String prefix) throws IOException {
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                new Directives()
+                    .xpath("/catalog")
+                    .add("project")
+                    .attr("id", pid)
+                    .add("created")
+                    .set(
+                        ZonedDateTime.now().format(
+                            DateTimeFormatter.ISO_INSTANT
+                        )
+                    )
+                    .up()
+                    .add("prefix")
+                    .set(prefix)
+            );
+        }
+    }
+
+    /**
+     * Find a project by XPath query.
+     * @param xpath XPath query
+     * @return Prefixes found, if found
+     * @throws IOException If fails
+     */
+    public Collection<String> findByXPath(final String xpath)
+        throws IOException {
+        String term = xpath;
+        if (!term.isEmpty()) {
+            term = String.format("[%s]", term);
+        }
+        try (final Item item = this.item()) {
+            return new Xocument(item).xpath(
+                String.format("//project%s/prefix/text()", term)
+            );
+        }
     }
 
     /**

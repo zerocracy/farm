@@ -28,25 +28,6 @@
         </title>
     </xsl:template>
     <xsl:template match="page" mode="inner">
-        <xsl:if test="awards/award">
-            <p>
-                <xsl:text>Recent </xsl:text>
-                <xsl:value-of select="count(awards/award)"/>
-                <xsl:text> awards:</xsl:text>
-            </p>
-            <pre>
-                <xsl:for-each select="awards/award">
-                    <xsl:if test="position() &gt; 1">
-                        <xsl:text>&#10;</xsl:text>
-                    </xsl:if>
-                    <xsl:value-of select="."/>
-                </xsl:for-each>
-            </pre>
-        </xsl:if>
-        <xsl:if test="not(awards/award)">
-            <p>
-                <xsl:text>There are no awards yet.</xsl:text>
-            </p>
-        </xsl:if>
+        <xsl:value-of select="xml" disable-output-escaping="yes"/>
     </xsl:template>
 </xsl:stylesheet>

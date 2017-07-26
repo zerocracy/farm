@@ -17,8 +17,6 @@
 package com.zerocracy.pm.scope;
 
 import com.zerocracy.jstk.fake.FkProject;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
@@ -29,17 +27,6 @@ import org.junit.Test;
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class WbsTest {
-
-    @Test
-    public void printsWbs() throws Exception {
-        final Wbs wbs = new Wbs(new FkProject()).bootstrap();
-        final String job = "gh:yegor256/0pdd#44";
-        wbs.add(job);
-        MatcherAssert.assertThat(
-            wbs.markdown(),
-            Matchers.containsString("[yegor256/0pdd#44]")
-        );
-    }
 
     @Test
     public void addsAndRemovesJobs() throws Exception {

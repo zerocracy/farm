@@ -14,22 +14,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.scope.wbs
+package com.zerocracy.farm.sync;
 
-import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Project
-import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.scope.Wbs
+import java.util.AbstractMap;
+import java.util.Map;
 
-def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Show WBS')
-  new Assume(project, xml).roles('PO')
-  ClaimIn claim = new ClaimIn(xml)
-  claim.reply(
-    String.format(
-      'This is what we have in WBS:%n%n%s',
-      new Wbs(project).markdown()
-    )
-  ).postTo(project)
+/**
+ * Comparable map entry.
+ *
+ * @author Kirill (g4s8.public@gmail.com)
+ * @version $Id$
+ * @param <K> Key type
+ * @param <V> Value type
+ * @since 0.12
+ */
+final class CmpEntry<K, V extends Comparable<? super V>> extends
+    AbstractMap.SimpleImmutableEntry<K, V> implements
+    Comparable<CmpEntry<K, V>> {
+
+    private static final long serialVersionUID = 6039678934863820533L;
+
+    /**
+     * Ctor.
+     *
+     * @param origin Origin map entry
+     */
+    CmpEntry(final Map.Entry<K, V> origin) {
+        super(origin);
+    }
+
+    @Override
+    public int compareTo(final CmpEntry<K, V> other) {
+        return getValue().compareTo(other.getValue());
+    }
 }

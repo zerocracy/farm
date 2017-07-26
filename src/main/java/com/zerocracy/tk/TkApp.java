@@ -16,15 +16,18 @@
  */
 package com.zerocracy.tk;
 
+import com.jcabi.log.Logger;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.pmo.Pmo;
 import com.zerocracy.tk.profile.TkAgenda;
 import com.zerocracy.tk.profile.TkAwards;
 import com.zerocracy.tk.profile.TkProfile;
-import io.sentry.Sentry;
+import com.zerocracy.tk.project.TkArtifact;
+import com.zerocracy.tk.project.TkProject;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.Properties;
+import java.util.regex.Pattern;
 import org.cactoos.list.ArrayAsIterable;
 import org.cactoos.list.ConcatIterable;
 import org.cactoos.list.IterableAsList;
@@ -35,10 +38,14 @@ import org.takes.facets.fallback.FbChain;
 import org.takes.facets.fallback.FbLog4j;
 import org.takes.facets.fallback.FbStatus;
 import org.takes.facets.fallback.TkFallback;
+import org.takes.facets.flash.RsFlash;
 import org.takes.facets.flash.TkFlash;
+import org.takes.facets.fork.FkAnonymous;
+import org.takes.facets.fork.FkAuthenticated;
 import org.takes.facets.fork.FkRegex;
 import org.takes.facets.fork.Fork;
 import org.takes.facets.fork.TkFork;
+import org.takes.facets.forward.RsForward;
 import org.takes.facets.forward.TkForward;
 import org.takes.misc.Href;
 import org.takes.misc.Opt;
@@ -95,27 +102,6 @@ public final class TkApp extends TkWrap {
                                                             new FkRegex("/ping", new TkPing(farm)),
                                                             new FkRegex("/robots.txt", ""),
                                                             new FkRegex(
-                                                                "/u/([a-zA-Z0-9-]+)/awards",
-                                                                new TkAwards(props, new Pmo(farm))
-                                                            ),
-                                                            new FkRegex(
-                                                                "/u/([a-zA-Z0-9-]+)/agenda",
-                                                                new TkAgenda(props, new Pmo(farm))
-                                                            ),
-                                                            new FkRegex(
-                                                                "/u/([a-zA-Z0-9-]+)",
-                                                                new TkProfile(props, new Pmo(farm))
-                                                            ),
-                                                            new FkRegex(
-                                                                "/invite_friend",
-                                                                new TkRedirect(
-                                                                    new Href("https://slack.com/oauth/authorize")
-                                                                        .with("scope", "bot")
-                                                                        .with("client_id", props.getProperty("slack.client_id", ""))
-                                                                        .toString()
-                                                                )
-                                                            ),
-                                                            new FkRegex(
                                                                 "/xsl/[a-z\\-]+\\.xsl",
                                                                 new TkWithType(
                                                                     new TkRefresh("./src/main/xsl"),
@@ -127,6 +113,59 @@ public final class TkApp extends TkWrap {
                                                                 new TkWithType(
                                                                     new TkRefresh("./src/main/scss"),
                                                                     "text/css"
+                                                                )
+                                                            ),
+                                                            new FkRegex(
+                                                                "/invite_friend",
+                                                                new TkRedirect(
+                                                                    new Href("https://slack.com/oauth/authorize")
+                                                                        .with("scope", "bot")
+                                                                        .with("client_id", props.getProperty("slack.client_id", ""))
+                                                                        .toString()
+                                                                )
+                                                            ),
+                                                            new FkAnonymous(
+                                                                new TkFork(
+                                                                    new FkRegex(
+                                                                        Pattern.compile("/p/.+"),
+                                                                        () -> {
+                                                                            throw new RsForward(
+                                                                                new RsFlash("You must be logged in to see project details.")
+                                                                            );
+                                                                        }
+                                                                    ),
+                                                                    new FkRegex(
+                                                                        Pattern.compile("/u/.+"),
+                                                                        () -> {
+                                                                            throw new RsForward(
+                                                                                new RsFlash("You must be logged in to see user details.")
+                                                                            );
+                                                                        }
+                                                                    )
+                                                                )
+                                                            ),
+                                                            new FkAuthenticated(
+                                                                new TkFork(
+                                                                    new FkRegex(
+                                                                        "/p/([A-Z0-9]{9})",
+                                                                        new TkProject(props, farm)
+                                                                    ),
+                                                                    new FkRegex(
+                                                                        "/a/([A-Z0-9]{9})",
+                                                                        new TkArtifact(props, farm)
+                                                                    ),
+                                                                    new FkRegex(
+                                                                        "/u/([a-zA-Z0-9-]+)/awards",
+                                                                        new TkAwards(props, new Pmo(farm))
+                                                                    ),
+                                                                    new FkRegex(
+                                                                        "/u/([a-zA-Z0-9-]+)/agenda",
+                                                                        new TkAgenda(props, new Pmo(farm))
+                                                                    ),
+                                                                    new FkRegex(
+                                                                        "/u/([a-zA-Z0-9-]+)",
+                                                                        new TkProfile(props, new Pmo(farm))
+                                                                    )
                                                                 )
                                                             )
                                                         )
@@ -158,15 +197,8 @@ public final class TkApp extends TkWrap {
                             )
                         )
                     ),
-                    new FbStatus(
-                        HttpURLConnection.HTTP_BAD_REQUEST,
-                        new RsWithStatus(
-                            new RsText("Bad request"),
-                            HttpURLConnection.HTTP_BAD_REQUEST
-                        )
-                    ),
                     req -> {
-                        Sentry.capture(req.throwable());
+                        Logger.error(req, "%[exception]s", req.throwable());
                         return new Opt.Empty<>();
                     },
                     new FbLog4j(),

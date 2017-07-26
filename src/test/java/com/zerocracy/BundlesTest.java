@@ -45,6 +45,8 @@ import org.cactoos.list.MapEntry;
 import org.cactoos.list.MappedIterable;
 import org.cactoos.list.StickyList;
 import org.cactoos.list.StickyMap;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -112,15 +114,18 @@ public final class BundlesTest {
             "before",
             deps
         ).process(project, null);
-        new And(
-            new LimitedIterable<>(new EndlessIterable<>(1), Tv.TWENTY),
-            x -> {
-                TimeUnit.SECONDS.sleep(1L);
-                try (final Claims claims = new Claims(project).lock()) {
-                    return !claims.iterate().isEmpty();
+        MatcherAssert.assertThat(
+            new And(
+                new LimitedIterable<>(new EndlessIterable<>(1), Tv.FIFTY),
+                x -> {
+                    TimeUnit.SECONDS.sleep(1L);
+                    try (final Claims claims = new Claims(project).lock()) {
+                        return !claims.iterate().isEmpty();
+                    }
                 }
-            }
-        ).value();
+            ).value(),
+            Matchers.equalTo(false)
+        );
         new StkGroovy(
             new ResourceAsInput(
                 String.format("%s/_after.groovy", this.bundle)

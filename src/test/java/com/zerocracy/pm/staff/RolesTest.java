@@ -31,18 +31,6 @@ import org.junit.Test;
 public final class RolesTest {
 
     @Test
-    public void printsRoles() throws Exception {
-        final Roles roles = new Roles(new FkProject()).bootstrap();
-        final String person = "alex-palevsky";
-        roles.assign(person, "PO");
-        roles.assign(person, "DEV");
-        MatcherAssert.assertThat(
-            roles.markdown(),
-            Matchers.containsString("alex-palevsky): PO, DEV")
-        );
-    }
-
-    @Test
     public void addsAndRemovesRoles() throws Exception {
         final Roles roles = new Roles(new FkProject()).bootstrap();
         final String person = "davvd";
@@ -69,6 +57,7 @@ public final class RolesTest {
         final String uid = "yegor256";
         final String role = "QA";
         roles.assign(uid, role);
+        roles.assign(uid, "TST");
         MatcherAssert.assertThat(
             roles.findByRole(role),
             Matchers.hasItem(uid)

@@ -24,7 +24,7 @@ import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pmo.Awards
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Payment was made')
+  new Assume(project, xml).type('Make payment')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
   String login = claim.param('login')

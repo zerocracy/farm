@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <!--
  * Copyright (c) 2016-2017 Zerocracy
  *
@@ -17,29 +17,25 @@
  -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns="http://www.w3.org/1999/xhtml" version="1.0">
-    <xsl:output method="text"/>
-    <xsl:template match="/roles[not(person)]">
-        <xsl:text>No roles assigned.</xsl:text>
+    <xsl:output method="html" doctype-system="about:legacy-compat"
+        encoding="UTF-8" indent="yes" />
+    <xsl:strip-space elements="*"/>
+    <xsl:include href="/xsl/inner-layout.xsl"/>
+    <xsl:template match="page" mode="head">
+        <title>
+            <xsl:value-of select="project"/>
+        </title>
     </xsl:template>
-    <xsl:template match="/roles[person]">
-        <xsl:apply-templates select="person"/>
-    </xsl:template>
-    <xsl:template match="person">
-        <xsl:if test="position() &gt; 1">
-            <xsl:text>&#10;</xsl:text>
-        </xsl:if>
-        <xsl:text>  * [</xsl:text>
-        <xsl:text>@</xsl:text>
-        <xsl:value-of select="@id"/>
-        <xsl:text>](https://github.com/</xsl:text>
-        <xsl:value-of select="@id"/>
-        <xsl:text>): </xsl:text>
-        <xsl:apply-templates select="role"/>
-    </xsl:template>
-    <xsl:template match="role">
-        <xsl:if test="position() &gt; 1">
-            <xsl:text>, </xsl:text>
-        </xsl:if>
-        <xsl:value-of select="."/>
+    <xsl:template match="page" mode="inner">
+        <p>
+            <code>
+                <xsl:value-of select="artifact"/>
+            </code>
+            <xsl:text> at </xsl:text>
+            <a href="/p/{project}">
+                <xsl:value-of select="project"/>
+            </a>
+        </p>
+        <xsl:value-of select="xml" disable-output-escaping="yes"/>
     </xsl:template>
 </xsl:stylesheet>

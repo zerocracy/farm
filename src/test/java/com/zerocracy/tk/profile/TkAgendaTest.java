@@ -23,10 +23,10 @@ import com.zerocracy.pmo.People;
 import com.zerocracy.tk.TkApp;
 import java.util.Properties;
 import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.takes.Take;
 import org.takes.rq.RqFake;
+import org.takes.rq.RqWithHeaders;
 import org.takes.rs.RsPrint;
 
 /**
@@ -40,31 +40,23 @@ import org.takes.rs.RsPrint;
 public final class TkAgendaTest {
 
     @Test
-    public void rejectsOnUnknownUser() throws Exception {
-        final Take take = new TkApp(new Properties(), new FkFarm());
-        MatcherAssert.assertThat(
-            new RsPrint(
-                take.act(new RqFake("GET", "/u/yegor256/agenda"))
-            ).print(),
-            Matchers.containsString("User \"@yegor256\" not found")
-        );
-    }
-
-    @Test
     public void rendersAgendaPage() throws Exception {
         final Farm farm = new FkFarm();
-        new People(farm).bootstrap().touch("jeff");
+        new People(farm).bootstrap().touch("yegor256");
         final Take take = new TkApp(new Properties(), farm);
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
                 new RsPrint(
-                    take.act(new RqFake("HEAD", "/u/jeff/agenda"))
+                    take.act(
+                        new RqWithHeaders(
+                            new RqFake("GET", "/u/yegor256/agenda"),
+                            // @checkstyle LineLength (1 line)
+                            "Cookie: PsCookie=0975A5A5-F6DB193E-AF18000A-75726E3A-74657374-3A310005-6C6F6769-6E000879-65676F72-323536AE"
+                        )
+                    )
                 ).printBody()
             ),
-            XhtmlMatchers.hasXPaths(
-                "/xhtml:html",
-                "//xhtml:body"
-            )
+            XhtmlMatchers.hasXPaths("//xhtml:body")
         );
     }
 

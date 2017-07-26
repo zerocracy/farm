@@ -16,8 +16,6 @@
  */
 package com.zerocracy.pm.scope;
 
-import com.jcabi.xml.XMLDocument;
-import com.jcabi.xml.XSLDocument;
 import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
@@ -68,19 +66,6 @@ public final class Wbs {
             new Xocument(wbs.path()).bootstrap("pm/scope/wbs");
         }
         return this;
-    }
-
-    /**
-     * Print it to Markdown.
-     * @return Text
-     * @throws IOException If fails
-     */
-    public String markdown() throws IOException {
-        try (final Item wbs = this.item()) {
-            return new XSLDocument(
-                Wbs.class.getResource("wbs/to-markdown.xsl")
-            ).applyTo(new XMLDocument(wbs.path().toFile()));
-        }
     }
 
     /**

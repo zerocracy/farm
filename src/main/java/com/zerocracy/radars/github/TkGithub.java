@@ -71,8 +71,12 @@ public final class TkGithub implements Take, Runnable {
      * @param props Properties
      * @checkstyle ParameterNumberCheck (5 lines)
      */
-    public TkGithub(final Farm frm, final Github ghub, final Region dynamo,
-        final Properties props) {
+    public TkGithub(
+        final Farm frm,
+        final Github ghub,
+        final Region dynamo,
+        final Properties props
+    ) {
         this(
             frm,
             ghub,
@@ -112,6 +116,13 @@ public final class TkGithub implements Take, Runnable {
                     new RbByActions(
                         new RbOnClose(),
                         "closed"
+                    ),
+                    new RbByActions(
+                        new RbByLabel(
+                            new RbOnBug(),
+                            "bug"
+                        ),
+                        "labeled"
                     ),
                     new RbTweet(
                         dynamo.table("0crat-tweets"),

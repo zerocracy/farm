@@ -39,14 +39,4 @@ public final class AwardsTest {
         MatcherAssert.assertThat(awards.total(), Matchers.equalTo(1));
     }
 
-    @Test
-    public void iteratesPoints() throws Exception {
-        final Awards awards = new Awards(new FkProject(), "jeff").bootstrap();
-        awards.add(1, "gh:test/test#100", "some reason");
-        awards.add(-1, "gh:test/test#10", "some other reason");
-        MatcherAssert.assertThat(
-            awards.iterate(), Matchers.iterableWithSize(2)
-        );
-    }
-
 }

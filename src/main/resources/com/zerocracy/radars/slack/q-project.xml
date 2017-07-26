@@ -130,12 +130,6 @@
         </cmds>
     </cmd>
     <cmd>
-        <code>Show WBS</code>
-        <regex>wbs</regex>
-        <label>wbs</label>
-        <help>Show the entire WBS</help>
-    </cmd>
-    <cmd>
         <code>Bootstrap</code>
         <regex>bootstrap</regex>
         <label>bootstrap</label>
