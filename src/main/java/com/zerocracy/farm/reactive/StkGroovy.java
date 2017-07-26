@@ -53,10 +53,7 @@ public final class StkGroovy implements Stakeholder {
     /**
      * Label.
      */
-    @SuppressWarnings({
-        "PMD.SingularField",
-        "PMD.UnusedPrivateField"
-    })
+    @SuppressWarnings({"PMD.SingularField", "PMD.UnusedPrivateField"})
     private final String label;
 
     /**
@@ -87,10 +84,8 @@ public final class StkGroovy implements Stakeholder {
     }
 
     @Override
-    @SuppressWarnings({
-        "PMD.PreserveStackTrace",
-        "PMD.AvoidThrowingRawExceptionTypes"
-    })
+    @SuppressWarnings({"PMD.PreserveStackTrace",
+        "PMD.AvoidThrowingRawExceptionTypes"})
     public void process(final Project project, final XML claim)
         throws IOException {
         final Binding binding = new Binding();
