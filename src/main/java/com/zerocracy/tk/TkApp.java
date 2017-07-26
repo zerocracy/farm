@@ -16,6 +16,7 @@
  */
 package com.zerocracy.tk;
 
+import com.jcabi.log.Logger;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.pmo.Pmo;
 import com.zerocracy.tk.profile.TkAgenda;
@@ -23,7 +24,6 @@ import com.zerocracy.tk.profile.TkAwards;
 import com.zerocracy.tk.profile.TkProfile;
 import com.zerocracy.tk.project.TkArtifact;
 import com.zerocracy.tk.project.TkProject;
-import io.sentry.Sentry;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.Properties;
@@ -198,7 +198,7 @@ public final class TkApp extends TkWrap {
                         )
                     ),
                     req -> {
-                        Sentry.capture(req.throwable());
+                        Logger.error(req, "%[exception]s", req.throwable());
                         return new Opt.Empty<>();
                     },
                     new FbLog4j(),

@@ -1,5 +1,4 @@
-<?xml version="1.0"?>
-<!--
+/**
  * Copyright (c) 2016-2017 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -14,20 +13,11 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
- -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-    xmlns="http://www.w3.org/1999/xhtml" version="1.0">
-    <xsl:output method="html" doctype-system="about:legacy-compat"
-        encoding="UTF-8" indent="yes" />
-    <xsl:strip-space elements="*"/>
-    <xsl:include href="/xsl/inner-layout.xsl"/>
-    <xsl:template match="page" mode="head">
-        <title>
-            <xsl:text>awards: @</xsl:text>
-            <xsl:value-of select="identity/login"/>
-        </title>
-    </xsl:template>
-    <xsl:template match="page" mode="inner">
-        <xsl:value-of select="xml" disable-output-escaping="yes"/>
-    </xsl:template>
-</xsl:stylesheet>
+ */
+package com.zerocracy.bundles.slack_direct_message
+
+import com.jcabi.xml.XML
+import com.zerocracy.jstk.Project
+
+def exec(Project project, XML xml) {
+}

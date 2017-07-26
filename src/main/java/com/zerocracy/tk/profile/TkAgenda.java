@@ -17,15 +17,13 @@
 package com.zerocracy.tk.profile;
 
 import com.zerocracy.jstk.Project;
-import com.zerocracy.pmo.Agenda;
 import com.zerocracy.tk.RsPage;
+import com.zerocracy.tk.XeXsl;
 import java.io.IOException;
 import java.util.Properties;
 import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
-import org.takes.rs.xe.XeAppend;
-import org.takes.rs.xe.XeTransform;
 
 /**
  * User agenda page.
@@ -63,14 +61,13 @@ public final class TkAgenda implements TkRegex {
             this.props,
             "/xsl/agenda.xsl",
             req,
-            () -> new XeAppend(
-                "agenda",
-                new XeTransform<>(
-                    new Agenda(
-                        this.pmo, new RqSecureLogin(this.pmo, req).value()
-                    ).bootstrap().jobs(),
-                    obj -> new XeAppend("job", obj)
-                )
+            () -> new XeXsl(
+                this.pmo,
+                String.format(
+                    "agenda/%s.xml",
+                    new RqSecureLogin(this.pmo, req).value()
+                ),
+                "pmo/agenda.xsl"
             )
         );
     }

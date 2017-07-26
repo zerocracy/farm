@@ -17,6 +17,7 @@
 package com.zerocracy.farm.sync;
 
 import com.jcabi.aspects.Tv;
+import com.jcabi.log.Logger;
 import com.zerocracy.jstk.Item;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -85,9 +86,14 @@ final class SyncItem implements Item, Comparable<SyncItem> {
      * @throws InterruptedException If fails
      */
     public void acquire() throws InterruptedException {
+        final long start = System.currentTimeMillis();
         if (!this.semaphore.tryAcquire((long) Tv.TWENTY, TimeUnit.SECONDS)) {
             throw new IllegalStateException(
-                String.format("Failed to acquire %s", this.origin)
+                Logger.format(
+                    "Failed to acquire \"%s\" in %[msec]s",
+                    this.origin,
+                    System.currentTimeMillis() - start
+                )
             );
         }
         this.statistics.incrementAndGet();

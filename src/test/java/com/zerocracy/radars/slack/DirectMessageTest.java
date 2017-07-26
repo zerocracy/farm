@@ -14,29 +14,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pmo;
+package com.zerocracy.radars.slack;
 
-import com.zerocracy.jstk.fake.FkProject;
+import org.cactoos.TextHasString;
 import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
- * Test case for {@link Awards}.
- * @author Yegor Bugayenko (yegor256@gmail.com)
+ * Test case for {@link DirectMessage}.
+ * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
- * @since 0.12
+ * @since 0.13
  * @checkstyle JavadocMethodCheck (500 lines)
  */
-public final class AwardsTest {
+public final class DirectMessageTest {
 
     @Test
-    public void addsAndRemovesPoints() throws Exception {
-        final Awards awards = new Awards(new FkProject(), "yegor").bootstrap();
-        awards.add(1, "gh:test/test#1", "just for fun");
-        awards.add(-1, "gh:test/test#2", "just for fun 2");
-        awards.add(1, "gh:test/test#3", "just for fun 3");
-        MatcherAssert.assertThat(awards.total(), Matchers.equalTo(1));
+    public void withMentionTest() throws Exception {
+        MatcherAssert.assertThat(
+            "Didn't skip mention",
+            new DirectMessage("@0crat version"),
+            new TextHasString("version")
+        );
     }
 
+    @Test
+    public void withoutMentionTest() throws Exception {
+        final String msg = "hello";
+        MatcherAssert.assertThat(
+            "Changed origin message",
+            new DirectMessage(msg),
+            new TextHasString(msg)
+        );
+    }
 }
