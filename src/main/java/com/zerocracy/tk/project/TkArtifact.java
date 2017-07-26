@@ -27,6 +27,7 @@ import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
 import org.takes.rq.RqHref;
 import org.takes.rs.xe.XeAppend;
+import org.takes.rs.xe.XeChain;
 
 /**
  * Artifact page.
@@ -60,21 +61,27 @@ public final class TkArtifact implements TkRegex {
 
     @Override
     public Response act(final RqRegex req) throws IOException {
-        final Project project = new RqProject(this.farm, req).value();
-        final String artifact = new RqHref.Smart(
-            new RqHref.Base(req)
-        ).single("a");
         return new RsPage(
             this.props,
             "/xsl/artifact.xsl",
             req,
-            () -> new XeAppend("project", project.toString()),
-            () -> new XeAppend("artifact", artifact),
-            () -> new XeXsl(
-                project,
-                String.format("%s.xml", artifact.replaceAll("^.+/", "")),
-                String.format("%s.xsl", artifact)
-            )
+            () -> {
+                final Project project = new RqProject(this.farm, req).value();
+                final String artifact = new RqHref.Smart(
+                    new RqHref.Base(req)
+                ).single("a");
+                return new XeChain(
+                    new XeAppend("project", project.toString()),
+                    new XeAppend("artifact", artifact),
+                    new XeXsl(
+                        project,
+                        String.format(
+                            "%s.xml", artifact.replaceAll("^.+/", "")
+                        ),
+                        String.format("%s.xsl", artifact)
+                    )
+                );
+            }
         );
     }
 

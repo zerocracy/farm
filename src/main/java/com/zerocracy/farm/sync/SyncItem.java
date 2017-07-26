@@ -90,7 +90,7 @@ final class SyncItem implements Item, Comparable<SyncItem> {
         if (!this.semaphore.tryAcquire((long) Tv.TWENTY, TimeUnit.SECONDS)) {
             throw new IllegalStateException(
                 Logger.format(
-                    "Failed to acquire \"%s\" in %[msec]s",
+                    "Failed to acquire \"%s\" in %[ms]s",
                     this.origin,
                     System.currentTimeMillis() - start
                 )
