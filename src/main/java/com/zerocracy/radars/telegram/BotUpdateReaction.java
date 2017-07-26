@@ -79,7 +79,7 @@ final class BotUpdateReaction {
     }
 
     /**
-     * Session associated with this chat
+     * Session associated with this chat.
      * @param chat Chat id
      * @param bot A bot
      * @return Session
