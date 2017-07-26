@@ -16,8 +16,8 @@
  */
 package com.zerocracy.farm;
 
-import com.jcabi.aspects.Cacheable;
 import com.jcabi.log.Logger;
+import com.jcabi.aspects.Cacheable;
 import com.zerocracy.farm.reactive.Brigade;
 import com.zerocracy.farm.reactive.RvFarm;
 import com.zerocracy.farm.reactive.StkGroovy;
