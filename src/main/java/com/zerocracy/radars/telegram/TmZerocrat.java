@@ -57,6 +57,7 @@ final class TmZerocrat extends TelegramLongPollingBot {
         final String name,
         final BotUpdateReaction reaction
     ) {
+        super();
         this.token = token;
         this.name = name;
         this.reaction = reaction;
