@@ -23,7 +23,6 @@ import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.SoftException;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
-import io.sentry.Sentry;
 import java.io.IOException;
 import java.util.Properties;
 import lombok.EqualsAndHashCode;

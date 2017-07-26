@@ -20,7 +20,6 @@ import com.jcabi.log.Logger;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.jstk.Farm;
-import io.sentry.Sentry;
 import org.cactoos.Func;
 import org.cactoos.Proc;
 import org.cactoos.func.FuncWithFallback;

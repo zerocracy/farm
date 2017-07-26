@@ -16,8 +16,8 @@
  */
 package com.zerocracy.farm;
 
-import com.jcabi.log.Logger;
 import com.jcabi.aspects.Cacheable;
+import com.jcabi.log.Logger;
 import com.zerocracy.farm.reactive.Brigade;
 import com.zerocracy.farm.reactive.RvFarm;
 import com.zerocracy.farm.reactive.StkGroovy;
@@ -26,7 +26,6 @@ import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.SoftException;
 import com.zerocracy.jstk.Stakeholder;
-import io.sentry.Sentry;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeSet;
