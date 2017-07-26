@@ -31,7 +31,7 @@ def exec(Project project, XML xml) {
   String job = claim.param('job')
   new Wbs(project).bootstrap().remove(job)
   claim.reply(
-    String.format('Job `%s` is out of scope.', job)
+    String.format('Job `%s` is now out of scope.', job)
   ).postTo(project)
   Orders orders = new Orders(project).bootstrap()
   if (orders.assigned(job)) {

@@ -14,27 +14,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.staff.awards
+package com.zerocracy.radars.slack;
 
-import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Project
-import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
-import com.zerocracy.pmo.Awards
+import org.cactoos.TextHasString;
+import org.hamcrest.MatcherAssert;
+import org.junit.Test;
 
-def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Make payment')
-  ClaimIn claim = new ClaimIn(xml)
-  String job = claim.param('job')
-  String login = claim.param('login')
-  int minutes = Integer.parseInt(claim.param('minutes'))
-  Awards awards = new Awards(project, login).bootstrap()
-  awards.add(minutes, job, claim.param('reason'))
-  new ClaimOut()
-    .type('Award points were added')
-    .param('job', job)
-    .param('login', login)
-    .param('points', minutes)
-    .postTo(project)
+/**
+ * Test case for {@link DirectMessage}.
+ * @author Kirill (g4s8.public@gmail.com)
+ * @version $Id$
+ * @since 0.13
+ * @checkstyle JavadocMethodCheck (500 lines)
+ */
+public final class DirectMessageTest {
+
+    @Test
+    public void withMentionTest() throws Exception {
+        MatcherAssert.assertThat(
+            "Didn't skip mention",
+            new DirectMessage("@0crat version"),
+            new TextHasString("version")
+        );
+    }
+
+    @Test
+    public void withoutMentionTest() throws Exception {
+        final String msg = "hello";
+        MatcherAssert.assertThat(
+            "Changed origin message",
+            new DirectMessage(msg),
+            new TextHasString(msg)
+        );
+    }
 }

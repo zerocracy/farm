@@ -7,11 +7,21 @@
         <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
         <link rel="shortcut icon" href="http://www.zerocracy.com/logo.png"/>
         <link rel="stylesheet" href="/css/main.css"/>
-        <title>Internal application error</title>
+        <title>oops...</title>
     </head>
     <body>
+        <p>
+            <a href="/">
+                <img src="http://www.zerocracy.com/logo.svg" class="inner-logo" />
+            </a>
+        </p>
         <h1>Internal application error</h1>
         <p>${version}, ${revision}</p>
+        <p>
+            Please, report it <a href="https://github.com/zerocracy/datum/issues">here</a>.
+            We will do our best to fix it as soon as possible.
+            We're very sorry.
+        </p>
         <pre>${error}</pre>
     </body>
 </html>

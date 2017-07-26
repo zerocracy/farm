@@ -14,27 +14,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.staff.awards
+package com.zerocracy.farm.sync;
 
-import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Project
-import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
-import com.zerocracy.pmo.Awards
+import java.util.AbstractMap;
+import java.util.Map;
 
-def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Make payment')
-  ClaimIn claim = new ClaimIn(xml)
-  String job = claim.param('job')
-  String login = claim.param('login')
-  int minutes = Integer.parseInt(claim.param('minutes'))
-  Awards awards = new Awards(project, login).bootstrap()
-  awards.add(minutes, job, claim.param('reason'))
-  new ClaimOut()
-    .type('Award points were added')
-    .param('job', job)
-    .param('login', login)
-    .param('points', minutes)
-    .postTo(project)
+/**
+ * Comparable map entry.
+ *
+ * @author Kirill (g4s8.public@gmail.com)
+ * @version $Id$
+ * @param <K> Key type
+ * @param <V> Value type
+ * @since 0.12
+ */
+final class CmpEntry<K, V extends Comparable<? super V>> extends
+    AbstractMap.SimpleImmutableEntry<K, V> implements
+    Comparable<CmpEntry<K, V>> {
+
+    private static final long serialVersionUID = 6039678934863820533L;
+
+    /**
+     * Ctor.
+     *
+     * @param origin Origin map entry
+     */
+    CmpEntry(final Map.Entry<K, V> origin) {
+        super(origin);
+    }
+
+    @Override
+    public int compareTo(final CmpEntry<K, V> other) {
+        return getValue().compareTo(other.getValue());
+    }
 }

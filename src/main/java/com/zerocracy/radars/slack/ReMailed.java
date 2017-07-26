@@ -60,10 +60,9 @@ public final class ReMailed implements Reaction<SlackMessagePosted> {
                 (Proc<Throwable>) throwable -> {
                     Logger.error(
                         this,
-                        "Error: %s",
-                        throwable.getLocalizedMessage()
+                        "%[exception]s",
+                        throwable
                     );
-                    Sentry.capture(throwable);
                 }
             )
         ).apply(true);

@@ -14,27 +14,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.staff.awards
+package com.zerocracy.stk.pm.staff.roles
 
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
-import com.zerocracy.pmo.Awards
+import com.zerocracy.pm.staff.Roles
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Make payment')
+  new Assume(project, xml).type('Resign all roles')
   ClaimIn claim = new ClaimIn(xml)
-  String job = claim.param('job')
   String login = claim.param('login')
-  int minutes = Integer.parseInt(claim.param('minutes'))
-  Awards awards = new Awards(project, login).bootstrap()
-  awards.add(minutes, job, claim.param('reason'))
+  new Roles(project).bootstrap().resign(login)
+  claim.reply(
+    String.format(
+      'All roles resigned from "%s".',
+      login
+    )
+  ).postTo(project)
   new ClaimOut()
-    .type('Award points were added')
-    .param('job', job)
+    .type('All roles were resigned')
     .param('login', login)
-    .param('points', minutes)
     .postTo(project)
 }

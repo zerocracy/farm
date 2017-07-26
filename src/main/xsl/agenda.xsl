@@ -28,25 +28,6 @@
         </title>
     </xsl:template>
     <xsl:template match="page" mode="inner">
-        <xsl:if test="agenda/job">
-            <p>
-                <xsl:text>There are </xsl:text>
-                <xsl:value-of select="count(agenda/job)"/>
-                <xsl:text> jobs assigned to you at the moment:</xsl:text>
-            </p>
-            <pre>
-                <xsl:for-each select="agenda/job">
-                    <xsl:if test="position() &gt; 1">
-                        <xsl:text>&#10;</xsl:text>
-                    </xsl:if>
-                    <xsl:value-of select="."/>
-                </xsl:for-each>
-            </pre>
-        </xsl:if>
-        <xsl:if test="not(agenda/job)">
-            <p>
-                <xsl:text>There are no jobs for you at the moment.</xsl:text>
-            </p>
-        </xsl:if>
+        <xsl:value-of select="xml" disable-output-escaping="yes"/>
     </xsl:template>
 </xsl:stylesheet>

@@ -32,7 +32,6 @@ import java.io.IOException;
 import java.util.AbstractMap;
 import java.util.Map;
 import java.util.Properties;
-import org.apache.commons.lang3.StringUtils;
 import org.cactoos.list.StickyMap;
 import org.takes.facets.fork.FkRegex;
 import org.takes.http.Exit;
@@ -82,12 +81,7 @@ public final class Main {
                 "Hey, we are in the testing mode!"
             );
         }
-        final String dsn = props.getProperty("sentry.dsn", "");
-        if (StringUtils.isNotBlank(dsn)) {
-            Sentry.init(dsn);
-        } else {
-            Sentry.init();
-        }
+        Sentry.init(props.getProperty("sentry.dsn", ""));
         final Map<String, SlackSession> slack = new ExtSlack().value();
         final Github github = new ExtGithub().value();
         final Region dynamo = new ExtDynamo().value();

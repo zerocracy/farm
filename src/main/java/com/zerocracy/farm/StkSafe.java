@@ -131,7 +131,6 @@ public final class StkSafe implements Stakeholder {
                     )
                 ).postTo(project);
             }
-            Sentry.capture(ex);
             Logger.error(
                 this, "%s failed at \"%s/%s\" in \"%s\": %[exception]s",
                 this.origin.getClass().getCanonicalName(),
