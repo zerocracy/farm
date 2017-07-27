@@ -14,24 +14,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pmo.profile.wallet
+package com.zerocracy.stk.pm.comm
 
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pmo.People
+// notify test: print message to text file
 
-def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Show wallet')
-  People people = new People(project).bootstrap()
-  ClaimIn claim = new ClaimIn(xml)
-  String login = claim.author()
-  claim.reply(
-    String.format(
-      'Your wallet is `%s` at "%s".',
-      people.wallet(login),
-      people.bank(login)
+static exec(Project project, XML xml) {
+  new Assume(project, xml).type('Notify test')
+  project.acq('test.txt').withAutoCloseable {
+    item -> item.path().toFile().write(
+      new ClaimIn(xml).param('message')
     )
-  ).postTo(project)
+  }
 }

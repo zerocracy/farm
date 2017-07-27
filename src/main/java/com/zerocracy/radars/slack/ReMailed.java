@@ -16,10 +16,10 @@
  */
 package com.zerocracy.radars.slack;
 
+import com.jcabi.log.Logger;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.jstk.Farm;
-import io.sentry.Sentry;
 import org.cactoos.Func;
 import org.cactoos.Proc;
 import org.cactoos.func.FuncWithFallback;
@@ -56,7 +56,13 @@ public final class ReMailed implements Reaction<SlackMessagePosted> {
                 (Func<Boolean, Boolean>) input -> this.origin.react(
                     farm, event, session
                 ),
-                (Proc<Throwable>) Sentry::capture
+                (Proc<Throwable>) throwable -> {
+                    Logger.error(
+                        this,
+                        "%[exception]s",
+                        throwable
+                    );
+                }
             )
         ).apply(true);
     }
