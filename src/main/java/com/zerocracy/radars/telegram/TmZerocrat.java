@@ -65,6 +65,7 @@ final class TmZerocrat extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(final Update update) {
+        Logger.debug(this, "Update received: %s", update);
         try {
             this.react(update);
         } catch (final TelegramApiException err) {
