@@ -83,7 +83,7 @@ public final class TkProfile implements TkRegex {
                     new XeAppend(
                         "projects",
                         new XeTransform<>(
-                            new Projects(this.pmo, login).iterate(),
+                            new Projects(this.pmo, login).bootstrap().iterate(),
                             pkt -> new XeAppend("project", pkt)
                         )
                     ),
