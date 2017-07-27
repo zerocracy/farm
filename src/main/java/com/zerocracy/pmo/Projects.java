@@ -117,7 +117,7 @@ public final class Projects {
      */
     private Item item() throws IOException {
         return this.pmo.acq(
-            String.format("awards/%s.xml", this.login)
+            String.format("projects/%s.xml", this.login)
         );
     }
 
