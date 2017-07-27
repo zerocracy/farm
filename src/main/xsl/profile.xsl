@@ -60,6 +60,16 @@
             <xsl:text>.</xsl:text>
         </p>
         <p>
+            <xsl:text>Projects: </xsl:text>
+            <xsl:for-each select="projects/project">
+                <xsl:if test="position() &gt; 1">
+                    <xsl:text>, </xsl:text>
+                </xsl:if>
+                <xsl:value-of select="."/>
+            </xsl:for-each>
+            <xsl:text>.</xsl:text>
+        </p>
+        <p>
             <xsl:text>Skills: </xsl:text>
             <xsl:for-each select="skills/skill">
                 <xsl:if test="position() &gt; 1">
