@@ -18,8 +18,6 @@ package com.zerocracy.radars.telegram;
 
 import java.io.IOException;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
-import org.telegram.telegrambots.bots.DefaultAbsSender;
-import org.telegram.telegrambots.exceptions.TelegramApiException;
 
 /**
  * Telegram bot session.
@@ -32,7 +30,7 @@ final class TmBotSession implements TmSession {
     /**
      * Telegram bot.
      */
-    private final DefaultAbsSender sender;
+    private final TmBot bot;
 
     /**
      * Chat id.
@@ -41,34 +39,25 @@ final class TmBotSession implements TmSession {
 
     /**
      * Ctor.
-     * @param sender A bot
+     * @param bot Telegram bot
      * @param chat Chat id
      */
-    TmBotSession(final DefaultAbsSender sender, final long chat) {
-        this.sender = sender;
+    TmBotSession(final TmBot bot, final long chat) {
+        this.bot = bot;
         this.chat = chat;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void reply(final TmResponse response) throws IOException {
-        try {
-            this.sender.sendMessage(
-                new SendMessage()
-                    .setChatId(this.chat)
-                    .setText(response.text())
-            );
-        } catch (final TelegramApiException err) {
-            throw new IOException("Telegram API error", err);
-        }
+        this.bot.reply(
+            new SendMessage()
+                .setChatId(this.chat)
+                .setText(response.text())
+        );
     }
 
     @Override
-    public String bot() throws IOException {
-        try {
-            return this.sender.getMe().getUserName();
-        } catch (final TelegramApiException err) {
-            throw new IOException(err);
-        }
+    public String botname() throws IOException {
+        return this.bot.name();
     }
 }

@@ -20,7 +20,6 @@ import com.zerocracy.jstk.Farm;
 import java.io.IOException;
 import java.util.Map;
 import org.telegram.telegrambots.api.objects.Update;
-import org.telegram.telegrambots.bots.DefaultAbsSender;
 
 /**
  * Reaction to bot update.
@@ -69,7 +68,7 @@ final class BotUpdateReaction {
      */
     public void react(
         final Update update,
-        final DefaultAbsSender bot
+        final TmBot bot
     ) throws IOException {
         this.reaction.react(
             this.farm,
@@ -84,7 +83,7 @@ final class BotUpdateReaction {
      * @param bot A bot
      * @return Session
      */
-    private TmSession session(final long chat, final DefaultAbsSender bot) {
+    private TmSession session(final long chat, final TmBot bot) {
         this.sessions.putIfAbsent(chat, new TmBotSession(bot, chat));
         return this.sessions.get(chat);
     }

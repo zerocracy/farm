@@ -38,5 +38,5 @@ public interface TmSession {
      * @return Username string
      * @throws IOException If failed
      */
-    String bot() throws IOException;
+    String botname() throws IOException;
 }

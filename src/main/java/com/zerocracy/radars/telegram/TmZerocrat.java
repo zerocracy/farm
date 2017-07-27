@@ -29,7 +29,7 @@ import org.telegram.telegrambots.exceptions.TelegramApiException;
  * @version $Id$
  * @since 0.15
  */
-final class TmZerocrat extends TelegramLongPollingBot {
+final class TmZerocrat extends TelegramLongPollingBot implements TmBot {
 
     /**
      * Telegram bot token.
@@ -39,7 +39,7 @@ final class TmZerocrat extends TelegramLongPollingBot {
     /**
      * Telegram bot username.
      */
-    private final String name;
+    private final String username;
 
     /**
      * Bot reaction.
@@ -49,17 +49,17 @@ final class TmZerocrat extends TelegramLongPollingBot {
     /**
      * Ctor.
      * @param token Telegram bot token
-     * @param name Telegram bot username
+     * @param username Telegram bot username
      * @param reaction Bot reaction.
      */
     TmZerocrat(
         final String token,
-        final String name,
+        final String username,
         final BotUpdateReaction reaction
     ) {
         super();
         this.token = token;
-        this.name = name;
+        this.username = username;
         this.reaction = reaction;
     }
 
@@ -79,12 +79,30 @@ final class TmZerocrat extends TelegramLongPollingBot {
 
     @Override
     public String getBotUsername() {
-        return this.name;
+        return this.username;
     }
 
     @Override
     public String getBotToken() {
         return this.token;
+    }
+
+    @Override
+    public void reply(final SendMessage msg) throws IOException {
+        try {
+            this.sendApiMethod(msg);
+        } catch (final TelegramApiException err) {
+            throw new IOException("reply: Telegram API error", err);
+        }
+    }
+
+    @Override
+    public String name() throws IOException {
+        try {
+            return this.getMe().getUserName();
+        } catch (final TelegramApiException err) {
+            throw new IOException("name: Telegram API error", err);
+        }
     }
 
     /**

@@ -14,39 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.radars.telegram;
-
-import com.zerocracy.jstk.Farm;
-import java.io.IOException;
 
 /**
- * React if not mine message.
+ * Telegram radar test.
+ *
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.15
  */
-final class ReNotMine implements Reaction {
-
-    /**
-     * Origin.
-     */
-    private final Reaction origin;
-
-    /**
-     * Ctor.
-     * @param origin Reaction
-     */
-    ReNotMine(final Reaction origin) {
-        this.origin = origin;
-    }
-
-    @Override
-    public boolean react(
-        final Farm farm,
-        final TmSession session,
-        final TmRequest request
-    ) throws IOException {
-        return !session.botname().equals(request.sender())
-            && this.origin.react(farm, session, request);
-    }
-}
+package com.zerocracy.radars.telegram;

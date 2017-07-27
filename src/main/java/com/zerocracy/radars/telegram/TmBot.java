@@ -16,37 +16,28 @@
  */
 package com.zerocracy.radars.telegram;
 
-import com.zerocracy.jstk.Farm;
 import java.io.IOException;
+import org.telegram.telegrambots.api.methods.send.SendMessage;
 
 /**
- * React if not mine message.
+ * Telegram bot API.
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.15
  */
-final class ReNotMine implements Reaction {
+interface TmBot {
 
     /**
-     * Origin.
+     * Send a message.
+     * @param msg Message to send
+     * @throws IOException If API failed
      */
-    private final Reaction origin;
+    void reply(SendMessage msg) throws IOException;
 
     /**
-     * Ctor.
-     * @param origin Reaction
+     * Bot name.
+     * @return Name string
+     * @throws IOException If API failed
      */
-    ReNotMine(final Reaction origin) {
-        this.origin = origin;
-    }
-
-    @Override
-    public boolean react(
-        final Farm farm,
-        final TmSession session,
-        final TmRequest request
-    ) throws IOException {
-        return !session.botname().equals(request.sender())
-            && this.origin.react(farm, session, request);
-    }
+    String name() throws IOException;
 }
