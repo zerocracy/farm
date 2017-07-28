@@ -23,6 +23,8 @@ import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import java.net.URI;
+import org.cactoos.io.InputOf;
+import org.cactoos.text.BytesAsText;
 import org.takes.rs.xe.XeAppend;
 import org.takes.rs.xe.XeSource;
 import org.xembly.Directive;
@@ -73,12 +75,17 @@ public final class XeXsl implements XeSource {
             } else {
                 final XML xml = new XMLDocument(item.path().toFile());
                 content = new XSLDocument(
-                    URI.create(
-                        String.format(
-                            "http://datum.zerocracy.com/latest/xsl/%s",
-                            this.xsl
+                    new BytesAsText(
+                        new InputOf(
+                            URI.create(
+                                String.format(
+                                    "http://datum.zerocracy.com/latest/xsl/%s",
+                                    this.xsl
+                                )
+
+                            )
                         )
-                    )
+                    ).asString()
                 ).transform(xml).nodes("/*/xhtml:body").get(0).toString();
             }
             return new XeAppend("xml", content).toXembly();

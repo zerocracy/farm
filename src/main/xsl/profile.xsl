@@ -98,7 +98,9 @@
                     <xsl:if test="position() &gt; 1">
                         <xsl:text>, </xsl:text>
                     </xsl:if>
-                    <xsl:value-of select="."/>
+                    <code>
+                        <xsl:value-of select="."/>
+                    </code>
                 </xsl:for-each>
             </xsl:if>
             <xsl:if test="not(links/link)">
