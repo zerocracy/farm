@@ -308,7 +308,6 @@
             <groupId>org.telegram</groupId>
             <artifactId>telegrambots-meta</artifactId>
             <version>3.2</version>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
     <build>
