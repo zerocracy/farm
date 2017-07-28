@@ -22,13 +22,7 @@ import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pmo.Awards
-/**
- * @todo #63:30min We should multiply the award points with the given boost
- *  factor if a boost factor has been set for the task. The boost factor is
- *  defined in an XML document and the schema is in `pm/hr/boosts.xsd`. Default
- *  job size is 15 minutes. In case boost is not specified, the default factor
- *  should be 2x, which means default award is 30.
- */
+
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Make payment')
   ClaimIn claim = new ClaimIn(xml)
