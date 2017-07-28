@@ -18,16 +18,21 @@ package com.zerocracy.stk.pm.staff.roles
 
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
+import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.staff.Roles
+import com.zerocracy.pmo.Pmo
+import com.zerocracy.pmo.Projects
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Resign all roles')
   ClaimIn claim = new ClaimIn(xml)
   String login = claim.param('login')
   new Roles(project).bootstrap().resign(login)
+  Farm farm = binding.variables.farm
+  new Projects(new Pmo(farm), login).remove(project.toString())
   claim.reply(
     String.format(
       'All roles resigned from "%s".',

@@ -60,23 +60,48 @@
             <xsl:text>.</xsl:text>
         </p>
         <p>
+            <xsl:text>Projects: </xsl:text>
+            <xsl:if test="projects/project">
+                <xsl:for-each select="projects/project">
+                    <xsl:if test="position() &gt; 1">
+                        <xsl:text>, </xsl:text>
+                    </xsl:if>
+                    <xsl:value-of select="."/>
+                </xsl:for-each>
+            </xsl:if>
+            <xsl:if test="not(projects/project)">
+                <xsl:text>none</xsl:text>
+            </xsl:if>
+            <xsl:text>.</xsl:text>
+        </p>
+        <p>
             <xsl:text>Skills: </xsl:text>
-            <xsl:for-each select="skills/skill">
-                <xsl:if test="position() &gt; 1">
-                    <xsl:text>, </xsl:text>
-                </xsl:if>
-                <xsl:value-of select="."/>
-            </xsl:for-each>
+            <xsl:if test="skills/skill">
+                <xsl:for-each select="skills/skill">
+                    <xsl:if test="position() &gt; 1">
+                        <xsl:text>, </xsl:text>
+                    </xsl:if>
+                    <xsl:value-of select="."/>
+                </xsl:for-each>
+            </xsl:if>
+            <xsl:if test="not(skills/skill)">
+                <xsl:text>none</xsl:text>
+            </xsl:if>
             <xsl:text>.</xsl:text>
         </p>
         <p>
             <xsl:text>Links: </xsl:text>
-            <xsl:for-each select="links/link">
-                <xsl:if test="position() &gt; 1">
-                    <xsl:text>, </xsl:text>
-                </xsl:if>
-                <xsl:value-of select="."/>
-            </xsl:for-each>
+            <xsl:if test="links/link">
+                <xsl:for-each select="links/link">
+                    <xsl:if test="position() &gt; 1">
+                        <xsl:text>, </xsl:text>
+                    </xsl:if>
+                    <xsl:value-of select="."/>
+                </xsl:for-each>
+            </xsl:if>
+            <xsl:if test="not(links/link)">
+                <xsl:text>none</xsl:text>
+            </xsl:if>
             <xsl:text>.</xsl:text>
         </p>
     </xsl:template>
