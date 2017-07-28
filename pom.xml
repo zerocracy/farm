@@ -276,12 +276,39 @@
             <artifactId>jersey-server</artifactId>
             <version>2.26-b06</version>
             <scope>runtime</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.glassfish.hk2.external</groupId>
+                    <artifactId>javax.inject</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.icegreen</groupId>
             <artifactId>greenmail</artifactId>
             <version>1.5.5</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.telegram</groupId>
+            <artifactId>telegrambots</artifactId>
+            <version>3.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.glassfish.hk2.external</groupId>
+                    <artifactId>javax.inject</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.glassfish.jersey.containers</groupId>
+                    <artifactId>jersey-container-grizzly2-http</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.telegram</groupId>
+            <artifactId>telegrambots-meta</artifactId>
+            <version>3.2</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
     <build>
