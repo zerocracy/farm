@@ -66,7 +66,9 @@
                     <xsl:if test="position() &gt; 1">
                         <xsl:text>, </xsl:text>
                     </xsl:if>
-                    <xsl:value-of select="."/>
+                    <a href="/p/{.}">
+                        <xsl:value-of select="."/>
+                    </a>
                 </xsl:for-each>
             </xsl:if>
             <xsl:if test="not(projects/project)">
