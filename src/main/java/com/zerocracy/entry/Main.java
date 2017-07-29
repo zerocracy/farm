@@ -25,6 +25,8 @@ import com.zerocracy.jstk.Farm;
 import com.zerocracy.radars.github.TkGithub;
 import com.zerocracy.radars.slack.SlackRadar;
 import com.zerocracy.radars.slack.TkSlack;
+import com.zerocracy.radars.telegram.TelegramRadar;
+import com.zerocracy.radars.telegram.TmSession;
 import com.zerocracy.tk.TkAlias;
 import com.zerocracy.tk.TkApp;
 import io.sentry.Sentry;
@@ -32,6 +34,7 @@ import java.io.IOException;
 import java.util.AbstractMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 import org.cactoos.list.StickyMap;
 import org.takes.facets.fork.FkRegex;
 import org.takes.http.Exit;
@@ -39,7 +42,6 @@ import org.takes.http.FtCli;
 
 /**
  * Main entry point.
- *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
@@ -85,17 +87,26 @@ public final class Main {
         final Map<String, SlackSession> slack = new ExtSlack().value();
         final Github github = new ExtGithub().value();
         final Region dynamo = new ExtDynamo().value();
+        final Map<Long, TmSession> tms = new ConcurrentHashMap<>();
         final Farm farm = new SmartFarm(
             new S3Farm(new ExtBucket().value()),
             props,
             new StickyMap<>(
                 new AbstractMap.SimpleEntry<>("properties", props),
                 new AbstractMap.SimpleEntry<>("slack", slack),
+                new AbstractMap.SimpleEntry<>("telegram", tms),
                 new AbstractMap.SimpleEntry<>("github", github)
             )
         ).value();
-        try (final SlackRadar radar = new SlackRadar(farm, slack)) {
+        try (
+            final SlackRadar radar = new SlackRadar(farm, slack);
+            final TelegramRadar telegram = new TelegramRadar(farm, tms)
+        ) {
             radar.refresh();
+            telegram.start(
+                props.getProperty("telegram.token"),
+                props.getProperty("telegram.username")
+            );
             new FtCli(
                 new TkApp(
                     new ExtProperties().value(),

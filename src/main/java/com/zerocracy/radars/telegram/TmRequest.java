@@ -14,24 +14,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pmo.profile.wallet
+package com.zerocracy.radars.telegram;
 
-import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Project
-import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pmo.People
+/**
+ * Telegram message.
+ * @author Kirill (g4s8.public@gmail.com)
+ * @version $Id$
+ * @since 0.15
+ */
+interface TmRequest {
 
-def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Show wallet')
-  People people = new People(project).bootstrap()
-  ClaimIn claim = new ClaimIn(xml)
-  String login = claim.author()
-  claim.reply(
-    String.format(
-      'Your wallet is `%s` at "%s".',
-      people.wallet(login),
-      people.bank(login)
-    )
-  ).postTo(project)
+    /**
+     * Sender user.
+     * @return User name
+     */
+    String sender();
+
+    /**
+     * Request message text.
+     * @return Text string
+     */
+    String text();
+
+    /**
+     * Request chat id.
+     * @return Id number
+     */
+    long chat();
 }

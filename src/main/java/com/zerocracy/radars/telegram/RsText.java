@@ -14,24 +14,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pmo.profile.wallet
+package com.zerocracy.radars.telegram;
 
-import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Project
-import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pmo.People
+import java.io.IOException;
+import org.cactoos.Text;
 
-def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Show wallet')
-  People people = new People(project).bootstrap()
-  ClaimIn claim = new ClaimIn(xml)
-  String login = claim.author()
-  claim.reply(
-    String.format(
-      'Your wallet is `%s` at "%s".',
-      people.wallet(login),
-      people.bank(login)
-    )
-  ).postTo(project)
+/**
+ * Text response to telegram session.
+ * @author Kirill (g4s8.public@gmail.com)
+ * @version $Id$
+ * @since 0.15
+ */
+final class RsText implements TmResponse {
+
+    /**
+     * Text.
+     */
+    private final Text txt;
+
+    /**
+     * Ctor.
+     * @param txt Response text
+     */
+    RsText(final Text txt) {
+        this.txt = txt;
+    }
+
+    @Override
+    public String text() throws IOException {
+        return this.txt.asString();
+    }
 }

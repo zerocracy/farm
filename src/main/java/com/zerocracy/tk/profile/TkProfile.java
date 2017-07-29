@@ -20,6 +20,7 @@ import com.zerocracy.jstk.Project;
 import com.zerocracy.pmo.Agenda;
 import com.zerocracy.pmo.Awards;
 import com.zerocracy.pmo.People;
+import com.zerocracy.pmo.Projects;
 import com.zerocracy.tk.RsPage;
 import java.io.IOException;
 import java.util.Properties;
@@ -79,6 +80,13 @@ public final class TkProfile implements TkRegex {
                     new XeAppend("rate", people.rate(login).toString()),
                     new XeAppend("wallet", people.wallet(login)),
                     new XeAppend("bank", people.bank(login)),
+                    new XeAppend(
+                        "projects",
+                        new XeTransform<>(
+                            new Projects(this.pmo, login).bootstrap().iterate(),
+                            pkt -> new XeAppend("project", pkt)
+                        )
+                    ),
                     new XeAppend(
                         "skills",
                         new XeTransform<>(

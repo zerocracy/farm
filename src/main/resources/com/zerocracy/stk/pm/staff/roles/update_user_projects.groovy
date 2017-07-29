@@ -14,24 +14,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pmo.profile.wallet
+package com.zerocracy.stk.pm.staff.roles
 
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
+import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pmo.People
+import com.zerocracy.pmo.Pmo
+import com.zerocracy.pmo.Projects
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Show wallet')
-  People people = new People(project).bootstrap()
+  new Assume(project, xml).type('Role was assigned')
   ClaimIn claim = new ClaimIn(xml)
-  String login = claim.author()
-  claim.reply(
-    String.format(
-      'Your wallet is `%s` at "%s".',
-      people.wallet(login),
-      people.bank(login)
-    )
-  ).postTo(project)
+  String login = claim.param('login')
+  Farm farm = binding.variables.farm
+  new Projects(new Pmo(farm), login).add(project.toString())
 }

@@ -44,7 +44,8 @@ final class StrictProject implements Project {
             "(bots\\.xml)",
             "(people\\.xml)",
             "(awards/[a-zA-Z0-9-]+\\.xml)",
-            "(agenda/[a-zA-Z0-9-]+\\.xml)"
+            "(agenda/[a-zA-Z0-9-]+\\.xml)",
+            "(projects/[a-zA-Z0-9-]+\\.xml)"
         )
     );
 
@@ -60,7 +61,8 @@ final class StrictProject implements Project {
             "(estimates\\.xml)",
             "(wbs\\.xml)",
             "(orders\\.xml)",
-            "(bans\\.xml)"
+            "(bans\\.xml)",
+            "(test\\.txt)"
         )
     );
 

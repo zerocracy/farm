@@ -14,24 +14,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pmo.profile.wallet
+package com.zerocracy.radars.telegram;
 
-import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Project
-import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pmo.People
+import com.zerocracy.jstk.Farm;
+import java.io.IOException;
 
-def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Show wallet')
-  People people = new People(project).bootstrap()
-  ClaimIn claim = new ClaimIn(xml)
-  String login = claim.author()
-  claim.reply(
-    String.format(
-      'Your wallet is `%s` at "%s".',
-      people.wallet(login),
-      people.bank(login)
-    )
-  ).postTo(project)
+/**
+ * React if not mine message.
+ * @author Kirill (g4s8.public@gmail.com)
+ * @version $Id$
+ * @since 0.15
+ */
+final class ReNotMine implements Reaction {
+
+    /**
+     * Origin.
+     */
+    private final Reaction origin;
+
+    /**
+     * Ctor.
+     * @param origin Reaction
+     */
+    ReNotMine(final Reaction origin) {
+        this.origin = origin;
+    }
+
+    @Override
+    public boolean react(
+        final Farm farm,
+        final TmSession session,
+        final TmRequest request
+    ) throws IOException {
+        return !session.botname().equals(request.sender())
+            && this.origin.react(farm, session, request);
+    }
 }

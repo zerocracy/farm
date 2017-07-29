@@ -14,24 +14,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pmo.profile.wallet
+package com.zerocracy.radars.telegram;
 
-import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Project
-import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pmo.People
+import com.zerocracy.jstk.Farm;
+import java.io.IOException;
 
-def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Show wallet')
-  People people = new People(project).bootstrap()
-  ClaimIn claim = new ClaimIn(xml)
-  String login = claim.author()
-  claim.reply(
-    String.format(
-      'Your wallet is `%s` at "%s".',
-      people.wallet(login),
-      people.bank(login)
-    )
-  ).postTo(project)
+/**
+ * Telegram message reaction.
+ * @author Kirill (g4s8.public@gmail.com)
+ * @version $Id$
+ * @since 0.15
+ */
+interface Reaction {
+
+    /**
+     * Rect for new request.
+     * @param farm Project farm
+     * @param session Current Telegram session
+     * @param request Telegram request
+     * @return TRUE if reacted
+     * @throws IOException If failed
+     */
+    boolean react(
+        Farm farm,
+        TmSession session,
+        TmRequest request
+    ) throws IOException;
 }
