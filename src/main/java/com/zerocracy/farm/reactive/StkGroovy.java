@@ -17,6 +17,7 @@
 package com.zerocracy.farm.reactive;
 
 import com.jcabi.aspects.Cacheable;
+import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.zerocracy.farm.MismatchException;
 import com.zerocracy.jstk.Project;
@@ -53,7 +54,6 @@ public final class StkGroovy implements Stakeholder {
     /**
      * Label.
      */
-    @SuppressWarnings({"PMD.SingularField", "PMD.UnusedPrivateField"})
     private final String label;
 
     /**
@@ -121,6 +121,7 @@ public final class StkGroovy implements Stakeholder {
     @Cacheable(forever = true)
     private Class<?> script() throws IOException {
         try (final GroovyClassLoader loader = new GroovyClassLoader()) {
+            Logger.info(this, String.format("compiling %s", this.label));
             return loader.parseClass(
                 new BytesAsText(
                     new InputAsBytes(this.input)
