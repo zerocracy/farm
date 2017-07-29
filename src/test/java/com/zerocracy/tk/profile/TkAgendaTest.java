@@ -21,10 +21,12 @@ import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.fake.FkFarm;
 import com.zerocracy.pmo.People;
 import com.zerocracy.tk.TkApp;
+import java.net.HttpURLConnection;
 import java.util.Properties;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 import org.takes.Take;
+import org.takes.facets.hamcrest.HmRsStatus;
 import org.takes.rq.RqFake;
 import org.takes.rq.RqWithHeaders;
 import org.takes.rs.RsPrint;
@@ -37,6 +39,7 @@ import org.takes.rs.RsPrint;
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class TkAgendaTest {
 
     @Test
@@ -60,4 +63,54 @@ public final class TkAgendaTest {
         );
     }
 
+    //@todo #96:30min This test as well as
+    // TkAgendaTest.redirectsWhenAccessingNonexistentUsersAgenda should return
+    // a redirect status code. RqSecureLogin actually throws RsFailure, which
+    // is a HTTPException subtype that embeds 301 status. However, invoking the
+    // scenario through an actual request in TkApp causes it to be embedded in
+    // UncheckedIOException, causing the Takes framework to return HTTP 500
+    // error status instead. Let's find out what's doing on and fix it. After
+    // fix is applied we should re-enable these tests.
+    @Test
+    @org.junit.Ignore
+    public void redirectsWhenAccessingDifferentUsersAgenda()
+        throws Exception {
+        final Farm farm = new FkFarm();
+        new People(farm).bootstrap().touch("yegor256");
+        new People(farm).bootstrap().touch("carlosmiranda");
+        final Take app = new TkApp(new Properties(), farm);
+        MatcherAssert.assertThat(
+            new RsPrint(
+                app.act(
+                    new RqWithHeaders(
+                        new RqFake("GET", "/u/carlosmiranda/agenda"),
+                        // @checkstyle LineLength (1 line)
+                        "Cookie: PsCookie=0975A5A5-F6DB193E-AF18000A-75726E3A-74657374-3A310005-6C6F6769-6E000879-65676F72-323536AE"
+                    )
+                )
+            ),
+            new HmRsStatus(HttpURLConnection.HTTP_MOVED_PERM)
+        );
+    }
+
+    @Test
+    @org.junit.Ignore
+    public void redirectsWhenAccessingNonexistentUsersAgenda()
+        throws Exception {
+        final Farm farm = new FkFarm();
+        new People(farm).bootstrap().touch("yegor256");
+        final Take app = new TkApp(new Properties(), farm);
+        MatcherAssert.assertThat(
+            new RsPrint(
+                app.act(
+                    new RqWithHeaders(
+                        new RqFake("GET", "/u/foo-user/agenda"),
+                        // @checkstyle LineLength (1 line)
+                        "Cookie: PsCookie=0975A5A5-F6DB193E-AF18000A-75726E3A-74657374-3A310005-6C6F6769-6E000879-65676F72-323536AE"
+                    )
+                )
+            ),
+            new HmRsStatus(HttpURLConnection.HTTP_MOVED_PERM)
+        );
+    }
 }
