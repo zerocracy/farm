@@ -30,6 +30,8 @@ release:
     echo -e "Host *\n  StrictHostKeyChecking no\n  UserKnownHostsFile=/dev/null" > ~/.ssh/config
     git add settings.xml
     git commit -m 'settings.xml'
+    sed -i "s/build.revision=.*/$(cat ./target/classes/main.properties | grep build.revision)/g" ./src/main/resources/main.properties
+    git add ./src/main/resources/main.properties && git commit -m "build.revision"
     git fetch
     git push -f heroku $(git symbolic-ref --short HEAD):master
     git reset HEAD~1
