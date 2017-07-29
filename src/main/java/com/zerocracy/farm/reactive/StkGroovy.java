@@ -17,13 +17,14 @@
 package com.zerocracy.farm.reactive;
 
 import com.jcabi.aspects.Cacheable;
-import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.zerocracy.farm.MismatchException;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import groovy.lang.Binding;
 import groovy.lang.GroovyClassLoader;
+import groovy.lang.GroovyCodeSource;
+import groovy.lang.GroovyShell;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -121,11 +122,14 @@ public final class StkGroovy implements Stakeholder {
     @Cacheable(forever = true)
     private Class<?> script() throws IOException {
         try (final GroovyClassLoader loader = new GroovyClassLoader()) {
-            Logger.info(this, String.format("compiling %s", this.label));
             return loader.parseClass(
-                new BytesAsText(
-                    new InputAsBytes(this.input)
-                ).asString()
+                new GroovyCodeSource(
+                    new BytesAsText(
+                        new InputAsBytes(this.input)
+                    ).asString(),
+                    this.label,
+                    GroovyShell.DEFAULT_CODE_BASE
+                )
             );
         }
     }
