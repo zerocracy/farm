@@ -82,7 +82,6 @@ public final class XeXsl implements XeSource {
                                     "http://datum.zerocracy.com/latest/xsl/%s",
                                     this.xsl
                                 )
-
                             )
                         )
                     ).asString()
