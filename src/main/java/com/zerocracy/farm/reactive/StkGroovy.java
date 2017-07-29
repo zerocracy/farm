@@ -110,10 +110,7 @@ public final class StkGroovy implements Stakeholder {
             if (exp.getCause() instanceof MismatchException) {
                 throw MismatchException.class.cast(exp.getCause());
             }
-            if (exp.getCause() instanceof IllegalStateException) {
-                throw IllegalStateException.class.cast(exp.getCause());
-            }
-            throw new RuntimeException(exp);
+            throw new IllegalStateException(exp);
         }
     }
     /**
