@@ -16,20 +16,26 @@
  */
 package com.zerocracy.farm.reactive;
 
+import com.jcabi.aspects.Cacheable;
 import com.jcabi.xml.XML;
+import com.zerocracy.farm.MismatchException;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import groovy.lang.Binding;
+import groovy.lang.GroovyClassLoader;
+import groovy.lang.GroovyCodeSource;
 import groovy.lang.GroovyShell;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.EqualsAndHashCode;
 import org.cactoos.Input;
 import org.cactoos.func.And;
 import org.cactoos.func.UncheckedScalar;
 import org.cactoos.io.InputAsBytes;
 import org.cactoos.text.BytesAsText;
-import org.cactoos.text.FormattedText;
 
 /**
  * Stakeholder in Groovy.
@@ -38,6 +44,7 @@ import org.cactoos.text.FormattedText;
  * @version $Id$
  * @since 0.10
  */
+@EqualsAndHashCode(of = "label")
 public final class StkGroovy implements Stakeholder {
 
     /**
@@ -58,9 +65,10 @@ public final class StkGroovy implements Stakeholder {
     /**
      * Ctor.
      * @param src Input
+     * @param lbl Label
      */
-    public StkGroovy(final Input src) {
-        this(src, "script", new HashMap<>(0));
+    public StkGroovy(final Input src, final String lbl) {
+        this(src, lbl, new HashMap<>(0));
     }
 
     /**
@@ -77,11 +85,11 @@ public final class StkGroovy implements Stakeholder {
     }
 
     @Override
+    @SuppressWarnings({"PMD.PreserveStackTrace",
+        "PMD.AvoidThrowingRawExceptionTypes"})
     public void process(final Project project, final XML claim)
         throws IOException {
         final Binding binding = new Binding();
-        binding.setVariable("p", project);
-        binding.setVariable("x", claim);
         new UncheckedScalar<>(
             new And(
                 this.deps.entrySet(),
@@ -90,16 +98,39 @@ public final class StkGroovy implements Stakeholder {
                 }
             )
         ).value();
-        final GroovyShell shell = new GroovyShell(binding);
-        shell.evaluate(
-            new FormattedText(
-                "%s\n\nexec(p, x)\n",
-                new BytesAsText(
-                    new InputAsBytes(this.input)
-                ).asString()
-            ).asString(),
-            this.label
-        );
+        final Class<?> clazz = this.script();
+        try {
+            final Constructor<?> constructor = clazz.getConstructor(
+                Binding.class
+            );
+            final Object instance = constructor.newInstance(binding);
+            clazz.getMethod("exec", Project.class, XML.class)
+                .invoke(instance, project, claim);
+        } catch (final IllegalAccessException | NoSuchMethodException
+            | InstantiationException | InvocationTargetException exp) {
+            if (exp.getCause() instanceof MismatchException) {
+                throw MismatchException.class.cast(exp.getCause());
+            }
+            throw new IllegalStateException(exp);
+        }
     }
-
+    /**
+     * Compiles the script.
+     * @return Class
+     * @throws IOException If fails
+     */
+    @Cacheable(forever = true)
+    private Class<?> script() throws IOException {
+        try (final GroovyClassLoader loader = new GroovyClassLoader()) {
+            return loader.parseClass(
+                new GroovyCodeSource(
+                    new BytesAsText(
+                        new InputAsBytes(this.input)
+                    ).asString(),
+                    this.label,
+                    GroovyShell.DEFAULT_CODE_BASE
+                )
+            );
+        }
+    }
 }

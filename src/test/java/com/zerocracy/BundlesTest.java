@@ -111,7 +111,7 @@ public final class BundlesTest {
             new ResourceAsInput(
                 String.format("%s/_before.groovy", this.bundle)
             ),
-            "before",
+            String.format("%s_before", this.bundle),
             deps
         ).process(project, null);
         MatcherAssert.assertThat(
@@ -130,7 +130,7 @@ public final class BundlesTest {
             new ResourceAsInput(
                 String.format("%s/_after.groovy", this.bundle)
             ),
-            "after",
+            String.format("%s_after", this.bundle),
             deps
         ).process(project, null);
     }

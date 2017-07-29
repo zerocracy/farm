@@ -44,15 +44,17 @@ public final class StkGroovyTest {
             new InputOf(
                 String.join(
                     "\n",
+                    "import com.zerocracy.jstk.Project",
+                    "import com.jcabi.xml.XML",
                     "import com.zerocracy.pm.ClaimOut",
-                    "def exec(project, xml) {",
+                    "def exec(Project project, XML xml) {",
                     "new ClaimOut()",
                     "  .type(binding.variables.dep)",
                     "  .postTo(project)",
                     "}"
                 )
             ),
-            "script",
+            "stkgroovytest-parsesgroovy",
             new StickyMap<String, Object>(
                 new AbstractMap.SimpleEntry<>(
                     "dep", "hello dude"

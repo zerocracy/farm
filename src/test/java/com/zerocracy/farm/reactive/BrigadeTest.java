@@ -50,8 +50,10 @@ public final class BrigadeTest {
             new TeeInput(
                 String.join(
                     "\n",
+                    "import com.zerocracy.jstk.Project",
+                    "import com.jcabi.xml.XML",
                     "import com.zerocracy.pm.ClaimOut",
-                    "def exec(project, xml) {",
+                    "def exec(Project project, XML xml) {",
                     "new ClaimOut().type('one more').postTo(project)",
                     "}"
                 ),
@@ -65,7 +67,7 @@ public final class BrigadeTest {
             xml = claims.iterate().iterator().next();
         }
         final Brigade brigade = new Brigade(
-            new StkGroovy(new InputOf(file))
+            new StkGroovy(new InputOf(file), "brigadetest-parsesgroovy")
         );
         brigade.process(project, xml);
         try (final Claims claims = new Claims(project).lock()) {
@@ -86,7 +88,8 @@ public final class BrigadeTest {
         }
         final Brigade brigade = new Brigade(
             new StkGroovy(
-                new ResourceAsInput("com/zerocracy/stk/hello.groovy")
+                new ResourceAsInput("com/zerocracy/stk/hello.groovy"),
+                "brigadetest-parsesgroovyscript"
             )
         );
         brigade.process(project, xml);
