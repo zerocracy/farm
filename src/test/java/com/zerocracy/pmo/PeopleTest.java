@@ -123,4 +123,23 @@ public final class PeopleTest {
         );
     }
 
+    @Test
+    public void vacationTest() throws Exception {
+        final People people = new People(new FkProject()).bootstrap();
+        final String uid = "g4s8";
+        MatcherAssert.assertThat(
+            people.vacation(uid),
+            Matchers.is(false)
+        );
+        people.vacation(uid, true);
+        MatcherAssert.assertThat(
+            people.vacation(uid),
+            Matchers.is(true)
+        );
+        people.vacation(uid, false);
+        MatcherAssert.assertThat(
+            people.vacation(uid),
+            Matchers.is(false)
+        );
+    }
 }

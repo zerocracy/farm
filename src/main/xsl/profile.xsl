@@ -29,6 +29,11 @@
     </xsl:template>
     <xsl:template match="page" mode="inner">
         <xsl:apply-templates select="details"/>
+        <xsl:if test="vacation/text() = 'true'">
+            <p>
+                <xsl:text>On vacation</xsl:text>
+            </p>
+        </xsl:if>
         <p>
             <xsl:text>Total points: </xsl:text>
             <a href="/u/{identity/login}/awards">

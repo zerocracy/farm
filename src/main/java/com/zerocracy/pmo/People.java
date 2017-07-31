@@ -26,6 +26,8 @@ import com.zerocracy.jstk.cash.Cash;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
+import org.cactoos.func.UncheckedScalar;
+import org.cactoos.list.ItemOfIterable;
 import org.cactoos.list.MappedIterable;
 import org.xembly.Directives;
 
@@ -35,6 +37,7 @@ import org.xembly.Directives;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings({ "PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals" })
 public final class People {
@@ -325,6 +328,50 @@ public final class People {
                     xml.xpath("@href").get(0)
                 )
             );
+        }
+    }
+
+    /**
+     * Set vacation mode.
+     * @param uid User ID
+     * @param mode TRUE if vacation mode on
+     * @throws IOException If fails
+     */
+    public void vacation(
+        final String uid,
+        final boolean mode
+    ) throws IOException {
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                People.start(uid)
+                    .addIf("vacation")
+                    .set(mode)
+            );
+        }
+    }
+
+    /**
+     * Check vacation mode.
+     * @param uid User ID
+     * @return TRUE if person on vacation
+     * @throws IOException If fails
+     */
+    public boolean vacation(final String uid) throws IOException {
+        try (final Item item = this.item()) {
+            return new UncheckedScalar<>(
+                new ItemOfIterable<>(
+                    new MappedIterable<>(
+                        new Xocument(item).xpath(
+                            String.format(
+                                "/people/person[@id='%s']/vacation/text()",
+                                uid
+                            )
+                        ),
+                        Boolean::parseBoolean
+                    ),
+                    false
+                )
+            ).value();
         }
     }
 
