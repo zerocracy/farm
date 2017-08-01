@@ -35,10 +35,6 @@ import org.telegram.telegrambots.generics.BotSession;
  *  to a project. It should be similar to Slack implementations.
  *  Bot must understand only profile commands, q-profile.xml from slack
  *  can be copied.
- * @todo #75:30min Add notify_in_telegram stakeholder script.
- *  This script should take Telegram session from binding properties
- *  and send a message to sessions's chat. It may be direct chat or
- *  Telegram channel.
  */
 public final class TelegramRadar implements AutoCloseable {
 
