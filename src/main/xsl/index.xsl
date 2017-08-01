@@ -59,6 +59,10 @@
                 </xsl:call-template>
             </p>
             <p>
+                <a href="http://datum.zerocracy.com/pages/policy.html">
+                    <xsl:text>Policy</xsl:text>
+                </a>
+                <xsl:text> &#183; </xsl:text>
                 <xsl:if test="identity">
                     <a href="/u/{identity/login}">
                         <span title="GitHub user currently logged in">
