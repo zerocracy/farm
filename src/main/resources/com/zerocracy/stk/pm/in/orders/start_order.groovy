@@ -41,7 +41,8 @@ def exec(Project project, XML xml) {
     orders.assign(job, login, reason)
     claim.reply(
       String.format(
-        'Job `%s` assigned to @%s, please go ahead.',
+        'Job `%s` assigned to @%s, please go ahead' +
+        ' ([policy](http://datum.zerocracy.com/pages/policy.html)).',
         job, login
       )
     ).postTo(project)
