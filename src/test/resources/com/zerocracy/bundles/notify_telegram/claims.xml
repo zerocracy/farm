@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<claims xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/zerocracy/datum/0.22/xsd/pm/claims.xsd">
+    <claim id="1">
+        <type>Notify</type>
+        <created>2017-03-27T11:18:09.228Z</created>
+        <params>
+            <param name="message">Hello Telegram!</param>
+        </params>
+        <token>telegram;42</token>
+    </claim>
+</claims>

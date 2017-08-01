@@ -20,42 +20,27 @@ import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
+import com.zerocracy.radars.telegram.TmResponse
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Notify')
-  ClaimIn claim = new ClaimIn(xml)
-  String[] parts = claim.token().split(';', 2)
-  if (parts[0] == 'slack') {
-    claim.copy()
-      .type('Notify in Slack')
-      .token(parts[1])
-      .postTo(project)
-  } else if (parts[0] == 'telegram') {
-    claim.copy()
-    .type('Notify in Telegram')
-    .token(parts[1])
-    .postTo(project)
-  } else if (parts[0] == 'github') {
-    claim.copy()
-      .type('Notify in GitHub')
-      .token(parts[1])
-      .postTo(project)
-  } else if (parts[0] == 'job') {
-    claim.copy()
-      .type('Notify job')
-      .token(parts[1])
-      .postTo(project)
-  } else if (parts[0] == 'test') {
-    claim.copy()
-      .type('Notify test')
-      .token(parts[1])
-      .postTo(project)
-  } else {
-    throw new IllegalStateException(
-      String.format(
-        'I don\'t know how to notify "%s"',
-        parts[0]
-      )
+  new Assume(project, xml).type('Notify in Telegram')
+  final ClaimIn claim = new ClaimIn(xml)
+  final channel = Long.parseLong(claim.token())
+  binding.variables.telegram[channel].reply(new Response(claim))
+}
+
+class Response implements TmResponse {
+
+  final ClaimIn claim
+
+  Response(ClaimIn claim) {
+    this.claim = claim
+  }
+
+  @Override
+  String text() throws IOException {
+    claim.param('message').replaceAll(
+      '\\[([^]]+)]\\(([^)]+)\\)', '<$2|$1>'
     )
   }
 }

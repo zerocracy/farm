@@ -129,7 +129,7 @@ public final class SmartFarm implements Scalar<Farm> {
                             }
                             Logger.error(
                                 this,
-                                "$[exception]s",
+                                "%[exception]s",
                                 exp
                             );
                         }

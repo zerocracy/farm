@@ -26,6 +26,7 @@ import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.fake.FkFarm;
 import com.zerocracy.pm.Claims;
+import com.zerocracy.radars.telegram.TmSession;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
@@ -93,6 +94,7 @@ public final class BundlesTest {
         final Map<String, Object> deps = new StickyMap<String, Object>(
             new MapEntry<>("github", new MkGithub("test")),
             new MapEntry<>("slack", new HashMap<String, SlackSession>(0)),
+            new MapEntry<>("telegram", new HashMap<Long, TmSession>(0)),
             new MapEntry<>("properties", props)
         );
         final Farm farm = new SmartFarm(new FkFarm(), props, deps).value();
