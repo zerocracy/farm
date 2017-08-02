@@ -42,12 +42,19 @@
             <xsl:text>).</xsl:text>
         </p>
         <p>
-            <xsl:text>Links: </xsl:text>
+            <xsl:value-of select="count(links/link)"/>
+            <xsl:text> link</xsl:text>
+            <xsl:if test="count(links/link) &gt; 1">
+                <xsl:text>s</xsl:text>
+            </xsl:if>
+            <xsl:text>: </xsl:text>
             <xsl:for-each select="links/link">
                 <xsl:if test="position() &gt; 1">
                     <xsl:text>, </xsl:text>
                 </xsl:if>
-                <xsl:value-of select="."/>
+                <code>
+                    <xsl:value-of select="."/>
+                </code>
             </xsl:for-each>
             <xsl:text>.</xsl:text>
         </p>
