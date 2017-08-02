@@ -38,8 +38,7 @@
             </p>
             <p>
                 <xsl:text>Zerocrat is a project manager</xsl:text>
-                <br/>
-                <xsl:text>that never sleeps.</xsl:text>
+                <xsl:text> that never sleeps.</xsl:text>
             </p>
             <p>
                 <span title="Current version of the bot">
