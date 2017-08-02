@@ -78,9 +78,12 @@ public final class TkProfile implements TkRegex {
                 ),
                 new XeAppend(
                     "details",
-                    new XeAppend("rate", people.rate(login).toString()),
-                    new XeAppend("wallet", people.wallet(login)),
-                    new XeAppend("bank", people.bank(login)),
+                    new XeAppend(
+                        "rate",
+                        new XeAppend("cash", people.rate(login).toString()),
+                        new XeAppend("wallet", people.wallet(login)),
+                        new XeAppend("bank", people.bank(login))
+                    ),
                     new XeAppend(
                         "vacation",
                         Boolean.toString(

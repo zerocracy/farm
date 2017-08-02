@@ -28,34 +28,49 @@
         </title>
     </xsl:template>
     <xsl:template match="page" mode="inner">
+        <xsl:apply-templates select="vacation"/>
         <xsl:apply-templates select="details"/>
-        <xsl:if test="vacation/text() = 'true'">
-            <p>
-                <xsl:text>On vacation</xsl:text>
-            </p>
-        </xsl:if>
+        <xsl:apply-templates select="awards"/>
+        <xsl:apply-templates select="agenda"/>
+    </xsl:template>
+    <xsl:template match="awards">
         <p>
             <xsl:text>Total points: </xsl:text>
-            <a href="/u/{identity/login}/awards">
-                <xsl:if test="awards &gt;= 0">
+            <a href="/u/{/page/identity/login}/awards">
+                <xsl:if test=". &gt;= 0">
                     <xsl:text>+</xsl:text>
                 </xsl:if>
-                <xsl:value-of select="awards"/>
-            </a>
-            <xsl:text>.</xsl:text>
-        </p>
-        <p>
-            <xsl:text>Total jobs: </xsl:text>
-            <a href="/u/{identity/login}/agenda">
-                <xsl:value-of select="agenda"/>
+                <xsl:value-of select="."/>
             </a>
             <xsl:text>.</xsl:text>
         </p>
     </xsl:template>
+    <xsl:template match="agenda">
+        <p>
+            <xsl:text>Total jobs: </xsl:text>
+            <a href="/u/{/page/identity/login}/agenda">
+                <xsl:value-of select="."/>
+            </a>
+            <xsl:text>.</xsl:text>
+        </p>
+    </xsl:template>
+    <xsl:template match="vacation">
+        <xsl:if test=". = 'true'">
+            <p>
+                <xsl:text>On vacation</xsl:text>
+            </p>
+        </xsl:if>
+    </xsl:template>
     <xsl:template match="details">
+        <xsl:apply-templates select="rate"/>
+        <xsl:apply-templates select="projects"/>
+        <xsl:apply-templates select="links"/>
+        <xsl:apply-templates select="skills"/>
+    </xsl:template>
+    <xsl:template match="rate">
         <p>
             <xsl:text>Rate: </xsl:text>
-            <xsl:value-of select="rate"/>
+            <xsl:value-of select="cash"/>
             <xsl:text>, wallet: </xsl:text>
             <code>
                 <xsl:value-of select="wallet"/>
@@ -64,59 +79,16 @@
             <xsl:value-of select="bank"/>
             <xsl:text>.</xsl:text>
         </p>
-        <xsl:apply-templates select="projects"/>
-        <p>
-            <xsl:if test="skills/skill">
-                <xsl:value-of select="count(skills/skill)"/>
-                <xsl:text> skill</xsl:text>
-                <xsl:if test="count(skills/skill) &gt; 1">
-                    <xsl:text>s</xsl:text>
-                </xsl:if>
-                <xsl:text>: </xsl:text>
-                <xsl:for-each select="skills/skill">
-                    <xsl:if test="position() &gt; 1">
-                        <xsl:text>, </xsl:text>
-                    </xsl:if>
-                    <xsl:value-of select="."/>
-                </xsl:for-each>
-            </xsl:if>
-            <xsl:if test="not(skills/skill)">
-                <xsl:text>none</xsl:text>
-            </xsl:if>
-            <xsl:text>.</xsl:text>
-        </p>
-        <p>
-            <xsl:if test="links/link">
-                <xsl:value-of select="count(links/link)"/>
-                <xsl:text> link</xsl:text>
-                <xsl:if test="count(links/link) &gt; 1">
-                    <xsl:text>s</xsl:text>
-                </xsl:if>
-                <xsl:text>: </xsl:text>
-                <xsl:for-each select="links/link">
-                    <xsl:if test="position() &gt; 1">
-                        <xsl:text>, </xsl:text>
-                    </xsl:if>
-                    <code>
-                        <xsl:value-of select="."/>
-                    </code>
-                </xsl:for-each>
-            </xsl:if>
-            <xsl:if test="not(links/link)">
-                <xsl:text>none</xsl:text>
-            </xsl:if>
-            <xsl:text>.</xsl:text>
-        </p>
     </xsl:template>
     <xsl:template match="projects[project]">
         <p>
-            <xsl:value-of select="count(projects/project)"/>
+            <xsl:value-of select="count(project)"/>
             <xsl:text> project</xsl:text>
-            <xsl:if test="count(projects/project) &gt; 1">
+            <xsl:if test="count(project) &gt; 1">
                 <xsl:text>s</xsl:text>
             </xsl:if>
             <xsl:text>: </xsl:text>
-            <xsl:for-each select="projects/project">
+            <xsl:for-each select="project">
                 <xsl:if test="position() &gt; 1">
                     <xsl:text>, </xsl:text>
                 </xsl:if>
@@ -130,6 +102,52 @@
     <xsl:template match="projects[not(project)]">
         <p>
             <xsl:text>You're in no projects yet.</xsl:text>
+        </p>
+    </xsl:template>
+    <xsl:template match="skills[skill]">
+        <p>
+            <xsl:value-of select="count(skill)"/>
+            <xsl:text> skill</xsl:text>
+            <xsl:if test="count(skill) &gt; 1">
+                <xsl:text>s</xsl:text>
+            </xsl:if>
+            <xsl:text>: </xsl:text>
+            <xsl:for-each select="skill">
+                <xsl:if test="position() &gt; 1">
+                    <xsl:text>, </xsl:text>
+                </xsl:if>
+                <xsl:value-of select="."/>
+            </xsl:for-each>
+            <xsl:text>.</xsl:text>
+        </p>
+    </xsl:template>
+    <xsl:template match="skills[not(skill)]">
+        <p>
+            <xsl:text>We don't know anything about your skills yet.</xsl:text>
+        </p>
+    </xsl:template>
+    <xsl:template match="links[link]">
+        <p>
+            <xsl:value-of select="count(link)"/>
+            <xsl:text> link</xsl:text>
+            <xsl:if test="count(link) &gt; 1">
+                <xsl:text>s</xsl:text>
+            </xsl:if>
+            <xsl:text>: </xsl:text>
+            <xsl:for-each select="link">
+                <xsl:if test="position() &gt; 1">
+                    <xsl:text>, </xsl:text>
+                </xsl:if>
+                <code>
+                    <xsl:value-of select="."/>
+                </code>
+            </xsl:for-each>
+            <xsl:text>.</xsl:text>
+        </p>
+    </xsl:template>
+    <xsl:template match="links[not(link)]">
+        <p>
+            <xsl:text>It's weird, no links?!</xsl:text>
         </p>
     </xsl:template>
 </xsl:stylesheet>
