@@ -64,26 +64,15 @@
             <xsl:value-of select="bank"/>
             <xsl:text>.</xsl:text>
         </p>
+        <xsl:apply-templates select="projects"/>
         <p>
-            <xsl:text>Projects: </xsl:text>
-            <xsl:if test="projects/project">
-                <xsl:for-each select="projects/project">
-                    <xsl:if test="position() &gt; 1">
-                        <xsl:text>, </xsl:text>
-                    </xsl:if>
-                    <a href="/p/{.}">
-                        <xsl:value-of select="."/>
-                    </a>
-                </xsl:for-each>
-            </xsl:if>
-            <xsl:if test="not(projects/project)">
-                <xsl:text>none</xsl:text>
-            </xsl:if>
-            <xsl:text>.</xsl:text>
-        </p>
-        <p>
-            <xsl:text>Skills: </xsl:text>
             <xsl:if test="skills/skill">
+                <xsl:value-of select="count(skills/skill)"/>
+                <xsl:text> skill</xsl:text>
+                <xsl:if test="count(skills/skill) &gt; 1">
+                    <xsl:text>s</xsl:text>
+                </xsl:if>
+                <xsl:text>: </xsl:text>
                 <xsl:for-each select="skills/skill">
                     <xsl:if test="position() &gt; 1">
                         <xsl:text>, </xsl:text>
@@ -97,8 +86,13 @@
             <xsl:text>.</xsl:text>
         </p>
         <p>
-            <xsl:text>Links: </xsl:text>
             <xsl:if test="links/link">
+                <xsl:value-of select="count(links/link)"/>
+                <xsl:text> link</xsl:text>
+                <xsl:if test="count(links/link) &gt; 1">
+                    <xsl:text>s</xsl:text>
+                </xsl:if>
+                <xsl:text>: </xsl:text>
                 <xsl:for-each select="links/link">
                     <xsl:if test="position() &gt; 1">
                         <xsl:text>, </xsl:text>
@@ -112,6 +106,30 @@
                 <xsl:text>none</xsl:text>
             </xsl:if>
             <xsl:text>.</xsl:text>
+        </p>
+    </xsl:template>
+    <xsl:template match="projects[project]">
+        <p>
+            <xsl:value-of select="count(projects/project)"/>
+            <xsl:text> project</xsl:text>
+            <xsl:if test="count(projects/project) &gt; 1">
+                <xsl:text>s</xsl:text>
+            </xsl:if>
+            <xsl:text>: </xsl:text>
+            <xsl:for-each select="projects/project">
+                <xsl:if test="position() &gt; 1">
+                    <xsl:text>, </xsl:text>
+                </xsl:if>
+                <a href="/p/{.}">
+                    <xsl:value-of select="."/>
+                </a>
+            </xsl:for-each>
+            <xsl:text>.</xsl:text>
+        </p>
+    </xsl:template>
+    <xsl:template match="projects[not(project)]">
+        <p>
+            <xsl:text>You're in no projects yet.</xsl:text>
         </p>
     </xsl:template>
 </xsl:stylesheet>
