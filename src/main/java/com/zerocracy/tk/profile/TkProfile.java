@@ -30,6 +30,7 @@ import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
 import org.takes.rs.xe.XeAppend;
+import org.takes.rs.xe.XeChain;
 import org.takes.rs.xe.XeTransform;
 import org.takes.rs.xe.XeWhen;
 
@@ -65,65 +66,74 @@ public final class TkProfile implements TkRegex {
 
     @Override
     public Response act(final RqRegex req) throws IOException {
-        final String login = new RqLogin(this.pmo, req).value();
-        final People people = new People(this.pmo).bootstrap();
         return new RsPage(
             this.props,
             "/xsl/profile.xsl",
             req,
-            () -> new XeWhen(
-                login.equals(new RqUser(this.pmo, req).value()),
-                new XeAppend(
-                    "details",
-                    new XeAppend(
-                        "rate",
-                        new XeAppend("cash", people.rate(login).toString()),
-                        new XeAppend("wallet", people.wallet(login)),
-                        new XeAppend("bank", people.bank(login))
-                    ),
-                    new XeAppend(
-                        "vacation",
-                        Boolean.toString(
-                            people.vacation(login)
+            () -> {
+                final String user = new RqUser(this.pmo, req).value();
+                final String login = new RqLogin(this.pmo, req).value();
+                final People people = new People(this.pmo).bootstrap();
+                return new XeChain(
+                    new XeWhen(
+                        login.equals(user),
+                        new XeAppend(
+                            "details",
+                            new XeAppend(
+                                "rate",
+                                new XeAppend(
+                                    "cash", people.rate(login).toString()
+                                ),
+                                new XeAppend("wallet", people.wallet(login)),
+                                new XeAppend("bank", people.bank(login))
+                            ),
+                            new XeAppend(
+                                "vacation",
+                                Boolean.toString(
+                                    people.vacation(login)
+                                )
+                            ),
+                            new XeAppend(
+                                "projects",
+                                new XeTransform<>(
+                                    new Projects(
+                                        this.pmo, login
+                                    ).bootstrap().iterate(),
+                                    pkt -> new XeAppend("project", pkt)
+                                )
+                            ),
+                            new XeAppend(
+                                "skills",
+                                new XeTransform<>(
+                                    people.skills(login),
+                                    skill -> new XeAppend("skill", skill)
+                                )
+                            ),
+                            new XeAppend(
+                                "links",
+                                new XeTransform<>(
+                                    people.links(login),
+                                    link -> new XeAppend("link", link)
+                                )
+                            )
                         )
                     ),
                     new XeAppend(
-                        "projects",
-                        new XeTransform<>(
-                            new Projects(this.pmo, login).bootstrap().iterate(),
-                            pkt -> new XeAppend("project", pkt)
+                        "awards",
+                        Integer.toString(
+                            new Awards(this.pmo, login).bootstrap().total()
                         )
                     ),
                     new XeAppend(
-                        "skills",
-                        new XeTransform<>(
-                            people.skills(login),
-                            skill -> new XeAppend("skill", skill)
-                        )
-                    ),
-                    new XeAppend(
-                        "links",
-                        new XeTransform<>(
-                            people.links(login),
-                            link -> new XeAppend("link", link)
+                        "agenda",
+                        Integer.toString(
+                            new LengthOfIterable(
+                                new Agenda(this.pmo, login).bootstrap().jobs()
+                            ).value()
                         )
                     )
-                )
-            ),
-            () -> new XeAppend(
-                "awards",
-                Integer.toString(
-                    new Awards(this.pmo, login).bootstrap().total()
-                )
-            ),
-            () -> new XeAppend(
-                "agenda",
-                Integer.toString(
-                    new LengthOfIterable(
-                        new Agenda(this.pmo, login).bootstrap().jobs()
-                    ).value()
-                )
-            )
+                );
+            }
         );
     }
 
