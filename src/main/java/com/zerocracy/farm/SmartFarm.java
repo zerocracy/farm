@@ -17,23 +17,17 @@
 package com.zerocracy.farm;
 
 import com.jcabi.aspects.Cacheable;
-import com.jcabi.log.Logger;
 import com.zerocracy.farm.reactive.Brigade;
 import com.zerocracy.farm.reactive.RvFarm;
 import com.zerocracy.farm.reactive.StkGroovy;
 import com.zerocracy.farm.sync.SyncFarm;
 import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.SoftException;
 import com.zerocracy.jstk.Stakeholder;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
-import org.cactoos.Proc;
 import org.cactoos.Scalar;
-import org.cactoos.func.FuncWithFallback;
-import org.cactoos.func.IoCheckedFunc;
 import org.cactoos.io.ResourceAsInput;
 import org.cactoos.list.MapEntry;
 import org.cactoos.list.MappedIterable;
@@ -110,31 +104,14 @@ public final class SmartFarm implements Scalar<Farm> {
             path -> new StkSafe(
                 path,
                 this.props,
-                (project, xml) -> new IoCheckedFunc<>(
-                    new FuncWithFallback<Project, Boolean>(
-                        (Proc<Project>) pkt -> new StkGroovy(
-                            new ResourceAsInput(path),
-                            path,
-                            new StickyMap<String, Object>(
-                                this.deps,
-                                new MapEntry<>("farm", this.value())
-                            )
-                        ).process(pkt, xml),
-                        exp -> {
-                            if (exp instanceof MismatchException) {
-                                throw MismatchException.class.cast(exp);
-                            }
-                            if (exp instanceof SoftException) {
-                                throw SoftException.class.cast(exp);
-                            }
-                            Logger.error(
-                                this,
-                                "%[exception]s",
-                                exp
-                            );
-                        }
+                new StkGroovy(
+                    new ResourceAsInput(path),
+                    path,
+                    new StickyMap<String, Object>(
+                        this.deps,
+                        new MapEntry<>("farm", this.value())
                     )
-                ).apply(project)
+                )
             )
         );
     }

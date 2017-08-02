@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.tk.profile;
+package com.zerocracy.tk;
 
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pmo.People;
@@ -31,7 +31,7 @@ import org.takes.facets.forward.RsFailure;
  * @since 0.12
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-final class RqLogin implements Scalar<String> {
+public final class RqLogin implements Scalar<String> {
 
     /**
      * PMO.
@@ -48,7 +48,7 @@ final class RqLogin implements Scalar<String> {
      * @param pkt Project
      * @param req Request
      */
-    RqLogin(final Project pkt, final RqRegex req) {
+    public RqLogin(final Project pkt, final RqRegex req) {
         this.pmo = pkt;
         this.request = req;
     }

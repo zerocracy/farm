@@ -17,12 +17,12 @@
 package com.zerocracy.farm;
 
 import com.jcabi.aspects.Tv;
-import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.SoftException;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
+import io.sentry.Sentry;
 import java.io.IOException;
 import java.util.Properties;
 import lombok.EqualsAndHashCode;
@@ -95,14 +95,7 @@ public final class StkSafe implements Stakeholder {
                     String.format("Oops! %s", ex.getMessage())
                 ).postTo(project);
             } else {
-                Logger.error(
-                    this, "%s soft failure at \"%s/%s\" in \"%s\": %s",
-                    this.origin.getClass().getCanonicalName(),
-                    new ClaimIn(xml).type(),
-                    new ClaimIn(xml).number(),
-                    project,
-                    ex.getLocalizedMessage()
-                );
+                Sentry.capture(ex);
             }
             // @checkstyle IllegalCatchCheck (1 line)
         } catch (final Throwable ex) {
@@ -130,14 +123,7 @@ public final class StkSafe implements Stakeholder {
                     )
                 ).postTo(project);
             }
-            Logger.error(
-                this, "%s failed at \"%s/%s\" in \"%s\": %[exception]s",
-                this.origin.getClass().getCanonicalName(),
-                new ClaimIn(xml).type(),
-                new ClaimIn(xml).number(),
-                project,
-                ex
-            );
+            Sentry.capture(ex);
         }
     }
 }

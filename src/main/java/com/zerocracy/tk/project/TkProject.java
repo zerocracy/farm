@@ -17,8 +17,11 @@
 package com.zerocracy.tk.project;
 
 import com.zerocracy.jstk.Farm;
+import com.zerocracy.jstk.Project;
+import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.pmo.Catalog;
 import com.zerocracy.pmo.Pmo;
+import com.zerocracy.tk.RqLogin;
 import com.zerocracy.tk.RsPage;
 import java.io.IOException;
 import java.util.Properties;
@@ -66,12 +69,21 @@ public final class TkProject implements TkRegex {
             "/xsl/project.xsl",
             req,
             () -> {
-                final String pid = new RqProject(this.farm, req)
-                    .value().toString();
+                final Project project = new RqProject(this.farm, req).value();
+                final String pid = project.toString();
                 return new XeChain(
                     new XeAppend(
                         "project",
                         new RqProject(this.farm, req).value().toString()
+                    ),
+                    new XeAppend(
+                        "roles",
+                        new XeTransform<>(
+                            new Roles(project).bootstrap().allRoles(
+                                new RqLogin(project, req).value()
+                            ),
+                            role -> new XeAppend("role", role)
+                        )
                     ),
                     new XeAppend(
                         "links",

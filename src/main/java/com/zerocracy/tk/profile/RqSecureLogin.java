@@ -17,6 +17,7 @@
 package com.zerocracy.tk.profile;
 
 import com.zerocracy.jstk.Project;
+import com.zerocracy.tk.RqLogin;
 import java.io.IOException;
 import org.cactoos.Scalar;
 import org.takes.facets.auth.Identity;
