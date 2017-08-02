@@ -190,15 +190,13 @@ public final class People {
                     uid
                 )
             ).iterator();
-            if (!rates.hasNext()) {
-                throw new SoftException(
-                    String.format(
-                        "Your rate is not set yet (uid=%s)", uid
-                    )
-                );
+            final String rate;
+            if (rates.hasNext()) {
+                rate = rates.next().xpath("text()").get(0);
+            } else {
+                rate = Cash.ZERO.toString();
             }
-            final XML rate = rates.next();
-            return new Cash.S(rate.xpath("text()").get(0));
+            return new Cash.S(rate);
         }
     }
 

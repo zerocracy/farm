@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.tk;
+package com.zerocracy.tk.profile;
 
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pmo.People;

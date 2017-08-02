@@ -21,13 +21,12 @@ import com.zerocracy.pmo.Agenda;
 import com.zerocracy.pmo.Awards;
 import com.zerocracy.pmo.People;
 import com.zerocracy.pmo.Projects;
-import com.zerocracy.tk.RqLogin;
+import com.zerocracy.tk.RqUser;
 import com.zerocracy.tk.RsPage;
 import java.io.IOException;
 import java.util.Properties;
 import org.cactoos.list.LengthOfIterable;
 import org.takes.Response;
-import org.takes.facets.auth.RqAuth;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
 import org.takes.rs.xe.XeAppend;
@@ -73,9 +72,7 @@ public final class TkProfile implements TkRegex {
             "/xsl/profile.xsl",
             req,
             () -> new XeWhen(
-                login.equals(
-                    new RqAuth(req).identity().properties().get("login")
-                ),
+                login.equals(new RqUser(req).value()),
                 new XeAppend(
                     "details",
                     new XeAppend(

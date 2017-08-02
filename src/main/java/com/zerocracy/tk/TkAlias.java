@@ -24,8 +24,6 @@ import java.util.logging.Level;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
-import org.takes.facets.auth.Identity;
-import org.takes.facets.auth.RqAuth;
 import org.takes.facets.flash.RsFlash;
 import org.takes.facets.forward.RsForward;
 import org.takes.rq.RqHref;
@@ -36,6 +34,7 @@ import org.takes.rq.RqHref;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class TkAlias implements Take {
 
@@ -55,34 +54,28 @@ public final class TkAlias implements Take {
     @Override
     @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     public Response act(final Request req) throws IOException {
-        final Identity identity = new RqAuth(req).identity();
-        if (identity.equals(Identity.ANONYMOUS)) {
-            throw new RsForward(
-                new RsFlash("You have to login first!", Level.SEVERE)
-            );
-        }
         final RqHref.Smart smart = new RqHref.Smart(new RqHref.Base(req));
         final String rel = smart.single("rel");
         final String href = smart.single("href");
         final People people = new People(new Pmo(this.farm)).bootstrap();
         if (people.find(rel, href).iterator().hasNext()) {
             throw new RsForward(
-                new RsFlash("We've been already introduced, thanks!")
-            );
-        } else {
-            people.link(
-                identity.properties().get("login"),
-                rel, href
-            );
-            throw new RsForward(
                 new RsFlash(
-                    String.format(
-                        "Thanks, you've got an alias, @rel='%s', @href='%s'",
-                        rel, href
-                    )
+                    "We've been already introduced, thanks!",
+                    Level.WARNING
                 )
             );
         }
+        final String login = new RqUser(req).value();
+        people.link(login, rel, href);
+        return new RsForward(
+            new RsFlash(
+                String.format(
+                    "Thanks, @%s now has an alias, @rel='%s', @href='%s'",
+                    login, rel, href
+                )
+            )
+        );
     }
 
 }

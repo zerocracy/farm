@@ -64,6 +64,16 @@ public final class PeopleTest {
     }
 
     @Test
+    public void readsUnsetRate() throws Exception {
+        final People people = new People(new FkProject()).bootstrap();
+        final String uid = "dmarkov9";
+        MatcherAssert.assertThat(
+            people.rate(uid),
+            Matchers.equalTo(Cash.ZERO)
+        );
+    }
+
+    @Test
     public void setsUserWallet() throws Exception {
         final People people = new People(new FkProject()).bootstrap();
         final String uid = "yegor256-1";

@@ -21,10 +21,10 @@ import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.pmo.Catalog;
 import com.zerocracy.pmo.Pmo;
+import com.zerocracy.tk.RqUser;
 import java.io.IOException;
 import java.util.logging.Level;
 import org.cactoos.Scalar;
-import org.takes.facets.auth.RqAuth;
 import org.takes.facets.flash.RsFlash;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.forward.RsFailure;
@@ -72,15 +72,14 @@ final class RqProject implements Scalar<Project> {
         final Project project = this.farm.find(
             String.format("@id='%s'", name)
         ).iterator().next();
-        final String login = new RqAuth(this.request)
-            .identity().properties().get("login");
+        final String login = new RqUser(this.request).value();
         final Roles roles = new Roles(project).bootstrap();
         if (!roles.hasRole(login, "ARC", "PO")) {
             throw new RsForward(
                 new RsFlash(
                     String.format(
-                        "@%s must either be a PO or an ARC to view this.",
-                        login
+                        "@%s must either be a PO or an ARC to view %s",
+                        login, name
                     ),
                     Level.SEVERE
                 )

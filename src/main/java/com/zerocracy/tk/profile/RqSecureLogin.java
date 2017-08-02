@@ -17,7 +17,6 @@
 package com.zerocracy.tk.profile;
 
 import com.zerocracy.jstk.Project;
-import com.zerocracy.tk.RqLogin;
 import com.zerocracy.tk.RqUser;
 import java.io.IOException;
 import java.util.logging.Level;
