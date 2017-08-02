@@ -63,6 +63,20 @@ import org.reflections.scanners.ResourcesScanner;
  * @checkstyle JavadocVariableCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @checkstyle VisibilityModifierCheck (500 lines)
+ * @todo #140:30m Optimize XsdResolver
+ *  App spend a lot of time in `StrictXML.resolve` method.
+ *  It seems that `XsdResolver` fetches schemas each time
+ *  `Xocument` created. It may be more effective to download
+ *  xsd schemas in build phase and read them instead of remote.
+ * @todo #140:30m Optimize groovy scripts parsing
+ *  Tests spend a lot of time on loading, parsing and compiling
+ *  groovy stakeholder scripts. It would be more optimal to
+ *  share `Brigade` instance between all bundle tests. It may be achieved
+ *  using `@BeforeClass` JUnit annotation.
+ * @todo #140:30m Optimize SyncItem.acquire() method
+ *  App spend a lot of time on `acquire` method.
+ *  It seems that we hold opened item too long or too often.
+ *  Also we can share read-only item between multiple threads.
  */
 @SuppressWarnings("PMD.ExcessiveImports")
 @RunWith(Parameterized.class)
