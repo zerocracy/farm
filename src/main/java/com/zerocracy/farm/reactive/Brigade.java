@@ -60,7 +60,7 @@ public final class Brigade {
      */
     public Brigade(final Iterable<Stakeholder> lst) {
         this.list = lst;
-        this.cache = new HashMap<>();
+        this.cache = new HashMap<>(0);
     }
 
     /**
@@ -72,9 +72,9 @@ public final class Brigade {
      */
     public int process(final Project project, final XML xml)
         throws IOException {
-        int total = 0;
         final String key = xml.xpath("/claim/type/text()").get(0);
         this.cache.putIfAbsent(key, new ArrayList<>(0));
+        int total = 0;
         for (final Stakeholder stk : this.list) {
             if (this.cache.get(key).contains(stk)) {
                 continue;
