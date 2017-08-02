@@ -32,7 +32,14 @@
             <code>
                 <xsl:value-of select="project"/>
             </code>
-            <xsl:text>.</xsl:text>
+            <xsl:text> (your roles: </xsl:text>
+            <xsl:for-each select="roles/role">
+                <xsl:if test="position() &gt; 1">
+                    <xsl:text>, </xsl:text>
+                </xsl:if>
+                <xsl:value-of select="."/>
+            </xsl:for-each>
+            <xsl:text>).</xsl:text>
         </p>
         <p>
             <xsl:text>Links: </xsl:text>
