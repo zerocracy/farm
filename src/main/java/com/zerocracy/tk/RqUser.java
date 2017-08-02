@@ -14,78 +14,52 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.tk.project;
+package com.zerocracy.tk;
 
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Project;
-import com.zerocracy.pm.staff.Roles;
-import com.zerocracy.pmo.Catalog;
-import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
 import java.util.logging.Level;
 import org.cactoos.Scalar;
+import org.takes.Request;
+import org.takes.facets.auth.Identity;
 import org.takes.facets.auth.RqAuth;
 import org.takes.facets.flash.RsFlash;
-import org.takes.facets.fork.RqRegex;
-import org.takes.facets.forward.RsFailure;
 import org.takes.facets.forward.RsForward;
 
 /**
- * Project from the request.
+ * User login from OAuth.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.12
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-final class RqProject implements Scalar<Project> {
+public final class RqUser implements Scalar<String> {
 
     /**
-     * Farm.
+     * Request.
      */
-    private final Farm farm;
-
-    /**
-     * RqRegex.
-     */
-    private final RqRegex request;
+    private final Request request;
 
     /**
      * Ctor.
-     * @param frm Farm
      * @param req Request
      */
-    RqProject(final Farm frm, final RqRegex req) {
-        this.farm = frm;
+    public RqUser(final Request req) {
         this.request = req;
     }
 
     @Override
-    public Project value() throws IOException {
-        final String name = this.request.matcher().group(1);
-        final Catalog catalog = new Catalog(new Pmo(this.farm)).bootstrap();
-        if (catalog.links(name).isEmpty()) {
-            throw new RsFailure(
-                String.format("Project \"%s\" not found", name)
-            );
-        }
-        final Project project = this.farm.find(
-            String.format("@id='%s'", name)
-        ).iterator().next();
-        final String login = new RqAuth(this.request)
-            .identity().properties().get("login");
-        final Roles roles = new Roles(project).bootstrap();
-        if (!roles.hasRole(login, "ARC", "PO")) {
+    public String value() throws IOException {
+        final Identity identity = new RqAuth(this.request).identity();
+        if (identity.equals(Identity.ANONYMOUS)) {
             throw new RsForward(
                 new RsFlash(
-                    String.format(
-                        "@%s must either be a PO or an ARC to view this.",
-                        login
-                    ),
+                    "You must be logged in.",
                     Level.SEVERE
                 )
             );
         }
-        return project;
+        return identity.properties().get("login");
     }
+
 }

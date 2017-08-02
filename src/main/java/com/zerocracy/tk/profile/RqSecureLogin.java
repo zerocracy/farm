@@ -18,12 +18,13 @@ package com.zerocracy.tk.profile;
 
 import com.zerocracy.jstk.Project;
 import com.zerocracy.tk.RqLogin;
+import com.zerocracy.tk.RqUser;
 import java.io.IOException;
+import java.util.logging.Level;
 import org.cactoos.Scalar;
-import org.takes.facets.auth.Identity;
-import org.takes.facets.auth.RqAuth;
+import org.takes.facets.flash.RsFlash;
 import org.takes.facets.fork.RqRegex;
-import org.takes.facets.forward.RsFailure;
+import org.takes.facets.forward.RsForward;
 
 /**
  * User login from the request.
@@ -58,10 +59,15 @@ final class RqSecureLogin implements Scalar<String> {
     @Override
     public String value() throws IOException {
         final String login = new RqLogin(this.pmo, this.request).value();
-        final Identity identity = new RqAuth(this.request).identity();
-        if (!identity.properties().get("login").equals(login)) {
-            throw new RsFailure(
-                String.format("Only \"@%s\" is allowed to see this page", login)
+        final String user = new RqUser(this.request).value();
+        if (!user.equals(login)) {
+            throw new RsForward(
+                new RsFlash(
+                    String.format(
+                        "Only \"@%s\" is allowed to see this page", login
+                    ),
+                    Level.SEVERE
+                )
             );
         }
         return login;
