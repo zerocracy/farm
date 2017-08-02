@@ -19,21 +19,21 @@ package com.zerocracy.bundles.bug_label
 import com.jcabi.github.Github
 import com.jcabi.github.Repos
 import com.jcabi.xml.XML
-import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
-import com.zerocracy.radars.github.RbOnBug
+import com.zerocracy.radars.github.RbOnPullRequest
+
 import javax.json.Json
 import org.cactoos.list.ArrayAsIterable
 
 def exec(Project project, XML xml) {
   Github github = binding.variables.github
-  def repo = github.repos().create(new Repos.RepoCreate("bugs", false))
-  def issue = repo.issues().create("A Bug", "")
+  def repo = github.repos().create(new Repos.RepoCreate("pulls", false))
+  def pull = repo.pulls().create("New PR", "master", "master")
   final xpath = String.format(
     "links/link[@rel='github' and @href='%s']",
     repo.coordinates().toString().toLowerCase(Locale.ENGLISH)
   )
-  new RbOnBug().react(
+  new RbOnPullRequest().react(
     new ProjectFarm(project, xpath),
     github,
     Json.createObjectBuilder().add(
@@ -46,28 +46,4 @@ def exec(Project project, XML xml) {
         .add("full_name", repo.coordinates().toString())
     ).build()
   )
-}
-
-// @todo #69:15min We're now using this class here and
-//  adds_new_pull_request_to_wbs/_before.groovy. In the future we might have
-//  even more uses after we've expanded the bundles tests. Probably better to
-//  factor this out into its own class file in src/test/java.
-class ProjectFarm implements Farm {
-
-  private final Project proj
-  private final String xpath
-
-  ProjectFarm(final Project proj, final String xpath) {
-    this.proj = proj
-    this.xpath = xpath
-  }
-
-  @Override
-  Iterable<Project> find(final String xpath) throws IOException {
-    if (this.xpath == xpath) {
-      return new ArrayAsIterable<Project>(this.proj)
-    } else {
-      return Collections.emptyList()
-    }
-  }
 }

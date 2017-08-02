@@ -46,6 +46,7 @@ import org.takes.rs.RsWithStatus;
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
  */
 @ScheduleWithFixedDelay
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class TkGithub implements Take, Runnable {
 
     /**
@@ -108,6 +109,10 @@ public final class TkGithub implements Take, Runnable {
                             )
                         ),
                         "created"
+                    ),
+                    new RbByActions(
+                        new RbOnPullRequest(),
+                        "opened", "reopened"
                     ),
                     new RbByActions(
                         new RbPingArchitect(),
