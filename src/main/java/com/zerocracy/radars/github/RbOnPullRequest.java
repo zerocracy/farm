@@ -42,7 +42,7 @@ public final class RbOnPullRequest implements Rebound {
         final String answer;
         if (issue.isPull()) {
             new ClaimOut()
-                .type("Add pull request to WBS")
+                .type("Add job to WBS")
                 .token(new TokenOfIssue(issue))
                 .param("job", new Job(issue))
                 .postTo(new GhProject(farm, issue.repo()));

@@ -48,10 +48,6 @@ def exec(Project project, XML xml) {
   )
 }
 
-// @todo #69:15min We're now using this class here and
-//  adds_new_pull_request_to_wbs/_before.groovy. In the future we might have
-//  even more uses after we've expanded the bundles tests. Probably better to
-//  factor this out into its own class file in src/test/java.
 class ProjectFarm implements Farm {
 
   private final Project proj
