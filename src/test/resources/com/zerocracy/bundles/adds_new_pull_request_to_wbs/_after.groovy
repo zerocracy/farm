@@ -26,5 +26,6 @@ def exec(Project project, XML xml) {
 //  See https://github.com/jcabi/jcabi-github/issues/1323. When the issue is
 //  fixed, jcabi-github version should be updated and the assertion should be
 //  enabled.
+
 // assert new Wbs(project).bootstrap().exists('gh:test/test#1')
 }
