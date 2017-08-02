@@ -72,7 +72,7 @@ public final class TkProfile implements TkRegex {
             "/xsl/profile.xsl",
             req,
             () -> new XeWhen(
-                login.equals(new RqUser(req).value()),
+                login.equals(new RqUser(this.pmo, req).value()),
                 new XeAppend(
                     "details",
                     new XeAppend(

@@ -21,6 +21,7 @@ import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.fake.FkFarm;
 import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.pmo.Catalog;
+import com.zerocracy.pmo.People;
 import com.zerocracy.pmo.Pmo;
 import com.zerocracy.tk.TkApp;
 import java.util.Properties;
@@ -51,7 +52,9 @@ public final class TkArtifactTest {
         final Roles roles = new Roles(
             farm.find(String.format("@id='%s'", pid)).iterator().next()
         ).bootstrap();
-        roles.assign("yegor256", "PO");
+        final String uid = "yegor256";
+        roles.assign(uid, "PO");
+        new People(new Pmo(farm)).bootstrap().invite(uid, "mentor");
         final Take take = new TkApp(new Properties(), farm);
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(

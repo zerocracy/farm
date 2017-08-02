@@ -58,7 +58,7 @@ final class RqSecureLogin implements Scalar<String> {
     @Override
     public String value() throws IOException {
         final String login = new RqLogin(this.pmo, this.request).value();
-        final String user = new RqUser(this.request).value();
+        final String user = new RqUser(this.pmo, this.request).value();
         if (!user.equals(login)) {
             throw new RsForward(
                 new RsFlash(

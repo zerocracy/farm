@@ -66,7 +66,7 @@ public final class TkAlias implements Take {
                 )
             );
         }
-        final String login = new RqUser(req).value();
+        final String login = new RqUser(this.farm, req).value();
         people.link(login, rel, href);
         return new RsForward(
             new RsFlash(

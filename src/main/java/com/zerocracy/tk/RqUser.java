@@ -16,6 +16,10 @@
  */
 package com.zerocracy.tk;
 
+import com.zerocracy.jstk.Farm;
+import com.zerocracy.jstk.Project;
+import com.zerocracy.pmo.People;
+import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
 import java.util.logging.Level;
 import org.cactoos.Scalar;
@@ -36,15 +40,31 @@ import org.takes.facets.forward.RsForward;
 public final class RqUser implements Scalar<String> {
 
     /**
+     * PMO.
+     */
+    private final Project pmo;
+
+    /**
      * Request.
      */
     private final Request request;
 
     /**
      * Ctor.
+     * @param farm Farm
      * @param req Request
      */
-    public RqUser(final Request req) {
+    public RqUser(final Farm farm, final Request req) {
+        this(new Pmo(farm), req);
+    }
+
+    /**
+     * Ctor.
+     * @param pkt Project
+     * @param req Request
+     */
+    public RqUser(final Project pkt, final Request req) {
+        this.pmo = pkt;
         this.request = req;
     }
 
@@ -55,11 +75,21 @@ public final class RqUser implements Scalar<String> {
             throw new RsForward(
                 new RsFlash(
                     "You must be logged in.",
-                    Level.SEVERE
+                    Level.WARNING
                 )
             );
         }
-        return identity.properties().get("login");
+        final String login = identity.properties().get("login");
+        final People people = new People(this.pmo).bootstrap();
+        if (!people.hasMentor(login)) {
+            throw new RsForward(
+                new RsFlash(
+                    "You must be invited to us by somebody who we already know",
+                    Level.WARNING
+                )
+            );
+        }
+        return login;
     }
 
 }

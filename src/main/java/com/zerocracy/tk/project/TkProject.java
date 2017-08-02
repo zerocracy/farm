@@ -80,7 +80,7 @@ public final class TkProject implements TkRegex {
                         "roles",
                         new XeTransform<>(
                             new Roles(project).bootstrap().allRoles(
-                                new RqUser(req).value()
+                                new RqUser(this.farm, req).value()
                             ),
                             role -> new XeAppend("role", role)
                         )
