@@ -16,13 +16,14 @@
  */
 package com.zerocracy.stk.pm.staff.elections
 
+import com.jcabi.log.Logger
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimOut
-import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pm.staff.Elections
+import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pm.staff.bans.FkBans
 import com.zerocracy.pm.staff.voters.Banned
 import com.zerocracy.pm.staff.voters.NoRoom
@@ -34,25 +35,27 @@ def exec(Project project, XML xml) {
   Wbs wbs = new Wbs(project).bootstrap()
   Roles roles = new Roles(project).bootstrap()
   List<String> logins = roles.findByRole('DEV')
-  if (!logins.empty) {
-    Elections elections = new Elections(project).bootstrap()
-    for (String job : wbs.iterate()) {
-      def elected = elections.elect(
-        job, logins,
-        [
-          (new NoRoom(project)): -100,
-          (new Banned(job, new FkBans())): -1000,
-          (new Vacation(project)): -1000
-        ]
-      )
-      if (elected) {
-        new ClaimOut()
-          .type('Performer was elected')
-          .param('login', elections.winner(job))
-          .param('job', job)
-          .param('reason', elections.reason(job))
-          .postTo(project)
-      }
+  if (logins.empty) {
+    Logger.warn(this, 'No DEVs in %s, cannot elect', project)
+    return
+  }
+  Elections elections = new Elections(project).bootstrap()
+  for (String job : wbs.iterate()) {
+    def elected = elections.elect(
+      job, logins,
+      [
+        (new NoRoom(project)): -100,
+        (new Banned(job, new FkBans())): -1000,
+        (new Vacation(project)): -1000
+      ]
+    )
+    if (elected) {
+      new ClaimOut()
+        .type('Performer was elected')
+        .param('login', elections.winner(job))
+        .param('job', job)
+        .param('reason', elections.reason(job))
+        .postTo(project)
     }
   }
 }

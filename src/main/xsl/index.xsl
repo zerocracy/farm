@@ -37,6 +37,11 @@
                 </a>
             </p>
             <p>
+                <xsl:text>Zerocrat is a project manager</xsl:text>
+                <br/>
+                <xsl:text>that never sleeps.</xsl:text>
+            </p>
+            <p>
                 <span title="Current version of the bot">
                     <xsl:text>v</xsl:text>
                     <xsl:value-of select="version/name"/>

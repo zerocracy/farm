@@ -25,7 +25,6 @@ import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Map;
 import org.xembly.Directives;
 
@@ -78,7 +77,7 @@ public final class Elections {
      * @return TRUE if was elected a new winner
      * @throws IOException If fails
      */
-    public boolean elect(final String job, final List<String> logins,
+    public boolean elect(final String job, final Iterable<String> logins,
         final Map<Voter, Integer> voters) throws IOException {
         String winner = "";
         if (this.elected(job)) {
@@ -87,7 +86,7 @@ public final class Elections {
         final String date = ZonedDateTime.now().format(
             DateTimeFormatter.ISO_INSTANT
         );
-        try (final Item roles = this.item()) {
+        try (final Item item = this.item()) {
             final Directives dirs = new Directives()
                 .xpath(
                     String.format(
@@ -103,6 +102,7 @@ public final class Elections {
                         job
                     )
                 )
+                .strict(1)
                 .add("election")
                 .attr("date", date);
             final StringBuilder log = new StringBuilder(0);
@@ -120,12 +120,12 @@ public final class Elections {
                 }
                 dirs.up();
             }
-            new Xocument(roles.path()).modify(dirs);
+            new Xocument(item.path()).modify(dirs);
         }
         boolean elected = true;
         if (!winner.isEmpty() && this.winner(job).equals(winner)) {
-            try (final Item roles = this.item()) {
-                new Xocument(roles.path()).modify(
+            try (final Item item = this.item()) {
+                new Xocument(item.path()).modify(
                     new Directives().xpath(
                         String.format(
                             "/elections/job[@id='%s']/election[@date='%s']",
