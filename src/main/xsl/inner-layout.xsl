@@ -35,6 +35,15 @@
                 <xsl:text>@</xsl:text>
                 <xsl:value-of select="identity/login"/>
             </a>
+            <xsl:text> &#183; </xsl:text>
+            <a href="http://datum.zerocracy.com/pages/policy.html">
+                <xsl:text>Policy</xsl:text>
+            </a>
+            <xsl:text> &#183; </xsl:text>
+            <a href="{links/link[@rel='takes:logout']/@href}"
+                title="Log out">
+                <xsl:text>Exit</xsl:text>
+            </a>
         </p>
         <xsl:apply-templates select="." mode="inner"/>
         <p>
