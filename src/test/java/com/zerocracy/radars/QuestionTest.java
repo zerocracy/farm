@@ -85,7 +85,7 @@ public final class QuestionTest {
         );
         MatcherAssert.assertThat(
             question.help(),
-            Matchers.containsString("Try one of these")
+            Matchers.containsString("try one of these")
         );
     }
 
