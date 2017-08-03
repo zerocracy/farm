@@ -23,7 +23,7 @@ import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.radars.github.RbOnPullRequest
 import javax.json.Json
-import org.cactoos.list.ArrayAsIterable
+import org.cactoos.iterable.IterableOf
 
 def exec(Project project, XML xml) {
   Github github = binding.variables.github
@@ -65,7 +65,7 @@ class ProjectFarm implements Farm {
   @Override
   Iterable<Project> find(final String xpath) throws IOException {
     if (this.xpath == xpath) {
-      return new ArrayAsIterable<Project>(this.proj)
+      return new IterableOf<Project>(this.proj)
     } else {
       return Collections.emptyList()
     }

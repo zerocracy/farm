@@ -24,8 +24,8 @@ import com.zerocracy.pm.Claims;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.cactoos.io.InputOf;
-import org.cactoos.io.LengthOfInput;
-import org.cactoos.io.ResourceAsInput;
+import org.cactoos.io.LengthOf;
+import org.cactoos.io.ResourceOf;
 import org.cactoos.io.TeeInput;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -46,7 +46,7 @@ public final class BrigadeTest {
         final Path path = Files.createTempDirectory("");
         final Path file = path.resolve("a/b/c/test.groovy");
         file.getParent().toFile().mkdirs();
-        new LengthOfInput(
+        new LengthOf(
             new TeeInput(
                 String.join(
                     "\n",
@@ -88,7 +88,7 @@ public final class BrigadeTest {
         }
         final Brigade brigade = new Brigade(
             new StkGroovy(
-                new ResourceAsInput("com/zerocracy/stk/hello.groovy"),
+                new ResourceOf("com/zerocracy/stk/hello.groovy"),
                 "brigadetest-parsesgroovyscript"
             )
         );

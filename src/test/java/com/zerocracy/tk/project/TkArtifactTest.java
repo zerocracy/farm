@@ -24,10 +24,12 @@ import com.zerocracy.pmo.Catalog;
 import com.zerocracy.pmo.People;
 import com.zerocracy.pmo.Pmo;
 import com.zerocracy.tk.TkApp;
+import java.net.HttpURLConnection;
 import java.util.Properties;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 import org.takes.Take;
+import org.takes.facets.hamcrest.HmRsStatus;
 import org.takes.rq.RqFake;
 import org.takes.rq.RqWithHeaders;
 import org.takes.rs.RsPrint;
@@ -41,6 +43,20 @@ import org.takes.rs.RsPrint;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class TkArtifactTest {
+
+    @Test
+    public void rejectsAbsentProject() throws Exception {
+        final Take take = new TkApp(new Properties(), new FkFarm());
+        MatcherAssert.assertThat(
+            take.act(
+                new RqFake(
+                    "HEAD",
+                    "/a/ABCDEF098?a=pm/staff/roles"
+                )
+            ),
+            new HmRsStatus(HttpURLConnection.HTTP_MOVED_PERM)
+        );
+    }
 
     @Test
     public void rendersHomePage() throws Exception {

@@ -21,14 +21,13 @@ import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.SoftException;
 import com.zerocracy.jstk.cash.Cash;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
-import org.cactoos.func.UncheckedScalar;
-import org.cactoos.list.ItemOfIterable;
-import org.cactoos.list.MappedIterable;
+import org.cactoos.iterable.ItemAt;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.scalar.UncheckedScalar;
 import org.xembly.Directives;
 
 /**
@@ -233,14 +232,13 @@ public final class People {
                     uid
                 )
             ).iterator();
-            if (!wallet.hasNext()) {
-                throw new SoftException(
-                    String.format(
-                        "Your wallet is not set yet (uid=%s)", uid
-                    )
-                );
+            final String value;
+            if (wallet.hasNext()) {
+                value = wallet.next();
+            } else {
+                value = "";
             }
-            return wallet.next();
+            return value;
         }
     }
 
@@ -252,12 +250,19 @@ public final class People {
      */
     public String bank(final String uid) throws IOException {
         try (final Item item = this.item()) {
-            return new Xocument(item.path()).xpath(
+            final Iterator<String> banks = new Xocument(item.path()).xpath(
                 String.format(
                     "/people/person[@id='%s']/wallet/@bank",
                     uid
                 )
-            ).iterator().next();
+            ).iterator();
+            final String value;
+            if (banks.hasNext()) {
+                value = banks.next();
+            } else {
+                value = "";
+            }
+            return value;
         }
     }
 
@@ -313,7 +318,7 @@ public final class People {
      */
     public Iterable<String> links(final String uid) throws IOException {
         try (final Item item = this.item()) {
-            return new MappedIterable<>(
+            return new Mapped<>(
                 new Xocument(item).nodes(
                     String.format(
                         "/people/person[@id='%s']/links/link",
@@ -357,8 +362,8 @@ public final class People {
     public boolean vacation(final String uid) throws IOException {
         try (final Item item = this.item()) {
             return new UncheckedScalar<>(
-                new ItemOfIterable<>(
-                    new MappedIterable<>(
+                new ItemAt<>(
+                    new Mapped<>(
                         new Xocument(item).xpath(
                             String.format(
                                 "/people/person[@id='%s']/vacation/text()",

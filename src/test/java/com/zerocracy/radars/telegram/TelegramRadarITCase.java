@@ -22,9 +22,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import org.cactoos.ScalarHasValue;
-import org.cactoos.func.And;
-import org.cactoos.list.EndlessIterable;
-import org.cactoos.list.LimitedIterable;
+import org.cactoos.iterable.Endless;
+import org.cactoos.iterable.Limited;
+import org.cactoos.scalar.And;
 import org.hamcrest.MatcherAssert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -65,8 +65,8 @@ public final class TelegramRadarITCase {
             );
             MatcherAssert.assertThat(
                 new And(
-                    new LimitedIterable<>(
-                        new EndlessIterable<>(1),
+                    new Limited<>(
+                        new Endless<>(1),
                         Tv.FIFTY
                     ),
                     x -> {

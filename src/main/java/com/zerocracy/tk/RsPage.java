@@ -18,9 +18,11 @@ package com.zerocracy.tk;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.Properties;
 import org.cactoos.Scalar;
-import org.cactoos.list.MappedIterable;
+import org.cactoos.scalar.IoCheckedScalar;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.facets.auth.Identity;
@@ -96,15 +98,20 @@ public final class RsPage extends RsWrap {
      * @throws IOException If fails
      * @checkstyle ParameterNumberCheck (5 lines)
      */
+    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     private static Response make(final Properties props, final String xsl,
         final Request req, final Iterable<Scalar<XeSource>> src)
         throws IOException {
+        final Collection<XeSource> sources = new LinkedList<>();
+        for (final Scalar<XeSource> item : src) {
+            sources.add(new IoCheckedScalar<>(item).value());
+        }
         final Response raw = new RsXembly(
             new XeStylesheet(xsl),
             new XeAppend(
                 "page",
                 new XeMillis(false),
-                new XeChain(new MappedIterable<>(src, Scalar::value)),
+                new XeChain(sources),
                 new XeLinkHome(req),
                 new XeLinkSelf(req),
                 new XeDate(),

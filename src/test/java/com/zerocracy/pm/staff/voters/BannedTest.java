@@ -18,7 +18,7 @@ package com.zerocracy.pm.staff.voters;
 
 import com.zerocracy.pm.staff.bans.FkBans;
 import java.io.IOException;
-import org.cactoos.list.ArrayAsIterable;
+import org.cactoos.iterable.IterableOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -38,7 +38,7 @@ public final class BannedTest {
             "Banned voter didn't give high rank for banned user",
             new Banned(
                 "job#1",
-                new FkBans(new ArrayAsIterable<>("Test"))
+                new FkBans(new IterableOf<>("Test"))
             ).vote("caarlos0", new StringBuilder()),
             Matchers.equalTo(1.0)
         );

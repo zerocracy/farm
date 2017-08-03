@@ -32,10 +32,10 @@ import java.util.HashMap;
 import java.util.Map;
 import lombok.EqualsAndHashCode;
 import org.cactoos.Input;
-import org.cactoos.func.And;
-import org.cactoos.func.UncheckedScalar;
-import org.cactoos.io.InputAsBytes;
-import org.cactoos.text.BytesAsText;
+import org.cactoos.io.BytesOf;
+import org.cactoos.scalar.And;
+import org.cactoos.scalar.UncheckedScalar;
+import org.cactoos.text.TextOf;
 
 /**
  * Stakeholder in Groovy.
@@ -124,8 +124,8 @@ public final class StkGroovy implements Stakeholder {
         try (final GroovyClassLoader loader = new GroovyClassLoader()) {
             return loader.parseClass(
                 new GroovyCodeSource(
-                    new BytesAsText(
-                        new InputAsBytes(this.input)
+                    new TextOf(
+                        new BytesOf(this.input)
                     ).asString(),
                     this.label,
                     GroovyShell.DEFAULT_CODE_BASE

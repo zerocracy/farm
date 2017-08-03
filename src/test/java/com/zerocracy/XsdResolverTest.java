@@ -21,8 +21,7 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSLDocument;
 import org.cactoos.io.InputOf;
-import org.cactoos.io.ReaderAsInput;
-import org.cactoos.text.BytesAsText;
+import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -96,7 +95,7 @@ public final class XsdResolverTest {
     @Test
     public void resolvesBasicXsdAsByteStream() throws Exception {
         MatcherAssert.assertThat(
-            new BytesAsText(
+            new TextOf(
                 new InputOf(
                     new XsdResolver().resolveResource(
                         "-", "-", "-",
@@ -113,8 +112,8 @@ public final class XsdResolverTest {
     @Test
     public void resolvesBasicXsdAsCharStream() throws Exception {
         MatcherAssert.assertThat(
-            new BytesAsText(
-                new ReaderAsInput(
+            new TextOf(
+                new InputOf(
                     new XsdResolver().resolveResource(
                         "-", "-", "-",
                         // @checkstyle LineLength (1 line)

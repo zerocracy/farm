@@ -28,10 +28,10 @@ import java.util.Properties;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
 import org.cactoos.Scalar;
-import org.cactoos.io.ResourceAsInput;
-import org.cactoos.list.MapEntry;
-import org.cactoos.list.MappedIterable;
-import org.cactoos.list.StickyMap;
+import org.cactoos.io.ResourceOf;
+import org.cactoos.iterable.MapEntry;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.iterable.StickyMap;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
 
@@ -79,7 +79,7 @@ public final class SmartFarm implements Scalar<Farm> {
     public Farm value() {
         final Farm farm = new SyncFarm(this.origin);
         return new RvFarm(
-            query -> new MappedIterable<>(
+            query -> new Mapped<>(
                 farm.find(query),
                 project -> new UplinkedProject(
                     new StrictProject(project),
@@ -95,7 +95,7 @@ public final class SmartFarm implements Scalar<Farm> {
      * @return Stakeholders
      */
     private Iterable<Stakeholder> stakeholders() {
-        return new MappedIterable<>(
+        return new Mapped<>(
             new TreeSet<>(
                 new Reflections(
                     "com.zerocracy.stk", new ResourcesScanner()
@@ -105,7 +105,7 @@ public final class SmartFarm implements Scalar<Farm> {
                 path,
                 this.props,
                 new StkGroovy(
-                    new ResourceAsInput(path),
+                    new ResourceOf(path),
                     path,
                     new StickyMap<String, Object>(
                         this.deps,

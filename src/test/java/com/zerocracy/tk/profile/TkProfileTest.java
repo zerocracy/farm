@@ -42,14 +42,17 @@ public final class TkProfileTest {
     @Test
     public void rendersHomePage() throws Exception {
         final Farm farm = new FkFarm();
-        new People(farm).bootstrap().touch("yegor256");
+        final String uid = "yegor256";
+        final People people = new People(farm).bootstrap();
+        people.touch(uid);
+        people.invite(uid, "mentor");
         final Take take = new TkApp(new Properties(), farm);
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
                 new RsPrint(
                     take.act(
                         new RqWithHeaders(
-                            new RqFake("GET", "/u/yegor256/agenda"),
+                            new RqFake("GET", "/u/yegor256"),
                             // @checkstyle LineLength (1 line)
                             "Cookie: PsCookie=0975A5A5-F6DB193E-AF18000A-75726E3A-74657374-3A310005-6C6F6769-6E000879-65676F72-323536AE"
                         )

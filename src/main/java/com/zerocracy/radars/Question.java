@@ -28,9 +28,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicReference;
-import org.cactoos.list.MappedIterable;
-import org.cactoos.list.SortedIterable;
-import org.cactoos.list.StickyList;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.iterable.Sorted;
+import org.cactoos.iterable.StickyList;
 
 /**
  * Question in text.
@@ -168,7 +168,7 @@ public final class Question {
                         "\n  * ",
                         new TreeSet<>(
                             new StickyList<CharSequence>(
-                                new MappedIterable<>(
+                                new Mapped<>(
                                     cmds,
                                     cmd -> String.format(
                                         "`%s` %s",
@@ -228,15 +228,15 @@ public final class Question {
                         part,
                         String.join(
                             "> <",
-                            new MappedIterable<>(
+                            new Mapped<>(
                                 opts,
                                 item -> item.xpath("name/text()  ").get(0)
                             )
                         ),
                         String.join(
                             "\n  ",
-                            new SortedIterable<String>(
-                                new MappedIterable<>(
+                            new Sorted<String>(
+                                new Mapped<>(
                                     opts,
                                     item -> String.format(
                                         "* `<%s>`: %s",

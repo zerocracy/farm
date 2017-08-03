@@ -22,8 +22,7 @@ import com.ullink.slack.simpleslackapi.SlackSession
 import com.ullink.slack.simpleslackapi.SlackUser
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimOut
-import org.cactoos.list.ArrayAsIterable
-import org.cactoos.list.IterableAsList
+import org.cactoos.iterable.ListOf
 import org.mockito.Mockito
 
 /**
@@ -44,11 +43,7 @@ def exec(Project project, XML xml) {
     .thenThrow(NullPointerException.class)
   final channel = Mockito.mock(SlackChannel.class)
   Mockito.when(channel.id).thenReturn(channelId)
-  Mockito.when(session.channels).thenReturn(
-    new IterableAsList<>(
-      new ArrayAsIterable<>(channel)
-    )
-  )
+  Mockito.when(session.channels).thenReturn(new ListOf<>(channel))
   binding.variables.slack.put(channelId, session)
   new ClaimOut()
     .type("Notify in Slack")

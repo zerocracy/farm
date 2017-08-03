@@ -18,7 +18,7 @@ package com.zerocracy.radars.slack;
 
 import java.io.IOException;
 import org.cactoos.Text;
-import org.cactoos.text.StringAsText;
+import org.cactoos.text.TextOf;
 import org.cactoos.text.TrimmedText;
 import org.cactoos.text.UncheckedText;
 
@@ -40,7 +40,7 @@ final class DirectMessage implements Text {
      * @param msg Slack message string
      */
     DirectMessage(final String msg) {
-        this(new StringAsText(msg));
+        this(new TextOf(msg));
     }
 
     /**

@@ -25,7 +25,7 @@ import com.zerocracy.tk.RqUser;
 import com.zerocracy.tk.RsPage;
 import java.io.IOException;
 import java.util.Properties;
-import org.cactoos.list.LengthOfIterable;
+import org.cactoos.iterable.LengthOf;
 import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
@@ -127,7 +127,7 @@ public final class TkProfile implements TkRegex {
                     new XeAppend(
                         "agenda",
                         Integer.toString(
-                            new LengthOfIterable(
+                            new LengthOf(
                                 new Agenda(this.pmo, login).bootstrap().jobs()
                             ).value()
                         )

@@ -27,9 +27,9 @@ import java.io.IOException;
 import java.util.Properties;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.StringUtils;
-import org.cactoos.text.BytesAsText;
+import org.cactoos.io.BytesOf;
 import org.cactoos.text.FormattedText;
-import org.cactoos.text.ThrowableAsBytes;
+import org.cactoos.text.TextOf;
 
 /**
  * Stakeholder that reports about failures and doesn't fail ever.
@@ -95,7 +95,15 @@ public final class StkSafe implements Stakeholder {
                     String.format("Oops! %s", ex.getMessage())
                 ).postTo(project);
             } else {
-                Sentry.capture(ex);
+                Sentry.capture(
+                    new IllegalArgumentException(
+                        String.format(
+                            "Claim #%d \"%s\" has no token",
+                            claim.number(), claim.type()
+                        ),
+                        ex
+                    )
+                );
             }
             // @checkstyle IllegalCatchCheck (1 line)
         } catch (final Throwable ex) {
@@ -113,8 +121,8 @@ public final class StkSafe implements Stakeholder {
                             this.props.getProperty("build.revision"),
                             this.props.getProperty("build.date"),
                             StringUtils.abbreviate(
-                                new BytesAsText(
-                                    new ThrowableAsBytes(ex)
+                                new TextOf(
+                                    new BytesOf(ex)
                                 ).asString(),
                                 Tv.THOUSAND
                             )

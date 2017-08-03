@@ -34,19 +34,18 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
-import org.cactoos.func.Ternary;
-import org.cactoos.func.UncheckedScalar;
-import org.cactoos.io.InputAsBytes;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.InputWithFallback;
-import org.cactoos.io.LengthOfInput;
-import org.cactoos.io.PathAsOutput;
+import org.cactoos.io.LengthOf;
+import org.cactoos.io.OutputTo;
 import org.cactoos.io.TeeInput;
-import org.cactoos.list.ReducedIterable;
-import org.cactoos.list.ReverseIterable;
-import org.cactoos.list.StickyList;
-import org.cactoos.text.BytesAsText;
+import org.cactoos.iterable.Reduced;
+import org.cactoos.iterable.Reversed;
+import org.cactoos.iterable.StickyList;
+import org.cactoos.scalar.Ternary;
+import org.cactoos.scalar.UncheckedScalar;
 import org.cactoos.text.SplitText;
+import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.w3c.dom.Node;
 import org.w3c.dom.ls.LSResourceResolver;
@@ -107,10 +106,8 @@ public final class Xocument {
     @Override
     public String toString() {
         return new UncheckedText(
-            new BytesAsText(
-                new InputAsBytes(
-                    new InputOf(this.file)
-                )
+            new TextOf(
+                new InputOf(this.file)
             )
         ).asString();
     }
@@ -206,8 +203,8 @@ public final class Xocument {
             Xocument.RESOLVER
         ).toString();
         if (!before.toString().equals(after)) {
-            new LengthOfInput(
-                new TeeInput(after, new PathAsOutput(this.file))
+            new LengthOf(
+                new TeeInput(after, new OutputTo(this.file))
             ).value();
         }
     }
@@ -233,11 +230,11 @@ public final class Xocument {
             after = xml;
         } else {
             after = new UncheckedScalar<>(
-                new ReducedIterable<>(
-                    new ReverseIterable<>(
+                new Reduced<>(
+                    new Reversed<>(
                         new StickyList<>(
                             new SplitText(
-                                new BytesAsText(
+                                new TextOf(
                                     new InputWithFallback(
                                         new InputOf(
                                             Xocument.url(
@@ -273,8 +270,8 @@ public final class Xocument {
                     }
                 )
             ).value();
-            new LengthOfInput(
-                new TeeInput(after.toString(), new PathAsOutput(this.file))
+            new LengthOf(
+                new TeeInput(after.toString(), new OutputTo(this.file))
             ).value();
         }
         return after;

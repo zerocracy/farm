@@ -42,7 +42,10 @@ public final class TkAwardsTest {
     @Test
     public void rendersAgendaPage() throws Exception {
         final Farm farm = new FkFarm();
-        new People(farm).bootstrap().touch("yegor256");
+        final String uid = "yegor256";
+        final People people = new People(farm).bootstrap();
+        people.touch(uid);
+        people.invite(uid, "mentor");
         final Take take = new TkApp(new Properties(), farm);
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(

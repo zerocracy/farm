@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.EqualsAndHashCode;
-import org.cactoos.list.MappedIterable;
+import org.cactoos.iterable.Mapped;
 
 /**
  * Synchronized farm.
@@ -56,7 +56,7 @@ public final class SyncFarm implements Farm {
     @Override
     public Iterable<Project> find(final String query) throws IOException {
         synchronized (this.origin) {
-            return new MappedIterable<>(
+            return new Mapped<>(
                 this.origin.find(query),
                 pkt -> new SyncProject(pkt, this.pool)
             );

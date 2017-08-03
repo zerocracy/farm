@@ -36,9 +36,9 @@ import java.util.Locale;
 import java.util.stream.StreamSupport;
 import javax.json.JsonObject;
 import org.apache.commons.lang3.StringUtils;
-import org.cactoos.list.FilteredIterable;
-import org.cactoos.list.LengthOfIterable;
-import org.cactoos.list.MappedIterable;
+import org.cactoos.iterable.Filtered;
+import org.cactoos.iterable.LengthOf;
+import org.cactoos.iterable.Mapped;
 
 /**
  * Reaction on GitHub comment.
@@ -118,7 +118,7 @@ public final class ReOnComment implements Reaction {
         }
         Logger.info(
             this, "%d comments found in %s#%d and processed in %[ms]s: %s",
-            new LengthOfIterable(comments).value(),
+            new LengthOf(comments).value(),
             issue.repo().coordinates(),
             issue.number(),
             System.currentTimeMillis() - start,
@@ -156,8 +156,8 @@ public final class ReOnComment implements Reaction {
             // @checkstyle MagicNumber (1 line)
             seen = 276041067;
         }
-        return new FilteredIterable<>(
-            new MappedIterable<>(
+        return new Filtered<>(
+            new Mapped<>(
                 issue.comments().iterate(new Date(since)),
                 SafeComment::new
             ),

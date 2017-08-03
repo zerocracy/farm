@@ -26,7 +26,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import javax.json.JsonObject;
-import org.cactoos.list.MappedIterable;
+import org.cactoos.iterable.Mapped;
 import org.xembly.Directives;
 
 /**
@@ -135,7 +135,7 @@ public final class Bots {
      */
     public Iterable<Map.Entry<String, String>> tokens() throws IOException {
         try (final Item item = this.item()) {
-            return new MappedIterable<>(
+            return new Mapped<>(
                 new Xocument(item.path()).nodes(
                     "/bots/bot"
                 ),

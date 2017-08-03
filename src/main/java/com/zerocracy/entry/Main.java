@@ -35,7 +35,7 @@ import java.util.AbstractMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
-import org.cactoos.list.StickyMap;
+import org.cactoos.iterable.StickyMap;
 import org.takes.facets.fork.FkRegex;
 import org.takes.http.Exit;
 import org.takes.http.FtCli;
@@ -87,7 +87,7 @@ public final class Main {
         final Map<String, SlackSession> slack = new ExtSlack().value();
         final Github github = new ExtGithub().value();
         final Region dynamo = new ExtDynamo().value();
-        final Map<Long, TmSession> tms = new ConcurrentHashMap<>();
+        final Map<Long, TmSession> tms = new ConcurrentHashMap<>(0);
         final Farm farm = new SmartFarm(
             new S3Farm(new ExtBucket().value()),
             props,

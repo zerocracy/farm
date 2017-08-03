@@ -27,8 +27,8 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.EqualsAndHashCode;
-import org.cactoos.list.ArrayAsIterable;
-import org.cactoos.list.MappedIterable;
+import org.cactoos.iterable.ListOf;
+import org.cactoos.iterable.Mapped;
 
 /**
  * Farm in S3.
@@ -74,12 +74,12 @@ public final class S3Farm implements Farm {
     public Iterable<Project> find(final String xpath) throws IOException {
         Iterable<Project> found;
         if ("@id='PMO'".equals(xpath)) {
-            found = new ArrayAsIterable<>(
+            found = new ListOf<>(
                 new S3Project(this.bucket, "PMO/", this.temp)
             );
         } else {
             final Catalog catalog = new Catalog(this).bootstrap();
-            found = new MappedIterable<>(
+            found = new Mapped<>(
                 catalog.findByXPath(xpath),
                 prefix -> new S3Project(this.bucket, prefix, this.temp)
             );

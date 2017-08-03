@@ -25,8 +25,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.cactoos.Proc;
 import org.cactoos.func.FuncWithFallback;
 import org.cactoos.func.IoCheckedFunc;
-import org.cactoos.text.BytesAsText;
-import org.cactoos.text.ThrowableAsBytes;
+import org.cactoos.io.BytesOf;
+import org.cactoos.text.TextOf;
 
 /**
  * Safe Reaction on GitHub comment.
@@ -75,8 +75,8 @@ public final class ReSafe implements Response {
                             " [here](https://github.com/zerocracy/datum):",
                             "\n\n```\n",
                             StringUtils.abbreviate(
-                                new BytesAsText(
-                                    new ThrowableAsBytes(throwable)
+                                new TextOf(
+                                    new BytesOf(throwable)
                                 ).asString(),
                                 Tv.THOUSAND
                             ),
