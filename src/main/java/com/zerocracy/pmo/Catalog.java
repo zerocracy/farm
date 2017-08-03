@@ -24,8 +24,8 @@ import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
-import org.cactoos.list.MappedIterable;
-import org.cactoos.list.StickyList;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.iterable.StickyList;
 import org.xembly.Directives;
 
 /**
@@ -172,7 +172,7 @@ public final class Catalog {
     public Collection<String> links(final String pid) throws IOException {
         try (final Item item = this.item()) {
             return new StickyList<>(
-                new MappedIterable<>(
+                new Mapped<>(
                     new Xocument(item).nodes(
                         String.format(
                             "/catalog/project[@id='%s']/links/link",

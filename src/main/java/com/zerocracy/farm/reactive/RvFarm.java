@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import lombok.EqualsAndHashCode;
-import org.cactoos.list.MappedIterable;
+import org.cactoos.iterable.Mapped;
 
 /**
  * Reactive farm.
@@ -63,7 +63,7 @@ public final class RvFarm implements Farm {
 
     @Override
     public Iterable<Project> find(final String query) throws IOException {
-        return new MappedIterable<>(
+        return new Mapped<>(
             this.origin.find(query),
             p -> this.pool.computeIfAbsent(
                 p,

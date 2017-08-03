@@ -34,18 +34,18 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import org.cactoos.Input;
-import org.cactoos.func.And;
-import org.cactoos.io.LengthOfInput;
-import org.cactoos.io.PathAsOutput;
-import org.cactoos.io.ResourceAsInput;
+import org.cactoos.io.LengthOf;
+import org.cactoos.io.OutputTo;
+import org.cactoos.io.ResourceOf;
 import org.cactoos.io.TeeInput;
-import org.cactoos.list.EndlessIterable;
-import org.cactoos.list.LimitedIterable;
-import org.cactoos.list.MapAsProperties;
-import org.cactoos.list.MapEntry;
-import org.cactoos.list.MappedIterable;
-import org.cactoos.list.StickyList;
-import org.cactoos.list.StickyMap;
+import org.cactoos.iterable.Endless;
+import org.cactoos.iterable.Limited;
+import org.cactoos.iterable.MapEntry;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.iterable.PropertiesOf;
+import org.cactoos.iterable.StickyList;
+import org.cactoos.iterable.StickyMap;
+import org.cactoos.scalar.And;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -74,7 +74,7 @@ public final class BundlesTest {
     @Parameterized.Parameters(name = "{0}")
     public static Collection<Object[]> bundles() {
         return new StickyList<>(
-            new MappedIterable<>(
+            new Mapped<>(
                 new Reflections(
                     "com.zerocracy.bundles", new ResourcesScanner()
                 ).getResources(p -> p.endsWith("claims.xml")),
@@ -87,7 +87,7 @@ public final class BundlesTest {
 
     @Test
     public void oneBundleWorksFine() throws Exception {
-        final Properties props = new MapAsProperties(
+        final Properties props = new PropertiesOf(
             new MapEntry<>("testing", "true")
         ).value();
         // @checkstyle DiamondOperatorCheck (1 line)
@@ -104,13 +104,13 @@ public final class BundlesTest {
             path -> {
                 BundlesTest.save(
                     project,
-                    new ResourceAsInput(path),
+                    new ResourceOf(path),
                     path.substring(path.lastIndexOf('/') + 1)
                 );
             }
         ).value();
         new StkGroovy(
-            new ResourceAsInput(
+            new ResourceOf(
                 String.format("%s/_before.groovy", this.bundle)
             ),
             String.format("%s_before", this.bundle),
@@ -118,7 +118,7 @@ public final class BundlesTest {
         ).process(project, null);
         MatcherAssert.assertThat(
             new And(
-                new LimitedIterable<>(new EndlessIterable<>(1), Tv.FIFTY),
+                new Limited<>(new Endless<>(1), Tv.FIFTY),
                 x -> {
                     TimeUnit.SECONDS.sleep(1L);
                     try (final Claims claims = new Claims(project).lock()) {
@@ -129,7 +129,7 @@ public final class BundlesTest {
             Matchers.equalTo(false)
         );
         new StkGroovy(
-            new ResourceAsInput(
+            new ResourceOf(
                 String.format("%s/_after.groovy", this.bundle)
             ),
             String.format("%s_after", this.bundle),
@@ -148,10 +148,10 @@ public final class BundlesTest {
         final String file) throws IOException {
         try (final Item item =
             project.acq(file.substring(file.lastIndexOf('/') + 1))) {
-            new LengthOfInput(
+            new LengthOf(
                 new TeeInput(
                     input,
-                    new PathAsOutput(item.path())
+                    new OutputTo(item.path())
                 )
             ).value();
         }

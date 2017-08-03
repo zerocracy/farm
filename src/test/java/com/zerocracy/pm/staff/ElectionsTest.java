@@ -18,9 +18,9 @@ package com.zerocracy.pm.staff;
 
 import com.zerocracy.jstk.fake.FkProject;
 import java.security.SecureRandom;
-import org.cactoos.list.MapEntry;
-import org.cactoos.list.StickyList;
-import org.cactoos.list.StickyMap;
+import org.cactoos.iterable.MapEntry;
+import org.cactoos.iterable.StickyList;
+import org.cactoos.iterable.StickyMap;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;

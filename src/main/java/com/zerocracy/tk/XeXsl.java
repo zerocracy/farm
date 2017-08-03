@@ -24,7 +24,7 @@ import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import java.net.URI;
 import org.cactoos.io.InputOf;
-import org.cactoos.text.BytesAsText;
+import org.cactoos.text.TextOf;
 import org.takes.rs.xe.XeAppend;
 import org.takes.rs.xe.XeSource;
 import org.xembly.Directive;
@@ -75,7 +75,7 @@ public final class XeXsl implements XeSource {
             } else {
                 final XML xml = new XMLDocument(item.path().toFile());
                 content = new XSLDocument(
-                    new BytesAsText(
+                    new TextOf(
                         new InputOf(
                             URI.create(
                                 String.format(

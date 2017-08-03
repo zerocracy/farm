@@ -23,10 +23,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import org.cactoos.ScalarHasValue;
-import org.cactoos.func.And;
-import org.cactoos.list.ArrayAsIterable;
-import org.cactoos.list.MappedIterable;
-import org.cactoos.list.RepeatIterable;
+import org.cactoos.iterable.IterableOf;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.iterable.Repeated;
+import org.cactoos.scalar.And;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 
@@ -49,8 +49,8 @@ public final class SyncProjectTest {
             threshold
         );
         new And(
-            new MappedIterable<>(
-                new ArrayAsIterable<>("one", "two", "three"),
+            new Mapped<>(
+                new IterableOf<>("one", "two", "three"),
                 project::acq
             ),
             Item::close
@@ -58,7 +58,7 @@ public final class SyncProjectTest {
         MatcherAssert.assertThat(
             "SyncProject did not clean item's pool",
             new And(
-                new RepeatIterable<>(0, Tv.TWENTY),
+                new Repeated<>(0, Tv.TWENTY),
                 x -> {
                     TimeUnit.MICROSECONDS.sleep(1L);
                     return pool.size() != threshold;

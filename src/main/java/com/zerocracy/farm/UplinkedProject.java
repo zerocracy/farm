@@ -25,12 +25,12 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.regex.Pattern;
 import lombok.EqualsAndHashCode;
-import org.cactoos.func.IoCheckedScalar;
-import org.cactoos.func.Or;
-import org.cactoos.func.Ternary;
-import org.cactoos.list.ArrayAsIterable;
-import org.cactoos.list.MappedIterable;
-import org.cactoos.list.StickyList;
+import org.cactoos.iterable.IterableOf;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.iterable.StickyList;
+import org.cactoos.scalar.IoCheckedScalar;
+import org.cactoos.scalar.Or;
+import org.cactoos.scalar.Ternary;
 
 /**
  * Project that can fetch files from PMO.
@@ -47,8 +47,8 @@ final class UplinkedProject implements Project {
      */
     private static final Collection<Pattern> FILES = new HashSet<>(
         new StickyList<>(
-            new MappedIterable<>(
-                new ArrayAsIterable<>(
+            new Mapped<>(
+                new IterableOf<>(
                     "awards/[a-zA-Z0-9-]+\\.xml",
                     "agenda/[a-zA-Z0-9-]+\\.xml",
                     "catalog\\.xml",
@@ -89,7 +89,7 @@ final class UplinkedProject implements Project {
         return new IoCheckedScalar<>(
             new Ternary<>(
                 () -> !"PMO".equals(this.origin.toString()) && new Or(
-                    new MappedIterable<>(
+                    new Mapped<>(
                         UplinkedProject.FILES,
                         pattern -> () -> pattern.matcher(file).matches()
                     )

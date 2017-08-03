@@ -23,8 +23,8 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
-import org.cactoos.list.ArrayAsIterable;
-import org.cactoos.list.MappedIterable;
+import org.cactoos.iterable.ListOf;
+import org.cactoos.iterable.Mapped;
 import org.cactoos.text.JoinedText;
 import org.xembly.Directives;
 
@@ -192,8 +192,8 @@ public final class Roles {
                     person,
                     new JoinedText(
                         " or ",
-                        new MappedIterable<>(
-                            new ArrayAsIterable<>(list),
+                        new Mapped<>(
+                            new ListOf<>(list),
                             role -> String.format("role='%s'", role)
                         )
                     ).asString()

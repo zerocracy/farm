@@ -22,15 +22,15 @@ import java.io.IOException;
 import java.util.Map;
 import lombok.EqualsAndHashCode;
 import org.cactoos.Proc;
-import org.cactoos.func.And;
 import org.cactoos.func.AsyncFunc;
-import org.cactoos.func.False;
 import org.cactoos.func.ProcOf;
-import org.cactoos.func.SyncScalar;
-import org.cactoos.func.Ternary;
-import org.cactoos.list.LimitedIterable;
-import org.cactoos.list.MappedIterable;
-import org.cactoos.list.SortedIterable;
+import org.cactoos.iterable.Limited;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.iterable.Sorted;
+import org.cactoos.scalar.And;
+import org.cactoos.scalar.False;
+import org.cactoos.scalar.SyncScalar;
+import org.cactoos.scalar.Ternary;
 
 /**
  * Pool project.
@@ -94,9 +94,9 @@ final class SyncProject implements Project {
             new Ternary<>(
                 () -> this.pool.size() > threshold,
                 new And(
-                    new LimitedIterable<>(
-                        new SortedIterable<CmpEntry<String, SyncItem>>(
-                            new MappedIterable<>(
+                    new Limited<>(
+                        new Sorted<CmpEntry<String, SyncItem>>(
+                            new Mapped<>(
                                 this.pool.entrySet(),
                                 CmpEntry::new
                             )

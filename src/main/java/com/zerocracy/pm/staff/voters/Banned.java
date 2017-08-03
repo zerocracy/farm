@@ -19,7 +19,7 @@ package com.zerocracy.pm.staff.voters;
 import com.zerocracy.pm.staff.Voter;
 import com.zerocracy.pm.staff.bans.Bans;
 import java.io.IOException;
-import org.cactoos.list.LengthOfIterable;
+import org.cactoos.iterable.LengthOf;
 import org.cactoos.text.JoinedText;
 
 /**
@@ -55,9 +55,9 @@ public final class Banned implements Voter {
         throws IOException {
         final Iterable<String> reasons = this.bans.reasons(this.job, login);
         final double rate;
-        if (new LengthOfIterable(reasons).value() > 0) {
+        if (new LengthOf(reasons).value() > 0) {
             log.append("Banned from this job because: ")
-                .append(new JoinedText(", ", reasons));
+                .append(new JoinedText(", ", reasons).asString());
             rate = 1.0;
         } else {
             log.append("There are no bans");

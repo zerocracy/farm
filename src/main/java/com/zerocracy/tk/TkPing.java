@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.Func;
 import org.cactoos.func.AsyncFunc;
-import org.cactoos.list.FilteredIterable;
+import org.cactoos.iterable.Filtered;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
@@ -118,7 +118,7 @@ public final class TkPing implements Take {
      */
     private static boolean needs(final Project project) throws IOException {
         try (final Claims claims = new Claims(project).lock()) {
-            return !new FilteredIterable<>(
+            return !new Filtered<>(
                 claims.iterate(),
                 input -> new ClaimIn(input).type().equals(TkPing.TYPE)
             ).iterator().hasNext();

@@ -21,7 +21,7 @@ import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.staff.Voter;
 import com.zerocracy.pmo.Agenda;
 import java.io.IOException;
-import org.cactoos.list.LengthOfIterable;
+import org.cactoos.iterable.LengthOf;
 
 /**
  * Says "yes" when there is no room for this developer.
@@ -48,7 +48,7 @@ public final class NoRoom implements Voter {
     @Override
     public double vote(final String login, final StringBuilder log)
         throws IOException {
-        final long total = new LengthOfIterable(
+        final long total = new LengthOf(
             new Agenda(this.project, login).bootstrap().jobs()
         ).value();
         final double rate;

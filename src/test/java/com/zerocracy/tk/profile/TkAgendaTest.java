@@ -45,7 +45,10 @@ public final class TkAgendaTest {
     @Test
     public void rendersAgendaPage() throws Exception {
         final Farm farm = new FkFarm();
-        new People(farm).bootstrap().touch("yegor256");
+        final String uid = "yegor256";
+        final People people = new People(farm).bootstrap();
+        people.touch(uid);
+        people.invite(uid, "mentor");
         final Take take = new TkApp(new Properties(), farm);
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
@@ -63,18 +66,8 @@ public final class TkAgendaTest {
         );
     }
 
-    // @todo #96:30min This test as well as
-    //  TkAgendaTest.redirectsWhenAccessingNonexistentUsersAgenda should return
-    //  a redirect status code. RqSecureLogin actually throws RsFailure, which
-    //  is a HTTPException subtype that embeds 301 status. However, invoking the
-    //  scenario through an actual request in TkApp causes it to be embedded in
-    //  UncheckedIOException, causing the Takes framework to return HTTP 500
-    //  error status instead. Let's find out what's going on and fix it. After
-    //  fix is applied we should re-enable these tests.
     @Test
-    @org.junit.Ignore
-    public void redirectsWhenAccessingDifferentUsersAgenda()
-        throws Exception {
+    public void redirectsWhenAccessingDifferentUsersAgenda() throws Exception {
         final Farm farm = new FkFarm();
         new People(farm).bootstrap().touch("yegor256");
         new People(farm).bootstrap().touch("carlosmiranda");
@@ -89,12 +82,11 @@ public final class TkAgendaTest {
                     )
                 )
             ),
-            new HmRsStatus(HttpURLConnection.HTTP_MOVED_PERM)
+            new HmRsStatus(HttpURLConnection.HTTP_SEE_OTHER)
         );
     }
 
     @Test
-    @org.junit.Ignore
     public void redirectsWhenAccessingNonexistentUsersAgenda()
         throws Exception {
         final Farm farm = new FkFarm();
@@ -110,7 +102,7 @@ public final class TkAgendaTest {
                     )
                 )
             ),
-            new HmRsStatus(HttpURLConnection.HTTP_MOVED_PERM)
+            new HmRsStatus(HttpURLConnection.HTTP_SEE_OTHER)
         );
     }
 }

@@ -27,11 +27,9 @@ import com.zerocracy.tk.project.TkProject;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.Properties;
-import org.cactoos.list.ArrayAsIterable;
-import org.cactoos.list.ConcatIterable;
-import org.cactoos.list.IterableAsList;
-import org.cactoos.text.BytesAsText;
-import org.cactoos.text.ThrowableAsBytes;
+import org.cactoos.io.BytesOf;
+import org.cactoos.iterable.ListOf;
+import org.cactoos.text.TextOf;
 import org.takes.facets.fallback.Fallback;
 import org.takes.facets.fallback.FbChain;
 import org.takes.facets.fallback.FbLog4j;
@@ -39,9 +37,9 @@ import org.takes.facets.fallback.FbStatus;
 import org.takes.facets.fallback.TkFallback;
 import org.takes.facets.flash.TkFlash;
 import org.takes.facets.fork.FkRegex;
-import org.takes.facets.fork.Fork;
 import org.takes.facets.fork.TkFork;
 import org.takes.facets.forward.TkForward;
+import org.takes.misc.Concat;
 import org.takes.misc.Href;
 import org.takes.misc.Opt;
 import org.takes.rs.RsText;
@@ -89,10 +87,10 @@ public final class TkApp extends TkWrap {
                                     new TkAppAuth(
                                         new TkForward(
                                             new TkFork(
-                                                new IterableAsList<>(
-                                                    new ConcatIterable<Fork>(
-                                                        new ArrayAsIterable<>(forks),
-                                                        new ArrayAsIterable<>(
+                                                new ListOf<>(
+                                                    new Concat<>(
+                                                        new ListOf<>(forks),
+                                                        new ListOf<>(
                                                             new FkRegex("/", new TkIndex(props)),
                                                             new FkRegex("/ping", new TkPing(farm)),
                                                             new FkRegex("/robots.txt", ""),
@@ -180,8 +178,8 @@ public final class TkApp extends TkWrap {
                                     TkApp.class.getResource("error.html.vm"),
                                     new RsVelocity.Pair(
                                         "error",
-                                        new BytesAsText(
-                                            new ThrowableAsBytes(
+                                        new TextOf(
+                                            new BytesOf(
                                                 req.throwable()
                                             )
                                         ).asString()

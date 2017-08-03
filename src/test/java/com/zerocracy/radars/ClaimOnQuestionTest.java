@@ -20,7 +20,7 @@ import com.jcabi.xml.XMLDocument;
 import com.zerocracy.jstk.fake.FkProject;
 import com.zerocracy.pm.Claims;
 import java.util.Collection;
-import org.cactoos.list.StickyList;
+import org.cactoos.iterable.StickyList;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;

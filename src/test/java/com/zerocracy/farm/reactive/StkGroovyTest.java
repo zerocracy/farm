@@ -22,7 +22,7 @@ import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.Claims;
 import java.util.AbstractMap;
 import org.cactoos.io.InputOf;
-import org.cactoos.list.StickyMap;
+import org.cactoos.iterable.StickyMap;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
