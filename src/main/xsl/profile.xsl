@@ -62,23 +62,33 @@
         </xsl:if>
     </xsl:template>
     <xsl:template match="details">
-        <xsl:apply-templates select="rate"/>
+        <p>
+            <xsl:apply-templates select="rate"/>
+            <xsl:text>; </xsl:text>
+            <xsl:apply-templates select="wallet"/>
+            <xsl:text>.</xsl:text>
+        </p>
         <xsl:apply-templates select="projects"/>
         <xsl:apply-templates select="links"/>
         <xsl:apply-templates select="skills"/>
     </xsl:template>
-    <xsl:template match="rate">
-        <p>
-            <xsl:text>Rate: </xsl:text>
-            <xsl:value-of select="cash"/>
-            <xsl:text>, wallet: </xsl:text>
-            <code>
-                <xsl:value-of select="wallet"/>
-            </code>
-            <xsl:text> at </xsl:text>
-            <xsl:value-of select="bank"/>
-            <xsl:text>.</xsl:text>
-        </p>
+    <xsl:template match="rate[.!='0']">
+        <xsl:text>Rate: </xsl:text>
+        <xsl:value-of select="."/>
+    </xsl:template>
+    <xsl:template match="rate[.='0']">
+        <xsl:text>Rate is not set yet</xsl:text>
+    </xsl:template>
+    <xsl:template match="wallet[name!='']">
+        <xsl:text>wallet: </xsl:text>
+        <code>
+            <xsl:value-of select="name"/>
+        </code>
+        <xsl:text> at </xsl:text>
+        <xsl:value-of select="bank"/>
+    </xsl:template>
+    <xsl:template match="wallet[name='']">
+        <xsl:text>payment info is absent</xsl:text>
     </xsl:template>
     <xsl:template match="projects[project]">
         <p>
