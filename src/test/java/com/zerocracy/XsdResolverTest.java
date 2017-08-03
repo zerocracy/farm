@@ -25,6 +25,7 @@ import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.w3c.dom.ls.LSResourceResolver;
 
 /**
  * Test case for {@link XsdResolver}.
@@ -123,6 +124,16 @@ public final class XsdResolverTest {
                 )
             ).asString(),
             Matchers.endsWith(":schema>\n")
+        );
+    }
+
+    @Test
+    public void resolvesOnlyOnce() throws Exception {
+        final String url = "http://www.yegor256.com/2016/11/29/eolang.html";
+        final LSResourceResolver resolver = new XsdResolver();
+        MatcherAssert.assertThat(
+            resolver.resolveResource("-", "-", "-", url, "-"),
+            Matchers.is(resolver.resolveResource("-", "-", "-", url, "-"))
         );
     }
 
