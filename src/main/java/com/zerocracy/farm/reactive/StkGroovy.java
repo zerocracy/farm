@@ -32,7 +32,6 @@ import java.util.HashMap;
 import java.util.Map;
 import lombok.EqualsAndHashCode;
 import org.cactoos.Input;
-import org.cactoos.io.BytesOf;
 import org.cactoos.scalar.And;
 import org.cactoos.scalar.UncheckedScalar;
 import org.cactoos.text.TextOf;
@@ -98,7 +97,9 @@ public final class StkGroovy implements Stakeholder {
                 }
             )
         ).value();
-        final Class<?> clazz = this.script();
+        final Class<?> clazz = StkGroovy.script(
+            new TextOf(this.input).asString(), this.label
+        );
         try {
             final Constructor<?> constructor = clazz.getConstructor(
                 Binding.class
@@ -116,19 +117,18 @@ public final class StkGroovy implements Stakeholder {
     }
     /**
      * Compiles the script.
+     * @param body Script body
+     * @param name Script name
      * @return Class
      * @throws IOException If fails
      */
     @Cacheable(forever = true)
-    private Class<?> script() throws IOException {
+    private static Class<?> script(final String body,
+        final String name) throws IOException {
         try (final GroovyClassLoader loader = new GroovyClassLoader()) {
             return loader.parseClass(
                 new GroovyCodeSource(
-                    new TextOf(
-                        new BytesOf(this.input)
-                    ).asString(),
-                    this.label,
-                    GroovyShell.DEFAULT_CODE_BASE
+                    body, name, GroovyShell.DEFAULT_CODE_BASE
                 )
             );
         }
