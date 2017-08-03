@@ -26,11 +26,10 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Show rate')
   People people = new People(project).bootstrap()
   ClaimIn claim = new ClaimIn(xml)
-  String login = claim.param('person')
   claim.reply(
     String.format(
       'Your rate is %s.',
-      people.rate(login)
+      people.rate(claim.author())
     )
   ).postTo(project)
 }
