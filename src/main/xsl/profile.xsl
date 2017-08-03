@@ -33,7 +33,12 @@
         <xsl:apply-templates select="awards"/>
         <xsl:apply-templates select="agenda"/>
     </xsl:template>
-    <xsl:template match="awards">
+    <xsl:template match="awards[.=0]">
+        <p>
+            <xsl:text>There are no awards yet.</xsl:text>
+        </p>
+    </xsl:template>
+    <xsl:template match="awards[.!=0]">
         <p>
             <xsl:text>Total points: </xsl:text>
             <a href="/u/{/page/identity/login}/awards">
@@ -45,7 +50,12 @@
             <xsl:text>.</xsl:text>
         </p>
     </xsl:template>
-    <xsl:template match="agenda">
+    <xsl:template match="agenda[.=0]">
+        <p>
+            <xsl:text>There are no jobs in the agenda.</xsl:text>
+        </p>
+    </xsl:template>
+    <xsl:template match="agenda[.!=0]">
         <p>
             <xsl:text>Total jobs: </xsl:text>
             <a href="/u/{/page/identity/login}/agenda">
