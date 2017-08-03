@@ -54,7 +54,7 @@ public final class ClaimOnQuestionTest {
     public void buildsClaim() throws Exception {
         final Question question = new Question(
             new XMLDocument(
-                this.getClass().getResource("slack/q-project.xml")
+                this.getClass().getResource("q-project.xml")
             ),
             this.query
         );

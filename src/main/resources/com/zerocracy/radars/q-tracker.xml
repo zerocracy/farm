@@ -55,7 +55,7 @@
     </cmd>
     <cmd>
         <code>Cancel order</code>
-        <regex>resign|reject</regex>
+        <regex>resign|reject|refuse</regex>
         <label>resign</label>
         <help>Resign from this issue</help>
     </cmd>

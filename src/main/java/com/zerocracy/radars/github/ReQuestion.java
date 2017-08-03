@@ -44,7 +44,11 @@ public final class ReQuestion implements Response {
             );
         }
         final Question question = new Question(
-            new XMLDocument(this.getClass().getResource("q-github.xml")),
+            new XMLDocument(
+                this.getClass().getResource(
+                    "/com/zerocracy/radars/q-tracker.xml"
+                )
+            ),
             parts[1].trim()
         );
         final Project project = new GhProject(farm, comment);

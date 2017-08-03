@@ -74,7 +74,7 @@ public final class RqUser implements Scalar<String> {
         if (identity.equals(Identity.ANONYMOUS)) {
             throw new RsForward(
                 new RsFlash(
-                    "You must be logged in",
+                    "You must be logged in.",
                     Level.WARNING
                 )
             );
@@ -84,7 +84,7 @@ public final class RqUser implements Scalar<String> {
         if (!people.hasMentor(login)) {
             throw new RsForward(
                 new RsFlash(
-                    "You must be invited to us by somebody who we already know",
+                    "You must be invited to us by someone we already know.",
                     Level.WARNING
                 )
             );

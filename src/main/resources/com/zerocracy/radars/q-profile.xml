@@ -29,12 +29,6 @@
         <help>Print current version of the bot</help>
     </cmd>
     <cmd>
-        <code>Show aliases</code>
-        <regex>alias(es)?</regex>
-        <label>aliases</label>
-        <help>Show all your currently registered aliases</help>
-    </cmd>
-    <cmd>
         <code>Invite a friend</code>
         <regex>invite</regex>
         <label>invite</label>

@@ -35,7 +35,7 @@ public final class QuestionTest {
     public void parsesValidText() throws Exception {
         final Question question = new Question(
             new XMLDocument(
-                this.getClass().getResource("slack/q-project.xml")
+                this.getClass().getResource("q-project.xml")
             ),
             "role assign ARC yegor256"
         );
@@ -57,7 +57,7 @@ public final class QuestionTest {
     public void buildsHelp() throws Exception {
         final Question question = new Question(
             new XMLDocument(
-                this.getClass().getResource("slack/q-profile.xml")
+                this.getClass().getResource("q-profile.xml")
             ),
             "rate set"
         );
@@ -75,7 +75,7 @@ public final class QuestionTest {
     public void buildsHelpOnInvalidCommand() throws Exception {
         final Question question = new Question(
             new XMLDocument(
-                this.getClass().getResource("github/q-github.xml")
+                this.getClass().getResource("q-tracker.xml")
             ),
             "just-a-weird-command"
         );
@@ -94,8 +94,8 @@ public final class QuestionTest {
     @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     public void parsesManyValidTexts() throws Exception {
         final String[] files = {
-            "slack/q-profile-test.xml",
-            "slack/q-project-test.xml",
+            "q-profile-test.xml",
+            "q-project-test.xml",
         };
         for (final String file : files) {
             final XML test = new XMLDocument(

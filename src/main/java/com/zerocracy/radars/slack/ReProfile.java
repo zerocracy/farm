@@ -42,7 +42,11 @@ public final class ReProfile implements Reaction<SlackMessagePosted> {
         final SlackSession session
     ) throws IOException {
         final Question question = new Question(
-            new XMLDocument(this.getClass().getResource("q-profile.xml")),
+            new XMLDocument(
+                this.getClass().getResource(
+                    "/com/zerocracy/radars/q-profile.xml"
+                )
+            ),
             new DirectMessage(event.getMessageContent()).asString()
         );
         new ClaimOnQuestion(question)

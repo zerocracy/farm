@@ -15,37 +15,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  -->
-<test target="slack/q-project.xml">
+<test target="q-profile.xml">
     <cmd>
-        <text>links</text>
-        <code>links.show</code>
+        <text>rate</text>
+        <code>profile.rate.show</code>
     </cmd>
     <cmd>
-        <text>link add github yegor256/pdd</text>
-        <code>links.add</code>
-        <opts>
-            <opt>
-                <name>rel</name>
-                <value>github</value>
-            </opt>
-            <opt>
-                <name>href</name>
-                <value>yegor256/pdd</value>
-            </opt>
-        </opts>
-    </cmd>
-    <cmd>
-        <text>link remove  github   yegor256/pdd  </text>
-        <code>links.remove</code>
-        <opts>
-            <opt>
-                <name>rel</name>
-                <value>github</value>
-            </opt>
-            <opt>
-                <name>href</name>
-                <value>yegor256/pdd</value>
-            </opt>
-        </opts>
+        <text>skills</text>
+        <code>profile.skills.show</code>
     </cmd>
 </test>
