@@ -84,7 +84,13 @@ public final class RqUser implements Scalar<String> {
         if (!people.hasMentor(login)) {
             throw new RsForward(
                 new RsFlash(
-                    "You must be invited to us by someone we already know.",
+                    String.join(
+                        " ",
+                        "You must be invited to us by someone we already know.",
+                        "If you don't know anyone who works with us already,",
+                        "email us to join@zerocracy.com and we'll see what",
+                        "we can do."
+                    ),
                     Level.WARNING
                 )
             );
