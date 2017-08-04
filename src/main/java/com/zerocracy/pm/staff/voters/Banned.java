@@ -16,8 +16,9 @@
  */
 package com.zerocracy.pm.staff.voters;
 
+import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.staff.Voter;
-import com.zerocracy.pm.staff.bans.Bans;
+import com.zerocracy.pm.staff.Bans;
 import java.io.IOException;
 import org.cactoos.iterable.LengthOf;
 import org.cactoos.text.JoinedText;
@@ -31,29 +32,31 @@ import org.cactoos.text.JoinedText;
 public final class Banned implements Voter {
 
     /**
+     * A project.
+     */
+    private final Project proj;
+
+    /**
      * Current job.
      */
     private final String job;
 
     /**
-     * Project bans.
-     */
-    private final Bans bans;
-
-    /**
      * Ctor.
      * @param job Current job
-     * @param bans Project bans
+     * @param proj ApProject
      */
-    public Banned(final String job, final Bans bans) {
+    public Banned(final Project proj, final String job) {
+        this.proj = proj;
         this.job = job;
-        this.bans = bans;
     }
 
     @Override
     public double vote(final String login, final StringBuilder log)
         throws IOException {
-        final Iterable<String> reasons = this.bans.reasons(this.job, login);
+        final Iterable<String> reasons = new Bans(this.proj)
+            .bootstrap()
+            .reasons(this.job, login);
         final double rate;
         if (new LengthOf(reasons).value() > 0) {
             log.append("Banned from this job because: ")
