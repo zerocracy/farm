@@ -14,11 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.bug_label
+package com.zerocracy.bundles.adds_new_pull_request_to_wbs
 
 import com.jcabi.xml.XML
 import com.zerocracy.jstk.Project
-import com.zerocracy.pm.scope.Wbs
 
 def exec(Project project, XML xml) {
 // @todo #69:15min This assertion is disabled because the mock Github pull

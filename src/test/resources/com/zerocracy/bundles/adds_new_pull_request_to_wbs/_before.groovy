@@ -14,16 +14,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.bug_label
+package com.zerocracy.bundles.adds_new_pull_request_to_wbs
 
 import com.jcabi.github.Github
 import com.jcabi.github.Repos
 import com.jcabi.xml.XML
-import com.zerocracy.jstk.Farm
+import com.zerocracy.farm.ProjectFarm
 import com.zerocracy.jstk.Project
 import com.zerocracy.radars.github.RbOnPullRequest
 import javax.json.Json
-import org.cactoos.iterable.IterableOf
 
 def exec(Project project, XML xml) {
   Github github = binding.variables.github
@@ -46,28 +45,4 @@ def exec(Project project, XML xml) {
         .add("full_name", repo.coordinates().toString())
     ).build()
   )
-}
-
-// @todo #69:15min We're now using this class here and
-//  adds_new_pull_request_to_wbs/_before.groovy. In the future we might have
-//  even more uses after we've expanded the bundles tests. Probably better to
-//  factor this out into its own class file in src/test/java.
-class ProjectFarm implements Farm {
-
-  private final Project proj
-  private final String xpath
-
-  ProjectFarm(final Project proj, final String xpath) {
-    this.proj = proj
-    this.xpath = xpath
-  }
-
-  @Override
-  Iterable<Project> find(final String xpath) throws IOException {
-    if (this.xpath == xpath) {
-      return new IterableOf<Project>(this.proj)
-    } else {
-      return Collections.emptyList()
-    }
-  }
 }

@@ -19,11 +19,10 @@ package com.zerocracy.bundles.bug_label
 import com.jcabi.github.Github
 import com.jcabi.github.Repos
 import com.jcabi.xml.XML
-import com.zerocracy.jstk.Farm
+import com.zerocracy.farm.ProjectFarm
 import com.zerocracy.jstk.Project
 import com.zerocracy.radars.github.RbOnBug
 import javax.json.Json
-import org.cactoos.iterable.IterableOf
 
 def exec(Project project, XML xml) {
   Github github = binding.variables.github
@@ -46,24 +45,4 @@ def exec(Project project, XML xml) {
         .add("full_name", repo.coordinates().toString())
     ).build()
   )
-}
-
-class ProjectFarm implements Farm {
-
-  private final Project proj
-  private final String xpath
-
-  ProjectFarm(final Project proj, final String xpath) {
-    this.proj = proj
-    this.xpath = xpath
-  }
-
-  @Override
-  Iterable<Project> find(final String xpath) throws IOException {
-    if (this.xpath == xpath) {
-      return new IterableOf<Project>(this.proj)
-    } else {
-      return Collections.emptyList()
-    }
-  }
 }
