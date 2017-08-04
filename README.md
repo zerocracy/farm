@@ -8,6 +8,32 @@ Stakeholders' Farm.
 
 It's a manager of Java stakeholders.
 
+This is what is has to do (in chronological order):
+
+  - [ ] DEVs join projects, POs give them roles
+  - [ ] 0crat elects DEVs, assigns tasks, closes tasks
+  - [ ] POs fund projects, 0crat pays devs (plus our commission)
+  - [ ] 0crat creates online profiles for DEVs with statistics
+  - [ ] 0crat predicts scope
+  - [ ] 0crat estimates schedule and budget
+  - [ ] 0crat suggests optimization plans (scope, budget, staff)
+  - [ ] 0crat identifies, analyzes, and manages risks
+  - [ ] 0crat benchmarks projects and makes suggestions for POs
+  - [ ] Besides GitHub we work with JIRA, Trello, Bitbucket
+
+This is our marketing plan (in chronological order):
+
+  - [ ] We randomly assign tasks in open source projects to programmers
+  - [ ] Some of them become interested
+  - [ ] They start joining projects officially, getting `DEV` roles
+  - [ ] 0crat manages open source projects (25 projects)
+  - [ ] We invite ARCs to manage their private projects, for free
+  - [ ] Some of them will be interested to hire most active DEVs
+  - [ ] They will start funding their accounts and pay
+  - [ ] We improve their back-end reporting, they become happy
+  - [ ] We start charging our comission, no more free accounts
+  - [ ] We grow and dominate the market
+
 ## Claims
 
 The central point of control in the project is
