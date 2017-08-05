@@ -16,6 +16,7 @@
  */
 package com.zerocracy.radars.github;
 
+import com.jcabi.aspects.RetryOnFailure;
 import com.jcabi.github.Github;
 import com.jcabi.github.RtPagination;
 import com.jcabi.http.Request;
@@ -23,6 +24,7 @@ import com.jcabi.http.response.RestResponse;
 import com.zerocracy.jstk.Farm;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.util.concurrent.TimeUnit;
 import javax.json.JsonObject;
 
 /**
@@ -63,6 +65,8 @@ public final class GithubFetch implements Runnable {
     }
 
     @Override
+    // @checkstyle MagicNumber (1 line)
+    @RetryOnFailure(attempts = 10, delay = 30, unit = TimeUnit.SECONDS)
     public void run() {
         try {
             this.fetch();
