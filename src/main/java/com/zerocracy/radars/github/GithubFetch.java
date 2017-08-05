@@ -65,6 +65,7 @@ public final class GithubFetch implements Runnable {
     }
 
     @Override
+    // @checkstyle MagicNumber (1 line)
     @RetryOnFailure(attempts = 10, delay = 30, unit = TimeUnit.SECONDS)
     public void run() {
         try {
