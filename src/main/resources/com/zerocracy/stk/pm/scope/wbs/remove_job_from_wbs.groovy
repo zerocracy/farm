@@ -21,9 +21,16 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
+import com.zerocracy.pm.cost.Boosts
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.scope.Wbs
-
+/**
+ * @todo #165:30m Add 'Archive WBS' stakeholder.
+ *  It should handle 'Archive job' claim type, read parameters
+ *  and submit them into `archive.xml`. Also wee need to
+ *  put 'created' and 'removed' params into claim in this stakeholder.
+ *  See archive schema in `archive.xsd`
+ */
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Remove job from WBS')
   new Assume(project, xml).roles('ARC', 'PO')
@@ -34,7 +41,15 @@ def exec(Project project, XML xml) {
     String.format('Job `%s` is now out of scope.', job)
   ).postTo(project)
   Orders orders = new Orders(project).bootstrap()
-  if (orders.assigned(job)) {
+  final assigned = orders.assigned(job)
+  final archiveClaim = new ClaimOut()
+    .type('Archive job')
+    .param('job', job)
+    .param('boost', new Boosts(project).bootstrap().factor(job))
+  if (assigned) {
+    archiveClaim.param('performer', orders.performer(job))
+  }
+  if (assigned) {
     new ClaimOut()
       .type('Finish order')
       .param('job', job)
@@ -44,4 +59,5 @@ def exec(Project project, XML xml) {
     .type('Job removed from WBS')
     .param('job', job)
     .postTo(project)
+  archiveClaim.postTo(project)
 }
