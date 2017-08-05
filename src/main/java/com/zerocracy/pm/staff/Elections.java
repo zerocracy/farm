@@ -25,6 +25,7 @@ import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Map;
 import org.xembly.Directives;
 
@@ -154,6 +155,17 @@ public final class Elections {
                     )
                 ).remove()
             );
+        }
+    }
+
+    /**
+     * Iterate election jobs.
+     * @return Job list
+     * @throws IOException If failed
+     */
+    public List<String> jobs() throws IOException {
+        try (final Item roles = this.item()) {
+            return new Xocument(roles).xpath("/elections/job/@id");
         }
     }
 
