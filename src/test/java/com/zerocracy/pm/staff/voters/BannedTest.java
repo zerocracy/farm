@@ -27,8 +27,8 @@ import org.junit.Test;
  * Test case for {@link Banned}.
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
- * @checkstyle JavadocMethodCheck (500 lines)
  * @since 0.13
+ * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class BannedTest {
 
@@ -36,7 +36,7 @@ public final class BannedTest {
     public void highRankForBanned() throws IOException {
         final FkProject proj = new FkProject();
         final String login = "caarlos0";
-        final String job = "job#1";
+        final String job = "gh:test/job#1";
         new Bans(proj).bootstrap().ban(job, login, "Issue reporter");
         MatcherAssert.assertThat(
             "Banned voter didn't give high rank for banned user",
@@ -54,7 +54,7 @@ public final class BannedTest {
             "Banned voter didn't give low rank for not banned user",
             new Banned(
                 new FkProject(),
-                "job#2"
+                "gh:test/job#2"
             ).vote("yegor256", new StringBuilder()),
             Matchers.equalTo(0.0)
         );

@@ -63,13 +63,14 @@ public final class Bans {
      * @param job A job
      * @param login User to check
      * @return Reasons of bans
+     * @throws IOException If fails
      */
     public List<String> reasons(final String job, final String login)
         throws IOException {
         try (final Item item = this.item()) {
             return new Xocument(item).xpath(
                 String.format(
-                    "/bans/ban[@job='%s' and /login/text()='%s']/reason/text()",
+                    "/bans/ban[@job='%s' and login/text()='%s']/reason/text()",
                     job,
                     login
                 )
@@ -95,8 +96,8 @@ public final class Bans {
         try (final Item item = this.item()) {
             new Xocument(item).modify(
                 new Directives()
-                    .xpath("/roles]")
-                    .add("role")
+                    .xpath("/bans")
+                    .add("ban")
                     .attr("job", job)
                     .add("created").set(date).up()
                     .add("login").set(login).up()

@@ -17,8 +17,8 @@
 package com.zerocracy.pm.staff.voters;
 
 import com.zerocracy.jstk.Project;
-import com.zerocracy.pm.staff.Voter;
 import com.zerocracy.pm.staff.Bans;
+import com.zerocracy.pm.staff.Voter;
 import java.io.IOException;
 import org.cactoos.iterable.LengthOf;
 import org.cactoos.text.JoinedText;
