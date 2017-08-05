@@ -22,6 +22,12 @@ import com.zerocracy.jstk.Project
 import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pm.staff.Elections
 
+/**
+ * @todo #145:30m Needs project cross-item synchronization.
+ *  Now WBS can be changed during elections cleanup that
+ *  resulting in keeping unused elections until next WBS update.
+ *  To avoid this behavior we need some kind of transactional items change.
+ */
 def exec(Project project, XML xml) {
   new Assume(project, xml).types(['Add job to WBS', 'Remove job from WBS'])
   final jobs = new Wbs(project).bootstrap().iterate().toList()
