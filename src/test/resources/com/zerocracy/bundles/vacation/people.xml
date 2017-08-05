@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<people xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/zerocracy/datum/0.32.2/xsd/pmo/people.xsd"
+        version="1"
+        updated="2016-12-29T09:03:21.684Z">
+    <person id="g4s8">
+        <name>Kirill</name>
+        <mentor>yegor256</mentor>
+    </person>
+</people>

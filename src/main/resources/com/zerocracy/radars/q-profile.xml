@@ -42,6 +42,19 @@
         </opts>
     </cmd>
     <cmd>
+        <code>Vacation mode</code>
+        <regex>vacation</regex>
+        <label>vacation</label>
+        <help>Change vacation mode</help>
+        <opts>
+            <opt>
+                <name>mode</name>
+                <regex>(on|off)</regex>
+                <help>Vacation mode: 'on' or 'off'</help>
+            </opt>
+        </opts>
+    </cmd>
+    <cmd>
         <code>Apply to a project</code>
         <regex>apply</regex>
         <label>apply</label>

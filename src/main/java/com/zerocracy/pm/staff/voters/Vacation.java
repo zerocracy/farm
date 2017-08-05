@@ -26,10 +26,6 @@ import java.io.IOException;
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.16
- * @todo #110:30min Add a stakeholder to change person's
- *  vacation status and two commands in `q-profile`:
- *  "vacation on" and "vacation off". Stakeholder should
- *  change `vacation` flag in people.xml.
  */
 public final class Vacation implements Voter {
 
