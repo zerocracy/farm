@@ -46,7 +46,8 @@ public final class ClaimOnQuestionTest {
     public static Collection<Object> bundles() {
         return new StickyList<>(
             "role assign ARC yegor256",
-            "just some text"
+            "just some text",
+            "vacation on"
         );
     }
 

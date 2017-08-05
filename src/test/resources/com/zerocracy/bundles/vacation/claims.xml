@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<claims xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/zerocracy/datum/0.32.2/xsd/pm/claims.xsd"
+        updated="2017-07-21T20:31:44.512Z"
+        version="1">
+    <claim id="1">
+        <created>2017-07-21T20:32:19.716Z</created>
+        <type>Vacation mode</type>
+        <params>
+            <param name="mode">on</param>
+        </params>
+        <author>g4s8</author>
+    </claim>
+</claims>
