@@ -24,7 +24,6 @@ import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pm.staff.Elections
 import com.zerocracy.pm.staff.Roles
-import com.zerocracy.pm.staff.bans.FkBans
 import com.zerocracy.pm.staff.voters.Banned
 import com.zerocracy.pm.staff.voters.NoRoom
 import com.zerocracy.pm.staff.voters.Vacation
@@ -45,7 +44,7 @@ def exec(Project project, XML xml) {
       job, logins,
       [
         (new NoRoom(project)): -100,
-        (new Banned(job, new FkBans())): -1000,
+        (new Banned(project, job)): -1000,
         (new Vacation(project)): -1000
       ]
     )

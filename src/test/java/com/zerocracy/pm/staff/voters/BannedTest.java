@@ -16,9 +16,9 @@
  */
 package com.zerocracy.pm.staff.voters;
 
-import com.zerocracy.pm.staff.bans.FkBans;
+import com.zerocracy.jstk.fake.FkProject;
+import com.zerocracy.pm.staff.Bans;
 import java.io.IOException;
-import org.cactoos.iterable.IterableOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -34,12 +34,16 @@ public final class BannedTest {
 
     @Test
     public void highRankForBanned() throws IOException {
+        final FkProject proj = new FkProject();
+        final String login = "caarlos0";
+        final String job = "gh:test/job#1";
+        new Bans(proj).bootstrap().ban(job, login, "Issue reporter");
         MatcherAssert.assertThat(
             "Banned voter didn't give high rank for banned user",
             new Banned(
-                "job#1",
-                new FkBans(new IterableOf<>("Test"))
-            ).vote("caarlos0", new StringBuilder()),
+                proj,
+                job
+            ).vote(login, new StringBuilder()),
             Matchers.equalTo(1.0)
         );
     }
@@ -49,8 +53,8 @@ public final class BannedTest {
         MatcherAssert.assertThat(
             "Banned voter didn't give low rank for not banned user",
             new Banned(
-                "job#2",
-                new FkBans()
+                new FkProject(),
+                "gh:test/job#2"
             ).vote("yegor256", new StringBuilder()),
             Matchers.equalTo(0.0)
         );
