@@ -84,6 +84,27 @@ public final class Assume {
     }
 
     /**
+     * On of.
+     * @param types The types to compare with
+     * @throws MismatchException If doesn't match any
+     */
+    public void types(final Iterable<String> types) throws MismatchException {
+        final String input = new ClaimIn(this.xml).type();
+        for (final String type : types) {
+            if (input.equalsIgnoreCase(type)) {
+                return;
+            }
+        }
+        throw new MismatchException(
+            String.format(
+                "Type \"%s\" is not mine, I'm expecting one of \"%s\"",
+                input,
+                types
+            )
+        );
+    }
+
+    /**
      * At least one role is present.
      * @param roles The roles
      * @throws IOException If fails
