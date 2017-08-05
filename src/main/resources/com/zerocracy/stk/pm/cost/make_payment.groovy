@@ -21,22 +21,17 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
+import com.zerocracy.pm.cost.Boosts
 import com.zerocracy.pm.staff.Roles
-/**
- * @todo #63:30min We should multiply the payment with the given boost
- *  factor if a boost factor has been set for the task. The boost factor is
- *  defined in an XML document and the schema is in `pm/cost/boosts.xsd`. Default
- *  job size is 15 minutes. In case boost is not specified, the default factor
- *  should be 2, which means default payment is 30. Let's also use the same
- *  boost factor in awarding points in add_award_points.groovy.
- */
+
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Make payment')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
   String login = claim.param('login')
   String reason = claim.param('reason')
-  int minutes = Integer.parseInt(claim.param('minutes'))
+  final boots = new Boosts(project).bootstrap()
+  int minutes = Integer.parseInt(claim.param('minutes')) * boots.factor(job)
   Roles roles = new Roles(project).bootstrap()
   if (!roles.hasAnyRole(login)) {
     return
