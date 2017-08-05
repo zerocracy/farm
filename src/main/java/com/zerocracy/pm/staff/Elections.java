@@ -108,9 +108,13 @@ public final class Elections {
                 .attr("date", date);
             final StringBuilder log = new StringBuilder(0);
             for (final Map.Entry<Voter, Integer> ent : voters.entrySet()) {
+                Integer weight = ent.getValue();
+                if (weight < 0) {
+                    weight = 0;
+                }
                 dirs.add("vote")
                     .attr("author", ent.getKey().getClass().getName())
-                    .attr("weight", ent.getValue());
+                    .attr("weight", weight);
                 for (final String login : logins) {
                     log.setLength(0);
                     dirs.add("person")
