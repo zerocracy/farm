@@ -23,8 +23,9 @@ import com.zerocracy.jstk.Project
  * @todo #165:30m Implement archive mechanism.
  *  There is empty stakeholder `archive_job`
  *  that handles 'Job removed from WBS' claims.
- *  It should get some job info (such as created time, performer, close reason)
- *  and submit it into `archive.xml`. Also it's needed to complete this
+ *  It should get some job info (such as created time, performer, boost,
+ *  close reason) *  and submit it into `archive.xml`.
+ *  Also it's needed to complete this
  *  bundle-test with some archive assertions.
  */
 def exec(Project project, XML xml) {
