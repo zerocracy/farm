@@ -20,11 +20,11 @@ import com.jcabi.xml.XML
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.staff.Elections
 /**
- * @todo #83:30min We should add new "bans" to this XML document every time
- *  we add a new job to the WBS. Lets create a new stakeholder
- *  pm.staff.bans.ban_github_reporter. It has to catch "Job was added to WBS"
- *  type, check whether the job starts with gh: and then take the author of
- *  the ticket from GitHub.
+ * @todo #93:30min Task reporter is already added to bans.xml. However, this
+ *  test still fails for some reason. It could be because the election
+ *  mechanism is broken (https://github.com/zerocracy/farm/issues/150), or that
+ *  the test setup or data is not complete. Let's find out what's wrong and
+ *  revise the test appropriately, perhaps even rewriting it.
  */
 def exec(Project project, XML xml) {
   final job = 'gh:test/farm#1'
