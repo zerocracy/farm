@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<claims xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/zerocracy/datum/0.33/xsd/pm/claims.xsd"
+        version="0.1"
+        updated="2017-08-07T10:37:00.000Z">
+    <claim id="1">
+        <type>Bootstrap</type>
+        <created>2017-08-07T10:37:00.000Z</created>
+        <author>cmiranda</author>
+    </claim>
+    <claim id="2">
+        <type>Add job to WBS</type>
+        <created>2017-08-07T10:37:00.000Z</created>
+        <author>cmiranda</author>
+        <token>github;test/test;1</token>
+        <params>
+            <param name="job">gh:test/test#1</param>
+        </params>
+    </claim>
+    <claim id="3">
+        <type>Job was added to WBS</type>
+        <created>2017-08-07T10:37:00.000Z</created>
+        <author>cmiranda</author>
+        <token>github;test/test;1</token>
+        <params>
+            <param name="job">gh:test/test#1</param>
+        </params>
+    </claim>
+</claims>

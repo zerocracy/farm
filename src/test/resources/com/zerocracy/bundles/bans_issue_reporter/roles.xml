@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<roles xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/zerocracy/datum/0.33/xsd/pm/staff/roles.xsd"
+       version="0.1"
+       updated="2017-08-07T10:37:00.000Z">
+    <person id="test">
+        <role>PO</role>
+    </person>
+</roles>
