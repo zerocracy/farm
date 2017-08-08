@@ -17,7 +17,8 @@
  -->
 <!--
  @todo #166:15min The latest Github milestones information is contained in
-  milestones.xml. We should display those milestones here in project.xsl.
+  milestones.xml document. We should display those updated milestones right here
+  in project.xsl.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns="http://www.w3.org/1999/xhtml" version="1.0">
