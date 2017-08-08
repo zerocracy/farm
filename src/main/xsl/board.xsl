@@ -65,7 +65,9 @@
                         <xsl:text>font-weight:bold</xsl:text>
                     </xsl:attribute>
                 </xsl:if>
-                <xsl:value-of select="id"/>
+                <code>
+                    <xsl:value-of select="id"/>
+                </code>
             </td>
             <td>
                 <xsl:apply-templates select="repositories"/>
@@ -87,6 +89,5 @@
                 <xsl:value-of select="."/>
             </a>
         </xsl:for-each>
-        <xsl:text>.</xsl:text>
     </xsl:template>
 </xsl:stylesheet>

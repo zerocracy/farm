@@ -80,7 +80,7 @@ public final class TkBoard implements Take {
                 try (final Item item = new Pmo(this.farm).acq("catalog.xml")) {
                     new And(
                         new Xocument(item).nodes(
-                            "/catalog/project[@id!='PMO']"
+                            "/catalog/project[@id!='PMO' and publish='true']"
                         ),
                         new FuncOf<>(
                             input -> sources.add(this.source(input, user)),
