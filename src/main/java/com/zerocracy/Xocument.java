@@ -40,7 +40,6 @@ import org.cactoos.io.LengthOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.TeeInput;
 import org.cactoos.iterable.Reduced;
-import org.cactoos.iterable.Reversed;
 import org.cactoos.iterable.StickyList;
 import org.cactoos.scalar.Ternary;
 import org.cactoos.scalar.UncheckedScalar;
@@ -231,23 +230,21 @@ public final class Xocument {
         } else {
             after = new UncheckedScalar<>(
                 new Reduced<>(
-                    new Reversed<>(
-                        new StickyList<>(
-                            new SplitText(
-                                new TextOf(
-                                    new InputWithFallback(
-                                        new InputOf(
-                                            Xocument.url(
-                                                String.format(
-                                                    "/latest/upgrades/%s/list",
-                                                    xsd
-                                                )
+                    new StickyList<>(
+                        new SplitText(
+                            new TextOf(
+                                new InputWithFallback(
+                                    new InputOf(
+                                        Xocument.url(
+                                            String.format(
+                                                "/latest/upgrades/%s/list",
+                                                xsd
                                             )
                                         )
                                     )
-                                ),
-                                "\n"
-                            )
+                                )
+                            ),
+                            "\n"
                         )
                     ),
                     xml,
