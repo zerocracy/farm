@@ -286,7 +286,7 @@ public final class Xocument {
     private static URL url(final String path) throws MalformedURLException {
         return new URL(
             String.format(
-                "http://datum.zerocracy.com/%s",
+                "http://datum.zerocracy.com%s",
                 path
             )
         );
