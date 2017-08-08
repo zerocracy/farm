@@ -74,6 +74,19 @@ public final class Roles {
     }
 
     /**
+     * Everybody.
+     * @return GitHub logins of everybody
+     * @throws IOException If fails
+     */
+    public Collection<String> everybody() throws IOException {
+        try (final Item roles = this.item()) {
+            return new Xocument(roles).xpath(
+                "/roles/person/@id"
+            );
+        }
+    }
+
+    /**
      * Assign role.
      * @param person The person
      * @param role The role to assign

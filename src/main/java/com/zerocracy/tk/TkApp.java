@@ -118,6 +118,10 @@ public final class TkApp extends TkWrap {
                                                                 )
                                                             ),
                                                             new FkRegex(
+                                                                "/board",
+                                                                new TkBoard(props, farm)
+                                                            ),
+                                                            new FkRegex(
                                                                 "/p/([A-Z0-9]{9})",
                                                                 new TkProject(props, farm)
                                                             ),

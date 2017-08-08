@@ -132,11 +132,21 @@
                 </a>
             </xsl:for-each>
             <xsl:text>.</xsl:text>
+            <xsl:text> Apply to more projects: </xsl:text>
+            <a href="/board">
+                <xsl:text>board</xsl:text>
+            </a>
+            <xsl:text>.</xsl:text>
         </p>
     </xsl:template>
     <xsl:template match="projects[not(project)]">
         <p>
             <xsl:text>You're in no projects yet.</xsl:text>
+            <xsl:text> You can apply to some of them: </xsl:text>
+            <a href="/board">
+                <xsl:text>board</xsl:text>
+            </a>
+            <xsl:text>.</xsl:text>
         </p>
     </xsl:template>
     <xsl:template match="skills[skill]">

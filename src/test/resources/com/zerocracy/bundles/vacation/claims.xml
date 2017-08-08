@@ -5,7 +5,7 @@
         version="1">
     <claim id="1">
         <created>2017-07-21T20:32:19.716Z</created>
-        <type>Vacation mode</type>
+        <type>Change vacation mode</type>
         <params>
             <param name="mode">on</param>
         </params>

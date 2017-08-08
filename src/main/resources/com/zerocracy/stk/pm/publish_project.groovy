@@ -14,27 +14,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pmo.profile
+package com.zerocracy.stk.pm
 
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
+import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pmo.People
+import com.zerocracy.pmo.Catalog
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Change vacation mode')
-  final claim = new ClaimIn(xml)
-  final mode = claim.param('mode')
-  final people = new People(project).bootstrap()
-  final login = claim.author()
+  new Assume(project, xml).type('Publish the project')
+  ClaimIn claim = new ClaimIn(xml)
+  String mode = claim.param('mode')
+  Farm farm = binding.variables.farm
+  Catalog catalog = new Catalog(farm)
   if ('on' == mode) {
-    people.vacation(login, true)
-    claim.reply('You are on vacation now')
+    catalog.publish(project.toString(), true)
+    claim.reply('The project is visible now')
   } else if ('off' == mode) {
-    people.vacation(login, false)
-    claim.reply('Your vacation has been ended')
+    catalog.publish(project.toString(), false)
+    claim.reply('The project is not visible anymore')
   } else {
-    claim.reply("Incorrect vacation mode. Possible modes are 'on' or 'off'")
+    claim.reply("Incorrect mode, possible values are 'on' or 'off'")
   }
 }
