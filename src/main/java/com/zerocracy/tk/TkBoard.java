@@ -81,7 +81,8 @@ public final class TkBoard implements Take {
                     new And(
                         new Xocument(item).nodes("/catalog/project"),
                         new FuncOf<>(
-                            input -> sources.add(this.source(input, user))
+                            input -> sources.add(this.source(input, user)),
+                            true
                         )
                     ).value();
                 }
