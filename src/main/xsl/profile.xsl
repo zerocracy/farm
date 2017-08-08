@@ -72,6 +72,17 @@
         </xsl:if>
     </xsl:template>
     <xsl:template match="details">
+        <xsl:if test="count(links/link) &lt; 2">
+            <p>
+                <xsl:text>You should start talking to our bot</xsl:text>
+                <xsl:text> through one of our supported media, like</xsl:text>
+                <xsl:text> Telegram or Slack. More details you can find in </xsl:text>
+                <a href="http://datum.zerocracy.com/pages/policy.html">
+                    <xsl:text>our policy</xsl:text>
+                </a>
+                <xsl:text>.</xsl:text>
+            </p>
+        </xsl:if>
         <p>
             <xsl:apply-templates select="rate"/>
             <xsl:text>; </xsl:text>
