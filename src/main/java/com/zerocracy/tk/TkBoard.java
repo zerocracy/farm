@@ -79,7 +79,9 @@ public final class TkBoard implements Take {
                 final Collection<XeSource> sources = new LinkedList<>();
                 try (final Item item = new Pmo(this.farm).acq("catalog.xml")) {
                     new And(
-                        new Xocument(item).nodes("/catalog/project"),
+                        new Xocument(item).nodes(
+                            "/catalog/project[@id!='PMO']"
+                        ),
                         new FuncOf<>(
                             input -> sources.add(this.source(input, user)),
                             true
