@@ -27,6 +27,7 @@ import com.zerocracy.tk.project.TkProject;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.Properties;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.cactoos.io.BytesOf;
 import org.cactoos.iterable.ListOf;
 import org.cactoos.text.TextOf;
@@ -182,11 +183,13 @@ public final class TkApp extends TkWrap {
                                     TkApp.class.getResource("error.html.vm"),
                                     new RsVelocity.Pair(
                                         "error",
-                                        new TextOf(
-                                            new BytesOf(
-                                                req.throwable()
-                                            )
-                                        ).asString()
+                                        StringEscapeUtils.escapeHtml4(
+                                            new TextOf(
+                                                new BytesOf(
+                                                    req.throwable()
+                                                )
+                                            ).asString()
+                                        )
                                     ),
                                     new RsVelocity.Pair(
                                         "version",
