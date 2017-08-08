@@ -31,11 +31,17 @@ def exec(Project project, XML xml) {
   Catalog catalog = new Catalog(farm)
   if ('on' == mode) {
     catalog.publish(project.toString(), true)
-    claim.reply('The project is visible now')
+    claim.reply(
+      'The project is visible now'
+    ).postTo(project)
   } else if ('off' == mode) {
     catalog.publish(project.toString(), false)
-    claim.reply('The project is not visible anymore')
+    claim.reply(
+      'The project is not visible anymore'
+    ).postTo(project)
   } else {
-    claim.reply("Incorrect mode, possible values are 'on' or 'off'")
+    claim.reply(
+      "Incorrect mode, possible values are 'on' or 'off'"
+    ).postTo(project)
   }
 }

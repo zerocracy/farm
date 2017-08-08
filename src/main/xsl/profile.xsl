@@ -131,22 +131,20 @@
                     <xsl:value-of select="."/>
                 </a>
             </xsl:for-each>
-            <xsl:text>.</xsl:text>
-            <xsl:text> Apply to more projects: </xsl:text>
+            <xsl:text> (</xsl:text>
             <a href="/board">
-                <xsl:text>board</xsl:text>
+                <xsl:text>apply</xsl:text>
             </a>
-            <xsl:text>.</xsl:text>
+            <xsl:text> for more).</xsl:text>
         </p>
     </xsl:template>
     <xsl:template match="projects[not(project)]">
         <p>
-            <xsl:text>You're in no projects yet.</xsl:text>
-            <xsl:text> You can apply to some of them: </xsl:text>
+            <xsl:text>You're in no projects yet, </xsl:text>
             <a href="/board">
-                <xsl:text>board</xsl:text>
+                <xsl:text>apply</xsl:text>
             </a>
-            <xsl:text>.</xsl:text>
+            <xsl:text> to some of them.</xsl:text>
         </p>
     </xsl:template>
     <xsl:template match="skills[skill]">
