@@ -74,6 +74,10 @@
     <xsl:template match="details">
         <xsl:if test="count(links/link) &lt; 2">
             <p>
+                <span style="color:red">
+                    <xsl:text>ATTENTION</xsl:text>
+                </span>
+                <xsl:text>: </xsl:text>
                 <xsl:text>You should start talking to our bot</xsl:text>
                 <xsl:text> through one of our supported media, like</xsl:text>
                 <xsl:text> Telegram or Slack. More details you can find in </xsl:text>
