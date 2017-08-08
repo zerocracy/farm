@@ -48,12 +48,14 @@ public final class RbOnClose implements Rebound {
         final Issue.Smart issue = new Issue.Smart(
             new IssueOfEvent(github, event)
         );
-        final String author = issue.author()
-            .login().toLowerCase(Locale.ENGLISH);
-        final String closer = RbOnClose.closer(issue);
         final String answer;
-        if (author.equals(closer)) {
+        if (issue.isPull()) {
+            answer = "It's a pull request";
+        } else if (RbOnClose.tagged(issue)) {
+            answer = "It's invalid";
+        } else {
             final Project project = new GhProject(farm, issue.repo());
+            final String closer = RbOnClose.closer(issue);
             new ClaimOut()
                 .type("Remove job from WBS")
                 .token(new TokenOfIssue(issue))
@@ -61,22 +63,8 @@ public final class RbOnClose implements Rebound {
                 .postTo(project);
             answer = String.format(
                 "Issue #%d closed by @%s, asked WBS to take it out of scope",
-                issue.number(), author
+                issue.number(), closer
             );
-        } else if (issue.isPull()) {
-            answer = "It's a pull request";
-        } else if (RbOnClose.tagged(issue)) {
-            answer = "It's invalid";
-        } else {
-            issue.open();
-            issue.comments().post(
-                String.format(
-                    // @checkstyle LineLength (1 line)
-                    "@%s please, ask @%s to close this issue and [read more](http://www.yegor256.com/2014/11/24/principles-of-bug-tracking.html)",
-                    closer, author
-                )
-            );
-            answer = String.format("Ticket re-opened, %s notified", closer);
         }
         return answer;
     }
