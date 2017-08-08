@@ -55,7 +55,8 @@ public final class CatalogTest {
                         )
                     )
                     .up()
-                    .add("prefix").set("2017/01/AAAABBBBC/")
+                    .add("prefix").set("2017/01/AAAABBBBC/").up()
+                    .add("publish").set("false")
             );
         }
         final Catalog catalog = new Catalog(project);
@@ -66,6 +67,18 @@ public final class CatalogTest {
                 Matchers.not(Matchers.emptyIterable())
             );
         }
+    }
+
+    @Test
+    public void changesPublishStatus() throws Exception {
+        final String pid = "67WE334FF";
+        final Catalog catalog = new Catalog(new FkProject()).bootstrap();
+        catalog.add(pid, "2017/01/67WE334FF/");
+        catalog.publish(pid, true);
+        MatcherAssert.assertThat(
+            catalog.published(pid),
+            Matchers.is(true)
+        );
     }
 
     private static Item item(final Project project) throws IOException {

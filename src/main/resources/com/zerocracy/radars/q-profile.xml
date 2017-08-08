@@ -42,7 +42,7 @@
         </opts>
     </cmd>
     <cmd>
-        <code>Vacation mode</code>
+        <code>Change vacation mode</code>
         <regex>vacation</regex>
         <label>vacation</label>
         <help>Change vacation mode</help>

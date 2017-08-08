@@ -90,8 +90,8 @@ public final class Catalog {
                         )
                     )
                     .up()
-                    .add("prefix")
-                    .set(prefix)
+                    .add("prefix").set(prefix).up()
+                    .add("publish").set(Boolean.toString(false))
             );
         }
     }
@@ -111,6 +111,42 @@ public final class Catalog {
         try (final Item item = this.item()) {
             return new Xocument(item).xpath(
                 String.format("//project%s/prefix/text()", term)
+            );
+        }
+    }
+
+    /**
+     * Publish or unpublish this project.
+     * @param pid Project ID
+     * @param status Publication status to set
+     * @throws IOException If fails
+     */
+    public void publish(final String pid, final boolean status)
+        throws IOException {
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                new Directives().xpath(
+                    String.format("/catalog/project[@id='%s']/publish", pid)
+                ).strict(1).set(Boolean.toString(status))
+            );
+        }
+    }
+
+    /**
+     * This project is published?
+     * @param pid Project ID
+     * @return TRUE if published
+     * @throws IOException If fails
+     */
+    public boolean published(final String pid) throws IOException {
+        try (final Item item = this.item()) {
+            return Boolean.parseBoolean(
+                new Xocument(item).xpath(
+                    String.format(
+                        "/catalog/project[@id='%s']/publish/text()",
+                        pid
+                    )
+                ).get(0)
             );
         }
     }

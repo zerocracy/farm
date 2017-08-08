@@ -72,6 +72,21 @@
         </xsl:if>
     </xsl:template>
     <xsl:template match="details">
+        <xsl:if test="count(links/link) &lt; 2">
+            <p>
+                <span style="color:red">
+                    <xsl:text>ATTENTION</xsl:text>
+                </span>
+                <xsl:text>: </xsl:text>
+                <xsl:text>You should start talking to our bot</xsl:text>
+                <xsl:text> through one of our supported media, like</xsl:text>
+                <xsl:text> Telegram or Slack. More details you can find in </xsl:text>
+                <a href="http://datum.zerocracy.com/pages/policy.html">
+                    <xsl:text>our policy</xsl:text>
+                </a>
+                <xsl:text>.</xsl:text>
+            </p>
+        </xsl:if>
         <p>
             <xsl:apply-templates select="rate"/>
             <xsl:text>; </xsl:text>
@@ -116,12 +131,20 @@
                     <xsl:value-of select="."/>
                 </a>
             </xsl:for-each>
-            <xsl:text>.</xsl:text>
+            <xsl:text> (</xsl:text>
+            <a href="/board">
+                <xsl:text>apply</xsl:text>
+            </a>
+            <xsl:text> for more).</xsl:text>
         </p>
     </xsl:template>
     <xsl:template match="projects[not(project)]">
         <p>
-            <xsl:text>You're in no projects yet.</xsl:text>
+            <xsl:text>You're in no projects yet, </xsl:text>
+            <a href="/board">
+                <xsl:text>apply</xsl:text>
+            </a>
+            <xsl:text> to some of them.</xsl:text>
         </p>
     </xsl:template>
     <xsl:template match="skills[skill]">

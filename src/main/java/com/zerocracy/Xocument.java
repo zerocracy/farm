@@ -32,6 +32,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.LinkedList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.cactoos.io.InputOf;
@@ -39,8 +40,8 @@ import org.cactoos.io.InputWithFallback;
 import org.cactoos.io.LengthOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.TeeInput;
+import org.cactoos.iterable.ListOf;
 import org.cactoos.iterable.Reduced;
-import org.cactoos.iterable.Reversed;
 import org.cactoos.iterable.StickyList;
 import org.cactoos.scalar.Ternary;
 import org.cactoos.scalar.UncheckedScalar;
@@ -67,7 +68,7 @@ public final class Xocument {
     /**
      * Current DATUM version.
      */
-    private static final String VERSION = "0.32.3";
+    private static final String VERSION = "0.34";
 
     /**
      * Compressing XSL.
@@ -231,23 +232,21 @@ public final class Xocument {
         } else {
             after = new UncheckedScalar<>(
                 new Reduced<>(
-                    new Reversed<>(
-                        new StickyList<>(
-                            new SplitText(
-                                new TextOf(
-                                    new InputWithFallback(
-                                        new InputOf(
-                                            Xocument.url(
-                                                String.format(
-                                                    "/latest/upgrades/%s/list",
-                                                    xsd
-                                                )
+                    new StickyList<>(
+                        new SplitText(
+                            new TextOf(
+                                new InputWithFallback(
+                                    new InputOf(
+                                        Xocument.url(
+                                            String.format(
+                                                "/latest/upgrades/%s/list",
+                                                xsd
                                             )
                                         )
                                     )
-                                ),
-                                "\n"
-                            )
+                                )
+                            ),
+                            "\n"
                         )
                     ),
                     xml,
@@ -286,7 +285,7 @@ public final class Xocument {
     private static URL url(final String path) throws MalformedURLException {
         return new URL(
             String.format(
-                "http://datum.zerocracy.com/%s",
+                "http://datum.zerocracy.com%s",
                 path
             )
         );
@@ -308,10 +307,15 @@ public final class Xocument {
      * @return The number
      */
     private static int num(final String ver) {
-        final String[] parts = ver.split("\\.");
+        final List<String> parts = new LinkedList<>();
+        parts.addAll(new ListOf<>(ver.split("\\.")));
+        if (parts.size() < Tv.THREE) {
+            parts.add("0");
+        }
         int sum = 0;
-        for (int idx = parts.length - 1; idx >= 0; --idx) {
-            sum += Integer.parseInt(parts[idx]) << (idx << Tv.THREE);
+        for (int idx = parts.size() - 1; idx >= 0; --idx) {
+            sum += Integer.parseInt(parts.get(idx))
+                << (parts.size() - idx << Tv.THREE);
         }
         return sum;
     }

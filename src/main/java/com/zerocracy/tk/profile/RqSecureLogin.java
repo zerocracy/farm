@@ -63,7 +63,7 @@ final class RqSecureLogin implements Scalar<String> {
             throw new RsForward(
                 new RsFlash(
                     String.format(
-                        "Only \"@%s\" is allowed to see this page", login
+                        "Only @%s is allowed to see this page.", login
                     ),
                     Level.SEVERE
                 )

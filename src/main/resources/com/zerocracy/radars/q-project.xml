@@ -130,6 +130,19 @@
         </cmds>
     </cmd>
     <cmd>
+        <code>Publish the project</code>
+        <regex>publish</regex>
+        <label>publish</label>
+        <help>Publish the project or un-publish</help>
+        <opts>
+            <opt>
+                <name>mode</name>
+                <regex>(on|off)</regex>
+                <help>Publication mode: 'on' or 'off'</help>
+            </opt>
+        </opts>
+    </cmd>
+    <cmd>
         <code>Bootstrap</code>
         <regex>bootstrap</regex>
         <label>bootstrap</label>

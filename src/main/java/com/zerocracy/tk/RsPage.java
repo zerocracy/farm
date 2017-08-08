@@ -102,16 +102,20 @@ public final class RsPage extends RsWrap {
     private static Response make(final Properties props, final String xsl,
         final Request req, final Iterable<Scalar<XeSource>> src)
         throws IOException {
-        final Collection<XeSource> sources = new LinkedList<>();
-        for (final Scalar<XeSource> item : src) {
-            sources.add(new IoCheckedScalar<>(item).value());
-        }
         final Response raw = new RsXembly(
             new XeStylesheet(xsl),
             new XeAppend(
                 "page",
                 new XeMillis(false),
-                new XeChain(sources),
+                new XeChain(
+                    () -> {
+                        final Collection<XeSource> sources = new LinkedList<>();
+                        for (final Scalar<XeSource> item : src) {
+                            sources.add(new IoCheckedScalar<>(item).value());
+                        }
+                        return sources;
+                    }
+                ),
                 new XeLinkHome(req),
                 new XeLinkSelf(req),
                 new XeDate(),

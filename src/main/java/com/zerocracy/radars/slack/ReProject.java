@@ -39,7 +39,11 @@ public final class ReProject implements Reaction<SlackMessagePosted> {
     public boolean react(final Farm farm, final SlackMessagePosted event,
         final SlackSession session) throws IOException {
         final Question question = new Question(
-            new XMLDocument(this.getClass().getResource("q-project.xml")),
+            new XMLDocument(
+                this.getClass().getResource(
+                    "/com/zerocracy/radars/q-project.xml"
+                )
+            ),
             event.getMessageContent().split("\\s+", 2)[1].trim()
         );
         final Project project = new SkProject(farm, event);
