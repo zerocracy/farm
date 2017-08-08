@@ -30,11 +30,17 @@ def exec(Project project, XML xml) {
   final login = claim.author()
   if ('on' == mode) {
     people.vacation(login, true)
-    claim.reply('You are on vacation now')
+    claim.reply(
+      'You are on vacation now'
+    ).postTo(project)
   } else if ('off' == mode) {
     people.vacation(login, false)
-    claim.reply('Your vacation has been ended')
+    claim.reply(
+      'Your vacation has been ended'
+    ).postTo(project)
   } else {
-    claim.reply("Incorrect vacation mode. Possible modes are 'on' or 'off'")
+    claim.reply(
+      "Incorrect vacation mode. Possible modes are 'on' or 'off'"
+    ).postTo(project)
   }
 }
