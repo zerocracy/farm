@@ -32,6 +32,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.LinkedList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.cactoos.io.InputOf;
@@ -39,6 +40,7 @@ import org.cactoos.io.InputWithFallback;
 import org.cactoos.io.LengthOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.TeeInput;
+import org.cactoos.iterable.ListOf;
 import org.cactoos.iterable.Reduced;
 import org.cactoos.iterable.StickyList;
 import org.cactoos.scalar.Ternary;
@@ -305,10 +307,15 @@ public final class Xocument {
      * @return The number
      */
     private static int num(final String ver) {
-        final String[] parts = ver.split("\\.");
+        final List<String> parts = new LinkedList<>();
+        parts.addAll(new ListOf<>(ver.split("\\.")));
+        if (parts.size() < Tv.THREE) {
+            parts.add("0");
+        }
         int sum = 0;
-        for (int idx = parts.length - 1; idx >= 0; --idx) {
-            sum += Integer.parseInt(parts[idx]) << (idx << Tv.THREE);
+        for (int idx = parts.size() - 1; idx >= 0; --idx) {
+            sum += Integer.parseInt(parts.get(idx))
+                << (parts.size() - idx << Tv.THREE);
         }
         return sum;
     }

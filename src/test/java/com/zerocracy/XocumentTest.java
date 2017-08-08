@@ -44,10 +44,10 @@ public final class XocumentTest {
             new TeeInput(
                 new JoinedText(
                     " ",
-                    "<catalog",
+                    "<catalog version='0.32.2'",
                     "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'",
                     "xsi:noNamespaceSchemaLocation=",
-                    "'http://datum.zerocracy.com/0.1/xsd/pmo/catalog.xsd'>",
+                    "'http://datum.zerocracy.com/0.32.3/xsd/pmo/catalog.xsd'>",
                     "<project id='ABCDEFGHT'>",
                     "<created>2017-01-02T12:00:00</created></project>",
                     "<project id='ABCDEFGHI'>",
