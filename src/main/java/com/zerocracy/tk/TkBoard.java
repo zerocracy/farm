@@ -100,7 +100,7 @@ public final class TkBoard implements Take {
     private XeSource source(final XML node, final String user)
         throws IOException {
         final Project project = this.farm.find(
-            String.format("@id=''%s", node.xpath("@id").get(0))
+            String.format("@id='%s'", node.xpath("@id").get(0))
         ).iterator().next();
         return new XeAppend(
             "project",
