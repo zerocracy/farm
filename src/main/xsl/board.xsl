@@ -37,10 +37,10 @@
     <xsl:template match="projects[project]">
         <p>
             <xsl:text>To join any of these projects you have</xsl:text>
-            <xsl:text> to apply, but asking @0crat in a chat,</xsl:text>
+            <xsl:text> to apply, by asking @0crat in a chat,</xsl:text>
             <xsl:text> see </xsl:text>
-            <a href="http://datum.zerocracy.com/pages/policy.html#1">
-                <xsl:text>par.1</xsl:text>
+            <a href="http://datum.zerocracy.com/pages/policy.html#2">
+                <xsl:text>par.2</xsl:text>
             </a>
             <xsl:text> of our Policy.</xsl:text>
         </p>
