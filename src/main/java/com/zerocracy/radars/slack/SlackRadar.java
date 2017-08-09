@@ -72,7 +72,9 @@ public final class SlackRadar implements AutoCloseable {
                     new ReLogged<>(
                         new ReNotMine(
                             new ReIfDirect(
-                                new ReProfile(),
+                                new ReIfAddressed(
+                                    new ReProfile()
+                                ),
                                 new ReIfAddressed(
                                     new ReProject()
                                 )
