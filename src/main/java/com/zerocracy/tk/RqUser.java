@@ -21,6 +21,7 @@ import com.zerocracy.jstk.Project;
 import com.zerocracy.pmo.People;
 import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.logging.Level;
 import org.cactoos.Scalar;
 import org.takes.Request;
@@ -79,14 +80,16 @@ public final class RqUser implements Scalar<String> {
                 )
             );
         }
-        final String login = identity.properties().get("login");
+        final String login = identity.properties()
+            .get("login").toLowerCase(Locale.ENGLISH);
         final People people = new People(this.pmo).bootstrap();
         if (!people.hasMentor(login)) {
             throw new RsForward(
                 new RsFlash(
                     String.join(
                         " ",
-                        "You must be invited to us by someone we already know.",
+                        String.format("You \"@%s\" must be invited", login),
+                        "to us by someone we already know.",
                         "If you don't know anyone who works with us already,",
                         "email us to join@zerocracy.com and we'll see what",
                         "we can do."
