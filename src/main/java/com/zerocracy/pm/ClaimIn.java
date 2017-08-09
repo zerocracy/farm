@@ -51,7 +51,10 @@ public final class ClaimIn {
     public ClaimOut reply(final String msg) {
         if (!this.hasToken()) {
             throw new IllegalArgumentException(
-                "There is no token, can't reply"
+                String.format(
+                    "There is no token in \"%s\", can't reply",
+                    this.type()
+                )
             );
         }
         return new ClaimOut(
@@ -141,8 +144,8 @@ public final class ClaimIn {
         if (!params.hasNext()) {
             throw new IllegalArgumentException(
                 String.format(
-                    "Parameter \"%s\" not found among: %s",
-                    name,
+                    "Parameter \"%s\" not found in \"%s\" among: %s",
+                    name, this.type(),
                     this.xml.xpath("params/param/@name")
                 )
             );
