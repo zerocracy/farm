@@ -35,6 +35,15 @@
         </p>
     </xsl:template>
     <xsl:template match="projects[project]">
+        <p>
+            <xsl:text>To join any of these projects you have</xsl:text>
+            <xsl:text> to apply, but asking @0crat in a chat,</xsl:text>
+            <xsl:text> see </xsl:text>
+            <a href="http://datum.zerocracy.com/pages/policy.html#1">
+                <xsl:text>par.1</xsl:text>
+            </a>
+            <xsl:text> of our Policy.</xsl:text>
+        </p>
         <table>
             <thead>
                 <tr>
@@ -60,11 +69,6 @@
     <xsl:template match="project">
         <tr>
             <td>
-                <xsl:if test="mine='true'">
-                    <xsl:attribute name="style">
-                        <xsl:text>font-weight:bold</xsl:text>
-                    </xsl:attribute>
-                </xsl:if>
                 <code>
                     <xsl:value-of select="id"/>
                 </code>
@@ -73,7 +77,18 @@
                 <xsl:apply-templates select="repositories"/>
             </td>
             <td>
-                <xsl:value-of select="members"/>
+                <xsl:if test="mine='false'">
+                    <xsl:value-of select="members"/>
+                </xsl:if>
+                <xsl:if test="mine='true'">
+                    <xsl:if test="members = 1">
+                        <xsl:text>you</xsl:text>
+                    </xsl:if>
+                    <xsl:if test="members &gt; 1">
+                        <xsl:value-of select="members - 1"/>
+                        <xsl:text>+you</xsl:text>
+                    </xsl:if>
+                </xsl:if>
             </td>
             <td>
                 <xsl:value-of select="jobs"/>
