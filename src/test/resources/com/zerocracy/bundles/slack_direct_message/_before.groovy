@@ -29,7 +29,7 @@ import org.mockito.Mockito
 def exec(Project project, XML xml) {
   final session = Mockito.mock(SlackSession.class)
   final person = "7YYZZT99S"
-  final event = mockSession("hello", "C123", "user", person)
+  final event = mockSession("@0crat hello", "C123", "user", person)
   final farm = new FkFarm(project)
   new ReProfile().react(farm, event, session)
 }

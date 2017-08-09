@@ -44,7 +44,7 @@ public final class ReProject implements Reaction<SlackMessagePosted> {
                     "/com/zerocracy/radars/q-project.xml"
                 )
             ),
-            event.getMessageContent().split("\\s+", 2)[1].trim()
+            event.getMessageContent().trim().split("\\s+", 2)[1].trim()
         );
         final Project project = new SkProject(farm, event);
         new ClaimOnQuestion(question)

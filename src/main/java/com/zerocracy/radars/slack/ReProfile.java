@@ -47,7 +47,7 @@ public final class ReProfile implements Reaction<SlackMessagePosted> {
                     "/com/zerocracy/radars/q-profile.xml"
                 )
             ),
-            new DirectMessage(event.getMessageContent()).asString()
+            event.getMessageContent().trim().split("\\s+", 2)[1].trim()
         );
         new ClaimOnQuestion(question)
             .claim()
