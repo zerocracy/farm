@@ -25,8 +25,8 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Version')
   Properties props = binding.variables.properties
   new ClaimIn(xml).reply(
-    """My version is `${props.getProperty('build.version')}`,
- rev.`${props.getProperty('build.revision')}`,
- built on ${props.getProperty('build.date')}"""
+    "My version is `${props.getProperty('build.version')}`," +
+    " rev.`${props.getProperty('build.revision')}`," +
+    " built on ${props.getProperty('build.date')}"
   ).postTo(project)
 }
