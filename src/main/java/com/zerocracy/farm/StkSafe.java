@@ -135,7 +135,15 @@ public final class StkSafe implements Stakeholder {
                     )
                 ).postTo(project);
             }
-            Sentry.capture(ex);
+            Sentry.capture(
+                new IllegalArgumentException(
+                    String.format(
+                        "Claim #%d in %s: type=\"%s\"",
+                        claim.number(), project, claim.type()
+                    ),
+                    ex
+                )
+            );
         }
     }
 }
