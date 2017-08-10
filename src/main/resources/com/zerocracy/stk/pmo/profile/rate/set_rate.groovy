@@ -27,9 +27,8 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Set rate')
   People people = new People(project).bootstrap()
   ClaimIn claim = new ClaimIn(xml)
-  String login = claim.param('person')
   Cash rate = new Cash.S(claim.param('rate'))
-  people.rate(login, rate)
+  people.rate(claim.author(), rate)
   claim.reply(
     String.format(
       'Rate of "%s" set to %s.',

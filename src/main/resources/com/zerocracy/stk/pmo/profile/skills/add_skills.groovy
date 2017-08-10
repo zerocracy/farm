@@ -28,8 +28,7 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Add skills')
   People people = new People(project).bootstrap()
   ClaimIn claim = new ClaimIn(xml)
-  String login = claim.param('person')
-  Collection<String> skills = people.skills(login)
+  Collection<String> skills = people.skills(claim.author())
   if (skills.size() > Tv.FIVE) {
     throw new SoftException(
       String.format(
@@ -39,7 +38,7 @@ def exec(Project project, XML xml) {
     )
   }
   String skill = claim.param('skill')
-  people.skill(login, skill)
+  people.skill(claim.author(), skill)
   claim.reply(
     String.format(
       'New skill "%s" added to "%s".',
