@@ -26,7 +26,7 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Show skills')
   People people = new People(project).bootstrap()
   ClaimIn claim = new ClaimIn(xml)
-  String login = claim.param('person')
+  String login = claim.param('login')
   Collection<String> skills = people.skills(login)
   String msg
   if (skills.iterator().hasNext()) {
