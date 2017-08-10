@@ -47,7 +47,8 @@ public final class ReProject implements Reaction<SlackMessagePosted> {
             event.getMessageContent().trim().split("\\s+", 2)[1].trim()
         );
         final Project project = new SkProject(farm, event);
-        new ClaimOnQuestion(question)
+        // @checkstyle LineLength (1 line)
+        new ClaimOnQuestion(question, "Remember, this chat is for managing a project; to manage your personal profile, please open a private chat with the bot.")
             .claim()
             .token(new SkToken(event))
             .author(new SkPerson(farm, event).uid())

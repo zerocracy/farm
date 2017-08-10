@@ -49,7 +49,8 @@ public final class ReProfile implements Reaction<SlackMessagePosted> {
             ),
             event.getMessageContent().trim().split("\\s+", 2)[1].trim()
         );
-        new ClaimOnQuestion(question)
+        // @checkstyle LineLength (1 line)
+        new ClaimOnQuestion(question, "Remember, this chat is for managing your personal profile; to manage a project, please open or create a new channel and invite the bot there.")
             .claim()
             .token(new SkToken(event))
             .author(new SkPerson(farm, event).uid())
