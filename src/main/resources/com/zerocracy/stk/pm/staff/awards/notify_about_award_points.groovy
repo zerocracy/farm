@@ -32,7 +32,7 @@ def exec(Project project, XML xml) {
   Awards awards = new Awards(project, login).bootstrap()
   new ClaimOut()
     .type('Notify user')
-    .token(login)
+    .token("user;${login}")
     .param(
       'message',
       String.format(
@@ -44,7 +44,7 @@ def exec(Project project, XML xml) {
     .postTo(project)
   new ClaimOut()
     .type('Notify job')
-    .token(job)
+    .token("job;${job}")
     .param(
       'message',
       String.format(

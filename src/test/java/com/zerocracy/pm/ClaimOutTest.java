@@ -38,7 +38,7 @@ public final class ClaimOutTest {
             claims.add(
                 new Concat<Directive>(
                     new ClaimOut.Notify(
-                        "token",
+                        "test;token",
                         "hello, world"
                     ),
                     new ClaimOut().type("hello")

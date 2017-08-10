@@ -29,7 +29,7 @@ def exec(Project project, XML xml) {
   String role = claim.param('role')
   new ClaimOut()
     .type('Notify user')
-    .token(login)
+    .token("user;${login}")
     .param(
       'message',
       "You just got role `${role}` in " +

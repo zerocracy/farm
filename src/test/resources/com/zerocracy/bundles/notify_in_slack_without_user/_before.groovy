@@ -47,7 +47,7 @@ def exec(Project project, XML xml) {
   binding.variables.slack.put(channelId, session)
   new ClaimOut()
     .type("Notify in Slack")
-    .token("${channelId};none;one-more-part")
+    .token("slack;${channelId};none;one-more-part")
     .param("message", "Hello None!")
     .postTo(project)
 }

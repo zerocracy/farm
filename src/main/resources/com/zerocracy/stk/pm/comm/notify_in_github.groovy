@@ -40,19 +40,24 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Notify in GitHub')
   ClaimIn claim = new ClaimIn(xml)
   String[] parts = claim.token().split(';')
+  if (parts[0] != 'github') {
+    throw new IllegalArgumentException(
+      "Something is wrong with this token: ${claim.token()}"
+    )
+  }
   Github github = binding.variables.github
   Repo repo = github.repos().get(
-    new Coordinates.Simple(parts[0])
+    new Coordinates.Simple(parts[1])
   )
   Issue issue = safe(
     repo.issues().get(
-      Integer.parseInt(parts[1])
+      Integer.parseInt(parts[2])
     )
   )
   String message = claim.param('message')
-  if (parts.length > 2) {
+  if (parts.length > 3) {
     Comment comment = issue.comments().get(
-      Integer.parseInt(parts[2])
+      Integer.parseInt(parts[3])
     )
     new GhTube(comment).say(message)
   } else {
