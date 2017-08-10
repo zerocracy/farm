@@ -29,19 +29,6 @@
         <help>Print current version of the bot</help>
     </cmd>
     <cmd>
-        <code>Invite a friend</code>
-        <regex>invite</regex>
-        <label>invite</label>
-        <help>Invite a friend</help>
-        <opts>
-            <opt>
-                <name>login</name>
-                <regex>[a-z0-9-]+</regex>
-                <help>GitHub login of your friend</help>
-            </opt>
-        </opts>
-    </cmd>
-    <cmd>
         <code>Show links</code>
         <regex>links?</regex>
         <label>links</label>
