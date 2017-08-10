@@ -97,9 +97,9 @@ public final class GhProject implements Project {
             throw new SoftException(
                 String.join(
                     "",
-                    "I'm not managing this GitHub repository (",
-                    name,
-                    "). You have to contact me in Slack first."
+                    "I'm not managing `", name, "` GitHub repository.",
+                    "You have to contact me in Slack first.",
+                    "Our [policy]() explains how."
                 )
             );
         }
