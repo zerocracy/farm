@@ -33,7 +33,6 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Locale;
-import java.util.stream.StreamSupport;
 import javax.json.JsonObject;
 import org.apache.commons.lang3.StringUtils;
 import org.cactoos.iterable.Filtered;
@@ -117,18 +116,16 @@ public final class ReOnComment implements Reaction {
             this.send(farm, comment);
         }
         Logger.info(
-            this, "%d comments found in %s#%d and processed in %[ms]s: %s",
+            this, "%d comments found in %s and processed in %[ms]s: %s",
             new LengthOf(comments).value(),
             issue.repo().coordinates(),
-            issue.number(),
             System.currentTimeMillis() - start,
             String.join(
                 ", ",
-                () -> StreamSupport
-                    .stream(comments.spliterator(), false)
-                    .<CharSequence>map(
-                        comment -> String.format("#%d", comment.number())
-                    ).iterator()
+                new Mapped<>(
+                    comments,
+                    cmt -> String.format("#%d", cmt.number())
+                )
             )
         );
     }

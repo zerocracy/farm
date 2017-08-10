@@ -23,6 +23,7 @@ import com.zerocracy.pmo.Catalog;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -102,16 +103,17 @@ public final class S3Farm implements Farm {
         final Matcher matcher = Pattern.compile(
             "\\s*@id\\s*=\\s*'([^']+)'\\s*"
         ).matcher(xpath);
-        if (!matcher.matches()) {
-            throw new IllegalStateException(
-                String.format("Can't find anything with %s", xpath)
+        final Iterable<Project> found;
+        if (matcher.matches()) {
+            final String pid = matcher.group(1);
+            catalog.add(
+                pid, String.format("%tY/%1$tm/%s/", new Date(), pid)
             );
+            found = this.find(xpath);
+        } else {
+            found = Collections.emptyList();
         }
-        final String pid = matcher.group(1);
-        catalog.add(
-            pid, String.format("%tY/%1$tm/%s/", new Date(), pid)
-        );
-        return this.find(xpath);
+        return found;
     }
 
 }
