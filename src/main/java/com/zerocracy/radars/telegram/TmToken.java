@@ -16,29 +16,31 @@
  */
 package com.zerocracy.radars.telegram;
 
+import java.util.Locale;
+
 /**
- * Telegram message.
+ * Telegram token.
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
- * @since 0.15
+ * @since 0.16
  */
-public interface TmRequest {
+final class TmToken {
 
     /**
-     * Sender user.
-     * @return User name
+     * Telegram request.
      */
-    String sender();
+    private final TmRequest request;
 
     /**
-     * Request message text.
-     * @return Text string
+     * Ctor.
+     * @param req Telegram request
      */
-    String text();
+    TmToken(final TmRequest req) {
+        this.request = req;
+    }
 
-    /**
-     * Request chat id.
-     * @return Id number
-     */
-    long chat();
+    @Override
+    public String toString() {
+        return String.format(Locale.US, "telegram;%d", this.request.chat());
+    }
 }

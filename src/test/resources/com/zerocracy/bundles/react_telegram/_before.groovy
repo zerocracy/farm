@@ -14,31 +14,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.radars.telegram;
+package com.zerocracy.bundles.react_telegram
 
-/**
- * Telegram message.
- * @author Kirill (g4s8.public@gmail.com)
- * @version $Id$
- * @since 0.15
- */
-public interface TmRequest {
+import com.jcabi.xml.XML
+import com.zerocracy.farm.ProjectFarm
+import com.zerocracy.jstk.Project
+import com.zerocracy.radars.telegram.ReProfile
+import com.zerocracy.radars.telegram.fake.FkTmRequest
+import com.zerocracy.radars.telegram.fake.FkTmSession
 
-    /**
-     * Sender user.
-     * @return User name
-     */
-    String sender();
-
-    /**
-     * Request message text.
-     * @return Text string
-     */
-    String text();
-
-    /**
-     * Request chat id.
-     * @return Id number
-     */
-    long chat();
+def exec(Project project, XML xml) {
+  binding.variables.telegram.put(42L, new FkTmSession())
+  new ReProfile().react(new ProjectFarm(project, "@id='PMO'"), new FkTmSession(), new FkTmRequest("yegor256", "hello", 42))
 }
+
+
