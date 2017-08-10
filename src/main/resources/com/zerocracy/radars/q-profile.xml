@@ -17,7 +17,7 @@
  -->
 <question>
     <cmd>
-        <code>Hello</code>
+        <code>Hello profile</code>
         <regex>hi|hello|hey|morning|good morning</regex>
         <label>hello</label>
         <help>Just say hello</help>

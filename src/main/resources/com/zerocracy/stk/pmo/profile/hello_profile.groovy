@@ -14,34 +14,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.radars.telegram;
+package com.zerocracy.stk.pmo.profile
 
-import com.zerocracy.jstk.Farm;
-import java.io.IOException;
-import org.cactoos.text.FormattedText;
+import com.jcabi.xml.XML
+import com.zerocracy.farm.Assume
+import com.zerocracy.jstk.Project
+import com.zerocracy.pm.ClaimIn
 
-/**
- * Say hello_project to the user.
- * @author Kirill (g4s8.public@gmail.com)
- * @version $Id$
- * @since 0.15
- */
-final class ReHello implements Reaction {
-
-    @Override
-    public boolean react(
-        final Farm farm,
-        final TmSession session,
-        final TmRequest request
-    ) throws IOException {
-        session.reply(
-            new RsText(
-                new FormattedText(
-                    "Hello, %s",
-                    request.sender()
-                )
-            )
-        );
-        return true;
-    }
+def exec(Project project, XML xml) {
+  new Assume(project, xml).type('Hello profile')
+  ClaimIn claim = new ClaimIn(xml)
+  claim.reply(
+    "Hey, what's up, how is it going?" +
+    ' More information is in' +
+    " [your profile](http://www.0crat.com/u/${claim.author()})."
+  ).postTo(project)
 }
