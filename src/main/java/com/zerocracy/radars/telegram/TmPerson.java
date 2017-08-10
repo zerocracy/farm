@@ -16,29 +16,47 @@
  */
 package com.zerocracy.radars.telegram;
 
+import com.zerocracy.jstk.Farm;
+import com.zerocracy.pmo.GoodPeople;
+import com.zerocracy.pmo.People;
+import java.io.IOException;
+
 /**
- * Telegram message.
+ * Person in telegram.
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
- * @since 0.15
+ * @since 0.16
  */
-public interface TmRequest {
+final class TmPerson {
 
     /**
-     * Sender user.
-     * @return User name
+     * Farm.
      */
-    String sender();
+    private final Farm farm;
 
     /**
-     * Request message text.
-     * @return Text string
+     * Event.
      */
-    String text();
+    private final TmRequest request;
 
     /**
-     * Request chat id.
-     * @return Id number
+     * Ctor.
+     * @param frm Farm
+     * @param req Telegram request
      */
-    long chat();
+    TmPerson(final Farm frm, final TmRequest req) {
+        this.farm = frm;
+        this.request = req;
+    }
+
+    /**
+     * User ID.
+     * @return User ID
+     * @throws IOException If fails
+     */
+    public String uid() throws IOException {
+        return new GoodPeople(new People(this.farm)).get(
+            "telegram", this.request.sender()
+        );
+    }
 }

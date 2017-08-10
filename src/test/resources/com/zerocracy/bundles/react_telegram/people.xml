@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<people xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/zerocracy/datum/0.28/xsd/pmo/people.xsd"
+        version="1"
+        updated="2016-12-29T09:03:21.684Z">
+    <person id="yegor256">
+        <name>Yegor Bugayenko</name>
+        <mentor>0crat</mentor>
+        <links>
+            <link rel="telegram" href="yegor256"/>
+        </links>
+    </person>
+</people>

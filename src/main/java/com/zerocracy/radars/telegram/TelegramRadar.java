@@ -71,7 +71,7 @@ public final class TelegramRadar implements AutoCloseable {
         this(
             farm,
             new ReNotMine(
-                new ReHello()
+                new ReProfile()
             ),
             sessions
         );
