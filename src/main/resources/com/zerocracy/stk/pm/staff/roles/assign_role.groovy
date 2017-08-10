@@ -32,7 +32,8 @@ def exec(Project project, XML xml) {
   new Roles(project).bootstrap().assign(login, role)
   claim.reply(
     String.format(
-      'Role "%s" assigned to "%s".',
+      'Role "%s" assigned to "%s",' +
+      ' see [full list](http://www.0crat.com/p/ff?) of roles.',
       role, login
     )
   ).postTo(project)

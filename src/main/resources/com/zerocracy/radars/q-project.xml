@@ -73,48 +73,40 @@
         </cmds>
     </cmd>
     <cmd>
-        <code>Show roles</code>
-        <regex>roles?</regex>
-        <label>roles</label>
-        <help>Show all roles assigned at the moment, add and remove them</help>
-        <cmds>
-            <cmd>
-                <code>Assign role</code>
-                <regex>assign|add|register</regex>
-                <label>assign</label>
-                <help>Assign new project role</help>
-                <opts>
-                    <opt>
-                        <name>role</name>
-                        <regex>[A-Z]{2,4}</regex>
-                        <help>Project role, all caps, e.g. ARC, PO or DEV</help>
-                    </opt>
-                    <opt>
-                        <name>login</name>
-                        <regex>[a-zA-Z0-9\-]+</regex>
-                        <help>GitHub login of the user</help>
-                    </opt>
-                </opts>
-            </cmd>
-            <cmd>
-                <code>Resign role</code>
-                <regex>resign|remove|unregister</regex>
-                <label>resign</label>
-                <help>Resign a person from a project role</help>
-                <opts>
-                    <opt>
-                        <name>role</name>
-                        <regex>[A-Z]{2,4}</regex>
-                        <help>Project role, all caps, e.g. ARC or PO</help>
-                    </opt>
-                    <opt>
-                        <name>login</name>
-                        <regex>[a-zA-Z0-9\-]+</regex>
-                        <help>GitHub login of the user</help>
-                    </opt>
-                </opts>
-            </cmd>
-        </cmds>
+        <code>Assign role</code>
+        <regex>assign</regex>
+        <label>assign</label>
+        <help>Assign new project role</help>
+        <opts>
+            <opt>
+                <name>role</name>
+                <regex>[A-Z]{2,4}</regex>
+                <help>Project role, all caps, e.g. ARC, PO or DEV</help>
+            </opt>
+            <opt>
+                <name>login</name>
+                <regex>[a-zA-Z0-9\-]+</regex>
+                <help>GitHub login of the user</help>
+            </opt>
+        </opts>
+    </cmd>
+    <cmd>
+        <code>Resign role</code>
+        <regex>resign</regex>
+        <label>resign</label>
+        <help>Resign a person from a project role</help>
+        <opts>
+            <opt>
+                <name>role</name>
+                <regex>[A-Z]{2,4}</regex>
+                <help>Project role, all caps, e.g. ARC or PO</help>
+            </opt>
+            <opt>
+                <name>login</name>
+                <regex>[a-zA-Z0-9\-]+</regex>
+                <help>GitHub login of the user</help>
+            </opt>
+        </opts>
     </cmd>
     <cmd>
         <code>Publish the project</code>
