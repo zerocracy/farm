@@ -102,27 +102,6 @@
         </cmds>
     </cmd>
     <cmd>
-        <code>Show skills</code>
-        <regex>skills?</regex>
-        <label>skills</label>
-        <help>Show your currently registered technical skills</help>
-        <cmds>
-            <cmd>
-                <code>Add skill</code>
-                <regex>add|set</regex>
-                <label>add</label>
-                <help>Add a new skill</help>
-                <opts>
-                    <opt>
-                        <name>skill</name>
-                        <regex>.+</regex>
-                        <help>Your skill, e.g. "java.spring" or "cpp"</help>
-                    </opt>
-                </opts>
-            </cmd>
-        </cmds>
-    </cmd>
-    <cmd>
         <code>Show wallet</code>
         <regex>wallet</regex>
         <label>wallet</label>

@@ -20,8 +20,4 @@
         <text>rate</text>
         <code>profile.rate.show</code>
     </cmd>
-    <cmd>
-        <text>skills</text>
-        <code>profile.skills.show</code>
-    </cmd>
 </test>

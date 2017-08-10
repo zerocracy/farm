@@ -23,7 +23,6 @@ import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.cash.Cash;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Iterator;
 import org.cactoos.iterable.ItemAt;
 import org.cactoos.iterable.Mapped;
@@ -122,40 +121,6 @@ public final class People {
                     uid
                 )
             ).isEmpty();
-        }
-    }
-
-    /**
-     * Add new skill.
-     * @param uid User ID
-     * @param skill The skill to add
-     * @throws IOException If fails
-     */
-    public void skill(final String uid, final String skill) throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
-                People.start(uid)
-                    .addIf("skills")
-                    .add("skill")
-                    .set(skill)
-            );
-        }
-    }
-
-    /**
-     * Get all user skills.
-     * @param uid User ID
-     * @return List of skills
-     * @throws IOException If fails
-     */
-    public Collection<String> skills(final String uid) throws IOException {
-        try (final Item item = this.item()) {
-            return new Xocument(item).xpath(
-                String.format(
-                    "/people/person[@id='%s']/skills/skill/text()",
-                    uid
-                )
-            );
         }
     }
 
