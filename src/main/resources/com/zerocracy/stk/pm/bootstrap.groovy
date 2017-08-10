@@ -36,7 +36,8 @@ def exec(Project project, XML xml) {
         ' ',
         'I\'m ready to manage a project.',
         'When you\'re ready, you can start giving me commands,',
-        'always prefixing your messages with my name.'
+        'always prefixing your messages with my name.',
+        "All project artifacts are [here](http://www.0crat.com/p/${project})."
       )
     ).postTo(project)
   } else {
