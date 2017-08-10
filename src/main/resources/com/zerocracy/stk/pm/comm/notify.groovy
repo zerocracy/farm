@@ -53,8 +53,8 @@ def exec(Project project, XML xml) {
   } else {
     throw new IllegalStateException(
       String.format(
-        'I don\'t know how to notify "%s"',
-        parts[0]
+        'I don\'t know how to notify "%s" from "%s"/"%s": "%s"',
+        parts[0], claim.author(), claim.token(), claim.param('message')
       )
     )
   }
