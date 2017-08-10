@@ -33,7 +33,8 @@ def exec(Project project, XML xml) {
   claim.reply(
     String.format(
       'Role "%s" assigned to "%s",' +
-      ' see [full list](http://www.0crat.com/p/ff?) of roles.',
+      " see [full list](http://www.0crat.com/p/${project}?a=pm/staff/roles)" +
+      ' of roles.',
       role, login
     )
   ).postTo(project)
