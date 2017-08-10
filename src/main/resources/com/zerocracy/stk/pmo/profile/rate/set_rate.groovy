@@ -25,7 +25,6 @@ import com.zerocracy.pmo.People
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Set rate')
-  new Assume(project, xml).roles('ARC', 'PO')
   People people = new People(project).bootstrap()
   ClaimIn claim = new ClaimIn(xml)
   String login = claim.param('person')
