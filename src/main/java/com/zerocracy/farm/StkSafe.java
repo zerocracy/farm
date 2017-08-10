@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.util.Properties;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.cactoos.io.BytesOf;
 import org.cactoos.text.FormattedText;
 import org.cactoos.text.TextOf;
@@ -116,13 +117,16 @@ public final class StkSafe implements Stakeholder {
                         " submit this error as a ticket",
                         " [here](https://github.com/zerocracy/datum):\n\n```\n",
                         new FormattedText(
-                            "%s %s %s\n%s",
+                            "%s %s %s\n%s\n%s",
                             this.props.getProperty("build.version"),
                             this.props.getProperty("build.revision"),
                             this.props.getProperty("build.date"),
+                            ExceptionUtils.getMessage(ex),
                             StringUtils.abbreviate(
                                 new TextOf(
-                                    new BytesOf(ex)
+                                    new BytesOf(
+                                        ExceptionUtils.getRootCause(ex)
+                                    )
                                 ).asString(),
                                 Tv.THOUSAND
                             )
