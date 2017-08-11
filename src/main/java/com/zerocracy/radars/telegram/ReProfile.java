@@ -42,7 +42,7 @@ public final class ReProfile implements Reaction {
             request.text().trim()
         );
         // @checkstyle LineLength (1 line)
-        new ClaimOnQuestion(question, "Remember, this chat is for managing your personal profile; to manage a project, please open or create a new channel and invite the bot there.")
+        new ClaimOnQuestion(question, "Remember, this chat is for managing your personal profile; to manage a project, please open or create a new Slack channel and invite the bot there.")
             .claim()
             .token(new TmToken(request))
             .author(new TmPerson(farm, request).uid())
