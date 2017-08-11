@@ -36,7 +36,8 @@ def exec(Project project, XML xml) {
   Github github = binding.variables.github
   Issue.Smart issue = new Issue.Smart(new Job.Issue(github, job))
   String author = issue.author().login().toLowerCase(Locale.ENGLISH)
-  if (new Roles(project).bootstrap().hasAnyRole(author)) {
+  Roles roles = new Roles(project).bootstrap()
+  if (roles.hasAnyRole(author)) {
     new ClaimOut()
       .type('Make payment')
       .param('job', job)

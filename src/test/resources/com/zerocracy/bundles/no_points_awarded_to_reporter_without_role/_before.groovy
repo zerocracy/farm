@@ -22,7 +22,7 @@ import com.jcabi.xml.XML
 import com.zerocracy.jstk.Project
 
 def exec(Project project, XML xml) {
-  Github github = binding.variables.github
+  Github github = binding.variables.github.relogin("yegor256")
   def repo = github.repos().create(new Repos.RepoCreate("test", false))
   repo.issues().create("hello, world", "")
 }
