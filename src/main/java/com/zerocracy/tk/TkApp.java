@@ -31,6 +31,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.cactoos.io.BytesOf;
 import org.cactoos.iterable.ListOf;
 import org.cactoos.text.TextOf;
+import org.takes.Take;
 import org.takes.facets.fallback.Fallback;
 import org.takes.facets.fallback.FbChain;
 import org.takes.facets.fallback.FbLog4j;
@@ -43,6 +44,7 @@ import org.takes.facets.forward.TkForward;
 import org.takes.misc.Concat;
 import org.takes.misc.Href;
 import org.takes.misc.Opt;
+import org.takes.rs.RsRedirect;
 import org.takes.rs.RsText;
 import org.takes.rs.RsVelocity;
 import org.takes.rs.RsWithStatus;
@@ -121,6 +123,12 @@ public final class TkApp extends TkWrap {
                                                             new FkRegex(
                                                                 "/board",
                                                                 new TkBoard(props, farm)
+                                                            ),
+                                                            new FkRegex(
+                                                                "/myself",
+                                                                (Take) req -> new RsRedirect(
+                                                                    String.format("/u/%s", new RqUser(farm, req).value())
+                                                                )
                                                             ),
                                                             new FkRegex(
                                                                 "/p/([A-Z0-9]{9})",
