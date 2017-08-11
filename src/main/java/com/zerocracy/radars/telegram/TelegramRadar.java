@@ -31,10 +31,6 @@ import org.telegram.telegrambots.generics.BotSession;
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.15
- * @todo #75:30min Need to parse telegram message and post as claim
- *  to a project. It should be similar to Slack implementations.
- *  Bot must understand only profile commands, q-profile.xml from slack
- *  can be copied.
  */
 public final class TelegramRadar implements AutoCloseable {
 
@@ -71,7 +67,7 @@ public final class TelegramRadar implements AutoCloseable {
         this(
             farm,
             new ReNotMine(
-                new ReHello()
+                new ReProfile()
             ),
             sessions
         );

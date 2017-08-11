@@ -14,31 +14,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.radars.telegram;
+package com.zerocracy.bundles.react_telegram
 
-/**
- * Telegram message.
- * @author Kirill (g4s8.public@gmail.com)
- * @version $Id$
- * @since 0.15
- */
-public interface TmRequest {
+import com.jcabi.xml.XML
+import com.zerocracy.jstk.Project
+import com.zerocracy.radars.telegram.fake.FkTmSession
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
 
-    /**
-     * Sender user.
-     * @return User name
-     */
-    String sender();
-
-    /**
-     * Request message text.
-     * @return Text string
-     */
-    String text();
-
-    /**
-     * Request chat id.
-     * @return Id number
-     */
-    long chat();
+def exec(Project project, XML xml) {
+  final FkTmSession session = binding.variables.telegram.get(42L)
+  MatcherAssert.assertThat(
+    "no responses",
+    session.responses(),
+    Matchers.hasSize(1)
+  )
 }

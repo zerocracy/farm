@@ -14,34 +14,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.radars.telegram;
+package com.zerocracy.bundles.modifies_wbs
 
-import com.zerocracy.jstk.Farm;
-import java.io.IOException;
-import org.cactoos.text.FormattedText;
+import com.jcabi.github.Github
+import com.jcabi.github.Repos
+import com.jcabi.xml.XML
+import com.zerocracy.jstk.Project
 
-/**
- * Say hello_project to the user.
- * @author Kirill (g4s8.public@gmail.com)
- * @version $Id$
- * @since 0.15
- */
-final class ReHello implements Reaction {
-
-    @Override
-    public boolean react(
-        final Farm farm,
-        final TmSession session,
-        final TmRequest request
-    ) throws IOException {
-        session.reply(
-            new RsText(
-                new FormattedText(
-                    "Hello, %s",
-                    request.sender()
-                )
-            )
-        );
-        return true;
-    }
+def exec(Project project, XML xml) {
+  Github github = binding.variables.github
+  def repo = github.repos().create(new Repos.RepoCreate("test", false))
+  repo.issues().create("hello, world", "")
 }

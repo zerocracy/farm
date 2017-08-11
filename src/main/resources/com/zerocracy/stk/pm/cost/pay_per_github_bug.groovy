@@ -23,6 +23,7 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
+import com.zerocracy.pm.staff.Roles
 import com.zerocracy.radars.github.Job
 
 def exec(Project project, XML xml) {
@@ -35,11 +36,14 @@ def exec(Project project, XML xml) {
   Github github = binding.variables.github
   Issue.Smart issue = new Issue.Smart(new Job.Issue(github, job))
   String author = issue.author().login().toLowerCase(Locale.ENGLISH)
-  new ClaimOut()
-    .type('Make payment')
-    .param('job', job)
-    .param('login', author)
-    .param('reason', 'Bug was reported')
-    .param('minutes', 15)
-    .postTo(project)
+  Roles roles = new Roles(project).bootstrap()
+  if (roles.hasAnyRole(author)) {
+    new ClaimOut()
+      .type('Make payment')
+      .param('job', job)
+      .param('login', author)
+      .param('reason', 'Bug was reported')
+      .param('minutes', 15)
+      .postTo(project)
+  }
 }
