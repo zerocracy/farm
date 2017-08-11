@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+set -x
 
 head=$(git rev-parse --short HEAD)
 cd $(dirname $0)
