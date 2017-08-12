@@ -18,6 +18,7 @@ package com.zerocracy.tk;
 
 import com.jcabi.log.Logger;
 import com.zerocracy.jstk.Farm;
+import com.zerocracy.pmo.People;
 import com.zerocracy.pmo.Pmo;
 import com.zerocracy.tk.profile.TkAgenda;
 import com.zerocracy.tk.profile.TkAwards;
@@ -127,7 +128,12 @@ public final class TkApp extends TkWrap {
                                                             new FkRegex(
                                                                 "/myself",
                                                                 (Take) req -> new RsRedirect(
-                                                                    String.format("/u/%s", new RqUser(farm, req).value())
+                                                                    String.format(
+                                                                        "/u/%s", new RqUser(
+                                                                            new People(farm).bootstrap(),
+                                                                            req
+                                                                        ).value()
+                                                                    )
                                                                 )
                                                             ),
                                                             new FkRegex(

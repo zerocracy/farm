@@ -16,7 +16,6 @@
  */
 package com.zerocracy.tk.profile;
 
-import com.zerocracy.jstk.Project;
 import com.zerocracy.pmo.People;
 import java.io.IOException;
 import java.util.Locale;
@@ -37,9 +36,9 @@ import org.takes.facets.forward.RsForward;
 public final class RqLogin implements Scalar<String> {
 
     /**
-     * PMO.
+     * People.
      */
-    private final Project pmo;
+    private final People people;
 
     /**
      * RqRegex.
@@ -48,11 +47,11 @@ public final class RqLogin implements Scalar<String> {
 
     /**
      * Ctor.
-     * @param pkt Project
+     * @param ppl People
      * @param req Request
      */
-    public RqLogin(final Project pkt, final RqRegex req) {
-        this.pmo = pkt;
+    public RqLogin(final People ppl, final RqRegex req) {
+        this.people = ppl;
         this.request = req;
     }
 
@@ -60,8 +59,7 @@ public final class RqLogin implements Scalar<String> {
     public String value() throws IOException {
         final String login = this.request.matcher()
             .group(1).toLowerCase(Locale.ENGLISH);
-        final People people = new People(this.pmo).bootstrap();
-        if (!people.find("github", login).iterator().hasNext()) {
+        if (!this.people.find("github", login).iterator().hasNext()) {
             throw new RsForward(
                 new RsFlash(
                     String.format("User \"@%s\" not found", login),

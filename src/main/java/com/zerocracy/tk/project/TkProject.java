@@ -20,6 +20,7 @@ import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.pmo.Catalog;
+import com.zerocracy.pmo.People;
 import com.zerocracy.pmo.Pmo;
 import com.zerocracy.tk.RqUser;
 import com.zerocracy.tk.RsPage;
@@ -80,7 +81,10 @@ public final class TkProject implements TkRegex {
                         "roles",
                         new XeTransform<>(
                             new Roles(project).bootstrap().allRoles(
-                                new RqUser(this.farm, req).value()
+                                new RqUser(
+                                    new People(this.farm).bootstrap(),
+                                    req
+                                ).value()
                             ),
                             role -> new XeAppend("role", role)
                         )

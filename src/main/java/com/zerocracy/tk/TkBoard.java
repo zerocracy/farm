@@ -23,6 +23,7 @@ import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.scope.Wbs;
 import com.zerocracy.pm.staff.Roles;
+import com.zerocracy.pmo.People;
 import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
 import java.util.Collection;
@@ -75,7 +76,10 @@ public final class TkBoard implements Take {
             "/xsl/board.xsl",
             req,
             () -> {
-                final String user = new RqUser(this.farm, req).value();
+                final String user = new RqUser(
+                    new People(this.farm).bootstrap(),
+                    req
+                ).value();
                 final Collection<XeSource> sources = new LinkedList<>();
                 try (final Item item = new Pmo(this.farm).acq("catalog.xml")) {
                     new And(

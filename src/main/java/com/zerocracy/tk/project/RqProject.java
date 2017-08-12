@@ -20,6 +20,7 @@ import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.pmo.Catalog;
+import com.zerocracy.pmo.People;
 import com.zerocracy.pmo.Pmo;
 import com.zerocracy.tk.RqUser;
 import java.io.IOException;
@@ -72,7 +73,10 @@ final class RqProject implements Scalar<Project> {
         final Project project = this.farm.find(
             String.format("@id='%s'", name)
         ).iterator().next();
-        final String login = new RqUser(this.farm, this.request).value();
+        final String login = new RqUser(
+            new People(this.farm).bootstrap(),
+            this.request
+        ).value();
         final Roles roles = new Roles(project).bootstrap();
         if (!roles.hasRole(login, "ARC", "PO") && !"yegor256".equals(login)) {
             throw new RsForward(
