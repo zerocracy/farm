@@ -16,7 +16,10 @@
  */
 package com.zerocracy.tk;
 
+import com.zerocracy.jstk.Farm;
+import com.zerocracy.jstk.Project;
 import com.zerocracy.pmo.People;
+import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.logging.Level;
@@ -36,10 +39,11 @@ import org.takes.facets.forward.RsForward;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class RqUser implements Scalar<String> {
+
     /**
-     * People.
+     * PMO.
      */
-    private final People people;
+    private final Project pmo;
 
     /**
      * Request.
@@ -48,11 +52,20 @@ public final class RqUser implements Scalar<String> {
 
     /**
      * Ctor.
-     * @param ppl People
+     * @param farm Farm
      * @param req Request
      */
-    public RqUser(final People ppl, final Request req) {
-        this.people = ppl;
+    public RqUser(final Farm farm, final Request req) {
+        this(new Pmo(farm), req);
+    }
+
+    /**
+     * Ctor.
+     * @param pkt Project
+     * @param req Request
+     */
+    public RqUser(final Project pkt, final Request req) {
+        this.pmo = pkt;
         this.request = req;
     }
 
@@ -69,7 +82,8 @@ public final class RqUser implements Scalar<String> {
         }
         final String login = identity.properties()
             .get("login").toLowerCase(Locale.ENGLISH);
-        if (!this.people.hasMentor(login)) {
+        final People people = new People(this.pmo).bootstrap();
+        if (!people.hasMentor(login)) {
             throw new RsForward(
                 new RsFlash(
                     String.join(

@@ -71,9 +71,9 @@ public final class TkProfile implements TkRegex {
             "/xsl/profile.xsl",
             req,
             () -> {
+                final String user = new RqUser(this.pmo, req).value();
+                final String login = new RqLogin(this.pmo, req).value();
                 final People people = new People(this.pmo).bootstrap();
-                final String user = new RqUser(people, req).value();
-                final String login = new RqLogin(people, req).value();
                 return new XeChain(
                     new XeWhen(
                         login.equals(user),

@@ -17,7 +17,6 @@
 package com.zerocracy.tk.profile;
 
 import com.zerocracy.jstk.Project;
-import com.zerocracy.pmo.People;
 import com.zerocracy.tk.RqUser;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -58,9 +57,8 @@ final class RqSecureLogin implements Scalar<String> {
 
     @Override
     public String value() throws IOException {
-        final People people = new People(this.pmo).bootstrap();
-        final String login = new RqLogin(people, this.request).value();
-        final String user = new RqUser(people, this.request).value();
+        final String login = new RqLogin(this.pmo, this.request).value();
+        final String user = new RqUser(this.pmo, this.request).value();
         if (!user.equals(login)) {
             throw new RsForward(
                 new RsFlash(
