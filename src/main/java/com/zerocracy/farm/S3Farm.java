@@ -16,6 +16,7 @@
  */
 package com.zerocracy.farm;
 
+import com.jcabi.aspects.Cacheable;
 import com.jcabi.s3.Bucket;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
@@ -25,6 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.EqualsAndHashCode;
@@ -72,6 +74,7 @@ public final class S3Farm implements Farm {
     }
 
     @Override
+    @Cacheable(lifetime = 2, unit = TimeUnit.SECONDS)
     public Iterable<Project> find(final String xpath) throws IOException {
         Iterable<Project> found;
         if ("@id='PMO'".equals(xpath)) {
