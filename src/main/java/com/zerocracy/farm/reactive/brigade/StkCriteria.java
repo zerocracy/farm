@@ -22,7 +22,7 @@ import lombok.EqualsAndHashCode;
  * Brigade claim sameness criteria.
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
- * @since 0.15
+ * @since 0.16.1
  */
 @EqualsAndHashCode(of = {"type", "prj"})
 @SuppressWarnings({"PMD.SingularField", "PMD.UnusedPrivateField"})

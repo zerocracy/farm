@@ -25,14 +25,14 @@ import java.util.List;
  * Pooled stakeholders that should be closed after processing.
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
- * @since 0.16
+ * @since 0.16.1
  */
 public interface StkPooled extends Iterable<Stakeholder>, Closeable {
 
     /**
-     * Just fixed stakeholder items.
+     * Simple stakeholder items.
      */
-    final class Just implements StkPooled {
+    final class Simple implements StkPooled {
 
         /**
          * Items.
@@ -43,7 +43,7 @@ public interface StkPooled extends Iterable<Stakeholder>, Closeable {
          * Ctor.
          * @param items Stakeholders
          */
-        public Just(final List<Stakeholder> items) {
+        public Simple(final List<Stakeholder> items) {
             this.items = items;
         }
 

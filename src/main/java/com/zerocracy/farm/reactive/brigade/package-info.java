@@ -16,10 +16,10 @@
  */
 
 /**
- * Brigade tests.
+ * Brigade stakeholders.
  *
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
- * @since 0.16
+ * @since 0.16.1
  */
 package com.zerocracy.farm.reactive.brigade;

@@ -36,7 +36,7 @@ import org.junit.Test;
  * Test case for {@link StkPool}.
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
- * @since 0.16
+ * @since 0.16.1
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */

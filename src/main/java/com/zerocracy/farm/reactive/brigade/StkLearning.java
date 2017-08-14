@@ -25,10 +25,10 @@ import org.cactoos.iterable.ListOf;
 import org.cactoos.iterator.Mapped;
 
 /**
- * Stakeholders that learning from status.
+ * Stakeholders that learn from status.
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
- * @since 0.16
+ * @since 0.16.1
  */
 public final class StkLearning implements StkPooled {
 

@@ -74,8 +74,8 @@ public final class Brigade {
     public int process(final Project project, final XML xml)
         throws IOException {
         try (
-            final StkPooled stakeholders = this.pool
-                .stakeholders(project, xml)
+            final StkPooled stakeholders =
+                this.pool.stakeholders(project, xml)
         ) {
             return new LengthOf(
                 new Filtered<>(

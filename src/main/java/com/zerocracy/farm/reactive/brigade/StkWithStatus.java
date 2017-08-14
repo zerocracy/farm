@@ -26,7 +26,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Stakeholder that knows self status.
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
- * @since 0.16
+ * @since 0.16.1
  */
 final class StkWithStatus implements Stakeholder {
 

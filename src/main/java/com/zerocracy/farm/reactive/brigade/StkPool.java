@@ -30,7 +30,7 @@ import org.cactoos.iterable.StickyList;
  * Pool of stakeholders.
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
- * @since 0.16
+ * @since 0.16.1
  */
 public final class StkPool {
 
@@ -75,7 +75,7 @@ public final class StkPool {
         final StkPooled pooled;
         synchronized (this.learned) {
             if (this.learned.containsKey(criteria)) {
-                pooled = new StkPooled.Just(this.learned.get(criteria));
+                pooled = new StkPooled.Simple(this.learned.get(criteria));
             } else {
                 pooled = new StkLearning(
                     new StickyList<>(
