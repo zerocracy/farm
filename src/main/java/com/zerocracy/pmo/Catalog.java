@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pmo;
 
+import com.jcabi.log.Logger;
 import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
@@ -94,6 +95,10 @@ public final class Catalog {
                     .add("publish").set(Boolean.toString(false))
             );
         }
+        Logger.info(
+            this, "New project \"%s\" added, prefix is \"%s\"",
+            pid, prefix
+        );
     }
 
     /**

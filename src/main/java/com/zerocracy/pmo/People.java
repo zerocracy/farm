@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pmo;
 
+import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Farm;
@@ -105,6 +106,10 @@ public final class People {
                     .set(mentor)
             );
         }
+        Logger.info(
+            this, "New user @%s invited by @%s",
+            uid, mentor
+        );
     }
 
     /**
@@ -138,6 +143,10 @@ public final class People {
                     .set(rate)
             );
         }
+        Logger.info(
+            this, "Rate %s set for @%s",
+            rate, uid
+        );
     }
 
     /**
@@ -181,6 +190,10 @@ public final class People {
                     .attr("bank", bank)
             );
         }
+        Logger.info(
+            this, "Wallet %s/%s set for @%s",
+            bank, wallet, uid
+        );
     }
 
     /**
@@ -254,6 +267,10 @@ public final class People {
                     .attr("href", alias)
             );
         }
+        Logger.info(
+            this, "Link added for @%s, rel=\"%s\", href=\"%s\"",
+            uid, rel, alias
+        );
     }
 
     /**
@@ -305,10 +322,8 @@ public final class People {
      * @param mode TRUE if vacation mode on
      * @throws IOException If fails
      */
-    public void vacation(
-        final String uid,
-        final boolean mode
-    ) throws IOException {
+    public void vacation(final String uid,
+        final boolean mode) throws IOException {
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 People.start(uid)
@@ -316,6 +331,10 @@ public final class People {
                     .set(mode)
             );
         }
+        Logger.info(
+            this, "Vacation mode \"%s\" set for @%s",
+            mode, uid
+        );
     }
 
     /**

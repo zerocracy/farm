@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pmo;
 
+import com.jcabi.log.Logger;
 import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
@@ -125,6 +126,10 @@ public final class Bots {
                     )
             );
         }
+        Logger.info(
+            this, "New bot \"%s\" registered for \"%s\"",
+            bid, team
+        );
         return team;
     }
 
