@@ -14,28 +14,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pmo.profile.skills
+package com.zerocracy.bundles.modifies_wbs
 
+import com.jcabi.github.Github
+import com.jcabi.github.Repos
 import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
-import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pmo.People
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Show skills')
-  People people = new People(project).bootstrap()
-  ClaimIn claim = new ClaimIn(xml)
-  String login = claim.param('person')
-  Collection<String> skills = people.skills(login)
-  String msg
-  if (skills.iterator().hasNext()) {
-    msg = String.format(
-      'Your skills are: `%s`.',
-      String.join('`, `', skills)
-    )
-  } else {
-    msg = 'Your skills are not defined yet.'
-  }
-  claim.reply(msg).postTo(project)
+  Github github = binding.variables.github
+  def repo = github.repos().create(new Repos.RepoCreate("test", false))
+  repo.issues().create("hello, world", "")
 }

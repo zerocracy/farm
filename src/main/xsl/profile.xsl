@@ -94,7 +94,6 @@
             <xsl:text>.</xsl:text>
         </p>
         <xsl:apply-templates select="projects"/>
-        <xsl:apply-templates select="links"/>
         <xsl:apply-templates select="skills"/>
     </xsl:template>
     <xsl:template match="rate[.!='0']">
@@ -145,28 +144,6 @@
                 <xsl:text>apply</xsl:text>
             </a>
             <xsl:text> to some of them.</xsl:text>
-        </p>
-    </xsl:template>
-    <xsl:template match="skills[skill]">
-        <p>
-            <xsl:value-of select="count(skill)"/>
-            <xsl:text> skill</xsl:text>
-            <xsl:if test="count(skill) &gt; 1">
-                <xsl:text>s</xsl:text>
-            </xsl:if>
-            <xsl:text>: </xsl:text>
-            <xsl:for-each select="skill">
-                <xsl:if test="position() &gt; 1">
-                    <xsl:text>, </xsl:text>
-                </xsl:if>
-                <xsl:value-of select="."/>
-            </xsl:for-each>
-            <xsl:text>.</xsl:text>
-        </p>
-    </xsl:template>
-    <xsl:template match="skills[not(skill)]">
-        <p>
-            <xsl:text>We don't know anything about your skills yet.</xsl:text>
         </p>
     </xsl:template>
     <xsl:template match="links[link]">

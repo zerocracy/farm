@@ -14,37 +14,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pmo.profile.skills
+package com.zerocracy.bundles.react_telegram
 
-import com.jcabi.aspects.Tv
 import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
-import com.zerocracy.jstk.SoftException
-import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pmo.People
+import com.zerocracy.radars.telegram.fake.FkTmSession
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Add skills')
-  People people = new People(project).bootstrap()
-  ClaimIn claim = new ClaimIn(xml)
-  String login = claim.param('person')
-  Collection<String> skills = people.skills(login)
-  if (skills.size() > Tv.FIVE) {
-    throw new SoftException(
-      String.format(
-        'You\'ve got too many skills already: `%s` (max is five).',
-        String.join('`, `', skills)
-      )
-    )
-  }
-  String skill = claim.param('skill')
-  people.skill(login, skill)
-  claim.reply(
-    String.format(
-      'New skill "%s" added to "%s".',
-      skill,
-      login
-    )
-  ).postTo(project)
+  final FkTmSession session = binding.variables.telegram.get(42L)
+  MatcherAssert.assertThat(
+    "no responses",
+    session.responses(),
+    Matchers.hasSize(1)
+  )
 }

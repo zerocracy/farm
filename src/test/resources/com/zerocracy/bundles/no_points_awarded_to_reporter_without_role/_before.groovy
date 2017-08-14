@@ -14,31 +14,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.radars.telegram;
+package com.zerocracy.bundles.modifies_wbs
 
-/**
- * Telegram message.
- * @author Kirill (g4s8.public@gmail.com)
- * @version $Id$
- * @since 0.15
- */
-public interface TmRequest {
+import com.jcabi.github.Github
+import com.jcabi.github.Repos
+import com.jcabi.xml.XML
+import com.zerocracy.jstk.Project
 
-    /**
-     * Sender user.
-     * @return User name
-     */
-    String sender();
-
-    /**
-     * Request message text.
-     * @return Text string
-     */
-    String text();
-
-    /**
-     * Request chat id.
-     * @return Id number
-     */
-    long chat();
+def exec(Project project, XML xml) {
+  Github github = binding.variables.github.relogin("yegor256")
+  def repo = github.repos().create(new Repos.RepoCreate("test", false))
+  repo.issues().create("hello, world", "")
 }

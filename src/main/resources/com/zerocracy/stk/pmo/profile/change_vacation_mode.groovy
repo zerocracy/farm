@@ -27,14 +27,13 @@ def exec(Project project, XML xml) {
   final claim = new ClaimIn(xml)
   final mode = claim.param('mode')
   final people = new People(project).bootstrap()
-  final login = claim.author()
   if ('on' == mode) {
-    people.vacation(login, true)
+    people.vacation(claim.author(), true)
     claim.reply(
       'You are on vacation now'
     ).postTo(project)
   } else if ('off' == mode) {
-    people.vacation(login, false)
+    people.vacation(claim.author(), false)
     claim.reply(
       'Your vacation has been ended'
     ).postTo(project)

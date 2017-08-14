@@ -14,31 +14,58 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.radars.telegram;
+package com.zerocracy.radars.telegram.fake;
+
+import com.zerocracy.radars.telegram.TmRequest;
 
 /**
- * Telegram message.
+ * Fake telegram request.
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
- * @since 0.15
+ * @since 0.16
  */
-public interface TmRequest {
+public final class FkTmRequest implements TmRequest {
 
     /**
-     * Sender user.
-     * @return User name
+     * Sender.
      */
-    String sender();
+    private final String snd;
 
     /**
-     * Request message text.
-     * @return Text string
+     * Text.
      */
-    String text();
+    private final String txt;
 
     /**
-     * Request chat id.
-     * @return Id number
+     * Chat id.
      */
-    long chat();
+    private final long id;
+
+    /**
+     * Ctor.
+     * @param sender Sender
+     * @param text Text
+     * @param chat Chat id
+     */
+    public FkTmRequest(final String sender, final String text,
+        final long chat) {
+        this.snd = sender;
+        this.txt = text;
+        this.id = chat;
+    }
+
+    @Override
+    public String sender() {
+        return this.snd;
+    }
+
+    @Override
+    public String text() {
+        return this.txt;
+    }
+
+    @Override
+    public long chat() {
+        return this.id;
+    }
 }

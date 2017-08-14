@@ -37,5 +37,12 @@
             </a>
         </p>
         <xsl:value-of select="xml" disable-output-escaping="yes"/>
+        <p>
+            <xsl:text>You can download this artifact as </xsl:text>
+            <a href="/xml/{project}?a={artifact}">
+                <xsl:text>XML</xsl:text>
+            </a>
+            <xsl:text>.</xsl:text>
+        </p>
     </xsl:template>
 </xsl:stylesheet>

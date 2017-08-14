@@ -104,13 +104,6 @@ public final class TkProfile implements TkRegex {
                                 )
                             ),
                             new XeAppend(
-                                "skills",
-                                new XeTransform<>(
-                                    people.skills(login),
-                                    skill -> new XeAppend("skill", skill)
-                                )
-                            ),
-                            new XeAppend(
                                 "links",
                                 new XeTransform<>(
                                     people.links(login),

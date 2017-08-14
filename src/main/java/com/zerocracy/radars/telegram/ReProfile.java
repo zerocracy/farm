@@ -16,32 +16,37 @@
  */
 package com.zerocracy.radars.telegram;
 
+import com.jcabi.xml.XMLDocument;
 import com.zerocracy.jstk.Farm;
+import com.zerocracy.pmo.Pmo;
+import com.zerocracy.radars.ClaimOnQuestion;
+import com.zerocracy.radars.Question;
 import java.io.IOException;
-import org.cactoos.text.FormattedText;
 
 /**
- * Say hello_project to the user.
+ * Telegram profile reaction.
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
- * @since 0.15
+ * @since 0.16
  */
-final class ReHello implements Reaction {
-
+public final class ReProfile implements Reaction {
     @Override
-    public boolean react(
-        final Farm farm,
-        final TmSession session,
-        final TmRequest request
-    ) throws IOException {
-        session.reply(
-            new RsText(
-                new FormattedText(
-                    "Hello, %s",
-                    request.sender()
+    public boolean react(final Farm farm, final TmSession session,
+        final TmRequest request) throws IOException {
+        final Question question = new Question(
+            new XMLDocument(
+                this.getClass().getResource(
+                    "/com/zerocracy/radars/q-profile.xml"
                 )
-            )
+            ),
+            request.text().trim()
         );
-        return true;
+        // @checkstyle LineLength (1 line)
+        new ClaimOnQuestion(question, "Remember, this chat is for managing your personal profile; to manage a project, please open or create a new Slack channel and invite the bot there.")
+            .claim()
+            .token(new TmToken(request))
+            .author(new TmPerson(farm, request).uid())
+            .postTo(new Pmo(farm));
+        return question.matches();
     }
 }

@@ -55,7 +55,7 @@ public final class TkAgendaTest {
                 new RsPrint(
                     take.act(
                         new RqWithHeaders(
-                            new RqFake("GET", "/u/yegor256/agenda"),
+                            new RqFake("GET", "/u/Yegor256/agenda"),
                             // @checkstyle LineLength (1 line)
                             "Cookie: PsCookie=0975A5A5-F6DB193E-AF18000A-75726E3A-74657374-3A310005-6C6F6769-6E000879-65676F72-323536AE"
                         )

@@ -63,7 +63,7 @@
             <opt>
                 <name>project</name>
                 <regex>[A-Z0-9]{9}</regex>
-                <help>Project ID you're applying to</help>
+                <help>Project ID you're applying to, find it [here](http://www.0crat.com/board)</help>
             </opt>
         </opts>
     </cmd>
@@ -76,7 +76,7 @@
             <opt>
                 <name>project</name>
                 <regex>[A-Z0-9]{9}</regex>
-                <help>Project ID you're existing</help>
+                <help>Project ID you're existing, find them in [your profile](http://www.0crat.com/myself)</help>
             </opt>
         </opts>
     </cmd>
@@ -96,27 +96,6 @@
                         <name>rate</name>
                         <regex>.+</regex>
                         <help>Hourly rate, e.g. $15</help>
-                    </opt>
-                </opts>
-            </cmd>
-        </cmds>
-    </cmd>
-    <cmd>
-        <code>Show skills</code>
-        <regex>skills?</regex>
-        <label>skills</label>
-        <help>Show your currently registered technical skills</help>
-        <cmds>
-            <cmd>
-                <code>Add skill</code>
-                <regex>add|set</regex>
-                <label>add</label>
-                <help>Add a new skill</help>
-                <opts>
-                    <opt>
-                        <name>skill</name>
-                        <regex>.+</regex>
-                        <help>Your skill, e.g. "java.spring" or "cpp"</help>
                     </opt>
                 </opts>
             </cmd>

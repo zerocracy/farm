@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pmo;
 
+import com.jcabi.log.Logger;
 import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
@@ -78,36 +79,44 @@ public final class Projects {
 
     /**
      * Add project.
-     * @param project Project
+     * @param pid Project ID
      * @throws IOException If fails
      */
-    public void add(final String project) throws IOException {
+    public void add(final String pid) throws IOException {
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()
                     .xpath("/projects")
                     .add("project")
-                    .set(project)
+                    .set(pid)
             );
         }
+        Logger.info(
+            this, "New project \"%s\" added to @%s",
+            pid, this.login
+        );
     }
 
     /**
      * Remove project.
-     * @param project Project
+     * @param pid Project ID
      * @throws IOException If fails
      */
-    public void remove(final String project) throws IOException {
+    public void remove(final String pid) throws IOException {
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives().xpath(
                     String.format(
                         "/projects/project[.='%s']",
-                        project
+                        pid
                     )
                 ).remove()
             );
         }
+        Logger.info(
+            this, "Project \"%s\" removed for @%s",
+            pid, this.login
+        );
     }
 
     /**
