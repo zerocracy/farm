@@ -81,7 +81,7 @@ public final class RbOnCloseTest {
                     )
                 ).build()
             ),
-            Matchers.startsWith("Issue #1 closed by @rultor")
+            Matchers.startsWith("Asked WBS")
         );
     }
 }

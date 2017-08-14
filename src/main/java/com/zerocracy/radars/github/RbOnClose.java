@@ -16,9 +16,6 @@
  */
 package com.zerocracy.radars.github;
 
-import com.jcabi.aspects.RetryOnFailure;
-import com.jcabi.aspects.Tv;
-import com.jcabi.github.Event;
 import com.jcabi.github.Github;
 import com.jcabi.github.Issue;
 import com.jcabi.github.Label;
@@ -28,12 +25,10 @@ import com.zerocracy.pm.ClaimOut;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 import javax.json.JsonObject;
 
 /**
- * Open the issue if it was closed not by the person who opened it.
+ * Issue close-event reaction. Remove it from WBS.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
@@ -55,31 +50,14 @@ public final class RbOnClose implements Rebound {
             answer = "It's invalid";
         } else {
             final Project project = new GhProject(farm, issue.repo());
-            final String closer = RbOnClose.closer(issue);
             new ClaimOut()
                 .type("Remove job from WBS")
                 .token(new TokenOfIssue(issue))
                 .param("job", new Job(issue))
                 .postTo(project);
-            answer = String.format(
-                "Issue #%d closed by @%s, asked WBS to take it out of scope",
-                issue.number(), closer
-            );
+            answer = "Asked WBS to take it out of scope";
         }
         return answer;
-    }
-
-    /**
-     * Get closer's login.
-     * @param issue The issue
-     * @return Login
-     * @throws IOException If fails
-     */
-    @RetryOnFailure(delay = Tv.FIVE, unit = TimeUnit.SECONDS, verbose = false)
-    private static String closer(final Issue.Smart issue) throws IOException {
-        return new Event.Smart(
-            issue.latestEvent(Event.CLOSED)
-        ).author().login().toLowerCase(Locale.ENGLISH);
     }
 
     /**
@@ -100,5 +78,4 @@ public final class RbOnClose implements Rebound {
         }
         return tagged;
     }
-
 }
