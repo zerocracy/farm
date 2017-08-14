@@ -23,6 +23,9 @@ import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import java.net.URI;
+import org.cactoos.Func;
+import org.cactoos.func.StickyFunc;
+import org.cactoos.func.UncheckedFunc;
 import org.cactoos.io.InputOf;
 import org.cactoos.text.TextOf;
 import org.takes.rs.xe.XeAppend;
@@ -38,6 +41,22 @@ import org.xembly.Directive;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class XeXsl implements XeSource {
+
+    /**
+     * Loader of XSL documents.
+     */
+    private static final Func<String, String> STYLESHEETS = new StickyFunc<>(
+        path -> new TextOf(
+            new InputOf(
+                URI.create(
+                    String.format(
+                        "http://datum.zerocracy.com/latest/xsl/%s",
+                        path
+                    )
+                )
+            )
+        ).asString()
+    );
 
     /**
      * Project.
@@ -75,16 +94,7 @@ public final class XeXsl implements XeSource {
             } else {
                 final XML xml = new XMLDocument(item.path().toFile());
                 content = new XSLDocument(
-                    new TextOf(
-                        new InputOf(
-                            URI.create(
-                                String.format(
-                                    "http://datum.zerocracy.com/latest/xsl/%s",
-                                    this.xsl
-                                )
-                            )
-                        )
-                    ).asString()
+                    new UncheckedFunc<>(XeXsl.STYLESHEETS).apply(this.xsl)
                 ).transform(xml).nodes("/*/xhtml:body").get(0).toString();
             }
             return new XeAppend("xml", content).toXembly();
