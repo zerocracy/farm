@@ -135,6 +135,10 @@ public final class Catalog {
                 ).strict(1).set(Boolean.toString(status))
             );
         }
+        Logger.info(
+            this, "Project \"%s\" publishing status changed to \"%s\"",
+            pid, status
+        );
     }
 
     /**
@@ -176,6 +180,10 @@ public final class Catalog {
                     .attr("href", href)
             );
         }
+        Logger.info(
+            this, "Project \"%s\" got a new link, rel=\"%s\", href=\"%s\"",
+            pid, rel, href
+        );
     }
 
     /**
@@ -202,6 +210,10 @@ public final class Catalog {
                     .remove()
             );
         }
+        Logger.info(
+            this, "Project \"%s\" lost a link, rel=\"%s\", href=\"%s\"",
+            pid, rel, href
+        );
     }
 
     /**
@@ -247,6 +259,10 @@ public final class Catalog {
                     .set(parent)
             );
         }
+        Logger.info(
+            this, "Project \"%s\" got a parent \"%s\"",
+            pid, parent
+        );
     }
 
     /**

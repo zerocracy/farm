@@ -24,6 +24,7 @@ import com.zerocracy.tk.profile.TkAwards;
 import com.zerocracy.tk.profile.TkProfile;
 import com.zerocracy.tk.project.TkArtifact;
 import com.zerocracy.tk.project.TkProject;
+import com.zerocracy.tk.project.TkXml;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.Properties;
@@ -137,6 +138,10 @@ public final class TkApp extends TkWrap {
                                                             new FkRegex(
                                                                 "/a/([A-Z0-9]{9})",
                                                                 new TkArtifact(props, farm)
+                                                            ),
+                                                            new FkRegex(
+                                                                "/xml/([A-Z0-9]{9})",
+                                                                new TkXml(farm)
                                                             ),
                                                             new FkRegex(
                                                                 "/u/([a-zA-Z0-9-]+)/awards",
