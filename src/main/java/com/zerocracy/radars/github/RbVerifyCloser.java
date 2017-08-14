@@ -33,6 +33,10 @@ import javax.json.JsonObject;
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.16.1
+ * @todo #156:30m We need to check issue closer's role.
+ *  If his role is 'PO' or 'ARC' we should skip warning message
+ *  about bad practice and just say that
+ *  issue has been closed by ARC (or PO).
  */
 final class RbVerifyCloser implements Rebound {
 
