@@ -18,6 +18,7 @@ package com.zerocracy.pmo;
 
 import com.jcabi.log.Logger;
 import com.zerocracy.Xocument;
+import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
@@ -43,6 +44,15 @@ public final class Agenda {
      * Login of the person.
      */
     private final String login;
+
+    /**
+     * Ctor.
+     * @param farm The farm
+     * @param user The user
+     */
+    public Agenda(final Farm farm, final String user) {
+        this(new Pmo(farm), user);
+    }
 
     /**
      * Ctor.

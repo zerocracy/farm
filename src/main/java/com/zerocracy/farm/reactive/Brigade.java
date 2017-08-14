@@ -82,7 +82,9 @@ public final class Brigade {
             if (Brigade.process(stk, project, xml)) {
                 ++total;
             } else {
-                this.cache.get(key).add(stk);
+                synchronized (this.cache) {
+                    this.cache.get(key).add(stk);
+                }
             }
         }
         return total;
