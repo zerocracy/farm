@@ -17,6 +17,7 @@
 package com.zerocracy;
 
 import com.jcabi.aspects.Tv;
+import com.jcabi.log.Logger;
 import com.jcabi.xml.StrictXML;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
@@ -156,6 +157,7 @@ public final class Xocument {
                     "xsi:noNamespaceSchemaLocation", uri
                 )
             );
+            Logger.info(this, "XSD upgraded to \"%s\" in %s", uri, this.file);
         }
         return this;
     }
@@ -272,6 +274,10 @@ public final class Xocument {
             new LengthOf(
                 new TeeInput(after.toString(), new OutputTo(this.file))
             ).value();
+            Logger.info(
+                this, "XML upgraded to \"%s\" in %s",
+                Xocument.VERSION, this.file
+            );
         }
         return after;
     }
