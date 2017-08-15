@@ -20,6 +20,7 @@ import com.jcabi.xml.XML;
 import com.zerocracy.farm.MismatchException;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
+import com.zerocracy.pm.ClaimIn;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -72,7 +73,7 @@ public final class Brigade {
      */
     public int process(final Project project, final XML xml)
         throws IOException {
-        final String key = xml.xpath("/claim/type/text()").get(0);
+        final String key = new ClaimIn(xml).type();
         this.cache.putIfAbsent(key, new ArrayList<>(0));
         int total = 0;
         for (final Stakeholder stk : this.list) {
