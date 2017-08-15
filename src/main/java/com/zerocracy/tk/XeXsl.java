@@ -110,11 +110,8 @@ public final class XeXsl implements XeSource {
                     new StickyMap<String, Object>(
                         new MapEntry<>(
                             "today",
-                            String.format(
-                                "'%s'",
-                                ZonedDateTime.now().format(
-                                    DateTimeFormatter.ISO_INSTANT
-                                )
+                            ZonedDateTime.now().format(
+                                DateTimeFormatter.ISO_INSTANT
                             )
                         )
                     ),

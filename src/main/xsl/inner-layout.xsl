@@ -55,6 +55,10 @@
                 <xsl:value-of select="version/name"/>
             </span>
             <xsl:text> &#183; </xsl:text>
+            <span title="Current version of datum">
+                <xsl:value-of select="datum"/>
+            </span>
+            <xsl:text> &#183; </xsl:text>
             <xsl:call-template name="takes_millis">
                 <xsl:with-param name="millis" select="millis"/>
             </xsl:call-template>
