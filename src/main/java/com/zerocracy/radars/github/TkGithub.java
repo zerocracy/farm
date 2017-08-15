@@ -132,6 +132,7 @@ public final class TkGithub implements Take, Runnable {
                         ),
                         "labeled"
                     ),
+                    new RbByActions(new RbOnAssign(), "assigned"),
                     new RbTweet(
                         dynamo.table("0crat-tweets"),
                         props.getProperty("twitter.key"),
