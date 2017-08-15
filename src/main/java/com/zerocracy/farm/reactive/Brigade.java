@@ -22,7 +22,6 @@ import com.zerocracy.farm.reactive.brigade.StkPool;
 import com.zerocracy.farm.reactive.brigade.StkPooled;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
-import com.zerocracy.pm.ClaimIn;
 import java.io.IOException;
 import java.util.Arrays;
 import org.cactoos.iterable.Filtered;

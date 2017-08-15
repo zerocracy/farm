@@ -19,6 +19,7 @@ package com.zerocracy.farm.reactive.brigade;
 import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
+import com.zerocracy.pm.ClaimIn;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,7 @@ import org.cactoos.iterable.StickyList;
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.16.1
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)B
  */
 public final class StkPool {
 
@@ -70,7 +72,7 @@ public final class StkPool {
         final XML claim) {
         final StkCriteria criteria = new StkCriteria(
             project.toString(),
-            claim.xpath("/claim/type/text()").get(0)
+            new ClaimIn(claim).type()
         );
         final StkPooled pooled;
         synchronized (this.learned) {

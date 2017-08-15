@@ -53,9 +53,9 @@ public final class StkPoolTest {
                 new Repeated<>(new StkPoolTest.FkErrStakeholder(), failed)
             )
         );
-        final XMLDocument claim = new XMLDocument(
+        final XML claim = new XMLDocument(
             "<claim><type>test</type></claim>"
-        );
+        ).nodes("/claim").get(0);
         try (final StkPooled items = pool.stakeholders(project, claim)) {
             new And(
                 items,
