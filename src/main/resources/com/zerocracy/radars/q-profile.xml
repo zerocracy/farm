@@ -76,7 +76,7 @@
             <opt>
                 <name>project</name>
                 <regex>[A-Z0-9]{9}</regex>
-                <help>Project ID you're existing, find them in [your profile](http://www.0crat.com/myself)</help>
+                <help>Project ID you're existing, find them in [your profile](http://www.0crat.com/me)</help>
             </opt>
         </opts>
     </cmd>

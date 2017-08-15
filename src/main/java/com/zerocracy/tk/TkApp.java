@@ -126,7 +126,7 @@ public final class TkApp extends TkWrap {
                                                                 new TkBoard(props, farm)
                                                             ),
                                                             new FkRegex(
-                                                                "/myself",
+                                                                "/me",
                                                                 (Take) req -> new RsRedirect(
                                                                     String.format("/u/%s", new RqUser(farm, req).value())
                                                                 )
