@@ -54,6 +54,7 @@
                 <xsl:text>v</xsl:text>
                 <xsl:value-of select="version/name"/>
             </span>
+            <xsl:text> &#183; </xsl:text>
             <span title="Current version of datum">
                 <xsl:value-of select="datum"/>
             </span>
