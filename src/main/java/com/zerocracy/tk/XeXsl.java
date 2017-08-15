@@ -23,10 +23,15 @@ import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import java.net.URI;
-import org.cactoos.Func;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import javax.xml.transform.stream.StreamSource;
 import org.cactoos.func.StickyFunc;
 import org.cactoos.func.UncheckedFunc;
 import org.cactoos.io.InputOf;
+import org.cactoos.io.InputStreamOf;
+import org.cactoos.iterable.MapEntry;
+import org.cactoos.iterable.StickyMap;
 import org.cactoos.text.TextOf;
 import org.takes.rs.xe.XeAppend;
 import org.takes.rs.xe.XeSource;
@@ -45,18 +50,12 @@ public final class XeXsl implements XeSource {
     /**
      * Loader of XSL documents.
      */
-    private static final Func<String, String> STYLESHEETS = new StickyFunc<>(
-        path -> new TextOf(
-            new InputOf(
-                URI.create(
-                    String.format(
-                        "http://datum.zerocracy.com/latest/xsl/%s",
-                        path
-                    )
-                )
+    private static final UncheckedFunc<URI, String> STYLESHEETS =
+        new UncheckedFunc<>(
+            new StickyFunc<>(
+                uri -> new TextOf(new InputOf(uri)).asString()
             )
-        ).asString()
-    );
+        );
 
     /**
      * Project.
@@ -93,8 +92,33 @@ public final class XeXsl implements XeSource {
                 content = "<p>The document is empty yet.</p>";
             } else {
                 final XML xml = new XMLDocument(item.path().toFile());
+                final URI uri = URI.create(
+                    String.format(
+                        "http://datum.zerocracy.com/latest/xsl/%s",
+                        this.xsl
+                    )
+                );
                 content = new XSLDocument(
-                    new UncheckedFunc<>(XeXsl.STYLESHEETS).apply(this.xsl)
+                    XeXsl.STYLESHEETS.apply(uri),
+                    (href, base) -> new StreamSource(
+                        new InputStreamOf(
+                            XeXsl.STYLESHEETS.apply(
+                                URI.create(base).resolve(href)
+                            )
+                        )
+                    ),
+                    new StickyMap<String, Object>(
+                        new MapEntry<>(
+                            "today",
+                            String.format(
+                                "'%s'",
+                                ZonedDateTime.now().format(
+                                    DateTimeFormatter.ISO_INSTANT
+                                )
+                            )
+                        )
+                    ),
+                    uri.toString()
                 ).transform(xml).nodes("/*/xhtml:body").get(0).toString();
             }
             return new XeAppend("xml", content).toXembly();

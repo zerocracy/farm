@@ -16,9 +16,6 @@
  */
 package com.zerocracy.radars.github;
 
-import com.jcabi.aspects.RetryOnFailure;
-import com.jcabi.aspects.Tv;
-import com.jcabi.github.Event;
 import com.jcabi.github.Github;
 import com.jcabi.github.Issue;
 import com.jcabi.github.Label;
@@ -28,12 +25,10 @@ import com.zerocracy.pm.ClaimOut;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 import javax.json.JsonObject;
 
 /**
- * Open the issue if it was closed not by the person who opened it.
+ * Issue close-event reaction. Remove it from WBS.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
@@ -48,50 +43,21 @@ public final class RbOnClose implements Rebound {
         final Issue.Smart issue = new Issue.Smart(
             new IssueOfEvent(github, event)
         );
-        final String author = issue.author()
-            .login().toLowerCase(Locale.ENGLISH);
-        final String closer = RbOnClose.closer(issue);
         final String answer;
-        if (author.equals(closer)) {
+        if (issue.isPull()) {
+            answer = "It's a pull request";
+        } else if (RbOnClose.tagged(issue)) {
+            answer = "It's invalid";
+        } else {
             final Project project = new GhProject(farm, issue.repo());
             new ClaimOut()
                 .type("Remove job from WBS")
                 .token(new TokenOfIssue(issue))
                 .param("job", new Job(issue))
                 .postTo(project);
-            answer = String.format(
-                "Issue #%d closed by @%s, asked WBS to take it out of scope",
-                issue.number(), author
-            );
-        } else if (issue.isPull()) {
-            answer = "It's a pull request";
-        } else if (RbOnClose.tagged(issue)) {
-            answer = "It's invalid";
-        } else {
-            issue.open();
-            issue.comments().post(
-                String.format(
-                    // @checkstyle LineLength (1 line)
-                    "@%s please, ask @%s to close this issue and [read more](http://www.yegor256.com/2014/11/24/principles-of-bug-tracking.html)",
-                    closer, author
-                )
-            );
-            answer = String.format("Ticket re-opened, %s notified", closer);
+            answer = "Asked WBS to take it out of scope";
         }
         return answer;
-    }
-
-    /**
-     * Get closer's login.
-     * @param issue The issue
-     * @return Login
-     * @throws IOException If fails
-     */
-    @RetryOnFailure(delay = Tv.FIVE, unit = TimeUnit.SECONDS, verbose = false)
-    private static String closer(final Issue.Smart issue) throws IOException {
-        return new Event.Smart(
-            issue.latestEvent(Event.CLOSED)
-        ).author().login().toLowerCase(Locale.ENGLISH);
     }
 
     /**
@@ -112,5 +78,4 @@ public final class RbOnClose implements Rebound {
         }
         return tagged;
     }
-
 }

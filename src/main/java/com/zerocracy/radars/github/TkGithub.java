@@ -119,7 +119,10 @@ public final class TkGithub implements Take, Runnable {
                         "opened", "reopened"
                     ),
                     new RbByActions(
-                        new RbOnClose(),
+                        new Rebound.Chain(
+                            new RbVerifyCloser(),
+                            new RbOnClose()
+                        ),
                         "closed"
                     ),
                     new RbByActions(
@@ -129,6 +132,7 @@ public final class TkGithub implements Take, Runnable {
                         ),
                         "labeled"
                     ),
+                    new RbByActions(new RbOnAssign(), "assigned"),
                     new RbTweet(
                         dynamo.table("0crat-tweets"),
                         props.getProperty("twitter.key"),

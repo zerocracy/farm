@@ -34,7 +34,7 @@ def exec(Project project, XML xml) {
   String role = claim.param('role')
   Roles roles = new Roles(project).bootstrap()
   roles.resign(login, role)
-  if (roles.hasAnyRole(login)) {
+  if (!roles.hasAnyRole(login)) {
     Farm farm = binding.variables.farm
     new Projects(new Pmo(farm), login).remove(project.toString())
   }

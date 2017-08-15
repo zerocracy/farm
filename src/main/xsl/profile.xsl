@@ -28,7 +28,6 @@
         </title>
     </xsl:template>
     <xsl:template match="page" mode="inner">
-        <xsl:apply-templates select="vacation"/>
         <xsl:apply-templates select="details"/>
         <xsl:apply-templates select="awards"/>
         <xsl:apply-templates select="agenda"/>
@@ -64,14 +63,8 @@
             <xsl:text>.</xsl:text>
         </p>
     </xsl:template>
-    <xsl:template match="vacation">
-        <xsl:if test=". = 'true'">
-            <p>
-                <xsl:text>On vacation</xsl:text>
-            </p>
-        </xsl:if>
-    </xsl:template>
     <xsl:template match="details">
+        <xsl:apply-templates select="vacation"/>
         <xsl:if test="count(links/link) &lt; 2">
             <p>
                 <span style="color:red">
@@ -95,6 +88,13 @@
         </p>
         <xsl:apply-templates select="projects"/>
         <xsl:apply-templates select="skills"/>
+    </xsl:template>
+    <xsl:template match="vacation">
+        <xsl:if test=". = 'true'">
+            <p>
+                <xsl:text>On vacation</xsl:text>
+            </p>
+        </xsl:if>
     </xsl:template>
     <xsl:template match="rate[.!='0']">
         <xsl:text>Rate: </xsl:text>
