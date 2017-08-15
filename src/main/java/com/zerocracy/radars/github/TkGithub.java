@@ -119,7 +119,10 @@ public final class TkGithub implements Take, Runnable {
                         "opened", "reopened"
                     ),
                     new RbByActions(
-                        new RbOnClose(),
+                        new Rebound.Chain(
+                            new RbVerifyCloser(),
+                            new RbOnClose()
+                        ),
                         "closed"
                     ),
                     new RbByActions(
