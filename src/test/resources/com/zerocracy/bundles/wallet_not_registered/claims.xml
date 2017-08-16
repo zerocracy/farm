@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<claims xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/zerocracy/datum/0.28/xsd/pm/claims.xsd"
+        updated="2017-07-21T20:31:44.512Z"
+        version="1">
+    <claim id="1">
+        <created>2017-07-21T20:32:19.716Z</created>
+        <type>Show wallet</type>
+        <token>test;C123;user42</token>
+        <author>yegor256</author>
+    </claim>
+</claims>
