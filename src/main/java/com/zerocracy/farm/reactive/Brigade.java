@@ -18,19 +18,17 @@ package com.zerocracy.farm.reactive;
 
 import com.jcabi.xml.XML;
 import com.zerocracy.farm.MismatchException;
+import com.zerocracy.farm.reactive.brigade.StkPool;
+import com.zerocracy.farm.reactive.brigade.StkPooled;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
-import com.zerocracy.pm.ClaimIn;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.cactoos.iterable.Filtered;
+import org.cactoos.iterable.LengthOf;
 
 /**
  * Brigade of stakeholders.
- *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.10
@@ -38,14 +36,9 @@ import java.util.Map;
 public final class Brigade {
 
     /**
-     * Full list.
+     * Pool of stakeholders.
      */
-    private final Iterable<Stakeholder> list;
-
-    /**
-     * A "cache" of stakeholders.
-     */
-    private final Map<String, List<Stakeholder>> cache;
+    private final StkPool pool;
 
     /**
      * Ctor.
@@ -60,8 +53,15 @@ public final class Brigade {
      * @param lst List of stakeholders
      */
     public Brigade(final Iterable<Stakeholder> lst) {
-        this.list = lst;
-        this.cache = new HashMap<>(0);
+        this(new StkPool(lst));
+    }
+
+    /**
+     * Primary ctor.
+     * @param pool Pool of stakeholders
+     */
+    public Brigade(final StkPool pool) {
+        this.pool = pool;
     }
 
     /**
@@ -73,22 +73,17 @@ public final class Brigade {
      */
     public int process(final Project project, final XML xml)
         throws IOException {
-        final String key = new ClaimIn(xml).type();
-        this.cache.putIfAbsent(key, new ArrayList<>(0));
-        int total = 0;
-        for (final Stakeholder stk : this.list) {
-            if (this.cache.get(key).contains(stk)) {
-                continue;
-            }
-            if (Brigade.process(stk, project, xml)) {
-                ++total;
-            } else {
-                synchronized (this.cache) {
-                    this.cache.get(key).add(stk);
-                }
-            }
+        try (
+            final StkPooled stakeholders =
+                this.pool.stakeholders(project, xml)
+        ) {
+            return new LengthOf(
+                new Filtered<>(
+                    stakeholders,
+                    stk -> Brigade.process(stk, project, xml)
+                )
+            ).value();
         }
-        return total;
     }
 
     /**

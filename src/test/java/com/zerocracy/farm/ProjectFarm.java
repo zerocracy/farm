@@ -26,6 +26,10 @@ import org.cactoos.iterable.IterableOf;
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.16
+ * @todo #172:30min This class has been migrated to the zerocracy/jstk project.
+ *  It is now in com.zerocracy.jstk.fake.FkProjectFarm. When the change has
+ *  been released let's update the jstk library, remove ProjectFarm class, and
+ *  substitute FkProjectFarm in its place wherever we are using it.
  */
 public final class ProjectFarm implements Farm {
     /**
