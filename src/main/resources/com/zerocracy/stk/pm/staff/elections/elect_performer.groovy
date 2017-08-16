@@ -48,7 +48,7 @@ def exec(Project project, XML xml) {
         (new Vacation(project)): -1000
       ]
     )
-    if (elected) {
+    if (elections.elected(job)) {
       new ClaimOut()
         .type('Performer was elected')
         .param('login', elections.winner(job))

@@ -48,7 +48,7 @@
         </xsl:for-each>
     </xsl:variable>
     <xsl:variable name="winner">
-        <xsl:for-each select="$total/user">
+        <xsl:for-each select="$total/user[@score &gt;= 0]">
             <xsl:sort select="@score" order="descending" data-type="number"/>
             <xsl:if test="position()=1">
                 <xsl:value-of select="@login"/>
@@ -63,32 +63,34 @@
             <total>
                 <xsl:apply-templates select="$total"/>
             </total>
-            <winner>
-                <xsl:value-of select="$winner"/>
-            </winner>
-            <reason>
-                <xsl:for-each select="$table/user">
-                    <xsl:variable name="login" select="@login"/>
-                    <xsl:text>@</xsl:text>
-                    <xsl:value-of select="@login"/>
-                    <xsl:text> (</xsl:text>
-                    <xsl:value-of select="format-number($total/user[@login=$login]/@score, '0.00')"/>
-                    <xsl:text> of </xsl:text>
-                    <xsl:value-of select="format-number($total/user[@login=$login]/@max, '0')"/>
-                    <xsl:text>):&#10;</xsl:text>
-                    <xsl:for-each select="vote">
-                        <xsl:text>  </xsl:text>
-                        <xsl:value-of select="format-number(@score, '0.00')"/>
-                        <xsl:text>=</xsl:text>
-                        <xsl:value-of select="format-number(@points, '0.00')"/>
-                        <xsl:text>x</xsl:text>
-                        <xsl:value-of select="@weight"/>
-                        <xsl:text> </xsl:text>
-                        <xsl:value-of select="text()"/>
-                        <xsl:text>&#10;</xsl:text>
+            <xsl:if test="$winner != ''">
+                <winner>
+                    <xsl:value-of select="$winner"/>
+                </winner>
+                <reason>
+                    <xsl:for-each select="$table/user">
+                        <xsl:variable name="login" select="@login"/>
+                        <xsl:text>@</xsl:text>
+                        <xsl:value-of select="@login"/>
+                        <xsl:text> (</xsl:text>
+                        <xsl:value-of select="format-number($total/user[@login=$login]/@score, '0.00')"/>
+                        <xsl:text> of </xsl:text>
+                        <xsl:value-of select="format-number($total/user[@login=$login]/@max, '0')"/>
+                        <xsl:text>):&#10;</xsl:text>
+                        <xsl:for-each select="vote">
+                            <xsl:text>  </xsl:text>
+                            <xsl:value-of select="format-number(@score, '0.00')"/>
+                            <xsl:text>=</xsl:text>
+                            <xsl:value-of select="format-number(@points, '0.00')"/>
+                            <xsl:text>x</xsl:text>
+                            <xsl:value-of select="@weight"/>
+                            <xsl:text> </xsl:text>
+                            <xsl:value-of select="text()"/>
+                            <xsl:text>&#10;</xsl:text>
+                        </xsl:for-each>
                     </xsl:for-each>
-                </xsl:for-each>
-            </reason>
+                </reason>
+            </xsl:if>
         </summary>
     </xsl:template>
     <xsl:template match="node()|@*">
