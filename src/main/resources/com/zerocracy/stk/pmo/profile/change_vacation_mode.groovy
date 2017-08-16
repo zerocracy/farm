@@ -29,17 +29,23 @@ def exec(Project project, XML xml) {
   final people = new People(project).bootstrap()
   if ('on' == mode) {
     people.vacation(claim.author(), true)
-    claim.reply(
-      'You are on vacation now'
-    ).postTo(project)
+    if (claim.hasToken()) {
+      claim.reply(
+        'You are on vacation now'
+      ).postTo(project)
+    }
   } else if ('off' == mode) {
     people.vacation(claim.author(), false)
-    claim.reply(
-      'Your vacation has been ended'
-    ).postTo(project)
+    if (claim.hasToken()) {
+      claim.reply(
+        'Your vacation has been ended'
+      ).postTo(project)
+    }
   } else {
-    claim.reply(
-      "Incorrect vacation mode. Possible modes are 'on' or 'off'"
-    ).postTo(project)
+    if (claim.hasToken()) {
+      claim.reply(
+        "Incorrect vacation mode. Possible modes are 'on' or 'off'"
+      ).postTo(project)
+    }
   }
 }

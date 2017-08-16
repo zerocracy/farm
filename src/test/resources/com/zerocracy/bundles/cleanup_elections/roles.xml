@@ -3,7 +3,7 @@
        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/zerocracy/datum/0.33/xsd/pm/staff/roles.xsd"
        version="0.1"
        updated="2017-08-07T10:37:00.000Z">
-    <person id="cmiranda">
+    <person id="yegor256">
         <role>PO</role>
     </person>
 </roles>

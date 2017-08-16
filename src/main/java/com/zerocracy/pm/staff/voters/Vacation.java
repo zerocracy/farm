@@ -44,10 +44,10 @@ public final class Vacation implements Voter {
 
     /**
      * Primary ctor.
-     * @param people People
+     * @param ppl People
      */
-    private Vacation(final People people) {
-        this.people = people;
+    private Vacation(final People ppl) {
+        this.people = ppl;
     }
 
     @Override
@@ -60,6 +60,7 @@ public final class Vacation implements Voter {
             log.append("On vacation");
             vote = 1.0D;
         } else {
+            log.append("Not on vacation");
             vote = 0.0D;
         }
         return vote;

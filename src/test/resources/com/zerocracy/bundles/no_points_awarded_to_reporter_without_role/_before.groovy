@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.modifies_wbs
+package com.zerocracy.bundles.no_points_awarded_to_reporter_without_role
 
 import com.jcabi.github.Github
 import com.jcabi.github.Repos

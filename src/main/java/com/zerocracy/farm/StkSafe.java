@@ -17,7 +17,6 @@
 package com.zerocracy.farm;
 
 import com.jcabi.aspects.Tv;
-import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.SoftException;
@@ -136,6 +135,9 @@ public final class StkSafe implements Stakeholder {
                     )
                 ).postTo(project);
             }
+            if (this.props.containsKey("testing")) {
+                throw new IllegalStateException(ex);
+            }
             Sentry.capture(
                 new IllegalArgumentException(
                     String.format(
@@ -145,7 +147,6 @@ public final class StkSafe implements Stakeholder {
                     ex
                 )
             );
-            Logger.error(this, "%[exception]s", ex);
         }
     }
 }
