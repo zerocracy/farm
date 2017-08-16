@@ -14,31 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pmo.profile.wallet
+package com.zerocracy.bundles.wallet_not_registered
 
 import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
-import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pmo.People
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Show wallet')
-  final claim = new ClaimIn(xml)
-  claim.reply(response(new People(project).bootstrap(), claim.author()))
-    .postTo(project)
 }
 
-def response(People people, String author) {
-  final wallet = people.wallet(author)
-  final bank = people.bank(author)
-  if (wallet.empty || bank.empty) {
-    'Your wallet is not configured yet'
-  } else {
-    String.format(
-      'Your wallet is `%s` at "%s".',
-      people.wallet(author),
-      people.bank(author)
-    )
-  }
-}
+
