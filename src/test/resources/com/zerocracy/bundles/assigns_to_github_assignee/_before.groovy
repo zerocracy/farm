@@ -20,7 +20,7 @@ import com.jcabi.github.Github
 import com.jcabi.github.Issue
 import com.jcabi.github.Repos
 import com.jcabi.xml.XML
-import com.zerocracy.farm.ProjectFarm
+import com.zerocracy.jstk.fake.FkFarm
 import com.zerocracy.jstk.Project
 import com.zerocracy.radars.github.RbOnAssign
 
@@ -37,7 +37,7 @@ def exec(Project project, XML xml) {
       repo.coordinates().toString().toLowerCase(Locale.ENGLISH)
   )
   new RbOnAssign().react(
-      new ProjectFarm(project, xpath),
+      new FkFarm(project, xpath),
       github,
       Json.createObjectBuilder().add(
           "issue",
