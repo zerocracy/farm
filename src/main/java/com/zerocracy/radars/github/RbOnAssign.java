@@ -45,7 +45,6 @@ public final class RbOnAssign implements Rebound {
         new ClaimOut()
             .type("Request order start")
             .token(new TokenOfIssue(issue))
-            .author(event.getJsonObject("sender").getString("login"))
             .param("login", login)
             .param("job", new Job(issue))
             .postTo(new GhProject(farm, issue.repo()));

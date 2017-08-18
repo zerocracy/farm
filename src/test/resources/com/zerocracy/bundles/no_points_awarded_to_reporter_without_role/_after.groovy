@@ -18,7 +18,6 @@ package com.zerocracy.bundles.modifies_wbs
 
 import com.jcabi.xml.XML
 import com.zerocracy.jstk.Project
-import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pmo.Awards
 
 def exec(Project project, XML xml) {
