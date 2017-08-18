@@ -16,6 +16,7 @@
  */
 package com.zerocracy.radars.slack;
 
+import com.jcabi.aspects.RetryOnFailure;
 import com.jcabi.log.Logger;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackChannelJoined;
@@ -111,11 +112,21 @@ public final class SlackRadar implements AutoCloseable {
             final Bots bots = new Bots(this.farm).bootstrap();
             final Collection<String> tokens = new HashSet<>(0);
             for (final Map.Entry<String, String> bot : bots.tokens()) {
+                if (!this.sessions.containsKey(bot.getKey())) {
+                    try {
+                        this.sessions.put(
+                            bot.getKey(),
+                            this.start(bot.getValue())
+                        );
+                    } catch (final IOException ex) {
+                        Logger.warn(
+                            this, "Can't connect to %s: %s",
+                            bot.getKey(), ex.getLocalizedMessage()
+                        );
+                        continue;
+                    }
+                }
                 tokens.add(bot.getKey());
-                this.sessions.computeIfAbsent(
-                    bot.getKey(),
-                    key -> this.start(bot.getValue())
-                );
             }
             for (final String bid : this.sessions.keySet()) {
                 if (!tokens.contains(bid)) {
@@ -136,15 +147,13 @@ public final class SlackRadar implements AutoCloseable {
      * Create a session.
      * @param token Token
      * @return The session
+     * @throws IOException If fails
      */
-    private SlackSession start(final String token) {
+    @RetryOnFailure
+    private SlackSession start(final String token) throws IOException {
         final SlackSession ssn =
             SlackSessionFactory.createWebSocketSlackSession(token);
-        try {
-            ssn.connect();
-        } catch (final IOException ex) {
-            throw new IllegalStateException(ex);
-        }
+        ssn.connect();
         Logger.info(
             this, "Slack connected as @%s/%s to %s",
             ssn.sessionPersona().getUserName(),
