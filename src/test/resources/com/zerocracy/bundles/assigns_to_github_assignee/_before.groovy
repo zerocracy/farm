@@ -23,6 +23,7 @@ import com.jcabi.xml.XML
 import com.zerocracy.farm.ProjectFarm
 import com.zerocracy.jstk.Project
 import com.zerocracy.radars.github.RbOnAssign
+
 import javax.json.Json
 
 def exec(Project project, XML xml) {
