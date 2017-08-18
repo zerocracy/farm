@@ -16,13 +16,14 @@
  */
 package com.zerocracy.bundles.assigns_performer
 
+import com.jcabi.github.Event
 import com.jcabi.github.Github
 import com.jcabi.github.Issue
 import com.jcabi.github.Repos
 import com.jcabi.xml.XML
 import com.zerocracy.farm.ProjectFarm
 import com.zerocracy.jstk.Project
-import com.zerocracy.radars.github.RbOnAssign
+import com.zerocracy.pmo.People
 import com.zerocracy.radars.github.RbOnUnassign
 
 import javax.json.Json
@@ -32,6 +33,9 @@ def exec(Project project, XML xml) {
   def repo = github.repos().create(new Repos.RepoCreate("test", false))
   def issue =
       new Issue.Smart(repo.issues().create("hello, world", ""))
+  repo.issueEvents()
+      .create(Event.UNASSIGNED, issue.number(), "yegor256", com.google.common.base.Optional.absent())
+  new People(project).bootstrap()
   final xpath = String.format(
       "links/link[@rel='github' and @href='%s']",
       repo.coordinates().toString().toLowerCase(Locale.ENGLISH)
@@ -46,9 +50,6 @@ def exec(Project project, XML xml) {
           "repository",
           Json.createObjectBuilder()
               .add("full_name", repo.coordinates().toString())
-      ).add(
-          "sender",
-          Json.createObjectBuilder().add("login", "yegor256")
       ).build()
   )
 }

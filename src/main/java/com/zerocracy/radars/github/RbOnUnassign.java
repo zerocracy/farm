@@ -45,7 +45,6 @@ public final class RbOnUnassign implements Rebound {
         new ClaimOut()
             .type("Cancel order")
             .token(new TokenOfIssue(issue))
-            .author(event.getJsonObject("sender").getString("login"))
             .param("job", new Job(issue))
             .postTo(new GhProject(farm, issue.repo()));
         return new FormattedText(
