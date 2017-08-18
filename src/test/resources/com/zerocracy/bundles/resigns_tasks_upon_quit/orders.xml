@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<orders xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/zerocracy/datum/0.27/xsd/pm/in/orders.xsd"
+        version="0.1"
+        updated="2017-08-18T13:18:00.000Z">
+    <order job="gh:test/test#1">
+        <created>2017-08-18T13:18:00.000Z</created>
+        <performer>cmiranda</performer>
+        <reason>some reason</reason>
+    </order>
+    <order job="gh:test/test#2">
+        <created>2017-08-18T13:18:00.000Z</created>
+        <performer>cmiranda</performer>
+        <reason>some reason</reason>
+    </order>
+    <order job="gh:test/test#3">
+        <created>2017-08-18T13:18:00.000Z</created>
+        <performer>yegor256</performer>
+        <reason>some reason</reason>
+    </order>
+</orders>

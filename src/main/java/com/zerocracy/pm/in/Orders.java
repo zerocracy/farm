@@ -171,6 +171,20 @@ public final class Orders {
     }
 
     /**
+     * List of jobs of given person.
+     * @param login Performer
+     * @return List of job IDs
+     * @throws IOException If fails
+     */
+    public Iterable<String> jobs(final String login) throws IOException {
+        try (final Item item = this.item()) {
+            return new Xocument(item.path()).xpath(
+                String.format("/orders/order[performer='%s']/@job", login)
+            );
+        }
+    }
+
+    /**
      * The item.
      * @return Item
      * @throws IOException If fails
