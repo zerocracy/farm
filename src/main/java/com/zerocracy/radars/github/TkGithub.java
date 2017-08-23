@@ -82,7 +82,7 @@ public final class TkGithub implements Take, Runnable {
             frm,
             ghub,
             new RbLogged(
-                new Rebound.Chain(
+                new RbSafe(
                     new RbByActions(
                         new RbOnComment(
                             new GithubFetch(
