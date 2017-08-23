@@ -6,6 +6,7 @@
 [![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.svg)](https://gitter.im/zerocracy/Lobby)
 
 [![Stability of Webhook](http://www.rehttp.net/b?u=http%3A%2F%2Fwww.0crat.com%2Fghook)](http://www.rehttp.net/i?u=http%3A%2F%2Fwww.0crat.com%2Fghook)
+
 [![Availability at SixNines](http://www.sixnines.io/b/2b3a)](http://www.sixnines.io/h/2b3a)
 [![Run Status](https://api.shippable.com/projects/58469fb83ee1d30f00c9b66e/badge?branch=master)](https://app.shippable.com/projects/58469fb83ee1d30f00c9b66e)
 [![PDD status](http://www.0pdd.com/svg?name=zerocracy/farm)](http://www.0pdd.com/p?name=zerocracy/farm)
