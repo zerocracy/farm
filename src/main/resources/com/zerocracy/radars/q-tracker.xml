@@ -59,4 +59,10 @@
         <label>resign</label>
         <help>Resign from this issue</help>
     </cmd>
+    <!--
+    @todo #148:30min Let's make it possible for a user to say `@0crat waiting`.
+     When this is done we should register an impediment for the job of type
+     "unknown" in impediments.xml. See
+     http://datum.zerocracy.com/pages/policy.html#7.
+    -->
 </question>
