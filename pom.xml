@@ -20,7 +20,7 @@ SOFTWARE.
   <parent>
     <groupId>com.jcabi</groupId>
     <artifactId>parent</artifactId>
-    <version>0.49</version>
+    <version>0.49.1</version>
   </parent>
   <groupId>com.zerocracy</groupId>
   <artifactId>farm</artifactId>
