@@ -91,6 +91,10 @@
                 <a href="http://www.sixnines.io/h/2b3a">
                     <img src="http://www.sixnines.io/b/2b3a?style=flat"/>
                 </a>
+                <xsl:text> </xsl:text>
+                <a href="http://www.rehttp.net/i?u=http%3A%2F%2Fwww.0crat.com%2Fghook">
+                    <img src="http://www.rehttp.net/b?u=http%3A%2F%2Fwww.0crat.com%2Fghook"/>
+                </a>
             </p>
         </div>
     </xsl:template>

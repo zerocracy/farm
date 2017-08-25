@@ -20,6 +20,7 @@ import com.jcabi.aspects.Cacheable;
 import com.jcabi.xml.XML;
 import com.zerocracy.farm.MismatchException;
 import com.zerocracy.jstk.Project;
+import com.zerocracy.jstk.SoftException;
 import com.zerocracy.jstk.Stakeholder;
 import groovy.lang.Binding;
 import groovy.lang.GroovyClassLoader;
@@ -111,6 +112,9 @@ public final class StkGroovy implements Stakeholder {
             | InstantiationException | InvocationTargetException exp) {
             if (exp.getCause() instanceof MismatchException) {
                 throw MismatchException.class.cast(exp.getCause());
+            }
+            if (exp.getCause() instanceof SoftException) {
+                throw SoftException.class.cast(exp.getCause());
             }
             throw new IllegalStateException(exp);
         }

@@ -55,12 +55,6 @@ public final class StkSafe implements Stakeholder {
     /**
      * Stakeholder unique identifier.
      */
-    @SuppressWarnings(
-        {
-            "PMD.SingularField",
-            "PMD.UnusedPrivateField"
-        }
-    )
     private final String identifier;
 
     /**
@@ -99,8 +93,8 @@ public final class StkSafe implements Stakeholder {
                 Sentry.capture(
                     new IllegalArgumentException(
                         String.format(
-                            "Claim #%d \"%s\" has no token",
-                            claim.number(), claim.type()
+                            "Claim #%d \"%s\" has no token in %s",
+                            claim.number(), claim.type(), this.identifier
                         ),
                         ex
                     )
@@ -141,8 +135,9 @@ public final class StkSafe implements Stakeholder {
             Sentry.capture(
                 new IllegalArgumentException(
                     String.format(
-                        "Claim #%d in %s: type=\"%s\"",
-                        claim.number(), project, claim.type()
+                        "Claim #%d in %s: type=\"%s\", id=\"%s\"",
+                        claim.number(), project, claim.type(),
+                        this.identifier
                     ),
                     ex
                 )
