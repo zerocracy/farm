@@ -1,65 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- * Copyright (c) 2016-2017 Zerocracy
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to read
- * the Software only. Permissions is hereby NOT GRANTED to use, copy, modify,
- * merge, publish, distribute, sublicense, and/or sell copies of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- -->
+Copyright (c) 2016-2017 Zerocracy
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to read
+the Software only. Permissions is hereby NOT GRANTED to use, copy, modify,
+merge, publish, distribute, sublicense, and/or sell copies of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-->
 <question>
-    <cmd>
-        <code>Hello</code>
-        <regex>hi|hello|hey|morning|good morning</regex>
-        <label>hello</label>
-        <help>Just say hello</help>
-    </cmd>
-    <cmd>
-        <code>Version</code>
-        <regex>version|ver</regex>
-        <label>version</label>
-        <help>Print current version of the bot</help>
-    </cmd>
-    <cmd>
-        <code>Add job to WBS</code>
-        <regex>in</regex>
-        <label>in</label>
-        <help>Register this issue in scope (WBS)</help>
-    </cmd>
-    <cmd>
-        <code>Remove job from WBS</code>
-        <regex>out</regex>
-        <label>out</label>
-        <help>Remove this issue from scope (WBS)</help>
-    </cmd>
-    <cmd>
-        <code>Request order start</code>
-        <regex>assign</regex>
-        <label>assign</label>
-        <help>Assign a performer to this issue</help>
-        <opts>
-            <opt>
-                <name>login</name>
-                <regex>me|@[a-zA-Z0-9\-]+</regex>
-                <help>"me" or GitHub login of the person to assign</help>
-            </opt>
-        </opts>
-    </cmd>
-    <cmd>
-        <code>Cancel order</code>
-        <regex>resign|reject|refuse</regex>
-        <label>resign</label>
-        <help>Resign from this issue</help>
-    </cmd>
-    <!--
+  <cmd>
+    <code>Hello</code>
+    <regex>hi|hello|hey|morning|good morning</regex>
+    <label>hello</label>
+    <help>Just say hello</help>
+  </cmd>
+  <cmd>
+    <code>Version</code>
+    <regex>version|ver</regex>
+    <label>version</label>
+    <help>Print current version of the bot</help>
+  </cmd>
+  <cmd>
+    <code>Add job to WBS</code>
+    <regex>in</regex>
+    <label>in</label>
+    <help>Register this issue in scope (WBS)</help>
+  </cmd>
+  <cmd>
+    <code>Remove job from WBS</code>
+    <regex>out</regex>
+    <label>out</label>
+    <help>Remove this issue from scope (WBS)</help>
+  </cmd>
+  <cmd>
+    <code>Request order start</code>
+    <regex>assign</regex>
+    <label>assign</label>
+    <help>Assign a performer to this issue</help>
+    <opts>
+      <opt>
+        <name>login</name>
+        <regex>me|@[a-zA-Z0-9\-]+</regex>
+        <help>"me" or GitHub login of the person to assign</help>
+      </opt>
+    </opts>
+  </cmd>
+  <cmd>
+    <code>Cancel order</code>
+    <regex>resign|reject|refuse</regex>
+    <label>resign</label>
+    <help>Resign from this issue</help>
+  </cmd>
+  <!--
     @todo #148:30min Let's make it possible for a user to say `@0crat waiting`.
      When this is done we should register an impediment for the job of type
      "unknown" in impediments.xml. See
