@@ -128,17 +128,17 @@ final class SyncProject implements Project {
                     new SyncItem(this.origin.acq(file))
                 );
             }
+            final SyncItem item = this.pool.get(location);
+            try {
+                item.acquire();
+            } catch (final InterruptedException ex) {
+                Thread.currentThread().interrupt();
+                throw new IllegalStateException(ex);
+            }
+            if (this.pool.size() > this.threshold) {
+                new AsyncFunc<>(this.clean).apply(null);
+            }
+            return item;
         }
-        final SyncItem item = this.pool.get(location);
-        try {
-            item.acquire();
-        } catch (final InterruptedException ex) {
-            Thread.currentThread().interrupt();
-            throw new IllegalStateException(ex);
-        }
-        if (this.pool.size() > this.threshold) {
-            new AsyncFunc<>(this.clean).apply(null);
-        }
-        return item;
     }
 }

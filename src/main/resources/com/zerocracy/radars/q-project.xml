@@ -1,151 +1,130 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- * Copyright (c) 2016-2017 Zerocracy
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to read
- * the Software only. Permissions is hereby NOT GRANTED to use, copy, modify,
- * merge, publish, distribute, sublicense, and/or sell copies of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- -->
+Copyright (c) 2016-2017 Zerocracy
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to read
+the Software only. Permissions is hereby NOT GRANTED to use, copy, modify,
+merge, publish, distribute, sublicense, and/or sell copies of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-->
 <question>
-    <cmd>
-        <code>Hello</code>
-        <regex>hi|hello|hey|morning|good morning</regex>
-        <label>hello</label>
-        <help>Just say hello</help>
-    </cmd>
-    <cmd>
-        <code>Version</code>
-        <regex>version|ver</regex>
-        <label>version</label>
-        <help>Print current version of the bot</help>
-    </cmd>
-    <cmd>
-        <code>Invite a friend</code>
-        <regex>invite</regex>
-        <label>invite</label>
-        <help>Invite a friend</help>
+  <cmd>
+    <code>Hello project</code>
+    <regex>hi|hello|hey|morning|good morning</regex>
+    <label>hello</label>
+    <help>Just say hello</help>
+  </cmd>
+  <cmd>
+    <code>Version</code>
+    <regex>version|ver</regex>
+    <label>version</label>
+    <help>Print current version of the bot</help>
+  </cmd>
+  <cmd>
+    <code>Show links</code>
+    <regex>links?</regex>
+    <label>links</label>
+    <help>Show all resources the project is linked with</help>
+    <cmds>
+      <cmd>
+        <code>Add link</code>
+        <regex>add|set</regex>
+        <label>add</label>
+        <help>Add a new resource</help>
         <opts>
-            <opt>
-                <name>login</name>
-                <regex>[a-z0-9-]+</regex>
-                <help>GitHub login of your friend</help>
-            </opt>
+          <opt>
+            <name>rel</name>
+            <regex>[a-z]+</regex>
+            <help>Kind of resource, e.g. "github"</help>
+          </opt>
+          <opt>
+            <name>href</name>
+            <regex>.+</regex>
+            <help>Resource details, for example GitHub repository name</help>
+          </opt>
         </opts>
-    </cmd>
-    <cmd>
-        <code>Show links</code>
-        <regex>links?</regex>
-        <label>links</label>
-        <help>Show all resources the project is linked with</help>
-        <cmds>
-            <cmd>
-                <code>Add link</code>
-                <regex>add|set</regex>
-                <label>add</label>
-                <help>Add a new resource</help>
-                <opts>
-                    <opt>
-                        <name>rel</name>
-                        <regex>[a-z]+</regex>
-                        <help>Kind of resource, e.g. "github"</help>
-                    </opt>
-                    <opt>
-                        <name>href</name>
-                        <regex>.+</regex>
-                        <help>Resource details, for example GitHub repository name</help>
-                    </opt>
-                </opts>
-            </cmd>
-            <cmd>
-                <code>Remove link</code>
-                <regex>del|delete|remove</regex>
-                <label>remove</label>
-                <help>Remove an existing project resource</help>
-                <opts>
-                    <opt>
-                        <name>rel</name>
-                        <regex>[a-z]+</regex>
-                        <help>Kind of resource, e.g. "github"</help>
-                    </opt>
-                    <opt>
-                        <name>href</name>
-                        <regex>.+</regex>
-                        <help>Resource details, for example GitHub repository name</help>
-                    </opt>
-                </opts>
-            </cmd>
-        </cmds>
-    </cmd>
-    <cmd>
-        <code>Show roles</code>
-        <regex>roles?</regex>
-        <label>roles</label>
-        <help>Show all roles assigned at the moment, add and remove them</help>
-        <cmds>
-            <cmd>
-                <code>Assign role</code>
-                <regex>assign|add|register</regex>
-                <label>assign</label>
-                <help>Assign new project role</help>
-                <opts>
-                    <opt>
-                        <name>role</name>
-                        <regex>[A-Z]{2,4}</regex>
-                        <help>Project role, all caps, e.g. ARC, PO or DEV</help>
-                    </opt>
-                    <opt>
-                        <name>login</name>
-                        <regex>[a-zA-Z0-9\-]+</regex>
-                        <help>GitHub login of the user</help>
-                    </opt>
-                </opts>
-            </cmd>
-            <cmd>
-                <code>Resign role</code>
-                <regex>resign|remove|unregister</regex>
-                <label>resign</label>
-                <help>Resign a person from a project role</help>
-                <opts>
-                    <opt>
-                        <name>role</name>
-                        <regex>[A-Z]{2,4}</regex>
-                        <help>Project role, all caps, e.g. ARC or PO</help>
-                    </opt>
-                    <opt>
-                        <name>login</name>
-                        <regex>[a-zA-Z0-9\-]+</regex>
-                        <help>GitHub login of the user</help>
-                    </opt>
-                </opts>
-            </cmd>
-        </cmds>
-    </cmd>
-    <cmd>
-        <code>Publish the project</code>
-        <regex>publish</regex>
-        <label>publish</label>
-        <help>Publish the project or un-publish</help>
+      </cmd>
+      <cmd>
+        <code>Remove link</code>
+        <regex>del|delete|remove</regex>
+        <label>remove</label>
+        <help>Remove an existing project resource</help>
         <opts>
-            <opt>
-                <name>mode</name>
-                <regex>(on|off)</regex>
-                <help>Publication mode: 'on' or 'off'</help>
-            </opt>
+          <opt>
+            <name>rel</name>
+            <regex>[a-z]+</regex>
+            <help>Kind of resource, e.g. "github"</help>
+          </opt>
+          <opt>
+            <name>href</name>
+            <regex>.+</regex>
+            <help>Resource details, for example GitHub repository name</help>
+          </opt>
         </opts>
-    </cmd>
-    <cmd>
-        <code>Bootstrap</code>
-        <regex>bootstrap</regex>
-        <label>bootstrap</label>
-        <help>Bootstrap the project to initialize all project artifacts</help>
-    </cmd>
+      </cmd>
+    </cmds>
+  </cmd>
+  <cmd>
+    <code>Assign role</code>
+    <regex>assign</regex>
+    <label>assign</label>
+    <help>Assign new project role</help>
+    <opts>
+      <opt>
+        <name>role</name>
+        <regex>[A-Z]{2,4}</regex>
+        <help>Project role, all caps, e.g. ARC, PO or DEV</help>
+      </opt>
+      <opt>
+        <name>login</name>
+        <regex>[a-zA-Z0-9\-]+</regex>
+        <help>GitHub login of the user</help>
+      </opt>
+    </opts>
+  </cmd>
+  <cmd>
+    <code>Resign role</code>
+    <regex>resign</regex>
+    <label>resign</label>
+    <help>Resign a person from a project role</help>
+    <opts>
+      <opt>
+        <name>role</name>
+        <regex>[A-Z]{2,4}</regex>
+        <help>Project role, all caps, e.g. ARC or PO</help>
+      </opt>
+      <opt>
+        <name>login</name>
+        <regex>[a-zA-Z0-9\-]+</regex>
+        <help>GitHub login of the user</help>
+      </opt>
+    </opts>
+  </cmd>
+  <cmd>
+    <code>Publish the project</code>
+    <regex>publish</regex>
+    <label>publish</label>
+    <help>Publish the project or un-publish</help>
+    <opts>
+      <opt>
+        <name>mode</name>
+        <regex>(on|off)</regex>
+        <help>Publication mode: 'on' or 'off'</help>
+      </opt>
+    </opts>
+  </cmd>
+  <cmd>
+    <code>Bootstrap</code>
+    <regex>bootstrap</regex>
+    <label>bootstrap</label>
+    <help>Bootstrap the project to initialize all project artifacts</help>
+  </cmd>
 </question>

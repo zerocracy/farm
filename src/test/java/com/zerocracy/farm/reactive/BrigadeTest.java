@@ -81,7 +81,7 @@ public final class BrigadeTest {
     @Test
     public void parsesGroovyScript() throws Exception {
         final Project project = new FkProject();
-        new ClaimOut().type("hello").token("notoken").postTo(project);
+        new ClaimOut().type("hello").token("test;notoken").postTo(project);
         final XML xml;
         try (final Claims claims = new Claims(project).lock()) {
             xml = claims.iterate().iterator().next();

@@ -9,6 +9,7 @@ env:
   MAVEN_OPTS: -XX:MaxPermSize=256m -Xmx1g
 install: |-
   sudo gem install pdd
+  sudo gem install xcop
   java -version
 deploy:
   script: |

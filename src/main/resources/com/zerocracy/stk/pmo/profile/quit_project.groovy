@@ -23,6 +23,7 @@ import com.zerocracy.jstk.Project
 import com.zerocracy.jstk.SoftException
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
+import com.zerocracy.pm.in.Orders
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Quit a project')
@@ -34,6 +35,16 @@ def exec(Project project, XML xml) {
     throw new SoftException(
       "Project \"${pid}\" doesn't exist."
     )
+  }
+  def login = claim.author()
+  final Orders orders = new Orders(project).bootstrap()
+  for (String job : orders.jobs(login)) {
+    orders.resign(job)
+    new ClaimOut()
+        .type('Order was canceled')
+        .param('job', job)
+        .param('login', login)
+        .postTo(project)
   }
   new ClaimOut()
     .type('Resign all roles')

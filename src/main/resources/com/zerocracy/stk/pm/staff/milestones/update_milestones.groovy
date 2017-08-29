@@ -14,28 +14,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pmo.profile.skills
+package com.zerocracy.stk.pm.staff.roles
 
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pmo.People
+import com.zerocracy.pm.ClaimOut
+import com.zerocracy.pm.staff.Roles
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Show skills')
-  People people = new People(project).bootstrap()
-  ClaimIn claim = new ClaimIn(xml)
-  String login = claim.param('person')
-  Collection<String> skills = people.skills(login)
-  String msg
-  if (skills.iterator().hasNext()) {
-    msg = String.format(
-      'Your skills are: `%s`.',
-      String.join('`, `', skills)
-    )
-  } else {
-    msg = 'Your skills are not defined yet.'
-  }
-  claim.reply(msg).postTo(project)
+/**
+ * @todo #166:30min let's implement this stakeholder. It will update
+ *  milestones.xml, taking information from GitHub milestones. It has to be
+ *  triggered by GitHub webhook: when milestones are updated. For each
+ *  milestone, it has to add gh: prefix to the name found on GitHub.
+ */
 }

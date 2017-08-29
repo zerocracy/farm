@@ -71,19 +71,16 @@ public final class Elections {
     }
 
     /**
-     * Assign role.
+     * Elect a performer.
      * @param job The job to elect
      * @param logins Candidates
      * @param voters Voters and weights
-     * @return TRUE if was elected a new winner
+     * @return TRUE if a new election made some changes to the situation
      * @throws IOException If fails
      */
     public boolean elect(final String job, final Iterable<String> logins,
         final Map<Voter, Integer> voters) throws IOException {
-        String winner = "";
-        if (this.elected(job)) {
-            winner = this.winner(job);
-        }
+        final String state = this.state(job);
         final String date = ZonedDateTime.now().format(
             DateTimeFormatter.ISO_INSTANT
         );
@@ -123,8 +120,8 @@ public final class Elections {
             }
             new Xocument(item.path()).modify(dirs);
         }
-        boolean elected = true;
-        if (!winner.isEmpty() && this.winner(job).equals(winner)) {
+        boolean modified = true;
+        if (this.state(job).equals(state)) {
             try (final Item item = this.item()) {
                 new Xocument(item.path()).modify(
                     new Directives().xpath(
@@ -135,9 +132,9 @@ public final class Elections {
                     ).remove()
                 );
             }
-            elected = false;
+            modified = false;
         }
-        return elected;
+        return modified;
     }
 
     /**
@@ -170,20 +167,41 @@ public final class Elections {
     }
 
     /**
+     * Retrieve TRUE if at least one election happened already.
+     * @param job The job
+     * @return TRUE if an election exists
+     * @throws IOException If fails
+     */
+    public boolean exists(final String job) throws IOException {
+        try (final Item item = this.item()) {
+            return !new XMLDocument(item.path().toFile()).nodes(
+                String.format(
+                    "/elections/job[ @id ='%s']/election[ last()]", job
+                )
+            ).isEmpty();
+        }
+    }
+
+    /**
      * Retrieve TRUE if the performer is elected for the job.
      * @param job The job
      * @return TRUE if it has a winner
      * @throws IOException If fails
      */
     public boolean elected(final String job) throws IOException {
-        try (final Item roles = this.item()) {
-            return new Xocument(roles).nodes(
-                String.format(
-                    "/elections/job[@id='%s']/election",
-                    job
-                )
-            ).iterator().hasNext();
+        boolean elected = this.exists(job);
+        if (elected) {
+            try (final Item item = this.item()) {
+                elected = Elections.STYLESHEET.transform(
+                    new XMLDocument(item.path().toFile()).nodes(
+                        String.format(
+                            "/elections/job[@id ='%s']/election[ last()]", job
+                        )
+                    ).get(0)
+                ).nodes("/summary/winner").iterator().hasNext();
+            }
         }
+        return elected;
     }
 
     /**
@@ -220,6 +238,21 @@ public final class Elections {
                 ).get(0)
             ).xpath("/summary/winner/text()").get(0);
         }
+    }
+
+    /**
+     * Current state with this job.
+     * @param job The job
+     * @return State, encrypted
+     * @throws IOException If fails
+     */
+    private String state(final String job) throws IOException {
+        final StringBuilder state = new StringBuilder(0);
+        state.append(this.exists(job)).append(' ').append(this.elected(job));
+        if (this.elected(job)) {
+            state.append(' ').append(this.winner(job));
+        }
+        return state.toString();
     }
 
     /**

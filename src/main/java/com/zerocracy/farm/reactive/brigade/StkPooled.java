@@ -14,34 +14,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.radars.telegram;
+package com.zerocracy.farm.reactive.brigade;
 
-import com.zerocracy.jstk.Farm;
-import java.io.IOException;
-import org.cactoos.text.FormattedText;
+import com.zerocracy.jstk.Stakeholder;
+import java.io.Closeable;
+import java.util.Iterator;
+import java.util.List;
 
 /**
- * Say hello to the user.
+ * Pooled stakeholders that should be closed after processing.
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
- * @since 0.15
+ * @since 0.16.1
  */
-final class ReHello implements Reaction {
+public interface StkPooled extends Iterable<Stakeholder>, Closeable {
 
-    @Override
-    public boolean react(
-        final Farm farm,
-        final TmSession session,
-        final TmRequest request
-    ) throws IOException {
-        session.reply(
-            new RsText(
-                new FormattedText(
-                    "Hello, %s",
-                    request.sender()
-                )
-            )
-        );
-        return true;
+    /**
+     * Simple stakeholder items.
+     */
+    final class Simple implements StkPooled {
+
+        /**
+         * Items.
+         */
+        private final List<Stakeholder> items;
+
+        /**
+         * Ctor.
+         * @param items Stakeholders
+         */
+        public Simple(final List<Stakeholder> items) {
+            this.items = items;
+        }
+
+        @Override
+        @SuppressWarnings("PMD.UncommentedEmptyMethodBody")
+        public void close() {
+        }
+
+        @Override
+        public Iterator<Stakeholder> iterator() {
+            return this.items.iterator();
+        }
     }
 }

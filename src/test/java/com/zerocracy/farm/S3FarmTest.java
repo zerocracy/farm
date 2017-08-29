@@ -60,6 +60,19 @@ public final class S3FarmTest {
     }
 
     @Test
+    public void returnsEmptyListOfProjects() throws Exception {
+        final Bucket bucket = new FkBucket(
+            Files.createTempDirectory("").toFile(),
+            "some-bucket-to-test"
+        );
+        final Farm farm = new S3Farm(bucket);
+        MatcherAssert.assertThat(
+            farm.find("links/link[@rel='github']"),
+            Matchers.emptyIterable()
+        );
+    }
+
+    @Test
     public void makesProjectsSafe() throws Exception {
         final Bucket bucket = new FkBucket(
             Files.createTempDirectory("").toFile(),

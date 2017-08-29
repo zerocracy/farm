@@ -24,14 +24,21 @@ import com.zerocracy.pmo.People
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Show wallet')
-  People people = new People(project).bootstrap()
-  ClaimIn claim = new ClaimIn(xml)
-  String login = claim.author()
-  claim.reply(
+  final claim = new ClaimIn(xml)
+  claim.reply(response(new People(project).bootstrap(), claim.author()))
+    .postTo(project)
+}
+
+def response(People people, String author) {
+  final wallet = people.wallet(author)
+  final bank = people.bank(author)
+  if (wallet.empty || bank.empty) {
+    'Your wallet is not configured yet'
+  } else {
     String.format(
       'Your wallet is `%s` at "%s".',
-      people.wallet(login),
-      people.bank(login)
+      people.wallet(author),
+      people.bank(author)
     )
-  ).postTo(project)
+  }
 }

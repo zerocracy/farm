@@ -24,6 +24,7 @@ import com.zerocracy.tk.profile.TkAwards;
 import com.zerocracy.tk.profile.TkProfile;
 import com.zerocracy.tk.project.TkArtifact;
 import com.zerocracy.tk.project.TkProject;
+import com.zerocracy.tk.project.TkXml;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.Properties;
@@ -31,6 +32,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.cactoos.io.BytesOf;
 import org.cactoos.iterable.ListOf;
 import org.cactoos.text.TextOf;
+import org.takes.Take;
 import org.takes.facets.fallback.Fallback;
 import org.takes.facets.fallback.FbChain;
 import org.takes.facets.fallback.FbLog4j;
@@ -43,6 +45,7 @@ import org.takes.facets.forward.TkForward;
 import org.takes.misc.Concat;
 import org.takes.misc.Href;
 import org.takes.misc.Opt;
+import org.takes.rs.RsRedirect;
 import org.takes.rs.RsText;
 import org.takes.rs.RsVelocity;
 import org.takes.rs.RsWithStatus;
@@ -110,7 +113,7 @@ public final class TkApp extends TkWrap {
                                                                 )
                                                             ),
                                                             new FkRegex(
-                                                                "/invite_friend",
+                                                                "/add_to_slack",
                                                                 new TkRedirect(
                                                                     new Href("https://slack.com/oauth/authorize")
                                                                         .with("scope", "bot")
@@ -123,12 +126,22 @@ public final class TkApp extends TkWrap {
                                                                 new TkBoard(props, farm)
                                                             ),
                                                             new FkRegex(
+                                                                "/me",
+                                                                (Take) req -> new RsRedirect(
+                                                                    String.format("/u/%s", new RqUser(farm, req).value())
+                                                                )
+                                                            ),
+                                                            new FkRegex(
                                                                 "/p/([A-Z0-9]{9})",
                                                                 new TkProject(props, farm)
                                                             ),
                                                             new FkRegex(
                                                                 "/a/([A-Z0-9]{9})",
                                                                 new TkArtifact(props, farm)
+                                                            ),
+                                                            new FkRegex(
+                                                                "/xml/([A-Z0-9]{9})",
+                                                                new TkXml(farm)
                                                             ),
                                                             new FkRegex(
                                                                 "/u/([a-zA-Z0-9-]+)/awards",

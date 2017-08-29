@@ -28,33 +28,28 @@ def exec(Project project, XML xml) {
   if (parts[0] == 'slack') {
     claim.copy()
       .type('Notify in Slack')
-      .token(parts[1])
       .postTo(project)
   } else if (parts[0] == 'telegram') {
     claim.copy()
-    .type('Notify in Telegram')
-    .token(parts[1])
-    .postTo(project)
+      .type('Notify in Telegram')
+      .postTo(project)
   } else if (parts[0] == 'github') {
     claim.copy()
       .type('Notify in GitHub')
-      .token(parts[1])
       .postTo(project)
   } else if (parts[0] == 'job') {
     claim.copy()
       .type('Notify job')
-      .token(parts[1])
       .postTo(project)
   } else if (parts[0] == 'test') {
     claim.copy()
       .type('Notify test')
-      .token(parts[1])
       .postTo(project)
   } else {
     throw new IllegalStateException(
       String.format(
-        'I don\'t know how to notify "%s"',
-        parts[0]
+        'I don\'t know how to notify "%s" in %s: "%s"',
+        parts[0], project, claim.param('message')
       )
     )
   }

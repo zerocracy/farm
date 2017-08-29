@@ -120,7 +120,8 @@ final class S3Item implements Item {
 
     @Override
     public void close() throws IOException {
-        if (this.open.get() && (!this.ocket.exists() || this.dirty())) {
+        if (this.open.get() && Files.exists(this.temp)
+            && (!this.ocket.exists() || this.dirty())) {
             final ObjectMetadata meta = new ObjectMetadata();
             final long start = System.currentTimeMillis();
             meta.setContentLength(this.temp.toFile().length());

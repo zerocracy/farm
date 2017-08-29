@@ -34,13 +34,15 @@ def exec(Project project, XML xml) {
   String role = claim.param('role')
   Roles roles = new Roles(project).bootstrap()
   roles.resign(login, role)
-  if (roles.hasAnyRole(login)) {
+  if (!roles.hasAnyRole(login)) {
     Farm farm = binding.variables.farm
     new Projects(new Pmo(farm), login).remove(project.toString())
   }
   claim.reply(
     String.format(
-      'Role "%s" resigned from "%s".',
+      'Role "%s" resigned from "%s",' +
+      " see [full list](http://www.0crat.com/a/${project}?a=pm/staff/roles)" +
+      ' of roles.',
       role, login
     )
   ).postTo(project)

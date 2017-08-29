@@ -96,10 +96,11 @@ public final class GhProject implements Project {
         if (!list.hasNext()) {
             throw new SoftException(
                 String.join(
-                    "",
-                    "I'm not managing this GitHub repository (",
-                    name,
-                    "). You have to contact me in Slack first."
+                    " ",
+                    "I'm not managing `", name, "` GitHub repository.",
+                    "You have to contact me in Slack first.",
+                    // @checkstyle LineLength (1 line)
+                    "Our [policy](http://datum.zerocracy.com/pages/policy.html) explains how."
                 )
             );
         }

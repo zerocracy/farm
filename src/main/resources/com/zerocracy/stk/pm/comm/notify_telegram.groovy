@@ -24,19 +24,23 @@ import com.zerocracy.radars.telegram.TmResponse
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Notify in Telegram')
-  final ClaimIn claim = new ClaimIn(xml)
-  final channel = Long.parseLong(claim.token())
+  ClaimIn claim = new ClaimIn(xml)
+  String[] parts = claim.token().split(';')
+  if (parts[0] != 'telegram') {
+    throw new IllegalArgumentException(
+      "Something is wrong with this token: ${claim.token()}"
+    )
+  }
+  String[] slices = parts[1].split(':')
+  long channel = Long.parseLong(slices[0])
   binding.variables.telegram[channel].reply(new Response(claim))
 }
 
 class Response implements TmResponse {
-
   final ClaimIn claim
-
   Response(ClaimIn claim) {
     this.claim = claim
   }
-
   @Override
   String text() throws IOException {
     claim.param('message').replaceAll(

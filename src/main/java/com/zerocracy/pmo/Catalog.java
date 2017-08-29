@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pmo;
 
+import com.jcabi.log.Logger;
 import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
@@ -94,6 +95,10 @@ public final class Catalog {
                     .add("publish").set(Boolean.toString(false))
             );
         }
+        Logger.info(
+            this, "New project \"%s\" added, prefix is \"%s\"",
+            pid, prefix
+        );
     }
 
     /**
@@ -130,6 +135,10 @@ public final class Catalog {
                 ).strict(1).set(Boolean.toString(status))
             );
         }
+        Logger.info(
+            this, "Project \"%s\" publishing status changed to \"%s\"",
+            pid, status
+        );
     }
 
     /**
@@ -171,6 +180,10 @@ public final class Catalog {
                     .attr("href", href)
             );
         }
+        Logger.info(
+            this, "Project \"%s\" got a new link, rel=\"%s\", href=\"%s\"",
+            pid, rel, href
+        );
     }
 
     /**
@@ -197,6 +210,10 @@ public final class Catalog {
                     .remove()
             );
         }
+        Logger.info(
+            this, "Project \"%s\" lost a link, rel=\"%s\", href=\"%s\"",
+            pid, rel, href
+        );
     }
 
     /**
@@ -242,6 +259,10 @@ public final class Catalog {
                     .set(parent)
             );
         }
+        Logger.info(
+            this, "Project \"%s\" got a parent \"%s\"",
+            pid, parent
+        );
     }
 
     /**

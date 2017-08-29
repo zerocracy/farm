@@ -19,6 +19,7 @@ package com.zerocracy.entry;
 import com.jcabi.aspects.Cacheable;
 import com.jcabi.s3.Bucket;
 import com.jcabi.s3.Region;
+import com.jcabi.s3.cached.CdRegion;
 import com.jcabi.s3.retry.ReRegion;
 import java.io.IOException;
 import java.util.Properties;
@@ -37,10 +38,12 @@ final class ExtBucket implements Scalar<Bucket> {
     @Cacheable(forever = true)
     public Bucket value() throws IOException {
         final Properties props = new ExtProperties().value();
-        return new ReRegion(
-            new Region.Simple(
-                props.getProperty("s3.key"),
-                props.getProperty("s3.secret")
+        return new CdRegion(
+            new ReRegion(
+                new Region.Simple(
+                    props.getProperty("s3.key"),
+                    props.getProperty("s3.secret")
+                )
             )
         ).bucket(props.getProperty("s3.bucket"));
     }

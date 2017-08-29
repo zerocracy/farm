@@ -16,6 +16,7 @@
  */
 package com.zerocracy.tk;
 
+import com.zerocracy.Xocument;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
@@ -153,6 +154,7 @@ public final class RsPage extends RsWrap {
                         props.getProperty("build.date", "2017-01-01")
                     )
                 ),
+                new XeAppend("datum", Xocument.VERSION),
                 new XeMemory(),
                 new XeMillis(true)
             )

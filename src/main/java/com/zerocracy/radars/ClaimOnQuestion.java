@@ -34,11 +34,26 @@ public final class ClaimOnQuestion {
     private final Question question;
 
     /**
+     * The tail text in case of failure.
+     */
+    private final String tail;
+
+    /**
      * Ctor.
      * @param qtn Question
      */
     public ClaimOnQuestion(final Question qtn) {
+        this(qtn, "");
+    }
+
+    /**
+     * Ctor.
+     * @param qtn Question
+     * @param text Tail text in case of error
+     */
+    public ClaimOnQuestion(final Question qtn, final String text) {
         this.question = qtn;
+        this.tail = text;
     }
 
     /**
@@ -52,9 +67,13 @@ public final class ClaimOnQuestion {
                 .type(this.question.code())
                 .params(this.question.params());
         } else {
-            claim = new ClaimOut()
-                .type("Notify")
-                .param("message", this.question.help());
+            claim = new ClaimOut().type("Notify").param(
+                "message",
+                String.format(
+                    "%s\n\n%s",
+                    this.question.help(), this.tail
+                )
+            );
         }
         return claim;
     }

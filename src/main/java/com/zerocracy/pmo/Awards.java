@@ -16,7 +16,9 @@
  */
 package com.zerocracy.pmo;
 
+import com.jcabi.log.Logger;
 import com.zerocracy.Xocument;
+import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
@@ -42,6 +44,15 @@ public final class Awards {
      * Login of the person.
      */
     private final String login;
+
+    /**
+     * Ctor.
+     * @param farm The farm
+     * @param user The user
+     */
+    public Awards(final Farm farm, final String user) {
+        this(new Pmo(farm), user);
+    }
 
     /**
      * Ctor.
@@ -99,6 +110,10 @@ public final class Awards {
                     .set(job)
             );
         }
+        Logger.info(
+            this, "New award added, points=%d, job=\"%s\", reason=\"%s\"",
+            points, job, reason
+        );
     }
 
     /**

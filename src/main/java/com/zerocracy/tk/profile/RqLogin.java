@@ -19,6 +19,7 @@ package com.zerocracy.tk.profile;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pmo.People;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.logging.Level;
 import org.cactoos.Scalar;
 import org.takes.facets.flash.RsFlash;
@@ -57,7 +58,8 @@ public final class RqLogin implements Scalar<String> {
 
     @Override
     public String value() throws IOException {
-        final String login = this.request.matcher().group(1);
+        final String login = this.request.matcher()
+            .group(1).toLowerCase(Locale.ENGLISH);
         final People people = new People(this.pmo).bootstrap();
         if (!people.find("github", login).iterator().hasNext()) {
             throw new RsForward(

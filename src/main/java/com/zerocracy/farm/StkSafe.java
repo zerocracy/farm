@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.util.Properties;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.cactoos.io.BytesOf;
 import org.cactoos.text.FormattedText;
 import org.cactoos.text.TextOf;
@@ -54,12 +55,6 @@ public final class StkSafe implements Stakeholder {
     /**
      * Stakeholder unique identifier.
      */
-    @SuppressWarnings(
-        {
-            "PMD.SingularField",
-            "PMD.UnusedPrivateField"
-        }
-    )
     private final String identifier;
 
     /**
@@ -98,8 +93,8 @@ public final class StkSafe implements Stakeholder {
                 Sentry.capture(
                     new IllegalArgumentException(
                         String.format(
-                            "Claim #%d \"%s\" has no token",
-                            claim.number(), claim.type()
+                            "Claim #%d \"%s\" has no token in %s",
+                            claim.number(), claim.type(), this.identifier
                         ),
                         ex
                     )
@@ -116,13 +111,16 @@ public final class StkSafe implements Stakeholder {
                         " submit this error as a ticket",
                         " [here](https://github.com/zerocracy/datum):\n\n```\n",
                         new FormattedText(
-                            "%s %s %s\n%s",
+                            "%s %s %s\n%s\n%s",
                             this.props.getProperty("build.version"),
                             this.props.getProperty("build.revision"),
                             this.props.getProperty("build.date"),
+                            ExceptionUtils.getMessage(ex),
                             StringUtils.abbreviate(
                                 new TextOf(
-                                    new BytesOf(ex)
+                                    new BytesOf(
+                                        ExceptionUtils.getRootCause(ex)
+                                    )
                                 ).asString(),
                                 Tv.THOUSAND
                             )
@@ -131,7 +129,19 @@ public final class StkSafe implements Stakeholder {
                     )
                 ).postTo(project);
             }
-            Sentry.capture(ex);
+            if (this.props.containsKey("testing")) {
+                throw new IllegalStateException(ex);
+            }
+            Sentry.capture(
+                new IllegalArgumentException(
+                    String.format(
+                        "Claim #%d in %s: type=\"%s\", id=\"%s\"",
+                        claim.number(), project, claim.type(),
+                        this.identifier
+                    ),
+                    ex
+                )
+            );
         }
     }
 }

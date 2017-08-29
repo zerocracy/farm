@@ -91,8 +91,8 @@ final class FlushAction implements Proc<Boolean> {
         if (total == 0 && claim.hasToken()) {
             throw new IllegalStateException(
                 String.format(
-                    "Failed to process \"%s\", no stakeholders",
-                    claim.type()
+                    "Failed to process \"%s\"/\"%s\", no stakeholders",
+                    claim.type(), claim.token()
                 )
             );
         }

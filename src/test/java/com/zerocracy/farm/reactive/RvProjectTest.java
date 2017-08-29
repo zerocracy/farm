@@ -48,7 +48,7 @@ public final class RvProjectTest {
         );
         final RvProject project = new RvProject(raw, flush);
         try (final Claims claims = new Claims(project).lock()) {
-            claims.add(new ClaimOut().type("hello").token("tt"));
+            claims.add(new ClaimOut().type("hello").token("test;tt"));
         }
         flush.close();
         try (final Claims claims = new Claims(project).lock()) {

@@ -14,48 +14,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.farm;
+package com.zerocracy.radars.telegram;
 
 import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Project;
-import java.util.Collections;
-import org.cactoos.iterable.IterableOf;
+import com.zerocracy.pmo.GoodPeople;
+import com.zerocracy.pmo.People;
+import java.io.IOException;
 
 /**
- * Test farm with single project.
+ * Person in telegram.
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.16
  */
-public final class ProjectFarm implements Farm {
-    /**
-     * A project.
-     */
-    private final Project proj;
+final class TmPerson {
 
     /**
-     * Project's xpath.
+     * Farm.
      */
-    private final String xpth;
+    private final Farm farm;
+
+    /**
+     * Event.
+     */
+    private final TmRequest request;
 
     /**
      * Ctor.
-     * @param proj A project
-     * @param xpth Project's xpath
+     * @param frm Farm
+     * @param req Telegram request
      */
-    public ProjectFarm(final Project proj, final String xpth) {
-        this.proj = proj;
-        this.xpth = xpth;
+    TmPerson(final Farm frm, final TmRequest req) {
+        this.farm = frm;
+        this.request = req;
     }
 
-    @Override
-    public Iterable<Project> find(final String xpath) {
-        final Iterable<Project> ret;
-        if (this.xpth.equals(xpath)) {
-            ret = new IterableOf<>(this.proj);
-        } else {
-            ret = Collections.emptyList();
-        }
-        return ret;
+    /**
+     * User ID.
+     * @return User ID
+     * @throws IOException If fails
+     */
+    public String uid() throws IOException {
+        return new GoodPeople(new People(this.farm)).get(
+            "telegram", this.request.sender()
+        );
     }
 }

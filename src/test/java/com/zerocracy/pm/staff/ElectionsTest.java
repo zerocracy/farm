@@ -103,4 +103,21 @@ public final class ElectionsTest {
         MatcherAssert.assertThat(elections.elected(job), Matchers.is(false));
     }
 
+    @Test
+    public void doesntElectWithNegativeScore() throws Exception {
+        final Elections elections = new Elections(new FkProject()).bootstrap();
+        final String job = "gh:test/test#55";
+        elections.elect(
+            job,
+            new StickyList<>("somebody"),
+            new StickyMap<Voter, Integer>(
+                new MapEntry<>(
+                    (login, log) -> 1.0d,
+                    -1
+                )
+            )
+        );
+        MatcherAssert.assertThat(elections.elected(job), Matchers.is(false));
+    }
+
 }

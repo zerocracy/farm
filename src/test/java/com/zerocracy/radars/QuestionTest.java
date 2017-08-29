@@ -37,7 +37,7 @@ public final class QuestionTest {
             new XMLDocument(
                 this.getClass().getResource("q-project.xml")
             ),
-            "role assign ARC yegor256"
+            "assign ARC yegor256"
         );
         MatcherAssert.assertThat(
             question.matches(),

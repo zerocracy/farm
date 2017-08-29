@@ -62,6 +62,28 @@ public final class S3ItemTest {
     }
 
     @Test
+    public void closesNonExistingFiles() throws Exception {
+        final Ocket ocket = new FkOcket(
+            Files.createTempDirectory("").toFile(),
+            "bucket-66", "orders.xml"
+        );
+        try (final Item item = new S3Item(ocket)) {
+            item.path();
+        }
+    }
+
+    @Test
+    public void closesExistingFiles() throws Exception {
+        final Ocket ocket = new FkOcket(
+            Files.createTempDirectory("").toFile(),
+            "bucket-69", "bans.xml"
+        );
+        try (final Item item = new S3Item(ocket)) {
+            Files.write(item.path(), "".getBytes());
+        }
+    }
+
+    @Test
     public void refreshesFilesOnServer() throws Exception {
         final FkOcket ocket = new FkOcket(
             Files.createTempDirectory("").toFile(),

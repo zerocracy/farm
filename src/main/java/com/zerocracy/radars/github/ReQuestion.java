@@ -37,7 +37,7 @@ public final class ReQuestion implements Response {
     @Override
     public boolean react(final Farm farm, final Comment.Smart comment)
         throws IOException {
-        final String[] parts = comment.body().split("\\s+", 2);
+        final String[] parts = comment.body().trim().split("\\s+", 2);
         if (parts.length < 2) {
             throw new IllegalArgumentException(
                 String.format("Wrong input: \"%s\"", comment.body())

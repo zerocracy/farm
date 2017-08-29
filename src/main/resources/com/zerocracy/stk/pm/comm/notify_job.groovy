@@ -26,12 +26,18 @@ import com.zerocracy.pm.ClaimIn
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Notify job')
   ClaimIn claim = new ClaimIn(xml)
-  String[] parts = claim.token().split(':')
-  if (parts[0] == 'gh') {
-    String[] coords = parts[1].split('#')
+  String[] parts = claim.token().split(';')
+  if (parts[0] != 'job') {
+    throw new IllegalArgumentException(
+      "Something is wrong with this token: ${claim.token()}"
+    )
+  }
+  String[] slices = parts[1].split(':')
+  if (slices[0] == 'gh') {
+    String[] coords = slices[1].split('#')
     claim.copy()
       .type('Notify in GitHub')
-      .token("${coords[0]};${coords[1]}")
+      .token("github;${coords[0]};${coords[1]}")
       .postTo(project)
   } else {
     throw new IllegalStateException(

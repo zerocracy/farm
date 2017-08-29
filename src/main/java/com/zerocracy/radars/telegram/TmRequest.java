@@ -22,7 +22,7 @@ package com.zerocracy.radars.telegram;
  * @version $Id$
  * @since 0.15
  */
-interface TmRequest {
+public interface TmRequest {
 
     /**
      * Sender user.

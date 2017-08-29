@@ -14,58 +14,58 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.radars.slack;
+package com.zerocracy.radars.telegram.fake;
 
-import java.io.IOException;
-import org.cactoos.Text;
-import org.cactoos.text.TextOf;
-import org.cactoos.text.TrimmedText;
-import org.cactoos.text.UncheckedText;
+import com.zerocracy.radars.telegram.TmRequest;
 
 /**
- * Slack direct message.
+ * Fake telegram request.
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
- * @since 0.13
+ * @since 0.16
  */
-final class DirectMessage implements Text {
+public final class FkTmRequest implements TmRequest {
 
     /**
-     * Slack message.
+     * Sender.
      */
-    private final Text msg;
+    private final String snd;
+
+    /**
+     * Text.
+     */
+    private final String txt;
+
+    /**
+     * Chat id.
+     */
+    private final long id;
 
     /**
      * Ctor.
-     * @param msg Slack message string
+     * @param sender Sender
+     * @param text Text
+     * @param chat Chat id
      */
-    DirectMessage(final String msg) {
-        this(new TextOf(msg));
-    }
-
-    /**
-     * Primary ctor.
-     * @param msg Slack message text
-     */
-    DirectMessage(final Text msg) {
-        this.msg = new TrimmedText(msg);
+    public FkTmRequest(final String sender, final String text,
+        final long chat) {
+        this.snd = sender;
+        this.txt = text;
+        this.id = chat;
     }
 
     @Override
-    public String asString() throws IOException {
-        return this.msg.asString().replaceFirst(
-            "^@[a-z0-9][a-z0-9._-]+\\s",
-            ""
-        );
+    public String sender() {
+        return this.snd;
     }
 
     @Override
-    public int compareTo(final Text text) {
-        return new UncheckedText(this).compareTo(text);
+    public String text() {
+        return this.txt;
     }
 
     @Override
-    public String toString() {
-        return new UncheckedText(this).asString();
+    public long chat() {
+        return this.id;
     }
 }

@@ -16,11 +16,14 @@
  */
 package com.zerocracy.farm.reactive;
 
+import com.zerocracy.farm.MismatchException;
 import com.zerocracy.jstk.Project;
+import com.zerocracy.jstk.SoftException;
 import com.zerocracy.jstk.fake.FkProject;
 import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.Claims;
 import java.util.AbstractMap;
+import java.util.HashMap;
 import org.cactoos.io.InputOf;
 import org.cactoos.iterable.StickyMap;
 import org.hamcrest.MatcherAssert;
@@ -67,5 +70,45 @@ public final class StkGroovyTest {
                 Matchers.endsWith(" dude")
             );
         }
+    }
+
+    @Test(expected = SoftException.class)
+    public void letsSoftExceptionFloatUp() throws Exception {
+        final Project project = new FkProject();
+        new StkGroovy(
+            new InputOf(
+                String.join(
+                    "\n",
+                    "import com.zerocracy.jstk.Project ",
+                    "import com.zerocracy.jstk.SoftException",
+                    "import com.jcabi.xml.XML ",
+                    "def exec(Project project, XML xml) { ",
+                    "throw new SoftException('intended')",
+                    "} "
+                )
+            ),
+            "stkgroovytest-floats-soft",
+            new HashMap<>(0)
+        ).process(project, null);
+    }
+
+    @Test(expected = MismatchException.class)
+    public void letsMismatchExceptionFloatUp() throws Exception {
+        final Project project = new FkProject();
+        new StkGroovy(
+            new InputOf(
+                String.join(
+                    "\n",
+                    "import com.zerocracy.jstk.Project  ",
+                    "import com.zerocracy.farm.MismatchException",
+                    "import com.jcabi.xml.XML  ",
+                    "def exec(Project project, XML xml) {  ",
+                    "throw new MismatchException('intended')",
+                    "}  "
+                )
+            ),
+            "stkgroovytest-floats-mismatch",
+            new HashMap<>(0)
+        ).process(project, null);
     }
 }

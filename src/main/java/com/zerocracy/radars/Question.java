@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.regex.Pattern;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.iterable.Sorted;
 import org.cactoos.iterable.StickyList;
@@ -252,8 +253,19 @@ public final class Question {
                 break;
             }
             final String param = parts.remove(0);
-            if (param.matches(opt.xpath("regex/text()").get(0))) {
+            final Pattern regex = Pattern.compile(
+                opt.xpath("regex/text()").get(0)
+            );
+            if (regex.matcher(param).matches()) {
                 this.rparams.put(name, param);
+            } else {
+                this.rcode.set(null);
+                this.rhelp.set(
+                    String.format(
+                        "Argument \"%s\" doesn't match regex \"%s\"",
+                        param, regex
+                    )
+                );
             }
         }
     }

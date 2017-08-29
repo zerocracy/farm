@@ -30,6 +30,11 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Notify in Slack')
   ClaimIn claim = new ClaimIn(xml)
   String[] parts = claim.token().split(';')
+  if (parts[0] != 'slack') {
+    throw new IllegalArgumentException(
+      "Something is wrong with this token: ${claim.token()}"
+    )
+  }
   String message = claim.param('message').replaceAll(
     '\\[([^]]+)]\\(([^)]+)\\)', '<$2|$1>'
   )
@@ -38,9 +43,9 @@ def exec(Project project, XML xml) {
     Logger.info(this, 'Message to Slack [%s]: %s', claim.token(), message)
     return
   }
-  SlackSession session = session(parts[0])
-  if (parts.length > 2) {
-    final user = session.findUserByUserName(parts[1])
+  SlackSession session = session(parts[1])
+  if (parts.length > 3) {
+    final user = session.findUserByUserName(parts[2])
     if (user != null) {
       session.sendMessage(
         session.openDirectMessageChannel(user).reply.slackChannel,
@@ -48,17 +53,17 @@ def exec(Project project, XML xml) {
       )
     }
   } else {
-    SlackChannel channel = session.findChannelById(parts[0])
-    if (parts.length > 1) {
+    SlackChannel channel = session.findChannelById(parts[1])
+    if (parts.length > 2) {
       session.sendMessage(
         channel,
-        String.format('@%s %s', parts[1], message)
+        String.format('@%s %s', parts[2], message)
       )
       Logger.info(
         this, '@%s posted %d chars to @%s at %s/%s',
         session.sessionPersona().userName,
         message.length(),
-        parts[1],
+        parts[2],
         channel.name, channel.id
       )
     } else {

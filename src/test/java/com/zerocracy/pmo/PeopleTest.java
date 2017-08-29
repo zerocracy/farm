@@ -90,20 +90,6 @@ public final class PeopleTest {
     }
 
     @Test
-    public void setsAndFetchesUserSkills() throws Exception {
-        final People people = new People(new FkProject()).bootstrap();
-        final String uid = "karato";
-        final String skill = "java";
-        people.skill(uid, skill);
-        people.skill(uid, "java.spring");
-        people.skill(uid, "ruby");
-        MatcherAssert.assertThat(
-            people.skills(uid),
-            Matchers.hasItem(skill)
-        );
-    }
-
-    @Test
     public void upgradesXsdAutomatically() throws Exception {
         final Project project = new FkProject();
         Files.write(
@@ -117,7 +103,7 @@ public final class PeopleTest {
             ).getBytes()
         );
         final People people = new People(project).bootstrap();
-        people.skill("karato90", "java9");
+        people.rate("karato90", new Cash.S("$27"));
     }
 
     @Test

@@ -51,6 +51,7 @@ final class TmBotSession implements TmSession {
     public void reply(final TmResponse response) throws IOException {
         this.bot.reply(
             new SendMessage()
+                .enableMarkdown(true)
                 .setChatId(this.chat)
                 .setText(response.text())
         );
