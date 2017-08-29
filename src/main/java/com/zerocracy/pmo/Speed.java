@@ -7,10 +7,13 @@ import java.io.IOException;
 import org.xembly.Directives;
 
 /**
- * Spped of delivery.
+ * Speed of delivery.
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
- * @since 0.16
+ * @since 0.17
+ * @todo #158:30m Add new stakeholder that should add a record to speed.xml
+ *  on each 'Order was finished' claim. Also we need a voter which will
+ *  pay attention to that numbers and vote for that person who is the fastest.
  */
 public final class Speed {
 
