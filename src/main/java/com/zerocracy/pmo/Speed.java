@@ -92,6 +92,19 @@ public final class Speed {
     }
 
     /**
+     * Return full list of jobs.
+     * @return List of job IDs
+     * @throws IOException If fails
+     */
+    public Iterable<String> jobs() throws IOException {
+        try (final Item item = this.item()) {
+            return new Xocument(item.path()).xpath(
+                "/speed/order/@job"
+            );
+        }
+    }
+
+    /**
      * The item.
      * @return Item
      * @throws IOException If fails
