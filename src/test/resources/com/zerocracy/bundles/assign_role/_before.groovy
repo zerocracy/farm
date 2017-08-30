@@ -14,39 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.staff.roles
+package com.zerocracy.bundles.assign_role
 
 import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
-import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
-import com.zerocracy.pm.staff.Roles
-import com.zerocracy.pmo.People
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Assign role')
-  new Assume(project, xml).roles('ARC', 'PO')
-  ClaimIn claim = new ClaimIn(xml)
-  String login = claim.param('login')
-  final people = new People(project).bootstrap()
-  if (!people.hasMentor(login)) {
-    claim.reply('Assignee must be registered person.')
-    return
-  }
-  String role = claim.param('role')
-  new Roles(project).bootstrap().assign(login, role)
-  claim.reply(
-    String.format(
-      'Role "%s" assigned to "%s",' +
-      " see [full list](http://www.0crat.com/a/${project}?a=pm/staff/roles)" +
-      ' of roles.',
-      role, login
-    )
-  ).postTo(project)
-  new ClaimOut()
-    .type('Role was assigned')
-    .param('login', login)
-    .param('role', role)
-    .postTo(project)
 }
