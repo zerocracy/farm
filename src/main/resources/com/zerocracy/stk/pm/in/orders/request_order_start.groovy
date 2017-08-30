@@ -23,21 +23,15 @@ import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.scope.Wbs
-import com.zerocracy.pmo.People
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Request order start')
   new Assume(project, xml).roles('ARC', 'PO')
   ClaimIn claim = new ClaimIn(xml)
   String login = claim.param('login').replaceAll('^@', '')
-  final people = new People(project)
   String job = claim.param('job')
   if ('me' == login) {
     login = claim.author()
-  }
-  if (!people.hasMentor(login)) {
-    claim.reply('Assignee must be registered person.')
-    return
   }
   Wbs wbs = new Wbs(project).bootstrap()
   if (!wbs.exists(job)) {
