@@ -36,6 +36,7 @@ import org.cactoos.text.FormattedText;
  * @author Carlos Miranda (miranda.cma@gmail.com)
  * @version $Id$
  * @since 0.16.1
+ * @checkstyle ClassDataAbstractionCouplingCheck (2 lines)
  */
 public final class RbOnAssign implements Rebound {
 
@@ -61,7 +62,7 @@ public final class RbOnAssign implements Rebound {
         ).author().login().toLowerCase(Locale.ENGLISH);
         if (new Roles(project).bootstrap().hasRole(author, "ARC")) {
             final int minutes = -10;
-            final Awards awards = new Awards(project, login).bootstrap();
+            final Awards awards = new Awards(project, author).bootstrap();
             awards.add(
                 minutes,
                 job.toString(),
