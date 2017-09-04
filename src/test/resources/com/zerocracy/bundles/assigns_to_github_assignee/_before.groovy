@@ -16,6 +16,7 @@
  */
 package com.zerocracy.bundles.assigns_performer
 
+import com.jcabi.github.Event
 import com.jcabi.github.Github
 import com.jcabi.github.Issue
 import com.jcabi.github.Repos
@@ -32,6 +33,8 @@ def exec(Project project, XML xml) {
   def issue =
       new Issue.Smart(repo.issues().create("hello, world", ""))
   issue.assign("yegor256")
+  repo.issueEvents()
+    .create(Event.ASSIGNED, issue.number(), "yegor256", com.google.common.base.Optional.absent())
   final xpath = String.format(
       "links/link[@rel='github' and @href='%s']",
       repo.coordinates().toString().toLowerCase(Locale.ENGLISH)

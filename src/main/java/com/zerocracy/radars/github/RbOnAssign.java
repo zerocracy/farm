@@ -17,11 +17,16 @@
 
 package com.zerocracy.radars.github;
 
+import com.jcabi.github.Event;
 import com.jcabi.github.Github;
 import com.jcabi.github.Issue;
 import com.zerocracy.jstk.Farm;
+import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.ClaimOut;
+import com.zerocracy.pm.staff.Roles;
+import com.zerocracy.pmo.Awards;
 import java.io.IOException;
+import java.util.Locale;
 import javax.json.JsonObject;
 import org.cactoos.text.FormattedText;
 
@@ -42,13 +47,33 @@ public final class RbOnAssign implements Rebound {
             new IssueOfEvent(github, event)
         );
         final String login = issue.assignee().login();
+        final Project project = new GhProject(farm, issue.repo());
+        final Job job = new Job(issue);
         new ClaimOut()
             .type("Request order start")
             .token(new TokenOfIssue(issue))
             .author(event.getJsonObject("sender").getString("login"))
             .param("login", login)
-            .param("job", new Job(issue))
+            .param("job", job)
             .postTo(new GhProject(farm, issue.repo()));
+        final String author = new Event.Smart(
+            issue.latestEvent(Event.ASSIGNED)
+        ).author().login().toLowerCase(Locale.ENGLISH);
+        if (new Roles(project).bootstrap().hasRole(author, "ARC")) {
+            final int minutes = -10;
+            final Awards awards = new Awards(project, login).bootstrap();
+            awards.add(
+                minutes,
+                job.toString(),
+                "Manual assignment of issues is discouraged."
+            );
+            new ClaimOut()
+                .type("Award points were added")
+                .param("job", job)
+                .param("login", author)
+                .param("points", minutes)
+                .postTo(project);
+        }
         return new FormattedText(
             "Issue #%d assigned to %s via Github",
             issue.number(), login
