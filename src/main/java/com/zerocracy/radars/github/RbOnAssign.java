@@ -42,16 +42,30 @@ public final class RbOnAssign implements Rebound {
             new IssueOfEvent(github, event)
         );
         final String login = issue.assignee().login();
-        new ClaimOut()
-            .type("Request order start")
-            .token(new TokenOfIssue(issue))
-            .author(event.getJsonObject("sender").getString("login"))
-            .param("login", login)
-            .param("job", new Job(issue))
-            .postTo(new GhProject(farm, issue.repo()));
-        return new FormattedText(
-            "Issue #%d assigned to %s via Github",
-            issue.number(), login
-        ).asString();
+        final FormattedText reply;
+        if (login.equalsIgnoreCase("0crat")) {
+            new ClaimOut()
+                .type("Add job to WBS")
+                .token(new TokenOfIssue(issue))
+                .param("job", new Job(issue))
+                .postTo(new GhProject(farm, issue.repo()));
+            reply = new FormattedText(
+                "Issue #%d assigned to 0crat, adding to WBS",
+                issue.number()
+            );
+        } else {
+            new ClaimOut()
+                .type("Request order start")
+                .token(new TokenOfIssue(issue))
+                .author(event.getJsonObject("sender").getString("login"))
+                .param("login", login)
+                .param("job", new Job(issue))
+                .postTo(new GhProject(farm, issue.repo()));
+            reply = new FormattedText(
+                "Issue #%d assigned to %s via Github",
+                issue.number(), login
+            );
+        }
+        return reply.asString();
     }
 }
