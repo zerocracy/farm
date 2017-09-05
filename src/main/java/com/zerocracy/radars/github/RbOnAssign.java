@@ -43,7 +43,8 @@ public final class RbOnAssign implements Rebound {
         );
         final String login = issue.assignee().login();
         final FormattedText reply;
-        if (login.equalsIgnoreCase("0crat")) {
+        if ("0crat".equalsIgnoreCase(login)) {
+            issue.assign("");
             new ClaimOut()
                 .type("Add job to WBS")
                 .token(new TokenOfIssue(issue))
