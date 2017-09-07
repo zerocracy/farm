@@ -20,6 +20,7 @@ import com.jcabi.aspects.Cacheable;
 import com.zerocracy.farm.reactive.Brigade;
 import com.zerocracy.farm.reactive.RvFarm;
 import com.zerocracy.farm.reactive.StkGroovy;
+import com.zerocracy.farm.ruled.RdFarm;
 import com.zerocracy.farm.sync.SyncFarm;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Stakeholder;
@@ -78,15 +79,17 @@ public final class SmartFarm implements Scalar<Farm> {
     @Cacheable(forever = true)
     public Farm value() {
         final Farm farm = new SyncFarm(this.origin);
-        return new RvFarm(
-            query -> new Mapped<>(
-                farm.find(query),
-                project -> new UplinkedProject(
-                    new StrictProject(project),
-                    farm
-                )
-            ),
-            new Brigade(this.stakeholders())
+        return new RdFarm(
+            new RvFarm(
+                query -> new Mapped<>(
+                    farm.find(query),
+                    project -> new UplinkedProject(
+                        new StrictProject(project),
+                        farm
+                    )
+                ),
+                new Brigade(this.stakeholders())
+            )
         );
     }
 
