@@ -39,6 +39,7 @@ def exec(Project project, XML xml) {
     return
   }
   Elections elections = new Elections(project).bootstrap()
+  Set<String> winners = new HashSet<>();
   for (String job : wbs.iterate()) {
     def elected = elections.elect(
       job, logins,
@@ -49,12 +50,16 @@ def exec(Project project, XML xml) {
       ]
     )
     if (elections.elected(job)) {
-      new ClaimOut()
-        .type('Performer was elected')
-        .param('login', elections.winner(job))
-        .param('job', job)
-        .param('reason', elections.reason(job))
-        .postTo(project)
+      String winner = elections.winner(job)
+      if (!winners.contains(winner)) {
+        winners.add(winner)
+        new ClaimOut()
+          .type('Performer was elected')
+          .param('login', winner)
+          .param('job', job)
+          .param('reason', elections.reason(job))
+          .postTo(project)
+      }
     }
   }
 }

@@ -37,16 +37,15 @@ import java.util.LinkedList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.cactoos.io.InputOf;
+import org.cactoos.io.InputStreamOf;
 import org.cactoos.io.InputWithFallback;
 import org.cactoos.io.LengthOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.TeeInput;
 import org.cactoos.iterable.ListOf;
 import org.cactoos.iterable.Reduced;
-import org.cactoos.iterable.StickyList;
 import org.cactoos.scalar.Ternary;
 import org.cactoos.scalar.UncheckedScalar;
-import org.cactoos.text.SplitText;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.w3c.dom.Node;
@@ -199,17 +198,35 @@ public final class Xocument {
         final XML before = new XMLDocument(this.toString());
         final Node node = before.node();
         new Xembler(dirs).applyQuietly(node);
-        final String after = new StrictXML(
+        final XML xml = new StrictXML(
             Xocument.COMPRESS.with(
                 "version", Xocument.VERSION
             ).transform(new XMLDocument(node)),
             Xocument.RESOLVER
-        ).toString();
+        );
+        final String after = xml.toString();
         if (!before.toString().equals(after)) {
-            new LengthOf(
-                new TeeInput(after, new OutputTo(this.file))
-            ).value();
+            new LengthOf(new TeeInput(after, this.file)).value();
         }
+    }
+
+    /**
+     * Load index.
+     * @param url The URL of it
+     * @return XML
+     * @throws IOException If fails
+     */
+    private static XML index(final URL url) throws IOException {
+        return new XMLDocument(
+            new TextOf(
+                new InputWithFallback(
+                    new InputOf(
+                        url
+                    ),
+                    new InputOf("<index/>")
+                )
+            ).asString()
+        );
     }
 
     /**
@@ -219,7 +236,7 @@ public final class Xocument {
      * @return Upgraded
      * @throws IOException If fails
      */
-    public XML upgraded(final XML xml, final String xsd) throws IOException {
+    private XML upgraded(final XML xml, final String xsd) throws IOException {
         final String version = new UncheckedScalar<>(
             new Ternary<String>(
                 xml.xpath("/*/@version"),
@@ -234,38 +251,29 @@ public final class Xocument {
         } else {
             after = new UncheckedScalar<>(
                 new Reduced<>(
-                    new StickyList<>(
-                        new SplitText(
-                            new TextOf(
-                                new InputWithFallback(
-                                    new InputOf(
-                                        Xocument.url(
-                                            String.format(
-                                                "/latest/upgrades/%s/list",
-                                                xsd
-                                            )
-                                        )
-                                    )
-                                )
-                            ),
-                            "\n"
+                    Xocument.index(
+                        Xocument.url(
+                            String.format(
+                                "/latest/upgrades/%s/index.xml",
+                                xsd
+                            )
                         )
-                    ),
+                    ).nodes("/index/entry[@dir='false']"),
                     xml,
-                    (input, line) -> {
+                    (input, node) -> {
                         XML output = input;
-                        final String[] parts = line.split(" ");
-                        if (Xocument.compare(parts[0], version) > 0) {
+                        final String ver = node.xpath("@order").get(0);
+                        if (Xocument.compare(ver, version) > 0
+                            && Xocument.compare(ver, Xocument.VERSION) < 0) {
+                            final URL url = new URL(node.xpath("@uri").get(0));
                             output = XSLDocument.make(
-                                new InputOf(
-                                    Xocument.url(
-                                        String.format(
-                                            "/latest/%s",
-                                            parts[1]
-                                        )
-                                    )
-                                ).stream()
+                                new InputStreamOf(url)
                             ).transform(input);
+                            Logger.info(
+                                this,
+                                "XML %s.xml upgraded to \"%s\" by %s in %s",
+                                xsd, ver, url, this.file
+                            );
                         }
                         return output;
                     }
@@ -274,10 +282,6 @@ public final class Xocument {
             new LengthOf(
                 new TeeInput(after.toString(), new OutputTo(this.file))
             ).value();
-            Logger.info(
-                this, "XML upgraded to \"%s\" in %s",
-                Xocument.VERSION, this.file
-            );
         }
         return after;
     }
