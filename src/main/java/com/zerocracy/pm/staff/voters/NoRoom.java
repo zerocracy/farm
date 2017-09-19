@@ -33,23 +33,23 @@ import org.cactoos.iterable.LengthOf;
 public final class NoRoom implements Voter {
 
     /**
-     * Current project.
+     * The PMO.
      */
-    private final Project project;
+    private final Project pmo;
 
     /**
      * Ctor.
      * @param pkt Current project
      */
     public NoRoom(final Project pkt) {
-        this.project = pkt;
+        this.pmo = pkt;
     }
 
     @Override
     public double vote(final String login, final StringBuilder log)
         throws IOException {
         final long total = new LengthOf(
-            new Agenda(this.project, login).bootstrap().jobs()
+            new Agenda(this.pmo, login).bootstrap().jobs()
         ).value();
         final double rate;
         if (total > (long) Tv.FIVE) {
