@@ -30,9 +30,9 @@ import java.util.TreeSet;
 import java.util.regex.Pattern;
 import org.cactoos.Scalar;
 import org.cactoos.io.ResourceOf;
-import org.cactoos.iterable.MapEntry;
 import org.cactoos.iterable.Mapped;
-import org.cactoos.iterable.StickyMap;
+import org.cactoos.map.MapEntry;
+import org.cactoos.map.StickyMap;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
 

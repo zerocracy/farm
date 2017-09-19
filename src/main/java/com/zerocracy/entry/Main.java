@@ -35,7 +35,7 @@ import java.util.AbstractMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
-import org.cactoos.iterable.StickyMap;
+import org.cactoos.map.StickyMap;
 import org.takes.facets.fork.FkRegex;
 import org.takes.http.Exit;
 import org.takes.http.FtCli;

@@ -10,6 +10,7 @@ env:
 install: |-
   sudo gem install pdd
   sudo gem install xcop
+  sudo gem install sass -v 3.4.25
   java -version
 deploy:
   script: |

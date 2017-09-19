@@ -25,7 +25,7 @@ import com.zerocracy.pm.Claims;
 import java.util.AbstractMap;
 import java.util.HashMap;
 import org.cactoos.io.InputOf;
-import org.cactoos.iterable.StickyMap;
+import org.cactoos.map.StickyMap;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;

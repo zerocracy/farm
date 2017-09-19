@@ -22,7 +22,7 @@ import com.ullink.slack.simpleslackapi.SlackSession
 import com.ullink.slack.simpleslackapi.SlackUser
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimOut
-import org.cactoos.iterable.ListOf
+import org.cactoos.list.ListOf
 import org.mockito.Mockito
 
 /**

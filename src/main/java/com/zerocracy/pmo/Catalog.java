@@ -26,7 +26,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import org.cactoos.iterable.Mapped;
-import org.cactoos.iterable.StickyList;
+import org.cactoos.list.StickyList;
 import org.xembly.Directives;
 
 /**

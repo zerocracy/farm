@@ -30,7 +30,7 @@ import java.net.HttpURLConnection;
 import java.util.Properties;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.cactoos.io.BytesOf;
-import org.cactoos.iterable.ListOf;
+import org.cactoos.list.ListOf;
 import org.cactoos.text.TextOf;
 import org.takes.Take;
 import org.takes.facets.fallback.Fallback;

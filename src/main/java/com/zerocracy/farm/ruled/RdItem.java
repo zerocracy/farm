@@ -27,14 +27,15 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.concurrent.atomic.AtomicReference;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.stream.StreamSource;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.StringUtils;
+import org.cactoos.Input;
 import org.cactoos.io.InputOf;
-import org.cactoos.io.InputStreamOf;
 import org.cactoos.io.InputWithFallback;
 import org.cactoos.io.LengthOf;
 import org.cactoos.io.TeeInput;
@@ -94,8 +95,9 @@ final class RdItem implements Item, Sources {
     public Path path() throws IOException {
         final Path path = this.origin.path();
         this.file.set(path);
-        if (Files.exists(path)) {
+        if (Files.exists(path) && path.toFile().length() > 0L) {
             this.length = path.toFile().length();
+//            this.validate(RdItem.area(path));
         }
         return path;
     }
@@ -106,17 +108,10 @@ final class RdItem implements Item, Sources {
         final boolean modified = Files.exists(path)
             && this.length != path.toFile().length();
         if (modified) {
-            final String xsd = StringUtils.substringBeforeLast(
-                StringUtils.substringAfter(
-                    new XMLDocument(
-                        path.toFile()
-                    ).xpath("/*/@xsi:noNamespaceSchemaLocation").get(0),
-                    "/xsd/"
-                ),
-                ".xsd"
-            );
+            final String area = RdItem.area(path);
             this.origin.close();
-            this.propagate(xsd);
+            this.propagate(area);
+            this.validate(area);
         } else {
             this.origin.close();
         }
@@ -126,41 +121,113 @@ final class RdItem implements Item, Sources {
     public Source resolve(final String href, final String base)
         throws TransformerException {
         try (final Item item = this.project.acq(href)) {
-            return new StreamSource(
-                new InputStreamOf(item.path())
-            );
+            final Path path = item.path();
+            final Input input;
+            if (path.toFile().length() > 0L) {
+                input = new InputOf(item.path());
+            } else {
+                input = new InputOf("<always-empty/>");
+            }
+            return new StreamSource(input.stream());
         } catch (final IOException ex) {
             throw new TransformerException(ex);
         }
     }
 
     /**
-     * Propagate changes to other documents.
-     * @param xsd XSD location, e.g. "pm/scope/wbs"
+     * Get are of the path.
+     * @return The area, e.g. "pm/scope/wbs"
      * @throws IOException If fails
      */
-    private void propagate(final String xsd) throws IOException {
+    public static String area(final Path path) throws IOException {
+        return StringUtils.substringBeforeLast(
+            StringUtils.substringAfter(
+                new XMLDocument(
+                    path.toFile()
+                ).xpath("/*/@xsi:noNamespaceSchemaLocation").get(0),
+                "/xsd/"
+            ),
+            ".xsd"
+        );
+    }
+
+    /**
+     * Propagate changes to other documents.
+     * @param area XSD location, e.g. "pm/scope/wbs"
+     * @throws IOException If fails
+     */
+    private void validate(final String area) throws IOException {
         new UncheckedScalar<>(
             new And(
-                new XMLDocument(
-                    new TextOf(
-                        new InputWithFallback(
-                            new InputOf(
-                                URI.create(
-                                    String.format(
-                                        // @checkstyle LineLength (1 line)
-                                        "http://datum.zerocracy.com/latest/auto/%s/index.xml",
-                                        xsd
-                                    )
-                                )
-                            ),
-                            new InputOf("<index/>")
-                        )
-                    ).asString()
-                ).xpath("/index/entry[@dir='false']/@uri"),
+                RdItem.index(
+                    String.format(
+                        "/latest/rules/%s",
+                        StringUtils.substringBefore(area, "/")
+                    )
+                ),
+                this::check
+            )
+        ).value();
+    }
+
+    /**
+     * Propagate changes to other documents.
+     * @param area XSD location, e.g. "pm/scope/wbs"
+     * @throws IOException If fails
+     */
+    private void propagate(final String area) throws IOException {
+        new UncheckedScalar<>(
+            new And(
+                RdItem.index(
+                    String.format(
+                        "/latest/auto/%s", area
+                    )
+                ),
                 this::auto
             )
         ).value();
+    }
+
+    /**
+     * Get entries from the index at the URI.
+     * @param uri URI of the index (path only)
+     * @return List of URIs
+     * @throws IOException If fails
+     */
+    private static Iterable<String> index(final String uri) throws IOException {
+        return new XMLDocument(
+            new TextOf(
+                new InputWithFallback(
+                    new InputOf(
+                        URI.create(
+                            String.format(
+                                "http://datum.zerocracy.com%s/index.xml",
+                                uri
+                            )
+                        )
+                    ),
+                    new InputOf("<index/>")
+                )
+            ).asString()
+        ).xpath("/index/entry[@dir='false']/@uri");
+    }
+
+    /**
+     * Check for consistency.
+     * @param xsl The URI of the XSL that modifies
+     * @throws IOException If fails
+     */
+    private void check(final String xsl) throws IOException {
+        final Collection<String> errors =
+            XSLDocument.make(new InputOf(URI.create(xsl)).stream())
+                .with(this)
+                .transform(new XMLDocument("<i/>"))
+                .xpath("/errors/error/text()");
+        if (!errors.isEmpty()) {
+            throw new IllegalStateException(
+                String.join("; ", errors)
+            );
+        }
     }
 
     /**

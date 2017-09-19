@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 import lombok.EqualsAndHashCode;
 import org.cactoos.iterable.IterableOf;
 import org.cactoos.iterable.Mapped;
-import org.cactoos.iterable.StickyList;
+import org.cactoos.list.StickyList;
 import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.scalar.Or;
 import org.cactoos.scalar.Ternary;

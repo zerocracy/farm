@@ -24,11 +24,15 @@ import com.zerocracy.farm.reactive.StkGroovy;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.fake.FkFarm;
+import com.zerocracy.jstk.fake.FkProject;
+import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
 import com.zerocracy.radars.telegram.TmSession;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -40,14 +44,16 @@ import org.cactoos.io.ResourceOf;
 import org.cactoos.io.TeeInput;
 import org.cactoos.iterable.Endless;
 import org.cactoos.iterable.Limited;
-import org.cactoos.iterable.MapEntry;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.iterable.PropertiesOf;
-import org.cactoos.iterable.StickyList;
-import org.cactoos.iterable.StickyMap;
+import org.cactoos.iterable.Sorted;
+import org.cactoos.list.StickyList;
+import org.cactoos.map.MapEntry;
+import org.cactoos.map.StickyMap;
 import org.cactoos.scalar.And;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -71,18 +77,34 @@ public final class BundlesTest {
     @Parameterized.Parameter
     public String bundle;
 
+    private String name;
+
+    private Path home;
+
     @Parameterized.Parameters(name = "{0}")
     public static Collection<Object[]> bundles() {
-        return new StickyList<>(
+        return new StickyList<Object[]>(
             new Mapped<>(
-                new Reflections(
-                    "com.zerocracy.bundles", new ResourcesScanner()
-                ).getResources(p -> p.endsWith("claims.xml")),
+                new Sorted<>(
+                    new Reflections(
+                        "com.zerocracy.bundles", new ResourcesScanner()
+                    ).getResources(p -> p.endsWith("claims.xml"))
+                ),
                 path -> new Object[]{
                     path.substring(0, path.indexOf("/claims.xml")),
                 }
             )
         );
+    }
+
+    @Before
+    public void prepare() {
+        this.name = this.bundle.substring(
+            this.bundle.lastIndexOf('/') + 1
+        );
+        this.home = Paths.get("target/testing-bundles")
+            .resolve(this.name)
+            .toAbsolutePath();
     }
 
     @Test
@@ -97,16 +119,26 @@ public final class BundlesTest {
             new MapEntry<>("telegram", new HashMap<Long, TmSession>(0)),
             new MapEntry<>("properties", props)
         );
-        final Farm farm = new SmartFarm(new FkFarm(), props, deps).value();
-        final Project project = farm.find("id=12345").iterator().next();
+        final Farm farm = new SmartFarm(
+            query -> Collections.singleton(
+                new FkProject(this.home.resolve(this.name))
+            ),
+            props, deps
+        ).value();
+        final Project project = farm.find(this.name).iterator().next();
         new And(
             BundlesTest.resources(this.bundle.replace("/", ".")),
             path -> {
-                BundlesTest.save(
-                    project,
-                    new ResourceOf(path),
-                    path.substring(path.lastIndexOf('/') + 1)
-                );
+                new LengthOf(
+                    new TeeInput(
+                        new ResourceOf(path),
+                        new OutputTo(
+                            this.home.resolve(this.name).resolve(
+                                path.substring(path.lastIndexOf('/') + 1)
+                            )
+                        )
+                    )
+                ).value();
             }
         ).value();
         new StkGroovy(
@@ -116,6 +148,7 @@ public final class BundlesTest {
             String.format("%s_before", this.bundle),
             deps
         ).process(project, null);
+        new ClaimOut().type("ping").postTo(project);
         MatcherAssert.assertThat(
             new And(
                 new Limited<>(new Endless<>(1), Tv.FIFTY),
