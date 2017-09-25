@@ -18,51 +18,44 @@ package com.zerocracy.pm.staff.voters;
 
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.staff.Voter;
-import com.zerocracy.pmo.People;
+import com.zerocracy.pmo.Agenda;
 import java.io.IOException;
+import org.cactoos.iterable.LengthOf;
 
 /**
- * Vacation voter.
+ * Workload voter.
+ *
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
- * @since 0.16
+ * @since 0.17
  */
-public final class Vacation implements Voter {
+public final class Workload implements Voter {
 
     /**
-     * The people.
+     * Max jobs count to take in account.
      */
-    private final People people;
+    private static final double MAX_JOBS = 20.0;
+
+    /**
+     * The PMO.
+     */
+    private final Project pmo;
 
     /**
      * Ctor.
-     * @param pmo The PMO
+     * @param prj The PMO
      */
-    public Vacation(final Project pmo) {
-        this(new People(pmo));
-    }
-
-    /**
-     * Primary ctor.
-     * @param ppl People
-     */
-    private Vacation(final People ppl) {
-        this.people = ppl;
+    public Workload(final Project prj) {
+        this.pmo = prj;
     }
 
     @Override
-    public double vote(
-        final String login,
-        final StringBuilder log
-    ) throws IOException {
-        final double vote;
-        if (this.people.bootstrap().vacation(login)) {
-            log.append("On vacation");
-            vote = 1.0D;
-        } else {
-            log.append("Not on vacation");
-            vote = 0.0D;
-        }
-        return vote;
+    public double vote(final String login, final StringBuilder log)
+        throws IOException {
+        final double jobs = new LengthOf(
+            new Agenda(this.pmo, login).jobs()
+        ).value();
+        return (Workload.MAX_JOBS - Math.min(jobs, Workload.MAX_JOBS))
+            / Workload.MAX_JOBS;
     }
 }

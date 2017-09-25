@@ -60,7 +60,7 @@ public final class SyncProjectTest {
             new And(
                 new Repeated<>(0, Tv.TWENTY),
                 x -> {
-                    TimeUnit.MICROSECONDS.sleep(1L);
+                    TimeUnit.MILLISECONDS.sleep(1L);
                     return pool.size() != threshold;
                 }
             ),

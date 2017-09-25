@@ -19,6 +19,7 @@ package com.zerocracy.stk.pm.staff.elections
 import com.jcabi.log.Logger
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
+import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.scope.Wbs
@@ -27,6 +28,8 @@ import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pm.staff.voters.Banned
 import com.zerocracy.pm.staff.voters.NoRoom
 import com.zerocracy.pm.staff.voters.Vacation
+import com.zerocracy.pmo.Pmo
+import com.zerocracy.pm.staff.voters.Workload
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Ping')
@@ -39,14 +42,17 @@ def exec(Project project, XML xml) {
     return
   }
   Elections elections = new Elections(project).bootstrap()
-  Set<String> winners = new HashSet<>();
+  Set<String> winners = new HashSet<>()
+  Farm farm = binding.variables.farm
+  Project pmo = new Pmo(farm)
   for (String job : wbs.iterate()) {
-    def elected = elections.elect(
+    elections.elect(
       job, logins,
       [
-        (new NoRoom(project)): -100,
+        (new NoRoom(pmo)): -100,
         (new Banned(project, job)): -1000,
-        (new Vacation(project)): -1000
+        (new Vacation(project)): -1000,
+        (new Workload(pmo)): 1
       ]
     )
     if (elections.elected(job)) {
