@@ -40,7 +40,6 @@ import org.cactoos.io.InputOf;
 import org.cactoos.io.InputStreamOf;
 import org.cactoos.io.InputWithFallback;
 import org.cactoos.io.LengthOf;
-import org.cactoos.io.OutputTo;
 import org.cactoos.io.TeeInput;
 import org.cactoos.iterable.Reduced;
 import org.cactoos.list.ListOf;
@@ -220,9 +219,7 @@ public final class Xocument {
         return new XMLDocument(
             new TextOf(
                 new InputWithFallback(
-                    new InputOf(
-                        url
-                    ),
+                    new InputOf(url),
                     new InputOf("<index/>")
                 )
             ).asString()
@@ -279,9 +276,7 @@ public final class Xocument {
                     }
                 )
             ).value();
-            new LengthOf(
-                new TeeInput(after.toString(), new OutputTo(this.file))
-            ).value();
+            new LengthOf(new TeeInput(after.toString(), this.file)).value();
         }
         return after;
     }

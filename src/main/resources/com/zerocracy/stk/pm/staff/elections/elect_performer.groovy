@@ -38,7 +38,7 @@ def exec(Project project, XML xml) {
   Roles roles = new Roles(project).bootstrap()
   List<String> logins = roles.findByRole('DEV')
   if (logins.empty) {
-    Logger.warn(this, 'No DEVs in %s, cannot elect', project)
+    Logger.info(this, 'No DEVs in %s, cannot elect', project)
     return
   }
   Elections elections = new Elections(project).bootstrap()
