@@ -14,26 +14,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pmo.profile.rate
+package com.zerocracy.pm.time;
 
-import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Project
-import com.zerocracy.jstk.cash.Cash
-import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pmo.People
+import org.junit.Ignore;
+import org.junit.Test;
 
-def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Set rate')
-  People people = new People(project).bootstrap()
-  ClaimIn claim = new ClaimIn(xml)
-  Cash rate = new Cash.S(claim.param('rate'))
-  people.rate(claim.author(), rate)
-  claim.reply(
-    String.format(
-      'Rate of "%s" set to %s.',
-      claim.author(),
-      rate
-    )
-  ).postTo(project)
+/**
+ * Test case for reminders.
+ *
+ * @author Kirill (g4s8.public@gmail.com)
+ * @version $Id$
+ * @since 0.17
+ * @todo #137:30m Add new stakeholder, which will go through all orders
+ *  and check their age. If they are old enough to create
+ *  a new reminder (5 days, 8 days) - we should create it and send
+ *  a notification to the user that the task will be taken away
+ *  from him in 10 days (this is our policy).
+ * @checkstyle JavadocMethodCheck (500 lines)
+ */
+public final class RemindersTest {
+
+    @Test
+    @Ignore
+    public void allReminders() {
+        throw new UnsupportedOperationException("Test not implemented");
+    }
 }
