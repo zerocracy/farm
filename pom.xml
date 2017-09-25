@@ -78,7 +78,7 @@ SOFTWARE.
     <dependency>
       <groupId>com.zerocracy</groupId>
       <artifactId>jstk</artifactId>
-      <version>0.14.4</version>
+      <version>0.14.5</version>
     </dependency>
     <dependency>
       <groupId>io.sentry</groupId>

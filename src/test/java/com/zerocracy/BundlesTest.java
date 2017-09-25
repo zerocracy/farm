@@ -121,7 +121,10 @@ public final class BundlesTest {
         );
         final Farm farm = new SmartFarm(
             query -> Collections.singleton(
-                new FkProject(this.home.resolve(this.name))
+                new FkProject(
+                    this.home.resolve(this.name),
+                    new FkProject().toString()
+                )
             ),
             props, deps
         ).value();

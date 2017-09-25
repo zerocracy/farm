@@ -125,7 +125,12 @@ final class SyncItem implements Item, Comparable<SyncItem> {
         }
         this.statistics.incrementAndGet();
         final SyncItem.ReportTask task = new SyncItem.ReportTask(
-            new Exception("Item was opened too long").fillInStackTrace(),
+            new Exception(
+                String.format(
+                    "Item \"%s\" was opened for too long",
+                    this.toString()
+                )
+            ).fillInStackTrace(),
             this.origin.toString()
         );
         synchronized (this.tasks) {
