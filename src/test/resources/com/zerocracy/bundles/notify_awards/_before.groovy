@@ -14,29 +14,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.staff.awards
+package com.zerocracy.bundles.notify_awards
 
+import com.jcabi.github.Github
+import com.jcabi.github.Repos
 import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
-import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
-import com.zerocracy.pmo.Awards
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Make payment')
-  ClaimIn claim = new ClaimIn(xml)
-  String job = claim.param('job')
-  String login = claim.param('login')
-  int minutes = Integer.parseInt(claim.param('minutes'))
-  final reason = claim.param('reason')
-  Awards awards = new Awards(project, login).bootstrap()
-  awards.add(minutes, job, reason)
-  new ClaimOut()
-    .type('Award points were added')
-    .param('job', job)
-    .param('login', login)
-    .param('points', minutes)
-    .param('reason', reason)
-    .postTo(project)
+  Github github = binding.variables.github
+  github.repos().create(new Repos.RepoCreate("test", false))
+    .issues()
+    .create("hello, world", "")
 }
