@@ -59,13 +59,13 @@ public final class StkSafe implements Stakeholder {
 
     /**
      * Ctor.
-     * @param id Identifier
+     * @param sid Stakeholder identifier
      * @param pps Properties
      * @param stk Original stakeholder
      */
-    public StkSafe(final String id, final Properties pps,
+    public StkSafe(final String sid, final Properties pps,
         final Stakeholder stk) {
-        this.identifier = id;
+        this.identifier = sid;
         this.props = pps;
         this.origin = stk;
     }
@@ -102,6 +102,9 @@ public final class StkSafe implements Stakeholder {
             }
             // @checkstyle IllegalCatchCheck (1 line)
         } catch (final Throwable ex) {
+            if (this.props.containsKey("testing")) {
+                throw new IllegalStateException(ex);
+            }
             if (claim.hasToken()) {
                 claim.reply(
                     String.join(
@@ -128,9 +131,6 @@ public final class StkSafe implements Stakeholder {
                         "\n```"
                     )
                 ).postTo(project);
-            }
-            if (this.props.containsKey("testing")) {
-                throw new IllegalStateException(ex);
             }
             Sentry.capture(
                 new IllegalArgumentException(

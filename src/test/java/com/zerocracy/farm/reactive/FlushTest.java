@@ -52,7 +52,6 @@ public final class FlushTest {
         final Project project = FlushTest.project();
         final AtomicInteger done = new AtomicInteger(0);
         final CountDownLatch latch = new CountDownLatch(1);
-        final int max = Tv.FIVE;
         final Brigade brigade = new Brigade(
             (Stakeholder) (pkt, claim) -> {
                 done.incrementAndGet();
@@ -62,6 +61,7 @@ public final class FlushTest {
             }
         );
         new ClaimOut().type("first").postTo(project);
+        final int max = Tv.FIVE;
         final Thread thread = new Thread(
             new VerboseRunnable(
                 () -> {
@@ -77,10 +77,13 @@ public final class FlushTest {
         thread.start();
         try (final Flush flush = new Flush(project, brigade)) {
             latch.countDown();
+            while (thread.isAlive()) {
+                flush.run();
+            }
             flush.run();
         }
         thread.join();
-        try (final Claims claims = new Claims(project).lock()) {
+        try (final Claims claims = new Claims(project)) {
             MatcherAssert.assertThat(
                 claims.iterate(),
                 Matchers.hasSize(0)

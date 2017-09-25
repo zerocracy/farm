@@ -52,7 +52,34 @@ public final class ClaimsTest {
                 )
             ).value();
         }
-        try (final Claims claims = new Claims(project).lock()) {
+        try (final Claims claims = new Claims(project)) {
+            claims.add(new ClaimOut().token("test;test;1").type("just hello"));
+            MatcherAssert.assertThat(
+                claims.iterate().iterator().hasNext(),
+                Matchers.is(true)
+            );
+        }
+    }
+
+    @Test
+    public void handlesExceptionsCorrectly() throws Exception {
+        final Project project = new FkProject();
+        try (final Item item = project.acq("claims.xml")) {
+            new LengthOf(
+                new TeeInput(
+                    String.join(
+                        " ",
+                        "<claims",
+                        "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'",
+                        // @checkstyle LineLength (1 line)
+                        "xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/zerocracy/datum/0.27/xsd/pm/claims.xsd'",
+                        "version='0.1' updated='2017-03-27T11:18:09.228Z'/>"
+                    ),
+                    item.path()
+                )
+            ).value();
+        }
+        try (final Claims claims = new Claims(project)) {
             claims.add(new ClaimOut().token("test;test;1").type("just hello"));
             MatcherAssert.assertThat(
                 claims.iterate().iterator().hasNext(),
@@ -63,7 +90,7 @@ public final class ClaimsTest {
 
     @Test
     public void addsAndRemovesClaims() throws Exception {
-        try (final Claims claims = new Claims(new FkProject()).lock()) {
+        try (final Claims claims = new Claims(new FkProject())) {
             claims.add(new ClaimOut().token("test;test").type("hello"));
             MatcherAssert.assertThat(
                 claims.iterate().iterator().next().xpath("token/text()").get(0),

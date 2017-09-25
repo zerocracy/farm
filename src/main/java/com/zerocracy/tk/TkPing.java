@@ -117,7 +117,7 @@ public final class TkPing implements Take {
      * @throws IOException If fails
      */
     private static boolean needs(final Project project) throws IOException {
-        try (final Claims claims = new Claims(project).lock()) {
+        try (final Claims claims = new Claims(project)) {
             return !new Filtered<>(
                 claims.iterate(),
                 input -> new ClaimIn(input).type().equals(TkPing.TYPE)

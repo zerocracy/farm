@@ -64,7 +64,7 @@ public final class StkGroovyTest {
                 )
             )
         ).process(project, null);
-        try (final Claims claims = new Claims(project).lock()) {
+        try (final Claims claims = new Claims(project)) {
             MatcherAssert.assertThat(
                 new ClaimIn(claims.iterate().iterator().next()).type(),
                 Matchers.endsWith(" dude")

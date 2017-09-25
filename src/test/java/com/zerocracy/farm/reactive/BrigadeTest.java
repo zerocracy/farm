@@ -63,14 +63,14 @@ public final class BrigadeTest {
         final Project project = new FkProject();
         new ClaimOut().type("just some fun").postTo(project);
         final XML xml;
-        try (final Claims claims = new Claims(project).lock()) {
+        try (final Claims claims = new Claims(project)) {
             xml = claims.iterate().iterator().next();
         }
         final Brigade brigade = new Brigade(
             new StkGroovy(new InputOf(file), "brigadetest-parsesgroovy")
         );
         brigade.process(project, xml);
-        try (final Claims claims = new Claims(project).lock()) {
+        try (final Claims claims = new Claims(project)) {
             MatcherAssert.assertThat(
                 claims.iterate(),
                 Matchers.hasSize(2)
@@ -83,7 +83,7 @@ public final class BrigadeTest {
         final Project project = new FkProject();
         new ClaimOut().type("hello").token("test;notoken").postTo(project);
         final XML xml;
-        try (final Claims claims = new Claims(project).lock()) {
+        try (final Claims claims = new Claims(project)) {
             xml = claims.iterate().iterator().next();
         }
         final Brigade brigade = new Brigade(
@@ -93,7 +93,7 @@ public final class BrigadeTest {
             )
         );
         brigade.process(project, xml);
-        try (final Claims claims = new Claims(project).lock()) {
+        try (final Claims claims = new Claims(project)) {
             MatcherAssert.assertThat(
                 claims.iterate(),
                 Matchers.hasSize(2)

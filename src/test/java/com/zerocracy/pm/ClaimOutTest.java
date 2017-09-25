@@ -34,7 +34,7 @@ public final class ClaimOutTest {
 
     @Test
     public void chainsThem() throws Exception {
-        try (final Claims claims = new Claims(new FkProject()).lock()) {
+        try (final Claims claims = new Claims(new FkProject())) {
             claims.add(
                 new Concat<Directive>(
                     new ClaimOut.Notify(

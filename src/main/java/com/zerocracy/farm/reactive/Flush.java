@@ -93,19 +93,27 @@ final class Flush implements Runnable, Closeable {
 
     @Override
     public void run() {
-        if (!this.service.isShutdown() && !this.alive.getAndSet(true)) {
-            this.service.submit(
-                new RunnableWithTrigger(
-                    new VerboseRunnable(
-                        new RunnableOf<>(
-                            new FlushAction(this.project, this.brigade)
-                        ),
-                        true, true
-                    ),
-                    this.alive
-                )
+        if (this.service.isShutdown()) {
+            throw new IllegalStateException(
+                "The Flush is closed already"
             );
         }
+        if (this.service.isShutdown()) {
+            throw new IllegalStateException(
+                "The Flush is closing now..."
+            );
+        }
+        this.service.submit(
+            new RunnableWithTrigger(
+                new VerboseRunnable(
+                    new RunnableOf<>(
+                        new FlushAction(this.project, this.brigade)
+                    ),
+                    true, true
+                ),
+                this.alive
+            )
+        );
     }
 
     @Override
@@ -115,7 +123,6 @@ final class Flush implements Runnable, Closeable {
 
     @Override
     public void close() {
-        this.service.shutdown();
         while (this.alive.get()) {
             try {
                 TimeUnit.SECONDS.sleep(1L);
@@ -125,6 +132,7 @@ final class Flush implements Runnable, Closeable {
             }
             Logger.info(this, "Waiting for the Flush to close");
         }
+        this.service.shutdown();
     }
 
 }

@@ -47,11 +47,11 @@ public final class RvProjectTest {
             Executors.newSingleThreadExecutor(new VerboseThreads())
         );
         final RvProject project = new RvProject(raw, flush);
-        try (final Claims claims = new Claims(project).lock()) {
+        try (final Claims claims = new Claims(project)) {
             claims.add(new ClaimOut().type("hello").token("test;tt"));
         }
         flush.close();
-        try (final Claims claims = new Claims(project).lock()) {
+        try (final Claims claims = new Claims(project)) {
             MatcherAssert.assertThat(
                 claims.iterate(),
                 Matchers.hasSize(0)

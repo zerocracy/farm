@@ -51,11 +51,12 @@ final class RdProject implements Project {
 
     @Override
     public Item acq(final String file) throws IOException {
-        Item item = this.origin.acq(file);
-        if (file.endsWith(".xml")) {
-            item = new RdItem(this, item);
+        try (final Item item = this.origin.acq(file)) {
+            if (file.endsWith(".xml")) {
+                return new RdItem(this, item);
+            }
+            return item;
         }
-        return item;
     }
 
 }

@@ -97,7 +97,6 @@ final class RdItem implements Item, Sources {
         this.file.set(path);
         if (Files.exists(path) && path.toFile().length() > 0L) {
             this.length = path.toFile().length();
-//            this.validate(RdItem.area(path));
         }
         return path;
     }

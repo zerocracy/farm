@@ -23,7 +23,8 @@ import com.zerocracy.jstk.Project;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.concurrent.atomic.AtomicReference;
+import org.cactoos.scalar.IoCheckedScalar;
+import org.cactoos.scalar.StickyScalar;
 import org.xembly.Directive;
 import org.xembly.Directives;
 
@@ -44,7 +45,7 @@ public final class Claims implements Closeable {
     /**
      * Item.
      */
-    private final AtomicReference<Item> item;
+    private final IoCheckedScalar<Item> item;
 
     /**
      * Ctor.
@@ -52,28 +53,21 @@ public final class Claims implements Closeable {
      */
     public Claims(final Project pkt) {
         this.project = pkt;
-        this.item = new AtomicReference<>();
-    }
-
-    /**
-     * Bootstrap it and lock.
-     * @return Itself
-     * @throws IOException If fails
-     */
-    public Claims lock() throws IOException {
-        if (this.item.get() == null) {
-            this.item.set(this.project.acq("claims.xml"));
-            new Xocument(this.item.get().path()).bootstrap("pm/claims");
-        }
-        return this;
+        this.item = new IoCheckedScalar<>(
+            new StickyScalar<>(
+                () -> {
+                    try (final Item itm = this.project.acq("claims.xml")) {
+                        new Xocument(itm.path()).bootstrap("pm/claims");
+                        return itm;
+                    }
+                }
+            )
+        );
     }
 
     @Override
     public void close() throws IOException {
-        if (this.item.get() != null) {
-            this.item.get().close();
-            this.item.set(null);
-        }
+        this.item.value().close();
     }
 
     /**
@@ -85,7 +79,7 @@ public final class Claims implements Closeable {
         if (!dirs.iterator().hasNext()) {
             throw new IllegalArgumentException("Empty directives");
         }
-        new Xocument(this.item.get().path()).modify(
+        new Xocument(this.item.value().path()).modify(
             new Directives().xpath("/claims").append(dirs)
         );
     }
@@ -96,7 +90,7 @@ public final class Claims implements Closeable {
      * @throws IOException If fails
      */
     public void remove(final long cid) throws IOException {
-        new Xocument(this.item.get().path()).modify(
+        new Xocument(this.item.value().path()).modify(
             new Directives().xpath(
                 String.format(
                     "/claims/claim[@id='%d']", cid
@@ -111,7 +105,7 @@ public final class Claims implements Closeable {
      * @throws IOException If fails
      */
     public Collection<XML> iterate() throws IOException {
-        return new Xocument(this.item.get().path()).nodes("/claims/claim");
+        return new Xocument(this.item.value().path()).nodes("/claims/claim");
     }
 
 }

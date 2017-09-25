@@ -54,6 +54,7 @@ import org.cactoos.scalar.And;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -108,6 +109,7 @@ public final class BundlesTest {
     }
 
     @Test
+    @Ignore
     public void oneBundleWorksFine() throws Exception {
         final Properties props = new PropertiesOf(
             new MapEntry<>("testing", "true")
@@ -157,7 +159,7 @@ public final class BundlesTest {
                 new Limited<>(new Endless<>(1), Tv.FIFTY),
                 x -> {
                     TimeUnit.SECONDS.sleep(1L);
-                    try (final Claims claims = new Claims(project).lock()) {
+                    try (final Claims claims = new Claims(project)) {
                         return !claims.iterate().isEmpty();
                     }
                 }

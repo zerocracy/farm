@@ -59,7 +59,7 @@ final class FlushAction implements Proc<Boolean> {
     public void exec(final Boolean input) throws Exception {
         while (true) {
             final Iterator<XML> found;
-            try (final Claims claims = new Claims(this.project).lock()) {
+            try (final Claims claims = new Claims(this.project)) {
                 found = claims.iterate().iterator();
             }
             boolean more = false;
@@ -84,7 +84,7 @@ final class FlushAction implements Proc<Boolean> {
         final ClaimIn claim = new ClaimIn(xml);
         final int total = this.brigade.process(this.project, xml);
         final int left;
-        try (final Claims claims = new Claims(this.project).lock()) {
+        try (final Claims claims = new Claims(this.project)) {
             claims.remove(claim.number());
             left = claims.iterate().size();
         }
