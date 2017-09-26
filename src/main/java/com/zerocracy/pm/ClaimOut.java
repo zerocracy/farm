@@ -22,6 +22,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.xembly.Directive;
 import org.xembly.Directives;
 
@@ -36,6 +37,11 @@ import org.xembly.Directives;
 public final class ClaimOut implements Iterable<Directive> {
 
     /**
+     * Counter of IDs.
+     */
+    private static final AtomicInteger CID = new AtomicInteger();
+
+    /**
      * Directives.
      */
     private final Directives dirs;
@@ -47,7 +53,11 @@ public final class ClaimOut implements Iterable<Directive> {
         this(
             new Directives()
                 .add("claim")
-                .attr("id", System.nanoTime() % (long) Integer.MAX_VALUE)
+                .attr(
+                    "id",
+                    (int) System.currentTimeMillis()
+                        + ClaimOut.CID.incrementAndGet()
+                )
                 .add("created")
                 .set(
                     ZonedDateTime.now().format(
