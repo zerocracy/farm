@@ -56,6 +56,7 @@ import org.cactoos.text.TextOf;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @EqualsAndHashCode(of = "origin")
+@SuppressWarnings("PMD.ExcessiveImports")
 final class RdItem implements Item, Sources {
 
     /**
