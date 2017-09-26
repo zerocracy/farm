@@ -16,6 +16,7 @@
  */
 package com.zerocracy.farm.sync;
 
+import com.jcabi.aspects.Tv;
 import com.jcabi.log.VerboseThreads;
 import com.jcabi.s3.Bucket;
 import com.jcabi.s3.fake.FkBucket;
@@ -52,7 +53,8 @@ public final class SyncFarmTest {
             "the-bucket"
         );
         final Farm farm = new SyncFarm(new S3Farm(bucket));
-        final int threads = Runtime.getRuntime().availableProcessors() << 4;
+        final int threads =
+            Runtime.getRuntime().availableProcessors() << Tv.FOUR;
         final ExecutorService service = Executors.newFixedThreadPool(
             threads, new VerboseThreads()
         );

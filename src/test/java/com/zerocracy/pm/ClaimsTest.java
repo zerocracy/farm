@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pm;
 
+import com.jcabi.aspects.Tv;
 import com.jcabi.log.VerboseThreads;
 import com.jcabi.s3.Bucket;
 import com.jcabi.s3.fake.FkBucket;
@@ -46,6 +47,7 @@ import org.junit.Test;
  * @version $Id$
  * @since 0.9
  * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class ClaimsTest {
 
@@ -57,7 +59,8 @@ public final class ClaimsTest {
         );
         final Project project = new SyncFarm(new S3Farm(bucket))
             .find("@id='ABCZZFE03'").iterator().next();
-        final int threads = Runtime.getRuntime().availableProcessors() << 4;
+        final int threads =
+            Runtime.getRuntime().availableProcessors() << Tv.FOUR;
         final ExecutorService service = Executors.newFixedThreadPool(
             threads, new VerboseThreads()
         );
@@ -83,32 +86,6 @@ public final class ClaimsTest {
 
     @Test
     public void opensExistingClaimsXml() throws Exception {
-        final Project project = new FkProject();
-        try (final Item item = project.acq("claims.xml")) {
-            new LengthOf(
-                new TeeInput(
-                    String.join(
-                        " ",
-                        "<claims",
-                        "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'",
-                        // @checkstyle LineLength (1 line)
-                        "xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/zerocracy/datum/0.27/xsd/pm/claims.xsd'",
-                        "version='0.1' updated='2017-03-27T11:18:09.228Z'/>"
-                    ),
-                    item.path()
-                )
-            ).value();
-        }
-        final Claims claims = new Claims(project).bootstrap();
-        claims.add(new ClaimOut().token("test;test;1").type("just hello"));
-        MatcherAssert.assertThat(
-            claims.iterate().iterator().hasNext(),
-            Matchers.is(true)
-        );
-    }
-
-    @Test
-    public void handlesExceptionsCorrectly() throws Exception {
         final Project project = new FkProject();
         try (final Item item = project.acq("claims.xml")) {
             new LengthOf(

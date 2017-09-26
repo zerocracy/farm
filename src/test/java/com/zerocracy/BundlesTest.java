@@ -22,13 +22,11 @@ import com.ullink.slack.simpleslackapi.SlackSession;
 import com.zerocracy.farm.SmartFarm;
 import com.zerocracy.farm.reactive.StkGroovy;
 import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.fake.FkProject;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
 import com.zerocracy.radars.telegram.TmSession;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
@@ -37,7 +35,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
-import org.cactoos.Input;
 import org.cactoos.io.LengthOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.ResourceOf;
@@ -179,19 +176,6 @@ public final class BundlesTest {
             pkg,
             new ResourcesScanner()
         ).getResources(p -> p.endsWith(".xml"));
-    }
-
-    private static void save(final Project project, final Input input,
-        final String file) throws IOException {
-        try (final Item item =
-            project.acq(file.substring(file.lastIndexOf('/') + 1))) {
-            new LengthOf(
-                new TeeInput(
-                    input,
-                    new OutputTo(item.path())
-                )
-            ).value();
-        }
     }
 
 }

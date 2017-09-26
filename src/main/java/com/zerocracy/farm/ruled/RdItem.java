@@ -135,10 +135,11 @@ final class RdItem implements Item, Sources {
 
     /**
      * Get are of the path.
+     * @param path The path
      * @return The area, e.g. "pm/scope/wbs"
      * @throws IOException If fails
      */
-    public static String area(final Path path) throws IOException {
+    private static String area(final Path path) throws IOException {
         return StringUtils.substringBeforeLast(
             StringUtils.substringAfter(
                 new XMLDocument(
