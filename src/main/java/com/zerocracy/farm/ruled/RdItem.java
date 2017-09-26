@@ -34,10 +34,14 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.stream.StreamSource;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.StringUtils;
+import org.cactoos.Func;
 import org.cactoos.Input;
+import org.cactoos.func.StickyFunc;
+import org.cactoos.func.UncheckedFunc;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.InputWithFallback;
 import org.cactoos.io.LengthOf;
+import org.cactoos.io.StickyInput;
 import org.cactoos.io.TeeInput;
 import org.cactoos.scalar.And;
 import org.cactoos.scalar.UncheckedScalar;
@@ -53,6 +57,15 @@ import org.cactoos.text.TextOf;
  */
 @EqualsAndHashCode(of = "origin")
 final class RdItem implements Item, Sources {
+
+    /**
+     * Cache of documents.
+     */
+    private static final UncheckedFunc<URI, Input> CACHE = new UncheckedFunc<>(
+        new StickyFunc<>(
+            (Func<URI, Input>) uri -> new StickyInput(new InputOf(uri))
+        )
+    );
 
     /**
      * Original project.
@@ -200,7 +213,7 @@ final class RdItem implements Item, Sources {
         return new XMLDocument(
             new TextOf(
                 new InputWithFallback(
-                    new InputOf(
+                    RdItem.CACHE.apply(
                         URI.create(
                             String.format(
                                 "http://datum.zerocracy.com%s/index.xml",
@@ -221,11 +234,13 @@ final class RdItem implements Item, Sources {
      */
     private void check(final String xsl) throws IOException {
         final Collection<String> errors =
-            XSLDocument.make(new InputOf(URI.create(xsl)).stream())
+            XSLDocument.make(RdItem.CACHE.apply(URI.create(xsl)).stream())
                 .with(this)
                 .transform(new XMLDocument("<i/>"))
                 .xpath("/errors/error/text()");
-        if (!errors.isEmpty()) {
+        if (errors.isEmpty()) {
+            Logger.info(this, "%s checked with %s", this, xsl);
+        } else {
             throw new IllegalStateException(
                 String.join("; ", errors)
             );
@@ -253,9 +268,7 @@ final class RdItem implements Item, Sources {
                 new LengthOf(
                     new TeeInput(
                         XSLDocument.make(
-                            new InputOf(
-                                URI.create(xsl)
-                            ).stream()
+                            RdItem.CACHE.apply(URI.create(xsl)).stream()
                         ).with(this).transform(xml).toString(),
                         item.path()
                     )

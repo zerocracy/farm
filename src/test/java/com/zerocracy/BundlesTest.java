@@ -118,16 +118,14 @@ public final class BundlesTest {
             new MapEntry<>("telegram", new HashMap<Long, TmSession>(0)),
             new MapEntry<>("properties", props)
         );
+        final String pid = "TSTBUNDLE";
         final Farm farm = new SmartFarm(
-            query -> Collections.singleton(
-                new FkProject(
-                    this.home.resolve(this.name),
-                    new FkProject().toString()
-                )
-            ),
+            query -> Collections.singleton(new FkProject(this.home, pid)),
             props, deps
         ).value();
-        final Project project = farm.find(this.name).iterator().next();
+        final Project project = farm.find(
+            String.format("@id='%s'", pid)
+        ).iterator().next();
         new And(
             BundlesTest.resources(this.bundle.replace("/", ".")),
             path -> {
