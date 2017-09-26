@@ -89,6 +89,14 @@ final class SyncItem implements Item, Comparable<SyncItem> {
 
     @Override
     public Path path() throws IOException {
+        if (this.semaphore.availablePermits() > 0) {
+            throw new IllegalStateException(
+                String.format(
+                    "The item \"%s\" is closed already",
+                    this.origin
+                )
+            );
+        }
         synchronized (this.origin) {
             return this.origin.path();
         }
@@ -182,7 +190,7 @@ final class SyncItem implements Item, Comparable<SyncItem> {
         @Override
         public void run() {
             if (!this.canceled.get()) {
-                this.stk.printStackTrace();
+                Logger.error(this, "%[exception]s", this.stk);
                 Sentry.capture(
                     new EventBuilder()
                         .withMessage(

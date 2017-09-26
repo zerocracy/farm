@@ -80,19 +80,16 @@ final class SyncProject implements Project {
      * Ctor.
      * @param pkt Project
      * @param map Pool of items
-     * @param threshold Max pool size
+     * @param max Max pool size
      */
-    SyncProject(
-        final Project pkt,
-        final Map<String, SyncItem> map,
-        final int threshold
-    ) {
+    SyncProject(final Project pkt, final Map<String, SyncItem> map,
+        final int max) {
         this.origin = pkt;
         this.pool = map;
-        this.threshold = threshold;
+        this.threshold = max;
         this.clean = none -> new SyncScalar<>(
             new Ternary<>(
-                () -> this.pool.size() > threshold,
+                () -> this.pool.size() > max,
                 new And(
                     new Limited<>(
                         new Sorted<CmpEntry<String, SyncItem>>(

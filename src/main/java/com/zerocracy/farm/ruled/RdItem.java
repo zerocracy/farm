@@ -104,16 +104,16 @@ final class RdItem implements Item, Sources {
     @Override
     public void close() throws IOException {
         final Path path = this.file.get();
-        final boolean modified = Files.exists(path)
-            && this.length != path.toFile().length();
-        if (modified) {
-            final String area = RdItem.area(path);
-            this.origin.close();
-            this.propagate(area);
-            this.validate(area);
-        } else {
-            this.origin.close();
+        if (path != null) {
+            final boolean modified = Files.exists(path)
+                && this.length != path.toFile().length();
+            if (modified) {
+                final String area = RdItem.area(path);
+                this.propagate(area);
+                this.validate(area);
+            }
         }
+        this.origin.close();
     }
 
     @Override
