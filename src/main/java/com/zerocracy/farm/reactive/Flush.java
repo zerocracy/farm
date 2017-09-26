@@ -17,26 +17,22 @@
 package com.zerocracy.farm.reactive;
 
 import com.jcabi.log.Logger;
-import com.jcabi.log.VerboseRunnable;
+import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.Stakeholder;
-import java.io.Closeable;
-import java.util.Collection;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-import org.cactoos.func.RunnableOf;
+import com.zerocracy.pm.ClaimIn;
+import com.zerocracy.pm.Claims;
+import java.io.IOException;
+import java.util.Iterator;
+import org.cactoos.Proc;
 
 /**
- * The activity of cleaning the list of claims and processing
- * them all.
+ * The action that happens in the {@link Flush}.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.1
+ * @since 0.10
  */
-final class Flush implements Runnable, Closeable {
+final class Flush implements Proc<Boolean> {
 
     /**
      * The project.
@@ -49,90 +45,56 @@ final class Flush implements Runnable, Closeable {
     private final Brigade brigade;
 
     /**
-     * Is it running now?
-     */
-    private final AtomicBoolean alive;
-
-    /**
-     * Service to run.
-     */
-    private final ExecutorService service;
-
-    /**
-     * Ctor.
-     * @param pkt Project
-     * @param list List of stakeholders
-     * @param svc Service
-     */
-    Flush(final Project pkt, final Collection<Stakeholder> list,
-        final ExecutorService svc) {
-        this(pkt, new Brigade(list), svc);
-    }
-
-    /**
      * Ctor.
      * @param pkt Project
      * @param bgd Brigade
      */
     Flush(final Project pkt, final Brigade bgd) {
-        this(pkt, bgd, Executors.newSingleThreadExecutor());
+        this.project = pkt;
+        this.brigade = bgd;
+    }
+
+    @Override
+    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
+    public void exec(final Boolean input) throws Exception {
+        final Claims claims = new Claims(this.project).bootstrap();
+        while (true) {
+            final Iterator<XML> found = claims.iterate().iterator();
+            if (!found.hasNext()) {
+                break;
+            }
+            this.process(found.next());
+        }
     }
 
     /**
-     * Ctor.
-     * @param pkt Project
-     * @param bgd Brigade
-     * @param svc Service
+     * Process it.
+     * @param xml The claim
+     * @throws IOException If fails
      */
-    Flush(final Project pkt, final Brigade bgd, final ExecutorService svc) {
-        this.project = pkt;
-        this.brigade = bgd;
-        this.service = svc;
-        this.alive = new AtomicBoolean();
-    }
-
-    @Override
-    public void run() {
-        if (this.service.isShutdown()) {
+    @SuppressWarnings("PMD.PrematureDeclaration")
+    private void process(final XML xml) throws IOException {
+        final long start = System.currentTimeMillis();
+        final ClaimIn claim = new ClaimIn(xml);
+        final int total = this.brigade.process(this.project, xml);
+        final Claims claims = new Claims(this.project);
+        claims.remove(claim.number());
+        final int left = claims.iterate().size();
+        if (total == 0 && claim.hasToken()) {
             throw new IllegalStateException(
-                "The Flush is closed already"
+                String.format(
+                    "Failed to process \"%s\"/\"%s\", no stakeholders",
+                    claim.type(), claim.token()
+                )
             );
         }
-        if (this.service.isShutdown()) {
-            throw new IllegalStateException(
-                "The Flush is closing now..."
-            );
-        }
-        this.service.submit(
-            new RunnableWithTrigger(
-                new VerboseRunnable(
-                    new RunnableOf<>(
-                        new FlushAction(this.project, this.brigade)
-                    ),
-                    true, true
-                ),
-                this.alive
-            )
+        Logger.info(
+            this, "Seen \"%s/%d/%d\" at \"%s\" by %d stk, %[ms]s",
+            claim.type(), claim.number(), left,
+            this.project.toString(),
+            total,
+            System.currentTimeMillis() - start
         );
-    }
-
-    @Override
-    public String toString() {
-        return this.project.toString();
-    }
-
-    @Override
-    public void close() {
-        while (this.alive.get()) {
-            try {
-                TimeUnit.SECONDS.sleep(1L);
-            } catch (final InterruptedException ex) {
-                Thread.currentThread().interrupt();
-                throw new IllegalStateException(ex);
-            }
-            Logger.info(this, "Waiting for the Flush to close");
-        }
-        this.service.shutdown();
     }
 
 }

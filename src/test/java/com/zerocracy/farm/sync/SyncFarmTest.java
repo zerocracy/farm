@@ -46,19 +46,20 @@ import org.junit.Test;
 public final class SyncFarmTest {
 
     @Test
-    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     public void makesProjectsThreadSafe() throws Exception {
         final Bucket bucket = new FkBucket(
             Files.createTempDirectory("").toFile(),
             "the-bucket"
         );
         final Farm farm = new SyncFarm(new S3Farm(bucket));
-        final int threads = Runtime.getRuntime().availableProcessors() << 2;
+        final int threads = Runtime.getRuntime().availableProcessors() << 4;
         final ExecutorService service = Executors.newFixedThreadPool(
             threads, new VerboseThreads()
         );
         final CountDownLatch latch = new CountDownLatch(1);
         final Collection<Future<Boolean>> futures = new ArrayList<>(threads);
+        final Project project = farm.find("@id='ABCZZFE03'").iterator().next();
+        final Roles roles = new Roles(project);
         final String role = "PO";
         for (int thread = 0; thread < threads; ++thread) {
             final String person = String.format("jeff%d", thread);
@@ -66,9 +67,6 @@ public final class SyncFarmTest {
                 service.submit(
                     () -> {
                         latch.await();
-                        final Project project =
-                            farm.find("@id='ABCZZFE03'").iterator().next();
-                        final Roles roles = new Roles(project);
                         roles.bootstrap();
                         roles.assign(person, role);
                         return roles.hasRole(person, role);

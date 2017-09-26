@@ -64,12 +64,11 @@ public final class StkGroovyTest {
                 )
             )
         ).process(project, null);
-        try (final Claims claims = new Claims(project)) {
-            MatcherAssert.assertThat(
-                new ClaimIn(claims.iterate().iterator().next()).type(),
-                Matchers.endsWith(" dude")
-            );
-        }
+        final Claims claims = new Claims(project).bootstrap();
+        MatcherAssert.assertThat(
+            new ClaimIn(claims.iterate().iterator().next()).type(),
+            Matchers.endsWith(" dude")
+        );
     }
 
     @Test(expected = SoftException.class)

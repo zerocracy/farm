@@ -61,12 +61,11 @@ public final class ClaimOnQuestionTest {
         );
         final FkProject project = new FkProject();
         new ClaimOnQuestion(question).claim().postTo(project);
-        try (final Claims claims = new Claims(project)) {
-            MatcherAssert.assertThat(
-                claims.iterate(),
-                Matchers.iterableWithSize(1)
-            );
-        }
+        final Claims claims = new Claims(project).bootstrap();
+        MatcherAssert.assertThat(
+            claims.iterate(),
+            Matchers.iterableWithSize(1)
+        );
     }
 
 }

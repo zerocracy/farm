@@ -34,21 +34,20 @@ public final class ClaimOutTest {
 
     @Test
     public void chainsThem() throws Exception {
-        try (final Claims claims = new Claims(new FkProject())) {
-            claims.add(
-                new Concat<Directive>(
-                    new ClaimOut.Notify(
-                        "test;token",
-                        "hello, world"
-                    ),
-                    new ClaimOut().type("hello")
-                )
-            );
-            MatcherAssert.assertThat(
-                claims.iterate(),
-                Matchers.iterableWithSize(2)
-            );
-        }
+        final Claims claims = new Claims(new FkProject()).bootstrap();
+        claims.add(
+            new Concat<Directive>(
+                new ClaimOut.Notify(
+                    "test;token",
+                    "hello, world"
+                ),
+                new ClaimOut().type("hello")
+            )
+        );
+        MatcherAssert.assertThat(
+            claims.iterate(),
+            Matchers.iterableWithSize(2)
+        );
     }
 
 }

@@ -20,6 +20,7 @@ import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import lombok.EqualsAndHashCode;
+import org.cactoos.Proc;
 
 /**
  * Reactive project.
@@ -39,16 +40,16 @@ final class RvProject implements Project {
     /**
      * The spin.
      */
-    private final Flush flush;
+    private final Proc<?> flush;
 
     /**
      * Ctor.
      * @param pkt Project
-     * @param spn Spin
+     * @param proc Flush
      */
-    RvProject(final Project pkt, final Flush spn) {
+    RvProject(final Project pkt, final Proc<?> proc) {
         this.origin = pkt;
-        this.flush = spn;
+        this.flush = proc;
     }
 
     @Override

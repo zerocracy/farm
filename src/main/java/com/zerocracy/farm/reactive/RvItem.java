@@ -21,6 +21,8 @@ import com.zerocracy.jstk.Item;
 import java.io.IOException;
 import java.nio.file.Path;
 import lombok.EqualsAndHashCode;
+import org.cactoos.Proc;
+import org.cactoos.func.IoCheckedProc;
 
 /**
  * Reactive item.
@@ -40,16 +42,16 @@ final class RvItem implements Item {
     /**
      * The spin.
      */
-    private final Flush flush;
+    private final Proc<?> flush;
 
     /**
      * Ctor.
      * @param item Original item
-     * @param spn Spin
+     * @param proc Spin
      */
-    RvItem(final Item item, final Flush spn) {
+    RvItem(final Item item, final Proc<?> proc) {
         this.origin = item;
-        this.flush = spn;
+        this.flush = proc;
     }
 
     @Override
@@ -68,7 +70,7 @@ final class RvItem implements Item {
             .nodes("/claims/claim").size();
         this.origin.close();
         if (total > 0) {
-            this.flush.run();
+            new IoCheckedProc<>(this.flush).exec(null);
         }
     }
 

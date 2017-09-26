@@ -21,7 +21,6 @@ import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Executors;
 import lombok.EqualsAndHashCode;
 import org.cactoos.iterable.Mapped;
 
@@ -66,14 +65,7 @@ public final class RvFarm implements Farm {
         return new Mapped<>(
             this.origin.find(query),
             p -> this.pool.computeIfAbsent(
-                p,
-                pkt -> new RvProject(
-                    pkt,
-                    new Flush(
-                        pkt, this.brigade,
-                        Executors.newSingleThreadExecutor()
-                    )
-                )
+                p, pkt -> new RvProject(pkt, new Flush(pkt, this.brigade))
             )
         );
     }

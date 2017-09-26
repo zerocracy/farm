@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.cactoos.Proc;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -54,6 +55,7 @@ public final class FlushTest {
         final CountDownLatch latch = new CountDownLatch(1);
         final Brigade brigade = new Brigade(
             (Stakeholder) (pkt, claim) -> {
+                System.out.println(new ClaimIn(claim).type());
                 done.incrementAndGet();
                 if (new ClaimIn(claim).type().startsWith("nex")) {
                     new ClaimIn(claim).reply("the answer").postTo(project);
@@ -67,28 +69,27 @@ public final class FlushTest {
                 () -> {
                     latch.await();
                     for (int idx = 0; idx < max; ++idx) {
+                        System.out.println("posted");
                         new ClaimOut().token("test;t")
                             .type("next").postTo(project);
                     }
+                    System.out.println("done");
                     return null;
                 }
             )
         );
         thread.start();
-        try (final Flush flush = new Flush(project, brigade)) {
-            latch.countDown();
-            while (thread.isAlive()) {
-                flush.run();
-            }
-            flush.run();
+        final Proc<?> flush = new Flush(project, brigade);
+        latch.countDown();
+        while (thread.isAlive()) {
+            flush.exec(null);
         }
-        thread.join();
-        try (final Claims claims = new Claims(project)) {
-            MatcherAssert.assertThat(
-                claims.iterate(),
-                Matchers.hasSize(0)
-            );
-        }
+        flush.exec(null);
+        final Claims claims = new Claims(project).bootstrap();
+        MatcherAssert.assertThat(
+            claims.iterate(),
+            Matchers.hasSize(0)
+        );
         MatcherAssert.assertThat(done.get(), Matchers.equalTo((max << 1) + 1));
     }
 

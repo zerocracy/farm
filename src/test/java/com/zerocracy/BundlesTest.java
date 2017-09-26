@@ -159,9 +159,8 @@ public final class BundlesTest {
                 new Limited<>(new Endless<>(1), Tv.FIFTY),
                 x -> {
                     TimeUnit.SECONDS.sleep(1L);
-                    try (final Claims claims = new Claims(project)) {
-                        return !claims.iterate().isEmpty();
-                    }
+                    final Claims claims = new Claims(project).bootstrap();
+                    return !claims.iterate().isEmpty();
                 }
             ).value(),
             Matchers.equalTo(false)

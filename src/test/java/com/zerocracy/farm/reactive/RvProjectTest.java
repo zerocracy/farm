@@ -16,13 +16,11 @@
  */
 package com.zerocracy.farm.reactive;
 
-import com.jcabi.log.VerboseThreads;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.fake.FkProject;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
 import java.util.Collections;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -43,20 +41,19 @@ public final class RvProjectTest {
         final Project raw = new FkProject();
         final Flush flush = new Flush(
             raw,
-            Collections.singletonList((pkt, xml) -> done.set(true)),
-            Executors.newSingleThreadExecutor(new VerboseThreads())
+            new Brigade(
+                Collections.singletonList(
+                    (project, xml) -> done.set(true)
+                )
+            )
         );
         final RvProject project = new RvProject(raw, flush);
-        try (final Claims claims = new Claims(project)) {
-            claims.add(new ClaimOut().type("hello").token("test;tt"));
-        }
-        flush.close();
-        try (final Claims claims = new Claims(project)) {
-            MatcherAssert.assertThat(
-                claims.iterate(),
-                Matchers.hasSize(0)
-            );
-        }
+        final Claims claims = new Claims(project).bootstrap();
+        claims.add(new ClaimOut().type("hello").token("test;tt"));
+        MatcherAssert.assertThat(
+            claims.iterate(),
+            Matchers.hasSize(0)
+        );
         MatcherAssert.assertThat(done.get(), Matchers.is(true));
     }
 
