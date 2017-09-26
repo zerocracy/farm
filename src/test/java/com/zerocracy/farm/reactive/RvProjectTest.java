@@ -50,10 +50,11 @@ public final class RvProjectTest {
         final RvProject project = new RvProject(raw, flush);
         final Claims claims = new Claims(project).bootstrap();
         claims.add(new ClaimOut().type("hello").token("test;tt"));
-        MatcherAssert.assertThat(
-            claims.iterate(),
-            Matchers.hasSize(0)
-        );
+        while (true) {
+            if (!claims.iterate().iterator().hasNext()) {
+                break;
+            }
+        }
         MatcherAssert.assertThat(done.get(), Matchers.is(true));
     }
 

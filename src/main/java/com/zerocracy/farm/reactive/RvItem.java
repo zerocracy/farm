@@ -22,7 +22,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import lombok.EqualsAndHashCode;
 import org.cactoos.Proc;
-import org.cactoos.func.IoCheckedProc;
+import org.cactoos.func.AsyncFunc;
+import org.cactoos.func.IoCheckedFunc;
 
 /**
  * Reactive item.
@@ -70,7 +71,9 @@ final class RvItem implements Item {
             .nodes("/claims/claim").size();
         this.origin.close();
         if (total > 0) {
-            new IoCheckedProc<>(this.flush).exec(null);
+            new IoCheckedFunc<>(
+                new AsyncFunc<>(this.flush)
+            ).apply(null);
         }
     }
 
