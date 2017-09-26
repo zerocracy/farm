@@ -36,6 +36,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
+import org.cactoos.Func;
+import org.cactoos.func.StickyFunc;
+import org.cactoos.func.UncheckedFunc;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.InputStreamOf;
 import org.cactoos.io.InputWithFallback;
@@ -63,6 +66,22 @@ import org.xembly.Xembler;
  */
 @SuppressWarnings("PMD.ExcessiveImports")
 public final class Xocument {
+
+    /**
+     * Cache of documents.
+     */
+    private static final UncheckedFunc<URL, XML> INDEXES = new UncheckedFunc<>(
+        new StickyFunc<>(
+            (Func<URL, XML>) url -> new XMLDocument(
+                new TextOf(
+                    new InputWithFallback(
+                        new InputOf(url),
+                        new InputOf("<index/>")
+                    )
+                ).asString()
+            )
+        )
+    );
 
     /**
      * Current DATUM version.
@@ -210,23 +229,6 @@ public final class Xocument {
     }
 
     /**
-     * Load index.
-     * @param url The URL of it
-     * @return XML
-     * @throws IOException If fails
-     */
-    private static XML index(final URL url) throws IOException {
-        return new XMLDocument(
-            new TextOf(
-                new InputWithFallback(
-                    new InputOf(url),
-                    new InputOf("<index/>")
-                )
-            ).asString()
-        );
-    }
-
-    /**
      * Upgrade if necessary.
      * @param xml XML to upgrade
      * @param xsd Path to XSD, eg "pm/scope/wbs"
@@ -248,7 +250,7 @@ public final class Xocument {
         } else {
             after = new UncheckedScalar<>(
                 new Reduced<>(
-                    Xocument.index(
+                    Xocument.INDEXES.apply(
                         Xocument.url(
                             String.format(
                                 "/latest/upgrades/%s/index.xml",

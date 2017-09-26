@@ -20,6 +20,7 @@ import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -55,8 +56,9 @@ public final class ClaimOut implements Iterable<Directive> {
                 .add("claim")
                 .attr(
                     "id",
-                    (int) System.currentTimeMillis()
-                        + ClaimOut.CID.incrementAndGet()
+                    Integer.parseInt(
+                        String.format("%1$tj%1$tH%1$tM", new Date())
+                    ) + ClaimOut.CID.incrementAndGet()
                 )
                 .add("created")
                 .set(

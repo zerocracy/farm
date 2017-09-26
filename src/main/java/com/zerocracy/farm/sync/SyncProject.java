@@ -21,19 +21,9 @@ import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import java.util.Map;
 import lombok.EqualsAndHashCode;
-import org.cactoos.Proc;
-import org.cactoos.func.AsyncFunc;
-import org.cactoos.func.ProcOf;
-import org.cactoos.iterable.Limited;
-import org.cactoos.iterable.Mapped;
-import org.cactoos.iterable.Sorted;
-import org.cactoos.scalar.And;
-import org.cactoos.scalar.False;
-import org.cactoos.scalar.SyncScalar;
-import org.cactoos.scalar.Ternary;
 
 /**
- * Pool project.
+ * Sync project.
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
@@ -63,11 +53,6 @@ final class SyncProject implements Project {
     private final int threshold;
 
     /**
-     * Clean action.
-     */
-    private final Proc<Void> clean;
-
-    /**
      * Ctor.
      * @param pkt Project
      * @param map Pool of items
@@ -87,25 +72,6 @@ final class SyncProject implements Project {
         this.origin = pkt;
         this.pool = map;
         this.threshold = max;
-        this.clean = none -> new SyncScalar<>(
-            new Ternary<>(
-                () -> this.pool.size() > max,
-                new And(
-                    new Limited<>(
-                        new Sorted<CmpEntry<String, SyncItem>>(
-                            new Mapped<>(
-                                this.pool.entrySet(),
-                                CmpEntry::new
-                            )
-                        ),
-                        this.pool.size() - this.threshold
-                    ),
-                    new ProcOf<>(e -> this.pool.remove(e.getKey()))
-                ),
-                new False()
-            ),
-            this.pool
-        ).value();
     }
 
     @Override
@@ -133,9 +99,9 @@ final class SyncProject implements Project {
                 throw new IllegalStateException(ex);
             }
             if (this.pool.size() > this.threshold) {
-                new AsyncFunc<>(this.clean).apply(null);
+                this.pool.clear();
             }
-            return item;
+            return new TimeableItem(item);
         }
     }
 }

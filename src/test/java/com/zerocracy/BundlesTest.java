@@ -32,6 +32,7 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
@@ -51,7 +52,6 @@ import org.cactoos.scalar.And;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -106,7 +106,6 @@ public final class BundlesTest {
     }
 
     @Test
-    @Ignore
     public void oneBundleWorksFine() throws Exception {
         final Properties props = new PropertiesOf(
             new MapEntry<>("testing", "true")
@@ -118,7 +117,9 @@ public final class BundlesTest {
             new MapEntry<>("telegram", new HashMap<Long, TmSession>(0)),
             new MapEntry<>("properties", props)
         );
-        final String pid = "TSTBUNDLE";
+        final String pid = this.name.toUpperCase(Locale.ENGLISH).replaceAll(
+            "[^A-Z0-9]", ""
+        ).substring(0, 9);
         final Farm farm = new SmartFarm(
             query -> Collections.singleton(new FkProject(this.home, pid)),
             props, deps
@@ -133,7 +134,7 @@ public final class BundlesTest {
                     new TeeInput(
                         new ResourceOf(path),
                         new OutputTo(
-                            this.home.resolve(this.name).resolve(
+                            this.home.resolve(
                                 path.substring(path.lastIndexOf('/') + 1)
                             )
                         )

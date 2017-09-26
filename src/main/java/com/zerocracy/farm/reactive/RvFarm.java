@@ -73,7 +73,7 @@ public final class RvFarm implements Farm {
                     new AsyncFunc<Boolean, Boolean>(
                         new Flush(pkt, this.brigade),
                         Executors.newSingleThreadExecutor(
-                            new VerboseThreads()
+                            new VerboseThreads(pkt.toString())
                         )
                     )
                 )
