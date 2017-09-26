@@ -55,7 +55,6 @@ public final class FlushTest {
         final CountDownLatch latch = new CountDownLatch(1);
         final Brigade brigade = new Brigade(
             (Stakeholder) (pkt, claim) -> {
-                System.out.println(new ClaimIn(claim).type());
                 done.incrementAndGet();
                 if (new ClaimIn(claim).type().startsWith("nex")) {
                     new ClaimIn(claim).reply("the answer").postTo(project);
@@ -69,11 +68,9 @@ public final class FlushTest {
                 () -> {
                     latch.await();
                     for (int idx = 0; idx < max; ++idx) {
-                        System.out.println("posted");
                         new ClaimOut().token("test;t")
                             .type("next").postTo(project);
                     }
-                    System.out.println("done");
                     return null;
                 }
             )
