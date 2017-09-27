@@ -99,7 +99,7 @@ final class RdRules {
         new UncheckedScalar<>(new And(xsls, this::check)).value();
         Logger.info(
             this, "%s validated with %d XSLs",
-            this, new LengthOf(xsls).value()
+            this.path.getFileName(), new LengthOf(xsls).value()
         );
     }
 

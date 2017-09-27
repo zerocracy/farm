@@ -17,11 +17,8 @@
 package com.zerocracy.farm.ruled;
 
 import com.zerocracy.jstk.Item;
-import com.zerocracy.jstk.Project;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.concurrent.atomic.AtomicReference;
 import lombok.EqualsAndHashCode;
 
 /**
@@ -32,67 +29,42 @@ import lombok.EqualsAndHashCode;
  * @since 0.17
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@EqualsAndHashCode(of = "origin")
+@EqualsAndHashCode(of = "file")
 final class RdItem implements Item {
 
     /**
-     * Original project.
+     * Session.
      */
-    private final Project project;
+    private final RdSession session;
 
     /**
-     * Original item.
+     * File name.
      */
-    private final Item origin;
-
-    /**
-     * The location of the file.
-     */
-    private final AtomicReference<Path> file;
-
-    /**
-     * The length of the file.
-     */
-    private long length;
+    private final String file;
 
     /**
      * Ctor.
-     * @param pkt Project
-     * @param item Original item
+     * @param ssn Session
+     * @param name The name
      */
-    RdItem(final Project pkt, final Item item) {
-        this.project = pkt;
-        this.origin = item;
-        this.file = new AtomicReference<>();
-        this.length = 0L;
+    RdItem(final RdSession ssn, final String name) {
+        this.session = ssn;
+        this.file = name;
     }
 
     @Override
     public String toString() {
-        return this.origin.toString();
+        return this.file;
     }
 
     @Override
     public Path path() throws IOException {
-        final Path path = this.origin.path();
-        this.file.set(path);
-        if (Files.exists(path) && path.toFile().length() > 0L) {
-            this.length = path.toFile().length();
-        }
-        return path;
+        return this.session.acquire(this.file);
     }
 
     @Override
     public void close() throws IOException {
-        final Path path = this.file.get();
-        final boolean modified = path != null
-            && Files.exists(path)
-            && this.length != path.toFile().length();
-        if (modified) {
-            new RdAuto(this.project, path).propagate();
-            new RdRules(this.project, path).validate();
-        }
-        this.origin.close();
+        this.session.release(this.file);
     }
 
 }

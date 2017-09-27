@@ -20,7 +20,7 @@ SOFTWARE.
   <parent>
     <groupId>com.jcabi</groupId>
     <artifactId>parent</artifactId>
-    <version>0.49.1</version>
+    <version>0.49.2</version>
   </parent>
   <groupId>com.zerocracy</groupId>
   <artifactId>farm</artifactId>
@@ -186,6 +186,11 @@ SOFTWARE.
       <artifactId>commons-lang3</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-text</artifactId>
+      <version>1.1</version>
+    </dependency>
+    <dependency>
       <groupId>com.jcabi</groupId>
       <artifactId>jcabi-aspects</artifactId>
       <version>0.22.6</version>
@@ -218,12 +223,6 @@ SOFTWARE.
     <dependency>
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest-core</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.aspectj</groupId>
-      <artifactId>aspectjrt</artifactId>
-      <version>1.8.10</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -335,11 +334,11 @@ SOFTWARE.
           <plugin>
             <groupId>com.qulice</groupId>
             <artifactId>qulice-maven-plugin</artifactId>
+            <version>1.0-SNAPSHOT</version>
             <configuration>
               <excludes combine.children="append">
                 <exclude>findbugs:.*</exclude>
-                <exclude>codenarc:**/*</exclude>
-                <exclude>xml:.*/q-[a-z\-]+\.xml</exclude>
+                <exclude>duplicatefinder:.*</exclude>
               </excludes>
               <license>file:${basedir}/LICENSE.txt</license>
             </configuration>
