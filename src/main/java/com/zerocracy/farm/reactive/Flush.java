@@ -18,6 +18,7 @@ package com.zerocracy.farm.reactive;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
+import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.Claims;
@@ -32,7 +33,7 @@ import org.cactoos.Proc;
  * @version $Id$
  * @since 0.10
  */
-final class Flush implements Proc<Boolean> {
+final class Flush implements Proc<Item> {
 
     /**
      * The project.
@@ -55,8 +56,7 @@ final class Flush implements Proc<Boolean> {
     }
 
     @Override
-    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
-    public void exec(final Boolean input) throws Exception {
+    public void exec(final Item item) throws Exception {
         final Claims claims = new Claims(this.project).bootstrap();
         while (true) {
             final Iterator<XML> found = claims.iterate().iterator();

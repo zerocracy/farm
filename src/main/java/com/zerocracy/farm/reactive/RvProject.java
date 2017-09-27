@@ -16,11 +16,16 @@
  */
 package com.zerocracy.farm.reactive;
 
+import com.jcabi.log.VerboseRunnable;
+import com.jcabi.log.VerboseThreads;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import lombok.EqualsAndHashCode;
 import org.cactoos.Proc;
+import org.cactoos.func.RunnableOf;
 
 /**
  * Reactive project.
@@ -38,18 +43,26 @@ final class RvProject implements Project {
     private final Project origin;
 
     /**
-     * The spin.
+     * The flush.
      */
-    private final Proc<?> flush;
+    private final Proc<Item> flush;
+
+    /**
+     * The service.
+     */
+    private final ExecutorService service;
 
     /**
      * Ctor.
      * @param pkt Project
-     * @param proc Flush
+     * @param flsh Flush
      */
-    RvProject(final Project pkt, final Proc<?> proc) {
+    RvProject(final Project pkt, final Proc<Item> flsh) {
         this.origin = pkt;
-        this.flush = proc;
+        this.flush = flsh;
+        this.service = Executors.newSingleThreadExecutor(
+            new VerboseThreads(pkt.toString())
+        );
     }
 
     @Override
@@ -61,7 +74,14 @@ final class RvProject implements Project {
     public Item acq(final String file) throws IOException {
         Item item = this.origin.acq(file);
         if ("claims.xml".equals(file)) {
-            item = new RvItem(item, this.flush);
+            item = new RvClaims(
+                item,
+                itm -> this.service.submit(
+                    new VerboseRunnable(
+                        new RunnableOf<>(this.flush)
+                    )
+                )
+            );
         }
         return item;
     }

@@ -40,7 +40,7 @@ public final class ClaimOut implements Iterable<Directive> {
     /**
      * Counter of IDs.
      */
-    private static final AtomicInteger CID = new AtomicInteger();
+    private static final AtomicInteger COUNTER = new AtomicInteger();
 
     /**
      * Directives.
@@ -54,12 +54,7 @@ public final class ClaimOut implements Iterable<Directive> {
         this(
             new Directives()
                 .add("claim")
-                .attr(
-                    "id",
-                    Integer.parseInt(
-                        String.format("%1$tj%1$tH%1$tM", new Date())
-                    ) + ClaimOut.CID.incrementAndGet()
-                )
+                .attr("id", ClaimOut.cid())
                 .add("created")
                 .set(
                     ZonedDateTime.now().format(
@@ -168,6 +163,17 @@ public final class ClaimOut implements Iterable<Directive> {
     @Override
     public Iterator<Directive> iterator() {
         return new Directives(this.dirs).up().iterator();
+    }
+
+    /**
+     * Create unique ID.
+     * @return ID of the claim
+     */
+    private static int cid() {
+        final int body = Integer.parseInt(
+            String.format("%1$tj%1$tH%1$tM", new Date())
+        );
+        return ClaimOut.COUNTER.incrementAndGet() + body;
     }
 
     /**

@@ -14,37 +14,52 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.farm.sync;
+package com.zerocracy.farm.cached;
 
-import java.util.AbstractMap;
+import com.zerocracy.jstk.Farm;
+import com.zerocracy.jstk.Item;
+import com.zerocracy.jstk.Project;
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
+import lombok.EqualsAndHashCode;
+import org.cactoos.iterable.Mapped;
 
 /**
- * Comparable map entry.
+ * Cached farm.
  *
- * @author Kirill (g4s8.public@gmail.com)
+ * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @param <K> Key type
- * @param <V> Value type
- * @since 0.12
+ * @since 0.11
  */
-final class CmpEntry<K, V extends Comparable<? super V>> extends
-    AbstractMap.SimpleImmutableEntry<K, V> implements
-    Comparable<CmpEntry<K, V>> {
+@EqualsAndHashCode(of = "origin")
+public final class CachedFarm implements Farm {
 
-    private static final long serialVersionUID = 6039678934863820533L;
+    /**
+     * Original farm.
+     */
+    private final Farm origin;
+
+    /**
+     * Pool of items.
+     */
+    private final Map<String, Item> pool;
 
     /**
      * Ctor.
-     *
-     * @param origin Origin map entry
+     * @param farm Original farm
      */
-    CmpEntry(final Map.Entry<K, V> origin) {
-        super(origin);
+    public CachedFarm(final Farm farm) {
+        this.origin = farm;
+        this.pool = new HashMap<>(0);
     }
 
     @Override
-    public int compareTo(final CmpEntry<K, V> other) {
-        return getValue().compareTo(other.getValue());
+    public Iterable<Project> find(final String query) throws IOException {
+        return new Mapped<>(
+            this.origin.find(query),
+            pkt -> new CachedProject(pkt, this.pool)
+        );
     }
+
 }

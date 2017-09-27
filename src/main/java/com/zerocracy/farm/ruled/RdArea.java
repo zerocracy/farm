@@ -14,45 +14,48 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.farm.sync;
+package com.zerocracy.farm.ruled;
 
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Project;
+import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
-import lombok.EqualsAndHashCode;
-import org.cactoos.iterable.Mapped;
+import java.nio.file.Path;
+import org.apache.commons.lang3.StringUtils;
+import org.cactoos.Scalar;
 
 /**
- * Synchronized farm.
- *
+ * XML file area, e.g. "pm/scope/wbs".
+
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.1
+ * @since 0.17
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@EqualsAndHashCode(of = "origin")
-public final class SyncFarm implements Farm {
+final class RdArea implements Scalar<String> {
 
     /**
-     * Original farm.
+     * The file.
      */
-    private final Farm origin;
+    private final Path path;
 
     /**
      * Ctor.
-     * @param farm Original farm
+     * @param file The XML file
      */
-    public SyncFarm(final Farm farm) {
-        this.origin = farm;
+    RdArea(final Path file) {
+        this.path = file;
     }
 
     @Override
-    public Iterable<Project> find(final String query) throws IOException {
-        synchronized (this.origin) {
-            return new Mapped<>(
-                this.origin.find(query),
-                SyncProject::new
-            );
-        }
+    public String value() throws IOException {
+        return StringUtils.substringBeforeLast(
+            StringUtils.substringAfter(
+                new XMLDocument(
+                    this.path.toFile()
+                ).xpath("/*/@xsi:noNamespaceSchemaLocation").get(0),
+                "/xsd/"
+            ),
+            ".xsd"
+        );
     }
 
 }

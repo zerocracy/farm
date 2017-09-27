@@ -52,6 +52,7 @@ import org.cactoos.scalar.And;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -106,6 +107,7 @@ public final class BundlesTest {
     }
 
     @Test
+    @Ignore
     public void oneBundleWorksFine() throws Exception {
         final Properties props = new PropertiesOf(
             new MapEntry<>("testing", "true")

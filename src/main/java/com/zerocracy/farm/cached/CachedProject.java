@@ -14,57 +14,65 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.farm.ruled;
+package com.zerocracy.farm.cached;
 
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.Map;
 import lombok.EqualsAndHashCode;
 
 /**
- * Ruled item.
+ * Cached project.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.17
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @since 0.11
  */
 @EqualsAndHashCode(of = "origin")
-final class RdItem implements Item {
+final class CachedProject implements Project {
 
     /**
-     * Original project.
+     * Default max pool size.
      */
-    private final Project project;
+    private static final int DEFAULT_THRESHOLD = 50;
 
     /**
-     * Original item.
+     * Origin project.
      */
-    private final Item origin;
+    private final Project origin;
 
     /**
-     * The location of the file.
+     * Pool of items.
      */
-    private final AtomicReference<Path> file;
+    private final Map<String, Item> pool;
 
     /**
-     * The length of the file.
+     * Max pool size.
      */
-    private long length;
+    private final int threshold;
 
     /**
      * Ctor.
      * @param pkt Project
-     * @param item Original item
+     * @param map Pool of items
      */
-    RdItem(final Project pkt, final Item item) {
-        this.project = pkt;
-        this.origin = item;
-        this.file = new AtomicReference<>();
-        this.length = 0L;
+    CachedProject(final Project pkt, final Map<String, Item> map) {
+        this(pkt, map, CachedProject.DEFAULT_THRESHOLD);
+    }
+
+    /**
+     * Ctor.
+     * @param pkt Project
+     * @param map Pool of items
+     * @param max Max pool size
+     */
+    CachedProject(final Project pkt, final Map<String, Item> map,
+        final int max) {
+        this.origin = pkt;
+        this.pool = map;
+        this.threshold = max;
     }
 
     @Override
@@ -73,26 +81,16 @@ final class RdItem implements Item {
     }
 
     @Override
-    public Path path() throws IOException {
-        final Path path = this.origin.path();
-        this.file.set(path);
-        if (Files.exists(path) && path.toFile().length() > 0L) {
-            this.length = path.toFile().length();
+    public Item acq(final String file) throws IOException {
+        final String location = String.format(
+            "%s %s", this.origin, file
+        );
+        if (this.pool.size() > this.threshold) {
+            this.pool.clear();
         }
-        return path;
-    }
-
-    @Override
-    public void close() throws IOException {
-        final Path path = this.file.get();
-        final boolean modified = path != null
-            && Files.exists(path)
-            && this.length != path.toFile().length();
-        if (modified) {
-            new RdAuto(this.project, path).propagate();
-            new RdRules(this.project, path).validate();
+        if (!this.pool.containsKey(location)) {
+            this.pool.put(location, this.origin.acq(file));
         }
-        this.origin.close();
+        return this.pool.get(location);
     }
-
 }

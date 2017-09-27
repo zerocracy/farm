@@ -78,7 +78,7 @@ SOFTWARE.
     <dependency>
       <groupId>com.zerocracy</groupId>
       <artifactId>jstk</artifactId>
-      <version>0.14.5</version>
+      <version>0.14.6</version>
     </dependency>
     <dependency>
       <groupId>io.sentry</groupId>
@@ -94,7 +94,7 @@ SOFTWARE.
     <dependency>
       <groupId>org.cactoos</groupId>
       <artifactId>cactoos</artifactId>
-      <version>0.17</version>
+      <version>0.18</version>
     </dependency>
     <dependency>
       <groupId>com.ullink.slack</groupId>

@@ -16,15 +16,12 @@
  */
 package com.zerocracy.farm.reactive;
 
-import com.jcabi.log.VerboseThreads;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Executors;
 import lombok.EqualsAndHashCode;
-import org.cactoos.func.AsyncFunc;
 import org.cactoos.iterable.Mapped;
 
 /**
@@ -70,12 +67,7 @@ public final class RvFarm implements Farm {
             p -> this.pool.computeIfAbsent(
                 p, pkt -> new RvProject(
                     pkt,
-                    new AsyncFunc<Boolean, Boolean>(
-                        new Flush(pkt, this.brigade),
-                        Executors.newSingleThreadExecutor(
-                            new VerboseThreads(pkt.toString())
-                        )
-                    )
+                    new Flush(pkt, this.brigade)
                 )
             )
         );

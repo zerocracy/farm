@@ -20,6 +20,7 @@ import com.jcabi.aspects.Tv;
 import com.jcabi.s3.Bucket;
 import com.jcabi.s3.fake.FkBucket;
 import com.zerocracy.farm.S3Farm;
+import com.zerocracy.farm.cached.CachedFarm;
 import com.zerocracy.farm.reactive.Brigade;
 import com.zerocracy.farm.reactive.RvFarm;
 import com.zerocracy.farm.sync.SyncFarm;
@@ -29,6 +30,7 @@ import com.zerocracy.pm.scope.Wbs;
 import java.nio.file.Files;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -42,6 +44,7 @@ import org.junit.Test;
 public final class RdItemTest {
 
     @Test
+    @Ignore
     public void closesClaims() throws Exception {
         final Bucket bucket = new FkBucket(
             Files.createTempDirectory("").toFile(),
@@ -49,7 +52,7 @@ public final class RdItemTest {
         );
         final Project project = new RdFarm(
             new RvFarm(
-                new SyncFarm(new S3Farm(bucket)),
+                new SyncFarm(new CachedFarm(new S3Farm(bucket))),
                 new Brigade()
             )
         ).find("@id='ABCDEFGHI'").iterator().next();

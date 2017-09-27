@@ -25,14 +25,14 @@ import org.cactoos.Proc;
 import org.cactoos.func.IoCheckedProc;
 
 /**
- * Reactive item.
+ * Reactive claims item.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.10
  */
 @EqualsAndHashCode(of = "origin")
-final class RvItem implements Item {
+final class RvClaims implements Item {
 
     /**
      * Original item.
@@ -40,16 +40,16 @@ final class RvItem implements Item {
     private final Item origin;
 
     /**
-     * The spin.
+     * The flush.
      */
-    private final Proc<?> flush;
+    private final Proc<Item> flush;
 
     /**
      * Ctor.
      * @param item Original item
-     * @param proc Spin
+     * @param proc Proc
      */
-    RvItem(final Item item, final Proc<?> proc) {
+    RvClaims(final Item item, final Proc<Item> proc) {
         this.origin = item;
         this.flush = proc;
     }
@@ -70,7 +70,7 @@ final class RvItem implements Item {
             .nodes("/claims/claim").size();
         this.origin.close();
         if (total > 0) {
-            new IoCheckedProc<>(this.flush).exec(null);
+            new IoCheckedProc<>(this.flush).exec(this);
         }
     }
 

@@ -16,13 +16,10 @@
  */
 package com.zerocracy.farm.sync;
 
-import com.jcabi.aspects.Tv;
-import com.jcabi.log.Logger;
 import com.zerocracy.jstk.Item;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
 import lombok.EqualsAndHashCode;
 
 /**
@@ -48,10 +45,11 @@ final class SyncItem implements Item {
     /**
      * Ctor.
      * @param item Original item
+     * @param sem Semaphore
      */
-    SyncItem(final Item item) {
+    SyncItem(final Item item, final Semaphore sem) {
         this.origin = item;
-        this.semaphore = new Semaphore(1, true);
+        this.semaphore = sem;
     }
 
     @Override
@@ -61,41 +59,15 @@ final class SyncItem implements Item {
 
     @Override
     public Path path() throws IOException {
-        if (this.semaphore.availablePermits() > 0) {
-            throw new IllegalStateException(
-                String.format(
-                    "The item \"%s\" is closed already",
-                    this.origin
-                )
-            );
-        }
-        synchronized (this.origin) {
-            return this.origin.path();
-        }
+        return this.origin.path();
     }
 
     @Override
     public void close() throws IOException {
-        synchronized (this.origin) {
+        try {
             this.origin.close();
+        } finally {
             this.semaphore.release();
-        }
-    }
-
-    /**
-     * Acquire access.
-     * @throws InterruptedException If fails
-     */
-    public void acquire() throws InterruptedException {
-        final long start = System.currentTimeMillis();
-        if (!this.semaphore.tryAcquire((long) Tv.TWENTY, TimeUnit.SECONDS)) {
-            throw new IllegalStateException(
-                Logger.format(
-                    "Failed to acquire \"%s\" in %[ms]s",
-                    this.origin,
-                    System.currentTimeMillis() - start
-                )
-            );
         }
     }
 

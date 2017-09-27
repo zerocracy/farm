@@ -16,14 +16,20 @@
  */
 package com.zerocracy.farm.sync;
 
+import com.jcabi.aspects.Tv;
+import com.jcabi.log.Logger;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 import lombok.EqualsAndHashCode;
 
 /**
  * Sync project.
+ *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
@@ -33,45 +39,22 @@ import lombok.EqualsAndHashCode;
 final class SyncProject implements Project {
 
     /**
-     * Default max pool size.
-     */
-    private static final int DEFAULT_THRESHOLD = 50;
-
-    /**
      * Origin project.
      */
     private final Project origin;
 
     /**
-     * Pool of items.
+     * Striped.
      */
-    private final Map<String, SyncItem> pool;
-
-    /**
-     * Max pool size.
-     */
-    private final int threshold;
+    private final Map<String, Semaphore> semaphores;
 
     /**
      * Ctor.
      * @param pkt Project
-     * @param map Pool of items
      */
-    SyncProject(final Project pkt, final Map<String, SyncItem> map) {
-        this(pkt, map, SyncProject.DEFAULT_THRESHOLD);
-    }
-
-    /**
-     * Ctor.
-     * @param pkt Project
-     * @param map Pool of items
-     * @param max Max pool size
-     */
-    SyncProject(final Project pkt, final Map<String, SyncItem> map,
-        final int max) {
+    SyncProject(final Project pkt) {
         this.origin = pkt;
-        this.pool = map;
-        this.threshold = max;
+        this.semaphores = new ConcurrentHashMap<>(0);
     }
 
     @Override
@@ -81,27 +64,27 @@ final class SyncProject implements Project {
 
     @Override
     public Item acq(final String file) throws IOException {
-        final String location = String.format(
-            "%s %s", this.origin, file
+        final long start = System.currentTimeMillis();
+        final Semaphore semaphore = this.semaphores.computeIfAbsent(
+            file, s -> new Semaphore(1, true)
         );
-        synchronized (this.pool) {
-            if (!this.pool.containsKey(location)) {
-                this.pool.put(
-                    location,
-                    new SyncItem(this.origin.acq(file))
+        try {
+            if (!semaphore.tryAcquire((long) Tv.TEN, TimeUnit.SECONDS)) {
+                throw new IllegalStateException(
+                    Logger.format(
+                        "Failed to acquire \"%s\" in \"%s\" in %[ms]s (%d)",
+                        file, this.origin,
+                        System.currentTimeMillis() - start,
+                        this.semaphores.size()
+                    )
                 );
             }
-            final SyncItem item = this.pool.get(location);
-            try {
-                item.acquire();
-            } catch (final InterruptedException ex) {
-                Thread.currentThread().interrupt();
-                throw new IllegalStateException(ex);
-            }
-            if (this.pool.size() > this.threshold) {
-                this.pool.clear();
-            }
-            return new TimeableItem(item);
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException(ex);
         }
+        return new TimeableItem(
+            new SyncItem(this.origin.acq(file), semaphore)
+        );
     }
 }
