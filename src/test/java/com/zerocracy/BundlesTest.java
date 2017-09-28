@@ -29,15 +29,17 @@ import com.zerocracy.pm.Claims;
 import com.zerocracy.radars.telegram.TmSession;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileVisitOption;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
-import org.apache.commons.io.FileUtils;
 import org.apache.log4j.FileAppender;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
@@ -114,7 +116,10 @@ public final class BundlesTest {
         this.home = Paths.get("target/testing-bundles")
             .resolve(this.name)
             .toAbsolutePath();
-        FileUtils.deleteDirectory(this.home.toFile());
+        Files.walk(this.home, FileVisitOption.FOLLOW_LINKS)
+            .sorted(Comparator.reverseOrder())
+            .map(Path::toFile)
+            .forEach(File::delete);
         this.appender = new FileAppender(
             new PatternLayout("%t %p %m\n"),
             this.home.resolve("test.log").toString(),
