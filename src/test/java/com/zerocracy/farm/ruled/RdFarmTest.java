@@ -14,55 +14,54 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.farm.sync;
+package com.zerocracy.farm.ruled;
 
 import com.jcabi.s3.Bucket;
 import com.jcabi.s3.fake.FkBucket;
 import com.zerocracy.RunsInThreads;
 import com.zerocracy.farm.S3Farm;
+import com.zerocracy.farm.sync.SyncFarm;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.scope.Wbs;
-import com.zerocracy.pm.staff.Roles;
 import java.nio.file.Files;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
- * Test case for {@link SyncFarm}.
+ * Test case for {@link RdFarm}.
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.10
+ * @since 0.18
  * @checkstyle JavadocMethodCheck (500 lines)
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
- * @checkstyle ExecutableStatementCountCheck (500 lines)
  */
-public final class SyncFarmTest {
+public final class RdFarmTest {
 
     @Test
-    public void makesProjectsThreadSafe() throws Exception {
+    public void worksInManyThreads() throws Exception {
         final Bucket bucket = new FkBucket(
             Files.createTempDirectory("").toFile(),
-            "the-bucket"
+            "some-bucket"
         );
-        final Farm farm = new SyncFarm(new S3Farm(bucket));
-        final Project project = farm.find("@id='ABCZZFE03'").iterator().next();
-        final Roles roles = new Roles(project);
-        final String role = "PO";
+        final Farm farm = new SyncFarm(new RdFarm(new S3Farm(bucket)));
+        final Project project = farm.find("@id='RDFRMTEST'").iterator().next();
+        final Wbs wbs = new Wbs(project).bootstrap();
+        final AtomicInteger total = new AtomicInteger();
         MatcherAssert.assertThat(
             inc -> {
-                final String person = String.format(
-                    "jeff%d", inc.incrementAndGet()
-                );
-                final String task = String.format(
+                final String job = String.format(
                     "gh:test/test#%d", inc.incrementAndGet()
                 );
-                new Wbs(project).bootstrap().add(task);
-                roles.bootstrap().assign(person, role);
-                return roles.hasRole(person, role);
+                wbs.add(job);
+                return wbs.exists(job);
             },
-            new RunsInThreads<>(new AtomicInteger())
+            new RunsInThreads<>(total)
+        );
+        MatcherAssert.assertThat(
+            wbs.iterate().size(),
+            Matchers.equalTo(total.get())
         );
     }
 

@@ -14,19 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.workload
+package com.zerocracy.bundles.understands_bug_label
 
 import com.jcabi.xml.XML
 import com.zerocracy.jstk.Project
+import com.zerocracy.pm.scope.Wbs
 
 def exec(Project project, XML xml) {
-// @todo #228:30m We should be able to test PMO items, e.g. 'agenda/<login>.xml'.
-//  Now it's impossible because `BundlesTest` uses FkProject for all resources.
-//  Also 'farm' can't be accessed via `binding.variables` in test groovy script.
-
-//  Farm farm = binding.variables.farm
-//  MatcherAssert.assertThat(
-//    new Workload(new Pmo(farm)).vote('first', new StringBuilder()),
-//    Matchers.equalTo(0.75)
-//  )
+  assert new Wbs(project).bootstrap().exists('gh:test/bugs#1')
 }

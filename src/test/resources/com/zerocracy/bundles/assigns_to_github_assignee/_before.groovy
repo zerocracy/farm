@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.assigns_performer
+package com.zerocracy.bundles.assigns_to_github_assignee
 
 import com.jcabi.github.Github
 import com.jcabi.github.Issue
@@ -29,26 +29,21 @@ import javax.json.Json
 def exec(Project project, XML xml) {
   Github github = binding.variables.github
   def repo = github.repos().create(new Repos.RepoCreate("test", false))
-  def issue =
-      new Issue.Smart(repo.issues().create("hello, world", ""))
+  def issue = new Issue.Smart(repo.issues().create("hello, world", ""))
   issue.assign("yegor256")
-  final xpath = String.format(
-      "links/link[@rel='github' and @href='%s']",
-      repo.coordinates().toString().toLowerCase(Locale.ENGLISH)
-  )
   new RbOnAssign().react(
-      new FkFarm(project, xpath),
-      github,
-      Json.createObjectBuilder().add(
-          "issue",
-          Json.createObjectBuilder().add("number", issue.number())
-      ).add(
-          "repository",
-          Json.createObjectBuilder()
-              .add("full_name", repo.coordinates().toString())
-      ).add(
-          "sender",
-          Json.createObjectBuilder().add("login", "yegor256")
-      ).build()
+    new FkFarm(
+      project,
+      String.format(
+        "links/link[@rel='github' and @href='%s']",
+        repo.coordinates().toString().toLowerCase(Locale.ENGLISH)
+      )
+    ),
+    github,
+    Json.createObjectBuilder()
+      .add("issue", Json.createObjectBuilder().add("number", issue.number()))
+      .add("repository", Json.createObjectBuilder().add("full_name", repo.coordinates().toString()))
+      .add("sender", Json.createObjectBuilder().add("login", "yegor256"))
+      .build()
   )
 }

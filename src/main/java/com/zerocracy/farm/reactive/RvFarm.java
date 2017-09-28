@@ -19,8 +19,8 @@ package com.zerocracy.farm.reactive;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import lombok.EqualsAndHashCode;
 import org.cactoos.iterable.Mapped;
 
@@ -57,7 +57,7 @@ public final class RvFarm implements Farm {
     public RvFarm(final Farm farm, final Brigade bgd) {
         this.origin = farm;
         this.brigade = bgd;
-        this.pool = new HashMap<>(0);
+        this.pool = new ConcurrentHashMap<>(0);
     }
 
     @Override

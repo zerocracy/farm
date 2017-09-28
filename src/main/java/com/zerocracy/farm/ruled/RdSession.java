@@ -114,7 +114,14 @@ final class RdSession {
             if (modified) {
                 this.alive.set(true);
                 new RdAuto(this.project, path).propagate();
-                new RdRules(this.project, path).validate();
+                new RdRules(
+                    this.project, path,
+                    String.format(
+                        "%s/%s modified (%d to %d)",
+                        this.project, path.getFileName(),
+                        this.lengths.get(file), path.toFile().length()
+                    )
+                ).validate();
             }
             this.lengths.remove(file);
             if (this.lengths.isEmpty()) {

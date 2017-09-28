@@ -16,6 +16,7 @@
  */
 package com.zerocracy.farm.reactive;
 
+import com.jcabi.aspects.Tv;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Item;
@@ -25,6 +26,9 @@ import com.zerocracy.pm.Claims;
 import java.io.IOException;
 import java.util.Iterator;
 import org.cactoos.Proc;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.text.JoinedText;
+import org.cactoos.text.SubText;
 
 /**
  * The action that happens in the {@link Flush}.
@@ -89,11 +93,21 @@ final class Flush implements Proc<Item> {
             );
         }
         Logger.info(
-            this, "Seen \"%s/%d/%d\" at \"%s\" by %d stk, %[ms]s",
+            this, "Seen \"%s/%d/%d\" at \"%s\" by %d stk, %[ms]s [%s]",
             claim.type(), claim.number(), left,
             this.project.toString(),
             total,
-            System.currentTimeMillis() - start
+            System.currentTimeMillis() - start,
+            new JoinedText(
+                "; ",
+                new Mapped<>(
+                    claim.params().entrySet(),
+                    ent -> String.format(
+                        "%s=%s", ent.getKey(),
+                        new SubText(ent.getValue(), 0, Tv.TWENTY).asString()
+                    )
+                )
+            ).asString()
         );
     }
 

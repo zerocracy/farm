@@ -22,6 +22,8 @@ import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Comparator;
+import org.cactoos.collection.Sorted;
 import org.xembly.Directive;
 import org.xembly.Directives;
 
@@ -99,7 +101,18 @@ public final class Claims {
      */
     public Collection<XML> iterate() throws IOException {
         try (final Item item = this.item()) {
-            return new Xocument(item).nodes("/claims/claim");
+            return new Sorted<>(
+                new Comparator<XML>() {
+                    @Override
+                    public int compare(final XML left, final XML right) {
+                        return Long.compare(this.cid(left), this.cid(right));
+                    }
+                    private long cid(final XML xml) {
+                        return new ClaimIn(xml).number();
+                    }
+                },
+                new Xocument(item).nodes("/claims/claim")
+            );
         }
     }
 

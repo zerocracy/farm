@@ -71,13 +71,20 @@ final class RdRules {
     private final Path path;
 
     /**
+     * The reason for validation.
+     */
+    private final String reason;
+
+    /**
      * Ctor.
      * @param pkt Project
      * @param file File with item
+     * @param rsn Reason
      */
-    RdRules(final Project pkt, final Path file) {
+    RdRules(final Project pkt, final Path file, final String rsn) {
         this.project = pkt;
         this.path = file;
+        this.reason = rsn;
     }
 
     /**
@@ -98,8 +105,8 @@ final class RdRules {
         ).iterate();
         new UncheckedScalar<>(new And(xsls, this::check)).value();
         Logger.info(
-            this, "%s validated with %d XSLs",
-            this.path.getFileName(), new LengthOf(xsls).value()
+            this, "%s, %d XSLs confirm consistency",
+            this.reason, new LengthOf(xsls).value()
         );
     }
 

@@ -109,9 +109,8 @@ public final class Xocument {
     /**
      * Ctor.
      * @param item Item
-     * @throws IOException If fails
      */
-    public Xocument(final Item item) throws IOException {
+    public Xocument(final Item item) {
         this(item::path);
     }
 
@@ -184,7 +183,10 @@ public final class Xocument {
                     "xsi:noNamespaceSchemaLocation", uri
                 )
             );
-            Logger.info(this, "XSD upgraded to \"%s\" in %s", uri, this.file);
+            Logger.info(
+                this, "XSD upgraded to \"%s\" in %s", uri,
+                this.file.value().getFileName()
+            );
         }
         return this;
     }
@@ -281,7 +283,7 @@ public final class Xocument {
                             Logger.info(
                                 this,
                                 "XML %s.xml upgraded to \"%s\" by %s in %s",
-                                xsd, ver, url, this.file
+                                xsd, ver, url, this.file.value().getFileName()
                             );
                         }
                         return output;

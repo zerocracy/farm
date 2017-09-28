@@ -16,7 +16,7 @@
  */
 package com.zerocracy.farm;
 
-import com.jcabi.aspects.Cacheable;
+import com.zerocracy.farm.cached.CachedFarm;
 import com.zerocracy.farm.reactive.Brigade;
 import com.zerocracy.farm.reactive.RvFarm;
 import com.zerocracy.farm.reactive.StkGroovy;
@@ -33,6 +33,9 @@ import org.cactoos.io.ResourceOf;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.map.MapEntry;
 import org.cactoos.map.StickyMap;
+import org.cactoos.scalar.StickyScalar;
+import org.cactoos.scalar.SyncScalar;
+import org.cactoos.scalar.UncheckedScalar;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
 
@@ -48,9 +51,9 @@ import org.reflections.scanners.ResourcesScanner;
 public final class SmartFarm implements Scalar<Farm> {
 
     /**
-     * Original farm.
+     * Unique self.
      */
-    private final Farm origin;
+    private final Scalar<Farm> self;
 
     /**
      * Properties.
@@ -64,33 +67,39 @@ public final class SmartFarm implements Scalar<Farm> {
 
     /**
      * Ctor.
-     * @param frm Original
+     * @param farm Original
      * @param pps Properties
      * @param dps Deps
      */
-    public SmartFarm(final Farm frm, final Properties pps,
+    public SmartFarm(final Farm farm, final Properties pps,
         final Map<String, Object> dps) {
-        this.origin = frm;
         this.props = pps;
         this.deps = dps;
+        this.self = new SyncScalar<>(
+            new StickyScalar<>(
+                () -> new SyncFarm(
+                    new RdFarm(
+                        new RvFarm(
+                            new CachedFarm(
+                                query -> new Mapped<>(
+                                    farm.find(query),
+                                    project -> new UplinkedProject(
+                                        new StrictProject(project),
+                                        farm
+                                    )
+                                )
+                            ),
+                            new Brigade(this.stakeholders())
+                        )
+                    )
+                )
+            )
+        );
     }
 
     @Override
-    @Cacheable(forever = true)
     public Farm value() {
-        final Farm farm = new SyncFarm(this.origin);
-        return new RdFarm(
-            new RvFarm(
-                query -> new Mapped<>(
-                    farm.find(query),
-                    project -> new UplinkedProject(
-                        new StrictProject(project),
-                        farm
-                    )
-                ),
-                new Brigade(this.stakeholders())
-            )
-        );
+        return new UncheckedScalar<>(this.self).value();
     }
 
     /**

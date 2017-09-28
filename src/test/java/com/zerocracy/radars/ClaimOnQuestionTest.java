@@ -47,7 +47,7 @@ public final class ClaimOnQuestionTest {
         return new StickyList<>(
             "role assign ARC yegor256",
             "just some text",
-            "vacation on"
+            "modifies_vacation_mode on"
         );
     }
 

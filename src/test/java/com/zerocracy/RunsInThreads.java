@@ -1,0 +1,92 @@
+/**
+ * Copyright (c) 2016-2017 Zerocracy
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to read
+ * the Software only. Permissions is hereby NOT GRANTED to use, copy, modify,
+ * merge, publish, distribute, sublicense, and/or sell copies of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+package com.zerocracy;
+
+import com.jcabi.aspects.Tv;
+import com.jcabi.log.VerboseCallable;
+import com.jcabi.log.VerboseThreads;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import org.cactoos.Func;
+import org.cactoos.scalar.And;
+import org.cactoos.scalar.UncheckedScalar;
+import org.hamcrest.Description;
+import org.hamcrest.TypeSafeMatcher;
+
+/**
+ * Matcher for {@link Func} that must run in multiple threads.
+ *
+ * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @version $Id$
+ * @param <T> Type of input
+ * @since 0.18
+ * @checkstyle JavadocMethodCheck (500 lines)
+ */
+public final class RunsInThreads<T> extends TypeSafeMatcher<Func<T, Boolean>> {
+
+    /**
+     * Input.
+     */
+    private final T input;
+
+    /**
+     * Ctor.
+     * @param object Input object
+     */
+    public RunsInThreads(final T object) {
+        super();
+        this.input = object;
+    }
+
+    @Override
+    public boolean matchesSafely(final Func<T, Boolean> func) {
+        final int threads =
+            Runtime.getRuntime().availableProcessors() << Tv.FOUR;
+        final ExecutorService service = Executors.newFixedThreadPool(
+            threads, new VerboseThreads()
+        );
+        final CountDownLatch latch = new CountDownLatch(1);
+        final Collection<Future<Boolean>> futures = new ArrayList<>(threads);
+        final Callable<Boolean> task = new VerboseCallable<>(
+            () -> {
+                latch.await();
+                return func.apply(this.input);
+            },
+            true, true
+        );
+        for (int thread = 0; thread < threads; ++thread) {
+            futures.add(service.submit(task));
+        }
+        latch.countDown();
+        return new UncheckedScalar<>(
+            new And(
+                futures,
+                (Func<Future<Boolean>, Boolean>) Future::get
+            )
+        ).value();
+    }
+
+    @Override
+    public void describeTo(final Description description) {
+        description.appendText("failed");
+    }
+}

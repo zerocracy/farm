@@ -14,14 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.assigns_performer
+package com.zerocracy.bundles.set_user_rate
 
 import com.jcabi.xml.XML
 import com.zerocracy.jstk.Project
-import com.zerocracy.pm.in.Orders
-import com.zerocracy.pm.scope.Wbs
 
 def exec(Project project, XML xml) {
-  def wbs = new Wbs(project).bootstrap()
-  assert wbs.exists('gh:test/test#1')
 }

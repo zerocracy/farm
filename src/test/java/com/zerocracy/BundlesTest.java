@@ -23,19 +23,24 @@ import com.zerocracy.farm.SmartFarm;
 import com.zerocracy.farm.reactive.StkGroovy;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.fake.FkProject;
+import com.zerocracy.jstk.fake.FkFarm;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
 import com.zerocracy.radars.telegram.TmSession;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
+import org.apache.commons.io.FileUtils;
+import org.apache.log4j.FileAppender;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
 import org.cactoos.io.LengthOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.ResourceOf;
@@ -49,8 +54,10 @@ import org.cactoos.list.StickyList;
 import org.cactoos.map.MapEntry;
 import org.cactoos.map.StickyMap;
 import org.cactoos.scalar.And;
+import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -68,6 +75,7 @@ import org.reflections.scanners.ResourcesScanner;
  * @checkstyle JavadocVariableCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @checkstyle VisibilityModifierCheck (500 lines)
+ * @checkstyle ClassFanOutComplexityCheck (500 lines)
  */
 @SuppressWarnings("PMD.ExcessiveImports")
 @RunWith(Parameterized.class)
@@ -79,6 +87,8 @@ public final class BundlesTest {
     private String name;
 
     private Path home;
+
+    private FileAppender appender;
 
     @Parameterized.Parameters(name = "{0}")
     public static Collection<Object[]> bundles() {
@@ -97,13 +107,33 @@ public final class BundlesTest {
     }
 
     @Before
-    public void prepare() {
+    public void prepare() throws IOException {
         this.name = this.bundle.substring(
             this.bundle.lastIndexOf('/') + 1
         );
         this.home = Paths.get("target/testing-bundles")
             .resolve(this.name)
             .toAbsolutePath();
+        FileUtils.deleteDirectory(this.home.toFile());
+        this.appender = new FileAppender(
+            new PatternLayout("%t %p %m\n"),
+            this.home.resolve("test.log").toString(),
+            false
+        );
+        Logger.getRootLogger().addAppender(this.appender);
+    }
+
+    @After
+    public void after() throws IOException {
+        Logger.getRootLogger().removeAppender(this.appender);
+        MatcherAssert.assertThat(
+            String.format(
+                "There were some exceptions in the log, see %s",
+                this.appender.getFile()
+            ),
+            new TextOf(new File(this.appender.getFile())).asString(),
+            Matchers.not(Matchers.containsString("Exception"))
+        );
     }
 
     @Test
@@ -123,8 +153,7 @@ public final class BundlesTest {
             "[^A-Z0-9]", ""
         ).substring(0, 9);
         final Farm farm = new SmartFarm(
-            query -> Collections.singleton(new FkProject(this.home, pid)),
-            props, deps
+            new FkFarm(this.home), props, deps
         ).value();
         final Project project = farm.find(
             String.format("@id='%s'", pid)

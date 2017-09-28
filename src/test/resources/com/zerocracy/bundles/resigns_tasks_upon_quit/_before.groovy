@@ -16,8 +16,6 @@
  */
 package com.zerocracy.bundles.resigns_tasks_upon_quit
 
-import com.jcabi.github.Github
-import com.jcabi.github.Repos
 import com.jcabi.xml.XML
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimOut
