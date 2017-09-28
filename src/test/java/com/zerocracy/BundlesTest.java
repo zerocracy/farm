@@ -24,6 +24,7 @@ import com.zerocracy.farm.reactive.StkGroovy;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.fake.FkFarm;
+import com.zerocracy.jstk.fake.FkProject;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
 import com.zerocracy.radars.telegram.TmSession;
@@ -34,6 +35,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Locale;
@@ -61,7 +63,6 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -116,10 +117,12 @@ public final class BundlesTest {
         this.home = Paths.get("target/testing-bundles")
             .resolve(this.name)
             .toAbsolutePath();
-        Files.walk(this.home, FileVisitOption.FOLLOW_LINKS)
-            .sorted(Comparator.reverseOrder())
-            .map(Path::toFile)
-            .forEach(File::delete);
+        if (Files.exists(this.home)) {
+            Files.walk(this.home, FileVisitOption.FOLLOW_LINKS)
+                .sorted(Comparator.reverseOrder())
+                .map(Path::toFile)
+                .forEach(File::delete);
+        }
         this.appender = new FileAppender(
             new PatternLayout("%t %p %m\n"),
             this.home.resolve("test.log").toString(),
@@ -142,7 +145,6 @@ public final class BundlesTest {
     }
 
     @Test
-    @Ignore
     public void oneBundleWorksFine() throws Exception {
         final Properties props = new PropertiesOf(
             new MapEntry<>("testing", "true")
@@ -157,12 +159,17 @@ public final class BundlesTest {
         final String pid = this.name.toUpperCase(Locale.ENGLISH).replaceAll(
             "[^A-Z0-9]", ""
         ).substring(0, 9);
+        final String xpath = String.format("@id='%s'", pid);
         final Farm farm = new SmartFarm(
-            new FkFarm(this.home), props, deps
+            new FkFarm(
+                new StickyMap<String, Project>(
+                    new MapEntry<String, Project>(xpath, new FkProject(this.home, pid)),
+                    new MapEntry<String, Project>("@id='PMO'", new FkProject(this.home, pid))
+                )
+            ),
+            props, deps
         ).value();
-        final Project project = farm.find(
-            String.format("@id='%s'", pid)
-        ).iterator().next();
+        final Project project = farm.find(xpath).iterator().next();
         new And(
             BundlesTest.resources(this.bundle.replace("/", ".")),
             path -> {
