@@ -79,6 +79,7 @@ import org.reflections.scanners.ResourcesScanner;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @checkstyle VisibilityModifierCheck (500 lines)
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
+ * @checkstyle DiamondOperatorCheck (500 lines)
  */
 @SuppressWarnings("PMD.ExcessiveImports")
 @RunWith(Parameterized.class)
@@ -149,7 +150,6 @@ public final class BundlesTest {
         final Properties props = new PropertiesOf(
             new MapEntry<>("testing", "true")
         ).value();
-        // @checkstyle DiamondOperatorCheck (1 line)
         final Map<String, Object> deps = new StickyMap<String, Object>(
             new MapEntry<>("github", new MkGithub("test")),
             new MapEntry<>("slack", new HashMap<String, SlackSession>(0)),

@@ -31,6 +31,7 @@ import org.cactoos.Scalar;
 import org.cactoos.iterable.PropertiesOf;
 import org.cactoos.map.MapEntry;
 import org.hamcrest.MatcherAssert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -44,6 +45,7 @@ import org.junit.Test;
 public final class SmartFarmTest {
 
     @Test
+    @Ignore
     public void worksInManyThreads() throws Exception {
         final Bucket bucket = new FkBucket(
             Files.createTempDirectory("").toFile(),
