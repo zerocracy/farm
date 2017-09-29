@@ -69,7 +69,7 @@ public final class SyncProject implements Project {
         );
         try {
             // @checkstyle MagicNumber (1 line)
-            if (!semaphore.tryAcquire(10L, TimeUnit.SECONDS)) {
+            if (!semaphore.tryAcquire(60L, TimeUnit.SECONDS)) {
                 throw new IllegalStateException(
                     Logger.format(
                         "Failed to acquire \"%s\" in \"%s\" in %[ms]s (%d)",
