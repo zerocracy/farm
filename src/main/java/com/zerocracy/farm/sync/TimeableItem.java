@@ -16,7 +16,6 @@
  */
 package com.zerocracy.farm.sync;
 
-import com.jcabi.aspects.Tv;
 import com.jcabi.log.Logger;
 import com.zerocracy.jstk.Item;
 import io.sentry.Sentry;
@@ -48,8 +47,13 @@ final class TimeableItem implements Item {
     private final Item origin;
 
     /**
+     * Max seconds to wait.
+     */
+    private final long max;
+
+    /**
      * This timer will send error message with stacktrace to
-     * Sentry if item acquired more than 20 seconds.
+     * Sentry if item acquired more than X seconds.
      */
     private final Timer timer;
 
@@ -61,9 +65,11 @@ final class TimeableItem implements Item {
     /**
      * Ctor.
      * @param item Original item
+     * @param secs Seconds to wait
      */
-    TimeableItem(final Item item) {
+    TimeableItem(final Item item, final long secs) {
         this.origin = item;
+        this.max = secs;
         this.timer = new Timer();
         this.tasks = new ArrayList<>(1);
     }
@@ -78,8 +84,8 @@ final class TimeableItem implements Item {
         final TimeableItem.ReportTask task = new TimeableItem.ReportTask(
             new Exception(
                 String.format(
-                    "Item \"%s\" was opened for too long",
-                    this.toString()
+                    "Item \"%s\" was opened for too long (over %d secs)",
+                    this.toString(), this.max
                 )
             ).fillInStackTrace(),
             this.origin.toString()
@@ -88,7 +94,7 @@ final class TimeableItem implements Item {
             this.tasks.add(task);
             this.timer.schedule(
                 task,
-                TimeUnit.MILLISECONDS.convert(Tv.TWENTY, TimeUnit.SECONDS)
+                TimeUnit.MILLISECONDS.convert(this.max, TimeUnit.SECONDS)
             );
         }
         return this.origin.path();

@@ -32,13 +32,15 @@ def exec(Project project, XML xml) {
   String login = claim.param('login')
   new Roles(project).bootstrap().resign(login)
   Farm farm = binding.variables.farm
-  new Projects(new Pmo(farm), login).remove(project.toString())
-  claim.reply(
-    String.format(
-      'All roles resigned from "%s".',
-      login
-    )
-  ).postTo(project)
+  new Projects(new Pmo(farm), login).bootstrap().remove(project.toString())
+  if (claim.hasToken()) {
+    claim.reply(
+      String.format(
+        'All roles resigned from "%s".',
+        login
+      )
+    ).postTo(project)
+  }
   new ClaimOut()
     .type('All roles were resigned')
     .param('login', login)

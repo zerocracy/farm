@@ -35,7 +35,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Locale;
@@ -45,6 +44,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.log4j.FileAppender;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
+import org.cactoos.Func;
 import org.cactoos.io.LengthOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.ResourceOf;
@@ -156,20 +156,20 @@ public final class BundlesTest {
             new MapEntry<>("telegram", new HashMap<Long, TmSession>(0)),
             new MapEntry<>("properties", props)
         );
-        final String pid = this.name.toUpperCase(Locale.ENGLISH).replaceAll(
-            "[^A-Z0-9]", ""
-        ).substring(0, 9);
-        final String xpath = String.format("@id='%s'", pid);
         final Farm farm = new SmartFarm(
             new FkFarm(
-                new StickyMap<String, Project>(
-                    new MapEntry<String, Project>(xpath, new FkProject(this.home, pid)),
-                    new MapEntry<String, Project>("@id='PMO'", new FkProject(this.home, pid))
-                )
+                (Func<String, Project>) pid -> new FkProject(this.home, pid)
             ),
             props, deps
         ).value();
-        final Project project = farm.find(xpath).iterator().next();
+        final Project project = farm.find(
+            String.format(
+                "@id='%s'",
+                this.name.toUpperCase(Locale.ENGLISH).replaceAll(
+                    "[^A-Z0-9]", ""
+                ).substring(0, Tv.NINE)
+            )
+        ).iterator().next();
         new And(
             BundlesTest.resources(this.bundle.replace("/", ".")),
             path -> {

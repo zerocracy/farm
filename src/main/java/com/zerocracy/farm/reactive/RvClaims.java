@@ -67,6 +67,7 @@ final class RvClaims implements Item {
     @Override
     public void close() throws IOException {
         final int total = new Xocument(this.path())
+            .bootstrap("pm/claims")
             .nodes("/claims/claim").size();
         this.origin.close();
         if (total > 0) {

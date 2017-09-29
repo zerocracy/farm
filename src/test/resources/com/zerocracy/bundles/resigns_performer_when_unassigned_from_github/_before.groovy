@@ -36,12 +36,8 @@ def exec(Project project, XML xml) {
   repo.issueEvents()
       .create(Event.UNASSIGNED, issue.number(), "yegor256", com.google.common.base.Optional.absent())
   new People(project).bootstrap()
-  final xpath = String.format(
-      "links/link[@rel='github' and @href='%s']",
-      repo.coordinates().toString().toLowerCase(Locale.ENGLISH)
-  )
   new RbOnUnassign().react(
-      new FkFarm(project, xpath),
+      new FkFarm(project),
       github,
       Json.createObjectBuilder().add(
           "issue",

@@ -83,8 +83,6 @@ final class SyncProject implements Project {
             Thread.currentThread().interrupt();
             throw new IllegalStateException(ex);
         }
-        return new TimeableItem(
-            new SyncItem(this.origin.acq(file), semaphore)
-        );
+        return new SyncItem(this.origin.acq(file), semaphore);
     }
 }

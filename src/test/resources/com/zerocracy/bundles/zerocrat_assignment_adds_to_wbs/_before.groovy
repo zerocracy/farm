@@ -36,13 +36,7 @@ def exec(Project project, XML xml) {
     com.google.common.base.Optional.absent()
   )
   new RbOnAssign().react(
-    new FkFarm(
-      project,
-      String.format(
-        "links/link[@rel='github' and @href='%s']",
-        repo.coordinates().toString().toLowerCase(Locale.ENGLISH)
-      )
-    ),
+    new FkFarm(project),
     github,
     Json.createObjectBuilder()
       .add("issue", Json.createObjectBuilder().add("number", issue.number()))

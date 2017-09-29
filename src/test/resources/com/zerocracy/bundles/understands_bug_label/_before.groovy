@@ -28,12 +28,8 @@ def exec(Project project, XML xml) {
   Github github = binding.variables.github
   def repo = github.repos().create(new Repos.RepoCreate("bugs", false))
   def issue = repo.issues().create("A Bug", "")
-  final xpath = String.format(
-    "links/link[@rel='github' and @href='%s']",
-    repo.coordinates().toString().toLowerCase(Locale.ENGLISH)
-  )
   new RbOnBug().react(
-    new FkFarm(project, xpath),
+    new FkFarm(project),
     github,
     Json.createObjectBuilder().add(
       "issue",
