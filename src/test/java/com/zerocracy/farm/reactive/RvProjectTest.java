@@ -16,6 +16,8 @@
  */
 package com.zerocracy.farm.reactive;
 
+import com.jcabi.aspects.Tv;
+import com.zerocracy.RunsInThreads;
 import com.zerocracy.farm.sync.SyncProject;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.fake.FkProject;
@@ -23,6 +25,7 @@ import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -40,7 +43,7 @@ public final class RvProjectTest {
     @Test
     public void closesClaims() throws Exception {
         final AtomicBoolean done = new AtomicBoolean();
-        final Project raw = new FkProject();
+        final Project raw = new SyncProject(new FkProject());
         final Flush flush = new Flush(
             raw,
             new Brigade(
@@ -49,7 +52,7 @@ public final class RvProjectTest {
                 )
             )
         );
-        final RvProject project = new RvProject(new SyncProject(raw), flush);
+        final Project project = new RvProject(raw, flush);
         final Claims claims = new Claims(project).bootstrap();
         claims.add(new ClaimOut().type("hello").token("test;tt"));
         while (true) {
@@ -58,6 +61,35 @@ public final class RvProjectTest {
             }
         }
         MatcherAssert.assertThat(done.get(), Matchers.is(true));
+    }
+
+    @Test
+    public void closesClaimsInThreads() throws Exception {
+        final AtomicInteger total = new AtomicInteger(Tv.FIFTY);
+        final Project raw = new SyncProject(new FkProject());
+        final Flush flush = new Flush(
+            raw,
+            new Brigade(
+                Collections.singletonList(
+                    (project, xml) -> total.decrementAndGet()
+                )
+            )
+        );
+        final Project project = new RvProject(raw, flush);
+        MatcherAssert.assertThat(
+            input -> {
+                new ClaimOut().type("hello").postTo(project);
+                return true;
+            },
+            new RunsInThreads<>(null, total.get())
+        );
+        final Claims claims = new Claims(project).bootstrap();
+        while (true) {
+            if (!claims.iterate().iterator().hasNext()) {
+                break;
+            }
+        }
+        MatcherAssert.assertThat(total.get(), Matchers.equalTo(0));
     }
 
 }

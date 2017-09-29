@@ -49,23 +49,35 @@ public final class RunsInThreads<T> extends TypeSafeMatcher<Func<T, Boolean>> {
     private final T input;
 
     /**
+     * Total number of threads to run.
+     */
+    private final int total;
+
+    /**
      * Ctor.
      * @param object Input object
      */
     public RunsInThreads(final T object) {
+        this(object, Runtime.getRuntime().availableProcessors() << Tv.FOUR);
+    }
+
+    /**
+     * Ctor.
+     * @param object Input object
+     */
+    public RunsInThreads(final T object, final int threads) {
         super();
         this.input = object;
+        this.total = threads;
     }
 
     @Override
     public boolean matchesSafely(final Func<T, Boolean> func) {
-        final int threads =
-            Runtime.getRuntime().availableProcessors() << Tv.FOUR;
         final ExecutorService service = Executors.newFixedThreadPool(
-            threads, new VerboseThreads()
+            this.total, new VerboseThreads()
         );
         final CountDownLatch latch = new CountDownLatch(1);
-        final Collection<Future<Boolean>> futures = new ArrayList<>(threads);
+        final Collection<Future<Boolean>> futures = new ArrayList<>(this.total);
         final Callable<Boolean> task = new VerboseCallable<>(
             () -> {
                 latch.await();
@@ -73,7 +85,7 @@ public final class RunsInThreads<T> extends TypeSafeMatcher<Func<T, Boolean>> {
             },
             true, true
         );
-        for (int thread = 0; thread < threads; ++thread) {
+        for (int thread = 0; thread < this.total; ++thread) {
             futures.add(service.submit(task));
         }
         latch.countDown();
