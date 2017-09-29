@@ -16,7 +16,6 @@
  */
 package com.zerocracy.radars.slack;
 
-import com.jcabi.aspects.Tv;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.jstk.Farm;
@@ -80,7 +79,8 @@ public final class ReSafe implements Reaction<SlackMessagePosted> {
                                 new TextOf(
                                     new BytesOf(throwable)
                                 ).asString(),
-                                Tv.THOUSAND
+                                // @checkstyle MagicNumber (1 line)
+                                1000
                             ),
                             "\n```"
                         )

@@ -16,7 +16,6 @@
  */
 package com.zerocracy.farm.sync;
 
-import com.jcabi.aspects.Tv;
 import com.jcabi.log.Logger;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
@@ -69,7 +68,8 @@ public final class SyncProject implements Project {
             file, s -> new Semaphore(1, true)
         );
         try {
-            if (!semaphore.tryAcquire((long) Tv.TEN, TimeUnit.SECONDS)) {
+            // @checkstyle MagicNumber (1 line)
+            if (!semaphore.tryAcquire(10L, TimeUnit.SECONDS)) {
                 throw new IllegalStateException(
                     Logger.format(
                         "Failed to acquire \"%s\" in \"%s\" in %[ms]s (%d)",

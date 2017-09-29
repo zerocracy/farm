@@ -17,60 +17,55 @@
 package com.zerocracy.radars.github;
 
 import com.jcabi.github.Github;
-import com.jcabi.log.VerboseRunnable;
 import com.jcabi.log.VerboseThreads;
-import com.zerocracy.jstk.Farm;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import javax.json.JsonObject;
+import org.cactoos.func.UncheckedProc;
 
 /**
- * React when a new comment was posted.
+ * GitHub hook, take.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.9
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @since 0.18
  */
-public final class RbOnComment implements Rebound {
+public final class GithubRoutine implements Runnable {
 
     /**
-     * Runnable to trigger.
+     * Github.
      */
-    private final Runnable radar;
+    private final Github github;
 
     /**
      * Service.
      */
-    private final ExecutorService service;
+    private final ScheduledExecutorService service;
 
     /**
      * Ctor.
-     * @param code The radar
+     * @param ghub Github
      */
-    public RbOnComment(final Runnable code) {
-        this.radar = code;
-        this.service = Executors.newSingleThreadExecutor(
+    public GithubRoutine(final Github ghub) {
+        this.github = ghub;
+        this.service = Executors.newSingleThreadScheduledExecutor(
             new VerboseThreads()
         );
     }
 
-    @Override
-    public String react(final Farm farm, final Github github,
-        final JsonObject event) {
-        this.service.submit(
-            new VerboseRunnable(
-                () -> {
-                    // @checkstyle MagicNumber (1 line)
-                    TimeUnit.SECONDS.sleep(5L);
-                    this.radar.run();
-                    return null;
-                },
-                true, true
-            )
+    /**
+     * Start it.
+     */
+    public void start() {
+        this.service.scheduleWithFixedDelay(
+            this, 1L, 1L, TimeUnit.SECONDS
         );
-        return "Notification checking triggered";
     }
 
+    @Override
+    public void run() {
+        new UncheckedProc<>(
+            new AcceptInvitations(this.github)
+        ).exec(true);
+    }
 }

@@ -16,13 +16,14 @@
  */
 package com.zerocracy.entry;
 
-import com.jcabi.aspects.Cacheable;
 import com.jcabi.github.Github;
 import com.jcabi.github.RtGithub;
 import java.io.IOException;
 import java.util.Properties;
 import lombok.EqualsAndHashCode;
 import org.cactoos.Scalar;
+import org.cactoos.scalar.IoCheckedScalar;
+import org.cactoos.scalar.StickyScalar;
 
 /**
  * GitHub server connector.
@@ -34,14 +35,24 @@ import org.cactoos.Scalar;
 @EqualsAndHashCode
 final class ExtGithub implements Scalar<Github> {
 
+    /**
+     * The value.
+     */
+    private final IoCheckedScalar<Github> self = new IoCheckedScalar<>(
+        new StickyScalar<>(
+            () -> {
+                final Properties props = new ExtProperties().value();
+                return new RtGithub(
+                    props.getProperty("github.0crat.login"),
+                    props.getProperty("github.0crat.password")
+                );
+            }
+        )
+    );
+
     @Override
-    @Cacheable(forever = true)
     public Github value() throws IOException {
-        final Properties props = new ExtProperties().value();
-        return new RtGithub(
-            props.getProperty("github.0crat.login"),
-            props.getProperty("github.0crat.password")
-        );
+        return this.self.value();
     }
 
 }

@@ -16,7 +16,6 @@
  */
 package com.zerocracy.farm;
 
-import com.jcabi.aspects.Tv;
 import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.SoftException;
@@ -125,7 +124,8 @@ public final class StkSafe implements Stakeholder {
                                         ExceptionUtils.getRootCause(ex)
                                     )
                                 ).asString(),
-                                Tv.THOUSAND
+                                // @checkstyle MagicNumber (1 line)
+                                1000
                             )
                         ).asString(),
                         "\n```"

@@ -24,6 +24,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
+import org.takes.Take;
 import org.takes.facets.hamcrest.HmRsStatus;
 import org.takes.rq.RqFake;
 import org.takes.rq.RqWithBody;
@@ -40,24 +41,23 @@ public final class TkGithubTest {
     @Test
     public void parsesJson() throws Exception {
         final Farm farm = new FkFarm();
-        try (final TkGithub take = new TkGithub(
+        final Take take = new TkGithub(
             farm, new MkGithub(), (frm, github, event) -> "nothing"
-        )) {
-            MatcherAssert.assertThat(
-                take.act(
-                    new RqWithBody(
-                        new RqFake("POST", "/"),
-                        String.format(
-                            "payload=%s",
-                            URLEncoder.encode(
-                                "{\"foo\": \"bar\"}",
-                                StandardCharsets.UTF_8.displayName()
-                            )
+        );
+        MatcherAssert.assertThat(
+            take.act(
+                new RqWithBody(
+                    new RqFake("POST", "/"),
+                    String.format(
+                        "payload=%s",
+                        URLEncoder.encode(
+                            "{\"foo\": \"bar\"}",
+                            StandardCharsets.UTF_8.displayName()
                         )
                     )
-                ),
-                new HmRsStatus(HttpURLConnection.HTTP_OK)
-            );
-        }
+                )
+            ),
+            new HmRsStatus(HttpURLConnection.HTTP_OK)
+        );
     }
 }

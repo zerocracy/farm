@@ -16,7 +16,6 @@
  */
 package com.zerocracy;
 
-import com.jcabi.aspects.Tv;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.StrictXML;
 import com.jcabi.xml.XML;
@@ -330,13 +329,15 @@ public final class Xocument {
     private static int num(final String ver) {
         final List<String> parts = new LinkedList<>();
         parts.addAll(new ListOf<>(ver.split("\\.")));
-        if (parts.size() < Tv.THREE) {
+        // @checkstyle MagicNumber (1 line)
+        if (parts.size() < 3) {
             parts.add("0");
         }
         int sum = 0;
         for (int idx = parts.size() - 1; idx >= 0; --idx) {
             sum += Integer.parseInt(parts.get(idx))
-                << (parts.size() - idx << Tv.THREE);
+                // @checkstyle MagicNumber (1 line)
+                << (parts.size() - idx << 3);
         }
         return sum;
     }

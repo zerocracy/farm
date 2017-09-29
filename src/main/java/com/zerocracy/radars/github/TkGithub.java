@@ -16,12 +16,10 @@
  */
 package com.zerocracy.radars.github;
 
-import com.jcabi.aspects.ScheduleWithFixedDelay;
 import com.jcabi.dynamo.Region;
 import com.jcabi.github.Github;
 import com.zerocracy.jstk.Farm;
 import java.io.ByteArrayInputStream;
-import java.io.Closeable;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
@@ -46,9 +44,8 @@ import org.takes.rs.RsWithStatus;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
  */
-@ScheduleWithFixedDelay
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public final class TkGithub implements Take, Runnable, Closeable {
+public final class TkGithub implements Take, Runnable {
 
     /**
      * Reaction.
@@ -188,10 +185,5 @@ public final class TkGithub implements Take, Runnable, Closeable {
         new UncheckedProc<>(
             new AcceptInvitations(this.github)
         ).exec(true);
-    }
-
-    @Override
-    public void close() {
-        // We need this method to stop the scheduler
     }
 }

@@ -16,7 +16,6 @@
  */
 package com.zerocracy.farm.reactive;
 
-import com.jcabi.aspects.Tv;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Item;
@@ -104,7 +103,8 @@ final class Flush implements Proc<Item> {
                     claim.params().entrySet(),
                     ent -> String.format(
                         "%s=%s", ent.getKey(),
-                        new SubText(ent.getValue(), 0, Tv.TWENTY).asString()
+                        // @checkstyle MagicNumber (1 line)
+                        new SubText(ent.getValue(), 0, 20).asString()
                     )
                 )
             ).asString()

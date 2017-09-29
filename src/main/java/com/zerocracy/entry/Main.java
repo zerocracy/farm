@@ -22,6 +22,7 @@ import com.ullink.slack.simpleslackapi.SlackSession;
 import com.zerocracy.farm.S3Farm;
 import com.zerocracy.farm.SmartFarm;
 import com.zerocracy.jstk.Farm;
+import com.zerocracy.radars.github.GithubRoutine;
 import com.zerocracy.radars.github.TkGithub;
 import com.zerocracy.radars.slack.SlackRadar;
 import com.zerocracy.radars.slack.TkSlack;
@@ -107,9 +108,10 @@ public final class Main {
                 props.getProperty("telegram.token"),
                 props.getProperty("telegram.username")
             );
+            new GithubRoutine(github).start();
             new FtCli(
                 new TkApp(
-                    new ExtProperties().value(),
+                    props,
                     farm,
                     new FkRegex("/slack", new TkSlack(farm, props, radar)),
                     new FkRegex("/alias", new TkAlias(farm)),
