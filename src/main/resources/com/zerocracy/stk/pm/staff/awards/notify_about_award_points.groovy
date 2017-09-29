@@ -18,12 +18,10 @@ package com.zerocracy.stk.pm.staff.awards
 
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pmo.Awards
-import com.zerocracy.pmo.Pmo
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Award points were added')
@@ -31,9 +29,7 @@ def exec(Project project, XML xml) {
   String job = claim.param('job')
   String login = claim.param('login')
   Integer points = Integer.parseInt(claim.param('points'))
-  Farm farm = binding.variables.farm
-  Project pmo = new Pmo(farm)
-  Awards awards = new Awards(pmo, login).bootstrap()
+  Awards awards = new Awards(project, login).bootstrap()
   new ClaimOut()
     .type('Notify user')
     .token("user;${login}")

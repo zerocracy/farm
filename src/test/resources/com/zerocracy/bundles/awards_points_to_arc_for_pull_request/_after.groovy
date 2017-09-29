@@ -17,10 +17,8 @@
 package com.zerocracy.bundles.awards_points_to_arc_for_pull_request
 
 import com.jcabi.xml.XML
-import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.pmo.Awards
-import com.zerocracy.pmo.Pmo
 
 def exec(Project project, XML xml) {
 // @todo #72:15min The assertion at the end is disabled because the mock Github
@@ -29,8 +27,6 @@ def exec(Project project, XML xml) {
 //  See https://github.com/jcabi/jcabi-github/issues/1323. When the issue is
 //  fixed, jcabi-github version should be updated and the assertion should be
 //  enabled.
-  Farm farm = binding.variables.farm
-  Project pmo = new Pmo(farm)
-  def awards = new Awards(pmo, 'dmarkov').bootstrap()
+  def awards = new Awards(project, 'dmarkov').bootstrap()
   assert awards.total() >= 0
 }

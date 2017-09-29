@@ -21,13 +21,10 @@ import com.jcabi.github.Github
 import com.jcabi.github.Issue
 import com.jcabi.github.Repos
 import com.jcabi.xml.XML
-import com.zerocracy.jstk.Farm
-import com.zerocracy.jstk.fake.FkFarm
 import com.zerocracy.jstk.Project
+import com.zerocracy.jstk.fake.FkFarm
 import com.zerocracy.pmo.People
-import com.zerocracy.pmo.Pmo
 import com.zerocracy.radars.github.RbOnUnassign
-
 import javax.json.Json
 
 def exec(Project project, XML xml) {
@@ -37,9 +34,7 @@ def exec(Project project, XML xml) {
     new Issue.Smart(repo.issues().create('Hello, world', ''))
   repo.issueEvents()
     .create(Event.UNASSIGNED, issue.number(), 'yegor256', com.google.common.base.Optional.absent())
-  Farm farm = binding.variables.farm
-  Project pmo = new Pmo(farm)
-  new People(pmo).bootstrap()
+  new People(project).bootstrap()
   new RbOnUnassign().react(
     new FkFarm(project),
     github,

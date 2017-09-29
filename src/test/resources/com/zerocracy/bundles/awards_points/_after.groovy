@@ -17,14 +17,10 @@
 package com.zerocracy.bundles.awards_points
 
 import com.jcabi.xml.XML
-import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.pmo.Awards
-import com.zerocracy.pmo.Pmo
 
 def exec(Project project, XML xml) {
-  Farm farm = binding.variables.farm
-  Project pmo = new Pmo(farm)
-  def awards = new Awards(pmo, 'yegor-a').bootstrap()
+  def awards = new Awards(project, 'yegor-a').bootstrap()
   assert awards.total() == 30
 }

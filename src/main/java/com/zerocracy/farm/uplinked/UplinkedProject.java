@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.farm;
+package com.zerocracy.farm.uplinked;
 
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
@@ -51,6 +51,7 @@ final class UplinkedProject implements Project {
                 new IterableOf<>(
                     "awards/[a-zA-Z0-9-]+\\.xml",
                     "agenda/[a-zA-Z0-9-]+\\.xml",
+                    "projects/[a-zA-Z0-9-]+\\.xml",
                     "catalog\\.xml",
                     "people\\.xml"
                 ),

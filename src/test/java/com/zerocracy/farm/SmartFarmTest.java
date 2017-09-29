@@ -21,6 +21,7 @@ import com.jcabi.s3.fake.FkBucket;
 import com.zerocracy.RunsInThreads;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
+import com.zerocracy.pm.in.Orders;
 import com.zerocracy.pm.scope.Wbs;
 import java.nio.file.Files;
 import java.util.HashMap;
@@ -60,7 +61,9 @@ public final class SmartFarmTest {
                     "gh:test/test#%d", inc.incrementAndGet()
                 );
                 new Wbs(project).bootstrap().add(job);
-                return new Wbs(project).exists(job);
+                new Orders(project).bootstrap().assign(job, "yegor", "reason");
+                new Wbs(project).bootstrap().remove(job);
+                return !new Orders(project).assigned(job);
             },
             new RunsInThreads<>(new AtomicInteger())
         );

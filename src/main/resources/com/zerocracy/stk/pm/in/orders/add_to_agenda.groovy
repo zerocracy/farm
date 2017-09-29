@@ -18,21 +18,17 @@ package com.zerocracy.stk.pm.in.orders
 
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pmo.Agenda
-import com.zerocracy.pmo.Pmo
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Order was given')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
   String login = claim.param('login')
-  Farm farm = binding.variables.farm
-  Project pmo = new Pmo(farm)
-  new Agenda(pmo, login).bootstrap().add(job, 'https://github.com/')
+  new Agenda(project, login).bootstrap().add(job, 'https://github.com/')
   new ClaimOut()
     .type('Agenda was updated')
     .param('login', login)

@@ -14,27 +14,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.staff.awards
+package com.zerocracy.farm.uplinked;
 
-import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Project
-import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
-import com.zerocracy.pmo.Awards
+import com.zerocracy.jstk.Farm;
+import com.zerocracy.jstk.Project;
+import java.io.IOException;
+import lombok.EqualsAndHashCode;
+import org.cactoos.iterable.Mapped;
 
-def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Make payment')
-  ClaimIn claim = new ClaimIn(xml)
-  String job = claim.param('job')
-  String login = claim.param('login')
-  int minutes = Integer.parseInt(claim.param('minutes'))
-  Awards awards = new Awards(project, login).bootstrap()
-  awards.add(minutes, job, claim.param('reason'))
-  new ClaimOut()
-    .type('Award points were added')
-    .param('job', job)
-    .param('login', login)
-    .param('points', minutes)
-    .postTo(project)
+/**
+ * Uplinked farm.
+ *
+ * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @version $Id$
+ * @since 0.18
+ */
+@EqualsAndHashCode(of = "origin")
+public final class UplinkedFarm implements Farm {
+
+    /**
+     * Original farm.
+     */
+    private final Farm origin;
+
+    /**
+     * Ctor.
+     * @param farm Original farm
+     */
+    public UplinkedFarm(final Farm farm) {
+        this.origin = farm;
+    }
+
+    @Override
+    public Iterable<Project> find(final String query) throws IOException {
+        return new Mapped<>(
+            this.origin.find(query),
+            pkt -> new UplinkedProject(pkt, this.origin)
+        );
+    }
+
 }

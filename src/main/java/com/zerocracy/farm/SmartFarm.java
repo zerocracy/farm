@@ -23,6 +23,7 @@ import com.zerocracy.farm.reactive.StkGroovy;
 import com.zerocracy.farm.ruled.RdFarm;
 import com.zerocracy.farm.strict.StrictFarm;
 import com.zerocracy.farm.sync.SyncFarm;
+import com.zerocracy.farm.uplinked.UplinkedFarm;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Stakeholder;
 import java.util.Map;
@@ -78,21 +79,16 @@ public final class SmartFarm implements Scalar<Farm> {
         this.deps = dps;
         this.self = new SyncScalar<>(
             new StickyScalar<>(
-                () -> new SyncFarm(
-                    new RdFarm(
-                        new RvFarm(
+                () -> new RdFarm(
+                    new RvFarm(
+                        new SyncFarm(
                             new CachedFarm(
-                                new StrictFarm(
-                                    query -> new Mapped<>(
-                                        farm.find(query),
-                                        project -> new UplinkedProject(
-                                            project, farm
-                                        )
-                                    )
+                                new UplinkedFarm(
+                                    new StrictFarm(farm)
                                 )
-                            ),
-                            new Brigade(this.stakeholders())
-                        )
+                            )
+                        ),
+                        new Brigade(this.stakeholders())
                     )
                 )
             )
