@@ -18,14 +18,18 @@ package com.zerocracy.stk.pmo.profile.rate
 
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
+import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.jstk.cash.Cash
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.People
+import com.zerocracy.pmo.Pmo
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Set rate')
-  People people = new People(project).bootstrap()
+  Farm farm = binding.variables.farm
+  Project pmo = new Pmo(farm)
+  People people = new People(pmo).bootstrap()
   ClaimIn claim = new ClaimIn(xml)
   Cash rate = new Cash.S(claim.param('rate'))
   people.rate(claim.author(), rate)

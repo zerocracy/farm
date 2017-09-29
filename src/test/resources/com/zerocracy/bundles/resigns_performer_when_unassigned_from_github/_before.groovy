@@ -14,16 +14,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.assigns_performer
+package com.zerocracy.bundles.resigns_performer_when_unassigned_from_github
 
 import com.jcabi.github.Event
 import com.jcabi.github.Github
 import com.jcabi.github.Issue
 import com.jcabi.github.Repos
 import com.jcabi.xml.XML
+import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.fake.FkFarm
 import com.zerocracy.jstk.Project
 import com.zerocracy.pmo.People
+import com.zerocracy.pmo.Pmo
 import com.zerocracy.radars.github.RbOnUnassign
 
 import javax.json.Json
@@ -32,20 +34,19 @@ def exec(Project project, XML xml) {
   Github github = binding.variables.github
   def repo = github.repos().create(new Repos.RepoCreate('test', false))
   def issue =
-      new Issue.Smart(repo.issues().create('Hello, world', ''))
+    new Issue.Smart(repo.issues().create('Hello, world', ''))
   repo.issueEvents()
-      .create(Event.UNASSIGNED, issue.number(), 'yegor256', com.google.common.base.Optional.absent())
-  new People(project).bootstrap()
+    .create(Event.UNASSIGNED, issue.number(), 'yegor256', com.google.common.base.Optional.absent())
+  Farm farm = binding.variables.farm
+  Project pmo = new Pmo(farm)
+  new People(pmo).bootstrap()
   new RbOnUnassign().react(
-      new FkFarm(project),
-      github,
-      Json.createObjectBuilder().add(
-          'issue',
-          Json.createObjectBuilder().add('number', issue.number())
-      ).add(
-          'repository',
-          Json.createObjectBuilder()
-              .add('full_name', repo.coordinates().toString())
-      ).build()
+    new FkFarm(project),
+    github,
+    Json.createObjectBuilder()
+      .add('issue', Json.createObjectBuilder().add('number', issue.number()))
+      .add('repository', Json.createObjectBuilder()
+      .add('full_name', repo.coordinates().toString()))
+      .build()
   )
 }

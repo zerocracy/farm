@@ -18,14 +18,18 @@ package com.zerocracy.stk.pmo.profile.wallet
 
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
+import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.People
+import com.zerocracy.pmo.Pmo
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Show wallet')
   ClaimIn claim = new ClaimIn(xml)
-  claim.reply(response(new People(project).bootstrap(), claim.author()))
+  Farm farm = binding.variables.farm
+  Project pmo = new Pmo(farm)
+  claim.reply(response(new People(pmo).bootstrap(), claim.author()))
     .postTo(project)
 }
 

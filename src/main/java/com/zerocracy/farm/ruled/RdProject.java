@@ -18,6 +18,7 @@ package com.zerocracy.farm.ruled;
 
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
+import java.io.IOException;
 import lombok.EqualsAndHashCode;
 
 /**
@@ -55,8 +56,14 @@ final class RdProject implements Project {
     }
 
     @Override
-    public Item acq(final String file) {
-        return new RdItem(this.session, file);
+    public Item acq(final String file) throws IOException {
+        final Item item;
+        if ("claims.xml".equals(file)) {
+            item = this.origin.acq(file);
+        } else {
+            item = new RdItem(this.session, file);
+        }
+        return item;
     }
 
 }

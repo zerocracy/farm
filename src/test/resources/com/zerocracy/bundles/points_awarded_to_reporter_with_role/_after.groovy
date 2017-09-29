@@ -14,13 +14,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.modifies_wbs
+package com.zerocracy.bundles.points_awarded_to_reporter_with_role
 
 import com.jcabi.xml.XML
+import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.pmo.Awards
+import com.zerocracy.pmo.Pmo
 
 def exec(Project project, XML xml) {
-  def awards = new Awards(project, 'test').bootstrap()
+  Farm farm = binding.variables.farm
+  Project pmo = new Pmo(farm)
+  def awards = new Awards(pmo, 'test').bootstrap()
   assert awards.total() == 15
 }

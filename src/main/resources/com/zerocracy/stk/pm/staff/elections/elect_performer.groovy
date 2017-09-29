@@ -51,7 +51,7 @@ def exec(Project project, XML xml) {
       [
         (new NoRoom(pmo)): -100,
         (new Banned(project, job)): -1000,
-        (new Vacation(project)): -1000,
+        (new Vacation(pmo)): -1000,
         (new Workload(pmo)): 1
       ]
     )

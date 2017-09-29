@@ -185,12 +185,15 @@ public final class BundlesTest {
                 ).value();
             }
         ).value();
+        final Map<String, Object> gdeps = new StickyMap<String, Object>(
+            deps, new MapEntry<>("farm", farm)
+        );
         new StkGroovy(
             new ResourceOf(
                 String.format("%s/_before.groovy", this.bundle)
             ),
             String.format("%s_before", this.bundle),
-            deps
+            gdeps
         ).process(project, null);
         new ClaimOut().type("ping").postTo(project);
         MatcherAssert.assertThat(
@@ -209,7 +212,7 @@ public final class BundlesTest {
                 String.format("%s/_after.groovy", this.bundle)
             ),
             String.format("%s_after", this.bundle),
-            deps
+            gdeps
         ).process(project, null);
     }
 

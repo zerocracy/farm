@@ -20,10 +20,14 @@ import com.jcabi.s3.Bucket;
 import com.jcabi.s3.fake.FkBucket;
 import com.zerocracy.RunsInThreads;
 import com.zerocracy.farm.S3Farm;
+import com.zerocracy.farm.strict.StrictFarm;
 import com.zerocracy.farm.sync.SyncFarm;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
+import com.zerocracy.pm.ClaimOut;
+import com.zerocracy.pm.Claims;
 import com.zerocracy.pm.scope.Wbs;
+import com.zerocracy.pmo.Pmo;
 import java.nio.file.Files;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.hamcrest.MatcherAssert;
@@ -62,6 +66,21 @@ public final class RdFarmTest {
         MatcherAssert.assertThat(
             wbs.iterate().size(),
             Matchers.equalTo(total.get())
+        );
+    }
+
+    @Test
+    public void worksWithPmo() throws Exception {
+        final Bucket bucket = new FkBucket(
+            Files.createTempDirectory("").toFile(),
+            "some-bucket-pmo"
+        );
+        final Farm farm = new RdFarm(new StrictFarm(new S3Farm(bucket)));
+        final Project pmo = new Pmo(farm);
+        new ClaimOut().type("hello you").postTo(pmo);
+        MatcherAssert.assertThat(
+            new Claims(pmo).iterate().iterator().hasNext(),
+            Matchers.equalTo(true)
         );
     }
 

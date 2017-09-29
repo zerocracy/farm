@@ -17,14 +17,18 @@
 package com.zerocracy.bundles.set_user_rate
 
 import com.jcabi.xml.XML
+import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.jstk.cash.Cash
 import com.zerocracy.pmo.People
+import com.zerocracy.pmo.Pmo
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
-  Cash rate = new People(project).rate('user42')
+  Farm farm = binding.variables.farm
+  Project pmo = new Pmo(farm)
+  Cash rate = new People(pmo).rate('user42')
   MatcherAssert.assertThat(
     rate.decimal().doubleValue(),
     Matchers.equalTo(100.0D)

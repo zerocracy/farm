@@ -14,23 +14,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.awards_points_to_arc_for_pull_request
+package com.zerocracy.farm.strict;
 
-import com.jcabi.xml.XML
-import com.zerocracy.jstk.Farm
-import com.zerocracy.jstk.Project
-import com.zerocracy.pmo.Awards
-import com.zerocracy.pmo.Pmo
+import com.zerocracy.jstk.Farm;
+import com.zerocracy.jstk.Project;
+import java.io.IOException;
+import lombok.EqualsAndHashCode;
+import org.cactoos.iterable.Mapped;
 
-def exec(Project project, XML xml) {
-// @todo #72:15min The assertion at the end is disabled because the mock Github
-//  pull request created in _before.groovy is not recognized as a valid pull
-//  request. So it is not recognized as a PR and the test fails.
-//  See https://github.com/jcabi/jcabi-github/issues/1323. When the issue is
-//  fixed, jcabi-github version should be updated and the assertion should be
-//  enabled.
-  Farm farm = binding.variables.farm
-  Project pmo = new Pmo(farm)
-  def awards = new Awards(pmo, 'dmarkov').bootstrap()
-  assert awards.total() >= 0
+/**
+ * Strict farm.
+ *
+ * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @version $Id$
+ * @since 0.18
+ */
+@EqualsAndHashCode(of = "origin")
+public final class StrictFarm implements Farm {
+
+    /**
+     * Original farm.
+     */
+    private final Farm origin;
+
+    /**
+     * Ctor.
+     * @param farm Original farm
+     */
+    public StrictFarm(final Farm farm) {
+        this.origin = farm;
+    }
+
+    @Override
+    public Iterable<Project> find(final String query) throws IOException {
+        return new Mapped<>(
+            this.origin.find(query),
+            StrictProject::new
+        );
+    }
+
 }
