@@ -78,7 +78,7 @@ public final class RvProjectTest {
         final Project project = new RvProject(raw, flush);
         MatcherAssert.assertThat(
             input -> {
-                new ClaimOut().type("hello").postTo(project);
+                new ClaimOut().type("hello you").postTo(project);
                 return true;
             },
             new RunsInThreads<>(null, total.get())
