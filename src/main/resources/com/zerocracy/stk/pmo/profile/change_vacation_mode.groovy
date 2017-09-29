@@ -24,9 +24,9 @@ import com.zerocracy.pmo.People
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Change modifies_vacation_mode mode')
-  final claim = new ClaimIn(xml)
-  final mode = claim.param('mode')
-  final people = new People(project).bootstrap()
+  ClaimIn claim = new ClaimIn(xml)
+  String mode = claim.param('mode')
+  People people = new People(project).bootstrap()
   if ('on' == mode) {
     people.vacation(claim.author(), true)
     if (claim.hasToken()) {
