@@ -48,6 +48,7 @@ public final class CatalogTest {
                     .xpath("/catalog")
                     .add("project")
                     .attr("id", pid)
+                    .add("title").set(pid).up()
                     .add("created")
                     .set(
                         ZonedDateTime.now().format(

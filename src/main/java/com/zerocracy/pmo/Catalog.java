@@ -84,6 +84,7 @@ public final class Catalog {
                     .xpath("/catalog")
                     .add("project")
                     .attr("id", pid)
+                    .add("title").set(pid).up()
                     .add("created")
                     .set(
                         ZonedDateTime.now().format(

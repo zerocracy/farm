@@ -23,7 +23,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import org.xembly.Directive;
 import org.xembly.Directives;
 
@@ -40,7 +40,7 @@ public final class ClaimOut implements Iterable<Directive> {
     /**
      * Counter of IDs.
      */
-    private static final AtomicInteger COUNTER = new AtomicInteger();
+    private static final AtomicLong COUNTER = new AtomicLong();
 
     /**
      * Directives.
@@ -169,9 +169,9 @@ public final class ClaimOut implements Iterable<Directive> {
      * Create unique ID.
      * @return ID of the claim
      */
-    private static int cid() {
-        final int body = Integer.parseInt(
-            String.format("%1$tj%1$tH%1$tM", new Date())
+    private static long cid() {
+        final long body = Long.parseLong(
+            String.format("%1$tj%1$tH%1$tM000", new Date())
         );
         return ClaimOut.COUNTER.incrementAndGet() + body;
     }
