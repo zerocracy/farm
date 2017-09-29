@@ -36,7 +36,7 @@ import lombok.EqualsAndHashCode;
  * @since 0.1
  */
 @EqualsAndHashCode(of = "origin")
-final class SyncProject implements Project {
+public final class SyncProject implements Project {
 
     /**
      * Origin project.
@@ -52,7 +52,7 @@ final class SyncProject implements Project {
      * Ctor.
      * @param pkt Project
      */
-    SyncProject(final Project pkt) {
+    public SyncProject(final Project pkt) {
         this.origin = pkt;
         this.semaphores = new ConcurrentHashMap<>(0);
     }

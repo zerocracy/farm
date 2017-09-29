@@ -16,6 +16,7 @@
  */
 package com.zerocracy.farm.reactive;
 
+import com.zerocracy.farm.sync.SyncProject;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.fake.FkProject;
 import com.zerocracy.pm.ClaimOut;
@@ -47,7 +48,7 @@ public final class RvProjectTest {
                 )
             )
         );
-        final RvProject project = new RvProject(raw, flush);
+        final RvProject project = new RvProject(new SyncProject(raw), flush);
         final Claims claims = new Claims(project).bootstrap();
         claims.add(new ClaimOut().type("hello").token("test;tt"));
         while (true) {
