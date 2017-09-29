@@ -28,16 +28,16 @@ import javax.json.Json
 
 def exec(Project project, XML xml) {
   Github github = binding.variables.github
-  def repo = github.repos().create(new Repos.RepoCreate("test", false))
-  def issue = new Issue.Smart(repo.issues().create("hello, world", ""))
-  issue.assign("yegor256")
+  def repo = github.repos().create(new Repos.RepoCreate('test', false))
+  def issue = new Issue.Smart(repo.issues().create('hello, world', ''))
+  issue.assign('yegor256')
   new RbOnAssign().react(
     new FkFarm(project),
     github,
     Json.createObjectBuilder()
-      .add("issue", Json.createObjectBuilder().add("number", issue.number()))
-      .add("repository", Json.createObjectBuilder().add("full_name", repo.coordinates().toString()))
-      .add("sender", Json.createObjectBuilder().add("login", "yegor256"))
+      .add('issue', Json.createObjectBuilder().add('number', issue.number()))
+      .add('repository', Json.createObjectBuilder().add('full_name', repo.coordinates().toString()))
+      .add('sender', Json.createObjectBuilder().add('login', 'yegor256'))
       .build()
   )
 }

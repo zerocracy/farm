@@ -18,15 +18,16 @@ package com.zerocracy.stk.pm.comm
 
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
+import com.zerocracy.jstk.Item
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 // notify test: print message to text file
 
 static exec(Project project, XML xml) {
   new Assume(project, xml).type('Notify test')
-  project.acq('test.txt').withAutoCloseable {
-    item -> item.path().toFile().write(
-      new ClaimIn(xml).param('message')
-    )
-  }
+  Item item = project.acq('test.txt')
+  item.path().toFile().write(
+    new ClaimIn(xml).param('message')
+  )
+  item.close()
 }

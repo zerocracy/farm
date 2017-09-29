@@ -26,19 +26,19 @@ import javax.json.Json
 
 def exec(Project project, XML xml) {
   Github github = binding.variables.github
-  def repo = github.repos().create(new Repos.RepoCreate("test", false))
-  def pull = repo.pulls().create("New PR", "master", "master")
+  def repo = github.repos().create(new Repos.RepoCreate('test', false))
+  def pull = repo.pulls().create('New PR', 'master', 'master')
   new RbOnPullRequest().react(
     new FkFarm(project),
     github,
     Json.createObjectBuilder().add(
-        "pull_request",
+        'pull_request',
         Json.createObjectBuilder()
-            .add("number", pull.number())
+            .add('number', pull.number())
     ).add(
-      "repository",
+      'repository',
       Json.createObjectBuilder()
-        .add("full_name", repo.coordinates().toString())
+        .add('full_name', repo.coordinates().toString())
     ).build()
   )
 }

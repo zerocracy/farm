@@ -34,21 +34,21 @@ import org.mockito.Mockito
  *  After that we should get rid of `Mockito` in this test.
  */
 def exec(Project project, XML xml) {
-  final channelId = 'C123'
+  String channelId = 'C123'
   binding.variables.properties.put('slack_testing', true)
-  final session = Mockito.mock(SlackSession.class)
-  Mockito.when(session.findUserByUserName(Mockito.any(String.class)))
+  SlackSession session = Mockito.mock(SlackSession)
+  Mockito.when(session.findUserByUserName(Mockito.any(String)))
     .thenReturn(null)
   Mockito.when(session.openDirectMessageChannel(Mockito.<SlackUser>isNull()))
-    .thenThrow(NullPointerException.class)
-  final channel = Mockito.mock(SlackChannel.class)
+    .thenThrow(NullPointerException)
+  SlackChannel channel = Mockito.mock(SlackChannel)
   Mockito.when(channel.id).thenReturn(channelId)
   Mockito.when(session.channels).thenReturn(new ListOf<>(channel))
   binding.variables.slack.put(channelId, session)
   new ClaimOut()
-    .type("Notify in Slack")
+    .type('Notify in Slack')
     .token("slack;${channelId};none;one-more-part")
-    .param("message", "Hello None!")
+    .param('message', 'Hello None!')
     .postTo(project)
 }
 

@@ -18,12 +18,13 @@ package com.zerocracy.bundles.set_user_rate
 
 import com.jcabi.xml.XML
 import com.zerocracy.jstk.Project
+import com.zerocracy.jstk.cash.Cash
 import com.zerocracy.pmo.People
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
-  final rate = new People(project).rate('user42')
+  Cash rate = new People(project).rate('user42')
   MatcherAssert.assertThat(
     rate.decimal().doubleValue(),
     Matchers.equalTo(100.0D)

@@ -30,22 +30,22 @@ import javax.json.Json
 
 def exec(Project project, XML xml) {
   Github github = binding.variables.github
-  def repo = github.repos().create(new Repos.RepoCreate("test", false))
+  def repo = github.repos().create(new Repos.RepoCreate('test', false))
   def issue =
-      new Issue.Smart(repo.issues().create("hello, world", ""))
+      new Issue.Smart(repo.issues().create('Hello, world', ''))
   repo.issueEvents()
-      .create(Event.UNASSIGNED, issue.number(), "yegor256", com.google.common.base.Optional.absent())
+      .create(Event.UNASSIGNED, issue.number(), 'yegor256', com.google.common.base.Optional.absent())
   new People(project).bootstrap()
   new RbOnUnassign().react(
       new FkFarm(project),
       github,
       Json.createObjectBuilder().add(
-          "issue",
-          Json.createObjectBuilder().add("number", issue.number())
+          'issue',
+          Json.createObjectBuilder().add('number', issue.number())
       ).add(
-          "repository",
+          'repository',
           Json.createObjectBuilder()
-              .add("full_name", repo.coordinates().toString())
+              .add('full_name', repo.coordinates().toString())
       ).build()
   )
 }

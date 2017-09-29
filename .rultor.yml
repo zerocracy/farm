@@ -43,7 +43,7 @@ release:
   - yegor256
 merge:
   script: |-
-    mvn help:system clean install -Pqulice --settings ../settings.xml
+    mvn help:system clean install -Pcodenarc -Pqulice --settings ../settings.xml
     mvn clean site -Psite --settings ../settings.xml
     mvn clean
     pdd --source=$(pwd) --verbose --file=/dev/null

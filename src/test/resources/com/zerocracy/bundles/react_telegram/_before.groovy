@@ -28,7 +28,7 @@ def exec(Project project, XML xml) {
   new ReProfile().react(
     new FkFarm('PMO', project),
     new FkTmSession(),
-    new FkTmRequest("yegor256", "hello", 42)
+    new FkTmRequest('yegor256', 'hello', 42)
   )
 }
 

@@ -23,6 +23,6 @@ import com.zerocracy.jstk.Project
 
 def exec(Project project, XML xml) {
   Github github = binding.variables.github
-  def repo = github.repos().create(new Repos.RepoCreate("test", false))
-  repo.issues().create("WBS archive", "")
+  def repo = github.repos().create(new Repos.RepoCreate('test', false))
+  repo.issues().create('WBS archive', '')
 }

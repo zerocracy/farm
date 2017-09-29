@@ -14,17 +14,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.modifies_wbs
+package com.zerocracy.bundles.bans_issue_reporter
 
 import com.jcabi.xml.XML
 import com.zerocracy.jstk.Project
-import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pm.staff.Bans
 
 def exec(Project project, XML xml) {
   String job = 'gh:test/test#1'
   def bans = new Bans(project).bootstrap()
-  assert !bans.reasons(job, "test").empty
-  assert !bans.reasons(job, "test")[0]
-      .equals("The user reported the ticket.")
+  assert !bans.reasons(job, 'test').empty
+  assert bans.reasons(job, 'test')[0] != 'The user reported the ticket.'
 }

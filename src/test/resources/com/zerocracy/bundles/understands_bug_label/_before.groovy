@@ -26,19 +26,19 @@ import javax.json.Json
 
 def exec(Project project, XML xml) {
   Github github = binding.variables.github
-  def repo = github.repos().create(new Repos.RepoCreate("bugs", false))
-  def issue = repo.issues().create("A Bug", "")
+  def repo = github.repos().create(new Repos.RepoCreate('bugs', false))
+  def issue = repo.issues().create('A bug', '')
   new RbOnBug().react(
     new FkFarm(project),
     github,
     Json.createObjectBuilder().add(
-      "issue",
+      'issue',
       Json.createObjectBuilder()
-        .add("number", issue.number())
+        .add('number', issue.number())
     ).add(
-      "repository",
+      'repository',
       Json.createObjectBuilder()
-        .add("full_name", repo.coordinates().toString())
+        .add('full_name', repo.coordinates().toString())
     ).build()
   )
 }

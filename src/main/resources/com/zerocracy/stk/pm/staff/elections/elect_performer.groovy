@@ -42,7 +42,7 @@ def exec(Project project, XML xml) {
     return
   }
   Elections elections = new Elections(project).bootstrap()
-  Set<String> winners = new HashSet<>()
+  Set<String> winners = [] as Set
   Farm farm = binding.variables.farm
   Project pmo = new Pmo(farm)
   for (String job : wbs.iterate()) {

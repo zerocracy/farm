@@ -24,7 +24,7 @@ ruleset {
     ComparisonWithSelf
     ConfusingTernary
     ConsecutiveLiteralAppends
-    ConsecutiveStringConcatenation
+    //ConsecutiveStringConcatenation
     ConstantIfExpression
     ConstantTernaryExpression
     DeadCode
@@ -38,7 +38,7 @@ ruleset {
     EmptyForStatement
     EmptyIfStatement
     EmptyInstanceInitializer
-    EmptyMethod
+    //EmptyMethod
     EmptyStaticInitializer
     EmptySwitchStatement
     EmptySynchronizedStatement

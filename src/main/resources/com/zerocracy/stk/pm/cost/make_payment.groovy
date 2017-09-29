@@ -30,8 +30,8 @@ def exec(Project project, XML xml) {
   String job = claim.param('job')
   String login = claim.param('login')
   String reason = claim.param('reason')
-  String boots = new Boosts(project).bootstrap()
-  int minutes = Integer.parseInt(claim.param('minutes')) * boots.factor(job)
+  Boosts boosts = new Boosts(project).bootstrap()
+  int minutes = Integer.parseInt(claim.param('minutes')) * boosts.factor(job)
   Roles roles = new Roles(project).bootstrap()
   if (!roles.hasAnyRole(login)) {
     return

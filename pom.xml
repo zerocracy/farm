@@ -329,6 +329,14 @@ SOFTWARE.
   <profiles>
     <profile>
       <id>qulice</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.codenarc</groupId>
+          <artifactId>CodeNarc</artifactId>
+          <version>1.0</version>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
       <build>
         <plugins>
           <plugin>
@@ -343,21 +351,6 @@ SOFTWARE.
               <license>file:${basedir}/LICENSE.txt</license>
             </configuration>
           </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>codenarc</id>
-      <dependencies>
-        <dependency>
-          <groupId>org.codenarc</groupId>
-          <artifactId>CodeNarc</artifactId>
-          <version>1.0</version>
-          <scope>test</scope>
-        </dependency>
-      </dependencies>
-      <build>
-        <plugins>
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>exec-maven-plugin</artifactId>
@@ -399,21 +392,25 @@ SOFTWARE.
                     import com.jcabi.xml.XML
                     import com.jcabi.xml.XMLDocument
                     XML xml = new XMLDocument(new File('${project.build.directory}/codenarc.xml'))
-                    List<XML> files = xml.nodes('//File')
-                    if (!files.isEmpty()) {
-                      for (XML file : files) {
-                        for (XML violation : file.nodes('.//Violation')) {
-                          printf(
-                            '%s[%s] %s: %s\n',
-                            file.xpath('@name').get(0),
-                            violation.xpath('@lineNumber').get(0),
-                            violation.xpath('@ruleName').get(0),
-                            violation.xpath('Message/text()').get(0)
-                          )
+                    List<XML> pkgs = xml.nodes('//Package[@filesWithViolations > 0]')
+                    if (!pkgs.isEmpty()) {
+                      for (XML pkg : pkgs) {
+                        for (XML file : pkg.nodes('.//File')) {
+                          for (XML violation : file.nodes('.//Violation')) {
+                            printf(
+                              '%s/%s[%s] %s: %s\n',
+                              pkg.xpath('@path').get(0),
+                              file.xpath('@name').get(0),
+                              violation.xpath('@lineNumber').get(0),
+                              violation.xpath('@ruleName').get(0),
+                              violation.xpath('Message/text()').get(0)
+                            )
+                          }
                         }
                       }
                       throw new Exception('CodeNarc violations see above')
                     }
+                    println('All ' + xml.xpath('//PackageSummary/@totalFiles').get(0) + ' Groovy files are clean!')
                   ]]></source>
                 </configuration>
               </execution>
