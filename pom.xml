@@ -279,7 +279,6 @@ SOFTWARE.
       <groupId>com.jcabi</groupId>
       <artifactId>jcabi-aspects</artifactId>
       <version>0.22.6</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.icegreen</groupId>

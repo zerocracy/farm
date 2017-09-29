@@ -16,6 +16,7 @@
  */
 package com.zerocracy.entry;
 
+import com.jcabi.aspects.Loggable;
 import com.jcabi.dynamo.Region;
 import com.jcabi.github.Github;
 import com.ullink.slack.simpleslackapi.SlackSession;
@@ -68,6 +69,7 @@ public final class Main {
      * @param args Command line arguments
      * @throws IOException If fails on I/O
      */
+    @Loggable
     public static void main(final String... args) throws IOException {
         new Main(args).exec();
     }
