@@ -33,6 +33,7 @@ import org.junit.Test;
  * @version $Id$
  * @since 0.11
  * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class RvProjectTest {
 
