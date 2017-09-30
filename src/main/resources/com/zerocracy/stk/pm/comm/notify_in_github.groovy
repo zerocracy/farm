@@ -23,6 +23,8 @@ import com.jcabi.github.Comment
 import com.jcabi.github.Coordinates
 import com.jcabi.github.Github
 import com.jcabi.github.Issue
+import com.jcabi.github.Limit
+import com.jcabi.github.Limits
 import com.jcabi.github.Repo
 import com.jcabi.github.Smarts
 import com.jcabi.xml.XML
@@ -30,7 +32,6 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.radars.github.GhTube
-
 // Token must look like: zerocracy/farm;123;6
 //   - repository coordinates
 //   - issue number
@@ -46,6 +47,11 @@ def exec(Project project, XML xml) {
     )
   }
   Github github = binding.variables.github
+  Limit.Smart limit = new Limit.Smart(github.limits().get(Limits.CORE))
+  if (limit.remaining() < 500) {
+    claim.copy().postTo(project)
+    return
+  }
   Repo repo = github.repos().get(
     new Coordinates.Simple(parts[1])
   )
