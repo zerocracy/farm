@@ -104,7 +104,7 @@ public final class StkSafe implements Stakeholder {
             if (this.props.containsKey("testing")) {
                 throw new IllegalStateException(ex);
             }
-            if (claim.hasToken()) {
+            if (claim.hasToken() && !"Notify".equals(claim.type())) {
                 claim.reply(
                     String.join(
                         "",
