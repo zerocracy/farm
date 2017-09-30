@@ -36,7 +36,7 @@ SOFTWARE.
     <opts>
       <opt>
         <name>login</name>
-        <regex>[a-z0-9-]+</regex>
+        <regex>[A-Za-z0-9-]+</regex>
         <help>GitHub login of your friend</help>
       </opt>
     </opts>
