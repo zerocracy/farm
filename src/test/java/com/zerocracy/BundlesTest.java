@@ -41,6 +41,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 import org.apache.log4j.FileAppender;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
@@ -50,6 +51,7 @@ import org.cactoos.io.OutputTo;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.io.TeeInput;
 import org.cactoos.iterable.Endless;
+import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Limited;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.iterable.PropertiesOf;
@@ -67,6 +69,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.reflections.Reflections;
+import org.reflections.Store;
 import org.reflections.scanners.ResourcesScanner;
 
 /**
@@ -171,7 +174,7 @@ public final class BundlesTest {
             )
         ).iterator().next();
         new And(
-            BundlesTest.resources(this.bundle.replace("/", ".")),
+            BundlesTest.resources(this.bundle),
             path -> {
                 new LengthOf(
                     new TeeInput(
@@ -216,11 +219,23 @@ public final class BundlesTest {
         ).process(project, null);
     }
 
-    private static Iterable<String> resources(final String pkg) {
-        return new Reflections(
-            pkg,
-            new ResourcesScanner()
-        ).getResources(p -> p.endsWith(".xml"));
+    private static Iterable<String> resources(final String path) {
+        final Store store = new Reflections(
+            path.replace(File.separator, "."),
+            new PatternScanner(
+                new ResourcesScanner(),
+                Pattern.compile(
+                    String.format("^%s%s.*", path, File.separator)
+                )
+            )
+        ).getStore();
+        final String name = PatternScanner.class.getSimpleName();
+        return store.get(
+            name,
+            new Filtered<>(
+                store.get(name).keySet(),
+                p -> p.endsWith(".xml")
+            )
+        );
     }
-
 }
