@@ -61,12 +61,15 @@ final class Flush implements Proc<Item> {
     @Override
     public void exec(final Item item) throws Exception {
         final Claims claims = new Claims(this.project).bootstrap();
-        while (true) {
+        int total = 0;
+        // @checkstyle MagicNumber (1 line)
+        while (total < 20) {
             final Iterator<XML> found = claims.iterate().iterator();
             if (!found.hasNext()) {
                 break;
             }
             this.process(found.next());
+            ++total;
         }
     }
 
