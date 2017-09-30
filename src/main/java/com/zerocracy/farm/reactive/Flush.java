@@ -68,7 +68,7 @@ final class Flush implements Proc<Item> {
             if (!found.hasNext()) {
                 break;
             }
-            this.process(found.next());
+            this.process(found.next(), total);
             ++total;
         }
     }
@@ -76,10 +76,11 @@ final class Flush implements Proc<Item> {
     /**
      * Process it.
      * @param xml The claim
+     * @param idx Position in the queue
      * @throws IOException If fails
      */
     @SuppressWarnings("PMD.PrematureDeclaration")
-    private void process(final XML xml) throws IOException {
+    private void process(final XML xml, final int idx) throws IOException {
         final long start = System.currentTimeMillis();
         final ClaimIn claim = new ClaimIn(xml);
         final int total = this.brigade.process(this.project, xml);
@@ -95,8 +96,8 @@ final class Flush implements Proc<Item> {
             );
         }
         Logger.info(
-            this, "Seen \"%s/%d/%d\" at \"%s\" by %d stk, %[ms]s [%s]",
-            claim.type(), claim.number(), left,
+            this, "Seen #%d:\"%s/%d/%d\" at \"%s\" by %d stk, %[ms]s [%s]",
+            idx, claim.type(), claim.number(), left,
             this.project.toString(),
             total,
             System.currentTimeMillis() - start,
