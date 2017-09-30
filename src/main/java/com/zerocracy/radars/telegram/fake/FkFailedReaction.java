@@ -14,30 +14,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.radars.telegram;
+package com.zerocracy.radars.telegram.fake;
 
 import com.zerocracy.jstk.Farm;
+import com.zerocracy.jstk.SoftException;
+import com.zerocracy.radars.telegram.Reaction;
+import com.zerocracy.radars.telegram.TmRequest;
+import com.zerocracy.radars.telegram.TmSession;
 import java.io.IOException;
 
 /**
- * Telegram message reaction.
+ * Telegram reaction that always fail with message.
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
- * @since 0.15
+ * @since 0.17
  */
-public interface Reaction {
+public final class FkFailedReaction implements Reaction {
 
     /**
-     * Rect for new request.
-     * @param farm Project farm
-     * @param session Current Telegram session
-     * @param request Telegram request
-     * @return TRUE if reacted
-     * @throws IOException If failed
+     * Exception message.
      */
-    boolean react(
-        Farm farm,
-        TmSession session,
-        TmRequest request
-    ) throws IOException;
+    private final String msg;
+
+    /**
+     * Ctor.
+     * @param message Error message.
+     */
+    public FkFailedReaction(final String message) {
+        this.msg = message;
+    }
+
+    @Override
+    public boolean react(
+        final Farm farm,
+        final TmSession session,
+        final TmRequest request
+    ) throws IOException {
+        throw new SoftException(this.msg);
+    }
 }

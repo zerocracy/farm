@@ -18,6 +18,7 @@ package com.zerocracy.radars.telegram;
 
 import com.jcabi.aspects.Tv;
 import com.zerocracy.jstk.fake.FkFarm;
+import com.zerocracy.radars.telegram.fake.FkFailedReaction;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -28,6 +29,9 @@ import org.cactoos.scalar.And;
 import org.hamcrest.MatcherAssert;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.telegram.telegrambots.ApiContextInitializer;
+import org.telegram.telegrambots.TelegramBotsApi;
+import org.telegram.telegrambots.generics.BotSession;
 
 /**
  * Integration test for Telegram bot.
@@ -49,6 +53,9 @@ import org.junit.Test;
  */
 public final class TelegramRadarITCase {
 
+    private static final String TOKEN = "<token>";
+    private static final String NAME = "<name_bot>";
+
     @Test
     @Ignore
     public void connectToTelegramTest() throws Exception {
@@ -60,8 +67,8 @@ public final class TelegramRadarITCase {
             )
         ) {
             rdr.start(
-                "--bot-token--",
-                "--bot--name--"
+                TelegramRadarITCase.TOKEN,
+                TelegramRadarITCase.NAME
             );
             MatcherAssert.assertThat(
                 new And(
@@ -77,5 +84,31 @@ public final class TelegramRadarITCase {
                 new ScalarHasValue<>(false)
             );
         }
+    }
+
+    /**
+     * Replies with {@link com.zerocracy.jstk.SoftException} to any
+     * Telegram message.
+     * @throws Exception If failed
+     */
+    @Test
+    @Ignore
+    public void replyWithSoftException() throws Exception {
+        ApiContextInitializer.init();
+        final BotSession session = new TelegramBotsApi().registerBot(
+            new TmZerocrat(
+                TelegramRadarITCase.TOKEN,
+                TelegramRadarITCase.NAME,
+                new BotUpdateReaction(
+                    new ReSafe(
+                        new FkFailedReaction("Test error")
+                    ),
+                    new FkFarm(),
+                    new ConcurrentHashMap<>(1)
+                )
+            )
+        );
+        TimeUnit.SECONDS.sleep((long) Tv.TEN);
+        session.stop();
     }
 }
