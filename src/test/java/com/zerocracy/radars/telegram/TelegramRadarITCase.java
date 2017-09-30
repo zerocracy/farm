@@ -50,10 +50,18 @@ import org.telegram.telegrambots.generics.BotSession;
  * @version $Id$
  * @since 0.15
  * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class TelegramRadarITCase {
 
+    /**
+     * Telegram bot token.
+     */
     private static final String TOKEN = "<token>";
+
+    /**
+     * Telegram bot name.
+     */
     private static final String NAME = "<name_bot>";
 
     @Test
