@@ -129,6 +129,27 @@ public final class ClaimOut implements Iterable<Directive> {
     }
 
     /**
+     * Until this amount of seconds.
+     * @param seconds The amount of seconds to wait
+     * @return This
+     */
+    public ClaimOut until(final long seconds) {
+        this.dirs
+            .push()
+            .xpath("until")
+            .remove()
+            .pop()
+            .add("until")
+            .set(
+                ZonedDateTime.now().plusSeconds(seconds).format(
+                    DateTimeFormatter.ISO_INSTANT
+                )
+            )
+            .up();
+        return this;
+    }
+
+    /**
      * With this param.
      * @param name Name
      * @param value Value

@@ -25,6 +25,7 @@ import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.fake.FkProject;
 import java.nio.file.Files;
+import java.util.concurrent.TimeUnit;
 import org.cactoos.io.LengthOf;
 import org.cactoos.io.TeeInput;
 import org.hamcrest.MatcherAssert;
@@ -91,6 +92,20 @@ public final class ClaimsTest {
         MatcherAssert.assertThat(
             claims.iterate().iterator().next().xpath("token/text()").get(0),
             Matchers.startsWith("test;")
+        );
+    }
+
+    @Test
+    public void ignoresClaimsUntilTheyBecomeValid() throws Exception {
+        final Claims claims = new Claims(new FkProject()).bootstrap();
+        claims.add(
+            new ClaimOut()
+                .until(TimeUnit.HOURS.toSeconds(1L))
+                .type("hello future")
+        );
+        MatcherAssert.assertThat(
+            claims.iterate().iterator().hasNext(),
+            Matchers.equalTo(false)
         );
     }
 

@@ -21,6 +21,8 @@ import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Comparator;
 import org.cactoos.collection.Sorted;
@@ -100,6 +102,9 @@ public final class Claims {
      * @throws IOException If fails
      */
     public Collection<XML> iterate() throws IOException {
+        final String now = ZonedDateTime.now().format(
+            DateTimeFormatter.ISO_INSTANT
+        );
         try (final Item item = this.item()) {
             return new Sorted<>(
                 new Comparator<XML>() {
@@ -111,7 +116,11 @@ public final class Claims {
                         return new ClaimIn(xml).number();
                     }
                 },
-                new Xocument(item).nodes("/claims/claim")
+                new Xocument(item).nodes(
+                    String.format(
+                        "/claims/claim[not(until) or until < '%s']", now
+                    )
+                )
             );
         }
     }
