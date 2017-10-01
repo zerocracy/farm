@@ -20,7 +20,7 @@ import com.jcabi.xml.XMLDocument;
 import com.zerocracy.jstk.fake.FkProject;
 import com.zerocracy.pm.Claims;
 import java.util.Collection;
-import org.cactoos.iterable.StickyList;
+import org.cactoos.list.StickyList;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -47,7 +47,7 @@ public final class ClaimOnQuestionTest {
         return new StickyList<>(
             "role assign ARC yegor256",
             "just some text",
-            "vacation on"
+            "modifies_vacation_mode on"
         );
     }
 
@@ -61,12 +61,11 @@ public final class ClaimOnQuestionTest {
         );
         final FkProject project = new FkProject();
         new ClaimOnQuestion(question).claim().postTo(project);
-        try (final Claims claims = new Claims(project).lock()) {
-            MatcherAssert.assertThat(
-                claims.iterate(),
-                Matchers.iterableWithSize(1)
-            );
-        }
+        final Claims claims = new Claims(project).bootstrap();
+        MatcherAssert.assertThat(
+            claims.iterate(),
+            Matchers.iterableWithSize(1)
+        );
     }
 
 }

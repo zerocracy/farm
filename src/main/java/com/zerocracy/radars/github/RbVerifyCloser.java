@@ -16,15 +16,12 @@
  */
 package com.zerocracy.radars.github;
 
-import com.jcabi.aspects.RetryOnFailure;
-import com.jcabi.aspects.Tv;
 import com.jcabi.github.Event;
 import com.jcabi.github.Github;
 import com.jcabi.github.Issue;
 import com.zerocracy.jstk.Farm;
 import java.io.IOException;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 import javax.json.JsonObject;
 
 /**
@@ -81,7 +78,6 @@ final class RbVerifyCloser implements Rebound {
      * @return Login
      * @throws IOException If fails
      */
-    @RetryOnFailure(delay = Tv.FIVE, unit = TimeUnit.SECONDS, verbose = false)
     private static String closer(final Issue.Smart issue) throws IOException {
         return new Event.Smart(
             issue.latestEvent(Event.CLOSED)

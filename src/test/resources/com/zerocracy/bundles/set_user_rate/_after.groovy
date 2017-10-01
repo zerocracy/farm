@@ -14,37 +14,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.farm.sync;
+package com.zerocracy.bundles.set_user_rate
 
-import java.util.AbstractMap;
-import java.util.Map;
+import com.jcabi.xml.XML
+import com.zerocracy.jstk.Project
+import com.zerocracy.jstk.cash.Cash
+import com.zerocracy.pmo.People
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
 
-/**
- * Comparable map entry.
- *
- * @author Kirill (g4s8.public@gmail.com)
- * @version $Id$
- * @param <K> Key type
- * @param <V> Value type
- * @since 0.12
- */
-final class CmpEntry<K, V extends Comparable<? super V>> extends
-    AbstractMap.SimpleImmutableEntry<K, V> implements
-    Comparable<CmpEntry<K, V>> {
-
-    private static final long serialVersionUID = 6039678934863820533L;
-
-    /**
-     * Ctor.
-     *
-     * @param origin Origin map entry
-     */
-    CmpEntry(final Map.Entry<K, V> origin) {
-        super(origin);
-    }
-
-    @Override
-    public int compareTo(final CmpEntry<K, V> other) {
-        return getValue().compareTo(other.getValue());
-    }
+def exec(Project project, XML xml) {
+  Cash rate = new People(project).rate('user42')
+  MatcherAssert.assertThat(
+    rate.decimal().doubleValue(),
+    Matchers.equalTo(100.0D)
+  )
 }

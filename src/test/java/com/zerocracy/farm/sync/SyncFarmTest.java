@@ -16,24 +16,17 @@
  */
 package com.zerocracy.farm.sync;
 
-import com.jcabi.log.VerboseThreads;
 import com.jcabi.s3.Bucket;
 import com.jcabi.s3.fake.FkBucket;
+import com.zerocracy.RunsInThreads;
 import com.zerocracy.farm.S3Farm;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
+import com.zerocracy.pm.scope.Wbs;
 import com.zerocracy.pm.staff.Roles;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import org.cactoos.Func;
-import org.cactoos.scalar.And;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
@@ -42,47 +35,34 @@ import org.junit.Test;
  * @version $Id$
  * @since 0.10
  * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @checkstyle ExecutableStatementCountCheck (500 lines)
  */
 public final class SyncFarmTest {
 
     @Test
-    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     public void makesProjectsThreadSafe() throws Exception {
         final Bucket bucket = new FkBucket(
             Files.createTempDirectory("").toFile(),
             "the-bucket"
         );
         final Farm farm = new SyncFarm(new S3Farm(bucket));
-        final int threads = Runtime.getRuntime().availableProcessors() << 2;
-        final ExecutorService service = Executors.newFixedThreadPool(
-            threads, new VerboseThreads()
-        );
-        final CountDownLatch latch = new CountDownLatch(1);
-        final Collection<Future<Boolean>> futures = new ArrayList<>(threads);
+        final Project project = farm.find("@id='ABCZZFE03'").iterator().next();
+        final Roles roles = new Roles(project);
         final String role = "PO";
-        for (int thread = 0; thread < threads; ++thread) {
-            final String person = String.format("jeff%d", thread);
-            futures.add(
-                service.submit(
-                    () -> {
-                        latch.await();
-                        final Project project =
-                            farm.find("@id='ABCZZFE03'").iterator().next();
-                        final Roles roles = new Roles(project);
-                        roles.bootstrap();
-                        roles.assign(person, role);
-                        return roles.hasRole(person, role);
-                    }
-                )
-            );
-        }
-        latch.countDown();
         MatcherAssert.assertThat(
-            new And(
-                futures,
-                (Func<Future<Boolean>, Boolean>) Future::get
-            ).value(),
-            Matchers.is(true)
+            inc -> {
+                final String person = String.format(
+                    "jeff%d", inc.incrementAndGet()
+                );
+                final String task = String.format(
+                    "gh:test/test#%d", inc.incrementAndGet()
+                );
+                new Wbs(project).bootstrap().add(task);
+                roles.bootstrap().assign(person, role);
+                return roles.hasRole(person, role);
+            },
+            new RunsInThreads<>(new AtomicInteger())
         );
     }
 

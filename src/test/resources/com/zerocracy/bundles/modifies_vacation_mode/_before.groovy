@@ -14,18 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.vacation
+package com.zerocracy.bundles.modifies_vacation_mode
 
 import com.jcabi.xml.XML
 import com.zerocracy.jstk.Project
-import com.zerocracy.pmo.People
-import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
-  MatcherAssert.assertThat(
-    'vacation mode is "off"',
-    new People(project).vacation('g4s8'),
-    Matchers.is(true)
-  )
 }

@@ -16,7 +16,6 @@
  */
 package com.zerocracy.entry;
 
-import com.jcabi.aspects.Cacheable;
 import java.io.IOException;
 import java.util.Properties;
 import org.cactoos.Scalar;
@@ -33,7 +32,6 @@ import org.cactoos.iterable.PropertiesOf;
 final class ExtProperties implements Scalar<Properties> {
 
     @Override
-    @Cacheable(forever = true)
     public Properties value() throws IOException {
         final Properties props = new PropertiesOf(
             new ResourceOf("main.properties")

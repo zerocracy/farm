@@ -23,9 +23,9 @@ import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
-  final FkTmSession session = binding.variables.telegram.get(42L)
+  FkTmSession session = binding.variables.telegram.get(42L)
   MatcherAssert.assertThat(
-    "no responses",
+    'no responses',
     session.responses(),
     Matchers.hasSize(1)
   )

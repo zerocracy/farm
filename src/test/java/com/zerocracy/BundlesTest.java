@@ -22,36 +22,54 @@ import com.ullink.slack.simpleslackapi.SlackSession;
 import com.zerocracy.farm.SmartFarm;
 import com.zerocracy.farm.reactive.StkGroovy;
 import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.fake.FkFarm;
+import com.zerocracy.jstk.fake.FkProject;
+import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
 import com.zerocracy.radars.telegram.TmSession;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileVisitOption;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
-import org.cactoos.Input;
+import java.util.regex.Pattern;
+import org.apache.log4j.FileAppender;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
+import org.cactoos.Func;
 import org.cactoos.io.LengthOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.io.TeeInput;
 import org.cactoos.iterable.Endless;
+import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Limited;
-import org.cactoos.iterable.MapEntry;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.iterable.PropertiesOf;
-import org.cactoos.iterable.StickyList;
-import org.cactoos.iterable.StickyMap;
+import org.cactoos.iterable.Sorted;
+import org.cactoos.list.StickyList;
+import org.cactoos.map.MapEntry;
+import org.cactoos.map.StickyMap;
 import org.cactoos.scalar.And;
+import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.reflections.Reflections;
+import org.reflections.Store;
 import org.reflections.scanners.ResourcesScanner;
 
 /**
@@ -63,6 +81,8 @@ import org.reflections.scanners.ResourcesScanner;
  * @checkstyle JavadocVariableCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @checkstyle VisibilityModifierCheck (500 lines)
+ * @checkstyle ClassFanOutComplexityCheck (500 lines)
+ * @checkstyle DiamondOperatorCheck (500 lines)
  */
 @SuppressWarnings("PMD.ExcessiveImports")
 @RunWith(Parameterized.class)
@@ -71,17 +91,60 @@ public final class BundlesTest {
     @Parameterized.Parameter
     public String bundle;
 
+    private String name;
+
+    private Path home;
+
+    private FileAppender appender;
+
     @Parameterized.Parameters(name = "{0}")
     public static Collection<Object[]> bundles() {
-        return new StickyList<>(
+        return new StickyList<Object[]>(
             new Mapped<>(
-                new Reflections(
-                    "com.zerocracy.bundles", new ResourcesScanner()
-                ).getResources(p -> p.endsWith("claims.xml")),
+                new Sorted<>(
+                    new Reflections(
+                        "com.zerocracy.bundles", new ResourcesScanner()
+                    ).getResources(p -> p.endsWith("claims.xml"))
+                ),
                 path -> new Object[]{
                     path.substring(0, path.indexOf("/claims.xml")),
                 }
             )
+        );
+    }
+
+    @Before
+    public void prepare() throws IOException {
+        this.name = this.bundle.substring(
+            this.bundle.lastIndexOf('/') + 1
+        );
+        this.home = Paths.get("target/testing-bundles")
+            .resolve(this.name)
+            .toAbsolutePath();
+        if (Files.exists(this.home)) {
+            Files.walk(this.home, FileVisitOption.FOLLOW_LINKS)
+                .sorted(Comparator.reverseOrder())
+                .map(Path::toFile)
+                .forEach(File::delete);
+        }
+        this.appender = new FileAppender(
+            new PatternLayout("%t %p %m\n"),
+            this.home.resolve("test.log").toString(),
+            false
+        );
+        Logger.getRootLogger().addAppender(this.appender);
+    }
+
+    @After
+    public void after() throws IOException {
+        Logger.getRootLogger().removeAppender(this.appender);
+        MatcherAssert.assertThat(
+            String.format(
+                "There were some exceptions in the log, see %s",
+                this.appender.getFile()
+            ),
+            new TextOf(new File(this.appender.getFile())).asString(),
+            Matchers.not(Matchers.containsString("Exception"))
         );
     }
 
@@ -90,40 +153,59 @@ public final class BundlesTest {
         final Properties props = new PropertiesOf(
             new MapEntry<>("testing", "true")
         ).value();
-        // @checkstyle DiamondOperatorCheck (1 line)
         final Map<String, Object> deps = new StickyMap<String, Object>(
             new MapEntry<>("github", new MkGithub("test")),
             new MapEntry<>("slack", new HashMap<String, SlackSession>(0)),
             new MapEntry<>("telegram", new HashMap<Long, TmSession>(0)),
             new MapEntry<>("properties", props)
         );
-        final Farm farm = new SmartFarm(new FkFarm(), props, deps).value();
-        final Project project = farm.find("id=12345").iterator().next();
+        final Farm farm = new SmartFarm(
+            new FkFarm(
+                (Func<String, Project>) pid -> new FkProject(this.home, pid)
+            ),
+            props, deps
+        ).value();
+        final Project project = farm.find(
+            String.format(
+                "@id='%s'",
+                this.name.toUpperCase(Locale.ENGLISH).replaceAll(
+                    "[^A-Z0-9]", ""
+                ).substring(0, Tv.NINE)
+            )
+        ).iterator().next();
         new And(
-            BundlesTest.resources(this.bundle.replace("/", ".")),
+            BundlesTest.resources(this.bundle),
             path -> {
-                BundlesTest.save(
-                    project,
-                    new ResourceOf(path),
-                    path.substring(path.lastIndexOf('/') + 1)
-                );
+                new LengthOf(
+                    new TeeInput(
+                        new ResourceOf(path),
+                        new OutputTo(
+                            this.home.resolve(
+                                path.substring(path.lastIndexOf('/') + 1)
+                            )
+                        )
+                    )
+                ).value();
             }
         ).value();
+        final Map<String, Object> gdeps = new StickyMap<String, Object>(
+            deps, new MapEntry<>("farm", farm)
+        );
         new StkGroovy(
             new ResourceOf(
                 String.format("%s/_before.groovy", this.bundle)
             ),
             String.format("%s_before", this.bundle),
-            deps
+            gdeps
         ).process(project, null);
+        new ClaimOut().type("ping").postTo(project);
         MatcherAssert.assertThat(
             new And(
                 new Limited<>(new Endless<>(1), Tv.FIFTY),
                 x -> {
                     TimeUnit.SECONDS.sleep(1L);
-                    try (final Claims claims = new Claims(project).lock()) {
-                        return !claims.iterate().isEmpty();
-                    }
+                    final Claims claims = new Claims(project).bootstrap();
+                    return !claims.iterate().isEmpty();
                 }
             ).value(),
             Matchers.equalTo(false)
@@ -133,28 +215,27 @@ public final class BundlesTest {
                 String.format("%s/_after.groovy", this.bundle)
             ),
             String.format("%s_after", this.bundle),
-            deps
+            gdeps
         ).process(project, null);
     }
 
-    private static Iterable<String> resources(final String pkg) {
-        return new Reflections(
-            pkg,
-            new ResourcesScanner()
-        ).getResources(p -> p.endsWith(".xml"));
-    }
-
-    private static void save(final Project project, final Input input,
-        final String file) throws IOException {
-        try (final Item item =
-            project.acq(file.substring(file.lastIndexOf('/') + 1))) {
-            new LengthOf(
-                new TeeInput(
-                    input,
-                    new OutputTo(item.path())
+    private static Iterable<String> resources(final String path) {
+        final Store store = new Reflections(
+            path.replace(File.separator, "."),
+            new PatternScanner(
+                new ResourcesScanner(),
+                Pattern.compile(
+                    String.format("^%s%s.*", path, File.separator)
                 )
-            ).value();
-        }
+            )
+        ).getStore();
+        final String name = PatternScanner.class.getSimpleName();
+        return store.get(
+            name,
+            new Filtered<>(
+                store.get(name).keySet(),
+                p -> p.endsWith(".xml")
+            )
+        );
     }
-
 }

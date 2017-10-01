@@ -16,7 +16,6 @@
  */
 package com.zerocracy.pm.staff.voters;
 
-import com.jcabi.aspects.Tv;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.staff.Voter;
 import com.zerocracy.pmo.Agenda;
@@ -52,7 +51,8 @@ public final class NoRoom implements Voter {
             new Agenda(this.pmo, login).bootstrap().jobs()
         ).value();
         final double rate;
-        if (total > (long) Tv.FIVE) {
+        // @checkstyle MagicNumber (1 line)
+        if (total > 5L) {
             rate = 1.0d;
             log.append(String.format("There are %d open jobs already", total));
         } else if (total > 1L) {

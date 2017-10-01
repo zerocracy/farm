@@ -23,10 +23,13 @@ import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimOut
 
 def exec(Project project, XML xml) {
+  Github github = binding.variables.github
+  def repo = github.repos().create(new Repos.RepoCreate('test', false))
+  def issue = repo.issues().create('title', 'body')
   new ClaimOut()
-    .type("Quit a project")
-    .token("github;gh:test/test#1")
-    .author("cmiranda")
-    .param("project", project.toString())
+    .type('Quit a project')
+    .token("job;gh:${repo.coordinates()}#${issue.number()}")
+    .author('cmiranda')
+    .param('project', project.toString())
     .postTo(project)
 }

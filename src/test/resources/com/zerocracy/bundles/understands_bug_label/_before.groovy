@@ -14,18 +14,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.set_rate
+package com.zerocracy.bundles.understands_bug_label
 
+import com.jcabi.github.Github
+import com.jcabi.github.Repos
 import com.jcabi.xml.XML
+import com.zerocracy.jstk.fake.FkFarm
 import com.zerocracy.jstk.Project
-import com.zerocracy.pmo.People
-import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
+import com.zerocracy.radars.github.RbOnBug
+import javax.json.Json
 
 def exec(Project project, XML xml) {
-  final rate = new People(project).rate('user42')
-  MatcherAssert.assertThat(
-    rate.decimal().doubleValue(),
-    Matchers.equalTo(100.0D)
+  Github github = binding.variables.github
+  def repo = github.repos().create(new Repos.RepoCreate('bugs', false))
+  def issue = repo.issues().create('A bug', '')
+  new RbOnBug().react(
+    new FkFarm(project),
+    github,
+    Json.createObjectBuilder().add(
+      'issue',
+      Json.createObjectBuilder()
+        .add('number', issue.number())
+    ).add(
+      'repository',
+      Json.createObjectBuilder()
+        .add('full_name', repo.coordinates().toString())
+    ).build()
   )
 }

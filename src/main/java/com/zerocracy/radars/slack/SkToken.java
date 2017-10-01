@@ -16,7 +16,6 @@
  */
 package com.zerocracy.radars.slack;
 
-import com.jcabi.aspects.Tv;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 
 /**
@@ -43,7 +42,8 @@ public final class SkToken {
 
     @Override
     public String toString() {
-        return new StringBuilder(Tv.HUNDRED)
+        // @checkstyle MagicNumber (1 line)
+        return new StringBuilder(100)
             .append("slack;")
             .append(this.event.getChannel().getId())
             .append(';')

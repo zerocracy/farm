@@ -37,7 +37,7 @@ def exec(Project project, XML xml) {
     )
   }
   def login = claim.author()
-  final Orders orders = new Orders(project).bootstrap()
+  Orders orders = new Orders(project).bootstrap()
   for (String job : orders.jobs(login)) {
     orders.resign(job)
     new ClaimOut()

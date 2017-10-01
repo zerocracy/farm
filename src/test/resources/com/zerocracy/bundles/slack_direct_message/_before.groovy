@@ -21,42 +21,27 @@ import com.ullink.slack.simpleslackapi.SlackChannel
 import com.ullink.slack.simpleslackapi.SlackSession
 import com.ullink.slack.simpleslackapi.SlackUser
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted
-import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
+import com.zerocracy.jstk.fake.FkFarm
 import com.zerocracy.radars.slack.ReProfile
 import org.mockito.Mockito
 
 def exec(Project project, XML xml) {
-  final session = Mockito.mock(SlackSession.class)
-  final person = "7YYZZT99S"
-  final event = mockSession("@0crat hello", "C123", "user", person)
-  final farm = new FkFarm(project)
-  new ReProfile().react(farm, event, session)
+  SlackSession session = Mockito.mock(SlackSession)
+  String person = '7YYZZT99S'
+  SlackMessagePosted event = mockSession('@0crat hello', 'C123', 'user', person)
+  new ReProfile().react(new FkFarm(project), event, session)
 }
 
 static mockSession(String message, String channelId, String senderName, String senderId) {
-  final event = Mockito.mock(SlackMessagePosted.class)
+  SlackMessagePosted event = Mockito.mock(SlackMessagePosted)
   Mockito.when(event.messageContent).thenReturn(message)
-  final channel = Mockito.mock(SlackChannel.class)
+  SlackChannel channel = Mockito.mock(SlackChannel)
   Mockito.when(channel.id).thenReturn(channelId)
   Mockito.when(event.channel).thenReturn(channel)
-  final sender = Mockito.mock(SlackUser.class)
+  SlackUser sender = Mockito.mock(SlackUser)
   Mockito.when(sender.userName).thenReturn(senderName)
   Mockito.when(sender.id).thenReturn(senderId)
   Mockito.when(event.sender).thenReturn(sender)
-  return event
-}
-
-class FkFarm implements Farm {
-
-  private final Project proj
-
-  FkFarm(Project proj) {
-    this.proj = proj
-  }
-
-  @Override
-  Iterable<Project> find(final String xpath) throws IOException {
-    [proj]
-  }
+  event
 }

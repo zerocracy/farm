@@ -17,15 +17,19 @@
 package com.zerocracy.bundles.react_telegram
 
 import com.jcabi.xml.XML
-import com.zerocracy.jstk.fake.FkFarm
 import com.zerocracy.jstk.Project
+import com.zerocracy.jstk.fake.FkFarm
 import com.zerocracy.radars.telegram.ReProfile
 import com.zerocracy.radars.telegram.fake.FkTmRequest
 import com.zerocracy.radars.telegram.fake.FkTmSession
 
 def exec(Project project, XML xml) {
   binding.variables.telegram.put(42L, new FkTmSession())
-  new ReProfile().react(new FkFarm(project, "@id='PMO'"), new FkTmSession(), new FkTmRequest("yegor256", "hello", 42))
+  new ReProfile().react(
+    new FkFarm('PMO', project),
+    new FkTmSession(),
+    new FkTmRequest('yegor256', 'hello', 42)
+  )
 }
 
 

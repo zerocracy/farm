@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.assigns_performer
+package com.zerocracy.bundles.zerocrat_assignment_adds_to_wbs
 
 import com.jcabi.github.Event
 import com.jcabi.github.Github
@@ -24,34 +24,24 @@ import com.jcabi.xml.XML
 import com.zerocracy.jstk.fake.FkFarm
 import com.zerocracy.jstk.Project
 import com.zerocracy.radars.github.RbOnAssign
-
 import javax.json.Json
 
 def exec(Project project, XML xml) {
   Github github = binding.variables.github
-  def repo = github.repos().create(new Repos.RepoCreate("test", false))
-  def issue =
-      new Issue.Smart(repo.issues().create("hello, world", ""))
-  issue.assign("0crat")
-  repo.issueEvents()
-    .create(Event.ASSIGNED, issue.number(), "yegor256", com.google.common.base.Optional.absent())
-  final xpath = String.format(
-      "links/link[@rel='github' and @href='%s']",
-      repo.coordinates().toString().toLowerCase(Locale.ENGLISH)
+  def repo = github.repos().create(new Repos.RepoCreate('test', false))
+  def issue = new Issue.Smart(repo.issues().create('Hello, world', ''))
+  issue.assign('0crat')
+  repo.issueEvents().create(
+    Event.ASSIGNED, issue.number(), 'yegor256',
+    com.google.common.base.Optional.absent()
   )
   new RbOnAssign().react(
-      new FkFarm(project, xpath),
-      github,
-      Json.createObjectBuilder().add(
-          "issue",
-          Json.createObjectBuilder().add("number", issue.number())
-      ).add(
-          "repository",
-          Json.createObjectBuilder()
-              .add("full_name", repo.coordinates().toString())
-      ).add(
-          "sender",
-          Json.createObjectBuilder().add("login", "yegor256")
-      ).build()
+    new FkFarm(project),
+    github,
+    Json.createObjectBuilder()
+      .add('issue', Json.createObjectBuilder().add('number', issue.number()))
+      .add('repository', Json.createObjectBuilder().add('full_name', repo.coordinates().toString()))
+      .add('sender', Json.createObjectBuilder().add('login', 'yegor256'))
+      .build()
   )
 }

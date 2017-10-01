@@ -14,12 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.bug_label
+package com.zerocracy.bundles.set_user_rate
 
 import com.jcabi.xml.XML
 import com.zerocracy.jstk.Project
-import com.zerocracy.pm.scope.Wbs
 
 def exec(Project project, XML xml) {
-  assert new Wbs(project).bootstrap().exists('gh:test/bugs#1')
 }

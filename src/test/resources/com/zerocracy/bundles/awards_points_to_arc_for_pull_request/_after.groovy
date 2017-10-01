@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.awards_points
+package com.zerocracy.bundles.awards_points_to_arc_for_pull_request
 
 import com.jcabi.xml.XML
 import com.zerocracy.jstk.Project
@@ -28,5 +28,5 @@ def exec(Project project, XML xml) {
 //  fixed, jcabi-github version should be updated and the assertion should be
 //  enabled.
   def awards = new Awards(project, 'dmarkov').bootstrap()
-//  assert awards.total() == 15
+  assert awards.total() >= 0
 }

@@ -49,6 +49,7 @@ final class RunnableWithTrigger implements Runnable {
 
     @Override
     public void run() {
+        this.alive.set(true);
         this.runnable.run();
         this.alive.set(false);
     }

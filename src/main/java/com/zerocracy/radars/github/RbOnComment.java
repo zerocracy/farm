@@ -16,7 +16,6 @@
  */
 package com.zerocracy.radars.github;
 
-import com.jcabi.aspects.Tv;
 import com.jcabi.github.Github;
 import com.jcabi.log.VerboseRunnable;
 import com.jcabi.log.VerboseThreads;
@@ -63,7 +62,8 @@ public final class RbOnComment implements Rebound {
         this.service.submit(
             new VerboseRunnable(
                 () -> {
-                    TimeUnit.SECONDS.sleep((long) Tv.FIVE);
+                    // @checkstyle MagicNumber (1 line)
+                    TimeUnit.SECONDS.sleep(5L);
                     this.radar.run();
                     return null;
                 },

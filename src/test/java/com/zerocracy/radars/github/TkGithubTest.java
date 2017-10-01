@@ -42,9 +42,7 @@ public final class TkGithubTest {
     public void parsesJson() throws Exception {
         final Farm farm = new FkFarm();
         final Take take = new TkGithub(
-            farm,
-            new MkGithub(),
-            (frm, github, event) -> "nothing"
+            farm, new MkGithub(), (frm, github, event) -> "nothing"
         );
         MatcherAssert.assertThat(
             take.act(
