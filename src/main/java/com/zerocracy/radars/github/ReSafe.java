@@ -19,13 +19,11 @@ package com.zerocracy.radars.github;
 import com.jcabi.github.Comment;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.SoftException;
+import com.zerocracy.msg.TxtUnrecoverableError;
 import java.io.IOException;
-import org.apache.commons.lang3.StringUtils;
 import org.cactoos.Proc;
 import org.cactoos.func.FuncWithFallback;
 import org.cactoos.func.IoCheckedFunc;
-import org.cactoos.io.BytesOf;
-import org.cactoos.text.TextOf;
 
 /**
  * Safe Reaction on GitHub comment.
@@ -67,21 +65,7 @@ public final class ReSafe implements Response {
                 },
                 (Proc<Throwable>) throwable -> {
                     comment.issue().comments().post(
-                        String.join(
-                            "",
-                            "There is an unrecoverable failure on my side.",
-                            " Please, submit it",
-                            " [here](https://github.com/zerocracy/datum):",
-                            "\n\n```\n",
-                            StringUtils.abbreviate(
-                                new TextOf(
-                                    new BytesOf(throwable)
-                                ).asString(),
-                                // @checkstyle MagicNumber (1 line)
-                                1000
-                            ),
-                            "\n```"
-                        )
+                        new TxtUnrecoverableError(throwable).asString()
                     );
                     throw new IOException(throwable);
                 }

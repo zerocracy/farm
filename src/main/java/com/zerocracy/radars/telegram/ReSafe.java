@@ -18,13 +18,11 @@ package com.zerocracy.radars.telegram;
 
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.SoftException;
+import com.zerocracy.msg.TxtUnrecoverableError;
 import java.io.IOException;
-import org.apache.commons.lang3.StringUtils;
 import org.cactoos.Proc;
 import org.cactoos.func.FuncWithFallback;
 import org.cactoos.func.IoCheckedFunc;
-import org.cactoos.io.BytesOf;
-import org.cactoos.text.JoinedText;
 import org.cactoos.text.TextOf;
 
 /**
@@ -70,24 +68,7 @@ public final class ReSafe implements Reaction {
                 },
                 (Proc<Throwable>) throwable -> {
                     session.reply(
-                        new RsText(
-                            new JoinedText(
-                                "",
-                                "There is an unrecoverable",
-                                "failure on my side.",
-                                " Please, submit it",
-                                " [here](https://github.com/zerocracy/datum):",
-                                "\n\n```\n",
-                                StringUtils.abbreviate(
-                                    new TextOf(
-                                        new BytesOf(throwable)
-                                    ).asString(),
-                                    // @checkstyle MagicNumber (1 line)
-                                    1000
-                                ),
-                                "\n```"
-                            )
-                        )
+                        new RsText(new TxtUnrecoverableError(throwable))
                     );
                     throw new IOException(throwable);
                 }
