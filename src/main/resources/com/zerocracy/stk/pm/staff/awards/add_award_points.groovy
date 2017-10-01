@@ -29,7 +29,7 @@ def exec(Project project, XML xml) {
   String job = claim.param('job')
   String login = claim.param('login')
   int minutes = Integer.parseInt(claim.param('minutes'))
-  final reason = claim.param('reason')
+  String reason = claim.param('reason')
   Awards awards = new Awards(project, login).bootstrap()
   awards.add(minutes, job, reason)
   new ClaimOut()

@@ -19,6 +19,7 @@ package com.zerocracy.bundles.notify_awards
 import com.jcabi.github.Comment
 import com.jcabi.github.Coordinates
 import com.jcabi.github.Github
+import com.jcabi.github.Issue
 import com.jcabi.xml.XML
 import com.zerocracy.jstk.Project
 import org.hamcrest.MatcherAssert
@@ -26,11 +27,11 @@ import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
   Github github = binding.variables.github
-  final issue = github.repos()
-    .get(new Coordinates.Simple("test/test"))
+  Issue issue = github.repos()
+    .get(new Coordinates.Simple('test/test'))
     .issues()
     .get(1)
-  final comment = new Comment.Smart(issue.comments().get(1)).body()
+  String comment = new Comment.Smart(issue.comments().get(1)).body()
   MatcherAssert.assertThat(
     comment,
     Matchers.startsWith('Test reason: +15 points just awarded to @yegor256')

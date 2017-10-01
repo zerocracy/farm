@@ -30,7 +30,7 @@ def exec(Project project, XML xml) {
   String login = claim.param('login')
   Integer points = Integer.parseInt(claim.param('points'))
   Awards awards = new Awards(project, login).bootstrap()
-  final reason = claim.param('reason')
+  String reason = claim.param('reason')
   new ClaimOut()
     .type('Notify user')
     .token("user;${login}")

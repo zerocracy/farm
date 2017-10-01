@@ -23,7 +23,7 @@ import com.zerocracy.jstk.Project
 
 def exec(Project project, XML xml) {
   Github github = binding.variables.github
-  github.repos().create(new Repos.RepoCreate("test", false))
+  github.repos().create(new Repos.RepoCreate('test', false))
     .issues()
-    .create("hello, world", "")
+    .create('hello, world', '')
 }
