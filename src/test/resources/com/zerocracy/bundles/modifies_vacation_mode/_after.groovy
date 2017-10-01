@@ -14,35 +14,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.bug_label
+package com.zerocracy.bundles.modifies_vacation_mode
 
-import com.jcabi.github.Github
-import com.jcabi.github.Repos
 import com.jcabi.xml.XML
-import com.zerocracy.jstk.fake.FkFarm
 import com.zerocracy.jstk.Project
-import com.zerocracy.radars.github.RbOnBug
-import javax.json.Json
+import com.zerocracy.pmo.People
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
-  Github github = binding.variables.github
-  def repo = github.repos().create(new Repos.RepoCreate("bugs", false))
-  def issue = repo.issues().create("A Bug", "")
-  final xpath = String.format(
-    "links/link[@rel='github' and @href='%s']",
-    repo.coordinates().toString().toLowerCase(Locale.ENGLISH)
-  )
-  new RbOnBug().react(
-    new FkFarm(project, xpath),
-    github,
-    Json.createObjectBuilder().add(
-      "issue",
-      Json.createObjectBuilder()
-        .add("number", issue.number())
-    ).add(
-      "repository",
-      Json.createObjectBuilder()
-        .add("full_name", repo.coordinates().toString())
-    ).build()
+  MatcherAssert.assertThat(
+    'modifies_vacation_mode mode is "off"',
+    new People(project).vacation('g4s8'),
+    Matchers.is(false)
   )
 }

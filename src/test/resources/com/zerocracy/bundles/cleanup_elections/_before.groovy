@@ -23,6 +23,6 @@ import com.zerocracy.jstk.Project
 
 def exec(Project project, XML xml) {
   Repo repo = binding.variables.github.repos()
-    .create(new Repos.RepoCreate("test", false))
+    .create(new Repos.RepoCreate('test', false))
   ['first', 'second', 'third', 'fourth'].each { repo.issues().create(it, 'stub') }
 }

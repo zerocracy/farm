@@ -65,17 +65,21 @@ SOFTWARE.
     </p>
     <p>
       <xsl:text>Time: </xsl:text>
+      <!--
       <a href="/a/{project}?a=pm/time/schedule">
         <xsl:text>Schedule</xsl:text>
       </a>
+      -->
       <xsl:text>.</xsl:text>
     </p>
     <p>
       <xsl:text>Cost: </xsl:text>
+      <!--
       <a href="/a/{project}?a=pm/cost/budget">
         <xsl:text>Budget</xsl:text>
       </a>
       <xsl:text>, </xsl:text>
+      -->
       <a href="/a/{project}?a=pm/cost/estimates">
         <xsl:text>Estimates</xsl:text>
       </a>

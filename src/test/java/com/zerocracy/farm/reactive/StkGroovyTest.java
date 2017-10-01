@@ -25,7 +25,7 @@ import com.zerocracy.pm.Claims;
 import java.util.AbstractMap;
 import java.util.HashMap;
 import org.cactoos.io.InputOf;
-import org.cactoos.iterable.StickyMap;
+import org.cactoos.map.StickyMap;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -64,12 +64,11 @@ public final class StkGroovyTest {
                 )
             )
         ).process(project, null);
-        try (final Claims claims = new Claims(project).lock()) {
-            MatcherAssert.assertThat(
-                new ClaimIn(claims.iterate().iterator().next()).type(),
-                Matchers.endsWith(" dude")
-            );
-        }
+        final Claims claims = new Claims(project).bootstrap();
+        MatcherAssert.assertThat(
+            new ClaimIn(claims.iterate().iterator().next()).type(),
+            Matchers.endsWith(" dude")
+        );
     }
 
     @Test(expected = SoftException.class)

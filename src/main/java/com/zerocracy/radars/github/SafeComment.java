@@ -16,13 +16,11 @@
  */
 package com.zerocracy.radars.github;
 
-import com.jcabi.aspects.RetryOnFailure;
 import com.jcabi.github.Comment;
 import com.jcabi.github.Issue;
 import com.jcabi.github.mock.MkGithub;
 import com.jcabi.log.Logger;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 import javax.json.JsonObject;
 
 /**
@@ -107,7 +105,6 @@ final class SafeComment implements Comment {
      * @return JSON
      * @throws IOException If fails
      */
-    @RetryOnFailure(delay = 1, unit = TimeUnit.SECONDS, verbose = false)
     private JsonObject load() throws IOException {
         return this.origin.json();
     }

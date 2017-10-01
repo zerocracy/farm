@@ -16,7 +16,6 @@
  */
 package com.zerocracy.tk;
 
-import com.jcabi.aspects.Tv;
 import com.jcabi.http.request.JdkRequest;
 import com.jcabi.log.Logger;
 import com.zerocracy.jstk.Farm;
@@ -88,7 +87,8 @@ public final class TkPing implements Take {
         final ClaimOut out = new ClaimOut().type(TkPing.TYPE);
         for (final Project project : this.farm.find("")) {
             if (System.currentTimeMillis() - start
-                > TimeUnit.SECONDS.toMillis((long) Tv.FIVE)) {
+                // @checkstyle MagicNumber (1 line)
+                > TimeUnit.SECONDS.toMillis(5L)) {
                 done.add(this.ping(req));
                 break;
             }
@@ -117,12 +117,11 @@ public final class TkPing implements Take {
      * @throws IOException If fails
      */
     private static boolean needs(final Project project) throws IOException {
-        try (final Claims claims = new Claims(project).lock()) {
-            return !new Filtered<>(
-                claims.iterate(),
-                input -> new ClaimIn(input).type().equals(TkPing.TYPE)
-            ).iterator().hasNext();
-        }
+        final Claims claims = new Claims(project).bootstrap();
+        return !new Filtered<>(
+            claims.iterate(),
+            input -> new ClaimIn(input).type().equals(TkPing.TYPE)
+        ).iterator().hasNext();
     }
 
     /**
@@ -132,7 +131,8 @@ public final class TkPing implements Take {
      */
     private String ping(final Request req) {
         final String out;
-        if (this.total.get() < Tv.THREE) {
+        // @checkstyle MagicNumber (1 line)
+        if (this.total.get() < 3) {
             final String arg = "loop";
             new AsyncFunc<>(
                 (Func<Integer, Integer>) idx -> new JdkRequest(

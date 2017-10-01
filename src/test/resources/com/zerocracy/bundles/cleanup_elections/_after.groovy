@@ -24,7 +24,7 @@ import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
   MatcherAssert.assertThat(
-    "elections still exists",
+    'Elections still exists',
     new Elections(project).bootstrap().jobs(),
     Matchers.hasSize(1)
   )

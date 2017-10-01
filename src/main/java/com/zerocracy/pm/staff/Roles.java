@@ -23,8 +23,8 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
-import org.cactoos.iterable.ListOf;
 import org.cactoos.iterable.Mapped;
+import org.cactoos.list.ListOf;
 import org.cactoos.text.JoinedText;
 import org.xembly.Directives;
 

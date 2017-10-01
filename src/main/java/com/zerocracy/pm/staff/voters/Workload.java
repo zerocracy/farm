@@ -55,6 +55,12 @@ public final class Workload implements Voter {
         final double jobs = new LengthOf(
             new Agenda(this.pmo, login).jobs()
         ).value();
+        log.append(
+            String.format(
+                "%.0f jobs out of %.0f",
+                jobs, Workload.MAX_JOBS
+            )
+        );
         return (Workload.MAX_JOBS - Math.min(jobs, Workload.MAX_JOBS))
             / Workload.MAX_JOBS;
     }

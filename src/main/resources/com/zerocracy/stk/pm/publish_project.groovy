@@ -18,7 +18,6 @@ package com.zerocracy.stk.pm
 
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Catalog
@@ -27,8 +26,7 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Publish the project')
   ClaimIn claim = new ClaimIn(xml)
   String mode = claim.param('mode')
-  Farm farm = binding.variables.farm
-  Catalog catalog = new Catalog(farm)
+  Catalog catalog = new Catalog(project)
   if ('on' == mode) {
     catalog.publish(project.toString(), true)
     claim.reply(

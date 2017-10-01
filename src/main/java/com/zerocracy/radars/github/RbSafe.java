@@ -16,7 +16,6 @@
  */
 package com.zerocracy.radars.github;
 
-import com.jcabi.aspects.Tv;
 import com.jcabi.github.Github;
 import com.jcabi.github.Issue;
 import com.jcabi.github.mock.MkGithub;
@@ -84,7 +83,8 @@ public final class RbSafe implements Rebound {
                                 new TextOf(
                                     new BytesOf(throwable)
                                 ).asString(),
-                                Tv.THOUSAND
+                                // @checkstyle MagicNumber (1 line)
+                                1000
                             ),
                             "\n```"
                         )

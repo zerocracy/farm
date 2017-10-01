@@ -14,12 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.workload
 
-import com.jcabi.xml.XML
-import com.zerocracy.jstk.Project
-
-def exec(Project project, XML xml) {
-}
-
-
+/**
+ * Strict farm.
+ *
+ * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @version $Id$
+ * @since 0.17
+ */
+package com.zerocracy.farm.strict;

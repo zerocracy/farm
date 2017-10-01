@@ -23,6 +23,6 @@ import com.zerocracy.jstk.Project
 
 def exec(Project project, XML xml) {
   Github github = binding.variables.github
-  def repo = github.repos().create(new Repos.RepoCreate("farm", false))
-  repo.issues().create("BundlesTest failing on master", "")
+  def repo = github.repos().create(new Repos.RepoCreate('farm', false))
+  repo.issues().create('BundlesTest failing on master', '')
 }

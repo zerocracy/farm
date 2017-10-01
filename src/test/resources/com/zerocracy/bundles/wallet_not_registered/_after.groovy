@@ -17,10 +17,11 @@
 package com.zerocracy.bundles.wallet_not_registered
 
 import com.jcabi.xml.XML
+import com.zerocracy.jstk.Item
 import com.zerocracy.jstk.Project
 
 def exec(Project project, XML xml) {
-  project.acq('test.txt').withAutoCloseable {
-    item -> assert item.path().toFile().newReader().readLine() == 'Your wallet is not configured yet'
-  }
+  Item item = project.acq('test.txt')
+  assert item.path().toFile().newReader().readLine() == 'Your wallet is not configured yet'
+  item.close()
 }

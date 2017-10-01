@@ -16,7 +16,6 @@
  */
 package com.zerocracy.entry;
 
-import com.jcabi.aspects.Cacheable;
 import com.jcabi.dynamo.Credentials;
 import com.jcabi.dynamo.Region;
 import com.jcabi.dynamo.retry.ReRegion;
@@ -34,7 +33,6 @@ import org.cactoos.Scalar;
 final class ExtDynamo implements Scalar<Region> {
 
     @Override
-    @Cacheable(forever = true)
     public Region value() throws IOException {
         final Properties props = new ExtProperties().value();
         return new ReRegion(

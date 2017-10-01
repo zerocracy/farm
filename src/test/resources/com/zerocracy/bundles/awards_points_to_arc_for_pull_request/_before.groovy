@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.awards_points
+package com.zerocracy.bundles.awards_points_to_arc_for_pull_request
 
 import com.jcabi.github.Github
 import com.jcabi.github.Repos
@@ -23,6 +23,6 @@ import com.zerocracy.jstk.Project
 
 def exec(Project project, XML xml) {
   Github github = binding.variables.github
-  def repo = github.repos().create(new Repos.RepoCreate("test", false))
-  repo.pulls().create("Test PR", "test", "teset")
+  def repo = github.repos().create(new Repos.RepoCreate('test', false))
+  repo.pulls().create('Test PR', 'test', 'the test')
 }

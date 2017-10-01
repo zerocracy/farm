@@ -38,11 +38,11 @@ def exec(Project project, XML xml) {
   Roles roles = new Roles(project).bootstrap()
   List<String> logins = roles.findByRole('DEV')
   if (logins.empty) {
-    Logger.warn(this, 'No DEVs in %s, cannot elect', project)
+    Logger.info(this, 'No DEVs in %s, cannot elect', project)
     return
   }
   Elections elections = new Elections(project).bootstrap()
-  Set<String> winners = new HashSet<>()
+  Set<String> winners = [] as Set
   Farm farm = binding.variables.farm
   Project pmo = new Pmo(farm)
   for (String job : wbs.iterate()) {
@@ -51,7 +51,7 @@ def exec(Project project, XML xml) {
       [
         (new NoRoom(pmo)): -100,
         (new Banned(project, job)): -1000,
-        (new Vacation(project)): -1000,
+        (new Vacation(pmo)): -1000,
         (new Workload(pmo)): 1
       ]
     )

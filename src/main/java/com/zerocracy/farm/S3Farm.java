@@ -28,8 +28,8 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.EqualsAndHashCode;
-import org.cactoos.iterable.ListOf;
 import org.cactoos.iterable.Mapped;
+import org.cactoos.list.ListOf;
 
 /**
  * Farm in S3.
