@@ -24,14 +24,14 @@ import com.zerocracy.pm.ClaimOut
 
 def exec(Project project, XML xml) {
   Github github = binding.variables.github
-  def repo = github.repos().create(new Repos.RepoCreate("test", false))
-  def issue = repo.issues().create("hello, world", "")
+  def repo = github.repos().create(new Repos.RepoCreate('test', false))
+  def issue = repo.issues().create('Hello, world', '')
   new ClaimOut()
-    .type("hello")
+    .type('hello')
     .token("github;${repo.coordinates()};${issue.number()}")
     .postTo(project)
   new ClaimOut()
-    .type("version")
+    .type('version')
     .token("github;${repo.coordinates()};${issue.number()}")
     .postTo(project)
 }

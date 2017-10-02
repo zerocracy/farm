@@ -30,16 +30,16 @@ import java.io.IOException;
 public final class Vacation implements Voter {
 
     /**
-     * A project.
+     * The people.
      */
     private final People people;
 
     /**
      * Ctor.
-     * @param project A project
+     * @param pmo The PMO
      */
-    public Vacation(final Project project) {
-        this(new People(project));
+    public Vacation(final Project pmo) {
+        this(new People(pmo));
     }
 
     /**

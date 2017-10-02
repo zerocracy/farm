@@ -30,8 +30,8 @@ import com.zerocracy.pm.staff.Elections
  */
 def exec(Project project, XML xml) {
   new Assume(project, xml).types(['Add job to WBS', 'Remove job from WBS'])
-  final jobs = new Wbs(project).bootstrap().iterate().toList()
-  final elections = new Elections(project).bootstrap()
+  Collection<String> jobs = new Wbs(project).bootstrap().iterate()
+  Elections elections = new Elections(project).bootstrap()
   elections.jobs().each {
     if (!jobs.contains(it)) {
       elections.remove(it)

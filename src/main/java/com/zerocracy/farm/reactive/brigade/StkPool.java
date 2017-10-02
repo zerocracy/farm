@@ -23,9 +23,9 @@ import com.zerocracy.pm.ClaimIn;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.cactoos.iterable.ListOf;
 import org.cactoos.iterable.Mapped;
-import org.cactoos.iterable.StickyList;
+import org.cactoos.list.ListOf;
+import org.cactoos.list.StickyList;
 
 /**
  * Pool of stakeholders.

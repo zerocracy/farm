@@ -16,7 +16,6 @@
  */
 package com.zerocracy.farm.reactive;
 
-import com.jcabi.aspects.Cacheable;
 import com.jcabi.xml.XML;
 import com.zerocracy.farm.MismatchException;
 import com.zerocracy.jstk.Project;
@@ -33,6 +32,9 @@ import java.util.HashMap;
 import java.util.Map;
 import lombok.EqualsAndHashCode;
 import org.cactoos.Input;
+import org.cactoos.func.IoCheckedBiFunc;
+import org.cactoos.func.StickyBiFunc;
+import org.cactoos.func.SyncBiFunc;
 import org.cactoos.scalar.And;
 import org.cactoos.scalar.UncheckedScalar;
 import org.cactoos.text.TextOf;
@@ -43,9 +45,31 @@ import org.cactoos.text.TextOf;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.10
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @EqualsAndHashCode(of = "label")
 public final class StkGroovy implements Stakeholder {
+
+    /**
+     * Scripts.
+     */
+    private static final IoCheckedBiFunc<String, String, Class<?>> SCRIPTS =
+        new IoCheckedBiFunc<>(
+            new SyncBiFunc<>(
+                new StickyBiFunc<>(
+                    (body, name) -> {
+                        try (final GroovyClassLoader loader =
+                            new GroovyClassLoader()) {
+                            return loader.parseClass(
+                                new GroovyCodeSource(
+                                    body, name, GroovyShell.DEFAULT_CODE_BASE
+                                )
+                            );
+                        }
+                    }
+                )
+            )
+        );
 
     /**
      * Input.
@@ -98,7 +122,7 @@ public final class StkGroovy implements Stakeholder {
                 }
             )
         ).value();
-        final Class<?> clazz = StkGroovy.script(
+        final Class<?> clazz = StkGroovy.SCRIPTS.apply(
             new TextOf(this.input).asString(), this.label
         );
         try {
@@ -117,24 +141,6 @@ public final class StkGroovy implements Stakeholder {
                 throw SoftException.class.cast(exp.getCause());
             }
             throw new IllegalStateException(exp);
-        }
-    }
-    /**
-     * Compiles the script.
-     * @param body Script body
-     * @param name Script name
-     * @return Class
-     * @throws IOException If fails
-     */
-    @Cacheable(forever = true)
-    private static Class<?> script(final String body,
-        final String name) throws IOException {
-        try (final GroovyClassLoader loader = new GroovyClassLoader()) {
-            return loader.parseClass(
-                new GroovyCodeSource(
-                    body, name, GroovyShell.DEFAULT_CODE_BASE
-                )
-            );
         }
     }
 }

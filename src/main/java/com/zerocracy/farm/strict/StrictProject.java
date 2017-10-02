@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.farm;
+package com.zerocracy.farm.strict;
 
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;

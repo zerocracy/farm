@@ -14,10 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.vacation
+package com.zerocracy.bundles.workload_voting
 
 import com.jcabi.xml.XML
 import com.zerocracy.jstk.Project
 
 def exec(Project project, XML xml) {
 }
+
+

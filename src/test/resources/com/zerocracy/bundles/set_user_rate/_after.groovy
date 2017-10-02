@@ -14,12 +14,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.bug_label
+package com.zerocracy.bundles.set_user_rate
 
 import com.jcabi.xml.XML
 import com.zerocracy.jstk.Project
-import com.zerocracy.pm.scope.Wbs
+import com.zerocracy.jstk.cash.Cash
+import com.zerocracy.pmo.People
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
-  assert new Wbs(project).bootstrap().exists('gh:test/bugs#1')
+  Cash rate = new People(project).rate('user42')
+  MatcherAssert.assertThat(
+    rate.decimal().doubleValue(),
+    Matchers.equalTo(100.0D)
+  )
 }

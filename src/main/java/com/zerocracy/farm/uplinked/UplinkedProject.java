@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.farm;
+package com.zerocracy.farm.uplinked;
 
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 import lombok.EqualsAndHashCode;
 import org.cactoos.iterable.IterableOf;
 import org.cactoos.iterable.Mapped;
-import org.cactoos.iterable.StickyList;
+import org.cactoos.list.StickyList;
 import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.scalar.Or;
 import org.cactoos.scalar.Ternary;
@@ -51,6 +51,7 @@ final class UplinkedProject implements Project {
                 new IterableOf<>(
                     "awards/[a-zA-Z0-9-]+\\.xml",
                     "agenda/[a-zA-Z0-9-]+\\.xml",
+                    "projects/[a-zA-Z0-9-]+\\.xml",
                     "catalog\\.xml",
                     "people\\.xml"
                 ),

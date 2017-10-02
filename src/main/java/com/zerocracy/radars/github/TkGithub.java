@@ -16,7 +16,6 @@
  */
 package com.zerocracy.radars.github;
 
-import com.jcabi.aspects.ScheduleWithFixedDelay;
 import com.jcabi.dynamo.Region;
 import com.jcabi.github.Github;
 import com.zerocracy.jstk.Farm;
@@ -45,7 +44,6 @@ import org.takes.rs.RsWithStatus;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
  */
-@ScheduleWithFixedDelay
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class TkGithub implements Take, Runnable {
 
@@ -72,12 +70,8 @@ public final class TkGithub implements Take, Runnable {
      * @param props Properties
      * @checkstyle ParameterNumberCheck (5 lines)
      */
-    public TkGithub(
-        final Farm frm,
-        final Github ghub,
-        final Region dynamo,
-        final Properties props
-    ) {
+    public TkGithub(final Farm frm, final Github ghub, final Region dynamo,
+        final Properties props) {
         this(
             frm,
             ghub,

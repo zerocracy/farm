@@ -16,7 +16,6 @@
  */
 package com.zerocracy;
 
-import com.jcabi.aspects.Tv;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.StrictXML;
 import com.jcabi.xml.XML;
@@ -36,14 +35,17 @@ import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
+import org.cactoos.Func;
+import org.cactoos.Scalar;
+import org.cactoos.func.StickyFunc;
+import org.cactoos.func.UncheckedFunc;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.InputStreamOf;
 import org.cactoos.io.InputWithFallback;
 import org.cactoos.io.LengthOf;
-import org.cactoos.io.OutputTo;
 import org.cactoos.io.TeeInput;
-import org.cactoos.iterable.ListOf;
 import org.cactoos.iterable.Reduced;
+import org.cactoos.list.ListOf;
 import org.cactoos.scalar.Ternary;
 import org.cactoos.scalar.UncheckedScalar;
 import org.cactoos.text.TextOf;
@@ -68,7 +70,23 @@ public final class Xocument {
     /**
      * Current DATUM version.
      */
-    public static final String VERSION = "0.36.4";
+    public static final String VERSION = "0.41";
+
+    /**
+     * Cache of documents.
+     */
+    private static final UncheckedFunc<URL, XML> INDEXES = new UncheckedFunc<>(
+        new StickyFunc<>(
+            (Func<URL, XML>) url -> new XMLDocument(
+                new TextOf(
+                    new InputWithFallback(
+                        new InputOf(url),
+                        new InputOf("<index/>")
+                    )
+                ).asString()
+            )
+        )
+    );
 
     /**
      * Compressing XSL.
@@ -85,15 +103,14 @@ public final class Xocument {
     /**
      * File.
      */
-    private final Path file;
+    private final UncheckedScalar<Path> file;
 
     /**
      * Ctor.
      * @param item Item
-     * @throws IOException If fails
      */
-    public Xocument(final Item item) throws IOException {
-        this(item.path());
+    public Xocument(final Item item) {
+        this(item::path);
     }
 
     /**
@@ -101,14 +118,22 @@ public final class Xocument {
      * @param path File
      */
     public Xocument(final Path path) {
-        this.file = path;
+        this(() -> path);
+    }
+
+    /**
+     * Ctor.
+     * @param path File
+     */
+    private Xocument(final Scalar<Path> path) {
+        this.file = new UncheckedScalar<>(path);
     }
 
     @Override
     public String toString() {
         return new UncheckedText(
             new TextOf(
-                new InputOf(this.file)
+                new InputOf(this.file.value())
             )
         ).asString();
     }
@@ -125,9 +150,10 @@ public final class Xocument {
         final String uri = Xocument.url(
             String.format("/%s/xsd/%s.xsd", Xocument.VERSION, xsd)
         ).toString();
-        if (!Files.exists(this.file) || Files.size(this.file) == 0L) {
+        final Path path = this.file.value();
+        if (!Files.exists(path) || Files.size(path) == 0L) {
             Files.write(
-                this.file,
+                path,
                 String.join(
                     " ",
                     String.format("<%s", root),
@@ -146,7 +172,7 @@ public final class Xocument {
                 StandardOpenOption.CREATE
             );
         }
-        final XML xml = this.upgraded(new XMLDocument(this.file.toFile()), xsd);
+        final XML xml = this.upgraded(new XMLDocument(path.toFile()), xsd);
         final String schema = xml.xpath(
             String.format("/%s/@xsi:noNamespaceSchemaLocation", root)
         ).get(0);
@@ -156,7 +182,10 @@ public final class Xocument {
                     "xsi:noNamespaceSchemaLocation", uri
                 )
             );
-            Logger.info(this, "XSD upgraded to \"%s\" in %s", uri, this.file);
+            Logger.info(
+                this, "XSD upgraded to \"%s\" in %s", uri,
+                this.file.value().getFileName()
+            );
         }
         return this;
     }
@@ -169,7 +198,7 @@ public final class Xocument {
      */
     public List<String> xpath(final String xpath) throws IOException {
         final XML xml = new StrictXML(
-            new XMLDocument(this.file.toFile()),
+            new XMLDocument(this.file.value().toFile()),
             Xocument.RESOLVER
         );
         return xml.xpath(xpath);
@@ -183,7 +212,7 @@ public final class Xocument {
      */
     public List<XML> nodes(final String xpath) throws IOException {
         final XML xml = new StrictXML(
-            new XMLDocument(this.file.toFile()),
+            new XMLDocument(this.file.value().toFile()),
             Xocument.RESOLVER
         );
         return xml.nodes(xpath);
@@ -206,27 +235,8 @@ public final class Xocument {
         );
         final String after = xml.toString();
         if (!before.toString().equals(after)) {
-            new LengthOf(new TeeInput(after, this.file)).value();
+            new LengthOf(new TeeInput(after, this.file.value())).value();
         }
-    }
-
-    /**
-     * Load index.
-     * @param url The URL of it
-     * @return XML
-     * @throws IOException If fails
-     */
-    private static XML index(final URL url) throws IOException {
-        return new XMLDocument(
-            new TextOf(
-                new InputWithFallback(
-                    new InputOf(
-                        url
-                    ),
-                    new InputOf("<index/>")
-                )
-            ).asString()
-        );
     }
 
     /**
@@ -251,7 +261,7 @@ public final class Xocument {
         } else {
             after = new UncheckedScalar<>(
                 new Reduced<>(
-                    Xocument.index(
+                    Xocument.INDEXES.apply(
                         Xocument.url(
                             String.format(
                                 "/latest/upgrades/%s/index.xml",
@@ -272,7 +282,7 @@ public final class Xocument {
                             Logger.info(
                                 this,
                                 "XML %s.xml upgraded to \"%s\" by %s in %s",
-                                xsd, ver, url, this.file
+                                xsd, ver, url, this.file.value().getFileName()
                             );
                         }
                         return output;
@@ -280,7 +290,7 @@ public final class Xocument {
                 )
             ).value();
             new LengthOf(
-                new TeeInput(after.toString(), new OutputTo(this.file))
+                new TeeInput(after.toString(), this.file.value())
             ).value();
         }
         return after;
@@ -319,13 +329,15 @@ public final class Xocument {
     private static int num(final String ver) {
         final List<String> parts = new LinkedList<>();
         parts.addAll(new ListOf<>(ver.split("\\.")));
-        if (parts.size() < Tv.THREE) {
+        // @checkstyle MagicNumber (1 line)
+        if (parts.size() < 3) {
             parts.add("0");
         }
         int sum = 0;
         for (int idx = parts.size() - 1; idx >= 0; --idx) {
             sum += Integer.parseInt(parts.get(idx))
-                << (parts.size() - idx << Tv.THREE);
+                // @checkstyle MagicNumber (1 line)
+                << (parts.size() - idx << 3);
         }
         return sum;
     }

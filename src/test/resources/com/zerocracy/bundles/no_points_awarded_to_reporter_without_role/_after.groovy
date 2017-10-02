@@ -14,11 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.modifies_wbs
+package com.zerocracy.bundles.no_points_awarded_to_reporter_without_role
 
 import com.jcabi.xml.XML
 import com.zerocracy.jstk.Project
-import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pmo.Awards
 
 def exec(Project project, XML xml) {

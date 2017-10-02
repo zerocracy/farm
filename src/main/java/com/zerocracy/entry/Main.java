@@ -16,12 +16,14 @@
  */
 package com.zerocracy.entry;
 
+import com.jcabi.aspects.Loggable;
 import com.jcabi.dynamo.Region;
 import com.jcabi.github.Github;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.zerocracy.farm.S3Farm;
 import com.zerocracy.farm.SmartFarm;
 import com.zerocracy.jstk.Farm;
+import com.zerocracy.radars.github.GithubRoutine;
 import com.zerocracy.radars.github.TkGithub;
 import com.zerocracy.radars.slack.SlackRadar;
 import com.zerocracy.radars.slack.TkSlack;
@@ -35,7 +37,7 @@ import java.util.AbstractMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
-import org.cactoos.iterable.StickyMap;
+import org.cactoos.map.StickyMap;
 import org.takes.facets.fork.FkRegex;
 import org.takes.http.Exit;
 import org.takes.http.FtCli;
@@ -67,6 +69,7 @@ public final class Main {
      * @param args Command line arguments
      * @throws IOException If fails on I/O
      */
+    @Loggable
     public static void main(final String... args) throws IOException {
         new Main(args).exec();
     }
@@ -107,9 +110,10 @@ public final class Main {
                 props.getProperty("telegram.token"),
                 props.getProperty("telegram.username")
             );
+            new GithubRoutine(github).start();
             new FtCli(
                 new TkApp(
-                    new ExtProperties().value(),
+                    props,
                     farm,
                     new FkRegex("/slack", new TkSlack(farm, props, radar)),
                     new FkRegex("/alias", new TkAlias(farm)),

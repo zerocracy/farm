@@ -16,7 +16,6 @@
  */
 package com.zerocracy.radars.github;
 
-import com.jcabi.aspects.Tv;
 import com.jcabi.github.Comment;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.SoftException;
@@ -78,7 +77,8 @@ public final class ReSafe implements Response {
                                 new TextOf(
                                     new BytesOf(throwable)
                                 ).asString(),
-                                Tv.THOUSAND
+                                // @checkstyle MagicNumber (1 line)
+                                1000
                             ),
                             "\n```"
                         )

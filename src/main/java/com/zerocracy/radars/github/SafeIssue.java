@@ -16,14 +16,12 @@
  */
 package com.zerocracy.radars.github;
 
-import com.jcabi.aspects.RetryOnFailure;
 import com.jcabi.github.Comments;
 import com.jcabi.github.Event;
 import com.jcabi.github.Issue;
 import com.jcabi.github.IssueLabels;
 import com.jcabi.github.Repo;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 import javax.json.JsonObject;
 
 /**
@@ -60,7 +58,6 @@ final class SafeIssue implements Issue {
     }
 
     @Override
-    @RetryOnFailure(delay = 1, unit = TimeUnit.SECONDS, verbose = false)
     public JsonObject json() throws IOException {
         return this.origin.json();
     }

@@ -28,6 +28,7 @@ import java.util.Map;
  * @version $Id$
  * @since 0.9
  */
+@SuppressWarnings("PMD.TooManyMethods")
 public final class ClaimIn {
 
     /**
@@ -41,6 +42,11 @@ public final class ClaimIn {
      */
     public ClaimIn(final XML input) {
         this.xml = input;
+    }
+
+    @Override
+    public String toString() {
+        return this.xml.toString();
     }
 
     /**

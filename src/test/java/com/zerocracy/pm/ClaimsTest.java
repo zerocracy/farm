@@ -16,7 +16,18 @@
  */
 package com.zerocracy.pm;
 
+import com.jcabi.s3.Bucket;
+import com.jcabi.s3.fake.FkBucket;
+import com.zerocracy.RunsInThreads;
+import com.zerocracy.farm.S3Farm;
+import com.zerocracy.farm.sync.SyncFarm;
+import com.zerocracy.jstk.Item;
+import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.fake.FkProject;
+import java.nio.file.Files;
+import java.util.concurrent.TimeUnit;
+import org.cactoos.io.LengthOf;
+import org.cactoos.io.TeeInput;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -27,18 +38,75 @@ import org.junit.Test;
  * @version $Id$
  * @since 0.9
  * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class ClaimsTest {
 
     @Test
-    public void addsAndRemovesClaims() throws Exception {
-        try (final Claims claims = new Claims(new FkProject()).lock()) {
-            claims.add(new ClaimOut().token("test;test").type("hello"));
-            MatcherAssert.assertThat(
-                claims.iterate().iterator().next().xpath("token/text()").get(0),
-                Matchers.startsWith("test;")
-            );
+    public void modifiesInMultipleThreads() throws Exception {
+        final Bucket bucket = new FkBucket(
+            Files.createTempDirectory("").toFile(),
+            "the-bucket"
+        );
+        final Project project = new SyncFarm(new S3Farm(bucket))
+            .find("@id='ABCZZFE03'").iterator().next();
+        MatcherAssert.assertThat(
+            input -> {
+                new ClaimOut().type("how are you").postTo(project);
+                return true;
+            },
+            new RunsInThreads<>(true)
+        );
+    }
+
+    @Test
+    public void opensExistingClaimsXml() throws Exception {
+        final Project project = new FkProject();
+        try (final Item item = project.acq("claims.xml")) {
+            new LengthOf(
+                new TeeInput(
+                    String.join(
+                        " ",
+                        "<claims",
+                        "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'",
+                        // @checkstyle LineLength (1 line)
+                        "xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/zerocracy/datum/0.27/xsd/pm/claims.xsd'",
+                        "version='0.1' updated='2017-03-27T11:18:09.228Z'/>"
+                    ),
+                    item.path()
+                )
+            ).value();
         }
+        final Claims claims = new Claims(project).bootstrap();
+        claims.add(new ClaimOut().token("test;test;1").type("just hello"));
+        MatcherAssert.assertThat(
+            claims.iterate().iterator().hasNext(),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    public void addsAndRemovesClaims() throws Exception {
+        final Claims claims = new Claims(new FkProject()).bootstrap();
+        claims.add(new ClaimOut().token("test;test").type("hello"));
+        MatcherAssert.assertThat(
+            claims.iterate().iterator().next().xpath("token/text()").get(0),
+            Matchers.startsWith("test;")
+        );
+    }
+
+    @Test
+    public void ignoresClaimsUntilTheyBecomeValid() throws Exception {
+        final Claims claims = new Claims(new FkProject()).bootstrap();
+        claims.add(
+            new ClaimOut()
+                .until(TimeUnit.HOURS.toSeconds(1L))
+                .type("hello future")
+        );
+        MatcherAssert.assertThat(
+            claims.iterate().iterator().hasNext(),
+            Matchers.equalTo(false)
+        );
     }
 
 }

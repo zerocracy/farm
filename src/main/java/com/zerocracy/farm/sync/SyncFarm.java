@@ -19,8 +19,8 @@ package com.zerocracy.farm.sync;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import lombok.EqualsAndHashCode;
 import org.cactoos.iterable.Mapped;
 
@@ -40,9 +40,9 @@ public final class SyncFarm implements Farm {
     private final Farm origin;
 
     /**
-     * Pool of items.
+     * Pool of projects.
      */
-    private final Map<String, SyncItem> pool;
+    private final Map<Project, Project> pool;
 
     /**
      * Ctor.
@@ -50,7 +50,7 @@ public final class SyncFarm implements Farm {
      */
     public SyncFarm(final Farm farm) {
         this.origin = farm;
-        this.pool = new HashMap<>(0);
+        this.pool = new ConcurrentHashMap<>(0);
     }
 
     @Override
@@ -58,7 +58,9 @@ public final class SyncFarm implements Farm {
         synchronized (this.origin) {
             return new Mapped<>(
                 this.origin.find(query),
-                pkt -> new SyncProject(pkt, this.pool)
+                p -> this.pool.computeIfAbsent(
+                    p, SyncProject::new
+                )
             );
         }
     }

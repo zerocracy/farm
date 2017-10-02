@@ -17,6 +17,8 @@
 package com.zerocracy.radars.github;
 
 import com.jcabi.github.Github;
+import com.jcabi.github.Limit;
+import com.jcabi.github.Limits;
 import com.jcabi.github.RtPagination;
 import com.jcabi.http.Request;
 import com.jcabi.http.response.RestResponse;
@@ -50,6 +52,13 @@ public final class AcceptInvitations implements Proc<Boolean> {
 
     @Override
     public void exec(final Boolean input) throws IOException {
+        final Limit.Smart limits = new Limit.Smart(
+            this.github.limits().get(Limits.CORE)
+        );
+        // @checkstyle MagicNumber (1 line)
+        if (limits.remaining() < 500) {
+            return;
+        }
         final Request entry = this.github.entry().reset("Accept").header(
             "accept", "application/vnd.github.swamp-thing-preview+json"
         );
