@@ -30,15 +30,16 @@ def exec(Project project, XML xml) {
   String login = claim.param('login')
   Integer points = Integer.parseInt(claim.param('points'))
   Awards awards = new Awards(project, login).bootstrap()
+  String reason = claim.param('reason')
   new ClaimOut()
     .type('Notify user')
     .token("user;${login}")
     .param(
       'message',
       String.format(
-        'You got %+d points in `%s`, your total is'
+        '%s: you got %+d points in `%s`, your total is'
         + ' [%+d](http://www.0crat.com/u/%s/awards).',
-        points, job, awards.total(), login
+        reason, points, job, awards.total(), login
       )
     )
     .postTo(project)
@@ -48,9 +49,9 @@ def exec(Project project, XML xml) {
     .param(
       'message',
       String.format(
-        '%+d points just awarded to @%s, total is'
+        '%s: %+d points just awarded to @%s, total is'
         + ' [%+d](http://www.0crat.com/u/%s).',
-        points, login, awards.total(), login
+        reason, points, login, awards.total(), login
       )
     )
     .postTo(project)
