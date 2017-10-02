@@ -14,30 +14,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.radars.telegram;
-
-import com.zerocracy.jstk.Farm;
-import java.io.IOException;
 
 /**
- * Telegram message reaction.
+ * Common messages.
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
- * @since 0.15
+ * @since 0.17
  */
-public interface Reaction {
-
-    /**
-     * Rect for new request.
-     * @param farm Project farm
-     * @param session Current Telegram session
-     * @param request Telegram request
-     * @return TRUE if reacted
-     * @throws IOException If failed
-     */
-    boolean react(
-        Farm farm,
-        TmSession session,
-        TmRequest request
-    ) throws IOException;
-}
+package com.zerocracy.msg;

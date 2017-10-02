@@ -14,9 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.radars.github;
+package com.zerocracy.radars.telegram;
 
-import com.jcabi.github.Comment;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.SoftException;
 import com.zerocracy.msg.TxtUnrecoverableError;
@@ -24,48 +23,52 @@ import java.io.IOException;
 import org.cactoos.Proc;
 import org.cactoos.func.FuncWithFallback;
 import org.cactoos.func.IoCheckedFunc;
+import org.cactoos.text.TextOf;
 
 /**
- * Safe Reaction on GitHub comment.
+ * Safe Telegram reaction.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
- * @since 0.10
+ * @since 0.17
  */
-public final class ReSafe implements Response {
+public final class ReSafe implements Reaction {
 
     /**
-     * Response.
+     * Origin reaction.
      */
-    private final Response origin;
+    private final Reaction origin;
 
     /**
      * Ctor.
-     * @param rsp Response
+     * @param reaction Origin reaction
      */
-    public ReSafe(final Response rsp) {
-        this.origin = rsp;
+    public ReSafe(final Reaction reaction) {
+        this.origin = reaction;
     }
 
     @Override
-    public boolean react(final Farm farm, final Comment.Smart comment)
-        throws IOException {
+    public boolean react(
+        final Farm farm,
+        final TmSession session,
+        final TmRequest request
+    ) throws IOException {
         return new IoCheckedFunc<>(
             new FuncWithFallback<Boolean, Boolean>(
                 smart -> {
                     boolean result = false;
                     try {
-                        result = this.origin.react(farm, comment);
+                        result = this.origin.react(farm, session, request);
                     } catch (final SoftException ex) {
-                        comment.issue().comments().post(
-                            ex.getLocalizedMessage()
+                        session.reply(
+                            new RsText(new TextOf(ex.getMessage()))
                         );
                     }
                     return result;
                 },
                 (Proc<Throwable>) throwable -> {
-                    comment.issue().comments().post(
-                        new TxtUnrecoverableError(throwable).asString()
+                    session.reply(
+                        new RsText(new TxtUnrecoverableError(throwable))
                     );
                     throw new IOException(throwable);
                 }
