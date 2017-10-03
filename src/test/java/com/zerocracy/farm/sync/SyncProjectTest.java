@@ -18,53 +18,39 @@ package com.zerocracy.farm.sync;
 
 import com.jcabi.aspects.Tv;
 import com.zerocracy.jstk.Item;
+import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.fake.FkProject;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import org.cactoos.ScalarHasValue;
-import org.cactoos.iterable.IterableOf;
-import org.cactoos.iterable.Mapped;
-import org.cactoos.iterable.Repeated;
-import org.cactoos.scalar.And;
+import java.util.Collection;
+import java.util.LinkedList;
 import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
  * Test case for {@link SyncProject}.
- * @author Kirill (g4s8.public@gmail.com)
+ * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.12
+ * @since 0.10
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class SyncProjectTest {
 
     @Test
-    public void cleanUp() throws Exception {
-        final int threshold = 1;
-        final Map<String, SyncItem> pool = new HashMap<>();
-        final SyncProject project = new SyncProject(
-            new FkProject(),
-            pool,
-            threshold
-        );
-        new And(
-            new Mapped<>(
-                new IterableOf<>("one", "two", "three"),
-                project::acq
-            ),
-            Item::close
-        ).value();
+    public void locksFilesIndividually() throws Exception {
+        final Project project = new SyncProject(new FkProject());
+        final Collection<Item> items = new LinkedList<>();
+        for (int idx = 0; idx < Tv.FIFTY; ++idx) {
+            final Item item = project.acq(String.format("%d.xml", idx));
+            item.path();
+            items.add(item);
+        }
+        for (final Item item : items) {
+            item.close();
+        }
         MatcherAssert.assertThat(
-            "SyncProject did not clean item's pool",
-            new And(
-                new Repeated<>(0, Tv.TWENTY),
-                x -> {
-                    TimeUnit.MICROSECONDS.sleep(1L);
-                    return pool.size() != threshold;
-                }
-            ),
-            new ScalarHasValue<>(false)
+            items.size(),
+            Matchers.greaterThan(0)
         );
     }
+
 }

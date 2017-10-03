@@ -21,8 +21,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.cactoos.iterable.Filtered;
-import org.cactoos.iterable.ListOf;
 import org.cactoos.iterator.Mapped;
+import org.cactoos.list.ListOf;
 
 /**
  * Stakeholders that learn from status.

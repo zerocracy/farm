@@ -6,3 +6,5 @@ target/
 .settings
 .classpath
 .recommenders
+Gemfile.lock
+ajcore.*

@@ -14,37 +14,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.farm.sync;
+package com.zerocracy.bundles.understands_bug_label
 
-import java.util.AbstractMap;
-import java.util.Map;
+import com.jcabi.github.Github
+import com.jcabi.github.Repos
+import com.jcabi.xml.XML
+import com.zerocracy.jstk.fake.FkFarm
+import com.zerocracy.jstk.Project
+import com.zerocracy.radars.github.RbOnBug
+import javax.json.Json
 
-/**
- * Comparable map entry.
- *
- * @author Kirill (g4s8.public@gmail.com)
- * @version $Id$
- * @param <K> Key type
- * @param <V> Value type
- * @since 0.12
- */
-final class CmpEntry<K, V extends Comparable<? super V>> extends
-    AbstractMap.SimpleImmutableEntry<K, V> implements
-    Comparable<CmpEntry<K, V>> {
-
-    private static final long serialVersionUID = 6039678934863820533L;
-
-    /**
-     * Ctor.
-     *
-     * @param origin Origin map entry
-     */
-    CmpEntry(final Map.Entry<K, V> origin) {
-        super(origin);
-    }
-
-    @Override
-    public int compareTo(final CmpEntry<K, V> other) {
-        return getValue().compareTo(other.getValue());
-    }
+def exec(Project project, XML xml) {
+  Github github = binding.variables.github
+  def repo = github.repos().create(new Repos.RepoCreate('bugs', false))
+  def issue = repo.issues().create('A bug', '')
+  new RbOnBug().react(
+    new FkFarm(project),
+    github,
+    Json.createObjectBuilder().add(
+      'issue',
+      Json.createObjectBuilder()
+        .add('number', issue.number())
+    ).add(
+      'repository',
+      Json.createObjectBuilder()
+        .add('full_name', repo.coordinates().toString())
+    ).build()
+  )
 }

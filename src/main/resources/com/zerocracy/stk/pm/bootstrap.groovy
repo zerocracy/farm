@@ -21,6 +21,7 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.jstk.SoftException
 import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.staff.Roles
 
 def exec(Project project, XML xml) {
@@ -31,15 +32,22 @@ def exec(Project project, XML xml) {
   String role = 'PO'
   if (roles.isEmpty()) {
     roles.assign(author, role)
-    claim.reply(
-      String.join(
-        ' ',
-        'I\'m ready to manage a project.',
-        'When you\'re ready, you can start giving me commands,',
-        'always prefixing your messages with my name.',
-        "All project artifacts are [here](http://www.0crat.com/p/${project})."
-      )
-    ).postTo(project)
+    new ClaimOut()
+      .type('Role was assigned')
+      .param('login', author)
+      .param('role', role)
+      .postTo(project)
+    if (claim.hasToken()) {
+      claim.reply(
+        String.join(
+          ' ',
+          'I\'m ready to manage a project. Project ID is `${project}`.',
+          'When you\'re ready, you can start giving me commands,',
+          'always prefixing your messages with my name.',
+          "All project artifacts are [here](http://www.0crat.com/p/${project})."
+        )
+      ).postTo(project)
+    }
   } else {
     if (roles.hasRole(author, role)) {
       throw new SoftException(

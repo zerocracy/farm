@@ -16,7 +16,6 @@
  */
 package com.zerocracy.radars.github;
 
-import com.jcabi.aspects.Tv;
 import com.jcabi.github.Comment;
 import com.jcabi.log.Logger;
 import java.io.IOException;
@@ -56,7 +55,8 @@ public final class GhTube {
                 "> %s ([here](https://github.com/%s/issues/%d#issuecomment-%d))%n%n@%s %s",
                 StringUtils.abbreviate(
                     new Comment.Smart(this.comment).body(),
-                    Tv.HUNDRED
+                    // @checkstyle MagicNumber (1 line)
+                    100
                 ).replaceAll("\\s+", " "),
                 this.comment.issue().repo().coordinates(),
                 this.comment.issue().number(),

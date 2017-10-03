@@ -32,7 +32,7 @@ def exec(Project project, XML xml) {
   claim.reply(
     String.format(
       'Rate of "%s" set to %s.',
-      login,
+      claim.author(),
       rate
     )
   ).postTo(project)

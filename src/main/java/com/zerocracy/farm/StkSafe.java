@@ -16,7 +16,6 @@
  */
 package com.zerocracy.farm;
 
-import com.jcabi.aspects.Tv;
 import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.SoftException;
@@ -38,6 +37,9 @@ import org.cactoos.text.TextOf;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
+ * @todo #272:30min Error handling in `StkSafe::process` method is similar to
+ *  `ReSafe` in telegram, slack and github error handling. We need to refactor
+ *  it. Let's use one class for it, now it's placed in `TxtUnrecoverableError`.
  */
 @EqualsAndHashCode(of = "identifier")
 public final class StkSafe implements Stakeholder {
@@ -59,13 +61,13 @@ public final class StkSafe implements Stakeholder {
 
     /**
      * Ctor.
-     * @param id Identifier
+     * @param sid Stakeholder identifier
      * @param pps Properties
      * @param stk Original stakeholder
      */
-    public StkSafe(final String id, final Properties pps,
+    public StkSafe(final String sid, final Properties pps,
         final Stakeholder stk) {
-        this.identifier = id;
+        this.identifier = sid;
         this.props = pps;
         this.origin = stk;
     }
@@ -102,7 +104,10 @@ public final class StkSafe implements Stakeholder {
             }
             // @checkstyle IllegalCatchCheck (1 line)
         } catch (final Throwable ex) {
-            if (claim.hasToken()) {
+            if (this.props.containsKey("testing")) {
+                throw new IllegalStateException(ex);
+            }
+            if (claim.hasToken() && !"Notify".equals(claim.type())) {
                 claim.reply(
                     String.join(
                         "",
@@ -122,15 +127,13 @@ public final class StkSafe implements Stakeholder {
                                         ExceptionUtils.getRootCause(ex)
                                     )
                                 ).asString(),
-                                Tv.THOUSAND
+                                // @checkstyle MagicNumber (1 line)
+                                1000
                             )
                         ).asString(),
                         "\n```"
                     )
                 ).postTo(project);
-            }
-            if (this.props.containsKey("testing")) {
-                throw new IllegalStateException(ex);
             }
             Sentry.capture(
                 new IllegalArgumentException(

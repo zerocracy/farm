@@ -45,7 +45,7 @@ def exec(Project project, XML xml) {
   }
   SlackSession session = session(parts[1])
   if (parts.length > 3) {
-    final user = session.findUserByUserName(parts[2])
+    String user = session.findUserByUserName(parts[2])
     if (user != null) {
       session.sendMessage(
         session.openDirectMessageChannel(user).reply.slackChannel,

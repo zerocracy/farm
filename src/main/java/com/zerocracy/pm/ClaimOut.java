@@ -20,8 +20,10 @@ import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 import org.xembly.Directive;
 import org.xembly.Directives;
 
@@ -36,6 +38,11 @@ import org.xembly.Directives;
 public final class ClaimOut implements Iterable<Directive> {
 
     /**
+     * Counter of IDs.
+     */
+    private static final AtomicLong COUNTER = new AtomicLong();
+
+    /**
      * Directives.
      */
     private final Directives dirs;
@@ -47,7 +54,7 @@ public final class ClaimOut implements Iterable<Directive> {
         this(
             new Directives()
                 .add("claim")
-                .attr("id", System.nanoTime() % (long) Integer.MAX_VALUE)
+                .attr("id", ClaimOut.cid())
                 .add("created")
                 .set(
                     ZonedDateTime.now().format(
@@ -72,9 +79,8 @@ public final class ClaimOut implements Iterable<Directive> {
      * @throws IOException If fails
      */
     public void postTo(final Project project) throws IOException {
-        try (final Claims claims = new Claims(project).lock()) {
-            claims.add(this);
-        }
+        final Claims claims = new Claims(project).bootstrap();
+        claims.add(this);
     }
 
     /**
@@ -123,6 +129,27 @@ public final class ClaimOut implements Iterable<Directive> {
     }
 
     /**
+     * Until this amount of seconds.
+     * @param seconds The amount of seconds to wait
+     * @return This
+     */
+    public ClaimOut until(final long seconds) {
+        this.dirs
+            .push()
+            .xpath("until")
+            .remove()
+            .pop()
+            .add("until")
+            .set(
+                ZonedDateTime.now().plusSeconds(seconds).format(
+                    DateTimeFormatter.ISO_INSTANT
+                )
+            )
+            .up();
+        return this;
+    }
+
+    /**
      * With this param.
      * @param name Name
      * @param value Value
@@ -157,6 +184,17 @@ public final class ClaimOut implements Iterable<Directive> {
     @Override
     public Iterator<Directive> iterator() {
         return new Directives(this.dirs).up().iterator();
+    }
+
+    /**
+     * Create unique ID.
+     * @return ID of the claim
+     */
+    private static long cid() {
+        final long body = Long.parseLong(
+            String.format("%1$tj%1$tH%1$tM000", new Date())
+        );
+        return ClaimOut.COUNTER.incrementAndGet() + body;
     }
 
     /**

@@ -89,7 +89,7 @@ public final class TkProfile implements TkRegex {
                                 new XeAppend("bank", people.bank(login))
                             ),
                             new XeAppend(
-                                "vacation",
+                                "modifies_vacation_mode",
                                 Boolean.toString(
                                     people.vacation(login)
                                 )

@@ -16,7 +16,6 @@
  */
 package com.zerocracy.radars.slack;
 
-import com.jcabi.aspects.RetryOnFailure;
 import com.jcabi.log.Logger;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackChannelJoined;
@@ -149,7 +148,6 @@ public final class SlackRadar implements AutoCloseable {
      * @return The session
      * @throws IOException If fails
      */
-    @RetryOnFailure
     private SlackSession start(final String token) throws IOException {
         final SlackSession ssn =
             SlackSessionFactory.createWebSocketSlackSession(token);

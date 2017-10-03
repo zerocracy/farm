@@ -36,7 +36,7 @@ import lombok.EqualsAndHashCode;
  * @version $Id$
  * @since 0.1
  */
-@EqualsAndHashCode(of = "ocket")
+@EqualsAndHashCode(of = { "ocket", "temp" })
 final class S3Item implements Item {
 
     /**

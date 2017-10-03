@@ -23,14 +23,15 @@ import com.zerocracy.tk.profile.TkAgenda;
 import com.zerocracy.tk.profile.TkAwards;
 import com.zerocracy.tk.profile.TkProfile;
 import com.zerocracy.tk.project.TkArtifact;
+import com.zerocracy.tk.project.TkBadge;
 import com.zerocracy.tk.project.TkProject;
 import com.zerocracy.tk.project.TkXml;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.Properties;
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.cactoos.io.BytesOf;
-import org.cactoos.iterable.ListOf;
+import org.cactoos.list.ListOf;
 import org.cactoos.text.TextOf;
 import org.takes.Take;
 import org.takes.facets.fallback.Fallback;
@@ -130,6 +131,10 @@ public final class TkApp extends TkWrap {
                                                                 (Take) req -> new RsRedirect(
                                                                     String.format("/u/%s", new RqUser(farm, req).value())
                                                                 )
+                                                            ),
+                                                            new FkRegex(
+                                                                "/badge/([A-Z0-9]{9})\\.svg",
+                                                                new TkBadge()
                                                             ),
                                                             new FkRegex(
                                                                 "/p/([A-Z0-9]{9})",

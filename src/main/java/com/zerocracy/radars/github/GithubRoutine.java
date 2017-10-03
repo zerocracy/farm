@@ -14,62 +14,58 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.farm.reactive;
+package com.zerocracy.radars.github;
 
-import com.zerocracy.Xocument;
-import com.zerocracy.jstk.Item;
-import java.io.IOException;
-import java.nio.file.Path;
-import lombok.EqualsAndHashCode;
+import com.jcabi.github.Github;
+import com.jcabi.log.VerboseThreads;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import org.cactoos.func.UncheckedProc;
 
 /**
- * Reactive item.
+ * GitHub hook, take.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.10
+ * @since 0.18
  */
-@EqualsAndHashCode(of = "origin")
-final class RvItem implements Item {
+public final class GithubRoutine implements Runnable {
 
     /**
-     * Original item.
+     * Github.
      */
-    private final Item origin;
+    private final Github github;
 
     /**
-     * The spin.
+     * Service.
      */
-    private final Flush flush;
+    private final ScheduledExecutorService service;
 
     /**
      * Ctor.
-     * @param item Original item
-     * @param spn Spin
+     * @param ghub Github
      */
-    RvItem(final Item item, final Flush spn) {
-        this.origin = item;
-        this.flush = spn;
+    public GithubRoutine(final Github ghub) {
+        this.github = ghub;
+        this.service = Executors.newSingleThreadScheduledExecutor(
+            new VerboseThreads()
+        );
+    }
+
+    /**
+     * Start it.
+     */
+    public void start() {
+        this.service.scheduleWithFixedDelay(
+            this, 1L, 1L, TimeUnit.SECONDS
+        );
     }
 
     @Override
-    public String toString() {
-        return this.origin.toString();
+    public void run() {
+        new UncheckedProc<>(
+            new AcceptInvitations(this.github)
+        ).exec(true);
     }
-
-    @Override
-    public Path path() throws IOException {
-        return this.origin.path();
-    }
-
-    @Override
-    public void close() throws IOException {
-        final int total = new Xocument(this.path())
-            .nodes("/claims/claim").size();
-        this.origin.close();
-        if (total > 0) {
-            this.flush.run();
-        }
-    }
-
 }

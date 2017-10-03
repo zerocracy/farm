@@ -14,12 +14,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.bug_label
+package com.zerocracy.tk.project;
 
-import com.jcabi.xml.XML
-import com.zerocracy.jstk.Project
-import com.zerocracy.pm.scope.Wbs
+import org.takes.Response;
+import org.takes.facets.fork.RqRegex;
+import org.takes.facets.fork.TkRegex;
+import org.takes.rs.RsWithBody;
+import org.takes.rs.RsWithType;
 
-def exec(Project project, XML xml) {
-  assert new Wbs(project).bootstrap().exists('gh:test/bugs#1')
+/**
+ * Project badge.
+ *
+ * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @version $Id$
+ * @since 0.18
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ */
+public final class TkBadge implements TkRegex {
+
+    @Override
+    public Response act(final RqRegex req) {
+        return new RsWithType(
+            new RsWithBody(
+                this.getClass().getResourceAsStream("badge.svg")
+            ),
+            "image/svg+xml"
+        );
+    }
+
 }

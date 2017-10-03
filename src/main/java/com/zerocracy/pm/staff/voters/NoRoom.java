@@ -16,7 +16,6 @@
  */
 package com.zerocracy.pm.staff.voters;
 
-import com.jcabi.aspects.Tv;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.staff.Voter;
 import com.zerocracy.pmo.Agenda;
@@ -33,26 +32,27 @@ import org.cactoos.iterable.LengthOf;
 public final class NoRoom implements Voter {
 
     /**
-     * Current project.
+     * The PMO.
      */
-    private final Project project;
+    private final Project pmo;
 
     /**
      * Ctor.
      * @param pkt Current project
      */
     public NoRoom(final Project pkt) {
-        this.project = pkt;
+        this.pmo = pkt;
     }
 
     @Override
     public double vote(final String login, final StringBuilder log)
         throws IOException {
         final long total = new LengthOf(
-            new Agenda(this.project, login).bootstrap().jobs()
+            new Agenda(this.pmo, login).bootstrap().jobs()
         ).value();
         final double rate;
-        if (total > (long) Tv.FIVE) {
+        // @checkstyle MagicNumber (1 line)
+        if (total > 5L) {
             rate = 1.0d;
             log.append(String.format("There are %d open jobs already", total));
         } else if (total > 1L) {

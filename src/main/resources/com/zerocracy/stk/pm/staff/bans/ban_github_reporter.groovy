@@ -36,5 +36,5 @@ def exec(Project project, XML xml) {
   Issue.Smart issue = new Issue.Smart(new Job.Issue(github, job))
   String author = issue.author().login().toLowerCase(Locale.ENGLISH)
   new Bans(project).bootstrap()
-      .ban(job, author, "This user reported the ticket")
+      .ban(job, author, 'This user reported the ticket')
 }

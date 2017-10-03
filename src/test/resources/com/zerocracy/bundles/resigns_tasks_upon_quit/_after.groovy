@@ -19,7 +19,6 @@ package com.zerocracy.bundles.resigns_tasks_upon_quit
 import com.jcabi.xml.XML
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.in.Orders
-import com.zerocracy.pmo.Awards
 
 def exec(Project project, XML xml) {
   def orders = new Orders(project).bootstrap()

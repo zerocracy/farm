@@ -17,10 +17,11 @@
 package com.zerocracy.bundles.show_wallet
 
 import com.jcabi.xml.XML
+import com.zerocracy.jstk.Item
 import com.zerocracy.jstk.Project
 
 def exec(Project project, XML xml) {
-  project.acq('test.txt').withAutoCloseable {
-    item -> assert item.path().toFile().newReader().readLine() == 'Your wallet is `yegor256@gmail.com` at "paypal".'
-  }
+  Item item = project.acq('test.txt')
+  assert item.path().toFile().newReader().readLine() == 'Your wallet is `yegor256@gmail.com` at "paypal".'
+  item.close()
 }

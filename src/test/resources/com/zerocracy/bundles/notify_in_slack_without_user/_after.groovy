@@ -23,8 +23,8 @@ import com.zerocracy.jstk.Project
 import org.mockito.Mockito
 
 def exec(Project project, XML xml) {
-  final channelId = 'C123'
-  final SlackSession session = binding.variables.slack.get(channelId)
+  String channelId = 'C123'
+  SlackSession session = binding.variables.slack.get(channelId)
   Mockito.verify(
     session,
     Mockito.never()

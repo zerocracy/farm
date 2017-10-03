@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.cactoos.Proc;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -52,7 +53,6 @@ public final class FlushTest {
         final Project project = FlushTest.project();
         final AtomicInteger done = new AtomicInteger(0);
         final CountDownLatch latch = new CountDownLatch(1);
-        final int max = Tv.FIVE;
         final Brigade brigade = new Brigade(
             (Stakeholder) (pkt, claim) -> {
                 done.incrementAndGet();
@@ -62,6 +62,7 @@ public final class FlushTest {
             }
         );
         new ClaimOut().type("first").postTo(project);
+        final int max = Tv.FIVE;
         final Thread thread = new Thread(
             new VerboseRunnable(
                 () -> {
@@ -75,17 +76,17 @@ public final class FlushTest {
             )
         );
         thread.start();
-        try (final Flush flush = new Flush(project, brigade)) {
-            latch.countDown();
-            flush.run();
+        final Proc<?> flush = new Flush(project, brigade);
+        latch.countDown();
+        while (thread.isAlive()) {
+            flush.exec(null);
         }
-        thread.join();
-        try (final Claims claims = new Claims(project).lock()) {
-            MatcherAssert.assertThat(
-                claims.iterate(),
-                Matchers.hasSize(0)
-            );
-        }
+        flush.exec(null);
+        final Claims claims = new Claims(project).bootstrap();
+        MatcherAssert.assertThat(
+            claims.iterate(),
+            Matchers.hasSize(0)
+        );
         MatcherAssert.assertThat(done.get(), Matchers.equalTo((max << 1) + 1));
     }
 

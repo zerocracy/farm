@@ -16,7 +16,6 @@
  */
 package com.zerocracy.entry;
 
-import com.jcabi.aspects.Cacheable;
 import com.jcabi.s3.Bucket;
 import com.jcabi.s3.Region;
 import com.jcabi.s3.cached.CdRegion;
@@ -35,7 +34,6 @@ import org.cactoos.Scalar;
 final class ExtBucket implements Scalar<Bucket> {
 
     @Override
-    @Cacheable(forever = true)
     public Bucket value() throws IOException {
         final Properties props = new ExtProperties().value();
         return new CdRegion(

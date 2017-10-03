@@ -16,31 +16,10 @@
  */
 package com.zerocracy.farm.ruled;
 
-import com.jcabi.log.Logger;
-import com.jcabi.xml.Sources;
-import com.jcabi.xml.XML;
-import com.jcabi.xml.XMLDocument;
-import com.jcabi.xml.XSLDocument;
 import com.zerocracy.jstk.Item;
-import com.zerocracy.jstk.Project;
 import java.io.IOException;
-import java.net.URI;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.concurrent.atomic.AtomicReference;
-import javax.xml.transform.Source;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.stream.StreamSource;
 import lombok.EqualsAndHashCode;
-import org.apache.commons.lang3.StringUtils;
-import org.cactoos.io.InputOf;
-import org.cactoos.io.InputStreamOf;
-import org.cactoos.io.InputWithFallback;
-import org.cactoos.io.LengthOf;
-import org.cactoos.io.TeeInput;
-import org.cactoos.scalar.And;
-import org.cactoos.scalar.UncheckedScalar;
-import org.cactoos.text.TextOf;
 
 /**
  * Ruled item.
@@ -50,153 +29,42 @@ import org.cactoos.text.TextOf;
  * @since 0.17
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@EqualsAndHashCode(of = "origin")
-final class RdItem implements Item, Sources {
+@EqualsAndHashCode(of = "file")
+final class RdItem implements Item {
 
     /**
-     * Original project.
+     * Session.
      */
-    private final Project project;
+    private final RdSession session;
 
     /**
-     * Original item.
+     * File name.
      */
-    private final Item origin;
-
-    /**
-     * The location of the file.
-     */
-    private final AtomicReference<Path> file;
-
-    /**
-     * The length of the file.
-     */
-    private long length;
+    private final String file;
 
     /**
      * Ctor.
-     * @param pkt Project
-     * @param item Original item
+     * @param ssn Session
+     * @param name The name
      */
-    RdItem(final Project pkt, final Item item) {
-        this.project = pkt;
-        this.origin = item;
-        this.file = new AtomicReference<>();
-        this.length = 0L;
+    RdItem(final RdSession ssn, final String name) {
+        this.session = ssn;
+        this.file = name;
     }
 
     @Override
     public String toString() {
-        return this.origin.toString();
+        return this.file;
     }
 
     @Override
     public Path path() throws IOException {
-        final Path path = this.origin.path();
-        this.file.set(path);
-        if (Files.exists(path)) {
-            this.length = path.toFile().length();
-        }
-        return path;
+        return this.session.acquire(this.file);
     }
 
     @Override
     public void close() throws IOException {
-        final Path path = this.file.get();
-        final boolean modified = Files.exists(path)
-            && this.length != path.toFile().length();
-        if (modified) {
-            final String xsd = StringUtils.substringBeforeLast(
-                StringUtils.substringAfter(
-                    new XMLDocument(
-                        path.toFile()
-                    ).xpath("/*/@xsi:noNamespaceSchemaLocation").get(0),
-                    "/xsd/"
-                ),
-                ".xsd"
-            );
-            this.origin.close();
-            this.propagate(xsd);
-        } else {
-            this.origin.close();
-        }
-    }
-
-    @Override
-    public Source resolve(final String href, final String base)
-        throws TransformerException {
-        try (final Item item = this.project.acq(href)) {
-            return new StreamSource(
-                new InputStreamOf(item.path())
-            );
-        } catch (final IOException ex) {
-            throw new TransformerException(ex);
-        }
-    }
-
-    /**
-     * Propagate changes to other documents.
-     * @param xsd XSD location, e.g. "pm/scope/wbs"
-     * @throws IOException If fails
-     */
-    private void propagate(final String xsd) throws IOException {
-        new UncheckedScalar<>(
-            new And(
-                new XMLDocument(
-                    new TextOf(
-                        new InputWithFallback(
-                            new InputOf(
-                                URI.create(
-                                    String.format(
-                                        // @checkstyle LineLength (1 line)
-                                        "http://datum.zerocracy.com/latest/auto/%s/index.xml",
-                                        xsd
-                                    )
-                                )
-                            ),
-                            new InputOf("<index/>")
-                        )
-                    ).asString()
-                ).xpath("/index/entry[@dir='false']/@uri"),
-                this::auto
-            )
-        ).value();
-    }
-
-    /**
-     * Auto-modify one document.
-     * @param xsl The URI of the XSL that modifies
-     * @throws IOException If fails
-     */
-    private void auto(final String xsl) throws IOException {
-        final String target = String.format(
-            "%s.xml",
-            StringUtils.substringBefore(
-                StringUtils.substringAfter(
-                    StringUtils.substringAfterLast(xsl, "/"), "-"
-                ), "-"
-            )
-        );
-        try (final Item item = this.project.acq(target)) {
-            if (Files.exists(item.path())
-                && item.path().toFile().length() > 0L) {
-                final XML xml = new XMLDocument(item.path().toFile());
-                new LengthOf(
-                    new TeeInput(
-                        XSLDocument.make(
-                            new InputOf(
-                                URI.create(xsl)
-                            ).stream()
-                        ).with(this).transform(xml).toString(),
-                        item.path()
-                    )
-                ).value();
-                Logger.info(
-                    this, "Applied %s to %s in %s",
-                    xsl, target, this.project
-                );
-            }
-        }
+        this.session.release(this.file);
     }
 
 }

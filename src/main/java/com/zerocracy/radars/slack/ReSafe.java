@@ -16,18 +16,15 @@
  */
 package com.zerocracy.radars.slack;
 
-import com.jcabi.aspects.Tv;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.SoftException;
+import com.zerocracy.msg.TxtUnrecoverableError;
 import java.io.IOException;
-import org.apache.commons.lang3.StringUtils;
 import org.cactoos.Proc;
 import org.cactoos.func.FuncWithFallback;
 import org.cactoos.func.IoCheckedFunc;
-import org.cactoos.io.BytesOf;
-import org.cactoos.text.TextOf;
 
 /**
  * Safe reaction.
@@ -70,20 +67,7 @@ public final class ReSafe implements Reaction<SlackMessagePosted> {
                 (Proc<Throwable>) throwable -> {
                     session.sendMessage(
                         event.getChannel(),
-                        String.join(
-                            "",
-                            "There is an unrecoverable failure on my side.",
-                            " Please, submit it",
-                            " [here](https://github.com/zerocracy/datum):",
-                            "\n\n```\n",
-                            StringUtils.abbreviate(
-                                new TextOf(
-                                    new BytesOf(throwable)
-                                ).asString(),
-                                Tv.THOUSAND
-                            ),
-                            "\n```"
-                        )
+                        new TxtUnrecoverableError(throwable).asString()
                     );
                     throw new IOException(throwable);
                 }

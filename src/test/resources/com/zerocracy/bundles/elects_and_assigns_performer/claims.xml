@@ -23,11 +23,6 @@ SOFTWARE.
   </claim>
   <claim id="2">
     <created>2017-03-27T11:18:09.228Z</created>
-    <type>ping</type>
-    <author>yegor256</author>
-  </claim>
-  <claim id="3">
-    <created>2017-03-27T11:18:09.228Z</created>
     <type>Request order start</type>
     <token>job;gh:test/test#2</token>
     <author>dmarkov</author>
@@ -35,5 +30,15 @@ SOFTWARE.
       <param name="job">gh:test/test#2</param>
       <param name="login">me</param>
     </params>
+  </claim>
+  <claim id="3">
+    <created>2017-03-27T11:19:09.228Z</created>
+    <type>ping</type>
+    <author>yegor256</author>
+  </claim>
+  <claim id="4">
+    <created>2017-03-27T11:20:09.228Z</created>
+    <type>ping</type>
+    <author>yegor256</author>
   </claim>
 </claims>

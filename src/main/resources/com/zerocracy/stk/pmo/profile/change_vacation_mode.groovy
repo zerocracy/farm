@@ -23,28 +23,28 @@ import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.People
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Change vacation mode')
-  final claim = new ClaimIn(xml)
-  final mode = claim.param('mode')
-  final people = new People(project).bootstrap()
+  new Assume(project, xml).type('Change modifies_vacation_mode mode')
+  ClaimIn claim = new ClaimIn(xml)
+  String mode = claim.param('mode')
+  People people = new People(project).bootstrap()
   if ('on' == mode) {
     people.vacation(claim.author(), true)
     if (claim.hasToken()) {
       claim.reply(
-        'You are on vacation now'
+        'You are on modifies_vacation_mode now'
       ).postTo(project)
     }
   } else if ('off' == mode) {
     people.vacation(claim.author(), false)
     if (claim.hasToken()) {
       claim.reply(
-        'Your vacation has been ended'
+        'Your modifies_vacation_mode has been ended'
       ).postTo(project)
     }
   } else {
     if (claim.hasToken()) {
       claim.reply(
-        "Incorrect vacation mode. Possible modes are 'on' or 'off'"
+        "Incorrect modifies_vacation_mode mode. Possible modes are 'on' or 'off'"
       ).postTo(project)
     }
   }

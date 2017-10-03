@@ -16,20 +16,17 @@
  */
 package com.zerocracy.radars.github;
 
-import com.jcabi.aspects.Tv;
 import com.jcabi.github.Github;
 import com.jcabi.github.Issue;
 import com.jcabi.github.mock.MkGithub;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.SoftException;
+import com.zerocracy.msg.TxtUnrecoverableError;
 import java.io.IOException;
 import javax.json.JsonObject;
-import org.apache.commons.lang3.StringUtils;
 import org.cactoos.Proc;
 import org.cactoos.func.FuncWithFallback;
 import org.cactoos.func.IoCheckedFunc;
-import org.cactoos.io.BytesOf;
-import org.cactoos.text.TextOf;
 
 /**
  * Rebound that is safe.
@@ -73,22 +70,9 @@ public final class RbSafe implements Rebound {
                     return result;
                 },
                 (Proc<Throwable>) throwable -> {
-                    RbSafe.issue(github, event).comments().post(
-                        String.join(
-                            "",
-                            "There is an unrecoverable failure on my side.",
-                            " Please, submit it",
-                            " [here](https://github.com/zerocracy/datum):",
-                            "\n\n```\n",
-                            StringUtils.abbreviate(
-                                new TextOf(
-                                    new BytesOf(throwable)
-                                ).asString(),
-                                Tv.THOUSAND
-                            ),
-                            "\n```"
-                        )
-                    );
+                    RbSafe.issue(github, event)
+                        .comments()
+                        .post(new TxtUnrecoverableError(throwable).asString());
                     throw new IOException(throwable);
                 }
             )
