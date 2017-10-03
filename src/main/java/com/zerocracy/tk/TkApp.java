@@ -23,6 +23,7 @@ import com.zerocracy.tk.profile.TkAgenda;
 import com.zerocracy.tk.profile.TkAwards;
 import com.zerocracy.tk.profile.TkProfile;
 import com.zerocracy.tk.project.TkArtifact;
+import com.zerocracy.tk.project.TkBadge;
 import com.zerocracy.tk.project.TkProject;
 import com.zerocracy.tk.project.TkXml;
 import java.io.IOException;
@@ -130,6 +131,10 @@ public final class TkApp extends TkWrap {
                                                                 (Take) req -> new RsRedirect(
                                                                     String.format("/u/%s", new RqUser(farm, req).value())
                                                                 )
+                                                            ),
+                                                            new FkRegex(
+                                                                "/badge/([A-Z0-9]{9})\\.svg",
+                                                                new TkBadge()
                                                             ),
                                                             new FkRegex(
                                                                 "/p/([A-Z0-9]{9})",
