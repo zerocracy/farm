@@ -26,5 +26,5 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Role was assigned')
   ClaimIn claim = new ClaimIn(xml)
   String login = claim.param('login')
-  new Projects(project, login).add(project.toString())
+  new Projects(project, login).bootstrap().add(project.toString())
 }
