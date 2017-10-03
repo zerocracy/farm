@@ -22,12 +22,18 @@ import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.staff.Roles
+import com.zerocracy.pmo.People
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Assign role')
   new Assume(project, xml).roles('ARC', 'PO')
   ClaimIn claim = new ClaimIn(xml)
   String login = claim.param('login')
+  People people = new People(project).bootstrap()
+  if (!people.hasMentor(login)) {
+    claim.reply('Assignee must be registered person.')
+    return
+  }
   String role = claim.param('role')
   new Roles(project).bootstrap().assign(login, role)
   claim.reply(

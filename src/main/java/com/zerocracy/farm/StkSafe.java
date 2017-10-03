@@ -37,6 +37,9 @@ import org.cactoos.text.TextOf;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
+ * @todo #272:30min Error handling in `StkSafe::process` method is similar to
+ *  `ReSafe` in telegram, slack and github error handling. We need to refactor
+ *  it. Let's use one class for it, now it's placed in `TxtUnrecoverableError`.
  */
 @EqualsAndHashCode(of = "identifier")
 public final class StkSafe implements Stakeholder {

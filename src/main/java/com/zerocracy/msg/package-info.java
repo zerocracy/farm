@@ -14,17 +14,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.staff.roles
 
-import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Project
-import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pmo.Projects
-
-def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Role was assigned')
-  ClaimIn claim = new ClaimIn(xml)
-  String login = claim.param('login')
-  new Projects(project, login).bootstrap().add(project.toString())
-}
+/**
+ * Common messages.
+ * @author Kirill (g4s8.public@gmail.com)
+ * @version $Id$
+ * @since 0.17
+ */
+package com.zerocracy.msg;

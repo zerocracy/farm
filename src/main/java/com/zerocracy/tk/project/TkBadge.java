@@ -14,17 +14,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.staff.roles
+package com.zerocracy.tk.project;
 
-import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Project
-import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pmo.Projects
+import org.takes.Response;
+import org.takes.facets.fork.RqRegex;
+import org.takes.facets.fork.TkRegex;
+import org.takes.rs.RsWithBody;
+import org.takes.rs.RsWithType;
 
-def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Role was assigned')
-  ClaimIn claim = new ClaimIn(xml)
-  String login = claim.param('login')
-  new Projects(project, login).bootstrap().add(project.toString())
+/**
+ * Project badge.
+ *
+ * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @version $Id$
+ * @since 0.18
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ */
+public final class TkBadge implements TkRegex {
+
+    @Override
+    public Response act(final RqRegex req) {
+        return new RsWithType(
+            new RsWithBody(
+                this.getClass().getResourceAsStream("badge.svg")
+            ),
+            "image/svg+xml"
+        );
+    }
+
 }
