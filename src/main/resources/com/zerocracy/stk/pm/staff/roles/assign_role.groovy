@@ -29,7 +29,7 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).roles('ARC', 'PO')
   ClaimIn claim = new ClaimIn(xml)
   String login = claim.param('login')
-  final people = new People(project).bootstrap()
+  People people = new People(project).bootstrap()
   if (!people.hasMentor(login)) {
     claim.reply('Assignee must be registered person.')
     return
