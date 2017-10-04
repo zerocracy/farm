@@ -86,7 +86,7 @@ public final class TkProject implements TkRegex {
                         )
                     ),
                     new XeAppend(
-                        "links",
+                        "project_links",
                         new XeTransform<>(
                             new Catalog(new Pmo(this.farm)).links(pid),
                             link -> new XeAppend("link", link)

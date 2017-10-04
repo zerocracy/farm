@@ -40,13 +40,13 @@ SOFTWARE.
       <xsl:text>).</xsl:text>
     </p>
     <p>
-      <xsl:value-of select="count(links/link)"/>
+      <xsl:value-of select="count(project_links/link)"/>
       <xsl:text> link</xsl:text>
-      <xsl:if test="count(links/link) &gt; 1">
+      <xsl:if test="count(project_links/link) &gt; 1">
         <xsl:text>s</xsl:text>
       </xsl:if>
       <xsl:text>: </xsl:text>
-      <xsl:for-each select="links/link">
+      <xsl:for-each select="project_links/link">
         <xsl:if test="position() &gt; 1">
           <xsl:text>, </xsl:text>
         </xsl:if>
