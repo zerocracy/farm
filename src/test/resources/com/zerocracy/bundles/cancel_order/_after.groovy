@@ -25,7 +25,7 @@ import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
-  Repo repo = binding.variables.github.repos().get(new Coordinates.Simple("test/test"))
+  Repo repo = binding.variables.github.repos().get(new Coordinates.Simple('test/test'))
   MatcherAssert.assertThat(
     new Issue.Smart(repo.issues().get(1)).assignee().login(),
     Matchers.equalTo('')

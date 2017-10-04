@@ -24,7 +24,7 @@ import com.zerocracy.jstk.Project
 
 def exec(Project project, XML xml) {
   Repo repo = binding.variables.github.repos()
-    .create(new Repos.RepoCreate("test", false))
-  final issue = repo.issues().create('Test', '')
+    .create(new Repos.RepoCreate('test', false))
+  Issue issue = repo.issues().create('Test', '')
   new Issue.Smart(issue).assign('g4s8')
 }
