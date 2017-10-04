@@ -88,16 +88,14 @@ public final class RbOnAssign implements Rebound {
         if (new Roles(project).bootstrap().hasRole(author, "ARC")) {
             final int minutes = -10;
             final Awards awards = new Awards(project, author).bootstrap();
-            awards.add(
-                minutes,
-                job.toString(),
-                "Manual assignment of issues is discouraged."
-            );
+            final String reason = "Manual assignment of issues is discouraged.";
+            awards.add(minutes, job.toString(), reason);
             new ClaimOut()
                 .type("Award points were added")
                 .param("job", job)
                 .param("login", author)
                 .param("points", minutes)
+                .param("reason", reason)
                 .postTo(project);
         }
         return reply.asString();
