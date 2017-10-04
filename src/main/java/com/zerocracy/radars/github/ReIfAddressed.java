@@ -18,6 +18,7 @@ package com.zerocracy.radars.github;
 
 import com.jcabi.github.Comment;
 import com.zerocracy.jstk.Farm;
+import com.zerocracy.jstk.SoftException;
 import java.io.IOException;
 import java.util.regex.Pattern;
 
@@ -46,15 +47,24 @@ public final class ReIfAddressed implements Response {
     @Override
     public boolean react(final Farm farm, final Comment.Smart comment)
         throws IOException {
-        final Pattern pattern = Pattern.compile(
-            String.format(
-                "@%s .+",
-                comment.issue().repo().github().users().self().login()
-            ),
-            Pattern.MULTILINE | Pattern.CASE_INSENSITIVE
+        final String self = String.format(
+            "@%s", comment.issue().repo().github().users().self().login()
         );
         boolean done = false;
-        if (pattern.matcher(comment.body()).matches()) {
+        if (comment.body().contains(self)) {
+            final Pattern pattern = Pattern.compile(
+                String.format(
+                    "@%s .+",
+                    comment.issue().repo().github().users().self().login()
+                ),
+                Pattern.MULTILINE | Pattern.CASE_INSENSITIVE
+            );
+            if (!pattern.matcher(comment.body()).matches()) {
+                throw new SoftException(
+                    // @checkstyle LineLength (1 line)
+                    "Are you speaking to me or about me? You must always start your message with my name if you want to address it to me."
+                );
+            }
             done = this.origin.react(farm, comment);
         }
         return done;

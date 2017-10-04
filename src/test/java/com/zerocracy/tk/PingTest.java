@@ -45,7 +45,7 @@ public final class PingTest {
     @Parameterized.Parameter
     public String url;
 
-    @Parameterized.Parameters
+    @Parameterized.Parameters(name = "{0}")
     public static Collection<Object[]> params() {
         return Arrays.asList(
             new Object[][] {
@@ -53,6 +53,7 @@ public final class PingTest {
                 {"/css/main.css"},
                 {"/xsl/index.xsl"},
                 {"/xsl/layout.xsl"},
+                {"/badge/123456789.svg"},
                 {"/"},
                 {"/add_to_slack"},
                 {"/ping"},

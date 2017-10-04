@@ -14,17 +14,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.staff.roles
+package com.zerocracy.bundles.assign_role
 
 import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
-import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pmo.Projects
+import com.zerocracy.pm.staff.Roles
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Role was assigned')
-  ClaimIn claim = new ClaimIn(xml)
-  String login = claim.param('login')
-  new Projects(project, login).add(project.toString())
+  MatcherAssert.assertThat(
+    new Roles(project).bootstrap().allRoles('g4s8'),
+    Matchers.contains(Matchers.equalTo('DEV'))
+  )
 }

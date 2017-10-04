@@ -36,7 +36,7 @@ def exec(Project project, XML xml) {
   if (!roles.hasAnyRole(login)) {
     return
   }
-  // here we pay
+  // here we pay if the amount is positive, otherwise we ignore
   new ClaimOut()
     .type('Payment was made')
     .param('job', job)

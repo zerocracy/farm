@@ -436,7 +436,7 @@ SOFTWARE.
           <plugin>
             <groupId>nl.geodienstencentrum.maven</groupId>
             <artifactId>sass-maven-plugin</artifactId>
-            <version>2.5</version>
+            <version>2.25</version>
             <executions>
               <execution>
                 <id>generate-css</id>

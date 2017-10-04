@@ -14,30 +14,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.radars.telegram;
+package com.zerocracy.tk.project;
 
-import com.zerocracy.jstk.Farm;
-import java.io.IOException;
+import org.takes.Response;
+import org.takes.facets.fork.RqRegex;
+import org.takes.facets.fork.TkRegex;
+import org.takes.rs.RsWithBody;
+import org.takes.rs.RsWithType;
 
 /**
- * Telegram message reaction.
- * @author Kirill (g4s8.public@gmail.com)
+ * Project badge.
+ *
+ * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.15
+ * @since 0.18
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-public interface Reaction {
+public final class TkBadge implements TkRegex {
 
-    /**
-     * Rect for new request.
-     * @param farm Project farm
-     * @param session Current Telegram session
-     * @param request Telegram request
-     * @return TRUE if reacted
-     * @throws IOException If failed
-     */
-    boolean react(
-        Farm farm,
-        TmSession session,
-        TmRequest request
-    ) throws IOException;
+    @Override
+    public Response act(final RqRegex req) {
+        return new RsWithType(
+            new RsWithBody(
+                this.getClass().getResourceAsStream("badge.svg")
+            ),
+            "image/svg+xml"
+        );
+    }
+
 }
