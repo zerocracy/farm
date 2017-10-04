@@ -55,6 +55,7 @@ public final class PingTest {
                 {"/xsl/layout.xsl"},
                 {"/badge/123456789.svg"},
                 {"/"},
+                {"/org/takes/rs/xe/memory.xsl"},
                 {"/add_to_slack"},
                 {"/ping"},
             }
