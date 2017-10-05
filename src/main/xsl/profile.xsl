@@ -26,6 +26,16 @@ SOFTWARE.
     </title>
   </xsl:template>
   <xsl:template match="page" mode="inner">
+    <xsl:if test="not(details)">
+      <p>
+        <xsl:text>This is the profile of </xsl:text>
+        <a href="https://github.com/{owner}">
+          <xsl:text>@</xsl:text>
+          <xsl:value-of select="owner"/>
+        </a>
+        <xsl:text>.</xsl:text>
+      </p>
+    </xsl:if>
     <xsl:apply-templates select="details"/>
     <xsl:apply-templates select="awards"/>
     <xsl:apply-templates select="agenda"/>
@@ -38,7 +48,7 @@ SOFTWARE.
   <xsl:template match="awards[.!=0]">
     <p>
       <xsl:text>Total points: </xsl:text>
-      <a href="/u/{/page/identity/login}/awards">
+      <a href="/u/{owner}/awards">
         <xsl:if test=". &gt;= 0">
           <xsl:text>+</xsl:text>
         </xsl:if>
@@ -55,7 +65,7 @@ SOFTWARE.
   <xsl:template match="agenda[.!=0]">
     <p>
       <xsl:text>Total jobs: </xsl:text>
-      <a href="/u/{/page/identity/login}/agenda">
+      <a href="/u/{owner}/agenda">
         <xsl:value-of select="."/>
       </a>
       <xsl:text>.</xsl:text>
