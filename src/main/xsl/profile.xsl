@@ -48,7 +48,7 @@ SOFTWARE.
   <xsl:template match="awards[.!=0]">
     <p>
       <xsl:text>Total points: </xsl:text>
-      <a href="/u/{owner}/awards">
+      <a href="/u/{/page/owner}/awards">
         <xsl:if test=". &gt;= 0">
           <xsl:text>+</xsl:text>
         </xsl:if>
@@ -65,7 +65,7 @@ SOFTWARE.
   <xsl:template match="agenda[.!=0]">
     <p>
       <xsl:text>Total jobs: </xsl:text>
-      <a href="/u/{owner}/agenda">
+      <a href="/u/{/page/owner}/agenda">
         <xsl:value-of select="."/>
       </a>
       <xsl:text>.</xsl:text>
