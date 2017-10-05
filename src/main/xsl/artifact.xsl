@@ -34,6 +34,9 @@ SOFTWARE.
         <xsl:value-of select="project"/>
       </a>
     </p>
+    <p>
+      <xsl:text>Please, use Google Chrome browser to see the document correctly.</xsl:text>
+    </p>
     <xsl:value-of select="xml" disable-output-escaping="yes"/>
     <p>
       <xsl:text>You can download this artifact as </xsl:text>
