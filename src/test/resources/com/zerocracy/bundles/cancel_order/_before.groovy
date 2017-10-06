@@ -14,19 +14,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.resigns_tasks_upon_quit
+package com.zerocracy.bundles.cancel_order
 
+import com.jcabi.github.Issue
+import com.jcabi.github.Repo
+import com.jcabi.github.Repos
 import com.jcabi.xml.XML
 import com.zerocracy.jstk.Project
 
 def exec(Project project, XML xml) {
-//  Github github = binding.variables.github
-//  def repo = github.repos().create(new Repos.RepoCreate('test', false))
-//  def issue = repo.issues().create('title', 'body')
-//  new ClaimOut()
-//    .type('Quit a project')
-//    .token("job;gh:${repo.coordinates()}#${issue.number()}")
-//    .author('cmiranda')
-//    .param('project', project.toString())
-//    .postTo(project)
+  Repo repo = binding.variables.github.repos()
+    .create(new Repos.RepoCreate('test', false))
+  Issue issue = repo.issues().create('Test', '')
+  new Issue.Smart(issue).assign('g4s8')
 }

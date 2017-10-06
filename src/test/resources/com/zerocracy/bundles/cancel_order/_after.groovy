@@ -14,19 +14,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.resigns_tasks_upon_quit
+package com.zerocracy.bundles.cancel_order
 
+import com.jcabi.github.Coordinates
+import com.jcabi.github.Issue
+import com.jcabi.github.Repo
 import com.jcabi.xml.XML
 import com.zerocracy.jstk.Project
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
-//  Github github = binding.variables.github
-//  def repo = github.repos().create(new Repos.RepoCreate('test', false))
-//  def issue = repo.issues().create('title', 'body')
-//  new ClaimOut()
-//    .type('Quit a project')
-//    .token("job;gh:${repo.coordinates()}#${issue.number()}")
-//    .author('cmiranda')
-//    .param('project', project.toString())
-//    .postTo(project)
+  Repo repo = binding.variables.github.repos().get(new Coordinates.Simple('test/test'))
+  MatcherAssert.assertThat(
+    new Issue.Smart(repo.issues().get(1)).assignee().login(),
+    Matchers.equalTo('')
+  )
 }
