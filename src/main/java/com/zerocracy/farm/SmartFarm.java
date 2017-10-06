@@ -80,13 +80,11 @@ public final class SmartFarm implements Scalar<Farm> {
                 () -> {
                     final Farm frm = new RvFarm(
                         new UplinkedFarm(
-                            new StrictFarm(
-                                new SyncFarm(farm)
-                            )
+                            new StrictFarm(farm)
                         ),
                         new Brigade(this.stakeholders())
                     );
-                    return frm;
+                    return new SyncFarm(frm);
                 }
             )
         );
