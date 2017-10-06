@@ -75,6 +75,7 @@ public final class TkProfile implements TkRegex {
                 final String login = new RqLogin(this.pmo, req).value();
                 final People people = new People(this.pmo).bootstrap();
                 return new XeChain(
+                    new XeAppend("owner", login),
                     new XeWhen(
                         login.equals(user),
                         new XeAppend(

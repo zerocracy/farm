@@ -14,23 +14,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.in.orders
+package com.zerocracy.stk.pm.staff.projects
 
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
-import com.zerocracy.pmo.Agenda
+import com.zerocracy.pmo.Projects
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Order was given')
+  new Assume(project, xml).type(
+    'Role was assigned', 'Order was given'
+  )
   ClaimIn claim = new ClaimIn(xml)
-  String job = claim.param('job')
   String login = claim.param('login')
-  new Agenda(project, login).bootstrap().add(job, 'https://github.com/')
+  new Projects(project, login).bootstrap().add(project.toString())
   new ClaimOut()
-    .type('Agenda was updated')
+    .type('User projects were updated')
     .param('login', login)
     .postTo(project)
 }

@@ -19,10 +19,13 @@ package com.zerocracy.stk.pm.staff.roles
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
+import com.zerocracy.jstk.SoftException
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
+import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.Projects
+import org.cactoos.iterable.LengthOf
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Resign role')
@@ -31,6 +34,12 @@ def exec(Project project, XML xml) {
   String login = claim.param('login')
   String role = claim.param('role')
   Roles roles = new Roles(project).bootstrap()
+  int jobs = new LengthOf(new Orders(project).jobs(login)).value()
+  if (jobs > 0) {
+    throw new SoftException(
+      "There are still ${jobs} jobs assigned to @${login}, can't resign"
+    )
+  }
   roles.resign(login, role)
   if (!roles.hasAnyRole(login)) {
     new Projects(project, login).remove(project.toString())

@@ -23,7 +23,11 @@ import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.staff.Roles;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
+import org.cactoos.collection.Mapped;
+import org.cactoos.iterable.IterableOf;
 
 /**
  * Assumptions for stakeholder.
@@ -66,14 +70,19 @@ public final class Assume {
 
     /**
      * Equals.
-     * @param type The type to compare with
+     * @param types The types to accept
      * @throws MismatchException If doesn't match
      */
-    public void type(final String type) throws MismatchException {
+    public void type(final String... types) throws MismatchException {
         final String input = new ClaimIn(this.xml)
             .type().toLowerCase(Locale.ENGLISH);
-        final String expected = type.toLowerCase(Locale.ENGLISH);
-        if (!input.equals(expected)) {
+        final Set<String> expected = new HashSet<>(
+            new Mapped<>(
+                new IterableOf<>(types),
+                type -> type.toLowerCase(Locale.ENGLISH)
+            )
+        );
+        if (!expected.contains(input)) {
             throw new MismatchException(
                 String.format(
                     "Type \"%s\" is not mine, I'm expecting \"%s\"",

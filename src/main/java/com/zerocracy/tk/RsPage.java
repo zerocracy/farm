@@ -32,6 +32,9 @@ import org.takes.facets.auth.XeIdentity;
 import org.takes.facets.auth.XeLogoutLink;
 import org.takes.facets.auth.social.XeGithubLink;
 import org.takes.facets.flash.XeFlash;
+import org.takes.facets.fork.FkTypes;
+import org.takes.facets.fork.RsFork;
+import org.takes.rs.RsPrettyXml;
 import org.takes.rs.RsWithType;
 import org.takes.rs.RsWrap;
 import org.takes.rs.RsXslt;
@@ -159,7 +162,17 @@ public final class RsPage extends RsWrap {
                 new XeMillis(true)
             )
         );
-        return new RsXslt(new RsWithType(raw, "text/html"));
+        return new RsFork(
+            req,
+            new FkTypes(
+                "application/xml,text/xml",
+                new RsPrettyXml(new RsWithType(raw, "text/xml"))
+            ),
+            new FkTypes(
+                "*/*",
+                new RsXslt(new RsWithType(raw, "text/html"))
+            )
+        );
     }
 
 }

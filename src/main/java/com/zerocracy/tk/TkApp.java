@@ -51,6 +51,7 @@ import org.takes.rs.RsText;
 import org.takes.rs.RsVelocity;
 import org.takes.rs.RsWithStatus;
 import org.takes.rs.RsWithType;
+import org.takes.tk.TkClasspath;
 import org.takes.tk.TkGzip;
 import org.takes.tk.TkMeasured;
 import org.takes.tk.TkRedirect;
@@ -97,6 +98,10 @@ public final class TkApp extends TkWrap {
                                                         new ListOf<>(forks),
                                                         new ListOf<>(
                                                             new FkRegex("/", new TkIndex(props)),
+                                                            new FkRegex(
+                                                                "/org/takes/.+\\.xsl",
+                                                                new TkClasspath()
+                                                            ),
                                                             new FkRegex("/ping", new TkPing(farm)),
                                                             new FkRegex("/robots.txt", ""),
                                                             new FkRegex(
