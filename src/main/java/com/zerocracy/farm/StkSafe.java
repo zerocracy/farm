@@ -96,7 +96,7 @@ public final class StkSafe implements Stakeholder {
                     new IllegalArgumentException(
                         String.format(
                             "Claim #%d \"%s\" has no token in %s",
-                            claim.number(), claim.type(), this.identifier
+                            claim.cid(), claim.type(), this.identifier
                         ),
                         ex
                     )
@@ -139,7 +139,7 @@ public final class StkSafe implements Stakeholder {
                 new IllegalArgumentException(
                     String.format(
                         "Claim #%d in %s: type=\"%s\", id=\"%s\"",
-                        claim.number(), project, claim.type(),
+                        claim.cid(), project, claim.type(),
                         this.identifier
                     ),
                     ex

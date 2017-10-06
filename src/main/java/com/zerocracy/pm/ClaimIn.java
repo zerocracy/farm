@@ -17,6 +17,9 @@
 package com.zerocracy.pm;
 
 import com.jcabi.xml.XML;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -91,8 +94,22 @@ public final class ClaimIn {
      * Get ID.
      * @return ID
      */
-    public long number() {
+    public long cid() {
         return Long.parseLong(this.xml.xpath("@id").get(0));
+    }
+
+    /**
+     * Created.
+     * @return Date when it was created
+     */
+    public Date created() {
+        return new Date(
+            Instant.from(
+                DateTimeFormatter.ISO_INSTANT.parse(
+                    this.xml.xpath("created/text()").get(0)
+                )
+            ).toEpochMilli()
+        );
     }
 
     /**

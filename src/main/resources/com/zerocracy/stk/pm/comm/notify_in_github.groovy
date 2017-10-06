@@ -36,8 +36,8 @@ import java.util.concurrent.TimeUnit
 
 // Token must look like: zerocracy/farm;123;6
 //   - repository coordinates
-//   - issue number
-//   - comment number inside the issue (optional)
+//   - issue cid
+//   - comment cid inside the issue (optional)
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Notify in GitHub')

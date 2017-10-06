@@ -14,31 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.understands_bug_label
 
-import com.jcabi.github.Github
-import com.jcabi.github.Repos
-import com.jcabi.xml.XML
-import com.zerocracy.jstk.fake.FkFarm
-import com.zerocracy.jstk.Project
-import com.zerocracy.radars.github.RbOnBug
-import javax.json.Json
-
-def exec(Project project, XML xml) {
-  Github github = binding.variables.github
-  def repo = github.repos().create(new Repos.RepoCreate('bugs', false))
-  def issue = repo.issues().create('A bug', '')
-  new RbOnBug().react(
-    new FkFarm(project),
-    github,
-    Json.createObjectBuilder().add(
-      'issue',
-      Json.createObjectBuilder()
-        .add('cid', issue.number())
-    ).add(
-      'repository',
-      Json.createObjectBuilder()
-        .add('full_name', repo.coordinates().toString())
-    ).build()
-  )
-}
+/**
+ * Footprint farm, tests.
+ *
+ * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @version $Id$
+ * @since 0.18
+ */
+package com.zerocracy.farm.footprint;

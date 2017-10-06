@@ -322,9 +322,9 @@ public final class Xocument {
     }
 
     /**
-     * Version as a number.
+     * Version as a cid.
      * @param ver Version
-     * @return The number
+     * @return The cid
      */
     private static int num(final String ver) {
         final List<String> parts = new LinkedList<>();

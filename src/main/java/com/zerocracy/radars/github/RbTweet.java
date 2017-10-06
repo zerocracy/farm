@@ -180,7 +180,7 @@ public final class RbTweet implements Rebound {
     /**
      * Mark it as tweeted already.
      * @param repo The repo
-     * @param tweet Tweet number
+     * @param tweet Tweet cid
      * @throws IOException If fails
      */
     private void mark(final Repo repo, final long tweet) throws IOException {

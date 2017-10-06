@@ -34,7 +34,7 @@ import org.xembly.Directives;
  * @version $Id$
  * @since 0.9
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({ "PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods" })
 public final class ClaimOut implements Iterable<Directive> {
 
     /**
@@ -110,6 +110,20 @@ public final class ClaimOut implements Iterable<Directive> {
             .remove()
             .pop()
             .add("token").set(token).up();
+        return this;
+    }
+
+    /**
+     * With this claim ID.
+     * @param cid Claim ID
+     * @return This
+     */
+    public ClaimOut cid(final long cid) {
+        this.dirs
+            .push()
+            .xpath(".")
+            .attr("id", cid)
+            .pop();
         return this;
     }
 

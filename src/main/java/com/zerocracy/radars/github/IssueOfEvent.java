@@ -108,13 +108,13 @@ final class IssueOfEvent implements Issue {
     private Issue issue() {
         final int num;
         if (this.event.containsKey("issue")) {
-            num = this.event.getJsonObject("issue").getInt("number");
+            num = this.event.getJsonObject("issue").getInt("cid");
         } else if (this.event.containsKey("pull_request")) {
-            num = this.event.getJsonObject("pull_request").getInt("number");
+            num = this.event.getJsonObject("pull_request").getInt("cid");
         } else {
             throw new IllegalStateException(
                 String.format(
-                    "Can't find issue number in %s", this.event
+                    "Can't find issue cid in %s", this.event
                 )
             );
         }

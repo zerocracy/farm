@@ -49,7 +49,7 @@ public final class RunsInThreads<T> extends TypeSafeMatcher<Func<T, Boolean>> {
     private final T input;
 
     /**
-     * Total number of threads to run.
+     * Total cid of threads to run.
      */
     private final int total;
 
