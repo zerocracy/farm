@@ -65,11 +65,4 @@ def exec(Project project, XML xml) {
     .param('login', login)
     .param('reason', "Per request of @${claim.author()}.")
     .postTo(project)
-  new ClaimOut()
-    .type('Make payment')
-    .param('job', job)
-    .param('login', claim.author())
-    .param('reason', 'Manual assignments of jobs are discouraged, see par.19')
-    .param('minutes', -5)
-    .postTo(project)
 }

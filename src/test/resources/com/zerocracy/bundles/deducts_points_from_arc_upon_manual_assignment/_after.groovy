@@ -22,5 +22,5 @@ import com.zerocracy.pmo.Awards
 
 def exec(Project project, XML xml) {
   def awards = new Awards(project, 'yegor256').bootstrap()
-  assert awards.total() == -10
+  assert awards.total() == -5
 }

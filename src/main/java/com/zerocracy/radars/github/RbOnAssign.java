@@ -86,9 +86,10 @@ public final class RbOnAssign implements Rebound {
             issue.latestEvent(Event.ASSIGNED)
         ).author().login().toLowerCase(Locale.ENGLISH);
         if (new Roles(project).bootstrap().hasRole(author, "ARC")) {
-            final int minutes = -10;
+            final int minutes = -5;
             final Awards awards = new Awards(project, author).bootstrap();
-            final String reason = "Manual assignment of issues is discouraged.";
+            final String reason =
+                "Manual assignment of issues is discouraged, see par.19";
             awards.add(minutes, job.toString(), reason);
             new ClaimOut()
                 .type("Award points were added")
