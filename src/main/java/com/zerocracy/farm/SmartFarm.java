@@ -77,15 +77,14 @@ public final class SmartFarm implements Scalar<Farm> {
         this.deps = dps;
         this.self = new SyncScalar<>(
             new StickyScalar<>(
-                () -> {
-                    final Farm frm = new RvFarm(
+                () -> new SyncFarm(
+                    new RvFarm(
                         new UplinkedFarm(
                             new StrictFarm(farm)
                         ),
                         new Brigade(this.stakeholders())
-                    );
-                    return new SyncFarm(frm);
-                }
+                    )
+                )
             )
         );
     }

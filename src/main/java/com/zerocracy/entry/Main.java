@@ -22,6 +22,7 @@ import com.jcabi.github.Github;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.zerocracy.farm.S3Farm;
 import com.zerocracy.farm.SmartFarm;
+import com.zerocracy.farm.footprint.FtFarm;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.radars.github.GithubRoutine;
 import com.zerocracy.radars.github.TkGithub;
@@ -92,7 +93,10 @@ public final class Main {
         final Region dynamo = new ExtDynamo().value();
         final Map<Long, TmSession> tms = new ConcurrentHashMap<>(0);
         final Farm farm = new SmartFarm(
-            new S3Farm(new ExtBucket().value()),
+            new FtFarm(
+                new S3Farm(new ExtBucket().value()),
+                new ExtMongo().value()
+            ),
             props,
             new StickyMap<>(
                 new AbstractMap.SimpleEntry<>("properties", props),
