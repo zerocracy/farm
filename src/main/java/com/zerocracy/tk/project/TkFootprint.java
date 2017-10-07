@@ -69,7 +69,9 @@ public final class TkFootprint implements TkRegex {
                         new XeTransform<>(
                             new Footprint(this.farm, project).collection()
                                 .find(Filters.eq("project", project.toString()))
-                                .sort(Sorts.descending("created")),
+                                .sort(Sorts.descending("created"))
+                                // @checkstyle MagicNumber (1 line)
+                                .limit(50),
                             doc -> new XeAppend(
                                 "claim",
                                 new XeAppend(
