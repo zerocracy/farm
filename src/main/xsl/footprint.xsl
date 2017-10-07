@@ -56,10 +56,12 @@ SOFTWARE.
         <xsl:value-of select="created"/>
       </td>
       <td>
+        <xsl:text>"</xsl:text>
         <xsl:value-of select="type"/>
+        <xsl:text>"</xsl:text>
       </td>
       <td>
-        <xsl:for-each select="*[not(name() = 'type') and not(name() = 'created')]">
+        <xsl:for-each select="*[not(name() = 'type') and not(name() = 'created') and not(name() = '_id') and not(name() = 'cid') and not(name() = 'project') and not(name() = 'closed')]">
           <xsl:if test="position() &gt; 1">
             <xsl:text>; </xsl:text>
           </xsl:if>
