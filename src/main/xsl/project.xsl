@@ -87,6 +87,10 @@ SOFTWARE.
     </p>
     <p>
       <xsl:text>Integration: </xsl:text>
+      <a href="/footprint/{project}">
+        <xsl:text>Footprint</xsl:text>
+      </a>
+      <xsl:text>, </xsl:text>
       <a href="/a/{project}?a=pm/claims">
         <xsl:text>Claims</xsl:text>
       </a>
