@@ -22,7 +22,7 @@ SOFTWARE.
     <date>${timestamp}</date>
   </build>
   <security>
-    <xor.key>${xor.key}</xor.key>
+    <xor.key><![CDATA[${xor.key}]]></xor.key>
   </security>
   <github>
     <app.client_id>${github.app.client_id}</app.client_id>
