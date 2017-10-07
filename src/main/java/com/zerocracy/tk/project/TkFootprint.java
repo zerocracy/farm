@@ -16,8 +16,11 @@
  */
 package com.zerocracy.tk.project;
 
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Sorts;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
+import com.zerocracy.pm.Footprint;
 import com.zerocracy.tk.RsPage;
 import java.io.IOException;
 import org.takes.Response;
@@ -25,6 +28,7 @@ import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
 import org.takes.rs.xe.XeAppend;
 import org.takes.rs.xe.XeChain;
+import org.takes.rs.xe.XeTransform;
 
 /**
  * Footprint page.
@@ -34,6 +38,7 @@ import org.takes.rs.xe.XeChain;
  * @since 0.12
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class TkFootprint implements TkRegex {
 
     /**
@@ -60,7 +65,23 @@ public final class TkFootprint implements TkRegex {
                 return new XeChain(
                     new XeAppend("project", project.toString()),
                     new XeAppend(
-                        "claims", "none"
+                        "claims",
+                        new XeTransform<>(
+                            new Footprint(this.farm, project).collection()
+                                .find(Filters.eq("project", project.toString()))
+                                .sort(Sorts.descending("created")),
+                            doc -> new XeAppend(
+                                "claim",
+                                new XeAppend(
+                                    "created",
+                                    doc.get("created").toString()
+                                ),
+                                new XeAppend(
+                                    "type",
+                                    doc.get("type").toString()
+                                )
+                            )
+                        )
                     )
                 );
             }

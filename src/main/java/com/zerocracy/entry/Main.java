@@ -80,9 +80,8 @@ public final class Main {
             );
         }
         Sentry.init(props.get("//sentry/dsn", ""));
-        Farm farm = new S3Farm(new ExtBucket().value());
-        farm = new SmartFarm(
-            new FtFarm(farm, new ExtMongo(farm).value())
+        final Farm farm = new SmartFarm(
+            new FtFarm(new S3Farm(new ExtBucket().value()))
         ).value();
         try (
             final SlackRadar radar = new SlackRadar(farm);

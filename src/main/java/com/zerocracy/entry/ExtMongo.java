@@ -21,11 +21,18 @@ import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.jstk.Farm;
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+import java.nio.file.Files;
 import org.cactoos.Scalar;
+import org.cactoos.func.RunnableOf;
 import org.cactoos.func.StickyFunc;
 import org.cactoos.func.SyncFunc;
 import org.cactoos.func.UncheckedFunc;
 import org.cactoos.list.ListOf;
+import org.cactoos.scalar.StickyScalar;
+import org.cactoos.scalar.SyncScalar;
+import org.cactoos.scalar.UncheckedScalar;
 
 /**
  * MongoDB server connector.
@@ -33,7 +40,9 @@ import org.cactoos.list.ListOf;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.18
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class ExtMongo implements Scalar<MongoClient> {
 
     /**
@@ -45,23 +54,66 @@ public final class ExtMongo implements Scalar<MongoClient> {
                 new StickyFunc<>(
                     frm -> {
                         final Props props = new Props(frm);
-                        return new MongoClient(
-                            new ServerAddress(
-                                props.get("//mongo/host"),
-                                Integer.parseInt(props.get("//mongo/port"))
-                            ),
-                            new ListOf<>(
-                                MongoCredential.createCredential(
-                                    props.get("//mongo/user"),
-                                    "admin",
-                                    props.get("//mongo/password").toCharArray()
+                        final MongoClient client;
+                        if (props.has("//testing")) {
+                            client = new MongoClient(
+                                "localhost", ExtMongo.FAKE.value()
+                            );
+                        } else {
+                            client = new MongoClient(
+                                new ServerAddress(
+                                    props.get("//mongo/host"),
+                                    Integer.parseInt(props.get("//mongo/port"))
+                                ),
+                                new ListOf<>(
+                                    MongoCredential.createCredential(
+                                        props.get("//mongo/user"),
+                                        "admin",
+                                        props.get("//mongo/password")
+                                            .toCharArray()
+                                    )
                                 )
-                            )
-                        );
+                            );
+                        }
+                        return client;
                     }
                 )
             )
         );
+
+    /**
+     * Thread with Mongodb.
+     * @checkstyle ConstantUsageCheck (5 lines)
+     */
+    private static final UncheckedScalar<Integer> FAKE = new UncheckedScalar<>(
+        new SyncScalar<>(
+            new StickyScalar<>(
+                () -> {
+                    final ServerSocket socket = new ServerSocket();
+                    final int port;
+                    try {
+                        socket.setReuseAddress(true);
+                        socket.bind(new InetSocketAddress("localhost", 0));
+                        port = socket.getLocalPort();
+                    } finally {
+                        socket.close();
+                    }
+                    new Thread(
+                        new RunnableOf<>(
+                            () -> new ProcessBuilder().command(
+                                "mongod",
+                                "--dbpath",
+                                Files.createTempDirectory("ft").toString(),
+                                "--port",
+                                Integer.toString(port)
+                            ).redirectErrorStream(true).start()
+                        )
+                    ).start();
+                    return port;
+                }
+            )
+        )
+    );
 
     /**
      * The farm.
