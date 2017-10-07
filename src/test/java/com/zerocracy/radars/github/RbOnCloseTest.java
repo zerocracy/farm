@@ -70,7 +70,7 @@ public final class RbOnCloseTest {
                     .add(
                         "issue",
                         Json.createObjectBuilder().add(
-                            "cid",
+                            "number",
                             issue.number()
                         )
                     ).add(

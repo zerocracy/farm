@@ -37,7 +37,7 @@ def exec(Project project, XML xml) {
     Json.createObjectBuilder().add(
       'issue',
       Json.createObjectBuilder()
-        .add('cid', issue.number())
+        .add('number', issue.number())
     ).add(
       'repository',
       Json.createObjectBuilder()

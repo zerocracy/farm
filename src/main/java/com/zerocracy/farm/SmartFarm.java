@@ -65,7 +65,9 @@ public final class SmartFarm implements Scalar<Farm> {
                     new RvFarm(
                         new PropsFarm(
                             new UplinkedFarm(
-                                new StrictFarm(farm)
+                                new StrictFarm(
+                                    new SyncFarm(farm)
+                                )
                             )
                         ),
                         new Brigade(this.stakeholders())

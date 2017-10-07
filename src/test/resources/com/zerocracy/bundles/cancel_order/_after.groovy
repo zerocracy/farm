@@ -14,27 +14,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.resigns_tasks_upon_quit
+package com.zerocracy.bundles.cancel_order
 
+import com.jcabi.github.Coordinates
 import com.jcabi.github.Github
-import com.jcabi.github.Repos
+import com.jcabi.github.Issue
+import com.jcabi.github.Repo
 import com.jcabi.xml.XML
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
-import com.zerocracy.pm.ClaimOut
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
-  def repo = github.repos().create(new Repos.RepoCreate('test', false))
-  def issue = repo.issues().create('title', 'body')
-  repo.issues().create('title 2', 'body 2')
-  repo.issues().create('title 3', 'body 3')
-  new ClaimOut()
-    .type('Quit a project')
-    .token("job;gh:${repo.coordinates()}#${issue.number()}")
-    .author('cmiranda')
-    .param('project', project.toString())
-    .postTo(project)
+  Repo repo = github.repos().get(new Coordinates.Simple('test/test'))
+  MatcherAssert.assertThat(
+    new Issue.Smart(repo.issues().get(1)).assignee().login(),
+    Matchers.equalTo('')
+  )
 }

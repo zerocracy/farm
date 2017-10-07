@@ -42,7 +42,7 @@ def exec(Project project, XML xml) {
     new FkFarm(project),
     github,
     Json.createObjectBuilder()
-      .add('issue', Json.createObjectBuilder().add('cid', issue.number()))
+      .add('issue', Json.createObjectBuilder().add('number', issue.number()))
       .add('repository', Json.createObjectBuilder()
       .add('full_name', repo.coordinates().toString()))
       .build()

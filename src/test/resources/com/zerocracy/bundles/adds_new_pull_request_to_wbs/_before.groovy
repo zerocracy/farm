@@ -35,7 +35,7 @@ def exec(Project project, XML xml) {
     new FkFarm(project),
     github,
     Json.createObjectBuilder()
-      .add('pull_request', Json.createObjectBuilder().add('cid', pull.number()))
+      .add('pull_request', Json.createObjectBuilder().add('number', pull.number()))
       .add('repository', Json.createObjectBuilder().add('full_name', repo.coordinates().toString()))
       .build()
   )

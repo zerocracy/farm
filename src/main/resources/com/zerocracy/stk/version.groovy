@@ -18,15 +18,18 @@ package com.zerocracy.stk
 
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
+import com.zerocracy.farm.props.Props
+import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Version')
-  Properties props = binding.variables.properties
+  Farm farm = binding.variables.farm
+  Props props = new Props(farm)
   new ClaimIn(xml).reply(
-    "My version is `${props.getProperty('build.version')}`," +
-    " rev.`${props.getProperty('build.revision')}`," +
-    " built on ${props.getProperty('build.date')}"
+    "My version is `${props.get('//build/version', '')}`," +
+    " rev.`${props.get('//build/revision', '')}`," +
+    " built on ${props.get('//build/date', '')}"
   ).postTo(project)
 }

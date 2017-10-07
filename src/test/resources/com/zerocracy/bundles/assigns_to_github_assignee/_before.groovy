@@ -2,11 +2,11 @@
  * Copyright (c) 2016-2017 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to read
+ * of this software and associated documentation files (the 'Software'), to read
  * the Software only. Permissions is hereby NOT GRANTED to use, copy, modify,
  * merge, publish, distribute, sublicense, and/or sell copies of the Software.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -16,6 +16,7 @@
  */
 package com.zerocracy.bundles.assigns_to_github_assignee
 
+import com.jcabi.github.Event
 import com.jcabi.github.Github
 import com.jcabi.github.Issue
 import com.jcabi.github.Repos
@@ -33,11 +34,13 @@ def exec(Project project, XML xml) {
   def repo = github.repos().create(new Repos.RepoCreate('test', false))
   def issue = new Issue.Smart(repo.issues().create('hello, world', ''))
   issue.assign('yegor256')
+  repo.issueEvents()
+    .create(Event.ASSIGNED, issue.number(), 'yegor256', com.google.common.base.Optional.absent())
   new RbOnAssign().react(
     new FkFarm(project),
     github,
     Json.createObjectBuilder()
-      .add('issue', Json.createObjectBuilder().add('cid', issue.number()))
+      .add('issue', Json.createObjectBuilder().add('number', issue.number()))
       .add('repository', Json.createObjectBuilder().add('full_name', repo.coordinates().toString()))
       .add('sender', Json.createObjectBuilder().add('login', 'yegor256'))
       .build()
