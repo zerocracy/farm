@@ -28,7 +28,9 @@ import com.jcabi.github.Limits
 import com.jcabi.github.Repo
 import com.jcabi.github.Smarts
 import com.jcabi.xml.XML
+import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
+import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.radars.github.GhTube
@@ -48,7 +50,8 @@ def exec(Project project, XML xml) {
       "Something is wrong with this token: ${claim.token()}"
     )
   }
-  Github github = binding.variables.github
+  Farm farm = binding.variables.farm
+  Github github = new ExtGithub(farm).value()
   Limit.Smart limit = new Limit.Smart(github.limits().get(Limits.CORE))
   if (limit.remaining() < 500) {
     claim.copy().until(TimeUnit.MINUTES.toSeconds(5L)).postTo(project)

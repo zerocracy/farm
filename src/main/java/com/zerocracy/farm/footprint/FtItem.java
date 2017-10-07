@@ -19,16 +19,12 @@ package com.zerocracy.farm.footprint;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.mongodb.MongoClient;
-import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.Updates;
 import com.zerocracy.jstk.Item;
-import com.zerocracy.pm.ClaimIn;
+import com.zerocracy.pm.Footprint;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Map;
 import lombok.EqualsAndHashCode;
-import org.bson.Document;
 import org.cactoos.io.LengthOf;
 import org.cactoos.io.TeeInput;
 
@@ -96,14 +92,15 @@ final class FtItem implements Item {
         final XML after = FtItem.claims(modified);
         this.origin.close();
         final XML before = FtItem.claims(this.temp);
+        final Footprint footprint = new Footprint(this.mongo, this.pid);
         for (final XML claim : before.nodes("//claim")) {
             if (!FtItem.exists(after, claim)) {
-                this.closed(claim);
+                footprint.close(claim);
             }
         }
         for (final XML claim : after.nodes("//claim")) {
             if (!FtItem.exists(before, claim)) {
-                this.opened(claim);
+                footprint.open(claim);
             }
         }
         Files.delete(this.temp);
@@ -138,48 +135,6 @@ final class FtItem implements Item {
             xml = new XMLDocument("<claims/>");
         }
         return xml;
-    }
-
-    /**
-     * The claim was closed.
-     * @param xml The claim
-     */
-    private void closed(final XML xml) {
-        final ClaimIn claim = new ClaimIn(xml);
-        this.mongo.getDatabase("footprint").getCollection("claims").updateOne(
-            Filters.and(
-                Filters.eq("cid", claim.cid()),
-                Filters.eq("project", this.pid),
-                Filters.eq("type", claim.type()),
-                Filters.eq("created", claim.created())
-            ),
-            Updates.currentDate("closed")
-        );
-    }
-
-    /**
-     * The claim was opened.
-     * @param xml The claim
-     */
-    private void opened(final XML xml) {
-        final ClaimIn claim = new ClaimIn(xml);
-        Document doc = new Document()
-            .append("cid", claim.cid())
-            .append("project", this.pid)
-            .append("type", claim.type())
-            .append("created", claim.created());
-        if (claim.hasAuthor()) {
-            doc = doc.append("author", claim.author());
-        }
-        if (claim.hasToken()) {
-            doc = doc.append("token", claim.token());
-        }
-        for (final Map.Entry<String, String> ent : claim.params().entrySet()) {
-            doc = doc.append(ent.getKey(), ent.getValue());
-        }
-        this.mongo.getDatabase("footprint")
-            .getCollection("claims")
-            .insertOne(doc);
     }
 
 }

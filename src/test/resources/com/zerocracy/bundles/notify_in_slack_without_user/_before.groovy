@@ -20,6 +20,8 @@ import com.jcabi.xml.XML
 import com.ullink.slack.simpleslackapi.SlackChannel
 import com.ullink.slack.simpleslackapi.SlackSession
 import com.ullink.slack.simpleslackapi.SlackUser
+import com.zerocracy.entry.ExtSlack
+import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimOut
 import org.cactoos.list.ListOf
@@ -35,7 +37,7 @@ import org.mockito.Mockito
  */
 def exec(Project project, XML xml) {
   String channelId = 'C123'
-  binding.variables.properties.put('slack_testing', true)
+  binding.variables.slack_testing = true
   SlackSession session = Mockito.mock(SlackSession)
   Mockito.when(session.findUserByUserName(Mockito.any(String)))
     .thenReturn(null)
@@ -44,7 +46,8 @@ def exec(Project project, XML xml) {
   SlackChannel channel = Mockito.mock(SlackChannel)
   Mockito.when(channel.id).thenReturn(channelId)
   Mockito.when(session.channels).thenReturn(new ListOf<>(channel))
-  binding.variables.slack.put(channelId, session)
+  Farm farm = binding.variables.farm
+  new ExtSlack(farm).value()[channelId] = session
   new ClaimOut()
     .type('Notify in Slack')
     .token("slack;${channelId};none;one-more-part")

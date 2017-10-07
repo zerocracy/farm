@@ -19,9 +19,12 @@ package com.zerocracy.entry;
 import com.jcabi.dynamo.Credentials;
 import com.jcabi.dynamo.Region;
 import com.jcabi.dynamo.retry.ReRegion;
-import java.io.IOException;
-import java.util.Properties;
+import com.zerocracy.farm.props.Props;
+import com.zerocracy.jstk.Farm;
 import org.cactoos.Scalar;
+import org.cactoos.func.StickyFunc;
+import org.cactoos.func.SyncFunc;
+import org.cactoos.func.UncheckedFunc;
 
 /**
  * DynamoDB server connector.
@@ -30,19 +33,45 @@ import org.cactoos.Scalar;
  * @version $Id$
  * @since 0.7
  */
-final class ExtDynamo implements Scalar<Region> {
+public final class ExtDynamo implements Scalar<Region> {
 
-    @Override
-    public Region value() throws IOException {
-        final Properties props = new ExtProperties().value();
-        return new ReRegion(
-            new Region.Simple(
-                new Credentials.Simple(
-                    props.getProperty("dynamo.key"),
-                    props.getProperty("dynamo.secret")
+    /**
+     * The singleton.
+     */
+    private static final UncheckedFunc<Farm, Region> SINGLETON =
+        new UncheckedFunc<>(
+            new SyncFunc<>(
+                new StickyFunc<>(
+                    frm -> {
+                        final Props props = new Props(frm);
+                        return new ReRegion(
+                            new Region.Simple(
+                                new Credentials.Simple(
+                                    props.get("//dynamo/key"),
+                                    props.get("//dynamo/secret")
+                                )
+                            )
+                        );
+                    }
                 )
             )
         );
+
+    /**
+     * The farm.
+     */
+    private final Farm farm;
+
+    /**
+     * Ctor.
+     * @param frm The farm
+     */
+    public ExtDynamo(final Farm frm) {
+        this.farm = frm;
     }
 
+    @Override
+    public Region value() {
+        return ExtDynamo.SINGLETON.apply(this.farm);
+    }
 }

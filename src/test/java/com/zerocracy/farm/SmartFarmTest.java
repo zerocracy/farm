@@ -24,13 +24,10 @@ import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.in.Orders;
 import com.zerocracy.pm.scope.Wbs;
 import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.Scalar;
-import org.cactoos.iterable.PropertiesOf;
-import org.cactoos.map.MapEntry;
 import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -51,11 +48,7 @@ public final class SmartFarmTest {
             Files.createTempDirectory("").toFile(),
             "some-bucket"
         );
-        final Farm farm = new SmartFarm(
-            new S3Farm(bucket),
-            new PropertiesOf(new MapEntry<>("testing", "true")).value(),
-            new HashMap<>(0)
-        ).value();
+        final Farm farm = new SmartFarm(new S3Farm(bucket)).value();
         final Project project = farm.find("@id='SMRTFRMTT'").iterator().next();
         MatcherAssert.assertThat(
             inc -> {
@@ -77,9 +70,7 @@ public final class SmartFarmTest {
             Files.createTempDirectory("").toFile(),
             "some-bucket-again"
         );
-        final Scalar<Farm> farm = new SmartFarm(
-            new S3Farm(bucket), new Properties(), new HashMap<>(0)
-        );
+        final Scalar<Farm> farm = new SmartFarm(new S3Farm(bucket));
         MatcherAssert.assertThat(
             inc -> {
                 final Project project = farm.value()
@@ -100,9 +91,7 @@ public final class SmartFarmTest {
             Files.createTempDirectory("").toFile(),
             "some-bucket-3"
         );
-        final Scalar<Farm> farm = new SmartFarm(
-            new S3Farm(bucket), new Properties(), new HashMap<>(0)
-        );
+        final Scalar<Farm> farm = new SmartFarm(new S3Farm(bucket));
         MatcherAssert.assertThat(
             inc -> {
                 final Project project = farm.value().find(
@@ -113,6 +102,23 @@ public final class SmartFarmTest {
                 return new Wbs(project).iterate().size() == 1;
             },
             new RunsInThreads<>(new AtomicInteger())
+        );
+    }
+
+    @Test
+    public void returnsSameProjec() throws Exception {
+        final Bucket bucket = new FkBucket(
+            Files.createTempDirectory("").toFile(),
+            "some-bucket-6"
+        );
+        final Project project = new SmartFarm(new S3Farm(bucket)).value().find(
+            "@id='123456789'"
+        ).iterator().next();
+        final String job = "gh:test/test#22";
+        new Wbs(project).bootstrap().add(job);
+        MatcherAssert.assertThat(
+            new Wbs(project).bootstrap().iterate(),
+            Matchers.hasItem(job)
         );
     }
 

@@ -16,6 +16,7 @@
  */
 package com.zerocracy.radars.telegram;
 
+import com.zerocracy.entry.ExtTelegram;
 import com.zerocracy.jstk.Farm;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -60,33 +61,32 @@ public final class TelegramRadar implements AutoCloseable {
 
     /**
      * Ctor.
-     * @param farm Project farm
-     * @param sessions Telegram sessions
+     * @param frm Project farm
      */
-    public TelegramRadar(final Farm farm, final Map<Long, TmSession> sessions) {
-        this(
-            farm,
-            new ReNotMine(
-                new ReProfile()
-            ),
-            sessions
-        );
+    public TelegramRadar(final Farm frm) {
+        this(frm, new ExtTelegram(frm).value());
     }
 
     /**
      * Ctor.
-     * @param farm Project farm
-     * @param reaction Telegram reaction
-     * @param sessions Telegram sessions
+     * @param frm Project farm
+     * @param map Telegram sessions
      */
-    private TelegramRadar(
-        final Farm farm,
-        final Reaction reaction,
-        final Map<Long, TmSession> sessions
-    ) {
-        this.farm = farm;
-        this.reaction = reaction;
-        this.sessions = sessions;
+    public TelegramRadar(final Farm frm, final Map<Long, TmSession> map) {
+        this(frm, new ReNotMine(new ReProfile()), map);
+    }
+
+    /**
+     * Ctor.
+     * @param frm Project farm
+     * @param rct Telegram reaction
+     * @param map Telegram sessions
+     */
+    public TelegramRadar(final Farm frm, final Reaction rct,
+        final Map<Long, TmSession> map) {
+        this.farm = frm;
+        this.reaction = rct;
+        this.sessions = map;
         this.bots = new LinkedList<>();
     }
 

@@ -17,12 +17,12 @@
 package com.zerocracy.tk.profile;
 
 import com.jcabi.matchers.XhtmlMatchers;
+import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.fake.FkFarm;
 import com.zerocracy.pmo.People;
 import com.zerocracy.tk.TkApp;
 import java.net.HttpURLConnection;
-import java.util.Properties;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 import org.takes.Take;
@@ -44,12 +44,12 @@ public final class TkAgendaTest {
 
     @Test
     public void rendersAgendaPage() throws Exception {
-        final Farm farm = new FkFarm();
+        final Farm farm = new PropsFarm(new FkFarm());
         final String uid = "yegor256";
         final People people = new People(farm).bootstrap();
         people.touch(uid);
         people.invite(uid, "mentor");
-        final Take take = new TkApp(new Properties(), farm);
+        final Take take = new TkApp(farm);
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
                 new RsPrint(
@@ -68,10 +68,10 @@ public final class TkAgendaTest {
 
     @Test
     public void redirectsWhenAccessingDifferentUsersAgenda() throws Exception {
-        final Farm farm = new FkFarm();
+        final Farm farm = new PropsFarm(new FkFarm());
         new People(farm).bootstrap().touch("yegor256");
         new People(farm).bootstrap().touch("carlosmiranda");
-        final Take app = new TkApp(new Properties(), farm);
+        final Take app = new TkApp(farm);
         MatcherAssert.assertThat(
             new RsPrint(
                 app.act(
@@ -89,9 +89,9 @@ public final class TkAgendaTest {
     @Test
     public void redirectsWhenAccessingNonexistentUsersAgenda()
         throws Exception {
-        final Farm farm = new FkFarm();
+        final Farm farm = new PropsFarm(new FkFarm());
         new People(farm).bootstrap().touch("yegor256");
-        final Take app = new TkApp(new Properties(), farm);
+        final Take app = new TkApp(farm);
         MatcherAssert.assertThat(
             new RsPrint(
                 app.act(

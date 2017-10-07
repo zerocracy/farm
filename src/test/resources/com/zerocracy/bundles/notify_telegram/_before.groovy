@@ -17,11 +17,14 @@
 package com.zerocracy.bundles.notify_telegram
 
 import com.jcabi.xml.XML
+import com.zerocracy.entry.ExtTelegram
+import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.radars.telegram.fake.FkTmSession
 
 def exec(Project project, XML xml) {
-  binding.variables.telegram.put(42L, new FkTmSession())
+  Farm farm = binding.variables.farm
+  new ExtTelegram(farm).value()[42L] = new FkTmSession()
 }
 
 

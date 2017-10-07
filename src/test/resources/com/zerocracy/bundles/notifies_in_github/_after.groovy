@@ -20,10 +20,13 @@ import com.jcabi.github.Comment
 import com.jcabi.github.Coordinates
 import com.jcabi.github.Github
 import com.jcabi.xml.XML
+import com.zerocracy.entry.ExtGithub
+import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 
 def exec(Project project, XML xml) {
-  Github github = binding.variables.github
+  Farm farm = binding.variables.farm
+  Github github = new ExtGithub(farm).value()
   def repo = github.repos().get(new Coordinates.Simple('test/test'))
   def issue = repo.issues().get(1)
   assert 'Hey, what\'s up, how is it going?' == new Comment.Smart(

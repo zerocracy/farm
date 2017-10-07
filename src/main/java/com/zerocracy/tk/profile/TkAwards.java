@@ -16,11 +16,11 @@
  */
 package com.zerocracy.tk.profile;
 
-import com.zerocracy.jstk.Project;
+import com.zerocracy.jstk.Farm;
+import com.zerocracy.pmo.Pmo;
 import com.zerocracy.tk.RsPage;
 import com.zerocracy.tk.XeXsl;
 import java.io.IOException;
-import java.util.Properties;
 import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
@@ -36,36 +36,29 @@ import org.takes.facets.fork.TkRegex;
 public final class TkAwards implements TkRegex {
 
     /**
-     * Properties.
+     * Farm.
      */
-    private final Properties props;
-
-    /**
-     * PMO.
-     */
-    private final Project pmo;
+    private final Farm farm;
 
     /**
      * Ctor.
-     * @param pps Properties
-     * @param pkt Project
+     * @param frm Farm
      */
-    public TkAwards(final Properties pps, final Project pkt) {
-        this.props = pps;
-        this.pmo = pkt;
+    public TkAwards(final Farm frm) {
+        this.farm = frm;
     }
 
     @Override
     public Response act(final RqRegex req) throws IOException {
         return new RsPage(
-            this.props,
+            this.farm,
             "/xsl/awards.xsl",
             req,
             () -> new XeXsl(
-                this.pmo,
+                new Pmo(this.farm),
                 String.format(
                     "awards/%s.xml",
-                    new RqSecureLogin(this.pmo, req).value()
+                    new RqSecureLogin(new Pmo(this.farm), req).value()
                 ),
                 "pmo/awards.xsl"
             )

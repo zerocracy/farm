@@ -17,6 +17,7 @@
 package com.zerocracy.tk.project;
 
 import com.jcabi.matchers.XhtmlMatchers;
+import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.fake.FkFarm;
 import com.zerocracy.pm.staff.Roles;
@@ -25,7 +26,6 @@ import com.zerocracy.pmo.People;
 import com.zerocracy.pmo.Pmo;
 import com.zerocracy.tk.TkApp;
 import java.net.HttpURLConnection;
-import java.util.Properties;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 import org.takes.Take;
@@ -46,7 +46,7 @@ public final class TkArtifactTest {
 
     @Test
     public void rejectsAbsentProject() throws Exception {
-        final Take take = new TkApp(new Properties(), new FkFarm());
+        final Take take = new TkApp(new PropsFarm(new FkFarm()));
         MatcherAssert.assertThat(
             take.act(
                 new RqFake(
@@ -60,7 +60,7 @@ public final class TkArtifactTest {
 
     @Test
     public void rendersHomePage() throws Exception {
-        final Farm farm = new FkFarm();
+        final Farm farm = new PropsFarm(new FkFarm());
         final Catalog catalog = new Catalog(new Pmo(farm)).bootstrap();
         final String pid = "A1B2C3D4F";
         catalog.add(pid, String.format("2017/07/%s/", pid));
@@ -71,7 +71,7 @@ public final class TkArtifactTest {
         final String uid = "yegor256";
         roles.assign(uid, "PO");
         new People(new Pmo(farm)).bootstrap().invite(uid, "mentor");
-        final Take take = new TkApp(new Properties(), farm);
+        final Take take = new TkApp(farm);
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
                 new RsPrint(

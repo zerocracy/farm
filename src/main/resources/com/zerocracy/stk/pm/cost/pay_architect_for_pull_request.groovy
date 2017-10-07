@@ -20,7 +20,9 @@ import com.jcabi.github.Github
 import com.jcabi.github.Issue
 import com.jcabi.log.Logger
 import com.jcabi.xml.XML
+import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
+import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
@@ -44,13 +46,14 @@ def exec(Project project, XML xml) {
     )
     return
   }
-  Github github = binding.variables.github
+  Farm farm = binding.variables.farm
+  Github github = new ExtGithub(farm).value()
   Issue.Smart issue = new Issue.Smart(new Job.Issue(github, job))
-  if (issue.isPull()) {
+  if (issue.pull) {
     new ClaimOut()
       .type('Make payment')
       .param('job', job)
-      .param('login', logins.get(0))
+      .param('login', logins[0])
       .param('reason', 'Payment to ARC for closed pull request.')
       .param('minutes', 15)
       .postTo(project)

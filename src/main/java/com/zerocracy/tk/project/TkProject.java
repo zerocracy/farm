@@ -24,7 +24,6 @@ import com.zerocracy.pmo.Pmo;
 import com.zerocracy.tk.RqUser;
 import com.zerocracy.tk.RsPage;
 import java.io.IOException;
-import java.util.Properties;
 import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
@@ -43,29 +42,22 @@ import org.takes.rs.xe.XeTransform;
 public final class TkProject implements TkRegex {
 
     /**
-     * Properties.
-     */
-    private final Properties props;
-
-    /**
      * Farm.
      */
     private final Farm farm;
 
     /**
      * Ctor.
-     * @param pps Properties
      * @param frm Farm
      */
-    public TkProject(final Properties pps, final Farm frm) {
-        this.props = pps;
+    public TkProject(final Farm frm) {
         this.farm = frm;
     }
 
     @Override
     public Response act(final RqRegex req) throws IOException {
         return new RsPage(
-            this.props,
+            this.farm,
             "/xsl/project.xsl",
             req,
             () -> {

@@ -19,10 +19,13 @@ package com.zerocracy.bundles.elects_and_assigns_performer
 import com.jcabi.github.Github
 import com.jcabi.github.Repos
 import com.jcabi.xml.XML
+import com.zerocracy.entry.ExtGithub
+import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 
 def exec(Project project, XML xml) {
-  Github github = binding.variables.github
+  Farm farm = binding.variables.farm
+  Github github = new ExtGithub(farm).value()
   def repo = github.repos().create(new Repos.RepoCreate('test', false))
   repo.issues().create('Hello, world', '')
   repo.issues().create('hello again', '')

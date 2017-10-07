@@ -20,7 +20,9 @@ import com.jcabi.github.Github
 import com.jcabi.http.Request
 import com.jcabi.http.response.RestResponse
 import com.jcabi.xml.XML
+import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
+import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
@@ -29,7 +31,8 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Role was assigned')
   ClaimIn claim = new ClaimIn(xml)
   String login = claim.param('login')
-  Github github = binding.variables.github
+  Farm farm = binding.variables.farm
+  Github github = new ExtGithub(farm).value()
   if (github.users().self().login() == '0crat') {
     github.entry().uri()
       .path('/user/following')

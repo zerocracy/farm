@@ -20,11 +20,11 @@ import com.jcabi.http.request.JdkRequest;
 import com.jcabi.http.response.JsonResponse;
 import com.jcabi.http.response.RestResponse;
 import com.jcabi.log.VerboseThreads;
+import com.zerocracy.farm.props.Props;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.pmo.Bots;
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.util.Properties;
 import org.cactoos.func.AsyncFunc;
 import org.takes.Request;
 import org.takes.Response;
@@ -49,11 +49,6 @@ public final class TkSlack implements Take {
     private final Farm farm;
 
     /**
-     * Properties.
-     */
-    private final Properties props;
-
-    /**
      * Radar.
      */
     private final SlackRadar radar;
@@ -61,13 +56,10 @@ public final class TkSlack implements Take {
     /**
      * Ctor.
      * @param frm Farm
-     * @param pps Properties
      * @param rdr Radar
      */
-    public TkSlack(final Farm frm, final Properties pps,
-        final SlackRadar rdr) {
+    public TkSlack(final Farm frm, final SlackRadar rdr) {
         this.farm = frm;
-        this.props = pps;
         this.radar = rdr;
     }
 
@@ -75,16 +67,17 @@ public final class TkSlack implements Take {
     @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     public Response act(final Request req) throws IOException {
         final Bots bots = new Bots(this.farm).bootstrap();
+        final Props props = new Props(this.farm);
         final String team = bots.register(
             new JdkRequest("https://slack.com/api/oauth.access")
                 .uri()
                 .queryParam(
                     "client_id",
-                    this.props.getProperty("slack.client_id")
+                    props.get("//slack/client_id")
                 )
                 .queryParam(
                     "client_secret",
-                    this.props.getProperty("slack.client_secret")
+                    props.get("//slack/client_secret")
                 )
                 .queryParam(
                     "code",

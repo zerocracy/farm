@@ -21,7 +21,6 @@ import com.zerocracy.jstk.Project;
 import com.zerocracy.tk.RsPage;
 import com.zerocracy.tk.XeXsl;
 import java.io.IOException;
-import java.util.Properties;
 import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
@@ -40,29 +39,22 @@ import org.takes.rs.xe.XeChain;
 public final class TkArtifact implements TkRegex {
 
     /**
-     * Properties.
-     */
-    private final Properties props;
-
-    /**
      * Farm.
      */
     private final Farm farm;
 
     /**
      * Ctor.
-     * @param pps Properties
      * @param frm Farm
      */
-    public TkArtifact(final Properties pps, final Farm frm) {
-        this.props = pps;
+    public TkArtifact(final Farm frm) {
         this.farm = frm;
     }
 
     @Override
     public Response act(final RqRegex req) throws IOException {
         return new RsPage(
-            this.props,
+            this.farm,
             "/xsl/artifact.xsl",
             req,
             () -> {

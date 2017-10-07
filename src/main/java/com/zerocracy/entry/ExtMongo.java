@@ -19,10 +19,13 @@ package com.zerocracy.entry;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Properties;
+import com.zerocracy.farm.props.Props;
+import com.zerocracy.jstk.Farm;
 import org.cactoos.Scalar;
+import org.cactoos.func.StickyFunc;
+import org.cactoos.func.SyncFunc;
+import org.cactoos.func.UncheckedFunc;
+import org.cactoos.list.ListOf;
 
 /**
  * MongoDB server connector.
@@ -31,24 +34,51 @@ import org.cactoos.Scalar;
  * @version $Id$
  * @since 0.18
  */
-final class ExtMongo implements Scalar<MongoClient> {
+public final class ExtMongo implements Scalar<MongoClient> {
 
-    @Override
-    public MongoClient value() throws IOException {
-        final Properties props = new ExtProperties().value();
-        return new MongoClient(
-            new ServerAddress(
-                props.getProperty("mongo.host"),
-                Integer.parseInt(props.getProperty("mongo.port"))
-            ),
-            Arrays.asList(
-                MongoCredential.createCredential(
-                    props.getProperty("mongo.user"),
-                    props.getProperty("admin"),
-                    props.getProperty("mongo.password").toCharArray()
+    /**
+     * The singleton.
+     */
+    private static final UncheckedFunc<Farm, MongoClient> SINGLETON =
+        new UncheckedFunc<>(
+            new SyncFunc<>(
+                new StickyFunc<>(
+                    frm -> {
+                        final Props props = new Props(frm);
+                        return new MongoClient(
+                            new ServerAddress(
+                                props.get("//mongo/host"),
+                                Integer.parseInt(props.get("//mongo/port"))
+                            ),
+                            new ListOf<>(
+                                MongoCredential.createCredential(
+                                    props.get("//mongo/user"),
+                                    "admin",
+                                    props.get("//mongo/password").toCharArray()
+                                )
+                            )
+                        );
+                    }
                 )
             )
         );
+
+    /**
+     * The farm.
+     */
+    private final Farm farm;
+
+    /**
+     * Ctor.
+     * @param frm The farm
+     */
+    public ExtMongo(final Farm frm) {
+        this.farm = frm;
+    }
+
+    @Override
+    public MongoClient value() {
+        return ExtMongo.SINGLETON.apply(this.farm);
     }
 
 }

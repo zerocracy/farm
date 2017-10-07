@@ -31,7 +31,7 @@ import org.cactoos.io.TeeInput;
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.1
+ * @since 0.18
  */
 @EqualsAndHashCode(of = "origin")
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")

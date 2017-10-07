@@ -16,13 +16,17 @@
  */
 package com.zerocracy.bundles.cleanup_elections
 
+import com.jcabi.github.Github
 import com.jcabi.github.Repo
 import com.jcabi.github.Repos
 import com.jcabi.xml.XML
+import com.zerocracy.entry.ExtGithub
+import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 
 def exec(Project project, XML xml) {
-  Repo repo = binding.variables.github.repos()
-    .create(new Repos.RepoCreate('test', false))
+  Farm farm = binding.variables.farm
+  Github github = new ExtGithub(farm).value()
+  Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
   ['first', 'second', 'third', 'fourth'].each { repo.issues().create(it, 'stub') }
 }

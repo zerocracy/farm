@@ -18,6 +18,8 @@ package com.zerocracy.radars.github;
 
 import com.jcabi.github.Github;
 import com.jcabi.log.VerboseThreads;
+import com.zerocracy.entry.ExtGithub;
+import com.zerocracy.jstk.Farm;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -41,6 +43,14 @@ public final class GithubRoutine implements Runnable {
      * Service.
      */
     private final ScheduledExecutorService service;
+
+    /**
+     * Ctor.
+     * @param farm Farm
+     */
+    public GithubRoutine(final Farm farm) {
+        this(new ExtGithub(farm).value());
+    }
 
     /**
      * Ctor.

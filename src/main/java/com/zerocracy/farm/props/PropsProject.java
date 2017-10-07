@@ -14,32 +14,51 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.entry;
+package com.zerocracy.farm.props;
 
+import com.zerocracy.jstk.Item;
+import com.zerocracy.jstk.Project;
 import java.io.IOException;
-import java.util.Properties;
-import org.cactoos.Scalar;
-import org.cactoos.io.ResourceOf;
-import org.cactoos.iterable.PropertiesOf;
+import java.nio.file.Files;
+import lombok.EqualsAndHashCode;
 
 /**
- * Properties.
+ * Props project.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.11
+ * @since 0.18
  */
-final class ExtProperties implements Scalar<Properties> {
+@EqualsAndHashCode(of = "origin")
+final class PropsProject implements Project {
+
+    /**
+     * Origin project.
+     */
+    private final Project origin;
+
+    /**
+     * Ctor.
+     * @param pkt Project
+     */
+    PropsProject(final Project pkt) {
+        this.origin = pkt;
+    }
 
     @Override
-    public Properties value() throws IOException {
-        final Properties props = new PropertiesOf(
-            new ResourceOf("main.properties")
-        ).value();
-        if (this.getClass().getResource("/org/junit/Test.class") != null) {
-            props.setProperty("testing", "true");
+    public String toString() {
+        return this.origin.toString();
+    }
+
+    @Override
+    public Item acq(final String file) throws IOException {
+        final Item item;
+        if ("_props.xml".equals(file)) {
+            item = new PropsItem(Files.createTempFile("props", ".xml"));
+        } else {
+            item = this.origin.acq(file);
         }
-        return props;
+        return item;
     }
 
 }

@@ -17,11 +17,12 @@
 package com.zerocracy.tk;
 
 import com.zerocracy.Xocument;
+import com.zerocracy.farm.props.Props;
+import com.zerocracy.jstk.Farm;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.Properties;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.IoCheckedScalar;
 import org.takes.Request;
@@ -59,13 +60,14 @@ import org.takes.rs.xe.XeWhen;
  * @version $Id$
  * @since 0.6
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @checkstyle ClassFanOutComplexityCheck (500 lines)
  */
 @SuppressWarnings("PMD.ExcessiveImports")
 public final class RsPage extends RsWrap {
 
     /**
      * Ctor.
-     * @param props Properties
+     * @param farm Farm
      * @param xsl XSL
      * @param req Request
      * @param src Source
@@ -73,28 +75,28 @@ public final class RsPage extends RsWrap {
      * @checkstyle ParameterNumberCheck (5 lines)
      */
     @SafeVarargs
-    public RsPage(final Properties props, final String xsl,
+    public RsPage(final Farm farm, final String xsl,
         final Request req, final Scalar<XeSource>... src) throws IOException {
-        this(props, xsl, req, Arrays.asList(src));
+        this(farm, xsl, req, Arrays.asList(src));
     }
 
     /**
      * Ctor.
-     * @param props Properties
+     * @param farm Farm
      * @param xsl XSL
      * @param req Request
      * @param src Source
      * @throws IOException If fails
      * @checkstyle ParameterNumberCheck (5 lines)
      */
-    public RsPage(final Properties props, final String xsl, final Request req,
+    public RsPage(final Farm farm, final String xsl, final Request req,
         final Iterable<Scalar<XeSource>> src) throws IOException {
-        super(RsPage.make(props, xsl, req, src));
+        super(RsPage.make(farm, xsl, req, src));
     }
 
     /**
      * Make it.
-     * @param props Properties
+     * @param farm Farm
      * @param xsl XSL
      * @param req Request
      * @param src Source
@@ -103,9 +105,10 @@ public final class RsPage extends RsWrap {
      * @checkstyle ParameterNumberCheck (5 lines)
      */
     @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
-    private static Response make(final Properties props, final String xsl,
+    private static Response make(final Farm farm, final String xsl,
         final Request req, final Iterable<Scalar<XeSource>> src)
         throws IOException {
+        final Props props = new Props(farm);
         final Response raw = new RsXembly(
             new XeStylesheet(xsl),
             new XeAppend(
@@ -131,7 +134,7 @@ public final class RsPage extends RsWrap {
                     new XeChain(
                         new XeGithubLink(
                             req,
-                            props.getProperty("github.app.client_id", "")
+                            props.get("//github/app.client_id", "")
                         )
                     )
                 ),
@@ -146,15 +149,15 @@ public final class RsPage extends RsWrap {
                     "version",
                     new XeAppend(
                         "name",
-                        props.getProperty("build.version", "1.0-SNAPSHOT")
+                        props.get("//build/version", "1.0-SNAPSHOT")
                     ),
                     new XeAppend(
                         "revision",
-                        props.getProperty("build.revision", "ffffff")
+                        props.get("//build/revision", "ffffff")
                     ),
                     new XeAppend(
                         "date",
-                        props.getProperty("build.date", "2017-01-01")
+                        props.get("//build/date", "2017-01-01")
                     )
                 ),
                 new XeAppend("datum", Xocument.VERSION),

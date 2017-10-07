@@ -17,18 +17,18 @@
 package com.zerocracy.tk;
 
 import com.jcabi.log.Logger;
+import com.zerocracy.farm.props.Props;
 import com.zerocracy.jstk.Farm;
-import com.zerocracy.pmo.Pmo;
 import com.zerocracy.tk.profile.TkAgenda;
 import com.zerocracy.tk.profile.TkAwards;
 import com.zerocracy.tk.profile.TkProfile;
 import com.zerocracy.tk.project.TkArtifact;
 import com.zerocracy.tk.project.TkBadge;
+import com.zerocracy.tk.project.TkFootprint;
 import com.zerocracy.tk.project.TkProject;
 import com.zerocracy.tk.project.TkXml;
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.util.Properties;
 import org.apache.commons.text.StringEscapeUtils;
 import org.cactoos.io.BytesOf;
 import org.cactoos.list.ListOf;
@@ -75,13 +75,23 @@ public final class TkApp extends TkWrap {
 
     /**
      * Ctor.
-     * @param props Properties
      * @param farm The farm
+     * @param forks Additional forks
+     * @throws IOException If fails
+     */
+    public TkApp(final Farm farm, final FkRegex... forks) throws IOException {
+        this(farm, new Props(farm), forks);
+    }
+
+    /**
+     * Ctor.
+     * @param farm The farm
+     * @param props Properties
      * @param forks Additional forks
      * @throws IOException If fails
      * @checkstyle MethodLengthCheck (500 lines)
      */
-    public TkApp(final Properties props, final Farm farm,
+    public TkApp(final Farm farm, final Props props,
         final FkRegex... forks) throws IOException {
         super(
             new TkFallback(
@@ -97,7 +107,7 @@ public final class TkApp extends TkWrap {
                                                     new Concat<>(
                                                         new ListOf<>(forks),
                                                         new ListOf<>(
-                                                            new FkRegex("/", new TkIndex(props)),
+                                                            new FkRegex("/", new TkIndex(farm)),
                                                             new FkRegex(
                                                                 "/org/takes/.+\\.xsl",
                                                                 new TkClasspath()
@@ -123,13 +133,13 @@ public final class TkApp extends TkWrap {
                                                                 new TkRedirect(
                                                                     new Href("https://slack.com/oauth/authorize")
                                                                         .with("scope", "bot")
-                                                                        .with("client_id", props.getProperty("slack.client_id", ""))
+                                                                        .with("client_id", props.get("//slack/client_id", ""))
                                                                         .toString()
                                                                 )
                                                             ),
                                                             new FkRegex(
                                                                 "/board",
-                                                                new TkBoard(props, farm)
+                                                                new TkBoard(farm)
                                                             ),
                                                             new FkRegex(
                                                                 "/me",
@@ -143,11 +153,15 @@ public final class TkApp extends TkWrap {
                                                             ),
                                                             new FkRegex(
                                                                 "/p/([A-Z0-9]{9})",
-                                                                new TkProject(props, farm)
+                                                                new TkProject(farm)
+                                                            ),
+                                                            new FkRegex(
+                                                                "/footprint/([A-Z0-9]{9})",
+                                                                new TkFootprint(farm)
                                                             ),
                                                             new FkRegex(
                                                                 "/a/([A-Z0-9]{9})",
-                                                                new TkArtifact(props, farm)
+                                                                new TkArtifact(farm)
                                                             ),
                                                             new FkRegex(
                                                                 "/xml/([A-Z0-9]{9})",
@@ -155,22 +169,22 @@ public final class TkApp extends TkWrap {
                                                             ),
                                                             new FkRegex(
                                                                 "/u/([a-zA-Z0-9-]+)/awards",
-                                                                new TkAwards(props, new Pmo(farm))
+                                                                new TkAwards(farm)
                                                             ),
                                                             new FkRegex(
                                                                 "/u/([a-zA-Z0-9-]+)/agenda",
-                                                                new TkAgenda(props, new Pmo(farm))
+                                                                new TkAgenda(farm)
                                                             ),
                                                             new FkRegex(
                                                                 "/u/([a-zA-Z0-9-]+)",
-                                                                new TkProfile(props, new Pmo(farm))
+                                                                new TkProfile(farm)
                                                             )
                                                         )
                                                     )
                                                 )
                                             )
                                         ),
-                                        props
+                                        farm
                                     )
                                 )
                             )
@@ -178,9 +192,9 @@ public final class TkApp extends TkWrap {
                     ),
                     String.format(
                         "X-Zerocracy-Version: %s %s %s",
-                        props.getProperty("build.version"),
-                        props.getProperty("build.revision"),
-                        props.getProperty("build.date")
+                        props.get("//build/version", ""),
+                        props.get("//build/revision", ""),
+                        props.get("//build/date", "")
                     ),
                     "Vary: Cookie"
                 ),
@@ -216,11 +230,11 @@ public final class TkApp extends TkWrap {
                                     ),
                                     new RsVelocity.Pair(
                                         "version",
-                                        props.getProperty("build.version")
+                                        props.get("//build/version")
                                     ),
                                     new RsVelocity.Pair(
                                         "revision",
-                                        props.getProperty("build.revision")
+                                        props.get("//build/revision")
                                     )
                                 ),
                                 "text/html"

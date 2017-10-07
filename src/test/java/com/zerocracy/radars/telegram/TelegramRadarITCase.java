@@ -67,13 +67,9 @@ public final class TelegramRadarITCase {
     @Test
     @Ignore
     public void connectToTelegramTest() throws Exception {
-        final Map<Long, TmSession> sessions = new ConcurrentHashMap<>();
-        try (
-            final TelegramRadar rdr = new TelegramRadar(
-                new FkFarm(),
-                sessions
-            )
-        ) {
+        final Map<Long, TmSession> sessions = new ConcurrentHashMap<>(0);
+        try (final TelegramRadar rdr =
+            new TelegramRadar(new FkFarm(), sessions)) {
             rdr.start(
                 TelegramRadarITCase.TOKEN,
                 TelegramRadarITCase.NAME
