@@ -23,6 +23,7 @@ import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.Footprint;
 import com.zerocracy.tk.RsPage;
 import java.io.IOException;
+import java.util.Map;
 import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
@@ -74,13 +75,12 @@ public final class TkFootprint implements TkRegex {
                                 .limit(50),
                             doc -> new XeAppend(
                                 "claim",
-                                new XeAppend(
-                                    "created",
-                                    doc.get("created").toString()
-                                ),
-                                new XeAppend(
-                                    "type",
-                                    doc.get("type").toString()
+                                new XeTransform<Map.Entry<String, Object>>(
+                                    doc.entrySet(),
+                                    ent -> new XeAppend(
+                                        ent.getKey(),
+                                        ent.getValue().toString()
+                                    )
                                 )
                             )
                         )

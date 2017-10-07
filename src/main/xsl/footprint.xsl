@@ -40,6 +40,9 @@ SOFTWARE.
           <th>
             <xsl:text>Type</xsl:text>
           </th>
+          <th>
+            <xsl:text>Details</xsl:text>
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -54,6 +57,18 @@ SOFTWARE.
       </td>
       <td>
         <xsl:value-of select="type"/>
+      </td>
+      <td>
+        <xsl:for-each select="*[not(name() = 'type') and not(name() = 'created')]">
+          <xsl:if test="position() &gt; 1">
+            <xsl:text>; </xsl:text>
+          </xsl:if>
+          <xsl:value-of select="name()"/>
+          <xsl:text>:</xsl:text>
+          <code>
+            <xsl:value-of select="."/>
+          </code>
+        </xsl:for-each>
       </td>
     </tr>
   </xsl:template>
