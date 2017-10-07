@@ -19,10 +19,13 @@ package com.zerocracy.bundles.not_assign_task_to_reporter
 import com.jcabi.github.Github
 import com.jcabi.github.Repos
 import com.jcabi.xml.XML
+import com.zerocracy.entry.ExtGithub
+import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 
 def exec(Project project, XML xml) {
-  Github github = binding.variables.github
+  Farm farm = binding.variables.farm
+  Github github = new ExtGithub(farm).value()
   def repo = github.repos().create(new Repos.RepoCreate('farm', false))
   repo.issues().create('BundlesTest failing on master', '')
 }

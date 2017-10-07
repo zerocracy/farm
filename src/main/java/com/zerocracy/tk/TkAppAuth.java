@@ -16,7 +16,9 @@
  */
 package com.zerocracy.tk;
 
-import java.util.Properties;
+import com.zerocracy.farm.props.Props;
+import com.zerocracy.jstk.Farm;
+import java.io.IOException;
 import java.util.regex.Pattern;
 import org.takes.Take;
 import org.takes.facets.auth.PsByFlag;
@@ -49,20 +51,24 @@ final class TkAppAuth extends TkWrap {
     /**
      * Ctor.
      * @param take Take
-     * @param props Properties
+     * @param farm Farm
+     * @throws IOException If fails
      */
-    TkAppAuth(final Take take, final Properties props) {
-        super(TkAppAuth.make(take, props));
+    TkAppAuth(final Take take, final Farm farm) throws IOException {
+        super(TkAppAuth.make(take, farm));
     }
 
     /**
      * Authenticated.
      * @param take Takes
-     * @param props Properties
+     * @param farm Farm
      * @return Authenticated takes
+     * @throws IOException If fails
      */
     @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-    private static Take make(final Take take, final Properties props) {
+    private static Take make(final Take take, final Farm farm)
+        throws IOException {
+        final Props props = new Props(farm);
         return new TkAuth(
             new TkFork(
                 new FkParams(
@@ -77,8 +83,8 @@ final class TkAppAuth extends TkWrap {
                     new PsByFlag.Pair(
                         PsGithub.class.getSimpleName(),
                         new PsGithub(
-                            props.getProperty("github.app.client_id", ""),
-                            props.getProperty("github.app.client_secret", "")
+                            props.get("//github/app.client_id", ""),
+                            props.get("//github/app.client_secret", "")
                         )
                     ),
                     new PsByFlag.Pair(
@@ -91,7 +97,7 @@ final class TkAppAuth extends TkWrap {
                         new CcHex(
                             new CcXor(
                                 new CcSalted(new CcCompact()),
-                                props.getProperty("xor.key", "")
+                                props.get("//security/xor.key", "")
                             )
                         )
                     )

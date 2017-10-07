@@ -18,12 +18,13 @@ package com.zerocracy.entry;
 
 import com.jcabi.github.Github;
 import com.jcabi.github.RtGithub;
-import java.io.IOException;
-import java.util.Properties;
-import lombok.EqualsAndHashCode;
+import com.jcabi.github.mock.MkGithub;
+import com.zerocracy.farm.props.Props;
+import com.zerocracy.jstk.Farm;
 import org.cactoos.Scalar;
-import org.cactoos.scalar.IoCheckedScalar;
-import org.cactoos.scalar.StickyScalar;
+import org.cactoos.func.StickyFunc;
+import org.cactoos.func.SyncFunc;
+import org.cactoos.func.UncheckedFunc;
 
 /**
  * GitHub server connector.
@@ -32,27 +33,48 @@ import org.cactoos.scalar.StickyScalar;
  * @version $Id$
  * @since 0.7
  */
-@EqualsAndHashCode
-final class ExtGithub implements Scalar<Github> {
+public final class ExtGithub implements Scalar<Github> {
 
     /**
-     * The value.
+     * The singleton.
      */
-    private final IoCheckedScalar<Github> self = new IoCheckedScalar<>(
-        new StickyScalar<>(
-            () -> {
-                final Properties props = new ExtProperties().value();
-                return new RtGithub(
-                    props.getProperty("github.0crat.login"),
-                    props.getProperty("github.0crat.password")
-                );
-            }
-        )
-    );
+    private static final UncheckedFunc<Farm, Github> SINGLETON =
+        new UncheckedFunc<>(
+            new SyncFunc<>(
+                new StickyFunc<>(
+                    frm -> {
+                        final Props props = new Props(frm);
+                        final Github github;
+                        if (props.has("//testing")) {
+                            github = new MkGithub().relogin("test");
+                        } else {
+                            github = new RtGithub(
+                                props.get("//github//zerocrat.login"),
+                                props.get("//github//zerocrat.password")
+                            );
+                        }
+                        return github;
+                    }
+                )
+            )
+        );
+
+    /**
+     * The farm.
+     */
+    private final Farm farm;
+
+    /**
+     * Ctor.
+     * @param frm The farm
+     */
+    public ExtGithub(final Farm frm) {
+        this.farm = frm;
+    }
 
     @Override
-    public Github value() throws IOException {
-        return this.self.value();
+    public Github value() {
+        return ExtGithub.SINGLETON.apply(this.farm);
     }
 
 }

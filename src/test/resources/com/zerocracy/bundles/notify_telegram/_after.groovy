@@ -17,13 +17,16 @@
 package com.zerocracy.bundles.notify_telegram
 
 import com.jcabi.xml.XML
+import com.zerocracy.entry.ExtTelegram
+import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.radars.telegram.fake.FkTmSession
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
-  FkTmSession session = binding.variables.telegram.get(42L)
+  Farm farm = binding.variables.farm
+  FkTmSession session = new ExtTelegram(farm).value()[42L] as FkTmSession
   MatcherAssert.assertThat(
     'no responses',
     session.responses(),

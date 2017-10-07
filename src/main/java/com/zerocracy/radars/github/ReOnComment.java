@@ -60,7 +60,7 @@ public final class ReOnComment implements Reaction {
     private static final String DATE = "since";
 
     /**
-     * Dynamo attribute with the number of a comment already seen.
+     * Dynamo attribute with the cid of a comment already seen.
      */
     private static final String NUMBER = "comment-seen";
 

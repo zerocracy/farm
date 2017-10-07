@@ -16,15 +16,16 @@
  */
 package com.zerocracy.tk.profile;
 
+import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pmo.Agenda;
 import com.zerocracy.pmo.Awards;
 import com.zerocracy.pmo.People;
+import com.zerocracy.pmo.Pmo;
 import com.zerocracy.pmo.Projects;
 import com.zerocracy.tk.RqUser;
 import com.zerocracy.tk.RsPage;
 import java.io.IOException;
-import java.util.Properties;
 import org.cactoos.iterable.LengthOf;
 import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
@@ -45,35 +46,29 @@ import org.takes.rs.xe.XeWhen;
 public final class TkProfile implements TkRegex {
 
     /**
-     * Properties.
+     * Farm.
      */
-    private final Properties props;
-
-    /**
-     * PMO.
-     */
-    private final Project pmo;
+    private final Farm farm;
 
     /**
      * Ctor.
-     * @param pps Properties
-     * @param pkt Project
+     * @param frm Farm
      */
-    public TkProfile(final Properties pps, final Project pkt) {
-        this.props = pps;
-        this.pmo = pkt;
+    public TkProfile(final Farm frm) {
+        this.farm = frm;
     }
 
     @Override
     public Response act(final RqRegex req) throws IOException {
+        final Project pmo = new Pmo(this.farm);
         return new RsPage(
-            this.props,
+            this.farm,
             "/xsl/profile.xsl",
             req,
             () -> {
-                final String user = new RqUser(this.pmo, req).value();
-                final String login = new RqLogin(this.pmo, req).value();
-                final People people = new People(this.pmo).bootstrap();
+                final String user = new RqUser(pmo, req).value();
+                final String login = new RqLogin(pmo, req).value();
+                final People people = new People(pmo).bootstrap();
                 return new XeChain(
                     new XeAppend("owner", login),
                     new XeWhen(
@@ -99,7 +94,7 @@ public final class TkProfile implements TkRegex {
                                 "projects",
                                 new XeTransform<>(
                                     new Projects(
-                                        this.pmo, login
+                                        pmo, login
                                     ).bootstrap().iterate(),
                                     pkt -> new XeAppend("project", pkt)
                                 )
@@ -116,14 +111,14 @@ public final class TkProfile implements TkRegex {
                     new XeAppend(
                         "awards",
                         Integer.toString(
-                            new Awards(this.pmo, login).bootstrap().total()
+                            new Awards(pmo, login).bootstrap().total()
                         )
                     ),
                     new XeAppend(
                         "agenda",
                         Integer.toString(
                             new LengthOf(
-                                new Agenda(this.pmo, login).bootstrap().jobs()
+                                new Agenda(pmo, login).bootstrap().jobs()
                             ).value()
                         )
                     )

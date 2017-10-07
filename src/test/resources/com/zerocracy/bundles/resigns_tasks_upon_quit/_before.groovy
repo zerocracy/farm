@@ -16,17 +16,25 @@
  */
 package com.zerocracy.bundles.resigns_tasks_upon_quit
 
+import com.jcabi.github.Github
+import com.jcabi.github.Repos
 import com.jcabi.xml.XML
+import com.zerocracy.entry.ExtGithub
+import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
+import com.zerocracy.pm.ClaimOut
 
 def exec(Project project, XML xml) {
-//  Github github = binding.variables.github
-//  def repo = github.repos().create(new Repos.RepoCreate('test', false))
-//  def issue = repo.issues().create('title', 'body')
-//  new ClaimOut()
-//    .type('Quit a project')
-//    .token("job;gh:${repo.coordinates()}#${issue.number()}")
-//    .author('cmiranda')
-//    .param('project', project.toString())
-//    .postTo(project)
+  Farm farm = binding.variables.farm
+  Github github = new ExtGithub(farm).value()
+  def repo = github.repos().create(new Repos.RepoCreate('test', false))
+  def issue = repo.issues().create('title', 'body')
+  repo.issues().create('title 2', 'body 2')
+  repo.issues().create('title 3', 'body 3')
+  new ClaimOut()
+    .type('Quit a project')
+    .token("job;gh:${repo.coordinates()}#${issue.number()}")
+    .author('cmiranda')
+    .param('project', project.toString())
+    .postTo(project)
 }

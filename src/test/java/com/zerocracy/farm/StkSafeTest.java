@@ -21,8 +21,8 @@ import com.jcabi.xml.XMLDocument;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.SoftException;
 import com.zerocracy.jstk.Stakeholder;
+import com.zerocracy.jstk.fake.FkFarm;
 import com.zerocracy.jstk.fake.FkProject;
-import java.util.Properties;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -41,7 +41,7 @@ public final class StkSafeTest {
         Mockito.doThrow(new SoftException("")).when(stk).process(
             Mockito.any(Project.class), Mockito.any(XML.class)
         );
-        new StkSafe("hello", new Properties(), stk).process(
+        new StkSafe("hello", new FkFarm(), stk).process(
             new FkProject(),
             new XMLDocument(
                 "<claim id='1'><type>Hello</type><token>job;1</token></claim>"

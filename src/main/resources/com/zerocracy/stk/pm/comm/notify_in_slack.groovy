@@ -20,7 +20,10 @@ import com.jcabi.log.Logger
 import com.jcabi.xml.XML
 import com.ullink.slack.simpleslackapi.SlackChannel
 import com.ullink.slack.simpleslackapi.SlackSession
+import com.zerocracy.entry.ExtSlack
 import com.zerocracy.farm.Assume
+import com.zerocracy.farm.props.Props
+import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 
@@ -38,8 +41,9 @@ def exec(Project project, XML xml) {
   String message = claim.param('message').replaceAll(
     '\\[([^]]+)]\\(([^)]+)\\)', '<$2|$1>'
   )
-  if (binding.variables.properties.containsKey('testing')
-    && !binding.variables.properties.containsKey('slack_testing')) {
+  Farm farm = binding.variables.farm
+  Props props = new Props(farm)
+  if (props.has('//testing') && !binding.variables.slack_testing) {
     Logger.info(this, 'Message to Slack [%s]: %s', claim.token(), message)
     return
   }
@@ -79,7 +83,8 @@ def exec(Project project, XML xml) {
 }
 
 SlackSession session(String channel) {
-  for (SlackSession session : binding.variables.slack.values()) {
+  Farm farm = binding.variables.farm
+  for (SlackSession session : new ExtSlack(farm).value().values()) {
     if (belongsTo(session, channel)) {
       return session
     }
@@ -87,7 +92,7 @@ SlackSession session(String channel) {
   throw new IllegalArgumentException(
     String.format(
       'Can\'t find Slack session for channel "%s", among %d session(s)',
-      channel, binding.variables.slack.size()
+      channel, new ExtSlack(farm).value().size()
     )
   )
 }

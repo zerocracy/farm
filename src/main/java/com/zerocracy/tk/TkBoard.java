@@ -27,7 +27,6 @@ import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.Properties;
 import org.cactoos.func.FuncOf;
 import org.cactoos.scalar.And;
 import org.takes.Request;
@@ -49,29 +48,22 @@ import org.takes.rs.xe.XeTransform;
 public final class TkBoard implements Take {
 
     /**
-     * Properties.
-     */
-    private final Properties props;
-
-    /**
      * Farm.
      */
     private final Farm farm;
 
     /**
      * Ctor.
-     * @param pps Properties
      * @param frm Farm
      */
-    public TkBoard(final Properties pps, final Farm frm) {
-        this.props = pps;
+    public TkBoard(final Farm frm) {
         this.farm = frm;
     }
 
     @Override
     public Response act(final Request req) throws IOException {
         return new RsPage(
-            this.props,
+            this.farm,
             "/xsl/board.xsl",
             req,
             () -> {

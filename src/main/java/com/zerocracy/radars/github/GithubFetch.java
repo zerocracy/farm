@@ -20,6 +20,7 @@ import com.jcabi.github.Github;
 import com.jcabi.github.RtPagination;
 import com.jcabi.http.Request;
 import com.jcabi.http.response.RestResponse;
+import com.zerocracy.entry.ExtGithub;
 import com.zerocracy.jstk.Farm;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -49,6 +50,15 @@ public final class GithubFetch implements Runnable {
      * Reaction.
      */
     private final Reaction reaction;
+
+    /**
+     * Ctor.
+     * @param frm Farm
+     * @param rtn Reaction
+     */
+    public GithubFetch(final Farm frm, final Reaction rtn) {
+        this(frm, new ExtGithub(frm).value(), rtn);
+    }
 
     /**
      * Ctor.

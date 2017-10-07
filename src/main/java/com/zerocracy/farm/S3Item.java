@@ -166,8 +166,10 @@ final class S3Item implements Item {
         final Date local = new Date(
             Files.getLastModifiedTime(this.temp).toMillis()
         );
-        final Date remote = this.ocket.meta().getLastModified();
-        return !remote.equals(local);
+        final ObjectMetadata meta = this.ocket.meta();
+        final Date remote = meta.getLastModified();
+        return !remote.equals(local)
+            || this.temp.toFile().length() != meta.getContentLength();
     }
 
 }

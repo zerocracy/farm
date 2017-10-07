@@ -14,13 +14,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.assigns_performer
+package com.zerocracy.bundles.deducts_points_from_arc_upon_manual_assignment
 
 import com.jcabi.github.Event
 import com.jcabi.github.Github
 import com.jcabi.github.Issue
 import com.jcabi.github.Repos
 import com.jcabi.xml.XML
+import com.zerocracy.entry.ExtGithub
+import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.fake.FkFarm
 import com.zerocracy.jstk.Project
 import com.zerocracy.radars.github.RbOnAssign
@@ -28,26 +30,22 @@ import com.zerocracy.radars.github.RbOnAssign
 import javax.json.Json
 
 def exec(Project project, XML xml) {
-  Github github = binding.variables.github
+  Farm farm = binding.variables.farm
+  Github github = new ExtGithub(farm).value()
   def repo = github.repos().create(new Repos.RepoCreate('test', false))
-  def issue =
-      new Issue.Smart(repo.issues().create('hello, world', ''))
+  def issue = new Issue.Smart(repo.issues().create('hello, world', ''))
   issue.assign('carlosmiranda')
-  repo.issueEvents()
-    .create(Event.ASSIGNED, issue.number(), 'yegor256', com.google.common.base.Optional.absent())
+  repo.issueEvents().create(
+    Event.ASSIGNED, issue.number(), 'yegor256',
+    com.google.common.base.Optional.absent()
+  )
   new RbOnAssign().react(
-      new FkFarm(project),
-      github,
-      Json.createObjectBuilder().add(
-          'issue',
-          Json.createObjectBuilder().add('number', issue.number())
-      ).add(
-          'repository',
-          Json.createObjectBuilder()
-              .add('full_name', repo.coordinates().toString())
-      ).add(
-          'sender',
-          Json.createObjectBuilder().add('login', 'yegor256')
-      ).build()
+    new FkFarm(project),
+    github,
+    Json.createObjectBuilder()
+      .add('issue', Json.createObjectBuilder().add('number', issue.number()))
+      .add('repository', Json.createObjectBuilder().add('full_name', repo.coordinates().toString()))
+      .add('sender', Json.createObjectBuilder().add('login', 'yegor256'))
+      .build()
   )
 }

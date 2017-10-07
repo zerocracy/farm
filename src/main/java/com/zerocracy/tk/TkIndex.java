@@ -17,8 +17,8 @@
 package com.zerocracy.tk;
 
 import com.jcabi.log.Logger;
+import com.zerocracy.jstk.Farm;
 import java.io.IOException;
-import java.util.Properties;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
@@ -40,22 +40,22 @@ final class TkIndex implements Take {
     private static final long STARTED = System.currentTimeMillis();
 
     /**
-     * Properties.
+     * Farm.
      */
-    private final Properties properties;
+    private final Farm farm;
 
     /**
      * Ctor.
-     * @param props Props
+     * @param frm Farm
      */
-    TkIndex(final Properties props) {
-        this.properties = props;
+    TkIndex(final Farm frm) {
+        this.farm = frm;
     }
 
     @Override
     public Response act(final Request req) throws IOException {
         return new RsPage(
-            this.properties,
+            this.farm,
             "/xsl/index.xsl",
             req,
             () -> new XeAppend(

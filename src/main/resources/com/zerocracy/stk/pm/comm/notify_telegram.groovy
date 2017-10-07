@@ -17,7 +17,9 @@
 package com.zerocracy.stk.pm.comm
 
 import com.jcabi.xml.XML
+import com.zerocracy.entry.ExtTelegram
 import com.zerocracy.farm.Assume
+import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.radars.telegram.TmResponse
@@ -33,7 +35,8 @@ def exec(Project project, XML xml) {
   }
   String[] slices = parts[1].split(':')
   long channel = Long.parseLong(slices[0])
-  binding.variables.telegram[channel].reply(new Response(claim))
+  Farm farm = binding.variables.farm
+  new ExtTelegram(farm).value()[channel].reply(new Response(claim))
 }
 
 class Response implements TmResponse {

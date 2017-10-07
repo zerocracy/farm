@@ -85,7 +85,7 @@ final class Flush implements Proc<Item> {
         final ClaimIn claim = new ClaimIn(xml);
         final int total = this.brigade.process(this.project, xml);
         final Claims claims = new Claims(this.project);
-        claims.remove(claim.number());
+        claims.remove(claim.cid());
         final int left = claims.iterate().size();
         if (total == 0 && claim.hasToken()) {
             throw new IllegalStateException(
@@ -97,7 +97,7 @@ final class Flush implements Proc<Item> {
         }
         Logger.info(
             this, "Seen #%d:\"%s/%d/%d\" at \"%s\" by %d stk, %[ms]s [%s]",
-            idx, claim.type(), claim.number(), left,
+            idx, claim.type(), claim.cid(), left,
             this.project.toString(),
             total,
             System.currentTimeMillis() - start,

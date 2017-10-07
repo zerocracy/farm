@@ -17,9 +17,13 @@
 package com.zerocracy.entry;
 
 import com.ullink.slack.simpleslackapi.SlackSession;
+import com.zerocracy.jstk.Farm;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.cactoos.Scalar;
+import org.cactoos.func.StickyFunc;
+import org.cactoos.func.SyncFunc;
+import org.cactoos.func.UncheckedFunc;
 
 /**
  * Slack sessions.
@@ -28,23 +32,37 @@ import org.cactoos.Scalar;
  * @version $Id$
  * @since 0.11
  */
-final class ExtSlack implements Scalar<Map<String, SlackSession>> {
+public final class ExtSlack implements Scalar<Map<String, SlackSession>> {
 
     /**
-     * Sessions.
+     * The singleton.
      */
-    private final Map<String, SlackSession> map;
+    private static final
+        UncheckedFunc<Farm, Map<String, SlackSession>> SINGLETON =
+        new UncheckedFunc<>(
+            new SyncFunc<>(
+                new StickyFunc<>(
+                    frm -> new ConcurrentHashMap<>(0)
+                )
+            )
+        );
+
+    /**
+     * The farm.
+     */
+    private final Farm farm;
 
     /**
      * Ctor.
+     * @param frm The farm
      */
-    ExtSlack() {
-        this.map = new ConcurrentHashMap<>(0);
+    public ExtSlack(final Farm frm) {
+        this.farm = frm;
     }
 
     @Override
     public Map<String, SlackSession> value() {
-        return this.map;
+        return ExtSlack.SINGLETON.apply(this.farm);
     }
 
 }

@@ -19,26 +19,24 @@ package com.zerocracy.bundles.adds_new_pull_request_to_wbs
 import com.jcabi.github.Github
 import com.jcabi.github.Repos
 import com.jcabi.xml.XML
-import com.zerocracy.jstk.fake.FkFarm
+import com.zerocracy.entry.ExtGithub
+import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
+import com.zerocracy.jstk.fake.FkFarm
 import com.zerocracy.radars.github.RbOnPullRequest
 import javax.json.Json
 
 def exec(Project project, XML xml) {
-  Github github = binding.variables.github
+  Farm farm = binding.variables.farm
+  Github github = new ExtGithub(farm).value()
   def repo = github.repos().create(new Repos.RepoCreate('test', false))
   def pull = repo.pulls().create('New PR', 'master', 'master')
   new RbOnPullRequest().react(
     new FkFarm(project),
     github,
-    Json.createObjectBuilder().add(
-        'pull_request',
-        Json.createObjectBuilder()
-            .add('number', pull.number())
-    ).add(
-      'repository',
-      Json.createObjectBuilder()
-        .add('full_name', repo.coordinates().toString())
-    ).build()
+    Json.createObjectBuilder()
+      .add('pull_request', Json.createObjectBuilder().add('number', pull.number()))
+      .add('repository', Json.createObjectBuilder().add('full_name', repo.coordinates().toString()))
+      .build()
   )
 }

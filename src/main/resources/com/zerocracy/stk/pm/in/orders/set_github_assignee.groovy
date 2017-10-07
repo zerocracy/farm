@@ -20,7 +20,9 @@ import com.jcabi.github.Github
 import com.jcabi.github.Issue
 import com.jcabi.log.Logger
 import com.jcabi.xml.XML
+import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
+import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
@@ -33,7 +35,8 @@ def exec(Project project, XML xml) {
   if (!job.startsWith('gh:')) {
     return
   }
-  Github github = binding.variables.github
+  Farm farm = binding.variables.farm
+  Github github = new ExtGithub(farm).value()
   Issue issue = new Job.Issue(github, job)
   String login = claim.param('login')
   try {

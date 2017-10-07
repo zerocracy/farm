@@ -16,6 +16,7 @@
  */
 package com.zerocracy.farm;
 
+import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.farm.reactive.Brigade;
 import com.zerocracy.farm.reactive.RvFarm;
 import com.zerocracy.farm.reactive.StkGroovy;
@@ -24,8 +25,6 @@ import com.zerocracy.farm.sync.SyncFarm;
 import com.zerocracy.farm.uplinked.UplinkedFarm;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Stakeholder;
-import java.util.Map;
-import java.util.Properties;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
 import org.cactoos.Scalar;
@@ -56,34 +55,23 @@ public final class SmartFarm implements Scalar<Farm> {
     private final Scalar<Farm> self;
 
     /**
-     * Properties.
-     */
-    private final Properties props;
-
-    /**
-     * Deps.
-     */
-    private final Map<String, Object> deps;
-
-    /**
      * Ctor.
      * @param farm Original
-     * @param pps Properties
-     * @param dps Deps
      */
-    public SmartFarm(final Farm farm, final Properties pps,
-        final Map<String, Object> dps) {
-        this.props = pps;
-        this.deps = dps;
+    public SmartFarm(final Farm farm) {
         this.self = new SyncScalar<>(
             new StickyScalar<>(
-                () -> new RvFarm(
-                    new UplinkedFarm(
-                        new StrictFarm(
-                            new SyncFarm(farm)
-                        )
-                    ),
-                    new Brigade(this.stakeholders())
+                () -> new SyncFarm(
+                    new RvFarm(
+                        new PropsFarm(
+                            new UplinkedFarm(
+                                new StrictFarm(
+                                    new SyncFarm(farm)
+                                )
+                            )
+                        ),
+                        new Brigade(this.stakeholders())
+                    )
                 )
             )
         );
@@ -107,12 +95,11 @@ public final class SmartFarm implements Scalar<Farm> {
             ),
             path -> new StkSafe(
                 path,
-                this.props,
+                this.value(),
                 new StkGroovy(
                     new ResourceOf(path),
                     path,
                     new StickyMap<String, Object>(
-                        this.deps,
                         new MapEntry<>("farm", this.value())
                     )
                 )

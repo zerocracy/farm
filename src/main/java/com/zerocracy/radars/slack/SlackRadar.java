@@ -21,6 +21,7 @@ import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackChannelJoined;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.ullink.slack.simpleslackapi.impl.SlackSessionFactory;
+import com.zerocracy.entry.ExtSlack;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.pmo.Bots;
 import java.io.IOException;
@@ -54,19 +55,12 @@ public final class SlackRadar implements AutoCloseable {
     private final Reaction<SlackChannelJoined> joined;
 
     /**
-     * Slack sessions (Bot ID vs. Session).
-     */
-    private final Map<String, SlackSession> sessions;
-
-    /**
      * Ctor.
      * @param frm Farm
-     * @param map Sessions
      */
-    public SlackRadar(final Farm frm, final Map<String, SlackSession> map) {
+    public SlackRadar(final Farm frm) {
         this(
             frm,
-            map,
             new ReMailed(
                 new ReSafe(
                     new ReLogged<>(
@@ -89,17 +83,14 @@ public final class SlackRadar implements AutoCloseable {
     /**
      * Ctor.
      * @param frm Farm
-     * @param map Map of sessions
      * @param ptd Reaction on post
      */
-    SlackRadar(final Farm frm, final Map<String, SlackSession> map,
-        final Reaction<SlackMessagePosted> ptd) {
+    SlackRadar(final Farm frm, final Reaction<SlackMessagePosted> ptd) {
         this.farm = frm;
         this.posted = ptd;
         this.joined = new ReLogged<>(
             new ReInvite()
         );
-        this.sessions = map;
     }
 
     /**
@@ -111,9 +102,9 @@ public final class SlackRadar implements AutoCloseable {
             final Bots bots = new Bots(this.farm).bootstrap();
             final Collection<String> tokens = new HashSet<>(0);
             for (final Map.Entry<String, String> bot : bots.tokens()) {
-                if (!this.sessions.containsKey(bot.getKey())) {
+                if (!this.sessions().containsKey(bot.getKey())) {
                     try {
-                        this.sessions.put(
+                        this.sessions().put(
                             bot.getKey(),
                             this.start(bot.getValue())
                         );
@@ -127,9 +118,9 @@ public final class SlackRadar implements AutoCloseable {
                 }
                 tokens.add(bot.getKey());
             }
-            for (final String bid : this.sessions.keySet()) {
+            for (final String bid : this.sessions().keySet()) {
                 if (!tokens.contains(bid)) {
-                    this.sessions.remove(bid);
+                    this.sessions().remove(bid);
                 }
             }
         }
@@ -137,7 +128,7 @@ public final class SlackRadar implements AutoCloseable {
 
     @Override
     public void close() throws IOException {
-        for (final SlackSession session : this.sessions.values()) {
+        for (final SlackSession session : this.sessions().values()) {
             session.disconnect();
         }
     }
@@ -177,6 +168,14 @@ public final class SlackRadar implements AutoCloseable {
             }
         );
         return ssn;
+    }
+
+    /**
+     * Sessions.
+     * @return Sessions
+     */
+    private Map<String, SlackSession> sessions() {
+        return new ExtSlack(this.farm).value();
     }
 
 }

@@ -17,15 +17,20 @@
 package com.zerocracy.bundles.cancel_order
 
 import com.jcabi.github.Coordinates
+import com.jcabi.github.Github
 import com.jcabi.github.Issue
 import com.jcabi.github.Repo
 import com.jcabi.xml.XML
+import com.zerocracy.entry.ExtGithub
+import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
-  Repo repo = binding.variables.github.repos().get(new Coordinates.Simple('test/test'))
+  Farm farm = binding.variables.farm
+  Github github = new ExtGithub(farm).value()
+  Repo repo = github.repos().get(new Coordinates.Simple('test/test'))
   MatcherAssert.assertThat(
     new Issue.Smart(repo.issues().get(1)).assignee().login(),
     Matchers.equalTo('')

@@ -17,13 +17,13 @@
 package com.zerocracy.tk.profile;
 
 import com.jcabi.matchers.XhtmlMatchers;
+import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.fake.FkFarm;
 import com.zerocracy.pmo.Agenda;
 import com.zerocracy.pmo.Awards;
 import com.zerocracy.pmo.People;
 import com.zerocracy.tk.TkApp;
-import java.util.Properties;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 import org.takes.Take;
@@ -43,14 +43,14 @@ public final class TkProfileTest {
 
     @Test
     public void rendersHomePage() throws Exception {
-        final Farm farm = new FkFarm();
+        final Farm farm = new PropsFarm(new FkFarm());
         final String uid = "yegor256";
         final People people = new People(farm).bootstrap();
         people.touch(uid);
         people.invite(uid, "mentor");
         new Awards(farm, uid).bootstrap().add(1, "gh:test/test#1", "reason");
         new Agenda(farm, uid).bootstrap().add("gh:test/test#2", "#");
-        final Take take = new TkApp(new Properties(), farm);
+        final Take take = new TkApp(farm);
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
                 new RsPrint(

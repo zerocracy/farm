@@ -17,27 +17,20 @@
 package com.zerocracy.entry;
 
 import com.jcabi.aspects.Loggable;
-import com.jcabi.dynamo.Region;
-import com.jcabi.github.Github;
-import com.ullink.slack.simpleslackapi.SlackSession;
 import com.zerocracy.farm.S3Farm;
 import com.zerocracy.farm.SmartFarm;
+import com.zerocracy.farm.footprint.FtFarm;
+import com.zerocracy.farm.props.Props;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.radars.github.GithubRoutine;
 import com.zerocracy.radars.github.TkGithub;
 import com.zerocracy.radars.slack.SlackRadar;
 import com.zerocracy.radars.slack.TkSlack;
 import com.zerocracy.radars.telegram.TelegramRadar;
-import com.zerocracy.radars.telegram.TmSession;
 import com.zerocracy.tk.TkAlias;
 import com.zerocracy.tk.TkApp;
 import io.sentry.Sentry;
 import java.io.IOException;
-import java.util.AbstractMap;
-import java.util.Map;
-import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
-import org.cactoos.map.StickyMap;
 import org.takes.facets.fork.FkRegex;
 import org.takes.http.Exit;
 import org.takes.http.FtCli;
@@ -80,47 +73,32 @@ public final class Main {
      */
     @SuppressWarnings("unchecked")
     public void exec() throws IOException {
-        final Properties props = new ExtProperties().value();
-        if (props.containsKey("testing")) {
+        final Props props = new Props();
+        if (props.has("//testing")) {
             throw new IllegalStateException(
                 "Hey, we are in the testing mode!"
             );
         }
-        Sentry.init(props.getProperty("sentry.dsn", ""));
-        final Map<String, SlackSession> slack = new ExtSlack().value();
-        final Github github = new ExtGithub().value();
-        final Region dynamo = new ExtDynamo().value();
-        final Map<Long, TmSession> tms = new ConcurrentHashMap<>(0);
+        Sentry.init(props.get("//sentry/dsn", ""));
         final Farm farm = new SmartFarm(
-            new S3Farm(new ExtBucket().value()),
-            props,
-            new StickyMap<>(
-                new AbstractMap.SimpleEntry<>("properties", props),
-                new AbstractMap.SimpleEntry<>("slack", slack),
-                new AbstractMap.SimpleEntry<>("telegram", tms),
-                new AbstractMap.SimpleEntry<>("github", github)
-            )
+            new FtFarm(new S3Farm(new ExtBucket().value()))
         ).value();
         try (
-            final SlackRadar radar = new SlackRadar(farm, slack);
-            final TelegramRadar telegram = new TelegramRadar(farm, tms)
+            final SlackRadar radar = new SlackRadar(farm);
+            final TelegramRadar telegram = new TelegramRadar(farm)
         ) {
             radar.refresh();
             telegram.start(
-                props.getProperty("telegram.token"),
-                props.getProperty("telegram.username")
+                props.get("//telegram/token"),
+                props.get("//telegram/username")
             );
-            new GithubRoutine(github).start();
+            new GithubRoutine(farm).start();
             new FtCli(
                 new TkApp(
-                    props,
                     farm,
-                    new FkRegex("/slack", new TkSlack(farm, props, radar)),
+                    new FkRegex("/slack", new TkSlack(farm, radar)),
                     new FkRegex("/alias", new TkAlias(farm)),
-                    new FkRegex(
-                        "/ghook",
-                        new TkGithub(farm, github, dynamo, props)
-                    )
+                    new FkRegex("/ghook", new TkGithub(farm))
                 ),
                 this.arguments
             ).start(Exit.NEVER);

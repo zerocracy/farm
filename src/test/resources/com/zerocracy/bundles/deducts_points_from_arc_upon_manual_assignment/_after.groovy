@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.assigns_performer
+package com.zerocracy.bundles.deducts_points_from_arc_upon_manual_assignment
 
 import com.jcabi.xml.XML
 import com.zerocracy.jstk.Project

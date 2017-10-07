@@ -17,13 +17,14 @@
 package com.zerocracy.farm;
 
 import com.jcabi.xml.XML;
+import com.zerocracy.farm.props.Props;
+import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.SoftException;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
 import io.sentry.Sentry;
 import java.io.IOException;
-import java.util.Properties;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -45,14 +46,14 @@ import org.cactoos.text.TextOf;
 public final class StkSafe implements Stakeholder {
 
     /**
-     * Properties.
-     */
-    private final Properties props;
-
-    /**
      * Original stakeholder.
      */
     private final Stakeholder origin;
+
+    /**
+     * Farm.
+     */
+    private final Farm farm;
 
     /**
      * Stakeholder unique identifier.
@@ -62,13 +63,12 @@ public final class StkSafe implements Stakeholder {
     /**
      * Ctor.
      * @param sid Stakeholder identifier
-     * @param pps Properties
+     * @param frm Farm
      * @param stk Original stakeholder
      */
-    public StkSafe(final String sid, final Properties pps,
-        final Stakeholder stk) {
+    public StkSafe(final String sid, final Farm frm, final Stakeholder stk) {
         this.identifier = sid;
-        this.props = pps;
+        this.farm = frm;
         this.origin = stk;
     }
 
@@ -96,7 +96,7 @@ public final class StkSafe implements Stakeholder {
                     new IllegalArgumentException(
                         String.format(
                             "Claim #%d \"%s\" has no token in %s",
-                            claim.number(), claim.type(), this.identifier
+                            claim.cid(), claim.type(), this.identifier
                         ),
                         ex
                     )
@@ -104,7 +104,8 @@ public final class StkSafe implements Stakeholder {
             }
             // @checkstyle IllegalCatchCheck (1 line)
         } catch (final Throwable ex) {
-            if (this.props.containsKey("testing")) {
+            final Props props = new Props(this.farm);
+            if (props.has("//testing")) {
                 throw new IllegalStateException(ex);
             }
             if (claim.hasToken() && !"Notify".equals(claim.type())) {
@@ -117,9 +118,9 @@ public final class StkSafe implements Stakeholder {
                         " [here](https://github.com/zerocracy/datum):\n\n```\n",
                         new FormattedText(
                             "%s %s %s\n%s\n%s",
-                            this.props.getProperty("build.version"),
-                            this.props.getProperty("build.revision"),
-                            this.props.getProperty("build.date"),
+                            props.get("//build/version"),
+                            props.get("//build/revision"),
+                            props.get("//build/date"),
                             ExceptionUtils.getMessage(ex),
                             StringUtils.abbreviate(
                                 new TextOf(
@@ -139,7 +140,7 @@ public final class StkSafe implements Stakeholder {
                 new IllegalArgumentException(
                     String.format(
                         "Claim #%d in %s: type=\"%s\", id=\"%s\"",
-                        claim.number(), project, claim.type(),
+                        claim.cid(), project, claim.type(),
                         this.identifier
                     ),
                     ex

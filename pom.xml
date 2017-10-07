@@ -78,7 +78,7 @@ SOFTWARE.
     <dependency>
       <groupId>com.zerocracy</groupId>
       <artifactId>jstk</artifactId>
-      <version>0.14.8</version>
+      <version>0.15</version>
     </dependency>
     <dependency>
       <groupId>org.cactoos</groupId>
@@ -106,6 +106,21 @@ SOFTWARE.
           <artifactId>logback-classic</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.mongodb</groupId>
+      <artifactId>mongodb-driver</artifactId>
+      <version>3.5.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.mongodb</groupId>
+      <artifactId>mongodb-driver-core</artifactId>
+      <version>3.5.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.mongodb</groupId>
+      <artifactId>bson</artifactId>
+      <version>3.5.0</version>
     </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>
@@ -169,7 +184,7 @@ SOFTWARE.
     <dependency>
       <groupId>com.jcabi</groupId>
       <artifactId>jcabi-xml</artifactId>
-      <version>0.20.1</version>
+      <version>0.21</version>
     </dependency>
     <dependency>
       <groupId>com.jcabi.incubator</groupId>

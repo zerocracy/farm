@@ -17,8 +17,11 @@
 package com.zerocracy.stk.pmo.links
 
 import com.jcabi.github.Coordinates
+import com.jcabi.github.Github
 import com.jcabi.xml.XML
+import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
+import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Catalog
@@ -31,9 +34,9 @@ def exec(Project project, XML xml) {
   String rel = claim.param('rel')
   String href = claim.param('href')
   if ('github' == rel) {
-    binding.variables.github.repos().get(
-      new Coordinates.Simple(href)
-    ).stars().star()
+    Farm farm = binding.variables.farm
+    Github github = new ExtGithub(farm).value()
+    github.repos().get(new Coordinates.Simple(href)).stars().star()
   }
   new Catalog(project).link(pid, rel, href)
   claim.reply(

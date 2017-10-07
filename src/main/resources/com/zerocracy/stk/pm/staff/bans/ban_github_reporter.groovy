@@ -19,7 +19,9 @@ package com.zerocracy.stk.pm.scope.wbs
 import com.jcabi.github.Github
 import com.jcabi.github.Issue
 import com.jcabi.xml.XML
+import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
+import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.staff.Bans
@@ -32,7 +34,8 @@ def exec(Project project, XML xml) {
   if (!job.startsWith('gh:')) {
     return
   }
-  Github github = binding.variables.github
+  Farm farm = binding.variables.farm
+  Github github = new ExtGithub(farm).value()
   Issue.Smart issue = new Issue.Smart(new Job.Issue(github, job))
   String author = issue.author().login().toLowerCase(Locale.ENGLISH)
   new Bans(project).bootstrap()

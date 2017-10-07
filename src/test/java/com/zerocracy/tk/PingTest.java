@@ -16,11 +16,11 @@
  */
 package com.zerocracy.tk;
 
+import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.jstk.fake.FkFarm;
 import java.net.HttpURLConnection;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Properties;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -64,7 +64,7 @@ public final class PingTest {
 
     @Test
     public void rendersAllPossibleUrls() throws Exception {
-        final Take take = new TkApp(new Properties(), new FkFarm());
+        final Take take = new TkApp(new PropsFarm(new FkFarm()));
         MatcherAssert.assertThat(
             this.url,
             take.act(new RqFake("GET", this.url)),

@@ -20,9 +20,13 @@ import com.jcabi.s3.Bucket;
 import com.jcabi.s3.Region;
 import com.jcabi.s3.cached.CdRegion;
 import com.jcabi.s3.retry.ReRegion;
-import java.io.IOException;
-import java.util.Properties;
+import com.zerocracy.farm.props.Props;
+import com.zerocracy.farm.props.PropsFarm;
+import com.zerocracy.jstk.Farm;
 import org.cactoos.Scalar;
+import org.cactoos.func.StickyFunc;
+import org.cactoos.func.SyncFunc;
+import org.cactoos.func.UncheckedFunc;
 
 /**
  * S3 Bucket.
@@ -30,20 +34,55 @@ import org.cactoos.Scalar;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.11
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-final class ExtBucket implements Scalar<Bucket> {
+public final class ExtBucket implements Scalar<Bucket> {
 
-    @Override
-    public Bucket value() throws IOException {
-        final Properties props = new ExtProperties().value();
-        return new CdRegion(
-            new ReRegion(
-                new Region.Simple(
-                    props.getProperty("s3.key"),
-                    props.getProperty("s3.secret")
+    /**
+     * The singleton.
+     */
+    private static final UncheckedFunc<Farm, Bucket> SINGLETON =
+        new UncheckedFunc<>(
+            new SyncFunc<>(
+                new StickyFunc<>(
+                    frm -> {
+                        final Props props = new Props(frm);
+                        return new CdRegion(
+                            new ReRegion(
+                                new Region.Simple(
+                                    props.get("//s3/key"),
+                                    props.get("//s3/secret")
+                                )
+                            )
+                        ).bucket(props.get("//s3/bucket"));
+                    }
                 )
             )
-        ).bucket(props.getProperty("s3.bucket"));
+        );
+
+    /**
+     * The farm.
+     */
+    private final Farm farm;
+
+    /**
+     * Ctor.
+     */
+    public ExtBucket() {
+        this(new PropsFarm());
+    }
+
+    /**
+     * Ctor.
+     * @param frm The farm
+     */
+    public ExtBucket(final Farm frm) {
+        this.farm = frm;
+    }
+
+    @Override
+    public Bucket value() {
+        return ExtBucket.SINGLETON.apply(this.farm);
     }
 
 }

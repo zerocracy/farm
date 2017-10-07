@@ -113,7 +113,7 @@ public final class Claims {
                         return Long.compare(this.cid(left), this.cid(right));
                     }
                     private long cid(final XML xml) {
-                        return new ClaimIn(xml).number();
+                        return new ClaimIn(xml).cid();
                     }
                 },
                 new Xocument(item).nodes(

@@ -38,7 +38,7 @@ public interface TmRequest {
 
     /**
      * Request chat id.
-     * @return Id number
+     * @return Id cid
      */
     long chat();
 }

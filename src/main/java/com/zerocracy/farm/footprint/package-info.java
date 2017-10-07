@@ -14,32 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.entry;
-
-import java.io.IOException;
-import java.util.Properties;
-import org.cactoos.Scalar;
-import org.cactoos.io.ResourceOf;
-import org.cactoos.iterable.PropertiesOf;
 
 /**
- * Properties.
+ * Footprint farm.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.11
+ * @since 0.18
  */
-final class ExtProperties implements Scalar<Properties> {
-
-    @Override
-    public Properties value() throws IOException {
-        final Properties props = new PropertiesOf(
-            new ResourceOf("main.properties")
-        ).value();
-        if (this.getClass().getResource("/org/junit/Test.class") != null) {
-            props.setProperty("testing", "true");
-        }
-        return props;
-    }
-
-}
+package com.zerocracy.farm.footprint;

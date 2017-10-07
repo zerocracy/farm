@@ -16,14 +16,14 @@
  */
 package com.zerocracy.radars.github;
 
-import com.jcabi.dynamo.Region;
-import com.jcabi.github.Github;
+import com.zerocracy.entry.ExtDynamo;
+import com.zerocracy.entry.ExtGithub;
+import com.zerocracy.farm.props.Props;
 import com.zerocracy.jstk.Farm;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
-import java.util.Properties;
 import javax.json.Json;
 import javax.json.stream.JsonParsingException;
 import org.cactoos.func.UncheckedProc;
@@ -58,36 +58,35 @@ public final class TkGithub implements Take, Runnable {
     private final Farm farm;
 
     /**
-     * Github.
+     * Ctor.
+     * @param frm Farm
+     * @throws IOException If fails
      */
-    private final Github github;
+    public TkGithub(final Farm frm) throws IOException {
+        this(frm, new Props(frm));
+    }
 
     /**
      * Ctor.
      * @param frm Farm
-     * @param ghub Github
-     * @param dynamo DynamoDB
-     * @param props Properties
-     * @checkstyle ParameterNumberCheck (5 lines)
+     * @param props Props
+     * @throws IOException If fails
      */
-    public TkGithub(final Farm frm, final Github ghub, final Region dynamo,
-        final Properties props) {
+    public TkGithub(final Farm frm, final Props props) throws IOException {
         this(
             frm,
-            ghub,
             new RbLogged(
                 new RbSafe(
                     new RbByActions(
                         new RbOnComment(
                             new GithubFetch(
                                 frm,
-                                ghub,
                                 new ReLogged(
                                     new Reaction.Chain(
                                         new ReOnReason(
                                             "mention",
                                             new ReOnComment(
-                                                ghub,
+                                                new ExtGithub(frm).value(),
                                                 new ReSafe(
                                                     new ReNotMine(
                                                         new ReIfAddressed(
@@ -95,7 +94,8 @@ public final class TkGithub implements Take, Runnable {
                                                         )
                                                     )
                                                 ),
-                                                dynamo.table("0crat-github")
+                                                new ExtDynamo(frm).value()
+                                                    .table("0crat-github")
                                             )
                                         )
                                     )
@@ -129,11 +129,11 @@ public final class TkGithub implements Take, Runnable {
                     new RbByActions(new RbOnAssign(), "assigned"),
                     new RbByActions(new RbOnUnassign(), "unassigned"),
                     new RbTweet(
-                        dynamo.table("0crat-tweets"),
-                        props.getProperty("twitter.key"),
-                        props.getProperty("twitter.secret"),
-                        props.getProperty("twitter.token"),
-                        props.getProperty("twitter.tsecret")
+                        new ExtDynamo(frm).value().table("0crat-tweets"),
+                        props.get("//twitter/key"),
+                        props.get("//twitter/secret"),
+                        props.get("//twitter/token"),
+                        props.get("//twitter/tsecret")
                     )
                 )
             )
@@ -143,12 +143,10 @@ public final class TkGithub implements Take, Runnable {
     /**
      * Ctor.
      * @param frm Farm
-     * @param ghub Github
      * @param rbd Rebound
      */
-    public TkGithub(final Farm frm, final Github ghub, final Rebound rbd) {
+    public TkGithub(final Farm frm, final Rebound rbd) {
         this.farm = frm;
-        this.github = ghub;
         this.rebound = rbd;
     }
 
@@ -162,7 +160,7 @@ public final class TkGithub implements Take, Runnable {
                 new RsText(
                     this.rebound.react(
                         this.farm,
-                        this.github,
+                        new ExtGithub(this.farm).value(),
                         Json.createReader(
                             new ByteArrayInputStream(
                                 body.getBytes(StandardCharsets.UTF_8)
@@ -183,7 +181,7 @@ public final class TkGithub implements Take, Runnable {
     @Override
     public void run() {
         new UncheckedProc<>(
-            new AcceptInvitations(this.github)
+            new AcceptInvitations(new ExtGithub(this.farm).value())
         ).exec(true);
     }
 }

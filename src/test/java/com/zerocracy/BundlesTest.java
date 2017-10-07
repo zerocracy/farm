@@ -17,8 +17,6 @@
 package com.zerocracy;
 
 import com.jcabi.aspects.Tv;
-import com.jcabi.github.mock.MkGithub;
-import com.ullink.slack.simpleslackapi.SlackSession;
 import com.zerocracy.farm.SmartFarm;
 import com.zerocracy.farm.reactive.StkGroovy;
 import com.zerocracy.jstk.Farm;
@@ -27,7 +25,6 @@ import com.zerocracy.jstk.fake.FkFarm;
 import com.zerocracy.jstk.fake.FkProject;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
-import com.zerocracy.radars.telegram.TmSession;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileVisitOption;
@@ -36,10 +33,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import org.apache.log4j.FileAppender;
@@ -54,7 +49,6 @@ import org.cactoos.iterable.Endless;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Limited;
 import org.cactoos.iterable.Mapped;
-import org.cactoos.iterable.PropertiesOf;
 import org.cactoos.iterable.Sorted;
 import org.cactoos.list.StickyList;
 import org.cactoos.map.MapEntry;
@@ -150,20 +144,11 @@ public final class BundlesTest {
 
     @Test
     public void oneBundleWorksFine() throws Exception {
-        final Properties props = new PropertiesOf(
-            new MapEntry<>("testing", "true")
-        ).value();
-        final Map<String, Object> deps = new StickyMap<String, Object>(
-            new MapEntry<>("github", new MkGithub("test")),
-            new MapEntry<>("slack", new HashMap<String, SlackSession>(0)),
-            new MapEntry<>("telegram", new HashMap<Long, TmSession>(0)),
-            new MapEntry<>("properties", props)
-        );
         final Farm farm = new SmartFarm(
             new FkFarm(
-                (Func<String, Project>) pid -> new FkProject(this.home, pid)
-            ),
-            props, deps
+                (Func<String, Project>) pid -> new FkProject(this.home, pid),
+                this.home.toString()
+            )
         ).value();
         final Project project = farm.find(
             String.format(
@@ -189,7 +174,7 @@ public final class BundlesTest {
             }
         ).value();
         final Map<String, Object> gdeps = new StickyMap<String, Object>(
-            deps, new MapEntry<>("farm", farm)
+            new MapEntry<>("farm", farm)
         );
         new StkGroovy(
             new ResourceOf(
