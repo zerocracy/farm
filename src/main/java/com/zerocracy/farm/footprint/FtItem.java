@@ -93,12 +93,12 @@ final class FtItem implements Item {
         this.origin.close();
         final XML before = FtItem.claims(this.temp);
         final Footprint footprint = new Footprint(this.mongo, this.pid);
-        for (final XML claim : before.nodes("//claim")) {
+        for (final XML claim : before.nodes("//claim[type!='Ping']")) {
             if (!FtItem.exists(after, claim)) {
                 footprint.close(claim);
             }
         }
-        for (final XML claim : after.nodes("//claim")) {
+        for (final XML claim : after.nodes("//claim[type!='Ping' ]")) {
             if (!FtItem.exists(before, claim)) {
                 footprint.open(claim);
             }
