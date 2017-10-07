@@ -25,6 +25,13 @@ SOFTWARE.
     </title>
   </xsl:template>
   <xsl:template match="page" mode="inner">
+    <p>
+      <xsl:text>Footprint at </xsl:text>
+      <a href="/p/{project}">
+        <xsl:value-of select="project"/>
+      </a>
+      <xsl:text>.</xsl:text>
+    </p>
     <xsl:apply-templates select="claims"/>
   </xsl:template>
   <xsl:template match="claims">

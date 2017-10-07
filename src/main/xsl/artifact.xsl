@@ -33,6 +33,7 @@ SOFTWARE.
       <a href="/p/{project}">
         <xsl:value-of select="project"/>
       </a>
+      <xsl:text>.</xsl:text>
     </p>
     <p>
       <xsl:text>Please, use Google Chrome browser to see the document correctly.</xsl:text>
