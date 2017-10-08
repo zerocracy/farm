@@ -14,42 +14,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.cost
+package com.zerocracy.bundles.no_awards_for_pr
 
 import com.jcabi.github.Github
-import com.jcabi.github.Issue
+import com.jcabi.github.Repos
 import com.jcabi.xml.XML
 import com.zerocracy.entry.ExtGithub
-import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
-import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
-import com.zerocracy.pm.staff.Roles
-import com.zerocracy.radars.github.Job
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Job was added to WBS')
-  ClaimIn claim = new ClaimIn(xml)
-  String job = claim.param('job')
-  if (!job.startsWith('gh:')) {
-    return
-  }
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
-  Issue.Smart issue = new Issue.Smart(new Job.Issue(github, job))
-  if (issue.pull) {
-    return
-  }
-  String author = issue.author().login().toLowerCase(Locale.ENGLISH)
-  Roles roles = new Roles(project).bootstrap()
-  if (roles.hasAnyRole(author)) {
-    new ClaimOut()
-      .type('Make payment')
-      .param('job', job)
-      .param('login', author)
-      .param('reason', 'Bug was reported')
-      .param('minutes', 15)
-      .postTo(project)
-  }
+  def repo = github.repos().create(new Repos.RepoCreate('test', false))
+  repo.pulls().create('PR', 'fixes', 'master')
 }
