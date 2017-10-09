@@ -26,7 +26,6 @@ import com.zerocracy.pmo.People;
 import com.zerocracy.pmo.Pmo;
 import com.zerocracy.tk.TkApp;
 import org.hamcrest.MatcherAssert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.takes.Take;
 import org.takes.rq.RqFake;
@@ -49,7 +48,6 @@ import org.takes.rs.RsPrint;
 public final class TkFootprintTest {
 
     @Test
-    @Ignore
     public void rendersListOfClaims() throws Exception {
         final Farm farm = new PropsFarm(new FkFarm());
         final Catalog catalog = new Catalog(new Pmo(farm)).bootstrap();
