@@ -20,10 +20,9 @@ import com.jcabi.log.Logger;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import lombok.EqualsAndHashCode;
 
 /**
@@ -43,17 +42,26 @@ public final class SyncProject implements Project {
     private final Project origin;
 
     /**
-     * Striped.
+     * Lock.
      */
-    private final Map<String, Semaphore> semaphores;
+    private final Lock lock;
 
     /**
      * Ctor.
      * @param pkt Project
      */
     public SyncProject(final Project pkt) {
+        this(pkt, new ReentrantLock());
+    }
+
+    /**
+     * Ctor.
+     * @param pkt Project
+     * @param lck Lock
+     */
+    public SyncProject(final Project pkt, final Lock lck) {
         this.origin = pkt;
-        this.semaphores = new ConcurrentHashMap<>(0);
+        this.lock = lck;
     }
 
     @Override
@@ -64,18 +72,14 @@ public final class SyncProject implements Project {
     @Override
     public Item acq(final String file) throws IOException {
         final long start = System.currentTimeMillis();
-        final Semaphore semaphore = this.semaphores.computeIfAbsent(
-            file, s -> new Semaphore(1, true)
-        );
         try {
             // @checkstyle MagicNumber (1 line)
-            if (!semaphore.tryAcquire(60L, TimeUnit.SECONDS)) {
+            if (!this.lock.tryLock(5L, TimeUnit.MINUTES)) {
                 throw new IllegalStateException(
                     Logger.format(
-                        "Failed to acquire \"%s\" in \"%s\" in %[ms]s (%d)",
+                        "Failed to acquire \"%s\" in \"%s\" in %[ms]s",
                         file, this.origin,
-                        System.currentTimeMillis() - start,
-                        this.semaphores.size()
+                        System.currentTimeMillis() - start
                     )
                 );
             }
@@ -83,6 +87,6 @@ public final class SyncProject implements Project {
             Thread.currentThread().interrupt();
             throw new IllegalStateException(ex);
         }
-        return new SyncItem(this.origin.acq(file), semaphore);
+        return new SyncItem(this.origin.acq(file), this.lock);
     }
 }

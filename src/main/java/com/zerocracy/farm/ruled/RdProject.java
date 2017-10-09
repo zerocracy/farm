@@ -37,17 +37,11 @@ final class RdProject implements Project {
     private final Project origin;
 
     /**
-     * Session.
-     */
-    private final RdSession session;
-
-    /**
      * Ctor.
      * @param pkt Project
      */
     RdProject(final Project pkt) {
         this.origin = pkt;
-        this.session = new RdSession(this, pkt);
     }
 
     @Override
@@ -57,11 +51,9 @@ final class RdProject implements Project {
 
     @Override
     public Item acq(final String file) throws IOException {
-        final Item item;
-        if ("claims.xml".equals(file)) {
-            item = this.origin.acq(file);
-        } else {
-            item = new RdItem(this.session, file);
+        Item item = this.origin.acq(file);
+        if (!"claims.xml".equals(file)) {
+            item = new RdItem(this.origin, item);
         }
         return item;
     }

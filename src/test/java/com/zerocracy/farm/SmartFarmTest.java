@@ -21,14 +21,13 @@ import com.jcabi.s3.fake.FkBucket;
 import com.zerocracy.RunsInThreads;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
-import com.zerocracy.pm.in.Orders;
+import com.zerocracy.pm.cost.Boosts;
 import com.zerocracy.pm.scope.Wbs;
 import java.nio.file.Files;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.Scalar;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -42,7 +41,6 @@ import org.junit.Test;
 public final class SmartFarmTest {
 
     @Test
-    @Ignore
     public void worksInManyThreads() throws Exception {
         final Bucket bucket = new FkBucket(
             Files.createTempDirectory("").toFile(),
@@ -56,9 +54,9 @@ public final class SmartFarmTest {
                     "gh:test/test#%d", inc.incrementAndGet()
                 );
                 new Wbs(project).bootstrap().add(job);
-                new Orders(project).bootstrap().assign(job, "yegor", "reason");
+                new Boosts(project).bootstrap().boost(job, 1);
                 new Wbs(project).bootstrap().remove(job);
-                return !new Orders(project).assigned(job);
+                return new Boosts(project).factor(job) == 2;
             },
             new RunsInThreads<>(new AtomicInteger())
         );

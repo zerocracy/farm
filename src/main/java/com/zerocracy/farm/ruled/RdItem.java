@@ -17,8 +17,14 @@
 package com.zerocracy.farm.ruled;
 
 import com.zerocracy.jstk.Item;
+import com.zerocracy.jstk.Project;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.FileTime;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import lombok.EqualsAndHashCode;
 
 /**
@@ -29,42 +35,94 @@ import lombok.EqualsAndHashCode;
  * @since 0.17
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@EqualsAndHashCode(of = "file")
+@EqualsAndHashCode(of = "origin")
 final class RdItem implements Item {
 
     /**
-     * Session.
+     * Original item.
      */
-    private final RdSession session;
+    private final Item origin;
 
     /**
-     * File name.
+     * Project.
      */
-    private final String file;
+    private final Project project;
+
+    /**
+     * Initial modification time.
+     */
+    private final AtomicReference<FileTime> time;
+
+    /**
+     * Initial length.
+     */
+    private final AtomicReference<Long> length;
 
     /**
      * Ctor.
-     * @param ssn Session
-     * @param name The name
+     * @param pkt Project
+     * @param item Item
      */
-    RdItem(final RdSession ssn, final String name) {
-        this.session = ssn;
-        this.file = name;
+    RdItem(final Project pkt, final Item item) {
+        this.origin = item;
+        this.project = pkt;
+        this.time = new AtomicReference<>(null);
+        this.length = new AtomicReference<>(0L);
     }
 
     @Override
     public String toString() {
-        return this.file;
+        return this.origin.toString();
     }
 
     @Override
     public Path path() throws IOException {
-        return this.session.acquire(this.file);
+        final Path path = this.origin.path();
+        if (Files.exists(path)) {
+            this.time.compareAndSet(null, Files.getLastModifiedTime(path));
+            this.length.compareAndSet(0L, path.toFile().length());
+        }
+        return path;
     }
 
     @Override
     public void close() throws IOException {
-        this.session.release(this.file);
+        final Path path = this.path();
+        final String dirty = this.dirty();
+        if (!dirty.isEmpty()) {
+            new RdAuto(this.project, path, dirty).propagate();
+            new RdRules(this.project, path, dirty).validate();
+        }
+        this.origin.close();
+    }
+
+    /**
+     * Is it dirty?
+     * @return Some text if it's dirty
+     * @throws IOException If fails
+     */
+    private String dirty() throws IOException {
+        final Path path = this.path();
+        final List<String> dirty = new LinkedList<>();
+        if (Files.exists(path) && path.toFile().length() > 0L) {
+            if (!Files.getLastModifiedTime(path).equals(this.time.get())) {
+                dirty.add(
+                    String.format(
+                        "Time:%s!=%s",
+                        Files.getLastModifiedTime(path), this.time.get()
+                    )
+                );
+            }
+            if (path.toFile().length() != this.length.get()) {
+                dirty.add(
+                    String.format(
+                        "Length:%s!=%s",
+                        path.toFile().length(), this.length.get()
+                    )
+                );
+            }
+        }
+        return String.join("; ", dirty);
     }
 
 }

@@ -104,9 +104,10 @@ final class RdRules {
             )
         ).iterate();
         new UncheckedScalar<>(new And(xsls, this::check)).value();
-        Logger.info(
-            this, "%s, %d XSLs confirm consistency",
-            this.reason, new LengthOf(xsls).value()
+        Logger.debug(
+            this, "%d XSLs confirm consistency in %s after changes in %s: %s",
+            new LengthOf(xsls).value(), this.project,
+            this.path.getFileName(), this.reason
         );
     }
 

@@ -19,7 +19,7 @@ package com.zerocracy.farm.sync;
 import com.zerocracy.jstk.Item;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.concurrent.Semaphore;
+import java.util.concurrent.locks.Lock;
 import lombok.EqualsAndHashCode;
 
 /**
@@ -38,18 +38,18 @@ final class SyncItem implements Item {
     private final Item origin;
 
     /**
-     * Semaphore.
+     * Lock.
      */
-    private final Semaphore semaphore;
+    private final Lock lock;
 
     /**
      * Ctor.
      * @param item Original item
-     * @param sem Semaphore
+     * @param lck Lock
      */
-    SyncItem(final Item item, final Semaphore sem) {
+    SyncItem(final Item item, final Lock lck) {
         this.origin = item;
-        this.semaphore = sem;
+        this.lock = lck;
     }
 
     @Override
@@ -67,7 +67,7 @@ final class SyncItem implements Item {
         try {
             this.origin.close();
         } finally {
-            this.semaphore.release();
+            this.lock.unlock();
         }
     }
 

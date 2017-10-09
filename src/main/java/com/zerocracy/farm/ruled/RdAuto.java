@@ -75,13 +75,20 @@ final class RdAuto {
     private final Path path;
 
     /**
+     * The reason.
+     */
+    private final String reason;
+
+    /**
      * Ctor.
      * @param pkt Project
      * @param file The file with the item to start with
+     * @param rsn The reason
      */
-    RdAuto(final Project pkt, final Path file) {
+    RdAuto(final Project pkt, final Path file, final String rsn) {
         this.project = pkt;
         this.path = file;
+        this.reason = rsn;
     }
 
     /**
@@ -122,21 +129,26 @@ final class RdAuto {
             if (Files.exists(item.path())
                 && item.path().toFile().length() > 0L) {
                 final XML xml = new XMLDocument(item.path().toFile());
-                new LengthOf(
-                    new TeeInput(
-                        new XSLDocument(
-                            new TextOf(
-                                RdAuto.CACHE.apply(URI.create(xsl))
-                            ).asString(),
-                            new RdSources(this.project)
-                        ).transform(xml).toString(),
-                        item.path()
-                    )
-                ).value();
-                Logger.info(
-                    this, "Applied %s to %s in %s",
-                    xsl, target, this.project
-                );
+                final XML after = new XSLDocument(
+                    new TextOf(
+                        RdAuto.CACHE.apply(URI.create(xsl))
+                    ).asString(),
+                    new RdSources(this.project)
+                ).transform(xml);
+                if (!xml.equals(after)) {
+                    new LengthOf(
+                        new TeeInput(
+                            after.toString(),
+                            item.path()
+                        )
+                    ).value();
+                    Logger.info(
+                        this, "Applied %s to %s in %s (%d to %d): %s",
+                        xsl, target, this.project,
+                        xml.toString().length(), after.toString().length(),
+                        this.reason
+                    );
+                }
             }
         }
     }

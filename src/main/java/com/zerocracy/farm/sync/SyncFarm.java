@@ -21,6 +21,8 @@ import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import lombok.EqualsAndHashCode;
 import org.cactoos.iterable.Mapped;
 
@@ -40,9 +42,9 @@ public final class SyncFarm implements Farm {
     private final Farm origin;
 
     /**
-     * Pool of projects.
+     * Pool of locks.
      */
-    private final Map<Project, Project> pool;
+    private final Map<Project, Lock> pool;
 
     /**
      * Ctor.
@@ -58,8 +60,12 @@ public final class SyncFarm implements Farm {
         synchronized (this.origin) {
             return new Mapped<>(
                 this.origin.find(query),
-                p -> this.pool.computeIfAbsent(
-                    p, SyncProject::new
+                pkt -> new SyncProject(
+                    pkt,
+                    this.pool.computeIfAbsent(
+                        pkt,
+                        p -> new ReentrantLock()
+                    )
                 )
             );
         }
