@@ -21,12 +21,6 @@ import com.zerocracy.jstk.Project
 import com.zerocracy.pmo.Awards
 
 def exec(Project project, XML xml) {
-// @todo #72:15min The assertion at the end is disabled because the mock Github
-//  pull request created in _before.groovy is not recognized as a valid pull
-//  request. So it is not recognized as a PR and the test fails.
-//  See https://github.com/jcabi/jcabi-github/issues/1323. When the issue is
-//  fixed, jcabi-github version should be updated and the assertion should be
-//  enabled.
   def awards = new Awards(project, 'dmarkov').bootstrap()
-  assert awards.total() >= 0
+  assert awards.total() == 15
 }
