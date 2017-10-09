@@ -54,7 +54,7 @@ public final class ReIfAddressed implements Response {
         if (comment.body().contains(self)) {
             final Pattern pattern = Pattern.compile(
                 String.format(
-                    "@%s .+",
+                    "\\s*@%s\\s*.+",
                     comment.issue().repo().github().users().self().login()
                 ),
                 Pattern.MULTILINE | Pattern.CASE_INSENSITIVE
