@@ -62,16 +62,16 @@ public final class SmartFarm implements Scalar<Farm> {
     public SmartFarm(final Farm farm) {
         this.self = new SyncScalar<>(
             new StickyScalar<>(
-                () -> new RdFarm(
-                    new RvFarm(
-                        new PropsFarm(
+                () -> new PropsFarm(
+                    new RdFarm(
+                        new RvFarm(
                             new UplinkedFarm(
                                 new StrictFarm(
                                     new SyncFarm(farm)
                                 )
-                            )
-                        ),
-                        new Brigade(this.stakeholders())
+                            ),
+                            new Brigade(this.stakeholders())
+                        )
                     )
                 )
             )

@@ -19,8 +19,10 @@ package com.zerocracy.farm;
 import com.jcabi.s3.Bucket;
 import com.jcabi.s3.fake.FkBucket;
 import com.zerocracy.RunsInThreads;
+import com.zerocracy.farm.props.Props;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
+import com.zerocracy.jstk.fake.FkFarm;
 import com.zerocracy.pm.cost.Boosts;
 import com.zerocracy.pm.scope.Wbs;
 import java.nio.file.Files;
@@ -104,7 +106,7 @@ public final class SmartFarmTest {
     }
 
     @Test
-    public void returnsSameProjec() throws Exception {
+    public void returnsSameProject() throws Exception {
         final Bucket bucket = new FkBucket(
             Files.createTempDirectory("").toFile(),
             "some-bucket-6"
@@ -117,6 +119,17 @@ public final class SmartFarmTest {
         MatcherAssert.assertThat(
             new Wbs(project).bootstrap().iterate(),
             Matchers.hasItem(job)
+        );
+    }
+
+    @Test
+    public void readsProps() throws Exception {
+        final Project project = new SmartFarm(new FkFarm()).value().find(
+            "@id='123456700'"
+        ).iterator().next();
+        MatcherAssert.assertThat(
+            new Props(project).has("//testing"),
+            Matchers.equalTo(true)
         );
     }
 
