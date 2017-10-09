@@ -14,29 +14,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.in.orders
+package com.zerocracy.bundles.collect_speed
 
+import com.jcabi.github.Github
+import com.jcabi.github.Repos
 import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
+import com.zerocracy.entry.ExtGithub
+import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
-import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
-import com.zerocracy.pm.in.Orders
-import java.time.Duration
-import java.time.ZonedDateTime
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Finish order')
-  ClaimIn claim = new ClaimIn(xml)
-  String job = claim.param('job')
-  Orders orders = new Orders(project).bootstrap()
-  def duration = Duration.between(orders.startTime(job), ZonedDateTime.now())
-  String login = orders.performer(job)
-  orders.resign(job)
-  new ClaimOut()
-    .type('Order was finished')
-    .param('job', job)
-    .param('login', login)
-    .param('duration', duration.toString())
-    .postTo(project)
+  Farm farm = binding.variables.farm
+  Github github = new ExtGithub(farm).value()
+  def repo = github.repos().create(new Repos.RepoCreate('test', false))
+  repo.issues().create('hello, world', '')
 }

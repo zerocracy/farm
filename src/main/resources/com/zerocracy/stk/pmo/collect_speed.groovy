@@ -14,29 +14,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.in.orders
+package com.zerocracy.stk.pmo
 
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
+import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
-import com.zerocracy.pm.in.Orders
+import com.zerocracy.pmo.Pmo
+import com.zerocracy.pmo.Speed
 import java.time.Duration
-import java.time.ZonedDateTime
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Finish order')
-  ClaimIn claim = new ClaimIn(xml)
-  String job = claim.param('job')
-  Orders orders = new Orders(project).bootstrap()
-  def duration = Duration.between(orders.startTime(job), ZonedDateTime.now())
-  String login = orders.performer(job)
-  orders.resign(job)
-  new ClaimOut()
-    .type('Order was finished')
-    .param('job', job)
-    .param('login', login)
-    .param('duration', duration.toString())
-    .postTo(project)
+  new Assume(project, xml).type('Order was finished')
+
+  Farm farm = binding.variables.farm
+  def claim = new ClaimIn(xml)
+  def job = claim.param('job')
+  def duration = Duration.parse(claim.param('duration'))
+  new Speed(
+    new Pmo(farm),
+    claim.param('login')
+  ).bootstrap()
+    .add(
+      project.toString(),
+      job,
+      duration.toMinutes()
+    )
 }

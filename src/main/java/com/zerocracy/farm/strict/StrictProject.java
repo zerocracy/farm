@@ -45,7 +45,8 @@ final class StrictProject implements Project {
             "(people\\.xml)",
             "(awards/[a-zA-Z0-9-]+\\.xml)",
             "(agenda/[a-zA-Z0-9-]+\\.xml)",
-            "(projects/[a-zA-Z0-9-]+\\.xml)"
+            "(projects/[a-zA-Z0-9-]+\\.xml)",
+            "(speed/[a-zA-Z0-9-]+\\.xml)"
         )
     );
 

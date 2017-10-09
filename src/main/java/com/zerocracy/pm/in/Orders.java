@@ -22,6 +22,7 @@ import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.SoftException;
 import com.zerocracy.pm.scope.Wbs;
 import java.io.IOException;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import org.xembly.Directives;
@@ -171,6 +172,26 @@ public final class Orders {
     }
 
     /**
+     * Start time of order.
+     * @param job Order's job
+     * @return Start DateTime
+     * @throws IOException If fails
+     */
+    public ZonedDateTime startTime(final String job) throws IOException {
+        try (final Item orders = this.item()) {
+            return ZonedDateTime.parse(
+                new Xocument(orders.path()).xpath(
+                    String.format(
+                        "/orders/order[@job='%s']/created/text()",
+                        job
+                    )
+                ).get(0),
+                DateTimeFormatter.ISO_INSTANT.withZone(ZoneId.systemDefault())
+            );
+        }
+    }
+
+    /**
      * List of jobs of given person.
      * @param login Performer
      * @return List of job IDs
@@ -192,5 +213,4 @@ public final class Orders {
     private Item item() throws IOException {
         return this.project.acq("orders.xml");
     }
-
 }
