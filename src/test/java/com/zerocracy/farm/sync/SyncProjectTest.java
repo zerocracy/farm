@@ -19,7 +19,7 @@ package com.zerocracy.farm.sync;
 import com.jcabi.aspects.Tv;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.fake.FkProject;
+import com.zerocracy.jstk.farm.fake.FkProject;
 import java.util.Collection;
 import java.util.LinkedList;
 import org.hamcrest.MatcherAssert;

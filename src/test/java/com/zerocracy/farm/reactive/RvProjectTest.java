@@ -20,7 +20,7 @@ import com.jcabi.aspects.Tv;
 import com.zerocracy.RunsInThreads;
 import com.zerocracy.farm.sync.SyncProject;
 import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.fake.FkProject;
+import com.zerocracy.jstk.farm.fake.FkProject;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
 import java.util.Collections;

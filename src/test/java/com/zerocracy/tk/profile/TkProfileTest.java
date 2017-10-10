@@ -19,7 +19,7 @@ package com.zerocracy.tk.profile;
 import com.jcabi.matchers.XhtmlMatchers;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.fake.FkFarm;
+import com.zerocracy.jstk.farm.fake.FkFarm;
 import com.zerocracy.pmo.Agenda;
 import com.zerocracy.pmo.Awards;
 import com.zerocracy.pmo.People;

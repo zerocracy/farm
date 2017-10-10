@@ -17,7 +17,7 @@
 package com.zerocracy.radars.telegram;
 
 import com.jcabi.aspects.Tv;
-import com.zerocracy.jstk.fake.FkFarm;
+import com.zerocracy.jstk.farm.fake.FkFarm;
 import com.zerocracy.radars.telegram.fake.FkFailedReaction;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

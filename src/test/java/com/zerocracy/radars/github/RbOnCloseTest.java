@@ -22,7 +22,7 @@ import com.jcabi.github.Repo;
 import com.jcabi.github.Repos;
 import com.jcabi.github.mock.MkGithub;
 import com.jcabi.github.mock.MkStorage;
-import com.zerocracy.jstk.fake.FkFarm;
+import com.zerocracy.jstk.farm.fake.FkFarm;
 import java.io.IOException;
 import javax.json.Json;
 import org.hamcrest.MatcherAssert;

@@ -23,7 +23,7 @@ import com.zerocracy.farm.S3Farm;
 import com.zerocracy.farm.sync.SyncFarm;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.fake.FkProject;
+import com.zerocracy.jstk.farm.fake.FkProject;
 import java.nio.file.Files;
 import java.util.concurrent.TimeUnit;
 import org.cactoos.io.LengthOf;

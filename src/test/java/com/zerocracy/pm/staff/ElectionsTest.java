@@ -16,13 +16,19 @@
  */
 package com.zerocracy.pm.staff;
 
-import com.zerocracy.jstk.fake.FkProject;
+import com.zerocracy.jstk.farm.fake.FkProject;
+import com.zerocracy.jstk.farm.spy.SpyProject;
 import java.security.SecureRandom;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.Map;
+import org.cactoos.collection.Filtered;
 import org.cactoos.list.StickyList;
 import org.cactoos.map.MapEntry;
 import org.cactoos.map.StickyMap;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -31,6 +37,7 @@ import org.junit.Test;
  * @version $Id$
  * @since 0.12
  * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class ElectionsTest {
 
@@ -118,6 +125,41 @@ public final class ElectionsTest {
             )
         );
         MatcherAssert.assertThat(elections.elected(job), Matchers.is(false));
+    }
+
+    @Test
+    @Ignore
+    public void modifiesItemOnlyOnce() throws Exception {
+        final Collection<String> ops = new LinkedList<>();
+        final Elections elections = new Elections(
+            new SpyProject(
+                new FkProject(),
+                ops::add
+            )
+        ).bootstrap();
+        final String job = "gh:test/test#92";
+        // @checkstyle DiamondOperatorCheck (1 line)
+        final Map<Voter, Integer> voters = new StickyMap<Voter, Integer>(
+            new MapEntry<>((login, log) -> 1.0d, -1)
+        );
+        final Iterable<String> logins = new StickyList<>("james");
+        MatcherAssert.assertThat(
+            elections.elect(job, logins, voters),
+            Matchers.is(true)
+        );
+        // @checkstyle MagicNumberCheck (1 line)
+        for (int idx = 0; idx < 5; ++idx) {
+            MatcherAssert.assertThat(
+                elections.elect(job, logins, voters),
+                Matchers.is(false)
+            );
+        }
+        MatcherAssert.assertThat(
+            new Filtered<>(
+                ops, op -> op.startsWith("update:")
+            ).size(),
+            Matchers.equalTo(2)
+        );
     }
 
 }

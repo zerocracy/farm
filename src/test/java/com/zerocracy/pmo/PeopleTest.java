@@ -18,7 +18,7 @@ package com.zerocracy.pmo;
 
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.cash.Cash;
-import com.zerocracy.jstk.fake.FkProject;
+import com.zerocracy.jstk.farm.fake.FkProject;
 import java.nio.file.Files;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;

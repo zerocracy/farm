@@ -16,7 +16,7 @@
  */
 package com.zerocracy.pm.scope;
 
-import com.zerocracy.jstk.fake.FkProject;
+import com.zerocracy.jstk.farm.fake.FkProject;
 import org.junit.Test;
 
 /**

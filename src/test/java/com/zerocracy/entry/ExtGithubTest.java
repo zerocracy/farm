@@ -21,7 +21,7 @@ import com.jcabi.github.Github;
 import com.jcabi.github.Repos;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.fake.FkFarm;
+import com.zerocracy.jstk.farm.fake.FkFarm;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;

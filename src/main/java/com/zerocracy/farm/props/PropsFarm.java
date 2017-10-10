@@ -18,7 +18,7 @@ package com.zerocracy.farm.props;
 
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.fake.FkFarm;
+import com.zerocracy.jstk.farm.fake.FkFarm;
 import java.io.IOException;
 import lombok.EqualsAndHashCode;
 import org.cactoos.iterable.Mapped;

@@ -17,7 +17,7 @@
 package com.zerocracy.tk;
 
 import com.zerocracy.farm.props.PropsFarm;
-import com.zerocracy.jstk.fake.FkFarm;
+import com.zerocracy.jstk.farm.fake.FkFarm;
 import java.net.HttpURLConnection;
 import java.util.Arrays;
 import java.util.Collection;

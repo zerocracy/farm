@@ -19,7 +19,7 @@ package com.zerocracy.farm.reactive;
 import com.zerocracy.farm.MismatchException;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.SoftException;
-import com.zerocracy.jstk.fake.FkProject;
+import com.zerocracy.jstk.farm.fake.FkProject;
 import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.Claims;
 import java.util.AbstractMap;

@@ -16,7 +16,7 @@
  */
 package com.zerocracy.pm.staff.voters;
 
-import com.zerocracy.jstk.fake.FkProject;
+import com.zerocracy.jstk.farm.fake.FkProject;
 import com.zerocracy.pm.staff.Bans;
 import java.io.IOException;
 import org.hamcrest.MatcherAssert;

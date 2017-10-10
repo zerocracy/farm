@@ -21,8 +21,8 @@ import com.jcabi.xml.XMLDocument;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.SoftException;
 import com.zerocracy.jstk.Stakeholder;
-import com.zerocracy.jstk.fake.FkFarm;
-import com.zerocracy.jstk.fake.FkProject;
+import com.zerocracy.jstk.farm.fake.FkFarm;
+import com.zerocracy.jstk.farm.fake.FkProject;
 import org.junit.Test;
 import org.mockito.Mockito;
 

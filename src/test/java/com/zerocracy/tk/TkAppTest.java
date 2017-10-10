@@ -21,7 +21,7 @@ import com.jcabi.http.response.RestResponse;
 import com.jcabi.http.response.XmlResponse;
 import com.jcabi.matchers.XhtmlMatchers;
 import com.zerocracy.farm.props.PropsFarm;
-import com.zerocracy.jstk.fake.FkFarm;
+import com.zerocracy.jstk.farm.fake.FkFarm;
 import java.net.HttpURLConnection;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;

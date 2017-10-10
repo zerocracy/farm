@@ -22,7 +22,7 @@ import com.zerocracy.RunsInThreads;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.fake.FkFarm;
+import com.zerocracy.jstk.farm.fake.FkFarm;
 import com.zerocracy.pm.cost.Boosts;
 import com.zerocracy.pm.scope.Wbs;
 import java.nio.file.Files;

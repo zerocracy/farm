@@ -20,7 +20,7 @@ import com.jcabi.xml.XML
 import com.zerocracy.entry.ExtTelegram
 import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
-import com.zerocracy.jstk.fake.FkFarm
+import com.zerocracy.jstk.farm.fake.FkFarm
 import com.zerocracy.radars.telegram.ReProfile
 import com.zerocracy.radars.telegram.fake.FkTmRequest
 import com.zerocracy.radars.telegram.fake.FkTmSession
