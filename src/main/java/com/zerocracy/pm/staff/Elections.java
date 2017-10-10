@@ -22,11 +22,16 @@ import com.jcabi.xml.XSLDocument;
 import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
+import com.zerocracy.jstk.farm.fake.FkItem;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import org.cactoos.io.LengthOf;
+import org.cactoos.io.TeeInput;
 import org.xembly.Directives;
 
 /**
@@ -77,6 +82,7 @@ public final class Elections {
      * @param voters Voters and weights
      * @return TRUE if a new election made some changes to the situation
      * @throws IOException If fails
+     * @checkstyle ExecutableStatementCountCheck (200 lines)
      */
     public boolean elect(final String job, final Iterable<String> logins,
         final Map<Voter, Integer> voters) throws IOException {
@@ -84,46 +90,48 @@ public final class Elections {
         final String date = ZonedDateTime.now().format(
             DateTimeFormatter.ISO_INSTANT
         );
-        try (final Item item = this.item()) {
-            final Directives dirs = new Directives()
-                .xpath(
-                    String.format(
-                        "/elections[not(job[@id='%s'])]",
-                        job
-                    )
+        final Directives dirs = new Directives()
+            .xpath(
+                String.format(
+                    "/elections[not(job[@id='%s'])]",
+                    job
                 )
-                .add("job")
-                .attr("id", job)
-                .xpath(
-                    String.format(
-                        "/elections/job[@id='%s' ]",
-                        job
-                    )
+            )
+            .add("job")
+            .attr("id", job)
+            .xpath(
+                String.format(
+                    "/elections/job[@id='%s' ]",
+                    job
                 )
-                .strict(1)
-                .add("election")
-                .attr("date", date);
-            final StringBuilder log = new StringBuilder(0);
-            for (final Map.Entry<Voter, Integer> ent : voters.entrySet()) {
-                dirs.add("vote")
-                    .attr("author", ent.getKey().getClass().getName())
-                    .attr("weight", ent.getValue());
-                for (final String login : logins) {
-                    log.setLength(0);
-                    dirs.add("person")
-                        .attr("login", login)
-                        .attr("points", ent.getKey().vote(login, log))
-                        .set(log.toString())
-                        .up();
-                }
-                dirs.up();
+            )
+            .strict(1)
+            .add("election")
+            .attr("date", date);
+        final StringBuilder log = new StringBuilder(0);
+        for (final Map.Entry<Voter, Integer> ent : voters.entrySet()) {
+            dirs.add("vote")
+                .attr("author", ent.getKey().getClass().getName())
+                .attr("weight", ent.getValue());
+            for (final String login : logins) {
+                log.setLength(0);
+                dirs.add("person")
+                    .attr("login", login)
+                    .attr("points", ent.getKey().vote(login, log))
+                    .set(log.toString())
+                    .up();
             }
-            new Xocument(item.path()).modify(dirs);
+            dirs.up();
         }
-        boolean modified = true;
-        if (this.state(job).equals(state)) {
-            try (final Item item = this.item()) {
-                new Xocument(item.path()).modify(
+        try (final Item item = this.item()) {
+            final Path path = item.path();
+            final Path temp = Files.createTempFile("elections", ".xml");
+            new LengthOf(new TeeInput(path, temp)).value();
+            final Project pkt = file -> new FkItem(temp);
+            new Xocument(temp).modify(dirs);
+            boolean modified = true;
+            if (new Elections(pkt).state(job).equals(state)) {
+                new Xocument(temp).modify(
                     new Directives().xpath(
                         String.format(
                             "/elections/job[@id='%s']/election[@date='%s']",
@@ -131,10 +139,13 @@ public final class Elections {
                         )
                     ).remove()
                 );
+                modified = false;
             }
-            modified = false;
+            if (modified) {
+                new LengthOf(new TeeInput(temp, path)).value();
+            }
+            return modified;
         }
-        return modified;
     }
 
     /**

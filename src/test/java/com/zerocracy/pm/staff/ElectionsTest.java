@@ -28,7 +28,6 @@ import org.cactoos.map.MapEntry;
 import org.cactoos.map.StickyMap;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -128,7 +127,6 @@ public final class ElectionsTest {
     }
 
     @Test
-    @Ignore
     public void modifiesItemOnlyOnce() throws Exception {
         final Collection<String> ops = new LinkedList<>();
         final Elections elections = new Elections(
@@ -148,7 +146,7 @@ public final class ElectionsTest {
             Matchers.is(true)
         );
         // @checkstyle MagicNumberCheck (1 line)
-        for (int idx = 0; idx < 5; ++idx) {
+        for (int idx = 0; idx < 20; ++idx) {
             MatcherAssert.assertThat(
                 elections.elect(job, logins, voters),
                 Matchers.is(false)
