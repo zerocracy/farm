@@ -26,6 +26,7 @@ import org.cactoos.io.LengthOf;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.io.TeeInput;
 import org.cactoos.text.TextOf;
+import org.xembly.Directive;
 import org.xembly.Directives;
 import org.xembly.Xembler;
 
@@ -45,11 +46,26 @@ final class PropsItem implements Item {
     private final Path temp;
 
     /**
+     * Post processing.
+     */
+    private final Iterable<Directive> post;
+
+    /**
      * Ctor.
      * @param tmp Temp file
      */
     PropsItem(final Path tmp) {
+        this(tmp, new Directives());
+    }
+
+    /**
+     * Ctor.
+     * @param tmp Temp file
+     * @param dirs Post processing dirs
+     */
+    PropsItem(final Path tmp, final Iterable<Directive> dirs) {
         this.temp = tmp;
+        this.post = dirs;
     }
 
     @Override
@@ -59,17 +75,25 @@ final class PropsItem implements Item {
 
     @Override
     public Path path() throws IOException {
-        String text = new TextOf(
-            new ResourceOf("com/zerocracy/_props.xml")
-        ).asString();
+        final Directives dirs = new Directives();
         if (this.getClass().getResource("/org/junit/Test.class") != null) {
-            text = new XMLDocument(
-                new Xembler(
-                    new Directives().xpath("/props").add("testing").set("yes")
-                ).applyQuietly(new XMLDocument(text).node())
-            ).toString();
+            dirs.xpath("/props").add("testing").set("yes");
         }
-        new LengthOf(new TeeInput(text, this.temp)).value();
+        dirs.append(this.post);
+        new LengthOf(
+            new TeeInput(
+                new XMLDocument(
+                    new Xembler(dirs).applyQuietly(
+                        new XMLDocument(
+                            new TextOf(
+                                new ResourceOf("com/zerocracy/_props.xml")
+                            ).asString()
+                        ).node()
+                    )
+                ).toString(),
+                this.temp
+            )
+        ).value();
         return this.temp;
     }
 

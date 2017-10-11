@@ -21,6 +21,8 @@ import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import java.nio.file.Files;
 import lombok.EqualsAndHashCode;
+import org.xembly.Directive;
+import org.xembly.Directives;
 
 /**
  * Props project.
@@ -38,11 +40,26 @@ final class PropsProject implements Project {
     private final Project origin;
 
     /**
+     * Post processing.
+     */
+    private final Iterable<Directive> post;
+
+    /**
      * Ctor.
      * @param pkt Project
      */
     PropsProject(final Project pkt) {
+        this(pkt, new Directives());
+    }
+
+    /**
+     * Ctor.
+     * @param pkt Project
+     * @param dirs Post processing dirs
+     */
+    PropsProject(final Project pkt, final Iterable<Directive> dirs) {
         this.origin = pkt;
+        this.post = dirs;
     }
 
     @Override
@@ -54,7 +71,9 @@ final class PropsProject implements Project {
     public Item acq(final String file) throws IOException {
         final Item item;
         if ("_props.xml".equals(file)) {
-            item = new PropsItem(Files.createTempFile("props", ".xml"));
+            item = new PropsItem(
+                Files.createTempFile("props", ".xml"), this.post
+            );
         } else {
             item = this.origin.acq(file);
         }

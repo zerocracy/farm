@@ -17,14 +17,18 @@
 package com.zerocracy.farm;
 
 import com.jcabi.xml.XML;
-import com.jcabi.xml.XMLDocument;
+import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.SoftException;
 import com.zerocracy.jstk.Stakeholder;
-import com.zerocracy.jstk.farm.fake.FkFarm;
 import com.zerocracy.jstk.farm.fake.FkProject;
+import com.zerocracy.pm.ClaimOut;
+import com.zerocracy.pm.Claims;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.xembly.Directives;
 
 /**
  * Test case for {@link StkSafe}.
@@ -38,14 +42,35 @@ public final class StkSafeTest {
     @Test
     public void catchesSoftException() throws Exception {
         final Stakeholder stk = Mockito.mock(Stakeholder.class);
+        final Project project = new FkProject();
+        new ClaimOut().type("hello you").postTo(project);
+        final XML claim = new Claims(project).iterate().iterator().next();
         Mockito.doThrow(new SoftException("")).when(stk).process(
-            Mockito.any(Project.class), Mockito.any(XML.class)
+            project, claim
         );
-        new StkSafe("hello", new FkFarm(), stk).process(
-            new FkProject(),
-            new XMLDocument(
-                "<claim id='1'><type>Hello</type><token>job;1</token></claim>"
-            ).nodes("/claim").get(0)
+        new StkSafe("hello", new PropsFarm(), stk).process(project, claim);
+    }
+
+    @Test
+    public void dontRepostNotifyFailures() throws Exception {
+        final Stakeholder stk = Mockito.mock(Stakeholder.class);
+        final Project project = new FkProject();
+        new ClaimOut()
+            .type("Notify GitHub")
+            .token("github;test/test#1")
+            .postTo(project);
+        final XML claim = new Claims(project).iterate().iterator().next();
+        Mockito.doThrow(new IllegalStateException("")).when(stk).process(
+            project, claim
+        );
+        new StkSafe(
+            "hello1",
+            new PropsFarm(new Directives().xpath("/props/testing").remove()),
+            stk
+        ).process(project, claim);
+        MatcherAssert.assertThat(
+            new Claims(project).iterate(),
+            Matchers.iterableWithSize(1)
         );
     }
 

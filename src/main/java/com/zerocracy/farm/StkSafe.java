@@ -108,7 +108,7 @@ public final class StkSafe implements Stakeholder {
             if (props.has("//testing")) {
                 throw new IllegalStateException(ex);
             }
-            if (claim.hasToken() && !"Notify".equals(claim.type())) {
+            if (claim.hasToken() && !claim.type().startsWith("Notify")) {
                 claim.reply(
                     String.join(
                         "",
@@ -118,16 +118,12 @@ public final class StkSafe implements Stakeholder {
                         " [here](https://github.com/zerocracy/datum):\n\n```\n",
                         new FormattedText(
                             "%s %s %s\n%s\n%s",
-                            props.get("//build/version"),
-                            props.get("//build/revision"),
-                            props.get("//build/date"),
+                            props.get("//build/version", ""),
+                            props.get("//build/revision", ""),
+                            props.get("//build/date", ""),
                             ExceptionUtils.getMessage(ex),
                             StringUtils.abbreviate(
-                                new TextOf(
-                                    new BytesOf(
-                                        ExceptionUtils.getRootCause(ex)
-                                    )
-                                ).asString(),
+                                new TextOf(new BytesOf(ex)).asString(),
                                 // @checkstyle MagicNumber (1 line)
                                 1000
                             )

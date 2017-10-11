@@ -22,6 +22,8 @@ import com.zerocracy.jstk.farm.fake.FkFarm;
 import java.io.IOException;
 import lombok.EqualsAndHashCode;
 import org.cactoos.iterable.Mapped;
+import org.xembly.Directive;
+import org.xembly.Directives;
 
 /**
  * Props farm.
@@ -39,6 +41,11 @@ public final class PropsFarm implements Farm {
     private final Farm origin;
 
     /**
+     * Post processing.
+     */
+    private final Iterable<Directive> post;
+
+    /**
      * Ctor.
      */
     public PropsFarm() {
@@ -50,14 +57,32 @@ public final class PropsFarm implements Farm {
      * @param farm Original farm
      */
     public PropsFarm(final Farm farm) {
+        this(farm, new Directives());
+    }
+
+    /**
+     * Ctor.
+     * @param dirs Post processing dirs
+     */
+    public PropsFarm(final Iterable<Directive> dirs) {
+        this(new FkFarm(), dirs);
+    }
+
+    /**
+     * Ctor.
+     * @param farm Original farm
+     * @param dirs Post processing dirs
+     */
+    public PropsFarm(final Farm farm, final Iterable<Directive> dirs) {
         this.origin = farm;
+        this.post = dirs;
     }
 
     @Override
     public Iterable<Project> find(final String query) throws IOException {
         return new Mapped<>(
             this.origin.find(query),
-            PropsProject::new
+            pkt -> new PropsProject(pkt, this.post)
         );
     }
 
