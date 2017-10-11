@@ -32,13 +32,7 @@ def exec(Project project, XML xml) {
   def claim = new ClaimIn(xml)
   def job = claim.param('job')
   def duration = Duration.parse(claim.param('duration'))
-  new Speed(
-    new Pmo(farm),
-    claim.param('login')
-  ).bootstrap()
-    .add(
-      project.toString(),
-      job,
-      duration.toMinutes()
-    )
+  new Speed(new Pmo(farm), claim.param('login'))
+    .bootstrap()
+    .add(project.toString(), job, duration.toMinutes())
 }

@@ -16,38 +16,23 @@
  */
 package com.zerocracy.stk.pmo.links
 
+import com.jcabi.github.Coordinates
+import com.jcabi.github.Github
 import com.jcabi.xml.XML
+import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
+import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
-import com.zerocracy.jstk.SoftException
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
-import com.zerocracy.pmo.Catalog
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Add link')
-  new Assume(project, xml).roles('PO')
+  new Assume(project, xml).type('Project link was added')
   ClaimIn claim = new ClaimIn(xml)
-  String pid = claim.param('project')
   String rel = claim.param('rel')
   String href = claim.param('href')
-  Catalog catalog = new Catalog(project).bootstrap()
-  if (catalog.hasLink(pid, rel, href)) {
-    throw new SoftException(
-      "Project `${pid}` already has link, rel=`${rel}`, href=`${href}`"
-    )
+  if ('github' == rel) {
+    Farm farm = binding.variables.farm
+    Github github = new ExtGithub(farm).value()
+    github.repos().get(new Coordinates.Simple(href)).stars().star()
   }
-  catalog.link(pid, rel, href)
-  claim.reply(
-    String.format(
-      'The project is linked with rel=`%s` and href=`%s`.',
-      rel, href
-    )
-  ).postTo(project)
-  new ClaimOut()
-    .type('Project link was added')
-    .param('project', pid)
-    .param('rel', rel)
-    .param('href', href)
-    .postTo(project)
 }

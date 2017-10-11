@@ -36,6 +36,7 @@ import org.xembly.Directives;
  * @version $Id$
  * @since 0.1
  */
+@SuppressWarnings("PMD.TooManyMethods")
 public final class Catalog {
 
     /**
@@ -240,6 +241,27 @@ public final class Catalog {
                     )
                 )
             );
+        }
+    }
+
+    /**
+     * Project has this link?
+     * @param pid Project ID
+     * @param rel REL
+     * @param href HREF
+     * @return TRUE if it has a link
+     * @throws IOException If fails
+     */
+    public boolean hasLink(final String pid, final String rel,
+        final String href) throws IOException {
+        try (final Item item = this.item()) {
+            return !new Xocument(item.path()).nodes(
+                String.format(
+                    // @checkstyle LineLength (1 line)
+                    "/catalog/project[@id='%s' and links/link[@rel='%s' and @href='%s']]",
+                    pid, rel, href
+                )
+            ).isEmpty();
         }
     }
 

@@ -82,6 +82,25 @@ public final class CatalogTest {
         );
     }
 
+    @Test
+    public void addsAndRemovesLinks() throws Exception {
+        final String pid = "67WE334GG";
+        final Catalog catalog = new Catalog(new FkProject()).bootstrap();
+        catalog.add(pid, "2017/05/67WE334GG/");
+        final String rel = "jira";
+        final String href = "http://example.com:8080";
+        catalog.link(pid, rel, href);
+        MatcherAssert.assertThat(
+            catalog.hasLink(pid, rel, href),
+            Matchers.is(true)
+        );
+        catalog.unlink(pid, rel, href);
+        MatcherAssert.assertThat(
+            catalog.hasLink(pid, rel, href),
+            Matchers.is(false)
+        );
+    }
+
     private static Item item(final Project project) throws IOException {
         return project.acq("catalog.xml");
     }
