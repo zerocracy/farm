@@ -61,7 +61,8 @@ public final class FtFarmTest {
         MatcherAssert.assertThat(
             inc -> {
                 final long num = cid.getAndIncrement();
-                new ClaimOut().cid(num).type("hello").postTo(project);
+                new ClaimOut().cid(num).type("hello")
+                    .author("0pdd").postTo(project);
                 claims.remove(num);
                 return true;
             },

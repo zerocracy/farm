@@ -23,6 +23,7 @@ import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.staff.Roles
+import com.zerocracy.pmo.People
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Start order')
@@ -48,6 +49,10 @@ def exec(Project project, XML xml) {
         " @${login} check your" +
         " [Zerocracy profile](http://www.0crat.com/u/${login})" +
         ' and follow the instructions.'
+    }
+    if (new People(project).bootstrap().vacation(login)) {
+      msg += "\n\n@${claim.author()}, hey! You should be aware that " +
+        "@${login} is on vacation! This ticket may be delayed."
     }
     claim.reply(msg).postTo(project)
     new ClaimOut()
