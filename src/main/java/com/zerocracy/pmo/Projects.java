@@ -120,6 +120,23 @@ public final class Projects {
     }
 
     /**
+     * Return TRUE if it already exists.
+     * @param pid Project ID
+     * @return TRUE if exists
+     * @throws IOException If fails
+     */
+    public boolean exists(final String pid) throws IOException {
+        try (final Item item = this.item()) {
+            return !new Xocument(item.path()).nodes(
+                String.format(
+                    "/projects/project[.='%s' ]",
+                    pid
+                )
+            ).isEmpty();
+        }
+    }
+
+    /**
      * The item.
      * @return Item
      * @throws IOException If fails

@@ -14,27 +14,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.staff.projects
+package com.zerocracy.pmo;
 
-import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Project
-import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
-import com.zerocracy.pmo.Projects
+import com.zerocracy.jstk.farm.fake.FkProject;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Test;
 
-def exec(Project project, XML xml) {
-  new Assume(project, xml).type(
-    'Role was assigned', 'Order was given'
-  )
-  ClaimIn claim = new ClaimIn(xml)
-  String login = claim.param('login')
-  Projects projects = new Projects(project, login).bootstrap()
-  if (!projects.exists(project.toString())) {
-    projects.add(project.toString())
-    new ClaimOut()
-      .type('User projects were updated')
-      .param('login', login)
-      .postTo(project)
-  }
+/**
+ * Test case for {@link Projects}.
+ * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @version $Id$
+ * @since 0.12
+ * @checkstyle JavadocMethodCheck (500 lines)
+ */
+public final class ProjectsTest {
+
+    @Test
+    public void addsAndRemovesProjects() throws Exception {
+        final Projects projects = new Projects(
+            new FkProject(), "yegor"
+        ).bootstrap();
+        final String pkt = "123456789";
+        projects.add(pkt);
+        MatcherAssert.assertThat(projects.exists(pkt), Matchers.is(true));
+    }
+
 }
