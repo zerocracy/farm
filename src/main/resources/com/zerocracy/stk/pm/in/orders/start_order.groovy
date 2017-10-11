@@ -52,7 +52,7 @@ def exec(Project project, XML xml) {
     }
     if (new People(project).bootstrap().vacation(login)) {
       msg += "\n\n@${claim.author()}, hey! You should be aware that " +
-        "@${login} is on vacation! His tickets may be delayed."
+        "@${login} is on vacation! This ticket may be delayed."
     }
     claim.reply(msg).postTo(project)
     new ClaimOut()
