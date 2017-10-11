@@ -16,6 +16,13 @@
  */
 package com.zerocracy.entry;
 
+import com.amazonaws.ClientConfiguration;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.retry.PredefinedRetryPolicies;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.jcabi.s3.Bucket;
 import com.jcabi.s3.Region;
 import com.jcabi.s3.cached.CdRegion;
@@ -47,13 +54,25 @@ public final class ExtBucket implements Scalar<Bucket> {
                 new StickyFunc<>(
                     frm -> {
                         final Props props = new Props(frm);
-                        return new CdRegion(
-                            new ReRegion(
-                                new Region.Simple(
-                                    props.get("//s3/key"),
-                                    props.get("//s3/secret")
+                        final AmazonS3 aws = AmazonS3ClientBuilder.standard()
+                            .withRegion(Regions.US_EAST_1)
+                            .withClientConfiguration(
+                                new ClientConfiguration()
+                                    .withRetryPolicy(
+                                        PredefinedRetryPolicies.DEFAULT
+                                    )
+                            )
+                            .withCredentials(
+                                new AWSStaticCredentialsProvider(
+                                    new BasicAWSCredentials(
+                                        props.get("//s3/key"),
+                                        props.get("//s3/secret")
+                                    )
                                 )
                             )
+                            .build();
+                        return new CdRegion(
+                            new ReRegion(new Region.Simple(aws))
                         ).bucket(props.get("//s3/bucket"));
                     }
                 )
