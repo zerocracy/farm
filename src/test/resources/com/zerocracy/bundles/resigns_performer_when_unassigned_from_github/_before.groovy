@@ -45,6 +45,7 @@ def exec(Project project, XML xml) {
       .add('issue', Json.createObjectBuilder().add('number', issue.number()))
       .add('repository', Json.createObjectBuilder()
       .add('full_name', repo.coordinates().toString()))
+      .add('assignee', Json.createObjectBuilder().add('login', 'yegor256'))
       .build()
   )
 }
