@@ -21,7 +21,6 @@ import com.jcabi.github.Coordinates
 import com.jcabi.github.Github
 import com.jcabi.xml.XML
 import com.zerocracy.entry.ExtGithub
-import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.in.Orders
 
