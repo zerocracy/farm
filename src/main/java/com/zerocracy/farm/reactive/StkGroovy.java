@@ -133,14 +133,21 @@ public final class StkGroovy implements Stakeholder {
             clazz.getMethod("exec", Project.class, XML.class)
                 .invoke(instance, project, claim);
         } catch (final IllegalAccessException | NoSuchMethodException
-            | InstantiationException | InvocationTargetException exp) {
-            if (exp.getCause() instanceof MismatchException) {
-                throw MismatchException.class.cast(exp.getCause());
+            | InstantiationException | InvocationTargetException ex) {
+            if (ex.getCause() instanceof MismatchException) {
+                throw MismatchException.class.cast(ex.getCause());
             }
-            if (exp.getCause() instanceof SoftException) {
-                throw SoftException.class.cast(exp.getCause());
+            if (ex.getCause() instanceof SoftException) {
+                throw SoftException.class.cast(ex.getCause());
             }
-            throw new IllegalStateException(exp);
+            throw new IllegalStateException(
+                String.format(
+                    "%s in %s",
+                    ex.getClass().getCanonicalName(),
+                    this.label
+                ),
+                ex
+            );
         }
     }
 }

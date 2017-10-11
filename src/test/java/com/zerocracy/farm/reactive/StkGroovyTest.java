@@ -26,6 +26,7 @@ import java.util.AbstractMap;
 import java.util.HashMap;
 import org.cactoos.io.InputOf;
 import org.cactoos.map.StickyMap;
+import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -109,5 +110,30 @@ public final class StkGroovyTest {
             "stkgroovytest-floats-mismatch",
             new HashMap<>(0)
         ).process(project, null);
+    }
+
+    @Test
+    public void rethrowsCorrectly() throws Exception {
+        try {
+            new StkGroovy(
+                new InputOf(
+                    String.join(
+                        "\n",
+                        "import com.zerocracy.jstk.Project   ",
+                        "import com.jcabi.xml.XML   ",
+                        "def exec(Project project, XML xml) {   ",
+                        "throw new IllegalStateException('boom!')",
+                        "}   "
+                    )
+                ),
+                "stkgroovytest-runtime-exception",
+                new HashMap<>(0)
+            ).process(new FkProject(), null);
+        } catch (final IllegalStateException ex) {
+            MatcherAssert.assertThat(
+                new TextOf(ex).asString(),
+                Matchers.containsString("boom!")
+            );
+        }
     }
 }
