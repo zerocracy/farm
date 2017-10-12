@@ -49,12 +49,15 @@ def exec(Project project, XML xml) {
   }
   SlackSession session = session(parts[1])
   if (parts.length > 3) {
+    // @todo #117:30min Remove this debug message
+    //  when slack messages duplicates will be solved
+    //  now this string needs to clarify Slack stakeholder work
     String user = session.findUserByUserName(parts[2])
+    def channel = session.openDirectMessageChannel(user).reply.slackChannel
+    String debugMessage = "$message\n> claim: ${claim.cid()} ${claim.created()}" +
+      "\n> session: $session\n> channel: $channel"
     if (user != null) {
-      session.sendMessage(
-        session.openDirectMessageChannel(user).reply.slackChannel,
-        message
-      )
+      session.sendMessage(channel, debugMessage)
     }
   } else {
     SlackChannel channel = session.findChannelById(parts[1])
