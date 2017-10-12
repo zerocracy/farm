@@ -18,6 +18,7 @@ package com.zerocracy.farm.reactive;
 
 import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
+import com.zerocracy.jstk.farm.fake.FkFarm;
 import com.zerocracy.jstk.farm.fake.FkProject;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
@@ -65,7 +66,10 @@ public final class BrigadeTest {
         final Claims claims = new Claims(project).bootstrap();
         final XML xml = claims.iterate().iterator().next();
         final Brigade brigade = new Brigade(
-            new StkGroovy(new InputOf(file), "brigadetest-parsesgroovy")
+            new StkGroovy(
+                new InputOf(file), "brigadetest-parsesgroovy",
+                new FkFarm()
+            )
         );
         brigade.process(project, xml);
         MatcherAssert.assertThat(
@@ -83,7 +87,8 @@ public final class BrigadeTest {
         final Brigade brigade = new Brigade(
             new StkGroovy(
                 new ResourceOf("com/zerocracy/stk/hello.groovy"),
-                "brigadetest-parsesgroovyscript"
+                "brigadetest-parsesgroovyscript",
+                new FkFarm()
             )
         );
         brigade.process(project, xml);

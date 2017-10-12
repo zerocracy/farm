@@ -28,5 +28,7 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
   Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
-  ['first', 'second', 'third', 'fourth'].each { repo.issues().create(it, 'stub') }
+  ['first', 'second', 'third', 'fourth'].each {
+    repo.issues().create(it, 'stub')
+  }
 }

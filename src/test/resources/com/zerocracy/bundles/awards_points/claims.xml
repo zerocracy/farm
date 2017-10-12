@@ -18,6 +18,15 @@ SOFTWARE.
 <claims xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/zerocracy/datum/0.27/xsd/pm/claims.xsd" version="0.1" updated="2017-03-27T11:18:09.228Z">
   <claim id="1">
     <created>2017-03-27T11:18:09.228Z</created>
+    <type>Finish order</type>
+    <token>job;gh:test/test#1</token>
+    <author>dmarkov</author>
+    <params>
+      <param name="job">gh:test/test#1</param>
+    </params>
+  </claim>
+  <claim id="2">
+    <created>2017-03-27T11:18:09.228Z</created>
     <type>Remove job from WBS</type>
     <token>job;gh:test/test#1</token>
     <author>dmarkov</author>

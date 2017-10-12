@@ -15,7 +15,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2.0">
   <xsl:output method="xml" indent="no"/>
   <xsl:strip-space elements="*"/>
   <xsl:param name="version"/>
@@ -25,7 +25,7 @@ SOFTWARE.
         <xsl:value-of select="$version"/>
       </xsl:attribute>
       <xsl:attribute name="updated">
-        <xsl:value-of select="format-dateTime(current-dateTime(),'[Y]-[M00]-[D00]T[H00]:[m00]:[s00]')"/>
+        <xsl:value-of select="format-dateTime(adjust-dateTime-to-timezone(current-dateTime(), xs:dayTimeDuration('PT0H')),'[Y]-[M00]-[D00]T[H00]:[m00]:[s00]Z')"/>
       </xsl:attribute>
       <xsl:apply-templates select="node()|(@* except (@version|@updated))"/>
     </xsl:copy>

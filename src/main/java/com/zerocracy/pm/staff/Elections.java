@@ -26,6 +26,7 @@ import com.zerocracy.jstk.farm.fake.FkItem;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -41,6 +42,7 @@ import org.xembly.Directives;
  * @version $Id$
  * @since 0.12
  */
+@SuppressWarnings("PMD.TooManyMethods")
 public final class Elections {
 
     /**
@@ -73,6 +75,21 @@ public final class Elections {
             new Xocument(team).bootstrap("pm/staff/elections");
         }
         return this;
+    }
+
+    /**
+     * How old is it, in milliseconds?
+     * @return Milliseconds since recent update
+     * @throws IOException If failed
+     */
+    public long age() throws IOException {
+        try (final Item roles = this.item()) {
+            return System.currentTimeMillis() - Instant.from(
+                DateTimeFormatter.ISO_INSTANT.parse(
+                    new Xocument(roles).xpath("/elections/@updated").get(0)
+                )
+            ).toEpochMilli();
+        }
     }
 
     /**

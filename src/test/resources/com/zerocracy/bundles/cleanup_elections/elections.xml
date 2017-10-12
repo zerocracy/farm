@@ -19,27 +19,21 @@ SOFTWARE.
   <job id="gh:test/test#1">
     <election date="2016-11-20T09:03:21.684Z">
       <vote author="com.zerocracy.pm.staff.voter.NoRoom" weight="-100">
-        <person login="yegor256" points="0.44">There are 23 tasks in the
-                    agenda already
-                </person>
+        <person login="yegor256" points="0.44">There are 23 tasks in the agenda already</person>
       </vote>
     </election>
   </job>
   <job id="gh:test/test#2">
     <election date="2016-11-20T09:03:21.684Z">
       <vote author="com.zerocracy.pm.staff.voter.NoRoom" weight="-100">
-        <person login="yegor256" points="0.44">There are 23 tasks in the
-                    agenda already
-                </person>
+        <person login="yegor256" points="0.44">There are 23 tasks in the agenda already</person>
       </vote>
     </election>
   </job>
   <job id="gh:test/test#3">
     <election date="2016-11-20T09:03:21.684Z">
       <vote author="com.zerocracy.pm.staff.voter.NoRoom" weight="-100">
-        <person login="yegor256" points="0.44">There are 23 tasks in the
-                    agenda already
-                </person>
+        <person login="yegor256" points="0.44">There are 23 tasks in the agenda already</person>
       </vote>
     </election>
   </job>

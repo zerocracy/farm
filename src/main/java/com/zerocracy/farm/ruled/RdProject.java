@@ -52,7 +52,7 @@ final class RdProject implements Project {
     @Override
     public Item acq(final String file) throws IOException {
         Item item = this.origin.acq(file);
-        if (!"claims.xml".equals(file)) {
+        if (!"claims.xml".equals(file) && file.charAt(0) != '_') {
             item = new RdItem(this.origin, item);
         }
         return item;

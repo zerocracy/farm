@@ -18,6 +18,7 @@ package com.zerocracy.farm.reactive;
 
 import com.jcabi.xml.XML;
 import com.zerocracy.farm.MismatchException;
+import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.SoftException;
 import com.zerocracy.jstk.Stakeholder;
@@ -28,15 +29,11 @@ import groovy.lang.GroovyShell;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Map;
 import lombok.EqualsAndHashCode;
 import org.cactoos.Input;
 import org.cactoos.func.IoCheckedBiFunc;
 import org.cactoos.func.StickyBiFunc;
 import org.cactoos.func.SyncBiFunc;
-import org.cactoos.scalar.And;
-import org.cactoos.scalar.UncheckedScalar;
 import org.cactoos.text.TextOf;
 
 /**
@@ -82,30 +79,21 @@ public final class StkGroovy implements Stakeholder {
     private final String label;
 
     /**
-     * Deps.
+     * Farm.
      */
-    private final Map<String, Object> deps;
+    private final Farm farm;
 
     /**
      * Ctor.
      * @param src Input
      * @param lbl Label
-     */
-    public StkGroovy(final Input src, final String lbl) {
-        this(src, lbl, new HashMap<>(0));
-    }
-
-    /**
-     * Ctor.
-     * @param src Input
-     * @param lbl Label
-     * @param dps Dependencies
+     * @param frm Farm
      */
     public StkGroovy(final Input src, final String lbl,
-        final Map<String, Object> dps) {
+        final Farm frm) {
         this.input = src;
         this.label = lbl;
-        this.deps = dps;
+        this.farm = frm;
     }
 
     @Override
@@ -114,14 +102,7 @@ public final class StkGroovy implements Stakeholder {
     public void process(final Project project, final XML claim)
         throws IOException {
         final Binding binding = new Binding();
-        new UncheckedScalar<>(
-            new And(
-                this.deps.entrySet(),
-                ent -> {
-                    binding.setVariable(ent.getKey(), ent.getValue());
-                }
-            )
-        ).value();
+        binding.setVariable("farm", this.farm);
         final Class<?> clazz = StkGroovy.SCRIPTS.apply(
             new TextOf(this.input).asString(), this.label
         );

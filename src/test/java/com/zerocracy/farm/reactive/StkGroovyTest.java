@@ -17,15 +17,16 @@
 package com.zerocracy.farm.reactive;
 
 import com.zerocracy.farm.MismatchException;
+import com.zerocracy.farm.props.PropsFarm;
+import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.SoftException;
+import com.zerocracy.jstk.farm.fake.FkFarm;
 import com.zerocracy.jstk.farm.fake.FkProject;
 import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.Claims;
-import java.util.AbstractMap;
-import java.util.HashMap;
+import com.zerocracy.pmo.Pmo;
 import org.cactoos.io.InputOf;
-import org.cactoos.map.StickyMap;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -43,7 +44,8 @@ public final class StkGroovyTest {
 
     @Test
     public void parsesGroovy() throws Exception {
-        final Project project = new FkProject();
+        final Farm farm = new PropsFarm();
+        final Project project = new Pmo(farm);
         new StkGroovy(
             new InputOf(
                 String.join(
@@ -51,24 +53,21 @@ public final class StkGroovyTest {
                     "import com.zerocracy.jstk.Project",
                     "import com.jcabi.xml.XML",
                     "import com.zerocracy.pm.ClaimOut",
+                    "import com.zerocracy.farm.props.Props",
                     "def exec(Project project, XML xml) {",
                     "new ClaimOut()",
-                    "  .type(binding.variables.dep)",
+                    "  .type(new Props(project).get('//testing'))",
                     "  .postTo(project)",
                     "}"
                 )
             ),
             "stkgroovytest-parsesgroovy",
-            new StickyMap<String, Object>(
-                new AbstractMap.SimpleEntry<>(
-                    "dep", "hello dude"
-                )
-            )
+            farm
         ).process(project, null);
         final Claims claims = new Claims(project).bootstrap();
         MatcherAssert.assertThat(
             new ClaimIn(claims.iterate().iterator().next()).type(),
-            Matchers.endsWith(" dude")
+            Matchers.equalTo("yes")
         );
     }
 
@@ -88,7 +87,7 @@ public final class StkGroovyTest {
                 )
             ),
             "stkgroovytest-floats-soft",
-            new HashMap<>(0)
+            new FkFarm()
         ).process(project, null);
     }
 
@@ -108,7 +107,7 @@ public final class StkGroovyTest {
                 )
             ),
             "stkgroovytest-floats-mismatch",
-            new HashMap<>(0)
+            new FkFarm()
         ).process(project, null);
     }
 
@@ -127,7 +126,7 @@ public final class StkGroovyTest {
                     )
                 ),
                 "stkgroovytest-runtime-exception",
-                new HashMap<>(0)
+                new FkFarm()
             ).process(new FkProject(), null);
         } catch (final IllegalStateException ex) {
             MatcherAssert.assertThat(

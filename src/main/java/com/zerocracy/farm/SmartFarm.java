@@ -31,8 +31,6 @@ import java.util.regex.Pattern;
 import org.cactoos.Scalar;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.iterable.Mapped;
-import org.cactoos.map.MapEntry;
-import org.cactoos.map.StickyMap;
 import org.cactoos.scalar.StickyScalar;
 import org.cactoos.scalar.SyncScalar;
 import org.cactoos.scalar.UncheckedScalar;
@@ -62,17 +60,17 @@ public final class SmartFarm implements Scalar<Farm> {
     public SmartFarm(final Farm farm) {
         this.self = new SyncScalar<>(
             new StickyScalar<>(
-                () -> new PropsFarm(
+                () -> new RvFarm(
                     new RdFarm(
-                        new RvFarm(
-                            new UplinkedFarm(
+                        new UplinkedFarm(
+                            new PropsFarm(
                                 new StrictFarm(
                                     new SyncFarm(farm)
                                 )
-                            ),
-                            new Brigade(this.stakeholders())
+                            )
                         )
-                    )
+                    ),
+                    new Brigade(this.stakeholders())
                 )
             )
         );
@@ -95,15 +93,8 @@ public final class SmartFarm implements Scalar<Farm> {
                 ).getResources(Pattern.compile(".*\\.groovy"))
             ),
             path -> new StkSafe(
-                path,
-                this.value(),
-                new StkGroovy(
-                    new ResourceOf(path),
-                    path,
-                    new StickyMap<String, Object>(
-                        new MapEntry<>("farm", this.value())
-                    )
-                )
+                path, this.value(),
+                new StkGroovy(new ResourceOf(path), path, this.value())
             )
         );
     }

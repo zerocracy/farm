@@ -19,6 +19,7 @@ package com.zerocracy.stk.pm.staff.elections
 import com.jcabi.log.Logger
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
+import com.zerocracy.farm.props.Props
 import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimOut
@@ -28,8 +29,9 @@ import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pm.staff.voters.Banned
 import com.zerocracy.pm.staff.voters.NoRoom
 import com.zerocracy.pm.staff.voters.Vacation
-import com.zerocracy.pmo.Pmo
 import com.zerocracy.pm.staff.voters.Workload
+import com.zerocracy.pmo.Pmo
+import java.util.concurrent.TimeUnit
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Ping')
@@ -42,6 +44,11 @@ def exec(Project project, XML xml) {
     return
   }
   Elections elections = new Elections(project).bootstrap()
+  if (elections.age() < TimeUnit.MINUTES.toMillis(15)
+    && !new Props(project).has('//testing')) {
+    Logger.info(this, 'It is too early to make a new election')
+    return
+  }
   Set<String> winners = [] as Set
   Farm farm = binding.variables.farm
   Project pmo = new Pmo(farm)

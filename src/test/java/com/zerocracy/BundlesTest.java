@@ -34,7 +34,6 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Locale;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import org.apache.log4j.FileAppender;
@@ -51,8 +50,6 @@ import org.cactoos.iterable.Limited;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.iterable.Sorted;
 import org.cactoos.list.StickyList;
-import org.cactoos.map.MapEntry;
-import org.cactoos.map.StickyMap;
 import org.cactoos.scalar.And;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
@@ -173,15 +170,12 @@ public final class BundlesTest {
                 ).value();
             }
         ).value();
-        final Map<String, Object> gdeps = new StickyMap<String, Object>(
-            new MapEntry<>("farm", farm)
-        );
         new StkGroovy(
             new ResourceOf(
                 String.format("%s/_before.groovy", this.bundle)
             ),
             String.format("%s_before", this.bundle),
-            gdeps
+            farm
         ).process(project, null);
         new ClaimOut().type("ping").postTo(project);
         MatcherAssert.assertThat(
@@ -200,7 +194,7 @@ public final class BundlesTest {
                 String.format("%s/_after.groovy", this.bundle)
             ),
             String.format("%s_after", this.bundle),
-            gdeps
+            farm
         ).process(project, null);
     }
 

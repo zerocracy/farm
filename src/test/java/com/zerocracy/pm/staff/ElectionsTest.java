@@ -127,6 +127,20 @@ public final class ElectionsTest {
     }
 
     @Test
+    public void calculatesAge() throws Exception {
+        final Elections elections = new Elections(new FkProject()).bootstrap();
+        final String job = "gh:test/test#102";
+        elections.elect(
+            job,
+            new StickyList<>("david"),
+            new StickyMap<Voter, Integer>(
+                new MapEntry<>((login, log) -> 1.0d, -1)
+            )
+        );
+        MatcherAssert.assertThat(elections.age(), Matchers.greaterThan(0L));
+    }
+
+    @Test
     public void modifiesItemOnlyOnce() throws Exception {
         final Collection<String> ops = new LinkedList<>();
         final Elections elections = new Elections(
