@@ -35,6 +35,7 @@ import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.radars.github.GhTube
 import java.util.concurrent.TimeUnit
+import org.cactoos.text.SubText
 
 // Token must look like: zerocracy/farm;123;6
 //   - repository coordinates
@@ -60,12 +61,13 @@ def exec(Project project, XML xml) {
   Repo repo = github.repos().get(
     new Coordinates.Simple(parts[1])
   )
+  String message = claim.param('message')
   Issue issue = safe(
     repo.issues().get(
       Integer.parseInt(parts[2])
-    )
+    ),
+    message
   )
-  String message = claim.param('message')
   if (parts.length > 3) {
     Comment comment = issue.comments().get(
       Integer.parseInt(parts[3])
@@ -76,7 +78,7 @@ def exec(Project project, XML xml) {
   }
 }
 
-static Issue safe(Issue issue) {
+static Issue safe(Issue issue, String text) {
   List<Comment.Smart> comments = Lists.newArrayList(
     new Bulk<>(
       new Smarts<>(
@@ -88,8 +90,9 @@ static Issue safe(Issue issue) {
   if (over(issue, comments)) {
     throw new IllegalStateException(
       String.format(
-        'Can\'t post anything to %s#%d, too many comments already',
-        issue.repo().coordinates(), issue.number()
+        'Can\'t post anything to %s#%d, too many comments already: %s',
+        issue.repo().coordinates(), issue.number(),
+        new SubText(text, 0, 100).asString()
       )
     )
   }
