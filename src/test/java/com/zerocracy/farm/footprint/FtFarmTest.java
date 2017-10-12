@@ -18,6 +18,7 @@ package com.zerocracy.farm.footprint;
 
 import com.jcabi.s3.Bucket;
 import com.jcabi.s3.fake.FkBucket;
+import com.mongodb.client.model.Filters;
 import com.zerocracy.RunsInThreads;
 import com.zerocracy.farm.S3Farm;
 import com.zerocracy.farm.props.PropsFarm;
@@ -51,10 +52,13 @@ public final class FtFarmTest {
             Files.createTempDirectory("").toFile(),
             "the-bucket"
         );
-        final Farm farm = new SyncFarm(
-            new FtFarm(new PropsFarm(new S3Farm(bucket)))
+        final Farm farm = new FtFarm(
+            new PropsFarm(new SyncFarm(new S3Farm(bucket)))
         );
-        final Project project = farm.find("@id='ABCZZFE03'").iterator().next();
+        final String pid = "ABCZZTY03";
+        final Project project = farm.find(
+            String.format("@id='%s'", pid)
+        ).iterator().next();
         final Claims claims = new Claims(project);
         final AtomicLong cid = new AtomicLong(1L);
         final int threads = 10;
@@ -69,8 +73,9 @@ public final class FtFarmTest {
             new RunsInThreads<>(new AtomicInteger(), threads)
         );
         MatcherAssert.assertThat(
-            new Footprint(farm, project).collection().count(),
-            Matchers.equalTo((long) threads)
+            new Footprint(farm, project).collection()
+                .find(Filters.eq("project", pid)),
+            Matchers.iterableWithSize(threads)
         );
     }
 

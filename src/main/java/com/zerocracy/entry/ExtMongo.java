@@ -16,11 +16,14 @@
  */
 package com.zerocracy.entry;
 
+import com.github.mongobee.Mongobee;
+import com.github.mongobee.exception.MongobeeException;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.jstk.Farm;
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.nio.file.Files;
@@ -60,22 +63,9 @@ public final class ExtMongo implements Scalar<MongoClient> {
                                 "localhost", ExtMongo.FAKE.value()
                             );
                         } else {
-                            client = new MongoClient(
-                                new ServerAddress(
-                                    props.get("//mongo/host"),
-                                    Integer.parseInt(props.get("//mongo/port"))
-                                ),
-                                new ListOf<>(
-                                    MongoCredential.createCredential(
-                                        props.get("//mongo/user"),
-                                        "admin",
-                                        props.get("//mongo/password")
-                                            .toCharArray()
-                                    )
-                                )
-                            );
+                            client = ExtMongo.client(props);
                         }
-                        return client;
+                        return ExtMongo.bee(client);
                     }
                 )
             )
@@ -131,6 +121,47 @@ public final class ExtMongo implements Scalar<MongoClient> {
     @Override
     public MongoClient value() {
         return ExtMongo.SINGLETON.apply(this.farm);
+    }
+
+    /**
+     * Create a client.
+     * @param props Properties
+     * @return MongoDB client
+     * @throws IOException If fails
+     */
+    private static MongoClient client(final Props props) throws IOException {
+        return new MongoClient(
+            new ServerAddress(
+                props.get("//mongo/host"),
+                Integer.parseInt(props.get("//mongo/port"))
+            ),
+            new ListOf<>(
+                MongoCredential.createCredential(
+                    props.get("//mongo/user"),
+                    "admin",
+                    props.get("//mongo/password").toCharArray()
+                )
+            )
+        );
+    }
+
+    /**
+     * Apply mongobee.
+     * @param client The client
+     * @return MongoDB client
+     * @throws IOException If fails
+     */
+    private static MongoClient bee(final MongoClient client)
+        throws IOException {
+        final Mongobee bee = new Mongobee(client);
+        bee.setDbName("footprint");
+        bee.setChangeLogsScanPackage(ExtMongo.class.getPackage().getName());
+        try {
+            bee.execute();
+        } catch (final MongobeeException ex) {
+            throw new IOException(ex);
+        }
+        return client;
     }
 
 }
