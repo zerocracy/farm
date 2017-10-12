@@ -26,8 +26,14 @@ import com.zerocracy.pm.ClaimIn
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Notify user')
   ClaimIn claim = new ClaimIn(xml)
+  String[] parts = claim.token().split(';')
+  if (parts[0] != 'user') {
+    throw new IllegalArgumentException(
+      "Something is wrong with this token: ${claim.token()}"
+    )
+  }
   claim.copy()
     .type('Notify')
-    .token("slack;${project};${claim.token()};direct")
+    .token("slack;${project};${parts[1]}")
     .postTo(project)
 }
