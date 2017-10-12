@@ -31,6 +31,7 @@ import org.cactoos.text.FormattedText;
  * @author Carlos Miranda (miranda.cma@gmail.com)
  * @version $Id$
  * @since 0.16.1
+ * @checkstyle ClassDataAbstractionCouplingCheck (2 lines)
  */
 public final class RbOnUnassign implements Rebound {
 
@@ -41,7 +42,7 @@ public final class RbOnUnassign implements Rebound {
         final Issue.Smart issue = new Issue.Smart(
             new IssueOfEvent(github, event)
         );
-        final String login = issue.assignee().login();
+        final String login = new GhIssueEvent(event).assignee();
         new ClaimOut()
             .type("Cancel order")
             .token(new TokenOfIssue(issue))

@@ -47,8 +47,8 @@ public final class RbOnAssign implements Rebound {
         final Issue.Smart issue = new Issue.Smart(
             new IssueOfEvent(github, event)
         );
-        final String login = issue.assignee().login();
         final FormattedText reply;
+        final String login = new GhIssueEvent(event).assignee();
         if ("0crat".equalsIgnoreCase(login)) {
             issue.assign("");
             new ClaimOut()
