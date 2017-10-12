@@ -19,6 +19,7 @@ package com.zerocracy.stk.pm.staff.roles
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
+import com.zerocracy.jstk.SoftException
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.staff.Roles
@@ -31,11 +32,18 @@ def exec(Project project, XML xml) {
   String login = claim.param('login')
   People people = new People(project).bootstrap()
   if (!people.hasMentor(login)) {
-    claim.reply('Assignee must be registered person.')
-    return
+    throw new SoftException(
+      "Assignee @${login} must be a registered person."
+    )
   }
   String role = claim.param('role')
-  new Roles(project).bootstrap().assign(login, role)
+  Roles roles = new Roles(project).bootstrap()
+  if (roles.hasRole(login, role)) {
+    throw new SoftException(
+      "Assignee @${login} already has role `${role}`."
+    )
+  }
+  roles.assign(login, role)
   claim.reply(
     String.format(
       'Role "%s" assigned to "%s",' +
