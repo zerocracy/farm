@@ -74,7 +74,7 @@ public final class SyncProject implements Project {
         final long start = System.currentTimeMillis();
         try {
             // @checkstyle MagicNumber (1 line)
-            if (!this.lock.tryLock(5L, TimeUnit.MINUTES)) {
+            if (!this.lock.tryLock(30L, TimeUnit.SECONDS)) {
                 throw new IllegalStateException(
                     Logger.format(
                         "Failed to acquire \"%s\" in \"%s\" in %[ms]s",
@@ -85,7 +85,14 @@ public final class SyncProject implements Project {
             }
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
-            throw new IllegalStateException(ex);
+            throw new IllegalStateException(
+                Logger.format(
+                    "Interrupted while waiting for \"%s\" in %s for %[ms]s",
+                    file, this.toString(),
+                    System.currentTimeMillis() - start
+                ),
+                ex
+            );
         }
         return new SyncItem(this.origin.acq(file), this.lock);
     }
