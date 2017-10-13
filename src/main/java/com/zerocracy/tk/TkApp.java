@@ -230,11 +230,11 @@ public final class TkApp extends TkWrap {
                                     ),
                                     new RsVelocity.Pair(
                                         "version",
-                                        props.get("//build/version")
+                                        props.get("//build/version", "")
                                     ),
                                     new RsVelocity.Pair(
                                         "revision",
-                                        props.get("//build/revision")
+                                        props.get("//build/revision", "")
                                     )
                                 ),
                                 "text/html"

@@ -19,7 +19,6 @@ SOFTWARE.
   <claim id="1">
     <created>2017-03-27T11:18:09.228Z</created>
     <type>ping</type>
-    <author>yegor256</author>
   </claim>
   <claim id="2">
     <created>2017-03-27T11:18:09.228Z</created>
@@ -34,11 +33,17 @@ SOFTWARE.
   <claim id="3">
     <created>2017-03-27T11:19:09.228Z</created>
     <type>ping</type>
-    <author>yegor256</author>
   </claim>
   <claim id="4">
     <created>2017-03-27T11:20:09.228Z</created>
     <type>ping</type>
-    <author>yegor256</author>
+  </claim>
+  <claim id="5">
+    <created>2017-03-27T11:23:09.228Z</created>
+    <type>ping</type>
+  </claim>
+  <claim id="6">
+    <created>2017-03-27T11:26:09.228Z</created>
+    <type>ping</type>
   </claim>
 </claims>

@@ -24,6 +24,7 @@ import com.mongodb.client.model.Updates;
 import com.zerocracy.entry.ExtMongo;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
+import java.io.Closeable;
 import java.util.Map;
 import org.bson.Document;
 
@@ -35,7 +36,7 @@ import org.bson.Document;
  * @since 0.9
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public final class Footprint {
+public final class Footprint implements Closeable {
 
     /**
      * Project ID.
@@ -116,4 +117,8 @@ public final class Footprint {
         return this.mongo.getDatabase("footprint").getCollection("claims");
     }
 
+    @Override
+    public void close() {
+        this.mongo.close();
+    }
 }

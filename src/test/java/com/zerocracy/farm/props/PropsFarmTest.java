@@ -16,6 +16,7 @@
  */
 package com.zerocracy.farm.props;
 
+import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.farm.fake.FkFarm;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -35,6 +36,15 @@ public final class PropsFarmTest {
         MatcherAssert.assertThat(
             new Props(new PropsFarm(new FkFarm())).get("/props/testing"),
             Matchers.equalTo("yes")
+        );
+    }
+
+    @Test
+    public void equalsToEachOther() throws Exception {
+        final Farm farm = new FkFarm();
+        MatcherAssert.assertThat(
+            new PropsFarm(farm),
+            Matchers.equalTo(new PropsFarm(farm))
         );
     }
 

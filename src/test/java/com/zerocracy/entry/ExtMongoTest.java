@@ -48,22 +48,14 @@ public final class ExtMongoTest {
         final XML xml = new Claims(project).iterate().iterator().next();
         final MongoClient mongo = new ExtMongo(farm).value();
         final String pid = "123456789";
-        final Footprint footprint = new Footprint(mongo, pid);
-        footprint.open(xml);
-        footprint.close(xml);
-        MatcherAssert.assertThat(
-            footprint.collection().find(Filters.eq("project", pid)),
-            Matchers.iterableWithSize(1)
-        );
+        try (final Footprint footprint = new Footprint(mongo, pid)) {
+            footprint.open(xml);
+            footprint.close(xml);
+            MatcherAssert.assertThat(
+                footprint.collection().find(Filters.eq("project", pid)),
+                Matchers.iterableWithSize(1)
+            );
+        }
     }
 
-    @Test
-    public void makesTheSameObject() throws Exception {
-        final Farm farm = new PropsFarm(new FkFarm());
-        final MongoClient mongo = new ExtMongo(farm).value();
-        MatcherAssert.assertThat(
-            new ExtMongo(farm).value(),
-            Matchers.equalTo(mongo)
-        );
-    }
 }

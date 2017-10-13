@@ -23,7 +23,10 @@ import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.Footprint;
 import com.zerocracy.tk.RsPage;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Map;
+import org.bson.Document;
+import org.cactoos.list.StickyList;
 import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
@@ -63,16 +66,24 @@ public final class TkFootprint implements TkRegex {
             req,
             () -> {
                 final Project project = new RqProject(this.farm, req).value();
+                final Collection<Document> docs;
+                try (final Footprint footprint =
+                    new Footprint(this.farm, project)) {
+                    docs = new StickyList<>(
+                        footprint.collection()
+                            .find(Filters.eq("project", project.toString()))
+                            .sort(Sorts.descending("created"))
+                            // @checkstyle MagicNumber (1 line)
+                            .limit(50)
+                    );
+                    docs.size();
+                }
                 return new XeChain(
                     new XeAppend("project", project.toString()),
                     new XeAppend(
                         "claims",
                         new XeTransform<>(
-                            new Footprint(this.farm, project).collection()
-                                .find(Filters.eq("project", project.toString()))
-                                .sort(Sorts.descending("created"))
-                                // @checkstyle MagicNumber (1 line)
-                                .limit(50),
+                            docs,
                             doc -> new XeAppend(
                                 "claim",
                                 new XeTransform<Map.Entry<String, Object>>(

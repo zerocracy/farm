@@ -19,9 +19,7 @@ package com.zerocracy.entry;
 import com.jcabi.aspects.Loggable;
 import com.zerocracy.farm.S3Farm;
 import com.zerocracy.farm.SmartFarm;
-import com.zerocracy.farm.footprint.FtFarm;
 import com.zerocracy.farm.props.Props;
-import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.radars.github.GithubRoutine;
 import com.zerocracy.radars.github.TkGithub;
@@ -82,7 +80,7 @@ public final class Main {
         }
         Sentry.init(props.get("//sentry/dsn", ""));
         final Farm farm = new SmartFarm(
-            new FtFarm(new PropsFarm(new S3Farm(new ExtBucket().value())))
+            new S3Farm(new ExtBucket().value())
         ).value();
         try (
             final SlackRadar radar = new SlackRadar(farm);

@@ -16,7 +16,6 @@
  */
 package com.zerocracy.farm.footprint;
 
-import com.zerocracy.entry.ExtMongo;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
@@ -50,7 +49,7 @@ public final class FtFarm implements Farm {
     public Iterable<Project> find(final String query) throws IOException {
         return new Mapped<>(
             this.origin.find(query),
-            project -> new FtProject(project, new ExtMongo(this.origin).value())
+            project -> new FtProject(project, this.origin)
         );
     }
 

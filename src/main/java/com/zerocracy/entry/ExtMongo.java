@@ -27,9 +27,8 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import org.cactoos.Scalar;
-import org.cactoos.func.RunnableOf;
-import org.cactoos.func.StickyFunc;
 import org.cactoos.func.SyncFunc;
 import org.cactoos.func.UncheckedFunc;
 import org.cactoos.list.ListOf;
@@ -54,20 +53,18 @@ public final class ExtMongo implements Scalar<MongoClient> {
     private static final UncheckedFunc<Farm, MongoClient> SINGLETON =
         new UncheckedFunc<>(
             new SyncFunc<>(
-                new StickyFunc<>(
-                    frm -> {
-                        final Props props = new Props(frm);
-                        final MongoClient client;
-                        if (props.has("//testing")) {
-                            client = new MongoClient(
-                                "localhost", ExtMongo.FAKE.value()
-                            );
-                        } else {
-                            client = ExtMongo.client(props);
-                        }
-                        return ExtMongo.bee(client);
+                frm -> {
+                    final Props props = new Props(frm);
+                    final MongoClient client;
+                    if (props.has("//testing")) {
+                        client = new MongoClient(
+                            "localhost", ExtMongo.FAKE.value()
+                        );
+                    } else {
+                        client = ExtMongo.client(props);
                     }
-                )
+                    return ExtMongo.bee(client);
+                }
             )
         );
 
@@ -88,17 +85,25 @@ public final class ExtMongo implements Scalar<MongoClient> {
                     } finally {
                         socket.close();
                     }
-                    new Thread(
-                        new RunnableOf<>(
-                            () -> new ProcessBuilder().command(
-                                "mongod",
-                                "--dbpath",
-                                Files.createTempDirectory("ft").toString(),
-                                "--port",
-                                Integer.toString(port)
-                            ).redirectErrorStream(true).start()
+                    final Path dir = Files.createTempDirectory("mongo-log");
+                    final Process mongod = new ProcessBuilder()
+                        .command(
+                            "mongod",
+                            "--quiet",
+                            "--logpath",
+                            dir.resolve("log.txt").toAbsolutePath().toString(),
+                            "--dbpath",
+                            Files.createTempDirectory("ft").toString(),
+                            "--port",
+                            Integer.toString(port)
                         )
-                    ).start();
+                        .redirectInput(ProcessBuilder.Redirect.INHERIT)
+                        .redirectOutput(ProcessBuilder.Redirect.INHERIT)
+                        .redirectError(ProcessBuilder.Redirect.INHERIT)
+                        .start();
+                    Runtime.getRuntime().addShutdownHook(
+                        new Thread(mongod::destroy)
+                    );
                     return port;
                 }
             )

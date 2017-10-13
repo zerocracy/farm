@@ -18,8 +18,9 @@ package com.zerocracy.farm.footprint;
 
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
-import com.mongodb.MongoClient;
+import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
+import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.Footprint;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -40,9 +41,9 @@ import org.cactoos.io.TeeInput;
 final class FtItem implements Item {
 
     /**
-     * Project ID.
+     * Project.
      */
-    private final String pid;
+    private final Project project;
 
     /**
      * Original item.
@@ -50,9 +51,9 @@ final class FtItem implements Item {
     private final Item origin;
 
     /**
-     * Mongo.
+     * Farm.
      */
-    private final MongoClient mongo;
+    private final Farm farm;
 
     /**
      * Path to content temp.
@@ -61,17 +62,17 @@ final class FtItem implements Item {
 
     /**
      * Ctor.
-     * @param pkt Project ID
+     * @param pkt Project
      * @param item Original item
-     * @param client Mongo client
+     * @param frm Farm
      * @param path Content temp
      * @checkstyle ParameterNumberCheck (5 lines)
      */
-    FtItem(final String pkt, final Item item,
-        final MongoClient client, final Path path) {
-        this.pid = pkt;
+    FtItem(final Project pkt, final Item item,
+        final Farm frm, final Path path) {
+        this.project = pkt;
         this.origin = item;
-        this.mongo = client;
+        this.farm = frm;
         this.temp = path;
     }
 
@@ -92,15 +93,17 @@ final class FtItem implements Item {
         final XML after = FtItem.claims(modified);
         this.origin.close();
         final XML before = FtItem.claims(this.temp);
-        final Footprint footprint = new Footprint(this.mongo, this.pid);
-        for (final XML claim : before.nodes("//claim[type!='Ping']")) {
-            if (!FtItem.exists(after, claim)) {
-                footprint.close(claim);
+        try (final Footprint footprint =
+            new Footprint(this.farm, this.project)) {
+            for (final XML claim : before.nodes("//claim[type!='Ping']")) {
+                if (!FtItem.exists(after, claim)) {
+                    footprint.close(claim);
+                }
             }
-        }
-        for (final XML claim : after.nodes("//claim[type!='Ping' ]")) {
-            if (!FtItem.exists(before, claim)) {
-                footprint.open(claim);
+            for (final XML claim : after.nodes("//claim[type!='Ping' ]")) {
+                if (!FtItem.exists(before, claim)) {
+                    footprint.open(claim);
+                }
             }
         }
         Files.delete(this.temp);

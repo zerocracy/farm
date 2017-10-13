@@ -16,7 +16,6 @@
  */
 package com.zerocracy;
 
-import com.jcabi.aspects.Tv;
 import com.jcabi.log.VerboseCallable;
 import com.jcabi.log.VerboseThreads;
 import java.util.ArrayList;
@@ -58,7 +57,7 @@ public final class RunsInThreads<T> extends TypeSafeMatcher<Func<T, Boolean>> {
      * @param object Input object
      */
     public RunsInThreads(final T object) {
-        this(object, Runtime.getRuntime().availableProcessors() << Tv.FOUR);
+        this(object, Runtime.getRuntime().availableProcessors());
     }
 
     /**

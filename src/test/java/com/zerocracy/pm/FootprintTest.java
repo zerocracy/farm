@@ -42,15 +42,16 @@ public final class FootprintTest {
         final Project project = new Pmo(farm);
         new ClaimOut().type("hello").postTo(project);
         final XML xml = new Claims(project).iterate().iterator().next();
-        final Footprint footprint = new Footprint(farm, project);
-        footprint.open(xml);
-        footprint.close(xml);
-        MatcherAssert.assertThat(
-            footprint.collection().find(
-                Filters.eq("project", project.toString())
-            ),
-            Matchers.iterableWithSize(1)
-        );
+        try (final Footprint footprint = new Footprint(farm, project)) {
+            footprint.open(xml);
+            footprint.close(xml);
+            MatcherAssert.assertThat(
+                footprint.collection().find(
+                    Filters.eq("project", project.toString())
+                ),
+                Matchers.iterableWithSize(1)
+            );
+        }
     }
 
 }

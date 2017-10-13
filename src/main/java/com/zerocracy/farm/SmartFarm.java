@@ -16,6 +16,7 @@
  */
 package com.zerocracy.farm;
 
+import com.zerocracy.farm.footprint.FtFarm;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.farm.reactive.Brigade;
 import com.zerocracy.farm.reactive.RvFarm;
@@ -63,9 +64,11 @@ public final class SmartFarm implements Scalar<Farm> {
                 () -> new RvFarm(
                     new RdFarm(
                         new UplinkedFarm(
-                            new PropsFarm(
-                                new StrictFarm(
-                                    new SyncFarm(farm)
+                            new FtFarm(
+                                new PropsFarm(
+                                    new StrictFarm(
+                                        new SyncFarm(farm)
+                                    )
                                 )
                             )
                         )

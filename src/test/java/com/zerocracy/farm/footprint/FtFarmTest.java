@@ -72,11 +72,12 @@ public final class FtFarmTest {
             },
             new RunsInThreads<>(new AtomicInteger(), threads)
         );
-        MatcherAssert.assertThat(
-            new Footprint(farm, project).collection()
-                .find(Filters.eq("project", pid)),
-            Matchers.iterableWithSize(threads)
-        );
+        try (final Footprint footprint = new Footprint(farm, project)) {
+            MatcherAssert.assertThat(
+                footprint.collection().find(Filters.eq("project", pid)),
+                Matchers.iterableWithSize(threads)
+            );
+        }
     }
 
 }

@@ -16,7 +16,7 @@
  */
 package com.zerocracy.farm.footprint;
 
-import com.mongodb.MongoClient;
+import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
@@ -43,18 +43,18 @@ final class FtProject implements Project {
     private final Project origin;
 
     /**
-     * Mongo.
+     * Farm.
      */
-    private final MongoClient mongo;
+    private final Farm farm;
 
     /**
      * Ctor.
      * @param pkt Project
-     * @param client Mongo client
+     * @param frm Farm
      */
-    FtProject(final Project pkt, final MongoClient client) {
+    FtProject(final Project pkt, final Farm frm) {
         this.origin = pkt;
-        this.mongo = client;
+        this.farm = frm;
     }
 
     @Override
@@ -71,7 +71,7 @@ final class FtProject implements Project {
             if (Files.exists(before)) {
                 new LengthOf(new TeeInput(item.path(), temp)).value();
             }
-            item = new FtItem(this.toString(), item, this.mongo, temp);
+            item = new FtItem(this, item, this.farm, temp);
         }
         return item;
     }

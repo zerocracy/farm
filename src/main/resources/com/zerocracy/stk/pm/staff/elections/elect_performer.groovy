@@ -53,7 +53,7 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Project pmo = new Pmo(farm)
   for (String job : wbs.iterate()) {
-    elections.elect(
+    boolean done = elections.elect(
       job, logins,
       [
         (new NoRoom(pmo)): -100,
@@ -62,7 +62,7 @@ def exec(Project project, XML xml) {
         (new Workload(pmo)): 1
       ]
     )
-    if (elections.elected(job)) {
+    if (done && elections.elected(job)) {
       String winner = elections.winner(job)
       if (!winners.contains(winner)) {
         winners.add(winner)

@@ -17,9 +17,13 @@
 package com.zerocracy.bundles.elects_and_assigns_performer
 
 import com.jcabi.xml.XML
+import com.mongodb.client.model.Filters
+import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
+import com.zerocracy.pm.Footprint
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.staff.Elections
+import org.cactoos.iterable.LengthOf
 
 def exec(Project project, XML xml) {
   def job = 'gh:test/test#1'
@@ -28,4 +32,13 @@ def exec(Project project, XML xml) {
   assert orders.performer('gh:test/test#2') == 'dmarkov'
   def elections = new Elections(project).bootstrap()
   assert !elections.elected(job)
+  Farm farm = binding.variables.farm
+  assert new LengthOf(
+    new Footprint(farm, project).collection().find(
+      Filters.and(
+        Filters.eq('project', project.toString()),
+        Filters.eq('type', 'Performer was elected')
+      )
+    )
+  ).value() == 1
 }
