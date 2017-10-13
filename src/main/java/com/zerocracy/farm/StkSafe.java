@@ -76,7 +76,8 @@ public final class StkSafe implements Stakeholder {
     @SuppressWarnings(
         {
             "PMD.AvoidCatchingThrowable",
-            "PMD.AvoidRethrowingException"
+            "PMD.AvoidRethrowingException",
+            "PMD.CyclomaticComplexity"
         }
     )
     public void process(final Project project,
@@ -132,16 +133,20 @@ public final class StkSafe implements Stakeholder {
                     )
                 ).postTo(project);
             }
-            Sentry.capture(
-                new IllegalArgumentException(
-                    String.format(
-                        "Claim #%d in %s: type=\"%s\", id=\"%s\"",
-                        claim.cid(), project, claim.type(),
-                        this.identifier
-                    ),
-                    ex
+            final StringBuilder msg = new StringBuilder(
+                String.format(
+                    "Claim #%d in %s: type=\"%s\", stakeholder=\"%s\"",
+                    claim.cid(), project, claim.type(),
+                    this.identifier
                 )
             );
+            if (claim.hasAuthor()) {
+                msg.append(String.format(", author=\"%s\"", claim.author()));
+            }
+            if (claim.hasToken()) {
+                msg.append(String.format(", token=\"%s\"", claim.token()));
+            }
+            Sentry.capture(new IllegalArgumentException(msg.toString(), ex));
         }
     }
 }
