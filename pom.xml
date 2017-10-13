@@ -74,6 +74,9 @@ SOFTWARE.
       <url>https://github.com/zerocracy/farm</url>
     </site>
   </distributionManagement>
+  <properties>
+    <mongo.version>3.5.0</mongo.version>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>com.zerocracy</groupId>
@@ -110,17 +113,17 @@ SOFTWARE.
     <dependency>
       <groupId>org.mongodb</groupId>
       <artifactId>mongodb-driver</artifactId>
-      <version>3.6.0-beta2</version>
+      <version>${mongo.version}</version>
     </dependency>
     <dependency>
       <groupId>org.mongodb</groupId>
       <artifactId>mongodb-driver-core</artifactId>
-      <version>3.6.0-beta2</version>
+      <version>${mongo.version}</version>
     </dependency>
     <dependency>
       <groupId>org.mongodb</groupId>
       <artifactId>bson</artifactId>
-      <version>3.6.0-beta2</version>
+      <version>${mongo.version}</version>
     </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>
