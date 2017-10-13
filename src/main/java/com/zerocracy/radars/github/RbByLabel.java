@@ -32,6 +32,7 @@ import org.cactoos.text.FormattedText;
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.12
+ * @link https://developer.github.com/v3/activity/events/types/#labelevent
  */
 public final class RbByLabel implements Rebound {
 
@@ -53,38 +54,39 @@ public final class RbByLabel implements Rebound {
     /**
      * Ctor.
      *
-     * @param origin Origin
-     * @param labels Labels
+     * @param rebound Origin
+     * @param list Labels
      */
-    public RbByLabel(final Rebound origin, final String... labels) {
-        this(origin, Arrays.asList(labels));
+    public RbByLabel(final Rebound rebound, final String... list) {
+        this(rebound, Arrays.asList(list));
     }
 
     /**
      * Primary ctor.
      *
-     * @param origin Origin
-     * @param labels Labels
+     * @param rebound Origin
+     * @param list Labels
      */
-    public RbByLabel(final Rebound origin, final Collection<String> labels) {
-        this.origin = origin;
-        this.labels = labels;
+    public RbByLabel(final Rebound rebound, final Collection<String> list) {
+        this.origin = rebound;
+        this.labels = list;
     }
 
     @Override
-    public String react(
-        final Farm farm,
-        final Github github,
-        final JsonObject event
-    ) throws IOException {
+    public String react(final Farm farm, final Github github,
+        final JsonObject event) throws IOException {
         final Text reaction;
-        if (event.containsKey(RbByLabel.FIELD)
-            && this.labels.contains(event.getString(RbByLabel.FIELD))) {
-            reaction = new FormattedText(
-                "[%s]: %s",
-                event.getString(RbByLabel.FIELD),
-                this.origin.react(farm, github, event)
-            );
+        if (event.containsKey(RbByLabel.FIELD)) {
+            final String label = event.getJsonObject(RbByLabel.FIELD)
+                .getString("name");
+            if (this.labels.contains(label)) {
+                reaction = new FormattedText(
+                    "[%s]: %s",
+                    label, this.origin.react(farm, github, event)
+                );
+            } else {
+                reaction = new FormattedText("[%s]: not this one", label);
+            }
         } else {
             reaction = new FormattedText(
                 "We're not interested (%s)",
