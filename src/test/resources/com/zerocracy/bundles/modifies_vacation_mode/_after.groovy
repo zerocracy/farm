@@ -24,8 +24,8 @@ import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
   MatcherAssert.assertThat(
-    'modifies_vacation_mode mode is "off"',
+    'Vacation mode is "off"',
     new People(project).vacation('g4s8'),
-    Matchers.is(false)
+    Matchers.is(true)
   )
 }

@@ -40,7 +40,8 @@ def exec(Project project, XML xml) {
   if (logins.empty) {
     Logger.warn(this, 'No ARC in %s, cannot pay ARC for PR', project)
     return
-  } else if (logins.size() > 1) {
+  }
+  if (logins.size() > 1) {
     Logger.warn(
       this, 'More than one ARCs in %s, cannot pay ARC for PR', project
     )

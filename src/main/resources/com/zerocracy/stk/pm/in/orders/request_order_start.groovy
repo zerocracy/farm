@@ -19,6 +19,7 @@ package com.zerocracy.stk.pm.in.orders
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
+import com.zerocracy.jstk.SoftException
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.in.Orders
@@ -45,13 +46,12 @@ def exec(Project project, XML xml) {
   if (orders.assigned(job)) {
     String performer = orders.performer(job)
     if (login == performer) {
-      claim.reply(
+      throw new SoftException(
         String.format(
           'Job `%s` is already assigned to @%s.',
           job, login
         )
-      ).postTo(project)
-      return
+      )
     }
     orders.resign(job)
     new ClaimOut()

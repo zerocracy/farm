@@ -30,7 +30,7 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   String author = claim.author()
   String role = 'PO'
-  if (roles.isEmpty()) {
+  if (roles.empty) {
     roles.assign(author, role)
     new ClaimOut()
       .type('Role was assigned')

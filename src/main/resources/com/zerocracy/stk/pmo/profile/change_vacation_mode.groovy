@@ -19,33 +19,28 @@ package com.zerocracy.stk.pmo.profile
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
+import com.zerocracy.jstk.SoftException
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.People
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Change modifies_vacation_mode mode')
+  new Assume(project, xml).type('Change vacation mode')
   ClaimIn claim = new ClaimIn(xml)
   String mode = claim.param('mode')
   People people = new People(project).bootstrap()
   if ('on' == mode) {
     people.vacation(claim.author(), true)
     if (claim.hasToken()) {
-      claim.reply(
-        'You are on modifies_vacation_mode now'
-      ).postTo(project)
+      claim.reply('You are on vacation now').postTo(project)
     }
   } else if ('off' == mode) {
     people.vacation(claim.author(), false)
     if (claim.hasToken()) {
-      claim.reply(
-        'Your modifies_vacation_mode has been ended'
-      ).postTo(project)
+      claim.reply('Your vacation has been ended').postTo(project)
     }
   } else {
-    if (claim.hasToken()) {
-      claim.reply(
-        "Incorrect modifies_vacation_mode mode. Possible modes are 'on' or 'off'"
-      ).postTo(project)
-    }
+    throw new SoftException(
+      "Incorrect vacation mode. Possible modes are 'on' or 'off'"
+    )
   }
 }
