@@ -52,6 +52,7 @@ def exec(Project project, XML xml) {
   Set<String> winners = [] as Set
   Farm farm = binding.variables.farm
   Project pmo = new Pmo(farm)
+  long start = System.currentTimeMillis()
   for (String job : wbs.iterate()) {
     boolean done = elections.elect(
       job, logins,
@@ -73,6 +74,9 @@ def exec(Project project, XML xml) {
           .param('reason', elections.reason(job))
           .postTo(project)
       }
+    }
+    if (System.currentTimeMillis() - start > TimeUnit.SECONDS.toMillis(15)) {
+      break
     }
   }
 }
