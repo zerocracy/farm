@@ -19,6 +19,7 @@ package com.zerocracy.stk.pm.scope.wbs
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
+import com.zerocracy.jstk.SoftException
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.scope.Wbs
@@ -28,7 +29,13 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).roles('ARC', 'PO')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
-  new Wbs(project).bootstrap().add(job)
+  Wbs wbs = new Wbs(project).bootstrap()
+  if (wbs.exists(job)) {
+    throw new SoftException(
+      String.format('Job `%s` is already in scope.', job)
+    )
+  }
+  wbs.add(job)
   claim.reply(
     String.format('Job `%s` is in scope.', job)
   ).postTo(project)
