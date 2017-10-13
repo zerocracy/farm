@@ -153,6 +153,12 @@ SOFTWARE.
       <groupId>com.github.mongobee</groupId>
       <artifactId>mongobee</artifactId>
       <version>0.13</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.mongodb</groupId>
+          <artifactId>mongo-java-driver</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.amazonaws</groupId>
