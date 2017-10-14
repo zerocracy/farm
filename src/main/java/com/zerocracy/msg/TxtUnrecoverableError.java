@@ -48,11 +48,10 @@ public final class TxtUnrecoverableError implements Text {
     @Override
     public String asString() throws IOException {
         return new JoinedText(
-            "",
-            "There is an unrecoverable",
-            "failure on my side.",
-            " Please, submit it",
-            " [here](https://github.com/zerocracy/datum):",
+            " ",
+            "There is an unrecoverable failure on my side.",
+            "Please, submit it",
+            "[here](https://github.com/zerocracy/datum):",
             "\n\n```\n",
             StringUtils.abbreviate(
                 new TextOf(

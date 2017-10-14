@@ -20,10 +20,13 @@ import com.jcabi.log.Logger;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import lombok.EqualsAndHashCode;
+import org.cactoos.func.RunnableOf;
 
 /**
  * Sync project.
@@ -47,21 +50,40 @@ public final class SyncProject implements Project {
     private final Lock lock;
 
     /**
+     * Threshold of locking, in seconds.
+     */
+    private final long threshold;
+
+    /**
+     * Terminator of long running threads.
+     */
+    private final ExecutorService terminator;
+
+    /**
      * Ctor.
      * @param pkt Project
      */
     public SyncProject(final Project pkt) {
-        this(pkt, new ReentrantLock());
+        this(
+            pkt, new ReentrantLock(),
+            Long.MAX_VALUE, Executors.newSingleThreadExecutor()
+        );
     }
 
     /**
      * Ctor.
      * @param pkt Project
      * @param lck Lock
+     * @param sec Seconds to give to each thread
+     * @param svc Terminator
+     * @checkstyle ParameterNumberCheck (5 lines)
      */
-    public SyncProject(final Project pkt, final Lock lck) {
+    public SyncProject(final Project pkt, final Lock lck,
+        final long sec, final ExecutorService svc) {
         this.origin = pkt;
         this.lock = lck;
+        this.threshold = sec;
+        this.terminator = svc;
     }
 
     @Override
@@ -94,6 +116,17 @@ public final class SyncProject implements Project {
                 ex
             );
         }
+        final Thread thread = Thread.currentThread();
+        this.terminator.submit(
+            new RunnableOf<Object>(
+                input -> {
+                    if (!this.lock.tryLock(this.threshold, TimeUnit.SECONDS)) {
+                        thread.interrupt();
+                    }
+                    this.lock.unlock();
+                }
+            )
+        );
         return new SyncItem(this.origin.acq(file), this.lock);
     }
 }

@@ -21,12 +21,18 @@ import com.jcabi.s3.fake.FkBucket;
 import com.zerocracy.RunsInThreads;
 import com.zerocracy.farm.S3Farm;
 import com.zerocracy.jstk.Farm;
+import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.scope.Wbs;
 import com.zerocracy.pm.staff.Roles;
+import com.zerocracy.pmo.Pmo;
 import java.nio.file.Files;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.cactoos.func.RunnableOf;
 import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
@@ -64,6 +70,43 @@ public final class SyncFarmTest {
             },
             new RunsInThreads<>(new AtomicInteger())
         );
+    }
+
+    @Test
+    public void interruptsTooLongThread() throws Exception {
+        final Bucket bucket = new FkBucket(
+            Files.createTempDirectory("").toFile(),
+            "the-bucket-1"
+        );
+        final Farm farm = new SyncFarm(new S3Farm(bucket), 1L);
+        final Project pmo = new Pmo(farm);
+        final CountDownLatch locked = new CountDownLatch(1);
+        new Thread(
+            new RunnableOf<Object>(
+                input -> {
+                    try (final Item item = pmo.acq("b.xml")) {
+                        locked.countDown();
+                        MatcherAssert.assertThat(
+                            item.path(), Matchers.notNullValue()
+                        );
+                        TimeUnit.HOURS.sleep(1L);
+                    }
+                }
+            )
+        ).start();
+        locked.await();
+        try (final Item item = pmo.acq("a.xml")) {
+            MatcherAssert.assertThat(
+                item.path(),
+                Matchers.notNullValue()
+            );
+        }
+        try (final Item item = pmo.acq("c.xml")) {
+            MatcherAssert.assertThat(
+                item.path(),
+                Matchers.notNullValue()
+            );
+        }
     }
 
 }

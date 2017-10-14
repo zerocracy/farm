@@ -22,6 +22,7 @@ import com.jcabi.github.mock.MkGithub;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.SoftException;
 import com.zerocracy.msg.TxtUnrecoverableError;
+import io.sentry.Sentry;
 import java.io.IOException;
 import javax.json.JsonObject;
 import org.cactoos.Proc;
@@ -73,6 +74,7 @@ public final class RbSafe implements Rebound {
                     RbSafe.issue(github, event)
                         .comments()
                         .post(new TxtUnrecoverableError(throwable).asString());
+                    Sentry.capture(throwable);
                     throw new IOException(throwable);
                 }
             )

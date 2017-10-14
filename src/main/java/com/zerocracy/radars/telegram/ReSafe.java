@@ -19,6 +19,7 @@ package com.zerocracy.radars.telegram;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.SoftException;
 import com.zerocracy.msg.TxtUnrecoverableError;
+import io.sentry.Sentry;
 import java.io.IOException;
 import org.cactoos.Proc;
 import org.cactoos.func.FuncWithFallback;
@@ -70,6 +71,7 @@ public final class ReSafe implements Reaction {
                     session.reply(
                         new RsText(new TxtUnrecoverableError(throwable))
                     );
+                    Sentry.capture(throwable);
                     throw new IOException(throwable);
                 }
             )

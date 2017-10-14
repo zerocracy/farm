@@ -20,6 +20,7 @@ import com.jcabi.github.Comment;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.SoftException;
 import com.zerocracy.msg.TxtUnrecoverableError;
+import io.sentry.Sentry;
 import java.io.IOException;
 import org.cactoos.Proc;
 import org.cactoos.func.FuncWithFallback;
@@ -67,6 +68,7 @@ public final class ReSafe implements Response {
                     comment.issue().comments().post(
                         new TxtUnrecoverableError(throwable).asString()
                     );
+                    Sentry.capture(throwable);
                     throw new IOException(throwable);
                 }
             )
