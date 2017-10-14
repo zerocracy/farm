@@ -59,6 +59,14 @@ final class SyncItem implements Item {
 
     @Override
     public Path path() throws IOException {
+        if (Thread.currentThread().isInterrupted()) {
+            throw new IllegalStateException(
+                String.format(
+                    "The thread %s is interrupted, can't continue.",
+                    Thread.currentThread().getName()
+                )
+            );
+        }
         return this.origin.path();
     }
 
