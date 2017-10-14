@@ -32,6 +32,7 @@ import com.zerocracy.pm.staff.voters.Vacation
 import com.zerocracy.pm.staff.voters.Workload
 import com.zerocracy.pmo.Pmo
 import java.util.concurrent.TimeUnit
+import org.cactoos.iterable.Shuffled
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Ping')
@@ -53,7 +54,7 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Project pmo = new Pmo(farm)
   long start = System.currentTimeMillis()
-  for (String job : wbs.iterate()) {
+  for (String job : new Shuffled<>(wbs.iterate())) {
     boolean done = elections.elect(
       job, logins,
       [
