@@ -53,12 +53,12 @@ public final class ExtMongobee {
         try (final MongoClient client = new ExtMongo(this.farm).value()) {
             final Mongobee bee = new Mongobee(client);
             bee.setDbName("footprint");
+            bee.setChangeLogsScanPackage(ExtMongo.class.getPackage().getName());
             if (bee.isExecutionInProgress()) {
                 throw new IllegalStateException(
                     "MongoDB is busy, can't apply Mongobee changes"
                 );
             }
-            bee.setChangeLogsScanPackage(ExtMongo.class.getPackage().getName());
             bee.execute();
         } catch (final MongobeeException ex) {
             throw new IOException(ex);
