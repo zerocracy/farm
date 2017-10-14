@@ -19,6 +19,7 @@ package com.zerocracy.entry;
 import com.jcabi.xml.XML;
 import com.mongodb.MongoClient;
 import com.mongodb.client.model.Filters;
+import com.zerocracy.RunsInThreads;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
@@ -27,6 +28,7 @@ import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
 import com.zerocracy.pm.Footprint;
 import com.zerocracy.pmo.Pmo;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -37,7 +39,9 @@ import org.junit.Test;
  * @version $Id$
  * @since 0.18
  * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class ExtMongoTest {
 
     @Test
@@ -58,4 +62,25 @@ public final class ExtMongoTest {
         }
     }
 
+    @Test
+    public void worksInMultipleThreads() throws Exception {
+        final Farm farm = new PropsFarm(new FkFarm());
+        final Project project = new Pmo(farm);
+        new ClaimOut().type("hello dude").postTo(project);
+        final XML xml = new Claims(project).iterate().iterator().next();
+        final String pid = "123456799";
+        MatcherAssert.assertThat(
+            inc -> {
+                final MongoClient mongo = new ExtMongo(farm).value();
+                try (final Footprint footprint = new Footprint(mongo, pid)) {
+                    footprint.open(xml);
+                    footprint.close(xml);
+                    return footprint.collection()
+                        .find(Filters.eq("project", pid))
+                        .iterator().hasNext();
+                }
+            },
+            new RunsInThreads<>(new AtomicInteger())
+        );
+    }
 }

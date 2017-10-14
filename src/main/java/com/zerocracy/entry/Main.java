@@ -82,6 +82,7 @@ public final class Main {
         final Farm farm = new SmartFarm(
             new S3Farm(new ExtBucket().value())
         ).value();
+        new ExtMongobee(farm).apply();
         try (
             final SlackRadar radar = new SlackRadar(farm);
             final TelegramRadar telegram = new TelegramRadar(farm)

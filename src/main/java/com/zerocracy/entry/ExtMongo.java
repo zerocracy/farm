@@ -16,8 +16,6 @@
  */
 package com.zerocracy.entry;
 
-import com.github.mongobee.Mongobee;
-import com.github.mongobee.exception.MongobeeException;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
@@ -63,7 +61,7 @@ public final class ExtMongo implements Scalar<MongoClient> {
                     } else {
                         client = ExtMongo.client(props);
                     }
-                    return ExtMongo.bee(client);
+                    return client;
                 }
             )
         );
@@ -148,25 +146,6 @@ public final class ExtMongo implements Scalar<MongoClient> {
                 )
             )
         );
-    }
-
-    /**
-     * Apply mongobee.
-     * @param client The client
-     * @return MongoDB client
-     * @throws IOException If fails
-     */
-    private static MongoClient bee(final MongoClient client)
-        throws IOException {
-        final Mongobee bee = new Mongobee(client);
-        bee.setDbName("footprint");
-        bee.setChangeLogsScanPackage(ExtMongo.class.getPackage().getName());
-        try {
-            bee.execute();
-        } catch (final MongobeeException ex) {
-            throw new IOException(ex);
-        }
-        return client;
     }
 
 }
