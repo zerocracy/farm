@@ -21,7 +21,6 @@ import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.jstk.Farm;
-import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.nio.file.Files;
@@ -59,7 +58,19 @@ public final class ExtMongo implements Scalar<MongoClient> {
                             "localhost", ExtMongo.FAKE.value()
                         );
                     } else {
-                        client = ExtMongo.client(props);
+                        client = new MongoClient(
+                            new ServerAddress(
+                                props.get("//mongo/host"),
+                                Integer.parseInt(props.get("//mongo/port"))
+                            ),
+                            new ListOf<>(
+                                MongoCredential.createCredential(
+                                    props.get("//mongo/user"),
+                                    "admin",
+                                    props.get("//mongo/password").toCharArray()
+                                )
+                            )
+                        );
                     }
                     return client;
                 }
@@ -124,28 +135,6 @@ public final class ExtMongo implements Scalar<MongoClient> {
     @Override
     public MongoClient value() {
         return ExtMongo.SINGLETON.apply(this.farm);
-    }
-
-    /**
-     * Create a client.
-     * @param props Properties
-     * @return MongoDB client
-     * @throws IOException If fails
-     */
-    private static MongoClient client(final Props props) throws IOException {
-        return new MongoClient(
-            new ServerAddress(
-                props.get("//mongo/host"),
-                Integer.parseInt(props.get("//mongo/port"))
-            ),
-            new ListOf<>(
-                MongoCredential.createCredential(
-                    props.get("//mongo/user"),
-                    "admin",
-                    props.get("//mongo/password").toCharArray()
-                )
-            )
-        );
     }
 
 }

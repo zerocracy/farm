@@ -16,48 +16,25 @@
  */
 package com.zerocracy.entry;
 
-import com.github.mongobee.Mongobee;
-import com.github.mongobee.exception.MongobeeException;
-import com.mongodb.MongoClient;
+import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.jstk.Farm;
-import java.io.IOException;
+import com.zerocracy.jstk.farm.fake.FkFarm;
+import org.junit.Test;
 
 /**
- * Apply Mongobee changes.
- *
+ * Test case for {@link ExtMongo}.
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.18
+ * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-public final class ExtMongobee {
+public final class ExtMongobeeTest {
 
-    /**
-     * The farm.
-     */
-    private final Farm farm;
-
-    /**
-     * Ctor.
-     * @param frm The farm
-     */
-    public ExtMongobee(final Farm frm) {
-        this.farm = frm;
-    }
-
-    /**
-     * Apply mongobee.
-     * @throws IOException If fails
-     */
-    public void apply() throws IOException {
-        try (final MongoClient client = new ExtMongo(this.farm).value()) {
-            final Mongobee bee = new Mongobee(client);
-            bee.setDbName("footprint");
-            bee.setChangeLogsScanPackage(ExtMongo.class.getPackage().getName());
-            bee.execute();
-        } catch (final MongobeeException ex) {
-            throw new IOException(ex);
-        }
+    @Test
+    public void deploysMongoChanges() throws Exception {
+        final Farm farm = new PropsFarm(new FkFarm());
+        new ExtMongobee(farm).apply();
     }
 
 }

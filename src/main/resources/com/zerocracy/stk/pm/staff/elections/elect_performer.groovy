@@ -47,7 +47,7 @@ def exec(Project project, XML xml) {
   Elections elections = new Elections(project).bootstrap()
   if (elections.age() < TimeUnit.MINUTES.toMillis(15)
     && !new Props(project).has('//testing')) {
-    Logger.info(this, 'It is too early to make a new election')
+    Logger.info(this, 'It is too early to make a new election in %s', project)
     return
   }
   Set<String> winners = [] as Set
