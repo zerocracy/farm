@@ -16,14 +16,11 @@
  */
 package com.zerocracy.farm.sync;
 
-import com.jcabi.log.VerboseThreads;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import lombok.EqualsAndHashCode;
@@ -50,14 +47,9 @@ public final class SyncFarm implements Farm {
     private final Map<Project, ReentrantLock> pool;
 
     /**
-     * Threshold of locking, in seconds.
+     * Terminator.
      */
-    private final long threshold;
-
-    /**
-     * Terminator of long running threads.
-     */
-    private final ExecutorService terminator;
+    private final Terminator terminator;
 
     /**
      * Ctor.
@@ -75,10 +67,7 @@ public final class SyncFarm implements Farm {
     public SyncFarm(final Farm farm, final long sec) {
         this.origin = farm;
         this.pool = new ConcurrentHashMap<>(0);
-        this.threshold = sec;
-        this.terminator = Executors.newCachedThreadPool(
-            new VerboseThreads(SyncFarm.class)
-        );
+        this.terminator = new Terminator(sec);
     }
 
     @Override
@@ -92,7 +81,6 @@ public final class SyncFarm implements Farm {
                         pkt,
                         p -> new ReentrantLock()
                     ),
-                    this.threshold,
                     this.terminator
                 )
             );
