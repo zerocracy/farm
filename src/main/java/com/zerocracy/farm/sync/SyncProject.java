@@ -117,6 +117,7 @@ public final class SyncProject implements Project {
             );
         }
         final Thread thread = Thread.currentThread();
+        final Exception location = new IllegalStateException("Here!");
         this.terminator.submit(
             new RunnableOf<Object>(
                 input -> {
@@ -125,9 +126,9 @@ public final class SyncProject implements Project {
                         Logger.warn(
                             this,
                             // @checkstyle LineLength (1 line)
-                            "Thread %d/%s interrupted because of too long hold in %s",
+                            "Thread %d/%s interrupted because of too long hold of \"%s\" in %s: %[exception]s",
                             thread.getId(), thread.getName(),
-                            this.origin
+                            file, this.origin, location
                         );
                     }
                     this.lock.unlock();
