@@ -25,7 +25,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import lombok.EqualsAndHashCode;
 import org.cactoos.iterable.Mapped;
@@ -48,7 +47,7 @@ public final class SyncFarm implements Farm {
     /**
      * Pool of locks.
      */
-    private final Map<Project, Lock> pool;
+    private final Map<Project, ReentrantLock> pool;
 
     /**
      * Threshold of locking, in seconds.

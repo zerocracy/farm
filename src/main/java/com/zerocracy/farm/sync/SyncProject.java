@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import lombok.EqualsAndHashCode;
 import org.cactoos.func.RunnableOf;
@@ -47,7 +46,7 @@ public final class SyncProject implements Project {
     /**
      * Lock.
      */
-    private final Lock lock;
+    private final ReentrantLock lock;
 
     /**
      * Threshold of locking, in seconds.
@@ -78,7 +77,7 @@ public final class SyncProject implements Project {
      * @param svc Terminator
      * @checkstyle ParameterNumberCheck (5 lines)
      */
-    public SyncProject(final Project pkt, final Lock lck,
+    public SyncProject(final Project pkt, final ReentrantLock lck,
         final long sec, final ExecutorService svc) {
         this.origin = pkt;
         this.lock = lck;
@@ -99,9 +98,14 @@ public final class SyncProject implements Project {
             if (!this.lock.tryLock(30L, TimeUnit.SECONDS)) {
                 throw new IllegalStateException(
                     Logger.format(
-                        "Failed to acquire \"%s\" in \"%s\" in %[ms]s",
+                        // @checkstyle LineLength (1 line)
+                        "Failed to acquire \"%s\" in \"%s\" in %[ms]s, holdCount=%d, queueLength=%d, hasQueuedThreads=%b, isHeldByCurrentThread=%b",
                         file, this.origin,
-                        System.currentTimeMillis() - start
+                        System.currentTimeMillis() - start,
+                        this.lock.getHoldCount(),
+                        this.lock.getQueueLength(),
+                        this.lock.hasQueuedThreads(),
+                        this.lock.isHeldByCurrentThread()
                     )
                 );
             }
