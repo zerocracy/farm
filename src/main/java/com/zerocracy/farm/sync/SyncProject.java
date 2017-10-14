@@ -122,6 +122,13 @@ public final class SyncProject implements Project {
                 input -> {
                     if (!this.lock.tryLock(this.threshold, TimeUnit.SECONDS)) {
                         thread.interrupt();
+                        Logger.warn(
+                            this,
+                            // @checkstyle LineLength (1 line)
+                            "Thread %d/%s interrupted because of too long hold in %s",
+                            thread.getId(), thread.getName(),
+                            this.origin
+                        );
                     }
                     this.lock.unlock();
                 }
