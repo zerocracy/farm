@@ -16,6 +16,7 @@
  */
 package com.zerocracy.farm;
 
+import com.jcabi.log.VerboseRunnable;
 import com.jcabi.s3.Bucket;
 import com.jcabi.s3.fake.FkBucket;
 import com.zerocracy.RunsInThreads;
@@ -29,6 +30,7 @@ import com.zerocracy.pm.scope.Wbs;
 import java.nio.file.Files;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.Scalar;
+import org.cactoos.func.RunnableOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -113,9 +115,9 @@ public final class SmartFarmTest {
             "some-bucket-6"
         );
         final Project project = new SmartFarm(new S3Farm(bucket)).value().find(
-            "@id='123456789'"
+            "@id='123456709'"
         ).iterator().next();
-        final String job = "gh:test/test#22";
+        final String job = "gh:test/test#2989";
         new Wbs(project).bootstrap().add(job);
         MatcherAssert.assertThat(
             new Wbs(project).bootstrap().iterate(),
@@ -146,15 +148,14 @@ public final class SmartFarmTest {
         final String job = "gh:test/test#22";
         new Wbs(project).bootstrap().add(job);
         new Orders(project).bootstrap().assign(job, "jeff", "reason 0");
-        new Wbs(project).bootstrap().remove(job);
-//        new VerboseRunnable(
-//            new RunnableOf<>(
-//                obj -> {
-//                    new Wbs(project).bootstrap().remove(job);
-//                }
-//            ),
-//            true, true
-//        ).run();
+        new VerboseRunnable(
+            new RunnableOf<>(
+                obj -> {
+                    new Wbs(project).bootstrap().remove(job);
+                }
+            ),
+            true, false
+        ).run();
         MatcherAssert.assertThat(
             new Wbs(project).bootstrap().exists(job),
             Matchers.equalTo(true)

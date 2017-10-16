@@ -35,6 +35,7 @@ import javax.json.JsonObject;
  * @since 0.7
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class RbOnClose implements Rebound {
 
     @Override

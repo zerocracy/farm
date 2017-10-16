@@ -22,6 +22,7 @@ import com.jcabi.s3.Bucket;
 import com.jcabi.s3.fake.FkBucket;
 import com.zerocracy.farm.S3Farm;
 import com.zerocracy.farm.sync.SyncFarm;
+import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.farm.fake.FkFarm;
 import com.zerocracy.pm.cost.Boosts;
@@ -48,7 +49,15 @@ public final class RdItemTest {
     public void catchesIllegalModification() throws Exception {
         final Project project = new Pmo(new RdFarm(new FkFarm()));
         new Boosts(project).bootstrap();
-        new Boosts(project).boost("gh:test/test#55", 1);
+        new Boosts(project).boost("gh:test/test#509", 1);
+    }
+
+    @Test
+    public void ignoresNonXmlFiles() throws Exception {
+        final Project project = new Pmo(new RdFarm(new FkFarm()));
+        try (final Item item = project.acq("test.txt")) {
+            Files.write(item.path(), "How are you, dude?".getBytes());
+        }
     }
 
     @Test

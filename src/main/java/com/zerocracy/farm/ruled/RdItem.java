@@ -25,12 +25,12 @@ import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.concurrent.atomic.AtomicReference;
 import lombok.EqualsAndHashCode;
 import org.cactoos.io.LengthOf;
 import org.cactoos.io.TeeInput;
 import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.scalar.StickyScalar;
+import org.cactoos.scalar.SyncScalar;
 
 /**
  * Ruled item.
@@ -66,12 +66,12 @@ final class RdItem implements Item {
     /**
      * Initial modification time.
      */
-    private final AtomicReference<FileTime> time;
+    private final IoCheckedScalar<FileTime> time;
 
     /**
      * Initial length.
      */
-    private final AtomicReference<Long> length;
+    private final IoCheckedScalar<Long> length;
 
     /**
      * Ctor.
@@ -83,20 +83,32 @@ final class RdItem implements Item {
         this.origin = item;
         this.project = pkt;
         this.name = label;
-        this.time = new AtomicReference<>(null);
-        this.length = new AtomicReference<>(0L);
         this.temp = new IoCheckedScalar<>(
-            new StickyScalar<>(
-                () -> {
-                    final Path tmp = Files.createTempFile("rdfarm", ".xml");
-                    final Path src = this.origin.path();
-                    if (Files.exists(src)) {
-                        new LengthOf(new TeeInput(src, tmp)).value();
+            new SyncScalar<>(
+                new StickyScalar<>(
+                    () -> {
+                        final Path tmp = Files.createTempFile("rdfarm", ".xml");
+                        final Path src = this.origin.path();
+                        if (Files.exists(src)) {
+                            new LengthOf(new TeeInput(src, tmp)).value();
+                        }
+                        return tmp;
                     }
-                    this.time.set(Files.getLastModifiedTime(tmp));
-                    this.length.set(tmp.toFile().length());
-                    return tmp;
-                }
+                )
+            )
+        );
+        this.time = new IoCheckedScalar<>(
+            new SyncScalar<>(
+                new StickyScalar<>(
+                    () -> Files.getLastModifiedTime(this.temp.value())
+                )
+            )
+        );
+        this.length = new IoCheckedScalar<>(
+            new SyncScalar<>(
+                new StickyScalar<>(
+                    () -> this.temp.value().toFile().length()
+                )
             )
         );
     }
@@ -108,6 +120,8 @@ final class RdItem implements Item {
 
     @Override
     public Path path() throws IOException {
+        this.time.value();
+        this.length.value();
         return this.temp.value();
     }
 
@@ -141,19 +155,19 @@ final class RdItem implements Item {
         final Path path = this.temp.value();
         final Collection<String> dirty = new LinkedList<>();
         if (path.toFile().length() > 0L) {
-            if (!Files.getLastModifiedTime(path).equals(this.time.get())) {
+            if (!Files.getLastModifiedTime(path).equals(this.time.value())) {
                 dirty.add(
                     String.format(
                         "Time:%s!=%s",
-                        Files.getLastModifiedTime(path), this.time.get()
+                        Files.getLastModifiedTime(path), this.time.value()
                     )
                 );
             }
-            if (path.toFile().length() != this.length.get()) {
+            if (path.toFile().length() != this.length.value()) {
                 dirty.add(
                     String.format(
                         "Length:%s!=%s",
-                        path.toFile().length(), this.length.get()
+                        path.toFile().length(), this.length.value()
                     )
                 );
             }

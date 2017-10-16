@@ -56,7 +56,7 @@ public final class SyncFarm implements Farm {
      * @param farm Original farm
      */
     public SyncFarm(final Farm farm) {
-        this(farm, TimeUnit.MINUTES.toSeconds(1L));
+        this(farm, TimeUnit.MINUTES.toSeconds(2L));
     }
 
     /**
