@@ -51,6 +51,11 @@ public final class RbOnClose implements Rebound {
         } else {
             final Project project = new GhProject(farm, issue.repo());
             new ClaimOut()
+                .type("Finish order")
+                .token(new TokenOfIssue(issue))
+                .param("job", new Job(issue))
+                .postTo(project);
+            new ClaimOut()
                 .type("Remove job from WBS")
                 .token(new TokenOfIssue(issue))
                 .param("job", new Job(issue))

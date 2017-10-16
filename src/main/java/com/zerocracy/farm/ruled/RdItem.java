@@ -18,14 +18,19 @@ package com.zerocracy.farm.ruled;
 
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
+import com.zerocracy.jstk.farm.fake.FkItem;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
+import java.util.Collection;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import lombok.EqualsAndHashCode;
+import org.cactoos.io.LengthOf;
+import org.cactoos.io.TeeInput;
+import org.cactoos.scalar.IoCheckedScalar;
+import org.cactoos.scalar.StickyScalar;
 
 /**
  * Ruled item.
@@ -49,6 +54,16 @@ final class RdItem implements Item {
     private final Project project;
 
     /**
+     * Name.
+     */
+    private final String name;
+
+    /**
+     * Temp file.
+     */
+    private final IoCheckedScalar<Path> temp;
+
+    /**
      * Initial modification time.
      */
     private final AtomicReference<FileTime> time;
@@ -62,12 +77,28 @@ final class RdItem implements Item {
      * Ctor.
      * @param pkt Project
      * @param item Item
+     * @param label Name of the item
      */
-    RdItem(final Project pkt, final Item item) {
+    RdItem(final Project pkt, final Item item, final String label) {
         this.origin = item;
         this.project = pkt;
+        this.name = label;
         this.time = new AtomicReference<>(null);
         this.length = new AtomicReference<>(0L);
+        this.temp = new IoCheckedScalar<>(
+            new StickyScalar<>(
+                () -> {
+                    final Path tmp = Files.createTempFile("rdfarm", ".xml");
+                    final Path src = this.origin.path();
+                    if (Files.exists(src)) {
+                        new LengthOf(new TeeInput(src, tmp)).value();
+                    }
+                    this.time.set(Files.getLastModifiedTime(tmp));
+                    this.length.set(tmp.toFile().length());
+                    return tmp;
+                }
+            )
+        );
     }
 
     @Override
@@ -77,21 +108,26 @@ final class RdItem implements Item {
 
     @Override
     public Path path() throws IOException {
-        final Path path = this.origin.path();
-        if (Files.exists(path)) {
-            this.time.compareAndSet(null, Files.getLastModifiedTime(path));
-            this.length.compareAndSet(0L, path.toFile().length());
-        }
-        return path;
+        return this.temp.value();
     }
 
     @Override
     public void close() throws IOException {
-        final Path path = this.path();
         final String dirty = this.dirty();
         if (!dirty.isEmpty()) {
-            new RdAuto(this.project, path, dirty).propagate();
-            new RdRules(this.project, path, dirty).validate();
+            final Path tmp = this.temp.value();
+            final Project proxy = file -> {
+                final Item item;
+                if (this.name.equals(file)) {
+                    item = new FkItem(tmp);
+                } else {
+                    item = this.project.acq(file);
+                }
+                return item;
+            };
+            new RdAuto(proxy, tmp, dirty).propagate();
+            new RdRules(proxy, tmp, dirty).validate();
+            new LengthOf(new TeeInput(tmp, this.origin.path())).value();
         }
         this.origin.close();
     }
@@ -102,9 +138,9 @@ final class RdItem implements Item {
      * @throws IOException If fails
      */
     private String dirty() throws IOException {
-        final Path path = this.path();
-        final List<String> dirty = new LinkedList<>();
-        if (Files.exists(path) && path.toFile().length() > 0L) {
+        final Path path = this.temp.value();
+        final Collection<String> dirty = new LinkedList<>();
+        if (path.toFile().length() > 0L) {
             if (!Files.getLastModifiedTime(path).equals(this.time.get())) {
                 dirty.add(
                     String.format(

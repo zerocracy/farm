@@ -17,14 +17,19 @@
 package com.zerocracy.farm.ruled;
 
 import com.jcabi.aspects.Tv;
+import com.jcabi.log.VerboseRunnable;
 import com.jcabi.s3.Bucket;
 import com.jcabi.s3.fake.FkBucket;
 import com.zerocracy.farm.S3Farm;
 import com.zerocracy.farm.sync.SyncFarm;
 import com.zerocracy.jstk.Project;
+import com.zerocracy.jstk.farm.fake.FkFarm;
 import com.zerocracy.pm.cost.Boosts;
 import com.zerocracy.pm.scope.Wbs;
+import com.zerocracy.pmo.Pmo;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
+import org.cactoos.func.RunnableOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -38,6 +43,37 @@ import org.junit.Test;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class RdItemTest {
+
+    @Test(expected = UncheckedIOException.class)
+    public void catchesIllegalModification() throws Exception {
+        final Project project = new Pmo(new RdFarm(new FkFarm()));
+        new Boosts(project).bootstrap();
+        new Boosts(project).boost("gh:test/test#55", 1);
+    }
+
+    @Test
+    public void rejectsInvalidChanges() throws Exception {
+        final Bucket bucket = new FkBucket(
+            Files.createTempDirectory("").toFile(),
+            "the-bucket-1"
+        );
+        final Project project = new RdFarm(
+            new SyncFarm(new S3Farm(bucket))
+        ).find("@id='ABCDEDDHI'").iterator().next();
+        final String job = "gh:test/test#55";
+        new VerboseRunnable(
+            new RunnableOf<>(
+                input -> {
+                    new Boosts(project).bootstrap().boost(job, 1);
+                }
+            ),
+            true, false
+        ).run();
+        MatcherAssert.assertThat(
+            new Boosts(project).bootstrap().factor(job),
+            Matchers.equalTo(2)
+        );
+    }
 
     @Test
     public void closesClaims() throws Exception {

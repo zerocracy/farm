@@ -36,6 +36,7 @@ import org.cactoos.io.SyncInput;
 import org.cactoos.iterable.LengthOf;
 import org.cactoos.scalar.And;
 import org.cactoos.scalar.UncheckedScalar;
+import org.cactoos.text.JoinedText;
 
 /**
  * Ruled rules.
@@ -92,23 +93,27 @@ final class RdRules {
      * @throws IOException If fails
      */
     public void validate() throws IOException {
+        final String area = new RdArea(this.path).value();
         final Iterable<String> xsls = new RdIndex(
             URI.create(
                 String.format(
                     "/latest/rules/%s",
                     StringUtils.substringBefore(
-                        new RdArea(this.path).value(),
-                        "/"
+                        area, "/"
                     )
                 )
             )
         ).iterate();
         new UncheckedScalar<>(new And(xsls, this::check)).value();
-        Logger.debug(
-            this, "%d XSLs confirm consistency in %s after changes in %s: %s",
-            new LengthOf(xsls).value(), this.project,
-            this.path.getFileName(), this.reason
-        );
+        if (Logger.isDebugEnabled(this)) {
+            Logger.debug(
+                // @checkstyle LineLength (1 line)
+                this, "%d XSLs confirm consistency in %s after changes in %s, area=\"%s\", reason=\"%s\", XSLs=\"%s\"",
+                new LengthOf(xsls).value(), this.project,
+                this.path.getFileName(), area, this.reason,
+                new JoinedText(";", xsls).asString()
+            );
+        }
     }
 
     /**
