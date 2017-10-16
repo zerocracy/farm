@@ -46,8 +46,6 @@ class Response implements TmResponse {
   }
   @Override
   String text() throws IOException {
-    claim.param('message').replaceAll(
-      '\\[([^]]+)]\\(([^)]+)\\)', '<$2|$1>'
-    )
+    claim.param('message')
   }
 }

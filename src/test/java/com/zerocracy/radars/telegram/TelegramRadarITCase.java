@@ -17,8 +17,12 @@
 package com.zerocracy.radars.telegram;
 
 import com.jcabi.aspects.Tv;
+import com.jcabi.log.Logger;
+import com.jcabi.xml.XMLDocument;
 import com.zerocracy.jstk.farm.fake.FkFarm;
+import com.zerocracy.radars.Question;
 import com.zerocracy.radars.telegram.fake.FkFailedReaction;
+import com.zerocracy.radars.telegram.fake.FkTextReaction;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -26,7 +30,9 @@ import org.cactoos.ScalarHasValue;
 import org.cactoos.iterable.Endless;
 import org.cactoos.iterable.Limited;
 import org.cactoos.scalar.And;
+import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.telegram.telegrambots.ApiContextInitializer;
@@ -52,6 +58,7 @@ import org.telegram.telegrambots.generics.BotSession;
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.UseUtilityClass")
 public final class TelegramRadarITCase {
 
     /**
@@ -64,12 +71,17 @@ public final class TelegramRadarITCase {
      */
     private static final String NAME = "<name_bot>";
 
+    @BeforeClass
+    public static void initialize() {
+        ApiContextInitializer.init();
+    }
+
     @Test
     @Ignore
     public void connectToTelegramTest() throws Exception {
         final Map<Long, TmSession> sessions = new ConcurrentHashMap<>(0);
         try (final TelegramRadar rdr =
-            new TelegramRadar(new FkFarm(), sessions)) {
+        new TelegramRadar(new FkFarm(), sessions)) {
             rdr.start(
                 TelegramRadarITCase.TOKEN,
                 TelegramRadarITCase.NAME
@@ -98,7 +110,6 @@ public final class TelegramRadarITCase {
     @Test
     @Ignore
     public void replyWithSoftException() throws Exception {
-        ApiContextInitializer.init();
         final BotSession session = new TelegramBotsApi().registerBot(
             new TmZerocrat(
                 TelegramRadarITCase.TOKEN,
@@ -106,6 +117,38 @@ public final class TelegramRadarITCase {
                 new BotUpdateReaction(
                     new ReSafe(
                         new FkFailedReaction("Test error")
+                    ),
+                    new FkFarm(),
+                    new ConcurrentHashMap<>(1)
+                )
+            )
+        );
+        TimeUnit.SECONDS.sleep((long) Tv.TEN);
+        session.stop();
+    }
+
+    @Test
+    @Ignore
+    public void replyWithFormattedText() throws Exception {
+        final String help = new Question(
+            new XMLDocument(
+                this.getClass()
+                    .getResource("/com/zerocracy/radars/q-profile.xml")
+            ),
+            "help"
+        ).help();
+        Logger.error(this, help);
+        final BotSession session = new TelegramBotsApi().registerBot(
+            new TmZerocrat(
+                TelegramRadarITCase.TOKEN,
+                TelegramRadarITCase.NAME,
+                new BotUpdateReaction(
+                    new ReSafe(
+                        new FkTextReaction(
+                            new TextOf(
+                                help
+                            )
+                        )
                     ),
                     new FkFarm(),
                     new ConcurrentHashMap<>(1)
