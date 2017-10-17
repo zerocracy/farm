@@ -23,6 +23,7 @@ import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.cash.Cash;
+import com.zerocracy.jstk.cash.CashParsingException;
 import java.io.IOException;
 import java.util.Iterator;
 import org.cactoos.iterable.ItemAt;
@@ -170,6 +171,8 @@ public final class People {
                 rate = Cash.ZERO.toString();
             }
             return new Cash.S(rate);
+        } catch (final CashParsingException ex) {
+            throw new IllegalStateException(ex);
         }
     }
 

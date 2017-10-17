@@ -19,6 +19,7 @@ package com.zerocracy.stk.pm.in.orders
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
+import com.zerocracy.jstk.SoftException
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.in.Orders
@@ -30,6 +31,11 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
   Orders orders = new Orders(project).bootstrap()
+  if (!orders.assigned(job)) {
+    throw new SoftException(
+      String.format('There is no order for job `%s`.', job)
+    )
+  }
   def duration = Duration.between(orders.startTime(job), ZonedDateTime.now())
   String login = orders.performer(job)
   orders.resign(job)

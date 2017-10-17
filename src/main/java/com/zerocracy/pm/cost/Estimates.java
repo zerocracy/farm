@@ -21,6 +21,7 @@ import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.SoftException;
 import com.zerocracy.jstk.cash.Cash;
+import com.zerocracy.jstk.cash.CashParsingException;
 import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -114,6 +115,8 @@ public final class Estimates {
                     )
                 ).get(0)
             );
+        } catch (final CashParsingException ex) {
+            throw new IllegalStateException(ex);
         }
     }
 
