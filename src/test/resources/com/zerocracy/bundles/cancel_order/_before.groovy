@@ -24,6 +24,7 @@ import com.jcabi.xml.XML
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
+import com.zerocracy.pmo.Agenda
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
@@ -31,4 +32,8 @@ def exec(Project project, XML xml) {
   Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
   Issue issue = repo.issues().create('Test', '')
   new Issue.Smart(issue).assign('g4s8')
+  new Agenda(project, 'g4s8').bootstrap().add(
+    "gh:${repo.coordinates()}#${issue.number()}",
+    'http://github.com'
+  )
 }
