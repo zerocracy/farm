@@ -19,8 +19,12 @@ package com.zerocracy.entry;
 import com.jcabi.github.Github;
 import com.jcabi.github.RtGithub;
 import com.jcabi.github.mock.MkGithub;
+import com.jcabi.http.wire.CachingWire;
+import com.jcabi.http.wire.OneMinuteWire;
+import com.jcabi.http.wire.RetryWire;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.jstk.Farm;
+import java.io.IOException;
 import org.cactoos.Scalar;
 import org.cactoos.func.StickyFunc;
 import org.cactoos.func.SyncFunc;
@@ -48,10 +52,7 @@ public final class ExtGithub implements Scalar<Github> {
                         if (props.has("//testing")) {
                             github = new MkGithub().relogin("test");
                         } else {
-                            github = new RtGithub(
-                                props.get("//github//zerocrat.login"),
-                                props.get("//github//zerocrat.password")
-                            );
+                            github = ExtGithub.prod(props);
                         }
                         return github;
                     }
@@ -75,6 +76,25 @@ public final class ExtGithub implements Scalar<Github> {
     @Override
     public Github value() {
         return ExtGithub.SINGLETON.apply(this.farm);
+    }
+
+    /**
+     * Production GitHub client.
+     * @param props Pros
+     * @return Client
+     * @throws IOException If fails
+     */
+    private static Github prod(final Props props) throws IOException {
+        return new RtGithub(
+            new RtGithub(
+                props.get("//github//zerocrat.login"),
+                props.get("//github//zerocrat.password")
+            )
+                .entry()
+                .through(CachingWire.class, "(POST|PUT|PATCH) .*")
+                .through(OneMinuteWire.class)
+                .through(RetryWire.class)
+        );
     }
 
 }
