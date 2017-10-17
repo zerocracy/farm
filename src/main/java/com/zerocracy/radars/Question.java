@@ -164,10 +164,10 @@ public final class Question {
         if (!found) {
             this.rhelp.set(
                 String.format(
-                    "Can't understand \"%s\", try one of these:\n  * %s",
+                    "Can't understand \"%s\", try one of these:\n  - %s",
                     part,
                     String.join(
-                        "\n  * ",
+                        "\n  - ",
                         new TreeSet<>(
                             new StickyList<CharSequence>(
                                 new Mapped<>(

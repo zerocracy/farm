@@ -14,34 +14,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.radars.telegram;
+package com.zerocracy.radars.telegram.fake;
 
+import com.zerocracy.jstk.Farm;
+import com.zerocracy.radars.telegram.Reaction;
+import com.zerocracy.radars.telegram.RsText;
+import com.zerocracy.radars.telegram.TmRequest;
+import com.zerocracy.radars.telegram.TmSession;
 import java.io.IOException;
 import org.cactoos.Text;
 
 /**
- * Text response to telegram session.
+ * Reply with some text.
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
- * @since 0.15
+ * @since 0.17
  */
-public final class RsText implements TmResponse {
+public final class FkTextReaction implements Reaction {
 
     /**
-     * Text.
+     * Text to reply.
      */
-    private final Text txt;
+    private final Text text;
 
     /**
      * Ctor.
-     * @param txt Response text
+     * @param msg Text to reply
      */
-    public RsText(final Text txt) {
-        this.txt = txt;
+    public FkTextReaction(final Text msg) {
+        this.text = msg;
     }
 
     @Override
-    public String text() throws IOException {
-        return this.txt.asString();
+    public boolean react(
+        final Farm farm,
+        final TmSession session,
+        final TmRequest request
+    ) throws IOException {
+        session.reply(new RsText(this.text));
+        return true;
     }
 }
