@@ -24,7 +24,7 @@ import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pmo.Agenda
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Order was finished')
+  new Assume(project, xml).type('Order was finished', 'Order was canceled')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
   String login = claim.param('login')
