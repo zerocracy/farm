@@ -17,7 +17,6 @@
 package com.zerocracy.stk.pm.comm
 
 import com.google.common.collect.Lists
-import com.jcabi.aspects.Tv
 import com.jcabi.github.Bulk
 import com.jcabi.github.Comment
 import com.jcabi.github.Coordinates
@@ -36,7 +35,6 @@ import com.zerocracy.pm.ClaimIn
 import com.zerocracy.radars.github.GhTube
 import java.util.concurrent.TimeUnit
 import org.cactoos.text.SubText
-
 // Token must look like: zerocracy/farm;123;6
 //   - repository coordinates
 //   - issue cid
@@ -87,10 +85,10 @@ static Issue safe(Issue issue, String text) {
     )
   )
   Collections.reverse(comments)
-  if (over(issue, comments)) {
+  if (over(issue, comments, 8)) {
     throw new IllegalStateException(
       String.format(
-        'Can\'t post anything to %s#%d, too many comments already: %s',
+        'Can\'t post anything to %s#%d, too many comments already (over 8): %s',
         issue.repo().coordinates(), issue.number(),
         new SubText(text, 0, 100).asString()
       )
@@ -99,11 +97,11 @@ static Issue safe(Issue issue, String text) {
   issue
 }
 
-static boolean over(Issue issue, List<Comment.Smart> list) {
+static boolean over(Issue issue, List<Comment.Smart> list, int max) {
   String self = issue.repo().github().users().self().login()
   boolean over = false
   for (int idx = 0; idx < list.size(); ++idx) {
-    if (idx >= Tv.FIVE) {
+    if (idx >= max) {
       over = true
       break
     }
