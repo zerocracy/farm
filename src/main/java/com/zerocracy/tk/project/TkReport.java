@@ -91,7 +91,7 @@ public final class TkReport implements TkRegex {
             href.single(
                 "start",
                 TkReport.FMT.format(
-                    ZonedDateTime.now().minus(1L, ChronoUnit.WEEKS)
+                    ZonedDateTime.now().minus(1L, ChronoUnit.MONTHS)
                 )
             ),
             TkReport.FMT
@@ -100,11 +100,8 @@ public final class TkReport implements TkRegex {
             href.single("end", TkReport.FMT.format(ZonedDateTime.now())),
             TkReport.FMT
         );
-        final FtReport report = TkReport.REPORTS.get(
-            href.single(
-                "report",
-                TkReport.REPORTS.entrySet().iterator().next().getKey()
-            )
+        final String report = href.single(
+            "report", TkReport.REPORTS.entrySet().iterator().next().getKey()
         );
         return new RsPage(
             this.farm,
@@ -117,7 +114,7 @@ public final class TkReport implements TkRegex {
                     new Footprint(this.farm, project)) {
                     docs = new StickyList<>(
                         footprint.collection().aggregate(
-                            report.bson(
+                            TkReport.REPORTS.get(report).bson(
                                 project,
                                 Date.from(
                                     start.atStartOfDay().atZone(
@@ -137,6 +134,7 @@ public final class TkReport implements TkRegex {
                 }
                 return new XeChain(
                     new XeAppend("project", project.toString()),
+                    new XeAppend("report", report),
                     new XeAppend("start", TkReport.FMT.format(start)),
                     new XeAppend("end", TkReport.FMT.format(end)),
                     new XeAppend(

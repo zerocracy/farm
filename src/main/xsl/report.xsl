@@ -33,31 +33,46 @@ SOFTWARE.
       <xsl:text>.</xsl:text>
     </p>
     <form action="" method="get">
-      <fieldset>
+      <fieldset style="display:inline">
         <label>
-          <xsl:text>Report: </xsl:text>
+          <xsl:text>Report:&#xA0;</xsl:text>
         </label>
         <select name="report">
           <xsl:for-each select="reports/report">
             <option value="{.}">
+              <xsl:if test=".=/page/report">
+                <xsl:attribute name="selected">
+                  <xsl:text>selected</xsl:text>
+                </xsl:attribute>
+              </xsl:if>
               <xsl:value-of select="."/>
             </option>
           </xsl:for-each>
         </select>
+        <xsl:text> </xsl:text>
         <label>
-          <xsl:text>Start: </xsl:text>
+          <xsl:text>Start:&#xA0;</xsl:text>
         </label>
         <input type="date" name="start" value="{/page/start}"/>
+        <xsl:text> </xsl:text>
         <label>
-          <xsl:text>End: </xsl:text>
+          <xsl:text>End:&#xA0;</xsl:text>
         </label>
         <input type="date" name="end" value="{/page/end}"/>
+        <label>
+          <xsl:text>&#xA0;</xsl:text>
+        </label>
         <button type="submit">Go</button>
       </fieldset>
     </form>
     <xsl:apply-templates select="rows"/>
   </xsl:template>
-  <xsl:template match="rows">
+  <xsl:template match="rows[row]">
+    <p>
+      <xsl:text>There is no data for your request, sorry.</xsl:text>
+    </p>
+  </xsl:template>
+  <xsl:template match="rows[row]">
     <table>
       <thead>
         <tr>

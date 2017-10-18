@@ -85,7 +85,13 @@ public final class Footprint implements Closeable {
             doc = doc.append("token", claim.token());
         }
         for (final Map.Entry<String, String> ent : claim.params().entrySet()) {
-            doc = doc.append(ent.getKey(), ent.getValue());
+            final Object val;
+            if (ent.getValue().matches("[0-9]+")) {
+                val = Long.parseLong(ent.getValue());
+            } else {
+                val = ent.getValue();
+            }
+            doc = doc.append(ent.getKey(), val);
         }
         this.mongo.getDatabase("footprint")
             .getCollection("claims")
