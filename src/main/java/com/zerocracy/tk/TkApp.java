@@ -26,6 +26,7 @@ import com.zerocracy.tk.project.TkArtifact;
 import com.zerocracy.tk.project.TkBadge;
 import com.zerocracy.tk.project.TkFootprint;
 import com.zerocracy.tk.project.TkProject;
+import com.zerocracy.tk.project.TkReport;
 import com.zerocracy.tk.project.TkXml;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -158,6 +159,10 @@ public final class TkApp extends TkWrap {
                                                             new FkRegex(
                                                                 "/footprint/([A-Z0-9]{9})",
                                                                 new TkFootprint(farm)
+                                                            ),
+                                                            new FkRegex(
+                                                                "/report/([A-Z0-9]{9})",
+                                                                new TkReport(farm)
                                                             ),
                                                             new FkRegex(
                                                                 "/a/([A-Z0-9]{9})",
