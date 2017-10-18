@@ -49,6 +49,8 @@ public final class RbOnAssign implements Rebound {
         );
         final FormattedText reply;
         final String login = new GhIssueEvent(event).assignee();
+        final String sender = event.getJsonObject("sender")
+            .getString("login").toLowerCase(Locale.ENGLISH);
         if ("0crat".equalsIgnoreCase(login)) {
             issue.assign("");
             new ClaimOut()
@@ -64,7 +66,7 @@ public final class RbOnAssign implements Rebound {
             new ClaimOut()
                 .type("Request order start")
                 .token(new TokenOfIssue(issue))
-                .author(event.getJsonObject("sender").getString("login"))
+                .author(sender)
                 .param("login", login)
                 .param("job", new Job(issue))
                 .postTo(new GhProject(farm, issue.repo()));
@@ -78,7 +80,7 @@ public final class RbOnAssign implements Rebound {
         new ClaimOut()
             .type("Request order start")
             .token(new TokenOfIssue(issue))
-            .author(event.getJsonObject("sender").getString("login"))
+            .author(sender)
             .param("login", login)
             .param("job", job)
             .postTo(new GhProject(farm, issue.repo()));
