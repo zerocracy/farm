@@ -16,6 +16,7 @@
  */
 package com.zerocracy.radars.github;
 
+import java.util.Locale;
 import javax.json.JsonObject;
 
 /**
@@ -45,6 +46,7 @@ public final class GhIssueEvent {
      * @return Assignee's login
      */
     public String assignee() {
-        return this.evt.getJsonObject("assignee").getString("login");
+        return this.evt.getJsonObject("assignee").getString("login")
+            .toLowerCase(Locale.ENGLISH);
     }
 }
