@@ -65,6 +65,9 @@ SOFTWARE.
         <button type="submit">Go</button>
       </fieldset>
     </form>
+    <p>
+      <xsl:value-of select="title" disable-output-escaping="yes"/>
+    </p>
     <xsl:apply-templates select="rows"/>
   </xsl:template>
   <xsl:template match="rows[row]">

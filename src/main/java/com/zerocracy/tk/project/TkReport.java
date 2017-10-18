@@ -135,6 +135,7 @@ public final class TkReport implements TkRegex {
                 return new XeChain(
                     new XeAppend("project", project.toString()),
                     new XeAppend("report", report),
+                    new XeAppend("title", TkReport.REPORTS.get(report).title()),
                     new XeAppend("start", TkReport.FMT.format(start)),
                     new XeAppend("end", TkReport.FMT.format(end)),
                     new XeAppend(

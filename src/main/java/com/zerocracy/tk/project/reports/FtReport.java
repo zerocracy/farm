@@ -42,4 +42,11 @@ public interface FtReport {
      */
     List<? extends Bson> bson(Project project,
         Date start, Date end) throws IOException;
+
+    /**
+     * Its title, in HTML.
+     * @return Title of the report.
+     */
+    String title();
+
 }

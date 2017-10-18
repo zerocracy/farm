@@ -49,4 +49,14 @@ public final class OrderChampions implements FtReport {
             Aggregates.sort(Sorts.descending("orders"))
         );
     }
+
+    @Override
+    public String title() {
+        return String.join(
+            " ",
+            "This is a list of project members who got",
+            "the biggest amount of orders."
+        );
+    }
+
 }
