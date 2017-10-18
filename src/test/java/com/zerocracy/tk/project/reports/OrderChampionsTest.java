@@ -24,6 +24,7 @@ import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
 import com.zerocracy.pm.Footprint;
 import java.util.Date;
+import org.bson.Document;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -41,19 +42,24 @@ public final class OrderChampionsTest {
     @Test
     public void retrievesReportData() throws Exception {
         final Project pkt = new FkProject("7460A2829");
-        new ClaimOut().type("Order was given").postTo(pkt);
+        new ClaimOut()
+            .type("Order was given")
+            .param("login", "yegor256")
+            .postTo(pkt);
         final XML xml = new Claims(pkt).iterate().iterator().next();
         try (final Footprint footprint = new Footprint(new PropsFarm(), pkt)) {
             footprint.open(xml);
+            final Iterable<Document> docs = footprint.collection().aggregate(
+                new OrderChampions().bson(
+                    pkt,
+                    new Date(0L),
+                    new Date()
+                )
+            );
+            MatcherAssert.assertThat(docs, Matchers.iterableWithSize(1));
             MatcherAssert.assertThat(
-                footprint.collection().aggregate(
-                    new OrderChampions().bson(
-                        pkt,
-                        new Date(0L),
-                        new Date()
-                    )
-                ),
-                Matchers.iterableWithSize(1)
+                docs.iterator().next().get("user"),
+                Matchers.equalTo("@yegor256")
             );
         }
     }

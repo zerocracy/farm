@@ -42,7 +42,10 @@ public final class OrdersGivenByWeekTest {
     @Test
     public void retrievesReportData() throws Exception {
         final Project pkt = new FkProject("746092TT9");
-        new ClaimOut().type("Order was given").postTo(pkt);
+        new ClaimOut()
+            .type("Order was given")
+            .param("login", "yegor256")
+            .postTo(pkt);
         final XML xml = new Claims(pkt).iterate().iterator().next();
         try (final Footprint footprint = new Footprint(new PropsFarm(), pkt)) {
             footprint.open(xml);
@@ -55,7 +58,11 @@ public final class OrdersGivenByWeekTest {
             );
             MatcherAssert.assertThat(docs, Matchers.iterableWithSize(1));
             MatcherAssert.assertThat(
-                docs.iterator().next().get("_id"),
+                docs.iterator().next(),
+                Matchers.not(Matchers.hasKey("_id"))
+            );
+            MatcherAssert.assertThat(
+                docs.iterator().next().get("week"),
                 Matchers.notNullValue()
             );
         }

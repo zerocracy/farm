@@ -19,11 +19,15 @@ package com.zerocracy.tk.project.reports;
 import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.Sorts;
 import com.zerocracy.jstk.Project;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import org.bson.BsonArray;
+import org.bson.BsonDocument;
+import org.bson.BsonString;
 import org.bson.conversions.Bson;
 
 /**
@@ -46,7 +50,25 @@ public final class OrderChampions implements FtReport {
                 Filters.eq("type", "Order was given")
             ),
             Aggregates.group("$login", Accumulators.sum("orders", 1)),
-            Aggregates.sort(Sorts.descending("orders"))
+            Aggregates.sort(Sorts.descending("orders")),
+            Aggregates.project(
+                Projections.fields(
+                    Projections.exclude("_id"),
+                    Projections.computed(
+                        "user",
+                        new BsonDocument(
+                            "$concat",
+                            new BsonArray(
+                                Arrays.asList(
+                                    new BsonString("@"),
+                                    new BsonString("$_id")
+                                )
+                            )
+                        )
+                    ),
+                    Projections.include("orders")
+                )
+            )
         );
     }
 

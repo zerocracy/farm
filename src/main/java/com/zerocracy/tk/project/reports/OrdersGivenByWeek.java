@@ -19,6 +19,7 @@ package com.zerocracy.tk.project.reports;
 import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.Sorts;
 import com.zerocracy.jstk.Project;
 import java.util.Arrays;
@@ -51,7 +52,14 @@ public final class OrdersGivenByWeek implements FtReport {
                 new BsonDocument("$week", new BsonString("$created")),
                 Accumulators.sum("total", 1)
             ),
-            Aggregates.sort(Sorts.descending("_id"))
+            Aggregates.sort(Sorts.descending("_id")),
+            Aggregates.project(
+                Projections.fields(
+                    Projections.exclude("_id"),
+                    Projections.computed("week", "$_id"),
+                    Projections.include("total")
+                )
+            )
         );
     }
 
