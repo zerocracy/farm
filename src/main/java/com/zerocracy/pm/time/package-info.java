@@ -14,35 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pm.time;
-
-import com.zerocracy.jstk.farm.fake.FkProject;
-import java.io.IOException;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.Test;
 
 /**
- * Test case for reminders.
+ * PM time.
  *
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
- * @since 0.17
- * @checkstyle JavadocMethodCheck (500 lines)
+ * @since 0.18
  */
-public final class RemindersTest {
-
-    @Test
-    public void labels() throws IOException {
-        final Reminders reminders = new Reminders(new FkProject()).bootstrap();
-        final String job = "gh:test/test#1";
-        reminders.add(job, "test", "5 days");
-        MatcherAssert.assertThat(
-            "Labels were not found",
-            reminders.labels(job),
-            Matchers.contains(
-                Matchers.<String>startsWith("5")
-            )
-        );
-    }
-}
+package com.zerocracy.pm.time;
