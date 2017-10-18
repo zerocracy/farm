@@ -24,10 +24,12 @@ import com.zerocracy.jstk.Project;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import org.bson.BsonDocument;
+import org.bson.BsonString;
 import org.bson.conversions.Bson;
 
 /**
- * Order champions.
+ * Orders given by weeks.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
@@ -35,7 +37,7 @@ import org.bson.conversions.Bson;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public final class AwardChampions implements FtReport {
+public final class OrdersGivenByWeek implements FtReport {
 
     @Override
     public List<? extends Bson> bson(final Project project,
@@ -43,14 +45,13 @@ public final class AwardChampions implements FtReport {
         return Arrays.asList(
             new Match(
                 project, start, end,
-                Filters.eq("type", "Award points were added")
+                Filters.eq("type", "Order was given")
             ),
             Aggregates.group(
-                "$login",
-                Accumulators.sum("total", "$points"),
-                Accumulators.sum("jobs", 1)
+                new BsonDocument("$week", new BsonString("$created")),
+                Accumulators.sum("total", 1)
             ),
-            Aggregates.sort(Sorts.descending("total"))
+            Aggregates.sort(Sorts.descending("_id"))
         );
     }
 
@@ -58,10 +59,9 @@ public final class AwardChampions implements FtReport {
     public String title() {
         return String.join(
             " ",
-            "This is a list of project members who got",
-            "the biggest amount of awards points, according to",
-            // @checkstyle LineLength (1 line)
-            "<a href='http://datum.zerocracy.com/pages/policy.html#18'>par.18</a>."
+            "This is a chronological list of weeks and the amount",
+            "of orders that were given to project members",
+            "during that time periods."
         );
     }
 

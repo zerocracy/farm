@@ -23,6 +23,7 @@ import com.zerocracy.tk.RsPage;
 import com.zerocracy.tk.project.reports.AwardChampions;
 import com.zerocracy.tk.project.reports.FtReport;
 import com.zerocracy.tk.project.reports.OrderChampions;
+import com.zerocracy.tk.project.reports.OrdersGivenByWeek;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
@@ -68,7 +69,8 @@ public final class TkReport implements TkRegex {
     private static final Map<String, FtReport> REPORTS =
         new StickyMap<String, FtReport>(
             new MapEntry<>("order-champions", new OrderChampions()),
-            new MapEntry<>("award-champions", new AwardChampions())
+            new MapEntry<>("award-champions", new AwardChampions()),
+            new MapEntry<>("orders-given-by-week", new OrdersGivenByWeek())
         );
 
     /**

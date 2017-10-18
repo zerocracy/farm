@@ -16,7 +16,7 @@
  */
 
 /**
- * Reports.
+ * Reports, tests.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
