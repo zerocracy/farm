@@ -30,8 +30,10 @@ import org.cactoos.func.UncheckedProc;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
+import org.takes.facets.flash.RsFlash;
+import org.takes.facets.forward.RsForward;
+import org.takes.rq.RqForm;
 import org.takes.rq.form.RqFormBase;
-import org.takes.rq.form.RqFormSmart;
 import org.takes.rs.RsText;
 import org.takes.rs.RsWithStatus;
 
@@ -152,9 +154,16 @@ public final class TkGithub implements Take, Runnable {
 
     @Override
     public Response act(final Request req) throws IOException {
-        final String body = new RqFormSmart(
-            new RqFormBase(req)
-        ).single("payload");
+        final RqForm form = new RqFormBase(req);
+        final Iterable<String> body = form.param("payload");
+        if (!body.iterator().hasNext()) {
+            throw new RsForward(
+                new RsFlash(
+                    // @checkstyle LineLength (1 line)
+                    "We expect this URL to be called by GitHub with JSON as 'payload' form parameter."
+                )
+            );
+        }
         try {
             return new RsWithStatus(
                 new RsText(
@@ -163,7 +172,9 @@ public final class TkGithub implements Take, Runnable {
                         new ExtGithub(this.farm).value(),
                         Json.createReader(
                             new ByteArrayInputStream(
-                                body.getBytes(StandardCharsets.UTF_8)
+                                body.iterator().next().getBytes(
+                                    StandardCharsets.UTF_8
+                                )
                             )
                         ).readObject()
                     )

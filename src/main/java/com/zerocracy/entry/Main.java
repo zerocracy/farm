@@ -31,6 +31,7 @@ import com.zerocracy.tk.TkApp;
 import io.sentry.Sentry;
 import java.io.IOException;
 import org.takes.facets.fork.FkRegex;
+import org.takes.facets.fork.TkMethods;
 import org.takes.http.Exit;
 import org.takes.http.FtCli;
 
@@ -98,7 +99,10 @@ public final class Main {
                     farm,
                     new FkRegex("/slack", new TkSlack(farm, radar)),
                     new FkRegex("/alias", new TkAlias(farm)),
-                    new FkRegex("/ghook", new TkGithub(farm))
+                    new FkRegex(
+                        "/ghook",
+                        new TkMethods(new TkGithub(farm), "POST")
+                    )
                 ),
                 this.arguments
             ).start(Exit.NEVER);
