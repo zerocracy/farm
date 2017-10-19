@@ -72,7 +72,8 @@ public final class AwardChampions implements FtReport {
                     ),
                     Projections.include("total", "jobs")
                 )
-            )
+            ),
+            new ReplaceRoot("user", "jobs", "total")
         );
     }
 

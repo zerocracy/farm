@@ -68,7 +68,8 @@ public final class OrderChampions implements FtReport {
                     ),
                     Projections.include("orders")
                 )
-            )
+            ),
+            new ReplaceRoot("user", "orders")
         );
     }
 

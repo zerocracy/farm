@@ -81,7 +81,8 @@ public final class OrdersGivenByWeek implements FtReport {
                     ),
                     Projections.include("total")
                 )
-            )
+            ),
+            new ReplaceRoot("week", "total")
         );
     }
 
