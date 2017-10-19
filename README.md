@@ -76,6 +76,10 @@ One of the stakeholders will find that claim and reply to it. To read the
 claim we use `com.zerocracy.pm.ClaimIn`, which helps proceeding the XML. To
 generate a claim we use `com.zerocracy.pm.ClaimOut`.
 
+## How to contribute
+
+Please, see [CONTRIBUTING.md]().
+
 ## License
 
 Copyright (c) 2016-2017 Zerocracy
