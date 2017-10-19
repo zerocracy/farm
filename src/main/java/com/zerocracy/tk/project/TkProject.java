@@ -71,7 +71,7 @@ public final class TkProject implements TkRegex {
                     ),
                     new XeWhen(
                         !"PMO".equals(project.toString()),
-                        new XeAppend(
+                        () -> new XeAppend(
                             "roles",
                             new XeTransform<>(
                                 new Roles(project).bootstrap().allRoles(
