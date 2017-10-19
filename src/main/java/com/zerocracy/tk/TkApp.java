@@ -149,27 +149,27 @@ public final class TkApp extends TkWrap {
                                                                 )
                                                             ),
                                                             new FkRegex(
-                                                                "/badge/([A-Z0-9]{9})\\.svg",
+                                                                "/badge/(PMO|[A-Z0-9]{9})\\.svg",
                                                                 new TkBadge()
                                                             ),
                                                             new FkRegex(
-                                                                "/p/([A-Z0-9]{9})",
+                                                                "/p/(PMO|[A-Z0-9]{9})",
                                                                 new TkProject(farm)
                                                             ),
                                                             new FkRegex(
-                                                                "/footprint/([A-Z0-9]{9})",
+                                                                "/footprint/(PMO|[A-Z0-9]{9})",
                                                                 new TkFootprint(farm)
                                                             ),
                                                             new FkRegex(
-                                                                "/report/([A-Z0-9]{9})",
+                                                                "/report/(PMO|[A-Z0-9]{9})",
                                                                 new TkReport(farm)
                                                             ),
                                                             new FkRegex(
-                                                                "/a/([A-Z0-9]{9})",
+                                                                "/a/(PMO|[A-Z0-9]{9})",
                                                                 new TkArtifact(farm)
                                                             ),
                                                             new FkRegex(
-                                                                "/xml/([A-Z0-9]{9})",
+                                                                "/xml/(PMO|[A-Z0-9]{9})",
                                                                 new TkXml(farm)
                                                             ),
                                                             new FkRegex(
