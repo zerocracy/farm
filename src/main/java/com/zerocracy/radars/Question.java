@@ -221,6 +221,9 @@ public final class Question {
         final Collection<XML> opts = cmd.nodes("opts/opt");
         for (final XML opt : opts) {
             final String name = opt.xpath("name/text() ").get(0);
+            if (parts.isEmpty() && !opt.nodes("optional").isEmpty()) {
+                continue;
+            }
             if (parts.isEmpty()) {
                 this.rcode.set(null);
                 this.rhelp.set(

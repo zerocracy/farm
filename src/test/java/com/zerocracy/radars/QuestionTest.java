@@ -29,6 +29,7 @@ import org.junit.Test;
  * @since 0.1
  * @checkstyle JavadocMethodCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class QuestionTest {
 
     @Test
@@ -59,7 +60,7 @@ public final class QuestionTest {
             new XMLDocument(
                 this.getClass().getResource("q-profile.xml")
             ),
-            "rate set"
+            "vacation"
         );
         MatcherAssert.assertThat(
             question.matches(),
@@ -67,7 +68,21 @@ public final class QuestionTest {
         );
         MatcherAssert.assertThat(
             question.help(),
-            Matchers.containsString("Option `<rate>` is missing")
+            Matchers.containsString("Option `<mode>` is missing")
+        );
+    }
+
+    @Test
+    public void parsesWithoutOptionalArgument() throws Exception {
+        final Question question = new Question(
+            new XMLDocument(
+                this.getClass().getResource("q-profile.xml")
+            ),
+            "rate"
+        );
+        MatcherAssert.assertThat(
+            question.matches(),
+            Matchers.equalTo(true)
         );
     }
 

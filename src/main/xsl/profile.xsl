@@ -105,14 +105,23 @@ SOFTWARE.
     </xsl:if>
   </xsl:template>
   <xsl:template match="rate[.!='0']">
-    <xsl:text>Rate: </xsl:text>
+    <a href="http://datum.zerocracy.com/pages/policy.html#16">
+      <xsl:text>Rate</xsl:text>
+    </a>
+    <xsl:text>: </xsl:text>
     <xsl:value-of select="."/>
   </xsl:template>
   <xsl:template match="rate[.='0']">
-    <xsl:text>Rate is not set yet</xsl:text>
+    <a href="http://datum.zerocracy.com/pages/policy.html#16">
+      <xsl:text>Rate</xsl:text>
+    </a>
+    <xsl:text> is not set yet</xsl:text>
   </xsl:template>
   <xsl:template match="wallet[info!='']">
-    <xsl:text>wallet: </xsl:text>
+    <a href="http://datum.zerocracy.com/pages/policy.html#20">
+      <xsl:text>wallet: </xsl:text>
+    </a>
+    <xsl:text>: </xsl:text>
     <code>
       <xsl:value-of select="info"/>
     </code>
@@ -120,7 +129,10 @@ SOFTWARE.
     <xsl:value-of select="bank"/>
   </xsl:template>
   <xsl:template match="wallet[info='']">
-    <xsl:text>payment info is absent</xsl:text>
+    <a href="http://datum.zerocracy.com/pages/policy.html#20">
+      <xsl:text>payment info</xsl:text>
+    </a>
+    <xsl:text> is absent</xsl:text>
   </xsl:template>
   <xsl:template match="projects[project]">
     <p>

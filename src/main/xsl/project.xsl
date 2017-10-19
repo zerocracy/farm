@@ -30,32 +30,11 @@ SOFTWARE.
       <code>
         <xsl:value-of select="project"/>
       </code>
-      <xsl:text> (your roles: </xsl:text>
-      <xsl:for-each select="roles/role">
-        <xsl:if test="position() &gt; 1">
-          <xsl:text>, </xsl:text>
-        </xsl:if>
-        <xsl:value-of select="."/>
-      </xsl:for-each>
+      <xsl:text> (</xsl:text>
+      <xsl:apply-templates select="roles"/>
       <xsl:text>).</xsl:text>
     </p>
-    <p>
-      <xsl:value-of select="count(project_links/link)"/>
-      <xsl:text> link</xsl:text>
-      <xsl:if test="count(project_links/link) &gt; 1">
-        <xsl:text>s</xsl:text>
-      </xsl:if>
-      <xsl:text>: </xsl:text>
-      <xsl:for-each select="project_links/link">
-        <xsl:if test="position() &gt; 1">
-          <xsl:text>, </xsl:text>
-        </xsl:if>
-        <code>
-          <xsl:value-of select="."/>
-        </code>
-      </xsl:for-each>
-      <xsl:text>.</xsl:text>
-    </p>
+    <xsl:apply-templates select="project_links"/>
     <p>
       <xsl:text>Scope: </xsl:text>
       <a href="/a/{project}?a=pm/scope/wbs">
@@ -119,5 +98,37 @@ SOFTWARE.
       </a>
       <xsl:text>.</xsl:text>
     </p>
+  </xsl:template>
+  <xsl:template match="roles[not(role)]">
+    <xsl:text>you seem to have no roles in this project</xsl:text>
+  </xsl:template>
+  <xsl:template match="roles[role]">
+    <xsl:text>your roles: </xsl:text>
+    <xsl:for-each select="role">
+      <xsl:if test="position() &gt; 1">
+        <xsl:text>, </xsl:text>
+      </xsl:if>
+      <xsl:value-of select="."/>
+    </xsl:for-each>
+  </xsl:template>
+  <xsl:template match="project_links[not(link)]">
+    <xsl:text>The project has no links.</xsl:text>
+  </xsl:template>
+  <xsl:template match="project_links[link]">
+    <xsl:value-of select="count(link)"/>
+    <xsl:text> link</xsl:text>
+    <xsl:if test="count(link) &gt; 1">
+      <xsl:text>s</xsl:text>
+    </xsl:if>
+    <xsl:text>: </xsl:text>
+    <xsl:for-each select="link">
+      <xsl:if test="position() &gt; 1">
+        <xsl:text>, </xsl:text>
+      </xsl:if>
+      <code>
+        <xsl:value-of select="."/>
+      </code>
+    </xsl:for-each>
+    <xsl:text>.</xsl:text>
   </xsl:template>
 </xsl:stylesheet>

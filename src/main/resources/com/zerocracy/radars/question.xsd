@@ -39,6 +39,7 @@ SOFTWARE.
                   <xs:element name="name" minOccurs="1" maxOccurs="1" type="xs:string"/>
                   <xs:element name="regex" minOccurs="1" maxOccurs="1" type="xs:string"/>
                   <xs:element name="help" minOccurs="1" maxOccurs="1" type="xs:string"/>
+                  <xs:element name="optional" minOccurs="0" maxOccurs="1" type="xs:boolean"/>
                 </xs:all>
               </xs:complexType>
             </xs:element>

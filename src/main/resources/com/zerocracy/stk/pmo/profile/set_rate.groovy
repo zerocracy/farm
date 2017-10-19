@@ -14,14 +14,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.wallet_not_registered
+package com.zerocracy.stk.pmo.profile
 
 import com.jcabi.xml.XML
-import com.zerocracy.jstk.Item
+import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
+import com.zerocracy.jstk.SoftException
+import com.zerocracy.jstk.cash.Cash
+import com.zerocracy.jstk.cash.CashParsingException
+import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pmo.People
 
 def exec(Project project, XML xml) {
-  Item item = project.acq('test.txt')
-  assert item.path().toFile().newReader().readLine() == 'Your wallet is not configured yet'
-  item.close()
+  new Assume(project, xml).type('Set rate')
+  People people = new People(project).bootstrap()
+  ClaimIn claim = new ClaimIn(xml)
+  String author = claim.author()
+  if (!claim.hasParam('rate')) {
+    throw new SoftException(
+      String.format(
+        'Your rate is %s.',
+        people.rate(author)
+      )
+    )
+  }
+  try {
+    Cash rate = new Cash.S(claim.param('rate'))
+    people.rate(author, rate)
+    claim.reply(
+      String.format(
+        'Rate of "%s" set to %s.',
+        author, rate
+      )
+    ).postTo(project)
+  } catch (CashParsingException ex) {
+    throw new SoftException(ex.message)
+  }
 }

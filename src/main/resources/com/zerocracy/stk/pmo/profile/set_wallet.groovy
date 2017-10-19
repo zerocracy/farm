@@ -14,11 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pmo.profile.wallet
+package com.zerocracy.stk.pmo.profile
 
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
+import com.zerocracy.jstk.SoftException
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.People
 
@@ -26,14 +27,30 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Set wallet')
   People people = new People(project).bootstrap()
   ClaimIn claim = new ClaimIn(xml)
+  String author = claim.author()
+  if (!claim.hasParam('bank') || !claim.hasParam('wallet')) {
+    String wallet = people.wallet(author)
+    String bank = people.bank(author)
+    if (wallet.empty || bank.empty) {
+      throw new SoftException(
+        'Your wallet is not configured yet'
+      )
+    }
+    throw new SoftException(
+      String.format(
+        'Your wallet is `%s` at "%s".',
+        people.wallet(author),
+        people.bank(author)
+      )
+    )
+  }
   String bank = claim.param('bank')
   String wallet = claim.param('wallet')
-  people.wallet(claim.author(), bank, wallet)
+  people.wallet(author, bank, wallet)
   claim.reply(
     String.format(
-      'Wallet of "%s" set to `%s:%s`.',
-      login,
-      bank, wallet
+      'Wallet of @%s set to `%s:%s`.',
+      author, bank, wallet
     )
   ).postTo(project)
 }

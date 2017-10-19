@@ -81,51 +81,38 @@ SOFTWARE.
     </opts>
   </cmd>
   <cmd>
-    <code>Show rate</code>
+    <code>Set rate</code>
     <regex>rate</regex>
     <label>rate</label>
-    <help>Show your current hourly rate</help>
-    <cmds>
-      <cmd>
-        <code>Set rate</code>
-        <regex>set</regex>
-        <label>set</label>
-        <help>Change your current hourly rate</help>
-        <opts>
-          <opt>
-            <name>rate</name>
-            <regex>.+</regex>
-            <help>Hourly rate, e.g. $15</help>
-          </opt>
-        </opts>
-      </cmd>
-    </cmds>
+    <help>Change your current hourly rate</help>
+    <opts>
+      <opt>
+        <optional>true</optional>
+        <name>rate</name>
+        <regex>.+</regex>
+        <help>Hourly rate, e.g. $15</help>
+      </opt>
+    </opts>
   </cmd>
   <cmd>
-    <code>Show wallet</code>
+    <code>Set wallet</code>
     <regex>wallet</regex>
     <label>wallet</label>
-    <help>Show your currently registered wallet (payment details)</help>
-    <cmds>
-      <cmd>
-        <code>Set wallet</code>
-        <regex>set</regex>
-        <label>set</label>
-        <help>Change your payment information</help>
-        <opts>
-          <opt>
-            <name>bank</name>
-            <regex>[a-z]+</regex>
-            <help>Bank, e.g. "paypal" or "bitcoin"</help>
-          </opt>
-          <opt>
-            <name>wallet</name>
-            <regex>.+</regex>
-            <help>Technical payment details, e.g. PayPal email or Bitcoin wallet number</help>
-          </opt>
-        </opts>
-      </cmd>
-    </cmds>
+    <help>Change your payment information</help>
+    <opts>
+      <opt>
+        <optional>true</optional>
+        <name>bank</name>
+        <regex>[a-z]+</regex>
+        <help>Bank, e.g. "paypal" or "bitcoin"</help>
+      </opt>
+      <opt>
+        <optional>true</optional>
+        <name>wallet</name>
+        <regex>.+</regex>
+        <help>Technical payment details, e.g. PayPal email or Bitcoin wallet number</help>
+      </opt>
+    </opts>
   </cmd>
   <!--
     @todo #209:30m Add set title command here (q-profile.xml) which should be
