@@ -73,8 +73,8 @@ final class RqProject implements Scalar<Project> {
             String.format("@id='%s'", name)
         ).iterator().next();
         final String login = new RqUser(this.farm, this.request).value();
-        final Roles roles = new Roles(project).bootstrap();
-        if (!"yegor256".equals(login) && !roles.hasRole(login, "ARC", "PO")) {
+        if (!"yegor256".equals(login)
+            && !new Roles(project).bootstrap().hasRole(login, "ARC", "PO")) {
             throw new RsForward(
                 new RsFlash(
                     String.format(
