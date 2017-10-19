@@ -37,8 +37,7 @@ def exec(Project project, XML xml) {
   }
   String performer = orders.performer(job)
   Roles roles = new Roles(project).bootstrap()
-  if (!roles.hasRole(performer, 'PO', 'ARC')
-    && claim.hasAuthor()
+  if (claim.hasAuthor() && !roles.hasRole(claim.author(), 'PO', 'ARC')
     && claim.author() != performer) {
     throw new SoftException(
       String.format(
