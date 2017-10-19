@@ -55,10 +55,12 @@ public final class RbOnClose implements Rebound {
                 .type("Finish order")
                 .token(new TokenOfIssue(issue))
                 .param("job", new Job(issue))
+                .param("reason", "GitHub issue was closed, order is finished.")
                 .postTo(project);
             new ClaimOut()
                 .type("Remove job from WBS")
                 .token(new TokenOfIssue(issue))
+                .param("reason", "GitHub issue was closed, job must go off.")
                 .param("job", new Job(issue))
                 .postTo(project);
             answer = "Asked WBS to take it out of scope";

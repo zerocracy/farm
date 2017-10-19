@@ -20,7 +20,9 @@ package com.zerocracy.radars.github;
 import com.jcabi.github.Github;
 import com.jcabi.github.Issue;
 import com.zerocracy.jstk.Farm;
+import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.ClaimOut;
+import com.zerocracy.pm.in.Orders;
 import java.io.IOException;
 import javax.json.JsonObject;
 import org.cactoos.text.FormattedText;
@@ -43,11 +45,16 @@ public final class RbOnUnassign implements Rebound {
             new IssueOfEvent(github, event)
         );
         final String login = new GhIssueEvent(event).assignee();
-        new ClaimOut()
-            .type("Cancel order")
-            .token(new TokenOfIssue(issue))
-            .param("job", new Job(issue))
-            .postTo(new GhProject(farm, issue.repo()));
+        final String job = new Job(issue).toString();
+        final Project project = new GhProject(farm, issue.repo());
+        if (new Orders(project).bootstrap().assigned(job)) {
+            new ClaimOut()
+                .type("Cancel order")
+                .token(new TokenOfIssue(issue))
+                .param("job", new Job(issue))
+                .param("reason", "GitHub issue was unassigned")
+                .postTo(project);
+        }
         return new FormattedText(
             "Issue #%d was resigned (was assigned to %s) via Github",
             issue.number(), login

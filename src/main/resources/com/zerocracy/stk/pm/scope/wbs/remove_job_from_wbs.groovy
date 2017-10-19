@@ -34,7 +34,7 @@ def exec(Project project, XML xml) {
   if (orders.assigned(job)) {
     throw new SoftException(
       String.format(
-        'There is an open order for this job, @%s is still working with it.',
+        'There is an open order for this job, @%s is still working with it. Try to `reject` first.',
         orders.performer(job)
       )
     )

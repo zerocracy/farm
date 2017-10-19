@@ -53,6 +53,7 @@ public final class RbOnAssign implements Rebound {
                 .type("Add job to WBS")
                 .token(new TokenOfIssue(issue))
                 .param("job", new Job(issue))
+                .param("reason", "GitHub issue was assigned to 0crat")
                 .postTo(new GhProject(farm, issue.repo()));
             reply = new FormattedText(
                 "Issue #%d assigned to 0crat, adding to WBS",
@@ -65,6 +66,7 @@ public final class RbOnAssign implements Rebound {
                 .author(sender)
                 .param("login", login)
                 .param("job", new Job(issue))
+                .param("reason", "GitHub issue was assigned")
                 .postTo(new GhProject(farm, issue.repo()));
             reply = new FormattedText(
                 "Issue #%d assigned to %s via Github",
