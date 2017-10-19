@@ -79,24 +79,31 @@ public final class Reminders {
                         .add("order").attr("job", job)
                 );
             }
-            xoc.modify(
-                new Directives()
-                    .xpath(xpath)
-                    .strict(1)
-                    .add("reminder")
-                    .add("created")
-                    .set(
-                        ZonedDateTime.now().format(
-                            DateTimeFormatter.ISO_INSTANT
-                        )
-                    ).up()
-                    .add("label")
-                    .set(label)
-                    .up()
-                    .add("login")
-                    .set(login)
-                    .up()
-            );
+            if (xoc.nodes(
+                String.format(
+                    "%s/reminder/label[text() = '%s']",
+                    xpath, label
+                )
+            ).isEmpty()) {
+                xoc.modify(
+                    new Directives()
+                        .xpath(xpath)
+                        .strict(1)
+                        .add("reminder")
+                        .add("created")
+                        .set(
+                            ZonedDateTime.now().format(
+                                DateTimeFormatter.ISO_INSTANT
+                            )
+                        ).up()
+                        .add("label")
+                        .set(label)
+                        .up()
+                        .add("login")
+                        .set(login)
+                        .up()
+                );
+            }
         }
     }
 

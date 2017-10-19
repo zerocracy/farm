@@ -16,11 +16,11 @@
  */
 package com.zerocracy.stk.pm.time.reminders
 
-import com.jcabi.log.Logger
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.time.Reminders
 import java.time.ZoneOffset
@@ -29,13 +29,12 @@ import org.cactoos.collection.Mapped
 import org.cactoos.iterable.LengthOf
 
 /**
- * @todo #266:30min We need to schedule this stakeholder which
- *  will collect jobs to remind. It may be periodic task or it
- *  can be triggered by some event. Also we need to notify users
- *  in github with reminder's label.
+ * @todo # 266:30min Notify users about job in github
+ *  with reminder's label. It can be new stakeholder which will
+ *  react to 'Ping' claim.
  */
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Collect reminder')
+  new Assume(project, xml).type('Ping')
 
   def claim = new ClaimIn(xml)
   def reminders = new Reminders(project).bootstrap()
@@ -53,5 +52,9 @@ def exec(Project project, XML xml) {
       }
     )
   ).value()
-  Logger.info('remind.groovy', "processed $processed orders")
+  if (processed > 0) {
+    new ClaimOut()
+      .type('New reminders posted')
+      .postTo(project)
+  }
 }
