@@ -30,6 +30,7 @@ import org.takes.facets.fork.TkRegex;
 import org.takes.rs.xe.XeAppend;
 import org.takes.rs.xe.XeChain;
 import org.takes.rs.xe.XeTransform;
+import org.takes.rs.xe.XeWhen;
 
 /**
  * Project page.
@@ -68,13 +69,16 @@ public final class TkProject implements TkRegex {
                         "project",
                         new RqProject(this.farm, req).value().toString()
                     ),
-                    new XeAppend(
-                        "roles",
-                        new XeTransform<>(
-                            new Roles(project).bootstrap().allRoles(
-                                new RqUser(this.farm, req).value()
-                            ),
-                            role -> new XeAppend("role", role)
+                    new XeWhen(
+                        !"PMO".equals(project.toString()),
+                        new XeAppend(
+                            "roles",
+                            new XeTransform<>(
+                                new Roles(project).bootstrap().allRoles(
+                                    new RqUser(this.farm, req).value()
+                                ),
+                                role -> new XeAppend("role", role)
+                            )
                         )
                     ),
                     new XeAppend(
