@@ -78,7 +78,7 @@ generate a claim we use `com.zerocracy.pm.ClaimOut`.
 
 ## How to contribute
 
-Please, see [CONTRIBUTING.md]().
+Please, see [CONTRIBUTING.md](https://github.com/zerocracy/farm/blob/master/CONTRIBUTING.md).
 
 ## License
 
