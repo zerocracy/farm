@@ -43,7 +43,7 @@ def exec(Project project, XML xml) {
     throw new SoftException(
       String.format(
         'The job `%s` is assigned to @%s, you @%s cannot resign, since you are not a PO or ARC.',
-        job, performer, author
+        job, performer, claim.author()
       )
     )
   }
@@ -57,6 +57,7 @@ def exec(Project project, XML xml) {
   new ClaimOut()
     .type('Order was canceled')
     .param('job', job)
+    .param('voluntarily', claim.hasAuthor() && claim.author() == performer)
     .param('login', performer)
     .postTo(project)
 }
