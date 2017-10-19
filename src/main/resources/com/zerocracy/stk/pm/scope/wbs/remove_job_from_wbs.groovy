@@ -30,16 +30,30 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).roles('ARC', 'PO')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
-  Orders orders = new Orders(project).bootstrap()
-  if (orders.assigned(job)) {
+  Wbs wbs = new Wbs(project).bootstrap()
+  if (!wbs.exists(job)) {
     throw new SoftException(
-      String.format(
-        'There is an open order for this job, @%s is still working with it. Try to `reject` first.',
-        orders.performer(job)
-      )
+      String.format('Job `%s` is not in scope.', job)
     )
   }
-  new Wbs(project).bootstrap().remove(job)
+  Orders orders = new Orders(project).bootstrap()
+  if (orders.assigned(job)) {
+    String performer = orders.performer(job)
+    orders.resign(job)
+    claim.reply(
+      String.format(
+        '@%s resigned from `%s`, since the job is not in scope anymore.',
+        performer, job
+      )
+    ).postTo(project)
+    new ClaimOut()
+      .type('Order was canceled')
+      .param('job', job)
+      .param('voluntarily', false)
+      .param('login', performer)
+      .postTo(project)
+  }
+  wbs.remove(job)
   claim.reply(
     String.format('Job `%s` is now out of scope.', job)
   ).postTo(project)
