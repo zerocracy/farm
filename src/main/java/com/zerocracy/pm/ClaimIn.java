@@ -153,6 +153,20 @@ public final class ClaimIn {
     }
 
     /**
+     * Has param by name.
+     * @param name Param name
+     * @return TRUE if exists
+     */
+    public boolean hasParam(final String name) {
+        return this.xml.xpath(
+            String.format(
+                "params/param[ @name='%s']/text()",
+                name
+            )
+        ).iterator().hasNext();
+    }
+
+    /**
      * Get param by name.
      * @param name Param name
      * @return Param value
