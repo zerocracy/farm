@@ -51,7 +51,6 @@ public final class TkReportTest {
         final Catalog catalog = new Catalog(new Pmo(farm)).bootstrap();
         final String pid = "A1B2C3DXF";
         catalog.add(pid, String.format("2017/10/%s/", pid));
-        catalog.link(pid, "github", "test/test");
         final Project project = farm.find(
             String.format("@id='%s'", pid)
         ).iterator().next();

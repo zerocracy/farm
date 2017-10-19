@@ -87,6 +87,7 @@ public final class CatalogTest {
         final String pid = "67WE334GG";
         final Catalog catalog = new Catalog(new FkProject()).bootstrap();
         catalog.add(pid, "2017/05/67WE334GG/");
+        MatcherAssert.assertThat(catalog.exists(pid), Matchers.is(true));
         final String rel = "jira";
         final String href = "http://example.com:8080";
         catalog.link(pid, rel, href);

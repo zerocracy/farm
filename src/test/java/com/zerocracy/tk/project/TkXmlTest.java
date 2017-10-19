@@ -48,7 +48,6 @@ public final class TkXmlTest {
         final Catalog catalog = new Catalog(new Pmo(farm)).bootstrap();
         final String pid = "A1B2C3D4F";
         catalog.add(pid, String.format("2017/07/%s/", pid));
-        catalog.link(pid, "github", "test/test");
         final Roles roles = new Roles(
             farm.find(String.format("@id='%s'", pid)).iterator().next()
         ).bootstrap();

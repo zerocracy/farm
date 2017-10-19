@@ -104,6 +104,20 @@ public final class Catalog {
     }
 
     /**
+     * Project exists?
+     * @param pid Project ID
+     * @return TRUE if it exists
+     * @throws IOException If fails
+     */
+    public boolean exists(final String pid) throws IOException {
+        try (final Item item = this.item()) {
+            return !new Xocument(item).nodes(
+                String.format("//project[@id  ='%s']", pid)
+            ).isEmpty();
+        }
+    }
+
+    /**
      * Find a project by XPath query.
      * @param xpath XPath query
      * @return Prefixes found, if found
@@ -219,7 +233,7 @@ public final class Catalog {
     }
 
     /**
-     * Get all pmo links.
+     * Get all project links.
      * @param pid Project ID
      * @return Links found
      * @throws IOException If fails

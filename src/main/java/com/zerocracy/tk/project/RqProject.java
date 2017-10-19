@@ -64,7 +64,7 @@ final class RqProject implements Scalar<Project> {
     public Project value() throws IOException {
         final String name = this.request.matcher().group(1);
         final Catalog catalog = new Catalog(new Pmo(this.farm)).bootstrap();
-        if (catalog.links(name).isEmpty()) {
+        if (!catalog.exists(name)) {
             throw new RsFailure(
                 String.format("Project \"%s\" not found", name)
             );
