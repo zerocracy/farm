@@ -95,6 +95,11 @@ SOFTWARE.
     <tr>
       <xsl:for-each select="*">
         <td>
+          <xsl:if test="@type='java.lang.Integer' or @type='java.lang.Long'">
+            <xsl:attribute name="style">
+              <xsl:text>text-align:right</xsl:text>
+            </xsl:attribute>
+          </xsl:if>
           <xsl:value-of select="."/>
         </td>
       </xsl:for-each>

@@ -44,6 +44,10 @@ SOFTWARE.
           <xsl:value-of select="version/name"/>
         </span>
         <xsl:text> &#xB7; </xsl:text>
+        <span title="Claims processed over the last week">
+          <xsl:value-of select="claims"/>
+        </span>
+        <xsl:text> &#xB7; </xsl:text>
         <span title="The time since the last restart">
           <xsl:value-of select="alive"/>
         </span>

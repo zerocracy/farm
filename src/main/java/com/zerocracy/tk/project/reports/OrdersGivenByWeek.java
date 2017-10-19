@@ -25,7 +25,9 @@ import com.zerocracy.jstk.Project;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import org.bson.BsonArray;
 import org.bson.BsonDocument;
+import org.bson.BsonInt32;
 import org.bson.BsonString;
 import org.bson.conversions.Bson;
 
@@ -56,7 +58,27 @@ public final class OrdersGivenByWeek implements FtReport {
             Aggregates.project(
                 Projections.fields(
                     Projections.exclude("_id"),
-                    Projections.computed("week", "$_id"),
+                    Projections.computed(
+                        "week",
+                        new BsonDocument(
+                            "$concat",
+                            new BsonArray(
+                                Arrays.asList(
+                                    new BsonString("#"),
+                                    new BsonDocument(
+                                        "$substr",
+                                        new BsonArray(
+                                            Arrays.asList(
+                                                new BsonString("$_id"),
+                                                new BsonInt32(0),
+                                                new BsonInt32(2)
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    ),
                     Projections.include("total")
                 )
             )

@@ -43,7 +43,9 @@ import org.takes.facets.fork.TkRegex;
 import org.takes.rq.RqHref;
 import org.takes.rs.xe.XeAppend;
 import org.takes.rs.xe.XeChain;
+import org.takes.rs.xe.XeDirectives;
 import org.takes.rs.xe.XeTransform;
+import org.xembly.Directives;
 
 /**
  * Footprint report.
@@ -53,7 +55,7 @@ import org.takes.rs.xe.XeTransform;
  * @since 0.18
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({ "PMD.AvoidDuplicateLiterals", "PMD.ExcessiveImports" })
 public final class TkReport implements TkRegex {
 
     /**
@@ -155,9 +157,16 @@ public final class TkReport implements TkRegex {
                                 "row",
                                 new XeTransform<Map.Entry<String, Object>>(
                                     doc.entrySet(),
-                                    ent -> new XeAppend(
-                                        ent.getKey(),
-                                        ent.getValue().toString()
+                                    ent -> new XeDirectives(
+                                        new Directives()
+                                            .add(ent.getKey())
+                                            .attr(
+                                                "type",
+                                                ent.getValue()
+                                                    .getClass()
+                                                    .getName()
+                                            )
+                                            .set(ent.getValue())
                                     )
                                 )
                             )
