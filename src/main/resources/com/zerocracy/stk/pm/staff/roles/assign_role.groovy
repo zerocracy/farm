@@ -49,16 +49,16 @@ def exec(Project project, XML xml) {
     msg = "Role `${role}` was successfully assigned to @${login}," +
       " see [full list](http://www.0crat.com/a/${project}?a=pm/staff/roles)" +
       ' of roles. '
+    new ClaimOut()
+      .type('Role was assigned')
+      .param('login', login)
+      .param('role', role)
+      .postTo(project)
   }
-  new ClaimOut()
-    .type('Role was assigned')
-    .param('login', login)
-    .param('role', role)
-    .postTo(project)
   if (claim.hasParam('rate')) {
     Cash rate = new Cash.S(claim.param('rate'))
     claim.copy()
-      .type('Change rate')
+      .type('Change user rate')
       .param('login', login)
       .param('rate', rate)
       .postTo(project)

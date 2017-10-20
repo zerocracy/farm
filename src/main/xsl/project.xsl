@@ -50,6 +50,9 @@ SOFTWARE.
         <xsl:text>Schedule</xsl:text>
       </a>
       -->
+      <a href="/a/{project}?a=pm/time/reminders">
+        <xsl:text>Reminders</xsl:text>
+      </a>
       <xsl:text>.</xsl:text>
     </p>
     <p>
