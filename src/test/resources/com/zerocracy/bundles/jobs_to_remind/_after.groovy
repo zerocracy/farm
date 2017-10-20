@@ -14,35 +14,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pm.time;
+package com.zerocracy.bundles.jobs_to_remind
 
-import com.zerocracy.jstk.farm.fake.FkProject;
-import java.io.IOException;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.Test;
+import com.jcabi.xml.XML
+import com.zerocracy.jstk.Project
+import com.zerocracy.pm.time.Reminders
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
 
-/**
- * Test case for reminders.
- *
- * @author Kirill (g4s8.public@gmail.com)
- * @version $Id$
- * @since 0.17
- * @checkstyle JavadocMethodCheck (500 lines)
- */
-public final class RemindersTest {
-
-    @Test
-    public void labels() throws IOException {
-        final Reminders reminders = new Reminders(new FkProject()).bootstrap();
-        final String job = "gh:test/test#1";
-        reminders.add(job, "test", "5 days");
-        MatcherAssert.assertThat(
-            "Labels were not found",
-            reminders.labels(job),
-            Matchers.contains(
-                Matchers.<String>startsWith("5")
-            )
-        );
-    }
+def exec(Project project, XML xml) {
+  MatcherAssert.assertThat(
+    new Reminders(project).bootstrap().labels('gh:test/test#2'),
+    Matchers.contains('5 days')
+  )
 }

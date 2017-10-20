@@ -68,7 +68,8 @@ final class StrictProject implements Project {
             "(precedences\\.xml)",
             "(milestones\\.xml)",
             "(impediments\\.xml)",
-            "(boosts\\.xml)"
+            "(boosts\\.xml)",
+            "(reminders\\.xml)"
         )
     );
 
