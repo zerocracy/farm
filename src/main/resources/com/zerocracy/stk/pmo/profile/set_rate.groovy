@@ -33,21 +33,38 @@ def exec(Project project, XML xml) {
   if (!claim.hasParam('rate')) {
     throw new SoftException(
       String.format(
-        'Your rate is %s.',
+        'Your rate is %s. To change it just say `rate $25`, for example.',
         people.rate(author)
       )
     )
   }
+  Cash rate
   try {
-    Cash rate = new Cash.S(claim.param('rate'))
-    people.rate(author, rate)
-    claim.reply(
-      String.format(
-        'Rate of "%s" set to %s.',
-        author, rate
-      )
-    ).postTo(project)
+    rate = new Cash.S(claim.param('rate'))
   } catch (CashParsingException ex) {
     throw new SoftException(ex.message)
   }
+  if (rate > (new Cash.S('$300'))) {
+    throw new SoftException(
+      String.format(
+        'This is too high (%s), we do not work with rates higher than $300.',
+        rate
+      )
+    )
+  }
+  if (rate < (new Cash.S('$10'))) {
+    throw new SoftException(
+      String.format(
+        'This is too low (%s), we do not work with rates lower than $10.',
+        rate
+      )
+    )
+  }
+  people.rate(author, rate)
+  claim.reply(
+    String.format(
+      'Rate of "%s" set to %s.',
+      author, rate
+    )
+  ).postTo(project)
 }

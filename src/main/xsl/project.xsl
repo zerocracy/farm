@@ -30,11 +30,12 @@ SOFTWARE.
       <code>
         <xsl:value-of select="project"/>
       </code>
-      <xsl:text> (</xsl:text>
       <xsl:apply-templates select="roles"/>
-      <xsl:text>).</xsl:text>
+      <xsl:text>.</xsl:text>
     </p>
-    <xsl:apply-templates select="project_links"/>
+    <p>
+      <xsl:apply-templates select="project_links"/>
+    </p>
     <p>
       <xsl:text>Scope: </xsl:text>
       <a href="/a/{project}?a=pm/scope/wbs">
@@ -99,17 +100,15 @@ SOFTWARE.
       <xsl:text>.</xsl:text>
     </p>
   </xsl:template>
-  <xsl:template match="roles[not(role)]">
-    <xsl:text>you seem to have no roles in this project</xsl:text>
-  </xsl:template>
   <xsl:template match="roles[role]">
-    <xsl:text>your roles: </xsl:text>
+    <xsl:text> (your roles: </xsl:text>
     <xsl:for-each select="role">
       <xsl:if test="position() &gt; 1">
         <xsl:text>, </xsl:text>
       </xsl:if>
       <xsl:value-of select="."/>
     </xsl:for-each>
+    <xsl:text>)</xsl:text>
   </xsl:template>
   <xsl:template match="project_links[not(link)]">
     <xsl:text>The project has no links.</xsl:text>

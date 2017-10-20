@@ -33,7 +33,7 @@ def exec(Project project, XML xml) {
     String bank = people.bank(author)
     if (wallet.empty || bank.empty) {
       throw new SoftException(
-        'Your wallet is not configured yet'
+        'Your wallet is not configured yet. To configure it just say `wallet paypal me@example.com`, for example.'
       )
     }
     throw new SoftException(

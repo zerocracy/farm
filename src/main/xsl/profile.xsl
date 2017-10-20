@@ -119,7 +119,7 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="wallet[info!='']">
     <a href="http://datum.zerocracy.com/pages/policy.html#20">
-      <xsl:text>wallet: </xsl:text>
+      <xsl:text>wallet</xsl:text>
     </a>
     <xsl:text>: </xsl:text>
     <code>

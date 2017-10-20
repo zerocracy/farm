@@ -22,6 +22,7 @@ import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
+import com.zerocracy.jstk.SoftException;
 import com.zerocracy.jstk.cash.Cash;
 import com.zerocracy.jstk.cash.CashParsingException;
 import java.io.IOException;
@@ -185,6 +186,14 @@ public final class People {
      */
     public void wallet(final String uid, final String bank,
         final String wallet) throws IOException {
+        if (!bank.matches("paypal|btc")) {
+            throw new SoftException(
+                String.format(
+                    "Bank name `%s` is invalid, we accept `paypal` or `btc`.",
+                    bank
+                )
+            );
+        }
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 People.start(uid)
