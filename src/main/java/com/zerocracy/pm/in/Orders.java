@@ -22,9 +22,13 @@ import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.SoftException;
 import com.zerocracy.pm.scope.Wbs;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.chrono.ChronoZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import org.cactoos.list.ListOf;
+import org.cactoos.text.JoinedText;
 import org.xembly.Directives;
 
 /**
@@ -187,6 +191,29 @@ public final class Orders {
                     )
                 ).get(0),
                 DateTimeFormatter.ISO_INSTANT.withZone(ZoneId.systemDefault())
+            );
+        }
+    }
+
+    /**
+     * Orders which were created older than specified time.
+     * @param time Time to compare
+     * @return Job list
+     * @throws IOException If fails
+     */
+    public Iterable<String> olderThan(final ChronoZonedDateTime<LocalDate> time)
+        throws IOException {
+        try (final Item item = this.item()) {
+            return new ListOf<>(
+                new Xocument(item.path()).xpath(
+                    new JoinedText(
+                        "",
+                        "/orders/order[",
+                        "xs:dateTime(created) < xs:dateTime('",
+                        time.format(DateTimeFormatter.ISO_INSTANT),
+                        "')]/@job"
+                    ).asString()
+                )
             );
         }
     }
