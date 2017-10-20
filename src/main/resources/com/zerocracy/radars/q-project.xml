@@ -88,6 +88,12 @@ SOFTWARE.
         <regex>[a-zA-Z0-9\-]+</regex>
         <help>GitHub login of the user</help>
       </opt>
+      <opt>
+        <optional>true</optional>
+        <name>login</name>
+        <regex>.+</regex>
+        <help>Hourly rate for this user (instead of the one from profile)</help>
+      </opt>
     </opts>
   </cmd>
   <cmd>

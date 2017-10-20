@@ -58,6 +58,7 @@ final class StrictProject implements Project {
             "|",
             "(claims\\.xml)",
             "(roles\\.xml)",
+            "(rates\\.xml)",
             "(elections\\.xml)",
             "(estimates\\.xml)",
             "(wbs\\.xml)",

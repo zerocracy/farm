@@ -36,7 +36,14 @@ SOFTWARE.
       <xsl:text>.</xsl:text>
     </p>
     <p>
-      <xsl:text>Please, use Google Chrome browser to see the document correctly.</xsl:text>
+      <span style="color:red">
+        <xsl:text>Note</xsl:text>
+      </span>
+      <xsl:text>: Please, use </xsl:text>
+      <a href="https://www.google.com/chrome/browser/desktop/index.html">
+        <xsl:text>Google Chrome</xsl:text>
+      </a>
+      <xsl:text> to see the document correctly.</xsl:text>
     </p>
     <xsl:value-of select="xml" disable-output-escaping="yes"/>
     <p>

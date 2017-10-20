@@ -14,43 +14,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pmo.profile
+package com.zerocracy.stk.pm.cost
 
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
-import com.zerocracy.jstk.SoftException
+import com.zerocracy.jstk.cash.Cash
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
-import com.zerocracy.pmo.People
+import com.zerocracy.pm.cost.Rates
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Apply to a project')
+  new Assume(project, xml).type('Change user rate')
+  new Assume(project, xml).roles('ARC', 'PO')
   ClaimIn claim = new ClaimIn(xml)
-  Farm farm = binding.variables.farm
-  String pid = claim.param('project')
-  Iterable<Project> projects = farm.find("@id='${pid}'")
-  if (!projects.iterator().hasNext()) {
-    throw new SoftException(
-      "Project \"${pid}\" doesn't exist."
-    )
+  String login = claim.param('login')
+  Cash rate = new Cash.S(claim.param('rate'))
+  Rates rates = new Rates(project).bootstrap()
+  String msg
+  if (rates.exists(login)) {
+    msg = "Hourly rate of @${login} set to ${rate}."
+  } else {
+    msg = "Hourly rate of @${login} changed from ${rates.rate(login)} to ${rate}."
   }
-  String author = claim.author()
+  rates.set(login, rate)
   new ClaimOut()
-    .type('Notify project')
-    .param(
-      'message',
-      "@${claim.author()} wants to join you guys:" +
-      " [profile](http://www.0crat.com/u/${author})." +
-      " If you want to add @${author} to the project, just" +
-      ' assign them `DEV` role and that\'s it.' +
-      " The hourly rate of @${author} is ${new People(project).rate(author)}." +
-      ' You can use that rate or define another one,' +
-      ' see [par.13](http://datum.zerocracy.com/pages/policy.html#13).'
-    )
-    .postTo(projects[0])
-  claim.reply(
-    "Project `${pid}` was notified about your desire to join them."
-  ).postTo(project)
+    .type('User rate was changed')
+    .param('login', login)
+    .param('rate', rate)
+    .postTo(project)
+  claim.reply(msg).postTo(project)
 }

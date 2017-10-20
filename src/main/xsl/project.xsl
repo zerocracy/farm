@@ -60,6 +60,10 @@ SOFTWARE.
       </a>
       <xsl:text>, </xsl:text>
       -->
+      <a href="/a/{project}?a=pm/cost/rates">
+        <xsl:text>Rates</xsl:text>
+      </a>
+      <xsl:text>, </xsl:text>
       <a href="/a/{project}?a=pm/cost/estimates">
         <xsl:text>Estimates</xsl:text>
       </a>

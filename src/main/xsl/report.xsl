@@ -65,17 +65,21 @@ SOFTWARE.
         <button type="submit">Go</button>
       </fieldset>
     </form>
-    <p>
-      <xsl:value-of select="title" disable-output-escaping="yes"/>
-    </p>
     <xsl:apply-templates select="rows"/>
   </xsl:template>
-  <xsl:template match="rows[row]">
+  <xsl:template match="rows[not(row)]">
     <p>
-      <xsl:text>There is no data for your request, sorry.</xsl:text>
+      <xsl:text>There is </xsl:text>
+      <span style="color:red">
+        <xsl:text>no data</xsl:text>
+      </span>
+      <xsl:text> for your request, sorry.</xsl:text>
     </p>
   </xsl:template>
   <xsl:template match="rows[row]">
+    <p>
+      <xsl:value-of select="/page/title" disable-output-escaping="yes"/>
+    </p>
     <table>
       <thead>
         <tr>
