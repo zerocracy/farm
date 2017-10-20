@@ -22,26 +22,19 @@ import com.zerocracy.jstk.Project
 import com.zerocracy.jstk.cash.Cash
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
-import com.zerocracy.pm.cost.Rates
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Change user rate')
-  new Assume(project, xml).roles('ARC', 'PO')
+  new Assume(project, xml).type('User rate was changed')
   ClaimIn claim = new ClaimIn(xml)
   String login = claim.param('login')
   Cash rate = new Cash.S(claim.param('rate'))
-  Rates rates = new Rates(project).bootstrap()
-  String msg
-  if (rates.exists(login)) {
-    msg = "Hourly rate of @${login} changed from ${rates.rate(login)} to ${rate}."
-  } else {
-    msg = "Hourly rate of @${login} set to ${rate}."
-  }
-  rates.set(login, rate)
   new ClaimOut()
-    .type('User rate was changed')
-    .param('login', login)
-    .param('rate', rate)
+    .type('Notify user')
+    .token("user;${login}")
+    .param(
+      'message',
+      "Your new rate in `${project}` is ${rate}." +
+      ' Only new tasks will be affected.'
+    )
     .postTo(project)
-  claim.reply(msg).postTo(project)
 }
