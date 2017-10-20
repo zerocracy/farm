@@ -90,7 +90,7 @@ SOFTWARE.
       </opt>
       <opt>
         <optional>true</optional>
-        <name>login</name>
+        <name>rate</name>
         <regex>.+</regex>
         <help>Hourly rate for this user (instead of the one from profile)</help>
       </opt>

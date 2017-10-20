@@ -69,7 +69,7 @@ def exec(Project project, XML xml) {
     } else {
       msg += "Hourly rate of @${login} is not set," +
         ' the user will receive no money for task completion.' +
-        " If you want to assign hourly rate, say `assign ${role} ${login} \$25`," +
+        " If you want to assign an hourly rate, say `assign ${role} ${login} \$25`," +
         ' for example.'
     }
   }

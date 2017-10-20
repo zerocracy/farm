@@ -38,7 +38,7 @@ public final class QuestionTest {
             new XMLDocument(
                 this.getClass().getResource("q-project.xml")
             ),
-            "assign ARC yegor256"
+            "assign ARC yegor256 $40"
         );
         MatcherAssert.assertThat(
             question.matches(),
@@ -51,6 +51,10 @@ public final class QuestionTest {
         MatcherAssert.assertThat(
             question.params().get("role"),
             Matchers.equalTo("ARC")
+        );
+        MatcherAssert.assertThat(
+            question.params().get("rate"),
+            Matchers.equalTo("$40")
         );
     }
 
