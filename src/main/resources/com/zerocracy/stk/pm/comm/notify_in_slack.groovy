@@ -61,24 +61,26 @@ def exec(Project project, XML xml) {
     }
   } else {
     SlackChannel channel = session.findChannelById(parts[1])
+    String debugMessage = "$message\n> claim: ${claim.cid()} ${claim.created()}" +
+      "\n> session: $session\n> channel: $channel"
     if (parts.length > 2) {
       session.sendMessage(
         channel,
-        String.format('@%s %s', parts[2], message)
+        String.format('@%s %s', parts[2], debugMessage)
       )
       Logger.info(
         this, '@%s posted %d chars to @%s at %s/%s',
         session.sessionPersona().userName,
-        message.length(),
+        debugMessage.length(),
         parts[2],
         channel.name, channel.id
       )
     } else {
-      session.sendMessage(channel, message)
+      session.sendMessage(channel, debugMessage)
       Logger.info(
         this, '@%s posted %d chars at %s/%s',
         session.sessionPersona().userName,
-        message.length(),
+        debugMessage.length(),
         channel.name, channel.id
       )
     }
