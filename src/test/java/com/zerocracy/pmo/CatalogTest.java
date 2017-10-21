@@ -19,6 +19,7 @@ package com.zerocracy.pmo;
 import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
+import com.zerocracy.jstk.farm.fake.FkFarm;
 import com.zerocracy.jstk.farm.fake.FkProject;
 import java.io.IOException;
 import java.time.ZonedDateTime;
@@ -100,6 +101,28 @@ public final class CatalogTest {
             catalog.hasLink(pid, rel, href),
             Matchers.is(false)
         );
+    }
+
+    @Test
+    public void setProjectTitle() throws Exception {
+        final String pid = "000000000";
+        final Pmo pmo = new Pmo(new FkFarm());
+        final Catalog catalog = new Catalog(pmo).bootstrap();
+        catalog.add(pid, "2017/10/000000000/");
+        final String title = "test";
+        catalog.title(pid, title);
+        try (final Item item = CatalogTest.item(pmo)) {
+            MatcherAssert.assertThat(
+                new Xocument(item.path())
+                    .xpath(
+                        String.format(
+                            "/catalog/project[@id = '%s']/title/text()",
+                            pid
+                        )
+                    ),
+                Matchers.contains(title)
+            );
+        }
     }
 
     private static Item item(final Project project) throws IOException {

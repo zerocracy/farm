@@ -40,6 +40,11 @@ import org.xembly.Directives;
 public final class Catalog {
 
     /**
+     * Title.
+     */
+    private static final String PRJ_TITLE = "title";
+
+    /**
      * Project.
      */
     private final Project pmo;
@@ -85,7 +90,7 @@ public final class Catalog {
                     .xpath("/catalog")
                     .add("project")
                     .attr("id", pid)
-                    .add("title").set(pid).up()
+                    .add(Catalog.PRJ_TITLE).set(pid).up()
                     .add("created")
                     .set(
                         ZonedDateTime.now().format(
@@ -300,6 +305,24 @@ public final class Catalog {
             this, "Project \"%s\" got a parent \"%s\"",
             pid, parent
         );
+    }
+
+    /**
+     * Change project title.
+     * @param pid Project id
+     * @param title New title
+     * @throws IOException If fails
+     */
+    public void title(final String pid, final String title)
+        throws IOException {
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                new Directives()
+                    .xpath(String.format("/catalog/project[@id =  '%s']", pid))
+                    .addIf(Catalog.PRJ_TITLE)
+                    .set(title)
+            );
+        }
     }
 
     /**
