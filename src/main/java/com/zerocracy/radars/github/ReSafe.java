@@ -17,6 +17,7 @@
 package com.zerocracy.radars.github;
 
 import com.jcabi.github.Comment;
+import com.zerocracy.farm.props.Props;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.SoftException;
 import com.zerocracy.msg.TxtUnrecoverableError;
@@ -66,7 +67,9 @@ public final class ReSafe implements Response {
                 },
                 (Proc<Throwable>) throwable -> {
                     comment.issue().comments().post(
-                        new TxtUnrecoverableError(throwable).asString()
+                        new TxtUnrecoverableError(
+                            throwable, new Props(farm)
+                        ).asString()
                     );
                     Sentry.capture(throwable);
                     throw new IOException(throwable);

@@ -19,6 +19,7 @@ package com.zerocracy.radars.github;
 import com.jcabi.github.Github;
 import com.jcabi.github.Issue;
 import com.jcabi.github.mock.MkGithub;
+import com.zerocracy.farm.props.Props;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.SoftException;
 import com.zerocracy.msg.TxtUnrecoverableError;
@@ -71,9 +72,11 @@ public final class RbSafe implements Rebound {
                     return result;
                 },
                 (Proc<Throwable>) throwable -> {
-                    RbSafe.issue(github, event)
-                        .comments()
-                        .post(new TxtUnrecoverableError(throwable).asString());
+                    RbSafe.issue(github, event).comments().post(
+                        new TxtUnrecoverableError(
+                            throwable, new Props(farm)
+                        ).asString()
+                    );
                     Sentry.capture(throwable);
                     throw new IOException(throwable);
                 }

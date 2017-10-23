@@ -16,6 +16,7 @@
  */
 package com.zerocracy.radars.telegram;
 
+import com.zerocracy.farm.props.Props;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.SoftException;
 import com.zerocracy.msg.TxtUnrecoverableError;
@@ -69,7 +70,11 @@ public final class ReSafe implements Reaction {
                 },
                 (Proc<Throwable>) throwable -> {
                     session.reply(
-                        new RsText(new TxtUnrecoverableError(throwable))
+                        new RsText(
+                            new TxtUnrecoverableError(
+                                throwable, new Props(farm)
+                            )
+                        )
                     );
                     Sentry.capture(throwable);
                     throw new IOException(throwable);

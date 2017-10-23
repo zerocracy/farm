@@ -16,6 +16,7 @@
  */
 package com.zerocracy.msg;
 
+import com.zerocracy.farm.props.Props;
 import java.io.IOException;
 import org.apache.commons.lang3.StringUtils;
 import org.cactoos.Text;
@@ -38,11 +39,18 @@ public final class TxtUnrecoverableError implements Text {
     private final Throwable err;
 
     /**
+     * Props.
+     */
+    private final Props props;
+
+    /**
      * Ctor.
      * @param error Error
+     * @param pps Props
      */
-    public TxtUnrecoverableError(final Throwable error) {
+    public TxtUnrecoverableError(final Throwable error, final Props pps) {
         this.err = error;
+        this.props = pps;
     }
 
     @Override
@@ -60,7 +68,11 @@ public final class TxtUnrecoverableError implements Text {
                 // @checkstyle MagicNumber (1 line)
                 1000
             ),
-            "\n```"
+            "\n```\n\n",
+            "My version: `%s`, `%s`, `%s`.",
+            this.props.get("//build/version", ""),
+            this.props.get("//build/revision", ""),
+            this.props.get("//build/date", "")
         ).asString();
     }
 

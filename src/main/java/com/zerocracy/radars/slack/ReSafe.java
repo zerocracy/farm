@@ -18,6 +18,7 @@ package com.zerocracy.radars.slack;
 
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
+import com.zerocracy.farm.props.Props;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.SoftException;
 import com.zerocracy.msg.TxtUnrecoverableError;
@@ -68,7 +69,9 @@ public final class ReSafe implements Reaction<SlackMessagePosted> {
                 (Proc<Throwable>) throwable -> {
                     session.sendMessage(
                         event.getChannel(),
-                        new TxtUnrecoverableError(throwable).asString()
+                        new TxtUnrecoverableError(
+                            throwable, new Props(farm)
+                        ).asString()
                     );
                     Sentry.capture(throwable);
                     throw new IOException(throwable);
