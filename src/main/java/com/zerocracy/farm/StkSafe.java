@@ -129,7 +129,7 @@ public final class StkSafe implements Stakeholder {
                                 1000
                             )
                         ).asString(),
-                        "\n```"
+                        "\n```\n\nCc @yegor256"
                     )
                 ).postTo(project);
             }

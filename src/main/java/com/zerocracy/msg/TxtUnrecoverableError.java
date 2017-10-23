@@ -69,7 +69,7 @@ public final class TxtUnrecoverableError implements Text {
                 1000
             ),
             "\n```\n\n",
-            "My version: `%s`, `%s`, `%s`.",
+            "My version: `%s`, `%s`, `%s`. Cc @yegor256",
             this.props.get("//build/version", ""),
             this.props.get("//build/revision", ""),
             this.props.get("//build/date", "")
