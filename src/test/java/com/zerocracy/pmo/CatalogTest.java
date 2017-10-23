@@ -111,18 +111,11 @@ public final class CatalogTest {
         catalog.add(pid, "2017/10/000000000/");
         final String title = "test";
         catalog.title(pid, title);
-        try (final Item item = CatalogTest.item(pmo)) {
-            MatcherAssert.assertThat(
-                new Xocument(item.path())
-                    .xpath(
-                        String.format(
-                            "/catalog/project[@id = '%s']/title/text()",
-                            pid
-                        )
-                    ),
-                Matchers.contains(title)
-            );
-        }
+        MatcherAssert.assertThat(
+            "tite wasn't changed",
+            catalog.title(pid),
+            Matchers.equalTo(title)
+        );
     }
 
     private static Item item(final Project project) throws IOException {

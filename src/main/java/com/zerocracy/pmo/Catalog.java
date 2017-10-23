@@ -326,6 +326,24 @@ public final class Catalog {
     }
 
     /**
+     * Project title.
+     * @param pid Project id
+     * @return Title string
+     * @throws IOException If fails
+     */
+    public String title(final String pid) throws IOException {
+        try (final Item item = this.item()) {
+            return new Xocument(item.path())
+                .xpath(
+                    String.format(
+                        "/catalog/project[@id = '%s']/title/text()",
+                        pid
+                    )
+                ).get(0);
+        }
+    }
+
+    /**
      * The item.
      * @return Item
      * @throws IOException If fails
