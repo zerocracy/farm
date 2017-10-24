@@ -29,7 +29,7 @@ import org.cactoos.collection.Mapped
 import org.cactoos.iterable.LengthOf
 
 /**
- * @todo # 266:30min Notify users about job in github
+ * @todo #266:30min Notify users about job in github
  *  with reminder's label. It can be new stakeholder which will
  *  react to 'Ping' claim.
  */
