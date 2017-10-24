@@ -114,9 +114,4 @@ SOFTWARE.
       </opt>
     </opts>
   </cmd>
-  <!--
-    @todo #209:30m Add set title command here (q-profile.xml) which should be
-     handled by new `set_title` stakeholder. This stakeholder should change
-     project title in `catalog.xml` /catalog/project/title.
-  -->
 </question>

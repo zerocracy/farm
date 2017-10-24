@@ -133,4 +133,18 @@ SOFTWARE.
     <label>bootstrap</label>
     <help>Bootstrap the project to initialize all project artifacts</help>
   </cmd>
+  <cmd>
+    <code>Set title</code>
+    <regex>title</regex>
+    <label>title</label>
+    <help>Change project title</help>
+    <opts>
+      <opt>
+        <name>title</name>
+        <regex>[\d\w._-]{3,}</regex>
+        <help>New project title</help>
+        <optional>true</optional>
+      </opt>
+    </opts>
+  </cmd>
 </question>
