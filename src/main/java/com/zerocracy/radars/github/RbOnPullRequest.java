@@ -37,8 +37,9 @@ public final class RbOnPullRequest implements Rebound {
     @Override
     public String react(final Farm farm, final Github github,
         final JsonObject event) throws IOException {
-        final Issue.Smart issue =
-            new Issue.Smart(new IssueOfEvent(github, event));
+        final Issue.Smart issue = new Issue.Smart(
+            new IssueOfEvent(github, event)
+        );
         final String answer;
         if (issue.isPull()) {
             new ClaimOut()

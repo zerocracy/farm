@@ -25,6 +25,8 @@ import com.jcabi.github.IssueLabels;
 import com.jcabi.github.Repo;
 import java.io.IOException;
 import javax.json.JsonObject;
+import org.cactoos.scalar.RetryScalar;
+import org.cactoos.scalar.UncheckedScalar;
 
 /**
  * An issue in GitHub event.
@@ -57,55 +59,68 @@ final class IssueOfEvent implements Issue {
 
     @Override
     public Repo repo() {
-        return this.issue().repo();
+        return this.safe().repo();
     }
 
     @Override
     public int number() {
-        return this.issue().number();
+        return this.safe().number();
     }
 
     @Override
     public Comments comments() {
-        return this.issue().comments();
+        return this.safe().comments();
     }
 
     @Override
     public IssueLabels labels() {
-        return this.issue().labels();
+        return this.safe().labels();
     }
 
     @Override
     public Iterable<Event> events() throws IOException {
-        return this.issue().events();
+        return this.safe().events();
     }
 
     @Override
     public boolean exists() throws IOException {
-        return this.issue().exists();
+        return this.safe().exists();
     }
 
     @Override
     public void patch(final JsonObject json) throws IOException {
-        this.issue().patch(json);
+        this.safe().patch(json);
     }
 
     @Override
     public JsonObject json() throws IOException {
-        return this.issue().json();
+        return this.safe().json();
     }
 
     @Override
     public int compareTo(final Issue issue) {
-        return this.issue().compareTo(issue);
+        return this.safe().compareTo(issue);
     }
 
     /**
      * Make an issue.
      * @return Issue
      */
+    private Issue safe() {
+        return new UncheckedScalar<>(
+            new RetryScalar<>(
+                this::issue
+            )
+        ).value();
+    }
+
+    /**
+     * Make an issue.
+     * @return Issue
+     * @throws IOException If fails
+     */
     @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-    private Issue issue() {
+    private Issue issue() throws IOException {
         final int num;
         if (this.event.containsKey("issue")) {
             num = this.event.getJsonObject("issue").getInt("number");
@@ -118,7 +133,7 @@ final class IssueOfEvent implements Issue {
                 )
             );
         }
-        return new SafeIssue(
+        final Issue issue = new SafeIssue(
             this.github.repos().get(
                 new Coordinates.Simple(
                     this.event.getJsonObject("repository")
@@ -126,6 +141,16 @@ final class IssueOfEvent implements Issue {
                 )
             ).issues().get(num)
         );
+        if (!issue.exists()) {
+            throw new IllegalStateException(
+                String.format(
+                    "Issue %s#%d doesn't exist",
+                    issue.repo().coordinates(),
+                    issue.number()
+                )
+            );
+        }
+        return issue;
     }
 
 }
