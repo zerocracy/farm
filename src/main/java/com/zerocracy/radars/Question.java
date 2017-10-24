@@ -244,7 +244,7 @@ public final class Question {
                                 new Mapped<>(
                                     opts,
                                     item -> String.format(
-                                        "* `<%s>`: %s",
+                                        "\\* `<%s>`: %s",
                                         item.xpath("name/text()").get(0),
                                         item.xpath("help/text()").get(0)
                                     )
