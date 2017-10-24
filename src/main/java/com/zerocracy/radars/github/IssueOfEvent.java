@@ -136,7 +136,7 @@ final class IssueOfEvent implements Issue {
         }
         try {
             // @checkstyle MagicNumber (1 line)
-            TimeUnit.SECONDS.sleep(5L);
+            TimeUnit.MILLISECONDS.sleep(100L);
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
             throw new IllegalStateException(ex);
