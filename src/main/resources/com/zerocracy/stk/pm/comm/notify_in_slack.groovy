@@ -49,38 +49,31 @@ def exec(Project project, XML xml) {
   }
   SlackSession session = session(parts[1])
   if (parts.length > 3) {
-    // @todo #117:30min Remove this debug message
-    //  when slack messages duplicates will be solved
-    //  now this string needs to clarify Slack stakeholder work
     String user = session.findUserByUserName(parts[2])
     def channel = session.openDirectMessageChannel(user).reply.slackChannel
-    String debugMessage = "$message\n> claim: ${claim.cid()} ${claim.created()}" +
-      "\n> session: $session\n> channel: $channel"
     if (user != null) {
-      session.sendMessage(channel, debugMessage)
+      session.sendMessage(channel, message)
     }
   } else {
     SlackChannel channel = session.findChannelById(parts[1])
-    String debugMessage = "$message\n> claim: ${claim.cid()} ${claim.created()}" +
-      "\n> session: $session\n> channel: $channel"
     if (parts.length > 2) {
       session.sendMessage(
         channel,
-        String.format('@%s %s', parts[2], debugMessage)
+        String.format('@%s %s', parts[2], message)
       )
       Logger.info(
         this, '@%s posted %d chars to @%s at %s/%s',
         session.sessionPersona().userName,
-        debugMessage.length(),
+        message.length(),
         parts[2],
         channel.name, channel.id
       )
     } else {
-      session.sendMessage(channel, debugMessage)
+      session.sendMessage(channel, message)
       Logger.info(
         this, '@%s posted %d chars at %s/%s',
         session.sessionPersona().userName,
-        debugMessage.length(),
+        message.length(),
         channel.name, channel.id
       )
     }
