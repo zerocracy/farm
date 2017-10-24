@@ -56,10 +56,10 @@ public final class TxtUnrecoverableError implements Text {
     @Override
     public String asString() throws IOException {
         return new JoinedText(
-            " ",
+            "",
             "There is an unrecoverable failure on my side.",
-            "Please, submit it",
-            "[here](https://github.com/zerocracy/datum):",
+            " Please, submit it",
+            " [here](https://github.com/zerocracy/datum):",
             "\n\n```\n",
             StringUtils.abbreviate(
                 new TextOf(
@@ -69,10 +69,13 @@ public final class TxtUnrecoverableError implements Text {
                 1000
             ),
             "\n```\n\n",
-            "My version: `%s`, `%s`, `%s`. Cc @yegor256",
-            this.props.get("//build/version", ""),
-            this.props.get("//build/revision", ""),
-            this.props.get("//build/date", "")
+            String.format(
+                "My version: `%s`, `%s`, `%s`",
+                this.props.get("//build/version", ""),
+                this.props.get("//build/revision", ""),
+                this.props.get("//build/date", "")
+            ),
+            " /cc @yegor256"
         ).asString();
     }
 
