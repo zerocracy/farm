@@ -24,6 +24,7 @@ import com.jcabi.github.Issue;
 import com.jcabi.github.IssueLabels;
 import com.jcabi.github.Repo;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 import javax.json.JsonObject;
 import org.cactoos.scalar.RetryScalar;
 import org.cactoos.scalar.UncheckedScalar;
@@ -132,6 +133,13 @@ final class IssueOfEvent implements Issue {
                     "Can't find issue number in %s", this.event
                 )
             );
+        }
+        try {
+            // @checkstyle MagicNumber (1 line)
+            TimeUnit.SECONDS.sleep(5L);
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException(ex);
         }
         final Issue issue = new SafeIssue(
             this.github.repos().get(

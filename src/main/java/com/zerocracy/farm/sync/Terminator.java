@@ -38,7 +38,7 @@ import org.cactoos.func.RunnableOf;
 final class Terminator {
 
     /**
-     * Threshold of locking, in seconds.
+     * Threshold of locking, in milliseconds.
      */
     private final long threshold;
 
@@ -54,10 +54,10 @@ final class Terminator {
 
     /**
      * Ctor.
-     * @param sec Seconds to give to each thread
+     * @param msec Seconds to give to each thread
      */
-    Terminator(final long sec) {
-        this.threshold = sec;
+    Terminator(final long msec) {
+        this.threshold = msec;
         this.service = Executors.newCachedThreadPool(new VerboseThreads());
         this.killers = new ConcurrentHashMap<>(0);
     }
@@ -91,20 +91,22 @@ final class Terminator {
         final Exception location = new IllegalStateException("Here!");
         return new RunnableOf<Object>(
             input -> {
-                if (!lock.tryLock(this.threshold, TimeUnit.SECONDS)) {
-                    thread.interrupt();
+                if (!lock.tryLock(this.threshold, TimeUnit.MILLISECONDS)) {
                     Logger.warn(
                         this,
                         // @checkstyle LineLength (1 line)
-                        "Thread %d/%s interrupted because of too long hold of \"%s\" in %s, holdCount=%d, queueLength=%d, hasQueuedThreads=%b, isHeldByCurrentThread=%b: %[exception]s",
+                        "Thread %d/%s interrupted because of too long hold of \"%s\" in %s (over %d msec), holdCount=%d, isLocked=%b, queueLength=%d, hasQueuedThreads=%b, isHeldByCurrentThread=%b: %[exception]s",
                         thread.getId(), thread.getName(),
                         file, project,
+                        this.threshold,
                         lock.getHoldCount(),
+                        lock.isLocked(),
                         lock.getQueueLength(),
                         lock.hasQueuedThreads(),
                         lock.isHeldByCurrentThread(),
                         location
                     );
+                    thread.interrupt();
                 }
                 lock.unlock();
                 this.killers.remove(project);

@@ -35,7 +35,7 @@ public final class ProjectsTest {
         final Projects projects = new Projects(
             new FkProject(), "yegor"
         ).bootstrap();
-        final String pkt = "123456789";
+        final String pkt = "12TEST789";
         projects.add(pkt);
         MatcherAssert.assertThat(projects.exists(pkt), Matchers.is(true));
     }

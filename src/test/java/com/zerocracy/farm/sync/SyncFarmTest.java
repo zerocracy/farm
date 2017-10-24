@@ -78,17 +78,19 @@ public final class SyncFarmTest {
             Files.createTempDirectory("").toFile(),
             "the-bucket-1"
         );
-        final Farm farm = new SyncFarm(new S3Farm(bucket), 1L);
+        final Farm farm = new SyncFarm(
+            new S3Farm(bucket), TimeUnit.SECONDS.toMillis(1L)
+        );
         final Project pmo = new Pmo(farm);
         final CountDownLatch locked = new CountDownLatch(1);
         new Thread(
             new RunnableOf<Object>(
                 input -> {
                     try (final Item item = pmo.acq("b.xml")) {
-                        locked.countDown();
                         MatcherAssert.assertThat(
                             item.path(), Matchers.notNullValue()
                         );
+                        locked.countDown();
                         TimeUnit.HOURS.sleep(1L);
                     }
                 }

@@ -127,23 +127,26 @@ final class RdItem implements Item {
 
     @Override
     public void close() throws IOException {
-        final String dirty = this.dirty();
-        if (!dirty.isEmpty()) {
-            final Path tmp = this.temp.value();
-            final Project proxy = file -> {
-                final Item item;
-                if (this.name.equals(file)) {
-                    item = new FkItem(tmp);
-                } else {
-                    item = this.project.acq(file);
-                }
-                return item;
-            };
-            new RdAuto(proxy, tmp, dirty).propagate();
-            new RdRules(proxy, tmp, dirty).validate();
-            new LengthOf(new TeeInput(tmp, this.origin.path())).value();
+        try {
+            final String dirty = this.dirty();
+            if (!dirty.isEmpty()) {
+                final Path tmp = this.temp.value();
+                final Project proxy = file -> {
+                    final Item item;
+                    if (this.name.equals(file)) {
+                        item = new FkItem(tmp);
+                    } else {
+                        item = this.project.acq(file);
+                    }
+                    return item;
+                };
+                new RdAuto(proxy, tmp, dirty).propagate();
+                new RdRules(proxy, tmp, dirty).validate();
+                new LengthOf(new TeeInput(tmp, this.origin.path())).value();
+            }
+        } finally {
+            this.origin.close();
         }
-        this.origin.close();
     }
 
     /**

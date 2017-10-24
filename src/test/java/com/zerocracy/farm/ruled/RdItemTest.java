@@ -110,4 +110,26 @@ public final class RdItemTest {
         );
     }
 
+    @Test
+    public void closesUnderlyingItemAnyway() throws Exception {
+        final Bucket bucket = new FkBucket(
+            Files.createTempDirectory("").toFile(),
+            "the-bucket-98"
+        );
+        final Project project = new RdFarm(
+            new SyncFarm(new S3Farm(bucket))
+        ).find("@id='ABCDTTGHI'").iterator().next();
+        final String job = "gh:test/test#143";
+        final Thread bug = new Thread(
+            new RunnableOf<Object>(
+                input -> {
+                    new Boosts(project).bootstrap().boost(job, Tv.TEN);
+                }
+            )
+        );
+        bug.start();
+        bug.join();
+        new Boosts(project).bootstrap();
+    }
+
 }

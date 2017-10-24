@@ -51,7 +51,7 @@ public final class ExtMongoTest {
         new ClaimOut().type("hello").postTo(project);
         final XML xml = new Claims(project).iterate().iterator().next();
         final MongoClient mongo = new ExtMongo(farm).value();
-        final String pid = "123456789";
+        final String pid = "12MONGO89";
         try (final Footprint footprint = new Footprint(mongo, pid)) {
             footprint.open(xml);
             footprint.close(xml);

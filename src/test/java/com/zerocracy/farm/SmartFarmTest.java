@@ -143,7 +143,7 @@ public final class SmartFarmTest {
             "some-bucket-09"
         );
         final Project project = new SmartFarm(new S3Farm(bucket)).value().find(
-            "@id='123456789'"
+            "@id='SMARTFARM'"
         ).iterator().next();
         final String job = "gh:test/test#22";
         new Wbs(project).bootstrap().add(job);
