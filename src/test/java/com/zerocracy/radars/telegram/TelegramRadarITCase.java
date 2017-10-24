@@ -58,7 +58,7 @@ import org.telegram.telegrambots.generics.BotSession;
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@SuppressWarnings("PMD.UseUtilityClass")
+@SuppressWarnings({"PMD.UseUtilityClass", "PMD.AvoidDuplicateLiterals"})
 public final class TelegramRadarITCase {
 
     /**
@@ -136,6 +136,37 @@ public final class TelegramRadarITCase {
                     .getResource("/com/zerocracy/radars/q-profile.xml")
             ),
             "help"
+        ).help();
+        Logger.error(this, help);
+        final BotSession session = new TelegramBotsApi().registerBot(
+            new TmZerocrat(
+                TelegramRadarITCase.TOKEN,
+                TelegramRadarITCase.NAME,
+                new BotUpdateReaction(
+                    new ReSafe(
+                        new FkTextReaction(
+                            new TextOf(
+                                help
+                            )
+                        )
+                    ),
+                    new FkFarm(),
+                    new ConcurrentHashMap<>(1)
+                )
+            )
+        );
+        TimeUnit.SECONDS.sleep((long) Tv.TEN);
+        session.stop();
+    }
+
+    @Test
+    public void replyWithHelpMessage() throws Exception {
+        final String help = new Question(
+            new XMLDocument(
+                this.getClass()
+                    .getResource("/com/zerocracy/radars/q-profile.xml")
+            ),
+            "apply"
         ).help();
         Logger.error(this, help);
         final BotSession session = new TelegramBotsApi().registerBot(
