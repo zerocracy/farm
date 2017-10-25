@@ -35,7 +35,7 @@ import org.cactoos.iterable.LengthOf
  */
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Ping')
-
+  new Assume(project, xml).notPmo()
   def claim = new ClaimIn(xml)
   def reminders = new Reminders(project).bootstrap()
   def orders = new Orders(project).bootstrap()

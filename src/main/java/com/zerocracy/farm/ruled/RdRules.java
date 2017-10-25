@@ -130,9 +130,8 @@ final class RdRules {
         if (!errors.isEmpty()) {
             throw new IllegalStateException(
                 String.format(
-                    "%s says in %s: %s",
-                    xsl, this.project,
-                    String.join("; ", errors)
+                    "%s says: %s",
+                    xsl, String.join("; ", errors)
                 )
             );
         }
