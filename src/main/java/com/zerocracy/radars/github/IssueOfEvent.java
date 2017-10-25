@@ -152,7 +152,7 @@ final class IssueOfEvent implements Issue {
         if (!issue.exists()) {
             throw new IllegalStateException(
                 String.format(
-                    "Issue %s#%d doesn't exist",
+                    "Issue %s#%d doesn't exist in GitHub",
                     issue.repo().coordinates(),
                     issue.number()
                 )
