@@ -129,7 +129,11 @@ final class RdRules {
                 .xpath("/errors/error/text()");
         if (!errors.isEmpty()) {
             throw new IllegalStateException(
-                String.join("; ", errors)
+                String.format(
+                    "%s says in %s: %s",
+                    xsl, this.project,
+                    String.join("; ", errors)
+                )
             );
         }
     }
