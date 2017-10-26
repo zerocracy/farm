@@ -20,6 +20,7 @@ import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pmo.Agenda;
 import com.zerocracy.pmo.Awards;
+import com.zerocracy.pmo.Catalog;
 import com.zerocracy.pmo.People;
 import com.zerocracy.pmo.Pmo;
 import com.zerocracy.pmo.Projects;
@@ -32,8 +33,10 @@ import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
 import org.takes.rs.xe.XeAppend;
 import org.takes.rs.xe.XeChain;
+import org.takes.rs.xe.XeDirectives;
 import org.takes.rs.xe.XeTransform;
 import org.takes.rs.xe.XeWhen;
+import org.xembly.Directives;
 
 /**
  * User profile page.
@@ -69,6 +72,7 @@ public final class TkProfile implements TkRegex {
                 final String user = new RqUser(pmo, req).value();
                 final String login = new RqLogin(pmo, req).value();
                 final People people = new People(pmo).bootstrap();
+                final Catalog catalog = new Catalog(pmo).bootstrap();
                 return new XeChain(
                     new XeAppend("owner", login),
                     new XeWhen(
@@ -96,7 +100,12 @@ public final class TkProfile implements TkRegex {
                                     new Projects(
                                         pmo, login
                                     ).bootstrap().iterate(),
-                                    pkt -> new XeAppend("project", pkt)
+                                    pkt -> new XeDirectives(
+                                        new Directives()
+                                            .add("project")
+                                            .attr("title", catalog.title(pkt))
+                                            .set(pkt)
+                                    )
                                 )
                             ),
                             new XeAppend(

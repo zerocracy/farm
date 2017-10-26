@@ -147,7 +147,7 @@ SOFTWARE.
           <xsl:text>, </xsl:text>
         </xsl:if>
         <a href="/p/{.}">
-          <xsl:value-of select="."/>
+          <xsl:value-of select="@title"/>
         </a>
       </xsl:for-each>
       <xsl:text> (</xsl:text>

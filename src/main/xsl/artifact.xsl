@@ -31,7 +31,7 @@ SOFTWARE.
       </code>
       <xsl:text> at </xsl:text>
       <a href="/p/{project}">
-        <xsl:value-of select="project"/>
+        <xsl:value-of select="title"/>
       </a>
       <xsl:text>.</xsl:text>
     </p>

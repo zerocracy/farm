@@ -18,6 +18,7 @@ package com.zerocracy.tk.project;
 
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
+import com.zerocracy.pmo.Catalog;
 import com.zerocracy.tk.RsPage;
 import com.zerocracy.tk.XeXsl;
 import java.io.IOException;
@@ -62,8 +63,11 @@ public final class TkArtifact implements TkRegex {
                 final String artifact = new RqHref.Smart(
                     new RqHref.Base(req)
                 ).single("a");
+                final Catalog catalog = new Catalog(this.farm).bootstrap();
+                final String pid = project.toString();
                 return new XeChain(
-                    new XeAppend("project", project.toString()),
+                    new XeAppend("project", pid),
+                    new XeAppend("title", catalog.title(pid)),
                     new XeAppend("artifact", artifact),
                     new XeXsl(
                         project,

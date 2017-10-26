@@ -23,6 +23,7 @@ import com.zerocracy.jstk.farm.fake.FkFarm;
 import com.zerocracy.pmo.Agenda;
 import com.zerocracy.pmo.Awards;
 import com.zerocracy.pmo.People;
+import com.zerocracy.pmo.Projects;
 import com.zerocracy.tk.TkApp;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
@@ -50,6 +51,7 @@ public final class TkProfileTest {
         people.invite(uid, "mentor");
         new Awards(farm, uid).bootstrap().add(1, "gh:test/test#1", "reason");
         new Agenda(farm, uid).bootstrap().add("gh:test/test#2", "#");
+        new Projects(farm, uid).bootstrap().add("9A0007788");
         final Take take = new TkApp(farm);
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(

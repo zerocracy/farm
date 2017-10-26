@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
+import java.util.Iterator;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.list.StickyList;
 import org.xembly.Directives;
@@ -333,13 +334,18 @@ public final class Catalog {
      */
     public String title(final String pid) throws IOException {
         try (final Item item = this.item()) {
-            return new Xocument(item.path())
+            final Iterator<String> items = new Xocument(item.path())
                 .xpath(
                     String.format(
                         "/catalog/project[@id = '%s']/title/text()",
                         pid
                     )
-                ).get(0);
+                ).iterator();
+            String title = pid;
+            if (items.hasNext()) {
+                title = items.next();
+            }
+            return title;
         }
     }
 

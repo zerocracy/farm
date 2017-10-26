@@ -21,13 +21,15 @@ SOFTWARE.
   <xsl:include href="/xsl/inner-layout.xsl"/>
   <xsl:template match="page" mode="head">
     <title>
-      <xsl:value-of select="project"/>
+      <xsl:value-of select="title"/>
     </title>
   </xsl:template>
   <xsl:template match="page" mode="inner">
     <p>
       <xsl:text>Project: </xsl:text>
       <code>
+        <xsl:value-of select="title"/>
+        <xsl:text>/</xsl:text>
         <xsl:value-of select="project"/>
       </code>
       <xsl:apply-templates select="roles"/>

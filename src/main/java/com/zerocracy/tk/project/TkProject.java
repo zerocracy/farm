@@ -63,14 +63,13 @@ public final class TkProject implements TkRegex {
             req,
             () -> {
                 final Project project = new RqProject(this.farm, req).value();
+                final Catalog catalog = new Catalog(this.farm).bootstrap();
                 final String pid = project.toString();
                 return new XeChain(
-                    new XeAppend(
-                        "project",
-                        new RqProject(this.farm, req).value().toString()
-                    ),
+                    new XeAppend("project", pid),
+                    new XeAppend("title", catalog.title(pid)),
                     new XeWhen(
-                        !"PMO".equals(project.toString()),
+                        !"PMO".equals(pid),
                         () -> new XeAppend(
                             "roles",
                             new XeTransform<>(
