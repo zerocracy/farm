@@ -25,9 +25,6 @@ import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.time.Reminders
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
-import org.cactoos.collection.Mapped
-import org.cactoos.iterable.LengthOf
-
 /**
  * @todo #266:30min Notify users about job in github
  *  with reminder's label. It can be new stakeholder which will
@@ -39,22 +36,21 @@ def exec(Project project, XML xml) {
   def claim = new ClaimIn(xml)
   def reminders = new Reminders(project).bootstrap()
   def orders = new Orders(project).bootstrap()
-  def processed = new LengthOf(
-    new Mapped<>(
-      orders.olderThan(
-        ZonedDateTime.ofInstant(
-          claim.created().toInstant(), ZoneOffset.UTC
-        ).minusDays(5)
-      ),
-      { String job ->
-        reminders.add(job, orders.performer(job), '5 days')
-        job
-      }
-    )
-  ).value()
-  if (processed > 0) {
-    new ClaimOut()
-      .type('New reminders posted')
-      .postTo(project)
+  def expired = orders.olderThan(
+    ZonedDateTime.ofInstant(
+      claim.created().toInstant(), ZoneOffset.UTC
+    ).minusDays(5)
+  )
+  for (String job : expired) {
+    String label = '5 days'
+    String login = orders.performer(job)
+    if (reminders.add(job, login, label)) {
+      new ClaimOut()
+        .type('New reminder posted')
+        .param('job', job)
+        .param('label', label)
+        .param('login', login)
+        .postTo(project)
+    }
   }
 }

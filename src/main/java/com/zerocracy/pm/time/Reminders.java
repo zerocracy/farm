@@ -63,9 +63,10 @@ public final class Reminders {
      * @param job Job id.
      * @param login Order's login
      * @param label Label to show
+     * @return TRUE if actually added
      * @throws IOException If fails
      */
-    public void add(final String job, final String login, final String label)
+    public boolean add(final String job, final String login, final String label)
         throws IOException {
         try (final Item item = this.item()) {
             final Xocument xoc = new Xocument(item);
@@ -79,6 +80,7 @@ public final class Reminders {
                         .add("order").attr("job", job)
                 );
             }
+            boolean added = false;
             if (xoc.nodes(
                 String.format(
                     "%s/reminder/label[text() = '%s']",
@@ -103,7 +105,9 @@ public final class Reminders {
                         .set(login)
                         .up()
                 );
+                added = true;
             }
+            return added;
         }
     }
 
