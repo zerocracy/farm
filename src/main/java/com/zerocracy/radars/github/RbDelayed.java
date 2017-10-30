@@ -17,54 +17,44 @@
 package com.zerocracy.radars.github;
 
 import com.jcabi.github.Github;
-import com.jcabi.github.RtPagination;
-import com.jcabi.http.Request;
-import com.jcabi.http.response.RestResponse;
 import com.zerocracy.jstk.Farm;
 import java.io.IOException;
-import java.net.HttpURLConnection;
+import java.util.concurrent.TimeUnit;
 import javax.json.JsonObject;
 
 /**
- * GitHub notifications listening crew.
+ * Rebound that acts in about 5 seconds.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.1
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @since 0.10
  */
-public final class RbOnComment implements Rebound {
+public final class RbDelayed implements Rebound {
 
     /**
-     * Reaction.
+     * Original reaction.
      */
-    private final Reaction reaction;
+    private final Rebound origin;
 
     /**
      * Ctor.
      * @param rtn Reaction
      */
-    public RbOnComment(final Reaction rtn) {
-        this.reaction = rtn;
+    public RbDelayed(final Rebound rtn) {
+        this.origin = rtn;
     }
 
     @Override
     public String react(final Farm farm, final Github github,
-        final JsonObject json) throws IOException {
-        final Request req = github.entry()
-            .uri().path("/notifications").back();
-        final Iterable<JsonObject> events =
-            new RtPagination<>(req, RtPagination.COPYING);
-        int total = 0;
-        for (final JsonObject event : events) {
-            this.reaction.react(farm, event);
-            ++total;
+        final JsonObject event) throws IOException {
+        try {
+            // @checkstyle MagicNumber (1 line)
+            TimeUnit.SECONDS.sleep(5L);
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException(ex);
         }
-        req.method(Request.PUT)
-            .body().set("{}").back()
-            .fetch()
-            .as(RestResponse.class)
-            .assertStatus(HttpURLConnection.HTTP_RESET);
-        return String.format("%d GitHub events seen", total);
+        return this.origin.react(farm, github, event);
     }
+
 }

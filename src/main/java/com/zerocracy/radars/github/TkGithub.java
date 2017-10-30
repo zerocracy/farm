@@ -77,12 +77,11 @@ public final class TkGithub implements Take, Runnable {
     public TkGithub(final Farm frm, final Props props) throws IOException {
         this(
             frm,
-            new RbLogged(
-                new RbSafe(
-                    new RbByActions(
-                        new RbOnComment(
-                            new GithubFetch(
-                                frm,
+            new RbDelayed(
+                new RbLogged(
+                    new RbSafe(
+                        new RbByActions(
+                            new RbOnComment(
                                 new ReLogged(
                                     new Reaction.Chain(
                                         new ReOnReason(
@@ -102,40 +101,40 @@ public final class TkGithub implements Take, Runnable {
                                         )
                                     )
                                 )
-                            )
+                            ),
+                            "created"
                         ),
-                        "created"
-                    ),
-                    new RbByActions(
-                        new RbOnPullRequest(),
-                        "opened", "reopened"
-                    ),
-                    new RbByActions(
-                        new RbPingArchitect(),
-                        "opened", "reopened"
-                    ),
-                    new RbByActions(
-                        new Rebound.Chain(
-                            new RbVerifyCloser(),
-                            new RbOnClose()
+                        new RbByActions(
+                            new RbOnPullRequest(),
+                            "opened", "reopened"
                         ),
-                        "closed"
-                    ),
-                    new RbByActions(
-                        new RbByLabel(
-                            new RbOnBug(),
-                            "bug"
+                        new RbByActions(
+                            new RbPingArchitect(),
+                            "opened", "reopened"
                         ),
-                        "labeled"
-                    ),
-                    new RbByActions(new RbOnAssign(), "assigned"),
-                    new RbByActions(new RbOnUnassign(), "unassigned"),
-                    new RbTweet(
-                        new ExtDynamo(frm).value().table("0crat-tweets"),
-                        props.get("//twitter/key"),
-                        props.get("//twitter/secret"),
-                        props.get("//twitter/token"),
-                        props.get("//twitter/tsecret")
+                        new RbByActions(
+                            new Rebound.Chain(
+                                new RbVerifyCloser(),
+                                new RbOnClose()
+                            ),
+                            "closed"
+                        ),
+                        new RbByActions(
+                            new RbByLabel(
+                                new RbOnBug(),
+                                "bug"
+                            ),
+                            "labeled"
+                        ),
+                        new RbByActions(new RbOnAssign(), "assigned"),
+                        new RbByActions(new RbOnUnassign(), "unassigned"),
+                        new RbTweet(
+                            new ExtDynamo(frm).value().table("0crat-tweets"),
+                            props.get("//twitter/key"),
+                            props.get("//twitter/secret"),
+                            props.get("//twitter/token"),
+                            props.get("//twitter/tsecret")
+                        )
                     )
                 )
             )
