@@ -365,6 +365,12 @@ SOFTWARE.
           <artifactId>maven-surefire-plugin</artifactId>
           <configuration>
             <parallel>none</parallel>
+            <properties>
+              <property>
+                <name>listener</name>
+                <value>com.zerocracy.TestListener</value>
+              </property>
+            </properties>
           </configuration>
         </plugin>
       </plugins>

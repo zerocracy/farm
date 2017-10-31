@@ -39,8 +39,8 @@ def exec(Project project, XML xml) {
   Github github = new ExtGithub(farm).value()
   Issue.Smart issue = new Issue.Smart(new Job.Issue(github, job))
   String login = claim.param('login')
-  if (issue.json().isNull('assignee')) {
-    Logger.warn(
+  if (issue.json().isNull('assignee') || issue.assignee().login().empty) {
+    Logger.info(
       this, 'Issue %s#%d doesn\'t have an assignee',
       issue.repo().coordinates(), issue.number()
     )
@@ -53,10 +53,10 @@ def exec(Project project, XML xml) {
       .param('issue', issue.number())
       .postTo(project)
   } else {
-    Logger.warn(
-      this, 'Issue %s#%d has a different assignee already: @%s',
+    Logger.info(
+      this, 'Issue %s#%d has a different assignee already @%s, cannot remove @%s',
       issue.repo().coordinates(), issue.number(),
-      issue.assignee().login()
+      issue.assignee().login(), login
     )
   }
 }

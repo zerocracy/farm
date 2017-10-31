@@ -18,6 +18,7 @@ package com.zerocracy.tk;
 
 import com.jcabi.http.request.JdkRequest;
 import com.jcabi.log.Logger;
+import com.jcabi.log.VerboseThreads;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.ClaimIn;
@@ -76,7 +77,9 @@ public final class TkPing implements Take {
     public TkPing(final Farm frm) {
         this.farm = frm;
         this.total = new AtomicInteger();
-        this.executor = Executors.newSingleThreadExecutor();
+        this.executor = Executors.newSingleThreadExecutor(
+            new VerboseThreads(TkPing.class)
+        );
     }
 
     @Override

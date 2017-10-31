@@ -58,7 +58,9 @@ final class Terminator {
      */
     Terminator(final long msec) {
         this.threshold = msec;
-        this.service = Executors.newCachedThreadPool(new VerboseThreads());
+        this.service = Executors.newCachedThreadPool(
+            new VerboseThreads(Terminator.class)
+        );
         this.killers = new ConcurrentHashMap<>(0);
     }
 

@@ -59,7 +59,7 @@ public final class GithubRoutine implements Runnable {
     public GithubRoutine(final Github ghub) {
         this.github = ghub;
         this.service = Executors.newSingleThreadScheduledExecutor(
-            new VerboseThreads()
+            new VerboseThreads(GithubRoutine.class)
         );
     }
 

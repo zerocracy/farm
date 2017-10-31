@@ -73,7 +73,7 @@ public final class RunsInThreads<T> extends TypeSafeMatcher<Func<T, Boolean>> {
     @Override
     public boolean matchesSafely(final Func<T, Boolean> func) {
         final ExecutorService service = Executors.newFixedThreadPool(
-            this.total, new VerboseThreads()
+            this.total, new VerboseThreads(RunsInThreads.class)
         );
         final CountDownLatch latch = new CountDownLatch(1);
         final Collection<Future<Boolean>> futures = new ArrayList<>(this.total);
@@ -88,12 +88,14 @@ public final class RunsInThreads<T> extends TypeSafeMatcher<Func<T, Boolean>> {
             futures.add(service.submit(task));
         }
         latch.countDown();
-        return new UncheckedScalar<>(
+        final boolean matches = new UncheckedScalar<>(
             new And(
                 futures,
                 (Func<Future<Boolean>, Boolean>) Future::get
             )
         ).value();
+        service.shutdown();
+        return matches;
     }
 
     @Override
