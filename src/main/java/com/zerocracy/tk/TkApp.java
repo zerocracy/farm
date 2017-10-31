@@ -28,6 +28,7 @@ import com.zerocracy.tk.project.TkFootprint;
 import com.zerocracy.tk.project.TkProject;
 import com.zerocracy.tk.project.TkReport;
 import com.zerocracy.tk.project.TkXml;
+import io.sentry.Sentry;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import org.apache.commons.text.StringEscapeUtils;
@@ -218,6 +219,10 @@ public final class TkApp extends TkWrap {
                         return new Opt.Empty<>();
                     },
                     new FbLog4j(),
+                    req -> {
+                        Sentry.capture(req.throwable());
+                        return new Opt.Empty<>();
+                    },
                     req -> new Opt.Single<>(
                         new RsWithStatus(
                             new RsWithType(
