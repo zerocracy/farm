@@ -25,6 +25,6 @@ import org.hamcrest.Matchers
 def exec(Project project, XML xml) {
   MatcherAssert.assertThat(
     new Reminders(project).bootstrap().labels('gh:test/test#2'),
-    Matchers.contains('5 days')
+    Matchers.contains('8 days')
   )
 }
