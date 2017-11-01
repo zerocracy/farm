@@ -17,6 +17,8 @@
 package com.zerocracy;
 
 import com.jcabi.log.Logger;
+import java.util.Collection;
+import org.cactoos.collection.Filtered;
 import org.junit.runner.Result;
 import org.junit.runner.notification.RunListener;
 
@@ -31,10 +33,23 @@ public final class TestListener extends RunListener {
 
     @Override
     public void testRunFinished(final Result result) throws Exception {
-        for (final Thread thread : Thread.getAllStackTraces().keySet()) {
-            Logger.warn(
-                this, "Still alive: %s (%b)",
-                thread.getName(), thread.isDaemon()
+        super.testRunFinished(result);
+        final Collection<Thread> alive = new Filtered<>(
+            Thread.getAllStackTraces().keySet(),
+            thread -> thread.getName().startsWith("Terminator-")
+        );
+        if (!alive.isEmpty()) {
+            for (final Thread thread : alive) {
+                Logger.warn(
+                    this, "Thread is still alive: %d/%s (%b)",
+                    thread.getId(), thread.getName(), thread.isDaemon()
+                );
+            }
+            throw new IllegalStateException(
+                String.format(
+                    "%d threads are still alive, it's a bug, see above",
+                    alive.size()
+                )
             );
         }
     }

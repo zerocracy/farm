@@ -73,7 +73,7 @@ final class S3Project implements Project {
     }
 
     @Override
-    public String toString() {
+    public String pid() {
         String name = StringUtils.stripEnd(this.prefix, "/");
         if (name.contains("/")) {
             name = StringUtils.substringAfterLast(name, "/");

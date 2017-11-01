@@ -20,6 +20,7 @@ import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,12 +67,13 @@ public final class StkPool {
      * @param project A project
      * @param claim Claim
      * @return Stakeholders
+     * @throws IOException If fails
      */
     @SuppressWarnings("IOResourceOpenedButNotSafelyClosed")
     public StkPooled stakeholders(final Project project,
-        final XML claim) {
+        final XML claim) throws IOException {
         final StkCriteria criteria = new StkCriteria(
-            project.toString(),
+            project.pid(),
             new ClaimIn(claim).type()
         );
         final StkPooled pooled;

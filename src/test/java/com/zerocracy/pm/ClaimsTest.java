@@ -21,6 +21,7 @@ import com.jcabi.s3.fake.FkBucket;
 import com.zerocracy.RunsInThreads;
 import com.zerocracy.farm.S3Farm;
 import com.zerocracy.farm.sync.SyncFarm;
+import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.farm.fake.FkProject;
@@ -48,15 +49,17 @@ public final class ClaimsTest {
             Files.createTempDirectory("").toFile(),
             "the-bucket"
         );
-        final Project project = new SyncFarm(new S3Farm(bucket))
-            .find("@id='ABCZZFE03'").iterator().next();
-        MatcherAssert.assertThat(
-            input -> {
-                new ClaimOut().type("how are you").postTo(project);
-                return true;
-            },
-            new RunsInThreads<>(true)
-        );
+        try (final Farm farm = new SyncFarm(new S3Farm(bucket))) {
+            final Project project = farm.find("@id='ABCZZFE03'")
+                .iterator().next();
+            MatcherAssert.assertThat(
+                input -> {
+                    new ClaimOut().type("how are you").postTo(project);
+                    return true;
+                },
+                new RunsInThreads<>(true)
+            );
+        }
     }
 
     @Test

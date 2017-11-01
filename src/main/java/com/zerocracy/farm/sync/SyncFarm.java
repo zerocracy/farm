@@ -87,4 +87,9 @@ public final class SyncFarm implements Farm {
         }
     }
 
+    @Override
+    public void close() throws IOException {
+        this.terminator.close();
+        this.origin.close();
+    }
 }

@@ -80,14 +80,14 @@ public final class Main {
             );
         }
         Sentry.init(props.get("//sentry/dsn", ""));
-        final Farm farm = new SmartFarm(
-            new S3Farm(new ExtBucket().value())
-        ).value();
-        new ExtMongobee(farm).apply();
         try (
+            final Farm farm = new SmartFarm(
+                new S3Farm(new ExtBucket().value())
+            ).value();
             final SlackRadar radar = new SlackRadar(farm);
             final TelegramRadar telegram = new TelegramRadar(farm)
         ) {
+            new ExtMongobee(farm).apply();
             radar.refresh();
             telegram.start(
                 props.get("//telegram/token"),

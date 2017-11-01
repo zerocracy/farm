@@ -22,6 +22,10 @@ import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
+import org.cactoos.Scalar;
+import org.cactoos.scalar.IoCheckedScalar;
+import org.cactoos.scalar.StickyScalar;
+import org.cactoos.scalar.SyncScalar;
 
 /**
  * Project in Slack.
@@ -33,14 +37,9 @@ import java.io.IOException;
 public final class SkProject implements Project {
 
     /**
-     * Farm.
+     * Project.
      */
-    private final Farm farm;
-
-    /**
-     * Slack channel.
-     */
-    private final SlackChannel channel;
+    private final Scalar<Project> pkt;
 
     /**
      * Ctor.
@@ -53,36 +52,30 @@ public final class SkProject implements Project {
 
     /**
      * Ctor.
-     * @param frm Farm
-     * @param cnl Channel
+     * @param farm Farm
+     * @param channel Channel
      */
-    public SkProject(final Farm frm, final SlackChannel cnl) {
-        this.farm = frm;
-        this.channel = cnl;
+    public SkProject(final Farm farm, final SlackChannel channel) {
+        this.pkt = new SyncScalar<>(
+            new StickyScalar<>(
+                () -> farm.find(
+                    String.format(
+                        "@id='%s'",
+                        channel.getId()
+                    )
+                ).iterator().next()
+            )
+        );
     }
 
     @Override
-    public String toString() {
-        return this.channel.getId();
+    public String pid() throws IOException {
+        return new IoCheckedScalar<>(this.pkt).value().pid();
     }
 
     @Override
     public Item acq(final String file) throws IOException {
-        return this.project().acq(file);
-    }
-
-    /**
-     * Make it.
-     * @return Project
-     * @throws IOException If fails
-     */
-    private Project project() throws IOException {
-        return this.farm.find(
-            String.format(
-                "@id='%s'",
-                this.channel.getId()
-            )
-        ).iterator().next();
+        return new IoCheckedScalar<>(this.pkt).value().acq(file);
     }
 
 }

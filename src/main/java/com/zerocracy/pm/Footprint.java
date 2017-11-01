@@ -25,6 +25,7 @@ import com.zerocracy.entry.ExtMongo;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import java.io.Closeable;
+import java.io.IOException;
 import java.util.Map;
 import org.bson.Document;
 
@@ -52,9 +53,10 @@ public final class Footprint implements Closeable {
      * Ctor.
      * @param farm Farm
      * @param pkt Project
+     * @throws IOException If fails
      */
-    public Footprint(final Farm farm, final Project pkt) {
-        this(new ExtMongo(farm).value(), pkt.toString());
+    public Footprint(final Farm farm, final Project pkt) throws IOException {
+        this(new ExtMongo(farm).value(), pkt.pid());
     }
 
     /**

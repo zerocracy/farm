@@ -81,15 +81,15 @@ final class UplinkedProject implements Project {
     }
 
     @Override
-    public String toString() {
-        return this.origin.toString();
+    public String pid() throws IOException {
+        return this.origin.pid();
     }
 
     @Override
     public Item acq(final String file) throws IOException {
         return new IoCheckedScalar<>(
-            new Ternary<>(
-                () -> !"PMO".equals(this.origin.toString()) && new Or(
+            new Ternary<Item>(
+                () -> !"PMO".equals(this.origin.pid()) && new Or(
                     new Mapped<>(
                         UplinkedProject.FILES,
                         pattern -> () -> pattern.matcher(file).matches()

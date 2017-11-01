@@ -101,7 +101,7 @@ public final class Awards {
                     )
                     .up()
                     .add("project")
-                    .set(this.pmo.toString())
+                    .set(this.pmo.pid())
                     .up()
                     .add("reason")
                     .set(reason)

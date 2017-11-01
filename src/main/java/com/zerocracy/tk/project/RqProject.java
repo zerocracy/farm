@@ -17,6 +17,7 @@
 package com.zerocracy.tk.project;
 
 import com.zerocracy.jstk.Farm;
+import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.pmo.Catalog;
@@ -25,6 +26,9 @@ import com.zerocracy.tk.RqUser;
 import java.io.IOException;
 import java.util.logging.Level;
 import org.cactoos.Scalar;
+import org.cactoos.scalar.IoCheckedScalar;
+import org.cactoos.scalar.StickyScalar;
+import org.cactoos.scalar.SyncScalar;
 import org.takes.facets.flash.RsFlash;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.forward.RsFailure;
@@ -38,53 +42,62 @@ import org.takes.facets.forward.RsForward;
  * @since 0.12
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-final class RqProject implements Scalar<Project> {
+final class RqProject implements Project {
 
     /**
-     * Farm.
+     * Project.
      */
-    private final Farm farm;
-
-    /**
-     * RqRegex.
-     */
-    private final RqRegex request;
+    private final Scalar<Project> pkt;
 
     /**
      * Ctor.
-     * @param frm Farm
+     * @param farm Farm
      * @param req Request
+     * @throws IOException If fails
      */
-    RqProject(final Farm frm, final RqRegex req) {
-        this.farm = frm;
-        this.request = req;
+    RqProject(final Farm farm, final RqRegex req) throws IOException {
+        this.pkt = new SyncScalar<>(
+            new StickyScalar<>(
+                () -> {
+                    final String name = req.matcher().group(1);
+                    final Project pmo = new Pmo(farm);
+                    final Catalog catalog = new Catalog(pmo).bootstrap();
+                    if (!catalog.exists(name)) {
+                        throw new RsFailure(
+                            String.format("Project \"%s\" not found", name)
+                        );
+                    }
+                    final Project project = farm.find(
+                        String.format("@id='%s'", name)
+                    ).iterator().next();
+                    final String login = new RqUser(farm, req).value();
+                    if (!"yegor256".equals(login)
+                        && !new Roles(project).bootstrap()
+                        .hasRole(login, "ARC", "PO")) {
+                        throw new RsForward(
+                            new RsFlash(
+                                String.format(
+                                    "@%s must either be PO or ARC to view %s",
+                                    login, name
+                                ),
+                                Level.SEVERE
+                            )
+                        );
+                    }
+                    return project;
+                }
+            )
+        );
     }
 
     @Override
-    public Project value() throws IOException {
-        final String name = this.request.matcher().group(1);
-        final Catalog catalog = new Catalog(new Pmo(this.farm)).bootstrap();
-        if (!catalog.exists(name)) {
-            throw new RsFailure(
-                String.format("Project \"%s\" not found", name)
-            );
-        }
-        final Project project = this.farm.find(
-            String.format("@id='%s'", name)
-        ).iterator().next();
-        final String login = new RqUser(this.farm, this.request).value();
-        if (!"yegor256".equals(login)
-            && !new Roles(project).bootstrap().hasRole(login, "ARC", "PO")) {
-            throw new RsForward(
-                new RsFlash(
-                    String.format(
-                        "@%s must either be a PO or an ARC to view %s",
-                        login, name
-                    ),
-                    Level.SEVERE
-                )
-            );
-        }
-        return project;
+    public String pid() throws IOException {
+        return new IoCheckedScalar<>(this.pkt).value().pid();
     }
+
+    @Override
+    public Item acq(final String file) throws IOException {
+        return new IoCheckedScalar<>(this.pkt).value().acq(file);
+    }
+
 }

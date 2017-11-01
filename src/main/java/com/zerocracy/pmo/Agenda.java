@@ -128,7 +128,7 @@ public final class Agenda {
                     )
                     .up()
                     .add("project")
-                    .set(this.pmo.toString())
+                    .set(this.pmo.pid())
             );
         }
         Logger.info(

@@ -31,14 +31,14 @@ def exec(Project project, XML xml) {
   assert orders.performer(job) == 'yegor256'
   assert orders.performer('gh:test/test#2') == 'dmarkov'
   def elections = new Elections(project).bootstrap()
-  assert !elections.elected(job)
+  assert elections.elected(job)
   Farm farm = binding.variables.farm
   assert new LengthOf(
     new Footprint(farm, project).collection().find(
       Filters.and(
-        Filters.eq('project', project.toString()),
+        Filters.eq('project', project.pid()),
         Filters.eq('type', 'Performer was elected')
       )
     )
-  ).value() == 1
+  ).value() == 2
 }

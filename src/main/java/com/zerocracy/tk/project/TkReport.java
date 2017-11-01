@@ -112,7 +112,7 @@ public final class TkReport implements TkRegex {
             "/xsl/report.xsl",
             req,
             () -> {
-                final Project project = new RqProject(this.farm, req).value();
+                final Project project = new RqProject(this.farm, req);
                 final Collection<Document> docs;
                 try (final Footprint footprint =
                     new Footprint(this.farm, project)) {
@@ -137,7 +137,7 @@ public final class TkReport implements TkRegex {
                     docs.size();
                 }
                 return new XeChain(
-                    new XeAppend("project", project.toString()),
+                    new XeAppend("project", project.pid()),
                     new XeAppend("report", report),
                     new XeAppend("title", TkReport.REPORTS.get(report).title()),
                     new XeAppend("start", TkReport.FMT.format(start)),

@@ -28,12 +28,12 @@ def exec(Project project, XML xml) {
   String mode = claim.param('mode')
   Catalog catalog = new Catalog(project)
   if ('on' == mode) {
-    catalog.publish(project.toString(), true)
+    catalog.publish(project.pid(), true)
     claim.reply(
       'The project is visible now at the [board](http://www.0crat.com/board)'
     ).postTo(project)
   } else if ('off' == mode) {
-    catalog.publish(project.toString(), false)
+    catalog.publish(project.pid(), false)
     claim.reply(
       'The project is not visible anymore at the' +
       ' [board](http://www.0crat.com/board)'

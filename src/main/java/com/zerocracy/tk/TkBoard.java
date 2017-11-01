@@ -99,7 +99,7 @@ public final class TkBoard implements Take {
         ).iterator().next();
         return new XeAppend(
             "project",
-            new XeAppend("id", project.toString()),
+            new XeAppend("id", project.pid()),
             new XeAppend(
                 "mine",
                 Boolean.toString(

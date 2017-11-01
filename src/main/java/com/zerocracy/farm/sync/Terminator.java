@@ -19,6 +19,7 @@ package com.zerocracy.farm.sync;
 import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseThreads;
 import com.zerocracy.jstk.Project;
+import java.io.Closeable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -35,7 +36,7 @@ import org.cactoos.func.RunnableOf;
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-final class Terminator {
+final class Terminator implements Closeable {
 
     /**
      * Threshold of locking, in milliseconds.
@@ -59,9 +60,26 @@ final class Terminator {
     Terminator(final long msec) {
         this.threshold = msec;
         this.service = Executors.newCachedThreadPool(
-            new VerboseThreads(Terminator.class)
+            new VerboseThreads(
+                String.format("Terminator-%d-", msec)
+            )
         );
         this.killers = new ConcurrentHashMap<>(0);
+    }
+
+    @Override
+    public void close() {
+        this.service.shutdown();
+        try {
+            if (!this.service.awaitTermination(1L, TimeUnit.MINUTES)) {
+                throw new IllegalStateException(
+                    "Can't shutdown terminator service: "
+                );
+            }
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException(ex);
+        }
     }
 
     /**
@@ -115,4 +133,5 @@ final class Terminator {
             }
         );
     }
+
 }

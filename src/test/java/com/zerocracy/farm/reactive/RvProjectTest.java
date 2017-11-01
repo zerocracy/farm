@@ -18,11 +18,13 @@ package com.zerocracy.farm.reactive;
 
 import com.jcabi.aspects.Tv;
 import com.zerocracy.RunsInThreads;
-import com.zerocracy.farm.sync.SyncProject;
+import com.zerocracy.farm.sync.SyncFarm;
+import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.farm.fake.FkProject;
+import com.zerocracy.jstk.farm.fake.FkFarm;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
+import com.zerocracy.pmo.Pmo;
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -43,53 +45,57 @@ public final class RvProjectTest {
     @Test
     public void closesClaims() throws Exception {
         final AtomicBoolean done = new AtomicBoolean();
-        final Project raw = new SyncProject(new FkProject());
-        final Flush flush = new Flush(
-            raw,
-            new Brigade(
-                Collections.singletonList(
-                    (project, xml) -> done.set(true)
+        try (final Farm farm = new SyncFarm(new FkFarm())) {
+            final Project raw = new Pmo(farm);
+            final Flush flush = new Flush(
+                raw,
+                new Brigade(
+                    Collections.singletonList(
+                        (project, xml) -> done.set(true)
+                    )
                 )
-            )
-        );
-        final Project project = new RvProject(raw, flush);
-        final Claims claims = new Claims(project).bootstrap();
-        claims.add(new ClaimOut().type("hello").token("test;tt"));
-        while (true) {
-            if (!claims.iterate().iterator().hasNext()) {
-                break;
+            );
+            final Project project = new RvProject(raw, flush);
+            final Claims claims = new Claims(project).bootstrap();
+            claims.add(new ClaimOut().type("hello").token("test;tt"));
+            while (true) {
+                if (!claims.iterate().iterator().hasNext()) {
+                    break;
+                }
             }
+            MatcherAssert.assertThat(done.get(), Matchers.is(true));
         }
-        MatcherAssert.assertThat(done.get(), Matchers.is(true));
     }
 
     @Test
     public void closesClaimsInThreads() throws Exception {
         final AtomicInteger total = new AtomicInteger(Tv.FIFTY);
-        final Project raw = new SyncProject(new FkProject());
-        final Flush flush = new Flush(
-            raw,
-            new Brigade(
-                Collections.singletonList(
-                    (project, xml) -> total.decrementAndGet()
+        try (final Farm farm = new SyncFarm(new FkFarm())) {
+            final Project raw = new Pmo(farm);
+            final Flush flush = new Flush(
+                raw,
+                new Brigade(
+                    Collections.singletonList(
+                        (project, xml) -> total.decrementAndGet()
+                    )
                 )
-            )
-        );
-        final Project project = new RvProject(raw, flush);
-        MatcherAssert.assertThat(
-            input -> {
-                new ClaimOut().type("hello you").postTo(project);
-                return true;
-            },
-            new RunsInThreads<>(null, total.get())
-        );
-        final Claims claims = new Claims(project).bootstrap();
-        while (true) {
-            if (!claims.iterate().iterator().hasNext()) {
-                break;
+            );
+            final Project project = new RvProject(raw, flush);
+            MatcherAssert.assertThat(
+                input -> {
+                    new ClaimOut().type("hello you").postTo(project);
+                    return true;
+                },
+                new RunsInThreads<>(null, total.get())
+            );
+            final Claims claims = new Claims(project).bootstrap();
+            while (true) {
+                if (!claims.iterate().iterator().hasNext()) {
+                    break;
+                }
             }
+            MatcherAssert.assertThat(total.get(), Matchers.equalTo(0));
         }
-        MatcherAssert.assertThat(total.get(), Matchers.equalTo(0));
     }
 
 }

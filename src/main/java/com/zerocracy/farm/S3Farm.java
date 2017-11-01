@@ -91,6 +91,11 @@ public final class S3Farm implements Farm {
         return found;
     }
 
+    @Override
+    public void close() {
+        // nothing
+    }
+
     /**
      * Make sure it exists and return it.
      * @param catalog The catalog

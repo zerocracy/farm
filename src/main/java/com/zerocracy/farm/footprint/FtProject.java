@@ -58,8 +58,8 @@ final class FtProject implements Project {
     }
 
     @Override
-    public String toString() {
-        return this.origin.toString();
+    public String pid() throws IOException {
+        return this.origin.pid();
     }
 
     @Override

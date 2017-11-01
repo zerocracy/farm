@@ -17,6 +17,7 @@
 package com.zerocracy.tk;
 
 import com.zerocracy.jstk.Farm;
+import com.zerocracy.jstk.Project;
 import com.zerocracy.pmo.People;
 import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
@@ -57,7 +58,8 @@ public final class TkAlias implements Take {
         final RqHref.Smart smart = new RqHref.Smart(new RqHref.Base(req));
         final String rel = smart.single("rel");
         final String href = smart.single("href");
-        final People people = new People(new Pmo(this.farm)).bootstrap();
+        final Project pmo = new Pmo(this.farm);
+        final People people = new People(pmo).bootstrap();
         if (people.find(rel, href).iterator().hasNext()) {
             throw new RsForward(
                 new RsFlash(

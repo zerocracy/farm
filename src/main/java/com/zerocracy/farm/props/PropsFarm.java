@@ -86,4 +86,8 @@ public final class PropsFarm implements Farm {
         );
     }
 
+    @Override
+    public void close() throws IOException {
+        this.origin.close();
+    }
 }

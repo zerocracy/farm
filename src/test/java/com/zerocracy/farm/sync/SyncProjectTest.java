@@ -17,9 +17,11 @@
 package com.zerocracy.farm.sync;
 
 import com.jcabi.aspects.Tv;
+import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.farm.fake.FkProject;
+import com.zerocracy.jstk.farm.fake.FkFarm;
+import com.zerocracy.pmo.Pmo;
 import java.util.Collection;
 import java.util.LinkedList;
 import org.hamcrest.MatcherAssert;
@@ -37,20 +39,22 @@ public final class SyncProjectTest {
 
     @Test
     public void locksFilesIndividually() throws Exception {
-        final Project project = new SyncProject(new FkProject());
-        final Collection<Item> items = new LinkedList<>();
-        for (int idx = 0; idx < Tv.FIFTY; ++idx) {
-            final Item item = project.acq(String.format("%d.xml", idx));
-            item.path();
-            items.add(item);
+        try (final Farm farm = new SyncFarm(new FkFarm())) {
+            final Project project = new Pmo(farm);
+            final Collection<Item> items = new LinkedList<>();
+            for (int idx = 0; idx < Tv.FIFTY; ++idx) {
+                final Item item = project.acq(String.format("%d.xml", idx));
+                item.path();
+                items.add(item);
+            }
+            for (final Item item : items) {
+                item.close();
+            }
+            MatcherAssert.assertThat(
+                items.size(),
+                Matchers.greaterThan(0)
+            );
         }
-        for (final Item item : items) {
-            item.close();
-        }
-        MatcherAssert.assertThat(
-            items.size(),
-            Matchers.greaterThan(0)
-        );
     }
 
 }

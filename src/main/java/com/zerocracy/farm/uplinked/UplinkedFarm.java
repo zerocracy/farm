@@ -53,4 +53,8 @@ public final class UplinkedFarm implements Farm {
         );
     }
 
+    @Override
+    public void close() throws IOException {
+        this.origin.close();
+    }
 }

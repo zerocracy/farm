@@ -25,6 +25,10 @@ import com.zerocracy.jstk.SoftException;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Locale;
+import org.cactoos.Scalar;
+import org.cactoos.scalar.IoCheckedScalar;
+import org.cactoos.scalar.StickyScalar;
+import org.cactoos.scalar.SyncScalar;
 
 /**
  * Surrogate project.
@@ -36,14 +40,9 @@ import java.util.Locale;
 public final class GhProject implements Project {
 
     /**
-     * Farm.
+     * Project.
      */
-    private final Farm farm;
-
-    /**
-     * Repo.
-     */
-    private final Repo repo;
+    private final Scalar<Project> pkt;
 
     /**
      * Ctor.
@@ -56,55 +55,46 @@ public final class GhProject implements Project {
 
     /**
      * Ctor.
-     * @param frm Farm
-     * @param rpo Repo
+     * @param farm Farm
+     * @param repo Repo
      */
-    public GhProject(final Farm frm, final Repo rpo) {
-        this.farm = frm;
-        this.repo = rpo;
+    public GhProject(final Farm farm, final Repo repo) {
+        this.pkt = new SyncScalar<>(
+            new StickyScalar<>(
+                () -> {
+                    final String name = repo.coordinates()
+                        .toString().toLowerCase(Locale.ENGLISH);
+                    final Iterator<Project> list = farm.find(
+                        String.format(
+                            "links/link[@rel='github' and @href='%s']",
+                            name
+                        )
+                    ).iterator();
+                    if (!list.hasNext()) {
+                        throw new SoftException(
+                            String.join(
+                                " ",
+                                // @checkstyle LineLength (3 lines)
+                                "I'm not managing `", name, "` GitHub repository.",
+                                "You have to contact me in Slack first.",
+                                "Our [policy](http://datum.zerocracy.com/pages/policy.html) explains how."
+                            )
+                        );
+                    }
+                    return list.next();
+                }
+            )
+        );
     }
 
     @Override
-    public String toString() {
-        try {
-            return this.project().toString();
-        } catch (final IOException ex) {
-            throw new IllegalStateException(ex);
-        }
+    public String pid() throws IOException {
+        return new IoCheckedScalar<>(this.pkt).value().pid();
     }
 
     @Override
     public Item acq(final String file) throws IOException {
-        return this.project().acq(file);
-    }
-
-    /**
-     * Make it.
-     * @return Project
-     * @throws IOException If I/O files
-     */
-    private Project project() throws IOException {
-        final String name = this.repo.coordinates().toString().toLowerCase(
-            Locale.ENGLISH
-        );
-        final Iterator<Project> list = this.farm.find(
-            String.format(
-                "links/link[@rel='github' and @href='%s']",
-                name
-            )
-        ).iterator();
-        if (!list.hasNext()) {
-            throw new SoftException(
-                String.join(
-                    " ",
-                    "I'm not managing `", name, "` GitHub repository.",
-                    "You have to contact me in Slack first.",
-                    // @checkstyle LineLength (1 line)
-                    "Our [policy](http://datum.zerocracy.com/pages/policy.html) explains how."
-                )
-            );
-        }
-        return list.next();
+        return new IoCheckedScalar<>(this.pkt).value().acq(file);
     }
 
 }

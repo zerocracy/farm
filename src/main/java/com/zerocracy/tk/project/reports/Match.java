@@ -19,6 +19,7 @@ package com.zerocracy.tk.project.reports;
 import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
 import com.zerocracy.jstk.Project;
+import java.io.IOException;
 import java.util.Date;
 import org.bson.BsonDocument;
 import org.bson.codecs.configuration.CodecRegistry;
@@ -89,17 +90,21 @@ final class Match implements Bson {
     @Override
     public <T> BsonDocument toBsonDocument(final Class<T> type,
         final CodecRegistry reg) {
-        return Aggregates.match(
-            Filters.and(
-                new Joined<Bson>(
-                    new ListOf<>(
-                        Filters.eq("project", this.project.toString()),
-                        Filters.gt("created", this.start),
-                        Filters.lt("created", this.end)
-                    ),
-                    this.terms
+        try {
+            return Aggregates.match(
+                Filters.and(
+                    new Joined<Bson>(
+                        new ListOf<>(
+                            Filters.eq("project", this.project.pid()),
+                            Filters.gt("created", this.start),
+                            Filters.lt("created", this.end)
+                        ),
+                        this.terms
+                    )
                 )
-            )
-        ).toBsonDocument(type, reg);
+            ).toBsonDocument(type, reg);
+        } catch (final IOException ex) {
+            throw new IllegalStateException(ex);
+        }
     }
 }

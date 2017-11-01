@@ -52,24 +52,26 @@ public final class SyncFarmTest {
             Files.createTempDirectory("").toFile(),
             "the-bucket"
         );
-        final Farm farm = new SyncFarm(new S3Farm(bucket));
-        final Project project = farm.find("@id='ABCZZFE03'").iterator().next();
-        final Roles roles = new Roles(project);
-        final String role = "PO";
-        MatcherAssert.assertThat(
-            inc -> {
-                final String person = String.format(
-                    "jeff%d", inc.incrementAndGet()
-                );
-                final String task = String.format(
-                    "gh:test/test#%d", inc.incrementAndGet()
-                );
-                new Wbs(project).bootstrap().add(task);
-                roles.bootstrap().assign(person, role);
-                return roles.hasRole(person, role);
-            },
-            new RunsInThreads<>(new AtomicInteger())
-        );
+        try (final Farm farm = new SyncFarm(new S3Farm(bucket))) {
+            final Project project = farm.find("@id='ABCZZFE03'")
+                .iterator().next();
+            final Roles roles = new Roles(project);
+            final String role = "PO";
+            MatcherAssert.assertThat(
+                inc -> {
+                    final String person = String.format(
+                        "jeff%d", inc.incrementAndGet()
+                    );
+                    final String task = String.format(
+                        "gh:test/test#%d", inc.incrementAndGet()
+                    );
+                    new Wbs(project).bootstrap().add(task);
+                    roles.bootstrap().assign(person, role);
+                    return roles.hasRole(person, role);
+                },
+                new RunsInThreads<>(new AtomicInteger())
+            );
+        }
     }
 
     @Test
@@ -78,36 +80,37 @@ public final class SyncFarmTest {
             Files.createTempDirectory("").toFile(),
             "the-bucket-1"
         );
-        final Farm farm = new SyncFarm(
+        try (final Farm farm = new SyncFarm(
             new S3Farm(bucket), TimeUnit.SECONDS.toMillis(1L)
-        );
-        final Project pmo = new Pmo(farm);
-        final CountDownLatch locked = new CountDownLatch(1);
-        new Thread(
-            new RunnableOf<Object>(
-                input -> {
-                    try (final Item item = pmo.acq("b.xml")) {
-                        MatcherAssert.assertThat(
-                            item.path(), Matchers.notNullValue()
-                        );
-                        locked.countDown();
-                        TimeUnit.HOURS.sleep(1L);
+        )) {
+            final Project pmo = new Pmo(farm);
+            final CountDownLatch locked = new CountDownLatch(1);
+            new Thread(
+                new RunnableOf<Object>(
+                    input -> {
+                        try (final Item item = pmo.acq("expectedfailure.xml")) {
+                            MatcherAssert.assertThat(
+                                item.path(), Matchers.notNullValue()
+                            );
+                            locked.countDown();
+                            TimeUnit.HOURS.sleep(1L);
+                        }
                     }
-                }
-            )
-        ).start();
-        locked.await();
-        try (final Item item = pmo.acq("a.xml")) {
-            MatcherAssert.assertThat(
-                item.path(),
-                Matchers.notNullValue()
-            );
-        }
-        try (final Item item = pmo.acq("c.xml")) {
-            MatcherAssert.assertThat(
-                item.path(),
-                Matchers.notNullValue()
-            );
+                )
+            ).start();
+            locked.await();
+            try (final Item item = pmo.acq("a.xml")) {
+                MatcherAssert.assertThat(
+                    item.path(),
+                    Matchers.notNullValue()
+                );
+            }
+            try (final Item item = pmo.acq("c.xml")) {
+                MatcherAssert.assertThat(
+                    item.path(),
+                    Matchers.notNullValue()
+                );
+            }
         }
     }
 

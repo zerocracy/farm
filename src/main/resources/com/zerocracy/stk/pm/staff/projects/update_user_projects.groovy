@@ -30,8 +30,8 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   String login = claim.param('login')
   Projects projects = new Projects(project, login).bootstrap()
-  if (!projects.exists(project.toString())) {
-    projects.add(project.toString())
+  if (!projects.exists(project.pid())) {
+    projects.add(project.pid())
     new ClaimOut()
       .type('User projects were updated')
       .param('login', login)

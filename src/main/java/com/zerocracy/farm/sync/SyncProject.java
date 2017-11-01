@@ -33,7 +33,7 @@ import lombok.EqualsAndHashCode;
  * @since 0.1
  */
 @EqualsAndHashCode(of = "origin")
-public final class SyncProject implements Project {
+final class SyncProject implements Project {
 
     /**
      * Origin project.
@@ -53,18 +53,10 @@ public final class SyncProject implements Project {
     /**
      * Ctor.
      * @param pkt Project
-     */
-    public SyncProject(final Project pkt) {
-        this(pkt, new ReentrantLock(), new Terminator(Long.MAX_VALUE));
-    }
-
-    /**
-     * Ctor.
-     * @param pkt Project
      * @param lck Lock
      * @param tmr Terminator
      */
-    public SyncProject(final Project pkt, final ReentrantLock lck,
+    SyncProject(final Project pkt, final ReentrantLock lck,
         final Terminator tmr) {
         this.origin = pkt;
         this.lock = lck;
@@ -72,8 +64,8 @@ public final class SyncProject implements Project {
     }
 
     @Override
-    public String toString() {
-        return this.origin.toString();
+    public String pid() throws IOException {
+        return this.origin.pid();
     }
 
     @Override
@@ -100,7 +92,7 @@ public final class SyncProject implements Project {
             throw new IllegalStateException(
                 Logger.format(
                     "Interrupted while waiting for \"%s\" in %s for %[ms]s",
-                    file, this.toString(),
+                    file, this.pid(),
                     System.currentTimeMillis() - start
                 ),
                 ex

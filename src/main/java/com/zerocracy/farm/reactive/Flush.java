@@ -64,7 +64,7 @@ final class Flush implements Proc<Item> {
         int total = 0;
         // @checkstyle MagicNumber (1 line)
         while (total < 20) {
-            final Iterator<XML> found = claims.iterate().iterator();
+            final Iterator<XML> found = claims.take();
             if (!found.hasNext()) {
                 break;
             }
@@ -85,7 +85,6 @@ final class Flush implements Proc<Item> {
         final ClaimIn claim = new ClaimIn(xml);
         final int total = this.brigade.process(this.project, xml);
         final Claims claims = new Claims(this.project);
-        claims.remove(claim.cid());
         final int left = claims.iterate().size();
         if (total == 0 && claim.hasToken()) {
             throw new IllegalStateException(
@@ -98,7 +97,7 @@ final class Flush implements Proc<Item> {
         Logger.info(
             this, "Seen #%d:\"%s/%d/%d\" at \"%s\" by %d stk, %[ms]s [%s]",
             idx, claim.type(), claim.cid(), left,
-            this.project.toString(),
+            this.project.pid(),
             total,
             System.currentTimeMillis() - start,
             new JoinedText(

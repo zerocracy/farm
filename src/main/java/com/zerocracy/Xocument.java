@@ -110,7 +110,7 @@ public final class Xocument {
      * @param item Item
      */
     public Xocument(final Item item) {
-        this(item::path);
+        this((Scalar<Path>) item::path);
     }
 
     /**
@@ -118,7 +118,7 @@ public final class Xocument {
      * @param path File
      */
     public Xocument(final Path path) {
-        this(() -> path);
+        this((Scalar<Path>) () -> path);
     }
 
     /**

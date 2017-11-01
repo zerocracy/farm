@@ -20,6 +20,10 @@ import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
+import org.cactoos.Scalar;
+import org.cactoos.scalar.IoCheckedScalar;
+import org.cactoos.scalar.StickyScalar;
+import org.cactoos.scalar.SyncScalar;
 
 /**
  * PMO.
@@ -31,26 +35,30 @@ import java.io.IOException;
 public final class Pmo implements Project {
 
     /**
-     * Farm.
+     * The project.
      */
-    private final Farm farm;
+    private final Scalar<Project> pkt;
 
     /**
      * Ctor.
-     * @param frm Farm
+     * @param farm Farm
      */
-    public Pmo(final Farm frm) {
-        this.farm = frm;
+    public Pmo(final Farm farm) {
+        this.pkt = new SyncScalar<>(
+            new StickyScalar<>(
+                () -> farm.find("@id='PMO'").iterator().next()
+            )
+        );
     }
 
     @Override
-    public String toString() {
-        return "PMO";
+    public String pid() throws IOException {
+        return new IoCheckedScalar<>(this.pkt).value().pid();
     }
 
     @Override
     public Item acq(final String file) throws IOException {
-        return this.farm.find("@id='PMO'").iterator().next().acq(file);
+        return new IoCheckedScalar<>(this.pkt).value().acq(file);
     }
 
 }

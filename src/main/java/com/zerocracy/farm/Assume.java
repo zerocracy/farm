@@ -60,10 +60,10 @@ public final class Assume {
 
     /**
      * It's not a PMO.
-     * @throws MismatchException If this is PMO
+     * @throws IOException If this is PMO
      */
-    public void notPmo() throws MismatchException {
-        if ("PMO".equals(this.project.toString())) {
+    public void notPmo() throws IOException {
+        if ("PMO".equals(this.project.pid())) {
             throw new MismatchException("This is PMO");
         }
     }

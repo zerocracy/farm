@@ -26,6 +26,6 @@ def exec(Project project, XML xml) {
   MatcherAssert.assertThat(
     'User projects updated',
     new Projects(project, 'yegor256').bootstrap().iterate(),
-    Matchers.hasItem(project.toString())
+    Matchers.hasItem(project.pid())
   )
 }

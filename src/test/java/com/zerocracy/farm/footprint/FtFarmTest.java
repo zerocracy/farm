@@ -26,7 +26,6 @@ import com.zerocracy.farm.sync.SyncFarm;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.ClaimOut;
-import com.zerocracy.pm.Claims;
 import com.zerocracy.pm.Footprint;
 import java.nio.file.Files;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -52,31 +51,30 @@ public final class FtFarmTest {
             Files.createTempDirectory("").toFile(),
             "the-bucket"
         );
-        final Farm farm = new FtFarm(
+        try (final Farm farm = new FtFarm(
             new PropsFarm(new SyncFarm(new S3Farm(bucket)))
-        );
-        final String pid = "ABCZZTY03";
-        final Project project = farm.find(
-            String.format("@id='%s'", pid)
-        ).iterator().next();
-        final Claims claims = new Claims(project);
-        final AtomicLong cid = new AtomicLong(1L);
-        final int threads = 10;
-        MatcherAssert.assertThat(
-            inc -> {
-                final long num = cid.getAndIncrement();
-                new ClaimOut().cid(num).type("hello")
-                    .author("0pdd").postTo(project);
-                claims.remove(num);
-                return true;
-            },
-            new RunsInThreads<>(new AtomicInteger(), threads)
-        );
-        try (final Footprint footprint = new Footprint(farm, project)) {
+        )) {
+            final String pid = "ABCZZTY03";
+            final Project project = farm.find(
+                String.format("@id='%s'", pid)
+            ).iterator().next();
+            final AtomicLong cid = new AtomicLong(1L);
+            final int threads = 10;
             MatcherAssert.assertThat(
-                footprint.collection().find(Filters.eq("project", pid)),
-                Matchers.iterableWithSize(threads)
+                inc -> {
+                    final long num = cid.getAndIncrement();
+                    new ClaimOut().cid(num).type("hello")
+                        .author("0pdd").postTo(project);
+                    return true;
+                },
+                new RunsInThreads<>(new AtomicInteger(), threads)
             );
+            try (final Footprint footprint = new Footprint(farm, project)) {
+                MatcherAssert.assertThat(
+                    footprint.collection().find(Filters.eq("project", pid)),
+                    Matchers.iterableWithSize(threads)
+                );
+            }
         }
     }
 

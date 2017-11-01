@@ -34,5 +34,5 @@ def exec(Project project, XML xml) {
   def duration = Duration.parse(claim.param('duration'))
   new Speed(new Pmo(farm), claim.param('login'))
     .bootstrap()
-    .add(project.toString(), job, duration.toMinutes())
+    .add(project.pid(), job, duration.toMinutes())
 }

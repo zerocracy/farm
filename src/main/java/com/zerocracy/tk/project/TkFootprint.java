@@ -65,13 +65,13 @@ public final class TkFootprint implements TkRegex {
             "/xsl/footprint.xsl",
             req,
             () -> {
-                final Project project = new RqProject(this.farm, req).value();
+                final Project project = new RqProject(this.farm, req);
                 final Collection<Document> docs;
                 try (final Footprint footprint =
                     new Footprint(this.farm, project)) {
                     docs = new StickyList<>(
                         footprint.collection()
-                            .find(Filters.eq("project", project.toString()))
+                            .find(Filters.eq("project", project.pid()))
                             .sort(Sorts.descending("created"))
                             // @checkstyle MagicNumber (1 line)
                             .limit(50)
@@ -79,7 +79,7 @@ public final class TkFootprint implements TkRegex {
                     docs.size();
                 }
                 return new XeChain(
-                    new XeAppend("project", project.toString()),
+                    new XeAppend("project", project.pid()),
                     new XeAppend(
                         "claims",
                         new XeTransform<>(

@@ -53,7 +53,7 @@ public final class TkXml implements TkRegex {
 
     @Override
     public Response act(final RqRegex req) throws IOException {
-        final Project project = new RqProject(this.farm, req).value();
+        final Project project = new RqProject(this.farm, req);
         final String artifact = String.format(
             "%s.xml",
             new RqHref.Smart(

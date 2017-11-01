@@ -87,13 +87,13 @@ final class StrictProject implements Project {
     }
 
     @Override
-    public String toString() {
-        return this.origin.toString();
+    public String pid() throws IOException {
+        return this.origin.pid();
     }
 
     @Override
     public Item acq(final String file) throws IOException {
-        final boolean pmo = "PMO".equals(this.origin.toString());
+        final boolean pmo = "PMO".equals(this.origin.pid());
         if (pmo && !StrictProject.PMO.matcher(file).matches()) {
             throw new IllegalArgumentException(
                 String.format(

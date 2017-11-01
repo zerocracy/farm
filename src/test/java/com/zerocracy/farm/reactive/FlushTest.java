@@ -28,7 +28,6 @@ import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -50,58 +49,53 @@ public final class FlushTest {
 
     @Test
     public void processes() throws Exception {
-        final Project project = FlushTest.project();
-        final AtomicInteger done = new AtomicInteger(0);
-        final CountDownLatch latch = new CountDownLatch(1);
-        final Brigade brigade = new Brigade(
-            (Stakeholder) (pkt, claim) -> {
-                done.incrementAndGet();
-                if (new ClaimIn(claim).type().startsWith("nex")) {
-                    new ClaimIn(claim).reply("the answer").postTo(project);
-                }
-            }
-        );
-        new ClaimOut().type("first").postTo(project);
-        final int max = Tv.FIVE;
-        final Thread thread = new Thread(
-            new VerboseRunnable(
-                () -> {
-                    latch.await();
-                    for (int idx = 0; idx < max; ++idx) {
-                        new ClaimOut().token("test;t")
-                            .type("next").postTo(project);
-                    }
-                    return null;
-                }
-            )
-        );
-        thread.start();
-        final Proc<?> flush = new Flush(project, brigade);
-        latch.countDown();
-        while (thread.isAlive()) {
-            flush.exec(null);
-        }
-        flush.exec(null);
-        final Claims claims = new Claims(project).bootstrap();
-        MatcherAssert.assertThat(
-            claims.iterate(),
-            Matchers.hasSize(0)
-        );
-        MatcherAssert.assertThat(done.get(), Matchers.equalTo((max << 1) + 1));
-    }
-
-    /**
-     * Fake project.
-     * @return Project
-     * @throws IOException If fails
-     */
-    private static Project project() throws IOException {
         final Bucket bucket = new FkBucket(
             Files.createTempDirectory("").toFile(),
             "the-bucket"
         );
-        final Farm farm = new SyncFarm(new S3Farm(bucket));
-        return farm.find("@id='ABCZZFE03'").iterator().next();
+        try (final Farm farm = new SyncFarm(new S3Farm(bucket))) {
+            final Project project = farm.find("@id='ABCZZFE03'")
+                .iterator().next();
+            final AtomicInteger done = new AtomicInteger(0);
+            final CountDownLatch latch = new CountDownLatch(1);
+            final Brigade brigade = new Brigade(
+                (Stakeholder) (pkt, claim) -> {
+                    done.incrementAndGet();
+                    if (new ClaimIn(claim).type().startsWith("nex")) {
+                        new ClaimIn(claim).reply("the answer").postTo(project);
+                    }
+                }
+            );
+            new ClaimOut().type("first").postTo(project);
+            final int max = Tv.FIVE;
+            final Thread thread = new Thread(
+                new VerboseRunnable(
+                    () -> {
+                        latch.await();
+                        for (int idx = 0; idx < max; ++idx) {
+                            new ClaimOut().token("test;t")
+                                .type("next").postTo(project);
+                        }
+                        return null;
+                    }
+                )
+            );
+            thread.start();
+            final Proc<?> flush = new Flush(project, brigade);
+            latch.countDown();
+            while (thread.isAlive()) {
+                flush.exec(null);
+            }
+            flush.exec(null);
+            final Claims claims = new Claims(project).bootstrap();
+            MatcherAssert.assertThat(
+                claims.iterate(),
+                Matchers.hasSize(0)
+            );
+            MatcherAssert.assertThat(
+                done.get(), Matchers.equalTo((max << 1) + 1)
+            );
+        }
     }
 
 }

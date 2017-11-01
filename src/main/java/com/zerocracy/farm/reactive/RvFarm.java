@@ -73,4 +73,8 @@ public final class RvFarm implements Farm {
         );
     }
 
+    @Override
+    public void close() throws IOException {
+        this.origin.close();
+    }
 }

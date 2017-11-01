@@ -59,12 +59,12 @@ public final class TkArtifact implements TkRegex {
             "/xsl/artifact.xsl",
             req,
             () -> {
-                final Project project = new RqProject(this.farm, req).value();
+                final Project project = new RqProject(this.farm, req);
                 final String artifact = new RqHref.Smart(
                     new RqHref.Base(req)
                 ).single("a");
                 final Catalog catalog = new Catalog(this.farm).bootstrap();
-                final String pid = project.toString();
+                final String pid = project.pid();
                 return new XeChain(
                     new XeAppend("project", pid),
                     new XeAppend("title", catalog.title(pid)),

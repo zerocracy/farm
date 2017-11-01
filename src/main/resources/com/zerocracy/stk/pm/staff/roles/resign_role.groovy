@@ -42,7 +42,7 @@ def exec(Project project, XML xml) {
   }
   roles.resign(login, role)
   if (!roles.hasAnyRole(login)) {
-    new Projects(project, login).remove(project.toString())
+    new Projects(project, login).remove(project.pid())
   }
   claim.reply(
     String.format(

@@ -53,4 +53,8 @@ public final class FtFarm implements Farm {
         );
     }
 
+    @Override
+    public void close() throws IOException {
+        this.origin.close();
+    }
 }

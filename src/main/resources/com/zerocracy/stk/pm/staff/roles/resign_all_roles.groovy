@@ -29,7 +29,7 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   String login = claim.param('login')
   new Roles(project).bootstrap().resign(login)
-  new Projects(project, login).bootstrap().remove(project.toString())
+  new Projects(project, login).bootstrap().remove(project.pid())
   if (claim.hasToken()) {
     claim.reply(
       String.format(

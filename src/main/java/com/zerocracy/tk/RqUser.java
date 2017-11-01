@@ -24,6 +24,9 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.logging.Level;
 import org.cactoos.Scalar;
+import org.cactoos.scalar.IoCheckedScalar;
+import org.cactoos.scalar.StickyScalar;
+import org.cactoos.scalar.SyncScalar;
 import org.takes.Request;
 import org.takes.facets.auth.Identity;
 import org.takes.facets.auth.RqAuth;
@@ -41,14 +44,9 @@ import org.takes.facets.forward.RsForward;
 public final class RqUser implements Scalar<String> {
 
     /**
-     * PMO.
+     * Project.
      */
-    private final Project pmo;
-
-    /**
-     * Request.
-     */
-    private final Request request;
+    private final Scalar<String> user;
 
     /**
      * Ctor.
@@ -61,44 +59,50 @@ public final class RqUser implements Scalar<String> {
 
     /**
      * Ctor.
-     * @param pkt Project
+     * @param pmo The PMO
      * @param req Request
      */
-    public RqUser(final Project pkt, final Request req) {
-        this.pmo = pkt;
-        this.request = req;
+    public RqUser(final Project pmo, final Request req) {
+        this.user = new SyncScalar<>(
+            new StickyScalar<>(
+                () -> {
+                    final Identity identity = new RqAuth(req).identity();
+                    if (identity.equals(Identity.ANONYMOUS)) {
+                        throw new RsForward(
+                            new RsFlash(
+                                "You must be logged in.",
+                                Level.WARNING
+                            )
+                        );
+                    }
+                    final String login = identity.properties()
+                        .get("login").toLowerCase(Locale.ENGLISH);
+                    final People people = new People(pmo).bootstrap();
+                    if (!people.hasMentor(login)) {
+                        throw new RsForward(
+                            new RsFlash(
+                                String.join(
+                                    " ",
+                                    // @checkstyle LineLength (5 lines)
+                                    String.format("You \"@%s\" must be invited", login),
+                                    "to us by someone we already know.",
+                                    "If you don't know anyone who works with us already,",
+                                    "email us to join@zerocracy.com and we'll see what",
+                                    "we can do."
+                                ),
+                                Level.WARNING
+                            )
+                        );
+                    }
+                    return login;
+                }
+            )
+        );
     }
 
     @Override
     public String value() throws IOException {
-        final Identity identity = new RqAuth(this.request).identity();
-        if (identity.equals(Identity.ANONYMOUS)) {
-            throw new RsForward(
-                new RsFlash(
-                    "You must be logged in.",
-                    Level.WARNING
-                )
-            );
-        }
-        final String login = identity.properties()
-            .get("login").toLowerCase(Locale.ENGLISH);
-        final People people = new People(this.pmo).bootstrap();
-        if (!people.hasMentor(login)) {
-            throw new RsForward(
-                new RsFlash(
-                    String.join(
-                        " ",
-                        String.format("You \"@%s\" must be invited", login),
-                        "to us by someone we already know.",
-                        "If you don't know anyone who works with us already,",
-                        "email us to join@zerocracy.com and we'll see what",
-                        "we can do."
-                    ),
-                    Level.WARNING
-                )
-            );
-        }
-        return login;
+        return new IoCheckedScalar<>(this.user).value();
     }
 
 }

@@ -50,24 +50,26 @@ public final class RdFarmTest {
             Files.createTempDirectory("").toFile(),
             "some-bucket"
         );
-        final Farm farm = new SyncFarm(new RdFarm(new S3Farm(bucket)));
-        final Project project = farm.find("@id='RDFRMTEST'").iterator().next();
-        final Wbs wbs = new Wbs(project).bootstrap();
-        final AtomicInteger total = new AtomicInteger();
-        MatcherAssert.assertThat(
-            inc -> {
-                final String job = String.format(
-                    "gh:test/test#%d", inc.incrementAndGet()
-                );
-                wbs.add(job);
-                return wbs.exists(job);
-            },
-            new RunsInThreads<>(total)
-        );
-        MatcherAssert.assertThat(
-            wbs.iterate().size(),
-            Matchers.equalTo(total.get())
-        );
+        try (final Farm farm = new SyncFarm(new RdFarm(new S3Farm(bucket)))) {
+            final Project project = farm.find("@id='RDFRMTEST'")
+                .iterator().next();
+            final Wbs wbs = new Wbs(project).bootstrap();
+            final AtomicInteger total = new AtomicInteger();
+            MatcherAssert.assertThat(
+                inc -> {
+                    final String job = String.format(
+                        "gh:test/test#%d", inc.incrementAndGet()
+                    );
+                    wbs.add(job);
+                    return wbs.exists(job);
+                },
+                new RunsInThreads<>(total)
+            );
+            MatcherAssert.assertThat(
+                wbs.iterate().size(),
+                Matchers.equalTo(total.get())
+            );
+        }
     }
 
     @Test
@@ -76,13 +78,14 @@ public final class RdFarmTest {
             Files.createTempDirectory("").toFile(),
             "some-bucket-pmo"
         );
-        final Farm farm = new RdFarm(new StrictFarm(new S3Farm(bucket)));
-        final Project pmo = new Pmo(farm);
-        new ClaimOut().type("hello you").postTo(pmo);
-        MatcherAssert.assertThat(
-            new Claims(pmo).iterate().iterator().hasNext(),
-            Matchers.equalTo(true)
-        );
+        try (final Farm farm = new RdFarm(new StrictFarm(new S3Farm(bucket)))) {
+            final Project pmo = new Pmo(farm);
+            new ClaimOut().type("hello you").postTo(pmo);
+            MatcherAssert.assertThat(
+                new Claims(pmo).iterate().iterator().hasNext(),
+                Matchers.equalTo(true)
+            );
+        }
     }
 
 }

@@ -141,61 +141,66 @@ public final class BundlesTest {
 
     @Test
     public void oneBundleWorksFine() throws Exception {
-        final Farm farm = new SmartFarm(
+        try (final Farm farm = this.farm()) {
+            final Project project = farm.find(
+                String.format(
+                    "@id='%s'",
+                    this.name.toUpperCase(Locale.ENGLISH).replaceAll(
+                        "[^A-Z0-9]", ""
+                    ).substring(0, Tv.NINE)
+                )
+            ).iterator().next();
+            new And(
+                BundlesTest.resources(this.bundle),
+                path -> {
+                    new LengthOf(
+                        new TeeInput(
+                            new ResourceOf(path),
+                            new OutputTo(
+                                this.home.resolve(
+                                    path.substring(path.lastIndexOf('/') + 1)
+                                )
+                            )
+                        )
+                    ).value();
+                }
+            ).value();
+            new StkGroovy(
+                new ResourceOf(
+                    String.format("%s/_before.groovy", this.bundle)
+                ),
+                String.format("%s_before", this.bundle),
+                farm
+            ).process(project, null);
+            new ClaimOut().type("ping").postTo(project);
+            MatcherAssert.assertThat(
+                new And(
+                    new Limited<>(new Endless<>(1), Tv.FIFTY),
+                    x -> {
+                        TimeUnit.SECONDS.sleep(1L);
+                        final Claims claims = new Claims(project).bootstrap();
+                        return !claims.iterate().isEmpty();
+                    }
+                ).value(),
+                Matchers.equalTo(false)
+            );
+            new StkGroovy(
+                new ResourceOf(
+                    String.format("%s/_after.groovy", this.bundle)
+                ),
+                String.format("%s_after", this.bundle),
+                farm
+            ).process(project, null);
+        }
+    }
+
+    private Farm farm() {
+        return new SmartFarm(
             new FkFarm(
                 (Func<String, Project>) pid -> new FkProject(this.home, pid),
                 this.home.toString()
             )
         ).value();
-        final Project project = farm.find(
-            String.format(
-                "@id='%s'",
-                this.name.toUpperCase(Locale.ENGLISH).replaceAll(
-                    "[^A-Z0-9]", ""
-                ).substring(0, Tv.NINE)
-            )
-        ).iterator().next();
-        new And(
-            BundlesTest.resources(this.bundle),
-            path -> {
-                new LengthOf(
-                    new TeeInput(
-                        new ResourceOf(path),
-                        new OutputTo(
-                            this.home.resolve(
-                                path.substring(path.lastIndexOf('/') + 1)
-                            )
-                        )
-                    )
-                ).value();
-            }
-        ).value();
-        new StkGroovy(
-            new ResourceOf(
-                String.format("%s/_before.groovy", this.bundle)
-            ),
-            String.format("%s_before", this.bundle),
-            farm
-        ).process(project, null);
-        new ClaimOut().type("ping").postTo(project);
-        MatcherAssert.assertThat(
-            new And(
-                new Limited<>(new Endless<>(1), Tv.FIFTY),
-                x -> {
-                    TimeUnit.SECONDS.sleep(1L);
-                    final Claims claims = new Claims(project).bootstrap();
-                    return !claims.iterate().isEmpty();
-                }
-            ).value(),
-            Matchers.equalTo(false)
-        );
-        new StkGroovy(
-            new ResourceOf(
-                String.format("%s/_after.groovy", this.bundle)
-            ),
-            String.format("%s_after", this.bundle),
-            farm
-        ).process(project, null);
     }
 
     private static Iterable<String> resources(final String path) {

@@ -22,6 +22,7 @@ import com.jcabi.s3.Bucket;
 import com.jcabi.s3.fake.FkBucket;
 import com.zerocracy.farm.S3Farm;
 import com.zerocracy.farm.sync.SyncFarm;
+import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.farm.fake.FkFarm;
@@ -47,16 +48,20 @@ public final class RdItemTest {
 
     @Test(expected = UncheckedIOException.class)
     public void catchesIllegalModification() throws Exception {
-        final Project project = new Pmo(new RdFarm(new FkFarm()));
-        new Boosts(project).bootstrap();
-        new Boosts(project).boost("gh:test/test#509", 1);
+        try (final Farm farm = new RdFarm(new FkFarm())) {
+            final Project pmo = new Pmo(farm);
+            new Boosts(pmo).bootstrap();
+            new Boosts(pmo).boost("gh:test/test#509", 1);
+        }
     }
 
     @Test
     public void ignoresNonXmlFiles() throws Exception {
-        final Project project = new Pmo(new RdFarm(new FkFarm()));
-        try (final Item item = project.acq("test.txt")) {
-            Files.write(item.path(), "How are you, dude?".getBytes());
+        try (final Farm farm = new RdFarm(new FkFarm())) {
+            final Project pmo = new Pmo(farm);
+            try (final Item item = pmo.acq("test.txt")) {
+                Files.write(item.path(), "How are you, dude?".getBytes());
+            }
         }
     }
 
@@ -66,22 +71,22 @@ public final class RdItemTest {
             Files.createTempDirectory("").toFile(),
             "the-bucket-1"
         );
-        final Project project = new RdFarm(
-            new SyncFarm(new S3Farm(bucket))
-        ).find("@id='ABCDEDDHI'").iterator().next();
-        final String job = "gh:test/test#55";
-        new VerboseRunnable(
-            new RunnableOf<>(
-                input -> {
-                    new Boosts(project).bootstrap().boost(job, 1);
-                }
-            ),
-            true, false
-        ).run();
-        MatcherAssert.assertThat(
-            new Boosts(project).bootstrap().factor(job),
-            Matchers.equalTo(2)
-        );
+        try (final Farm farm = new RdFarm(new SyncFarm(new S3Farm(bucket)))) {
+            final Project pkt = farm.find("@id='ABCDEDDHI'").iterator().next();
+            final String job = "gh:test/test#55";
+            new VerboseRunnable(
+                new RunnableOf<>(
+                    input -> {
+                        new Boosts(pkt).bootstrap().boost(job, 1);
+                    }
+                ),
+                true, false
+            ).run();
+            MatcherAssert.assertThat(
+                new Boosts(pkt).bootstrap().factor(job),
+                Matchers.equalTo(2)
+            );
+        }
     }
 
     @Test
@@ -90,24 +95,24 @@ public final class RdItemTest {
             Files.createTempDirectory("").toFile(),
             "the-bucket"
         );
-        final Project project = new RdFarm(
-            new SyncFarm(new S3Farm(bucket))
-        ).find("@id='ABCDEFGHI'").iterator().next();
-        final String first = "gh:test/test#1";
-        new Wbs(project).bootstrap().add(first);
-        final String second = "gh:test/test#2";
-        new Wbs(project).bootstrap().add(second);
-        new Boosts(project).bootstrap().boost(first, Tv.TEN);
-        new Boosts(project).bootstrap().boost(second, Tv.TEN);
-        new Wbs(project).remove(first);
-        MatcherAssert.assertThat(
-            new Boosts(project).factor(first),
-            Matchers.not(Matchers.equalTo(Tv.TEN))
-        );
-        MatcherAssert.assertThat(
-            new Boosts(project).factor(second),
-            Matchers.equalTo(Tv.TEN)
-        );
+        try (final Farm farm = new RdFarm(new SyncFarm(new S3Farm(bucket)))) {
+            final Project pkt = farm.find("@id='ABCDEFGHI'").iterator().next();
+            final String first = "gh:test/test#1";
+            new Wbs(pkt).bootstrap().add(first);
+            final String second = "gh:test/test#2";
+            new Wbs(pkt).bootstrap().add(second);
+            new Boosts(pkt).bootstrap().boost(first, Tv.TEN);
+            new Boosts(pkt).bootstrap().boost(second, Tv.TEN);
+            new Wbs(pkt).remove(first);
+            MatcherAssert.assertThat(
+                new Boosts(pkt).factor(first),
+                Matchers.not(Matchers.equalTo(Tv.TEN))
+            );
+            MatcherAssert.assertThat(
+                new Boosts(pkt).factor(second),
+                Matchers.equalTo(Tv.TEN)
+            );
+        }
     }
 
     @Test
@@ -116,20 +121,20 @@ public final class RdItemTest {
             Files.createTempDirectory("").toFile(),
             "the-bucket-98"
         );
-        final Project project = new RdFarm(
-            new SyncFarm(new S3Farm(bucket))
-        ).find("@id='ABCDTTGHI'").iterator().next();
-        final String job = "gh:test/test#143";
-        final Thread bug = new Thread(
-            new RunnableOf<Object>(
-                input -> {
-                    new Boosts(project).bootstrap().boost(job, Tv.TEN);
-                }
-            )
-        );
-        bug.start();
-        bug.join();
-        new Boosts(project).bootstrap();
+        try (final Farm farm = new RdFarm(new SyncFarm(new S3Farm(bucket)))) {
+            final Project pkt = farm.find("@id='ABCDTTGHI'").iterator().next();
+            final String job = "gh:test/test#143";
+            final Thread bug = new Thread(
+                new RunnableOf<Object>(
+                    input -> {
+                        new Boosts(pkt).bootstrap().boost(job, Tv.TEN);
+                    }
+                )
+            );
+            bug.start();
+            bug.join();
+            new Boosts(pkt).bootstrap();
+        }
     }
 
 }

@@ -62,9 +62,9 @@ public final class TkProject implements TkRegex {
             "/xsl/project.xsl",
             req,
             () -> {
-                final Project project = new RqProject(this.farm, req).value();
+                final Project project = new RqProject(this.farm, req);
                 final Catalog catalog = new Catalog(this.farm).bootstrap();
-                final String pid = project.toString();
+                final String pid = project.pid();
                 return new XeChain(
                     new XeAppend("project", pid),
                     new XeAppend("title", catalog.title(pid)),

@@ -25,6 +25,8 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Iterator;
+import org.cactoos.collection.Limited;
 import org.cactoos.collection.Sorted;
 import org.xembly.Directive;
 import org.xembly.Directives;
@@ -80,19 +82,28 @@ public final class Claims {
     }
 
     /**
-     * Remove claim.
-     * @param cid Claim ID
+     * Take one claim and remove it.
+     * @return Found (or empty)
      * @throws IOException If fails
      */
-    public void remove(final long cid) throws IOException {
+    public Iterator<XML> take() throws IOException {
         try (final Item item = this.item()) {
-            new Xocument(item).modify(
-                new Directives().xpath(
-                    String.format(
-                        "/claims/claim[@id='%d']", cid
-                    )
-                ).strict(1).remove()
+            final Iterable<XML> found = new Limited<>(
+                this.iterate(), 1
             );
+            if (found.iterator().hasNext()) {
+                new Xocument(item).modify(
+                    new Directives().xpath(
+                        String.format(
+                            "/claims/claim[@id='%d']",
+                            Long.parseLong(
+                                found.iterator().next().xpath("@id").get(0)
+                            )
+                        )
+                    ).strict(1).remove()
+                );
+            }
+            return found.iterator();
         }
     }
 

@@ -47,7 +47,7 @@ public final class FootprintTest {
             footprint.close(xml);
             MatcherAssert.assertThat(
                 footprint.collection().find(
-                    Filters.eq("project", project.toString())
+                    Filters.eq("project", project.pid())
                 ),
                 Matchers.iterableWithSize(1)
             );
