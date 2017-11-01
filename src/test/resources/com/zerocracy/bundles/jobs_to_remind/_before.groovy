@@ -16,8 +16,17 @@
  */
 package com.zerocracy.bundles.jobs_to_remind
 
+import com.jcabi.github.Github
+import com.jcabi.github.Repos
 import com.jcabi.xml.XML
+import com.zerocracy.entry.ExtGithub
+import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 
 def exec(Project project, XML xml) {
+  Farm farm = binding.variables.farm
+  Github github = new ExtGithub(farm).value()
+  def repo = github.repos().create(new Repos.RepoCreate('test', false))
+  repo.issues().create('First', '')
+  repo.issues().create('Second', '')
 }

@@ -25,24 +25,27 @@ import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.time.Reminders
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
-/**
- * @todo #266:30min Notify users about job in github
- *  with reminder's label. It can be new stakeholder which will
- *  react to 'Ping' claim.
- */
+
+
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Ping')
   new Assume(project, xml).notPmo()
   def claim = new ClaimIn(xml)
   def reminders = new Reminders(project).bootstrap()
-  def orders = new Orders(project).bootstrap()
-  def expired = orders.olderThan(
-    ZonedDateTime.ofInstant(
-      claim.created().toInstant(), ZoneOffset.UTC
-    ).minusDays(5)
+
+  def claimTime = ZonedDateTime.ofInstant(
+    claim.created().toInstant(), ZoneOffset.UTC
   )
-  for (String job : expired) {
-    String label = '5 days'
+  Orders.metaClass.reminders = {
+    int days -> delegate.olderThan(claimTime.minusDays(days))
+      .toList()
+      .collectEntries { String job -> [job, "$days days"] }
+  }
+  def orders = new Orders(project).bootstrap()
+  Map<String, String> expired = orders.reminders(5) + orders.reminders(8)
+  for (Map.Entry<String, String> entry : expired.entrySet()) {
+    def job = entry.key
+    def label = entry.value
     String login = orders.performer(job)
     if (reminders.add(job, login, label)) {
       new ClaimOut()

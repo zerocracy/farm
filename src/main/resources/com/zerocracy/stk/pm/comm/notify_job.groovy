@@ -21,7 +21,7 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 
-// The token must look like: gh:zerocracy/farm#123
+// The token must look like: job;gh:zerocracy/farm#123
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Notify job')
