@@ -23,7 +23,6 @@ import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.farm.fake.FkFarm;
 import com.zerocracy.jstk.farm.fake.FkProject;
-import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
 import java.io.File;
 import java.io.IOException;
@@ -172,7 +171,6 @@ public final class BundlesTest {
                 String.format("%s_before", this.bundle),
                 farm
             ).process(project, null);
-            new ClaimOut().type("ping").postTo(project);
             MatcherAssert.assertThat(
                 new And(
                     new Limited<>(new Endless<>(1), Tv.FIFTY),

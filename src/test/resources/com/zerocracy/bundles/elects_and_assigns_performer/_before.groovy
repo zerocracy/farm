@@ -22,6 +22,7 @@ import com.jcabi.xml.XML
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
+import com.zerocracy.pm.ClaimOut
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
@@ -29,4 +30,5 @@ def exec(Project project, XML xml) {
   def repo = github.repos().create(new Repos.RepoCreate('test', false))
   repo.issues().create('Hello, world', '')
   repo.issues().create('hello again', '')
+  new ClaimOut().type('ping').postTo(project)
 }

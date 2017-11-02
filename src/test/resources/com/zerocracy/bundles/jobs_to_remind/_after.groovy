@@ -18,13 +18,46 @@ package com.zerocracy.bundles.jobs_to_remind
 
 import com.jcabi.xml.XML
 import com.zerocracy.jstk.Project
+import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.time.Reminders
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
+  def reminders = new Reminders(project).bootstrap()
   MatcherAssert.assertThat(
-    new Reminders(project).bootstrap().labels('gh:test/test#2'),
-    Matchers.contains('8 days')
+    'order #1 shouldn\'t be added to reminders',
+    reminders.labels('gh:test/test#1'),
+    Matchers.emptyIterable()
+  )
+  MatcherAssert.assertThat(
+    'order #2 with 5-days label was not found in reminders',
+    reminders.labels('gh:test/test#2'),
+    Matchers.allOf(
+      Matchers.iterableWithSize(1),
+      Matchers.contains('5 days')
+    )
+  )
+  MatcherAssert.assertThat(
+    'order #3 with 8-days label was not found in reminders',
+    reminders.labels('gh:test/test#3'),
+    Matchers.allOf(
+      Matchers.iterableWithSize(1),
+      Matchers.contains('8 days')
+    )
+  )
+  MatcherAssert.assertThat(
+    'order #4 with 10-days label was not found in reminders',
+    reminders.labels('gh:test/test#4'),
+    Matchers.allOf(
+      Matchers.iterableWithSize(1),
+      Matchers.contains('10 days')
+    )
+  )
+  def orders = new Orders(project).bootstrap()
+  MatcherAssert.assertThat(
+    'order #4 was not unassigned',
+    orders.assigned('gh:test/test#4'),
+    Matchers.is(false)
   )
 }
