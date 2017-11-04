@@ -46,14 +46,6 @@ def exec(Project project, XML xml) {
       Matchers.contains('8 days')
     )
   )
-  MatcherAssert.assertThat(
-    'order #4 with 10-days label was not found in reminders',
-    reminders.labels('gh:test/test#4'),
-    Matchers.allOf(
-      Matchers.iterableWithSize(1),
-      Matchers.contains('10 days')
-    )
-  )
   def orders = new Orders(project).bootstrap()
   MatcherAssert.assertThat(
     'order #4 was not unassigned',

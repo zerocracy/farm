@@ -44,7 +44,6 @@ def exec(Project project, XML xml) {
   }
   Map<String, String> expired = orders.reminders(5)
     .plus(orders.reminders(8))
-    .plus(orders.reminders(10))
   for (Map.Entry<String, String> entry : expired.entrySet()) {
     def job = entry.key
     def label = entry.value
