@@ -14,12 +14,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.zerocracy.farm.reactive;
+
+import com.zerocracy.jstk.Stakeholder;
+import java.io.Closeable;
+import java.util.Iterator;
+import java.util.List;
 
 /**
- * Brigade stakeholders.
- *
+ * Pooled stakeholders that should be closed after processing.
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.16.1
  */
-package com.zerocracy.farm.reactive.brigade;
+public interface StkPooled extends Iterable<Stakeholder>, Closeable {
+
+    /**
+     * Simple stakeholder items.
+     */
+    final class Simple implements StkPooled {
+
+        /**
+         * Items.
+         */
+        private final List<Stakeholder> items;
+
+        /**
+         * Ctor.
+         * @param items Stakeholders
+         */
+        public Simple(final List<Stakeholder> items) {
+            this.items = items;
+        }
+
+        @Override
+        @SuppressWarnings("PMD.UncommentedEmptyMethodBody")
+        public void close() {
+        }
+
+        @Override
+        public Iterator<Stakeholder> iterator() {
+            return this.items.iterator();
+        }
+    }
+}

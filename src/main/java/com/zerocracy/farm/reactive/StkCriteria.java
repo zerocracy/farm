@@ -14,47 +14,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.farm.reactive.brigade;
+package com.zerocracy.farm.reactive;
 
-import com.zerocracy.jstk.Stakeholder;
-import java.io.Closeable;
-import java.util.Iterator;
-import java.util.List;
+import lombok.EqualsAndHashCode;
 
 /**
- * Pooled stakeholders that should be closed after processing.
+ * Brigade claim sameness criteria.
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.16.1
  */
-public interface StkPooled extends Iterable<Stakeholder>, Closeable {
+@EqualsAndHashCode(of = {"type", "prj"})
+@SuppressWarnings({"PMD.SingularField", "PMD.UnusedPrivateField"})
+final class StkCriteria {
 
     /**
-     * Simple stakeholder items.
+     * Type.
      */
-    final class Simple implements StkPooled {
+    private final String type;
 
-        /**
-         * Items.
-         */
-        private final List<Stakeholder> items;
+    /**
+     * Project.
+     */
+    private final String prj;
 
-        /**
-         * Ctor.
-         * @param items Stakeholders
-         */
-        public Simple(final List<Stakeholder> items) {
-            this.items = items;
-        }
-
-        @Override
-        @SuppressWarnings("PMD.UncommentedEmptyMethodBody")
-        public void close() {
-        }
-
-        @Override
-        public Iterator<Stakeholder> iterator() {
-            return this.items.iterator();
-        }
+    /**
+     * Ctor.
+     * @param type Type
+     * @param project Project
+     */
+    StkCriteria(final String type, final String project) {
+        this.type = type;
+        this.prj = project;
     }
 }

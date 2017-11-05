@@ -14,37 +14,53 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.farm.reactive.brigade;
+package com.zerocracy.farm.reactive;
 
-import lombok.EqualsAndHashCode;
+import com.jcabi.xml.XML;
+import com.zerocracy.jstk.Project;
+import com.zerocracy.jstk.Stakeholder;
+import java.io.IOException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Brigade claim sameness criteria.
+ * Stakeholder that knows self status.
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.16.1
  */
-@EqualsAndHashCode(of = {"type", "prj"})
-@SuppressWarnings({"PMD.SingularField", "PMD.UnusedPrivateField"})
-final class StkCriteria {
+final class StkWithStatus implements Stakeholder {
 
     /**
-     * Type.
+     * Origin stakeholder.
      */
-    private final String type;
+    private final Stakeholder origin;
 
     /**
-     * Project.
+     * Result memory.
      */
-    private final String prj;
+    private final AtomicBoolean res;
 
     /**
      * Ctor.
-     * @param type Type
-     * @param project Project
+     * @param origin Origin stakeholder
      */
-    StkCriteria(final String type, final String project) {
-        this.type = type;
-        this.prj = project;
+    StkWithStatus(final Stakeholder origin) {
+        this.origin = origin;
+        this.res = new AtomicBoolean();
+    }
+
+    @Override
+    public void process(final Project project, final XML claim)
+        throws IOException {
+        this.origin.process(project, claim);
+        this.res.set(true);
+    }
+
+    /**
+     * Result status.
+     * @return TRUE for success
+     */
+    public boolean status() {
+        return this.res.get();
     }
 }

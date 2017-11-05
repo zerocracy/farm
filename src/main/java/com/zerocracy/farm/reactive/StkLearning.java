@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.farm.reactive.brigade;
+package com.zerocracy.farm.reactive;
 
 import com.zerocracy.jstk.Stakeholder;
 import java.util.Iterator;

@@ -18,8 +18,6 @@ package com.zerocracy.farm.reactive;
 
 import com.jcabi.xml.XML;
 import com.zerocracy.farm.MismatchException;
-import com.zerocracy.farm.reactive.brigade.StkPool;
-import com.zerocracy.farm.reactive.brigade.StkPooled;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import java.io.IOException;
