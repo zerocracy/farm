@@ -37,6 +37,13 @@ def exec(Project project, XML xml) {
       .param('login', author)
       .param('role', role)
       .postTo(project)
+    if (claim.hasParam('channel')) {
+      claim.copy()
+        .type('Set title')
+        .param('title', claim.param('channel'))
+        .param('project', project.pid())
+        .postTo(project)
+    }
     if (claim.hasToken()) {
       claim.reply(
         String.join(

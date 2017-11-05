@@ -20,5 +20,9 @@ SOFTWARE.
     <created>2017-07-21T20:32:19.716Z</created>
     <type>Bootstrap</type>
     <author>yegor256</author>
+    <token>test;C123;user42</token>
+    <params>
+      <param name="channel">Test</param>
+    </params>
   </claim>
 </claims>
