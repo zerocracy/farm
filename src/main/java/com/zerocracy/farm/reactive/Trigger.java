@@ -16,42 +16,21 @@
  */
 package com.zerocracy.farm.reactive;
 
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.io.IOException;
 
 /**
- * Spinner for the spin.
+ * The trigger to turn when it's time to flush claims in a project.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.10
+ * @since 0.18
  */
-final class RunnableWithTrigger implements Runnable {
+interface Trigger {
 
     /**
-     * The runnable.
+     * Flush it.
+     * @throws IOException If fails
      */
-    private final Runnable runnable;
-
-    /**
-     * Is it running now?
-     */
-    private final AtomicBoolean alive;
-
-    /**
-     * Ctor.
-     * @param rnb Runnable
-     * @param alv Alive flag
-     */
-    RunnableWithTrigger(final Runnable rnb, final AtomicBoolean alv) {
-        this.runnable = rnb;
-        this.alive = alv;
-    }
-
-    @Override
-    public void run() {
-        this.alive.set(true);
-        this.runnable.run();
-        this.alive.set(false);
-    }
+    void flush() throws IOException;
 
 }

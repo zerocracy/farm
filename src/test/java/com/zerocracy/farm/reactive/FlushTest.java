@@ -31,7 +31,6 @@ import com.zerocracy.pm.Claims;
 import java.nio.file.Files;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.cactoos.Proc;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -81,12 +80,12 @@ public final class FlushTest {
                 )
             );
             thread.start();
-            final Proc<?> flush = new Flush(project, brigade);
+            final Trigger flush = new Flush(project, brigade);
             latch.countDown();
             while (thread.isAlive()) {
-                flush.exec(null);
+                flush.flush();
             }
-            flush.exec(null);
+            flush.flush();
             final Claims claims = new Claims(project).bootstrap();
             MatcherAssert.assertThat(
                 claims.iterate(),

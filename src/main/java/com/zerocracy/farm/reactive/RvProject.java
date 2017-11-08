@@ -20,7 +20,6 @@ import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import lombok.EqualsAndHashCode;
-import org.cactoos.Proc;
 
 /**
  * Reactive project.
@@ -38,18 +37,18 @@ final class RvProject implements Project {
     private final Project origin;
 
     /**
-     * The flush.
+     * The trigger.
      */
-    private final Proc<Item> flush;
+    private final Trigger trigger;
 
     /**
      * Ctor.
      * @param pkt Project
-     * @param flsh Flush
+     * @param tgr Trigger
      */
-    RvProject(final Project pkt, final Proc<Item> flsh) {
+    RvProject(final Project pkt, final Trigger tgr) {
         this.origin = pkt;
-        this.flush = flsh;
+        this.trigger = tgr;
     }
 
     @Override
@@ -61,7 +60,7 @@ final class RvProject implements Project {
     public Item acq(final String file) throws IOException {
         Item item = this.origin.acq(file);
         if ("claims.xml".equals(file)) {
-            item = new RvClaims(item, this.flush);
+            item = new RvClaims(item, this.trigger);
         }
         return item;
     }

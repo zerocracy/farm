@@ -18,13 +18,11 @@ package com.zerocracy.farm.reactive;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
-import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.Claims;
 import java.io.IOException;
 import java.util.Iterator;
-import org.cactoos.Proc;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.text.JoinedText;
 import org.cactoos.text.SubText;
@@ -36,7 +34,7 @@ import org.cactoos.text.SubText;
  * @version $Id$
  * @since 0.10
  */
-final class Flush implements Proc<Item> {
+final class Flush implements Trigger {
 
     /**
      * The project.
@@ -59,7 +57,7 @@ final class Flush implements Proc<Item> {
     }
 
     @Override
-    public void exec(final Item item) throws Exception {
+    public void flush() throws IOException {
         final Claims claims = new Claims(this.project).bootstrap();
         int total = 0;
         // @checkstyle MagicNumber (1 line)

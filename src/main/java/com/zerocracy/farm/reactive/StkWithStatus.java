@@ -42,10 +42,10 @@ final class StkWithStatus implements Stakeholder {
 
     /**
      * Ctor.
-     * @param origin Origin stakeholder
+     * @param stk Origin stakeholder
      */
-    StkWithStatus(final Stakeholder origin) {
-        this.origin = origin;
+    StkWithStatus(final Stakeholder stk) {
+        this.origin = stk;
         this.res = new AtomicBoolean();
     }
 

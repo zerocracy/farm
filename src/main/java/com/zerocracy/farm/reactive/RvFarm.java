@@ -67,7 +67,7 @@ public final class RvFarm implements Farm {
             p -> this.pool.computeIfAbsent(
                 p, pkt -> new RvProject(
                     pkt,
-                    new Flush(pkt, this.brigade)
+                    () -> new Flush(pkt, this.brigade).flush()
                 )
             )
         );

@@ -21,8 +21,6 @@ import com.zerocracy.jstk.Item;
 import java.io.IOException;
 import java.nio.file.Path;
 import lombok.EqualsAndHashCode;
-import org.cactoos.Proc;
-import org.cactoos.func.IoCheckedProc;
 
 /**
  * Reactive claims item.
@@ -40,18 +38,18 @@ final class RvClaims implements Item {
     private final Item origin;
 
     /**
-     * The flush.
+     * The trigger.
      */
-    private final Proc<Item> flush;
+    private final Trigger trigger;
 
     /**
      * Ctor.
      * @param item Original item
-     * @param proc Proc
+     * @param tgr Trigger
      */
-    RvClaims(final Item item, final Proc<Item> proc) {
+    RvClaims(final Item item, final Trigger tgr) {
         this.origin = item;
-        this.flush = proc;
+        this.trigger = tgr;
     }
 
     @Override
@@ -71,7 +69,7 @@ final class RvClaims implements Item {
             .nodes("/claims/claim").size();
         this.origin.close();
         if (total > 0) {
-            new IoCheckedProc<>(this.flush).exec(this);
+            this.trigger.flush();
         }
     }
 
