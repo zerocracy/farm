@@ -26,7 +26,7 @@ import com.zerocracy.pm.time.Reminders
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 
-
+@SuppressWarnings('ExplicitCallToPlusMethod')
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Ping')
   new Assume(project, xml).notPmo()
@@ -36,13 +36,14 @@ def exec(Project project, XML xml) {
   def claimTime = ZonedDateTime.ofInstant(
     claim.created().toInstant(), ZoneOffset.UTC
   )
-  Orders.metaClass.reminders = {
+  def orders = new Orders(project).bootstrap()
+  orders.metaClass.reminders = {
     int days -> delegate.olderThan(claimTime.minusDays(days))
       .toList()
       .collectEntries { String job -> [job, "$days days"] }
   }
-  def orders = new Orders(project).bootstrap()
-  Map<String, String> expired = orders.reminders(5) + orders.reminders(8)
+  Map<String, String> expired = orders.reminders(5)
+    .plus(orders.reminders(8))
   for (Map.Entry<String, String> entry : expired.entrySet()) {
     def job = entry.key
     def label = entry.value
