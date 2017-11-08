@@ -29,4 +29,6 @@ def exec(Project project, XML xml) {
   def repo = github.repos().create(new Repos.RepoCreate('test', false))
   repo.issues().create('First', '')
   repo.issues().create('Second', '')
+  repo.issues().create('Third', '')
+  repo.issues().create('Fourth', '')
 }
