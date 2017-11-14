@@ -70,10 +70,8 @@ public final class TxtUnrecoverableError implements Text {
             ),
             "\n```\n\n",
             String.format(
-                "My version: `%s`, `%s`, `%s`",
-                this.props.get("//build/version", ""),
-                this.props.get("//build/revision", ""),
-                this.props.get("//build/date", "")
+                "[%s](https://github.com/zerocracy/farm/tree/%1$s)",
+                this.props.get("//build/version", "")
             ),
             " /cc @yegor256"
         ).asString();

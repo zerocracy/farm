@@ -23,6 +23,7 @@ import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.Claims;
 import java.io.IOException;
 import java.util.Iterator;
+import org.cactoos.iterable.LengthOf;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.text.JoinedText;
 import org.cactoos.text.SubText;
@@ -57,10 +58,17 @@ final class Flush implements Trigger {
     }
 
     @Override
+    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     public void flush() throws IOException {
         final Claims claims = new Claims(this.project).bootstrap();
         int total = 0;
+        int left = Integer.MAX_VALUE;
         while (true) {
+            final int length = new LengthOf(claims.iterate()).value();
+            if (length > left) {
+                break;
+            }
+            left = length;
             final Iterator<XML> found = claims.take();
             if (!found.hasNext()) {
                 break;
