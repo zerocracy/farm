@@ -16,7 +16,7 @@
  */
 package com.zerocracy.farm.reactive;
 
-import com.jcabi.log.VerboseThreads;
+import com.google.common.util.concurrent.MoreExecutors;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.farm.fake.FkItem;
@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
@@ -85,11 +84,10 @@ public final class RvFarm implements Farm {
      * @param threads How many threads to use
      */
     public RvFarm(final Farm farm, final Brigade bgd, final int threads) {
+        assert threads > 0;
         this.origin = farm;
         this.brigade = bgd;
-        this.service = Executors.newFixedThreadPool(
-            threads, new VerboseThreads(RvFarm.class)
-        );
+        this.service = MoreExecutors.newDirectExecutorService();
         this.alive = new AtomicInteger();
         this.locks = new ConcurrentHashMap<>(0);
     }
