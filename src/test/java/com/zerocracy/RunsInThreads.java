@@ -54,6 +54,13 @@ public final class RunsInThreads<T> extends TypeSafeMatcher<Func<T, Boolean>> {
 
     /**
      * Ctor.
+     */
+    public RunsInThreads() {
+        this(null);
+    }
+
+    /**
+     * Ctor.
      * @param object Input object
      */
     public RunsInThreads(final T object) {

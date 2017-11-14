@@ -48,14 +48,14 @@ final class UplinkedProject implements Project {
     private static final Collection<Pattern> FILES = new HashSet<>(
         new StickyList<>(
             new Mapped<>(
+                Pattern::compile,
                 new IterableOf<>(
                     "awards/[a-zA-Z0-9-]+\\.xml",
                     "agenda/[a-zA-Z0-9-]+\\.xml",
                     "projects/[a-zA-Z0-9-]+\\.xml",
                     "catalog\\.xml",
                     "people\\.xml"
-                ),
-                Pattern::compile
+                )
             )
         )
     );
@@ -91,8 +91,8 @@ final class UplinkedProject implements Project {
             new Ternary<Item>(
                 () -> !"PMO".equals(this.origin.pid()) && new Or(
                     new Mapped<>(
-                        UplinkedProject.FILES,
-                        pattern -> () -> pattern.matcher(file).matches()
+                        pattern -> () -> pattern.matcher(file).matches(),
+                        UplinkedProject.FILES
                     )
                 ).value(),
                 () -> new Pmo(this.farm).acq(file),

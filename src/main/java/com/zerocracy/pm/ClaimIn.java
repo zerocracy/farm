@@ -22,6 +22,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -187,7 +188,11 @@ public final class ClaimIn {
                 )
             );
         }
-        return params.next();
+        String value = params.next();
+        if ("login".equals(name)) {
+            value = value.toLowerCase(Locale.ENGLISH);
+        }
+        return value;
     }
 
     /**

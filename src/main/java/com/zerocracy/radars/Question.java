@@ -171,12 +171,12 @@ public final class Question {
                         new TreeSet<>(
                             new StickyList<CharSequence>(
                                 new Mapped<>(
-                                    cmds,
                                     cmd -> String.format(
                                         "`%s` %s",
                                         cmd.xpath("label/text()").get(0),
                                         cmd.xpath("help/text() ").get(0)
-                                    )
+                                    ),
+                                    cmds
                                 )
                             )
                         )
@@ -234,20 +234,20 @@ public final class Question {
                         String.join(
                             "> <",
                             new Mapped<>(
-                                opts,
-                                item -> item.xpath("name/text()  ").get(0)
+                                item -> item.xpath("name/text()  ").get(0),
+                                opts
                             )
                         ),
                         String.join(
                             "\n  ",
                             new Sorted<String>(
                                 new Mapped<>(
-                                    opts,
                                     item -> String.format(
                                         "\\* `<%s>`: %s",
                                         item.xpath("name/text()").get(0),
                                         item.xpath("help/text()").get(0)
-                                    )
+                                    ),
+                                    opts
                                 )
                             )
                         )

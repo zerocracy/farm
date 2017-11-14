@@ -85,8 +85,8 @@ public final class StkPool {
                     new StickyList<>(
                         new ListOf<StkWithStatus>(
                             new Mapped<>(
-                                this.raw,
-                                StkWithStatus::new
+                                StkWithStatus::new,
+                                this.raw
                             )
                         )
                     ),

@@ -60,8 +60,7 @@ final class Flush implements Trigger {
     public void flush() throws IOException {
         final Claims claims = new Claims(this.project).bootstrap();
         int total = 0;
-        // @checkstyle MagicNumber (1 line)
-        while (total < 20) {
+        while (true) {
             final Iterator<XML> found = claims.take();
             if (!found.hasNext()) {
                 break;
@@ -82,8 +81,7 @@ final class Flush implements Trigger {
         final long start = System.currentTimeMillis();
         final ClaimIn claim = new ClaimIn(xml);
         final int total = this.brigade.process(this.project, xml);
-        final Claims claims = new Claims(this.project);
-        final int left = claims.iterate().size();
+        final int left = new Claims(this.project).iterate().size();
         if (total == 0 && claim.hasToken()) {
             throw new IllegalStateException(
                 String.format(
@@ -101,12 +99,12 @@ final class Flush implements Trigger {
             new JoinedText(
                 "; ",
                 new Mapped<>(
-                    claim.params().entrySet(),
                     ent -> String.format(
                         "%s=%s", ent.getKey(),
                         // @checkstyle MagicNumber (1 line)
                         new SubText(ent.getValue(), 0, 20).asString()
-                    )
+                    ),
+                    claim.params().entrySet()
                 )
             ).asString()
         );

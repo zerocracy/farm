@@ -39,6 +39,7 @@ final class StrictProject implements Project {
     private static final Pattern PMO = Pattern.compile(
         String.join(
             "|",
+            "(flush)",
             "(claims\\.xml)",
             "(catalog\\.xml)",
             "(bots\\.xml)",
@@ -56,6 +57,7 @@ final class StrictProject implements Project {
     private static final Pattern PROJECT = Pattern.compile(
         String.join(
             "|",
+            "(flush)",
             "(claims\\.xml)",
             "(roles\\.xml)",
             "(rates\\.xml)",

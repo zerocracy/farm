@@ -90,14 +90,14 @@ public final class SmartFarm implements Scalar<Farm> {
      */
     private Iterable<Stakeholder> stakeholders() {
         return new Mapped<>(
+            path -> new StkSafe(
+                path, this.value(),
+                new StkGroovy(new ResourceOf(path), path, this.value())
+            ),
             new TreeSet<>(
                 new Reflections(
                     "com.zerocracy.stk", new ResourcesScanner()
                 ).getResources(Pattern.compile(".*\\.groovy"))
-            ),
-            path -> new StkSafe(
-                path, this.value(),
-                new StkGroovy(new ResourceOf(path), path, this.value())
             )
         );
     }

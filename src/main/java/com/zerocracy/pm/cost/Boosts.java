@@ -61,16 +61,16 @@ public final class Boosts {
         try (final Item item = this.item()) {
             return new UncheckedScalar<>(
                 new ItemAt<Integer>(
+                    src -> Boosts.FCT_DEFAULT,
                     new Mapped<>(
+                        Integer::parseInt,
                         new Xocument(item).xpath(
                             String.format(
                                 "/boosts/boost[@id='%s']/text()",
                                 job
                             )
-                        ),
-                        Integer::parseInt
-                    ),
-                    src -> Boosts.FCT_DEFAULT
+                        )
+                    )
                 )
             ).value();
         }

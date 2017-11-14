@@ -103,7 +103,6 @@ public final class Elections {
      */
     public boolean elect(final String job, final Iterable<String> logins,
         final Map<Voter, Integer> voters) throws IOException {
-        final String state = this.state(job);
         final String date = ZonedDateTime.now().format(
             DateTimeFormatter.ISO_INSTANT
         );
@@ -147,11 +146,12 @@ public final class Elections {
             final Project pkt = file -> new FkItem(temp);
             new Xocument(temp).modify(dirs);
             boolean modified = true;
-            if (new Elections(pkt).state(job).equals(state)) {
+            if (new Elections(pkt).state(job).equals(this.state(job))) {
                 new Xocument(temp).modify(
                     new Directives().xpath(
                         String.format(
-                            "/elections/job[@id='%s']/election[@date='%s']",
+                            // @checkstyle LineLength (1 line)
+                            "/elections/job[@id='%s']/election[@date='%s'][last()]",
                             job, date
                         )
                     ).remove()

@@ -26,7 +26,7 @@ import com.zerocracy.pmo.People
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Invite a friend')
   ClaimIn claim = new ClaimIn(xml)
-  String login = claim.param('login').toLowerCase(Locale.ENGLISH)
+  String login = claim.param('login')
   People people = new People(project).bootstrap()
   if (people.hasMentor(login)) {
     throw new SoftException(

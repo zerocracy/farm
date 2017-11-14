@@ -14,23 +14,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.farm.uplinked;
+package com.zerocracy.farm.reactive;
 
 import com.zerocracy.jstk.Farm;
+import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
-import java.io.IOException;
-import lombok.EqualsAndHashCode;
-import org.cactoos.iterable.Mapped;
+import org.cactoos.Scalar;
+import org.cactoos.scalar.NumberOf;
+import org.cactoos.text.TextOf;
 
 /**
- * Uplinked farm.
+ * Reactive farm is still alive?
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.18
  */
-@EqualsAndHashCode(of = "origin")
-public final class UplinkedFarm implements Farm {
+public final class RvAlive implements Scalar<Boolean> {
 
     /**
      * Original farm.
@@ -41,20 +41,18 @@ public final class UplinkedFarm implements Farm {
      * Ctor.
      * @param farm Original farm
      */
-    public UplinkedFarm(final Farm farm) {
+    public RvAlive(final Farm farm) {
         this.origin = farm;
     }
 
     @Override
-    public Iterable<Project> find(final String query) throws IOException {
-        return new Mapped<>(
-            pkt -> new UplinkedProject(pkt, this.origin),
-            this.origin.find(query)
-        );
+    public Boolean value() throws Exception {
+        final Project project = this.origin.find(
+            RvFarm.class.getCanonicalName()
+        ).iterator().next();
+        try (final Item item = project.acq("")) {
+            return new NumberOf(new TextOf(item.path())).intValue() > 0;
+        }
     }
 
-    @Override
-    public void close() throws IOException {
-        this.origin.close();
-    }
 }

@@ -206,8 +206,8 @@ public final class Roles {
                     new JoinedText(
                         " or ",
                         new Mapped<>(
-                            new ListOf<>(list),
-                            role -> String.format("role='%s'", role)
+                            role -> String.format("role='%s'", role),
+                            new ListOf<>(list)
                         )
                     ).asString()
                 )

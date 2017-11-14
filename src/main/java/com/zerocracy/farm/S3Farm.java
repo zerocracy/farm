@@ -81,8 +81,8 @@ public final class S3Farm implements Farm {
         } else {
             final Catalog catalog = new Catalog(this).bootstrap();
             found = new Mapped<>(
-                catalog.findByXPath(xpath),
-                prefix -> new S3Project(this.bucket, prefix, this.temp)
+                prefix -> new S3Project(this.bucket, prefix, this.temp),
+                catalog.findByXPath(xpath)
             );
             if (!found.iterator().hasNext()) {
                 found = this.force(catalog, xpath);

@@ -81,8 +81,8 @@ public final class PropsFarm implements Farm {
     @Override
     public Iterable<Project> find(final String query) throws IOException {
         return new Mapped<>(
-            this.origin.find(query),
-            pkt -> new PropsProject(pkt, this.post)
+            pkt -> new PropsProject(pkt, this.post),
+            this.origin.find(query)
         );
     }
 

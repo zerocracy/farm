@@ -89,8 +89,8 @@ public final class TelegramRadarITCase {
             MatcherAssert.assertThat(
                 new And(
                     new Limited<>(
-                        new Endless<>(1),
-                        Tv.FIFTY
+                        Tv.FIFTY,
+                        new Endless<>(1)
                     ),
                     x -> {
                         TimeUnit.SECONDS.sleep(1L);
@@ -160,6 +160,7 @@ public final class TelegramRadarITCase {
     }
 
     @Test
+    @Ignore
     public void replyWithHelpMessage() throws Exception {
         final String help = new Question(
             new XMLDocument(

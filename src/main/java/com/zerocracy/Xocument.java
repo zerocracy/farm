@@ -70,7 +70,7 @@ public final class Xocument {
     /**
      * Current DATUM version.
      */
-    public static final String VERSION = "0.43.1";
+    public static final String VERSION = "0.44";
 
     /**
      * Cache of documents.
@@ -261,14 +261,6 @@ public final class Xocument {
         } else {
             after = new UncheckedScalar<>(
                 new Reduced<>(
-                    Xocument.INDEXES.apply(
-                        Xocument.url(
-                            String.format(
-                                "/latest/upgrades/%s/index.xml",
-                                xsd
-                            )
-                        )
-                    ).nodes("/index/entry[@dir='false']"),
                     xml,
                     (input, node) -> {
                         XML output = input;
@@ -286,7 +278,15 @@ public final class Xocument {
                             );
                         }
                         return output;
-                    }
+                    },
+                    Xocument.INDEXES.apply(
+                        Xocument.url(
+                            String.format(
+                                "/latest/upgrades/%s/index.xml",
+                                xsd
+                            )
+                        )
+                    ).nodes("/index/entry[@dir='false']")
                 )
             ).value();
             new LengthOf(

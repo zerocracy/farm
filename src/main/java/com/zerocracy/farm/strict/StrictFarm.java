@@ -48,8 +48,8 @@ public final class StrictFarm implements Farm {
     @Override
     public Iterable<Project> find(final String query) throws IOException {
         return new Mapped<>(
-            this.origin.find(query),
-            StrictProject::new
+            StrictProject::new,
+            this.origin.find(query)
         );
     }
 

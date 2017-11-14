@@ -16,12 +16,18 @@
  */
 package com.zerocracy.pm.staff;
 
+import com.zerocracy.RunsInThreads;
+import com.zerocracy.farm.sync.SyncFarm;
+import com.zerocracy.jstk.Farm;
+import com.zerocracy.jstk.farm.fake.FkFarm;
 import com.zerocracy.jstk.farm.fake.FkProject;
 import com.zerocracy.jstk.farm.spy.SpyProject;
+import com.zerocracy.pmo.Pmo;
 import java.security.SecureRandom;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.collection.Filtered;
 import org.cactoos.list.StickyList;
 import org.cactoos.map.MapEntry;
@@ -172,6 +178,38 @@ public final class ElectionsTest {
             ).size(),
             Matchers.equalTo(2)
         );
+    }
+
+    @Test
+    public void electsOnlyOnce() throws Exception {
+        try (final Farm farm = new SyncFarm(new FkFarm())) {
+            final Elections elections = new Elections(
+                new Pmo(farm)
+            ).bootstrap();
+            final String job = "gh:test/test#550";
+            final Iterable<String> users = new StickyList<>("alex", "alex2");
+            // @checkstyle DiamondOperatorCheck (1 line)
+            final Map<Voter, Integer> voters = new StickyMap<Voter, Integer>(
+                new MapEntry<>(
+                    (login, log) -> 1.0d / (double) login.length(),
+                    1
+                )
+            );
+            final AtomicInteger elected = new AtomicInteger();
+            MatcherAssert.assertThat(
+                inc -> {
+                    if (elections.elect(job, users, voters)) {
+                        elected.incrementAndGet();
+                    }
+                    return true;
+                },
+                new RunsInThreads<>()
+            );
+            MatcherAssert.assertThat(
+                elected.get(),
+                Matchers.equalTo(1)
+            );
+        }
     }
 
 }

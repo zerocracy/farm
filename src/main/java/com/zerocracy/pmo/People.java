@@ -313,16 +313,16 @@ public final class People {
     public Iterable<String> links(final String uid) throws IOException {
         try (final Item item = this.item()) {
             return new Mapped<>(
+                xml -> String.format(
+                    "%s:%s",
+                    xml.xpath("@rel").get(0),
+                    xml.xpath("@href").get(0)
+                ),
                 new Xocument(item).nodes(
                     String.format(
                         "/people/person[@id='%s']/links/link",
                         uid
                     )
-                ),
-                xml -> String.format(
-                    "%s:%s",
-                    xml.xpath("@rel").get(0),
-                    xml.xpath("@href").get(0)
                 )
             );
         }
@@ -359,16 +359,16 @@ public final class People {
         try (final Item item = this.item()) {
             return new UncheckedScalar<>(
                 new ItemAt<>(
+                    false,
                     new Mapped<>(
+                        Boolean::parseBoolean,
                         new Xocument(item).xpath(
                             String.format(
                                 "/people/person[@id='%s']/vacation/text()",
                                 uid
                             )
-                        ),
-                        Boolean::parseBoolean
-                    ),
-                    false
+                        )
+                    )
                 )
             ).value();
         }

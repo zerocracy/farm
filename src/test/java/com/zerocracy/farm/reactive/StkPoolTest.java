@@ -49,8 +49,8 @@ public final class StkPoolTest {
         final FkProject project = new FkProject();
         final StkPool pool = new StkPool(
             new Joined<Stakeholder>(
-                new Repeated<>(new FkStakeholder(), successful),
-                new Repeated<>(new StkPoolTest.FkErrStakeholder(), failed)
+                new Repeated<>(successful, new FkStakeholder()),
+                new Repeated<>(failed, new StkPoolTest.FkErrStakeholder())
             )
         );
         final XML claim = new XMLDocument(

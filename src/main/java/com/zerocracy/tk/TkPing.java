@@ -122,8 +122,8 @@ public final class TkPing implements Take {
     private static boolean needs(final Project project) throws IOException {
         final Claims claims = new Claims(project).bootstrap();
         return !new Filtered<>(
-            claims.iterate(),
-            input -> new ClaimIn(input).type().equals(TkPing.TYPE)
+            input -> new ClaimIn(input).type().equals(TkPing.TYPE),
+            claims.iterate()
         ).iterator().hasNext();
     }
 

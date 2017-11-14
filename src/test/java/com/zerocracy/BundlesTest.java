@@ -18,6 +18,7 @@ package com.zerocracy;
 
 import com.jcabi.aspects.Tv;
 import com.zerocracy.farm.SmartFarm;
+import com.zerocracy.farm.reactive.RvAlive;
 import com.zerocracy.farm.reactive.StkGroovy;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
@@ -91,14 +92,14 @@ public final class BundlesTest {
     public static Collection<Object[]> bundles() {
         return new StickyList<Object[]>(
             new Mapped<>(
+                path -> new Object[]{
+                    path.substring(0, path.indexOf("/claims.xml")),
+                },
                 new Sorted<>(
                     new Reflections(
                         "com.zerocracy.bundles", new ResourcesScanner()
                     ).getResources(p -> p.endsWith("claims.xml"))
-                ),
-                path -> new Object[]{
-                    path.substring(0, path.indexOf("/claims.xml")),
-                }
+                )
             )
         );
     }
@@ -173,11 +174,12 @@ public final class BundlesTest {
             ).process(project, null);
             MatcherAssert.assertThat(
                 new And(
-                    new Limited<>(new Endless<>(1), Tv.FIFTY),
+                    new Limited<>(Tv.FIFTY, new Endless<>(1)),
                     x -> {
                         TimeUnit.SECONDS.sleep(1L);
                         final Claims claims = new Claims(project).bootstrap();
-                        return !claims.iterate().isEmpty();
+                        return !claims.iterate().isEmpty()
+                            || new RvAlive(farm).value();
                     }
                 ).value(),
                 Matchers.equalTo(false)
@@ -215,8 +217,8 @@ public final class BundlesTest {
         return store.get(
             name,
             new Filtered<>(
-                store.get(name).keySet(),
-                p -> p.endsWith(".xml")
+                p -> p.endsWith(".xml"),
+                store.get(name).keySet()
             )
         );
     }

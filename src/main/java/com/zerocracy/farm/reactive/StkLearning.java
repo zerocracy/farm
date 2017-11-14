@@ -67,11 +67,11 @@ public final class StkLearning implements StkPooled {
             this.lrn.put(
                 this.criteria,
                 new ListOf<>(
-                    new org.cactoos.iterable.Mapped<>(
+                    new org.cactoos.iterable.Mapped<StkWithStatus, Stakeholder>(
+                        x -> x,
                         new Filtered<>(
-                            this.src, StkWithStatus::status
-                        ),
-                        x -> x
+                            StkWithStatus::status, this.src
+                        )
                     )
                 )
             );
@@ -80,6 +80,6 @@ public final class StkLearning implements StkPooled {
 
     @Override
     public Iterator<Stakeholder> iterator() {
-        return new Mapped<>(this.src.iterator(), x -> x);
+        return new Mapped<>(x -> x, this.src.iterator());
     }
 }

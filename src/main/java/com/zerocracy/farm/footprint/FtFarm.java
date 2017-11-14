@@ -48,8 +48,8 @@ public final class FtFarm implements Farm {
     @Override
     public Iterable<Project> find(final String query) throws IOException {
         return new Mapped<>(
-            this.origin.find(query),
-            project -> new FtProject(project, this.origin)
+            project -> new FtProject(project, this.origin),
+            this.origin.find(query)
         );
     }
 

@@ -141,12 +141,12 @@ public final class Bots {
     public Iterable<Map.Entry<String, String>> tokens() throws IOException {
         try (final Item item = this.item()) {
             return new Mapped<>(
-                new Xocument(item.path()).nodes(
-                    "/bots/bot"
-                ),
                 node -> new HashMap.SimpleEntry<>(
                     node.xpath("@id").get(0),
                     node.xpath("bot_access_token/text()").get(0)
+                ),
+                new Xocument(item.path()).nodes(
+                    "/bots/bot"
                 )
             );
         }

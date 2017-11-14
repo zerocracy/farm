@@ -74,22 +74,24 @@ public final class SyncFarm implements Farm {
     public Iterable<Project> find(final String query) throws IOException {
         synchronized (this.origin) {
             return new Mapped<>(
-                this.origin.find(query),
                 pkt -> new SyncProject(
                     pkt,
                     this.pool.computeIfAbsent(
-                        pkt,
-                        p -> new ReentrantLock()
+                        pkt, p -> new ReentrantLock()
                     ),
                     this.terminator
-                )
+                ),
+                this.origin.find(query)
             );
         }
     }
 
     @Override
     public void close() throws IOException {
-        this.terminator.close();
-        this.origin.close();
+        try {
+            this.terminator.close();
+        } finally {
+            this.origin.close();
+        }
     }
 }

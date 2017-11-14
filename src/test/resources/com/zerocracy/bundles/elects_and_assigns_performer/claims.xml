@@ -30,20 +30,8 @@ SOFTWARE.
       <param name="login">me</param>
     </params>
   </claim>
-  <claim id="3">
+  <claim id="9223372036854775800">
     <created>2017-03-27T11:19:09.228Z</created>
-    <type>ping</type>
-  </claim>
-  <claim id="4">
-    <created>2017-03-27T11:20:09.228Z</created>
-    <type>ping</type>
-  </claim>
-  <claim id="5">
-    <created>2017-03-27T11:23:09.228Z</created>
-    <type>ping</type>
-  </claim>
-  <claim id="6">
-    <created>2017-03-27T11:26:09.228Z</created>
     <type>ping</type>
   </claim>
 </claims>

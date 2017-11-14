@@ -77,8 +77,8 @@ public final class Brigade {
         ) {
             return new LengthOf(
                 new Filtered<>(
-                    stakeholders,
-                    stk -> Brigade.process(stk, project, xml)
+                    stk -> Brigade.process(stk, project, xml),
+                    stakeholders
                 )
             ).value();
         }

@@ -248,16 +248,16 @@ public final class Catalog {
         try (final Item item = this.item()) {
             return new StickyList<>(
                 new Mapped<>(
+                    xml -> String.format(
+                        "%s:%s",
+                        xml.xpath("@rel").get(0),
+                        xml.xpath("@href").get(0)
+                    ),
                     new Xocument(item).nodes(
                         String.format(
                             "/catalog/project[@id='%s']/links/link",
                             pid
                         )
-                    ),
-                    xml -> String.format(
-                        "%s:%s",
-                        xml.xpath("@rel").get(0),
-                        xml.xpath("@href").get(0)
                     )
                 )
             );

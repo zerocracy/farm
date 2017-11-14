@@ -123,8 +123,8 @@ public final class ReOnComment implements Reaction {
             String.join(
                 ", ",
                 new Mapped<>(
-                    comments,
-                    cmt -> String.format("#%d", cmt.number())
+                    cmt -> String.format("#%d", cmt.number()),
+                    comments
                 )
             )
         );
@@ -154,11 +154,11 @@ public final class ReOnComment implements Reaction {
             seen = 276041067;
         }
         return new Filtered<>(
+            comment -> comment.number() > seen,
             new Mapped<>(
-                issue.comments().iterate(new Date(since)),
-                SafeComment::new
-            ),
-            comment -> comment.number() > seen
+                SafeComment::new,
+                issue.comments().iterate(new Date(since))
+            )
         );
     }
 

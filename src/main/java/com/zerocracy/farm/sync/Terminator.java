@@ -73,7 +73,7 @@ final class Terminator implements Closeable {
         try {
             if (!this.service.awaitTermination(1L, TimeUnit.MINUTES)) {
                 throw new IllegalStateException(
-                    "Can't shutdown terminator service: "
+                    "Can't shutdown terminator service"
                 );
             }
         } catch (final InterruptedException ex) {
