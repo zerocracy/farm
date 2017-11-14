@@ -35,9 +35,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
-import org.cactoos.Func;
 import org.cactoos.Scalar;
 import org.cactoos.func.StickyFunc;
+import org.cactoos.func.SyncFunc;
 import org.cactoos.func.UncheckedFunc;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.InputStreamOf;
@@ -76,14 +76,16 @@ public final class Xocument {
      * Cache of documents.
      */
     private static final UncheckedFunc<URL, XML> INDEXES = new UncheckedFunc<>(
-        new StickyFunc<>(
-            (Func<URL, XML>) url -> new XMLDocument(
-                new TextOf(
-                    new InputWithFallback(
-                        new InputOf(url),
-                        new InputOf("<index/>")
-                    )
-                ).asString()
+        new SyncFunc<>(
+            new StickyFunc<>(
+                url -> new XMLDocument(
+                    new TextOf(
+                        new InputWithFallback(
+                            new InputOf(url),
+                            new InputOf("<index/>")
+                        )
+                    ).asString()
+                )
             )
         )
     );

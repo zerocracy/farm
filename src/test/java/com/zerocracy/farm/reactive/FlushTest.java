@@ -47,7 +47,7 @@ import org.junit.Test;
 public final class FlushTest {
 
     @Test
-    public void processes() throws Exception {
+    public void processesAllClaims() throws Exception {
         final Bucket bucket = new FkBucket(
             Files.createTempDirectory("").toFile(),
             "the-bucket"
@@ -85,11 +85,12 @@ public final class FlushTest {
             while (thread.isAlive()) {
                 flush.flush();
             }
+            thread.join();
+            flush.flush();
             flush.flush();
             final Claims claims = new Claims(project).bootstrap();
             MatcherAssert.assertThat(
-                claims.iterate(),
-                Matchers.hasSize(0)
+                claims.iterate(), Matchers.emptyIterable()
             );
             MatcherAssert.assertThat(
                 done.get(), Matchers.equalTo((max << 1) + 1)

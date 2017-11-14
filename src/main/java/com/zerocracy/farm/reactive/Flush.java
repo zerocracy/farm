@@ -62,13 +62,8 @@ final class Flush implements Trigger {
     public void flush() throws IOException {
         final Claims claims = new Claims(this.project).bootstrap();
         int total = 0;
-        int left = Integer.MAX_VALUE;
-        while (true) {
-            final int length = new LengthOf(claims.iterate()).value();
-            if (length > left) {
-                break;
-            }
-            left = length;
+        final int left = new LengthOf(claims.iterate()).value();
+        for (int idx = 0; idx < left; ++idx) {
             final Iterator<XML> found = claims.take();
             if (!found.hasNext()) {
                 break;
