@@ -79,8 +79,7 @@ public final class ClaimOut implements Iterable<Directive> {
      * @throws IOException If fails
      */
     public void postTo(final Project project) throws IOException {
-        final Claims claims = new Claims(project).bootstrap();
-        claims.add(this);
+        new Claims(project).bootstrap().add(this);
     }
 
     /**

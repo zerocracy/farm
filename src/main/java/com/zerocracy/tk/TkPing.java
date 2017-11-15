@@ -21,7 +21,6 @@ import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseThreads;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
-import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
 import java.io.IOException;
@@ -33,7 +32,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.Func;
 import org.cactoos.func.AsyncFunc;
-import org.cactoos.iterable.Filtered;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
@@ -120,11 +118,7 @@ public final class TkPing implements Take {
      * @throws IOException If fails
      */
     private static boolean needs(final Project project) throws IOException {
-        final Claims claims = new Claims(project).bootstrap();
-        return !new Filtered<>(
-            input -> new ClaimIn(input).type().equals(TkPing.TYPE),
-            claims.iterate()
-        ).iterator().hasNext();
+        return new Claims(project).bootstrap().iterate().isEmpty();
     }
 
     /**

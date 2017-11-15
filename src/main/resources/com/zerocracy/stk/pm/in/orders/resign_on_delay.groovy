@@ -1,4 +1,4 @@
-package com.zerocracy.stk.pm.time.reminders
+package com.zerocracy.stk.pm.in.orders
 
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
@@ -10,19 +10,20 @@ import java.time.ZoneOffset
 import java.time.ZonedDateTime
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('New reminder posted')
+  new Assume(project, xml).type('Ping')
   new Assume(project, xml).notPmo()
-  def claim = new ClaimIn(xml)
-
-  def claimTime = ZonedDateTime.ofInstant(
+  ClaimIn claim = new ClaimIn(xml)
+  ZonedDateTime time = ZonedDateTime.ofInstant(
     claim.created().toInstant(), ZoneOffset.UTC
   )
-  def orders = new Orders(project).bootstrap()
-  orders.olderThan(claimTime.minusDays(10)).forEach {
+  Orders orders = new Orders(project).bootstrap()
+  int days = 10
+  orders.olderThan(time.minusDays(days)).forEach {
     new ClaimOut()
       .type('Cancel order')
       .token("job;$it")
       .param('job', it)
+      .param('reason', "It is older than ${days} days")
       .postTo(project)
   }
 }
