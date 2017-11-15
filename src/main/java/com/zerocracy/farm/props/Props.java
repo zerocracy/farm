@@ -23,6 +23,7 @@ import com.zerocracy.jstk.Project;
 import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
 import java.util.List;
+import org.cactoos.text.TextOf;
 
 /**
  * Props.
@@ -59,6 +60,15 @@ public final class Props {
      */
     public Props(final Project pkt) {
         this.project = pkt;
+    }
+
+    @Override
+    public String toString() {
+        try (final Item item = this.item()) {
+            return new TextOf(item.path()).asString();
+        } catch (final IOException ex) {
+            throw new IllegalStateException(ex);
+        }
     }
 
     /**

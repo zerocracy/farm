@@ -43,6 +43,7 @@ import org.takes.facets.fallback.FbStatus;
 import org.takes.facets.fallback.TkFallback;
 import org.takes.facets.flash.TkFlash;
 import org.takes.facets.fork.FkRegex;
+import org.takes.facets.fork.Fork;
 import org.takes.facets.fork.TkFork;
 import org.takes.facets.forward.TkForward;
 import org.takes.misc.Concat;
@@ -105,11 +106,12 @@ public final class TkApp extends TkWrap {
                                     new TkAppAuth(
                                         new TkForward(
                                             new TkFork(
-                                                new ListOf<>(
+                                                new ListOf<Fork>(
                                                     new Concat<>(
                                                         new ListOf<>(forks),
                                                         new ListOf<>(
                                                             new FkRegex("/", new TkIndex(farm)),
+                                                            new FkRegex("/guts", new TkGuts(farm)),
                                                             new FkRegex(
                                                                 "/org/takes/.+\\.xsl",
                                                                 new TkClasspath()

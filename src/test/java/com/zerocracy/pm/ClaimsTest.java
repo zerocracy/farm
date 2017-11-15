@@ -16,9 +16,11 @@
  */
 package com.zerocracy.pm;
 
+import com.jcabi.aspects.Tv;
 import com.jcabi.s3.Bucket;
 import com.jcabi.s3.fake.FkBucket;
 import com.zerocracy.RunsInThreads;
+import com.zerocracy.Xocument;
 import com.zerocracy.farm.S3Farm;
 import com.zerocracy.farm.sync.SyncFarm;
 import com.zerocracy.jstk.Farm;
@@ -31,7 +33,9 @@ import org.cactoos.io.LengthOf;
 import org.cactoos.io.TeeInput;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.xembly.Directives;
 
 /**
  * Test case for {@link Claims}.
@@ -41,6 +45,7 @@ import org.junit.Test;
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class ClaimsTest {
 
     @Test
@@ -109,6 +114,28 @@ public final class ClaimsTest {
         MatcherAssert.assertThat(
             claims.iterate().iterator().hasNext(),
             Matchers.equalTo(false)
+        );
+    }
+
+    @Test
+    @Ignore
+    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
+    public void iteratesLargeSetOfClaims() throws Exception {
+        final Project project = new FkProject();
+        final int total = Tv.HUNDRED;
+        try (final Item item = project.acq("claims.xml")) {
+            final Xocument doc = new Xocument(item).bootstrap("pm/claims");
+            for (int idx = 0; idx < total; ++idx) {
+                doc.modify(
+                    new Directives().xpath("/claims").append(
+                        new ClaimOut().type("hello my future")
+                    )
+                );
+            }
+        }
+        MatcherAssert.assertThat(
+            new Claims(project).bootstrap().iterate().size(),
+            Matchers.equalTo(total)
         );
     }
 

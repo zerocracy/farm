@@ -14,42 +14,56 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.farm.reactive;
+package com.zerocracy.tk;
 
 import com.zerocracy.farm.Guts;
 import com.zerocracy.jstk.Farm;
-import org.cactoos.Scalar;
-import org.cactoos.scalar.NumberOf;
+import java.io.IOException;
+import java.util.logging.Level;
+import org.cactoos.scalar.IoCheckedScalar;
+import org.takes.Request;
+import org.takes.Response;
+import org.takes.Take;
+import org.takes.facets.flash.RsFlash;
+import org.takes.facets.forward.RsForward;
+import org.takes.rs.RsText;
 
 /**
- * Reactive farm is still alive?
+ * Farm internals.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.18
+ * @since 0.19
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-public final class RvAlive implements Scalar<Boolean> {
+public final class TkGuts implements Take {
 
     /**
-     * Original farm.
+     * Farm.
      */
-    private final Farm origin;
+    private final Farm farm;
 
     /**
      * Ctor.
-     * @param farm Original farm
+     * @param frm Farm
      */
-    public RvAlive(final Farm farm) {
-        this.origin = farm;
+    public TkGuts(final Farm frm) {
+        this.farm = frm;
     }
 
     @Override
-    public Boolean value() throws Exception {
-        return new NumberOf(
-            new Guts(this.origin).value().xpath(
-                "/guts/farm[@id='RvFarm']/alive/text()"
-            ).get(0)
-        ).intValue() > 0;
+    public Response act(final Request req) throws IOException {
+        if (!"yegor256".equals(new RqUser(this.farm, req).value())) {
+            throw new RsForward(
+                new RsFlash(
+                    "You are not allowed to see this page, sorry.",
+                    Level.WARNING
+                )
+            );
+        }
+        return new RsText(
+            new IoCheckedScalar<>(new Guts(this.farm)).value().toString()
+        );
     }
 
 }

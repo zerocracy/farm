@@ -22,6 +22,7 @@ import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.Footprint;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -128,9 +129,9 @@ final class FtItem implements Item {
      * Load claims as XML document.
      * @param path The path
      * @return XML document
-     * @throws IOException If fails
+     * @throws FileNotFoundException If fails
      */
-    private static XML claims(final Path path) throws IOException {
+    private static XML claims(final Path path) throws FileNotFoundException {
         final XML xml;
         if (path.toFile().length() > 0L) {
             xml = new XMLDocument(path.toFile());

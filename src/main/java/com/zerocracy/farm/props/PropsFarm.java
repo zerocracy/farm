@@ -16,6 +16,7 @@
  */
 package com.zerocracy.farm.props;
 
+import com.zerocracy.farm.Guts;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.farm.fake.FkFarm;
@@ -80,10 +81,18 @@ public final class PropsFarm implements Farm {
 
     @Override
     public Iterable<Project> find(final String query) throws IOException {
-        return new Mapped<>(
-            pkt -> new PropsProject(pkt, this.post),
-            this.origin.find(query)
-        );
+        return new Guts(
+            this.origin,
+            () -> new Mapped<>(
+                pkt -> new PropsProject(pkt, this.post),
+                this.origin.find(query)
+            ),
+            () -> new Directives()
+                .xpath("/guts")
+                .add("farm")
+                .attr("id", this.getClass().getSimpleName())
+                .set(new Props(this).toString())
+        ).apply(query);
     }
 
     @Override

@@ -18,9 +18,9 @@ package com.zerocracy.farm.reactive;
 
 import com.jcabi.aspects.Tv;
 import com.jcabi.log.VerboseThreads;
+import com.zerocracy.farm.Guts;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.farm.fake.FkItem;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -31,8 +31,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import lombok.EqualsAndHashCode;
-import org.cactoos.iterable.IterableOf;
+import org.cactoos.iterable.Joined;
 import org.cactoos.iterable.Mapped;
+import org.xembly.Directive;
+import org.xembly.Directives;
 
 /**
  * Reactive farm.
@@ -73,6 +75,14 @@ public final class RvFarm implements Farm {
     /**
      * Ctor.
      * @param farm Original farm
+     */
+    public RvFarm(final Farm farm) {
+        this(farm, new Brigade());
+    }
+
+    /**
+     * Ctor.
+     * @param farm Original farm
      * @param bgd Stakeholders
      */
     public RvFarm(final Farm farm, final Brigade bgd) {
@@ -105,15 +115,9 @@ public final class RvFarm implements Farm {
                 )
             );
         }
-        final Iterable<Project> list;
-        if (query.equals(RvFarm.class.getCanonicalName())) {
-            list = new IterableOf<>(
-                (Project) file -> new FkItem(
-                    Integer.toString(this.alive.get())
-                )
-            );
-        } else {
-            list = new Mapped<>(
+        return new Guts(
+            this.origin,
+            () -> new Mapped<>(
                 pkt -> new RvProject(
                     pkt,
                     () -> {
@@ -136,9 +140,28 @@ public final class RvFarm implements Farm {
                     }
                 ),
                 this.origin.find(query)
-            );
-        }
-        return list;
+            ),
+            () -> new Directives()
+                .xpath("/guts")
+                .add("farm")
+                .attr("id", this.getClass().getSimpleName())
+                .add("alive")
+                .set(Integer.toString(this.alive.get()))
+                .up()
+                .add("locks")
+                .append(
+                    new Joined<Directive>(
+                        new Mapped<>(
+                            ent -> new Directives().add("lock")
+                                .add("project").set(ent.getKey().pid()).up()
+                                .add("id").set(ent.getValue().toString()).up()
+                                .up(),
+                            this.locks.entrySet()
+                        )
+                    )
+                )
+                .up()
+        ).apply(query);
     }
 
     @Override

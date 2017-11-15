@@ -25,6 +25,8 @@ import org.cactoos.iterable.Mapped;
 /**
  * Footprint farm.
  *
+ * <p>All claims are tracked through {@link com.zerocracy.pm.Footprint}.</p>
+ *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.18
