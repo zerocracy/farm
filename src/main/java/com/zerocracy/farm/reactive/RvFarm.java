@@ -16,6 +16,7 @@
  */
 package com.zerocracy.farm.reactive;
 
+import com.jcabi.aspects.Tv;
 import com.jcabi.log.VerboseThreads;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
@@ -96,6 +97,14 @@ public final class RvFarm implements Farm {
 
     @Override
     public Iterable<Project> find(final String query) throws IOException {
+        if (this.locks.size() > Tv.HUNDRED) {
+            throw new IllegalStateException(
+                String.format(
+                    "%s pool overflow, too many locks: %d",
+                    this.getClass().getCanonicalName(), this.locks.size()
+                )
+            );
+        }
         final Iterable<Project> list;
         if (query.equals(RvFarm.class.getCanonicalName())) {
             list = new IterableOf<>(

@@ -16,6 +16,7 @@
  */
 package com.zerocracy.farm.sync;
 
+import com.jcabi.aspects.Tv;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
@@ -72,6 +73,14 @@ public final class SyncFarm implements Farm {
 
     @Override
     public Iterable<Project> find(final String query) throws IOException {
+        if (this.pool.size() > Tv.HUNDRED) {
+            throw new IllegalStateException(
+                String.format(
+                    "%s pool overflow, too many items: %d",
+                    this.getClass().getCanonicalName(), this.pool.size()
+                )
+            );
+        }
         synchronized (this.origin) {
             return new Mapped<>(
                 pkt -> new SyncProject(

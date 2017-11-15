@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pm;
 
+import com.jcabi.aspects.Tv;
 import com.jcabi.xml.XML;
 import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
@@ -28,6 +29,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import org.cactoos.collection.Limited;
 import org.cactoos.collection.Sorted;
+import org.cactoos.iterable.LengthOf;
 import org.xembly.Directive;
 import org.xembly.Directives;
 
@@ -73,6 +75,15 @@ public final class Claims {
     public void add(final Iterable<Directive> dirs) throws IOException {
         if (!dirs.iterator().hasNext()) {
             throw new IllegalArgumentException("Empty directives");
+        }
+        final int size = new LengthOf(this.iterate()).value();
+        if (size > Tv.FORTY) {
+            throw new IllegalStateException(
+                String.format(
+                    "Can't add, claims overflow in %s, too many items: %d",
+                    this.project.pid(), size
+                )
+            );
         }
         try (final Item item = this.item()) {
             new Xocument(item).modify(
