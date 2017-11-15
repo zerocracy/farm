@@ -18,7 +18,7 @@ package com.zerocracy.farm.reactive;
 
 import com.jcabi.aspects.Tv;
 import com.jcabi.log.VerboseThreads;
-import com.zerocracy.farm.Guts;
+import com.zerocracy.farm.guts.Guts;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;

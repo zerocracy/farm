@@ -16,7 +16,7 @@
  */
 package com.zerocracy.farm.props;
 
-import com.zerocracy.farm.Guts;
+import com.zerocracy.farm.guts.Guts;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.farm.fake.FkFarm;

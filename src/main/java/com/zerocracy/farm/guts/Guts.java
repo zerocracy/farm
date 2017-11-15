@@ -14,26 +14,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.farm;
+package com.zerocracy.farm.guts;
 
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.farm.fake.FkItem;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import org.cactoos.Func;
 import org.cactoos.Scalar;
-import org.cactoos.io.LengthOf;
-import org.cactoos.io.TeeInput;
 import org.cactoos.iterable.IterableOf;
 import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.text.TextOf;
 import org.xembly.Directive;
-import org.xembly.Xembler;
 
 /**
  * Guts.
@@ -91,7 +85,7 @@ public final class Guts implements
     public Iterable<Project> apply(final String query) throws IOException {
         final Iterable<Project> list;
         if (Guts.QUERY.equals(query)) {
-            list = new IterableOf<>(new Guts.Pkt(query));
+            list = new IterableOf<>(new GsProject(this.farm, query, this.dirs));
         } else {
             list = this.normal.value();
         }
@@ -106,47 +100,4 @@ public final class Guts implements
         }
     }
 
-    /**
-     * Project.
-     */
-    private final class Pkt implements Project {
-        /**
-         * Query.
-         */
-        private final String query;
-        /**
-         * Ctor.
-         * @param qry The query
-         */
-        private Pkt(final String qry) {
-            this.query = qry;
-        }
-        @Override
-        public String pid() {
-            return Guts.QUERY;
-        }
-        @Override
-        public Item acq(final String file) throws IOException {
-            final Path temp = Files.createTempFile("farm", ".xml");
-            try (final Item item =
-                Guts.this.farm.find(this.query).iterator().next().acq(file)) {
-                final Path path = item.path();
-                if (!Files.exists(path)
-                    || path.toFile().length() == 0L) {
-                    new LengthOf(new TeeInput("<guts/>", path)).value();
-                }
-                new LengthOf(
-                    new TeeInput(
-                        new XMLDocument(
-                            new Xembler(Guts.this.dirs.value()).applyQuietly(
-                                new XMLDocument(path).node()
-                            )
-                        ).toString(),
-                        temp
-                    )
-                ).value();
-            }
-            return new FkItem(temp);
-        }
-    }
 }

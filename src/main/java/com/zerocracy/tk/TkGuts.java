@@ -16,7 +16,7 @@
  */
 package com.zerocracy.tk;
 
-import com.zerocracy.farm.Guts;
+import com.zerocracy.farm.guts.Guts;
 import com.zerocracy.jstk.Farm;
 import java.io.IOException;
 import java.util.logging.Level;
