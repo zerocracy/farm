@@ -78,7 +78,9 @@ final class GsProject implements Project {
     public Item acq(final String file) throws IOException {
         final Path temp = Files.createTempFile("farm", ".xml");
         final Iterator<Project> pkts = this.farm.find(this.query).iterator();
-        XML before = new XMLDocument("<guts/>");
+        XML before = new XMLDocument(
+            "<?xml-stylesheet href='/xsl/guts.xsl' type='text/xsl'?><guts/>"
+        );
         if (pkts.hasNext()) {
             try (final Item item = pkts.next().acq(file)) {
                 final Path path = item.path();

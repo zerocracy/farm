@@ -26,7 +26,8 @@ import org.takes.Response;
 import org.takes.Take;
 import org.takes.facets.flash.RsFlash;
 import org.takes.facets.forward.RsForward;
-import org.takes.rs.RsText;
+import org.takes.rs.RsWithBody;
+import org.takes.rs.RsWithType;
 
 /**
  * Farm internals.
@@ -61,8 +62,11 @@ public final class TkGuts implements Take {
                 )
             );
         }
-        return new RsText(
-            new IoCheckedScalar<>(new Guts(this.farm)).value().toString()
+        return new RsWithType(
+            new RsWithBody(
+                new IoCheckedScalar<>(new Guts(this.farm)).value().toString()
+            ),
+            "application/xml"
         );
     }
 
