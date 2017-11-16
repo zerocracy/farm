@@ -26,7 +26,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
+import org.cactoos.Scalar;
 import org.cactoos.func.RunnableOf;
+import org.cactoos.iterable.Joined;
+import org.cactoos.iterable.Mapped;
+import org.xembly.Directive;
+import org.xembly.Directives;
 
 /**
  * Terminator.
@@ -36,7 +41,7 @@ import org.cactoos.func.RunnableOf;
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-final class Terminator implements Closeable {
+final class Terminator implements Closeable, Scalar<Iterable<Directive>> {
 
     /**
      * Threshold of locking, in milliseconds.
@@ -82,6 +87,19 @@ final class Terminator implements Closeable {
         }
     }
 
+    @Override
+    public Iterable<Directive> value() throws Exception {
+        return new Directives().add("terminator").append(
+            new Joined<Directive>(
+                new Mapped<>(
+                    pkt -> new Directives().add("killers")
+                        .add("project").set(pkt.pid()).up()
+                        .up(),
+                    this.killers.keySet()
+                )
+            )
+        ).up();
+    }
     /**
      * Submit new one.
      * @param project The project

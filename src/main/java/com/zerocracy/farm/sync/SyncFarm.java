@@ -17,6 +17,7 @@
 package com.zerocracy.farm.sync;
 
 import com.jcabi.aspects.Tv;
+import com.zerocracy.farm.guts.Guts;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
@@ -25,7 +26,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import lombok.EqualsAndHashCode;
+import org.cactoos.iterable.Joined;
 import org.cactoos.iterable.Mapped;
+import org.xembly.Directive;
+import org.xembly.Directives;
 
 /**
  * Synchronized farm.
@@ -33,6 +37,7 @@ import org.cactoos.iterable.Mapped;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @EqualsAndHashCode(of = "origin")
 public final class SyncFarm implements Farm {
@@ -82,16 +87,42 @@ public final class SyncFarm implements Farm {
             );
         }
         synchronized (this.origin) {
-            return new Mapped<>(
-                pkt -> new SyncProject(
-                    pkt,
-                    this.pool.computeIfAbsent(
-                        pkt, p -> new ReentrantLock()
+            return new Guts(
+                this.origin,
+                () -> new Mapped<>(
+                    pkt -> new SyncProject(
+                        pkt,
+                        this.pool.computeIfAbsent(
+                            pkt, p -> new ReentrantLock()
+                        ),
+                        this.terminator
                     ),
-                    this.terminator
+                    this.origin.find(query)
                 ),
-                this.origin.find(query)
-            );
+                () -> new Directives()
+                    .xpath("/guts")
+                    .add("farm")
+                    .attr("id", this.getClass().getSimpleName())
+                    .append(this.terminator.value())
+                    .add("locks")
+                    .append(
+                        new Joined<Directive>(
+                            new Mapped<>(
+                                ent -> new Directives().add("lock")
+                                    .add("project").set(ent.getKey().pid()).up()
+                                    .add("id")
+                                    .set(ent.getValue().toString()).up()
+                                    .add("count")
+                                    .set(ent.getValue().getHoldCount()).up()
+                                    .add("length")
+                                    .set(ent.getValue().getQueueLength()).up()
+                                    .up(),
+                                this.pool.entrySet()
+                            )
+                        )
+                    )
+                    .up()
+            ).apply(query);
         }
     }
 

@@ -93,7 +93,7 @@ public final class Guts implements
     }
 
     @Override
-    public XML value() throws Exception {
+    public XML value() throws IOException {
         try (final Item item =
             this.farm.find(Guts.QUERY).iterator().next().acq("guts.xml")) {
             return new XMLDocument(new TextOf(item.path()).asString());

@@ -26,26 +26,86 @@ SOFTWARE.
         </title>
       </head>
       <body style="font-family:monospace">
+        <p style="color:red">
+          <xsl:text>Restricted area, be careful!</xsl:text>
+        </p>
         <xsl:for-each select="farm">
           <xsl:sort select="@id" order="ascending" data-type="text"/>
-          <p>
+          <p style="margin-top:2em">
             <strong>
               <xsl:value-of select="@id"/>
             </strong>
             <xsl:text>:</xsl:text>
           </p>
-          <p>
-            <xsl:apply-templates select="."/>
-          </p>
+          <xsl:apply-templates select="."/>
         </xsl:for-each>
       </body>
     </html>
   </xsl:template>
   <xsl:template match="farm[@id='PropsFarm']">
-    <xsl:text>See XML.</xsl:text>
+    <p>
+      <xsl:text>See XML.</xsl:text>
+    </p>
   </xsl:template>
   <xsl:template match="farm[@id='RvFarm']">
-    <xsl:text>Alive: </xsl:text>
-    <xsl:value-of select="alive"/>
+    <p>
+      <xsl:text>Alive: </xsl:text>
+      <xsl:value-of select="alive"/>
+      <xsl:text>.</xsl:text>
+    </p>
+    <p>
+      <xsl:text>Locks: </xsl:text>
+      <xsl:for-each select="locks/lock">
+        <xsl:if test="position() &gt; 1">
+          <xsl:text>, </xsl:text>
+        </xsl:if>
+        <xsl:value-of select="project"/>
+        <xsl:text>:</xsl:text>
+        <xsl:value-of select="id"/>
+        <xsl:text> (</xsl:text>
+        <span title="getHoldCount()">
+          <xsl:value-of select="count"/>
+        </span>
+        <xsl:text>/</xsl:text>
+        <span title="getQueueLength()">
+          <xsl:value-of select="length"/>
+        </span>
+        <xsl:text>)</xsl:text>
+      </xsl:for-each>
+      <xsl:text>.</xsl:text>
+    </p>
+  </xsl:template>
+  <xsl:template match="farm[@id='SyncFarm']">
+    <p>
+      <xsl:text>Locks: </xsl:text>
+      <xsl:for-each select="locks/lock">
+        <xsl:if test="position() &gt; 1">
+          <xsl:text>, </xsl:text>
+        </xsl:if>
+        <xsl:value-of select="project"/>
+        <xsl:text>:</xsl:text>
+        <xsl:value-of select="id"/>
+        <xsl:text> (</xsl:text>
+        <span title="getHoldCount()">
+          <xsl:value-of select="count"/>
+        </span>
+        <xsl:text>/</xsl:text>
+        <span title="getQueueLength()">
+          <xsl:value-of select="length"/>
+        </span>
+        <xsl:text>)</xsl:text>
+      </xsl:for-each>
+      <xsl:text>.</xsl:text>
+    </p>
+    <p>
+      <xsl:text>Terminator killers: </xsl:text>
+      <xsl:for-each select="terminator/killers">
+        <xsl:if test="position() &gt; 1">
+          <xsl:text>, </xsl:text>
+        </xsl:if>
+        <xsl:value-of select="project"/>
+      </xsl:for-each>
+      <xsl:text>.</xsl:text>
+    </p>
   </xsl:template>
 </xsl:stylesheet>

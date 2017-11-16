@@ -60,7 +60,7 @@ public final class RvFarm implements Farm {
     /**
      * Locks per projects.
      */
-    private final Map<Project, Lock> locks;
+    private final Map<Project, ReentrantLock> locks;
 
     /**
      * Executor of flushes.
@@ -154,7 +154,12 @@ public final class RvFarm implements Farm {
                         new Mapped<>(
                             ent -> new Directives().add("lock")
                                 .add("project").set(ent.getKey().pid()).up()
-                                .add("id").set(ent.getValue().toString()).up()
+                                .add("id")
+                                .set(ent.getValue().toString()).up()
+                                .add("count")
+                                .set(ent.getValue().getHoldCount()).up()
+                                .add("length")
+                                .set(ent.getValue().getQueueLength()).up()
                                 .up(),
                             this.locks.entrySet()
                         )
