@@ -61,16 +61,7 @@ SOFTWARE.
         </xsl:if>
         <xsl:value-of select="project"/>
         <xsl:text>:</xsl:text>
-        <xsl:value-of select="id"/>
-        <xsl:text> (</xsl:text>
-        <span title="getHoldCount()">
-          <xsl:value-of select="count"/>
-        </span>
-        <xsl:text>/</xsl:text>
-        <span title="getQueueLength()">
-          <xsl:value-of select="length"/>
-        </span>
-        <xsl:text>)</xsl:text>
+        <xsl:value-of select="label"/>
       </xsl:for-each>
       <xsl:text>.</xsl:text>
     </p>
@@ -84,26 +75,17 @@ SOFTWARE.
         </xsl:if>
         <xsl:value-of select="project"/>
         <xsl:text>:</xsl:text>
-        <xsl:value-of select="id"/>
-        <xsl:text> (</xsl:text>
-        <span title="getHoldCount()">
-          <xsl:value-of select="count"/>
-        </span>
-        <xsl:text>/</xsl:text>
-        <span title="getQueueLength()">
-          <xsl:value-of select="length"/>
-        </span>
-        <xsl:text>)</xsl:text>
+        <xsl:value-of select="label"/>
       </xsl:for-each>
       <xsl:text>.</xsl:text>
     </p>
     <p>
       <xsl:text>Terminator killers: </xsl:text>
-      <xsl:for-each select="terminator/killers">
+      <xsl:for-each select="terminator/killers/project">
         <xsl:if test="position() &gt; 1">
           <xsl:text>, </xsl:text>
         </xsl:if>
-        <xsl:value-of select="project"/>
+        <xsl:value-of select="."/>
       </xsl:for-each>
       <xsl:text>.</xsl:text>
     </p>

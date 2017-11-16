@@ -18,6 +18,7 @@ package com.zerocracy.farm.reactive;
 
 import com.jcabi.aspects.Tv;
 import com.jcabi.log.VerboseThreads;
+import com.zerocracy.farm.SmartLock;
 import com.zerocracy.farm.guts.Guts;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
@@ -29,7 +30,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 import lombok.EqualsAndHashCode;
 import org.cactoos.iterable.Joined;
 import org.cactoos.iterable.Mapped;
@@ -60,7 +60,7 @@ public final class RvFarm implements Farm {
     /**
      * Locks per projects.
      */
-    private final Map<Project, ReentrantLock> locks;
+    private final Map<Project, Lock> locks;
 
     /**
      * Executor of flushes.
@@ -125,7 +125,7 @@ public final class RvFarm implements Farm {
                         this.service.submit(
                             () -> {
                                 final Lock lock = this.locks.computeIfAbsent(
-                                    pkt, p -> new ReentrantLock()
+                                    pkt, p -> new SmartLock()
                                 );
                                 lock.lock();
                                 try {
@@ -154,12 +154,8 @@ public final class RvFarm implements Farm {
                         new Mapped<>(
                             ent -> new Directives().add("lock")
                                 .add("project").set(ent.getKey().pid()).up()
-                                .add("id")
+                                .add("label")
                                 .set(ent.getValue().toString()).up()
-                                .add("count")
-                                .set(ent.getValue().getHoldCount()).up()
-                                .add("length")
-                                .set(ent.getValue().getQueueLength()).up()
                                 .up(),
                             this.locks.entrySet()
                         )

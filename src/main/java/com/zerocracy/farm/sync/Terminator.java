@@ -25,7 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.Lock;
 import org.cactoos.Scalar;
 import org.cactoos.func.RunnableOf;
 import org.cactoos.iterable.Joined;
@@ -107,7 +107,7 @@ final class Terminator implements Closeable, Scalar<Iterable<Directive>> {
      * @param lock The lock
      */
     public void submit(final Project project, final String file,
-        final ReentrantLock lock) {
+        final Lock lock) {
         synchronized (this.killers) {
             if (!this.killers.containsKey(project)) {
                 this.killers.put(project, true);
@@ -124,7 +124,7 @@ final class Terminator implements Closeable, Scalar<Iterable<Directive>> {
      * @return The runnable
      */
     private Runnable killer(final Project project, final String file,
-        final ReentrantLock lock) {
+        final Lock lock) {
         final Thread thread = Thread.currentThread();
         final Exception location = new IllegalStateException("Here!");
         return new RunnableOf<Object>(
@@ -133,16 +133,9 @@ final class Terminator implements Closeable, Scalar<Iterable<Directive>> {
                     Logger.warn(
                         this,
                         // @checkstyle LineLength (1 line)
-                        "Thread %d/%s interrupted because of too long hold of \"%s\" in %s (over %d msec), holdCount=%d, isLocked=%b, queueLength=%d, hasQueuedThreads=%b, isHeldByCurrentThread=%b: %[exception]s",
+                        "Thread %d/%s interrupted because of too long hold of \"%s\" in %s (over %d msec), %s: %[exception]s",
                         thread.getId(), thread.getName(),
-                        file, project,
-                        this.threshold,
-                        lock.getHoldCount(),
-                        lock.isLocked(),
-                        lock.getQueueLength(),
-                        lock.hasQueuedThreads(),
-                        lock.isHeldByCurrentThread(),
-                        location
+                        file, project, this.threshold, lock, location
                     );
                     thread.interrupt();
                 }

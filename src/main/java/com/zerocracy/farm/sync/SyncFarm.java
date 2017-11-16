@@ -17,6 +17,7 @@
 package com.zerocracy.farm.sync;
 
 import com.jcabi.aspects.Tv;
+import com.zerocracy.farm.SmartLock;
 import com.zerocracy.farm.guts.Guts;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
@@ -24,7 +25,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.Lock;
 import lombok.EqualsAndHashCode;
 import org.cactoos.iterable.Joined;
 import org.cactoos.iterable.Mapped;
@@ -50,7 +51,7 @@ public final class SyncFarm implements Farm {
     /**
      * Pool of locks.
      */
-    private final Map<Project, ReentrantLock> pool;
+    private final Map<Project, Lock> pool;
 
     /**
      * Terminator.
@@ -93,7 +94,7 @@ public final class SyncFarm implements Farm {
                     pkt -> new SyncProject(
                         pkt,
                         this.pool.computeIfAbsent(
-                            pkt, p -> new ReentrantLock()
+                            pkt, p -> new SmartLock()
                         ),
                         this.terminator
                     ),
@@ -110,12 +111,8 @@ public final class SyncFarm implements Farm {
                             new Mapped<>(
                                 ent -> new Directives().add("lock")
                                     .add("project").set(ent.getKey().pid()).up()
-                                    .add("id")
+                                    .add("label")
                                     .set(ent.getValue().toString()).up()
-                                    .add("count")
-                                    .set(ent.getValue().getHoldCount()).up()
-                                    .add("length")
-                                    .set(ent.getValue().getQueueLength()).up()
                                     .up(),
                                 this.pool.entrySet()
                             )

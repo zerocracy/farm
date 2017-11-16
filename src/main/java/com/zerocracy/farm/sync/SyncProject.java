@@ -21,7 +21,7 @@ import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.Lock;
 import lombok.EqualsAndHashCode;
 
 /**
@@ -43,7 +43,7 @@ final class SyncProject implements Project {
     /**
      * Lock.
      */
-    private final ReentrantLock lock;
+    private final Lock lock;
 
     /**
      * Terminator.
@@ -56,8 +56,7 @@ final class SyncProject implements Project {
      * @param lck Lock
      * @param tmr Terminator
      */
-    SyncProject(final Project pkt, final ReentrantLock lck,
-        final Terminator tmr) {
+    SyncProject(final Project pkt, final Lock lck, final Terminator tmr) {
         this.origin = pkt;
         this.lock = lck;
         this.terminator = tmr;
@@ -76,14 +75,10 @@ final class SyncProject implements Project {
             if (!this.lock.tryLock(25L, TimeUnit.SECONDS)) {
                 throw new IllegalStateException(
                     Logger.format(
-                        // @checkstyle LineLength (1 line)
-                        "Failed to acquire \"%s\" in \"%s\" in %[ms]s, holdCount=%d, queueLength=%d, hasQueuedThreads=%b, isHeldByCurrentThread=%b",
+                        "Failed to acquire \"%s\" in \"%s\" in %[ms]s: %s",
                         file, this.origin,
                         System.currentTimeMillis() - start,
-                        this.lock.getHoldCount(),
-                        this.lock.getQueueLength(),
-                        this.lock.hasQueuedThreads(),
-                        this.lock.isHeldByCurrentThread()
+                        this.lock
                     )
                 );
             }

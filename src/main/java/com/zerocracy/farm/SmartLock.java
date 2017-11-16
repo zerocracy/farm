@@ -1,0 +1,108 @@
+/**
+ * Copyright (c) 2016-2017 Zerocracy
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to read
+ * the Software only. Permissions is hereby NOT GRANTED to use, copy, modify,
+ * merge, publish, distribute, sublicense, and/or sell copies of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+package com.zerocracy.farm;
+
+import com.jcabi.log.Logger;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+/**
+ * Lock that is smart.
+ *
+ * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @version $Id$
+ * @since 0.19
+ */
+public final class SmartLock implements Lock {
+
+    /**
+     * Original lock.
+     */
+    private final ReentrantLock origin = new ReentrantLock();
+
+    /**
+     * Start.
+     */
+    private final AtomicLong start = new AtomicLong();
+
+    /**
+     * Owner.
+     */
+    private final AtomicReference<Thread> owner = new AtomicReference<>();
+
+    @Override
+    public String toString() {
+        final String text;
+        if (this.origin.isLocked()) {
+            text = Logger.format(
+                "%[ms]s/%d/%d/%b/%b by %s",
+                System.currentTimeMillis() - this.start.get(),
+                this.origin.getHoldCount(),
+                this.origin.getQueueLength(),
+                this.origin.hasQueuedThreads(),
+                this.origin.isHeldByCurrentThread(),
+                this.owner.get().getName()
+            );
+        } else {
+            text = "free";
+        }
+        return text;
+    }
+
+    @Override
+    public void lock() {
+        this.start.set(System.currentTimeMillis());
+        this.owner.set(Thread.currentThread());
+        this.origin.lock();
+    }
+
+    @Override
+    public void lockInterruptibly() throws InterruptedException {
+        this.start.set(System.currentTimeMillis());
+        this.owner.set(Thread.currentThread());
+        this.origin.lockInterruptibly();
+    }
+
+    @Override
+    public boolean tryLock() {
+        this.start.set(System.currentTimeMillis());
+        this.owner.set(Thread.currentThread());
+        return this.origin.tryLock();
+    }
+
+    @Override
+    public boolean tryLock(final long time, final TimeUnit unit)
+        throws InterruptedException {
+        this.start.set(System.currentTimeMillis());
+        this.owner.set(Thread.currentThread());
+        return this.origin.tryLock(time, unit);
+    }
+
+    @Override
+    public void unlock() {
+        this.origin.unlock();
+    }
+
+    @Override
+    public Condition newCondition() {
+        return this.origin.newCondition();
+    }
+}
