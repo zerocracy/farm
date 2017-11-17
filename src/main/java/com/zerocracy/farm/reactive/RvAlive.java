@@ -47,7 +47,7 @@ public final class RvAlive implements Scalar<Boolean> {
     public Boolean value() throws Exception {
         return new NumberOf(
             new Guts(this.origin).value().xpath(
-                "/guts/farm[@id='RvFarm']/alive/text()"
+                "sum(/guts/farm[@id='RvFarm']/alive/count/text())"
             ).get(0)
         ).intValue() > 0;
     }

@@ -110,10 +110,8 @@ public final class SyncFarm implements Farm {
                         new Joined<Directive>(
                             new Mapped<>(
                                 ent -> new Directives().add("lock")
-                                    .add("project").set(ent.getKey().pid()).up()
-                                    .add("label")
-                                    .set(ent.getValue().toString()).up()
-                                    .up(),
+                                    .attr("pid", ent.getKey().pid())
+                                    .set(ent.getValue().toString()).up(),
                                 this.pool.entrySet()
                             )
                         )

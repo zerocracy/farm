@@ -50,7 +50,14 @@ SOFTWARE.
   <xsl:template match="farm[@id='RvFarm']">
     <p>
       <xsl:text>Alive: </xsl:text>
-      <xsl:value-of select="alive"/>
+      <xsl:for-each select="alive/count">
+        <xsl:if test="position() &gt; 1">
+          <xsl:text>, </xsl:text>
+        </xsl:if>
+        <xsl:value-of select="@pid"/>
+        <xsl:text>:</xsl:text>
+        <xsl:value-of select="."/>
+      </xsl:for-each>
       <xsl:text>.</xsl:text>
     </p>
     <p>
@@ -59,9 +66,9 @@ SOFTWARE.
         <xsl:if test="position() &gt; 1">
           <xsl:text>, </xsl:text>
         </xsl:if>
-        <xsl:value-of select="project"/>
+        <xsl:value-of select="@pid"/>
         <xsl:text>:</xsl:text>
-        <xsl:value-of select="label"/>
+        <xsl:value-of select="."/>
       </xsl:for-each>
       <xsl:text>.</xsl:text>
     </p>
@@ -73,9 +80,9 @@ SOFTWARE.
         <xsl:if test="position() &gt; 1">
           <xsl:text>, </xsl:text>
         </xsl:if>
-        <xsl:value-of select="project"/>
+        <xsl:value-of select="@pid"/>
         <xsl:text>:</xsl:text>
-        <xsl:value-of select="label"/>
+        <xsl:value-of select="."/>
       </xsl:for-each>
       <xsl:text>.</xsl:text>
     </p>

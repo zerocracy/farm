@@ -45,6 +45,7 @@ import org.xembly.Directives;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @EqualsAndHashCode(of = "origin")
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class RvFarm implements Farm {
 
     /**
@@ -70,7 +71,7 @@ public final class RvFarm implements Farm {
     /**
      * How many flushes are in the line now?
      */
-    private final AtomicInteger alive;
+    private final Map<Project, AtomicInteger> alive;
 
     /**
      * Ctor.
@@ -101,7 +102,7 @@ public final class RvFarm implements Farm {
         this.service = Executors.newFixedThreadPool(
             threads, new VerboseThreads(RvFarm.class)
         );
-        this.alive = new AtomicInteger();
+        this.alive = new ConcurrentHashMap<>(0);
         this.locks = new ConcurrentHashMap<>(0);
     }
 
@@ -121,20 +122,24 @@ public final class RvFarm implements Farm {
                 pkt -> new RvProject(
                     pkt,
                     () -> {
-                        this.alive.incrementAndGet();
+                        this.alive.computeIfAbsent(
+                            pkt, p -> new AtomicInteger()
+                        ).incrementAndGet();
                         this.service.submit(
                             () -> {
                                 final Lock lock = this.locks.computeIfAbsent(
                                     pkt, p -> new SmartLock()
                                 );
-                                lock.lock();
-                                try {
-                                    new Flush(pkt, this.brigade).flush();
-                                    this.alive.decrementAndGet();
-                                    return null;
-                                } finally {
-                                    lock.unlock();
+                                if (this.alive.get(pkt).get() < 2) {
+                                    lock.lock();
+                                    try {
+                                        new Flush(pkt, this.brigade).flush();
+                                    } finally {
+                                        lock.unlock();
+                                    }
                                 }
+                                this.alive.get(pkt).decrementAndGet();
+                                return null;
                             }
                         );
                     }
@@ -146,17 +151,23 @@ public final class RvFarm implements Farm {
                 .add("farm")
                 .attr("id", this.getClass().getSimpleName())
                 .add("alive")
-                .set(Integer.toString(this.alive.get()))
-                .up()
+                .append(
+                    new Joined<Directive>(
+                        new Mapped<>(
+                            ent -> new Directives().add("count")
+                                .attr("pid", ent.getKey().pid())
+                                .set(ent.getValue().toString()).up(),
+                            this.alive.entrySet()
+                        )
+                    )
+                )
                 .add("locks")
                 .append(
                     new Joined<Directive>(
                         new Mapped<>(
                             ent -> new Directives().add("lock")
-                                .add("project").set(ent.getKey().pid()).up()
-                                .add("label")
-                                .set(ent.getValue().toString()).up()
-                                .up(),
+                                .attr("pid", ent.getKey().pid())
+                                .set(ent.getValue().toString()).up(),
                             this.locks.entrySet()
                         )
                     )
