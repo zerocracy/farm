@@ -161,6 +161,7 @@ public final class RvFarm implements Farm {
                         )
                     )
                 )
+                .up()
                 .add("locks")
                 .append(
                     new Joined<Directive>(
