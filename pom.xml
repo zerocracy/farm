@@ -364,7 +364,6 @@ SOFTWARE.
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
           <configuration>
-            <parallel>none</parallel>
             <properties>
               <property>
                 <name>listener</name>

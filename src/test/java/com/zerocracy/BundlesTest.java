@@ -39,6 +39,7 @@ import java.util.regex.Pattern;
 import org.apache.log4j.FileAppender;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
+import org.apache.log4j.spi.LoggingEvent;
 import org.cactoos.Func;
 import org.cactoos.io.LengthOf;
 import org.cactoos.io.OutputTo;
@@ -118,11 +119,19 @@ public final class BundlesTest {
                 .map(Path::toFile)
                 .forEach(File::delete);
         }
+        final Thread thread = Thread.currentThread();
         this.appender = new FileAppender(
             new PatternLayout("%t %p %m\n"),
             this.home.resolve("test.log").toString(),
             false
-        );
+        ) {
+            @Override
+            public void doAppend(final LoggingEvent event) {
+                if (Thread.currentThread().equals(thread)) {
+                    super.doAppend(event);
+                }
+            }
+        };
         Logger.getRootLogger().addAppender(this.appender);
     }
 
