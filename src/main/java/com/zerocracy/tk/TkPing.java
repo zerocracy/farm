@@ -32,6 +32,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.Func;
 import org.cactoos.func.AsyncFunc;
+import org.cactoos.iterable.Shuffled;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
@@ -86,7 +87,7 @@ public final class TkPing implements Take {
         final Collection<String> done = new LinkedList<>();
         final long start = System.currentTimeMillis();
         final ClaimOut out = new ClaimOut().type(TkPing.TYPE);
-        for (final Project project : this.farm.find("")) {
+        for (final Project project : new Shuffled<>(this.farm.find(""))) {
             if (System.currentTimeMillis() - start
                 // @checkstyle MagicNumber (1 line)
                 > TimeUnit.SECONDS.toMillis(5L)) {
