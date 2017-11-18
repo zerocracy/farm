@@ -8,6 +8,7 @@ import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.in.Orders
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
+import org.cactoos.iterable.Limited
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Ping')
@@ -18,7 +19,7 @@ def exec(Project project, XML xml) {
   )
   Orders orders = new Orders(project).bootstrap()
   int days = 10
-  orders.olderThan(time.minusDays(days)).forEach {
+  new Limited<>(5, orders.olderThan(time.minusDays(days))).forEach {
     new ClaimOut()
       .type('Cancel order')
       .token("job;$it")

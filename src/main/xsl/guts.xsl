@@ -50,6 +50,7 @@ SOFTWARE.
     <p>
       <xsl:text>JVM: </xsl:text>
       <xsl:for-each select="attrs/attr">
+        <xsl:sort select="@id"/>
         <xsl:if test="position() &gt; 1">
           <xsl:text>, </xsl:text>
         </xsl:if>
@@ -67,11 +68,14 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="farm[@id='RvFarm']">
     <p>
-      <xsl:text>Alive: </xsl:text>
+      <xsl:text>Alive (</xsl:text>
+      <xsl:value-of select="sum(alive/count)"/>
+      <xsl:text>): </xsl:text>
       <xsl:if test="not(alive/count)">
         <xsl:text>-</xsl:text>
       </xsl:if>
       <xsl:for-each select="alive/count">
+        <xsl:sort select="@pid"/>
         <xsl:if test="position() &gt; 1">
           <xsl:text>, </xsl:text>
         </xsl:if>
@@ -87,6 +91,7 @@ SOFTWARE.
         <xsl:text>-</xsl:text>
       </xsl:if>
       <xsl:for-each select="locks/lock">
+        <xsl:sort select="@pid"/>
         <xsl:if test="position() &gt; 1">
           <xsl:text>, </xsl:text>
         </xsl:if>
@@ -104,6 +109,7 @@ SOFTWARE.
         <xsl:text>-</xsl:text>
       </xsl:if>
       <xsl:for-each select="locks/lock">
+        <xsl:sort select="@pid"/>
         <xsl:if test="position() &gt; 1">
           <xsl:text>, </xsl:text>
         </xsl:if>
@@ -119,6 +125,7 @@ SOFTWARE.
         <xsl:text>-</xsl:text>
       </xsl:if>
       <xsl:for-each select="terminator/killer">
+        <xsl:sort select="@pid"/>
         <xsl:if test="position() &gt; 1">
           <xsl:text>, </xsl:text>
         </xsl:if>
