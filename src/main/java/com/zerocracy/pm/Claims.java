@@ -77,7 +77,7 @@ public final class Claims {
             throw new IllegalArgumentException("Empty directives");
         }
         final int size = new LengthOf(this.iterate()).value();
-        if (size > Tv.FORTY) {
+        if (size > Tv.HUNDRED) {
             throw new IllegalStateException(
                 String.format(
                     "Can't add, claims overflow in %s, too many items: %d",

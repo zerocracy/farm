@@ -115,6 +115,9 @@ SOFTWARE.
     </p>
     <p>
       <xsl:text>Terminator killers: </xsl:text>
+      <xsl:if test="not(terminator/killer)">
+        <xsl:text>-</xsl:text>
+      </xsl:if>
       <xsl:for-each select="terminator/killer">
         <xsl:if test="position() &gt; 1">
           <xsl:text>, </xsl:text>
