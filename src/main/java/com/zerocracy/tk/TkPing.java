@@ -87,6 +87,7 @@ public final class TkPing implements Take {
         final Collection<String> done = new LinkedList<>();
         final long start = System.currentTimeMillis();
         final ClaimOut out = new ClaimOut().type(TkPing.TYPE);
+        final ClaimOut touch = new ClaimOut().type("Touch");
         for (final Project project : new Shuffled<>(this.farm.find(""))) {
             if (System.currentTimeMillis() - start
                 // @checkstyle MagicNumber (1 line)
@@ -98,7 +99,8 @@ public final class TkPing implements Take {
                 out.postTo(project);
                 done.add(project.pid());
             } else {
-                done.add(String.format("%s/not", project.pid()));
+                touch.postTo(project);
+                done.add(String.format("%s/touch", project.pid()));
             }
         }
         return new RsText(

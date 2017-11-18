@@ -41,13 +41,13 @@ def exec(Project project, XML xml) {
   Roles roles = new Roles(project).bootstrap()
   List<String> logins = roles.findByRole('DEV')
   if (logins.empty) {
-    Logger.info(this, 'No DEVs in %s, cannot elect', project)
+    Logger.info(this, 'No DEVs in %s, cannot elect', project.pid())
     return
   }
   Elections elections = new Elections(project).bootstrap()
   if (elections.age() < TimeUnit.MINUTES.toMillis(15)
     && !new Props(project).has('//testing')) {
-    Logger.info(this, 'It is too early to make a new election in %s', project)
+    Logger.info(this, 'It is too early to make a new election in %s', project.pid())
     return
   }
   Set<String> winners = [] as Set

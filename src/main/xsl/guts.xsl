@@ -26,6 +26,9 @@ SOFTWARE.
         </title>
       </head>
       <body style="font-family:monospace">
+        <p>
+          <img src="http://www.zerocracy.com/logo.svg" style="height:64px"/>
+        </p>
         <p style="color:red">
           <xsl:text>Restricted area, be careful!</xsl:text>
         </p>
