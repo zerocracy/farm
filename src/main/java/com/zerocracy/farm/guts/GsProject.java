@@ -25,11 +25,17 @@ import com.zerocracy.jstk.farm.fake.FkItem;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
+import org.cactoos.Scalar;
 import org.cactoos.io.LengthOf;
 import org.cactoos.io.TeeInput;
+import org.cactoos.iterable.Joined;
+import org.cactoos.iterable.Mapped;
 import org.cactoos.scalar.IoCheckedScalar;
 import org.xembly.Directive;
+import org.xembly.Directives;
 import org.xembly.Xembler;
 
 /**
@@ -38,6 +44,7 @@ import org.xembly.Xembler;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.19
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 final class GsProject implements Project {
 
@@ -63,6 +70,17 @@ final class GsProject implements Project {
      * @param anex Dirs to add
      */
     GsProject(final Farm frm, final String qry,
+        final Scalar<Iterable<Directive>> anex) {
+        this(frm, qry, new IoCheckedScalar<>(anex));
+    }
+
+    /**
+     * Ctor.
+     * @param frm Farm
+     * @param qry The query
+     * @param anex Dirs to add
+     */
+    GsProject(final Farm frm, final String qry,
         final IoCheckedScalar<Iterable<Directive>> anex) {
         this.farm = frm;
         this.query = qry;
@@ -79,7 +97,7 @@ final class GsProject implements Project {
         final Path temp = Files.createTempFile("farm", ".xml");
         final Iterator<Project> pkts = this.farm.find(this.query).iterator();
         XML before = new XMLDocument(
-            "<?xml-stylesheet href='/xsl/guts.xsl' type='text/xsl'?><guts/>"
+            new Xembler(GsProject.start()).xmlQuietly()
         );
         if (pkts.hasNext()) {
             try (final Item item = pkts.next().acq(file)) {
@@ -102,4 +120,50 @@ final class GsProject implements Project {
         ).value();
         return new FkItem(temp);
     }
+
+    /**
+     * Start XML.
+     * @return Dirs
+     */
+    private static Iterable<Directive> start() {
+        final Map<String, Object> attrs = new HashMap<>(0);
+        attrs.put(
+            "availableProcessors",
+            Runtime.getRuntime().availableProcessors()
+        );
+        attrs.put(
+            "freeMemory",
+            Runtime.getRuntime().freeMemory()
+        );
+        attrs.put(
+            "maxMemory",
+            Runtime.getRuntime().maxMemory()
+        );
+        attrs.put(
+            "totalMemory",
+            Runtime.getRuntime().totalMemory()
+        );
+        attrs.put(
+            "totalThreads",
+            Thread.getAllStackTraces().size()
+        );
+        return new Directives()
+            .pi("xml-stylesheet", "href='/xsl/guts.xsl' type='text/xsl'")
+            .add("guts")
+            .add("jvm")
+            .add("attrs")
+            .append(
+                new Joined<>(
+                    new Mapped<Map.Entry<String, Object>, Iterable<Directive>>(
+                        ent -> new Directives().add("attr")
+                            .attr("id", ent.getKey())
+                            .set(ent.getValue()).up(),
+                        attrs.entrySet()
+                    )
+                )
+            )
+            .up()
+            .up();
+    }
+
 }

@@ -29,6 +29,7 @@ SOFTWARE.
         <p style="color:red">
           <xsl:text>Restricted area, be careful!</xsl:text>
         </p>
+        <xsl:apply-templates select="jvm"/>
         <xsl:for-each select="farm">
           <xsl:sort select="@id" order="ascending" data-type="text"/>
           <p style="margin-top:2em">
@@ -42,6 +43,20 @@ SOFTWARE.
       </body>
     </html>
   </xsl:template>
+  <xsl:template match="jvm">
+    <p>
+      <xsl:text>JVM: </xsl:text>
+      <xsl:for-each select="attrs/attr">
+        <xsl:if test="position() &gt; 1">
+          <xsl:text>, </xsl:text>
+        </xsl:if>
+        <xsl:value-of select="@id"/>
+        <xsl:text>:</xsl:text>
+        <xsl:value-of select="."/>
+      </xsl:for-each>
+      <xsl:text>.</xsl:text>
+    </p>
+  </xsl:template>
   <xsl:template match="farm[@id='PropsFarm']">
     <p>
       <xsl:text>See XML.</xsl:text>
@@ -50,6 +65,9 @@ SOFTWARE.
   <xsl:template match="farm[@id='RvFarm']">
     <p>
       <xsl:text>Alive: </xsl:text>
+      <xsl:if test="not(alive/count)">
+        <xsl:text>&#xA0;</xsl:text>
+      </xsl:if>
       <xsl:for-each select="alive/count">
         <xsl:if test="position() &gt; 1">
           <xsl:text>, </xsl:text>
@@ -62,6 +80,9 @@ SOFTWARE.
     </p>
     <p>
       <xsl:text>Locks: </xsl:text>
+      <xsl:if test="not(locks/lock)">
+        <xsl:text>&#xA0;</xsl:text>
+      </xsl:if>
       <xsl:for-each select="locks/lock">
         <xsl:if test="position() &gt; 1">
           <xsl:text>, </xsl:text>
@@ -76,6 +97,9 @@ SOFTWARE.
   <xsl:template match="farm[@id='SyncFarm']">
     <p>
       <xsl:text>Locks: </xsl:text>
+      <xsl:if test="not(locks/lock)">
+        <xsl:text>&#xA0;</xsl:text>
+      </xsl:if>
       <xsl:for-each select="locks/lock">
         <xsl:if test="position() &gt; 1">
           <xsl:text>, </xsl:text>
