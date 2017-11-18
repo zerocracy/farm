@@ -66,7 +66,7 @@ SOFTWARE.
     <p>
       <xsl:text>Alive: </xsl:text>
       <xsl:if test="not(alive/count)">
-        <xsl:text>&#xA0;</xsl:text>
+        <xsl:text>-</xsl:text>
       </xsl:if>
       <xsl:for-each select="alive/count">
         <xsl:if test="position() &gt; 1">
@@ -81,7 +81,7 @@ SOFTWARE.
     <p>
       <xsl:text>Locks: </xsl:text>
       <xsl:if test="not(locks/lock)">
-        <xsl:text>&#xA0;</xsl:text>
+        <xsl:text>-</xsl:text>
       </xsl:if>
       <xsl:for-each select="locks/lock">
         <xsl:if test="position() &gt; 1">
@@ -98,7 +98,7 @@ SOFTWARE.
     <p>
       <xsl:text>Locks: </xsl:text>
       <xsl:if test="not(locks/lock)">
-        <xsl:text>&#xA0;</xsl:text>
+        <xsl:text>-</xsl:text>
       </xsl:if>
       <xsl:for-each select="locks/lock">
         <xsl:if test="position() &gt; 1">
@@ -112,10 +112,12 @@ SOFTWARE.
     </p>
     <p>
       <xsl:text>Terminator killers: </xsl:text>
-      <xsl:for-each select="terminator/killers/project">
+      <xsl:for-each select="terminator/killer">
         <xsl:if test="position() &gt; 1">
           <xsl:text>, </xsl:text>
         </xsl:if>
+        <xsl:value-of select="@pid"/>
+        <xsl:text>:</xsl:text>
         <xsl:value-of select="."/>
       </xsl:for-each>
       <xsl:text>.</xsl:text>

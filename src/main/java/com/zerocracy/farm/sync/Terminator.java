@@ -56,7 +56,7 @@ final class Terminator implements Closeable, Scalar<Iterable<Directive>> {
     /**
      * Map of statuses per project.
      */
-    private final Map<Project, Boolean> killers;
+    private final Map<Project, String> killers;
 
     /**
      * Ctor.
@@ -92,10 +92,10 @@ final class Terminator implements Closeable, Scalar<Iterable<Directive>> {
         return new Directives().add("terminator").append(
             new Joined<Directive>(
                 new Mapped<>(
-                    pkt -> new Directives().add("killers")
-                        .add("project").set(pkt.pid()).up()
-                        .up(),
-                    this.killers.keySet()
+                    pkt -> new Directives().add("killer")
+                        .attr("pid", pkt.getKey().pid())
+                        .set(pkt.getValue()).up(),
+                    this.killers.entrySet()
                 )
             )
         ).up();
@@ -110,7 +110,7 @@ final class Terminator implements Closeable, Scalar<Iterable<Directive>> {
         final Lock lock) {
         synchronized (this.killers) {
             if (!this.killers.containsKey(project)) {
-                this.killers.put(project, true);
+                this.killers.put(project, file);
                 this.service.submit(this.killer(project, file, lock));
             }
         }
