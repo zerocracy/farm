@@ -36,8 +36,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.cactoos.Scalar;
-import org.cactoos.func.StickyFunc;
-import org.cactoos.func.SyncFunc;
+import org.cactoos.func.SolidFunc;
 import org.cactoos.func.UncheckedFunc;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.InputStreamOf;
@@ -45,7 +44,7 @@ import org.cactoos.io.InputWithFallback;
 import org.cactoos.io.LengthOf;
 import org.cactoos.io.TeeInput;
 import org.cactoos.iterable.Reduced;
-import org.cactoos.list.ListOf;
+import org.cactoos.list.SolidList;
 import org.cactoos.scalar.Ternary;
 import org.cactoos.scalar.UncheckedScalar;
 import org.cactoos.text.TextOf;
@@ -76,16 +75,14 @@ public final class Xocument {
      * Cache of documents.
      */
     private static final UncheckedFunc<URL, XML> INDEXES = new UncheckedFunc<>(
-        new SyncFunc<>(
-            new StickyFunc<>(
-                url -> new XMLDocument(
-                    new TextOf(
-                        new InputWithFallback(
-                            new InputOf(url),
-                            new InputOf("<index/>")
-                        )
-                    ).asString()
-                )
+        new SolidFunc<>(
+            url -> new XMLDocument(
+                new TextOf(
+                    new InputWithFallback(
+                        new InputOf(url),
+                        new InputOf("<index/>")
+                    )
+                ).asString()
             )
         )
     );
@@ -330,7 +327,7 @@ public final class Xocument {
      */
     private static int num(final String ver) {
         final List<String> parts = new LinkedList<>();
-        parts.addAll(new ListOf<>(ver.split("\\.")));
+        parts.addAll(new SolidList<>(ver.split("\\.")));
         // @checkstyle MagicNumber (1 line)
         if (parts.size() < 3) {
             parts.add("0");

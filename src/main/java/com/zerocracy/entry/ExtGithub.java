@@ -26,8 +26,7 @@ import com.zerocracy.farm.props.Props;
 import com.zerocracy.jstk.Farm;
 import java.io.IOException;
 import org.cactoos.Scalar;
-import org.cactoos.func.StickyFunc;
-import org.cactoos.func.SyncFunc;
+import org.cactoos.func.SolidFunc;
 import org.cactoos.func.UncheckedFunc;
 
 /**
@@ -44,19 +43,17 @@ public final class ExtGithub implements Scalar<Github> {
      */
     private static final UncheckedFunc<Farm, Github> SINGLETON =
         new UncheckedFunc<>(
-            new SyncFunc<>(
-                new StickyFunc<>(
-                    frm -> {
-                        final Props props = new Props(frm);
-                        final Github github;
-                        if (props.has("//testing")) {
-                            github = new MkGithub().relogin("test");
-                        } else {
-                            github = ExtGithub.prod(props);
-                        }
-                        return github;
+            new SolidFunc<>(
+                frm -> {
+                    final Props props = new Props(frm);
+                    final Github github;
+                    if (props.has("//testing")) {
+                        github = new MkGithub().relogin("test");
+                    } else {
+                        github = ExtGithub.prod(props);
                     }
-                )
+                    return github;
+                }
             )
         );
 

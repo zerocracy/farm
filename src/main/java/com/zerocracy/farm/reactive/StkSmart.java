@@ -17,50 +17,57 @@
 package com.zerocracy.farm.reactive;
 
 import com.jcabi.xml.XML;
+import com.zerocracy.farm.MismatchException;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
+import com.zerocracy.pm.ClaimIn;
 import java.io.IOException;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
- * Stakeholder that knows self status.
+ * A stakeholder that doesn't hit the same
+ * {@link MismatchException} exception twice.
+ *
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
- * @since 0.16.1
+ * @since 0.19
  */
-final class StkWithStatus implements Stakeholder {
+final class StkSmart implements Stakeholder {
 
     /**
-     * Origin stakeholder.
+     * The original one.
      */
     private final Stakeholder origin;
 
     /**
-     * Result memory.
+     * List of places where we already seen problems.
      */
-    private final AtomicBoolean res;
+    private final Set<String> places;
 
     /**
      * Ctor.
-     * @param stk Origin stakeholder
+     * @param stk Original
      */
-    StkWithStatus(final Stakeholder stk) {
+    StkSmart(final Stakeholder stk) {
         this.origin = stk;
-        this.res = new AtomicBoolean();
+        this.places = new HashSet<>(0);
     }
 
     @Override
-    public void process(final Project project, final XML claim)
+    public void process(final Project project, final XML xml)
         throws IOException {
-        this.origin.process(project, claim);
-        this.res.set(true);
-    }
-
-    /**
-     * Result status.
-     * @return TRUE for success
-     */
-    public boolean status() {
-        return this.res.get();
+        final String place = String.format(
+            "%s:%s", project.pid(), new ClaimIn(xml).type()
+        );
+        synchronized (this.places) {
+            if (!this.places.contains(place)) {
+                try {
+                    this.origin.process(project, xml);
+                } catch (final MismatchException ex) {
+                    this.places.add(place);
+                }
+            }
+        }
     }
 }

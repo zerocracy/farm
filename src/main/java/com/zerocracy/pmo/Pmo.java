@@ -22,8 +22,7 @@ import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.IoCheckedScalar;
-import org.cactoos.scalar.StickyScalar;
-import org.cactoos.scalar.SyncScalar;
+import org.cactoos.scalar.SolidScalar;
 
 /**
  * PMO.
@@ -44,10 +43,8 @@ public final class Pmo implements Project {
      * @param farm Farm
      */
     public Pmo(final Farm farm) {
-        this.pkt = new SyncScalar<>(
-            new StickyScalar<>(
-                () -> farm.find("@id='PMO'").iterator().next()
-            )
+        this.pkt = new SolidScalar<>(
+            () -> farm.find("@id='PMO'").iterator().next()
         );
     }
 

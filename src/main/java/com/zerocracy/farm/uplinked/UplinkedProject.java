@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 import lombok.EqualsAndHashCode;
 import org.cactoos.iterable.IterableOf;
 import org.cactoos.iterable.Mapped;
-import org.cactoos.list.StickyList;
+import org.cactoos.list.SolidList;
 import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.scalar.Or;
 import org.cactoos.scalar.Ternary;
@@ -46,7 +46,7 @@ final class UplinkedProject implements Project {
      * Files to fetch from PMO.
      */
     private static final Collection<Pattern> FILES = new HashSet<>(
-        new StickyList<>(
+        new SolidList<>(
             new Mapped<>(
                 Pattern::compile,
                 new IterableOf<>(

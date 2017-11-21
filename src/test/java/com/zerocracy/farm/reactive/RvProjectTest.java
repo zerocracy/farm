@@ -25,9 +25,8 @@ import com.zerocracy.jstk.farm.fake.FkFarm;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
 import com.zerocracy.pmo.Pmo;
-import java.util.Collections;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.cactoos.list.SolidList;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -44,26 +43,28 @@ public final class RvProjectTest {
 
     @Test
     public void closesClaims() throws Exception {
-        final AtomicBoolean done = new AtomicBoolean();
+        final AtomicInteger done = new AtomicInteger();
         try (final Farm farm = new SyncFarm(new FkFarm())) {
             final Project raw = new Pmo(farm);
-            final Flush flush = new Flush(
-                raw,
+            final Flush def = new DefaultFlush(
                 new Brigade(
-                    Collections.singletonList(
-                        (project, xml) -> done.set(true)
+                    new SolidList<>(
+                        (project, xml) -> done.incrementAndGet()
                     )
                 )
             );
-            final Project project = new RvProject(raw, flush);
-            final Claims claims = new Claims(project).bootstrap();
-            claims.add(new ClaimOut().type("hello").token("test;tt"));
-            while (true) {
-                if (!claims.iterate().iterator().hasNext()) {
-                    break;
+            try (final Flush flush = new AsyncFlush(def)) {
+                final Project project = new RvProject(raw, flush);
+                final Claims claims = new Claims(project).bootstrap();
+                claims.add(new ClaimOut().type("hello A").token("test;t1"));
+                claims.add(new ClaimOut().type("hello B").token("test;t2"));
+                while (true) {
+                    if (!claims.iterate().iterator().hasNext()) {
+                        break;
+                    }
                 }
             }
-            MatcherAssert.assertThat(done.get(), Matchers.is(true));
+            MatcherAssert.assertThat(done.get(), Matchers.equalTo(2));
         }
     }
 
@@ -72,26 +73,27 @@ public final class RvProjectTest {
         final AtomicInteger total = new AtomicInteger(Tv.FIFTY);
         try (final Farm farm = new SyncFarm(new FkFarm())) {
             final Project raw = new Pmo(farm);
-            final Flush flush = new Flush(
-                raw,
+            final Flush def = new DefaultFlush(
                 new Brigade(
-                    Collections.singletonList(
+                    new SolidList<>(
                         (project, xml) -> total.decrementAndGet()
                     )
                 )
             );
-            final Project project = new RvProject(raw, flush);
-            MatcherAssert.assertThat(
-                input -> {
-                    new ClaimOut().type("hello you").postTo(project);
-                    return true;
-                },
-                new RunsInThreads<>(null, total.get())
-            );
-            final Claims claims = new Claims(project).bootstrap();
-            while (true) {
-                if (!claims.iterate().iterator().hasNext()) {
-                    break;
+            try (final Flush flush = new AsyncFlush(def)) {
+                final Project project = new RvProject(raw, flush);
+                MatcherAssert.assertThat(
+                    input -> {
+                        new ClaimOut().type("hello you").postTo(project);
+                        return true;
+                    },
+                    new RunsInThreads<>(true, total.get())
+                );
+                final Claims claims = new Claims(project).bootstrap();
+                while (true) {
+                    if (!claims.iterate().iterator().hasNext()) {
+                        break;
+                    }
                 }
             }
             MatcherAssert.assertThat(total.get(), Matchers.equalTo(0));

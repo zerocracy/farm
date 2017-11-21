@@ -21,8 +21,7 @@ import com.zerocracy.jstk.Farm;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.cactoos.Scalar;
-import org.cactoos.func.StickyFunc;
-import org.cactoos.func.SyncFunc;
+import org.cactoos.func.SolidFunc;
 import org.cactoos.func.UncheckedFunc;
 
 /**
@@ -40,10 +39,8 @@ public final class ExtSlack implements Scalar<Map<String, SlackSession>> {
     private static final
         UncheckedFunc<Farm, Map<String, SlackSession>> SINGLETON =
         new UncheckedFunc<>(
-            new SyncFunc<>(
-                new StickyFunc<>(
-                    frm -> new ConcurrentHashMap<>(0)
-                )
+            new SolidFunc<>(
+                frm -> new ConcurrentHashMap<>(0)
             )
         );
 

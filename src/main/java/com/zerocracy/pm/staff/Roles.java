@@ -24,7 +24,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import org.cactoos.iterable.Mapped;
-import org.cactoos.list.ListOf;
+import org.cactoos.list.SolidList;
 import org.cactoos.text.JoinedText;
 import org.xembly.Directives;
 
@@ -207,7 +207,7 @@ public final class Roles {
                         " or ",
                         new Mapped<>(
                             role -> String.format("role='%s'", role),
-                            new ListOf<>(list)
+                            new SolidList<>(list)
                         )
                     ).asString()
                 )

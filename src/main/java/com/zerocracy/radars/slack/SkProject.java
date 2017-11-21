@@ -24,8 +24,7 @@ import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.IoCheckedScalar;
-import org.cactoos.scalar.StickyScalar;
-import org.cactoos.scalar.SyncScalar;
+import org.cactoos.scalar.SolidScalar;
 
 /**
  * Project in Slack.
@@ -56,15 +55,13 @@ public final class SkProject implements Project {
      * @param channel Channel
      */
     public SkProject(final Farm farm, final SlackChannel channel) {
-        this.pkt = new SyncScalar<>(
-            new StickyScalar<>(
-                () -> farm.find(
-                    String.format(
-                        "@id='%s'",
-                        channel.getId()
-                    )
-                ).iterator().next()
-            )
+        this.pkt = new SolidScalar<>(
+            () -> farm.find(
+                String.format(
+                    "@id='%s'",
+                    channel.getId()
+                )
+            ).iterator().next()
         );
     }
 

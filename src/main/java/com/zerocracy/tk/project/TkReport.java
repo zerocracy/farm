@@ -34,7 +34,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 import org.bson.Document;
-import org.cactoos.list.StickyList;
+import org.cactoos.list.SolidList;
 import org.cactoos.map.MapEntry;
 import org.cactoos.map.StickyMap;
 import org.takes.Response;
@@ -116,7 +116,7 @@ public final class TkReport implements TkRegex {
                 final Collection<Document> docs;
                 try (final Footprint footprint =
                     new Footprint(this.farm, project)) {
-                    docs = new StickyList<>(
+                    docs = new SolidList<>(
                         footprint.collection().aggregate(
                             TkReport.REPORTS.get(report).bson(
                                 project,

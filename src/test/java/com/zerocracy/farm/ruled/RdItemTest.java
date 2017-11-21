@@ -29,7 +29,6 @@ import com.zerocracy.jstk.farm.fake.FkFarm;
 import com.zerocracy.pm.cost.Boosts;
 import com.zerocracy.pm.scope.Wbs;
 import com.zerocracy.pmo.Pmo;
-import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import org.cactoos.func.RunnableOf;
 import org.hamcrest.MatcherAssert;
@@ -46,7 +45,7 @@ import org.junit.Test;
  */
 public final class RdItemTest {
 
-    @Test(expected = UncheckedIOException.class)
+    @Test(expected = IllegalStateException.class)
     public void catchesIllegalModification() throws Exception {
         try (final Farm farm = new RdFarm(new FkFarm())) {
             final Project pmo = new Pmo(farm);

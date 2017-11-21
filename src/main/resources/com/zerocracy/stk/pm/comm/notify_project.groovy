@@ -26,6 +26,6 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   claim.copy()
     .type('Notify')
-    .token("slack;${project}")
+    .token("slack;${project.pid()}")
     .postTo(project)
 }

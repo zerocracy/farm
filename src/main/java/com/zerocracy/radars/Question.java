@@ -31,7 +31,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.iterable.Sorted;
-import org.cactoos.list.StickyList;
+import org.cactoos.list.SolidList;
 
 /**
  * Question in text.
@@ -169,7 +169,7 @@ public final class Question {
                     String.join(
                         "\n  - ",
                         new TreeSet<>(
-                            new StickyList<CharSequence>(
+                            new SolidList<CharSequence>(
                                 new Mapped<>(
                                     cmd -> String.format(
                                         "`%s` %s",

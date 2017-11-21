@@ -16,24 +16,13 @@
  */
 package com.zerocracy.farm.reactive;
 
-import com.jcabi.aspects.Tv;
-import com.jcabi.log.VerboseThreads;
-import com.zerocracy.farm.SmartLock;
 import com.zerocracy.farm.guts.Guts;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
+import com.zerocracy.jstk.Stakeholder;
 import java.io.IOException;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.Lock;
 import lombok.EqualsAndHashCode;
-import org.cactoos.iterable.Joined;
 import org.cactoos.iterable.Mapped;
-import org.xembly.Directive;
 import org.xembly.Directives;
 
 /**
@@ -54,24 +43,9 @@ public final class RvFarm implements Farm {
     private final Farm origin;
 
     /**
-     * Brigade.
+     * Flush.
      */
-    private final Brigade brigade;
-
-    /**
-     * Locks per projects.
-     */
-    private final Map<Project, Lock> locks;
-
-    /**
-     * Executor of flushes.
-     */
-    private final ExecutorService service;
-
-    /**
-     * How many flushes are in the line now?
-     */
-    private final Map<Project, AtomicInteger> alive;
+    private final Flush flush;
 
     /**
      * Ctor.
@@ -79,6 +53,15 @@ public final class RvFarm implements Farm {
      */
     public RvFarm(final Farm farm) {
         this(farm, new Brigade());
+    }
+
+    /**
+     * Ctor.
+     * @param farm Original farm
+     * @param list List of stakeholders
+     */
+    public RvFarm(final Farm farm, final Iterable<Stakeholder> list) {
+        this(farm, new Brigade(list));
     }
 
     /**
@@ -97,96 +80,39 @@ public final class RvFarm implements Farm {
      * @param threads How many threads to use
      */
     public RvFarm(final Farm farm, final Brigade bgd, final int threads) {
+        this(farm, new AsyncFlush(new DefaultFlush(bgd), threads));
+    }
+
+    /**
+     * Ctor.
+     * @param farm Original farm
+     * @param flsh Flush
+     */
+    public RvFarm(final Farm farm, final Flush flsh) {
         this.origin = farm;
-        this.brigade = bgd;
-        this.service = Executors.newFixedThreadPool(
-            threads, new VerboseThreads(RvFarm.class)
-        );
-        this.alive = new ConcurrentHashMap<>(0);
-        this.locks = new ConcurrentHashMap<>(0);
+        this.flush = flsh;
     }
 
     @Override
     public Iterable<Project> find(final String query) throws IOException {
-        if (this.locks.size() > Tv.HUNDRED) {
-            throw new IllegalStateException(
-                String.format(
-                    "%s pool overflow, too many locks: %d",
-                    this.getClass().getCanonicalName(), this.locks.size()
-                )
-            );
-        }
         return new Guts(
             this.origin,
             () -> new Mapped<>(
-                pkt -> new RvProject(
-                    pkt,
-                    () -> {
-                        this.alive.computeIfAbsent(
-                            pkt, p -> new AtomicInteger()
-                        ).incrementAndGet();
-                        this.service.submit(
-                            () -> {
-                                final Lock lock = this.locks.computeIfAbsent(
-                                    pkt, p -> new SmartLock()
-                                );
-                                if (this.alive.get(pkt).get() < 2) {
-                                    lock.lock();
-                                    try {
-                                        new Flush(pkt, this.brigade).flush();
-                                    } finally {
-                                        lock.unlock();
-                                    }
-                                }
-                                this.alive.get(pkt).decrementAndGet();
-                                return null;
-                            }
-                        );
-                    }
-                ),
+                pkt -> new RvProject(pkt, this.flush),
                 this.origin.find(query)
             ),
             () -> new Directives()
                 .xpath("/guts")
                 .add("farm")
                 .attr("id", this.getClass().getSimpleName())
-                .add("alive")
-                .append(
-                    new Joined<Directive>(
-                        new Mapped<>(
-                            ent -> new Directives().add("count")
-                                .attr("pid", ent.getKey().pid())
-                                .set(ent.getValue().toString()).up(),
-                            this.alive.entrySet()
-                        )
-                    )
-                )
-                .up()
-                .add("locks")
-                .append(
-                    new Joined<Directive>(
-                        new Mapped<>(
-                            ent -> new Directives().add("lock")
-                                .attr("pid", ent.getKey().pid())
-                                .set(ent.getValue().toString()).up(),
-                            this.locks.entrySet()
-                        )
-                    )
-                )
-                .up()
+                .append(this.flush.value())
         ).apply(query);
     }
 
     @Override
     public void close() throws IOException {
-        this.service.shutdown();
         try {
-            if (!this.service.awaitTermination(1L, TimeUnit.MINUTES)) {
-                throw new IllegalStateException("Can't terminate service");
-            }
-        } catch (final InterruptedException ex) {
-            Thread.currentThread().interrupt();
-            throw new IllegalStateException(ex);
+            this.flush.close();
         } finally {
             this.origin.close();
         }

@@ -16,101 +16,18 @@
  */
 package com.zerocracy.farm.reactive;
 
-import com.jcabi.log.Logger;
-import com.jcabi.xml.XML;
 import com.zerocracy.jstk.Project;
-import com.zerocracy.pm.ClaimIn;
-import com.zerocracy.pm.Claims;
-import java.io.IOException;
-import java.util.Iterator;
-import org.cactoos.iterable.LengthOf;
-import org.cactoos.iterable.Mapped;
-import org.cactoos.text.JoinedText;
-import org.cactoos.text.SubText;
+import java.io.Closeable;
+import org.cactoos.Proc;
+import org.cactoos.Scalar;
+import org.xembly.Directive;
 
 /**
- * The action that happens in the {@link Flush}.
+ * The flush.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.10
+ * @since 0.19
  */
-final class Flush implements Trigger {
-
-    /**
-     * The project.
-     */
-    private final Project project;
-
-    /**
-     * List of stakeholders.
-     */
-    private final Brigade brigade;
-
-    /**
-     * Ctor.
-     * @param pkt Project
-     * @param bgd Brigade
-     */
-    Flush(final Project pkt, final Brigade bgd) {
-        this.project = pkt;
-        this.brigade = bgd;
-    }
-
-    @Override
-    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
-    public void flush() throws IOException {
-        final Claims claims = new Claims(this.project).bootstrap();
-        int total = 0;
-        final int left = new LengthOf(claims.iterate()).value();
-        for (int idx = 0; idx < left; ++idx) {
-            final Iterator<XML> found = claims.take();
-            if (!found.hasNext()) {
-                break;
-            }
-            this.process(found.next(), total);
-            ++total;
-        }
-    }
-
-    /**
-     * Process it.
-     * @param xml The claim
-     * @param idx Position in the queue
-     * @throws IOException If fails
-     */
-    @SuppressWarnings("PMD.PrematureDeclaration")
-    private void process(final XML xml, final int idx) throws IOException {
-        final long start = System.currentTimeMillis();
-        final ClaimIn claim = new ClaimIn(xml);
-        final int total = this.brigade.process(this.project, xml);
-        final int left = new Claims(this.project).iterate().size();
-        if (total == 0 && claim.hasToken()) {
-            throw new IllegalStateException(
-                String.format(
-                    "Failed to process \"%s\"/\"%s\", no stakeholders",
-                    claim.type(), claim.token()
-                )
-            );
-        }
-        Logger.info(
-            this, "Seen #%d:\"%s/%d/%d\" at \"%s\" by %d stk, %[ms]s [%s]",
-            idx, claim.type(), claim.cid(), left,
-            this.project.pid(),
-            total,
-            System.currentTimeMillis() - start,
-            new JoinedText(
-                "; ",
-                new Mapped<>(
-                    ent -> String.format(
-                        "%s=%s", ent.getKey(),
-                        // @checkstyle MagicNumber (1 line)
-                        new SubText(ent.getValue(), 0, 20).asString()
-                    ),
-                    claim.params().entrySet()
-                )
-            ).asString()
-        );
-    }
-
+interface Flush extends Proc<Project>, Closeable, Scalar<Iterable<Directive>> {
 }

@@ -53,7 +53,7 @@ public final class StkGroovy implements Stakeholder {
     private static final IoCheckedBiFunc<String, String, Class<?>> SCRIPTS =
         new IoCheckedBiFunc<>(
             new SyncBiFunc<>(
-                new StickyBiFunc<>(
+                new StickyBiFunc<String, String, Class<?>>(
                     (body, name) -> {
                         try (final GroovyClassLoader loader =
                             new GroovyClassLoader()) {

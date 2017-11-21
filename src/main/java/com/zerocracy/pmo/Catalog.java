@@ -27,7 +27,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Iterator;
 import org.cactoos.iterable.Mapped;
-import org.cactoos.list.StickyList;
+import org.cactoos.list.SolidList;
 import org.xembly.Directives;
 
 /**
@@ -145,7 +145,7 @@ public final class Catalog {
     /**
      * Publish or unpublish this project.
      * @param pid Project ID
-     * @param status Publication status to set
+     * @param status Publication success to set
      * @throws IOException If fails
      */
     public void publish(final String pid, final boolean status)
@@ -158,7 +158,7 @@ public final class Catalog {
             );
         }
         Logger.info(
-            this, "Project \"%s\" publishing status changed to \"%s\"",
+            this, "Project \"%s\" publishing success changed to \"%s\"",
             pid, status
         );
     }
@@ -246,7 +246,7 @@ public final class Catalog {
      */
     public Collection<String> links(final String pid) throws IOException {
         try (final Item item = this.item()) {
-            return new StickyList<>(
+            return new SolidList<>(
                 new Mapped<>(
                     xml -> String.format(
                         "%s:%s",

@@ -18,7 +18,6 @@ package com.zerocracy.farm;
 
 import com.zerocracy.farm.footprint.FtFarm;
 import com.zerocracy.farm.props.PropsFarm;
-import com.zerocracy.farm.reactive.Brigade;
 import com.zerocracy.farm.reactive.RvFarm;
 import com.zerocracy.farm.reactive.StkGroovy;
 import com.zerocracy.farm.ruled.RdFarm;
@@ -32,8 +31,7 @@ import java.util.regex.Pattern;
 import org.cactoos.Scalar;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.iterable.Mapped;
-import org.cactoos.scalar.StickyScalar;
-import org.cactoos.scalar.SyncScalar;
+import org.cactoos.scalar.SolidScalar;
 import org.cactoos.scalar.UncheckedScalar;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
@@ -59,22 +57,20 @@ public final class SmartFarm implements Scalar<Farm> {
      * @param farm Original
      */
     public SmartFarm(final Farm farm) {
-        this.self = new SyncScalar<>(
-            new StickyScalar<>(
-                () -> new RvFarm(
-                    new RdFarm(
-                        new UplinkedFarm(
-                            new FtFarm(
-                                new PropsFarm(
-                                    new StrictFarm(
-                                        new SyncFarm(farm)
-                                    )
+        this.self = new SolidScalar<>(
+            () -> new RvFarm(
+                new RdFarm(
+                    new UplinkedFarm(
+                        new FtFarm(
+                            new PropsFarm(
+                                new StrictFarm(
+                                    new SyncFarm(farm)
                                 )
                             )
                         )
-                    ),
-                    new Brigade(this.stakeholders())
-                )
+                    )
+                ),
+                this.stakeholders()
             )
         );
     }

@@ -25,8 +25,7 @@ import java.util.Locale;
 import java.util.logging.Level;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.IoCheckedScalar;
-import org.cactoos.scalar.StickyScalar;
-import org.cactoos.scalar.SyncScalar;
+import org.cactoos.scalar.SolidScalar;
 import org.takes.Request;
 import org.takes.facets.auth.Identity;
 import org.takes.facets.auth.RqAuth;
@@ -63,40 +62,38 @@ public final class RqUser implements Scalar<String> {
      * @param req Request
      */
     public RqUser(final Project pmo, final Request req) {
-        this.user = new SyncScalar<>(
-            new StickyScalar<>(
-                () -> {
-                    final Identity identity = new RqAuth(req).identity();
-                    if (identity.equals(Identity.ANONYMOUS)) {
-                        throw new RsForward(
-                            new RsFlash(
-                                "You must be logged in.",
-                                Level.WARNING
-                            )
-                        );
-                    }
-                    final String login = identity.properties()
-                        .get("login").toLowerCase(Locale.ENGLISH);
-                    final People people = new People(pmo).bootstrap();
-                    if (!people.hasMentor(login)) {
-                        throw new RsForward(
-                            new RsFlash(
-                                String.join(
-                                    " ",
-                                    // @checkstyle LineLength (5 lines)
-                                    String.format("You \"@%s\" must be invited", login),
-                                    "to us by someone we already know.",
-                                    "If you don't know anyone who works with us already,",
-                                    "email us to join@zerocracy.com and we'll see what",
-                                    "we can do."
-                                ),
-                                Level.WARNING
-                            )
-                        );
-                    }
-                    return login;
+        this.user = new SolidScalar<>(
+            () -> {
+                final Identity identity = new RqAuth(req).identity();
+                if (identity.equals(Identity.ANONYMOUS)) {
+                    throw new RsForward(
+                        new RsFlash(
+                            "You must be logged in.",
+                            Level.WARNING
+                        )
+                    );
                 }
-            )
+                final String login = identity.properties()
+                    .get("login").toLowerCase(Locale.ENGLISH);
+                final People people = new People(pmo).bootstrap();
+                if (!people.hasMentor(login)) {
+                    throw new RsForward(
+                        new RsFlash(
+                            String.join(
+                                " ",
+                                // @checkstyle LineLength (5 lines)
+                                String.format("You \"@%s\" must be invited", login),
+                                "to us by someone we already know.",
+                                "If you don't know anyone who works with us already,",
+                                "email us to join@zerocracy.com and we'll see what",
+                                "we can do."
+                            ),
+                            Level.WARNING
+                        )
+                    );
+                }
+                return login;
+            }
         );
     }
 

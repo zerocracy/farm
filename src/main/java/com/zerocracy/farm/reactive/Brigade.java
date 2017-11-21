@@ -21,9 +21,12 @@ import com.zerocracy.farm.MismatchException;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import java.io.IOException;
-import java.util.Arrays;
+import org.cactoos.BiFunc;
 import org.cactoos.iterable.Filtered;
+import org.cactoos.iterable.IterableOf;
 import org.cactoos.iterable.LengthOf;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.list.SolidList;
 
 /**
  * Brigade of stakeholders.
@@ -31,57 +34,37 @@ import org.cactoos.iterable.LengthOf;
  * @version $Id$
  * @since 0.10
  */
-public final class Brigade {
+final class Brigade implements BiFunc<Project, XML, Integer> {
 
     /**
-     * Pool of stakeholders.
+     * Stakeholders.
      */
-    private final StkPool pool;
-
-    /**
-     * Ctor.
-     * @param lst List of stakeholders
-     */
-    public Brigade(final Stakeholder... lst) {
-        this(Arrays.asList(lst));
-    }
+    private final Iterable<Stakeholder> pool;
 
     /**
      * Ctor.
-     * @param lst List of stakeholders
+     * @param list List of stakeholders
      */
-    public Brigade(final Iterable<Stakeholder> lst) {
-        this(new StkPool(lst));
+    Brigade(final Stakeholder... list) {
+        this(new IterableOf<>(list));
     }
 
     /**
-     * Primary ctor.
-     * @param pool Pool of stakeholders
+     * Ctor.
+     * @param list List of stakeholders
      */
-    public Brigade(final StkPool pool) {
-        this.pool = pool;
+    Brigade(final Iterable<Stakeholder> list) {
+        this.pool = new SolidList<>(new Mapped<>(StkSmart::new, list));
     }
 
-    /**
-     * Process this claim.
-     * @param project Project
-     * @param xml XML to process
-     * @return How many stakeholders were interested
-     * @throws IOException If fails
-     */
-    public int process(final Project project, final XML xml)
-        throws IOException {
-        try (
-            final StkPooled stakeholders =
-                this.pool.stakeholders(project, xml)
-        ) {
-            return new LengthOf(
-                new Filtered<>(
-                    stk -> Brigade.process(stk, project, xml),
-                    stakeholders
-                )
-            ).value();
-        }
+    @Override
+    public Integer apply(final Project project, final XML xml) {
+        return new LengthOf(
+            new Filtered<>(
+                stk -> Brigade.process(stk, project, xml),
+                this.pool
+            )
+        ).value();
     }
 
     /**

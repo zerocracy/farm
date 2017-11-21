@@ -36,7 +36,7 @@ import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
- * Test case for {@link Flush}.
+ * Test case for {@link DefaultFlush}.
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.11
@@ -44,7 +44,7 @@ import org.junit.Test;
  * @checkstyle ExecutableStatementCountCheck (200 lines)
  * @checkstyle JavadocMethodCheck (500 lines)
  */
-public final class FlushTest {
+public final class AsyncFlushTest {
 
     @Test
     public void processesAllClaims() throws Exception {
@@ -80,18 +80,18 @@ public final class FlushTest {
                 )
             );
             thread.start();
-            final Trigger flush = new Flush(project, brigade);
-            latch.countDown();
-            while (thread.isAlive()) {
-                flush.flush();
+            final Flush def = new DefaultFlush(brigade);
+            try (final Flush flush = new AsyncFlush(def)) {
+                latch.countDown();
+                while (thread.isAlive()) {
+                    flush.exec(project);
+                }
+                thread.join();
+                final Claims claims = new Claims(project).bootstrap();
+                while (claims.iterate().iterator().hasNext()) {
+                    flush.exec(project);
+                }
             }
-            thread.join();
-            flush.flush();
-            flush.flush();
-            final Claims claims = new Claims(project).bootstrap();
-            MatcherAssert.assertThat(
-                claims.iterate(), Matchers.emptyIterable()
-            );
             MatcherAssert.assertThat(
                 done.get(), Matchers.equalTo((max << 1) + 1)
             );

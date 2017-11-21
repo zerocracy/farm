@@ -29,8 +29,7 @@ import lombok.EqualsAndHashCode;
 import org.cactoos.io.LengthOf;
 import org.cactoos.io.TeeInput;
 import org.cactoos.scalar.IoCheckedScalar;
-import org.cactoos.scalar.StickyScalar;
-import org.cactoos.scalar.SyncScalar;
+import org.cactoos.scalar.SolidScalar;
 
 /**
  * Ruled item.
@@ -84,31 +83,25 @@ final class RdItem implements Item {
         this.project = pkt;
         this.name = label;
         this.temp = new IoCheckedScalar<>(
-            new SyncScalar<>(
-                new StickyScalar<>(
-                    () -> {
-                        final Path tmp = Files.createTempFile("rdfarm", ".xml");
-                        final Path src = this.origin.path();
-                        if (Files.exists(src)) {
-                            new LengthOf(new TeeInput(src, tmp)).value();
-                        }
-                        return tmp;
+            new SolidScalar<>(
+                () -> {
+                    final Path tmp = Files.createTempFile("rdfarm", ".xml");
+                    final Path src = this.origin.path();
+                    if (Files.exists(src)) {
+                        new LengthOf(new TeeInput(src, tmp)).value();
                     }
-                )
+                    return tmp;
+                }
             )
         );
         this.time = new IoCheckedScalar<>(
-            new SyncScalar<>(
-                new StickyScalar<>(
-                    () -> Files.getLastModifiedTime(this.temp.value())
-                )
+            new SolidScalar<>(
+                () -> Files.getLastModifiedTime(this.temp.value())
             )
         );
         this.length = new IoCheckedScalar<>(
-            new SyncScalar<>(
-                new StickyScalar<>(
-                    () -> this.temp.value().toFile().length()
-                )
+            new SolidScalar<>(
+                () -> this.temp.value().toFile().length()
             )
         );
     }

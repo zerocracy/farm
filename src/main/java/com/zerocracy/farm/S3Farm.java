@@ -29,7 +29,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.EqualsAndHashCode;
 import org.cactoos.iterable.Mapped;
-import org.cactoos.list.ListOf;
+import org.cactoos.list.SolidList;
 
 /**
  * Farm in S3.
@@ -75,7 +75,7 @@ public final class S3Farm implements Farm {
     public Iterable<Project> find(final String xpath) throws IOException {
         Iterable<Project> found;
         if ("@id='PMO'".equals(xpath)) {
-            found = new ListOf<>(
+            found = new SolidList<>(
                 new S3Project(this.bucket, "PMO/", this.temp)
             );
         } else {

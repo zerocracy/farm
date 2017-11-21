@@ -33,7 +33,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import org.apache.commons.text.StringEscapeUtils;
 import org.cactoos.io.BytesOf;
-import org.cactoos.list.ListOf;
+import org.cactoos.list.SolidList;
 import org.cactoos.text.TextOf;
 import org.takes.Take;
 import org.takes.facets.fallback.Fallback;
@@ -106,10 +106,10 @@ public final class TkApp extends TkWrap {
                                     new TkAppAuth(
                                         new TkForward(
                                             new TkFork(
-                                                new ListOf<Fork>(
+                                                new SolidList<Fork>(
                                                     new Concat<>(
-                                                        new ListOf<>(forks),
-                                                        new ListOf<>(
+                                                        new SolidList<>(forks),
+                                                        new SolidList<>(
                                                             new FkRegex("/", new TkIndex(farm)),
                                                             new FkRegex("/guts", new TkGuts(farm)),
                                                             new FkRegex(

@@ -25,10 +25,12 @@ import com.zerocracy.jstk.farm.spy.SpyProject;
 import com.zerocracy.pmo.Pmo;
 import java.security.SecureRandom;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.collection.Filtered;
+import org.cactoos.list.SolidList;
 import org.cactoos.list.StickyList;
 import org.cactoos.map.MapEntry;
 import org.cactoos.map.StickyMap;
@@ -52,7 +54,7 @@ public final class ElectionsTest {
         final String job = "gh:test/test#1";
         elections.elect(
             job,
-            new StickyList<>("yegor256", "jeff"),
+            new SolidList<>("yegor256", "jeff"),
             new StickyMap<Voter, Integer>(
                 new MapEntry<>(
                     (login, log) -> {
@@ -82,7 +84,7 @@ public final class ElectionsTest {
         final String job = "gh:test/test#2";
         elections.elect(
             job,
-            new StickyList<>("loser", "loser2", "win", "yegor"),
+            new SolidList<>("loser", "loser2", "win", "yegor"),
             new StickyMap<Voter, Integer>(
                 new MapEntry<>(
                     (login, log) -> 1.0d / (double) login.length(),
@@ -103,7 +105,7 @@ public final class ElectionsTest {
         final String job = "gh:test/test#3";
         elections.elect(
             job,
-            new StickyList<>("myfriend"),
+            new SolidList<>("myfriend"),
             new StickyMap<Voter, Integer>(
                 new MapEntry<>(
                     (login, log) -> 1.0d / (double) login.length(),
@@ -121,7 +123,7 @@ public final class ElectionsTest {
         final String job = "gh:test/test#55";
         elections.elect(
             job,
-            new StickyList<>("somebody"),
+            new SolidList<>("somebody"),
             new StickyMap<Voter, Integer>(
                 new MapEntry<>(
                     (login, log) -> 1.0d,
@@ -138,7 +140,7 @@ public final class ElectionsTest {
         final String job = "gh:test/test#102";
         elections.elect(
             job,
-            new StickyList<>("david"),
+            new SolidList<>("david"),
             new StickyMap<Voter, Integer>(
                 new MapEntry<>((login, log) -> 1.0d, -1)
             )
@@ -174,7 +176,7 @@ public final class ElectionsTest {
         }
         MatcherAssert.assertThat(
             new Filtered<>(
-                ops, op -> op.startsWith("update:")
+                op -> op.startsWith("update:"), ops
             ).size(),
             Matchers.equalTo(2)
         );
@@ -187,12 +189,16 @@ public final class ElectionsTest {
                 new Pmo(farm)
             ).bootstrap();
             final String job = "gh:test/test#550";
-            final Iterable<String> users = new StickyList<>("alex", "alex2");
+            final Iterable<String> users = Collections.synchronizedList(
+                new SolidList<>("alex", "alex2")
+            );
             // @checkstyle DiamondOperatorCheck (1 line)
-            final Map<Voter, Integer> voters = new StickyMap<Voter, Integer>(
-                new MapEntry<>(
-                    (login, log) -> 1.0d / (double) login.length(),
-                    1
+            final Map<Voter, Integer> voters = Collections.synchronizedMap(
+                new StickyMap<Voter, Integer>(
+                    new MapEntry<>(
+                        (login, log) -> 1.0d / (double) login.length(),
+                        1
+                    )
                 )
             );
             final AtomicInteger elected = new AtomicInteger();

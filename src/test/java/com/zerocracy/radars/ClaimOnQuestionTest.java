@@ -20,7 +20,7 @@ import com.jcabi.xml.XMLDocument;
 import com.zerocracy.jstk.farm.fake.FkProject;
 import com.zerocracy.pm.Claims;
 import java.util.Collection;
-import org.cactoos.list.StickyList;
+import org.cactoos.list.SolidList;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -44,7 +44,7 @@ public final class ClaimOnQuestionTest {
 
     @Parameterized.Parameters(name = "{0}")
     public static Collection<Object> bundles() {
-        return new StickyList<>(
+        return new SolidList<>(
             "role assign ARC yegor256",
             "just some text",
             "modifies_vacation_mode on"

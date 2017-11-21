@@ -78,8 +78,8 @@ public final class Assume {
             .type().toLowerCase(Locale.ENGLISH);
         final Set<String> expected = new HashSet<>(
             new Mapped<>(
-                new IterableOf<>(types),
-                type -> type.toLowerCase(Locale.ENGLISH)
+                type -> type.toLowerCase(Locale.ENGLISH),
+                new IterableOf<>(types)
             )
         );
         if (!expected.contains(input)) {

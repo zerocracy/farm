@@ -20,8 +20,7 @@ import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
 import java.net.URI;
 import org.cactoos.Input;
-import org.cactoos.func.StickyFunc;
-import org.cactoos.func.SyncFunc;
+import org.cactoos.func.SolidFunc;
 import org.cactoos.func.UncheckedFunc;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.InputWithFallback;
@@ -43,11 +42,9 @@ final class RdIndex {
      * Cache of documents.
      */
     private static final UncheckedFunc<URI, Input> CACHE = new UncheckedFunc<>(
-        new SyncFunc<URI, Input>(
-            new StickyFunc<>(
-                path -> new SyncInput(
-                    new StickyInput(new InputOf(path))
-                )
+        new SolidFunc<>(
+            path -> new SyncInput(
+                new StickyInput(new InputOf(path))
             )
         )
     );

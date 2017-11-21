@@ -27,7 +27,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.chrono.ChronoZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import org.cactoos.list.ListOf;
+import org.cactoos.list.SolidList;
 import org.cactoos.text.JoinedText;
 import org.xembly.Directives;
 
@@ -204,7 +204,7 @@ public final class Orders {
     public Iterable<String> olderThan(final ChronoZonedDateTime<LocalDate> time)
         throws IOException {
         try (final Item item = this.item()) {
-            return new ListOf<>(
+            return new SolidList<>(
                 new Xocument(item.path()).xpath(
                     new JoinedText(
                         "",

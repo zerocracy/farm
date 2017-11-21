@@ -35,8 +35,9 @@ public final class TestListener extends RunListener {
     public void testRunFinished(final Result result) throws Exception {
         super.testRunFinished(result);
         final Collection<Thread> alive = new Filtered<>(
-            Thread.getAllStackTraces().keySet(),
             thread -> thread.getName().startsWith("Terminator-")
+                || thread.getName().startsWith("AsyncFlush-"),
+            Thread.getAllStackTraces().keySet()
         );
         if (!alive.isEmpty()) {
             for (final Thread thread : alive) {

@@ -22,8 +22,8 @@ import org.bson.BsonElement;
 import org.bson.BsonString;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.conversions.Bson;
-import org.cactoos.list.ListOf;
 import org.cactoos.list.Mapped;
+import org.cactoos.list.SolidList;
 
 /**
  * ReplaceRoot for Mongo.
@@ -45,7 +45,7 @@ public final class ReplaceRoot implements Bson {
      * @param list List of fields
      */
     public ReplaceRoot(final String... list) {
-        this(new ListOf<>(list));
+        this(new SolidList<>(list));
     }
 
     /**
@@ -61,12 +61,12 @@ public final class ReplaceRoot implements Bson {
         final CodecRegistry reg) {
         return Aggregates.replaceRoot(
             new BsonDocument(
-                new Mapped<>(
-                    new ListOf<>(this.fields),
+                new Mapped<String, BsonElement>(
                     field -> new BsonElement(
                         field,
                         new BsonString(String.format("$%s", field))
-                    )
+                    ),
+                    new SolidList<>(this.fields)
                 )
             )
         ).toBsonDocument(type, reg);

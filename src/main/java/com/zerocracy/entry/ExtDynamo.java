@@ -22,8 +22,7 @@ import com.jcabi.dynamo.retry.ReRegion;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.jstk.Farm;
 import org.cactoos.Scalar;
-import org.cactoos.func.StickyFunc;
-import org.cactoos.func.SyncFunc;
+import org.cactoos.func.SolidFunc;
 import org.cactoos.func.UncheckedFunc;
 
 /**
@@ -40,20 +39,18 @@ public final class ExtDynamo implements Scalar<Region> {
      */
     private static final UncheckedFunc<Farm, Region> SINGLETON =
         new UncheckedFunc<>(
-            new SyncFunc<>(
-                new StickyFunc<>(
-                    frm -> {
-                        final Props props = new Props(frm);
-                        return new ReRegion(
-                            new Region.Simple(
-                                new Credentials.Simple(
-                                    props.get("//dynamo/key"),
-                                    props.get("//dynamo/secret")
-                                )
+            new SolidFunc<>(
+                frm -> {
+                    final Props props = new Props(frm);
+                    return new ReRegion(
+                        new Region.Simple(
+                            new Credentials.Simple(
+                                props.get("//dynamo/key"),
+                                props.get("//dynamo/secret")
                             )
-                        );
-                    }
-                )
+                        )
+                    );
+                }
             )
         );
 

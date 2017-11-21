@@ -26,8 +26,7 @@ import java.net.URI;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import javax.xml.transform.stream.StreamSource;
-import org.cactoos.func.StickyFunc;
-import org.cactoos.func.SyncFunc;
+import org.cactoos.func.SolidFunc;
 import org.cactoos.func.UncheckedFunc;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.InputStreamOf;
@@ -53,10 +52,8 @@ public final class XeXsl implements XeSource {
      */
     private static final UncheckedFunc<URI, String> STYLESHEETS =
         new UncheckedFunc<>(
-            new SyncFunc<URI, String>(
-                new StickyFunc<>(
-                    uri -> new TextOf(new InputOf(uri)).asString()
-                )
+            new SolidFunc<>(
+                uri -> new TextOf(new InputOf(uri)).asString()
             )
         );
 

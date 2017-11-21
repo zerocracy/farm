@@ -21,8 +21,7 @@ import com.zerocracy.radars.telegram.TmSession;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.cactoos.Scalar;
-import org.cactoos.func.StickyFunc;
-import org.cactoos.func.SyncFunc;
+import org.cactoos.func.SolidFunc;
 import org.cactoos.func.UncheckedFunc;
 
 /**
@@ -39,10 +38,8 @@ public final class ExtTelegram implements Scalar<Map<Long, TmSession>> {
      */
     private static final UncheckedFunc<Farm, Map<Long, TmSession>> SINGLETON =
         new UncheckedFunc<>(
-            new SyncFunc<>(
-                new StickyFunc<Farm, Map<Long, TmSession>>(
-                    frm -> new ConcurrentHashMap<>(0)
-                )
+            new SolidFunc<Farm, Map<Long, TmSession>>(
+                frm -> new ConcurrentHashMap<>(0)
             )
         );
 

@@ -121,14 +121,14 @@ public final class RbTweet implements Rebound {
                 ).getId();
                 this.mark(repo, tweet);
                 answer = String.format(
-                    "See https://twitter.com/0crat/status/%d", tweet
+                    "See https://twitter.com/0crat/success/%d", tweet
                 );
             } catch (final TwitterException ex) {
                 throw new IOException(ex);
             }
         } else {
             answer = String.format(
-                "Tweeted earlier: https://twitter.com/0crat/status/%d",
+                "Tweeted earlier: https://twitter.com/0crat/success/%d",
                 tweet
             );
         }

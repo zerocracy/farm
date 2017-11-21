@@ -18,8 +18,7 @@ package com.zerocracy;
 
 import java.net.URL;
 import org.cactoos.Func;
-import org.cactoos.func.StickyFunc;
-import org.cactoos.func.SyncFunc;
+import org.cactoos.func.SolidFunc;
 import org.cactoos.func.UncheckedFunc;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.LSInputOf;
@@ -38,21 +37,19 @@ public final class XsdResolver implements LSResourceResolver {
     /**
      * The locator.
      */
-    private final Func<String, LSInput> locator = new SyncFunc<>(
-        new StickyFunc<>(
-            loc -> {
-                final String[] parts = loc.split(" ");
-                return new LSInputOf(
-                    // @checkstyle MagicNumber (6 lines)
-                    new StickyInput(
-                        new InputOf(
-                            new URL(parts[3])
-                        )
-                    ),
-                    parts[2], parts[3], parts[4]
-                );
-            }
-        )
+    private final Func<String, LSInput> locator = new SolidFunc<>(
+        loc -> {
+            final String[] parts = loc.split(" ");
+            return new LSInputOf(
+                // @checkstyle MagicNumber (6 lines)
+                new StickyInput(
+                    new InputOf(
+                        new URL(parts[3])
+                    )
+                ),
+                parts[2], parts[3], parts[4]
+            );
+        }
     );
 
     @Override

@@ -27,8 +27,7 @@ import java.util.Iterator;
 import java.util.Locale;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.IoCheckedScalar;
-import org.cactoos.scalar.StickyScalar;
-import org.cactoos.scalar.SyncScalar;
+import org.cactoos.scalar.SolidScalar;
 
 /**
  * Surrogate project.
@@ -59,31 +58,29 @@ public final class GhProject implements Project {
      * @param repo Repo
      */
     public GhProject(final Farm farm, final Repo repo) {
-        this.pkt = new SyncScalar<>(
-            new StickyScalar<>(
-                () -> {
-                    final String name = repo.coordinates()
-                        .toString().toLowerCase(Locale.ENGLISH);
-                    final Iterator<Project> list = farm.find(
-                        String.format(
-                            "links/link[@rel='github' and @href='%s']",
-                            name
+        this.pkt = new SolidScalar<>(
+            () -> {
+                final String name = repo.coordinates()
+                    .toString().toLowerCase(Locale.ENGLISH);
+                final Iterator<Project> list = farm.find(
+                    String.format(
+                        "links/link[@rel='github' and @href='%s']",
+                        name
+                    )
+                ).iterator();
+                if (!list.hasNext()) {
+                    throw new SoftException(
+                        String.join(
+                            " ",
+                            // @checkstyle LineLength (3 lines)
+                            "I'm not managing `", name, "` GitHub repository.",
+                            "You have to contact me in Slack first.",
+                            "Our [policy](http://datum.zerocracy.com/pages/policy.html) explains how."
                         )
-                    ).iterator();
-                    if (!list.hasNext()) {
-                        throw new SoftException(
-                            String.join(
-                                " ",
-                                // @checkstyle LineLength (3 lines)
-                                "I'm not managing `", name, "` GitHub repository.",
-                                "You have to contact me in Slack first.",
-                                "Our [policy](http://datum.zerocracy.com/pages/policy.html) explains how."
-                            )
-                        );
-                    }
-                    return list.next();
+                    );
                 }
-            )
+                return list.next();
+            }
         );
     }
 

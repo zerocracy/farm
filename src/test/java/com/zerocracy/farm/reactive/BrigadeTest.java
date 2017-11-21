@@ -17,17 +17,26 @@
 package com.zerocracy.farm.reactive;
 
 import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
+import com.zerocracy.farm.MismatchException;
 import com.zerocracy.jstk.Project;
+import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.jstk.farm.fake.FkFarm;
 import com.zerocracy.jstk.farm.fake.FkProject;
+import com.zerocracy.jstk.farm.fake.FkStakeholder;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.concurrent.atomic.AtomicInteger;
+import org.cactoos.BiFunc;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.LengthOf;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.io.TeeInput;
+import org.cactoos.iterable.IterableOf;
+import org.cactoos.iterable.Joined;
+import org.cactoos.iterable.Repeated;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -71,7 +80,7 @@ public final class BrigadeTest {
                 new FkFarm()
             )
         );
-        brigade.process(project, xml);
+        brigade.apply(project, xml);
         MatcherAssert.assertThat(
             claims.iterate(),
             Matchers.hasSize(2)
@@ -91,11 +100,34 @@ public final class BrigadeTest {
                 new FkFarm()
             )
         );
-        brigade.process(project, xml);
+        brigade.apply(project, xml);
         MatcherAssert.assertThat(
             claims.iterate(),
             Matchers.hasSize(2)
         );
+    }
+
+    @Test
+    public void keepsOnlySuccessfulStakeholders() throws Exception {
+        final AtomicInteger hits = new AtomicInteger();
+        // @checkstyle DiamondOperatorCheck (1 line)
+        final Iterable<Stakeholder> pool = new Joined<Stakeholder>(
+            new IterableOf<>(
+                (pkt, xml) -> {
+                    hits.incrementAndGet();
+                    throw new MismatchException("oops");
+                }
+            ),
+            new Repeated<>(10, new FkStakeholder())
+        );
+        final XML claim = new XMLDocument(
+            "<claim><type>test</type></claim>"
+        ).nodes("/claim").get(0);
+        final Project project = new FkProject();
+        final BiFunc<Project, XML, Integer> brigade = new Brigade(pool);
+        brigade.apply(project, claim);
+        brigade.apply(project, claim);
+        MatcherAssert.assertThat(hits.get(), Matchers.equalTo(1));
     }
 
 }

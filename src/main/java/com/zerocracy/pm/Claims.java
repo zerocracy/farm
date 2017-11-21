@@ -99,9 +99,7 @@ public final class Claims {
      */
     public Iterator<XML> take() throws IOException {
         try (final Item item = this.item()) {
-            final Iterable<XML> found = new Limited<>(
-                this.iterate(), 1
-            );
+            final Iterable<XML> found = new Limited<>(1, this.iterate());
             if (found.iterator().hasNext()) {
                 new Xocument(item).modify(
                     new Directives().xpath(

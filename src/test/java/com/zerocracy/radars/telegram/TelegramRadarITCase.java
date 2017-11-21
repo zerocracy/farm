@@ -88,14 +88,14 @@ public final class TelegramRadarITCase {
             );
             MatcherAssert.assertThat(
                 new And(
-                    new Limited<>(
-                        Tv.FIFTY,
-                        new Endless<>(1)
-                    ),
                     x -> {
                         TimeUnit.SECONDS.sleep(1L);
                         return sessions.isEmpty();
-                    }
+                    },
+                    new Limited<>(
+                        Tv.FIFTY,
+                        new Endless<>(1)
+                    )
                 ),
                 new ScalarHasValue<>(false)
             );

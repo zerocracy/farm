@@ -26,7 +26,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
 import org.bson.Document;
-import org.cactoos.list.StickyList;
+import org.cactoos.list.SolidList;
 import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
@@ -69,7 +69,7 @@ public final class TkFootprint implements TkRegex {
                 final Collection<Document> docs;
                 try (final Footprint footprint =
                     new Footprint(this.farm, project)) {
-                    docs = new StickyList<>(
+                    docs = new SolidList<>(
                         footprint.collection()
                             .find(Filters.eq("project", project.pid()))
                             .sort(Sorts.descending("created"))

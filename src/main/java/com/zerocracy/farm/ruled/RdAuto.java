@@ -29,8 +29,7 @@ import java.nio.file.Path;
 import org.apache.commons.lang3.StringUtils;
 import org.cactoos.Func;
 import org.cactoos.Input;
-import org.cactoos.func.StickyFunc;
-import org.cactoos.func.SyncFunc;
+import org.cactoos.func.SolidFunc;
 import org.cactoos.func.UncheckedFunc;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.LengthOf;
@@ -55,11 +54,9 @@ final class RdAuto {
      * Cache of documents.
      */
     private static final UncheckedFunc<URI, Input> CACHE = new UncheckedFunc<>(
-        new SyncFunc<>(
-            new StickyFunc<>(
-                (Func<URI, Input>) uri -> new SyncInput(
-                    new StickyInput(new InputOf(uri))
-                )
+        new SolidFunc<>(
+            (Func<URI, Input>) uri -> new SyncInput(
+                new StickyInput(new InputOf(uri))
             )
         )
     );
@@ -98,6 +95,7 @@ final class RdAuto {
     public void propagate() throws IOException {
         new UncheckedScalar<>(
             new And(
+                this::auto,
                 new RdIndex(
                     URI.create(
                         String.format(
@@ -105,8 +103,7 @@ final class RdAuto {
                             new RdArea(this.path).value()
                         )
                     )
-                ).iterate(),
-                this::auto
+                ).iterate()
             )
         ).value();
     }

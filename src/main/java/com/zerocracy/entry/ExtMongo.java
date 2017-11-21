@@ -28,9 +28,8 @@ import java.nio.file.Path;
 import org.cactoos.Scalar;
 import org.cactoos.func.SyncFunc;
 import org.cactoos.func.UncheckedFunc;
-import org.cactoos.list.ListOf;
-import org.cactoos.scalar.StickyScalar;
-import org.cactoos.scalar.SyncScalar;
+import org.cactoos.list.SolidList;
+import org.cactoos.scalar.SolidScalar;
 import org.cactoos.scalar.UncheckedScalar;
 
 /**
@@ -63,7 +62,7 @@ public final class ExtMongo implements Scalar<MongoClient> {
                                 props.get("//mongo/host"),
                                 Integer.parseInt(props.get("//mongo/port"))
                             ),
-                            new ListOf<>(
+                            new SolidList<>(
                                 MongoCredential.createCredential(
                                     props.get("//mongo/user"),
                                     "admin",
@@ -82,40 +81,38 @@ public final class ExtMongo implements Scalar<MongoClient> {
      * @checkstyle ConstantUsageCheck (5 lines)
      */
     private static final UncheckedScalar<Integer> FAKE = new UncheckedScalar<>(
-        new SyncScalar<>(
-            new StickyScalar<>(
-                () -> {
-                    final ServerSocket socket = new ServerSocket();
-                    final int port;
-                    try {
-                        socket.setReuseAddress(true);
-                        socket.bind(new InetSocketAddress("localhost", 0));
-                        port = socket.getLocalPort();
-                    } finally {
-                        socket.close();
-                    }
-                    final Path dir = Files.createTempDirectory("mongo-log");
-                    final Process mongod = new ProcessBuilder()
-                        .command(
-                            "mongod",
-                            "--quiet",
-                            "--logpath",
-                            dir.resolve("log.txt").toAbsolutePath().toString(),
-                            "--dbpath",
-                            Files.createTempDirectory("ft").toString(),
-                            "--port",
-                            Integer.toString(port)
-                        )
-                        .redirectInput(ProcessBuilder.Redirect.INHERIT)
-                        .redirectOutput(ProcessBuilder.Redirect.INHERIT)
-                        .redirectError(ProcessBuilder.Redirect.INHERIT)
-                        .start();
-                    Runtime.getRuntime().addShutdownHook(
-                        new Thread(mongod::destroy)
-                    );
-                    return port;
+        new SolidScalar<>(
+            () -> {
+                final ServerSocket socket = new ServerSocket();
+                final int port;
+                try {
+                    socket.setReuseAddress(true);
+                    socket.bind(new InetSocketAddress("localhost", 0));
+                    port = socket.getLocalPort();
+                } finally {
+                    socket.close();
                 }
-            )
+                final Path dir = Files.createTempDirectory("mongo-log");
+                final Process mongod = new ProcessBuilder()
+                    .command(
+                        "mongod",
+                        "--quiet",
+                        "--logpath",
+                        dir.resolve("log.txt").toAbsolutePath().toString(),
+                        "--dbpath",
+                        Files.createTempDirectory("ft").toString(),
+                        "--port",
+                        Integer.toString(port)
+                    )
+                    .redirectInput(ProcessBuilder.Redirect.INHERIT)
+                    .redirectOutput(ProcessBuilder.Redirect.INHERIT)
+                    .redirectError(ProcessBuilder.Redirect.INHERIT)
+                    .start();
+                Runtime.getRuntime().addShutdownHook(
+                    new Thread(mongod::destroy)
+                );
+                return port;
+            }
         )
     );
 

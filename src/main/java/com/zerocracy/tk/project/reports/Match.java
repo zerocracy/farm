@@ -25,7 +25,7 @@ import org.bson.BsonDocument;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.conversions.Bson;
 import org.cactoos.iterable.Joined;
-import org.cactoos.list.ListOf;
+import org.cactoos.list.SolidList;
 
 /**
  * Match.
@@ -68,7 +68,7 @@ final class Match implements Bson {
      */
     Match(final Project pkt, final Date left, final Date right,
         final Bson... items) {
-        this(pkt, left, right, new ListOf<>(items));
+        this(pkt, left, right, new SolidList<>(items));
     }
 
     /**
@@ -94,7 +94,7 @@ final class Match implements Bson {
             return Aggregates.match(
                 Filters.and(
                     new Joined<Bson>(
-                        new ListOf<>(
+                        new SolidList<>(
                             Filters.eq("project", this.project.pid()),
                             Filters.gt("created", this.start),
                             Filters.lt("created", this.end)

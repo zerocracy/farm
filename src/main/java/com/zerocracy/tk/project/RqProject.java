@@ -27,8 +27,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.IoCheckedScalar;
-import org.cactoos.scalar.StickyScalar;
-import org.cactoos.scalar.SyncScalar;
+import org.cactoos.scalar.SolidScalar;
 import org.takes.facets.flash.RsFlash;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.forward.RsFailure;
@@ -56,37 +55,35 @@ final class RqProject implements Project {
      * @throws IOException If fails
      */
     RqProject(final Farm farm, final RqRegex req) throws IOException {
-        this.pkt = new SyncScalar<>(
-            new StickyScalar<>(
-                () -> {
-                    final String name = req.matcher().group(1);
-                    final Project pmo = new Pmo(farm);
-                    final Catalog catalog = new Catalog(pmo).bootstrap();
-                    if (!catalog.exists(name)) {
-                        throw new RsFailure(
-                            String.format("Project \"%s\" not found", name)
-                        );
-                    }
-                    final Project project = farm.find(
-                        String.format("@id='%s'", name)
-                    ).iterator().next();
-                    final String login = new RqUser(farm, req).value();
-                    if (!"yegor256".equals(login)
-                        && !new Roles(project).bootstrap()
-                        .hasRole(login, "ARC", "PO")) {
-                        throw new RsForward(
-                            new RsFlash(
-                                String.format(
-                                    "@%s must either be PO or ARC to view %s",
-                                    login, name
-                                ),
-                                Level.SEVERE
-                            )
-                        );
-                    }
-                    return project;
+        this.pkt = new SolidScalar<>(
+            () -> {
+                final String name = req.matcher().group(1);
+                final Project pmo = new Pmo(farm);
+                final Catalog catalog = new Catalog(pmo).bootstrap();
+                if (!catalog.exists(name)) {
+                    throw new RsFailure(
+                        String.format("Project \"%s\" not found", name)
+                    );
                 }
-            )
+                final Project project = farm.find(
+                    String.format("@id='%s'", name)
+                ).iterator().next();
+                final String login = new RqUser(farm, req).value();
+                if (!"yegor256".equals(login)
+                    && !new Roles(project).bootstrap()
+                    .hasRole(login, "ARC", "PO")) {
+                    throw new RsForward(
+                        new RsFlash(
+                            String.format(
+                                "@%s must either be PO or ARC to view %s",
+                                login, name
+                            ),
+                            Level.SEVERE
+                        )
+                    );
+                }
+                return project;
+            }
         );
     }
 

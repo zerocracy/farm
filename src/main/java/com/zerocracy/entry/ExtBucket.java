@@ -31,8 +31,7 @@ import com.zerocracy.farm.props.Props;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.jstk.Farm;
 import org.cactoos.Scalar;
-import org.cactoos.func.StickyFunc;
-import org.cactoos.func.SyncFunc;
+import org.cactoos.func.SolidFunc;
 import org.cactoos.func.UncheckedFunc;
 
 /**
@@ -50,32 +49,30 @@ public final class ExtBucket implements Scalar<Bucket> {
      */
     private static final UncheckedFunc<Farm, Bucket> SINGLETON =
         new UncheckedFunc<>(
-            new SyncFunc<>(
-                new StickyFunc<>(
-                    frm -> {
-                        final Props props = new Props(frm);
-                        final AmazonS3 aws = AmazonS3ClientBuilder.standard()
-                            .withRegion(Regions.US_EAST_1)
-                            .withClientConfiguration(
-                                new ClientConfiguration()
-                                    .withRetryPolicy(
-                                        PredefinedRetryPolicies.DEFAULT
-                                    )
-                            )
-                            .withCredentials(
-                                new AWSStaticCredentialsProvider(
-                                    new BasicAWSCredentials(
-                                        props.get("//s3/key"),
-                                        props.get("//s3/secret")
-                                    )
+            new SolidFunc<>(
+                frm -> {
+                    final Props props = new Props(frm);
+                    final AmazonS3 aws = AmazonS3ClientBuilder.standard()
+                        .withRegion(Regions.US_EAST_1)
+                        .withClientConfiguration(
+                            new ClientConfiguration()
+                                .withRetryPolicy(
+                                    PredefinedRetryPolicies.DEFAULT
+                                )
+                        )
+                        .withCredentials(
+                            new AWSStaticCredentialsProvider(
+                                new BasicAWSCredentials(
+                                    props.get("//s3/key"),
+                                    props.get("//s3/secret")
                                 )
                             )
-                            .build();
-                        return new CdRegion(
-                            new ReRegion(new Region.Simple(aws))
-                        ).bucket(props.get("//s3/bucket"));
-                    }
-                )
+                        )
+                        .build();
+                    return new CdRegion(
+                        new ReRegion(new Region.Simple(aws))
+                    ).bucket(props.get("//s3/bucket"));
+                }
             )
         );
 

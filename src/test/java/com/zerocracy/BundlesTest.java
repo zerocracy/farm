@@ -50,7 +50,7 @@ import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Limited;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.iterable.Sorted;
-import org.cactoos.list.StickyList;
+import org.cactoos.list.SolidList;
 import org.cactoos.scalar.And;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
@@ -91,7 +91,7 @@ public final class BundlesTest {
 
     @Parameterized.Parameters(name = "{0}")
     public static Collection<Object[]> bundles() {
-        return new StickyList<Object[]>(
+        return new SolidList<Object[]>(
             new Mapped<>(
                 path -> new Object[]{
                     path.substring(0, path.indexOf("/claims.xml")),
@@ -160,7 +160,6 @@ public final class BundlesTest {
                 )
             ).iterator().next();
             new And(
-                BundlesTest.resources(this.bundle),
                 path -> {
                     new LengthOf(
                         new TeeInput(
@@ -172,7 +171,8 @@ public final class BundlesTest {
                             )
                         )
                     ).value();
-                }
+                },
+                BundlesTest.resources(this.bundle)
             ).value();
             new StkGroovy(
                 new ResourceOf(
@@ -183,13 +183,13 @@ public final class BundlesTest {
             ).process(project, null);
             MatcherAssert.assertThat(
                 new And(
-                    new Limited<>(Tv.FIFTY, new Endless<>(1)),
                     x -> {
                         TimeUnit.SECONDS.sleep(1L);
                         final Claims claims = new Claims(project).bootstrap();
                         return !claims.iterate().isEmpty()
                             || new RvAlive(farm).value();
-                    }
+                    },
+                    new Limited<>(Tv.FIFTY, new Endless<>(1))
                 ).value(),
                 Matchers.equalTo(false)
             );
