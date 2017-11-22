@@ -22,6 +22,7 @@ import com.zerocracy.farm.MismatchException;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.jstk.farm.fake.FkProject;
+import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -51,8 +52,9 @@ public final class StkSmartTest {
             "<claim><type>test</type></claim>"
         ).nodes("/claim").get(0);
         final Project project = new FkProject();
-        stk.process(project, claim);
-        stk.process(project, claim);
+        for (int idx = 0; idx < 2; ++idx) {
+            stk.process(project, claim);
+        }
         MatcherAssert.assertThat(hits.get(), Matchers.equalTo(1));
     }
 
@@ -68,8 +70,32 @@ public final class StkSmartTest {
             "<claim><type>test me</type></claim>"
         ).nodes("/claim ").get(0);
         final Project project = new FkProject();
-        stk.process(project, claim);
-        stk.process(project, claim);
+        for (int idx = 0; idx < 2; ++idx) {
+            stk.process(project, claim);
+        }
+        MatcherAssert.assertThat(hits.get(), Matchers.equalTo(2));
+    }
+
+    @Test
+    public void passesBrokenCallsThrough() throws Exception {
+        final AtomicInteger hits = new AtomicInteger();
+        final Stakeholder stk = new StkSmart(
+            (project, xml) -> {
+                hits.incrementAndGet();
+                throw new IOException("oops here");
+            }
+        );
+        final XML claim = new XMLDocument(
+            "<claim><type>test me now</type></claim>"
+        ).nodes("/claim  ").get(0);
+        final Project project = new FkProject();
+        for (int idx = 0; idx < 2; ++idx) {
+            try {
+                stk.process(project, claim);
+            } catch (final IOException ex) {
+                assert ex != null;
+            }
+        }
         MatcherAssert.assertThat(hits.get(), Matchers.equalTo(2));
     }
 

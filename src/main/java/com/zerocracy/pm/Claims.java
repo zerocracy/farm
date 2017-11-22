@@ -76,6 +76,11 @@ public final class Claims {
         if (!dirs.iterator().hasNext()) {
             throw new IllegalArgumentException("Empty directives");
         }
+        try (final Item item = this.item()) {
+            new Xocument(item).modify(
+                new Directives().xpath("/claims").append(dirs)
+            );
+        }
         final int size = new LengthOf(this.iterate()).value();
         if (size > Tv.HUNDRED) {
             throw new IllegalStateException(
@@ -83,11 +88,6 @@ public final class Claims {
                     "Can't add, claims overflow in %s, too many items: %d",
                     this.project.pid(), size
                 )
-            );
-        }
-        try (final Item item = this.item()) {
-            new Xocument(item).modify(
-                new Directives().xpath("/claims").append(dirs)
             );
         }
     }
