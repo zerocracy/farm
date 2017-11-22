@@ -25,7 +25,6 @@ import com.zerocracy.jstk.farm.spy.SpyProject;
 import com.zerocracy.pmo.Pmo;
 import java.security.SecureRandom;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -33,6 +32,7 @@ import org.cactoos.collection.Filtered;
 import org.cactoos.list.SolidList;
 import org.cactoos.list.StickyList;
 import org.cactoos.map.MapEntry;
+import org.cactoos.map.SolidMap;
 import org.cactoos.map.StickyMap;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -159,7 +159,7 @@ public final class ElectionsTest {
         ).bootstrap();
         final String job = "gh:test/test#92";
         // @checkstyle DiamondOperatorCheck (1 line)
-        final Map<Voter, Integer> voters = new StickyMap<Voter, Integer>(
+        final Map<Voter, Integer> voters = new SolidMap<Voter, Integer>(
             new MapEntry<>((login, log) -> 1.0d, -1)
         );
         final Iterable<String> logins = new StickyList<>("james");
@@ -189,16 +189,12 @@ public final class ElectionsTest {
                 new Pmo(farm)
             ).bootstrap();
             final String job = "gh:test/test#550";
-            final Iterable<String> users = Collections.synchronizedList(
-                new SolidList<>("alex", "alex2")
-            );
+            final Iterable<String> users = new SolidList<>("alex", "alex2");
             // @checkstyle DiamondOperatorCheck (1 line)
-            final Map<Voter, Integer> voters = Collections.synchronizedMap(
-                new StickyMap<Voter, Integer>(
-                    new MapEntry<>(
-                        (login, log) -> 1.0d / (double) login.length(),
-                        1
-                    )
+            final Map<Voter, Integer> voters = new SolidMap<Voter, Integer>(
+                new MapEntry<>(
+                    (login, log) -> 1.0d / (double) login.length(),
+                    1
                 )
             );
             final AtomicInteger elected = new AtomicInteger();
@@ -211,10 +207,7 @@ public final class ElectionsTest {
                 },
                 new RunsInThreads<>()
             );
-            MatcherAssert.assertThat(
-                elected.get(),
-                Matchers.equalTo(1)
-            );
+            MatcherAssert.assertThat(elected.get(), Matchers.equalTo(1));
         }
     }
 

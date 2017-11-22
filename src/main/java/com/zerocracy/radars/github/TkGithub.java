@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
 import javax.json.stream.JsonParsingException;
 import org.cactoos.func.UncheckedProc;
 import org.takes.Request;
@@ -77,63 +79,66 @@ public final class TkGithub implements Take, Runnable {
     public TkGithub(final Farm frm, final Props props) throws IOException {
         this(
             frm,
-            new RbDelayed(
-                new RbLogged(
-                    new RbSafe(
-                        new RbByActions(
-                            new RbOnComment(
-                                new ReLogged(
-                                    new Reaction.Chain(
-                                        new ReOnReason(
-                                            "mention",
-                                            new ReOnComment(
-                                                new ExtGithub(frm).value(),
-                                                new ReSafe(
-                                                    new ReNotMine(
-                                                        new ReIfAddressed(
-                                                            new ReQuestion()
+            new RbAccessible(
+                new RbDelayed(
+                    new RbLogged(
+                        new RbSafe(
+                            new RbByActions(
+                                new RbOnComment(
+                                    new ReLogged(
+                                        new Reaction.Chain(
+                                            new ReOnReason(
+                                                "mention",
+                                                new ReOnComment(
+                                                    new ExtGithub(frm).value(),
+                                                    new ReSafe(
+                                                        new ReNotMine(
+                                                            new ReIfAddressed(
+                                                                new ReQuestion()
+                                                            )
                                                         )
-                                                    )
-                                                ),
-                                                new ExtDynamo(frm).value()
-                                                    .table("0crat-github")
+                                                    ),
+                                                    new ExtDynamo(frm).value()
+                                                        .table("0crat-github")
+                                                )
                                             )
                                         )
                                     )
-                                )
+                                ),
+                                "created"
                             ),
-                            "created"
-                        ),
-                        new RbByActions(
-                            new RbOnPullRequest(),
-                            "opened", "reopened"
-                        ),
-                        new RbByActions(
-                            new RbPingArchitect(),
-                            "opened", "reopened"
-                        ),
-                        new RbByActions(
-                            new Rebound.Chain(
-                                new RbVerifyCloser(),
-                                new RbOnClose()
+                            new RbByActions(
+                                new RbOnPullRequest(),
+                                "opened", "reopened"
                             ),
-                            "closed"
-                        ),
-                        new RbByActions(
-                            new RbByLabel(
-                                new RbOnBug(),
-                                "bug"
+                            new RbByActions(
+                                new RbPingArchitect(),
+                                "opened", "reopened"
                             ),
-                            "labeled"
-                        ),
-                        new RbByActions(new RbOnAssign(), "assigned"),
-                        new RbByActions(new RbOnUnassign(), "unassigned"),
-                        new RbTweet(
-                            new ExtDynamo(frm).value().table("0crat-tweets"),
-                            props.get("//twitter/key"),
-                            props.get("//twitter/secret"),
-                            props.get("//twitter/token"),
-                            props.get("//twitter/tsecret")
+                            new RbByActions(
+                                new Rebound.Chain(
+                                    new RbVerifyCloser(),
+                                    new RbOnClose()
+                                ),
+                                "closed"
+                            ),
+                            new RbByActions(
+                                new RbByLabel(
+                                    new RbOnBug(),
+                                    "bug"
+                                ),
+                                "labeled"
+                            ),
+                            new RbByActions(new RbOnAssign(), "assigned"),
+                            new RbByActions(new RbOnUnassign(), "unassigned"),
+                            new RbTweet(
+                                new ExtDynamo(frm).value()
+                                    .table("0crat-tweets"),
+                                props.get("//twitter/key"),
+                                props.get("//twitter/secret"),
+                                props.get("//twitter/token"),
+                                props.get("//twitter/tsecret")
+                            )
                         )
                     )
                 )
@@ -163,29 +168,16 @@ public final class TkGithub implements Take, Runnable {
                 )
             );
         }
-        try {
-            return new RsWithStatus(
-                new RsText(
-                    this.rebound.react(
-                        this.farm,
-                        new ExtGithub(this.farm).value(),
-                        Json.createReader(
-                            new ByteArrayInputStream(
-                                body.iterator().next().getBytes(
-                                    StandardCharsets.UTF_8
-                                )
-                            )
-                        ).readObject()
-                    )
-                ),
-                HttpURLConnection.HTTP_OK
-            );
-        } catch (final JsonParsingException ex) {
-            throw new IllegalArgumentException(
-                String.format("Can't parse JSON: %s", body),
-                ex
-            );
-        }
+        return new RsWithStatus(
+            new RsText(
+                this.rebound.react(
+                    this.farm,
+                    new ExtGithub(this.farm).value(),
+                    TkGithub.json(body.iterator().next())
+                )
+            ),
+            HttpURLConnection.HTTP_OK
+        );
     }
 
     @Override
@@ -193,5 +185,26 @@ public final class TkGithub implements Take, Runnable {
         new UncheckedProc<>(
             new AcceptInvitations(new ExtGithub(this.farm).value())
         ).exec(true);
+    }
+
+    /**
+     * Read JSON from body.
+     * @param body The body
+     * @return The JSON object
+     */
+    private static JsonObject json(final String body) {
+        try (final JsonReader reader =
+            Json.createReader(
+                new ByteArrayInputStream(
+                    body.getBytes(StandardCharsets.UTF_8)
+                )
+            )) {
+            return reader.readObject();
+        } catch (final JsonParsingException ex) {
+            throw new IllegalArgumentException(
+                String.format("Can't parse JSON: %s", body),
+                ex
+            );
+        }
     }
 }
