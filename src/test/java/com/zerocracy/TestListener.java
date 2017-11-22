@@ -36,7 +36,8 @@ public final class TestListener extends RunListener {
         super.testRunFinished(result);
         final Collection<Thread> alive = new Filtered<>(
             thread -> thread.getName().startsWith("Terminator-")
-                || thread.getName().startsWith("AsyncFlush-"),
+                || thread.getName().startsWith("AsyncFlush-")
+                || thread.getName().startsWith("RvFarm-"),
             Thread.getAllStackTraces().keySet()
         );
         if (!alive.isEmpty()) {

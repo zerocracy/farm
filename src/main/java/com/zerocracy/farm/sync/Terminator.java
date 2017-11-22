@@ -18,6 +18,7 @@ package com.zerocracy.farm.sync;
 
 import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseThreads;
+import com.zerocracy.ShutUp;
 import com.zerocracy.jstk.Project;
 import java.io.Closeable;
 import java.util.Map;
@@ -74,17 +75,7 @@ final class Terminator implements Closeable, Scalar<Iterable<Directive>> {
 
     @Override
     public void close() {
-        this.service.shutdown();
-        try {
-            if (!this.service.awaitTermination(1L, TimeUnit.MINUTES)) {
-                throw new IllegalStateException(
-                    "Can't shutdown terminator service"
-                );
-            }
-        } catch (final InterruptedException ex) {
-            Thread.currentThread().interrupt();
-            throw new IllegalStateException(ex);
-        }
+        new ShutUp(this.service).close();
     }
 
     @Override

@@ -18,6 +18,7 @@ package com.zerocracy.farm.reactive;
 
 import com.jcabi.aspects.Tv;
 import com.jcabi.log.VerboseThreads;
+import com.zerocracy.ShutUp;
 import com.zerocracy.farm.SmartLock;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
@@ -25,7 +26,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import org.cactoos.iterable.Joined;
@@ -119,14 +119,8 @@ final class AsyncFlush implements Flush {
 
     @Override
     public void close() throws IOException {
-        this.service.shutdown();
         try {
-            if (!this.service.awaitTermination(1L, TimeUnit.MINUTES)) {
-                throw new IllegalStateException("Can't terminate service");
-            }
-        } catch (final InterruptedException ex) {
-            Thread.currentThread().interrupt();
-            throw new IllegalStateException(ex);
+            new ShutUp(this.service).close();
         } finally {
             this.origin.close();
         }

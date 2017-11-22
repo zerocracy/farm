@@ -16,13 +16,22 @@
  */
 package com.zerocracy.farm.reactive;
 
+import com.jcabi.log.VerboseThreads;
+import com.zerocracy.ShutUp;
 import com.zerocracy.farm.guts.Guts;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.Stakeholder;
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import lombok.EqualsAndHashCode;
+import org.cactoos.func.RunnableOf;
 import org.cactoos.iterable.Mapped;
+import org.cactoos.scalar.SolidScalar;
+import org.cactoos.scalar.UncheckedScalar;
 import org.xembly.Directives;
 
 /**
@@ -46,6 +55,11 @@ public final class RvFarm implements Farm {
      * Flush.
      */
     private final Flush flush;
+
+    /**
+     * Every minute flusher.
+     */
+    private final UncheckedScalar<ExecutorService> routine;
 
     /**
      * Ctor.
@@ -91,6 +105,27 @@ public final class RvFarm implements Farm {
     public RvFarm(final Farm farm, final Flush flsh) {
         this.origin = farm;
         this.flush = flsh;
+        this.routine = new UncheckedScalar<>(
+            new SolidScalar<>(
+                () -> {
+                    final ScheduledExecutorService svc =
+                        Executors.newSingleThreadScheduledExecutor(
+                            new VerboseThreads(RvFarm.class)
+                        );
+                    svc.scheduleWithFixedDelay(
+                        new RunnableOf<Boolean>(
+                            input -> {
+                                for (final Project pkt : this.origin.find("")) {
+                                    this.flush.exec(pkt);
+                                }
+                            }
+                        ),
+                        1L, 1L, TimeUnit.SECONDS
+                    );
+                    return svc;
+                }
+            )
+        );
     }
 
     @Override
@@ -111,6 +146,7 @@ public final class RvFarm implements Farm {
 
     @Override
     public void close() throws IOException {
+        new ShutUp(this.routine.value()).close();
         try {
             this.flush.close();
         } finally {

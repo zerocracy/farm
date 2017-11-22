@@ -86,22 +86,14 @@ public final class TkPing implements Take {
         this.total.incrementAndGet();
         final Collection<String> done = new LinkedList<>();
         final long start = System.currentTimeMillis();
-        final ClaimOut out = new ClaimOut().type(TkPing.TYPE);
-        final ClaimOut touch = new ClaimOut().type("Touch");
         for (final Project project : new Shuffled<>(this.farm.find(""))) {
             if (System.currentTimeMillis() - start
                 // @checkstyle MagicNumber (1 line)
                 > TimeUnit.SECONDS.toMillis(5L)) {
-                done.add(this.ping(req));
+                done.add(this.stop(req));
                 break;
             }
-            if (TkPing.needs(project)) {
-                out.postTo(project);
-                done.add(project.pid());
-            } else {
-                touch.postTo(project);
-                done.add(String.format("%s/touch", project.pid()));
-            }
+            done.add(TkPing.ping(project));
         }
         return new RsText(
             Logger.format(
@@ -120,8 +112,16 @@ public final class TkPing implements Take {
      * @return TRUE if needs a run
      * @throws IOException If fails
      */
-    private static boolean needs(final Project project) throws IOException {
-        return new Claims(project).bootstrap().iterate().isEmpty();
+    private static String ping(final Project project) throws IOException {
+        final Claims claims = new Claims(project).bootstrap();
+        final String out;
+        if (claims.iterate().isEmpty()) {
+            new ClaimOut().type(TkPing.TYPE).postTo(project);
+            out = project.pid();
+        } else {
+            out = String.format("%s/none", project.pid());
+        }
+        return out;
     }
 
     /**
@@ -129,7 +129,7 @@ public final class TkPing implements Take {
      * @param req Request received
      * @return Status
      */
-    private String ping(final Request req) {
+    private String stop(final Request req) {
         final String out;
         // @checkstyle MagicNumber (1 line)
         if (this.total.get() < 3) {
@@ -144,7 +144,7 @@ public final class TkPing implements Take {
                 ).fetch().status(),
                 this.executor
             ).apply(this.total.get());
-            out = "re-ping";
+            out = "re-stop";
         } else {
             out = String.format("Too many: %d", this.total.get());
         }
