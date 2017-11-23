@@ -141,6 +141,19 @@ public final class Orders {
     }
 
     /**
+     * All jobs we have orders for.
+     * @return List of jobs
+     * @throws IOException If fails of it there is no assignee
+     */
+    public Iterable<String> iterate() throws IOException {
+        try (final Item wbs = this.item()) {
+            return new Xocument(wbs.path()).xpath(
+                "/orders/order/@job  "
+            );
+        }
+    }
+
+    /**
      * Job is assigned.
      * @param job The job
      * @return TRUE if assigned
