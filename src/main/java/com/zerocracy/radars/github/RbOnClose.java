@@ -45,9 +45,7 @@ public final class RbOnClose implements Rebound {
             new IssueOfEvent(github, event)
         );
         final String answer;
-        if (issue.isPull()) {
-            answer = "It's a pull request";
-        } else if (RbOnClose.tagged(issue)) {
+        if (RbOnClose.tagged(issue)) {
             answer = "It's invalid";
         } else {
             final Project project = new GhProject(farm, issue.repo());

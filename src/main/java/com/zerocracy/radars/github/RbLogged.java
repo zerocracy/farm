@@ -100,8 +100,13 @@ public final class RbLogged implements Rebound {
         final String text;
         if (json.containsKey("issue")) {
             text = String.format(
-                "#%d",
+                "I:#%d",
                 json.getJsonObject("issue").getInt("number")
+            );
+        } else if (json.containsKey("pull_request")) {
+            text = String.format(
+                "PR:#%d",
+                json.getJsonObject("pull_request").getInt("number")
             );
         } else {
             text = "no issue";
