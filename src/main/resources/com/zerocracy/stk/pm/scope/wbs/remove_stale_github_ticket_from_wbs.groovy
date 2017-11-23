@@ -37,6 +37,7 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
   Date threshold = java.sql.Date.valueOf(LocalDate.now().minusDays(5))
+  int done = 0
   for (String job : wbs.iterate()) {
     if (orders.assigned(job)) {
       continue
@@ -54,5 +55,8 @@ def exec(Project project, XML xml) {
       .param('job', job)
       .param('reason', 'GitHub issue is already closed')
       .postTo(project)
+    if (++done > 10) {
+      break
+    }
   }
 }
