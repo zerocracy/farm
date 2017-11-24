@@ -19,10 +19,11 @@ package com.zerocracy.stk.pm.staff.elections
 import com.jcabi.log.Logger
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
-import com.zerocracy.farm.props.Props
 import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
+import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
+import com.zerocracy.pm.Claims
 import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pm.staff.Elections
 import com.zerocracy.pm.staff.Roles
@@ -37,6 +38,11 @@ import org.cactoos.iterable.Shuffled
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Ping')
   new Assume(project, xml).notPmo()
+  Claims claims = new Claims(project)
+  if (!claims.iterate().empty && !new ClaimIn(xml).hasParam('force')) {
+    Logger.info(this, 'Still %d claims, can\'t elect', claims.iterate().size())
+    return
+  }
   Wbs wbs = new Wbs(project).bootstrap()
   Roles roles = new Roles(project).bootstrap()
   List<String> logins = roles.findByRole('DEV')
@@ -45,11 +51,6 @@ def exec(Project project, XML xml) {
     return
   }
   Elections elections = new Elections(project).bootstrap()
-  if (elections.age() < TimeUnit.MINUTES.toMillis(15)
-    && !new Props(project).has('//testing')) {
-    Logger.info(this, 'It is too early to make a new election in %s', project.pid())
-    return
-  }
   Set<String> winners = [] as Set
   Farm farm = binding.variables.farm
   Project pmo = new Pmo(farm)

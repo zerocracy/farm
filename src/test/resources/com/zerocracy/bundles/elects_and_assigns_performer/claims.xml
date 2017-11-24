@@ -19,6 +19,9 @@ SOFTWARE.
   <claim id="1">
     <created>2017-03-27T11:18:09.228Z</created>
     <type>ping</type>
+    <params>
+      <param name="force">yes</param>
+    </params>
   </claim>
   <claim id="2">
     <created>2017-03-27T11:18:09.228Z</created>
