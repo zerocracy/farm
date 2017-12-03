@@ -26,6 +26,6 @@ def exec(Project project, XML xml) {
   new ClaimIn(xml).reply(
     "Hey, what's up, how is it going?" +
       ' More information about the project and its artifacts find ' +
-      " [here](http://www.0crat.com/p/${project})."
+      " [here](http://www.0crat.com/p/${project.pid()})."
   ).postTo(project)
 }

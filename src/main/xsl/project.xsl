@@ -26,6 +26,9 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="page" mode="inner">
     <p>
+      <img src="http://www.0crat.com/badge/{project}.svg"/>
+    </p>
+    <p>
       <xsl:text>Project: </xsl:text>
       <code>
         <xsl:value-of select="title"/>
