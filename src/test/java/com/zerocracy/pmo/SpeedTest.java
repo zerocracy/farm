@@ -37,4 +37,14 @@ public final class SpeedTest {
         speed.add("TST000002", "gh:test/test#2", 1L);
         MatcherAssert.assertThat(speed.jobs(), Matchers.iterableWithSize(2));
     }
+
+    @Test
+    public void avgTest() throws Exception {
+        final Speed speed = new Speed(new FkProject(), "fast").bootstrap();
+        speed.add("TST100001", "gh:test/fast#1", 1L);
+        speed.add("TST100002", "gh:test/fast#2", 2L);
+        // @checkstyle MagicNumber (1 line)
+        speed.add("TST100003", "gh:test/fast#3", 3L);
+        MatcherAssert.assertThat(speed.avg(), Matchers.equalTo(2.0));
+    }
 }

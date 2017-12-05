@@ -30,6 +30,7 @@ import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pm.staff.voters.Banned
 import com.zerocracy.pm.staff.voters.NoRoom
 import com.zerocracy.pm.staff.voters.Vacation
+import com.zerocracy.pm.staff.voters.VtrSpeed
 import com.zerocracy.pm.staff.voters.Workload
 import com.zerocracy.pmo.Pmo
 import java.util.concurrent.TimeUnit
@@ -62,7 +63,8 @@ def exec(Project project, XML xml) {
         (new NoRoom(pmo)): -100,
         (new Banned(project, job)): -1000,
         (new Vacation(pmo)): -1000,
-        (new Workload(pmo)): 1
+        (new Workload(pmo)): 1,
+        (new VtrSpeed(pmo)): 100
       ]
     )
     if (done && elections.elected(job)) {
