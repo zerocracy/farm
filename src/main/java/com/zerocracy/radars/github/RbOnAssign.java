@@ -59,6 +59,11 @@ public final class RbOnAssign implements Rebound {
                 "Issue #%d assigned to 0crat, adding to WBS",
                 issue.number()
             );
+        } else if ("0crat".equalsIgnoreCase(sender)) {
+            reply = new FormattedText(
+                "Issue #%d was assigned by 0crat, we ignore this situation",
+                issue.number()
+            );
         } else {
             new ClaimOut()
                 .type("Request order start")
