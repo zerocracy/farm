@@ -54,9 +54,11 @@ def exec(Project project, XML xml) {
       .postTo(project)
   }
   wbs.remove(job)
-  claim.reply(
-    String.format('Job `%s` is now out of scope.', job)
-  ).postTo(project)
+  if (claim.hasToken()) {
+    claim.reply(
+      String.format('Job `%s` is now out of scope.', job)
+    ).postTo(project)
+  }
   new ClaimOut()
     .type('Job removed from WBS')
     .param('job', job)
