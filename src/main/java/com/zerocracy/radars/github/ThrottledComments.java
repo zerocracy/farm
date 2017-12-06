@@ -78,10 +78,12 @@ public final class ThrottledComments implements Comments {
         if (over) {
             throw new IllegalStateException(
                 String.format(
+                    // @checkstyle LineLength (1 line)
                     "Can't post anything to %s#%d, too many comments already (over %d): %s",
                     this.comments.issue().repo().coordinates(),
                     this.comments.issue().number(),
                     max,
+                    // @checkstyle MagicNumber (1 line)
                     new SubText(text, 0, 100).asString()
                 )
             );

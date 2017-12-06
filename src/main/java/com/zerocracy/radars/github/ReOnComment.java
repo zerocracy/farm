@@ -98,12 +98,7 @@ public final class ReOnComment implements Reaction {
     public void react(final Farm farm, final JsonObject event)
         throws IOException {
         final JsonObject subject = event.getJsonObject("subject");
-        final Repo repo = this.github.repos().get(
-            new Coordinates.Simple(
-                event.getJsonObject("repository").getString("full_name")
-            )
-        );
-        if ("issue".equalsIgnoreCase(subject.getString("type"))) {
+        if ("Issue".equalsIgnoreCase(subject.getString("type"))) {
             throw new IllegalArgumentException(
                 String.format(
                     "Can't process this type of notification: %s",
@@ -111,6 +106,11 @@ public final class ReOnComment implements Reaction {
                 )
             );
         }
+        final Repo repo = this.github.repos().get(
+            new Coordinates.Simple(
+                event.getJsonObject("repository").getString("full_name")
+            )
+        );
         final Issue issue = repo.issues().get(
             Integer.parseInt(
                 StringUtils.substringAfterLast(
@@ -162,7 +162,7 @@ public final class ReOnComment implements Reaction {
         } else {
             since = 0L;
             // @checkstyle MagicNumber (1 line)
-            seen = 276041067;
+            seen = 276041068;
         }
         return new Filtered<>(
             comment -> comment.number() > seen,
