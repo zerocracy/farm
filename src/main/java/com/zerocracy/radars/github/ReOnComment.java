@@ -42,6 +42,9 @@ import org.cactoos.iterable.Mapped;
 /**
  * Reaction on GitHub comment.
  *
+ * <p>This is what is coming in the JSON:
+ * {@see http://developer.github.com/v3/activity/notifications/#list-your-notifications-in-a-repository}.</p>
+ *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
@@ -100,6 +103,14 @@ public final class ReOnComment implements Reaction {
                 event.getJsonObject("repository").getString("full_name")
             )
         );
+        if ("issue".equalsIgnoreCase(subject.getString("type"))) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "Can't process this type of notification: %s",
+                    subject
+                )
+            );
+        }
         final Issue issue = repo.issues().get(
             Integer.parseInt(
                 StringUtils.substringAfterLast(
@@ -122,7 +133,7 @@ public final class ReOnComment implements Reaction {
             System.currentTimeMillis() - start,
             String.join(
                 ", ",
-                new Mapped<>(
+                new Mapped<Comment.Smart, String>(
                     cmt -> String.format("#%d", cmt.number()),
                     comments
                 )
