@@ -32,6 +32,7 @@ import java.time.LocalDate
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Ping')
+  new Assume(project, xml).notPmo()
   Wbs wbs = new Wbs(project).bootstrap()
   Orders orders = new Orders(project).bootstrap()
   Farm farm = binding.variables.farm

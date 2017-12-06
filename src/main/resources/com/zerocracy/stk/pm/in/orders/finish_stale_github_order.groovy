@@ -31,6 +31,7 @@ import java.time.LocalDate
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Ping')
+  new Assume(project, xml).notPmo()
   Orders orders = new Orders(project).bootstrap()
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()

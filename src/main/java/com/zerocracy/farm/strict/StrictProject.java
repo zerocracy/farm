@@ -99,7 +99,7 @@ final class StrictProject implements Project {
             throw new IllegalArgumentException(
                 String.format(
                     "File \"%s\" is not accessible in \"%s\"",
-                    file, this.origin
+                    file, this.origin.pid()
                 )
             );
         }
@@ -107,7 +107,7 @@ final class StrictProject implements Project {
             throw new IllegalArgumentException(
                 String.format(
                     "File \"%s\" is not allowed in project \"%s\"",
-                    file, this.origin
+                    file, this.origin.pid()
                 )
             );
         }
