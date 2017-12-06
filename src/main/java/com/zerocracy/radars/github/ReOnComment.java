@@ -98,7 +98,7 @@ public final class ReOnComment implements Reaction {
     public void react(final Farm farm, final JsonObject event)
         throws IOException {
         final JsonObject subject = event.getJsonObject("subject");
-        if ("Issue".equalsIgnoreCase(subject.getString("type"))) {
+        if (!"Issue".equalsIgnoreCase(subject.getString("type"))) {
             throw new IllegalArgumentException(
                 String.format(
                     "Can't process this type of notification: %s",

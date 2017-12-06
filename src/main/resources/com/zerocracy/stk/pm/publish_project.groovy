@@ -23,6 +23,7 @@ import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Catalog
 
 def exec(Project project, XML xml) {
+  new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Publish the project')
   ClaimIn claim = new ClaimIn(xml)
   String mode = claim.param('mode')

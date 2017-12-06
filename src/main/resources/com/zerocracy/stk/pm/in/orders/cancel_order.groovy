@@ -26,6 +26,7 @@ import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.staff.Roles
 
 def exec(Project project, XML xml) {
+  new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Cancel order')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')

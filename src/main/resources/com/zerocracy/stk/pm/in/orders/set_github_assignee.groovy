@@ -29,6 +29,7 @@ import com.zerocracy.pm.ClaimOut
 import com.zerocracy.radars.github.Job
 
 def exec(Project project, XML xml) {
+  new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Order was given')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')

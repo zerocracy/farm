@@ -28,8 +28,8 @@ import java.time.ZonedDateTime
 
 @SuppressWarnings('ExplicitCallToPlusMethod')
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Ping')
   new Assume(project, xml).notPmo()
+  new Assume(project, xml).type('Ping')
   def claim = new ClaimIn(xml)
   def reminders = new Reminders(project).bootstrap()
 

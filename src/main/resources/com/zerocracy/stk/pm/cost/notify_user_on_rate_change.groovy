@@ -24,6 +24,7 @@ import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 
 def exec(Project project, XML xml) {
+  new Assume(project, xml).notPmo()
   new Assume(project, xml).type('User rate was changed')
   ClaimIn claim = new ClaimIn(xml)
   String login = claim.param('login')

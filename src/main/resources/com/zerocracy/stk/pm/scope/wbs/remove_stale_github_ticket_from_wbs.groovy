@@ -31,8 +31,8 @@ import com.zerocracy.radars.github.Job
 import java.time.LocalDate
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Ping')
   new Assume(project, xml).notPmo()
+  new Assume(project, xml).type('Ping')
   Wbs wbs = new Wbs(project).bootstrap()
   Orders orders = new Orders(project).bootstrap()
   Farm farm = binding.variables.farm

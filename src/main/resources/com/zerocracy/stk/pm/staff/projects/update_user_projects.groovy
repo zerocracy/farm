@@ -24,6 +24,7 @@ import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pmo.Projects
 
 def exec(Project project, XML xml) {
+  new Assume(project, xml).notPmo()
   new Assume(project, xml).type(
     'Role was assigned', 'Order was given'
   )

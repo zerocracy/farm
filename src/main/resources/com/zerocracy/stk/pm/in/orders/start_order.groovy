@@ -28,6 +28,7 @@ import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.People
 
 def exec(Project project, XML xml) {
+  new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Start order')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')

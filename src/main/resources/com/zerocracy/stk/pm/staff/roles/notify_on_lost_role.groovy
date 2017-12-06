@@ -23,6 +23,7 @@ import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 
 def exec(Project project, XML xml) {
+  new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Role was resigned')
   ClaimIn claim = new ClaimIn(xml)
   String login = claim.param('login')

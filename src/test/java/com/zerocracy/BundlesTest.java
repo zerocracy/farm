@@ -17,6 +17,8 @@
 package com.zerocracy;
 
 import com.jcabi.aspects.Tv;
+import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
 import com.zerocracy.farm.SmartFarm;
 import com.zerocracy.farm.reactive.RvAlive;
 import com.zerocracy.farm.reactive.StkGroovy;
@@ -41,6 +43,8 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.spi.LoggingEvent;
 import org.cactoos.Func;
+import org.cactoos.io.InputOf;
+import org.cactoos.io.InputWithFallback;
 import org.cactoos.io.LengthOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.ResourceOf;
@@ -150,14 +154,27 @@ public final class BundlesTest {
 
     @Test
     public void oneBundleWorksFine() throws Exception {
+        final XML setup = new XMLDocument(
+            new TextOf(
+                new InputWithFallback(
+                    new ResourceOf(
+                        String.format("%s/_setup.xml", this.bundle)
+                    ),
+                    new InputOf("<setup/>")
+                )
+            ).asString()
+        );
+        final String pid;
+        if (setup.nodes("/setup/pmo").isEmpty()) {
+            pid = this.name.toUpperCase(Locale.ENGLISH)
+                .replaceAll("[^A-Z0-9]", "")
+                .substring(0, Tv.NINE);
+        } else {
+            pid = "PMO";
+        }
         try (final Farm farm = this.farm()) {
             final Project project = farm.find(
-                String.format(
-                    "@id='%s'",
-                    this.name.toUpperCase(Locale.ENGLISH).replaceAll(
-                        "[^A-Z0-9]", ""
-                    ).substring(0, Tv.NINE)
-                )
+                String.format("@id='%s'", pid)
             ).iterator().next();
             new And(
                 path -> {

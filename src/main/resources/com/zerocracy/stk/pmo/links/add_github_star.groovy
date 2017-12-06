@@ -26,6 +26,7 @@ import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 
 def exec(Project project, XML xml) {
+  new Assume(project, xml).isPmo()
   new Assume(project, xml).type('Project link was added')
   ClaimIn claim = new ClaimIn(xml)
   String rel = claim.param('rel')

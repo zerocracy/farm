@@ -24,6 +24,7 @@ import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.People
 
 def exec(Project project, XML xml) {
+  new Assume(project, xml).isPmo()
   new Assume(project, xml).type('Invite a friend')
   ClaimIn claim = new ClaimIn(xml)
   String login = claim.param('login')

@@ -36,6 +36,7 @@ import org.cactoos.iterable.IterableOf;
  * @version $Id$
  * @since 0.11
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class Assume {
 
     /**
@@ -65,6 +66,16 @@ public final class Assume {
     public void notPmo() throws IOException {
         if ("PMO".equals(this.project.pid())) {
             throw new MismatchException("This is PMO");
+        }
+    }
+
+    /**
+     * It's a PMO.
+     * @throws IOException If this is PMO
+     */
+    public void isPmo() throws IOException {
+        if (!"PMO".equals(this.project.pid())) {
+            throw new MismatchException("This is not PMO");
         }
     }
 
