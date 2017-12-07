@@ -99,12 +99,7 @@ public final class ReOnComment implements Reaction {
         throws IOException {
         final JsonObject subject = event.getJsonObject("subject");
         if (!"Issue".equalsIgnoreCase(subject.getString("type"))) {
-            throw new IllegalArgumentException(
-                String.format(
-                    "Can't process this type of notification: %s",
-                    subject
-                )
-            );
+            return;
         }
         final Repo repo = this.github.repos().get(
             new Coordinates.Simple(
