@@ -64,29 +64,34 @@ public final class ThrottledComments implements Comments {
         );
         final String self = this.comments.issue().repo().github().users()
             .self().login().toLowerCase(Locale.ENGLISH);
-        boolean over = false;
-        final int max = 5;
+        final int max = 10;
+        // @checkstyle MagicNumber (1 line)
+        final String tail = new SubText(text, 0, 100).asString();
         for (int idx = 0; idx < list.size(); ++idx) {
-            if (idx >= max) {
-                over = true;
-                break;
-            }
             if (!list.get(idx).author().login().equalsIgnoreCase(self)) {
                 break;
             }
-        }
-        if (over) {
-            throw new IllegalStateException(
-                String.format(
-                    // @checkstyle LineLength (1 line)
-                    "Can't post anything to %s#%d, too many comments already (over %d): %s",
-                    this.comments.issue().repo().coordinates(),
-                    this.comments.issue().number(),
-                    max,
-                    // @checkstyle MagicNumber (1 line)
-                    new SubText(text, 0, 100).asString()
-                )
-            );
+            if (idx == 0 && list.get(idx).body().equals(text)) {
+                throw new IllegalStateException(
+                    String.format(
+                        "Can't post an identical message to %s#%d: %s",
+                        this.comments.issue().repo().coordinates(),
+                        this.comments.issue().number(),
+                        tail
+                    )
+                );
+            }
+            if (idx >= max) {
+                throw new IllegalStateException(
+                    String.format(
+                        // @checkstyle LineLength (1 line)
+                        "Can't post anything to %s#%d, too many comments already (over %d): %s",
+                        this.comments.issue().repo().coordinates(),
+                        this.comments.issue().number(),
+                        max, tail
+                    )
+                );
+            }
         }
         return this.comments.post(text);
     }
