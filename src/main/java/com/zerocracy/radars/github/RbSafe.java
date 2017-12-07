@@ -64,15 +64,17 @@ public final class RbSafe implements Rebound {
                     try {
                         result = this.origin.react(farm, github, event);
                     } catch (final SoftException ex) {
-                        RbSafe.issue(github, event).comments().post(
-                            ex.getLocalizedMessage()
-                        );
+                        new ThrottledComments(
+                            RbSafe.issue(github, event).comments()
+                        ).post(ex.getLocalizedMessage());
                         result = ex.getLocalizedMessage();
                     }
                     return result;
                 },
                 (Proc<Throwable>) throwable -> {
-                    RbSafe.issue(github, event).comments().post(
+                    new ThrottledComments(
+                        RbSafe.issue(github, event).comments()
+                    ).post(
                         new TxtUnrecoverableError(
                             throwable, new Props(farm)
                         ).asString()

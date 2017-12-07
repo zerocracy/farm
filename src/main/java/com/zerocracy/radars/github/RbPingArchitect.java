@@ -55,14 +55,14 @@ public final class RbPingArchitect implements Rebound {
             } else {
                 final String intro = String.join(", @", arcs);
                 if (issue.isPull()) {
-                    issue.comments().post(
+                    new ThrottledComments(issue.comments()).post(
                         String.format(
                             "@%s please, pay attention to this pull request",
                             intro
                         )
                     );
                 } else {
-                    issue.comments().post(
+                    new ThrottledComments(issue.comments()).post(
                         String.format(
                             "@%s please, pay attention to this issue",
                             intro
@@ -75,7 +75,7 @@ public final class RbPingArchitect implements Rebound {
             if ("yegor256".equals(author)) {
                 answer = "It's a ticket from @yegor256";
             } else {
-                issue.comments().post(
+                new ThrottledComments(issue.comments()).post(
                     String.format(
                         // @checkstyle LineLength (1 line)
                         "@%s I'm not managing this repo, remove the [webhook](https://github.com/%s/settings/hooks) or contact me in [Slack](http://www.zerocracy.com) //cc @yegor256",
