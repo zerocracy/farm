@@ -86,7 +86,7 @@ SOFTWARE.
     <dependency>
       <groupId>org.cactoos</groupId>
       <artifactId>cactoos</artifactId>
-      <version>0.23.3</version>
+      <version>0.25.6</version>
     </dependency>
     <dependency>
       <groupId>io.sentry</groupId>

@@ -66,7 +66,7 @@ public final class ReSafe implements Response {
                     return result;
                 },
                 (Proc<Throwable>) throwable -> {
-                    comment.issue().comments().post(
+                    new ThrottledComments(comment.issue().comments()).post(
                         new TxtUnrecoverableError(
                             throwable, new Props(farm)
                         ).asString()

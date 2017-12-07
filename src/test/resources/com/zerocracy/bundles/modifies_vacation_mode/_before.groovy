@@ -19,5 +19,5 @@ package com.zerocracy.bundles.modifies_vacation_mode
 import com.jcabi.xml.XML
 import com.zerocracy.jstk.Project
 
-def exec(Project project, XML xml) {
+def exec(Project pmo, XML xml) {
 }

@@ -136,7 +136,7 @@ public final class StkSafe implements Stakeholder {
             final StringBuilder msg = new StringBuilder(
                 String.format(
                     "Claim #%d in %s: type=\"%s\", stakeholder=\"%s\"",
-                    claim.cid(), project, claim.type(),
+                    claim.cid(), project.pid(), claim.type(),
                     this.identifier
                 )
             );

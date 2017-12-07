@@ -28,14 +28,19 @@ import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.radars.github.Job
+import com.zerocracy.radars.github.Quota
 import java.time.LocalDate
 
 def exec(Project project, XML xml) {
+  new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Ping')
-  Wbs wbs = new Wbs(project).bootstrap()
-  Orders orders = new Orders(project).bootstrap()
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
+  if (new Quota(github).over()) {
+    return
+  }
+  Wbs wbs = new Wbs(project).bootstrap()
+  Orders orders = new Orders(project).bootstrap()
   Date threshold = java.sql.Date.valueOf(LocalDate.now().minusDays(5))
   int done = 0
   for (String job : wbs.iterate()) {

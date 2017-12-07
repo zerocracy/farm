@@ -37,8 +37,8 @@ import java.util.concurrent.TimeUnit
 import org.cactoos.iterable.Shuffled
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Ping')
   new Assume(project, xml).notPmo()
+  new Assume(project, xml).type('Ping')
   Claims claims = new Claims(project)
   if (!claims.iterate().empty && !new ClaimIn(xml).hasParam('force')) {
     Logger.info(this, 'Still %d claims, can\'t elect', claims.iterate().size())

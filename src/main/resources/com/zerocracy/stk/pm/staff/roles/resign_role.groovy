@@ -28,6 +28,7 @@ import com.zerocracy.pmo.Projects
 import org.cactoos.iterable.LengthOf
 
 def exec(Project project, XML xml) {
+  new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Resign role')
   new Assume(project, xml).roles('ARC', 'PO')
   ClaimIn claim = new ClaimIn(xml)

@@ -49,7 +49,7 @@ public final class GhTube {
      * @throws IOException If fails
      */
     public void say(final String msg) throws IOException {
-        this.comment.issue().comments().post(
+        new ThrottledComments(this.comment.issue().comments()).post(
             String.format(
                 // @checkstyle LineLength (1 line)
                 "> %s ([here](https://github.com/%s/issues/%d#issuecomment-%d))%n%n@%s %s",

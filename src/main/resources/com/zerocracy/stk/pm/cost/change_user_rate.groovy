@@ -25,6 +25,7 @@ import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.cost.Rates
 
 def exec(Project project, XML xml) {
+  new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Change user rate')
   new Assume(project, xml).roles('ARC', 'PO')
   ClaimIn claim = new ClaimIn(xml)

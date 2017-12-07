@@ -42,6 +42,9 @@ import org.cactoos.iterable.Mapped;
 /**
  * Reaction on GitHub comment.
  *
+ * <p>This is what is coming in the JSON:
+ * {@see http://developer.github.com/v3/activity/notifications/#list-your-notifications-in-a-repository}.</p>
+ *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
@@ -95,6 +98,9 @@ public final class ReOnComment implements Reaction {
     public void react(final Farm farm, final JsonObject event)
         throws IOException {
         final JsonObject subject = event.getJsonObject("subject");
+        if (!"Issue".equalsIgnoreCase(subject.getString("type"))) {
+            return;
+        }
         final Repo repo = this.github.repos().get(
             new Coordinates.Simple(
                 event.getJsonObject("repository").getString("full_name")
@@ -122,7 +128,7 @@ public final class ReOnComment implements Reaction {
             System.currentTimeMillis() - start,
             String.join(
                 ", ",
-                new Mapped<>(
+                new Mapped<Comment.Smart, String>(
                     cmt -> String.format("#%d", cmt.number()),
                     comments
                 )
@@ -151,7 +157,7 @@ public final class ReOnComment implements Reaction {
         } else {
             since = 0L;
             // @checkstyle MagicNumber (1 line)
-            seen = 276041067;
+            seen = 276041068;
         }
         return new Filtered<>(
             comment -> comment.number() > seen,

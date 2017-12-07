@@ -25,6 +25,7 @@ import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.staff.Roles
 
 def exec(Project project, XML xml) {
+  new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Bootstrap')
   Roles roles = new Roles(project).bootstrap()
   ClaimIn claim = new ClaimIn(xml)

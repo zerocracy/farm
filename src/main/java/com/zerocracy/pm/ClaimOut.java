@@ -22,6 +22,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 import org.xembly.Directive;
@@ -132,6 +133,12 @@ public final class ClaimOut implements Iterable<Directive> {
      * @return This
      */
     public ClaimOut author(final Object author) {
+        final String login = author.toString().toLowerCase(Locale.ENGLISH);
+        if ("0crat".equals(login)) {
+            throw new IllegalArgumentException(
+                "0crat can't be the author of a claim"
+            );
+        }
         this.dirs
             .push()
             .xpath("author")

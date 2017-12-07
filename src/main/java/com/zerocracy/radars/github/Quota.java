@@ -14,31 +14,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pmo.profile
+package com.zerocracy.radars.github;
 
-import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Project
-import com.zerocracy.jstk.SoftException
-import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pmo.People
+import com.jcabi.github.Github;
+import com.jcabi.github.Limit;
+import com.jcabi.github.Limits;
+import java.io.IOException;
 
-def exec(Project project, XML xml) {
-  new Assume(project, xml).isPmo()
-  new Assume(project, xml).type('Invite a friend')
-  ClaimIn claim = new ClaimIn(xml)
-  String login = claim.param('login')
-  People people = new People(project).bootstrap()
-  if (people.hasMentor(login)) {
-    throw new SoftException(
-      "`@${login}` is already with us."
-    )
-  }
-  people.invite(login, claim.author())
-  claim.reply(
-    String.format(
-      'Thanks, `@%s` can now work with us, and you are the mentor.',
-      login
-    )
-  ).postTo(project)
+/**
+ * GitHub API is over its quota.
+ *
+ * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @version $Id$
+ * @since 0.19
+ */
+public final class Quota {
+
+    /**
+     * GitHub.
+     */
+    private final Github github;
+
+    /**
+     * Ctor.
+     * @param ghb Github
+     */
+    public Quota(final Github ghb) {
+        this.github = ghb;
+    }
+
+    /**
+     * Is it over?
+     * @return TRUE if over
+     * @throws IOException If fails
+     */
+    public boolean over() throws IOException {
+        final Limit.Smart limit = new Limit.Smart(
+            this.github.limits().get(Limits.CORE)
+        );
+        // @checkstyle MagicNumber (1 line)
+        return limit.remaining() < 500;
+    }
+
 }

@@ -16,6 +16,7 @@
  */
 package com.zerocracy.radars.github;
 
+import com.jcabi.github.Github;
 import com.zerocracy.entry.ExtDynamo;
 import com.zerocracy.entry.ExtGithub;
 import com.zerocracy.farm.props.Props;
@@ -37,6 +38,7 @@ import org.takes.facets.forward.RsForward;
 import org.takes.rq.RqForm;
 import org.takes.rq.form.RqFormBase;
 import org.takes.rs.RsText;
+import org.takes.rs.RsWithBody;
 import org.takes.rs.RsWithStatus;
 
 /**
@@ -75,6 +77,7 @@ public final class TkGithub implements Take, Runnable {
      * @param frm Farm
      * @param props Props
      * @throws IOException If fails
+     * @checkstyle LineLength (400 lines)
      */
     public TkGithub(final Farm frm, final Props props) throws IOException {
         this(
@@ -98,8 +101,7 @@ public final class TkGithub implements Take, Runnable {
                                                             )
                                                         )
                                                     ),
-                                                    new ExtDynamo(frm).value()
-                                                        .table("0crat-github")
+                                                    new ExtDynamo(frm).value().table("0crat-github")
                                                 )
                                             )
                                         )
@@ -132,8 +134,7 @@ public final class TkGithub implements Take, Runnable {
                             new RbByActions(new RbOnAssign(), "assigned"),
                             new RbByActions(new RbOnUnassign(), "unassigned"),
                             new RbTweet(
-                                new ExtDynamo(frm).value()
-                                    .table("0crat-tweets"),
+                                new ExtDynamo(frm).value().table("0crat-tweets"),
                                 props.get("//twitter/key"),
                                 props.get("//twitter/secret"),
                                 props.get("//twitter/token"),
@@ -168,11 +169,18 @@ public final class TkGithub implements Take, Runnable {
                 )
             );
         }
+        final Github github = new ExtGithub(this.farm).value();
+        if (new Quota(github).over()) {
+            throw new RsForward(
+                new RsWithBody("GitHub API is over quota"),
+                HttpURLConnection.HTTP_UNAVAILABLE
+            );
+        }
         return new RsWithStatus(
             new RsText(
                 this.rebound.react(
                     this.farm,
-                    new ExtGithub(this.farm).value(),
+                    github,
                     TkGithub.json(body.iterator().next())
                 )
             ),

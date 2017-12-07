@@ -25,6 +25,7 @@ import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.Projects
 
 def exec(Project project, XML xml) {
+  new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Resign all roles')
   ClaimIn claim = new ClaimIn(xml)
   String login = claim.param('login')

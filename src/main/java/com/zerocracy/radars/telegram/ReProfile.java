@@ -30,6 +30,7 @@ import java.io.IOException;
  * @since 0.16
  */
 public final class ReProfile implements Reaction {
+
     @Override
     public boolean react(final Farm farm, final TmSession session,
         final TmRequest request) throws IOException {

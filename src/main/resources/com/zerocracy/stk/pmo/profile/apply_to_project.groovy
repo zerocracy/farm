@@ -26,6 +26,7 @@ import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pmo.People
 
 def exec(Project project, XML xml) {
+  new Assume(project, xml).isPmo()
   new Assume(project, xml).type('Apply to a project')
   ClaimIn claim = new ClaimIn(xml)
   Farm farm = binding.variables.farm

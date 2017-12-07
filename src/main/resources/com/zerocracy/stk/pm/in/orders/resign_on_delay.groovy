@@ -11,8 +11,8 @@ import java.time.ZonedDateTime
 import org.cactoos.iterable.Limited
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Ping')
   new Assume(project, xml).notPmo()
+  new Assume(project, xml).type('Ping')
   ClaimIn claim = new ClaimIn(xml)
   ZonedDateTime time = ZonedDateTime.ofInstant(
     claim.created().toInstant(), ZoneOffset.UTC

@@ -23,6 +23,7 @@ import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Catalog
 
 def exec(Project project, XML xml) {
+  new Assume(project, xml).isPmo()
   new Assume(project, xml).type('Show links')
   new Assume(project, xml).roles('PO')
   ClaimIn claim = new ClaimIn(xml)

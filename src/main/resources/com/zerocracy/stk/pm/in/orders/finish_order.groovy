@@ -27,6 +27,7 @@ import java.time.Duration
 import java.time.ZonedDateTime
 
 def exec(Project project, XML xml) {
+  new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Finish order')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')

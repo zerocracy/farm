@@ -21,7 +21,6 @@ import com.mongodb.client.model.Filters;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
-import com.zerocracy.pmo.Pmo;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -39,7 +38,7 @@ public final class FootprintTest {
     @Test
     public void addsClaims() throws Exception {
         final Farm farm = new PropsFarm();
-        final Project project = new Pmo(farm);
+        final Project project = farm.find("@id='FOOTPRNTX'").iterator().next();
         new ClaimOut().type("hello").postTo(project);
         final XML xml = new Claims(project).iterate().iterator().next();
         try (final Footprint footprint = new Footprint(farm, project)) {

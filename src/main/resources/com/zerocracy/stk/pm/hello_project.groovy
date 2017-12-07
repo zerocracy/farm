@@ -22,6 +22,7 @@ import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 
 def exec(Project project, XML xml) {
+  new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Hello project')
   new ClaimIn(xml).reply(
     "Hey, what's up, how is it going?" +

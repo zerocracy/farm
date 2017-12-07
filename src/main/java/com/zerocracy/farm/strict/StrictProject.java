@@ -39,6 +39,7 @@ final class StrictProject implements Project {
     private static final Pattern PMO = Pattern.compile(
         String.join(
             "|",
+            "(test\\.txt)",
             "(claims\\.xml)",
             "(catalog\\.xml)",
             "(bots\\.xml)",
@@ -62,6 +63,7 @@ final class StrictProject implements Project {
             "(rates\\.xml)",
             "(elections\\.xml)",
             "(estimates\\.xml)",
+            "(budget\\.xml)",
             "(wbs\\.xml)",
             "(orders\\.xml)",
             "(bans\\.xml)",
@@ -99,7 +101,7 @@ final class StrictProject implements Project {
             throw new IllegalArgumentException(
                 String.format(
                     "File \"%s\" is not accessible in \"%s\"",
-                    file, this.origin
+                    file, this.origin.pid()
                 )
             );
         }
@@ -107,7 +109,7 @@ final class StrictProject implements Project {
             throw new IllegalArgumentException(
                 String.format(
                     "File \"%s\" is not allowed in project \"%s\"",
-                    file, this.origin
+                    file, this.origin.pid()
                 )
             );
         }

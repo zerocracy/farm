@@ -29,6 +29,7 @@ import com.zerocracy.pm.staff.Roles
 import com.zerocracy.radars.github.Job
 
 def exec(Project project, XML xml) {
+  new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Job was added to WBS')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')

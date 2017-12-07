@@ -26,6 +26,7 @@ import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.scope.Wbs
 
 def exec(Project project, XML xml) {
+  new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Remove job from WBS')
   new Assume(project, xml).roles('ARC', 'PO')
   ClaimIn claim = new ClaimIn(xml)
@@ -54,9 +55,11 @@ def exec(Project project, XML xml) {
       .postTo(project)
   }
   wbs.remove(job)
-  claim.reply(
-    String.format('Job `%s` is now out of scope.', job)
-  ).postTo(project)
+  if (claim.hasToken()) {
+    claim.reply(
+      String.format('Job `%s` is now out of scope.', job)
+    ).postTo(project)
+  }
   new ClaimOut()
     .type('Job removed from WBS')
     .param('job', job)

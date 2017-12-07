@@ -25,6 +25,7 @@ import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.scope.Wbs
 
 def exec(Project project, XML xml) {
+  new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Add job to WBS')
   new Assume(project, xml).roles('ARC', 'PO')
   ClaimIn claim = new ClaimIn(xml)

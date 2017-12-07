@@ -22,10 +22,10 @@ import com.zerocracy.pmo.People
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 
-def exec(Project project, XML xml) {
+def exec(Project pmo, XML xml) {
   MatcherAssert.assertThat(
     'Vacation mode is "off"',
-    new People(project).vacation('g4s8'),
+    new People(pmo).vacation('g4s8'),
     Matchers.is(true)
   )
 }

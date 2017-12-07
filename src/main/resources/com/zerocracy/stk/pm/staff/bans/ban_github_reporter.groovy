@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.scope.wbs
+package com.zerocracy.stk.pm.staff.bans
 
 import com.jcabi.github.Github
 import com.jcabi.github.Issue
@@ -28,6 +28,7 @@ import com.zerocracy.pm.staff.Bans
 import com.zerocracy.radars.github.Job
 
 def exec(Project project, XML xml) {
+  new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Job was added to WBS')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')

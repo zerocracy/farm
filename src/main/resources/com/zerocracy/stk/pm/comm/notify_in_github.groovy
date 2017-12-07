@@ -16,16 +16,11 @@
  */
 package com.zerocracy.stk.pm.comm
 
-import com.google.common.collect.Lists
-import com.jcabi.github.Bulk
 import com.jcabi.github.Comment
 import com.jcabi.github.Coordinates
 import com.jcabi.github.Github
 import com.jcabi.github.Issue
-import com.jcabi.github.Limit
-import com.jcabi.github.Limits
 import com.jcabi.github.Repo
-import com.jcabi.github.Smarts
 import com.jcabi.xml.XML
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
@@ -33,8 +28,9 @@ import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.radars.github.GhTube
+import com.zerocracy.radars.github.Quota
+import com.zerocracy.radars.github.ThrottledComments
 import java.util.concurrent.TimeUnit
-import org.cactoos.text.SubText
 // Token must look like: zerocracy/farm;123;6
 //   - repository coordinates
 //   - issue cid
@@ -51,8 +47,7 @@ def exec(Project project, XML xml) {
   }
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
-  Limit.Smart limit = new Limit.Smart(github.limits().get(Limits.CORE))
-  if (limit.remaining() < 500) {
+  if (new Quota(github).over()) {
     claim.copy().until(TimeUnit.MINUTES.toSeconds(5L)).postTo(project)
     return
   }
@@ -60,11 +55,8 @@ def exec(Project project, XML xml) {
     new Coordinates.Simple(parts[1])
   )
   String message = claim.param('message')
-  Issue issue = safe(
-    repo.issues().get(
-      Integer.parseInt(parts[2])
-    ),
-    message
+  Issue issue = repo.issues().get(
+    Integer.parseInt(parts[2])
   )
   if (parts.length > 3) {
     Comment comment = issue.comments().get(
@@ -72,42 +64,6 @@ def exec(Project project, XML xml) {
     )
     new GhTube(comment).say(message)
   } else {
-    issue.comments().post(message)
+    new ThrottledComments(issue.comments()).post(message)
   }
-}
-
-static Issue safe(Issue issue, String text) {
-  List<Comment.Smart> comments = Lists.newArrayList(
-    new Bulk<>(
-      new Smarts<>(
-        issue.comments().iterate(new Date(0L))
-      )
-    )
-  )
-  Collections.reverse(comments)
-  if (over(issue, comments, 8)) {
-    throw new IllegalStateException(
-      String.format(
-        'Can\'t post anything to %s#%d, too many comments already (over 8): %s',
-        issue.repo().coordinates(), issue.number(),
-        new SubText(text, 0, 100).asString()
-      )
-    )
-  }
-  issue
-}
-
-static boolean over(Issue issue, List<Comment.Smart> list, int max) {
-  String self = issue.repo().github().users().self().login()
-  boolean over = false
-  for (int idx = 0; idx < list.size(); ++idx) {
-    if (idx >= max) {
-      over = true
-      break
-    }
-    if (!list[idx].author().login().equalsIgnoreCase(self)) {
-      break
-    }
-  }
-  over
 }
