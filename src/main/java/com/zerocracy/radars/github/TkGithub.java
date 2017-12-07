@@ -16,6 +16,7 @@
  */
 package com.zerocracy.radars.github;
 
+import com.jcabi.github.Github;
 import com.zerocracy.entry.ExtDynamo;
 import com.zerocracy.entry.ExtGithub;
 import com.zerocracy.farm.props.Props;
@@ -37,6 +38,7 @@ import org.takes.facets.forward.RsForward;
 import org.takes.rq.RqForm;
 import org.takes.rq.form.RqFormBase;
 import org.takes.rs.RsText;
+import org.takes.rs.RsWithBody;
 import org.takes.rs.RsWithStatus;
 
 /**
@@ -80,65 +82,63 @@ public final class TkGithub implements Take, Runnable {
     public TkGithub(final Farm frm, final Props props) throws IOException {
         this(
             frm,
-            new RbQuota(
-                new RbAccessible(
-                    new RbDelayed(
-                        new RbLogged(
-                            new RbSafe(
-                                new RbByActions(
-                                    new RbOnComment(
-                                        new ReLogged(
-                                            new Reaction.Chain(
-                                                new ReOnReason(
-                                                    "mention",
-                                                    new ReOnComment(
-                                                        new ExtGithub(frm).value(),
-                                                        new ReSafe(
-                                                            new ReNotMine(
-                                                                new ReIfAddressed(
-                                                                    new ReQuestion()
-                                                                )
+            new RbAccessible(
+                new RbDelayed(
+                    new RbLogged(
+                        new RbSafe(
+                            new RbByActions(
+                                new RbOnComment(
+                                    new ReLogged(
+                                        new Reaction.Chain(
+                                            new ReOnReason(
+                                                "mention",
+                                                new ReOnComment(
+                                                    new ExtGithub(frm).value(),
+                                                    new ReSafe(
+                                                        new ReNotMine(
+                                                            new ReIfAddressed(
+                                                                new ReQuestion()
                                                             )
-                                                        ),
-                                                        new ExtDynamo(frm).value().table("0crat-github")
-                                                    )
+                                                        )
+                                                    ),
+                                                    new ExtDynamo(frm).value().table("0crat-github")
                                                 )
                                             )
                                         )
-                                    ),
-                                    "created"
+                                    )
                                 ),
-                                new RbByActions(
-                                    new RbOnPullRequest(),
-                                    "opened", "reopened"
+                                "created"
+                            ),
+                            new RbByActions(
+                                new RbOnPullRequest(),
+                                "opened", "reopened"
+                            ),
+                            new RbByActions(
+                                new RbPingArchitect(),
+                                "opened", "reopened"
+                            ),
+                            new RbByActions(
+                                new Rebound.Chain(
+                                    new RbVerifyCloser(),
+                                    new RbOnClose()
                                 ),
-                                new RbByActions(
-                                    new RbPingArchitect(),
-                                    "opened", "reopened"
+                                "closed"
+                            ),
+                            new RbByActions(
+                                new RbByLabel(
+                                    new RbOnBug(),
+                                    "bug"
                                 ),
-                                new RbByActions(
-                                    new Rebound.Chain(
-                                        new RbVerifyCloser(),
-                                        new RbOnClose()
-                                    ),
-                                    "closed"
-                                ),
-                                new RbByActions(
-                                    new RbByLabel(
-                                        new RbOnBug(),
-                                        "bug"
-                                    ),
-                                    "labeled"
-                                ),
-                                new RbByActions(new RbOnAssign(), "assigned"),
-                                new RbByActions(new RbOnUnassign(), "unassigned"),
-                                new RbTweet(
-                                    new ExtDynamo(frm).value().table("0crat-tweets"),
-                                    props.get("//twitter/key"),
-                                    props.get("//twitter/secret"),
-                                    props.get("//twitter/token"),
-                                    props.get("//twitter/tsecret")
-                                )
+                                "labeled"
+                            ),
+                            new RbByActions(new RbOnAssign(), "assigned"),
+                            new RbByActions(new RbOnUnassign(), "unassigned"),
+                            new RbTweet(
+                                new ExtDynamo(frm).value().table("0crat-tweets"),
+                                props.get("//twitter/key"),
+                                props.get("//twitter/secret"),
+                                props.get("//twitter/token"),
+                                props.get("//twitter/tsecret")
                             )
                         )
                     )
@@ -169,11 +169,18 @@ public final class TkGithub implements Take, Runnable {
                 )
             );
         }
+        final Github github = new ExtGithub(this.farm).value();
+        if (new Quota(github).over()) {
+            throw new RsForward(
+                new RsWithBody("GitHub API is over quota"),
+                HttpURLConnection.HTTP_UNAVAILABLE
+            );
+        }
         return new RsWithStatus(
             new RsText(
                 this.rebound.react(
                     this.farm,
-                    new ExtGithub(this.farm).value(),
+                    github,
                     TkGithub.json(body.iterator().next())
                 )
             ),

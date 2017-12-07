@@ -20,8 +20,6 @@ import com.jcabi.github.Comment
 import com.jcabi.github.Coordinates
 import com.jcabi.github.Github
 import com.jcabi.github.Issue
-import com.jcabi.github.Limit
-import com.jcabi.github.Limits
 import com.jcabi.github.Repo
 import com.jcabi.xml.XML
 import com.zerocracy.entry.ExtGithub
@@ -30,6 +28,7 @@ import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.radars.github.GhTube
+import com.zerocracy.radars.github.Quota
 import com.zerocracy.radars.github.ThrottledComments
 import java.util.concurrent.TimeUnit
 // Token must look like: zerocracy/farm;123;6
@@ -48,8 +47,7 @@ def exec(Project project, XML xml) {
   }
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
-  Limit.Smart limit = new Limit.Smart(github.limits().get(Limits.CORE))
-  if (limit.remaining() < 500) {
+  if (new Quota(github).over()) {
     claim.copy().until(TimeUnit.MINUTES.toSeconds(5L)).postTo(project)
     return
   }

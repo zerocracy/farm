@@ -19,54 +19,41 @@ package com.zerocracy.radars.github;
 import com.jcabi.github.Github;
 import com.jcabi.github.Limit;
 import com.jcabi.github.Limits;
-import com.zerocracy.jstk.Farm;
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import javax.json.JsonObject;
-import org.takes.facets.forward.RsForward;
-import org.takes.rs.RsWithBody;
 
 /**
- * Rebound that acts only if GitHub has API quota available.
+ * GitHub API is over its quota.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.19
  */
-public final class RbQuota implements Rebound {
+public final class Quota {
 
     /**
-     * Original reaction.
+     * GitHub.
      */
-    private final Rebound origin;
+    private final Github github;
 
     /**
      * Ctor.
-     * @param rtn Reaction
+     * @param ghb Github
      */
-    public RbQuota(final Rebound rtn) {
-        this.origin = rtn;
+    public Quota(final Github ghb) {
+        this.github = ghb;
     }
 
-    @Override
-    public String react(final Farm farm, final Github github,
-        final JsonObject event) throws IOException {
+    /**
+     * Is it over?
+     * @return TRUE if over
+     * @throws IOException If fails
+     */
+    public boolean over() throws IOException {
         final Limit.Smart limit = new Limit.Smart(
-            github.limits().get(Limits.CORE)
+            this.github.limits().get(Limits.CORE)
         );
         // @checkstyle MagicNumber (1 line)
-        if (limit.remaining() < 500) {
-            throw new RsForward(
-                new RsWithBody(
-                    String.format(
-                        "GitHub over quota: limit=%d, remaining=%d, reset=%s",
-                        limit.limit(), limit.remaining(), limit.reset()
-                    )
-                ),
-                HttpURLConnection.HTTP_UNAVAILABLE
-            );
-        }
-        return this.origin.react(farm, github, event);
+        return limit.remaining() < 500;
     }
 
 }
