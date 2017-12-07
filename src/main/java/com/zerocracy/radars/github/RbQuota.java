@@ -21,7 +21,10 @@ import com.jcabi.github.Limit;
 import com.jcabi.github.Limits;
 import com.zerocracy.jstk.Farm;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import javax.json.JsonObject;
+import org.takes.facets.forward.RsForward;
+import org.takes.rs.RsWithBody;
 
 /**
  * Rebound that acts only if GitHub has API quota available.
@@ -51,17 +54,19 @@ public final class RbQuota implements Rebound {
         final Limit.Smart limit = new Limit.Smart(
             github.limits().get(Limits.CORE)
         );
-        final String out;
         // @checkstyle MagicNumber (1 line)
         if (limit.remaining() < 500) {
-            out = String.format(
-                "GitHub quota is over: limit=%d, remaining=%d, reset=%s",
-                limit.limit(), limit.remaining(), limit.reset()
+            throw new RsForward(
+                new RsWithBody(
+                    String.format(
+                        "GitHub over quota: limit=%d, remaining=%d, reset=%s",
+                        limit.limit(), limit.remaining(), limit.reset()
+                    )
+                ),
+                HttpURLConnection.HTTP_UNAVAILABLE
             );
-        } else {
-            out = this.origin.react(farm, github, event);
         }
-        return out;
+        return this.origin.react(farm, github, event);
     }
 
 }
