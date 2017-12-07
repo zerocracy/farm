@@ -75,69 +75,70 @@ public final class TkGithub implements Take, Runnable {
      * @param frm Farm
      * @param props Props
      * @throws IOException If fails
+     * @checkstyle LineLength (400 lines)
      */
     public TkGithub(final Farm frm, final Props props) throws IOException {
         this(
             frm,
-            new RbAccessible(
-                new RbDelayed(
-                    new RbLogged(
-                        new RbSafe(
-                            new RbByActions(
-                                new RbOnComment(
-                                    new ReLogged(
-                                        new Reaction.Chain(
-                                            new ReOnReason(
-                                                "mention",
-                                                new ReOnComment(
-                                                    new ExtGithub(frm).value(),
-                                                    new ReSafe(
-                                                        new ReNotMine(
-                                                            new ReIfAddressed(
-                                                                new ReQuestion()
+            new RbQuota(
+                new RbAccessible(
+                    new RbDelayed(
+                        new RbLogged(
+                            new RbSafe(
+                                new RbByActions(
+                                    new RbOnComment(
+                                        new ReLogged(
+                                            new Reaction.Chain(
+                                                new ReOnReason(
+                                                    "mention",
+                                                    new ReOnComment(
+                                                        new ExtGithub(frm).value(),
+                                                        new ReSafe(
+                                                            new ReNotMine(
+                                                                new ReIfAddressed(
+                                                                    new ReQuestion()
+                                                                )
                                                             )
-                                                        )
-                                                    ),
-                                                    new ExtDynamo(frm).value()
-                                                        .table("0crat-github")
+                                                        ),
+                                                        new ExtDynamo(frm).value().table("0crat-github")
+                                                    )
                                                 )
                                             )
                                         )
-                                    )
+                                    ),
+                                    "created"
                                 ),
-                                "created"
-                            ),
-                            new RbByActions(
-                                new RbOnPullRequest(),
-                                "opened", "reopened"
-                            ),
-                            new RbByActions(
-                                new RbPingArchitect(),
-                                "opened", "reopened"
-                            ),
-                            new RbByActions(
-                                new Rebound.Chain(
-                                    new RbVerifyCloser(),
-                                    new RbOnClose()
+                                new RbByActions(
+                                    new RbOnPullRequest(),
+                                    "opened", "reopened"
                                 ),
-                                "closed"
-                            ),
-                            new RbByActions(
-                                new RbByLabel(
-                                    new RbOnBug(),
-                                    "bug"
+                                new RbByActions(
+                                    new RbPingArchitect(),
+                                    "opened", "reopened"
                                 ),
-                                "labeled"
-                            ),
-                            new RbByActions(new RbOnAssign(), "assigned"),
-                            new RbByActions(new RbOnUnassign(), "unassigned"),
-                            new RbTweet(
-                                new ExtDynamo(frm).value()
-                                    .table("0crat-tweets"),
-                                props.get("//twitter/key"),
-                                props.get("//twitter/secret"),
-                                props.get("//twitter/token"),
-                                props.get("//twitter/tsecret")
+                                new RbByActions(
+                                    new Rebound.Chain(
+                                        new RbVerifyCloser(),
+                                        new RbOnClose()
+                                    ),
+                                    "closed"
+                                ),
+                                new RbByActions(
+                                    new RbByLabel(
+                                        new RbOnBug(),
+                                        "bug"
+                                    ),
+                                    "labeled"
+                                ),
+                                new RbByActions(new RbOnAssign(), "assigned"),
+                                new RbByActions(new RbOnUnassign(), "unassigned"),
+                                new RbTweet(
+                                    new ExtDynamo(frm).value().table("0crat-tweets"),
+                                    props.get("//twitter/key"),
+                                    props.get("//twitter/secret"),
+                                    props.get("//twitter/token"),
+                                    props.get("//twitter/tsecret")
+                                )
                             )
                         )
                     )
