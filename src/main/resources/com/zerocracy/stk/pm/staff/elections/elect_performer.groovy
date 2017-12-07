@@ -64,7 +64,7 @@ def exec(Project project, XML xml) {
         (new Banned(project, job)): -1000,
         (new Vacation(pmo)): -1000,
         (new Workload(pmo)): 1,
-        (new VtrSpeed(pmo)): 100
+        (new VtrSpeed(pmo)): 1
       ]
     )
     if (done && elections.elected(job)) {

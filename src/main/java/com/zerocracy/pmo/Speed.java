@@ -22,6 +22,7 @@ import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import org.cactoos.collection.Mapped;
 import org.cactoos.iterable.ItemAt;
+import org.cactoos.scalar.IoCheckedScalar;
 import org.xembly.Directives;
 
 /**
@@ -95,19 +96,17 @@ public final class Speed {
      * @return Minutes
      * @throws IOException If fails
      */
-    @SuppressWarnings("PMD.AvoidCatchingGenericException")
     public double avg() throws IOException {
         try (final Item item = this.item()) {
-            return new ItemAt<>(
-                new Mapped<>(
-                    Double::parseDouble,
-                    new Xocument(item.path())
-                        .xpath("avg(/speed/order/minutes)")
+            return new IoCheckedScalar<>(
+                new ItemAt<>(
+                    new Mapped<>(
+                        Double::parseDouble,
+                        new Xocument(item.path())
+                            .xpath("avg(/speed/order/minutes)")
+                    )
                 )
             ).value();
-            // @checkstyle IllegalCatchCheck (1 line)
-        } catch (final Exception err) {
-            throw new IOException(err);
         }
     }
 
