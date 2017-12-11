@@ -367,7 +367,7 @@ SOFTWARE.
             <properties>
               <property>
                 <name>listener</name>
-                <value>com.zerocracy.TestListener</value>
+                <value>com.zerocracy.ThreadsWatching</value>
               </property>
             </properties>
           </configuration>
