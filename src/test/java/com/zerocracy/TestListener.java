@@ -29,7 +29,7 @@ import org.junit.runner.notification.RunListener;
  * @since 0.18
  * @checkstyle JavadocMethodCheck (500 lines)
  */
-public final class ThreadsWatching extends RunListener {
+public final class TestListener extends RunListener {
 
     @Override
     public void testRunFinished(final Result result) throws Exception {
