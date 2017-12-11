@@ -29,6 +29,8 @@ import org.cactoos.func.AsyncFunc;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
+import org.takes.facets.forward.RsForward;
+import org.takes.misc.Href;
 import org.takes.rq.RqHref;
 import org.takes.rs.RsWithHeader;
 import org.takes.rs.RsWithStatus;
@@ -66,6 +68,12 @@ public final class TkSlack implements Take {
     @Override
     @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     public Response act(final Request req) throws IOException {
+        final Href href = new RqHref.Base(req).href();
+        if (!href.param("code").iterator().hasNext()) {
+            throw new RsForward(
+                "Slack didn't authorize you, sorry!"
+            );
+        }
         final Bots bots = new Bots(this.farm).bootstrap();
         final Props props = new Props(this.farm);
         final String team = bots.register(
@@ -79,10 +87,7 @@ public final class TkSlack implements Take {
                     "client_secret",
                     props.get("//slack/client_secret")
                 )
-                .queryParam(
-                    "code",
-                    new RqHref.Smart(new RqHref.Base(req)).single("code")
-                )
+                .queryParam("code", href.param("code").iterator().next())
                 .back()
                 .fetch()
                 .as(RestResponse.class)
