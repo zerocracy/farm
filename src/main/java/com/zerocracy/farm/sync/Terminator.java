@@ -129,6 +129,7 @@ final class Terminator implements Closeable, Scalar<Iterable<Directive>> {
                         file, project, this.threshold, lock, location
                     );
                     thread.interrupt();
+                    this.submit(project, file, lock);
                 }
                 lock.unlock();
                 this.killers.remove(project);
