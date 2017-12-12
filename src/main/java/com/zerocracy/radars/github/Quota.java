@@ -56,4 +56,17 @@ public final class Quota {
         return limit.remaining() < 500;
     }
 
+    /**
+     * Is it quiet?
+     * @return TRUE if we have a lot of space
+     * @throws IOException If fails
+     */
+    public boolean quiet() throws IOException {
+        final Limit.Smart limit = new Limit.Smart(
+            this.github.limits().get(Limits.CORE)
+        );
+        // @checkstyle MagicNumber (1 line)
+        return limit.remaining() > 4000;
+    }
+
 }

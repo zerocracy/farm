@@ -36,7 +36,7 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Ping')
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
-  if (new Quota(github).over()) {
+  if (!new Quota(github).quiet()) {
     return
   }
   Wbs wbs = new Wbs(project).bootstrap()
