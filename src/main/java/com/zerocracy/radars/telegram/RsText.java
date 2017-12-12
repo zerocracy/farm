@@ -34,10 +34,10 @@ public final class RsText implements TmResponse {
 
     /**
      * Ctor.
-     * @param txt Response text
+     * @param text Response text
      */
-    public RsText(final Text txt) {
-        this.txt = txt;
+    public RsText(final Text text) {
+        this.txt = text;
     }
 
     @Override

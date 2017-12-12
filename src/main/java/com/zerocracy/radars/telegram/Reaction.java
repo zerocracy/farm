@@ -35,9 +35,6 @@ public interface Reaction {
      * @return TRUE if reacted
      * @throws IOException If failed
      */
-    boolean react(
-        Farm farm,
-        TmSession session,
-        TmRequest request
-    ) throws IOException;
+    boolean react(Farm farm, TmSession session, TmRequest request)
+        throws IOException;
 }

@@ -50,11 +50,8 @@ public final class ReSafe implements Reaction {
     }
 
     @Override
-    public boolean react(
-        final Farm farm,
-        final TmSession session,
-        final TmRequest request
-    ) throws IOException {
+    public boolean react(final Farm farm, final TmSession session,
+        final TmRequest request) throws IOException {
         return new IoCheckedFunc<>(
             new FuncWithFallback<Boolean, Boolean>(
                 smart -> {

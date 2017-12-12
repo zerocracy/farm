@@ -96,10 +96,8 @@ public final class TelegramRadar implements AutoCloseable {
      * @param name Bot name
      * @throws IOException If failed
      */
-    public void start(
-        final String token,
-        final String name
-    ) throws IOException {
+    public void start(final String token, final String name)
+        throws IOException {
         try {
             synchronized (this.bots) {
                 this.bots.add(

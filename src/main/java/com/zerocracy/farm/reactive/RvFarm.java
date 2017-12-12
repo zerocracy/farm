@@ -84,7 +84,7 @@ public final class RvFarm implements Farm {
      * @param bgd Stakeholders
      */
     public RvFarm(final Farm farm, final Brigade bgd) {
-        this(farm, bgd, Runtime.getRuntime().availableProcessors() << 2);
+        this(farm, bgd, Runtime.getRuntime().availableProcessors());
     }
 
     /**

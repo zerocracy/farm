@@ -61,7 +61,9 @@ SOFTWARE.
       <xsl:text>.</xsl:text>
     </p>
     <p>
-      <xsl:text>Threads: </xsl:text>
+      <xsl:text>Threads (</xsl:text>
+      <xsl:value-of select="count(threads/thread)"/>
+      <xsl:text>): </xsl:text>
       <xsl:for-each select="threads/thread">
         <xsl:sort select="@id"/>
         <xsl:if test="position() &gt; 1">

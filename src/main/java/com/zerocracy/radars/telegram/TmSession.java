@@ -31,7 +31,7 @@ public interface TmSession {
      * @param response Response to user
      * @throws IOException If failed
      */
-    void reply(final TmResponse response) throws IOException;
+    void reply(TmResponse response) throws IOException;
 
     /**
      * Bot username.

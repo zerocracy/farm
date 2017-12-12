@@ -34,10 +34,10 @@ final class ReNotMine implements Reaction {
 
     /**
      * Ctor.
-     * @param origin Reaction
+     * @param reaction Reaction
      */
-    ReNotMine(final Reaction origin) {
-        this.origin = origin;
+    ReNotMine(final Reaction reaction) {
+        this.origin = reaction;
     }
 
     @Override
