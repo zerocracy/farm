@@ -37,20 +37,21 @@ def exec(Project project, XML xml) {
       "Project \"${pid}\" doesn't exist."
     )
   }
+  Project target = projects[0]
   def login = claim.author()
-  Orders orders = new Orders(project).bootstrap()
+  Orders orders = new Orders(target).bootstrap()
   for (String job : orders.jobs(login)) {
     orders.resign(job)
     new ClaimOut()
         .type('Order was canceled')
         .param('job', job)
         .param('login', login)
-        .postTo(project)
+        .postTo(target)
   }
   new ClaimOut()
     .type('Resign all roles')
     .param('login', claim.author())
-    .postTo(projects[0])
+    .postTo(target)
   claim.reply(
     "You are not in the project `${pid}` anymore."
   ).postTo(project)
