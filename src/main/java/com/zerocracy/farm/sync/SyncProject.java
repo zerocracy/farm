@@ -76,7 +76,7 @@ final class SyncProject implements Project {
                 throw new IllegalStateException(
                     Logger.format(
                         "Failed to acquire \"%s\" in \"%s\" in %[ms]s: %s",
-                        file, this.origin,
+                        file, this.origin.pid(),
                         System.currentTimeMillis() - start,
                         this.lock
                     )
