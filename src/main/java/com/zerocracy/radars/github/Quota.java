@@ -43,6 +43,21 @@ public final class Quota {
         this.github = ghb;
     }
 
+    @Override
+    public String toString() {
+        final Limit.Smart limit = new Limit.Smart(
+            this.github.limits().get(Limits.CORE)
+        );
+        try {
+            return String.format(
+                "limit=%d, remaining=%d, reset=%s",
+                limit.limit(), limit.remaining(), limit.reset()
+            );
+        } catch (final IOException ex) {
+            throw new IllegalStateException(ex);
+        }
+    }
+
     /**
      * Is it over?
      * @return TRUE if over
