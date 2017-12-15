@@ -49,8 +49,10 @@ def exec(Project project, XML xml) {
     )
   }
   orders.assign(job, login, reason)
-  String msg = "Job `${job}` assigned to @${login}, please go ahead" +
-    ' ([policy](http://datum.zerocracy.com/pages/policy.html)).'
+  String msg = "Job `${job}` assigned to @${login}." +
+    ' The budget is [fixed](http://datum.zerocracy.com/pages/policy.html#4)' +
+    ' and it is 30 minutes. Please, read the' +
+    ' [Policy](http://datum.zerocracy.com/pages/policy.html) and go ahead.'
   if (!new Roles(project).bootstrap().hasAnyRole(login)) {
     msg += " @${login} is not a member of this project yet," +
       ' but can request to join.' +
