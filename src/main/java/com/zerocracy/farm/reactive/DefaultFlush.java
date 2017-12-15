@@ -23,6 +23,7 @@ import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.Claims;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.Map;
 import org.cactoos.BiFunc;
 import org.cactoos.func.IoCheckedBiFunc;
 import org.cactoos.iterable.LengthOf;
@@ -111,7 +112,7 @@ final class DefaultFlush implements Flush {
             System.currentTimeMillis() - start,
             new JoinedText(
                 "; ",
-                new Mapped<>(
+                new Mapped<Map.Entry<String, String>, String>(
                     ent -> String.format(
                         "%s=%s", ent.getKey(),
                         // @checkstyle MagicNumber (1 line)

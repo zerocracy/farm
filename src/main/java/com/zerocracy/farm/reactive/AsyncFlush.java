@@ -17,6 +17,7 @@
 package com.zerocracy.farm.reactive;
 
 import com.jcabi.aspects.Tv;
+import com.jcabi.log.VerboseCallable;
 import com.jcabi.log.VerboseThreads;
 import com.zerocracy.ShutUp;
 import com.zerocracy.farm.SmartLock;
@@ -99,21 +100,28 @@ final class AsyncFlush implements Flush {
             project, p -> new AtomicInteger()
         ).incrementAndGet();
         this.service.submit(
-            () -> {
-                final Lock lock = this.locks.computeIfAbsent(
-                    project, p -> new SmartLock()
-                );
-                if (this.alive.get(project).get() < 2) {
-                    lock.lock();
+            new VerboseCallable<>(
+                () -> {
+                    final Lock lock = this.locks.computeIfAbsent(
+                        project, p -> new SmartLock()
+                    );
                     try {
-                        this.origin.exec(project);
+                        // @checkstyle MagicNumber (1 line)
+                        if (this.alive.get(project).get() < 2) {
+                            lock.lock();
+                            try {
+                                this.origin.exec(project);
+                            } finally {
+                                lock.unlock();
+                            }
+                        }
                     } finally {
-                        lock.unlock();
+                        this.alive.get(project).decrementAndGet();
                     }
-                }
-                this.alive.get(project).decrementAndGet();
-                return null;
-            }
+                    return null;
+                },
+                true, true
+            )
         );
     }
 

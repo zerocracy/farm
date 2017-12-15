@@ -17,6 +17,7 @@
 package com.zerocracy.farm.sync;
 
 import com.jcabi.log.Logger;
+import com.jcabi.log.VerboseRunnable;
 import com.jcabi.log.VerboseThreads;
 import com.zerocracy.ShutUp;
 import com.zerocracy.jstk.Project;
@@ -102,7 +103,12 @@ final class Terminator implements Closeable, Scalar<Iterable<Directive>> {
         synchronized (this.killers) {
             if (!this.killers.containsKey(project)) {
                 this.killers.put(project, file);
-                this.service.submit(this.killer(project, file, lock));
+                this.service.submit(
+                    new VerboseRunnable(
+                        this.killer(project, file, lock),
+                        true, true
+                    )
+                );
             }
         }
     }
@@ -126,7 +132,7 @@ final class Terminator implements Closeable, Scalar<Iterable<Directive>> {
                         // @checkstyle LineLength (1 line)
                         "Thread %d/%s interrupted because of too long hold of \"%s\" in %s (over %d msec), %s: %[exception]s",
                         thread.getId(), thread.getName(),
-                        file, project, this.threshold, lock, location
+                        file, project.pid(), this.threshold, lock, location
                     );
                     thread.interrupt();
                     this.submit(project, file, lock);

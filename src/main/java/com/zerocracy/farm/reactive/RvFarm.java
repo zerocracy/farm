@@ -16,6 +16,7 @@
  */
 package com.zerocracy.farm.reactive;
 
+import com.jcabi.log.VerboseRunnable;
 import com.jcabi.log.VerboseThreads;
 import com.zerocracy.ShutUp;
 import com.zerocracy.farm.guts.Guts;
@@ -113,12 +114,16 @@ public final class RvFarm implements Farm {
                             new VerboseThreads(RvFarm.class)
                         );
                     svc.scheduleWithFixedDelay(
-                        new RunnableOf<Boolean>(
-                            input -> {
-                                for (final Project pkt : this.origin.find("")) {
-                                    this.flush.exec(pkt);
+                        new VerboseRunnable(
+                            new RunnableOf<Boolean>(
+                                input -> {
+                                    for (final Project pkt
+                                        : this.origin.find("")) {
+                                        this.flush.exec(pkt);
+                                    }
                                 }
-                            }
+                            ),
+                            true, true
                         ),
                         1L, 1L, TimeUnit.SECONDS
                     );

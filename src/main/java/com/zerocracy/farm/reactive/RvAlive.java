@@ -18,7 +18,7 @@ package com.zerocracy.farm.reactive;
 
 import com.zerocracy.farm.guts.Guts;
 import com.zerocracy.jstk.Farm;
-import org.cactoos.Scalar;
+import org.cactoos.scalar.NumberEnvelope;
 import org.cactoos.scalar.NumberOf;
 
 /**
@@ -28,28 +28,23 @@ import org.cactoos.scalar.NumberOf;
  * @version $Id$
  * @since 0.18
  */
-public final class RvAlive implements Scalar<Boolean> {
+public final class RvAlive extends NumberEnvelope {
 
     /**
-     * Original farm.
+     * Serialization marker.
      */
-    private final Farm origin;
+    private static final long serialVersionUID = 8977134566634953102L;
 
     /**
      * Ctor.
      * @param farm Original farm
      */
     public RvAlive(final Farm farm) {
-        this.origin = farm;
-    }
-
-    @Override
-    public Boolean value() throws Exception {
-        return new NumberOf(
-            new Guts(this.origin).value().xpath(
+        super(() -> new NumberOf(
+            new Guts(farm).value().xpath(
                 "sum(/guts/farm[@id='RvFarm']/alive/count/text())"
             ).get(0)
-        ).intValue() > 0;
+        ).doubleValue());
     }
 
 }
