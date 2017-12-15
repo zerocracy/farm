@@ -23,50 +23,53 @@ SOFTWARE.
   <xsl:include href="/org/takes/rs/xe/memory.xsl"/>
   <xsl:include href="/org/takes/rs/xe/sla.xsl"/>
   <xsl:template match="page" mode="body">
-    <p>
-      <a href="/">
-        <img src="http://www.zerocracy.com/logo.svg" class="inner-logo"/>
-      </a>
-    </p>
-    <p>
-      <a href="/u/{identity/login}">
-        <xsl:text>@</xsl:text>
-        <xsl:value-of select="identity/login"/>
-      </a>
-      <xsl:text> &#xB7; </xsl:text>
-      <a href="http://datum.zerocracy.com/pages/policy.html">
-        <xsl:text>Policy</xsl:text>
-      </a>
-      <xsl:text> &#xB7; </xsl:text>
-      <a href="{links/link[@rel='takes:logout']/@href}" title="Log out">
-        <xsl:text>Exit</xsl:text>
-      </a>
-    </p>
-    <xsl:apply-templates select="." mode="inner"/>
-    <p>
-      <span style="display:block;">
-        <xsl:text>&#x2014;</xsl:text>
-      </span>
-      <span title="Current version of the bot">
-        <xsl:text>v</xsl:text>
-        <xsl:value-of select="version/name"/>
-      </span>
-      <xsl:text> &#xB7; </xsl:text>
-      <span title="Current version of datum">
-        <xsl:value-of select="datum"/>
-      </span>
-      <xsl:text> &#xB7; </xsl:text>
-      <xsl:call-template name="takes_millis">
-        <xsl:with-param name="millis" select="millis"/>
-      </xsl:call-template>
-      <xsl:text> &#xB7; </xsl:text>
-      <xsl:call-template name="takes_sla">
-        <xsl:with-param name="sla" select="@sla"/>
-      </xsl:call-template>
-      <xsl:text> &#xB7; </xsl:text>
-      <xsl:call-template name="takes_memory">
-        <xsl:with-param name="memory" select="memory"/>
-      </xsl:call-template>
-    </p>
+    <header>
+      <p>
+        <a href="/">
+          <img src="http://www.zerocracy.com/logo.svg" class="inner-logo"/>
+        </a>
+      </p>
+    </header>
+    <article>
+      <p>
+        <a href="/u/{identity/login}">
+          <xsl:text>@</xsl:text>
+          <xsl:value-of select="identity/login"/>
+        </a>
+        <xsl:text> &#xB7; </xsl:text>
+        <a href="http://datum.zerocracy.com/pages/policy.html">
+          <xsl:text>Policy</xsl:text>
+        </a>
+        <xsl:text> &#xB7; </xsl:text>
+        <a href="{links/link[@rel='takes:logout']/@href}" title="Log out">
+          <xsl:text>Exit</xsl:text>
+        </a>
+      </p>
+      <xsl:apply-templates select="." mode="inner"/>
+    </article>
+    <footer>
+      <p>
+        <span title="Current version of the bot">
+          <xsl:text>v</xsl:text>
+          <xsl:value-of select="version/name"/>
+        </span>
+        <xsl:text> &#xB7; </xsl:text>
+        <span title="Current version of datum">
+          <xsl:value-of select="datum"/>
+        </span>
+        <xsl:text> &#xB7; </xsl:text>
+        <xsl:call-template name="takes_millis">
+          <xsl:with-param name="millis" select="millis"/>
+        </xsl:call-template>
+        <xsl:text> &#xB7; </xsl:text>
+        <xsl:call-template name="takes_sla">
+          <xsl:with-param name="sla" select="@sla"/>
+        </xsl:call-template>
+        <xsl:text> &#xB7; </xsl:text>
+        <xsl:call-template name="takes_memory">
+          <xsl:with-param name="memory" select="memory"/>
+        </xsl:call-template>
+      </p>
+    </footer>
   </xsl:template>
 </xsl:stylesheet>
