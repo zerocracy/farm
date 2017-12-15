@@ -35,7 +35,11 @@ SOFTWARE.
   <xsl:template match="projects[project]">
     <p>
       <xsl:text>To join any of these projects you have</xsl:text>
-      <xsl:text> to apply, by asking @0crat in a chat,</xsl:text>
+      <xsl:text> to apply, by asking </xsl:text>
+      <code>
+        <xsl:text>@0crat</xsl:text>
+      </code>
+      <xsl:text> in a chat,</xsl:text>
       <xsl:text> see </xsl:text>
       <a href="http://datum.zerocracy.com/pages/policy.html#2">
         <xsl:text>par.2</xsl:text>
@@ -49,7 +53,10 @@ SOFTWARE.
             <xsl:text>ID</xsl:text>
           </th>
           <th>
-            <xsl:text>Repositories</xsl:text>
+            <xsl:text>Title</xsl:text>
+          </th>
+          <th>
+            <xsl:text>GitHub Repositories</xsl:text>
           </th>
           <th>
             <xsl:text>Members</xsl:text>
@@ -72,9 +79,12 @@ SOFTWARE.
         </code>
       </td>
       <td>
-        <xsl:apply-templates select="repositories"/>
+        <xsl:value-of select="title"/>
       </td>
       <td>
+        <xsl:apply-templates select="repositories"/>
+      </td>
+      <td style="text-align:right;">
         <xsl:if test="mine='false'">
           <xsl:value-of select="members"/>
         </xsl:if>
@@ -88,7 +98,7 @@ SOFTWARE.
           </xsl:if>
         </xsl:if>
       </td>
-      <td>
+      <td style="text-align:right;">
         <xsl:value-of select="jobs"/>
       </td>
     </tr>
