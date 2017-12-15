@@ -128,12 +128,6 @@ SOFTWARE.
     </opts>
   </cmd>
   <cmd>
-    <code>Bootstrap</code>
-    <regex>bootstrap</regex>
-    <label>bootstrap</label>
-    <help>Bootstrap the project to initialize all project artifacts</help>
-  </cmd>
-  <cmd>
     <code>Set title</code>
     <regex>title</regex>
     <label>title</label>
