@@ -49,10 +49,10 @@ def exec(Project project, XML xml) {
       claim.reply(
         String.join(
           ' ',
-          "I\'m ready to manage a project. Project ID is `${project}`.",
+          "I\'m ready to manage a project. Project ID is `${project.pid()}`.",
           'When you\'re ready, you can start giving me commands,',
           'always prefixing your messages with my name.',
-          "All project artifacts are [here](http://www.0crat.com/p/${project})."
+          "All project artifacts are [here](http://www.0crat.com/p/${project.pid()})."
         )
       ).postTo(project)
     }
