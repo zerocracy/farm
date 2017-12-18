@@ -27,7 +27,9 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="page" mode="inner">
     <p>
-      <img src="/avatar/{owner}" style="width:64px;height:64px;"/>
+      <a href="https://github.com/{owner}">
+        <img src="/avatar/{owner}" style="width:64px;height:64px;border-radius:5px;"/>
+      </a>
     </p>
     <xsl:if test="not(details)">
       <p>
