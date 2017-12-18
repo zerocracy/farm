@@ -50,20 +50,36 @@ public final class NoRoom implements Voter {
         final long total = new LengthOf(
             new Agenda(this.pmo, login).bootstrap().jobs()
         ).value();
+        final long max = 5L;
         final double rate;
-        // @checkstyle MagicNumber (1 line)
-        if (total > 5L) {
+        if (total > max) {
             rate = 1.0d;
-            log.append(String.format("There are %d open jobs already", total));
+            log.append(
+                String.format(
+                    "%d open jobs already, max is %d", total, max
+                )
+            );
         } else if (total > 1L) {
             rate = 0.0d;
-            log.append(String.format("There are just %d open jobs", total));
+            log.append(
+                String.format(
+                    "Just %d open jobs out of %d", total, max
+                )
+            );
         } else if (total == 1L) {
             rate = 0.0d;
-            log.append("There is just one open jobs");
+            log.append(
+                String.format(
+                    "There is just one open job out of %d", max
+                )
+            );
         } else {
             rate = 0.0d;
-            log.append("There are no jobs yet");
+            log.append(
+                String.format(
+                    "There are no jobs yet, max is %d", max
+                )
+            );
         }
         return rate;
     }
