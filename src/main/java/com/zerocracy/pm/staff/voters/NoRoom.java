@@ -52,7 +52,7 @@ public final class NoRoom implements Voter {
         ).value();
         final long max = 5L;
         final double rate;
-        if (total > max) {
+        if (total >= max) {
             rate = 1.0d;
             log.append(
                 String.format(
