@@ -24,6 +24,7 @@ import com.jcabi.xml.XML
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
+import com.zerocracy.pm.staff.Bans
 import com.zerocracy.pmo.Agenda
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
@@ -39,5 +40,9 @@ def exec(Project project, XML xml) {
   MatcherAssert.assertThat(
     new Agenda(project, 'g4s8').bootstrap().exists('gh:test/test#1'),
     Matchers.equalTo(false)
+  )
+  MatcherAssert.assertThat(
+    new Bans(project).bootstrap().reasons('gh:test/test#1', 'g4s8'),
+    Matchers.iterableWithSize(1)
   )
 }

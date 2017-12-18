@@ -108,7 +108,7 @@ public final class ClaimsTest {
         final Claims claims = new Claims(new FkProject()).bootstrap();
         claims.add(
             new ClaimOut()
-                .until(TimeUnit.HOURS.toSeconds(1L))
+                .until(TimeUnit.MINUTES.toSeconds(1L))
                 .type("hello future")
         );
         MatcherAssert.assertThat(
