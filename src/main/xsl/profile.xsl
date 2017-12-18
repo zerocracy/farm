@@ -26,6 +26,9 @@ SOFTWARE.
     </title>
   </xsl:template>
   <xsl:template match="page" mode="inner">
+    <p>
+      <img src="/avatar/{owner}" style="width:64px;height:64px;"/>
+    </p>
     <xsl:if test="not(details)">
       <p>
         <xsl:text>This is the profile of </xsl:text>

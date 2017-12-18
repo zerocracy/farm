@@ -24,8 +24,6 @@ SOFTWARE.
         <meta name="description" content="Project managers that never sleep, fail, or miss anything"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <link rel="shortcut icon" href="http://www.zerocracy.com/logo.png"/>
-        <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Nunito"/>
-        <link rel="stylesheet" href="//cdn.rawgit.com/yegor256/tacit/gh-pages/tacit-css-1.1.1.min.css"/>
         <link rel="stylesheet" href="/css/main.css"/>
         <xsl:apply-templates select="." mode="head"/>
       </head>

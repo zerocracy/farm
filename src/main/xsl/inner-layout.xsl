@@ -28,7 +28,7 @@ SOFTWARE.
         <ul>
           <li>
             <a href="/">
-              <img src="http://www.zerocracy.com/logo.svg" class="inner-logo"/>
+              <img src="http://www.zerocracy.com/logo.svg" class="logo"/>
             </a>
           </li>
         </ul>

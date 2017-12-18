@@ -13,11 +13,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-* {
-  font-family: 'Nunito', sans-serif;
-}
+@import "//fonts.googleapis.com/css?family=Nunito";
+@import "//cdn.rawgit.com/yegor256/tacit/gh-pages/tacit-css-1.2.4.min.css";
 
 body {
+  font-family: 'Nunito', sans-serif;
   padding: 1em;
 }
 
@@ -27,6 +27,10 @@ section {
 
 article {
   width: 100%;
+
+  &.narrow {
+    width: 800px;
+  }
 }
 
 footer {
@@ -51,9 +55,11 @@ footer {
   }
 }
 
-.logo {
-  width: 128px;
-  height: 128px;
+header {
+  .logo {
+    width: 128px;
+    height: 128px;
+  }
 }
 
 .inner-logo {

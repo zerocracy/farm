@@ -31,7 +31,7 @@ SOFTWARE.
     <div class="center">
       <p>
         <a href="/">
-          <img src="http://www.zerocracy.com/logo.svg" class="logo"/>
+          <img src="http://www.zerocracy.com/logo.svg" style="width:128px;height:128px;"/>
         </a>
       </p>
       <p>
