@@ -23,6 +23,7 @@ import com.zerocracy.jstk.Project
 import com.zerocracy.jstk.SoftException
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
+import com.zerocracy.pmo.Catalog
 import com.zerocracy.pmo.People
 
 def exec(Project project, XML xml) {
@@ -31,8 +32,8 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   Farm farm = binding.variables.farm
   String pid = claim.param('project')
-  Iterable<Project> projects = farm.find("@id='${pid}'")
-  if (!projects.iterator().hasNext()) {
+
+  if (!new Catalog(project).bootstrap().exists(pid)) {
     throw new SoftException(
       "Project \"${pid}\" doesn't exist."
     )
@@ -50,7 +51,7 @@ def exec(Project project, XML xml) {
       ' You can use that rate or define another one,' +
       ' see [par.13](http://datum.zerocracy.com/pages/policy.html#13).'
     )
-    .postTo(projects[0])
+    .postTo(farm.find("@id='${pid}'")[0])
   claim.reply(
     "Project `${pid}` was notified about your desire to join them."
   ).postTo(project)
