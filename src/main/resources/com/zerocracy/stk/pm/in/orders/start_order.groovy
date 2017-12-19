@@ -49,7 +49,8 @@ def exec(Project project, XML xml) {
     )
   }
   orders.assign(job, login, reason)
-  String msg = "Job `${job}` assigned to @${login}." +
+  String msg = "Job `${job}` assigned to @${login} " +
+    " ([profile](http://www.0crat.com/u/${login}}))." +
     ' The budget is [fixed](http://datum.zerocracy.com/pages/policy.html#4)' +
     ' and it is 30 minutes. Please, read the' +
     ' [Policy](http://datum.zerocracy.com/pages/policy.html) and go ahead.'
