@@ -224,7 +224,7 @@ public final class BundlesTest {
                         return !claims.iterate().isEmpty()
                             || new RvAlive(farm).intValue() > 0;
                     },
-                    new Limited<>(Tv.FIFTY, new Endless<>(1))
+                    new Limited<>(Tv.THOUSAND, new Endless<>(1))
                 ).value(),
                 Matchers.equalTo(false)
             );

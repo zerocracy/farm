@@ -41,6 +41,8 @@ SOFTWARE.
     <p>
       <xsl:apply-templates select="project_links"/>
     </p>
+  </xsl:template>
+  <xsl:template match="page[project!='PMO']" mode="artifacts">
     <p>
       <xsl:text>Scope: </xsl:text>
       <a href="/a/{project}?a=pm/scope/wbs">
@@ -108,6 +110,27 @@ SOFTWARE.
       <xsl:text>, </xsl:text>
       <a href="/a/{project}?a=pm/staff/elections">
         <xsl:text>Elections</xsl:text>
+      </a>
+      <xsl:text>.</xsl:text>
+    </p>
+  </xsl:template>
+  <xsl:template match="page[project='PMO']" mode="artifacts">
+    <p>
+      <xsl:text>Artifacts: </xsl:text>
+      <a href="/a/{project}?a=pmo/bots">
+        <xsl:text>Bots</xsl:text>
+      </a>
+      <xsl:text>, </xsl:text>
+      <a href="/a/{project}?a=pmo/catalog">
+        <xsl:text>Catalog</xsl:text>
+      </a>
+      <xsl:text>, </xsl:text>
+      <a href="/a/{project}?a=pmo/people">
+        <xsl:text>People</xsl:text>
+      </a>
+      <xsl:text>, </xsl:text>
+      <a href="/a/{project}?a=pmo/claims">
+        <xsl:text>Claims</xsl:text>
       </a>
       <xsl:text>.</xsl:text>
     </p>

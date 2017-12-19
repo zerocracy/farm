@@ -17,12 +17,14 @@
 package com.zerocracy.farm;
 
 import com.jcabi.log.Logger;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import lombok.EqualsAndHashCode;
 
 /**
  * Lock that is smart.
@@ -31,7 +33,13 @@ import java.util.concurrent.locks.ReentrantLock;
  * @version $Id$
  * @since 0.19
  */
+@EqualsAndHashCode(of = "origin")
 public final class SmartLock implements Lock {
+
+    /**
+     * ID.
+     */
+    private final String uid = UUID.randomUUID().toString().substring(24);
 
     /**
      * Original lock.
@@ -53,7 +61,8 @@ public final class SmartLock implements Lock {
         final String text;
         if (this.origin.isLocked()) {
             text = Logger.format(
-                "%[ms]s/%d/%d/%b/%b by %s",
+                "%s/%[ms]s/%d/%d/%b/%b by %s",
+                this.uid,
                 System.currentTimeMillis() - this.start.get(),
                 this.origin.getHoldCount(),
                 this.origin.getQueueLength(),

@@ -48,9 +48,14 @@ public final class ShutUp {
     public void close() {
         this.service.shutdown();
         try {
-            if (!this.service.awaitTermination(1L, TimeUnit.MINUTES)) {
+            final long seconds = 10L;
+            if (!this.service.awaitTermination(seconds, TimeUnit.SECONDS)) {
+                this.service.shutdownNow();
                 throw new IllegalStateException(
-                    "Can't terminate the service"
+                    String.format(
+                        "Can't terminate the service even after %d seconds",
+                        seconds
+                    )
                 );
             }
         } catch (final InterruptedException ex) {
