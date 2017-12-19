@@ -118,6 +118,14 @@ SOFTWARE.
   <xsl:template match="page[project='PMO']" mode="artifacts">
     <p>
       <xsl:text>Artifacts: </xsl:text>
+      <a href="/report/{project}">
+        <xsl:text>Reports</xsl:text>
+      </a>
+      <xsl:text>, </xsl:text>
+      <a href="/footprint/{project}">
+        <xsl:text>Footprint</xsl:text>
+      </a>
+      <xsl:text>, </xsl:text>
       <a href="/a/{project}?a=pmo/bots">
         <xsl:text>Bots</xsl:text>
       </a>
