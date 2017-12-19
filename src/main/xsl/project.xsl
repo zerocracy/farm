@@ -41,6 +41,7 @@ SOFTWARE.
     <p>
       <xsl:apply-templates select="project_links"/>
     </p>
+    <xsl:apply-templates select="." mode="artifacts"/>
   </xsl:template>
   <xsl:template match="page[project!='PMO']" mode="artifacts">
     <p>
