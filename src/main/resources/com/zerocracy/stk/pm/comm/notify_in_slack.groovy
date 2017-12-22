@@ -28,7 +28,7 @@ import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 
-// Token must look like: slack;C43789437;yegor256
+// Token must look like: slack;C43789437;yegor256;direct
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Notify in Slack')
@@ -50,10 +50,29 @@ def exec(Project project, XML xml) {
   }
   SlackSession session = session(parts[1])
   if (parts.length > 2) {
-    SlackUser user = session.findUserByUserName(parts[2])
-    def channel = session.openDirectMessageChannel(user).reply.slackChannel
-    if (user != null) {
-      session.sendMessage(channel, message)
+    if (parts.length > 3 && parts[3] == 'direct') {
+      SlackUser user = session.findUserByUserName(parts[2])
+      def channel = session.openDirectMessageChannel(user).reply.slackChannel
+      if (user == null) {
+        Logger.warn(
+          this, 'Failed to notify @%s (%s), since there is no direct chat',
+          user.id, user.realName
+        )
+      } else {
+        session.sendMessage(channel, message)
+      }
+    } else {
+      SlackChannel channel = session.findChannelById(parts[1])
+      session.sendMessage(
+        channel, String.format('@%s %s', parts[2], message)
+      )
+      Logger.info(
+        this, '@%s posted %d chars to @%s at %s/%s',
+        session.sessionPersona().userName,
+        message.length(),
+        parts[2],
+        channel.name, channel.id
+      )
     }
   } else {
     SlackChannel channel = session.findChannelById(parts[1])
