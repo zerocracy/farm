@@ -19,6 +19,7 @@ package com.zerocracy.radars.github;
 import com.jcabi.github.Github;
 import com.jcabi.github.Limit;
 import com.jcabi.github.Limits;
+import com.jcabi.log.Logger;
 import com.zerocracy.entry.ExtGithub;
 import com.zerocracy.jstk.Farm;
 import java.io.IOException;
@@ -59,9 +60,10 @@ public final class Quota {
             this.github.limits().get(Limits.CORE)
         );
         try {
-            return String.format(
-                "limit=%d, remaining=%d, reset=%s",
-                limit.limit(), limit.remaining(), limit.reset()
+            return Logger.format(
+                "limit=%d, remaining=%d, reset=%[ms]s",
+                limit.limit(), limit.remaining(),
+                limit.reset().getTime() - System.currentTimeMillis()
             );
         } catch (final IOException ex) {
             throw new IllegalStateException(ex);
