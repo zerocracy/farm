@@ -85,6 +85,13 @@ SOFTWARE.
       <xsl:text>See XML.</xsl:text>
     </p>
   </xsl:template>
+  <xsl:template match="farm[@id='ExtFarm']">
+    <p>
+      <xsl:text>Quota: </xsl:text>
+      <xsl:value-of select="quota"/>
+      <xsl:text>.</xsl:text>
+    </p>
+  </xsl:template>
   <xsl:template match="farm[@id='RvFarm']">
     <p>
       <xsl:text>Alive (</xsl:text>

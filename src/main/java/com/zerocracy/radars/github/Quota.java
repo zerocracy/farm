@@ -19,6 +19,8 @@ package com.zerocracy.radars.github;
 import com.jcabi.github.Github;
 import com.jcabi.github.Limit;
 import com.jcabi.github.Limits;
+import com.zerocracy.entry.ExtGithub;
+import com.zerocracy.jstk.Farm;
 import java.io.IOException;
 
 /**
@@ -34,6 +36,14 @@ public final class Quota {
      * GitHub.
      */
     private final Github github;
+
+    /**
+     * Ctor.
+     * @param farm The farm
+     */
+    public Quota(final Farm farm) {
+        this(new ExtGithub(farm).value());
+    }
 
     /**
      * Ctor.
