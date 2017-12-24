@@ -47,4 +47,14 @@ public final class SpeedTest {
         speed.add("TST100003", "gh:test/fast#3", 3L);
         MatcherAssert.assertThat(speed.avg(), Matchers.equalTo(2.0));
     }
+
+    @Test
+    public void avgEmptyTest() throws Exception {
+        MatcherAssert.assertThat(
+            new Speed(new FkProject(), "user")
+                .bootstrap()
+                .avg(),
+            Matchers.equalTo(0.0)
+        );
+    }
 }

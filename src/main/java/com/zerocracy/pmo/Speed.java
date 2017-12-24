@@ -100,6 +100,7 @@ public final class Speed {
         try (final Item item = this.item()) {
             return new IoCheckedScalar<>(
                 new ItemAt<>(
+                    0.0,
                     new Mapped<>(
                         Double::parseDouble,
                         new Xocument(item.path())
