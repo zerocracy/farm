@@ -163,6 +163,22 @@ final class GsProject implements Project {
                 )
             )
             .up()
+            .add("threads")
+            .append(
+                new Joined<>(
+                    new Mapped<Thread, Iterable<Directive>>(
+                        thread -> new Directives()
+                            .add("thread")
+                            .attr("id", thread.getName())
+                            .attr("state", thread.getState())
+                            .attr("daemon", thread.isDaemon())
+                            .attr("alive", thread.isAlive())
+                            .up(),
+                        Thread.getAllStackTraces().keySet()
+                    )
+                )
+            )
+            .up()
             .up();
     }
 

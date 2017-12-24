@@ -76,7 +76,7 @@ final class SyncProject implements Project {
                 throw new IllegalStateException(
                     Logger.format(
                         "Failed to acquire \"%s\" in \"%s\" in %[ms]s: %s",
-                        file, this.origin,
+                        file, this.origin.pid(),
                         System.currentTimeMillis() - start,
                         this.lock
                     )
@@ -86,7 +86,8 @@ final class SyncProject implements Project {
             Thread.currentThread().interrupt();
             throw new IllegalStateException(
                 Logger.format(
-                    "Interrupted while waiting for \"%s\" in %s for %[ms]s",
+                    "%s interrupted while waiting for \"%s\" in %s for %[ms]s",
+                    Thread.currentThread().getName(),
                     file, this.pid(),
                     System.currentTimeMillis() - start
                 ),

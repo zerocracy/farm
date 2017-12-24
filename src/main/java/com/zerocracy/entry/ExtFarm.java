@@ -14,37 +14,55 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.farm.reactive;
+package com.zerocracy.farm.props;
 
 import com.zerocracy.farm.guts.Guts;
 import com.zerocracy.jstk.Farm;
-import org.cactoos.scalar.NumberEnvelope;
-import org.cactoos.scalar.NumberOf;
+import com.zerocracy.jstk.Project;
+import com.zerocracy.radars.github.Quota;
+import java.io.IOException;
+import lombok.EqualsAndHashCode;
+import org.xembly.Directives;
 
 /**
- * Reactive farm is still alive?
+ * Farm with guts about all Ext details.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.18
+ * @since 0.19
  */
-public final class RvAlive extends NumberEnvelope {
+@EqualsAndHashCode(of = "origin")
+public final class ExtFarm implements Farm {
 
     /**
-     * Serialization marker.
+     * Original farm.
      */
-    private static final long serialVersionUID = 8977134566634953102L;
+    private final Farm origin;
 
     /**
      * Ctor.
      * @param farm Original farm
      */
-    public RvAlive(final Farm farm) {
-        super(() -> new NumberOf(
-            new Guts(farm).value().xpath(
-                "sum(/guts/farm[@id='RvFarm']/alive/count/text())"
-            ).get(0)
-        ).doubleValue());
+    public ExtFarm(final Farm farm) {
+        this.origin = farm;
     }
 
+    @Override
+    public Iterable<Project> find(final String query) throws IOException {
+        return new Guts(
+            this.origin,
+            () -> this.origin.find(query),
+            () -> new Directives()
+                .xpath("/guts")
+                .add("farm")
+                .attr("id", this.getClass().getSimpleName())
+                .add("quota").set(new Quota(this.origin).toString()).up()
+                .up()
+        ).apply(query);
+    }
+
+    @Override
+    public void close() throws IOException {
+        this.origin.close();
+    }
 }

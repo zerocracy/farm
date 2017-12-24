@@ -35,13 +35,13 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Ping')
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
-  if (new Quota(github).over()) {
-    return
-  }
   Orders orders = new Orders(project).bootstrap()
   Date threshold = java.sql.Date.valueOf(LocalDate.now().minusDays(5))
   int done = 0
   for (String job : orders.iterate()) {
+    if (!new Quota(github).quiet()) {
+      return
+    }
     Issue.Smart issue = new Issue.Smart(new Job.Issue(github, job))
     if (issue.open) {
       continue

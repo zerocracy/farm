@@ -20,6 +20,7 @@ import com.jcabi.log.Logger
 import com.jcabi.xml.XML
 import com.ullink.slack.simpleslackapi.SlackChannel
 import com.ullink.slack.simpleslackapi.SlackSession
+import com.ullink.slack.simpleslackapi.SlackUser
 import com.zerocracy.entry.ExtSlack
 import com.zerocracy.farm.Assume
 import com.zerocracy.farm.props.Props
@@ -27,7 +28,7 @@ import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 
-// Token must look like: C43789437;yegor256
+// Token must look like: slack;C43789437;yegor256;direct
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Notify in Slack')
@@ -48,18 +49,22 @@ def exec(Project project, XML xml) {
     return
   }
   SlackSession session = session(parts[1])
-  if (parts.length > 3) {
-    String user = session.findUserByUserName(parts[2])
-    def channel = session.openDirectMessageChannel(user).reply.slackChannel
-    if (user != null) {
-      session.sendMessage(channel, message)
-    }
-  } else {
-    SlackChannel channel = session.findChannelById(parts[1])
-    if (parts.length > 2) {
+  if (parts.length > 2) {
+    if (parts.length > 3 && parts[3] == 'direct') {
+      SlackUser user = session.findUserByUserName(parts[2])
+      def channel = session.openDirectMessageChannel(user).reply.slackChannel
+      if (user == null) {
+        Logger.warn(
+          this, 'Failed to notify @%s (%s), since there is no direct chat',
+          user.id, user.realName
+        )
+      } else {
+        session.sendMessage(channel, message)
+      }
+    } else {
+      SlackChannel channel = session.findChannelById(parts[1])
       session.sendMessage(
-        channel,
-        String.format('@%s %s', parts[2], message)
+        channel, String.format('@%s %s', parts[2], message)
       )
       Logger.info(
         this, '@%s posted %d chars to @%s at %s/%s',
@@ -68,15 +73,16 @@ def exec(Project project, XML xml) {
         parts[2],
         channel.name, channel.id
       )
-    } else {
-      session.sendMessage(channel, message)
-      Logger.info(
-        this, '@%s posted %d chars at %s/%s',
-        session.sessionPersona().userName,
-        message.length(),
-        channel.name, channel.id
-      )
     }
+  } else {
+    SlackChannel channel = session.findChannelById(parts[1])
+    session.sendMessage(channel, message)
+    Logger.info(
+      this, '@%s posted %d chars at %s/%s',
+      session.sessionPersona().userName,
+      message.length(),
+      channel.name, channel.id
+    )
   }
 }
 

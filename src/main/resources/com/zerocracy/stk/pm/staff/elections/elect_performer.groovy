@@ -33,7 +33,6 @@ import com.zerocracy.pm.staff.voters.Vacation
 import com.zerocracy.pm.staff.voters.VtrSpeed
 import com.zerocracy.pm.staff.voters.Workload
 import com.zerocracy.pmo.Pmo
-import java.util.concurrent.TimeUnit
 import org.cactoos.iterable.Shuffled
 
 def exec(Project project, XML xml) {
@@ -52,10 +51,8 @@ def exec(Project project, XML xml) {
     return
   }
   Elections elections = new Elections(project).bootstrap()
-  Set<String> winners = [] as Set
   Farm farm = binding.variables.farm
   Project pmo = new Pmo(farm)
-  long start = System.currentTimeMillis()
   for (String job : new Shuffled<>(wbs.iterate())) {
     boolean done = elections.elect(
       job, logins,
@@ -68,18 +65,12 @@ def exec(Project project, XML xml) {
       ]
     )
     if (done && elections.elected(job)) {
-      String winner = elections.winner(job)
-      if (!winners.contains(winner)) {
-        winners.add(winner)
-        new ClaimOut()
-          .type('Performer was elected')
-          .param('login', winner)
-          .param('job', job)
-          .param('reason', elections.reason(job))
-          .postTo(project)
-      }
-    }
-    if (System.currentTimeMillis() - start > TimeUnit.SECONDS.toMillis(15)) {
+      new ClaimOut()
+        .type('Performer was elected')
+        .param('login', elections.winner(job))
+        .param('job', job)
+        .param('reason', elections.reason(job))
+        .postTo(project)
       break
     }
   }

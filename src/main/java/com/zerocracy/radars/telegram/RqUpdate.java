@@ -33,10 +33,10 @@ final class RqUpdate implements TmRequest {
 
     /**
      * Ctor.
-     * @param upd An update
+     * @param update An update
      */
-    RqUpdate(final Update upd) {
-        this.upd = upd;
+    RqUpdate(final Update update) {
+        this.upd = update;
     }
 
     @Override

@@ -14,54 +14,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy;
+package com.zerocracy.tk.profile;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
+import com.jcabi.github.Github;
+import com.jcabi.github.User;
+import java.io.IOException;
+import java.util.Locale;
+import org.takes.Response;
+import org.takes.facets.fork.RqRegex;
+import org.takes.facets.fork.TkRegex;
+import org.takes.rs.RsRedirect;
 
 /**
- * Shut executor service up.
+ * User avatar image.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.19
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-public final class ShutUp {
+public final class TkAvatar implements TkRegex {
 
     /**
-     * The service.
+     * GitHub.
      */
-    private final ExecutorService service;
+    private final Github github;
 
     /**
-     * Close this executor.
-     * @param svc The service
+     * Ctor.
+     * @param hub The github
      */
-    public ShutUp(final ExecutorService svc) {
-        this.service = svc;
+    public TkAvatar(final Github hub) {
+        this.github = hub;
     }
 
-    /**
-     * Close this executor.
-     */
-    public void close() {
-        this.service.shutdown();
-        try {
-            final long seconds = 10L;
-            if (!this.service.awaitTermination(seconds, TimeUnit.SECONDS)) {
-                this.service.shutdownNow();
-                throw new IllegalStateException(
-                    String.format(
-                        "Can't terminate the service even after %d seconds",
-                        seconds
-                    )
-                );
-            }
-        } catch (final InterruptedException ex) {
-            Thread.currentThread().interrupt();
-            throw new IllegalStateException(ex);
-        }
+    @Override
+    public Response act(final RqRegex req) throws IOException {
+        return new RsRedirect(
+            new User.Smart(
+                this.github.users().get(
+                    req.matcher().group(1).toLowerCase(Locale.ENGLISH)
+                )
+            ).avatarUrl().toString()
+        );
     }
 
 }

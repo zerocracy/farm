@@ -18,9 +18,12 @@ package com.zerocracy.pm;
 
 import com.jcabi.xml.XML;
 import com.mongodb.client.model.Filters;
+import com.zerocracy.RunsInThreads;
 import com.zerocracy.farm.props.PropsFarm;
+import com.zerocracy.farm.sync.SyncFarm;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -33,6 +36,7 @@ import org.junit.Test;
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class FootprintTest {
 
     @Test
@@ -49,6 +53,31 @@ public final class FootprintTest {
                     Filters.eq("project", project.pid())
                 ),
                 Matchers.iterableWithSize(1)
+            );
+        }
+    }
+
+    @Test
+    public void addsInThreads() throws Exception {
+        try (final Farm farm = new SyncFarm(new PropsFarm())) {
+            MatcherAssert.assertThat(
+                inc -> {
+                    final Project project = farm.find(
+                        String.format("@id='%09d'", inc.incrementAndGet())
+                    ).iterator().next();
+                    new ClaimOut().type("hello dude").postTo(project);
+                    final XML xml = new Claims(project)
+                        .iterate().iterator().next();
+                    try (final Footprint footprint =
+                        new Footprint(farm, project)) {
+                        footprint.open(xml);
+                        footprint.close(xml);
+                        return footprint.collection().find(
+                            Filters.eq("project", project.pid())
+                        ).iterator().hasNext();
+                    }
+                },
+                new RunsInThreads<>(new AtomicInteger())
             );
         }
     }

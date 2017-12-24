@@ -17,6 +17,7 @@
 package com.zerocracy.farm.reactive;
 
 import com.jcabi.aspects.Tv;
+import com.jcabi.log.VerboseCallable;
 import com.jcabi.log.VerboseThreads;
 import com.zerocracy.ShutUp;
 import com.zerocracy.farm.SmartLock;
@@ -95,26 +96,34 @@ final class AsyncFlush implements Flush {
                 )
             );
         }
-        this.alive.computeIfAbsent(
+        final AtomicInteger total = this.alive.computeIfAbsent(
             project, p -> new AtomicInteger()
-        ).incrementAndGet();
-        this.service.submit(
-            () -> {
-                final Lock lock = this.locks.computeIfAbsent(
-                    project, p -> new SmartLock()
-                );
-                if (this.alive.get(project).get() < 2) {
-                    lock.lock();
-                    try {
-                        this.origin.exec(project);
-                    } finally {
-                        lock.unlock();
-                    }
-                }
-                this.alive.get(project).decrementAndGet();
-                return null;
-            }
         );
+        // @checkstyle MagicNumber (1 line)
+        if (total.get() < 5) {
+            this.service.submit(
+                new VerboseCallable<>(
+                    () -> {
+                        final Lock lock = this.locks.computeIfAbsent(
+                            project, p -> new SmartLock()
+                        );
+                        try {
+                            lock.lock();
+                            try {
+                                this.origin.exec(project);
+                            } finally {
+                                lock.unlock();
+                            }
+                        } finally {
+                            total.decrementAndGet();
+                        }
+                        return null;
+                    },
+                    true, true
+                )
+            );
+            total.incrementAndGet();
+        }
     }
 
     @Override

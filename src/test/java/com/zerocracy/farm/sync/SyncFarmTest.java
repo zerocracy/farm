@@ -93,7 +93,7 @@ public final class SyncFarmTest {
                                 item.path(), Matchers.notNullValue()
                             );
                             locked.countDown();
-                            TimeUnit.HOURS.sleep(1L);
+                            TimeUnit.MINUTES.sleep(1L);
                         }
                     }
                 )

@@ -23,6 +23,7 @@ import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.scope.Wbs;
 import com.zerocracy.pm.staff.Roles;
+import com.zerocracy.pmo.Catalog;
 import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
 import java.util.Collection;
@@ -100,6 +101,7 @@ public final class TkBoard implements Take {
         return new XeAppend(
             "project",
             new XeAppend("id", project.pid()),
+            new XeAppend("title", new Catalog(this.farm).title(project.pid())),
             new XeAppend(
                 "mine",
                 Boolean.toString(

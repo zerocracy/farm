@@ -172,7 +172,12 @@ public final class TkGithub implements Take, Runnable {
         final Github github = new ExtGithub(this.farm).value();
         if (new Quota(github).over()) {
             throw new RsForward(
-                new RsWithBody("GitHub API is over quota"),
+                new RsWithBody(
+                    String.format(
+                        "GitHub API is over quota: %s",
+                        new Quota(github)
+                    )
+                ),
                 HttpURLConnection.HTTP_UNAVAILABLE
             );
         }

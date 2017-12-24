@@ -80,15 +80,15 @@ public final class AsyncFlushTest {
                 )
             );
             thread.start();
-            final Flush def = new DefaultFlush(brigade);
-            try (final Flush flush = new AsyncFlush(def)) {
+            try (final Flush flush =
+                new AsyncFlush(new DefaultFlush(brigade))) {
                 latch.countDown();
                 while (thread.isAlive()) {
                     flush.exec(project);
                 }
                 thread.join();
                 final Claims claims = new Claims(project).bootstrap();
-                while (claims.iterate().iterator().hasNext()) {
+                while (!claims.iterate().isEmpty()) {
                     flush.exec(project);
                 }
             }

@@ -46,18 +46,15 @@ final class BotUpdateReaction {
 
     /**
      * Ctor.
-     * @param reaction Reaction
-     * @param farm Project farm
-     * @param sessions Telegram sessions
+     * @param rtn Reaction
+     * @param frm Project farm
+     * @param map Telegram sessions
      */
-    BotUpdateReaction(
-        final Reaction reaction,
-        final Farm farm,
-        final Map<Long, TmSession> sessions
-    ) {
-        this.reaction = reaction;
-        this.farm = farm;
-        this.sessions = sessions;
+    BotUpdateReaction(final Reaction rtn, final Farm frm,
+        final Map<Long, TmSession> map) {
+        this.reaction = rtn;
+        this.farm = frm;
+        this.sessions = map;
     }
 
     /**

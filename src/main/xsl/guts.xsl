@@ -60,10 +60,36 @@ SOFTWARE.
       </xsl:for-each>
       <xsl:text>.</xsl:text>
     </p>
+    <p>
+      <xsl:text>Threads (</xsl:text>
+      <xsl:value-of select="count(threads/thread)"/>
+      <xsl:text>): </xsl:text>
+      <xsl:for-each select="threads/thread">
+        <xsl:sort select="@id"/>
+        <xsl:if test="position() &gt; 1">
+          <xsl:text>, </xsl:text>
+        </xsl:if>
+        <xsl:value-of select="@id"/>
+        <xsl:text>/</xsl:text>
+        <xsl:value-of select="@state"/>
+        <xsl:text>/</xsl:text>
+        <xsl:value-of select="@daemon"/>
+        <xsl:text>/</xsl:text>
+        <xsl:value-of select="@alive"/>
+      </xsl:for-each>
+      <xsl:text>.</xsl:text>
+    </p>
   </xsl:template>
   <xsl:template match="farm[@id='PropsFarm']">
     <p>
       <xsl:text>See XML.</xsl:text>
+    </p>
+  </xsl:template>
+  <xsl:template match="farm[@id='ExtFarm']">
+    <p>
+      <xsl:text>Quota: </xsl:text>
+      <xsl:value-of select="quota"/>
+      <xsl:text>.</xsl:text>
     </p>
   </xsl:template>
   <xsl:template match="farm[@id='RvFarm']">

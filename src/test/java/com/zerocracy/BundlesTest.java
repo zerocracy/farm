@@ -26,6 +26,7 @@ import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.farm.fake.FkFarm;
 import com.zerocracy.jstk.farm.fake.FkProject;
+import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.Claims;
 import java.io.File;
 import java.io.IOException;
@@ -56,6 +57,7 @@ import org.cactoos.iterable.Mapped;
 import org.cactoos.iterable.Sorted;
 import org.cactoos.list.SolidList;
 import org.cactoos.scalar.And;
+import org.cactoos.text.JoinedText;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -203,10 +205,26 @@ public final class BundlesTest {
                     x -> {
                         TimeUnit.SECONDS.sleep(1L);
                         final Claims claims = new Claims(project).bootstrap();
+                        com.jcabi.log.Logger.info(
+                            this, "alive=%d, %d claims: %s",
+                            new RvAlive(farm).intValue(),
+                            claims.iterate().size(),
+                            new JoinedText(
+                                ", ",
+                                new Mapped<>(
+                                    xml -> String.format(
+                                        "%s/%d",
+                                        new ClaimIn(xml).type(),
+                                        new ClaimIn(xml).cid()
+                                    ),
+                                    claims.iterate()
+                                )
+                            ).asString()
+                        );
                         return !claims.iterate().isEmpty()
-                            || new RvAlive(farm).value();
+                            || new RvAlive(farm).intValue() > 0;
                     },
-                    new Limited<>(Tv.FIFTY, new Endless<>(1))
+                    new Limited<>(Tv.THOUSAND, new Endless<>(1))
                 ).value(),
                 Matchers.equalTo(false)
             );

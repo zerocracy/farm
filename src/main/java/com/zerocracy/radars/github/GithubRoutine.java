@@ -17,6 +17,7 @@
 package com.zerocracy.radars.github;
 
 import com.jcabi.github.Github;
+import com.jcabi.log.VerboseRunnable;
 import com.jcabi.log.VerboseThreads;
 import com.zerocracy.entry.ExtGithub;
 import com.zerocracy.jstk.Farm;
@@ -68,7 +69,8 @@ public final class GithubRoutine implements Runnable {
      */
     public void start() {
         this.service.scheduleWithFixedDelay(
-            this, 1L, 1L, TimeUnit.SECONDS
+            new VerboseRunnable(this, true, true),
+            1L, 1L, TimeUnit.MINUTES
         );
     }
 

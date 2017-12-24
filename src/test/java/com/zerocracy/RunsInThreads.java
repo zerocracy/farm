@@ -26,6 +26,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import org.cactoos.Func;
+import org.cactoos.iterable.IterableNoNulls;
+import org.cactoos.iterable.Mapped;
 import org.cactoos.scalar.And;
 import org.cactoos.scalar.UncheckedScalar;
 import org.hamcrest.Description;
@@ -97,8 +99,12 @@ public final class RunsInThreads<T> extends TypeSafeMatcher<Func<T, Boolean>> {
         latch.countDown();
         final boolean matches = new UncheckedScalar<>(
             new And(
-                (Func<Future<Boolean>, Boolean>) Future::get,
-                futures
+                new IterableNoNulls<>(
+                    new Mapped<>(
+                        future -> future::get,
+                        futures
+                    )
+                )
             )
         ).value();
         service.shutdown();

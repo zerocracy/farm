@@ -23,6 +23,7 @@ import com.zerocracy.jstk.SoftException
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.in.Orders
+import com.zerocracy.pm.staff.Bans
 import com.zerocracy.pm.staff.Roles
 
 def exec(Project project, XML xml) {
@@ -54,6 +55,9 @@ def exec(Project project, XML xml) {
       performer, job
     )
   ).postTo(project)
+  new Bans(project).bootstrap().ban(
+    job, performer, 'User was resigned from the ticket'
+  )
   new ClaimOut()
     .type('Order was canceled')
     .param('job', job)

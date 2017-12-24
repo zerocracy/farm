@@ -21,6 +21,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.model.Filters;
 import com.zerocracy.RunsInThreads;
 import com.zerocracy.farm.props.PropsFarm;
+import com.zerocracy.farm.sync.SyncFarm;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.farm.fake.FkFarm;
@@ -64,23 +65,26 @@ public final class ExtMongoTest {
 
     @Test
     public void worksInMultipleThreads() throws Exception {
-        final Farm farm = new PropsFarm(new FkFarm());
-        final Project project = new Pmo(farm);
-        new ClaimOut().type("hello dude").postTo(project);
-        final XML xml = new Claims(project).iterate().iterator().next();
-        final String pid = "123456799";
-        MatcherAssert.assertThat(
-            inc -> {
-                final MongoClient mongo = new ExtMongo(farm).value();
-                try (final Footprint footprint = new Footprint(mongo, pid)) {
-                    footprint.open(xml);
-                    footprint.close(xml);
-                    return footprint.collection()
-                        .find(Filters.eq("project", pid))
-                        .iterator().hasNext();
-                }
-            },
-            new RunsInThreads<>(new AtomicInteger())
-        );
+        try (final Farm farm = new SyncFarm(new PropsFarm(new FkFarm()))) {
+            final Project project = new Pmo(farm);
+            final String pid = "123456799";
+            MatcherAssert.assertThat(
+                inc -> {
+                    final MongoClient mongo = new ExtMongo(farm).value();
+                    try (final Footprint footprint =
+                        new Footprint(mongo, pid)) {
+                        new ClaimOut().type("hello dude").postTo(project);
+                        final XML xml = new Claims(project)
+                            .iterate().iterator().next();
+                        footprint.open(xml);
+                        footprint.close(xml);
+                        return footprint.collection()
+                            .find(Filters.eq("project", pid))
+                            .iterator().hasNext();
+                    }
+                },
+                new RunsInThreads<>(new AtomicInteger())
+            );
+        }
     }
 }

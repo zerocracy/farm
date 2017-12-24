@@ -19,6 +19,9 @@ package com.zerocracy.radars.github;
 import com.jcabi.github.Github;
 import com.jcabi.github.Limit;
 import com.jcabi.github.Limits;
+import com.jcabi.log.Logger;
+import com.zerocracy.entry.ExtGithub;
+import com.zerocracy.jstk.Farm;
 import java.io.IOException;
 
 /**
@@ -37,10 +40,34 @@ public final class Quota {
 
     /**
      * Ctor.
+     * @param farm The farm
+     */
+    public Quota(final Farm farm) {
+        this(new ExtGithub(farm).value());
+    }
+
+    /**
+     * Ctor.
      * @param ghb Github
      */
     public Quota(final Github ghb) {
         this.github = ghb;
+    }
+
+    @Override
+    public String toString() {
+        final Limit.Smart limit = new Limit.Smart(
+            this.github.limits().get(Limits.CORE)
+        );
+        try {
+            return Logger.format(
+                "limit=%d, remaining=%d, reset=%[ms]s",
+                limit.limit(), limit.remaining(),
+                limit.reset().getTime() - System.currentTimeMillis()
+            );
+        } catch (final IOException ex) {
+            throw new IllegalStateException(ex);
+        }
     }
 
     /**
@@ -54,6 +81,19 @@ public final class Quota {
         );
         // @checkstyle MagicNumber (1 line)
         return limit.remaining() < 500;
+    }
+
+    /**
+     * Is it quiet?
+     * @return TRUE if we have a lot of space
+     * @throws IOException If fails
+     */
+    public boolean quiet() throws IOException {
+        final Limit.Smart limit = new Limit.Smart(
+            this.github.limits().get(Limits.CORE)
+        );
+        // @checkstyle MagicNumber (1 line)
+        return limit.remaining() > 4000;
     }
 
 }

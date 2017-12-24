@@ -34,7 +34,7 @@ def exec(Project project, XML xml) {
     .param(
       'message',
       "You just got role `${role}` in " +
-      "[${project}](http://www.0crat.com/p/${project}) project."
+      "[${project.pid()}](http://www.0crat.com/p/${project.pid()}) project."
     )
     .postTo(project)
 }

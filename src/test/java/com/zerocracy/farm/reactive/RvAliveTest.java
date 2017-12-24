@@ -36,8 +36,8 @@ public final class RvAliveTest {
     public void reportsFarmStatus() throws Exception {
         try (final Farm farm = new RvFarm(new FkFarm())) {
             MatcherAssert.assertThat(
-                new RvAlive(farm).value(),
-                Matchers.is(false)
+                new RvAlive(farm).intValue(),
+                Matchers.is(0)
             );
         }
     }

@@ -16,7 +16,6 @@
  */
 package com.zerocracy.radars.telegram;
 
-import com.jcabi.log.Logger;
 import java.io.IOException;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
@@ -48,32 +47,24 @@ final class TmZerocrat extends TelegramLongPollingBot implements TmBot {
 
     /**
      * Ctor.
-     * @param token Telegram bot token
-     * @param username Telegram bot username
-     * @param reaction Bot reaction.
+     * @param tkn Telegram bot token
+     * @param name Telegram bot username
+     * @param rtn Bot reaction.
      */
-    TmZerocrat(
-        final String token,
-        final String username,
-        final BotUpdateReaction reaction
-    ) {
+    TmZerocrat(final String tkn, final String name,
+        final BotUpdateReaction rtn) {
         super();
-        this.token = token;
-        this.username = username;
-        this.reaction = reaction;
+        this.token = tkn;
+        this.username = name;
+        this.reaction = rtn;
     }
 
     @Override
     public void onUpdateReceived(final Update update) {
-        Logger.debug(this, "Update received: %s", update);
         try {
             this.react(update);
-        } catch (final TelegramApiException err) {
-            Logger.error(
-                this,
-                "Telegram API error: %[exception]s",
-                err
-            );
+        } catch (final TelegramApiException ex) {
+            throw new IllegalStateException(ex);
         }
     }
 
@@ -91,8 +82,8 @@ final class TmZerocrat extends TelegramLongPollingBot implements TmBot {
     public void reply(final SendMessage msg) throws IOException {
         try {
             this.sendApiMethod(msg);
-        } catch (final TelegramApiException err) {
-            throw new IOException("reply: Telegram API error", err);
+        } catch (final TelegramApiException ex) {
+            throw new IOException(ex);
         }
     }
 
@@ -100,8 +91,8 @@ final class TmZerocrat extends TelegramLongPollingBot implements TmBot {
     public String name() throws IOException {
         try {
             return this.getMe().getUserName();
-        } catch (final TelegramApiException err) {
-            throw new IOException("name: Telegram API error", err);
+        } catch (final TelegramApiException ex) {
+            throw new IOException(ex);
         }
     }
 

@@ -21,13 +21,12 @@ import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.jstk.Farm;
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.cactoos.Scalar;
-import org.cactoos.func.SyncFunc;
-import org.cactoos.func.UncheckedFunc;
 import org.cactoos.list.SolidList;
 import org.cactoos.scalar.SolidScalar;
 import org.cactoos.scalar.UncheckedScalar;
@@ -42,39 +41,6 @@ import org.cactoos.scalar.UncheckedScalar;
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class ExtMongo implements Scalar<MongoClient> {
-
-    /**
-     * The singleton.
-     */
-    private static final UncheckedFunc<Farm, MongoClient> SINGLETON =
-        new UncheckedFunc<>(
-            new SyncFunc<>(
-                frm -> {
-                    final Props props = new Props(frm);
-                    final MongoClient client;
-                    if (props.has("//testing")) {
-                        client = new MongoClient(
-                            "localhost", ExtMongo.FAKE.value()
-                        );
-                    } else {
-                        client = new MongoClient(
-                            new ServerAddress(
-                                props.get("//mongo/host"),
-                                Integer.parseInt(props.get("//mongo/port"))
-                            ),
-                            new SolidList<>(
-                                MongoCredential.createCredential(
-                                    props.get("//mongo/user"),
-                                    "admin",
-                                    props.get("//mongo/password").toCharArray()
-                                )
-                            )
-                        );
-                    }
-                    return client;
-                }
-            )
-        );
 
     /**
      * Thread with Mongodb.
@@ -130,8 +96,29 @@ public final class ExtMongo implements Scalar<MongoClient> {
     }
 
     @Override
-    public MongoClient value() {
-        return ExtMongo.SINGLETON.apply(this.farm);
+    public MongoClient value() throws IOException {
+        final Props props = new Props(this.farm);
+        final MongoClient client;
+        if (props.has("//testing")) {
+            client = new MongoClient(
+                "localhost", ExtMongo.FAKE.value()
+            );
+        } else {
+            client = new MongoClient(
+                new ServerAddress(
+                    props.get("//mongo/host"),
+                    Integer.parseInt(props.get("//mongo/port"))
+                ),
+                new SolidList<>(
+                    MongoCredential.createCredential(
+                        props.get("//mongo/user"),
+                        "admin",
+                        props.get("//mongo/password").toCharArray()
+                    )
+                )
+            );
+        }
+        return client;
     }
 
 }
