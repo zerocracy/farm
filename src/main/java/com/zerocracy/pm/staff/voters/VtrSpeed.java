@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pm.staff.voters;
 
+import com.jcabi.log.Logger;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.staff.Voter;
 import com.zerocracy.pmo.Speed;
@@ -55,7 +56,12 @@ public final class VtrSpeed implements Voter {
     public double vote(final String login, final StringBuilder log)
         throws IOException {
         final double avg = new Speed(this.project, login).bootstrap().avg();
-        log.append(String.format("Average speed is %f minutes per job", avg));
+        log.append(
+            Logger.format(
+                "Average speed is %[ms]s per job",
+                (long) avg * TimeUnit.MINUTES.toMillis(1L)
+            )
+        );
         return (VtrSpeed.MAX - Math.max(0.0, Math.min(VtrSpeed.MAX, avg)))
             / VtrSpeed.MAX;
     }
