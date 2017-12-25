@@ -14,47 +14,54 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pmo;
+package com.zerocracy.pm.staff.voters;
 
 import com.zerocracy.jstk.farm.fake.FkProject;
+import com.zerocracy.pmo.Speed;
+import java.util.concurrent.TimeUnit;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
- * Test case for {@link Speed}.
+ * Test case for {@link VtrSpeed}.
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
- * @since 0.17
+ * @since 0.19
  * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle MagicNumber (500 line)
  */
-public final class SpeedTest {
+public final class VtrSpeedTest {
 
     @Test
-    public void addsSpeed() throws Exception {
-        final Speed speed = new Speed(new FkProject(), "g4s8").bootstrap();
-        speed.add("TST000001", "gh:test/test#1", 2L);
-        speed.add("TST000002", "gh:test/test#2", 1L);
-        MatcherAssert.assertThat(speed.jobs(), Matchers.iterableWithSize(2));
-    }
-
-    @Test
-    public void avgTest() throws Exception {
-        final Speed speed = new Speed(new FkProject(), "fast").bootstrap();
-        speed.add("TST100001", "gh:test/fast#1", 1L);
-        speed.add("TST100002", "gh:test/fast#2", 2L);
-        // @checkstyle MagicNumber (1 line)
-        speed.add("TST100003", "gh:test/fast#3", 3L);
-        MatcherAssert.assertThat(speed.avg(), Matchers.equalTo(2.0));
-    }
-
-    @Test
-    public void avgEmptyTest() throws Exception {
+    public void fastTest() throws Exception {
+        final FkProject pkt = new FkProject();
+        final String login = "user1";
+        final Speed speed = new Speed(pkt, login).bootstrap();
+        speed.add(
+            "TST000001",
+            "gh:test/test#1",
+            TimeUnit.HOURS.toMinutes(1L)
+        );
         MatcherAssert.assertThat(
-            new Speed(new FkProject(), "user")
-                .bootstrap()
-                .avg(),
-            Matchers.equalTo(0.0)
+            new VtrSpeed(pkt).vote(login, new StringBuilder(0)),
+            Matchers.greaterThan(0.9)
+        );
+    }
+
+    @Test
+    public void slowTest() throws Exception {
+        final FkProject pkt = new FkProject();
+        final String login = "user2";
+        final Speed speed = new Speed(pkt, login).bootstrap();
+        speed.add(
+            "TST000002",
+            "gh:test/test#2",
+            TimeUnit.DAYS.toMinutes(9L)
+        );
+        MatcherAssert.assertThat(
+            new VtrSpeed(pkt).vote(login, new StringBuilder(0)),
+            Matchers.equalTo(0.1)
         );
     }
 }

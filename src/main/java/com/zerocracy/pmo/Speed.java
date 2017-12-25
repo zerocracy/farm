@@ -20,6 +20,9 @@ import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
+import org.cactoos.collection.Mapped;
+import org.cactoos.iterable.ItemAt;
+import org.cactoos.scalar.IoCheckedScalar;
 import org.xembly.Directives;
 
 /**
@@ -27,9 +30,6 @@ import org.xembly.Directives;
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.17
- * @todo #250:30m Add new voter for `speed.xml`
- *  This voter should pay attention to user's speed from `speed.xml`
- *  and vote for that person who is the fastest.
  */
 public final class Speed {
 
@@ -88,6 +88,26 @@ public final class Speed {
                     .up()
                     .up()
             );
+        }
+    }
+
+    /**
+     * Average speed in minutes for user.
+     * @return Minutes
+     * @throws IOException If fails
+     */
+    public double avg() throws IOException {
+        try (final Item item = this.item()) {
+            return new IoCheckedScalar<>(
+                new ItemAt<>(
+                    0.0,
+                    new Mapped<>(
+                        Double::parseDouble,
+                        new Xocument(item.path())
+                            .xpath("avg(/speed/order/minutes)")
+                    )
+                )
+            ).value();
         }
     }
 

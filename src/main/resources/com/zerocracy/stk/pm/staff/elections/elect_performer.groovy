@@ -30,6 +30,7 @@ import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pm.staff.voters.Banned
 import com.zerocracy.pm.staff.voters.NoRoom
 import com.zerocracy.pm.staff.voters.Vacation
+import com.zerocracy.pm.staff.voters.VtrSpeed
 import com.zerocracy.pm.staff.voters.Workload
 import com.zerocracy.pmo.Pmo
 import org.cactoos.iterable.Shuffled
@@ -56,10 +57,11 @@ def exec(Project project, XML xml) {
     boolean done = elections.elect(
       job, logins,
       [
-        (new NoRoom(pmo)): -100,
+        (new NoRoom(pmo))         : -100,
         (new Banned(project, job)): -1000,
-        (new Vacation(pmo)): -1000,
-        (new Workload(pmo)): 1
+        (new Vacation(pmo))       : -1000,
+        (new Workload(pmo))       : 1,
+        (new VtrSpeed(pmo))       : 1
       ]
     )
     if (done && elections.elected(job)) {
