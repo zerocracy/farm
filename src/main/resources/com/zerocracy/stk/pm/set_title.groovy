@@ -35,7 +35,7 @@ def exec(Project project, XML xml) {
   if (!claim.hasParam('title')) {
     throw new SoftException(
       "Project title is ${catalog.title(pid)}. " +
-        'To change it just say `title MyProject`, for example.'
+      'To change it just say `title MyProject`, for example.'
     )
   }
   def title = claim.param('title')
