@@ -45,6 +45,12 @@ import org.xembly.Directives;
 final class AsyncFlush implements Flush {
 
     /**
+     * Queue length (the shorter the faster we are, but we may
+     * lose some claims).
+     */
+    private static final int QUEUE_LENGTH = 3;
+
+    /**
      * Original flush.
      */
     private final Flush origin;
@@ -99,8 +105,7 @@ final class AsyncFlush implements Flush {
         final AtomicInteger total = this.alive.computeIfAbsent(
             project, p -> new AtomicInteger()
         );
-        // @checkstyle MagicNumber (1 line)
-        if (total.get() < 5) {
+        if (total.get() < AsyncFlush.QUEUE_LENGTH) {
             this.service.submit(
                 new VerboseCallable<>(
                     () -> {

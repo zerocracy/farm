@@ -40,5 +40,5 @@ def exec(Project project, XML xml) {
   }
   def title = claim.param('title')
   catalog.title(pid, title)
-  claim.reply("Done, title changed to ${title}").postTo(project)
+  claim.reply("Done, title changed to \"${title}\"").postTo(project)
 }
