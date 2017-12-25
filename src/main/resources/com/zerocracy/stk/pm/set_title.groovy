@@ -29,7 +29,7 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Set title')
   new Assume(project, xml).roles('PO')
   def claim = new ClaimIn(xml)
-  String pid = claim.param('project')
+  String pid = project.pid()
   Farm farm = binding.variables.farm
   def catalog = new Catalog(new Pmo(farm)).bootstrap()
   if (!claim.hasParam('title')) {
@@ -40,5 +40,5 @@ def exec(Project project, XML xml) {
   }
   def title = claim.param('title')
   catalog.title(pid, title)
-  claim.reply("Done, title changed to $title").postTo(project)
+  claim.reply("Done, title changed to ${title}").postTo(project)
 }
