@@ -16,7 +16,6 @@
  */
 package com.zerocracy.stk.pm.in.orders
 
-import com.jcabi.github.Event
 import com.jcabi.github.Github
 import com.jcabi.github.Issue
 import com.jcabi.xml.XML
@@ -28,7 +27,6 @@ import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.radars.github.Job
 import com.zerocracy.radars.github.Quota
-import java.time.LocalDate
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
@@ -36,7 +34,7 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
   Orders orders = new Orders(project).bootstrap()
-  Date threshold = java.sql.Date.valueOf(LocalDate.now().minusDays(5))
+//  Date threshold = java.sql.Date.valueOf(LocalDate.now().minusDays(5))
   int done = 0
   for (String job : orders.iterate()) {
     if (!new Quota(github).quiet()) {
@@ -46,10 +44,10 @@ def exec(Project project, XML xml) {
     if (issue.open) {
       continue
     }
-    Date closed = new Event.Smart(issue.latestEvent(Event.CLOSED)).createdAt()
-    if (closed > threshold) {
-      continue
-    }
+//    Date closed = new Event.Smart(issue.latestEvent(Event.CLOSED)).createdAt()
+//    if (closed > threshold) {
+//      continue
+//    }
     new ClaimOut()
       .type('Finish order')
       .param('job', job)
