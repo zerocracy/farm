@@ -22,8 +22,7 @@ import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
+import org.cactoos.time.DateAsText;
 import org.xembly.Directives;
 
 /**
@@ -93,13 +92,7 @@ public final class Awards {
                     .add("points")
                     .set(points)
                     .up()
-                    .add("added")
-                    .set(
-                        ZonedDateTime.now().format(
-                            DateTimeFormatter.ISO_INSTANT
-                        )
-                    )
-                    .up()
+                    .add("added").set(new DateAsText().asString()).up()
                     .add("project")
                     .set(this.pmo.pid())
                     .up()

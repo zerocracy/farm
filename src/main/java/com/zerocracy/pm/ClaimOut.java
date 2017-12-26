@@ -19,12 +19,12 @@ package com.zerocracy.pm;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
+import org.cactoos.time.DateAsText;
 import org.xembly.Directive;
 import org.xembly.Directives;
 
@@ -56,13 +56,7 @@ public final class ClaimOut implements Iterable<Directive> {
             new Directives()
                 .add("claim")
                 .attr("id", ClaimOut.cid())
-                .add("created")
-                .set(
-                    ZonedDateTime.now().format(
-                        DateTimeFormatter.ISO_INSTANT
-                    )
-                )
-                .up()
+                .add("created").set(new DateAsText().asString()).up()
         );
     }
 
@@ -161,9 +155,9 @@ public final class ClaimOut implements Iterable<Directive> {
             .pop()
             .add("until")
             .set(
-                ZonedDateTime.now().plusSeconds(seconds).format(
-                    DateTimeFormatter.ISO_INSTANT
-                )
+                new DateAsText(
+                    ZonedDateTime.now().plusSeconds(seconds)
+                ).asString()
             )
             .up();
         return this;

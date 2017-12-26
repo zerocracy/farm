@@ -23,8 +23,6 @@ import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import java.net.URI;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import javax.xml.transform.stream.StreamSource;
 import org.cactoos.func.SolidFunc;
 import org.cactoos.func.UncheckedFunc;
@@ -33,6 +31,7 @@ import org.cactoos.io.InputStreamOf;
 import org.cactoos.map.MapEntry;
 import org.cactoos.map.StickyMap;
 import org.cactoos.text.TextOf;
+import org.cactoos.time.DateAsText;
 import org.takes.rs.xe.XeAppend;
 import org.takes.rs.xe.XeSource;
 import org.xembly.Directive;
@@ -108,12 +107,7 @@ public final class XeXsl implements XeSource {
                         )
                     ),
                     new StickyMap<String, Object>(
-                        new MapEntry<>(
-                            "today",
-                            ZonedDateTime.now().format(
-                                DateTimeFormatter.ISO_INSTANT
-                            )
-                        )
+                        new MapEntry<>("today", new DateAsText().asString())
                     ),
                     uri.toString()
                 ).transform(xml).nodes("/*/xhtml:body").get(0).toString();

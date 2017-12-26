@@ -23,8 +23,7 @@ import com.zerocracy.jstk.SoftException;
 import com.zerocracy.jstk.cash.Cash;
 import com.zerocracy.jstk.cash.CashParsingException;
 import java.io.IOException;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
+import org.cactoos.time.DateAsText;
 import org.xembly.Directives;
 
 /**
@@ -79,13 +78,7 @@ public final class Estimates {
                     .xpath("/estimates")
                     .add("order")
                     .attr("id", job)
-                    .add("created")
-                    .set(
-                        ZonedDateTime.now().format(
-                            DateTimeFormatter.ISO_INSTANT
-                        )
-                    )
-                    .up()
+                    .add("created").set(new DateAsText().asString()).up()
                     .add("cash")
                     .set(cash)
             );

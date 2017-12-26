@@ -22,8 +22,7 @@ import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.farm.fake.FkFarm;
 import com.zerocracy.jstk.farm.fake.FkProject;
 import java.io.IOException;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
+import org.cactoos.time.DateAsText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -51,12 +50,7 @@ public final class CatalogTest {
                     .attr("id", pid)
                     .add("title").set(pid).up()
                     .add("created")
-                    .set(
-                        ZonedDateTime.now().format(
-                            DateTimeFormatter.ISO_INSTANT
-                        )
-                    )
-                    .up()
+                    .set(new DateAsText().asString()).up()
                     .add("prefix").set("2017/01/AAAABBBBC/").up()
                     .add("publish").set("false")
             );

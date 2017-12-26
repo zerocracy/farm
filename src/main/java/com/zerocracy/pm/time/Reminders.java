@@ -20,8 +20,7 @@ import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
+import org.cactoos.time.DateAsText;
 import org.xembly.Directives;
 
 /**
@@ -92,12 +91,7 @@ public final class Reminders {
                         .xpath(xpath)
                         .strict(1)
                         .add("reminder")
-                        .add("created")
-                        .set(
-                            ZonedDateTime.now().format(
-                                DateTimeFormatter.ISO_INSTANT
-                            )
-                        ).up()
+                        .add("created").set(new DateAsText().asString()).up()
                         .add("label")
                         .set(label)
                         .up()

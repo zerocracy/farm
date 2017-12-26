@@ -22,12 +22,11 @@ import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Iterator;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.list.SolidList;
+import org.cactoos.time.DateAsText;
 import org.xembly.Directives;
 
 /**
@@ -93,12 +92,7 @@ public final class Catalog {
                     .attr("id", pid)
                     .add(Catalog.PRJ_TITLE).set(pid).up()
                     .add("created")
-                    .set(
-                        ZonedDateTime.now().format(
-                            DateTimeFormatter.ISO_INSTANT
-                        )
-                    )
-                    .up()
+                    .set(new DateAsText().asString()).up()
                     .add("prefix").set(prefix).up()
                     .add("publish").set(Boolean.toString(false))
             );

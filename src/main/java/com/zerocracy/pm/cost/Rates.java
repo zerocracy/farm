@@ -22,8 +22,7 @@ import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.cash.Cash;
 import com.zerocracy.jstk.cash.CashParsingException;
 import java.io.IOException;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
+import org.cactoos.time.DateAsText;
 import org.xembly.Directives;
 
 /**
@@ -75,13 +74,7 @@ public final class Rates {
                     .xpath("/rates")
                     .add("person")
                     .attr("id", login)
-                    .add("created")
-                    .set(
-                        ZonedDateTime.now().format(
-                            DateTimeFormatter.ISO_INSTANT
-                        )
-                    )
-                    .up()
+                    .add("created").set(new DateAsText().asString()).up()
                     .add("rate")
                     .set(rate)
             );

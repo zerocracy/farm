@@ -26,13 +26,12 @@ import com.zerocracy.jstk.farm.fake.FkItem;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.Instant;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import org.cactoos.io.LengthOf;
 import org.cactoos.io.TeeInput;
+import org.cactoos.time.DateAsText;
+import org.cactoos.time.DateOf;
 import org.xembly.Directives;
 
 /**
@@ -41,6 +40,7 @@ import org.xembly.Directives;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.12
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.TooManyMethods")
 public final class Elections {
@@ -84,11 +84,9 @@ public final class Elections {
      */
     public long age() throws IOException {
         try (final Item roles = this.item()) {
-            return System.currentTimeMillis() - Instant.from(
-                DateTimeFormatter.ISO_INSTANT.parse(
-                    new Xocument(roles).xpath("/elections/@updated").get(0)
-                )
-            ).toEpochMilli();
+            return System.currentTimeMillis() - new DateOf(
+                new Xocument(roles).xpath("/elections/@updated").get(0)
+            ).value().getTime();
         }
     }
 
@@ -103,9 +101,7 @@ public final class Elections {
      */
     public boolean elect(final String job, final Iterable<String> logins,
         final Map<Voter, Integer> voters) throws IOException {
-        final String date = ZonedDateTime.now().format(
-            DateTimeFormatter.ISO_INSTANT
-        );
+        final String date = new DateAsText().asString();
         final Directives dirs = new Directives()
             .xpath(
                 String.format(

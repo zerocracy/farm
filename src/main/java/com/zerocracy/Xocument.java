@@ -23,6 +23,7 @@ import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSL;
 import com.jcabi.xml.XSLDocument;
 import com.zerocracy.jstk.Item;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -30,8 +31,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
@@ -49,6 +48,7 @@ import org.cactoos.scalar.Ternary;
 import org.cactoos.scalar.UncheckedScalar;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
+import org.cactoos.time.DateAsText;
 import org.w3c.dom.Node;
 import org.w3c.dom.ls.LSResourceResolver;
 import org.xembly.Directive;
@@ -69,7 +69,7 @@ public final class Xocument {
     /**
      * Current DATUM version.
      */
-    public static final String VERSION = "0.44";
+    public static final String VERSION = "0.46.2";
 
     /**
      * Cache of documents.
@@ -157,12 +157,7 @@ public final class Xocument {
                     " ",
                     String.format("<%s", root),
                     String.format("version='%s'", Xocument.VERSION),
-                    String.format(
-                        "updated='%s'",
-                        ZonedDateTime.now().format(
-                            DateTimeFormatter.ISO_INSTANT
-                        )
-                    ),
+                    String.format("updated='%s'", new DateAsText().asString()),
                     "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'",
                     String.format(
                         "xsi:noNamespaceSchemaLocation='%s'/>", uri
@@ -193,9 +188,9 @@ public final class Xocument {
      * Query it.
      * @param xpath Query string
      * @return Found texts
-     * @throws IOException If fails
+     * @throws FileNotFoundException If fails
      */
-    public List<String> xpath(final String xpath) throws IOException {
+    public List<String> xpath(final String xpath) throws FileNotFoundException {
         final XML xml = new StrictXML(
             new XMLDocument(this.file.value().toFile()),
             Xocument.RESOLVER
@@ -207,9 +202,9 @@ public final class Xocument {
      * Query it.
      * @param xpath Query string
      * @return Found nodes
-     * @throws IOException If fails
+     * @throws FileNotFoundException If fails
      */
-    public List<XML> nodes(final String xpath) throws IOException {
+    public List<XML> nodes(final String xpath) throws FileNotFoundException {
         final XML xml = new StrictXML(
             new XMLDocument(this.file.value().toFile()),
             Xocument.RESOLVER

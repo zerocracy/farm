@@ -23,12 +23,13 @@ import com.zerocracy.jstk.SoftException;
 import com.zerocracy.pm.scope.Wbs;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.chrono.ChronoZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import org.cactoos.list.SolidList;
 import org.cactoos.text.JoinedText;
+import org.cactoos.time.DateAsText;
+import org.cactoos.time.ZonedDateTimeOf;
 import org.xembly.Directives;
 
 /**
@@ -37,6 +38,7 @@ import org.xembly.Directives;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.10
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.TooManyMethods")
 public final class Orders {
@@ -99,13 +101,7 @@ public final class Orders {
                     .strict(1)
                     .add("order")
                     .attr("job", job)
-                    .add("created")
-                    .set(
-                        ZonedDateTime.now().format(
-                            DateTimeFormatter.ISO_INSTANT
-                        )
-                    )
-                    .up()
+                    .add("created").set(new DateAsText().asString()).up()
                     .add("performer")
                     .set(login)
                     .up()
@@ -196,15 +192,14 @@ public final class Orders {
      */
     public ZonedDateTime startTime(final String job) throws IOException {
         try (final Item orders = this.item()) {
-            return ZonedDateTime.parse(
+            return new ZonedDateTimeOf(
                 new Xocument(orders.path()).xpath(
                     String.format(
                         "/orders/order[@job='%s']/created/text()",
                         job
                     )
-                ).get(0),
-                DateTimeFormatter.ISO_INSTANT.withZone(ZoneId.systemDefault())
-            );
+                ).get(0)
+            ).value();
         }
     }
 

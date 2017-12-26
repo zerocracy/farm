@@ -22,12 +22,11 @@ import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import javax.json.JsonObject;
 import org.cactoos.iterable.Mapped;
+import org.cactoos.time.DateAsText;
 import org.xembly.Directives;
 
 /**
@@ -119,11 +118,7 @@ public final class Bots {
                     .addIf("bot_access_token")
                     .set(bot.getString("bot_access_token")).up()
                     .addIf("created")
-                    .set(
-                        ZonedDateTime.now().format(
-                            DateTimeFormatter.ISO_INSTANT
-                        )
-                    )
+                    .set(new DateAsText().asString())
             );
         }
         Logger.info(

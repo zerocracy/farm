@@ -22,14 +22,13 @@ import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 import org.cactoos.collection.Limited;
 import org.cactoos.collection.Sorted;
 import org.cactoos.iterable.LengthOf;
+import org.cactoos.time.DateAsText;
 import org.xembly.Directive;
 import org.xembly.Directives;
 
@@ -39,6 +38,7 @@ import org.xembly.Directives;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.9
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class Claims {
 
@@ -122,9 +122,7 @@ public final class Claims {
      * @throws IOException If fails
      */
     public Collection<XML> iterate() throws IOException {
-        final String now = ZonedDateTime.now().format(
-            DateTimeFormatter.ISO_INSTANT
-        );
+        final String now = new DateAsText().asString();
         try (final Item item = this.item()) {
             return new Sorted<>(
                 new Comparator<XML>() {

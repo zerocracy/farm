@@ -20,9 +20,8 @@ import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
+import org.cactoos.time.DateAsText;
 import org.xembly.Directives;
 
 /**
@@ -85,21 +84,15 @@ public final class Bans {
      * @param reason Ban reason
      * @throws IOException If fails
      */
-    public void ban(
-        final String job,
-        final String login,
-        final String reason
-    ) throws IOException {
-        final String date = ZonedDateTime.now().format(
-            DateTimeFormatter.ISO_INSTANT
-        );
+    public void ban(final String job, final String login,
+        final String reason) throws IOException {
         try (final Item item = this.item()) {
             new Xocument(item).modify(
                 new Directives()
                     .xpath("/bans")
                     .add("ban")
                     .attr("job", job)
-                    .add("created").set(date).up()
+                    .add("created").set(new DateAsText().asString()).up()
                     .add("login").set(login).up()
                     .add("reason").set(reason).up()
                     .up()

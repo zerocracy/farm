@@ -21,9 +21,8 @@ import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.SoftException;
 import java.io.IOException;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Collection;
+import org.cactoos.time.DateAsText;
 import org.xembly.Directives;
 
 /**
@@ -86,12 +85,7 @@ public final class Wbs {
                     .xpath(String.format("/wbs[not(job[@id='%s'])]", job))
                     .strict(1)
                     .add("job").attr("id", job)
-                    .add("created")
-                    .set(
-                        ZonedDateTime.now().format(
-                            DateTimeFormatter.ISO_INSTANT
-                        )
-                    )
+                    .add("created").set(new DateAsText().asString())
             );
         }
     }
