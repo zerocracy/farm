@@ -79,8 +79,7 @@ public final class Wbs {
             );
         }
         try (final Item wbs = this.item()) {
-            final Xocument xocument = new Xocument(wbs.path());
-            xocument.modify(
+            new Xocument(wbs.path()).modify(
                 new Directives()
                     .xpath(String.format("/wbs[not(job[@id='%s'])]", job))
                     .strict(1)

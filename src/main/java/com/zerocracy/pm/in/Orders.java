@@ -94,8 +94,7 @@ public final class Orders {
             );
         }
         try (final Item wbs = this.item()) {
-            final Xocument xocument = new Xocument(wbs.path());
-            xocument.modify(
+            new Xocument(wbs.path()).modify(
                 new Directives()
                     .xpath(String.format("/orders[not(order[@job='%s'])]", job))
                     .strict(1)
@@ -126,8 +125,7 @@ public final class Orders {
             );
         }
         try (final Item wbs = this.item()) {
-            final Xocument xocument = new Xocument(wbs.path());
-            xocument.modify(
+            new Xocument(wbs.path()).modify(
                 new Directives()
                     .xpath(String.format("/orders/order[@job ='%s']", job))
                     .strict(1)

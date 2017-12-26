@@ -23,6 +23,9 @@ import com.zerocracy.jstk.SoftException;
 import com.zerocracy.jstk.cash.Cash;
 import com.zerocracy.jstk.cash.CashParsingException;
 import java.io.IOException;
+import org.cactoos.collection.Mapped;
+import org.cactoos.scalar.IoCheckedScalar;
+import org.cactoos.scalar.Reduced;
 import org.cactoos.time.DateAsText;
 import org.xembly.Directives;
 
@@ -32,8 +35,9 @@ import org.xembly.Directives;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.10
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@SuppressWarnings("PMD.TooManyMethods")
+@SuppressWarnings({ "PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals"})
 public final class Estimates {
 
     /**
@@ -56,9 +60,28 @@ public final class Estimates {
      */
     public Estimates bootstrap() throws IOException {
         try (final Item wbs = this.item()) {
-            new Xocument(wbs.path()).bootstrap("pm/cost/estimates");
+            final Xocument xoc = new Xocument(wbs.path());
+            xoc.bootstrap("pm/cost/estimates");
+            xoc.modify(
+                new Directives()
+                    .xpath("/estimates[not(@total)]")
+                    .attr("total", Cash.ZERO)
+            );
         }
         return this;
+    }
+
+    /**
+     * Total estimate.
+     * @return Total estimate
+     * @throws IOException If fails
+     */
+    public Cash total() throws IOException {
+        try (final Item wbs = this.item()) {
+            return new Cash.S(
+                new Xocument(wbs.path()).xpath("/estimates/@total").get(0)
+            );
+        }
     }
 
     /**
@@ -70,8 +93,8 @@ public final class Estimates {
     public void update(final String job, final Cash cash)
         throws IOException {
         try (final Item wbs = this.item()) {
-            final Xocument xocument = new Xocument(wbs.path());
-            xocument.modify(
+            final Xocument xoc = new Xocument(wbs.path());
+            xoc.modify(
                 new Directives()
                     .xpath(String.format("/estimates/order[@id= '%s']", job))
                     .remove()
@@ -81,6 +104,21 @@ public final class Estimates {
                     .add("created").set(new DateAsText().asString()).up()
                     .add("cash")
                     .set(cash)
+            );
+            xoc.modify(
+                new Directives().xpath("/estimates").attr(
+                    "total",
+                    new IoCheckedScalar<>(
+                        new Reduced<Cash, Cash>(
+                            Cash.ZERO,
+                            Cash::add,
+                            new Mapped<>(
+                                Cash.S::new,
+                                xoc.xpath("//order/cash/text()")
+                            )
+                        )
+                    ).value()
+                )
             );
         }
     }

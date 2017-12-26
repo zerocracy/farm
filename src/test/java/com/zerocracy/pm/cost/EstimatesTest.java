@@ -32,6 +32,15 @@ import org.junit.Test;
 public final class EstimatesTest {
 
     @Test
+    public void showsEmptyTotal() throws Exception {
+        final Estimates estimates = new Estimates(new FkProject()).bootstrap();
+        MatcherAssert.assertThat(
+            estimates.total(),
+            Matchers.equalTo(Cash.ZERO)
+        );
+    }
+
+    @Test
     public void estimatesJobs() throws Exception {
         final Estimates estimates = new Estimates(new FkProject()).bootstrap();
         final String job = "gh:yegor256/pdd#4";
@@ -39,6 +48,11 @@ public final class EstimatesTest {
         MatcherAssert.assertThat(
             estimates.get(job),
             Matchers.equalTo(new Cash.S("$45.00"))
+        );
+        estimates.update("gh:test/test#1", new Cash.S("$100"));
+        MatcherAssert.assertThat(
+            estimates.total(),
+            Matchers.equalTo(new Cash.S("$145.00"))
         );
     }
 

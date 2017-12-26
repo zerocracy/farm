@@ -18,6 +18,7 @@ package com.zerocracy.tk.project;
 
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
+import com.zerocracy.pm.cost.Estimates;
 import com.zerocracy.pm.cost.Ledger;
 import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.pmo.Catalog;
@@ -72,6 +73,10 @@ public final class TkProject implements TkRegex {
                     new XeAppend(
                         "cash",
                         new Ledger(project).bootstrap().cash().toString()
+                    ),
+                    new XeAppend(
+                        "estimates",
+                        new Estimates(project).bootstrap().total().toString()
                     ),
                     new XeWhen(
                         !"PMO".equals(pid),
