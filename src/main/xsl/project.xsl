@@ -36,12 +36,13 @@ SOFTWARE.
         <xsl:value-of select="project"/>
       </code>
       <xsl:apply-templates select="roles"/>
-      <xsl:text>; cash: </xsl:text>
       <xsl:text>.</xsl:text>
     </p>
     <p>
       <xsl:text>Cash: </xsl:text>
-      <xsl:value-of select="cash"/>
+      <a href="/a/{project}?a=pm/cost/ledger">
+        <xsl:value-of select="cash"/>
+      </a>
       <xsl:text>, locked: </xsl:text>
       <a href="/a/{project}?a=pm/cost/estimates">
         <xsl:value-of select="estimates"/>
@@ -81,6 +82,10 @@ SOFTWARE.
       </a>
       <xsl:text>, </xsl:text>
       -->
+      <a href="/a/{project}?a=pm/cost/ledger">
+        <xsl:text>Ledger</xsl:text>
+      </a>
+      <xsl:text>, </xsl:text>
       <a href="/a/{project}?a=pm/cost/rates">
         <xsl:text>Rates</xsl:text>
       </a>
