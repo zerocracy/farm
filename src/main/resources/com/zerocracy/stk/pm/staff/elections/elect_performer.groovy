@@ -57,11 +57,11 @@ def exec(Project project, XML xml) {
     boolean done = elections.elect(
       job, logins,
       [
-        (new NoRoom(pmo))         : -100,
-        (new Banned(project, job)): -1000,
-        (new Vacation(pmo))       : -1000,
-        (new Workload(pmo))       : 1,
-        (new VtrSpeed(pmo))       : 1
+        (new NoRoom(pmo)): -100,
+        (new Banned(project, job)): -100,
+        (new Vacation(pmo)): -100,
+        (new Workload(pmo)): 1,
+        (new VtrSpeed(pmo)): 1
       ]
     )
     if (done && elections.elected(job)) {

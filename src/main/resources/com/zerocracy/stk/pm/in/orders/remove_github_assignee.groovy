@@ -45,7 +45,7 @@ def exec(Project project, XML xml) {
       this, 'Issue %s#%d doesn\'t have an assignee',
       issue.repo().coordinates(), issue.number()
     )
-  } else if (login == issue.assignee().login().toLowerCase(Locale.ENGLISH)) {
+  } else if (login.equalsIgnoreCase(issue.assignee().login())) {
     issue.assign('')
     new ClaimOut()
       .type('GitHub issue lost an assignee')

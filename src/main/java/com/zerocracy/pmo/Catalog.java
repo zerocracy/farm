@@ -21,6 +21,7 @@ import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
+import com.zerocracy.jstk.SoftException;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
@@ -185,6 +186,14 @@ public final class Catalog {
      */
     public void link(final String pid, final String rel, final String href)
         throws IOException {
+        if (this.hasLink(pid, rel, href)) {
+            throw new SoftException(
+                String.format(
+                    "Project `%s` already has link, rel=`%s`, href=`%s`",
+                    pid, rel, href
+                )
+            );
+        }
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()

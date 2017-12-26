@@ -33,7 +33,11 @@ def exec(Project project, XML xml) {
       .type('Make payment')
       .param('job', job)
       .param('login', claim.author())
-      .param('reason', 'Tasks refusal is discouraged, see par.6')
+      .param(
+        'reason',
+        'Tasks refusal is discouraged, see' +
+        ' [par.6](http://datum.zerocracy.com/pages/policy.html#6)'
+      )
       .param('minutes', -15)
       .postTo(project)
   }

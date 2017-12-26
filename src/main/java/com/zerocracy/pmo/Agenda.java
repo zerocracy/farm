@@ -21,6 +21,7 @@ import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
+import com.zerocracy.jstk.SoftException;
 import java.io.IOException;
 import org.cactoos.time.DateAsText;
 import org.xembly.Directives;
@@ -110,6 +111,14 @@ public final class Agenda {
      */
     public void add(final String job, final String href)
         throws IOException {
+        if (this.exists(job)) {
+            throw new SoftException(
+                String.format(
+                    "Job `%s` is already in the agenda of @%s",
+                    job, this.login
+                )
+            );
+        }
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()

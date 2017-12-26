@@ -32,7 +32,6 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   Farm farm = binding.variables.farm
   String pid = claim.param('project')
-
   if (!new Catalog(project).bootstrap().exists(pid)) {
     throw new SoftException(
       "Project \"${pid}\" doesn't exist."

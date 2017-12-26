@@ -18,7 +18,6 @@ package com.zerocracy.stk.pm.cost
 
 import com.jcabi.github.Github
 import com.jcabi.github.Issue
-import com.jcabi.log.Logger
 import com.jcabi.xml.XML
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
@@ -39,13 +38,27 @@ def exec(Project project, XML xml) {
   }
   List<String> logins = new Roles(project).bootstrap().findByRole('ARC')
   if (logins.empty) {
-    Logger.warn(this, 'No ARC in %s, cannot pay ARC for PR', project)
+    new ClaimOut()
+      .type('Notify project')
+      .param(
+        'message',
+        'There are no ARC roles in the project,' +
+        ' I can\'t pay for the pull request review: ' +
+        "`${job}`."
+      )
+      .postTo(project)
     return
   }
   if (logins.size() > 1) {
-    Logger.warn(
-      this, 'More than one ARCs in %s, cannot pay ARC for PR', project
-    )
+    new ClaimOut()
+      .type('Notify project')
+      .param(
+        'message',
+        'There are too many ARC roles in the project (more than one),' +
+        ' I can\'t pay for the pull request review: ' +
+        "`${job}`."
+      )
+      .postTo(project)
     return
   }
   Farm farm = binding.variables.farm

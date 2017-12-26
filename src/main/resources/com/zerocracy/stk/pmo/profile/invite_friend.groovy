@@ -19,7 +19,6 @@ package com.zerocracy.stk.pmo.profile
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
-import com.zerocracy.jstk.SoftException
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.People
 
@@ -29,11 +28,6 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   String login = claim.param('login')
   People people = new People(project).bootstrap()
-  if (people.hasMentor(login)) {
-    throw new SoftException(
-      "`@${login}` is already with us."
-    )
-  }
   people.invite(login, claim.author())
   claim.reply(
     String.format(

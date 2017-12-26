@@ -19,7 +19,6 @@ package com.zerocracy.stk.pm.scope.wbs
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
-import com.zerocracy.jstk.SoftException
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.in.Orders
@@ -32,11 +31,6 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
   Wbs wbs = new Wbs(project).bootstrap()
-  if (!wbs.exists(job)) {
-    throw new SoftException(
-      String.format('Job `%s` is not in scope.', job)
-    )
-  }
   Orders orders = new Orders(project).bootstrap()
   if (orders.assigned(job)) {
     String performer = orders.performer(job)

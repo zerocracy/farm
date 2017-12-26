@@ -19,7 +19,6 @@ package com.zerocracy.stk.pmo.links
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
-import com.zerocracy.jstk.SoftException
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pmo.Catalog
@@ -33,11 +32,6 @@ def exec(Project project, XML xml) {
   String rel = claim.param('rel')
   String href = claim.param('href')
   Catalog catalog = new Catalog(project).bootstrap()
-  if (catalog.hasLink(pid, rel, href)) {
-    throw new SoftException(
-      "Project `${pid}` already has link, rel=`${rel}`, href=`${href}`"
-    )
-  }
   catalog.link(pid, rel, href)
   claim.reply(
     String.format(

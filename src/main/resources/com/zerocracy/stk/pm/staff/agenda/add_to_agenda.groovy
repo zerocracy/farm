@@ -19,7 +19,6 @@ package com.zerocracy.stk.pm.staff.agenda
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
-import com.zerocracy.jstk.SoftException
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pmo.Agenda
@@ -31,11 +30,6 @@ def exec(Project project, XML xml) {
   String job = claim.param('job')
   String login = claim.param('login')
   Agenda agenda = new Agenda(project, login).bootstrap()
-  if (agenda.exists(job)) {
-    throw new SoftException(
-      String.format('Job `%s` is already in the agenda of @%s', job, login)
-    )
-  }
   agenda.add(job, 'https://github.com/')
   new ClaimOut()
     .type('Agenda was updated')

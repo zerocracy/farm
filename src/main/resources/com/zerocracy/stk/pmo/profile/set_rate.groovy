@@ -45,22 +45,6 @@ def exec(Project project, XML xml) {
   } catch (CashParsingException ex) {
     throw new SoftException(ex.message)
   }
-  if (rate > (new Cash.S('$300'))) {
-    throw new SoftException(
-      String.format(
-        'This is too high (%s), we do not work with rates higher than $300.',
-        rate
-      )
-    )
-  }
-  if (rate < (new Cash.S('$10'))) {
-    throw new SoftException(
-      String.format(
-        'This is too low (%s), we do not work with rates lower than $10.',
-        rate
-      )
-    )
-  }
   people.rate(author, rate)
   claim.reply(
     String.format(

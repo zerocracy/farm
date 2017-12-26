@@ -19,10 +19,13 @@ package com.zerocracy.pm.staff;
 import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
+import com.zerocracy.jstk.SoftException;
+import com.zerocracy.pm.in.Orders;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import org.cactoos.iterable.LengthOf;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.list.SolidList;
 import org.cactoos.text.JoinedText;
@@ -34,6 +37,7 @@ import org.xembly.Directives;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class Roles {
 
@@ -149,6 +153,17 @@ public final class Roles {
      */
     public void resign(final String person, final String role)
         throws IOException {
+        final int jobs = new LengthOf(
+            new Orders(this.project).bootstrap().jobs(person)
+        ).value();
+        if (jobs > 0) {
+            throw new SoftException(
+                String.format(
+                    "There are still %d jobs assigned to @%s, can't resign",
+                    jobs, person
+                )
+            );
+        }
         try (final Item roles = this.item()) {
             final Xocument xoc = new Xocument(roles.path());
             xoc.modify(

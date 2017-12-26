@@ -97,6 +97,14 @@ public final class People {
      */
     public void invite(final String uid, final String mentor)
         throws IOException {
+        if (this.hasMentor(uid)) {
+            throw new SoftException(
+                String.format(
+                    "`@%s` is already with us.",
+                    uid
+                )
+            );
+        }
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 People.start(uid)
@@ -138,6 +146,24 @@ public final class People {
      * @throws IOException If fails
      */
     public void rate(final String uid, final Cash rate) throws IOException {
+        if (rate.compareTo(new Cash.S("$300")) > 0) {
+            throw new SoftException(
+                String.format(
+                    // @checkstyle LineLength (1 line)
+                    "This is too high (%s), we do not work with rates higher than $300.",
+                    rate
+                )
+            );
+        }
+        if (rate.compareTo(new Cash.S("$10")) < 0) {
+            throw new SoftException(
+                String.format(
+                    // @checkstyle LineLength (1 line)
+                    "This is too low (%s), we do not work with rates lower than $10.",
+                    rate
+                )
+            );
+        }
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 People.start(uid)

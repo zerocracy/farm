@@ -68,8 +68,8 @@ public final class TkArtifactTest {
             farm.find(String.format("@id='%s'", pid)).iterator().next()
         ).bootstrap();
         final String uid = "yegor256";
-        roles.assign(uid, "PO");
         new People(new Pmo(farm)).bootstrap().invite(uid, "mentor");
+        roles.assign(uid, "PO");
         final Take take = new TkApp(farm);
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
