@@ -22,6 +22,7 @@ import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.SoftException;
+import com.zerocracy.jstk.cash.Cash;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
@@ -36,6 +37,7 @@ import org.xembly.Directives;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.TooManyMethods")
 public final class Catalog {
@@ -95,6 +97,7 @@ public final class Catalog {
                     .add("created")
                     .set(new DateAsText().asString()).up()
                     .add("prefix").set(prefix).up()
+                    .add("fee").set(Cash.ZERO).up()
                     .add("publish").set(Boolean.toString(false))
             );
         }
@@ -133,6 +136,43 @@ public final class Catalog {
         try (final Item item = this.item()) {
             return new Xocument(item).xpath(
                 String.format("//project%s/prefix/text()", term)
+            );
+        }
+    }
+
+    /**
+     * Get project fee or Zero.
+     * @param pid Project ID
+     * @return Per transaction fee
+     * @throws IOException If fails
+     */
+    public Cash fee(final String pid) throws IOException {
+        try (final Item item = this.item()) {
+            final Iterator<String> fees = new Xocument(item.path()).xpath(
+                String.format("/catalog/project[@id='%s']/fee/text()", pid)
+            ).iterator();
+            final Cash fee;
+            if (fees.hasNext()) {
+                fee = new Cash.S(fees.next());
+            } else {
+                fee = Cash.ZERO;
+            }
+            return fee;
+        }
+    }
+
+    /**
+     * Set project fee.
+     * @param pid Project ID
+     * @param fee Fee to set
+     * @throws IOException If fails
+     */
+    public void fee(final String pid, final Cash fee) throws IOException {
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                new Directives().xpath(
+                    String.format("/catalog/project[@id='%s']/fee", pid)
+                ).set(fee)
             );
         }
     }

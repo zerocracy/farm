@@ -19,6 +19,7 @@ package com.zerocracy.pmo;
 import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
+import com.zerocracy.jstk.cash.Cash;
 import com.zerocracy.jstk.farm.fake.FkFarm;
 import com.zerocracy.jstk.farm.fake.FkProject;
 import java.io.IOException;
@@ -34,6 +35,7 @@ import org.xembly.Directives;
  * @version $Id$
  * @since 0.1
  * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class CatalogTest {
 
@@ -52,6 +54,7 @@ public final class CatalogTest {
                     .add("created")
                     .set(new DateAsText().asString()).up()
                     .add("prefix").set("2017/01/AAAABBBBC/").up()
+                    .add("fee").set("0").up()
                     .add("publish").set("false")
             );
         }
@@ -74,6 +77,22 @@ public final class CatalogTest {
         MatcherAssert.assertThat(
             catalog.published(pid),
             Matchers.is(true)
+        );
+    }
+
+    @Test
+    public void changesFee() throws Exception {
+        final String pid = "67WEDD4FF";
+        final Catalog catalog = new Catalog(new FkProject()).bootstrap();
+        catalog.add(pid, "2017/01/67WEDD4FF/");
+        MatcherAssert.assertThat(
+            catalog.fee(pid),
+            Matchers.equalTo(Cash.ZERO)
+        );
+        catalog.fee(pid, new Cash.S("$5.50"));
+        MatcherAssert.assertThat(
+            catalog.fee(pid),
+            Matchers.equalTo(new Cash.S("USD 5.50"))
         );
     }
 

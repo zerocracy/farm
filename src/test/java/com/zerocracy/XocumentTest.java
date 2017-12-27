@@ -49,8 +49,10 @@ public final class XocumentTest {
                     "xsi:noNamespaceSchemaLocation=",
                     "'http://datum.zerocracy.com/0.32.3/xsd/pmo/catalog.xsd'>",
                     "<project id='ABCDEFGHT'>",
+                    "<fee>$5</fee>",
                     "<created>2017-01-02T12:00:00</created></project>",
                     "<project id='ABCDEFGHI'>",
+                    "<fee>$1</fee>",
                     "<created>2017-01-01T12:00:00</created></project>",
                     "</catalog>"
                 ),

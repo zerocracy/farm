@@ -50,15 +50,17 @@ SOFTWARE.
       <a href="/a/{project}?a=pm/cost/ledger">
         <xsl:value-of select="cash"/>
       </a>
-      <xsl:text>, locked: </xsl:text>
-      <a href="/a/{project}?a=pm/cost/estimates">
-        <xsl:value-of select="estimates"/>
-      </a>
-      <xsl:text>, </xsl:text>
+      <xsl:text> (</xsl:text>
       <a href="#" class="pay">
         <xsl:text>add more funds</xsl:text>
       </a>
-      <xsl:text>, </xsl:text>
+      <xsl:text>), locked: </xsl:text>
+      <a href="/a/{project}?a=pm/cost/estimates">
+        <xsl:value-of select="estimates"/>
+      </a>
+      <xsl:text>, fee: </xsl:text>
+      <xsl:value-of select="fee"/>
+      <xsl:text>.</xsl:text>
     </p>
     <form id="form" style="display:none" action="/pay/{project}" method="post">
       <input name="cents" id="cents" type="hidden"/>

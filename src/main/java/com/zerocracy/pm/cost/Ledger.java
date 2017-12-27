@@ -165,7 +165,7 @@ public final class Ledger {
          * @param text Details
          * @checkstyle ParameterNumberCheck (5 lines)
          */
-        Transaction(final Cash amt, final String dbt, final String dbtx,
+        public Transaction(final Cash amt, final String dbt, final String dbtx,
             final String cdt, final String cdtx, final String text) {
             this.amount = amt;
             this.debit = dbt;

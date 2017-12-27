@@ -96,6 +96,10 @@ public final class TkProject implements TkRegex {
                                 "estimates",
                                 new Estimates(project).bootstrap()
                                     .total().toString()
+                            ),
+                            new XeAppend(
+                                "fee",
+                                catalog.fee(project.pid()).toString()
                             )
                         )
                     ),
