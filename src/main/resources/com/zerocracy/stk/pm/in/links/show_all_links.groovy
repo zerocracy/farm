@@ -14,21 +14,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pmo.links
+package com.zerocracy.stk.pm.in.links
 
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
+import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Catalog
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).isPmo()
   new Assume(project, xml).type('Show links')
   new Assume(project, xml).roles('PO')
   ClaimIn claim = new ClaimIn(xml)
   String pid = claim.param('project')
-  Collection<String> links = new Catalog(project).links(pid)
+  Farm farm = binding.variables.farm
+  Collection<String> links = new Catalog(farm).links(pid)
   claim.reply(
     String.format(
       'This project is linked with %d resources: `%s`.',

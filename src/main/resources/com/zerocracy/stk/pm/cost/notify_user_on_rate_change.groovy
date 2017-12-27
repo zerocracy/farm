@@ -34,7 +34,7 @@ def exec(Project project, XML xml) {
     .token("user;${login}")
     .param(
       'message',
-      "Your new rate in `${project}` is ${rate}." +
+      "Your new rate in `${project.pid()}` is ${rate}." +
       ' Only new tasks will be affected.'
     )
     .postTo(project)

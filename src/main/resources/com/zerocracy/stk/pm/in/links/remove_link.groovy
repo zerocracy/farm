@@ -14,23 +14,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pmo.links
+package com.zerocracy.stk.pm.in.links
 
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
+import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Catalog
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).isPmo()
   new Assume(project, xml).type('Remove link')
   new Assume(project, xml).roles('PO')
   ClaimIn claim = new ClaimIn(xml)
   String pid = claim.param('project')
   String rel = claim.param('rel')
   String href = claim.param('href')
-  new Catalog(project).unlink(pid, rel, href)
+  Farm farm = binding.variables.farm
+  new Catalog(farm).unlink(pid, rel, href)
   claim.reply(
     String.format(
       'Link removed from `%s` to rel=`%s` and href=`%s`.',
