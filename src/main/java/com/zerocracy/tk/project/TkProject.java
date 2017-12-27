@@ -16,6 +16,7 @@
  */
 package com.zerocracy.tk.project;
 
+import com.zerocracy.farm.props.Props;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.cost.Estimates;
@@ -70,6 +71,10 @@ public final class TkProject implements TkRegex {
                 return new XeChain(
                     new XeAppend("project", pid),
                     new XeAppend("title", catalog.title(pid)),
+                    new XeAppend(
+                        "stripe_key",
+                        new Props(this.farm).get("//stripe/key", "")
+                    ),
                     new XeAppend(
                         "cash",
                         new Ledger(project).bootstrap().cash().toString()

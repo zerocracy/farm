@@ -23,6 +23,7 @@ SOFTWARE.
     <title>
       <xsl:value-of select="title"/>
     </title>
+    <xsl:apply-templates select="." mode="js"/>
   </xsl:template>
   <xsl:template match="page" mode="inner">
     <p>
@@ -47,8 +48,18 @@ SOFTWARE.
       <a href="/a/{project}?a=pm/cost/estimates">
         <xsl:value-of select="estimates"/>
       </a>
-      <xsl:text>.</xsl:text>
+      <xsl:text>, </xsl:text>
+      <a href="#" class="pay">
+        <xsl:text>add more funds</xsl:text>
+      </a>
+      <xsl:text>, </xsl:text>
     </p>
+    <form id="form" style="display:none" action="/pay/{project}" method="post">
+      <input name="cents" id="cents" type="hidden"/>
+      <input name="token" id="token" type="hidden"/>
+      <input name="email" id="email" type="hidden"/>
+      <input type="submit"/>
+    </form>
     <p>
       <xsl:apply-templates select="project_links"/>
     </p>
@@ -192,5 +203,60 @@ SOFTWARE.
       </code>
     </xsl:for-each>
     <xsl:text>.</xsl:text>
+  </xsl:template>
+  <xsl:template match="page" mode="js">
+    <xsl:element name="script">
+      <xsl:attribute name="src">
+        <xsl:text>https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js</xsl:text>
+      </xsl:attribute>
+    </xsl:element>
+    <xsl:element name="script">
+      <xsl:attribute name="src">
+        <xsl:text>https://checkout.stripe.com/checkout.js</xsl:text>
+      </xsl:attribute>
+    </xsl:element>
+    <xsl:element name="script">
+      <xsl:attribute name="type">
+        <xsl:text>text/javascript</xsl:text>
+      </xsl:attribute>
+      <xsl:text>var stripe_key='</xsl:text>
+      <xsl:value-of select="stripe_key"/>
+      <xsl:text>';</xsl:text>
+      <xsl:text>var stripe_cents=</xsl:text>
+      <xsl:value-of select="10000"/>
+      <xsl:text>;</xsl:text>
+    </xsl:element>
+    <xsl:element name="script">
+      <xsl:attribute name="type">
+        <xsl:text>text/javascript</xsl:text>
+      </xsl:attribute>
+      <xsl:text>
+        // <![CDATA[
+        $(function() {
+          var handler = StripeCheckout.configure({
+            key: stripe_key,
+            image: 'http://www.zerocracy.com/logo.svg',
+            token: function (token) {
+              $('#token').val(token.id);
+              $('#email').val(token.email);
+              $('#form').submit();
+            }
+          });
+          $('a.pay').on('click', function (e) {
+            $('#cents').val(stripe_cents);
+            handler.open({
+              name: 'Add funds to the project',
+              description: script,
+              amount: stripe_cents
+            });
+            e.preventDefault();
+          });
+          $(window).on('popstate', function () {
+            handler.close();
+          });
+        });
+        // ]]>
+      </xsl:text>
+    </xsl:element>
   </xsl:template>
 </xsl:stylesheet>

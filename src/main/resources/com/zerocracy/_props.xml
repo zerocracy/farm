@@ -34,6 +34,10 @@ SOFTWARE.
     <client_id>${slack.client_id}</client_id>
     <client_secret>${slack.client_secret}</client_secret>
   </slack>
+  <stripe>
+    <key>${stripe.key}</key>
+    <secret>${stripe.secret}</secret>
+  </stripe>
   <s3>
     <key>${s3.key}</key>
     <secret>${s3.secret}</secret>
