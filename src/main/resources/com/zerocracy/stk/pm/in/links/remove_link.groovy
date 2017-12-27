@@ -21,6 +21,7 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pmo.Catalog
 
 def exec(Project project, XML xml) {
@@ -38,4 +39,9 @@ def exec(Project project, XML xml) {
       pid, rel, href
     )
   ).postTo(project)
+  new ClaimOut()
+    .type('Project link was removed')
+    .param('rel', rel)
+    .param('href', href)
+    .postTo(project)
 }

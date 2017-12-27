@@ -14,35 +14,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.in.links
+package com.zerocracy.stk.pm.cost
 
+import com.jcabi.github.Coordinates
+import com.jcabi.github.Github
+import com.jcabi.github.Repo
 import com.jcabi.xml.XML
+import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
-import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
+import com.zerocracy.jstk.cash.Cash
 import com.zerocracy.pmo.Catalog
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Add link')
-  new Assume(project, xml).roles('PO')
-  ClaimIn claim = new ClaimIn(xml)
-  String pid = claim.param('project')
-  String rel = claim.param('rel')
-  String href = claim.param('href')
+  new Assume(project, xml).notPmo()
+  new Assume(project, xml).type('Project link was added', 'Project link was removed')
   Farm farm = binding.variables.farm
   Catalog catalog = new Catalog(farm).bootstrap()
-  catalog.link(pid, rel, href)
-  claim.reply(
-    String.format(
-      'The project is linked with rel=`%s` and href=`%s`.',
-      rel, href
-    )
-  ).postTo(project)
-  new ClaimOut()
-    .type('Project link was added')
-    .param('rel', rel)
-    .param('href', href)
-    .postTo(project)
+  Github github = new ExtGithub(farm).value()
+  boolean free = true
+  for (String pair : catalog.links(project.pid())) {
+    String[] parts = pair.split(':', 2)
+    if (parts[0] == 'github') {
+      free = !new Repo.Smart(github.repos().get(new Coordinates.Simple(parts[1]))).private
+      if (!free) {
+        break
+      }
+    }
+  }
+  if (free) {
+    catalog.fee(project.pid(), Cash.ZERO)
+  } else {
+    catalog.fee(project.pid(), new Cash.S('$4'))
+  }
 }
