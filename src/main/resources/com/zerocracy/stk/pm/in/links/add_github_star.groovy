@@ -24,6 +24,7 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pm.ClaimOut
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Project link was added')
@@ -33,6 +34,18 @@ def exec(Project project, XML xml) {
   if ('github' == rel) {
     Farm farm = binding.variables.farm
     Github github = new ExtGithub(farm).value()
-    github.repos().get(new Coordinates.Simple(href)).stars().star()
+    try {
+      github.repos().get(new Coordinates.Simple(href)).stars().star()
+    } catch (AssertionError ex) {
+      new ClaimOut()
+        .type('Notify project')
+        .param(
+          'message',
+          "I failed to add GitHub star to ${href}," +
+          ' most likely the repository is either absent or' +
+          " @0crat doesn't have proper access: ${ex.message}"
+        )
+        .postTo(project)
+    }
   }
 }

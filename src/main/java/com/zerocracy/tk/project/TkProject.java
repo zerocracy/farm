@@ -71,27 +71,31 @@ public final class TkProject implements TkRegex {
                 return new XeChain(
                     new XeAppend("project", pid),
                     new XeAppend("title", catalog.title(pid)),
-                    new XeAppend(
-                        "stripe_key",
-                        new Props(this.farm).get("//stripe/key", "")
-                    ),
-                    new XeAppend(
-                        "cash",
-                        new Ledger(project).bootstrap().cash().toString()
-                    ),
-                    new XeAppend(
-                        "estimates",
-                        new Estimates(project).bootstrap().total().toString()
-                    ),
                     new XeWhen(
                         !"PMO".equals(pid),
-                        () -> new XeAppend(
-                            "roles",
-                            new XeTransform<>(
-                                new Roles(project).bootstrap().allRoles(
-                                    new RqUser(this.farm, req).value()
-                                ),
-                                role -> new XeAppend("role", role)
+                        () -> new XeChain(
+                            new XeAppend(
+                                "roles",
+                                new XeTransform<>(
+                                    new Roles(project).bootstrap().allRoles(
+                                        new RqUser(this.farm, req).value()
+                                    ),
+                                    role -> new XeAppend("role", role)
+                                )
+                            ),
+                            new XeAppend(
+                                "stripe_key",
+                                new Props(this.farm).get("//stripe/key", "")
+                            ),
+                            new XeAppend(
+                                "cash",
+                                new Ledger(project).bootstrap()
+                                    .cash().toString()
+                            ),
+                            new XeAppend(
+                                "estimates",
+                                new Estimates(project).bootstrap()
+                                    .total().toString()
                             )
                         )
                     ),

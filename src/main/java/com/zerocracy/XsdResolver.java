@@ -23,6 +23,7 @@ import org.cactoos.func.UncheckedFunc;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.LSInputOf;
 import org.cactoos.io.StickyInput;
+import org.cactoos.io.SyncInput;
 import org.w3c.dom.ls.LSInput;
 import org.w3c.dom.ls.LSResourceResolver;
 
@@ -41,10 +42,12 @@ public final class XsdResolver implements LSResourceResolver {
         loc -> {
             final String[] parts = loc.split(" ");
             return new LSInputOf(
-                // @checkstyle MagicNumber (6 lines)
-                new StickyInput(
-                    new InputOf(
-                        new URL(parts[3])
+                new SyncInput(
+                    new StickyInput(
+                        new InputOf(
+                            // @checkstyle MagicNumber (6 lines)
+                            new URL(parts[3])
+                        )
                     )
                 ),
                 parts[2], parts[3], parts[4]

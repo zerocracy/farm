@@ -40,6 +40,12 @@ SOFTWARE.
       <xsl:text>.</xsl:text>
     </p>
     <p>
+      <xsl:apply-templates select="project_links"/>
+    </p>
+    <xsl:apply-templates select="." mode="artifacts"/>
+  </xsl:template>
+  <xsl:template match="page[project!='PMO']" mode="artifacts">
+    <p>
       <xsl:text>Cash: </xsl:text>
       <a href="/a/{project}?a=pm/cost/ledger">
         <xsl:value-of select="cash"/>
@@ -60,12 +66,6 @@ SOFTWARE.
       <input name="email" id="email" type="hidden"/>
       <input type="submit"/>
     </form>
-    <p>
-      <xsl:apply-templates select="project_links"/>
-    </p>
-    <xsl:apply-templates select="." mode="artifacts"/>
-  </xsl:template>
-  <xsl:template match="page[project!='PMO']" mode="artifacts">
     <p>
       <xsl:text>Scope: </xsl:text>
       <a href="/a/{project}?a=pm/scope/wbs">
