@@ -112,6 +112,7 @@ public final class Catalog {
                     .add("created")
                     .set(new DateAsText().asString()).up()
                     .add("prefix").set(prefix).up()
+                    .add("alive").set(true).up()
                     .add("fee").set(Cash.ZERO).up()
                     .add("publish").set(Boolean.toString(false))
             );
@@ -151,6 +152,42 @@ public final class Catalog {
         try (final Item item = this.item()) {
             return new Xocument(item).xpath(
                 String.format("//project%s/prefix/text()", term)
+            );
+        }
+    }
+
+    /**
+     * Is it on pause?
+     * @param pid Project ID
+     * @return TRUE if on pause
+     * @throws IOException If fails
+     */
+    public boolean pause(final String pid) throws IOException {
+        try (final Item item = this.item()) {
+            return !Boolean.parseBoolean(
+                new Xocument(item.path()).xpath(
+                    String.format(
+                        "/catalog/project[@id='%s']/alive/text()",
+                        pid
+                    )
+                ).get(0)
+            );
+        }
+    }
+
+    /**
+     * Set it on pause.
+     * @param pid Project ID
+     * @param pause TRUE if it has to go on pause
+     * @throws IOException If fails
+     */
+    public void pause(final String pid,
+        final boolean pause) throws IOException {
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                new Directives().xpath(
+                    String.format("/catalog/project[@id='%s']/alive", pid)
+                ).set(!pause)
             );
         }
     }

@@ -142,6 +142,20 @@ SOFTWARE.
     </opts>
   </cmd>
   <cmd>
+    <code>Set on pause</code>
+    <regex>pause</regex>
+    <label>pause</label>
+    <help>Set the project on pause</help>
+    <opts>
+      <opt>
+        <name>flag</name>
+        <regex>(on|off)</regex>
+        <help>Either 'on' or 'off'</help>
+        <optional>true</optional>
+      </opt>
+    </opts>
+  </cmd>
+  <cmd>
     <code>Destroy</code>
     <regex>destroy</regex>
     <label>destroy</label>

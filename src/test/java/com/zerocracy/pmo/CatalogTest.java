@@ -55,6 +55,7 @@ public final class CatalogTest {
                     .set(new DateAsText().asString()).up()
                     .add("prefix").set("2017/01/AAAABBBBC/").up()
                     .add("fee").set("0").up()
+                    .add("alive").set("true").up()
                     .add("publish").set("false")
             );
         }
@@ -93,6 +94,22 @@ public final class CatalogTest {
         MatcherAssert.assertThat(
             catalog.fee(pid),
             Matchers.equalTo(new Cash.S("USD 5.50"))
+        );
+    }
+
+    @Test
+    public void setsItOnPause() throws Exception {
+        final String pid = "67WEPP4FF";
+        final Catalog catalog = new Catalog(new FkProject()).bootstrap();
+        catalog.add(pid, "2017/01/67WEPP4FF/");
+        MatcherAssert.assertThat(
+            catalog.pause(pid),
+            Matchers.equalTo(false)
+        );
+        catalog.pause(pid, true);
+        MatcherAssert.assertThat(
+            catalog.pause(pid),
+            Matchers.equalTo(true)
         );
     }
 

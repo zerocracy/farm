@@ -29,8 +29,22 @@ SOFTWARE.
     <p>
       <img src="http://www.0crat.com/badge/{project}.svg"/>
     </p>
+    <xsl:if test="pause = 'true'">
+      <strong>
+        <xsl:text>Attention</xsl:text>
+      </strong>
+      <xsl:text>: the project is on pause, see </xsl:text>
+      <a href="http://datum.zerocracy.com/pages/policy.html#24">
+        <xsl:text>par.24</xsl:text>
+      </a>
+      <xsl:text>.</xsl:text>
+    </xsl:if>
     <p>
-      <xsl:text>Project: </xsl:text>
+      <xsl:text>Project (</xsl:text>
+      <xsl:if test="pause = 'false'">
+        <xsl:text>alive</xsl:text>
+      </xsl:if>
+      <xsl:text>): </xsl:text>
       <code>
         <xsl:value-of select="title"/>
         <xsl:text>/</xsl:text>

@@ -75,6 +75,10 @@ public final class TkProject implements TkRegex {
                         !"PMO".equals(pid),
                         () -> new XeChain(
                             new XeAppend(
+                                "pause",
+                                Boolean.toString(catalog.pause(project.pid()))
+                            ),
+                            new XeAppend(
                                 "roles",
                                 new XeTransform<>(
                                     new Roles(project).bootstrap().allRoles(
