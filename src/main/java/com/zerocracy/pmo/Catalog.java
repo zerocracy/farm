@@ -81,6 +81,21 @@ public final class Catalog {
     }
 
     /**
+     * Delete it entirely.
+     * @param pid Project ID
+     * @throws IOException If fails
+     */
+    public void delete(final String pid) throws IOException {
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                new Directives().xpath(
+                    String.format("/catalog/project[@id='%s'] ", pid)
+                ).remove()
+            );
+        }
+    }
+
+    /**
      * Create a project with the given ID.
      * @param pid Project ID
      * @param prefix The prefix

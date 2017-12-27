@@ -14,36 +14,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.in.links
+package com.zerocracy.stk.pm
 
 import com.jcabi.xml.XML
+import com.zerocracy.entry.ExtBucket
 import com.zerocracy.farm.Assume
+import com.zerocracy.farm.S3Farm
 import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
+import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.Catalog
+import com.zerocracy.pmo.Projects
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Add link')
+  new Assume(project, xml).type('Destroy')
   new Assume(project, xml).roles('PO')
-  ClaimIn claim = new ClaimIn(xml)
-  String pid = claim.param('project')
-  String rel = claim.param('rel')
-  String href = claim.param('href')
   Farm farm = binding.variables.farm
+  for (String login : new Roles(project).everybody()) {
+    new Projects(farm, login).remove(project.pid())
+  }
   Catalog catalog = new Catalog(farm).bootstrap()
-  catalog.link(pid, rel, href)
-  claim.reply(
-    String.format(
-      'The project is linked with rel=`%s` and href=`%s`.',
-      rel, href
-    )
+  String prefix = catalog.findByXPath("@id='${project.pid()}'").iterator().next()
+  new S3Farm(new ExtBucket().value()).delete(prefix)
+  catalog.delete(project.pid())
+  new ClaimIn(xml).reply(
+    'All project files were destroyed on our servers.' +
+    ' Now you can safely /kick me out of the channel.'
   ).postTo(project)
-  new ClaimOut()
-    .type('Project link was added')
-    .param('rel', rel)
-    .param('href', href)
-    .postTo(project)
 }

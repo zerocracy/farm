@@ -97,6 +97,17 @@ public final class S3Farm implements Farm {
     }
 
     /**
+     * Delete all project files.
+     * @param prefix The prefix
+     * @throws IOException If fails
+     */
+    public void delete(final String prefix) throws IOException {
+        for (final String ocket : this.bucket.list(prefix)) {
+            this.bucket.remove(ocket);
+        }
+    }
+
+    /**
      * Make sure it exists and return it.
      * @param catalog The catalog
      * @param xpath The XPath

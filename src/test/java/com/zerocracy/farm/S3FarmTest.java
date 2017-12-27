@@ -22,7 +22,9 @@ import com.jcabi.s3.fake.FkBucket;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
+import com.zerocracy.pm.scope.Wbs;
 import com.zerocracy.pm.staff.Roles;
+import com.zerocracy.pmo.Catalog;
 import java.nio.file.Files;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -91,6 +93,28 @@ public final class S3FarmTest {
                 Matchers.is(true)
             );
         }
+    }
+
+    @Test
+    public void deletesProject() throws Exception {
+        final Bucket bucket = new FkBucket(
+            Files.createTempDirectory("").toFile(),
+            "the-bucket-99"
+        );
+        final String xpath = "@id='ABCR2FDD3'";
+        final Project project = new S3Farm(bucket)
+            .find(xpath).iterator().next();
+        new Wbs(project).bootstrap().add("gh:test/test#4");
+        final String prefix = new Catalog(new S3Farm(bucket))
+            .findByXPath(xpath)
+            .iterator().next();
+        new S3Farm(bucket).delete(prefix);
+        MatcherAssert.assertThat(
+            new Wbs(
+                new S3Farm(bucket).find(xpath).iterator().next()
+            ).bootstrap().iterate(),
+            Matchers.emptyIterable()
+        );
     }
 
 }

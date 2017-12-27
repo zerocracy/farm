@@ -141,4 +141,10 @@ SOFTWARE.
       </opt>
     </opts>
   </cmd>
+  <cmd>
+    <code>Destroy</code>
+    <regex>destroy</regex>
+    <label>destroy</label>
+    <help>Destroy all project files on our servers</help>
+  </cmd>
 </question>

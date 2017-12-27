@@ -50,17 +50,18 @@ def exec(Project project, XML xml) {
       .type('Notify project')
       .param(
         'message',
-        "You don't have any private GitHub repositories any more, the management fee is waived"
+        "You don't have any private GitHub repositories any more, the management fee is waived."
       )
       .postTo(project)
   }
   if (!free && catalog.fee(project.pid()) == Cash.ZERO) {
-    catalog.fee(project.pid(), new Cash.S('$4'))
+    Cash fee = new Cash.S('$4')
+    catalog.fee(project.pid(), fee)
     new ClaimOut()
       .type('Notify project')
       .param(
         'message',
-        'Since now you have a private GitHub repository, the management fee is applied'
+        "Since now you have a private GitHub repository, the management fee ${fee} is applied."
       )
       .postTo(project)
   }
