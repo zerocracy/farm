@@ -25,6 +25,7 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.jstk.cash.Cash
+import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pmo.Catalog
 
 def exec(Project project, XML xml) {
@@ -43,9 +44,24 @@ def exec(Project project, XML xml) {
       }
     }
   }
-  if (free) {
+  if (free && catalog.fee(project.pid()) != Cash.ZERO) {
     catalog.fee(project.pid(), Cash.ZERO)
-  } else {
+    new ClaimOut()
+      .type('Notify project')
+      .param(
+        'message',
+        "You don't have any private GitHub repositories any more, the management fee is waived"
+      )
+      .postTo(project)
+  }
+  if (!free && catalog.fee(project.pid()) == Cash.ZERO) {
     catalog.fee(project.pid(), new Cash.S('$4'))
+    new ClaimOut()
+      .type('Notify project')
+      .param(
+        'message',
+        'Since now you have a private GitHub repository, the management fee is applied'
+      )
+      .postTo(project)
   }
 }
