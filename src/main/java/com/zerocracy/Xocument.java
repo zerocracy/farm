@@ -260,7 +260,7 @@ public final class Xocument {
                         XML output = input;
                         final String ver = node.xpath("@order").get(0);
                         if (Xocument.compare(ver, version) > 0
-                            && Xocument.compare(ver, Xocument.VERSION) < 0) {
+                            && Xocument.compare(ver, Xocument.VERSION) <= 0) {
                             final URL url = new URL(node.xpath("@uri").get(0));
                             output = XSLDocument.make(
                                 new InputStreamOf(url)
