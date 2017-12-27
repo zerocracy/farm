@@ -249,7 +249,7 @@ SOFTWARE.
             $('#cents').val(stripe_cents);
             handler.open({
               name: 'Add funds',
-              description: 'Add funds to the project ' + pid + '. We will re-bill automatically, until you cancel.',
+              description: 'Initial payment to ' + pid,
               amount: stripe_cents
             });
             e.preventDefault();

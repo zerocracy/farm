@@ -47,6 +47,11 @@ SOFTWARE.
             </a>
           </li>
           <li>
+            <a href="http://datum.zerocracy.com/pages/terms.html">
+              <xsl:text>Terms</xsl:text>
+            </a>
+          </li>
+          <li>
             <a href="{links/link[@rel='takes:logout']/@href}" title="Log out">
               <xsl:text>Exit</xsl:text>
             </a>
