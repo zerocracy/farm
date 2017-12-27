@@ -19,6 +19,7 @@ package com.zerocracy.pm.cost;
 import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
+import com.zerocracy.jstk.SoftException;
 import com.zerocracy.jstk.cash.Cash;
 import com.zerocracy.jstk.cash.CashParsingException;
 import java.io.IOException;
@@ -66,18 +67,41 @@ public final class Rates {
      * @throws IOException If fails
      */
     public void set(final String login, final Cash rate) throws IOException {
+        if (rate.compareTo(new Cash.S("$300")) > 0) {
+            throw new SoftException(
+                String.format(
+                    // @checkstyle LineLength (1 line)
+                    "This is too high (%s), we do not work with rates higher than $300.",
+                    rate
+                )
+            );
+        }
+        if (!rate.equals(Cash.ZERO) && rate.compareTo(new Cash.S("$10")) < 0) {
+            throw new SoftException(
+                String.format(
+                    // @checkstyle LineLength (1 line)
+                    "This is too low (%s), we do not work with rates lower than $10.",
+                    rate
+                )
+            );
+        }
         try (final Item item = this.item()) {
             new Xocument(item).modify(
                 new Directives()
                     .xpath(String.format("/rates/person[@id='%s']", login))
                     .remove()
-                    .xpath("/rates")
-                    .add("person")
-                    .attr("id", login)
-                    .add("created").set(new DateAsText().asString()).up()
-                    .add("rate")
-                    .set(rate)
             );
+            if (!rate.equals(Cash.ZERO)) {
+                new Xocument(item).modify(
+                    new Directives()
+                        .xpath("/rates")
+                        .add("person")
+                        .attr("id", login)
+                        .add("created").set(new DateAsText().asString()).up()
+                        .add("rate")
+                        .set(rate)
+                );
+            }
         }
     }
 

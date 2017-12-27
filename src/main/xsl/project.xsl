@@ -245,8 +245,8 @@ SOFTWARE.
           $('a.pay').on('click', function (e) {
             $('#cents').val(stripe_cents);
             handler.open({
-              name: 'Add funds to the project',
-              description: script,
+              name: 'Add funds',
+              description: 'Fund the project',
               amount: stripe_cents
             });
             e.preventDefault();
