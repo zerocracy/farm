@@ -223,8 +223,11 @@ SOFTWARE.
       <xsl:value-of select="stripe_key"/>
       <xsl:text>';</xsl:text>
       <xsl:text>var stripe_cents=</xsl:text>
-      <xsl:value-of select="10000"/>
+      <xsl:value-of select="25600"/>
       <xsl:text>;</xsl:text>
+      <xsl:text>var pid='</xsl:text>
+      <xsl:value-of select="project"/>
+      <xsl:text>';</xsl:text>
     </xsl:element>
     <xsl:element name="script">
       <xsl:attribute name="type">
@@ -246,7 +249,7 @@ SOFTWARE.
             $('#cents').val(stripe_cents);
             handler.open({
               name: 'Add funds',
-              description: 'Fund the project',
+              description: 'Add funds to the project ' + pid + '. We will re-bill automatically, until you cancel.',
               amount: stripe_cents
             });
             e.preventDefault();
