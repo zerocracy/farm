@@ -23,6 +23,7 @@ import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
+import com.zerocracy.pmo.Catalog;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -93,7 +94,7 @@ public final class TkPing implements Take {
                 done.add(this.stop(req));
                 break;
             }
-            done.add(TkPing.ping(project));
+            done.add(this.ping(project));
         }
         return new RsText(
             Logger.format(
@@ -112,10 +113,12 @@ public final class TkPing implements Take {
      * @return TRUE if needs a run
      * @throws IOException If fails
      */
-    private static String ping(final Project project) throws IOException {
+    private String ping(final Project project) throws IOException {
         final Claims claims = new Claims(project).bootstrap();
         final String out;
-        if (claims.iterate().isEmpty()) {
+        if (new Catalog(this.farm).pause(project.pid())) {
+            out = String.format("%s/pause", project.pid());
+        } else if (claims.iterate().isEmpty()) {
             new ClaimOut().type(TkPing.TYPE).postTo(project);
             out = project.pid();
         } else {
