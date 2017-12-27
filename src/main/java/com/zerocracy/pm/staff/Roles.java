@@ -153,6 +153,14 @@ public final class Roles {
      */
     public void resign(final String person, final String role)
         throws IOException {
+        if (!this.hasRole(person, role)) {
+            throw new SoftException(
+                String.format(
+                    "User @%s doesn't have %s role in the project",
+                    person, role
+                )
+            );
+        }
         final int jobs = new LengthOf(
             new Orders(this.project).bootstrap().jobs(person)
         ).value();
