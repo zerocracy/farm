@@ -18,18 +18,18 @@ install: |-
   java -version
 deploy:
   script: |
-    mvn clean install -Prultor --settings ../settings.xml
-    mvn clean
+    mvn clean install -Prultor --settings ../settings.xml --quiet
+    mvn clean --quiet
     pdd --source=$(pwd) --verbose --file=zc-farm.xml
     s3cmd --no-progress put zc-farm.xml --config=../s3cfg s3://pdd.teamed.io/zc-farm.xml
 release:
   script: |
     [[ "${tag}" =~ ^[0-9]+(\.[0-9]+)*$ ]] || exit -1
-    mvn clean process-resources
-    mvn clean versions:set "-DnewVersion=${tag}"
+    mvn clean process-resources --quiet
+    mvn clean versions:set "-DnewVersion=${tag}" --quiet
     git commit -am "${tag}"
     cp ../settings.xml settings.xml
-    mvn clean package -Pqulice -Pzc-farm --errors --batch-mode
+    mvn clean package -Pqulice -Pzc-farm --errors --batch-mode --quiet
     git remote add heroku git@heroku.com:zerocrat.git
     mkdir ~/.ssh
     mv ../id_rsa ../id_rsa.pub ~/.ssh
@@ -44,8 +44,8 @@ release:
 merge:
   script: |-
     mvn help:system clean install -Pqulice --settings ../settings.xml
-    mvn clean site -Psite --settings ../settings.xml
-    mvn clean
+    mvn clean site -Psite --settings ../settings.xml --quiet
+    mvn clean --quiet
     pdd --source=$(pwd) --verbose --file=/dev/null
   commanders: []
 architect:

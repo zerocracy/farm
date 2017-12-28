@@ -26,6 +26,7 @@ import com.stripe.net.RequestOptions;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
+import com.zerocracy.jstk.cash.Cash;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pmo.Catalog;
 import java.io.IOException;
@@ -94,10 +95,15 @@ public final class TkPay implements TkRegex {
                 String.format("/p/%s", project.pid())
             );
         }
-        final long cents = Long.parseLong(form.single("cents"));
+        final Cash amount = new Cash.S(
+            String.format(
+                "USD %.2f",
+                Double.parseDouble(form.single("cents"))
+            )
+        );
         new ClaimOut()
             .type("Funded by Stripe")
-            .param("cents", cents)
+            .param("amount", amount)
             .param("stripe_customer", customer)
             .param("email", email)
             .postTo(project);
@@ -105,9 +111,8 @@ public final class TkPay implements TkRegex {
             new RsFlash(
                 String.format(
                     // @checkstyle LineLength (1 line)
-                    "The project \"%s\" was successfully funded for $%.2f. The ledger will be updated in a few minutes.",
-                    // @checkstyle MagicNumber (1 line)
-                    project.pid(), (double) cents / 100.0d
+                    "The project \"%s\" was successfully funded for %s. The ledger will be updated in a few minutes.",
+                    project.pid(), amount
                 )
             ),
             String.format("/p/%s", project.pid())
