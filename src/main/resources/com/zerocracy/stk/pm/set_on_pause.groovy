@@ -34,7 +34,8 @@ def exec(Project project, XML xml) {
   def catalog = new Catalog(new Pmo(farm)).bootstrap()
   if (!claim.hasParam('flag')) {
     throw new SoftException(
-      "The project is ${catalog.pause(pid) ? 'on pause' : 'alive (not on pause)'}."
+      "The project is ${catalog.pause(pid) ? 'on pause' : 'alive (not on pause)'}." +
+      ' To change the status say `pause on` or `pause off`.'
     )
   }
   boolean flag = claim.param('flag') == 'on'

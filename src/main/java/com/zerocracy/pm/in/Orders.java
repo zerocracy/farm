@@ -189,6 +189,13 @@ public final class Orders {
      * @throws IOException If fails
      */
     public ZonedDateTime startTime(final String job) throws IOException {
+        if (!this.assigned(job)) {
+            throw new SoftException(
+                String.format(
+                    "Job `%s` is not assigned, can't get start time", job
+                )
+            );
+        }
         try (final Item orders = this.item()) {
             return new ZonedDateTimeOf(
                 new Xocument(orders.path()).xpath(
