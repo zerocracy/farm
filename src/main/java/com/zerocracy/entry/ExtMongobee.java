@@ -18,9 +18,12 @@ package com.zerocracy.entry;
 
 import com.github.mongobee.Mongobee;
 import com.github.mongobee.exception.MongobeeException;
+import com.github.zafarkhaja.semver.Version;
 import com.mongodb.MongoClient;
 import com.zerocracy.jstk.Farm;
 import java.io.IOException;
+import org.bson.BsonDocument;
+import org.bson.BsonString;
 
 /**
  * Apply Mongobee changes.
@@ -51,8 +54,22 @@ public final class ExtMongobee {
      */
     public void apply() throws IOException {
         try (final MongoClient client = new ExtMongo(this.farm).value()) {
+            final String dbname = "footprint";
+            final Version version = Version.valueOf(
+                client.getDatabase(dbname).runCommand(
+                    new BsonDocument("buildinfo", new BsonString(""))
+                ).get("version").toString()
+            );
+            if (version.compareTo(Version.valueOf("3.4.0")) < 0) {
+                throw new IllegalStateException(
+                    String.format(
+                        "MongoDB server version is too old: %s",
+                        version
+                    )
+                );
+            }
             final Mongobee bee = new Mongobee(client);
-            bee.setDbName("footprint");
+            bee.setDbName(dbname);
             bee.setChangeLogsScanPackage(ExtMongo.class.getPackage().getName());
             bee.execute();
         } catch (final MongobeeException ex) {

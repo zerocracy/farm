@@ -116,7 +116,7 @@ public final class TkPing implements Take {
     private String ping(final Project project) throws IOException {
         final Claims claims = new Claims(project).bootstrap();
         final String out;
-        if (new Catalog(this.farm).pause(project.pid())) {
+        if (new Catalog(this.farm).bootstrap().pause(project.pid())) {
             out = String.format("%s/pause", project.pid());
         } else if (claims.iterate().isEmpty()) {
             new ClaimOut().type(TkPing.TYPE).postTo(project);
