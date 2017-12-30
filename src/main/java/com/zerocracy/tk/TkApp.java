@@ -114,6 +114,7 @@ public final class TkApp extends TkWrap {
                                                         new SolidList<>(forks),
                                                         new SolidList<>(
                                                             new FkRegex("/", new TkIndex(farm)),
+                                                            new FkRegex("/heapdump", new TkDump(farm)),
                                                             new FkRegex("/guts", new TkGuts(farm)),
                                                             new FkRegex(
                                                                 "/org/takes/.+\\.xsl",
