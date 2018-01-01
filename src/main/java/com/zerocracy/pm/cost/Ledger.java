@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2016-2017 Zerocracy
+ * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to read
@@ -239,8 +239,6 @@ public final class Ledger {
                 new Directives()
                     .xpath("/ledger")
                     .addIf("balance")
-                    .xpath("/ledger/balance[not(@total)]")
-                    .attr("total", Cash.ZERO)
                     .xpath(
                         String.format(
                             // @checkstyle LineLength (1 line)
@@ -254,14 +252,6 @@ public final class Ledger {
                     .add("ct").set(Cash.ZERO).up()
                     .add("dt").set(Cash.ZERO).up()
                     .xpath(xpath).set(before.add(this.amount))
-            );
-            xoc.modify(
-                new Directives().xpath("/ledger/balance").attr(
-                    "total",
-                    new Cash.S(
-                        xoc.xpath("/ledger/balance/@total").get(0)
-                    ).add(this.amount)
-                )
             );
         }
 

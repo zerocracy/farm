@@ -82,7 +82,7 @@ Please, see [CONTRIBUTING.md](https://github.com/zerocracy/farm/blob/master/CONT
 
 ## License
 
-Copyright (c) 2016-2017 Zerocracy
+Copyright (c) 2016-2018 Zerocracy
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to read

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2016-2017 Zerocracy
+ * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to read
@@ -64,6 +64,23 @@ public final class LedgerTest {
         MatcherAssert.assertThat(
             ledger.cash(),
             Matchers.equalTo(new Cash.S("$136"))
+        );
+    }
+
+    @Test
+    public void addsOneTransactions() throws Exception {
+        final Ledger ledger = new Ledger(new FkProject()).bootstrap();
+        ledger.add(
+            new Ledger.Transaction(
+                new Cash.S("$77"),
+                "assets", "cash",
+                "income", "sponsor",
+                "There is some funding just arrived to us"
+            )
+        );
+        MatcherAssert.assertThat(
+            ledger.cash(),
+            Matchers.equalTo(new Cash.S("$77"))
         );
     }
 
