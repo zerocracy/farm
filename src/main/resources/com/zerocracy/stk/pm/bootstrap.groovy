@@ -52,7 +52,10 @@ def exec(Project project, XML xml) {
           "I\'m ready to manage a project. Project ID is `${project.pid()}`.",
           'When you\'re ready, you can start giving me commands,',
           'always prefixing your messages with my name.',
-          "All project artifacts are [here](http://www.0crat.com/p/${project.pid()})."
+          "All project artifacts are [here](http://www.0crat.com/p/${project.pid()}).",
+          'Start with linking your project with GitHub repositories,',
+          'as explained in [par.17](http://datum.zerocracy.com/pages/policy.html#17)',
+          'of our Policy.'
         )
       ).postTo(project)
     }

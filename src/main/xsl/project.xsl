@@ -42,11 +42,11 @@ SOFTWARE.
       </p>
     </xsl:if>
     <p>
-      <xsl:text>Project (</xsl:text>
+      <xsl:text>Project</xsl:text>
       <xsl:if test="pause = 'false'">
-        <xsl:text>alive</xsl:text>
+        <xsl:text> (alive)</xsl:text>
       </xsl:if>
-      <xsl:text>): </xsl:text>
+      <xsl:text>: </xsl:text>
       <code>
         <xsl:value-of select="title"/>
         <xsl:text>/</xsl:text>
@@ -270,11 +270,12 @@ SOFTWARE.
             }
           });
           $('a.pay').on('click', function (e) {
-            $('#cents').val(stripe_cents);
+            var cents = $(this).attr('data-cents')
+            $('#cents').val(cents);
             handler.open({
               name: 'Add funds',
               description: 'Initial payment to ' + pid,
-              amount: $(this).attr('data-cents')
+              amount: cents
             });
             e.preventDefault();
           });
