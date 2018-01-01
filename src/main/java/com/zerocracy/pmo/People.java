@@ -237,7 +237,7 @@ public final class People {
     /**
      * Get user wallet.
      * @param uid User ID
-     * @return Wallet of the user
+     * @return Wallet of the user or empty string if it's not set
      * @throws IOException If fails
      */
     public String wallet(final String uid) throws IOException {
