@@ -67,8 +67,17 @@ SOFTWARE.
         <xsl:value-of select="cash"/>
       </a>
       <xsl:text> (</xsl:text>
-      <a href="#" class="pay">
-        <xsl:text>add more funds</xsl:text>
+      <xsl:text>add </xsl:text>
+      <a href="#" class="pay" data-cents="6400">
+        <xsl:text>$64</xsl:text>
+      </a>
+      <xsl:text>, </xsl:text>
+      <a href="#" class="pay" data-cents="25600">
+        <xsl:text>$256</xsl:text>
+      </a>
+      <xsl:text> or </xsl:text>
+      <a href="#" class="pay" data-cents="102400">
+        <xsl:text>$1024</xsl:text>
       </a>
       <xsl:text>), locked: </xsl:text>
       <a href="/a/{project}?a=pm/cost/estimates">
@@ -240,9 +249,6 @@ SOFTWARE.
       <xsl:text>var stripe_key='</xsl:text>
       <xsl:value-of select="stripe_key"/>
       <xsl:text>';</xsl:text>
-      <xsl:text>var stripe_cents=</xsl:text>
-      <xsl:value-of select="25600"/>
-      <xsl:text>;</xsl:text>
       <xsl:text>var pid='</xsl:text>
       <xsl:value-of select="project"/>
       <xsl:text>';</xsl:text>
@@ -268,7 +274,7 @@ SOFTWARE.
             handler.open({
               name: 'Add funds',
               description: 'Initial payment to ' + pid,
-              amount: stripe_cents
+              amount: $(this).attr('data-cents')
             });
             e.preventDefault();
           });
