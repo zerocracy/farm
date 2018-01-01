@@ -30,7 +30,7 @@ def exec(Project project, XML xml) {
   Cash amount = new Cash.S(claim.param('amount'))
   String customer = claim.param('stripe_customer')
   String email = claim.param('email')
-  new Ledger(project).add(
+  new Ledger(project).bootstrap().add(
     new Ledger.Transaction(
       amount,
       'assets', 'cash',

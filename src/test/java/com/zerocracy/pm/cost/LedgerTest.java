@@ -63,7 +63,7 @@ public final class LedgerTest {
         );
         MatcherAssert.assertThat(
             ledger.cash(),
-            Matchers.equalTo(new Cash.S("$143"))
+            Matchers.equalTo(new Cash.S("$136"))
         );
     }
 

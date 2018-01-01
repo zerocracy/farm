@@ -201,6 +201,25 @@ public final class Xocument {
     /**
      * Query it.
      * @param xpath Query string
+     * @param def Default one if nothing found
+     * @return Found text
+     * @throws FileNotFoundException If fails
+     */
+    public String xpath(final String xpath, final String def)
+        throws FileNotFoundException {
+        final List<String> vals = this.xpath(xpath);
+        final String val;
+        if (vals.isEmpty()) {
+            val = def;
+        } else {
+            val = vals.get(0);
+        }
+        return val;
+    }
+
+    /**
+     * Query it.
+     * @param xpath Query string
      * @return Found nodes
      * @throws FileNotFoundException If fails
      */

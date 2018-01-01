@@ -21,7 +21,6 @@ import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.cash.Cash;
 import java.io.IOException;
-import java.util.Iterator;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.UncheckedScalar;
 import org.cactoos.time.DateAsText;
@@ -58,17 +57,33 @@ public final class Ledger {
      */
     public Cash cash() throws IOException {
         try (final Item item = this.item()) {
-            final Iterator<String> texts = new Xocument(item).xpath(
-                // @checkstyle LineLength (1 line)
-                "//balance/account[name='assets' and namex='cash']/dt/text()"
-            ).iterator();
-            final Cash cash;
-            if (texts.hasNext()) {
-                cash = new Cash.S(texts.next());
-            } else {
-                cash = Cash.ZERO;
-            }
-            return cash;
+            return new Cash.S(
+                new Xocument(item).xpath(
+                    "//balance/account[name='assets']/dt/text()",
+                    "0"
+                )
+            ).add(
+                new Cash.S(
+                    new Xocument(item).xpath(
+                        "//balance/account[name='assets']/ct/text()",
+                        "0"
+                    )
+                ).mul(-1L)
+            ).add(
+                new Cash.S(
+                    new Xocument(item).xpath(
+                        "//balance/account[name='liabilities']/ct/text()",
+                        "0"
+                    )
+                ).mul(-1L)
+            ).add(
+                new Cash.S(
+                    new Xocument(item).xpath(
+                        "//balance/account[name='liabilities']/dt/text()",
+                        "0"
+                    )
+                )
+            );
         }
     }
 

@@ -85,6 +85,25 @@ public final class Estimates {
     }
 
     /**
+     * Update job estimate by factor.
+     * @param job The job to estimate
+     * @param factor The factor to use
+     * @throws IOException If fails
+     */
+    public void boost(final String job, final double factor)
+        throws IOException {
+        if (this.exists(job)) {
+            final double mul = 10000.0d;
+            this.update(
+                job,
+                this.get(job)
+                    .mul((long) (factor * mul))
+                    .div((long) mul)
+            );
+        }
+    }
+
+    /**
      * Change job estimate.
      * @param job The job to estimate
      * @param cash Value
@@ -92,6 +111,12 @@ public final class Estimates {
      */
     public void update(final String job, final Cash cash)
         throws IOException {
+        if (this.total()
+            .compareTo(new Ledger(this.project).bootstrap().cash()) > 0) {
+            throw new SoftException(
+                "Not enough funds available in the project"
+            );
+        }
         try (final Item wbs = this.item()) {
             final Xocument xoc = new Xocument(wbs.path());
             xoc.modify(

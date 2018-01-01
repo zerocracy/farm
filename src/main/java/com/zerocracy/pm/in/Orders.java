@@ -20,6 +20,9 @@ import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.SoftException;
+import com.zerocracy.pm.cost.Boosts;
+import com.zerocracy.pm.cost.Estimates;
+import com.zerocracy.pm.cost.Rates;
 import com.zerocracy.pm.scope.Wbs;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -91,6 +94,15 @@ public final class Orders {
                     "Job `%s` doesn't exist in WBS, can't create order",
                     job
                 )
+            );
+        }
+        final Rates rates = new Rates(this.project).bootstrap();
+        if (rates.exists(login)) {
+            new Estimates(this.project).bootstrap().update(
+                job, rates.rate(login).mul(
+                    (long) new Boosts(this.project).bootstrap().factor(job)
+                // @checkstyle MagicNumber (1 line)
+                ).div(4L)
             );
         }
         try (final Item wbs = this.item()) {

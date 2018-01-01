@@ -19,6 +19,7 @@ package com.zerocracy.pm.cost;
 import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
+import com.zerocracy.jstk.SoftException;
 import java.io.IOException;
 import org.cactoos.iterable.ItemAt;
 import org.cactoos.iterable.Mapped;
@@ -84,6 +85,26 @@ public final class Boosts {
      */
     public void boost(final String job, final int factor)
         throws IOException {
+        if (factor == 0) {
+            throw new SoftException(
+                String.format(
+                    "Boost factor for %s can't be zero",
+                    job
+                )
+            );
+        }
+        // @checkstyle MagicNumber (1 line)
+        if (factor > 64) {
+            throw new SoftException(
+                String.format(
+                    "Boost factor for %s can't be over 64: %d",
+                    job, factor
+                )
+            );
+        }
+        new Estimates(this.project).bootstrap().boost(
+            job, (double) factor / (double) this.factor(job)
+        );
         try (final Item item = this.item()) {
             final Xocument xoc = new Xocument(item);
             final String xpath = String.format("/boosts/boost[@id='%s']", job);
