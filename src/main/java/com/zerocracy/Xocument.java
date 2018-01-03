@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2016-2017 Zerocracy
+ * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to read
@@ -69,7 +69,7 @@ public final class Xocument {
     /**
      * Current DATUM version.
      */
-    public static final String VERSION = "0.49";
+    public static final String VERSION = "0.49.1";
 
     /**
      * Cache of documents.
@@ -196,6 +196,25 @@ public final class Xocument {
             Xocument.RESOLVER
         );
         return xml.xpath(xpath);
+    }
+
+    /**
+     * Query it.
+     * @param xpath Query string
+     * @param def Default one if nothing found
+     * @return Found text
+     * @throws FileNotFoundException If fails
+     */
+    public String xpath(final String xpath, final String def)
+        throws FileNotFoundException {
+        final List<String> vals = this.xpath(xpath);
+        final String val;
+        if (vals.isEmpty()) {
+            val = def;
+        } else {
+            val = vals.get(0);
+        }
+        return val;
     }
 
     /**

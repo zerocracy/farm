@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2016-2017 Zerocracy
+ * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to read
@@ -18,16 +18,19 @@ package com.zerocracy.stk.pm
 
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
+import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Catalog
+import com.zerocracy.pmo.Pmo
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Publish the project')
   ClaimIn claim = new ClaimIn(xml)
   String mode = claim.param('mode')
-  Catalog catalog = new Catalog(project)
+  Farm farm = binding.variables.farm
+  Catalog catalog = new Catalog(new Pmo(farm))
   if ('on' == mode) {
     catalog.publish(project.pid(), true)
     claim.reply(

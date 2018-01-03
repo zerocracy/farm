@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2016-2017 Zerocracy
+ * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to read
@@ -22,6 +22,7 @@ import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.jstk.cash.Cash
 import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.cost.Ledger
 import com.zerocracy.pmo.Catalog
 
@@ -34,7 +35,7 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Cash fee = new Catalog(farm).bootstrap().fee(project.pid())
   if (fee != Cash.ZERO) {
-    new Ledger(project).add(
+    new Ledger(project).bootstrap().add(
       new Ledger.Transaction(
         fee,
         'expenses', 'fee',
@@ -42,5 +43,9 @@ def exec(Project project, XML xml) {
         "Zerocracy fee for ${job} completed by @${login}"
       )
     )
+    new ClaimOut()
+      .type('Notify project')
+      .param('message', "Management fee ${fee} has been deducted")
+      .postTo(project)
   }
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-Copyright (c) 2016-2017 Zerocracy
+Copyright (c) 2016-2018 Zerocracy
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to read
@@ -42,11 +42,11 @@ SOFTWARE.
       </p>
     </xsl:if>
     <p>
-      <xsl:text>Project (</xsl:text>
+      <xsl:text>Project</xsl:text>
       <xsl:if test="pause = 'false'">
-        <xsl:text>alive</xsl:text>
+        <xsl:text> (alive)</xsl:text>
       </xsl:if>
-      <xsl:text>): </xsl:text>
+      <xsl:text>: </xsl:text>
       <code>
         <xsl:value-of select="title"/>
         <xsl:text>/</xsl:text>
@@ -67,8 +67,17 @@ SOFTWARE.
         <xsl:value-of select="cash"/>
       </a>
       <xsl:text> (</xsl:text>
-      <a href="#" class="pay">
-        <xsl:text>add more funds</xsl:text>
+      <xsl:text>add </xsl:text>
+      <a href="#" class="pay" data-cents="6400">
+        <xsl:text>$64</xsl:text>
+      </a>
+      <xsl:text>, </xsl:text>
+      <a href="#" class="pay" data-cents="25600">
+        <xsl:text>$256</xsl:text>
+      </a>
+      <xsl:text> or </xsl:text>
+      <a href="#" class="pay" data-cents="102400">
+        <xsl:text>$1024</xsl:text>
       </a>
       <xsl:text>), locked: </xsl:text>
       <a href="/a/{project}?a=pm/cost/estimates">
@@ -240,9 +249,6 @@ SOFTWARE.
       <xsl:text>var stripe_key='</xsl:text>
       <xsl:value-of select="stripe_key"/>
       <xsl:text>';</xsl:text>
-      <xsl:text>var stripe_cents=</xsl:text>
-      <xsl:value-of select="25600"/>
-      <xsl:text>;</xsl:text>
       <xsl:text>var pid='</xsl:text>
       <xsl:value-of select="project"/>
       <xsl:text>';</xsl:text>
@@ -264,11 +270,12 @@ SOFTWARE.
             }
           });
           $('a.pay').on('click', function (e) {
-            $('#cents').val(stripe_cents);
+            var cents = $(this).attr('data-cents')
+            $('#cents').val(cents);
             handler.open({
               name: 'Add funds',
               description: 'Initial payment to ' + pid,
-              amount: stripe_cents
+              amount: cents
             });
             e.preventDefault();
           });

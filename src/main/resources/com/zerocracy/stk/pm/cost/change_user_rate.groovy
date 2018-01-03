@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2016-2017 Zerocracy
+ * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to read
@@ -18,11 +18,14 @@ package com.zerocracy.stk.pm.cost
 
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
+import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
+import com.zerocracy.jstk.SoftException
 import com.zerocracy.jstk.cash.Cash
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.cost.Rates
+import com.zerocracy.pmo.People
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
@@ -30,6 +33,13 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).roles('ARC', 'PO')
   ClaimIn claim = new ClaimIn(xml)
   String login = claim.param('login')
+  Farm farm = binding.variables.farm
+  People people = new People(farm)
+  if (people.wallet(login).empty) {
+    throw new SoftException(
+      "User @${login} doesn't have a payment method configured yet, we won't be able to pay them."
+    )
+  }
   Cash rate = new Cash.S(claim.param('rate'))
   Rates rates = new Rates(project).bootstrap()
   String msg

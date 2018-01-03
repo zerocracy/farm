@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2016-2017 Zerocracy
+ * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to read
@@ -98,7 +98,8 @@ public final class TkPay implements TkRegex {
         final Cash amount = new Cash.S(
             String.format(
                 "USD %.2f",
-                Double.parseDouble(form.single("cents"))
+                // @checkstyle MagicNumber (1 line)
+                Double.parseDouble(form.single("cents")) / 100.0d
             )
         );
         new ClaimOut()

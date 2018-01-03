@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-Copyright (c) 2016-2017 Zerocracy
+Copyright (c) 2016-2018 Zerocracy
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to read
@@ -34,6 +34,13 @@ SOFTWARE.
     <client_id>${slack.client_id}</client_id>
     <client_secret>${slack.client_secret}</client_secret>
   </slack>
+  <paypal>
+    <mode>${paypal.mode}</mode>
+    <username>${paypal.username}</username>
+    <password>${paypal.password}</password>
+    <signature>${paypal.signature}</signature>
+    <appid>${paypal.appid}</appid>
+  </paypal>
   <stripe>
     <key>${stripe.key}</key>
     <secret>${stripe.secret}</secret>

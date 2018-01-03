@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2016-2017 Zerocracy
+ * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to read
@@ -237,7 +237,7 @@ public final class People {
     /**
      * Get user wallet.
      * @param uid User ID
-     * @return Wallet of the user
+     * @return Wallet of the user or empty string if it's not set
      * @throws IOException If fails
      */
     public String wallet(final String uid) throws IOException {

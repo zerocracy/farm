@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2016-2017 Zerocracy
+ * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to read
@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pm.cost;
 
+import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.cash.Cash;
 import com.zerocracy.jstk.farm.fake.FkProject;
 import org.hamcrest.MatcherAssert;
@@ -42,7 +43,16 @@ public final class EstimatesTest {
 
     @Test
     public void estimatesJobs() throws Exception {
-        final Estimates estimates = new Estimates(new FkProject()).bootstrap();
+        final Project project = new FkProject();
+        new Ledger(project).bootstrap().add(
+            new Ledger.Transaction(
+                new Cash.S("$500"),
+                "assets", "cash",
+                "income", "sponsor",
+                "Funded by Stripe customer"
+            )
+        );
+        final Estimates estimates = new Estimates(project).bootstrap();
         final String job = "gh:yegor256/pdd#4";
         estimates.update(job, new Cash.S("$45"));
         MatcherAssert.assertThat(

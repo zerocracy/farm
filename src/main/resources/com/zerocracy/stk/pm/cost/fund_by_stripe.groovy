@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2016-2017 Zerocracy
+ * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to read
@@ -21,6 +21,7 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.jstk.cash.Cash
 import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.cost.Ledger
 
 def exec(Project project, XML xml) {
@@ -30,7 +31,7 @@ def exec(Project project, XML xml) {
   Cash amount = new Cash.S(claim.param('amount'))
   String customer = claim.param('stripe_customer')
   String email = claim.param('email')
-  new Ledger(project).add(
+  new Ledger(project).bootstrap().add(
     new Ledger.Transaction(
       amount,
       'assets', 'cash',
@@ -38,4 +39,8 @@ def exec(Project project, XML xml) {
       "Funded by Stripe customer \"${customer}\""
     )
   )
+  new ClaimOut()
+    .type('Notify project')
+    .param('message', "The project has been funded via Stripe for ${amount}")
+    .postTo(project)
 }

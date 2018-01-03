@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2016-2017 Zerocracy
+ * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to read
@@ -18,11 +18,15 @@ package com.zerocracy.stk.pm.cost
 
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
+import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
+import com.zerocracy.jstk.cash.Cash
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.cost.Boosts
+import com.zerocracy.pm.cost.Estimates
 import com.zerocracy.pm.staff.Roles
+import com.zerocracy.pmo.banks.Payroll
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
@@ -37,12 +41,22 @@ def exec(Project project, XML xml) {
   if (!roles.hasAnyRole(login)) {
     return
   }
-  // here we pay if the amount is positive, otherwise we ignore
-  new ClaimOut()
-    .type('Payment was made')
-    .param('job', job)
-    .param('login', login)
-    .param('reason', reason)
-    .param('minutes', minutes)
-    .postTo(project)
+  Estimates estimates = new Estimates(project).bootstrap()
+  if (estimates.exists(job)) {
+    Cash price = estimates.get(job)
+    Farm farm = binding.variables.farm
+    String msg = new Payroll(farm).pay(
+      project, login, price,
+      "Payment for ${job} (${minutes} minutes): ${reason}"
+    )
+    new ClaimOut()
+      .type('Notify user')
+      .param('login', login)
+      .param('message', msg)
+      .postTo(project)
+    new ClaimOut()
+      .type('Notify project')
+      .param('message', msg)
+      .postTo(project)
+  }
 }
