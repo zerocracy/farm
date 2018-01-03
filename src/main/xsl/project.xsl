@@ -42,11 +42,29 @@ SOFTWARE.
       </p>
     </xsl:if>
     <p>
-      <xsl:text>Project</xsl:text>
-      <xsl:if test="pause = 'false'">
-        <xsl:text> (alive)</xsl:text>
-      </xsl:if>
-      <xsl:text>: </xsl:text>
+      <xsl:text>Project (</xsl:text>
+      <a href="http://datum.zerocracy.com/pages/policy.html#24">
+        <xsl:choose>
+          <xsl:when test="pause='false'">
+            <xsl:text>alive</xsl:text>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:text>paused</xsl:text>
+          </xsl:otherwise>
+        </xsl:choose>
+      </a>
+      <xsl:text>, </xsl:text>
+      <a href="http://www.0crat.com/board">
+        <xsl:choose>
+          <xsl:when test="published='true'">
+            <xsl:text>visible</xsl:text>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:text>invisible</xsl:text>
+          </xsl:otherwise>
+        </xsl:choose>
+      </a>
+      <xsl:text>): </xsl:text>
       <code>
         <xsl:value-of select="title"/>
         <xsl:text>/</xsl:text>

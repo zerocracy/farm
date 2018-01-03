@@ -19,12 +19,16 @@ def exec(Project project, XML xml) {
   )
   Orders orders = new Orders(project).bootstrap()
   int days = 10
-  new Limited<>(5, orders.olderThan(time.minusDays(days))).forEach {
+  new Limited<>(5, orders.olderThan(time.minusDays(days))).forEach { String job ->
     new ClaimOut()
       .type('Cancel order')
-      .token("job;$it")
-      .param('job', it)
+      .token("job;$job")
+      .param('job', job)
       .param('reason', "It is older than ${days} days")
+      .postTo(project)
+    new ClaimOut()
+      .type('Notify project')
+      .param('message', "Order at `${job}` cancelled for @${orders.performer(job)}: over ${days} days")
       .postTo(project)
   }
 }

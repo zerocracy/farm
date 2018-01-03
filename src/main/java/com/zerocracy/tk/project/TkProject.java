@@ -76,11 +76,15 @@ public final class TkProject implements TkRegex {
                         () -> new XeChain(
                             new XeAppend(
                                 "pause",
-                                Boolean.toString(catalog.pause(project.pid()))
+                                Boolean.toString(catalog.pause(pid))
+                            ),
+                            new XeAppend(
+                                "published",
+                                Boolean.toString(catalog.published(pid))
                             ),
                             new XeAppend(
                                 "roles",
-                                new XeTransform<>(
+                                new XeTransform<String>(
                                     new Roles(project).bootstrap().allRoles(
                                         new RqUser(this.farm, req).value()
                                     ),

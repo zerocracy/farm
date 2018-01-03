@@ -42,6 +42,11 @@ SOFTWARE.
             </a>
           </li>
           <li>
+            <a href="http://www.0crat.com/board">
+              <xsl:text>Board</xsl:text>
+            </a>
+          </li>
+          <li>
             <a href="http://datum.zerocracy.com/pages/policy.html">
               <xsl:text>Policy</xsl:text>
             </a>

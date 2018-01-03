@@ -56,13 +56,20 @@ public final class VtrSpeed implements Voter {
     public double vote(final String login, final StringBuilder log)
         throws IOException {
         final double avg = new Speed(this.project, login).bootstrap().avg();
-        log.append(
-            Logger.format(
-                "Average speed is %[ms]s per job",
-                (long) avg * TimeUnit.MINUTES.toMillis(1L)
-            )
-        );
-        return (VtrSpeed.MAX - Math.max(0.0, Math.min(VtrSpeed.MAX, avg)))
-            / VtrSpeed.MAX;
+        final double rank;
+        if (avg == 0.0d) {
+            log.append("Average speed is unknown");
+            rank = 0.0d;
+        } else {
+            log.append(
+                Logger.format(
+                    "Average speed is %[ms]s per job",
+                    (long) avg * TimeUnit.MINUTES.toMillis(1L)
+                )
+            );
+            rank = (VtrSpeed.MAX - Math.max(0.0, Math.min(VtrSpeed.MAX, avg)))
+                / VtrSpeed.MAX;
+        }
+        return rank;
     }
 }

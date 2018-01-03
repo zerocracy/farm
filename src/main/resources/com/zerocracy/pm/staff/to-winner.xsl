@@ -78,11 +78,13 @@ SOFTWARE.
 </xsl:text>
             <xsl:for-each select="vote">
               <xsl:text>  </xsl:text>
-              <xsl:value-of select="format-number(@score, '0.00')"/>
-              <xsl:text>=</xsl:text>
-              <xsl:value-of select="format-number(@points, '0.00')"/>
-              <xsl:text>x</xsl:text>
-              <xsl:value-of select="@weight"/>
+              <xsl:value-of select="format-number(@score, '+0.00')"/>
+              <xsl:if test="@points != @score">
+                <xsl:text>=</xsl:text>
+                <xsl:value-of select="format-number(@points, '0.00')"/>
+                <xsl:text>x</xsl:text>
+                <xsl:value-of select="@weight"/>
+              </xsl:if>
               <xsl:text> </xsl:text>
               <xsl:value-of select="text()"/>
               <xsl:text>
