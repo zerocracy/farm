@@ -41,6 +41,12 @@ def exec(Project project, XML xml) {
         'expenses', 'fee',
         'liabilities', 'zerocracy',
         "Zerocracy fee for ${job} completed by @${login}"
+      ),
+      new Ledger.Transaction(
+        fee,
+        'liabilities', 'zerocracy',
+        'assets', 'cash',
+        "Zerocracy fee paid in cash for ${job}"
       )
     )
     new ClaimOut()

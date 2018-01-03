@@ -44,7 +44,11 @@ SOFTWARE.
       <a href="http://datum.zerocracy.com/pages/policy.html#2">
         <xsl:text>par.2</xsl:text>
       </a>
-      <xsl:text> of our Policy.</xsl:text>
+      <xsl:text>. To add your project to this board you have to publish it, see </xsl:text>
+      <a href="http://datum.zerocracy.com/pages/policy.html#26">
+        <xsl:text>par.26</xsl:text>
+      </a>
+      <xsl:text>.</xsl:text>
     </p>
     <table>
       <thead>
