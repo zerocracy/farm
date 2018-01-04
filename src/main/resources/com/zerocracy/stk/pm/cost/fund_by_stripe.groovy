@@ -35,7 +35,7 @@ def exec(Project project, XML xml) {
     new Ledger.Transaction(
       amount,
       'assets', 'cash',
-      'income', email,
+      'income', email.toLowerCase(Locale.ENGLISH),
       "Funded by Stripe customer \"${customer}\""
     )
   )

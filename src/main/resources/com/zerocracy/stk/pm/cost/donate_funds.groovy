@@ -33,7 +33,7 @@ def exec(Project project, XML xml) {
     new Ledger.Transaction(
       amount,
       'assets', 'cash',
-      'income', 'Zerocracy',
+      'income', 'zerocracy',
       'Donated by Zerocracy'
     )
   )
