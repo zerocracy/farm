@@ -20,24 +20,16 @@ import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.in.Impediments
-
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Register impediment')
-
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
-
   new Impediments(project)
     .bootstrap()
     .register(job, 'The user just asked to wait a bit.')
-
-  new ClaimOut()
-    .type('Notify job')
-    .token("job;${job}")
-    .param('message', 'impediment was registered successfully')
+  claim.reply('Impediment was registered successfully')
     .postTo(project)
 }
