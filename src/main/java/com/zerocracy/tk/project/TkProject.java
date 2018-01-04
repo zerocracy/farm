@@ -106,6 +106,12 @@ public final class TkProject implements TkRegex {
                                     .total().toString()
                             ),
                             new XeAppend(
+                                "deficit",
+                                Boolean.toString(
+                                    new Ledger(project).bootstrap().deficit()
+                                )
+                            ),
+                            new XeAppend(
                                 "fee",
                                 catalog.fee(project.pid()).toString()
                             )

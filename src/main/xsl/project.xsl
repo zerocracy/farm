@@ -101,9 +101,29 @@ SOFTWARE.
       <a href="/a/{project}?a=pm/cost/estimates">
         <xsl:value-of select="estimates"/>
       </a>
-      <xsl:text>, fee: </xsl:text>
-      <xsl:value-of select="fee"/>
+      <xsl:text>, </xsl:text>
+      <a href="http://datum.zerocracy.com/pages/policy.html#23">
+        <xsl:text>fee</xsl:text>
+      </a>
+      <xsl:text>: </xsl:text>
+      <xsl:choose>
+        <xsl:when test="fee = '0'">
+          <span style="color:darkgreen">
+            <xsl:text>waived</xsl:text>
+          </span>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="fee"/>
+        </xsl:otherwise>
+      </xsl:choose>
       <xsl:text>.</xsl:text>
+      <xsl:if test="deficit = 'true'">
+        <xsl:text> </xsl:text>
+        <span style="color:darkred">
+          <xsl:text>ATTENTION</xsl:text>
+        </span>
+        <xsl:text>: The project is not funded, we can't assign any new tasks to anyone.</xsl:text>
+      </xsl:if>
     </p>
     <form id="form" style="display:none" action="/pay/{project}" method="post">
       <input name="cents" id="cents" type="hidden"/>

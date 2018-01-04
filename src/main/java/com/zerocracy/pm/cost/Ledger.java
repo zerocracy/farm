@@ -51,6 +51,45 @@ public final class Ledger {
     }
 
     /**
+     * Is it in deficit now?
+     * @return TRUE if the project doesn't have enough funds
+     * @throws IOException If fails
+     */
+    public boolean deficit() throws IOException {
+        try (final Item item = this.item()) {
+            return !new Xocument(item).nodes(
+                "/ledger/deficit"
+            ).isEmpty();
+        }
+    }
+
+    /**
+     * Set deficit status.
+     * @param def TRUE if there is a deficit
+     * @throws IOException If fails
+     */
+    public void deficit(final boolean def) throws IOException {
+        try (final Item item = this.item()) {
+            if (def) {
+                new Xocument(item).modify(
+                    new Directives()
+                        .xpath("/ledger[not(deficit)]")
+                        .strict(1)
+                        .add("deficit")
+                        .set(new DateAsText().asString())
+                );
+            } else {
+                new Xocument(item).modify(
+                    new Directives()
+                        .xpath("/ledger/deficit")
+                        .strict(1)
+                        .remove()
+                );
+            }
+        }
+    }
+
+    /**
      * What's left in project cash?
      * @return Cash left
      * @throws IOException If fails

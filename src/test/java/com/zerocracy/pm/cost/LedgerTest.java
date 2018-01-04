@@ -84,4 +84,19 @@ public final class LedgerTest {
         );
     }
 
+    @Test
+    public void modifiesDeficit() throws Exception {
+        final Ledger ledger = new Ledger(new FkProject()).bootstrap();
+        ledger.deficit(true);
+        MatcherAssert.assertThat(
+            ledger.deficit(),
+            Matchers.equalTo(true)
+        );
+        ledger.deficit(false);
+        MatcherAssert.assertThat(
+            ledger.deficit(),
+            Matchers.equalTo(false)
+        );
+    }
+
 }
