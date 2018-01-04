@@ -24,6 +24,7 @@ import com.zerocracy.tk.profile.TkAwards;
 import com.zerocracy.tk.profile.TkProfile;
 import com.zerocracy.tk.project.TkArtifact;
 import com.zerocracy.tk.project.TkBadge;
+import com.zerocracy.tk.project.TkDonate;
 import com.zerocracy.tk.project.TkFootprint;
 import com.zerocracy.tk.project.TkPay;
 import com.zerocracy.tk.project.TkProject;
@@ -172,6 +173,10 @@ public final class TkApp extends TkWrap {
                                                             new FkRegex(
                                                                 "/pay/(PMO|[A-Z0-9]{9})",
                                                                 new TkPay(farm)
+                                                            ),
+                                                            new FkRegex(
+                                                                "/donate/(PMO|[A-Z0-9]{9})",
+                                                                new TkDonate(farm)
                                                             ),
                                                             new FkRegex(
                                                                 "/a/(PMO|[A-Z0-9]{9})",

@@ -79,6 +79,17 @@ SOFTWARE.
     <xsl:apply-templates select="." mode="artifacts"/>
   </xsl:template>
   <xsl:template match="page[project!='PMO']" mode="artifacts">
+    <xsl:if test="identity/login = 'yegor256'">
+      <form action="/donate/{project}" method="post">
+        <label>
+          <xsl:text>Donate: </xsl:text>
+        </label>
+        <input name="amount" size="15" maxlength="15" placeholder="e.g. $100"/>
+        <button type="submit">
+          <xsl:text>Donate</xsl:text>
+        </button>
+      </form>
+    </xsl:if>
     <p>
       <xsl:text>Cash: </xsl:text>
       <a href="/a/{project}?a=pm/cost/ledger">
