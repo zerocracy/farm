@@ -20,10 +20,13 @@ import com.zerocracy.jstk.Farm;
 import com.zerocracy.pmo.GoodPeople;
 import com.zerocracy.pmo.People;
 import java.io.IOException;
+import org.telegram.telegrambots.api.objects.Update;
 
 /**
  * Person in telegram.
+ *
  * @author Kirill (g4s8.public@gmail.com)
+ * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.16
  */
@@ -35,18 +38,18 @@ final class TmPerson {
     private final Farm farm;
 
     /**
-     * Event.
+     * Telegram update.
      */
-    private final TmRequest request;
+    private final Update update;
 
     /**
      * Ctor.
      * @param frm Farm
-     * @param req Telegram request
+     * @param upd Update
      */
-    TmPerson(final Farm frm, final TmRequest req) {
+    TmPerson(final Farm frm, final Update upd) {
         this.farm = frm;
-        this.request = req;
+        this.update = upd;
     }
 
     /**
@@ -56,7 +59,7 @@ final class TmPerson {
      */
     public String uid() throws IOException {
         return new GoodPeople(new People(this.farm)).get(
-            "telegram", this.request.sender()
+            "telegram", Long.toString(this.update.getMessage().getChatId())
         );
     }
 }

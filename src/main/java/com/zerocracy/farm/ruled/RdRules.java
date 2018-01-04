@@ -106,7 +106,7 @@ final class RdRules {
             Logger.debug(
                 // @checkstyle LineLength (1 line)
                 this, "%d XSLs confirm consistency in %s after changes in %s, area=\"%s\", reason=\"%s\", XSLs=\"%s\"",
-                new LengthOf(xsls).value(), this.project,
+                new LengthOf(xsls).intValue(), this.project,
                 this.path.getFileName(), area, this.reason,
                 new JoinedText(";", xsls).asString()
             );

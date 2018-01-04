@@ -25,7 +25,6 @@ import com.zerocracy.radars.github.GithubRoutine;
 import com.zerocracy.radars.github.TkGithub;
 import com.zerocracy.radars.slack.SlackRadar;
 import com.zerocracy.radars.slack.TkSlack;
-import com.zerocracy.radars.telegram.TelegramRadar;
 import com.zerocracy.tk.TkAlias;
 import com.zerocracy.tk.TkApp;
 import io.sentry.Sentry;
@@ -84,15 +83,11 @@ public final class Main {
             final Farm farm = new SmartFarm(
                 new S3Farm(new ExtBucket().value())
             ).value();
-            final SlackRadar radar = new SlackRadar(farm);
-            final TelegramRadar telegram = new TelegramRadar(farm)
+            final SlackRadar radar = new SlackRadar(farm)
         ) {
             new ExtMongobee(farm).apply();
+            new ExtTelegram(farm).value();
             radar.refresh();
-            telegram.start(
-                props.get("//telegram/token"),
-                props.get("//telegram/username")
-            );
             new GithubRoutine(farm).start();
             new FtCli(
                 new TkApp(

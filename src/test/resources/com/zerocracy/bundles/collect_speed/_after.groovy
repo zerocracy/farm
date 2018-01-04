@@ -19,14 +19,13 @@ package com.zerocracy.bundles.collect_speed
 import com.jcabi.xml.XML
 import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
-import com.zerocracy.pmo.Pmo
 import com.zerocracy.pmo.Speed
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
-  def speed = new Speed(new Pmo(farm), 'g4s8').bootstrap()
+  def speed = new Speed(farm, 'g4s8').bootstrap()
   MatcherAssert.assertThat(
     'Order was not found in speed.xml',
     speed.jobs().first(),

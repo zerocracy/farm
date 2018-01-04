@@ -22,7 +22,6 @@ import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Catalog
-import com.zerocracy.pmo.Pmo
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
@@ -30,21 +29,21 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   String mode = claim.param('mode')
   Farm farm = binding.variables.farm
-  Catalog catalog = new Catalog(new Pmo(farm))
+  Catalog catalog = new Catalog(farm)
   if ('on' == mode) {
     catalog.publish(project.pid(), true)
     claim.reply(
-      'The project is visible now at the [board](http://www.0crat.com/board)'
+      'The project is visible now at the [board](http://www.0crat.com/board).'
     ).postTo(project)
   } else if ('off' == mode) {
     catalog.publish(project.pid(), false)
     claim.reply(
       'The project is not visible anymore at the' +
-      ' [board](http://www.0crat.com/board)'
+      ' [board](http://www.0crat.com/board).'
     ).postTo(project)
   } else {
     claim.reply(
-      "Incorrect mode, possible values are 'on' or 'off'"
+      "Incorrect mode, possible values are 'on' or 'off'."
     ).postTo(project)
   }
 }

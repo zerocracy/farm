@@ -17,7 +17,9 @@
 
 /**
  * Telegram reactions.
+ *
  * @author Kirill (g4s8.public@gmail.com)
+ * @author Yegor Bugayenko (yegor256@gmail.com)
  * @since 0.15
  * @version $Id$
  */

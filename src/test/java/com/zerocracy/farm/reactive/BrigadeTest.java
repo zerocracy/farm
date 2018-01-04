@@ -69,7 +69,7 @@ public final class BrigadeTest {
                 ),
                 file.toFile()
             )
-        ).value();
+        ).intValue();
         final Project project = new FkProject();
         new ClaimOut().type("just some fun").postTo(project);
         final Claims claims = new Claims(project).bootstrap();

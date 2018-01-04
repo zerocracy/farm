@@ -138,7 +138,7 @@ public final class Elections {
         try (final Item item = this.item()) {
             final Path path = item.path();
             final Path temp = Files.createTempFile("elections", ".xml");
-            new LengthOf(new TeeInput(path, temp)).value();
+            new LengthOf(new TeeInput(path, temp)).intValue();
             final Project pkt = file -> new FkItem(temp);
             new Xocument(temp).modify(dirs);
             boolean modified = true;
@@ -155,7 +155,7 @@ public final class Elections {
                 modified = false;
             }
             if (modified) {
-                new LengthOf(new TeeInput(temp, path)).value();
+                new LengthOf(new TeeInput(temp, path)).intValue();
             }
             return modified;
         }

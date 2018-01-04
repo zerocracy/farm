@@ -17,13 +17,7 @@
 package com.zerocracy.bundles.bootstraps_a_project
 
 import com.jcabi.xml.XML
-import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
-import com.zerocracy.pmo.Catalog
 
 def exec(Project project, XML xml) {
-  Farm farm = binding.variables.farm
-  new Catalog(farm)
-    .bootstrap()
-    .add(project.pid(), "2017/11/${project.pid()}/")
 }

@@ -83,7 +83,7 @@ public final class ClaimsTest {
                     ),
                     item.path()
                 )
-            ).value();
+            ).intValue();
         }
         final Claims claims = new Claims(project).bootstrap();
         claims.add(new ClaimOut().token("test;test;1").type("just hello"));

@@ -58,7 +58,7 @@ public final class Banned implements Voter {
             .bootstrap()
             .reasons(this.job, login);
         final double rate;
-        if (new LengthOf(reasons).value() > 0) {
+        if (new LengthOf(reasons).intValue() > 0) {
             log.append("Banned from this job because: ")
                 .append(new JoinedText(", ", reasons).asString());
             rate = 1.0;

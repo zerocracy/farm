@@ -32,36 +32,47 @@ import org.cactoos.iterable.LengthOf;
 public final class Workload implements Voter {
 
     /**
-     * Max jobs count to take in account.
-     */
-    private static final double MAX_JOBS = 20.0;
-
-    /**
      * The PMO.
      */
     private final Project pmo;
+
+    /**
+     * Max.
+     */
+    private final int max;
 
     /**
      * Ctor.
      * @param prj The PMO
      */
     public Workload(final Project prj) {
+        // @checkstyle MagicNumber (1 line)
+        this(prj, 20);
+    }
+
+    /**
+     * Ctor.
+     * @param prj The PMO
+     * @param threshold Max
+     */
+    public Workload(final Project prj, final int threshold) {
         this.pmo = prj;
+        this.max = threshold;
     }
 
     @Override
     public double vote(final String login, final StringBuilder log)
         throws IOException {
-        final double jobs = new LengthOf(
+        final int jobs = new LengthOf(
             new Agenda(this.pmo, login).jobs()
-        ).value();
+        ).intValue();
         log.append(
             String.format(
-                "%.0f jobs out of %.0f",
-                jobs, Workload.MAX_JOBS
+                "%d jobs out of %d",
+                jobs, this.max
             )
         );
-        return (Workload.MAX_JOBS - Math.min(jobs, Workload.MAX_JOBS))
-            / Workload.MAX_JOBS;
+        return (double) (this.max - Math.min(jobs, this.max))
+            / (double) this.max;
     }
 }

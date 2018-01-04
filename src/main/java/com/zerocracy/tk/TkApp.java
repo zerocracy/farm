@@ -17,11 +17,9 @@
 package com.zerocracy.tk;
 
 import com.jcabi.log.Logger;
-import com.zerocracy.entry.ExtGithub;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.tk.profile.TkAgenda;
-import com.zerocracy.tk.profile.TkAvatar;
 import com.zerocracy.tk.profile.TkAwards;
 import com.zerocracy.tk.profile.TkProfile;
 import com.zerocracy.tk.project.TkArtifact;
@@ -154,10 +152,6 @@ public final class TkApp extends TkWrap {
                                                                 (Take) req -> new RsRedirect(
                                                                     String.format("/u/%s", new RqUser(farm, req).value())
                                                                 )
-                                                            ),
-                                                            new FkRegex(
-                                                                "/avatar/([A-Za-z0-9\\-]{3,})",
-                                                                new TkAvatar(new ExtGithub(farm).value())
                                                             ),
                                                             new FkRegex(
                                                                 "/badge/(PMO|[A-Z0-9]{9})\\.svg",

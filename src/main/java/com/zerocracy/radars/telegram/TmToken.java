@@ -16,31 +16,35 @@
  */
 package com.zerocracy.radars.telegram;
 
-import java.util.Locale;
+import org.telegram.telegrambots.api.objects.Update;
 
 /**
  * Telegram token.
+ *
  * @author Kirill (g4s8.public@gmail.com)
+ * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.16
  */
 final class TmToken {
 
     /**
-     * Telegram request.
+     * Telegram update.
      */
-    private final TmRequest request;
+    private final Update update;
 
     /**
      * Ctor.
-     * @param req Telegram request
+     * @param upd Update
      */
-    TmToken(final TmRequest req) {
-        this.request = req;
+    TmToken(final Update upd) {
+        this.update = upd;
     }
 
     @Override
     public String toString() {
-        return String.format(Locale.US, "telegram;%d", this.request.chat());
+        return String.format(
+            "telegram;%d", this.update.getMessage().getChatId()
+        );
     }
 }

@@ -22,31 +22,34 @@ import com.zerocracy.pmo.Pmo;
 import com.zerocracy.radars.ClaimOnQuestion;
 import com.zerocracy.radars.Question;
 import java.io.IOException;
+import org.telegram.telegrambots.api.objects.Update;
 
 /**
  * Telegram profile reaction.
+ *
  * @author Kirill (g4s8.public@gmail.com)
+ * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.16
  */
 public final class ReProfile implements Reaction {
 
     @Override
-    public boolean react(final Farm farm, final TmSession session,
-        final TmRequest request) throws IOException {
+    public boolean react(final TmZerocrat bot, final Farm farm,
+        final Update update) throws IOException {
         final Question question = new Question(
             new XMLDocument(
                 this.getClass().getResource(
                     "/com/zerocracy/radars/q-profile.xml"
                 )
             ),
-            request.text().trim()
+            update.getMessage().getText().trim()
         );
         // @checkstyle LineLength (1 line)
         new ClaimOnQuestion(question, "Remember, this chat is for managing your personal profile; to manage a project, please open or create a new Slack channel and invite the bot there.")
             .claim()
-            .token(new TmToken(request))
-            .author(new TmPerson(farm, request).uid())
+            .token(new TmToken(update))
+            .author(new TmPerson(farm, update).uid())
             .postTo(new Pmo(farm));
         return question.matches();
     }

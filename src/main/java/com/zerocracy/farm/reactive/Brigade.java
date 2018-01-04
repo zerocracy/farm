@@ -64,7 +64,7 @@ final class Brigade implements BiFunc<Project, XML, Integer> {
                 stk -> Brigade.process(stk, project, xml),
                 this.pool
             )
-        ).value();
+        ).intValue();
     }
 
     /**

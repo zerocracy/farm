@@ -14,29 +14,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.radars.telegram;
+package com.zerocracy.farm.ruled;
 
-import java.io.IOException;
+import java.net.URI;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Test;
 
 /**
- * Telegram session. May be associated with direct chat or channel.
- * @author Kirill (g4s8.public@gmail.com)
+ * Test case for {@link RdIndex}.
+ * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.15
+ * @since 0.19
+ * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-public interface TmSession {
+public final class RdIndexTest {
 
-    /**
-     * Reply in current session.
-     * @param response Response to user
-     * @throws IOException If failed
-     */
-    void reply(TmResponse response) throws IOException;
+    @Test
+    public void listsEmptyIndex() throws Exception {
+        MatcherAssert.assertThat(
+            new RdIndex(URI.create("/latest/auto/pm/cost/boosts")).iterate(),
+            Matchers.iterableWithSize(0)
+        );
+    }
 
-    /**
-     * Bot username.
-     * @return Username string
-     * @throws IOException If failed
-     */
-    String botname() throws IOException;
 }

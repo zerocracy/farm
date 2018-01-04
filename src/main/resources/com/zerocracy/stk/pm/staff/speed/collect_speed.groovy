@@ -21,7 +21,6 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pmo.Pmo
 import com.zerocracy.pmo.Speed
 import java.time.Duration
 
@@ -32,7 +31,7 @@ def exec(Project project, XML xml) {
   def claim = new ClaimIn(xml)
   def job = claim.param('job')
   def duration = Duration.parse(claim.param('duration'))
-  new Speed(new Pmo(farm), claim.param('login'))
+  new Speed(farm, claim.param('login'))
     .bootstrap()
     .add(project.pid(), job, duration.toMinutes())
 }

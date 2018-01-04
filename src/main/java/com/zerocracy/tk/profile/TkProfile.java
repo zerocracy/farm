@@ -128,7 +128,7 @@ public final class TkProfile implements TkRegex {
                         Integer.toString(
                             new LengthOf(
                                 new Agenda(pmo, login).bootstrap().jobs()
-                            ).value()
+                            ).intValue()
                         )
                     )
                 );

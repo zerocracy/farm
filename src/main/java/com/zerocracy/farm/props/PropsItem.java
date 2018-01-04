@@ -93,7 +93,7 @@ final class PropsItem implements Item {
                 ).toString(),
                 this.temp
             )
-        ).value();
+        ).intValue();
         return this.temp;
     }
 

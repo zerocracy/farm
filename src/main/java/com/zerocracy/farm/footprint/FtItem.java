@@ -90,7 +90,7 @@ final class FtItem implements Item {
     @Override
     public void close() throws IOException {
         final Path modified = Files.createTempFile("footprint", ".xml");
-        new LengthOf(new TeeInput(this.path(), modified)).value();
+        new LengthOf(new TeeInput(this.path(), modified)).intValue();
         final XML after = FtItem.claims(modified);
         this.origin.close();
         final XML before = FtItem.claims(this.temp);

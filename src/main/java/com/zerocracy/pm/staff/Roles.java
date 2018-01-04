@@ -163,7 +163,7 @@ public final class Roles {
         }
         final int jobs = new LengthOf(
             new Orders(this.project).bootstrap().jobs(person)
-        ).value();
+        ).intValue();
         if (jobs > 0) {
             throw new SoftException(
                 String.format(

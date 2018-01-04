@@ -26,7 +26,7 @@ import com.zerocracy.msg.TxtUnrecoverableError;
 import io.sentry.Sentry;
 import java.io.IOException;
 import javax.json.JsonObject;
-import org.cactoos.Proc;
+import org.cactoos.func.FuncOf;
 import org.cactoos.func.FuncWithFallback;
 import org.cactoos.func.IoCheckedFunc;
 
@@ -71,17 +71,19 @@ public final class RbSafe implements Rebound {
                     }
                     return result;
                 },
-                (Proc<Throwable>) throwable -> {
-                    new ThrottledComments(
-                        RbSafe.issue(github, event).comments()
-                    ).post(
-                        new TxtUnrecoverableError(
-                            throwable, new Props(farm)
-                        ).asString()
-                    );
-                    Sentry.capture(throwable);
-                    throw new IOException(throwable);
-                }
+                new FuncOf<>(
+                    throwable -> {
+                        new ThrottledComments(
+                            RbSafe.issue(github, event).comments()
+                        ).post(
+                            new TxtUnrecoverableError(
+                                throwable, new Props(farm)
+                            ).asString()
+                        );
+                        Sentry.capture(throwable);
+                        throw new IOException(throwable);
+                    }
+                )
             )
         ).apply(true);
     }

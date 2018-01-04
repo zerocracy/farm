@@ -28,6 +28,7 @@ import com.zerocracy.jstk.farm.fake.FkFarm;
 import com.zerocracy.jstk.farm.fake.FkProject;
 import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.Claims;
+import com.zerocracy.pmo.Catalog;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileVisitOption;
@@ -178,6 +179,7 @@ public final class BundlesTest {
             final Project project = farm.find(
                 String.format("@id='%s'", pid)
             ).iterator().next();
+            new Catalog(farm).bootstrap().add(pid, "PMO/");
             new And(
                 path -> {
                     new LengthOf(
@@ -189,7 +191,7 @@ public final class BundlesTest {
                                 )
                             )
                         )
-                    ).value();
+                    ).intValue();
                 },
                 BundlesTest.resources(this.bundle)
             ).value();

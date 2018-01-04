@@ -123,7 +123,7 @@ public final class ReOnComment implements Reaction {
         }
         Logger.info(
             this, "%d comments found in %s and processed in %[ms]s: %s",
-            new LengthOf(comments).value(),
+            new LengthOf(comments).intValue(),
             issue.repo().coordinates(),
             System.currentTimeMillis() - start,
             String.join(

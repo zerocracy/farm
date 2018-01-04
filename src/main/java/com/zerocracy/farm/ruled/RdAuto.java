@@ -138,7 +138,7 @@ final class RdAuto {
                             after.toString(),
                             item.path()
                         )
-                    ).value();
+                    ).intValue();
                     Logger.info(
                         this, "Applied %s to %s in %s (%d to %d): %s",
                         xsl, target, this.project,

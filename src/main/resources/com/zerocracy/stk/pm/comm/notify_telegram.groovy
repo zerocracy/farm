@@ -22,7 +22,7 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.radars.telegram.TmResponse
+import org.telegram.telegrambots.api.methods.send.SendMessage
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Notify in Telegram')
@@ -30,22 +30,15 @@ def exec(Project project, XML xml) {
   String[] parts = claim.token().split(';')
   if (parts[0] != 'telegram') {
     throw new IllegalArgumentException(
-      "Something is wrong with this token: ${claim.token()}"
+      "Something is wrong with this token: \"${claim.token()}\""
     )
   }
-  String[] slices = parts[1].split(':')
-  long channel = Long.parseLong(slices[0])
+  long chat = Long.parseLong(parts[1])
   Farm farm = binding.variables.farm
-  new ExtTelegram(farm).value()[channel].reply(new Response(claim))
-}
-
-class Response implements TmResponse {
-  final ClaimIn claim
-  Response(ClaimIn claim) {
-    this.claim = claim
-  }
-  @Override
-  String text() throws IOException {
-    claim.param('message')
-  }
+  new ExtTelegram(farm).value().post(
+    new SendMessage()
+      .enableMarkdown(true)
+      .setChatId(chat)
+      .setText(claim.param('message'))
+  )
 }

@@ -23,7 +23,6 @@ import com.zerocracy.jstk.Project
 import com.zerocracy.jstk.SoftException
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Catalog
-import com.zerocracy.pmo.Pmo
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Set title')
@@ -31,7 +30,7 @@ def exec(Project project, XML xml) {
   def claim = new ClaimIn(xml)
   String pid = project.pid()
   Farm farm = binding.variables.farm
-  def catalog = new Catalog(new Pmo(farm)).bootstrap()
+  def catalog = new Catalog(farm).bootstrap()
   if (!claim.hasParam('title')) {
     throw new SoftException(
       "Project title is ${catalog.title(pid)}. " +

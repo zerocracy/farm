@@ -18,8 +18,10 @@ package com.zerocracy.stk.pm.comm
 
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
+import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pmo.People
 
 // The token must look like: yegor256
 
@@ -32,8 +34,19 @@ def exec(Project project, XML xml) {
       "Something is wrong with this token: ${claim.token()}"
     )
   }
-  claim.copy()
-    .type('Notify')
-    .token("slack;${project.pid()};${parts[1]};direct")
-    .postTo(project)
+  String login = parts[1]
+  Farm farm = binding.variables.farm
+  People people = new People(farm).bootstrap()
+  for (String uid : people.links(login, 'slack')) {
+    claim.copy()
+      .type('Notify in Slack')
+      .token("slack;${project.pid()};${login};${uid}")
+      .postTo(project)
+  }
+  for (String uid : people.links(login, 'telegram')) {
+    claim.copy()
+      .type('Notify in Telegram')
+      .token("telegram;${uid}")
+      .postTo(project)
+  }
 }

@@ -248,7 +248,7 @@ public final class Xocument {
         );
         final String after = xml.toString();
         if (!before.toString().equals(after)) {
-            new LengthOf(new TeeInput(after, this.file.value())).value();
+            new LengthOf(new TeeInput(after, this.file.value())).intValue();
         }
     }
 
@@ -304,7 +304,7 @@ public final class Xocument {
             ).value();
             new LengthOf(
                 new TeeInput(after.toString(), this.file.value())
-            ).value();
+            ).intValue();
         }
         return after;
     }

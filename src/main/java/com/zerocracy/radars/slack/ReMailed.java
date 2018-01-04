@@ -21,7 +21,7 @@ import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.jstk.Farm;
 import org.cactoos.Func;
-import org.cactoos.Proc;
+import org.cactoos.func.FuncOf;
 import org.cactoos.func.FuncWithFallback;
 import org.cactoos.func.UncheckedFunc;
 
@@ -56,13 +56,15 @@ public final class ReMailed implements Reaction<SlackMessagePosted> {
                 (Func<Boolean, Boolean>) input -> this.origin.react(
                     farm, event, session
                 ),
-                (Proc<Throwable>) throwable -> {
-                    Logger.error(
-                        this,
-                        "%[exception]s",
-                        throwable
-                    );
-                }
+                new FuncOf<>(
+                    throwable -> {
+                        Logger.error(
+                            this,
+                            "%[exception]s",
+                            throwable
+                        );
+                    }
+                )
             )
         ).apply(true);
     }

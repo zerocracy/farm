@@ -22,17 +22,21 @@ import com.zerocracy.jstk.SoftException;
 import com.zerocracy.msg.TxtUnrecoverableError;
 import io.sentry.Sentry;
 import java.io.IOException;
-import org.cactoos.Proc;
+import org.cactoos.func.FuncOf;
 import org.cactoos.func.FuncWithFallback;
 import org.cactoos.func.IoCheckedFunc;
 import org.cactoos.text.TextOf;
+import org.telegram.telegrambots.api.methods.send.SendMessage;
+import org.telegram.telegrambots.api.objects.Update;
 
 /**
  * Safe Telegram reaction.
  *
  * @author Kirill (g4s8.public@gmail.com)
+ * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.17
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class ReSafe implements Reaction {
 
@@ -50,32 +54,40 @@ public final class ReSafe implements Reaction {
     }
 
     @Override
-    public boolean react(final Farm farm, final TmSession session,
-        final TmRequest request) throws IOException {
+    public boolean react(final TmZerocrat bot, final Farm farm,
+        final Update update) throws IOException {
         return new IoCheckedFunc<>(
             new FuncWithFallback<Boolean, Boolean>(
                 smart -> {
                     boolean result = false;
                     try {
-                        result = this.origin.react(farm, session, request);
+                        result = this.origin.react(bot, farm, update);
                     } catch (final SoftException ex) {
-                        session.reply(
-                            new RsText(new TextOf(ex.getMessage()))
+                        bot.post(
+                            new SendMessage()
+                                .enableMarkdown(true)
+                                .setChatId(update.getMessage().getChatId())
+                                .setText(new TextOf(ex.getMessage()).asString())
                         );
                     }
                     return result;
                 },
-                (Proc<Throwable>) throwable -> {
-                    session.reply(
-                        new RsText(
-                            new TxtUnrecoverableError(
-                                throwable, new Props(farm)
-                            )
-                        )
-                    );
-                    Sentry.capture(throwable);
-                    throw new IOException(throwable);
-                }
+                new FuncOf<>(
+                    throwable -> {
+                        bot.post(
+                            new SendMessage()
+                                .enableMarkdown(true)
+                                .setChatId(update.getMessage().getChatId())
+                                .setText(
+                                    new TxtUnrecoverableError(
+                                        throwable, new Props(farm)
+                                    ).asString()
+                                )
+                        );
+                        Sentry.capture(throwable);
+                        throw new IOException(throwable);
+                    }
+                )
             )
         ).apply(true);
     }

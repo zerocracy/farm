@@ -18,10 +18,13 @@ package com.zerocracy.radars.telegram;
 
 import com.zerocracy.jstk.Farm;
 import java.io.IOException;
+import org.telegram.telegrambots.api.objects.Update;
 
 /**
  * Telegram message reaction.
+ *
  * @author Kirill (g4s8.public@gmail.com)
+ * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.15
  */
@@ -29,12 +32,11 @@ public interface Reaction {
 
     /**
      * Rect for new request.
+     * @param bot The bot
      * @param farm Project farm
-     * @param session Current Telegram session
-     * @param request Telegram request
+     * @param update The update
      * @return TRUE if reacted
      * @throws IOException If failed
      */
-    boolean react(Farm farm, TmSession session, TmRequest request)
-        throws IOException;
+    boolean react(TmZerocrat bot, Farm farm, Update update) throws IOException;
 }

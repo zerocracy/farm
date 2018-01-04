@@ -16,6 +16,8 @@
  */
 package com.zerocracy.radars.telegram;
 
+import com.zerocracy.farm.props.Props;
+import com.zerocracy.jstk.Farm;
 import java.io.IOException;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
@@ -24,93 +26,76 @@ import org.telegram.telegrambots.exceptions.TelegramApiException;
 
 /**
  * Actual bot implementation.
+ *
  * @author Kirill (g4s8.public@gmail.com)
+ * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.15
  */
-final class TmZerocrat extends TelegramLongPollingBot implements TmBot {
+public final class TmZerocrat extends TelegramLongPollingBot {
 
     /**
-     * Telegram bot token.
+     * Farm.
      */
-    private final String token;
-
-    /**
-     * Telegram bot username.
-     */
-    private final String username;
+    private final Farm farm;
 
     /**
      * Bot reaction.
      */
-    private final BotUpdateReaction reaction;
+    private final Reaction reaction;
 
     /**
      * Ctor.
-     * @param tkn Telegram bot token
-     * @param name Telegram bot username
+     * @param frm The farm
+     */
+    public TmZerocrat(final Farm frm) {
+        this(frm, new ReSafe(new ReProfile()));
+    }
+
+    /**
+     * Ctor.
+     * @param frm The farm
      * @param rtn Bot reaction.
      */
-    TmZerocrat(final String tkn, final String name,
-        final BotUpdateReaction rtn) {
+    TmZerocrat(final Farm frm, final Reaction rtn) {
         super();
-        this.token = tkn;
-        this.username = name;
+        this.farm = frm;
         this.reaction = rtn;
+    }
+
+    /**
+     * Post a message.
+     * @param message The message
+     * @throws TelegramApiException If fails
+     */
+    public void post(final SendMessage message) throws TelegramApiException {
+        this.sendApiMethod(message);
     }
 
     @Override
     public void onUpdateReceived(final Update update) {
         try {
-            this.react(update);
-        } catch (final TelegramApiException ex) {
+            this.reaction.react(this, this.farm, update);
+        } catch (final IOException ex) {
             throw new IllegalStateException(ex);
         }
     }
 
     @Override
     public String getBotUsername() {
-        return this.username;
+        try {
+            return new Props(this.farm).get("//telegram/username");
+        } catch (final IOException ex) {
+            throw new IllegalStateException(ex);
+        }
     }
 
     @Override
     public String getBotToken() {
-        return this.token;
-    }
-
-    @Override
-    public void reply(final SendMessage msg) throws IOException {
         try {
-            this.sendApiMethod(msg);
-        } catch (final TelegramApiException ex) {
-            throw new IOException(ex);
-        }
-    }
-
-    @Override
-    public String name() throws IOException {
-        try {
-            return this.getMe().getUserName();
-        } catch (final TelegramApiException ex) {
-            throw new IOException(ex);
-        }
-    }
-
-    /**
-     * React to update.
-     * @param update An update
-     * @throws TelegramApiException If API error
-     */
-    private void react(final Update update) throws TelegramApiException {
-        try {
-            this.reaction.react(update, this);
-        } catch (final IOException err) {
-            this.sendApiMethod(
-                new SendMessage(
-                    update.getMessage().getChatId(),
-                    err.getMessage()
-                )
-            );
+            return new Props(this.farm).get("//telegram/token");
+        } catch (final IOException ex) {
+            throw new IllegalStateException(ex);
         }
     }
 }

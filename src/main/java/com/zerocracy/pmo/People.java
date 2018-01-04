@@ -355,6 +355,25 @@ public final class People {
     }
 
     /**
+     * Get all aliases of a user by fixed REL.
+     * @param uid User ID
+     * @param rel The REL
+     * @return HREFs found
+     * @throws IOException If fails
+     */
+    public Iterable<String> links(final String uid, final String rel)
+        throws IOException {
+        try (final Item item = this.item()) {
+            return new Xocument(item).xpath(
+                String.format(
+                    "/people/person[@id='%s']/links/link[@rel='%s']/@href",
+                    uid, rel
+                )
+            );
+        }
+    }
+
+    /**
      * Set vacation mode.
      * @param uid User ID
      * @param mode TRUE if vacation mode on

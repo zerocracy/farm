@@ -28,7 +28,7 @@ SOFTWARE.
   <xsl:template match="page" mode="inner">
     <p>
       <a href="https://github.com/{owner}">
-        <img src="/avatar/{owner}" style="width:64px;height:64px;border-radius:5px;"/>
+        <img src="https://socatar.com/github/{owner}" style="width:64px;height:64px;border-radius:5px;"/>
       </a>
     </p>
     <xsl:if test="not(details)">

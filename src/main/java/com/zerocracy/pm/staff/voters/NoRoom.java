@@ -37,47 +37,62 @@ public final class NoRoom implements Voter {
     private final Project pmo;
 
     /**
+     * Max.
+     */
+    private final int max;
+
+    /**
      * Ctor.
      * @param pkt Current project
      */
     public NoRoom(final Project pkt) {
+        // @checkstyle MagicNumber (1 line)
+        this(pkt, 5);
+    }
+
+    /**
+     * Ctor.
+     * @param pkt Current project
+     * @param threshold Max
+     */
+    public NoRoom(final Project pkt, final int threshold) {
         this.pmo = pkt;
+        this.max = threshold;
     }
 
     @Override
     public double vote(final String login, final StringBuilder log)
         throws IOException {
-        final long total = new LengthOf(
+        final int total = new LengthOf(
             new Agenda(this.pmo, login).bootstrap().jobs()
-        ).value();
-        final long max = 5L;
+        ).intValue();
         final double rate;
-        if (total >= max) {
+        if (total >= this.max) {
             rate = 1.0d;
             log.append(
                 String.format(
-                    "%d open jobs already, max is %d", total, max
+                    "%d open jobs already, max is %d", total, this.max
                 )
             );
-        } else if (total > 1L) {
+        } else if (total > 1) {
             rate = 0.0d;
             log.append(
                 String.format(
-                    "Just %d open jobs out of %d", total, max
+                    "Just %d open jobs out of %d", total, this.max
                 )
             );
-        } else if (total == 1L) {
+        } else if (total == 1) {
             rate = 0.0d;
             log.append(
                 String.format(
-                    "There is just one open job out of %d", max
+                    "There is just one open job out of %d", this.max
                 )
             );
         } else {
             rate = 0.0d;
             log.append(
                 String.format(
-                    "There are no jobs yet, max is %d", max
+                    "There are no jobs yet, max is %d", this.max
                 )
             );
         }

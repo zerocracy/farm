@@ -61,7 +61,7 @@ final class DefaultFlush implements Flush {
     public void exec(final Project project) throws IOException {
         final Claims claims = new Claims(project).bootstrap();
         int total = 0;
-        final int left = new LengthOf(claims.iterate()).value();
+        final int left = new LengthOf(claims.iterate()).intValue();
         for (int idx = 0; idx < left; ++idx) {
             final Iterator<XML> found = claims.take();
             if (!found.hasNext()) {

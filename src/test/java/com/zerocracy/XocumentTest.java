@@ -57,7 +57,7 @@ public final class XocumentTest {
                 ),
                 temp
             )
-        ).value();
+        ).intValue();
         MatcherAssert.assertThat(
             new Xocument(temp)
                 .bootstrap("pmo/catalog")

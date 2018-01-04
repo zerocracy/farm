@@ -17,29 +17,34 @@
 package com.zerocracy.entry;
 
 import com.zerocracy.jstk.Farm;
-import com.zerocracy.radars.telegram.TmSession;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import com.zerocracy.radars.telegram.TmZerocrat;
 import org.cactoos.Scalar;
 import org.cactoos.func.SolidFunc;
 import org.cactoos.func.UncheckedFunc;
+import org.telegram.telegrambots.ApiContextInitializer;
+import org.telegram.telegrambots.TelegramBotsApi;
 
 /**
- * Telegram sessions.
+ * Telegram bot.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.11
  */
-public final class ExtTelegram implements Scalar<Map<Long, TmSession>> {
+public final class ExtTelegram implements Scalar<TmZerocrat> {
 
     /**
      * The singleton.
      */
-    private static final UncheckedFunc<Farm, Map<Long, TmSession>> SINGLETON =
+    private static final UncheckedFunc<Farm, TmZerocrat> SINGLETON =
         new UncheckedFunc<>(
-            new SolidFunc<Farm, Map<Long, TmSession>>(
-                frm -> new ConcurrentHashMap<>(0)
+            new SolidFunc<Farm, TmZerocrat>(
+                frm -> {
+                    ApiContextInitializer.init();
+                    final TmZerocrat bot = new TmZerocrat(frm);
+                    new TelegramBotsApi().registerBot(bot);
+                    return bot;
+                }
             )
         );
 
@@ -57,7 +62,7 @@ public final class ExtTelegram implements Scalar<Map<Long, TmSession>> {
     }
 
     @Override
-    public Map<Long, TmSession> value() {
+    public TmZerocrat value() {
         return ExtTelegram.SINGLETON.apply(this.farm);
     }
 

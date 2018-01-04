@@ -86,11 +86,16 @@ public final class Catalog {
      * @throws IOException If fails
      */
     public void delete(final String pid) throws IOException {
+        if (!this.exists(pid)) {
+            throw new IllegalArgumentException(
+                String.format("Project \"%s\" doesn't exist, can't delete", pid)
+            );
+        }
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives().xpath(
                     String.format("/catalog/project[@id='%s'] ", pid)
-                ).remove()
+                ).strict(1).remove()
             );
         }
     }
@@ -102,6 +107,11 @@ public final class Catalog {
      * @throws IOException If fails
      */
     public void add(final String pid, final String prefix) throws IOException {
+        if (this.exists(pid)) {
+            throw new IllegalArgumentException(
+                String.format("Project \"%s\" already exists", pid)
+            );
+        }
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()
@@ -163,6 +173,11 @@ public final class Catalog {
      * @throws IOException If fails
      */
     public boolean pause(final String pid) throws IOException {
+        if (!this.exists(pid)) {
+            throw new IllegalArgumentException(
+                String.format("Project \"%s\" doesn't exist", pid)
+            );
+        }
         try (final Item item = this.item()) {
             return !Boolean.parseBoolean(
                 new Xocument(item.path()).xpath(
@@ -183,11 +198,16 @@ public final class Catalog {
      */
     public void pause(final String pid,
         final boolean pause) throws IOException {
+        if (!this.exists(pid)) {
+            throw new IllegalArgumentException(
+                String.format("Project \"%s\" doesn't exist, can't pause", pid)
+            );
+        }
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives().xpath(
                     String.format("/catalog/project[@id='%s']/alive", pid)
-                ).set(!pause)
+                ).strict(1).set(!pause)
             );
         }
     }
@@ -199,6 +219,13 @@ public final class Catalog {
      * @throws IOException If fails
      */
     public Cash fee(final String pid) throws IOException {
+        if (!this.exists(pid)) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "Project \"%s\" doesn't exist, can't get fee", pid
+                )
+            );
+        }
         try (final Item item = this.item()) {
             final Iterator<String> fees = new Xocument(item.path()).xpath(
                 String.format("/catalog/project[@id='%s']/fee/text()", pid)
@@ -220,11 +247,18 @@ public final class Catalog {
      * @throws IOException If fails
      */
     public void fee(final String pid, final Cash fee) throws IOException {
+        if (!this.exists(pid)) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "Project \"%s\" doesn't exist, can't set fee", pid
+                )
+            );
+        }
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives().xpath(
                     String.format("/catalog/project[@id='%s']/fee", pid)
-                ).set(fee)
+                ).strict(1).set(fee)
             );
         }
     }
@@ -237,6 +271,13 @@ public final class Catalog {
      */
     public void publish(final String pid, final boolean status)
         throws IOException {
+        if (!this.exists(pid)) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "Project \"%s\" doesn't exist, can't publish", pid
+                )
+            );
+        }
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives().xpath(
@@ -257,6 +298,13 @@ public final class Catalog {
      * @throws IOException If fails
      */
     public boolean published(final String pid) throws IOException {
+        if (!this.exists(pid)) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "Project \"%s\" doesn't exist, can't check publish", pid
+                )
+            );
+        }
         try (final Item item = this.item()) {
             return Boolean.parseBoolean(
                 new Xocument(item).xpath(
@@ -278,6 +326,13 @@ public final class Catalog {
      */
     public void link(final String pid, final String rel, final String href)
         throws IOException {
+        if (!this.exists(pid)) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "Project \"%s\" doesn't exist, can't add link", pid
+                )
+            );
+        }
         if (this.hasLink(pid, rel, href)) {
             throw new SoftException(
                 String.format(
@@ -312,6 +367,13 @@ public final class Catalog {
      */
     public void unlink(final String pid, final String rel, final String href)
         throws IOException {
+        if (!this.exists(pid)) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "Project \"%s\" doesn't exist, can't unlink", pid
+                )
+            );
+        }
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()
@@ -340,6 +402,13 @@ public final class Catalog {
      * @throws IOException If fails
      */
     public Collection<String> links(final String pid) throws IOException {
+        if (!this.exists(pid)) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "Project \"%s\" doesn't exist, can't get links", pid
+                )
+            );
+        }
         try (final Item item = this.item()) {
             return new SolidList<>(
                 new Mapped<>(
@@ -369,6 +438,13 @@ public final class Catalog {
      */
     public boolean hasLink(final String pid, final String rel,
         final String href) throws IOException {
+        if (!this.exists(pid)) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "Project \"%s\" doesn't exist, can't check link", pid
+                )
+            );
+        }
         try (final Item item = this.item()) {
             return !new Xocument(item.path()).nodes(
                 String.format(
@@ -388,6 +464,13 @@ public final class Catalog {
      */
     public void parent(final String pid, final String parent)
         throws IOException {
+        if (!this.exists(pid)) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "Project \"%s\" doesn't exist, can't set parent", pid
+                )
+            );
+        }
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()
@@ -411,10 +494,18 @@ public final class Catalog {
      */
     public void title(final String pid, final String title)
         throws IOException {
+        if (!this.exists(pid)) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "Project \"%s\" doesn't exist, can't change title", pid
+                )
+            );
+        }
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()
                     .xpath(String.format("/catalog/project[@id =  '%s']", pid))
+                    .strict(1)
                     .addIf(Catalog.PRJ_TITLE)
                     .set(title)
             );
@@ -428,6 +519,13 @@ public final class Catalog {
      * @throws IOException If fails
      */
     public String title(final String pid) throws IOException {
+        if (!this.exists(pid)) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "Project \"%s\" doesn't exist, can't get title", pid
+                )
+            );
+        }
         try (final Item item = this.item()) {
             final Iterator<String> items = new Xocument(item.path())
                 .xpath(

@@ -88,7 +88,7 @@ final class RdItem implements Item {
                     final Path tmp = Files.createTempFile("rdfarm", ".xml");
                     final Path src = this.origin.path();
                     if (Files.exists(src)) {
-                        new LengthOf(new TeeInput(src, tmp)).value();
+                        new LengthOf(new TeeInput(src, tmp)).intValue();
                     }
                     return tmp;
                 }
@@ -135,7 +135,7 @@ final class RdItem implements Item {
                 };
                 new RdAuto(proxy, tmp, dirty).propagate();
                 new RdRules(proxy, tmp, dirty).validate();
-                new LengthOf(new TeeInput(tmp, this.origin.path())).value();
+                new LengthOf(new TeeInput(tmp, this.origin.path())).intValue();
             }
         } finally {
             this.origin.close();

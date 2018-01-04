@@ -81,7 +81,7 @@ public final class Claims {
                 new Directives().xpath("/claims").append(dirs)
             );
         }
-        final int size = new LengthOf(this.iterate()).value();
+        final int size = new LengthOf(this.iterate()).intValue();
         if (size > Tv.HUNDRED) {
             throw new IllegalStateException(
                 String.format(
