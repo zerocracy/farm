@@ -5,9 +5,11 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
+import com.zerocracy.pm.in.Impediments
 import com.zerocracy.pm.in.Orders
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
+import org.cactoos.iterable.Filtered
 import org.cactoos.iterable.Limited
 
 def exec(Project project, XML xml) {
@@ -18,8 +20,15 @@ def exec(Project project, XML xml) {
     claim.created().toInstant(), ZoneOffset.UTC
   )
   Orders orders = new Orders(project).bootstrap()
+  List<String> waiting = new Impediments(project).bootstrap().jobs().toList()
   int days = 10
-  new Limited<>(5, orders.olderThan(time.minusDays(days))).forEach { String job ->
+  new Limited<>(
+    5,
+    new Filtered(
+      { job -> !waiting.contains(job) },
+      orders.olderThan(time.minusDays(days))
+    )
+  ).forEach { String job ->
     new ClaimOut()
       .type('Cancel order')
       .token("job;$job")
