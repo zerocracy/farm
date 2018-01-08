@@ -58,7 +58,9 @@ SOFTWARE.
           <xsl:text>not defined</xsl:text>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:value-of select="."/>
+          <span style="color:darkgreen">
+            <xsl:value-of select="."/>
+          </span>
         </xsl:otherwise>
       </xsl:choose>
       <xsl:text>.</xsl:text>
@@ -135,22 +137,29 @@ SOFTWARE.
       </p>
     </xsl:if>
   </xsl:template>
-  <xsl:template match="wallet[info!='']">
-    <a href="http://datum.zerocracy.com/pages/policy.html#20">
-      <xsl:text>wallet</xsl:text>
-    </a>
-    <xsl:text>: </xsl:text>
-    <code>
-      <xsl:value-of select="info"/>
-    </code>
-    <xsl:text> at </xsl:text>
-    <xsl:value-of select="bank"/>
-  </xsl:template>
-  <xsl:template match="wallet[info='']">
-    <a href="http://datum.zerocracy.com/pages/policy.html#20">
-      <xsl:text>payment info</xsl:text>
-    </a>
-    <xsl:text> is absent</xsl:text>
+  <xsl:template match="wallet">
+    <p>
+      <xsl:text>The </xsl:text>
+      <a href="http://datum.zerocracy.com/pages/policy.html#20">
+        <xsl:text>wallet</xsl:text>
+      </a>
+      <xsl:text> is </xsl:text>
+      <xsl:choose>
+        <xsl:when test="info=''">
+          <span style="color:darkred">
+            <xsl:text>absent</xsl:text>
+          </span>
+        </xsl:when>
+        <xsl:otherwise>
+          <code>
+            <xsl:value-of select="info"/>
+          </code>
+          <xsl:text> at </xsl:text>
+          <xsl:value-of select="bank"/>
+        </xsl:otherwise>
+      </xsl:choose>
+      <xsl:text>.</xsl:text>
+    </p>
   </xsl:template>
   <xsl:template match="projects[project]">
     <p>
