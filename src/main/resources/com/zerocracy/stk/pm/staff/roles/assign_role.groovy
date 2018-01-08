@@ -47,7 +47,7 @@ def exec(Project project, XML xml) {
     msg = "Role `${role}` was already assigned to @${login}. "
   } else {
     roles.assign(login, role)
-    msg = "Role `${role}` was successfully assigned to @${login}," +
+    msg = "Role `${role}` was successfully assigned to [@${login}](http://www.0crat.com/u/${login})," +
       " see [full list](http://www.0crat.com/a/${project.pid()}?a=pm/staff/roles)" +
       ' of roles. '
     new ClaimOut()

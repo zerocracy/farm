@@ -42,8 +42,7 @@ def exec(Project project, XML xml) {
     .type('Notify project')
     .param(
       'message',
-      "@${claim.author()} wants to join you guys:" +
-      " [profile](http://www.0crat.com/u/${author})." +
+      "[@${claim.author()}](http://www.0crat.com/u/${author}) wants to join you guys." +
       " If you want to add @${author} to the project, just" +
       ' assign them `DEV` role and that\'s it.' +
       " The hourly rate of @${author} is ${new People(project).rate(author)}." +

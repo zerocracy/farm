@@ -31,7 +31,8 @@ def exec(Project project, XML xml) {
   people.invite(login, claim.author())
   claim.reply(
     String.format(
-      'Thanks, `@%s` can now work with us, and you are the mentor.',
+      'Thanks, `@%s` can now work with us, and you are the mentor,' +
+      ' see [§1](http://datum.zerocracy.com/pages/policy.html#1).',
       login
     )
   ).postTo(project)

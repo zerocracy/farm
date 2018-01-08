@@ -37,7 +37,8 @@ def exec(Project project, XML xml) {
   People people = new People(farm)
   if (people.wallet(login).empty) {
     throw new SoftException(
-      "User @${login} doesn't have a payment method configured yet, we won't be able to pay them."
+      "User [@${login}](http://www.0crat.com/u/${login}) doesn't have" +
+      'a payment method configured yet, we won\'t be able to pay them.'
     )
   }
   Cash rate = new Cash.S(claim.param('rate'))

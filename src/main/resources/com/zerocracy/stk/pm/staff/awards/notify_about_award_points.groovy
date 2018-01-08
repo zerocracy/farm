@@ -18,10 +18,12 @@ package com.zerocracy.stk.pm.staff.awards
 
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
+import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pmo.Awards
+import com.zerocracy.pmo.Catalog
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
@@ -32,14 +34,16 @@ def exec(Project project, XML xml) {
   Integer points = Integer.parseInt(claim.param('points'))
   Awards awards = new Awards(project, login).bootstrap()
   String reason = claim.param('reason')
+  Farm farm = binding.variables.farm
+  Catalog catalog = new Catalog(farm).bootstrap()
   new ClaimOut()
     .type('Notify user')
     .token("user;${login}")
     .param(
       'message',
       "You got ${points} [points](http://datum.zerocracy.com/pages/policy.html#18) in `${job}`" +
-      " ([${project.pid()}](http://www.0crat.com/p/${project.pid()}))," +
-      ' your total is ' +
+      " ([${catalog.title(project.pid())}](http://www.0crat.com/p/${project.pid()}))," +
+      ' your total is' +
       " [${awards.total()}](http://www.0crat.com/u/${login}/awards): ${reason}."
     )
     .postTo(project)

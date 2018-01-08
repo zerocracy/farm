@@ -59,6 +59,7 @@ def exec(Project project, XML xml) {
 //    }
     new ClaimOut()
       .type('Remove job from WBS')
+      .token("job;${job}")
       .param('job', job)
       .param('reason', 'GitHub issue is already closed')
       .postTo(project)
