@@ -80,10 +80,6 @@ public final class TkProfile implements TkRegex {
                         new XeAppend(
                             "details",
                             new XeAppend(
-                                "rate",
-                                people.rate(login).toString()
-                            ),
-                            new XeAppend(
                                 "wallet",
                                 new XeAppend("info", people.wallet(login)),
                                 new XeAppend("bank", people.bank(login))
@@ -116,6 +112,10 @@ public final class TkProfile implements TkRegex {
                                 )
                             )
                         )
+                    ),
+                    new XeAppend(
+                        "rate",
+                        people.rate(login).toString()
                     ),
                     new XeAppend(
                         "awards",

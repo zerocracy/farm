@@ -41,38 +41,69 @@ SOFTWARE.
         <xsl:text>.</xsl:text>
       </p>
     </xsl:if>
+    <xsl:apply-templates select="rate"/>
     <xsl:apply-templates select="details"/>
     <xsl:apply-templates select="awards"/>
     <xsl:apply-templates select="agenda"/>
   </xsl:template>
-  <xsl:template match="awards[.=0]">
+  <xsl:template match="rate">
     <p>
-      <xsl:text>There are no awards yet.</xsl:text>
-    </p>
-  </xsl:template>
-  <xsl:template match="awards[.!=0]">
-    <p>
-      <xsl:text>Total points: </xsl:text>
-      <a href="/u/{/page/owner}/awards">
-        <xsl:if test=". &gt;= 0">
-          <xsl:text>+</xsl:text>
-        </xsl:if>
-        <xsl:value-of select="."/>
+      <xsl:text>Hourly </xsl:text>
+      <a href="http://datum.zerocracy.com/pages/policy.html#16">
+        <xsl:text>rate</xsl:text>
       </a>
+      <xsl:text> is </xsl:text>
+      <xsl:choose>
+        <xsl:when test=".=0">
+          <xsl:text>not defined</xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="."/>
+        </xsl:otherwise>
+      </xsl:choose>
       <xsl:text>.</xsl:text>
     </p>
   </xsl:template>
-  <xsl:template match="agenda[.=0]">
+  <xsl:template match="awards">
     <p>
-      <xsl:text>There are no jobs in the agenda.</xsl:text>
+      <xsl:text>Total </xsl:text>
+      <a href="http://datum.zerocracy.com/pages/policy.html#18">
+        <xsl:text>points</xsl:text>
+      </a>
+      <xsl:text> earned: </xsl:text>
+      <xsl:choose>
+        <xsl:when test=".=0">
+          <span style="color:darkred">
+            <xsl:text>none</xsl:text>
+          </span>
+        </xsl:when>
+        <xsl:otherwise>
+          <a href="/u/{/page/owner}/awards">
+            <xsl:if test=". &gt;= 0">
+              <xsl:text>+</xsl:text>
+            </xsl:if>
+            <xsl:value-of select="."/>
+          </a>
+        </xsl:otherwise>
+      </xsl:choose>
+      <xsl:text>.</xsl:text>
     </p>
   </xsl:template>
-  <xsl:template match="agenda[.!=0]">
+  <xsl:template match="agenda">
     <p>
-      <xsl:text>Total jobs: </xsl:text>
-      <a href="/u/{/page/owner}/agenda">
-        <xsl:value-of select="."/>
-      </a>
+      <xsl:text>Currently open jobs: </xsl:text>
+      <xsl:choose>
+        <xsl:when test=".=0">
+          <span style="color:darkred">
+            <xsl:text>none</xsl:text>
+          </span>
+        </xsl:when>
+        <xsl:otherwise>
+          <a href="/u/{/page/owner}/agenda">
+            <xsl:value-of select="."/>
+          </a>
+        </xsl:otherwise>
+      </xsl:choose>
       <xsl:text>.</xsl:text>
     </p>
   </xsl:template>
@@ -93,12 +124,7 @@ SOFTWARE.
         <xsl:text>.</xsl:text>
       </p>
     </xsl:if>
-    <p>
-      <xsl:apply-templates select="rate"/>
-      <xsl:text>; </xsl:text>
-      <xsl:apply-templates select="wallet"/>
-      <xsl:text>.</xsl:text>
-    </p>
+    <xsl:apply-templates select="wallet"/>
     <xsl:apply-templates select="projects"/>
     <xsl:apply-templates select="skills"/>
   </xsl:template>
@@ -108,19 +134,6 @@ SOFTWARE.
         <xsl:text>On vacation</xsl:text>
       </p>
     </xsl:if>
-  </xsl:template>
-  <xsl:template match="rate[.!='0']">
-    <a href="http://datum.zerocracy.com/pages/policy.html#16">
-      <xsl:text>Rate</xsl:text>
-    </a>
-    <xsl:text>: </xsl:text>
-    <xsl:value-of select="."/>
-  </xsl:template>
-  <xsl:template match="rate[.='0']">
-    <a href="http://datum.zerocracy.com/pages/policy.html#16">
-      <xsl:text>Rate</xsl:text>
-    </a>
-    <xsl:text> is not set yet</xsl:text>
   </xsl:template>
   <xsl:template match="wallet[info!='']">
     <a href="http://datum.zerocracy.com/pages/policy.html#20">
