@@ -49,7 +49,7 @@ def exec(Project project, XML xml) {
       .type('Make payment')
       .param('job', job)
       .param('login', author)
-      .param('reason', 'Bug was reported')
+      .param('reason', 'Bug was reported, see [§29](http://datum.zerocracy.com/pages/policy.html#29)')
       .param('minutes', 15)
       .postTo(project)
   }

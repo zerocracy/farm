@@ -69,7 +69,11 @@ def exec(Project project, XML xml) {
       .type('Make payment')
       .param('job', job)
       .param('login', logins[0])
-      .param('reason', 'Payment to ARC for closed pull request.')
+      .param(
+        'reason',
+        'Payment to ARC for a closed pull request, ' +
+        'as in [§28](http://datum.zerocracy.com/pages/policy.html#28)'
+      )
       .param('minutes', 15)
       .postTo(project)
   }

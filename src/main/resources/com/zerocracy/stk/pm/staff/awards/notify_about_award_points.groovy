@@ -37,11 +37,10 @@ def exec(Project project, XML xml) {
     .token("user;${login}")
     .param(
       'message',
-      String.format(
-        '%s: you got %+d points in `%s`, your total is'
-        + ' [%+d](http://www.0crat.com/u/%s/awards).',
-        reason, points, job, awards.total(), login
-      )
+      "You got ${points} [points](http://datum.zerocracy.com/pages/policy.html#18) in `${job}`" +
+      " ([${project.pid()}](http://www.0crat.com/p/${project.pid()}))," +
+      ' your total is ' +
+      " [${awards.total()}](http://www.0crat.com/u/${login}/awards): ${reason}."
     )
     .postTo(project)
   new ClaimOut()

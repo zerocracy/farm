@@ -23,8 +23,6 @@ import com.zerocracy.jstk.Project
 import com.zerocracy.jstk.cash.Cash
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
-import com.zerocracy.pm.cost.Boosts
-import com.zerocracy.pm.cost.Estimates
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.banks.Payroll
 
@@ -35,15 +33,13 @@ def exec(Project project, XML xml) {
   String job = claim.param('job')
   String login = claim.param('login')
   String reason = claim.param('reason')
-  Boosts boosts = new Boosts(project).bootstrap()
-  int minutes = Integer.parseInt(claim.param('minutes')) * boosts.factor(job)
+  int minutes = Integer.parseInt(claim.param('minutes'))
   Roles roles = new Roles(project).bootstrap()
   if (!roles.hasAnyRole(login)) {
     return
   }
-  Estimates estimates = new Estimates(project).bootstrap()
-  if (estimates.exists(job)) {
-    Cash price = estimates.get(job)
+  if (claim.hasParam('cash')) {
+    Cash price = new Cash.S(claim.param('cash'))
     Farm farm = binding.variables.farm
     String msg = new Payroll(farm).pay(
       project, login, price,

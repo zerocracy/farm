@@ -51,7 +51,11 @@ def exec(Project project, XML xml) {
     )
     new ClaimOut()
       .type('Notify project')
-      .param('message', "Management fee ${fee} has been deducted")
+      .param(
+        'message',
+        "Management fee ${fee} has been deducted," +
+        ' see [§23](http://datum.zerocracy.com/pages/policy.html#23)'
+      )
       .postTo(project)
   }
 }
