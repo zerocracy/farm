@@ -164,7 +164,7 @@ public final class TkApp extends TkWrap {
                                                                 new TkProject(farm)
                                                             ),
                                                             new FkRegex(
-                                                                "/pp/[A-Z0-9]{9}",
+                                                                "/pp/([A-Z0-9]{9})",
                                                                 new TkPublic(farm)
                                                             ),
                                                             new FkRegex(
