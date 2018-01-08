@@ -24,11 +24,9 @@ import com.zerocracy.pmo.Catalog;
 import com.zerocracy.pmo.Pmo;
 import com.zerocracy.tk.RqUser;
 import java.io.IOException;
-import java.util.logging.Level;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.scalar.SolidScalar;
-import org.takes.facets.flash.RsFlash;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.forward.RsFailure;
 import org.takes.facets.forward.RsForward;
@@ -72,15 +70,7 @@ final class RqProject implements Project {
                 if (!"yegor256".equals(login)
                     && !new Roles(project).bootstrap()
                     .hasRole(login, "ARC", "PO")) {
-                    throw new RsForward(
-                        new RsFlash(
-                            String.format(
-                                "@%s must either be PO or ARC to view %s",
-                                login, name
-                            ),
-                            Level.SEVERE
-                        )
-                    );
+                    throw new RsForward(String.format("/pp/%s", name));
                 }
                 return project;
             }
