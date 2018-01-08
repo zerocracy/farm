@@ -20,6 +20,7 @@ import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pmo.People
 
 def exec(Project project, XML xml) {
@@ -36,4 +37,15 @@ def exec(Project project, XML xml) {
       login
     )
   ).postTo(project)
+  new ClaimOut()
+    .type('Notify user')
+    .token("user;${login}")
+    .param(
+      'message',
+      "You have been invited to Zerocracy by @${claim.author()}," +
+      ' as required in [§1](http://datum.zerocracy.com/pages/policy.html#1).' +
+      ' You can now apply to the projects, see' +
+      ' [§2](http://datum.zerocracy.com/pages/policy.html#1).'
+    )
+    .postTo(project)
 }
