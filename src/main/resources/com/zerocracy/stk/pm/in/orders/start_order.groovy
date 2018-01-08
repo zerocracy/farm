@@ -45,16 +45,16 @@ def exec(Project project, XML xml) {
   if (role == 'REV') {
     new Boosts(project).boost(job, 1)
     String arc = new Roles(project).bootstrap().findByRole('ARC')[0]
-    msg = "This PR `${job}` assigned to @${login} " +
-      " ([profile](http://www.0crat.com/u/${login}}))." +
+    msg = "This PR `${job}` assigned to [@${login}]" +
+      "(http://www.0crat.com/u/${login}})." +
       ' The budget is [fixed](http://datum.zerocracy.com/pages/policy.html#4)' +
       ' and it is 15 minutes. Please, read' +
       ' [§27](http://datum.zerocracy.com/pages/policy.html#27)' +
       ' and [§10](http://datum.zerocracy.com/pages/policy.html#10).'
       " If and when you decide to accept the changes, inform @${arc} right in this ticket."
   } else {
-    msg = "Job `${job}` assigned to @${login} " +
-      " ([profile](http://www.0crat.com/u/${login}}))." +
+    msg = "Job `${job}` assigned to [@${login}]" +
+      "(http://www.0crat.com/u/${login}})." +
       ' The budget is [fixed](http://datum.zerocracy.com/pages/policy.html#4)' +
       ' and it is 30 minutes. Please, read' +
       ' [§4](http://datum.zerocracy.com/pages/policy.html#4),' +

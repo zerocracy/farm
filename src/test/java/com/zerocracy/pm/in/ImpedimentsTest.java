@@ -16,7 +16,9 @@
  */
 package com.zerocracy.pm.in;
 
+import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.farm.fake.FkProject;
+import com.zerocracy.pm.scope.Wbs;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -33,12 +35,14 @@ public final class ImpedimentsTest {
 
     @Test
     public void registerImpediment() throws Exception {
-        final Impediments impediments = new Impediments(new FkProject())
-            .bootstrap();
+        final Project project = new FkProject();
+        final Impediments imp = new Impediments(project).bootstrap();
         final String job = "gh:test/test#1";
-        impediments.register(job, "test");
+        new Wbs(project).bootstrap().add(job);
+        new Orders(project).bootstrap().assign(job, "yegor256", "no reason");
+        imp.register(job, "test");
         MatcherAssert.assertThat(
-            impediments.jobs(),
+            imp.jobs(),
             Matchers.contains(job)
         );
     }

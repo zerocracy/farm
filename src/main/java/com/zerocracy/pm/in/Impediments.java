@@ -19,6 +19,7 @@ package com.zerocracy.pm.in;
 import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
+import com.zerocracy.jstk.SoftException;
 import java.io.IOException;
 import org.xembly.Directives;
 
@@ -37,10 +38,10 @@ public final class Impediments {
 
     /**
      * Ctor.
-     * @param project A project
+     * @param pkt A project
      */
-    public Impediments(final Project project) {
-        this.project = project;
+    public Impediments(final Project pkt) {
+        this.project = pkt;
     }
 
     /**
@@ -63,6 +64,14 @@ public final class Impediments {
      */
     public void register(final String job, final String reason)
         throws IOException {
+        if (!new Orders(this.project).bootstrap().assigned(job)) {
+            throw new SoftException(
+                String.format(
+                    "Job `%s` is not assigned, can't put it on hold",
+                    job
+                )
+            );
+        }
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()
