@@ -29,7 +29,13 @@ SOFTWARE.
       <img src="http://www.0crat.com/badge/{project}.svg"/>
     </p>
     <p>
-      <xsl:text>The project is managed by Zerocrat according to this </xsl:text>
+      <xsl:text>The project </xsl:text>
+      <code>
+        <xsl:value-of select="project"/>
+        <xsl:text>/</xsl:text>
+        <xsl:value-of select="title"/>
+      </code>
+      <xsl:text> is managed by Zerocrat according to this </xsl:text>
       <a href="http://datum.zerocracy.com/pages/policy.html">
         <xsl:text>Policy</xsl:text>
       </a>

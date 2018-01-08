@@ -16,15 +16,9 @@
  */
 package com.zerocracy.tk.project;
 
-import com.zerocracy.farm.props.Props;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
-import com.zerocracy.pm.cost.Estimates;
-import com.zerocracy.pm.cost.Ledger;
-import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.pmo.Catalog;
-import com.zerocracy.pmo.Pmo;
-import com.zerocracy.tk.RqUser;
 import com.zerocracy.tk.RsPage;
 import java.io.IOException;
 import org.takes.Response;
@@ -32,8 +26,6 @@ import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
 import org.takes.rs.xe.XeAppend;
 import org.takes.rs.xe.XeChain;
-import org.takes.rs.xe.XeTransform;
-import org.takes.rs.xe.XeWhen;
 
 /**
  * Project public page.
@@ -62,7 +54,7 @@ public final class TkPublic implements TkRegex {
     public Response act(final RqRegex req) throws IOException {
         return new RsPage(
             this.farm,
-            "/xsl/project.xsl",
+            "/xsl/public.xsl",
             req,
             () -> {
                 final Project project = new RqProject(this.farm, req);
@@ -70,60 +62,7 @@ public final class TkPublic implements TkRegex {
                 final String pid = project.pid();
                 return new XeChain(
                     new XeAppend("project", pid),
-                    new XeAppend("title", catalog.title(pid)),
-                    new XeWhen(
-                        !"PMO".equals(pid),
-                        () -> new XeChain(
-                            new XeAppend(
-                                "pause",
-                                Boolean.toString(catalog.pause(pid))
-                            ),
-                            new XeAppend(
-                                "published",
-                                Boolean.toString(catalog.published(pid))
-                            ),
-                            new XeAppend(
-                                "roles",
-                                new XeTransform<String>(
-                                    new Roles(project).bootstrap().allRoles(
-                                        new RqUser(this.farm, req).value()
-                                    ),
-                                    role -> new XeAppend("role", role)
-                                )
-                            ),
-                            new XeAppend(
-                                "stripe_key",
-                                new Props(this.farm).get("//stripe/key", "")
-                            ),
-                            new XeAppend(
-                                "cash",
-                                new Ledger(project).bootstrap()
-                                    .cash().toString()
-                            ),
-                            new XeAppend(
-                                "estimates",
-                                new Estimates(project).bootstrap()
-                                    .total().toString()
-                            ),
-                            new XeAppend(
-                                "deficit",
-                                Boolean.toString(
-                                    new Ledger(project).bootstrap().deficit()
-                                )
-                            ),
-                            new XeAppend(
-                                "fee",
-                                catalog.fee(project.pid()).toString()
-                            )
-                        )
-                    ),
-                    new XeAppend(
-                        "project_links",
-                        new XeTransform<>(
-                            new Catalog(new Pmo(this.farm)).links(pid),
-                            link -> new XeAppend("link", link)
-                        )
-                    )
+                    new XeAppend("title", catalog.title(pid))
                 );
             }
         );
