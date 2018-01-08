@@ -7,6 +7,7 @@ import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.in.Impediments
 import com.zerocracy.pm.in.Orders
+import com.zerocracy.pm.scope.Wbs
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import org.cactoos.iterable.Filtered
@@ -20,6 +21,7 @@ def exec(Project project, XML xml) {
     claim.created().toInstant(), ZoneOffset.UTC
   )
   Orders orders = new Orders(project).bootstrap()
+  Wbs wbs = new Wbs(project).bootstrap()
   List<String> waiting = new Impediments(project).bootstrap().jobs().toList()
   int days = 10
   new Limited<>(
@@ -29,15 +31,21 @@ def exec(Project project, XML xml) {
       orders.olderThan(time.minusDays(days))
     )
   ).forEach { String job ->
-    new ClaimOut()
-      .type('Cancel order')
-      .token("job;$job")
-      .param('job', job)
-      .param('reason', "It is older than ${days} days")
-      .postTo(project)
-    new ClaimOut()
-      .type('Notify project')
-      .param('message', "Order at `${job}` cancelled for @${orders.performer(job)}: over ${days} days")
-      .postTo(project)
+    if (wbs.role(job) != 'REV') {
+      new ClaimOut()
+        .type('Cancel order')
+        .token("job;$job")
+        .param('job', job)
+        .param('reason', "It is older than ${days} days, see [§8](http://datum.zerocracy.com/pages/policy.html#8)")
+        .postTo(project)
+      new ClaimOut()
+        .type('Notify project')
+        .param(
+          'message',
+          "Order at `${job}` cancelled for @${orders.performer(job)}," +
+          " it is over ${days} days, see [§8](http://datum.zerocracy.com/pages/policy.html#8)"
+        )
+        .postTo(project)
+    }
   }
 }

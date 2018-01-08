@@ -17,7 +17,9 @@ def exec(Project project, XML xml) {
       'message',
       "@${claim.param('login')} this job was assigned to you"
         + " ${claim.param('label')} ago."
-        + ' It will be taken away from you soon, unless you close it'
-        + ', see [§8](http://datum.zerocracy.com/pages/policy.html#8).'
+        + ' It will be taken away from you soon, unless you close it,'
+        + ' see [§8](http://datum.zerocracy.com/pages/policy.html#8).'
+        + ' Read [this](http://www.yegor256.com/2014/04/13/no-obligations-principle.html)'
+        + ' and [this](http://www.yegor256.com/2014/11/24/principles-of-bug-tracking.html), please.'
     ).postTo(project)
 }
