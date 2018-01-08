@@ -33,6 +33,14 @@ SOFTWARE.
     <regex>in</regex>
     <label>in</label>
     <help>Register this issue in scope (WBS)</help>
+    <opts>
+      <opt>
+        <name>role</name>
+        <regex>[A-Z]{2,3}</regex>
+        <help>The role of the job or "DEV" by default</help>
+        <optional>true</optional>
+      </opt>
+    </opts>
   </cmd>
   <cmd>
     <code>Remove job from WBS</code>

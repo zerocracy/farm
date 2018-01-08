@@ -53,6 +53,8 @@ public final class RbOnAssign implements Rebound {
                 .type("Add job to WBS")
                 .token(new TokenOfIssue(issue))
                 .param("job", new Job(issue))
+                // @checkstyle AvoidInlineConditionalsCheck (1 line)
+                .param("role", issue.isPull() ? "REV" : "DEV")
                 .param("reason", "GitHub issue was assigned to 0crat")
                 .postTo(new GhProject(farm, issue.repo()));
             reply = new FormattedText(

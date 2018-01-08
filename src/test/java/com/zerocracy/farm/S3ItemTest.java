@@ -35,6 +35,7 @@ import org.xembly.Directives;
  * @since 0.1
  * @checkstyle JavadocMethodCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class S3ItemTest {
 
     @Test
@@ -98,6 +99,7 @@ public final class S3ItemTest {
                 new Directives().xpath("/wbs")
                     .add("job")
                     .attr("id", "gh:yegor256/pdd#1")
+                    .add("role").set("DEV").up()
                     .add("created").set("2016-12-29T09:03:21.684Z")
             );
         }

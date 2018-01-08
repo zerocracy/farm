@@ -83,7 +83,9 @@ public final class Wbs {
                 new Directives()
                     .xpath(String.format("/wbs[not(job[@id='%s'])]", job))
                     .strict(1)
-                    .add("job").attr("id", job)
+                    .add("job")
+                    .attr("id", job)
+                    .add("role").set("DEV").up()
                     .add("created").set(new DateAsText().asString())
             );
         }
@@ -127,6 +129,46 @@ public final class Wbs {
     public Collection<String> iterate() throws IOException {
         try (final Item wbs = this.item()) {
             return new Xocument(wbs.path()).xpath("/wbs/job/@id");
+        }
+    }
+
+    /**
+     * Set job role.
+     * @param job The job to add
+     * @param role The role
+     * @throws IOException If fails
+     */
+    public void role(final String job, final String role) throws IOException {
+        if (!this.exists(job)) {
+            throw new SoftException(
+                String.format("Job `%s` doesn't exist, can't set role", job)
+            );
+        }
+        try (final Item wbs = this.item()) {
+            new Xocument(wbs.path()).modify(
+                new Directives()
+                    .xpath(String.format("/wbs/job[@id='%s']/role", job))
+                    .set(role)
+            );
+        }
+    }
+
+    /**
+     * Get job role.
+     * @param job The job to add
+     * @return The role
+     * @throws IOException If fails
+     */
+    public String role(final String job) throws IOException {
+        if (!this.exists(job)) {
+            throw new SoftException(
+                String.format("Job `%s` doesn't exist, can't get role", job)
+            );
+        }
+        try (final Item wbs = this.item()) {
+            return new Xocument(wbs.path()).xpath(
+                String.format("/wbs/job[@id='%s']/role/text()", job)
+            ).get(0);
         }
     }
 

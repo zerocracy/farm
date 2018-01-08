@@ -49,15 +49,16 @@ def exec(Project project, XML xml) {
   }
   Wbs wbs = new Wbs(project).bootstrap()
   Roles roles = new Roles(project).bootstrap()
-  List<String> logins = roles.findByRole('DEV')
-  if (logins.empty) {
-    Logger.info(this, 'No DEVs in %s, cannot elect', project.pid())
-    return
-  }
   Elections elections = new Elections(project).bootstrap()
   Farm farm = binding.variables.farm
   Project pmo = new Pmo(farm)
   for (String job : new Shuffled<>(wbs.iterate())) {
+    String role = wbs.role(job)
+    List<String> logins = roles.findByRole(role)
+    if (logins.empty) {
+      Logger.info(this, 'No %ss in %s, cannot elect', role, project.pid())
+      return
+    }
     boolean done = elections.elect(
       job, logins,
       [
@@ -73,6 +74,7 @@ def exec(Project project, XML xml) {
         .type('Performer was elected')
         .param('login', elections.winner(job))
         .param('job', job)
+        .param('role', role)
         .param('reason', elections.reason(job))
         .postTo(project)
       break

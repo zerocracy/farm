@@ -46,6 +46,7 @@ public final class RbOnPullRequest implements Rebound {
                 .type("Add job to WBS")
                 .token(new TokenOfIssue(issue))
                 .param("job", new Job(issue))
+                .param("role", "REV")
                 .postTo(new GhProject(farm, issue.repo()));
             answer = new FormattedText(
                 "Pull request #%d added to WBS", issue.number()

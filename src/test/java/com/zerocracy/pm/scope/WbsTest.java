@@ -17,6 +17,8 @@
 package com.zerocracy.pm.scope;
 
 import com.zerocracy.jstk.farm.fake.FkProject;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
@@ -33,7 +35,22 @@ public final class WbsTest {
         final Wbs wbs = new Wbs(new FkProject()).bootstrap();
         final String job = "gh:yegor256/0pdd#3";
         wbs.add(job);
+        MatcherAssert.assertThat(wbs.iterate(), Matchers.hasItem(job));
         wbs.remove(job);
+        MatcherAssert.assertThat(
+            wbs.iterate(), Matchers.not(Matchers.hasItem(job))
+        );
+    }
+
+    @Test
+    public void setsRole() throws Exception {
+        final Wbs wbs = new Wbs(new FkProject()).bootstrap();
+        final String job = "gh:yegor256/0pdd#99";
+        wbs.add(job);
+        wbs.role(job, "REV");
+        MatcherAssert.assertThat(
+            wbs.role(job), Matchers.not(Matchers.equalTo("DEV"))
+        );
     }
 
 }

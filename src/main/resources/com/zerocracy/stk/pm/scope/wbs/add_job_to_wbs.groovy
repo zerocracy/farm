@@ -29,13 +29,19 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).roles('ARC', 'PO')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
+  String role = 'DEV'
+  if (claim.hasParam('role')) {
+    role = claim.param('role')
+  }
   Wbs wbs = new Wbs(project).bootstrap()
   wbs.add(job)
+  wbs.role(job, role)
   claim.reply(
-    String.format('Job `%s` is now in scope.', job)
+    String.format('Job `%s` is now in scope, role is `%s`.', job, role)
   ).postTo(project)
   new ClaimOut()
     .type('Job was added to WBS')
     .param('job', job)
+    .param('role', role)
     .postTo(project)
 }
