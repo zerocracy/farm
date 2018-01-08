@@ -42,11 +42,11 @@ SOFTWARE.
       <xsl:text> in a chat,</xsl:text>
       <xsl:text> see </xsl:text>
       <a href="http://datum.zerocracy.com/pages/policy.html#2">
-        <xsl:text>par.2</xsl:text>
+        <xsl:text>&#xA7;2</xsl:text>
       </a>
       <xsl:text>. To add your project to this board you have to publish it, see </xsl:text>
       <a href="http://datum.zerocracy.com/pages/policy.html#26">
-        <xsl:text>par.26</xsl:text>
+        <xsl:text>&#xA7;26</xsl:text>
       </a>
       <xsl:text>.</xsl:text>
     </p>

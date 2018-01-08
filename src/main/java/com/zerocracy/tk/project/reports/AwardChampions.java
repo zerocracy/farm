@@ -84,7 +84,7 @@ public final class AwardChampions implements FtReport {
             "This is a list of project members who got",
             "the biggest amount of awards points, according to",
             // @checkstyle LineLength (1 line)
-            "<a href='http://datum.zerocracy.com/pages/policy.html#18'>par.18</a>."
+            "<a href='http://datum.zerocracy.com/pages/policy.html#18'>§18</a>."
         );
     }
 

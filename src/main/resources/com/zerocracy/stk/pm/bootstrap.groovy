@@ -54,7 +54,7 @@ def exec(Project project, XML xml) {
           'always prefixing your messages with my name.',
           "All project artifacts are [here](http://www.0crat.com/p/${project.pid()}).",
           'Start with linking your project with GitHub repositories,',
-          'as explained in [par.17](http://datum.zerocracy.com/pages/policy.html#17)',
+          'as explained in [§17](http://datum.zerocracy.com/pages/policy.html#17)',
           'of our Policy.'
         )
       ).postTo(project)

@@ -36,7 +36,7 @@ SOFTWARE.
         </strong>
         <xsl:text>: the project is on pause, see </xsl:text>
         <a href="http://datum.zerocracy.com/pages/policy.html#24">
-          <xsl:text>par.24</xsl:text>
+          <xsl:text>&#xA7;24</xsl:text>
         </a>
         <xsl:text>.</xsl:text>
       </p>

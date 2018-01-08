@@ -36,7 +36,7 @@ def exec(Project project, XML xml) {
       .param(
         'reason',
         'Manual assignment of issues is discouraged,' +
-        ' see [par.19](http://datum.zerocracy.com/pages/policy.html#19)'
+        ' see [§19](http://datum.zerocracy.com/pages/policy.html#19)'
       )
       .param('minutes', -5)
       .postTo(project)

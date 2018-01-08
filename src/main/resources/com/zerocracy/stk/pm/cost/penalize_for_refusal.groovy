@@ -36,7 +36,7 @@ def exec(Project project, XML xml) {
       .param(
         'reason',
         'Tasks refusal is discouraged, see' +
-        ' [par.6](http://datum.zerocracy.com/pages/policy.html#6)'
+        ' [§6](http://datum.zerocracy.com/pages/policy.html#6)'
       )
       .param('minutes', -15)
       .postTo(project)

@@ -48,7 +48,7 @@ def exec(Project project, XML xml) {
       ' assign them `DEV` role and that\'s it.' +
       " The hourly rate of @${author} is ${new People(project).rate(author)}." +
       ' You can use that rate or define another one,' +
-      ' see [par.13](http://datum.zerocracy.com/pages/policy.html#13).'
+      ' see [§13](http://datum.zerocracy.com/pages/policy.html#13).'
     )
     .postTo(farm.find("@id='${pid}'")[0])
   claim.reply(

@@ -19,11 +19,13 @@ package com.zerocracy.tk.project;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pmo.Catalog;
+import com.zerocracy.pmo.Pmo;
 import com.zerocracy.tk.RsPage;
 import java.io.IOException;
 import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
+import org.takes.facets.forward.RsFailure;
 import org.takes.rs.xe.XeAppend;
 import org.takes.rs.xe.XeChain;
 
@@ -57,9 +59,14 @@ public final class TkPublic implements TkRegex {
             "/xsl/public.xsl",
             req,
             () -> {
-                final Project project = new RqProject(this.farm, req);
-                final Catalog catalog = new Catalog(this.farm).bootstrap();
-                final String pid = project.pid();
+                final String pid = req.matcher().group(1);
+                final Project pmo = new Pmo(this.farm);
+                final Catalog catalog = new Catalog(pmo).bootstrap();
+                if (!catalog.exists(pid)) {
+                    throw new RsFailure(
+                        String.format("Project \"%s\" not found", pid)
+                    );
+                }
                 return new XeChain(
                     new XeAppend("project", pid),
                     new XeAppend("title", catalog.title(pid))

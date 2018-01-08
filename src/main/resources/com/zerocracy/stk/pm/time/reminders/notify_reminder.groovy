@@ -18,6 +18,6 @@ def exec(Project project, XML xml) {
       "@${claim.param('login')} this job was assigned to you"
         + " ${claim.param('label')} ago."
         + ' It will be taken away from you soon, unless you close it'
-        + ', see [par.8](http://datum.zerocracy.com/pages/policy.html#8).'
+        + ', see [§8](http://datum.zerocracy.com/pages/policy.html#8).'
     ).postTo(project)
 }
