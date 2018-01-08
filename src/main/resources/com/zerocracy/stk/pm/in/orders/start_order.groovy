@@ -21,6 +21,7 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
+import com.zerocracy.pm.cost.Boosts
 import com.zerocracy.pm.cost.Ledger
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.scope.Wbs
@@ -42,6 +43,7 @@ def exec(Project project, XML xml) {
   String role = new Wbs(project).bootstrap().role(job)
   String msg
   if (role == 'REV') {
+    new Boosts(project).boost(job, 1)
     String arc = new Roles(project).bootstrap().findByRole('ARC')[0]
     msg = "This PR `${job}` assigned to @${login} " +
       " ([profile](http://www.0crat.com/u/${login}}))." +
