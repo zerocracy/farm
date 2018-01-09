@@ -68,7 +68,7 @@ SOFTWARE.
         <reason>
           <xsl:for-each select="$table/user">
             <xsl:variable name="login" select="@login"/>
-            <xsl:if test="position() &gt; 0">
+            <xsl:if test="position() &gt; 1">
               <xsl:text>
 </xsl:text>
             </xsl:if>
@@ -80,7 +80,7 @@ SOFTWARE.
             <xsl:value-of select="format-number($total/user[@login=$login]/@max, '0')"/>
             <xsl:text>): </xsl:text>
             <xsl:for-each select="vote">
-              <xsl:if test="position() &gt; 0">
+              <xsl:if test="position() &gt; 1">
                 <xsl:text>; </xsl:text>
               </xsl:if>
               <xsl:if test="@score &gt; 0">

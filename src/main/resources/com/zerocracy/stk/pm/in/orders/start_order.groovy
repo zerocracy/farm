@@ -46,7 +46,7 @@ def exec(Project project, XML xml) {
     new Boosts(project).boost(job, 1)
     String arc = new Roles(project).bootstrap().findByRole('ARC')[0]
     msg = "This PR `${job}` assigned to [@${login}]" +
-      "(http://www.0crat.com/u/${login}})." +
+      "(http://www.0crat.com/u/${login}}) (`${role}`)." +
       ' The budget is [fixed](http://datum.zerocracy.com/pages/policy.html#4)' +
       ' and it is 15 minutes. Please, read' +
       ' [§27](http://datum.zerocracy.com/pages/policy.html#27)' +
@@ -54,7 +54,7 @@ def exec(Project project, XML xml) {
       " If and when you decide to accept the changes, inform @${arc} right in this ticket."
   } else {
     msg = "Job `${job}` assigned to [@${login}]" +
-      "(http://www.0crat.com/u/${login}})." +
+      "(http://www.0crat.com/u/${login}}) (`${role}`)." +
       ' The budget is [fixed](http://datum.zerocracy.com/pages/policy.html#4)' +
       ' and it is 30 minutes. Please, read' +
       ' [§4](http://datum.zerocracy.com/pages/policy.html#4),' +
@@ -78,6 +78,7 @@ def exec(Project project, XML xml) {
   new ClaimOut()
     .type('Order was given')
     .param('job', job)
+    .param('role', role)
     .param('login', login)
     .param('reason', reason)
     .postTo(project)

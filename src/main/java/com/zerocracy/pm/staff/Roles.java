@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
-import org.cactoos.iterable.LengthOf;
+import org.cactoos.collection.CollectionOf;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.list.SolidList;
 import org.cactoos.text.JoinedText;
@@ -161,14 +161,15 @@ public final class Roles {
                 )
             );
         }
-        final int jobs = new LengthOf(
+        final Collection<String> jobs = new CollectionOf<>(
             new Orders(this.project).bootstrap().jobs(person)
-        ).intValue();
-        if (jobs > 0) {
+        );
+        if (!jobs.isEmpty()) {
             throw new SoftException(
                 String.format(
-                    "There are still %d jobs assigned to @%s, can't resign",
-                    jobs, person
+                    "There are still %d jobs assigned to @%s, can't resign: %s",
+                    jobs.size(), person,
+                    new JoinedText(", ", jobs).asString()
                 )
             );
         }

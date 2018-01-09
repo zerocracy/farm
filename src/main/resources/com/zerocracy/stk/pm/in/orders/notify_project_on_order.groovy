@@ -28,11 +28,12 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
   String login = claim.param('login')
+  String role = claim.param('role')
   new ClaimOut()
     .type('Notify project')
     .param(
       'message',
-      "Job `${job}` was assigned to @${login}:\n"
+      "Job `${job}` was assigned to @${login} (role is ${role}):\n"
       + "```\n${claim.param('reason')}\n```"
     )
     .postTo(project)
