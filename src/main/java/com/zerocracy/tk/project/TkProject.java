@@ -68,7 +68,6 @@ public final class TkProject implements TkRegex {
             () -> {
                 final Project project = new RqProject(this.farm, req);
                 final Catalog catalog = new Catalog(this.farm).bootstrap();
-                final Rates rates = new Rates(project).bootstrap();
                 final String user = new RqUser(this.farm, req).value();
                 final String pid = project.pid();
                 return new XeChain(
@@ -76,56 +75,60 @@ public final class TkProject implements TkRegex {
                     new XeAppend("title", catalog.title(pid)),
                     new XeWhen(
                         !"PMO".equals(pid),
-                        () -> new XeChain(
-                            new XeAppend(
-                                "pause",
-                                Boolean.toString(catalog.pause(pid))
-                            ),
-                            new XeAppend(
-                                "published",
-                                Boolean.toString(catalog.published(pid))
-                            ),
-                            new XeWhen(
-                                rates.exists(user),
-                                () -> new XeAppend(
-                                    "rate",
-                                    rates.rate(user).toString()
+                        () -> {
+                            final Rates rates = new Rates(project).bootstrap();
+                            return new XeChain(
+                                new XeAppend(
+                                    "pause",
+                                    Boolean.toString(catalog.pause(pid))
+                                ),
+                                new XeAppend(
+                                    "published",
+                                    Boolean.toString(catalog.published(pid))
+                                ),
+                                new XeWhen(
+                                    rates.exists(user),
+                                    () -> new XeAppend(
+                                        "rate",
+                                        rates.rate(user).toString()
+                                    )
+                                ),
+                                new XeAppend(
+                                    "roles",
+                                    new XeTransform<String>(
+                                        new Roles(project).bootstrap().allRoles(
+                                            user
+                                        ),
+                                        role -> new XeAppend("role", role)
+                                    )
+                                ),
+                                new XeAppend(
+                                    "stripe_key",
+                                    new Props(this.farm).get("//stripe/key", "")
+                                ),
+                                new XeAppend(
+                                    "cash",
+                                    new Ledger(project).bootstrap()
+                                        .cash().toString()
+                                ),
+                                new XeAppend(
+                                    "estimates",
+                                    new Estimates(project).bootstrap()
+                                        .total().toString()
+                                ),
+                                new XeAppend(
+                                    "deficit",
+                                    Boolean.toString(
+                                        new Ledger(project).bootstrap()
+                                            .deficit()
+                                    )
+                                ),
+                                new XeAppend(
+                                    "fee",
+                                    catalog.fee(project.pid()).toString()
                                 )
-                            ),
-                            new XeAppend(
-                                "roles",
-                                new XeTransform<String>(
-                                    new Roles(project).bootstrap().allRoles(
-                                        user
-                                    ),
-                                    role -> new XeAppend("role", role)
-                                )
-                            ),
-                            new XeAppend(
-                                "stripe_key",
-                                new Props(this.farm).get("//stripe/key", "")
-                            ),
-                            new XeAppend(
-                                "cash",
-                                new Ledger(project).bootstrap()
-                                    .cash().toString()
-                            ),
-                            new XeAppend(
-                                "estimates",
-                                new Estimates(project).bootstrap()
-                                    .total().toString()
-                            ),
-                            new XeAppend(
-                                "deficit",
-                                Boolean.toString(
-                                    new Ledger(project).bootstrap().deficit()
-                                )
-                            ),
-                            new XeAppend(
-                                "fee",
-                                catalog.fee(project.pid()).toString()
-                            )
-                        )
+                            );
+                        }
                     ),
                     new XeAppend(
                         "project_links",
