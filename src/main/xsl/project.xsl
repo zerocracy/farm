@@ -74,6 +74,27 @@ SOFTWARE.
       <xsl:text>.</xsl:text>
     </p>
     <p>
+      <xsl:choose>
+        <xsl:when test="rate">
+          <xsl:text>Your </xsl:text>
+          <a href="http://datum.zerocracy.com/pages/policy.html#16">
+            <xsl:text>rate</xsl:text>
+          </a>
+          <xsl:text> here is </xsl:text>
+          <span style="color:darkgreen">
+            <xsl:value-of select="project"/>
+          </span>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:text>You are working in this project </xsl:text>
+          <a href="http://datum.zerocracy.com/pages/policy.html#16">
+            <xsl:text>for free</xsl:text>
+          </a>
+        </xsl:otherwise>
+      </xsl:choose>
+      <xsl:text>.</xsl:text>
+    </p>
+    <p>
       <xsl:apply-templates select="project_links"/>
     </p>
     <xsl:apply-templates select="." mode="artifacts"/>

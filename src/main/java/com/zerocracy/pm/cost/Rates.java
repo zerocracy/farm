@@ -112,6 +112,14 @@ public final class Rates {
      * @throws IOException If fails
      */
     public Cash rate(final String login) throws IOException {
+        if (!this.exists(login)) {
+            throw new SoftException(
+                String.format(
+                    "Rate for @%s is not set",
+                    login
+                )
+            );
+        }
         try (final Item item = this.item()) {
             return new Cash.S(
                 new Xocument(item).xpath(
