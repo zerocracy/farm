@@ -167,9 +167,10 @@ public final class Roles {
         if (!jobs.isEmpty()) {
             throw new SoftException(
                 String.format(
-                    "There are still %d jobs assigned to @%s, can't resign: %s",
+                    // @checkstyle LineLength (1 line)
+                    "There are still %d job(s) assigned to @%s, can't resign: `%s`",
                     jobs.size(), person,
-                    new JoinedText(", ", jobs).asString()
+                    new JoinedText("`, `", jobs).asString()
                 )
             );
         }
