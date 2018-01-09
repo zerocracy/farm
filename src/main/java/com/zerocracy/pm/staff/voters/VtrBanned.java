@@ -17,62 +17,55 @@
 package com.zerocracy.pm.staff.voters;
 
 import com.zerocracy.jstk.Project;
+import com.zerocracy.pm.staff.Bans;
 import com.zerocracy.pm.staff.Voter;
-import com.zerocracy.pmo.Agenda;
 import java.io.IOException;
 import org.cactoos.iterable.LengthOf;
+import org.cactoos.text.JoinedText;
 
 /**
- * Workload voter.
- *
+ * Says "yes" when user was banned for electing job.
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
- * @since 0.17
+ * @since 0.13
  */
-public final class Workload implements Voter {
+public final class VtrBanned implements Voter {
 
     /**
-     * The PMO.
+     * A project.
      */
-    private final Project pmo;
+    private final Project proj;
 
     /**
-     * Max.
+     * Current job.
      */
-    private final int max;
-
-    /**
-     * Ctor.
-     * @param prj The PMO
-     */
-    public Workload(final Project prj) {
-        // @checkstyle MagicNumber (1 line)
-        this(prj, 20);
-    }
+    private final String job;
 
     /**
      * Ctor.
-     * @param prj The PMO
-     * @param threshold Max
+     * @param job Current job
+     * @param proj ApProject
      */
-    public Workload(final Project prj, final int threshold) {
-        this.pmo = prj;
-        this.max = threshold;
+    public VtrBanned(final Project proj, final String job) {
+        this.proj = proj;
+        this.job = job;
     }
 
     @Override
     public double vote(final String login, final StringBuilder log)
         throws IOException {
-        final int jobs = new LengthOf(
-            new Agenda(this.pmo, login).jobs()
-        ).intValue();
-        log.append(
-            String.format(
-                "%d jobs out of %d",
-                jobs, this.max
-            )
-        );
-        return (double) (this.max - Math.min(jobs, this.max))
-            / (double) this.max;
+        final Iterable<String> reasons = new Bans(this.proj)
+            .bootstrap()
+            .reasons(this.job, login);
+        final double rate;
+        if (new LengthOf(reasons).intValue() > 0) {
+            log.append("Banned from this job because: ")
+                .append(new JoinedText(", ", reasons).asString());
+            rate = 1.0;
+        } else {
+            log.append("There are no bans");
+            rate = 0.0;
+        }
+        return rate;
     }
 }

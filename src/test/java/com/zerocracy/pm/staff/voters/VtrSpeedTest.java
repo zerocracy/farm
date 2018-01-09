@@ -19,6 +19,7 @@ package com.zerocracy.pm.staff.voters;
 import com.zerocracy.jstk.farm.fake.FkProject;
 import com.zerocracy.pmo.Speed;
 import java.util.concurrent.TimeUnit;
+import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -44,8 +45,10 @@ public final class VtrSpeedTest {
             TimeUnit.HOURS.toMinutes(1L)
         );
         MatcherAssert.assertThat(
-            new VtrSpeed(pkt).vote(login, new StringBuilder(0)),
-            Matchers.greaterThan(0.9)
+            new VtrSpeed(pkt, new ListOf<>("jeff", login)).vote(
+                login, new StringBuilder(0)
+            ),
+            Matchers.equalTo(0.5d)
         );
     }
 
@@ -60,8 +63,10 @@ public final class VtrSpeedTest {
             TimeUnit.DAYS.toMinutes(9L)
         );
         MatcherAssert.assertThat(
-            new VtrSpeed(pkt).vote(login, new StringBuilder(0)),
-            Matchers.equalTo(0.1)
+            new VtrSpeed(pkt, new ListOf<>(login)).vote(
+                login, new StringBuilder(0)
+            ),
+            Matchers.equalTo(1.0)
         );
     }
 }

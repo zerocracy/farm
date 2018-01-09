@@ -71,11 +71,11 @@ header {
 .flash {
   text-align: center;
 
-  &.flash-SEVERE { color: red; }
+  &.flash-SEVERE { color: darkred; border: darkred; }
 
-  &.flash-INFO { color: green; }
+  &.flash-INFO { color: darkgreen; border: darkgreen; }
 
-  &.flash-WARNING { color: orange; }
+  &.flash-WARNING { color: darkorange; border: darkorange; }
 }
 
 .sla {

@@ -29,7 +29,7 @@ import org.cactoos.iterable.LengthOf;
  * @version $Id$
  * @since 0.12
  */
-public final class NoRoom implements Voter {
+public final class VtrNoRoom implements Voter {
 
     /**
      * The PMO.
@@ -45,7 +45,7 @@ public final class NoRoom implements Voter {
      * Ctor.
      * @param pkt Current project
      */
-    public NoRoom(final Project pkt) {
+    public VtrNoRoom(final Project pkt) {
         // @checkstyle MagicNumber (1 line)
         this(pkt, 5);
     }
@@ -55,7 +55,7 @@ public final class NoRoom implements Voter {
      * @param pkt Current project
      * @param threshold Max
      */
-    public NoRoom(final Project pkt, final int threshold) {
+    public VtrNoRoom(final Project pkt, final int threshold) {
         this.pmo = pkt;
         this.max = threshold;
     }

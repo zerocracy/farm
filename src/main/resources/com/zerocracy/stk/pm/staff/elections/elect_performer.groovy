@@ -28,11 +28,12 @@ import com.zerocracy.pm.cost.Ledger
 import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pm.staff.Elections
 import com.zerocracy.pm.staff.Roles
-import com.zerocracy.pm.staff.voters.Banned
-import com.zerocracy.pm.staff.voters.NoRoom
-import com.zerocracy.pm.staff.voters.Vacation
+import com.zerocracy.pm.staff.voters.VtrBanned
+import com.zerocracy.pm.staff.voters.VtrNoRoom
+import com.zerocracy.pm.staff.voters.VtrRate
 import com.zerocracy.pm.staff.voters.VtrSpeed
-import com.zerocracy.pm.staff.voters.Workload
+import com.zerocracy.pm.staff.voters.VtrVacation
+import com.zerocracy.pm.staff.voters.VtrWorkload
 import com.zerocracy.pmo.Pmo
 import org.cactoos.iterable.Shuffled
 
@@ -62,11 +63,12 @@ def exec(Project project, XML xml) {
     boolean done = elections.elect(
       job, logins,
       [
-        (new NoRoom(pmo, 3)): -100,
-        (new Banned(project, job)): -100,
-        (new Vacation(pmo)): -100,
-        (new Workload(pmo, 15)): 1,
-        (new VtrSpeed(pmo)): 1
+        (new VtrRate(project, logins))        : 2,
+        (new VtrNoRoom(pmo, 3))      : -100,
+        (new VtrBanned(project, job)): -100,
+        (new VtrVacation(pmo))       : -100,
+        (new VtrWorkload(pmo, 15))   : 1,
+        (new VtrSpeed(pmo, logins))          : 3
       ]
     )
     if (done && elections.elected(job)) {

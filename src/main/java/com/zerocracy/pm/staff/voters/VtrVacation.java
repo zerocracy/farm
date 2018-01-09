@@ -17,55 +17,52 @@
 package com.zerocracy.pm.staff.voters;
 
 import com.zerocracy.jstk.Project;
-import com.zerocracy.pm.staff.Bans;
 import com.zerocracy.pm.staff.Voter;
+import com.zerocracy.pmo.People;
 import java.io.IOException;
-import org.cactoos.iterable.LengthOf;
-import org.cactoos.text.JoinedText;
 
 /**
- * Says "yes" when user was banned for electing job.
+ * Vacation voter.
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
- * @since 0.13
+ * @since 0.16
  */
-public final class Banned implements Voter {
+public final class VtrVacation implements Voter {
 
     /**
-     * A project.
+     * The people.
      */
-    private final Project proj;
-
-    /**
-     * Current job.
-     */
-    private final String job;
+    private final People people;
 
     /**
      * Ctor.
-     * @param job Current job
-     * @param proj ApProject
+     * @param pmo The PMO
      */
-    public Banned(final Project proj, final String job) {
-        this.proj = proj;
-        this.job = job;
+    public VtrVacation(final Project pmo) {
+        this(new People(pmo));
+    }
+
+    /**
+     * Primary ctor.
+     * @param ppl People
+     */
+    private VtrVacation(final People ppl) {
+        this.people = ppl;
     }
 
     @Override
-    public double vote(final String login, final StringBuilder log)
-        throws IOException {
-        final Iterable<String> reasons = new Bans(this.proj)
-            .bootstrap()
-            .reasons(this.job, login);
-        final double rate;
-        if (new LengthOf(reasons).intValue() > 0) {
-            log.append("Banned from this job because: ")
-                .append(new JoinedText(", ", reasons).asString());
-            rate = 1.0;
+    public double vote(
+        final String login,
+        final StringBuilder log
+    ) throws IOException {
+        final double vote;
+        if (this.people.bootstrap().vacation(login)) {
+            log.append("On vacation");
+            vote = 1.0D;
         } else {
-            log.append("There are no bans");
-            rate = 0.0;
+            log.append("Not on vacation");
+            vote = 0.0D;
         }
-        return rate;
+        return vote;
     }
 }

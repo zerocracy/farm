@@ -80,7 +80,7 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="page[project!='PMO']" mode="artifacts">
     <xsl:if test="identity/login = 'yegor256'">
-      <form action="/donate/{project}" method="post">
+      <form action="/donate/{project}" method="post" autocomplete="off">
         <label>
           <xsl:text>Donate: </xsl:text>
         </label>

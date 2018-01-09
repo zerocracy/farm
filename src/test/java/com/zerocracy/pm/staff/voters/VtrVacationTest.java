@@ -16,53 +16,31 @@
  */
 package com.zerocracy.pm.staff.voters;
 
-import com.zerocracy.jstk.Project;
-import com.zerocracy.pm.staff.Voter;
+import com.zerocracy.jstk.farm.fake.FkProject;
 import com.zerocracy.pmo.People;
-import java.io.IOException;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Test;
 
 /**
- * Vacation voter.
+ * Test case for {@link VtrVacation}.
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.16
+ * @checkstyle JavadocMethodCheck (500 lines)
  */
-public final class Vacation implements Voter {
+public final class VtrVacationTest {
 
-    /**
-     * The people.
-     */
-    private final People people;
-
-    /**
-     * Ctor.
-     * @param pmo The PMO
-     */
-    public Vacation(final Project pmo) {
-        this(new People(pmo));
-    }
-
-    /**
-     * Primary ctor.
-     * @param ppl People
-     */
-    private Vacation(final People ppl) {
-        this.people = ppl;
-    }
-
-    @Override
-    public double vote(
-        final String login,
-        final StringBuilder log
-    ) throws IOException {
-        final double vote;
-        if (this.people.bootstrap().vacation(login)) {
-            log.append("On vacation");
-            vote = 1.0D;
-        } else {
-            log.append("Not on vacation");
-            vote = 0.0D;
-        }
-        return vote;
+    @Test
+    public void highRankForVacationTest() throws Exception {
+        final FkProject project = new FkProject();
+        final String uid = "g4s8";
+        final People people = new People(project).bootstrap();
+        people.invite(uid, uid);
+        people.vacation(uid, true);
+        MatcherAssert.assertThat(
+            new VtrVacation(project).vote(uid, new StringBuilder()),
+            Matchers.equalTo(1.0D)
+        );
     }
 }

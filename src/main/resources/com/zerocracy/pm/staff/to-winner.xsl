@@ -42,7 +42,7 @@ SOFTWARE.
         <user login="jeff" max="1.4" score="0.21"/>
         -->
     <xsl:for-each select="$table/user">
-      <user login="{@login}" max="{sum(vote/@weight)}" score="{sum(vote/@score)}"/>
+      <user login="{@login}" max="{sum(vote[@weight &gt; 0]/@weight)}" score="{sum(vote/@score)}"/>
     </xsl:for-each>
   </xsl:variable>
   <xsl:variable name="winner">
@@ -68,16 +68,21 @@ SOFTWARE.
         <reason>
           <xsl:for-each select="$table/user">
             <xsl:variable name="login" select="@login"/>
+            <xsl:if test="position() &gt; 0">
+              <xsl:text>
+</xsl:text>
+            </xsl:if>
             <xsl:text>@</xsl:text>
             <xsl:value-of select="@login"/>
             <xsl:text> (</xsl:text>
             <xsl:value-of select="format-number($total/user[@login=$login]/@score, '0.00')"/>
             <xsl:text> of </xsl:text>
             <xsl:value-of select="format-number($total/user[@login=$login]/@max, '0')"/>
-            <xsl:text>):
-</xsl:text>
+            <xsl:text>): </xsl:text>
             <xsl:for-each select="vote">
-              <xsl:text>  </xsl:text>
+              <xsl:if test="position() &gt; 0">
+                <xsl:text>; </xsl:text>
+              </xsl:if>
               <xsl:if test="@score &gt; 0">
                 <xsl:text>+</xsl:text>
               </xsl:if>
@@ -90,8 +95,6 @@ SOFTWARE.
               </xsl:if>
               <xsl:text> </xsl:text>
               <xsl:value-of select="text()"/>
-              <xsl:text>
-</xsl:text>
             </xsl:for-each>
           </xsl:for-each>
         </reason>

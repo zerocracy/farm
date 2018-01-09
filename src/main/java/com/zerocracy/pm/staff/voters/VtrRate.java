@@ -18,12 +18,12 @@ package com.zerocracy.pm.staff.voters;
 
 import com.jcabi.log.Logger;
 import com.zerocracy.jstk.Project;
+import com.zerocracy.jstk.cash.Cash;
+import com.zerocracy.pm.cost.Rates;
 import com.zerocracy.pm.staff.Voter;
-import com.zerocracy.pmo.Speed;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import org.cactoos.collection.Filtered;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.map.MapEntry;
@@ -32,40 +32,40 @@ import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.scalar.SolidScalar;
 
 /**
- * Highest speed (lowest value) wins.
- *
- * Votes for that person who is the fastest.
- * Returns 1 for fast person and 0 for slow, 0.5 - for middle.
+ * Lowest rate wins.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
- * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.19
  */
-public final class VtrSpeed implements Voter {
+public final class VtrRate implements Voter {
 
     /**
-     * Speeds of others.
+     * Rates of others.
      */
-    private final IoCheckedScalar<Map<String, Double>> speeds;
+    private final IoCheckedScalar<Map<String, Cash>> rates;
 
     /**
      * Ctor.
-     * @param pmo The PMO
+     * @param project The project
      * @param others All other logins in the competition
+     * @checkstyle AvoidInlineConditionalsCheck (30 lines)
      */
-    public VtrSpeed(final Project pmo, final Collection<String> others) {
-        this.speeds = new IoCheckedScalar<>(
+    public VtrRate(final Project project, final Collection<String> others) {
+        this.rates = new IoCheckedScalar<>(
             new SolidScalar<>(
-                () -> new MapOf<>(
-                    new Mapped<>(
-                        login -> new MapEntry<>(
-                            login,
-                            new Speed(pmo, login).bootstrap().avg()
-                        ),
-                        others
-                    )
-                )
+                () -> {
+                    final Rates all = new Rates(project).bootstrap();
+                    return new MapOf<String, Cash>(
+                        new Mapped<>(
+                            login -> new MapEntry<>(
+                                login,
+                                all.exists(login) ? all.rate(login) : Cash.ZERO
+                            ),
+                            others
+                        )
+                    );
+                }
             )
         );
     }
@@ -73,18 +73,17 @@ public final class VtrSpeed implements Voter {
     @Override
     public double vote(final String login, final StringBuilder log)
         throws IOException {
-        final double mine = this.speeds.value().get(login);
-        final int faster = new Filtered<>(
-            speed -> speed < mine,
-            this.speeds.value().values()
+        final Cash mine = this.rates.value().get(login);
+        final int cheaper = new Filtered<>(
+            rate -> rate.compareTo(mine) < 0,
+            this.rates.value().values()
         ).size();
         log.append(
             Logger.format(
-                "Average delivery time %[ms]s is no.%d",
-                (long) mine * TimeUnit.MINUTES.toMillis(1L),
-                faster + 1
+                "Hourly rate %s is no.%d",
+                mine, cheaper + 1
             )
         );
-        return 1.0d - (double) faster / (double) this.speeds.value().size();
+        return 1.0d - (double) cheaper / (double) this.rates.value().size();
     }
 }

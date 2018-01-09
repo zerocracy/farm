@@ -19,6 +19,7 @@ package com.zerocracy.tk.project;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.cash.Cash;
+import com.zerocracy.jstk.cash.CashParsingException;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.tk.RqUser;
 import java.io.IOException;
@@ -67,7 +68,15 @@ public final class TkDonate implements TkRegex {
         }
         final Project project = new RqProject(this.farm, req);
         final RqFormSmart form = new RqFormSmart(new RqGreedy(req));
-        final Cash amount = new Cash.S(form.single("amount"));
+        final Cash amount;
+        try {
+            amount = new Cash.S(form.single("amount"));
+        } catch (final CashParsingException ex) {
+            throw new RsForward(
+                new RsFlash(ex),
+                String.format("/p/%s", project.pid())
+            );
+        }
         new ClaimOut()
             .type("Donate")
             .param("amount", amount)

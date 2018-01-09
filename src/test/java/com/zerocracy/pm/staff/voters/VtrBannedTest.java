@@ -24,13 +24,13 @@ import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
- * Test case for {@link Banned}.
+ * Test case for {@link VtrBanned}.
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.13
  * @checkstyle JavadocMethodCheck (500 lines)
  */
-public final class BannedTest {
+public final class VtrBannedTest {
 
     @Test
     public void highRankForBanned() throws IOException {
@@ -40,7 +40,7 @@ public final class BannedTest {
         new Bans(proj).bootstrap().ban(job, login, "Issue reporter");
         MatcherAssert.assertThat(
             "Banned voter didn't give high rank for banned user",
-            new Banned(
+            new VtrBanned(
                 proj,
                 job
             ).vote(login, new StringBuilder()),
@@ -52,7 +52,7 @@ public final class BannedTest {
     public void lowRankIfNotBanned() throws IOException {
         MatcherAssert.assertThat(
             "Banned voter didn't give low rank for not banned user",
-            new Banned(
+            new VtrBanned(
                 new FkProject(),
                 "gh:test/job#2"
             ).vote("yegor256", new StringBuilder()),
