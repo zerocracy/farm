@@ -17,13 +17,12 @@
 package com.zerocracy.stk.pm.staff.awards
 
 import com.jcabi.xml.XML
+import com.zerocracy.Par
 import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pmo.Awards
-import com.zerocracy.pmo.Catalog
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
@@ -34,17 +33,15 @@ def exec(Project project, XML xml) {
   Integer points = Integer.parseInt(claim.param('points'))
   Awards awards = new Awards(project, login).bootstrap()
   String reason = claim.param('reason')
-  Farm farm = binding.variables.farm
-  Catalog catalog = new Catalog(farm).bootstrap()
   new ClaimOut()
     .type('Notify user')
     .token("user;${login}")
     .param(
       'message',
-      "You got ${points} [points](http://datum.zerocracy.com/pages/policy.html#18) in `${job}`" +
-      " ([${catalog.title(project.pid())}](http://www.0crat.com/p/${project.pid()}))," +
-      ' your total is' +
-      " [${awards.total()}](http://www.0crat.com/u/${login}/awards): ${reason}."
+      new Par(
+        'You got %+d point(s) in the job %s in %s,',
+        'your total is [%+d](/u/%s/awards), see §18: %s'
+      ).say(points, job, project.pid(), awards.total(), login, reason)
     )
     .postTo(project)
   new ClaimOut()
@@ -52,11 +49,10 @@ def exec(Project project, XML xml) {
     .token("job;${job}")
     .param(
       'message',
-      String.format(
-        '%s: %+d points just awarded to @%s, total is'
-        + ' [%+d](http://www.0crat.com/u/%s).',
-        reason, points, login, awards.total(), login
-      )
+      new Par(
+        '%s: %+d point(s) just awarded to @%s,',
+        'total is [%+d](http://www.0crat.com/u/%s)',
+      ).say(reason, points, login, awards.total(), login)
     )
     .postTo(project)
 }

@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pmo.profile
 
 import com.jcabi.xml.XML
+import com.zerocracy.Par
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
@@ -31,18 +32,19 @@ def exec(Project project, XML xml) {
   People people = new People(project).bootstrap()
   people.invite(login, claim.author())
   claim.reply(
-    "Thanks, [@${login}](http://www.0crat.com/u/${login}) can now work with us, and you are the mentor," +
-    ' see [§1](http://datum.zerocracy.com/pages/policy.html#1).',
+    new Par(
+      'Thanks, @%s can now work with us, and you are the mentor, see §1',
+    ).say(login)
   ).postTo(project)
   new ClaimOut()
     .type('Notify user')
     .token("user;${login}")
     .param(
       'message',
-      "You have been invited to Zerocracy by [@${claim.author()}](http://www.0crat.com/u/${claim.author()})," +
-      ' as required in [§1](http://datum.zerocracy.com/pages/policy.html#1).' +
-      ' You can now apply to the projects, see' +
-      ' [§2](http://datum.zerocracy.com/pages/policy.html#1).'
+      new Par(
+        'You have been invited to Zerocracy by @%s, as required in §1.',
+        'You can now apply to the projects, see §2.'
+      ).say(claim.author())
     )
     .postTo(project)
 }

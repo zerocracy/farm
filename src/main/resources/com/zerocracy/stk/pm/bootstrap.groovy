@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pm
 
 import com.jcabi.xml.XML
+import com.zerocracy.Par
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.jstk.SoftException
@@ -47,16 +48,14 @@ def exec(Project project, XML xml) {
     }
     if (claim.hasToken()) {
       claim.reply(
-        String.join(
-          ' ',
-          "I\'m ready to manage a project. Project ID is `${project.pid()}`.",
+        new Par(
+          'I\'m ready to manage the %s project.',
           'When you\'re ready, you can start giving me commands,',
           'always prefixing your messages with my name.',
-          "All project artifacts are [here](http://www.0crat.com/p/${project.pid()}).",
+          'All project artifacts are [here](/p/%1$s).',
           'Start with linking your project with GitHub repositories,',
-          'as explained in [§17](http://datum.zerocracy.com/pages/policy.html#17)',
-          'of our Policy.'
-        )
+          'as explained in §17.'
+        ).say(project.pid())
       ).postTo(project)
     }
   } else {

@@ -17,6 +17,7 @@
 package com.zerocracy.radars.github;
 
 import com.jcabi.github.Comment;
+import com.zerocracy.Par;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.SoftException;
 import java.io.IOException;
@@ -61,8 +62,11 @@ public final class ReIfAddressed implements Response {
             );
             if (!pattern.matcher(comment.body()).matches()) {
                 throw new SoftException(
-                    // @checkstyle LineLength (1 line)
-                    "Are you speaking to me or about me? You must always start your message with my name if you want to address it to me."
+                    new Par(
+                        "Are you speaking to me or about me?",
+                        "You must always start your message with my name",
+                        "if you want to address it to me, see §1."
+                    ).say()
                 );
             }
             done = this.origin.react(farm, comment);

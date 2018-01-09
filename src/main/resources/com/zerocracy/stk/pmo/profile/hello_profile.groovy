@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pmo.profile
 
 import com.jcabi.xml.XML
+import com.zerocracy.Par
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
@@ -26,8 +27,9 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Hello profile')
   ClaimIn claim = new ClaimIn(xml)
   claim.reply(
-    "Hey, what's up, how is it going?" +
-    ' More information is in' +
-    " [your profile](http://www.0crat.com/u/${claim.author()})."
+    new Par(
+      "Hey, what's up, how is it going?",
+      'More information is in [your profile](/u/%s).'
+    ).say(claim.author())
   ).postTo(project)
 }

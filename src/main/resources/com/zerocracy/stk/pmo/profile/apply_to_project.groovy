@@ -17,10 +17,12 @@
 package com.zerocracy.stk.pmo.profile
 
 import com.jcabi.xml.XML
+import com.zerocracy.Par
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.jstk.SoftException
+import com.zerocracy.jstk.cash.Cash
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pmo.Catalog
@@ -32,25 +34,38 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   Farm farm = binding.variables.farm
   String pid = claim.param('project')
+  Cash rate = new Cash.S(claim.param('rate'))
   if (!new Catalog(project).bootstrap().exists(pid)) {
     throw new SoftException(
-      "Project \"${pid}\" doesn't exist."
+      new Par('Project %s doesn\'t exist').say(pid)
     )
   }
   String author = claim.author()
+  Cash std = new People(project).rate(author)
+  if (rate > std) {
+    throw new SoftException(
+      new Par(
+        'Your profile rate is %s,',
+        'you can\'t suggest higher rate of %s for this project'
+      ).say(std, rate)
+    )
+  }
   new ClaimOut()
     .type('Notify project')
     .param(
       'message',
-      "[@${claim.author()}](http://www.0crat.com/u/${author}) wants to join you guys." +
-      " If you want to add @${author} to the project, just" +
-      ' assign them `DEV` role and that\'s it.' +
-      " The hourly rate of @${author} is ${new People(project).rate(author)}." +
-      ' You can use that rate or define another one,' +
-      ' see [§13](http://datum.zerocracy.com/pages/policy.html#13).'
+      new Par(
+        '@%s wants to join you guys.',
+        'If you want to add them to the project,',
+        'just assign `DEV` role and that\'s it.',
+        'The hourly rate suggested by @%1$s is %s (profile rate is %s).',
+        'You can use that rate or define another one, see §13.'
+      ).say(claim.author(), rate, std)
     )
     .postTo(farm.find("@id='${pid}'")[0])
   claim.reply(
-    "Project `${pid}` was notified about your desire to join them."
+    new Par(
+      'The project %s was notified about your desire to join them'
+    ).say(pid)
   ).postTo(project)
 }

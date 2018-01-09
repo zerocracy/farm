@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pm
 
 import com.jcabi.xml.XML
+import com.zerocracy.Par
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
@@ -33,17 +34,20 @@ def exec(Project project, XML xml) {
   if ('on' == mode) {
     catalog.publish(project.pid(), true)
     claim.reply(
-      'The project is visible now at the [board](http://www.0crat.com/board).'
+      new Par(
+        'The project is visible now at the [board](/board)'
+      ).say()
     ).postTo(project)
   } else if ('off' == mode) {
     catalog.publish(project.pid(), false)
     claim.reply(
-      'The project is not visible anymore at the' +
-      ' [board](http://www.0crat.com/board).'
+      new Par(
+        'The project is not visible anymore at the [board](/board)'
+      ).say()
     ).postTo(project)
   } else {
     claim.reply(
-      "Incorrect mode, possible values are 'on' or 'off'."
+      new Par("Incorrect mode, possible values are 'on' or 'off'").say()
     ).postTo(project)
   }
 }

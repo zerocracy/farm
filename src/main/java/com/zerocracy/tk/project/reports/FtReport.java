@@ -46,7 +46,8 @@ public interface FtReport {
     /**
      * Its title, in HTML.
      * @return Title of the report.
+     * @throws IOException If fails
      */
-    String title();
+    String title() throws IOException;
 
 }

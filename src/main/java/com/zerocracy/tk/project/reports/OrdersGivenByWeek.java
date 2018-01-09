@@ -21,7 +21,9 @@ import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.Sorts;
+import com.zerocracy.Par;
 import com.zerocracy.jstk.Project;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -87,13 +89,12 @@ public final class OrdersGivenByWeek implements FtReport {
     }
 
     @Override
-    public String title() {
-        return String.join(
-            " ",
+    public String title() throws IOException {
+        return new Par(
             "This is a chronological list of weeks and the amount",
             "of orders that were given to project members",
             "during that time periods."
-        );
+        ).say();
     }
 
 }

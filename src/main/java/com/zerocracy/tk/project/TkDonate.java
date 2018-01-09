@@ -16,6 +16,7 @@
  */
 package com.zerocracy.tk.project;
 
+import com.zerocracy.Par;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.cash.Cash;
@@ -61,7 +62,7 @@ public final class TkDonate implements TkRegex {
         if (!"yegor256".equals(new RqUser(this.farm, req).value())) {
             throw new RsForward(
                 new RsFlash(
-                    "You are not allowed to donate, sorry.",
+                    "You are not allowed to donate, sorry",
                     Level.WARNING
                 )
             );
@@ -83,10 +84,9 @@ public final class TkDonate implements TkRegex {
             .postTo(project);
         return new RsForward(
             new RsFlash(
-                String.format(
-                    "You successfully donated %s to the project \"%s\".",
-                    amount, project.pid()
-                )
+                new Par(
+                    "You successfully donated %s to the project %s"
+                ).say(amount, project.pid())
             ),
             String.format("/p/%s", project.pid())
         );

@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pmo.profile
 
 import com.jcabi.xml.XML
+import com.zerocracy.Par
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.jstk.SoftException
@@ -34,24 +35,24 @@ def exec(Project project, XML xml) {
     String bank = people.bank(author)
     if (wallet.empty || bank.empty) {
       throw new SoftException(
-        'Your wallet is not configured yet. To configure it just say `wallet paypal me@example.com`, for example.'
+        new Par(
+          'Your wallet is not configured yet.',
+          'To configure it just say `wallet paypal me@example.com`, for example.'
+        ).say()
       )
     }
     throw new SoftException(
-      String.format(
-        'Your wallet is `%s` at "%s".',
-        people.wallet(author),
-        people.bank(author)
-      )
+      new Par(
+        'Your wallet is `%s` at "%s"'
+      ).say(people.wallet(author), people.bank(author))
     )
   }
   String bank = claim.param('bank')
   String wallet = claim.param('wallet')
   people.wallet(author, bank, wallet)
   claim.reply(
-    String.format(
-      'Wallet of @%s set to `%s:%s`.',
-      author, bank, wallet
-    )
+    new Par(
+      'Wallet of @%s set to `%s:%s`'
+    ).say(author, bank, wallet)
   ).postTo(project)
 }

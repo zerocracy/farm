@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pmo;
 
+import com.zerocracy.Par;
 import com.zerocracy.jstk.SoftException;
 import java.io.IOException;
 import java.util.Iterator;
@@ -56,9 +57,7 @@ public final class GoodPeople {
         final Iterator<String> list = this.people.find(rel, alias).iterator();
         if (!list.hasNext()) {
             throw new SoftException(
-                String.join(
-                    " ",
-                    "I don't know who you are, please click here:",
+                new Par("I don't know who you are, please click here: %s").say(
                     new Href("http://www.0crat.com/alias")
                         .with("rel", rel)
                         .with("href", alias)
@@ -68,11 +67,9 @@ public final class GoodPeople {
         final String uid = list.next();
         if (!this.people.hasMentor(uid)) {
             throw new SoftException(
-                String.join(
-                    " ",
-                    "You need to ask somebody to invite you:",
-                    "https://github.com/zerocracy/datum#invite-only"
-                )
+                new Par(
+                    "You need to ask somebody to invite you: %s"
+                ).say("https://github.com/zerocracy/datum#invite-only")
             );
         }
         return uid;

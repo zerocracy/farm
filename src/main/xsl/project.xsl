@@ -82,7 +82,7 @@ SOFTWARE.
           </a>
           <xsl:text> here is </xsl:text>
           <span style="color:darkgreen">
-            <xsl:value-of select="project"/>
+            <xsl:value-of select="rate"/>
           </span>
         </xsl:when>
         <xsl:otherwise>

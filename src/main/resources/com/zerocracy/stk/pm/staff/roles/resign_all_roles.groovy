@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pm.staff.roles
 
 import com.jcabi.xml.XML
+import com.zerocracy.Par
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
@@ -33,10 +34,7 @@ def exec(Project project, XML xml) {
   new Projects(project, login).bootstrap().remove(project.pid())
   if (claim.hasToken()) {
     claim.reply(
-      String.format(
-        'All roles resigned from "%s".',
-        login
-      )
+      new Par('All roles resigned from @%s').say(login)
     ).postTo(project)
   }
   new ClaimOut()

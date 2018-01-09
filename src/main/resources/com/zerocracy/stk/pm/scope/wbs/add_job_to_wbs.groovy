@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pm.scope.wbs
 
 import com.jcabi.xml.XML
+import com.zerocracy.Par
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
@@ -37,7 +38,7 @@ def exec(Project project, XML xml) {
   wbs.add(job)
   wbs.role(job, role)
   claim.reply(
-    String.format('Job `%s` is now in scope, role is `%s`.', job, role)
+    new Par('Job %s is now in scope, role is %s').say(job, role)
   ).postTo(project)
   new ClaimOut()
     .type('Job was added to WBS')

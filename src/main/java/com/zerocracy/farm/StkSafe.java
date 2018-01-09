@@ -17,6 +17,7 @@
 package com.zerocracy.farm;
 
 import com.jcabi.xml.XML;
+import com.zerocracy.Par;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
@@ -109,8 +110,7 @@ public final class StkSafe implements Stakeholder {
             }
             if (claim.hasToken() && !claim.type().startsWith("Notify")) {
                 claim.reply(
-                    String.join(
-                        "",
+                    new Par(
                         "I can't do it for technical reasons, I'm very sorry.",
                         " If you don't know what to do,",
                         " submit this error as a ticket",
@@ -128,7 +128,7 @@ public final class StkSafe implements Stakeholder {
                             )
                         ).asString(),
                         "\n```\n\nCc @yegor256"
-                    )
+                    ).say()
                 ).postTo(project);
             }
             final StringBuilder msg = new StringBuilder(

@@ -16,6 +16,7 @@
  */
 package com.zerocracy.tk.profile;
 
+import com.zerocracy.Par;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.tk.RqUser;
 import java.io.IOException;
@@ -62,9 +63,7 @@ final class RqSecureLogin implements Scalar<String> {
         if (!user.equals(login)) {
             throw new RsForward(
                 new RsFlash(
-                    String.format(
-                        "Only @%s is allowed to see this page.", login
-                    ),
+                    new Par("Only @%s is allowed to see this page").say(login),
                     Level.SEVERE
                 )
             );

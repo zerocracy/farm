@@ -23,6 +23,7 @@ import com.stripe.exception.CardException;
 import com.stripe.exception.InvalidRequestException;
 import com.stripe.model.Customer;
 import com.stripe.net.RequestOptions;
+import com.zerocracy.Par;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
@@ -110,11 +111,10 @@ public final class TkPay implements TkRegex {
             .postTo(project);
         return new RsForward(
             new RsFlash(
-                String.format(
-                    // @checkstyle LineLength (1 line)
-                    "The project \"%s\" was successfully funded for %s. The ledger will be updated in a few minutes.",
-                    project.pid(), amount
-                )
+                new Par(
+                    "The project %s was successfully funded for %s.",
+                    "The ledger will be updated in a few minutes."
+                ).say(project.pid(), amount)
             ),
             String.format("/p/%s", project.pid())
         );

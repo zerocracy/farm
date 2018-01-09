@@ -21,7 +21,9 @@ import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.Sorts;
+import com.zerocracy.Par;
 import com.zerocracy.jstk.Project;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -74,12 +76,11 @@ public final class OrderChampions implements FtReport {
     }
 
     @Override
-    public String title() {
-        return String.join(
-            " ",
+    public String title() throws IOException {
+        return new Par(
             "This is a list of project members who got",
             "the biggest amount of orders."
-        );
+        ).say();
     }
 
 }

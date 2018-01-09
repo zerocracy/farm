@@ -36,21 +36,29 @@ def exec(Project project, XML xml) {
   String login = claim.param('login')
   Farm farm = binding.variables.farm
   People people = new People(farm)
+  Cash rate = new Cash.S(claim.param('rate'))
   if (people.wallet(login).empty) {
     throw new SoftException(
       new Par(
         '@%s doesn\'t have a payment method configured yet,',
-        'we won\'t be able to pay them'
-      ).say(login)
+        'we won\'t be able to pay them.',
+        'That\'s why the rate %s can\'t be set.'
+      ).say(login, rate)
     )
   }
-  Cash rate = new Cash.S(claim.param('rate'))
   Rates rates = new Rates(project).bootstrap()
   String msg
   if (rates.exists(login)) {
-    msg = new Par(
-      'Hourly rate of @%s changed from %s to %s'
-    ).say(login, rates.rate(login), rate)
+    Cash before = rates.rate(login)
+    if (before == rate) {
+      msg = new Par(
+        'Hourly rate of @%s remains %s, no need to change'
+      ).say(login, rate)
+    } else {
+      msg = new Par(
+        'Hourly rate of @%s changed from %s to %s'
+      ).say(login, rate)
+    }
   } else {
     msg = new Par(
       'Hourly rate of @%s set to %s'

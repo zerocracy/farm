@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pm.scope.wbs
 
 import com.jcabi.xml.XML
+import com.zerocracy.Par
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
@@ -36,10 +37,9 @@ def exec(Project project, XML xml) {
     String performer = orders.performer(job)
     orders.resign(job)
     claim.reply(
-      String.format(
-        '@%s resigned from `%s`, since the job is not in scope anymore.',
-        performer, job
-      )
+      new Par(
+        '@%s resigned from %s, since the job is not in scope anymore'
+      ).say(performer, job)
     ).postTo(project)
     new ClaimOut()
       .type('Order was canceled')
@@ -51,7 +51,7 @@ def exec(Project project, XML xml) {
   wbs.remove(job)
   if (claim.hasToken()) {
     claim.reply(
-      String.format('Job `%s` is now out of scope.', job)
+      new Par('The job %s is now out of scope').say(job)
     ).postTo(project)
   }
   new ClaimOut()

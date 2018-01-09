@@ -57,7 +57,7 @@ public final class TkGuts implements Take {
         if (!"yegor256".equals(new RqUser(this.farm, req).value())) {
             throw new RsForward(
                 new RsFlash(
-                    "You are not allowed to see this page, sorry.",
+                    "You are not allowed to see this page, sorry",
                     Level.WARNING
                 )
             );

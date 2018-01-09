@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pmo.banks;
 
+import com.zerocracy.Par;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.SoftException;
@@ -63,10 +64,9 @@ public final class Payroll {
         final String wallet = new People(this.farm).wallet(login);
         if (wallet.isEmpty()) {
             throw new SoftException(
-                String.format(
-                    "@%s doesn't have payment method configured, can't pay.",
-                    login
-                )
+                new Par(
+                    "@%s doesn't have payment method configured, we can't pay"
+                ).say(login)
             );
         }
         final String[] parts = wallet.split(":", 2);
@@ -75,10 +75,9 @@ public final class Payroll {
             bank = new Paypal(this.farm);
         } else {
             throw new SoftException(
-                String.format(
-                    "@%s has an unsupported payment method \"%s\".",
-                    login, parts[0]
-                )
+                new Par(
+                    "@%s has an unsupported payment method \"%s\""
+                ).say(login, parts[0])
             );
         }
         final Cash commission = bank.fee(amount);

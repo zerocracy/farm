@@ -31,6 +31,7 @@ import org.junit.Test;
  * @since 0.1
  * @checkstyle JavadocMethodCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class PeopleTest {
 
     @Test
@@ -55,6 +56,7 @@ public final class PeopleTest {
     public void setsUserRate() throws Exception {
         final People people = new People(new FkProject()).bootstrap();
         final String uid = "alex-palevsky";
+        people.wallet(uid, "paypal", "test@example.com");
         people.rate(uid, new Cash.S("$35"));
         people.rate(uid, new Cash.S("$50"));
         MatcherAssert.assertThat(
@@ -103,7 +105,9 @@ public final class PeopleTest {
             ).getBytes()
         );
         final People people = new People(project).bootstrap();
-        people.rate("karato90", new Cash.S("$27"));
+        final String uid = "karato90";
+        people.wallet(uid, "btc", "test");
+        people.rate(uid, new Cash.S("$27"));
     }
 
     @Test

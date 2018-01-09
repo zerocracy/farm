@@ -118,10 +118,7 @@ public final class TkGithub implements Take, Runnable {
                                 "opened", "reopened"
                             ),
                             new RbByActions(
-                                new Rebound.Chain(
-                                    new RbVerifyCloser(),
-                                    new RbOnClose()
-                                ),
+                                new RbOnClose(),
                                 "closed"
                             ),
                             new RbByActions(
@@ -165,7 +162,7 @@ public final class TkGithub implements Take, Runnable {
             throw new RsForward(
                 new RsFlash(
                     // @checkstyle LineLength (1 line)
-                    "We expect this URL to be called by GitHub with JSON as 'payload' form parameter."
+                    "We expect this URL to be called by GitHub with JSON as 'payload' form parameter"
                 )
             );
         }

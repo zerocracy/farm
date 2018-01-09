@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pm
 
 import com.jcabi.xml.XML
+import com.zerocracy.Par
 import com.zerocracy.entry.ExtBucket
 import com.zerocracy.farm.Assume
 import com.zerocracy.farm.S3Farm
@@ -40,7 +41,9 @@ def exec(Project project, XML xml) {
   new S3Farm(new ExtBucket().value()).delete(prefix)
   catalog.delete(project.pid())
   new ClaimIn(xml).reply(
-    'All project files were destroyed on our servers.' +
-    ' Now you can safely /kick me out of the channel.'
+    new Par(
+      'All project files were destroyed on our servers.',
+      'Now you can safely /kick me out of the channel.'
+    ).say()
   ).postTo(project)
 }

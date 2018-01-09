@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pmo.profile
 
 import com.jcabi.xml.XML
+import com.zerocracy.Par
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.jstk.SoftException
@@ -33,10 +34,9 @@ def exec(Project project, XML xml) {
   String author = claim.author()
   if (!claim.hasParam('rate')) {
     throw new SoftException(
-      String.format(
-        'Your rate is %s. To change it just say `rate $25`, for example.',
-        people.rate(author)
-      )
+      new Par(
+        'Your rate is %s. To change it just say `rate $25`, for example.'
+      ).say(people.rate(author))
     )
   }
   Cash rate
@@ -47,9 +47,8 @@ def exec(Project project, XML xml) {
   }
   people.rate(author, rate)
   claim.reply(
-    String.format(
-      'Rate of "%s" set to %s.',
-      author, rate
-    )
+    new Par(
+      'Rate of @%s set to %s'
+    ).say(author, rate)
   ).postTo(project)
 }

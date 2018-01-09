@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pmo.profile
 
 import com.jcabi.xml.XML
+import com.zerocracy.Par
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
@@ -34,7 +35,7 @@ def exec(Project project, XML xml) {
   Iterable<Project> projects = farm.find("@id='${pid}'")
   if (!projects.iterator().hasNext()) {
     throw new SoftException(
-      "Project \"${pid}\" doesn't exist."
+      new Par('The project %s doesn\'t exist.').say(pid)
     )
   }
   Project target = projects[0]
@@ -53,6 +54,8 @@ def exec(Project project, XML xml) {
     .param('login', claim.author())
     .postTo(target)
   claim.reply(
-    "You are not in the project `${pid}` anymore."
+    new Par(
+      'You are not in the project %s anymore.'
+    ).say(pid)
   ).postTo(project)
 }

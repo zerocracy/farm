@@ -17,6 +17,9 @@
 package com.zerocracy;
 
 import com.jcabi.log.Logger;
+import com.zerocracy.jstk.Farm;
+import com.zerocracy.jstk.farm.fake.FkFarm;
+import com.zerocracy.pmo.Catalog;
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -36,6 +39,11 @@ import org.cactoos.text.JoinedText;
 public final class Par {
 
     /**
+     * The farm.
+     */
+    private final Farm farm;
+
+    /**
      * The text parts.
      */
     private final Iterable<String> parts;
@@ -45,6 +53,16 @@ public final class Par {
      * @param list The text
      */
     public Par(final String... list) {
+        this(new FkFarm(), list);
+    }
+
+    /**
+     * Ctor.
+     * @param frm The farm
+     * @param list The text
+     */
+    public Par(final Farm frm, final String... list) {
+        this.farm = frm;
         this.parts = new ListOf<>(list);
     }
 
@@ -59,18 +77,25 @@ public final class Par {
             new JoinedText(" ", this.parts).asString(), args
         );
         out = Par.replace(
-            out, Pattern.compile("@([a-z-0-9]{3,})"),
+            out, Pattern.compile("(?<= |^)@([a-z-0-9]{3,})"),
             matcher -> String.format(
                 "[%s](http://www.0crat.com/u/%s)",
                 matcher.group(0), matcher.group(1)
             )
         );
         out = Par.replace(
-            out, Pattern.compile("([A-Z0-9]{9})"),
-            matcher -> String.format(
-                "[`%s`](http://www.0crat.com/p/%1$s)",
-                matcher.group(0)
-            )
+            out, Pattern.compile("(?<= |^)([A-Z0-9]{9})"),
+            matcher -> {
+                String title = matcher.group(0);
+                final Catalog catalog = new Catalog(this.farm).bootstrap();
+                if (catalog.exists(title)) {
+                    title = catalog.title(title);
+                }
+                return String.format(
+                    "[%s](http://www.0crat.com/p/%s)",
+                    title, matcher.group(0)
+                );
+            }
         );
         out = Par.replace(
             out, Pattern.compile("gh:([a-zA-Z0-9-]+/[a-zA-Z0-9-]+)#(\\d+)"),
@@ -114,7 +139,7 @@ public final class Par {
             )
         );
         out = Par.replace(
-            out, Pattern.compile("ARC|DEV|REV|PO"),
+            out, Pattern.compile("(?<= |^)(ARC|DEV|REV|PO)"),
             matcher -> String.format("`%s`", matcher.group(0))
         );
         return out;

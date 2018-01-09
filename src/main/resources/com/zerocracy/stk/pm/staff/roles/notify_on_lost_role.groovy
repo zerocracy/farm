@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pm.staff.roles
 
 import com.jcabi.xml.XML
+import com.zerocracy.Par
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
@@ -33,8 +34,9 @@ def exec(Project project, XML xml) {
     .token("user;${login}")
     .param(
       'message',
-      "You just lost role `${role}` in " +
-      "[${project.pid()}](http://www.0crat.com/p/${project.pid()}) project."
+      new Par(
+        'You just lost role %s in the %s project'
+      ).say(role, project.pid())
     )
     .postTo(project)
 }

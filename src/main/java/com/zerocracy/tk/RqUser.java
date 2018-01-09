@@ -16,6 +16,7 @@
  */
 package com.zerocracy.tk;
 
+import com.zerocracy.Par;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pmo.People;
@@ -68,7 +69,7 @@ public final class RqUser implements Scalar<String> {
                 if (identity.equals(Identity.ANONYMOUS)) {
                     throw new RsForward(
                         new RsFlash(
-                            "You must be logged in.",
+                            "You must be logged in",
                             Level.WARNING
                         )
                     );
@@ -79,15 +80,10 @@ public final class RqUser implements Scalar<String> {
                 if (!people.hasMentor(login)) {
                     throw new RsForward(
                         new RsFlash(
-                            String.join(
-                                " ",
-                                // @checkstyle LineLength (5 lines)
-                                String.format("You \"@%s\" must be invited", login),
-                                "to us by someone we already know.",
-                                "If you don't know anyone who works with us already,",
-                                "email us to join@zerocracy.com and we'll see what",
-                                "we can do."
-                            ),
+                            new Par(
+                                "You @%s must be invited",
+                                "to us by someone we already know, see §1."
+                            ).say(login),
                             Level.WARNING
                         )
                     );

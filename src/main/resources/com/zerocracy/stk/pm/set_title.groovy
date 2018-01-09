@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pm
 
 import com.jcabi.xml.XML
+import com.zerocracy.Par
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
@@ -33,11 +34,17 @@ def exec(Project project, XML xml) {
   Catalog catalog = new Catalog(farm).bootstrap()
   if (!claim.hasParam('title')) {
     throw new SoftException(
-      "Project title is ${catalog.title(pid)}. " +
-      'To change it just say `title MyProject`, for example.'
+      new Par(
+        'Project title is "%s".',
+        'To change it just say `title MyProject`, for example.'
+      ).say(catalog.title(pid))
     )
   }
   def title = claim.param('title')
   catalog.title(pid, title)
-  claim.reply("Done, title changed to \"${title}\"").postTo(project)
+  claim.reply(
+    new Par(
+      'Done, title changed to "%s"'
+    ).say(title)
+  ).postTo(project)
 }

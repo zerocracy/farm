@@ -17,6 +17,7 @@
 package com.zerocracy.stk
 
 import com.jcabi.xml.XML
+import com.zerocracy.Par
 import com.zerocracy.farm.Assume
 import com.zerocracy.farm.props.Props
 import com.zerocracy.jstk.Farm
@@ -28,8 +29,10 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Props props = new Props(farm)
   new ClaimIn(xml).reply(
-    "My version is `${props.get('//build/version', '')}`," +
-    " rev.`${props.get('//build/revision', '')}`," +
-    " built on ${props.get('//build/date', '')}"
+    new Par(
+      "My version is `%s`, rev.`%s`, built on %s"
+    ).say(props.get('//build/version', ''),
+      props.get('//build/revision', ''),
+      props.get('//build/date', ''))
   ).postTo(project)
 }

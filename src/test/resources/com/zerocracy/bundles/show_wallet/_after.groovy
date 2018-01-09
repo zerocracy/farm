@@ -23,7 +23,7 @@ import com.zerocracy.jstk.Project
 def exec(Project project, XML xml) {
   Item item = project.acq('test.txt')
   assert item.path().toFile().newReader().readLine().contains(
-    'Your wallet is `yegor256@gmail.com` at "paypal".'
+    'Your wallet is `yegor256@gmail.com` at "paypal"'
   )
   item.close()
 }

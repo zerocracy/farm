@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pm
 
 import com.jcabi.xml.XML
+import com.zerocracy.Par
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
@@ -34,13 +35,16 @@ def exec(Project project, XML xml) {
   def catalog = new Catalog(new Pmo(farm)).bootstrap()
   if (!claim.hasParam('flag')) {
     throw new SoftException(
-      "The project is ${catalog.pause(pid) ? 'on pause' : 'alive (not on pause)'}." +
-      ' To change the status say `pause on` or `pause off`.'
+      new Par(
+        'The project is %s. To change the status say `pause on` or `pause off`'
+      ).say(catalog.pause(pid) ? 'on pause' : 'alive (not on pause)')
     )
   }
   boolean flag = claim.param('flag') == 'on'
   catalog.pause(pid, flag)
   claim.reply(
-    "Done, the project is currently ${catalog.pause(pid) ? 'on pause' : 'alive (not on pause)'}"
+    new Par(
+      'Done, the project is currently %s'
+    ).say(catalog.pause(pid) ? 'on pause' : 'alive (not on pause)')
   ).postTo(project)
 }

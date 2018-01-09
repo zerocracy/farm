@@ -18,6 +18,7 @@ package com.zerocracy.radars.github;
 
 import com.jcabi.github.Comment;
 import com.jcabi.github.Repo;
+import com.zerocracy.Par;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
@@ -70,13 +71,10 @@ public final class GhProject implements Project {
                 ).iterator();
                 if (!list.hasNext()) {
                     throw new SoftException(
-                        String.join(
-                            " ",
-                            // @checkstyle LineLength (3 lines)
-                            "I'm not managing `", name, "` GitHub repository.",
-                            "You have to contact me in Slack first.",
-                            "Our [policy](http://datum.zerocracy.com/pages/policy.html) explains how."
-                        )
+                        new Par(
+                            "I'm not managing `%s` GitHub repository,",
+                            "you have to contact me in Slack first, see §11"
+                        ).say(name)
                     );
                 }
                 return list.next();

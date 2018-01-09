@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pm.staff.roles
 
 import com.jcabi.xml.XML
+import com.zerocracy.Par
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.jstk.SoftException
@@ -36,7 +37,7 @@ def exec(Project project, XML xml) {
   People people = new People(project).bootstrap()
   if (!people.hasMentor(login)) {
     throw new SoftException(
-      "Assignee @${login} must be a registered person."
+      new Par('Assignee @%s must be a registered person.').say(login)
     )
   }
   String role = claim.param('role')
@@ -44,12 +45,15 @@ def exec(Project project, XML xml) {
   Rates rates = new Rates(project).bootstrap()
   String msg
   if (roles.hasRole(login, role)) {
-    msg = "Role `${role}` was already assigned to @${login}. "
+    msg = new Par(
+      'Role %s was already assigned to @%s'
+    ).say(role, login)
   } else {
     roles.assign(login, role)
-    msg = "Role `${role}` was successfully assigned to [@${login}](http://www.0crat.com/u/${login})," +
-      " see [full list](http://www.0crat.com/a/${project.pid()}?a=pm/staff/roles)" +
-      ' of roles. '
+    msg = new Par(
+      'Role %s was successfully assigned to @%s,',
+      'see [full list](/a/%s?a=pm/staff/roles) of roles. '
+    ).say(role, login, project.pid())
     new ClaimOut()
       .type('Role was assigned')
       .param('login', login)
@@ -65,13 +69,17 @@ def exec(Project project, XML xml) {
       .postTo(project)
   } else {
     if (rates.exists(login)) {
-      msg += "Hourly rate of @${login} is ${rates.rate(login)}." +
-        " To change the rate, say `assign ${role} ${login} \$25`, for example."
+      msg += new Par(
+        'Hourly rate of @%s is %s.',
+        'To change the rate, say `assign %s %1$s \$25`, for example.'
+      ).say(login, rates.rate(login), role)
     } else {
-      msg += "Hourly rate of @${login} is not set," +
-        ' the user will receive no money for task completion.' +
-        " If you want to assign an hourly rate, say `assign ${role} ${login} \$25`," +
-        ' for example.'
+      msg += new Par(
+        'Hourly rate of @%s is not set,',
+        'the user will receive no money for task completion.',
+        'If you want to assign an hourly rate, say `assign %s %1$s \$25`,',
+        'for example.'
+      ).say(login, role)
     }
   }
   claim.reply(msg).postTo(project)

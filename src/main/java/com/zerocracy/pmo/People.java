@@ -18,6 +18,7 @@ package com.zerocracy.pmo;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
+import com.zerocracy.Par;
 import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
@@ -99,10 +100,9 @@ public final class People {
         throws IOException {
         if (this.hasMentor(uid)) {
             throw new SoftException(
-                String.format(
-                    "`@%s` is already with us.",
-                    uid
-                )
+                new Par(
+                    "@%s is already with us, no need to invite again"
+                ).say(uid)
             );
         }
         try (final Item item = this.item()) {
@@ -116,10 +116,6 @@ public final class People {
                     .set(mentor)
             );
         }
-        Logger.info(
-            this, "New user @%s invited by @%s",
-            uid, mentor
-        );
     }
 
     /**
@@ -148,20 +144,26 @@ public final class People {
     public void rate(final String uid, final Cash rate) throws IOException {
         if (rate.compareTo(new Cash.S("$300")) > 0) {
             throw new SoftException(
-                String.format(
-                    // @checkstyle LineLength (1 line)
-                    "This is too high (%s), we do not work with rates higher than $300.",
-                    rate
-                )
+                new Par(
+                    "This is too high (%s),",
+                    "we do not work with rates higher than $300"
+                ).say(rate)
             );
         }
         if (rate.compareTo(new Cash.S("$10")) < 0) {
             throw new SoftException(
-                String.format(
-                    // @checkstyle LineLength (1 line)
-                    "This is too low (%s), we do not work with rates lower than $10.",
-                    rate
-                )
+                new Par(
+                    "This is too low (%s),",
+                    "we do not work with rates lower than $10"
+                ).say(rate)
+            );
+        }
+        if (this.wallet(uid).isEmpty()) {
+            throw new SoftException(
+                new Par(
+                    "You must configure your wallet first,",
+                    "before setting the rate to %s"
+                ).say(rate)
             );
         }
         try (final Item item = this.item()) {
@@ -171,10 +173,7 @@ public final class People {
                     .set(rate)
             );
         }
-        Logger.info(
-            this, "Rate %s set for @%s",
-            rate, uid
-        );
+        Logger.info(this, "Rate %s set for @%s", rate, uid);
     }
 
     /**

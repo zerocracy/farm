@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pmo
 
 import com.jcabi.xml.XML
+import com.zerocracy.Par
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
@@ -31,9 +32,8 @@ def exec(Project project, XML xml) {
   String parent = claim.param('parent')
   new Catalog(project).parent(child, parent)
   claim.reply(
-    String.format(
-      'Done, project `%s` is a child of `%s`.',
-      child, parent
-    )
+    new Par(
+      'Done, the project %s is a child of %s'
+    ).say(child, parent)
   ).postTo(project)
 }

@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pm.cost;
 
+import com.zerocracy.Par;
 import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
@@ -69,20 +70,18 @@ public final class Rates {
     public void set(final String login, final Cash rate) throws IOException {
         if (rate.compareTo(new Cash.S("$300")) > 0) {
             throw new SoftException(
-                String.format(
-                    // @checkstyle LineLength (1 line)
-                    "This is too high (%s), we do not work with rates higher than $300.",
-                    rate
-                )
+                new Par(
+                    "This is too high (%s), we do not work with rates",
+                    "higher than $300"
+                ).say(rate)
             );
         }
         if (!rate.equals(Cash.ZERO) && rate.compareTo(new Cash.S("$10")) < 0) {
             throw new SoftException(
-                String.format(
-                    // @checkstyle LineLength (1 line)
-                    "This is too low (%s), we do not work with rates lower than $10.",
-                    rate
-                )
+                new Par(
+                    "This is too low (%s), we do not work with rates",
+                    "lower than $10"
+                ).say(rate)
             );
         }
         try (final Item item = this.item()) {

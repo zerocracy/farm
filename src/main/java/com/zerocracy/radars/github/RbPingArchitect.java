@@ -18,6 +18,7 @@ package com.zerocracy.radars.github;
 
 import com.jcabi.github.Github;
 import com.jcabi.github.Issue;
+import com.zerocracy.Par;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.SoftException;
 import com.zerocracy.pm.staff.Roles;
@@ -56,17 +57,15 @@ public final class RbPingArchitect implements Rebound {
                 final String intro = String.join(", @", arcs);
                 if (issue.isPull()) {
                     new ThrottledComments(issue.comments()).post(
-                        String.format(
-                            "@%s please, pay attention to this pull request",
-                            intro
-                        )
+                        new Par(
+                            "@%s please, pay attention to this pull request"
+                        ).say(intro)
                     );
                 } else {
                     new ThrottledComments(issue.comments()).post(
-                        String.format(
-                            "@%s please, pay attention to this issue",
-                            intro
-                        )
+                        new Par(
+                            "@%s please, pay attention to this issue"
+                        ).say(intro)
                     );
                 }
                 answer = String.format("Architects notified: %s", arcs);
@@ -76,11 +75,12 @@ public final class RbPingArchitect implements Rebound {
                 answer = "It's a ticket from @yegor256";
             } else {
                 new ThrottledComments(issue.comments()).post(
-                    String.format(
-                        // @checkstyle LineLength (1 line)
-                        "@%s I'm not managing this repo, remove the [webhook](https://github.com/%s/settings/hooks) or contact me in [Slack](http://www.zerocracy.com) //cc @yegor256",
-                        author, issue.repo().coordinates()
-                    )
+                    new Par(
+                        "@%s I'm not managing this repo, remove the",
+                        "[webhook](https://github.com/%s/settings/hooks)",
+                        "or contact me in [Slack](http://www.zerocracy.com)",
+                        "//cc @yegor256"
+                    ).say(author, issue.repo().coordinates())
                 );
                 answer = "This repo is not managed";
             }
