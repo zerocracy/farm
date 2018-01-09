@@ -203,6 +203,10 @@ SOFTWARE.
       <a href="/a/{project}?a=pm/in/orders">
         <xsl:text>Orders</xsl:text>
       </a>
+      <xsl:text>, </xsl:text>
+      <a href="/a/{project}?a=pm/in/impediments">
+        <xsl:text>Impediments</xsl:text>
+      </a>
       <xsl:text>.</xsl:text>
     </p>
     <p>
