@@ -69,6 +69,10 @@ SOFTWARE.
           <xsl:text>Policy</xsl:text>
         </a>
         <xsl:text> &#xB7; </xsl:text>
+        <a href="http://datum.zerocracy.com/pages/terms.html">
+          <xsl:text>Terms</xsl:text>
+        </a>
+        <xsl:text> &#xB7; </xsl:text>
         <xsl:if test="identity">
           <a href="/u/{identity/login}">
             <span title="GitHub user currently logged in">

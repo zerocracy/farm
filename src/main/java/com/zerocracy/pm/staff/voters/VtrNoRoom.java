@@ -44,15 +44,6 @@ public final class VtrNoRoom implements Voter {
     /**
      * Ctor.
      * @param pkt Current project
-     */
-    public VtrNoRoom(final Project pkt) {
-        // @checkstyle MagicNumber (1 line)
-        this(pkt, 5);
-    }
-
-    /**
-     * Ctor.
-     * @param pkt Current project
      * @param threshold Max
      */
     public VtrNoRoom(final Project pkt, final int threshold) {

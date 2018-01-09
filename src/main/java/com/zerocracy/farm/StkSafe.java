@@ -89,9 +89,7 @@ public final class StkSafe implements Stakeholder {
             throw ex;
         } catch (final SoftException ex) {
             if (claim.hasToken()) {
-                new ClaimIn(xml).reply(
-                    String.format("Oops! %s", ex.getMessage())
-                ).postTo(project);
+                new ClaimIn(xml).reply(ex.getMessage()).postTo(project);
             } else {
                 Sentry.capture(
                     new IllegalArgumentException(

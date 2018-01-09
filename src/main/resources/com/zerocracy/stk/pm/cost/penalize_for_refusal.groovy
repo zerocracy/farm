@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pm.cost
 
 import com.jcabi.xml.XML
+import com.zerocracy.Par
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
@@ -35,8 +36,7 @@ def exec(Project project, XML xml) {
       .param('login', claim.author())
       .param(
         'reason',
-        'Tasks refusal is discouraged, see' +
-        ' [§6](http://datum.zerocracy.com/pages/policy.html#6)'
+        new Par('Tasks refusal is discouraged, see §6').print()
       )
       .param('minutes', -15)
       .postTo(project)

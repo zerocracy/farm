@@ -20,6 +20,7 @@ import com.jcabi.github.Coordinates
 import com.jcabi.github.Github
 import com.jcabi.github.Repo
 import com.jcabi.xml.XML
+import com.zerocracy.Par
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Farm
@@ -50,7 +51,10 @@ def exec(Project project, XML xml) {
       .type('Notify project')
       .param(
         'message',
-        "You don't have any private GitHub repositories any more, the management fee is waived."
+        new Par(
+          'You don\'t have any private GitHub repositories any more,',
+          'the management fee is waived, see §23.'
+        ).print()
       )
       .postTo(project)
   }
@@ -61,7 +65,10 @@ def exec(Project project, XML xml) {
       .type('Notify project')
       .param(
         'message',
-        "Since now you have a private GitHub repository, the management fee ${fee} is applied."
+        new Par(
+          'Since now you have a private GitHub repository,',
+          'the management fee %s is applied, see §23.'
+        ).print(fee)
       )
       .postTo(project)
   }

@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pm.cost
 
 import com.jcabi.xml.XML
+import com.zerocracy.Par
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.jstk.cash.Cash
@@ -34,8 +35,10 @@ def exec(Project project, XML xml) {
     .token("user;${login}")
     .param(
       'message',
-      "Your new rate in `${project.pid()}` is ${rate}." +
-      ' Only new tasks will be affected.'
+      new Par(
+        'Your new rate in %s is %s.',
+        'Only new tasks will be affected, by §16.'
+      ).print(project.pid(), rate)
     )
     .postTo(project)
 }

@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pm.staff;
 
+import com.zerocracy.Par;
 import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
@@ -155,10 +156,9 @@ public final class Roles {
         throws IOException {
         if (!this.hasRole(person, role)) {
             throw new SoftException(
-                String.format(
-                    "User @%s doesn't have %s role in the project",
-                    person, role
-                )
+                new Par(
+                    "@%s doesn't have %s role in the project"
+                ).print(person, role)
             );
         }
         final Collection<String> jobs = new CollectionOf<>(
@@ -166,11 +166,12 @@ public final class Roles {
         );
         if (!jobs.isEmpty()) {
             throw new SoftException(
-                String.format(
-                    // @checkstyle LineLength (1 line)
-                    "There are still %d job(s) assigned to @%s, can't resign: `%s`",
+                new Par(
+                    "There are still %d job(s) assigned to @%s,",
+                    "can't resign: %s"
+                ).print(
                     jobs.size(), person,
-                    new JoinedText("`, `", jobs).asString()
+                    new JoinedText(", ", jobs).asString()
                 )
             );
         }

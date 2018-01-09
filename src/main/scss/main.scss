@@ -69,13 +69,14 @@ header {
 }
 
 .flash {
+  color: white;
   text-align: center;
 
-  &.flash-SEVERE { color: darkred; border: darkred; }
+  &.flash-SEVERE { background-color: darkred; }
 
-  &.flash-INFO { color: darkgreen; border: darkgreen; }
+  &.flash-INFO { background-color: darkgreen; }
 
-  &.flash-WARNING { color: darkorange; border: darkorange; }
+  &.flash-WARNING { background-color: darkorange; }
 }
 
 .sla {

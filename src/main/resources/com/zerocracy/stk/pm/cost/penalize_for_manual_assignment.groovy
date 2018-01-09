@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pm.cost
 
 import com.jcabi.xml.XML
+import com.zerocracy.Par
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
@@ -35,8 +36,7 @@ def exec(Project project, XML xml) {
       .param('login', claim.author())
       .param(
         'reason',
-        'Manual assignment of issues is discouraged,' +
-        ' see [§19](http://datum.zerocracy.com/pages/policy.html#19)'
+        new Par('Manual assignment of issues is discouraged, see §19').print()
       )
       .param('minutes', -5)
       .postTo(project)

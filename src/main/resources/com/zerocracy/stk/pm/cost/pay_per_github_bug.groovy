@@ -19,6 +19,7 @@ package com.zerocracy.stk.pm.cost
 import com.jcabi.github.Github
 import com.jcabi.github.Issue
 import com.jcabi.xml.XML
+import com.zerocracy.Par
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Farm
@@ -49,7 +50,7 @@ def exec(Project project, XML xml) {
       .type('Make payment')
       .param('job', job)
       .param('login', author)
-      .param('reason', 'Bug was reported, see [§29](http://datum.zerocracy.com/pages/policy.html#29)')
+      .param('reason', new Par('Bug was reported, see §29').print())
       .param('minutes', 15)
       .postTo(project)
   }

@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pm.cost
 
 import com.jcabi.xml.XML
+import com.zerocracy.Par
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
@@ -37,17 +38,23 @@ def exec(Project project, XML xml) {
   People people = new People(farm)
   if (people.wallet(login).empty) {
     throw new SoftException(
-      "User [@${login}](http://www.0crat.com/u/${login}) doesn't have" +
-      ' a payment method configured yet, we won\'t be able to pay them.'
+      new Par(
+        '@%s doesn\'t have a payment method configured yet,',
+        'we won\'t be able to pay them'
+      ).print(login)
     )
   }
   Cash rate = new Cash.S(claim.param('rate'))
   Rates rates = new Rates(project).bootstrap()
   String msg
   if (rates.exists(login)) {
-    msg = "Hourly rate of @${login} changed from ${rates.rate(login)} to ${rate}."
+    msg = new Par(
+      'Hourly rate of @%s changed from %s to %s'
+    ).print(login, rates.rate(login), rate)
   } else {
-    msg = "Hourly rate of @${login} set to ${rate}."
+    msg = new Par(
+      'Hourly rate of @%s set to %s'
+    ).print(login, rate)
   }
   rates.set(login, rate)
   new ClaimOut()

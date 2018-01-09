@@ -19,6 +19,7 @@ package com.zerocracy.stk.pm.cost
 import com.jcabi.github.Github
 import com.jcabi.github.Issue
 import com.jcabi.xml.XML
+import com.zerocracy.Par
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Farm
@@ -42,9 +43,10 @@ def exec(Project project, XML xml) {
       .type('Notify project')
       .param(
         'message',
-        'There are no ARC roles in the project,' +
-        ' I can\'t pay for the pull request review: ' +
-        "`${job}`."
+        new Par(
+          'There are no ARC roles in the project,',
+          'I can\'t pay for the pull request review by §28: %s',
+        ).print(job)
       )
       .postTo(project)
     return
@@ -54,9 +56,10 @@ def exec(Project project, XML xml) {
       .type('Notify project')
       .param(
         'message',
-        'There are too many ARC roles in the project (more than one),' +
-        ' I can\'t pay for the pull request review: ' +
-        "`${job}`."
+        new Par(
+          'There are too many ARC roles in the project (more than one),',
+          'I can\'t pay for the pull request review by §28: %s'
+        ).print(job)
       )
       .postTo(project)
     return
@@ -71,8 +74,7 @@ def exec(Project project, XML xml) {
       .param('login', logins[0])
       .param(
         'reason',
-        'Payment to ARC for a closed pull request, ' +
-        'as in [§28](http://datum.zerocracy.com/pages/policy.html#28)'
+        new Par('Payment to ARC for a closed pull request, as in §28').print()
       )
       .param('minutes', 15)
       .postTo(project)

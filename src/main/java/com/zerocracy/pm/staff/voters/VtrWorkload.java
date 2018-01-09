@@ -44,15 +44,6 @@ public final class VtrWorkload implements Voter {
     /**
      * Ctor.
      * @param prj The PMO
-     */
-    public VtrWorkload(final Project prj) {
-        // @checkstyle MagicNumber (1 line)
-        this(prj, 20);
-    }
-
-    /**
-     * Ctor.
-     * @param prj The PMO
      * @param threshold Max
      */
     public VtrWorkload(final Project prj, final int threshold) {
@@ -68,7 +59,7 @@ public final class VtrWorkload implements Voter {
         ).intValue();
         log.append(
             String.format(
-                "%d jobs out of %d",
+                "%d out of %d jobs in agenda",
                 jobs, this.max
             )
         );

@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pm.cost
 
 import com.jcabi.xml.XML
+import com.zerocracy.Par
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.jstk.cash.Cash
@@ -39,6 +40,11 @@ def exec(Project project, XML xml) {
   )
   new ClaimOut()
     .type('Notify project')
-    .param('message', "The project got a donation of ${amount}")
+    .param(
+      'message',
+      new Par(
+        'The project %s got a donation of %s'
+      ).print(project.pid(), amount)
+    )
     .postTo(project)
 }

@@ -44,7 +44,7 @@ public final class RbOnBug implements Rebound {
             .type("Add job to WBS")
             .token(new TokenOfIssue(issue))
             .param("job", new Job(issue))
-            .param("reason", "GitHub label 'bug' was attached.")
+            .param("reason", "GitHub label was attached")
             .postTo(new GhProject(farm, issue.repo()));
         return new FormattedText(
             "Issue #%d added to WBS by 'bug' label",

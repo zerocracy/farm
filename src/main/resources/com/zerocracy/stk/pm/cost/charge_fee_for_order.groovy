@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pm.cost
 
 import com.jcabi.xml.XML
+import com.zerocracy.Par
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
@@ -53,8 +54,9 @@ def exec(Project project, XML xml) {
       .type('Notify project')
       .param(
         'message',
-        "Management fee ${fee} has been deducted," +
-        ' see [§23](http://datum.zerocracy.com/pages/policy.html#23)'
+        new Par(
+          'Management fee %s has been deducted, see §23'
+        ).print(fee)
       )
       .postTo(project)
   }
