@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pm.in.links
 
 import com.jcabi.xml.XML
+import com.zerocracy.Par
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
@@ -36,10 +37,9 @@ def exec(Project project, XML xml) {
   Catalog catalog = new Catalog(farm).bootstrap()
   catalog.link(pid, rel, href)
   claim.reply(
-    String.format(
-      'The project is linked with rel=`%s` and href=`%s`.',
-      rel, href
-    )
+    new Par(
+      'The project is linked with rel=`%s` and href=`%s`, by §17'
+    ).say(rel, href)
   ).postTo(project)
   new ClaimOut()
     .type('Project link was added')

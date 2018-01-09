@@ -54,7 +54,7 @@ public final class Par {
      * @return Text
      * @throws IOException If fails
      */
-    public String print(final Object... args) throws IOException {
+    public String say(final Object... args) throws IOException {
         String out = Logger.format(
             new JoinedText(" ", this.parts).asString(), args
         );
@@ -70,6 +70,13 @@ public final class Par {
             matcher -> String.format(
                 "[`%s`](http://www.0crat.com/p/%1$s)",
                 matcher.group(0)
+            )
+        );
+        out = Par.replace(
+            out, Pattern.compile("gh:([a-zA-Z0-9-]+/[a-zA-Z0-9-]+)#(\\d+)"),
+            matcher -> String.format(
+                "[#%s](https://github.com/%s/issues/%1$s)",
+                matcher.group(2), matcher.group(1)
             )
         );
         out = Par.replace(
@@ -90,6 +97,13 @@ public final class Par {
             matcher -> String.format(
                 "[%s](http://datum.zerocracy.com/pages/policy.html#%s)",
                 matcher.group(0), matcher.group(1)
+            )
+        );
+        out = Par.replace(
+            out, Pattern.compile("(\\[[^]]+])\\((/\\d{4}/[^)]+)\\)"),
+            matcher -> String.format(
+                "%s(http://www.yegor256.com%s)",
+                matcher.group(1), matcher.group(2)
             )
         );
         out = Par.replace(

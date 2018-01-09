@@ -19,6 +19,7 @@ package com.zerocracy.stk.pm.in.links
 import com.jcabi.github.Coordinates
 import com.jcabi.github.Github
 import com.jcabi.xml.XML
+import com.zerocracy.Par
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Farm
@@ -42,9 +43,11 @@ def exec(Project project, XML xml) {
         .type('Notify project')
         .param(
           'message',
-          "I failed to add GitHub star to ${href}," +
-          ' most likely the repository is either absent or' +
-          " @0crat doesn't have proper access: ${ex.message}"
+          new Par(
+            'I failed to add GitHub star to %s,',
+            'most likely the repository is either absent or',
+            'Zerocrat doesn\'t have proper access: %s'
+          ).say(href, ex.message)
         )
         .postTo(project)
     }

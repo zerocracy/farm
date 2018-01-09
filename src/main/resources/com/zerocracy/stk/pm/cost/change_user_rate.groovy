@@ -41,7 +41,7 @@ def exec(Project project, XML xml) {
       new Par(
         '@%s doesn\'t have a payment method configured yet,',
         'we won\'t be able to pay them'
-      ).print(login)
+      ).say(login)
     )
   }
   Cash rate = new Cash.S(claim.param('rate'))
@@ -50,11 +50,11 @@ def exec(Project project, XML xml) {
   if (rates.exists(login)) {
     msg = new Par(
       'Hourly rate of @%s changed from %s to %s'
-    ).print(login, rates.rate(login), rate)
+    ).say(login, rates.rate(login), rate)
   } else {
     msg = new Par(
       'Hourly rate of @%s set to %s'
-    ).print(login, rate)
+    ).say(login, rate)
   }
   rates.set(login, rate)
   new ClaimOut()

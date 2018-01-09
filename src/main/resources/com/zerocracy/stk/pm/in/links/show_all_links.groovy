@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pm.in.links
 
 import com.jcabi.xml.XML
+import com.zerocracy.Par
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
@@ -32,10 +33,8 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Collection<String> links = new Catalog(farm).links(pid)
   claim.reply(
-    String.format(
-      'This project is linked with %d resources: `%s`.',
-      links.size(),
-      String.join('`, `', links)
-    )
+    new Par(
+      'This project is linked with %d resource(s), by §17: `%s`',
+    ).say(links.size(), String.join('`, `', links))
   ).postTo(project)
 }

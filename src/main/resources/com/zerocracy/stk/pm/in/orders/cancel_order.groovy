@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pm.in.orders
 
 import com.jcabi.xml.XML
+import com.zerocracy.Par
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.jstk.SoftException
@@ -36,18 +37,17 @@ def exec(Project project, XML xml) {
   if (claim.hasAuthor() && !roles.hasRole(claim.author(), 'PO', 'ARC')
     && claim.author() != performer) {
     throw new SoftException(
-      String.format(
-        'The job `%s` is assigned to @%s, you @%s cannot resign, since you are not a PO or ARC.',
-        job, performer, claim.author()
-      )
+      new Par(
+        'The job %s is assigned to @%s,',
+        'you cannot resign, since you are not a PO or ARC',
+      ).say(job, performer)
     )
   }
   orders.resign(job)
   claim.reply(
-    String.format(
-      '@%s resigned from `%s`, please stop working.',
-      performer, job
-    )
+    new Par(
+      '@%s resigned from %s, please stop working',
+    ).say(performer, job)
   ).postTo(project)
   new ClaimOut()
     .type('Order was canceled')

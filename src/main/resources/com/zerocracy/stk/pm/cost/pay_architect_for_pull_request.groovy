@@ -46,7 +46,7 @@ def exec(Project project, XML xml) {
         new Par(
           'There are no ARC roles in the project,',
           'I can\'t pay for the pull request review by §28: %s',
-        ).print(job)
+        ).say(job)
       )
       .postTo(project)
     return
@@ -59,7 +59,7 @@ def exec(Project project, XML xml) {
         new Par(
           'There are too many ARC roles in the project (more than one),',
           'I can\'t pay for the pull request review by §28: %s'
-        ).print(job)
+        ).say(job)
       )
       .postTo(project)
     return
@@ -74,7 +74,7 @@ def exec(Project project, XML xml) {
       .param('login', logins[0])
       .param(
         'reason',
-        new Par('Payment to ARC for a closed pull request, as in §28').print()
+        new Par('Payment to ARC for a closed pull request, as in §28').say()
       )
       .param('minutes', 15)
       .postTo(project)

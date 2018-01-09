@@ -42,7 +42,7 @@ def exec(Project project, XML xml) {
           'cash balance is [%s](/p/%1$s?a=pm/cost/ledger)',
           '([%s](/p/%1$s?a=pm/cost/estimates) in active orders),',
           'we will continue to assign jobs to performers.',
-        ).print(project.pid(), cash, locked)
+        ).say(project.pid(), cash, locked)
       )
       .postTo(project)
   }
@@ -58,7 +58,7 @@ def exec(Project project, XML xml) {
           '([%s](/p/%1$s?a=pm/cost/estimates) in active orders),',
           'we temporarily stop assigning jobs, see §21.',
           'Please, fund the project ASAP.'
-        ).print(project.pid(), cash, locked)
+        ).say(project.pid(), cash, locked)
       )
       .postTo(project)
   }

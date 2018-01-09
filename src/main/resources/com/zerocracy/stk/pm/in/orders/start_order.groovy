@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pm.in.orders
 
 import com.jcabi.xml.XML
+import com.zerocracy.Par
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
@@ -45,34 +46,34 @@ def exec(Project project, XML xml) {
   if (role == 'REV') {
     new Boosts(project).boost(job, 1)
     String arc = new Roles(project).bootstrap().findByRole('ARC')[0]
-    msg = "This PR `${job}` assigned to [@${login}]" +
-      "(http://www.0crat.com/u/${login}}) (`${role}`)." +
-      ' The budget is [fixed](http://datum.zerocracy.com/pages/policy.html#4)' +
-      ' and it is 15 minutes. Please, read' +
-      ' [§27](http://datum.zerocracy.com/pages/policy.html#27)' +
-      ' and [§10](http://datum.zerocracy.com/pages/policy.html#10).'
-      " If and when you decide to accept the changes, inform @${arc} right in this ticket."
+    msg = new Par(
+      'This pull request %s is assigned to @%s.',
+      'The budget is 15 minutes, see §4.',
+      'Please, read §27 and §10 and',
+      'when you decide to accept the changes, inform @%s right in this ticket.'
+    ).say(job, login, arc)
   } else {
-    msg = "Job `${job}` assigned to [@${login}]" +
-      "(http://www.0crat.com/u/${login}}) (`${role}`)." +
-      ' The budget is [fixed](http://datum.zerocracy.com/pages/policy.html#4)' +
-      ' and it is 30 minutes. Please, read' +
-      ' [§4](http://datum.zerocracy.com/pages/policy.html#4),' +
-      ' [§8](http://datum.zerocracy.com/pages/policy.html#8),' +
-      ' and [§9](http://datum.zerocracy.com/pages/policy.html#9).' +
-      ' If the task is not clear, read [this](http://www.yegor256.com/2015/02/16/it-is-not-a-school.html)' +
-      ' and [this](http://www.yegor256.com/2015/01/15/how-to-cut-corners.html).'
+    msg = new Par(
+      'The job %s assigned to %s.',
+      'The budget is 30 minutes, see §4.',
+      'Please, read §8 and §9.',
+      'If the task is not clear,',
+      'read [this](/2015/02/16/it-is-not-a-school.html)',
+      'and [this](/2015/01/15/how-to-cut-corners.html).'
+    ).say(job, login)
   }
   if (!new Roles(project).bootstrap().hasAnyRole(login)) {
-    msg += " @${login} is not a member of this project yet," +
-      ' but can request to join.' +
-      " @${login} check your" +
-      " [Zerocracy profile](http://www.0crat.com/u/${login})" +
-      ' and follow the instructions.'
+    msg += new Par(
+      ' @%s is not a member of this project yet,',
+      'but they can request to join.',
+      'Check your [profile](/u/%1$s) and follow the instructions.'
+    ).say(login)
   }
   if (new People(project).bootstrap().vacation(login)) {
-    msg += "\n\n@${claim.author()}, hey! You should be aware that " +
-      "@${login} is on vacation! This ticket may be delayed."
+    msg += new Par(
+      'We should be aware that %s is on vacation!',
+      'This ticket may be delayed.'
+    ).say(login)
   }
   claim.reply(msg).postTo(project)
   new ClaimOut()

@@ -170,6 +170,11 @@ public final class ClaimOut implements Iterable<Directive> {
      * @return This
      */
     public ClaimOut param(final String name, final Object value) {
+        if (value == null) {
+            throw new IllegalArgumentException(
+                String.format("Value can't be NULL for \"%s\"", name)
+            );
+        }
         this.dirs
             .addIf("params")
             .push()

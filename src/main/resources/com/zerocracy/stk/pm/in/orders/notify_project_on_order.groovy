@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pm.in.orders
 
 import com.jcabi.xml.XML
+import com.zerocracy.Par
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
@@ -33,8 +34,9 @@ def exec(Project project, XML xml) {
     .type('Notify project')
     .param(
       'message',
-      "Job `${job}` was assigned to @${login} (role is ${role}):\n"
-      + "```\n${claim.param('reason')}\n```"
+      new Par(
+        'The job %s was assigned to @%s (role is %s):\n```\n%s\n```'
+      ).say(job, login, role, claim.param('reason'))
     )
     .postTo(project)
 }

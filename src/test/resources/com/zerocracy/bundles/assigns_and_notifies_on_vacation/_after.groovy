@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.assigns_performer
+package com.zerocracy.bundles.assigns_and_notifies_on_vacation
 
 import com.jcabi.github.Comment
 import com.jcabi.github.Coordinates
@@ -32,5 +32,5 @@ def exec(Project project, XML xml) {
   def issue = repo.issues().get(1)
   assert new Comment.Smart(
     issue.comments().iterate(new Date()).iterator().next()
-  ).body().contains('@yegor256 is on vacation')
+  ).body().contains('is on vacation')
 }

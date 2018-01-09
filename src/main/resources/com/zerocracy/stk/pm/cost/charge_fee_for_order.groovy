@@ -56,7 +56,7 @@ def exec(Project project, XML xml) {
         'message',
         new Par(
           'Management fee %s has been deducted, see §23'
-        ).print(fee)
+        ).say(fee)
       )
       .postTo(project)
   }

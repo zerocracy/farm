@@ -36,7 +36,7 @@ def exec(Project project, XML xml) {
       .param('login', claim.author())
       .param(
         'reason',
-        new Par('Manual assignment of issues is discouraged, see §19').print()
+        new Par('Manual assignment of issues is discouraged, see §19').say()
       )
       .param('minutes', -5)
       .postTo(project)

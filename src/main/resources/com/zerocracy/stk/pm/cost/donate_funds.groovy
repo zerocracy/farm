@@ -44,7 +44,7 @@ def exec(Project project, XML xml) {
       'message',
       new Par(
         'The project %s got a donation of %s'
-      ).print(project.pid(), amount)
+      ).say(project.pid(), amount)
     )
     .postTo(project)
 }

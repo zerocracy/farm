@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pm.in.orders
 
 import com.jcabi.xml.XML
+import com.zerocracy.Par
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.jstk.SoftException
@@ -48,10 +49,9 @@ def exec(Project project, XML xml) {
     String performer = orders.performer(job)
     if (login == performer) {
       throw new SoftException(
-        String.format(
-          'Job `%s` is already assigned to @%s.',
-          job, login
-        )
+        new Par(
+          'Job %s is already assigned to @%s'
+        ).say(job, login)
       )
     }
     orders.resign(job)
@@ -65,6 +65,6 @@ def exec(Project project, XML xml) {
     .type('Start order')
     .param('login', login)
     .param('manual', true)
-    .param('reason', "Per request of @${claim.author()}.")
+    .param('reason', new Par('Per request of @%s').say(claim.author()))
     .postTo(project)
 }

@@ -38,7 +38,7 @@ def exec(Project project, XML xml) {
       new Par(
         'Your new rate in %s is %s.',
         'Only new tasks will be affected, by §16.'
-      ).print(project.pid(), rate)
+      ).say(project.pid(), rate)
     )
     .postTo(project)
 }

@@ -50,7 +50,7 @@ def exec(Project project, XML xml) {
       .type('Make payment')
       .param('job', job)
       .param('login', author)
-      .param('reason', new Par('Bug was reported, see §29').print())
+      .param('reason', new Par('Bug was reported, see §29').say())
       .param('minutes', 15)
       .postTo(project)
   }

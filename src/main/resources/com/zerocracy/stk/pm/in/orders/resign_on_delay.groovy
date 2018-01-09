@@ -1,6 +1,7 @@
 package com.zerocracy.stk.pm.in.orders
 
 import com.jcabi.xml.XML
+import com.zerocracy.Par
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
@@ -36,14 +37,15 @@ def exec(Project project, XML xml) {
         .type('Cancel order')
         .token("job;$job")
         .param('job', job)
-        .param('reason', "It is older than ${days} days, see [§8](http://datum.zerocracy.com/pages/policy.html#8)")
+        .param('reason', new Par('It is older than %d day(s), see §8').say(days))
         .postTo(project)
       new ClaimOut()
         .type('Notify project')
         .param(
           'message',
-          "Order at `${job}` cancelled for @${orders.performer(job)}," +
-          " it is over ${days} days, see [§8](http://datum.zerocracy.com/pages/policy.html#8)"
+          new Par(
+            'The order at %s cancelled for @%s, it is over %d day(s), see §8'
+          ).say(job, orders.performer(job), days)
         )
         .postTo(project)
     }

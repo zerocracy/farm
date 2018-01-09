@@ -158,7 +158,7 @@ public final class Roles {
             throw new SoftException(
                 new Par(
                     "@%s doesn't have %s role in the project"
-                ).print(person, role)
+                ).say(person, role)
             );
         }
         final Collection<String> jobs = new CollectionOf<>(
@@ -169,7 +169,7 @@ public final class Roles {
                 new Par(
                     "There are still %d job(s) assigned to @%s,",
                     "can't resign: %s"
-                ).print(
+                ).say(
                     jobs.size(), person,
                     new JoinedText(", ", jobs).asString()
                 )

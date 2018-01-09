@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pm.in.links
 
 import com.jcabi.xml.XML
+import com.zerocracy.Par
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
@@ -35,10 +36,9 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   new Catalog(farm).unlink(pid, rel, href)
   claim.reply(
-    String.format(
-      'Link removed from `%s` to rel=`%s` and href=`%s`.',
-      pid, rel, href
-    )
+    new Par(
+      'Link removed from %s to rel=`%s` and href=`%s`, by §17'
+    ).say(pid, rel, href)
   ).postTo(project)
   new ClaimOut()
     .type('Project link was removed')

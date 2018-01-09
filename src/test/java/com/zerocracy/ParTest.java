@@ -38,8 +38,9 @@ public final class ParTest {
                 "@%s is a DEV",
                 "in C63314D6Z",
                 "and has %d job(s), as in §1",
-                "see [me](/p/PMO?a=1)"
-            ).print("yegor256", 1),
+                "see [me](/p/PMO?a=1)",
+                "and gh:test2-0/test4#455"
+            ).say("yegor256", 1),
             Matchers.equalTo(
                 new JoinedText(
                     " ",
@@ -47,7 +48,8 @@ public final class ParTest {
                     "in [`C63314D6Z`](http://www.0crat.com/p/C63314D6Z)",
                     "and has one job, as in",
                     "[§1](http://datum.zerocracy.com/pages/policy.html#1)",
-                    "see [me](http://www.0crat.com/p/PMO?a=1)"
+                    "see [me](http://www.0crat.com/p/PMO?a=1)",
+                    "and [#455](https://github.com/test2-0/test4/issues/455)"
                 ).asString()
             )
         );

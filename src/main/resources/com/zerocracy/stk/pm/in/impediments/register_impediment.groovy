@@ -30,6 +30,7 @@ def exec(Project project, XML xml) {
   new Impediments(project)
     .bootstrap()
     .register(job, 'The user just asked to wait a bit.')
-  claim.reply('Impediment was registered successfully')
-    .postTo(project)
+  claim.reply(
+    'The impediment was registered successfully'
+  ).postTo(project)
 }
