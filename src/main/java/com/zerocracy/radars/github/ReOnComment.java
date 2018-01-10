@@ -101,8 +101,6 @@ public final class ReOnComment implements Reaction {
         final String type = subject.getString("type");
         final String result;
         if ("Issue".equalsIgnoreCase(type)) {
-            result = String.format("comment to \"%s\" ignored", type);
-        } else {
             final Repo repo = this.github.repos().get(
                 new Coordinates.Simple(
                     event.getJsonObject("repository").getString("full_name")
@@ -137,6 +135,8 @@ public final class ReOnComment implements Reaction {
                 )
             );
             result = String.format("%s#%s", repo.coordinates(), issue.number());
+        } else {
+            result = String.format("comment to \"%s\" ignored", type);
         }
         return result;
     }
