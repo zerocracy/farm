@@ -34,7 +34,7 @@ def exec(Project project, XML xml) {
       'message',
       new Par(
         "The job %s was assigned to you a minute ago:\n```\n%s\n```"
-      ).say(claim.param('job'), claim.param('reason'))
+      ).say(claim.param('job'), new Par.ToText(claim.param('reason')))
     )
     .postTo(project)
 }

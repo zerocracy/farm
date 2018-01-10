@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pm.staff.voters;
 
+import com.zerocracy.Par;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.staff.Voter;
 import com.zerocracy.pmo.Agenda;
@@ -61,30 +62,16 @@ public final class VtrNoRoom implements Voter {
         if (total >= this.max) {
             rate = 1.0d;
             log.append(
-                String.format(
-                    "%d open jobs already, max is %d", total, this.max
-                )
-            );
-        } else if (total > 1) {
-            rate = 0.0d;
-            log.append(
-                String.format(
-                    "Just %d open jobs out of %d", total, this.max
-                )
-            );
-        } else if (total == 1) {
-            rate = 0.0d;
-            log.append(
-                String.format(
-                    "There is just one open job out of %d", this.max
-                )
+                new Par(
+                    "%d job(s) already, max is %d"
+                ).say(total, this.max)
             );
         } else {
             rate = 0.0d;
             log.append(
-                String.format(
-                    "There are no jobs yet, max is %d", this.max
-                )
+                new Par(
+                    "%d job(s) out of %d"
+                ).say(total, this.max)
             );
         }
         return rate;

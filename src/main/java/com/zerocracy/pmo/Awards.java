@@ -16,7 +16,6 @@
  */
 package com.zerocracy.pmo;
 
-import com.jcabi.log.Logger;
 import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
@@ -103,10 +102,6 @@ public final class Awards {
                     .set(job)
             );
         }
-        Logger.info(
-            this, "New award added, points=%d, job=\"%s\", reason=\"%s\"",
-            points, job, reason
-        );
     }
 
     /**

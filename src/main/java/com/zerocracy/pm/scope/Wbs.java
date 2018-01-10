@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pm.scope;
 
+import com.zerocracy.Par;
 import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
@@ -75,7 +76,7 @@ public final class Wbs {
     public void add(final String job) throws IOException {
         if (this.exists(job)) {
             throw new SoftException(
-                String.format("Job `%s` is already in scope", job)
+                new Par("Job %s is already in scope").say(job)
             );
         }
         try (final Item wbs = this.item()) {
@@ -99,7 +100,7 @@ public final class Wbs {
     public void remove(final String job) throws IOException {
         if (!this.exists(job)) {
             throw new SoftException(
-                String.format("Job `%s` was not in scope", job)
+                new Par("Job %s was not in scope").say(job)
             );
         }
         try (final Item wbs = this.item()) {
@@ -141,7 +142,7 @@ public final class Wbs {
     public void role(final String job, final String role) throws IOException {
         if (!this.exists(job)) {
             throw new SoftException(
-                String.format("Job `%s` doesn't exist, can't set role", job)
+                new Par("Job %s doesn't exist, can't set role").say(job)
             );
         }
         try (final Item wbs = this.item()) {
@@ -162,7 +163,7 @@ public final class Wbs {
     public String role(final String job) throws IOException {
         if (!this.exists(job)) {
             throw new SoftException(
-                String.format("Job `%s` doesn't exist, can't get role", job)
+                new Par("Job %s doesn't exist, can't get role").say(job)
             );
         }
         try (final Item wbs = this.item()) {

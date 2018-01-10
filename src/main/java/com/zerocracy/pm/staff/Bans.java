@@ -16,11 +16,13 @@
  */
 package com.zerocracy.pm.staff;
 
+import com.zerocracy.Par;
 import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import java.util.List;
+import org.cactoos.list.Mapped;
 import org.cactoos.time.DateAsText;
 import org.xembly.Directives;
 
@@ -39,10 +41,10 @@ public final class Bans {
 
     /**
      * Ctor.
-     * @param project A project
+     * @param pkt A project
      */
-    public Bans(final Project project) {
-        this.project = project;
+    public Bans(final Project pkt) {
+        this.project = pkt;
     }
 
     /**
@@ -55,6 +57,29 @@ public final class Bans {
             new Xocument(team).bootstrap("pm/staff/bans");
         }
         return this;
+    }
+
+    /**
+     * Get all bans.
+     * @param job A job
+     * @return Reasons of bans
+     * @throws IOException If fails
+     */
+    public List<String> reasons(final String job) throws IOException {
+        try (final Item item = this.item()) {
+            return new Mapped<>(
+                node -> new Par("@%s: %s").say(
+                    node.xpath("login/text()").get(0),
+                    node.xpath("reason/text()").get(0)
+                ),
+                new Xocument(item).nodes(
+                    String.format(
+                        "/bans/ban[@job='%s']",
+                        job
+                    )
+                )
+            );
+        }
     }
 
     /**

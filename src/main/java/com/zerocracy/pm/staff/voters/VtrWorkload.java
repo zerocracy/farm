@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pm.staff.voters;
 
+import com.zerocracy.Par;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.staff.Voter;
 import com.zerocracy.pmo.Agenda;
@@ -58,10 +59,9 @@ public final class VtrWorkload implements Voter {
             new Agenda(this.pmo, login).jobs()
         ).intValue();
         log.append(
-            String.format(
-                "%d out of %d jobs in agenda",
-                jobs, this.max
-            )
+            new Par(
+                "%d out of %d job(s) in agenda"
+            ).say(jobs, this.max)
         );
         return (double) (this.max - Math.min(jobs, this.max))
             / (double) this.max;

@@ -16,45 +16,42 @@
  */
 package com.zerocracy.stk.pm.cost
 
+import com.jcabi.github.Github
+import com.jcabi.github.Issue
 import com.jcabi.xml.XML
+import com.zerocracy.Par
+import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
-import com.zerocracy.jstk.cash.Cash
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
-import com.zerocracy.pm.staff.Roles
-import com.zerocracy.pmo.banks.Payroll
+import com.zerocracy.radars.github.Job
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Make payment')
+  new Assume(project, xml).type('Start order')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
-  String login = claim.param('login')
-  String reason = claim.param('reason')
-  int minutes = Integer.parseInt(claim.param('minutes'))
-  Roles roles = new Roles(project).bootstrap()
-  if (!roles.hasAnyRole(login)) {
+  if (!claim.hasAuthor() || !claim.hasParam('manual')) {
     return
   }
-  if (claim.hasParam('cash')) {
-    Cash price = new Cash.S(claim.param('cash'))
-    if (price != Cash.ZERO) {
-      Farm farm = binding.variables.farm
-      String msg = new Payroll(farm).pay(
-        project, login, price,
-        "Payment for ${job} (${minutes} minutes): ${reason}"
+  if (!job.startsWith('gh:')) {
+    return
+  }
+  Farm farm = binding.variables.farm
+  Github github = new ExtGithub(farm).value()
+  Issue.Smart issue = new Issue.Smart(new Job.Issue(github, job))
+  if (issue.author().login().equalsIgnoreCase(claim.param('login'))) {
+    new ClaimOut()
+      .type('Make payment')
+      .param('job', job)
+      .param('login', claim.author())
+      .param(
+        'reason',
+        new Par('It is strongly discouraged to assign jobs to their creators, see §19').say()
       )
-      new ClaimOut()
-        .type('Notify user')
-        .param('login', login)
-        .param('message', msg)
-        .postTo(project)
-      new ClaimOut()
-        .type('Notify project')
-        .param('message', msg)
-        .postTo(project)
-    }
+      .param('minutes', -15)
+      .postTo(project)
   }
 }

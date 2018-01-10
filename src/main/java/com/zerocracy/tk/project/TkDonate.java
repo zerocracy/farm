@@ -84,9 +84,11 @@ public final class TkDonate implements TkRegex {
             .postTo(project);
         return new RsForward(
             new RsFlash(
-                new Par(
-                    "You successfully donated %s to the project %s"
-                ).say(amount, project.pid())
+                new Par.ToText(
+                    new Par(
+                        "You successfully donated %s to the project %s"
+                    ).say(amount, project.pid())
+                ).toString()
             ),
             String.format("/p/%s", project.pid())
         );

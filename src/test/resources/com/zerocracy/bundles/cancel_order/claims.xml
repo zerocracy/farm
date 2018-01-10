@@ -18,6 +18,15 @@ SOFTWARE.
 <claims xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/zerocracy/datum/0.36.4/xsd/pm/claims.xsd" updated="2017-07-21T20:31:44.512Z" version="1">
   <claim id="1">
     <created>2017-07-21T20:32:19.716Z</created>
+    <type>Check job status</type>
+    <author>g4s8</author>
+    <token>github;test/test;1</token>
+    <params>
+      <param name="job">gh:test/test#1</param>
+    </params>
+  </claim>
+  <claim id="2">
+    <created>2017-07-21T20:32:19.716Z</created>
     <type>Cancel order</type>
     <author>g4s8</author>
     <token>github;test/test;1</token>

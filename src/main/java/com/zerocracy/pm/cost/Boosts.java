@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pm.cost;
 
+import com.zerocracy.Par;
 import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
@@ -31,6 +32,7 @@ import org.xembly.Directives;
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.16
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class Boosts {
 
@@ -87,19 +89,17 @@ public final class Boosts {
         throws IOException {
         if (factor == 0) {
             throw new SoftException(
-                String.format(
-                    "Boost factor for %s can't be zero",
-                    job
-                )
+                new Par(
+                    "Boost factor for %s can't be zero"
+                ).say(job)
             );
         }
         // @checkstyle MagicNumber (1 line)
         if (factor > 64) {
             throw new SoftException(
-                String.format(
-                    "Boost factor for %s can't be over 64: %d",
-                    job, factor
-                )
+                new Par(
+                    "Boost factor for %s can't be over 64: %d"
+                ).say(job, factor)
             );
         }
         new Estimates(this.project).bootstrap().boost(

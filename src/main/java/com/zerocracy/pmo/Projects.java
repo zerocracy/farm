@@ -16,7 +16,6 @@
  */
 package com.zerocracy.pmo;
 
-import com.jcabi.log.Logger;
 import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
@@ -101,10 +100,6 @@ public final class Projects {
                     .set(pid)
             );
         }
-        Logger.info(
-            this, "New project \"%s\" added to @%s",
-            pid, this.login
-        );
     }
 
     /**
@@ -123,10 +118,6 @@ public final class Projects {
                 ).remove()
             );
         }
-        Logger.info(
-            this, "Project \"%s\" removed for @%s",
-            pid, this.login
-        );
     }
 
     /**

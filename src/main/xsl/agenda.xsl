@@ -21,8 +21,9 @@ SOFTWARE.
   <xsl:include href="/xsl/inner-layout.xsl"/>
   <xsl:template match="page" mode="head">
     <title>
-      <xsl:text>agenda: @</xsl:text>
+      <xsl:text>@</xsl:text>
       <xsl:value-of select="identity/login"/>
+      <xsl:text>/jobs</xsl:text>
     </title>
   </xsl:template>
   <xsl:template match="page" mode="inner">

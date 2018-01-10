@@ -14,45 +14,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.radars.github;
+package com.zerocracy.pm.staff;
 
-import com.jcabi.log.Logger;
-import com.zerocracy.jstk.Farm;
-import java.io.IOException;
-import javax.json.JsonObject;
+import com.zerocracy.jstk.farm.fake.FkProject;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Test;
 
 /**
- * Log and pass through.
- *
+ * Test case for {@link Roles}.
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.1
+ * @since 0.19
+ * @checkstyle JavadocMethodCheck (500 lines)
  */
-public final class ReLogged implements Reaction {
+public final class BansTest {
 
-    /**
-     * Reaction.
-     */
-    private final Reaction reaction;
-
-    /**
-     * Ctor.
-     * @param rtn Reaction
-     */
-    public ReLogged(final Reaction rtn) {
-        this.reaction = rtn;
-    }
-
-    @Override
-    public String react(final Farm farm, final JsonObject event)
-        throws IOException {
-        Logger.info(
-            this,
-            "GitHub (repo=%s, reason=%s)",
-            event.getJsonObject("repository").getString("full_name"),
-            event.getString("reason")
+    @Test
+    public void addsAndRemovesBans() throws Exception {
+        final Bans bans = new Bans(new FkProject()).bootstrap();
+        final String job = "gh:test/test#1";
+        final String login = "davvd";
+        bans.ban(job, login, "just for fun");
+        MatcherAssert.assertThat(
+            bans.reasons(job, login),
+            Matchers.iterableWithSize(1)
         );
-        return this.reaction.react(farm, event);
+        MatcherAssert.assertThat(
+            bans.reasons(job),
+            Matchers.iterableWithSize(1)
+        );
     }
 
 }

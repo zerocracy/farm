@@ -16,7 +16,6 @@
  */
 package com.zerocracy.pmo;
 
-import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.zerocracy.Par;
 import com.zerocracy.Xocument;
@@ -173,7 +172,6 @@ public final class People {
                     .set(rate)
             );
         }
-        Logger.info(this, "Rate %s set for @%s", rate, uid);
     }
 
     /**
@@ -227,10 +225,6 @@ public final class People {
                     .attr("bank", bank)
             );
         }
-        Logger.info(
-            this, "Wallet %s/%s set for @%s",
-            bank, wallet, uid
-        );
     }
 
     /**
@@ -304,10 +298,6 @@ public final class People {
                     .attr("href", alias)
             );
         }
-        Logger.info(
-            this, "Link added for @%s, rel=\"%s\", href=\"%s\"",
-            uid, rel, alias
-        );
     }
 
     /**
@@ -387,10 +377,6 @@ public final class People {
                     .set(mode)
             );
         }
-        Logger.info(
-            this, "Vacation mode \"%s\" set for @%s",
-            mode, uid
-        );
     }
 
     /**

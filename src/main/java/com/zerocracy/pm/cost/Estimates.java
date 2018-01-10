@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pm.cost;
 
+import com.zerocracy.Par;
 import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
@@ -157,10 +158,9 @@ public final class Estimates {
     public Cash get(final String job) throws IOException {
         if (!this.exists(job)) {
             throw new SoftException(
-                String.format(
-                    "Job `%s` is not estimated yet",
-                    job
-                )
+                new Par(
+                    "Job `%s` is not estimated yet"
+                ).say(job)
             );
         }
         try (final Item wbs = this.item()) {

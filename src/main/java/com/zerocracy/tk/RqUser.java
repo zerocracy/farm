@@ -80,10 +80,12 @@ public final class RqUser implements Scalar<String> {
                 if (!people.hasMentor(login)) {
                     throw new RsForward(
                         new RsFlash(
-                            new Par(
-                                "You @%s must be invited",
-                                "to us by someone we already know, see §1."
-                            ).say(login),
+                            new Par.ToText(
+                                new Par(
+                                    "You (@%s) must be invited",
+                                    "to us by someone we already know, see §1"
+                                ).say(login)
+                            ).toString(),
                             Level.WARNING
                         )
                     );
