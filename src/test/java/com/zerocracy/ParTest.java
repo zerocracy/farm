@@ -65,4 +65,12 @@ public final class ParTest {
         );
     }
 
+    @Test
+    public void turnsItIntoText() throws Exception {
+        MatcherAssert.assertThat(
+            new Par.ToText(new Par("`It` is @%s").say("dmarkov")).toString(),
+            Matchers.equalTo("It is @dmarkov")
+        );
+    }
+
 }

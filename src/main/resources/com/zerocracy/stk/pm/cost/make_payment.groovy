@@ -40,19 +40,21 @@ def exec(Project project, XML xml) {
   }
   if (claim.hasParam('cash')) {
     Cash price = new Cash.S(claim.param('cash'))
-    Farm farm = binding.variables.farm
-    String msg = new Payroll(farm).pay(
-      project, login, price,
-      "Payment for ${job} (${minutes} minutes): ${reason}"
-    )
-    new ClaimOut()
-      .type('Notify user')
-      .param('login', login)
-      .param('message', msg)
-      .postTo(project)
-    new ClaimOut()
-      .type('Notify project')
-      .param('message', msg)
-      .postTo(project)
+    if (price != Cash.ZERO) {
+      Farm farm = binding.variables.farm
+      String msg = new Payroll(farm).pay(
+        project, login, price,
+        "Payment for ${job} (${minutes} minutes): ${reason}"
+      )
+      new ClaimOut()
+        .type('Notify user')
+        .param('login', login)
+        .param('message', msg)
+        .postTo(project)
+      new ClaimOut()
+        .type('Notify project')
+        .param('message', msg)
+        .postTo(project)
+    }
   }
 }

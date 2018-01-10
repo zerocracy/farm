@@ -63,7 +63,11 @@ final class RqSecureLogin implements Scalar<String> {
         if (!user.equals(login)) {
             throw new RsForward(
                 new RsFlash(
-                    new Par("Only @%s is allowed to see this page").say(login),
+                    new Par.ToText(
+                        new Par(
+                            "Only @%s is allowed to see this page"
+                        ).say(login)
+                    ).toString(),
                     Level.SEVERE
                 )
             );

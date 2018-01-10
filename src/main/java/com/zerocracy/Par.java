@@ -167,4 +167,27 @@ public final class Par {
         matcher.appendTail(out);
         return out.toString();
     }
+
+    /**
+     * To plain text.
+     */
+    public static final class ToText {
+        /**
+         * The par.
+         */
+        private final String par;
+        /**
+         * Ctor.
+         * @param txt The par
+         */
+        public ToText(final String txt) {
+            this.par = txt;
+        }
+        @Override
+        public String toString() {
+            return this.par
+                .replaceAll("\\[([^]]+)]\\([^)]+\\)", "$1")
+                .replaceAll("`([^`]+)", "$1");
+        }
+    }
 }

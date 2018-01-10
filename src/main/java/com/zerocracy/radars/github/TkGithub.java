@@ -17,6 +17,7 @@
 package com.zerocracy.radars.github;
 
 import com.jcabi.github.Github;
+import com.zerocracy.Par;
 import com.zerocracy.entry.ExtDynamo;
 import com.zerocracy.entry.ExtGithub;
 import com.zerocracy.farm.props.Props;
@@ -161,8 +162,10 @@ public final class TkGithub implements Take, Runnable {
         if (!body.iterator().hasNext()) {
             throw new RsForward(
                 new RsFlash(
-                    // @checkstyle LineLength (1 line)
-                    "We expect this URL to be called by GitHub with JSON as 'payload' form parameter"
+                    new Par(
+                        "We expect this URL to be called by GitHub",
+                        "with JSON as 'payload' form parameter"
+                    ).say()
                 )
             );
         }
@@ -170,10 +173,9 @@ public final class TkGithub implements Take, Runnable {
         if (new Quota(github).over()) {
             throw new RsForward(
                 new RsWithBody(
-                    String.format(
-                        "GitHub API is over quota: %s",
-                        new Quota(github)
-                    )
+                    new Par(
+                        "GitHub API is over quota: %s"
+                    ).say(new Quota(github))
                 ),
                 HttpURLConnection.HTTP_UNAVAILABLE
             );

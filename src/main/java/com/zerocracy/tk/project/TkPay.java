@@ -111,10 +111,12 @@ public final class TkPay implements TkRegex {
             .postTo(project);
         return new RsForward(
             new RsFlash(
-                new Par(
-                    "The project %s was successfully funded for %s.",
-                    "The ledger will be updated in a few minutes."
-                ).say(project.pid(), amount)
+                new Par.ToText(
+                    new Par(
+                        "The project %s was successfully funded for %s.",
+                        "The ledger will be updated in a few minutes."
+                    ).say(project.pid(), amount)
+                ).toString()
             ),
             String.format("/p/%s", project.pid())
         );

@@ -24,8 +24,10 @@ import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
+import com.zerocracy.jstk.cash.Cash
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
+import com.zerocracy.pm.cost.Rates
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.radars.github.Job
 
@@ -46,12 +48,18 @@ def exec(Project project, XML xml) {
   String author = issue.author().login().toLowerCase(Locale.ENGLISH)
   Roles roles = new Roles(project).bootstrap()
   if (roles.hasAnyRole(author)) {
+    Cash rate = Cash.ZERO
+    Rates rates = new Rates(project).bootstrap()
+    if (rates.exists(author)) {
+      rate = rates.rate(author)
+    }
     new ClaimOut()
       .type('Make payment')
       .param('job', job)
       .param('login', author)
       .param('reason', new Par('Bug was reported, see §29').say())
       .param('minutes', 15)
+      .param('cash', rate.mul(15) / 60)
       .postTo(project)
   }
 }

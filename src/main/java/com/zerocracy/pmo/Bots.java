@@ -17,6 +17,7 @@
 package com.zerocracy.pmo;
 
 import com.jcabi.log.Logger;
+import com.zerocracy.Par;
 import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
@@ -83,10 +84,9 @@ public final class Bots {
         final JsonObject bot = json.getJsonObject("bot");
         if (bot == null) {
             throw new IllegalArgumentException(
-                String.format(
-                    "can't find bot ID in %s",
-                    json
-                )
+                new Par(
+                    "can't find bot ID in %s"
+                ).say(json)
             );
         }
         final String bid = bot.getString("bot_user_id");

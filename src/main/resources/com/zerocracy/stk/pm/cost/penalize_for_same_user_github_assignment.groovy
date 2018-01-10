@@ -42,7 +42,7 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
   Issue.Smart issue = new Issue.Smart(new Job.Issue(github, job))
-  if (issue.author().login().equalsIgnoreCase(claim.author())) {
+  if (issue.author().login().equalsIgnoreCase(claim.param('login'))) {
     new ClaimOut()
       .type('Make payment')
       .param('job', job)
