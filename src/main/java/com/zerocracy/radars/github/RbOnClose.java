@@ -50,10 +50,9 @@ public final class RbOnClose implements Rebound {
         } else {
             final Project project = new GhProject(farm, issue.repo());
             new ClaimOut()
-                .type("Finish order")
+                .type("Close issue")
                 .token(new TokenOfIssue(issue))
                 .param("job", new Job(issue))
-                .param("reason", "GitHub issue was closed, order is finished.")
                 .postTo(project);
             new ClaimOut()
                 .type("Remove job from WBS")

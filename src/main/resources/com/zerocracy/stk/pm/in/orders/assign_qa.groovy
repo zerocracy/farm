@@ -14,28 +14,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pm.in;
+package com.zerocracy.stk.pm.in.orders
 
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.farm.fake.FkProject;
-import com.zerocracy.pm.scope.Wbs;
-import org.junit.Test;
+import com.jcabi.xml.XML
+import com.zerocracy.farm.Assume
+import com.zerocracy.jstk.Project
+import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pm.scope.Wbs
 
-/**
- * Test case for {@link Orders}.
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.10
- * @checkstyle JavadocMethodCheck (500 lines)
- */
-public final class OrdersTest {
-
-    @Test
-    public void assignsAndResigns() throws Exception {
-        final Project project = new FkProject();
-        final Orders orders = new Orders(project).bootstrap();
-        final String job = "gh:yegor256/0pdd#13";
-        new Wbs(project).bootstrap().add(job);
-        orders.assign(job, "yegor256", "just for fun");
-    }
+def exec(Project project, XML xml) {
+  new Assume(project, xml).notPmo()
+  new Assume(project, xml).type('Assign QA')
+  def claim = new ClaimIn(xml)
+  def job = claim.param('job')
+  def wbs = new Wbs(project).bootstrap()
+  wbs.add(job)
+  wbs.role(job, 'QA')
+  claim.reply("@${claim.param('assignee')} please review this job.")
 }
