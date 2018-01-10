@@ -68,7 +68,7 @@ public final class RbOnComment implements Rebound {
             .assertStatus(HttpURLConnection.HTTP_RESET);
         return String.format(
             "%d GitHub events seen: %s",
-            String.join(", ", messages)
+            messages.size(), String.join(", ", messages)
         );
     }
 }
