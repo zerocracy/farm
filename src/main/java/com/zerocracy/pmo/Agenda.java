@@ -17,6 +17,7 @@
 package com.zerocracy.pmo;
 
 import com.jcabi.log.Logger;
+import com.zerocracy.Par;
 import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.Item;
@@ -113,10 +114,9 @@ public final class Agenda {
         throws IOException {
         if (this.exists(job)) {
             throw new SoftException(
-                String.format(
-                    "Job `%s` is already in the agenda of @%s",
-                    job, this.login
-                )
+                new Par(
+                    "Job %s is already in the agenda of @%s"
+                ).say(job, this.login)
             );
         }
         try (final Item item = this.item()) {
