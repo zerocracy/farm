@@ -16,7 +16,6 @@
  */
 package com.zerocracy.pmo;
 
-import com.jcabi.log.Logger;
 import com.zerocracy.Par;
 import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Farm;
@@ -121,10 +120,6 @@ public final class Bots {
                     .set(new DateAsText().asString())
             );
         }
-        Logger.info(
-            this, "New bot \"%s\" registered for \"%s\"",
-            bid, team
-        );
         return team;
     }
 

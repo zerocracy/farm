@@ -16,7 +16,6 @@
  */
 package com.zerocracy.pmo;
 
-import com.jcabi.log.Logger;
 import com.zerocracy.Par;
 import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Farm;
@@ -133,10 +132,6 @@ public final class Agenda {
                     .set(this.pmo.pid())
             );
         }
-        Logger.info(
-            this, "New agenda item added job=\"%s\", href=\"%s\"",
-            job, href
-        );
     }
 
     /**

@@ -90,20 +90,18 @@ public final class TkGithub implements Take, Runnable {
                             new RbByActions(
                                 new RbOnComment(
                                     new ReLogged(
-                                        new Reaction.Chain(
-                                            new ReOnReason(
-                                                "mention",
-                                                new ReOnComment(
-                                                    new ExtGithub(frm).value(),
-                                                    new ReSafe(
-                                                        new ReNotMine(
-                                                            new ReIfAddressed(
-                                                                new ReQuestion()
-                                                            )
+                                        new ReOnReason(
+                                            "mention",
+                                            new ReOnComment(
+                                                new ExtGithub(frm).value(),
+                                                new ReSafe(
+                                                    new ReNotMine(
+                                                        new ReIfAddressed(
+                                                            new ReQuestion()
                                                         )
-                                                    ),
-                                                    new ExtDynamo(frm).value().table("0crat-github")
-                                                )
+                                                    )
+                                                ),
+                                                new ExtDynamo(frm).value().table("0crat-github")
                                             )
                                         )
                                     )

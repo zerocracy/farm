@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pm.in;
 
+import com.zerocracy.Par;
 import com.zerocracy.Xocument;
 import com.zerocracy.jstk.Item;
 import com.zerocracy.jstk.Project;
@@ -66,10 +67,9 @@ public final class Impediments {
         throws IOException {
         if (!new Orders(this.project).bootstrap().assigned(job)) {
             throw new SoftException(
-                String.format(
-                    "Job `%s` is not assigned, can't put it on hold",
-                    job
-                )
+                new Par(
+                    "Job %s is not assigned, can't put it on hold"
+                ).say(job)
             );
         }
         try (final Item item = this.item()) {

@@ -95,45 +95,50 @@ public final class ReOnComment implements Reaction {
     }
 
     @Override
-    public void react(final Farm farm, final JsonObject event)
+    public String react(final Farm farm, final JsonObject event)
         throws IOException {
         final JsonObject subject = event.getJsonObject("subject");
-        if (!"Issue".equalsIgnoreCase(subject.getString("type"))) {
-            return;
-        }
-        final Repo repo = this.github.repos().get(
-            new Coordinates.Simple(
-                event.getJsonObject("repository").getString("full_name")
-            )
-        );
-        final Issue issue = repo.issues().get(
-            Integer.parseInt(
-                StringUtils.substringAfterLast(
-                    subject.getString("url"),
-                    "/"
+        final String type = subject.getString("type");
+        final String result;
+        if ("Issue".equalsIgnoreCase(type)) {
+            result = String.format("comment to \"%s\" ignored", type);
+        } else {
+            final Repo repo = this.github.repos().get(
+                new Coordinates.Simple(
+                    event.getJsonObject("repository").getString("full_name")
                 )
-            )
-        );
-        final long start = System.currentTimeMillis();
-        final Iterable<Comment.Smart> comments = new Smarts<>(
-            this.comments(issue)
-        );
-        for (final Comment.Smart comment : comments) {
-            this.send(farm, comment);
-        }
-        Logger.info(
-            this, "%d comments found in %s and processed in %[ms]s: %s",
-            new LengthOf(comments).intValue(),
-            issue.repo().coordinates(),
-            System.currentTimeMillis() - start,
-            String.join(
-                ", ",
-                new Mapped<Comment.Smart, String>(
-                    cmt -> String.format("#%d", cmt.number()),
-                    comments
+            );
+            final Issue issue = repo.issues().get(
+                Integer.parseInt(
+                    StringUtils.substringAfterLast(
+                        subject.getString("url"),
+                        "/"
+                    )
                 )
-            )
-        );
+            );
+            final long start = System.currentTimeMillis();
+            final Iterable<Comment.Smart> comments = new Smarts<>(
+                this.comments(issue)
+            );
+            for (final Comment.Smart comment : comments) {
+                this.send(farm, comment);
+            }
+            Logger.info(
+                this, "%d comments found in %s and processed in %[ms]s: %s",
+                new LengthOf(comments).intValue(),
+                issue.repo().coordinates(),
+                System.currentTimeMillis() - start,
+                String.join(
+                    ", ",
+                    new Mapped<Comment.Smart, String>(
+                        cmt -> String.format("#%d", cmt.number()),
+                        comments
+                    )
+                )
+            );
+            result = String.format("%s#%s", repo.coordinates(), issue.number());
+        }
+        return result;
     }
 
     /**

@@ -58,6 +58,6 @@ def exec(Project project, XML xml) {
     items.add(new Par('The job has an impediment').say())
   }
   claim.reply(
-    'This is what I know about this job:\n\n  * ' + items.join('\n  * ')
+    'This is what I know about this job, as in §32:\n\n  * ' + items.join('\n  * ')
   ).postTo(project)
 }

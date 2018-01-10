@@ -23,6 +23,8 @@ import com.jcabi.http.response.RestResponse;
 import com.zerocracy.jstk.Farm;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.util.Collection;
+import java.util.LinkedList;
 import javax.json.JsonObject;
 
 /**
@@ -55,16 +57,18 @@ public final class RbOnComment implements Rebound {
             .uri().path("/notifications").back();
         final Iterable<JsonObject> events =
             new RtPagination<>(req, RtPagination.COPYING);
-        int total = 0;
+        final Collection<String> messages = new LinkedList<>();
         for (final JsonObject event : events) {
-            this.reaction.react(farm, event);
-            ++total;
+            messages.add(this.reaction.react(farm, event));
         }
         req.method(Request.PUT)
             .body().set("{}").back()
             .fetch()
             .as(RestResponse.class)
             .assertStatus(HttpURLConnection.HTTP_RESET);
-        return String.format("%d GitHub events seen", total);
+        return String.format(
+            "%d GitHub events seen: %s",
+            String.join(", ", messages)
+        );
     }
 }
