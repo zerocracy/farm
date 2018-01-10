@@ -100,7 +100,8 @@ public final class ReOnComment implements Reaction {
         final JsonObject subject = event.getJsonObject("subject");
         final String type = subject.getString("type");
         final String result;
-        if ("Issue".equalsIgnoreCase(type)) {
+        if ("Issue".equalsIgnoreCase(type)
+            || "PullRequest".equalsIgnoreCase(type)) {
             final Repo repo = this.github.repos().get(
                 new Coordinates.Simple(
                     event.getJsonObject("repository").getString("full_name")
