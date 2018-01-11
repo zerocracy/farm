@@ -42,6 +42,7 @@ import org.xembly.Directives;
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class Roles {
 
     /**
@@ -101,6 +102,20 @@ public final class Roles {
      */
     public void assign(final String person, final String role)
         throws IOException {
+        if ("REV".equals(role) && this.hasRole(person, "ARC")) {
+            throw new SoftException(
+                new Par(
+                    "The architect @%s can't be a reviewer at the same time"
+                ).say(person)
+            );
+        }
+        if ("ARC".equals(role) && this.hasRole(person, "REV")) {
+            throw new SoftException(
+                new Par(
+                    "The reviewer @%s can't be a architect at the same time"
+                ).say(person)
+            );
+        }
         try (final Item roles = this.item()) {
             final String login = person.toLowerCase(Locale.ENGLISH);
             new Xocument(roles.path()).modify(
@@ -161,6 +176,13 @@ public final class Roles {
                 new Par(
                     "@%s doesn't have %s role in the project"
                 ).say(person, role)
+            );
+        }
+        if ("PO".equals(role) && this.findByRole(role).size() < 2) {
+            throw new SoftException(
+                new Par(
+                    "You can't remove all product owners from the project"
+                ).say()
             );
         }
         final Wbs wbs = new Wbs(this.project).bootstrap();
