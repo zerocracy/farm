@@ -90,14 +90,18 @@ public final class Payroll {
                 "assets", "cash",
                 String.format(
                     "%s (amount:%s, commission:%s, PID:%s)",
-                    reason, amount, commission, pid
+                    new Par.ToText(reason).toString(),
+                    amount, commission, pid
                 )
             ),
             new Ledger.Transaction(
                 commission,
                 "expenses", "jobs",
                 "liabilities", method,
-                String.format("%s (commission)", reason)
+                String.format(
+                    "%s (commission)",
+                    new Par.ToText(reason).toString()
+                )
             ),
             new Ledger.Transaction(
                 amount,
