@@ -21,6 +21,8 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.staff.Roles
+import java.security.SecureRandom
+
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
@@ -35,10 +37,12 @@ def exec(Project project, XML xml) {
   } else {
     claim.copy()
       .type('Assign QA')
-//      @todo #73:30min We need to elect qa user (from `qa` list)
-//       instead of picking first. It may be similar to current election
-//       mechanism or just a random user.
-      .param('assignee', qa.first())
+      .param('assignee', qa.size() > 1 ? qa[Singleton.INSTANCE.random.nextInt(qa.size() - 1)] : qa.first())
       .postTo(project)
   }
+}
+
+enum Singleton {
+  INSTANCE
+  final random = new SecureRandom()
 }

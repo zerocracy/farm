@@ -25,6 +25,6 @@ import org.hamcrest.Matchers
 def exec(Project project, XML xml) {
   MatcherAssert.assertThat(
     new Wbs(project).bootstrap().role('gh:test/test#1'),
-    Matchers.equalTo('QA')
+    Matchers.equalTo('DEV')
   )
 }

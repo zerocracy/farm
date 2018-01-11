@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.in.orders
+package com.zerocracy.stk.pm.qa
 
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
@@ -27,8 +27,7 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Assign QA')
   def claim = new ClaimIn(xml)
   def job = claim.param('job')
-  def wbs = new Wbs(project).bootstrap()
-  wbs.add(job)
-  wbs.role(job, 'QA')
-  claim.reply("@${claim.param('assignee')} please review this job.")
+  new Wbs(project).bootstrap().add(job)
+  claim.reply("@${claim.param('assignee')} please review this job " +
+    'as in [§30](http://datum.zerocracy.com/pages/policy.html#30).')
 }
