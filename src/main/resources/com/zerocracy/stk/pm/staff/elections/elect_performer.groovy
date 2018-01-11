@@ -64,10 +64,10 @@ def exec(Project project, XML xml) {
       job, logins,
       [
         (new VtrRate(project, logins))        : 2,
-        (new VtrNoRoom(pmo, 3))      : -100,
+        (new VtrNoRoom(pmo, 3))      : role == 'REV' ? 0 : -100,
         (new VtrBanned(project, job)): -100,
         (new VtrVacation(pmo))       : -100,
-        (new VtrWorkload(pmo, 15))   : 1,
+        (new VtrWorkload(pmo, logins))   : 1,
         (new VtrSpeed(pmo, logins))          : 3
       ]
     )

@@ -71,7 +71,8 @@ def exec(Project project, XML xml) {
     if (rates.exists(login)) {
       msg += new Par(
         'Hourly rate of @%s is %s.',
-        'To change the rate, say `assign %s %1$s \$25`, for example.'
+        'To change the rate, say `assign XXX %1$s \$25`, for example,',
+        'where XXX must be %s or any other role, as in §13.'
       ).say(login, rates.rate(login), role)
     } else {
       msg += new Par(

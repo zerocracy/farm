@@ -16,12 +16,20 @@
  */
 package com.zerocracy.pm.staff.voters;
 
-import com.zerocracy.Par;
+import com.jcabi.log.Logger;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.staff.Voter;
 import com.zerocracy.pmo.Agenda;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Map;
+import org.cactoos.collection.Filtered;
 import org.cactoos.iterable.LengthOf;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.map.MapEntry;
+import org.cactoos.map.MapOf;
+import org.cactoos.scalar.IoCheckedScalar;
+import org.cactoos.scalar.SolidScalar;
 
 /**
  * Workload voter.
@@ -29,41 +37,52 @@ import org.cactoos.iterable.LengthOf;
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.17
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class VtrWorkload implements Voter {
 
     /**
-     * The PMO.
+     * Workloads of others.
      */
-    private final Project pmo;
-
-    /**
-     * Max.
-     */
-    private final int max;
+    private final IoCheckedScalar<Map<String, Integer>> jobs;
 
     /**
      * Ctor.
-     * @param prj The PMO
-     * @param threshold Max
+     * @param pmo The PMO
+     * @param others All other logins to compete with
      */
-    public VtrWorkload(final Project prj, final int threshold) {
-        this.pmo = prj;
-        this.max = threshold;
+    public VtrWorkload(final Project pmo, final Collection<String> others) {
+        this.jobs = new IoCheckedScalar<>(
+            new SolidScalar<>(
+                () -> new MapOf<>(
+                    new Mapped<>(
+                        login -> new MapEntry<>(
+                            login,
+                            new LengthOf(
+                                new Agenda(pmo, login).jobs()
+                            ).intValue()
+                        ),
+                        others
+                    )
+                )
+            )
+        );
     }
 
     @Override
     public double vote(final String login, final StringBuilder log)
         throws IOException {
-        final int jobs = new LengthOf(
-            new Agenda(this.pmo, login).jobs()
-        ).intValue();
+        final int mine = this.jobs.value().get(login);
+        final int smaller = new Filtered<>(
+            speed -> speed < mine,
+            this.jobs.value().values()
+        ).size();
         log.append(
-            new Par(
-                "%d out of %d job(s) in agenda"
-            ).say(jobs, this.max)
+            Logger.format(
+                "Workload of %d jobs is no.%d",
+                mine, smaller + 1
+            )
         );
-        return (double) (this.max - Math.min(jobs, this.max))
-            / (double) this.max;
+        return 1.0d - (double) smaller / (double) this.jobs.value().size();
     }
 }
