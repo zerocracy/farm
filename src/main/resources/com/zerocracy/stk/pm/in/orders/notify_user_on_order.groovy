@@ -19,6 +19,7 @@ package com.zerocracy.stk.pm.in.orders
 import com.jcabi.xml.XML
 import com.zerocracy.Par
 import com.zerocracy.farm.Assume
+import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
@@ -27,14 +28,16 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Order was given')
   ClaimIn claim = new ClaimIn(xml)
+  Farm farm = binding.variables.farm
   new ClaimOut()
     .type('Notify user')
     .token("user;${claim.param('login')}")
     .param(
       'message',
       new Par(
-        "The job %s was assigned to you a minute ago:\n```\n%s\n```"
-      ).say(claim.param('job'), new Par.ToText(claim.param('reason')))
+        farm,
+        "The job %s was assigned to you in %s a minute ago:\n```\n%s\n```"
+      ).say(claim.param('job'), project.pid(), new Par.ToText(claim.param('reason')))
     )
     .postTo(project)
 }

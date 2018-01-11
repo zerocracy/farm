@@ -19,6 +19,7 @@ package com.zerocracy.stk.pm
 import com.jcabi.xml.XML
 import com.zerocracy.Par
 import com.zerocracy.farm.Assume
+import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.jstk.SoftException
 import com.zerocracy.pm.ClaimIn
@@ -47,8 +48,10 @@ def exec(Project project, XML xml) {
         .postTo(project)
     }
     if (claim.hasToken()) {
+      Farm farm = binding.variables.farm
       claim.reply(
         new Par(
+          farm,
           'I\'m ready to manage the %s project.',
           'When you\'re ready, you can start giving me commands,',
           'always prefixing your messages with my name.',
