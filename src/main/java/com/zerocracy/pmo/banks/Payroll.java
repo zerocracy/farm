@@ -82,7 +82,9 @@ public final class Payroll {
             );
         }
         final Cash commission = bank.fee(amount);
-        final String pid = bank.pay(wallet, amount, reason);
+        final String pid = bank.pay(
+            wallet, amount, new Par.ToText(reason).toString()
+        );
         new Ledger(project).bootstrap().add(
             new Ledger.Transaction(
                 amount.add(commission),
