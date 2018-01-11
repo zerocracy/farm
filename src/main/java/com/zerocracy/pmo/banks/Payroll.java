@@ -61,7 +61,8 @@ public final class Payroll {
     public String pay(final Project project,
         final String login, final Cash amount,
         final String reason) throws IOException {
-        final String wallet = new People(this.farm).wallet(login);
+        final People people = new People(this.farm).bootstrap();
+        final String wallet = people.wallet(login);
         if (wallet.isEmpty()) {
             throw new SoftException(
                 new Par(
@@ -69,23 +70,23 @@ public final class Payroll {
                 ).say(login)
             );
         }
-        final String[] parts = wallet.split(":", 2);
+        final String method = people.bank(login);
         final Bank bank;
-        if ("paypal".equals(parts[0])) {
+        if ("paypal".equals(method)) {
             bank = new Paypal(this.farm);
         } else {
             throw new SoftException(
                 new Par(
                     "@%s has an unsupported payment method \"%s\""
-                ).say(login, parts[0])
+                ).say(login, method)
             );
         }
         final Cash commission = bank.fee(amount);
-        final String pid = bank.pay(parts[1], amount, reason);
+        final String pid = bank.pay(wallet, amount, reason);
         new Ledger(project).bootstrap().add(
             new Ledger.Transaction(
                 amount.add(commission),
-                "liabilities", parts[0],
+                "liabilities", method,
                 "assets", "cash",
                 String.format(
                     "%s (amount:%s, commission:%s, PID:%s)",
@@ -95,7 +96,7 @@ public final class Payroll {
             new Ledger.Transaction(
                 commission,
                 "expenses", "jobs",
-                "liabilities", parts[0],
+                "liabilities", method,
                 String.format("%s (commission)", reason)
             ),
             new Ledger.Transaction(
