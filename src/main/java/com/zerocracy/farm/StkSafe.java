@@ -24,6 +24,7 @@ import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.SoftException;
 import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
+import com.zerocracy.pm.ClaimOut;
 import io.sentry.Sentry;
 import java.io.IOException;
 import lombok.EqualsAndHashCode;
@@ -144,7 +145,12 @@ public final class StkSafe implements Stakeholder {
             if (claim.hasToken()) {
                 msg.append(String.format(", token=\"%s\"", claim.token()));
             }
-            Sentry.capture(new IllegalArgumentException(msg.toString(), ex));
+            new ClaimOut().type("Error")
+                .param("origin_id", claim.cid())
+                .param("origin_type", claim.type())
+                .param("message", msg.toString())
+                .param("stacktrace", new TextOf(ex).asString())
+                .postTo(project);
         }
     }
 }

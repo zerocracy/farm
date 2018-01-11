@@ -70,7 +70,7 @@ public final class StkSafeTest {
         ).process(project, claim);
         MatcherAssert.assertThat(
             new Claims(project).iterate(),
-            Matchers.iterableWithSize(1)
+            Matchers.iterableWithSize(2)
         );
     }
 
