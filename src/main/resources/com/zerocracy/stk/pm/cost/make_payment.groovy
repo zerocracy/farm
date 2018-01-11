@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pm.cost
 
 import com.jcabi.xml.XML
+import com.zerocracy.Par
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
@@ -53,7 +54,12 @@ def exec(Project project, XML xml) {
         .postTo(project)
       new ClaimOut()
         .type('Notify project')
-        .param('message', msg)
+        .param(
+        'message',
+          new Par(
+            'We just paid %s to @%s for %s: `%s`'
+          ).say(price, login, job, msg)
+        )
         .postTo(project)
     }
   }
