@@ -79,4 +79,17 @@ SOFTWARE.
     <label>status</label>
     <help>Check the status of the job</help>
   </cmd>
+  <cmd>
+    <code>Set boost</code>
+    <regex>boost</regex>
+    <label>boost</label>
+    <help>Set a boost for the job</help>
+    <opts>
+      <opt>
+        <name>factor</name>
+        <regex>\d+x</regex>
+        <help>boost factor</help>
+      </opt>
+    </opts>
+  </cmd>
 </question>
