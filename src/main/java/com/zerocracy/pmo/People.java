@@ -27,6 +27,7 @@ import com.zerocracy.jstk.cash.Cash;
 import com.zerocracy.jstk.cash.CashParsingException;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.regex.Pattern;
 import org.cactoos.iterable.ItemAt;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.scalar.UncheckedScalar;
@@ -209,11 +210,22 @@ public final class People {
      */
     public void wallet(final String uid, final String bank,
         final String wallet) throws IOException {
-        if (!bank.matches("paypal|btc")) {
+        if (!bank.matches("paypal")) {
             throw new SoftException(
                 String.format(
-                    "Bank name `%s` is invalid, we accept `paypal` or `btc`.",
+                    "Bank name `%s` is invalid, we accept only `paypal`",
                     bank
+                )
+            );
+        }
+        final Pattern email = Pattern.compile(
+            "\\b[\\w.%-]+@[-.\\w]+\\.[A-Za-z]{2,4}\\b"
+        );
+        if (!email.matcher(wallet).matches()) {
+            throw new SoftException(
+                String.format(
+                    "Email `%s` is not valid",
+                    wallet
                 )
             );
         }
@@ -252,7 +264,7 @@ public final class People {
     }
 
     /**
-     * Get user wallet.
+     * Get user bank (like "paypal").
      * @param uid User ID
      * @return Wallet of the user
      * @throws IOException If fails
