@@ -16,10 +16,10 @@
  */
 
 /**
- * Voters.
+ * Voters tests.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
- * @since 0.12
+ * @since 0.13
  */
-package com.zerocracy.pm.staff.voters;
+package com.zerocracy.pm.staff.votes;

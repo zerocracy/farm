@@ -14,49 +14,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pm.staff.voters;
+package com.zerocracy.pm.staff.votes;
 
 import com.zerocracy.jstk.farm.fake.FkProject;
-import com.zerocracy.pm.staff.Bans;
-import java.io.IOException;
+import com.zerocracy.pmo.People;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
- * Test case for {@link VtrBanned}.
+ * Test case for {@link VsVacation}.
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
- * @since 0.13
+ * @since 0.16
  * @checkstyle JavadocMethodCheck (500 lines)
  */
-public final class VtrBannedTest {
+public final class VsVacationTest {
 
     @Test
-    public void highRankForBanned() throws IOException {
-        final FkProject proj = new FkProject();
-        final String login = "caarlos0";
-        final String job = "gh:test/job#1";
-        new Bans(proj).bootstrap().ban(job, login, "Issue reporter");
+    public void highRankForVacationTest() throws Exception {
+        final FkProject project = new FkProject();
+        final String uid = "g4s8";
+        final People people = new People(project).bootstrap();
+        people.invite(uid, uid);
+        people.vacation(uid, true);
         MatcherAssert.assertThat(
-            "Banned voter didn't give high rank for banned user",
-            new VtrBanned(
-                proj,
-                job
-            ).vote(login, new StringBuilder()),
-            Matchers.equalTo(1.0)
-        );
-    }
-
-    @Test
-    public void lowRankIfNotBanned() throws IOException {
-        MatcherAssert.assertThat(
-            "Banned voter didn't give low rank for not banned user",
-            new VtrBanned(
-                new FkProject(),
-                "gh:test/job#2"
-            ).vote("yegor256", new StringBuilder()),
-            Matchers.equalTo(0.0)
+            new VsVacation(project).take(uid, new StringBuilder()),
+            Matchers.equalTo(1.0D)
         );
     }
 }

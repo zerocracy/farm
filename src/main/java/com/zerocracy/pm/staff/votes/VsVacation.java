@@ -14,10 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pm.staff.voters;
+package com.zerocracy.pm.staff.votes;
 
 import com.zerocracy.jstk.Project;
-import com.zerocracy.pm.staff.Voter;
+import com.zerocracy.pm.staff.Votes;
 import com.zerocracy.pmo.People;
 import java.io.IOException;
 
@@ -27,7 +27,7 @@ import java.io.IOException;
  * @version $Id$
  * @since 0.16
  */
-public final class VtrVacation implements Voter {
+public final class VsVacation implements Votes {
 
     /**
      * The people.
@@ -38,7 +38,7 @@ public final class VtrVacation implements Voter {
      * Ctor.
      * @param pmo The PMO
      */
-    public VtrVacation(final Project pmo) {
+    public VsVacation(final Project pmo) {
         this(new People(pmo));
     }
 
@@ -46,12 +46,12 @@ public final class VtrVacation implements Voter {
      * Primary ctor.
      * @param ppl People
      */
-    private VtrVacation(final People ppl) {
+    private VsVacation(final People ppl) {
         this.people = ppl;
     }
 
     @Override
-    public double vote(
+    public double take(
         final String login,
         final StringBuilder log
     ) throws IOException {

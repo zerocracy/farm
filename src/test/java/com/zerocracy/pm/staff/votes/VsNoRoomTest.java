@@ -14,33 +14,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pm.staff.voters;
+package com.zerocracy.pm.staff.votes;
 
 import com.zerocracy.jstk.farm.fake.FkProject;
-import com.zerocracy.pmo.People;
+import com.zerocracy.pmo.Agenda;
+import com.zerocracy.pmo.Awards;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
- * Test case for {@link VtrVacation}.
+ * Test case for {@link VsNoRoom}.
+ *
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
- * @since 0.16
+ * @since 0.19
  * @checkstyle JavadocMethodCheck (500 lines)
  */
-public final class VtrVacationTest {
+public final class VsNoRoomTest {
 
     @Test
-    public void highRankForVacationTest() throws Exception {
+    public void valueDependsOnAwards() throws Exception {
         final FkProject project = new FkProject();
-        final String uid = "g4s8";
-        final People people = new People(project).bootstrap();
-        people.invite(uid, uid);
-        people.vacation(uid, true);
+        final String user = "g4s8";
+        final Awards awards = new Awards(project, user).bootstrap();
+        final int points = 2935;
+        awards.add(points, "gh:test/test#1", "initial");
+        final Agenda agenda = new Agenda(project, user).bootstrap();
+        final int total = 10;
+        for (int num = 1; num < total; ++num) {
+            agenda.add(
+                String.format("gh:test/test#%d", num),
+                String.format("https://test/%d", num)
+            );
+        }
         MatcherAssert.assertThat(
-            new VtrVacation(project).vote(uid, new StringBuilder()),
-            Matchers.equalTo(1.0D)
+            new VsNoRoom(project).take(user, new StringBuilder(0)),
+            Matchers.equalTo(0.0)
         );
     }
 }

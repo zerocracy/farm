@@ -14,11 +14,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pm.staff.voters;
+package com.zerocracy.pm.staff.votes;
 
 import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.staff.Bans;
-import com.zerocracy.pm.staff.Voter;
+import com.zerocracy.pm.staff.Votes;
 import java.io.IOException;
 import org.cactoos.iterable.LengthOf;
 import org.cactoos.text.JoinedText;
@@ -29,7 +29,7 @@ import org.cactoos.text.JoinedText;
  * @version $Id$
  * @since 0.13
  */
-public final class VtrBanned implements Voter {
+public final class VsBanned implements Votes {
 
     /**
      * A project.
@@ -46,13 +46,13 @@ public final class VtrBanned implements Voter {
      * @param job Current job
      * @param proj ApProject
      */
-    public VtrBanned(final Project proj, final String job) {
+    public VsBanned(final Project proj, final String job) {
         this.proj = proj;
         this.job = job;
     }
 
     @Override
-    public double vote(final String login, final StringBuilder log)
+    public double take(final String login, final StringBuilder log)
         throws IOException {
         final Iterable<String> reasons = new Bans(this.proj)
             .bootstrap()

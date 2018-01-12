@@ -14,11 +14,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pm.staff.voters;
+package com.zerocracy.pm.staff.votes;
 
 import com.zerocracy.Par;
 import com.zerocracy.jstk.Project;
-import com.zerocracy.pm.staff.Voter;
+import com.zerocracy.pm.staff.Votes;
 import com.zerocracy.pmo.Agenda;
 import com.zerocracy.pmo.Awards;
 import java.io.IOException;
@@ -31,7 +31,7 @@ import org.cactoos.iterable.LengthOf;
  * @version $Id$
  * @since 0.12
  */
-public final class VtrNoRoom implements Voter {
+public final class VsNoRoom implements Votes {
 
     /**
      * The PMO.
@@ -42,12 +42,12 @@ public final class VtrNoRoom implements Voter {
      * Ctor.
      * @param pkt Current project
      */
-    public VtrNoRoom(final Project pkt) {
+    public VsNoRoom(final Project pkt) {
         this.pmo = pkt;
     }
 
     @Override
-    public double vote(final String login, final StringBuilder log)
+    public double take(final String login, final StringBuilder log)
         throws IOException {
         final int total = new LengthOf(
             new Agenda(this.pmo, login).bootstrap().jobs()

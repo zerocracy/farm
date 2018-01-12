@@ -33,7 +33,7 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Props props = new Props(farm)
   Sentry.capture(
-    new EventBuilder().withTag("pid", project.pid()).withSentryInterface(
+    new EventBuilder().withTag('pid', project.pid()).withSentryInterface(
       new MessageInterface(
         claim.param('message') + '\n\n' + claim.param('stacktrace')
       )

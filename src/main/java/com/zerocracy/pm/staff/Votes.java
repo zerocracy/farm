@@ -14,12 +14,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.zerocracy.pm.staff;
+
+import java.io.IOException;
 
 /**
- * Voters tests.
+ * Voter.
  *
- * @author Kirill (g4s8.public@gmail.com)
+ * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.13
+ * @since 0.12
  */
-package com.zerocracy.pm.staff.voters;
+public interface Votes {
+
+    /**
+     * Vote.
+     * @param login GitHub login of the user
+     * @param log Log of the take, if any
+     * @return Points to give to him (0..1)
+     * @throws IOException If fails
+     */
+    double take(String login, StringBuilder log) throws IOException;
+
+}

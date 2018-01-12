@@ -14,59 +14,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pm.staff.voters;
+package com.zerocracy.pm.staff.votes;
 
 import com.zerocracy.jstk.farm.fake.FkProject;
-import com.zerocracy.pmo.Speed;
-import java.util.concurrent.TimeUnit;
-import org.cactoos.list.ListOf;
+import com.zerocracy.pm.staff.Bans;
+import java.io.IOException;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
- * Test case for {@link VtrSpeed}.
+ * Test case for {@link VsBanned}.
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
- * @since 0.19
+ * @since 0.13
  * @checkstyle JavadocMethodCheck (500 lines)
- * @checkstyle MagicNumber (500 line)
  */
-public final class VtrSpeedTest {
+public final class VsBannedTest {
 
     @Test
-    public void fastTest() throws Exception {
-        final FkProject pkt = new FkProject();
-        final String login = "user1";
-        final Speed speed = new Speed(pkt, login).bootstrap();
-        speed.add(
-            "TST000001",
-            "gh:test/test#1",
-            TimeUnit.HOURS.toMinutes(1L)
-        );
+    public void highRankForBanned() throws IOException {
+        final FkProject proj = new FkProject();
+        final String login = "caarlos0";
+        final String job = "gh:test/job#1";
+        new Bans(proj).bootstrap().ban(job, login, "Issue reporter");
         MatcherAssert.assertThat(
-            new VtrSpeed(pkt, new ListOf<>("jeff", login)).vote(
-                login, new StringBuilder(0)
-            ),
-            Matchers.equalTo(0.5d)
+            "Banned voter didn't give high rank for banned user",
+            new VsBanned(
+                proj,
+                job
+            ).take(login, new StringBuilder()),
+            Matchers.equalTo(1.0)
         );
     }
 
     @Test
-    public void slowTest() throws Exception {
-        final FkProject pkt = new FkProject();
-        final String login = "user2";
-        final Speed speed = new Speed(pkt, login).bootstrap();
-        speed.add(
-            "TST000002",
-            "gh:test/test#2",
-            TimeUnit.DAYS.toMinutes(9L)
-        );
+    public void lowRankIfNotBanned() throws IOException {
         MatcherAssert.assertThat(
-            new VtrSpeed(pkt, new ListOf<>(login)).vote(
-                login, new StringBuilder(0)
-            ),
-            Matchers.equalTo(1.0)
+            "Banned voter didn't give low rank for not banned user",
+            new VsBanned(
+                new FkProject(),
+                "gh:test/job#2"
+            ).take("yegor256", new StringBuilder()),
+            Matchers.equalTo(0.0)
         );
     }
 }

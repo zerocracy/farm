@@ -14,13 +14,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pm.staff.voters;
+package com.zerocracy.pm.staff.votes;
 
 import com.jcabi.log.Logger;
 import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.cash.Cash;
 import com.zerocracy.pm.cost.Rates;
-import com.zerocracy.pm.staff.Voter;
+import com.zerocracy.pm.staff.Votes;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
@@ -38,7 +38,7 @@ import org.cactoos.scalar.SolidScalar;
  * @version $Id$
  * @since 0.19
  */
-public final class VtrRate implements Voter {
+public final class VsRate implements Votes {
 
     /**
      * Rates of others.
@@ -51,7 +51,7 @@ public final class VtrRate implements Voter {
      * @param others All other logins in the competition
      * @checkstyle AvoidInlineConditionalsCheck (30 lines)
      */
-    public VtrRate(final Project project, final Collection<String> others) {
+    public VsRate(final Project project, final Collection<String> others) {
         this.rates = new IoCheckedScalar<>(
             new SolidScalar<>(
                 () -> {
@@ -71,7 +71,7 @@ public final class VtrRate implements Voter {
     }
 
     @Override
-    public double vote(final String login, final StringBuilder log)
+    public double take(final String login, final StringBuilder log)
         throws IOException {
         final Cash mine = this.rates.value().get(login);
         final int cheaper = new Filtered<>(
