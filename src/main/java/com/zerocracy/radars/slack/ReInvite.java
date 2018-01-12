@@ -19,7 +19,6 @@ package com.zerocracy.radars.slack;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackChannelJoined;
 import com.zerocracy.jstk.Farm;
-import com.zerocracy.pm.ClaimOut;
 import java.io.IOException;
 
 /**
@@ -39,9 +38,6 @@ final class ReInvite implements Reaction<SlackChannelJoined> {
         session.sendMessage(
             event.getSlackChannel(),
             "Thanks for inviting me here."
-        );
-        new ClaimOut().type("Bootstrap").postTo(
-            new SkProject(farm, event.getSlackChannel())
         );
         return true;
     }
