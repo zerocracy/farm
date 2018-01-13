@@ -51,11 +51,11 @@ def exec(Project project, XML xml) {
     .type('Notify user')
     .token("user;${login}")
     .param(
-    'message',
-    new Par(
-      'You have been invited to Zerocracy by @%s, as required in §1.',
-      'You can now apply to the projects, see §2.'
-    ).say(claim.author())
-  )
+      'message',
+      new Par(
+        'You have been invited to Zerocracy by @%s, as required in §1.',
+        'You can now apply to the projects, see §2.'
+      ).say(claim.author())
+    )
     .postTo(project)
 }
