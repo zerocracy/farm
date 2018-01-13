@@ -22,15 +22,26 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
+import com.zerocracy.pmo.Awards
 import com.zerocracy.pmo.People
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).isPmo()
   new Assume(project, xml).type('Invite a friend')
-  ClaimIn claim = new ClaimIn(xml)
+  def claim = new ClaimIn(xml)
+  def author = claim.author()
+  if (new Awards(project, author).bootstrap().total() < 1000) {
+    claim.reply(
+      new Par(
+        '@%s you must have at least 1000 reputation to invite someone,',
+        ' as in §1'
+      ).say(author)
+    )
+    return
+  }
   String login = claim.param('login')
   People people = new People(project).bootstrap()
-  people.invite(login, claim.author())
+  people.invite(login, author)
   claim.reply(
     new Par(
       'Thanks, @%s can now work with us, and you are the mentor, see §1',
@@ -40,11 +51,11 @@ def exec(Project project, XML xml) {
     .type('Notify user')
     .token("user;${login}")
     .param(
-      'message',
-      new Par(
-        'You have been invited to Zerocracy by @%s, as required in §1.',
-        'You can now apply to the projects, see §2.'
-      ).say(claim.author())
-    )
+    'message',
+    new Par(
+      'You have been invited to Zerocracy by @%s, as required in §1.',
+      'You can now apply to the projects, see §2.'
+    ).say(claim.author())
+  )
     .postTo(project)
 }
