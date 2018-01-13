@@ -19,7 +19,6 @@ package com.zerocracy.stk.pm.qa
 import com.jcabi.xml.XML
 import com.zerocracy.Par
 import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.scope.Wbs
@@ -30,12 +29,8 @@ def exec(Project project, XML xml) {
   def claim = new ClaimIn(xml)
   def job = claim.param('job')
   new Wbs(project).bootstrap().add(job)
-  Farm farm = binding.variables.farm
   claim.reply(
-    new Par(
-      farm,
-      '@%s please review this job as in ',
-      '[§30](http://datum.zerocracy.com/pages/policy.html#30).'
-    ).say(claim.param('assignee'))
+    new Par('@%s please review this job as in §30.')
+      .say(claim.param('assignee'))
   )
 }
