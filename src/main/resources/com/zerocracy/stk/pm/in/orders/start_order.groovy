@@ -54,7 +54,7 @@ def exec(Project project, XML xml) {
     ).say(job, login, arc)
   } else {
     msg = new Par(
-      'The job %s assigned to %s.',
+      'The job %s assigned to @%s.',
       'The budget is 30 minutes, see §4.',
       'Please, read §8 and §9.',
       'If the task is not clear,',
