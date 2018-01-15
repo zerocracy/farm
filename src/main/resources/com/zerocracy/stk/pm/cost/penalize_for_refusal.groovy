@@ -28,12 +28,11 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Order was canceled')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
-  if (claim.hasAuthor() && claim.hasParam('voluntarily')
-    && claim.param('voluntarily') == 'true') {
+  if (claim.hasParam('voluntarily') && claim.param('voluntarily') == 'true') {
     new ClaimOut()
       .type('Make payment')
       .param('job', job)
-      .param('login', claim.author())
+      .param('login', claim.param('login'))
       .param(
         'reason',
         new Par('Tasks refusal is discouraged, see §6').say()
