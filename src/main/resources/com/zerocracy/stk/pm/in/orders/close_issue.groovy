@@ -23,7 +23,6 @@ import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.staff.Roles
 import java.security.SecureRandom
 
-
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Close issue')
@@ -37,12 +36,7 @@ def exec(Project project, XML xml) {
   } else {
     claim.copy()
       .type('Assign QA')
-      .param('assignee', qa.size() > 1 ? qa[Singleton.INSTANCE.random.nextInt(qa.size() - 1)] : qa.first())
+      .param('assignee', qa.size() > 1 ? qa[new SecureRandom().nextInt(qa.size() - 1)] : qa.first())
       .postTo(project)
   }
-}
-
-enum Singleton {
-  INSTANCE
-  final random = new SecureRandom()
 }
