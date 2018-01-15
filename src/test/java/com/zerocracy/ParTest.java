@@ -45,7 +45,7 @@ public final class ParTest {
             Matchers.equalTo(
                 new JoinedText(
                     " ",
-                    "[@yegor256](http://www.0crat.com/u/yegor256) is a `DEV`",
+                    "@yegor256[/z](http://www.0crat.com/u/yegor256) is a `DEV`",
                     "in [C63314D6Z](http://www.0crat.com/p/C63314D6Z)",
                     "and has one job, as in",
                     "[§1](http://datum.zerocracy.com/pages/policy.html#1)",
