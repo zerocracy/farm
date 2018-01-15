@@ -61,8 +61,7 @@ SOFTWARE.
   </issueManagement>
   <scm>
     <connection>scm:git:git@github.com:zerocracy/farm.git</connection>
-    <developerConnection>scm:git:git@github.com:zerocracy/farm.git
-    </developerConnection>
+    <developerConnection>scm:git:git@github.com:zerocracy/farm.git</developerConnection>
     <url>https://github.com/zerocracy/farm</url>
   </scm>
   <ciManagement>
@@ -461,13 +460,9 @@ SOFTWARE.
                   <classpathScope>test</classpathScope>
                   <arguments>
                     <argument>-basedir=${basedir}/src</argument>
-                    <argument>
-                      -rulesetfiles=file://${basedir}/src/test/resources/codenarc-rules.txt
-                    </argument>
+                    <argument>-rulesetfiles=file://${basedir}/src/test/resources/codenarc-rules.txt</argument>
                     <argument>-includes=**/*.groovy</argument>
-                    <argument>
-                      -report=xml:${project.build.directory}/codenarc.xml
-                    </argument>
+                    <argument>-report=xml:${project.build.directory}/codenarc.xml</argument>
                   </arguments>
                 </configuration>
               </execution>
@@ -489,7 +484,6 @@ SOFTWARE.
                   <source><![CDATA[
                     import com.jcabi.xml.XML
                     import com.jcabi.xml.XMLDocument
-
                     XML xml = new XMLDocument(new File('${project.build.directory}/codenarc.xml'))
                     List<XML> pkgs = xml.nodes('//Package[@filesWithViolations > 0]')
                     if (!pkgs.isEmpty()) {
@@ -497,12 +491,12 @@ SOFTWARE.
                         for (XML file : pkg.nodes('.//File')) {
                           for (XML violation : file.nodes('.//Violation')) {
                             printf(
-                                '%s/%s[%s] %s: %s\n',
-                                pkg.xpath('@path').get(0),
-                                file.xpath('@name').get(0),
-                                violation.xpath('@lineNumber').get(0),
-                                violation.xpath('@ruleName').get(0),
-                                violation.xpath('Message/text()').get(0)
+                              '%s/%s[%s] %s: %s\n',
+                              pkg.xpath('@path').get(0),
+                              file.xpath('@name').get(0),
+                              violation.xpath('@lineNumber').get(0),
+                              violation.xpath('@ruleName').get(0),
+                              violation.xpath('Message/text()').get(0)
                             )
                           }
                         }
@@ -510,7 +504,7 @@ SOFTWARE.
                       throw new Exception('CodeNarc violations see above')
                     }
                     println('All ' + xml.xpath('//PackageSummary/@totalFiles').get(0) + ' Groovy files are clean!')
-                    ]]></source>
+                  ]]></source>
                 </configuration>
               </execution>
             </executions>
@@ -539,8 +533,7 @@ SOFTWARE.
                   <goal>update-stylesheets</goal>
                 </goals>
                 <configuration>
-                  <sassSourceDirectory>${basedir}/src/main/scss
-                  </sassSourceDirectory>
+                  <sassSourceDirectory>${basedir}/src/main/scss</sassSourceDirectory>
                   <destination>${project.build.directory}/css</destination>
                 </configuration>
               </execution>
@@ -553,8 +546,7 @@ SOFTWARE.
             <configuration>
               <charset>UTF-8</charset>
               <nosuffix>true</nosuffix>
-              <webappTargetDir>${project.build.outputDirectory}
-              </webappTargetDir>
+              <webappTargetDir>${project.build.outputDirectory}</webappTargetDir>
             </configuration>
             <executions>
               <execution>
@@ -586,8 +578,7 @@ SOFTWARE.
                 </goals>
                 <configuration>
                   <srcFolder>${basedir}/src/main/xsl</srcFolder>
-                  <targetFolder>${project.build.outputDirectory}/xsl
-                  </targetFolder>
+                  <targetFolder>${project.build.outputDirectory}/xsl</targetFolder>
                   <fileExt>
                     <ext>xsl</ext>
                   </fileExt>
@@ -613,9 +604,7 @@ SOFTWARE.
             <artifactId>maven-jar-plugin</artifactId>
             <configuration>
               <archive>
-                <manifestFile>
-                  ${project.build.outputDirectory}/META-INF/MANIFEST.MF
-                </manifestFile>
+                <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
               </archive>
             </configuration>
           </plugin>
@@ -630,8 +619,7 @@ SOFTWARE.
                 </goals>
                 <configuration>
                   <includeScope>runtime</includeScope>
-                  <outputDirectory>${project.build.directory}/deps
-                  </outputDirectory>
+                  <outputDirectory>${project.build.directory}/deps</outputDirectory>
                   <overWriteReleases>true</overWriteReleases>
                   <overWriteSnapshots>true</overWriteSnapshots>
                   <overWriteIfNewer>true</overWriteIfNewer>
