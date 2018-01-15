@@ -14,28 +14,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pm.in;
+package com.zerocracy.bundles.assign_qa_user
 
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.farm.fake.FkProject;
-import com.zerocracy.pm.scope.Wbs;
-import org.junit.Test;
+import com.jcabi.github.Github
+import com.jcabi.github.Issue
+import com.jcabi.github.Repos
+import com.jcabi.xml.XML
+import com.zerocracy.entry.ExtGithub
+import com.zerocracy.jstk.Farm
+import com.zerocracy.jstk.Project
 
-/**
- * Test case for {@link Orders}.
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.10
- * @checkstyle JavadocMethodCheck (500 lines)
- */
-public final class OrdersTest {
-
-    @Test
-    public void assignsAndResigns() throws Exception {
-        final Project project = new FkProject();
-        final Orders orders = new Orders(project).bootstrap();
-        final String job = "gh:yegor256/0pdd#13";
-        new Wbs(project).bootstrap().add(job);
-        orders.assign(job, "yegor256", "just for fun");
-    }
+def exec(Project project, XML xml) {
+  Farm farm = binding.variables.farm
+  Github github = new ExtGithub(farm).value()
+  def repo = github.repos().create(new Repos.RepoCreate('test', false))
+  new Issue.Smart(repo.issues().create('Hello, world', ''))
 }

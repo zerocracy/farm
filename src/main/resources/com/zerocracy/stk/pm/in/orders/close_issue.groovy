@@ -14,28 +14,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pm.in;
+package com.zerocracy.stk.pm.in.orders
 
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.farm.fake.FkProject;
-import com.zerocracy.pm.scope.Wbs;
-import org.junit.Test;
+import com.jcabi.xml.XML
+import com.zerocracy.farm.Assume
+import com.zerocracy.jstk.Project
+import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pm.staff.Roles
+import java.security.SecureRandom
 
-/**
- * Test case for {@link Orders}.
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.10
- * @checkstyle JavadocMethodCheck (500 lines)
- */
-public final class OrdersTest {
-
-    @Test
-    public void assignsAndResigns() throws Exception {
-        final Project project = new FkProject();
-        final Orders orders = new Orders(project).bootstrap();
-        final String job = "gh:yegor256/0pdd#13";
-        new Wbs(project).bootstrap().add(job);
-        orders.assign(job, "yegor256", "just for fun");
-    }
+def exec(Project project, XML xml) {
+  new Assume(project, xml).notPmo()
+  new Assume(project, xml).type('Close issue')
+  def claim = new ClaimIn(xml)
+  def qa = new Roles(project).bootstrap().findByRole('QA')
+  if (qa.empty) {
+    claim.copy()
+      .type('Finish order')
+      .param('reason', 'GitHub issue was closed, order is finished.')
+      .postTo(project)
+  } else {
+    claim.copy()
+      .type('Assign QA')
+      .param('assignee', qa.size() > 1 ? qa[new SecureRandom().nextInt(qa.size() - 1)] : qa.first())
+      .postTo(project)
+  }
 }
