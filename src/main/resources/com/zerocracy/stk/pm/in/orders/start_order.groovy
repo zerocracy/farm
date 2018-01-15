@@ -22,8 +22,6 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
-import com.zerocracy.pm.cost.Boosts
-import com.zerocracy.pm.cost.Ledger
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pm.staff.Roles
@@ -37,14 +35,10 @@ def exec(Project project, XML xml) {
   String login = claim.param('login')
   String reason = claim.param('reason')
   Orders orders = new Orders(project).bootstrap()
-  if (new Ledger(project).bootstrap().deficit()) {
-    return
-  }
   orders.assign(job, login, reason)
   String role = new Wbs(project).bootstrap().role(job)
   String msg
   if (role == 'REV') {
-    new Boosts(project).boost(job, 1)
     String arc = new Roles(project).bootstrap().findByRole('ARC')[0]
     msg = new Par(
       'This pull request %s is assigned to @%s.',
