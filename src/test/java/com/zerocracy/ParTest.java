@@ -39,7 +39,7 @@ public final class ParTest {
                 "in C63314D6Z",
                 "and has %d job(s), as in §1",
                 "see [me](/p/PMO?a=1)",
-                "and gh:test2-0/test4#455",
+                "and gh:test2-0/test.-4#455",
                 "and again %1$s"
             ).say("yegor256", 1),
             Matchers.equalTo(
@@ -50,7 +50,7 @@ public final class ParTest {
                     "and has one job, as in",
                     "[§1](http://datum.zerocracy.com/pages/policy.html#1)",
                     "see [me](http://www.0crat.com/p/PMO?a=1)",
-                    "and [#455](https://github.com/test2-0/test4/issues/455)",
+                    "and [#455](https://github.com/test2-0/test.-4/issues/455)",
                     "and again yegor256"
                 ).asString()
             )

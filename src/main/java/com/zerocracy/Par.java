@@ -99,7 +99,7 @@ public final class Par {
         );
         out = Par.replace(
             out,
-            Pattern.compile("(?<= |^)gh:([a-zA-Z0-9-]+/[a-zA-Z0-9-]+)#(\\d+)"),
+            Pattern.compile("(?<= |^)gh:([a-zA-Z0-9-]+/[a-zA-Z0-9-.]+)#(\\d+)"),
             matcher -> String.format(
                 "[#%s](https://github.com/%s/issues/%1$s)",
                 matcher.group(2), matcher.group(1)
