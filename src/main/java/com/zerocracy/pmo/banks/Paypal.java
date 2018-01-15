@@ -144,7 +144,6 @@ final class Paypal implements Bank {
         final Receiver receiver = new Receiver();
         receiver.setAmount(amount);
         receiver.setEmail(email);
-        receiver.setPaymentType("DIGITALGOODS");
         final PayRequest request = new PayRequest();
         request.setReceiverList(
             new ReceiverList(Collections.singletonList(receiver))
