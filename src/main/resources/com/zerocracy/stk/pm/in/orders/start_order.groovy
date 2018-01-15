@@ -50,7 +50,10 @@ def exec(Project project, XML xml) {
       'This pull request %s is assigned to @%s.',
       'The budget is 15 minutes, see §4.',
       'Please, read §27 and §10 and',
-      'when you decide to accept the changes, inform @%s right in this ticket.'
+      'when you decide to accept the changes,',
+      'inform @%s (the architect) right in this ticket.',
+      'If you decide that this PR should not be accepted ever,',
+      'also inform the architect.'
     ).say(job, login, arc)
   } else {
     msg = new Par(
