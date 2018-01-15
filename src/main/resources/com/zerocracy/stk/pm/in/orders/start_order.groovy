@@ -49,7 +49,7 @@ def exec(Project project, XML xml) {
     msg = new Par(
       'This pull request %s is assigned to @%s.',
       'The budget is 15 minutes, see §4.',
-      'Please, read §27 and §10 and',
+      'Please, read §27 and',
       'when you decide to accept the changes,',
       'inform @%s (the architect) right in this ticket.',
       'If you decide that this PR should not be accepted ever,',
