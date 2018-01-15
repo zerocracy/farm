@@ -131,6 +131,10 @@ public final class QuestionTest {
                     question.matches(),
                     Matchers.equalTo(true)
                 );
+                MatcherAssert.assertThat(
+                    question.code(),
+                    Matchers.equalTo(cmd.xpath("code/text()").get(0))
+                );
                 for (final XML opt : cmd.nodes("opts/opt")) {
                     MatcherAssert.assertThat(
                         question.params(),

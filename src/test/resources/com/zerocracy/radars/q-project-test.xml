@@ -18,11 +18,11 @@ SOFTWARE.
 <test target="q-project.xml">
   <cmd>
     <text>links</text>
-    <code>links.show</code>
+    <code>Show links</code>
   </cmd>
   <cmd>
     <text>link add github yegor256/pdd</text>
-    <code>links.add</code>
+    <code>Add link</code>
     <opts>
       <opt>
         <name>rel</name>
@@ -36,7 +36,7 @@ SOFTWARE.
   </cmd>
   <cmd>
     <text>link remove  github   yegor256/pdd  </text>
-    <code>links.remove</code>
+    <code>Remove link</code>
     <opts>
       <opt>
         <name>rel</name>
