@@ -16,12 +16,11 @@
  */
 package com.zerocracy.radars.github;
 
-import com.jcabi.dynamo.Attributes;
-import com.jcabi.github.Comment;
 import com.jcabi.github.Github;
 import com.jcabi.github.Issue;
 import com.jcabi.github.mock.MkGithub;
 import com.zerocracy.entry.ExtDynamo;
+import com.zerocracy.farm.DyErrors;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.jstk.Farm;
 import com.zerocracy.jstk.SoftException;
@@ -76,34 +75,15 @@ public final class RbSafe implements Rebound {
                 },
                 new FuncOf<>(
                     throwable -> {
-                        final Comment comment = new ThrottledComments(
-                            RbSafe.issue(github, event).comments()
-                        ).post(
-                            new TxtUnrecoverableError(
-                                throwable, new Props(farm)
-                            ).asString()
-                        );
-                        new ExtDynamo(farm).value().table("0crat-errors")
-                            .put(
-                                new Attributes()
-                                    .with(
-                                        "issue",
-                                        String.format(
-                                            "%s#%d",
-                                            comment.issue().repo()
-                                                .coordinates(),
-                                            comment.issue().number()
-                                        )
-                                    )
-                                    .with(
-                                        "comment",
-                                        comment.number()
-                                    )
-                                    .with(
-                                        "created",
-                                        new Comment.Smart(comment)
-                                            .createdAt().getTime()
-                                    )
+                        new DyErrors(new ExtDynamo(farm).value())
+                            .add(
+                                new ThrottledComments(
+                                    RbSafe.issue(github, event).comments()
+                                ).post(
+                                    new TxtUnrecoverableError(
+                                        throwable, new Props(farm)
+                                    ).asString()
+                                )
                         );
                         Sentry.capture(throwable);
                         throw new IOException(throwable);

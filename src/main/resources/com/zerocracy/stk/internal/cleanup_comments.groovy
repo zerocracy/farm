@@ -16,50 +16,26 @@
  */
 package com.zerocracy.stk.internal
 
-import com.amazonaws.services.dynamodbv2.model.AttributeValue
-import com.amazonaws.services.dynamodbv2.model.ComparisonOperator
-import com.amazonaws.services.dynamodbv2.model.Condition
-import com.jcabi.dynamo.QueryValve
-import com.jcabi.github.Coordinates
 import com.jcabi.log.Logger
 import com.jcabi.xml.XML
 import com.zerocracy.entry.ExtDynamo
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
+import com.zerocracy.farm.DyErrors
 import com.zerocracy.farm.props.Props
 import com.zerocracy.jstk.Farm
 import com.zerocracy.jstk.Project
-import java.util.concurrent.TimeUnit
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Ping')
   Farm farm = binding.variables.farm
-  def github = new ExtGithub(farm).value()
   if (new Props(farm).has('//testing')) {
     Logger.info(this, 'skip in testing mode')
     return
   }
-  new ExtDynamo(farm).value().table('0crat-errors').frame()
-    .through(new QueryValve().withLimit(10))
-    .where(
-    'created',
-    new Condition()
-      .withComparisonOperator(ComparisonOperator.LT)
-      .withAttributeValueList(
-      new AttributeValue()
-        .withN(Long.toString(new Date().time - TimeUnit.HOURS.toMillis(72L)))
-    )
-  ).iterator().each { item ->
-    def issue = item.get('issue').s
-    def comment = item.get('comment').n
-    github
-      .repos()
-      .get(new Coordinates.Simple(issue.split('#')[0]))
-      .issues()
-      .get(Integer.valueOf(issue.split('#')[1]))
-      .comments()
-      .get(Integer.valueOf(comment))
-      .remove()
-  }
+  def github = new ExtGithub(farm).value()
+  new DyErrors(new ExtDynamo(farm).value())
+    .iterate(github, 10, 72L)
+    .each { it.remove() }
 }
