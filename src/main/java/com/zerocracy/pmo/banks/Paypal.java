@@ -134,6 +134,7 @@ final class Paypal implements Bank {
      * @param memo Memo
      * @return Request
      * @throws UnsupportedEncodingException If fails
+     * @link https://developer.paypal.com/docs/classic/api/adaptive-payments/Pay_API_Operation/
      */
     private static PayRequest request(final String email,
         final double amount, final String memo)
@@ -143,6 +144,7 @@ final class Paypal implements Bank {
         final Receiver receiver = new Receiver();
         receiver.setAmount(amount);
         receiver.setEmail(email);
+        receiver.setPaymentType("DIGITALGOODS");
         final PayRequest request = new PayRequest();
         request.setReceiverList(
             new ReceiverList(Collections.singletonList(receiver))
@@ -150,6 +152,7 @@ final class Paypal implements Bank {
         request.setSenderEmail("yegor@tpc2.com");
         request.setRequestEnvelope(env);
         request.setCurrencyCode("USD");
+        request.setFeesPayer("SENDER");
         request.setCancelUrl("http://www.zerocracy.com?cancel");
         request.setReturnUrl("http://www.zerocracy.com?return");
         request.setActionType("PAY");
