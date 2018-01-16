@@ -36,19 +36,22 @@ def exec(Project project, XML xml) {
   def duration = Duration.between(orders.startTime(job), ZonedDateTime.now())
   String login = orders.performer(job)
   Estimates estimates = new Estimates(project).bootstrap()
-  def extra = claim.params().with {
-    it.containsKey('quality') && it['quality'] == 'good' ? 15 : 0
+  def quality = claim.params().with {
+    it.containsKey('quality') ? it['quality'] : 'acceptable'
   }
-  ClaimOut out = new ClaimOut()
-    .type('Make payment')
-    .param('job', job)
-    .param('login', login)
-    .param('reason', 'Order was successfully finished')
-    .param('minutes', new Boosts(project).bootstrap().factor(job) * 15 + extra)
-  if (estimates.exists(job)) {
-    out = out.param('cash', estimates.get(job))
+  if (quality == 'good' || quality == 'acceptable') {
+    def extra = quality == 'good' ? 5 : 0
+    ClaimOut out = new ClaimOut()
+      .type('Make payment')
+      .param('job', job)
+      .param('login', login)
+      .param('reason', 'Order was successfully finished')
+      .param('minutes', new Boosts(project).bootstrap().factor(job) * 15 + extra)
+    if (estimates.exists(job)) {
+      out = out.param('cash', estimates.get(job))
+    }
+    out.postTo(project)
   }
-  out.postTo(project)
   orders.resign(job)
   new ClaimOut()
     .type('Order was finished')

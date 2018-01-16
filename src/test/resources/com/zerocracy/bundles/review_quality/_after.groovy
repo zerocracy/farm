@@ -19,6 +19,7 @@ package com.zerocracy.bundles.review_quality
 import com.jcabi.xml.XML
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.in.Orders
+import com.zerocracy.pmo.Awards
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 
@@ -30,13 +31,18 @@ def exec(Project project, XML xml) {
     Matchers.is(false)
   )
   MatcherAssert.assertThat(
-    'job 2 does not exist',
+    'job 2 still exists',
     orders.assigned('gh:test/test#2'),
-    Matchers.is(true)
+    Matchers.is(false)
   )
   MatcherAssert.assertThat(
     'job 3 still exists',
     orders.assigned('gh:test/test#3'),
     Matchers.is(false)
+  )
+  MatcherAssert.assertThat(
+    'qauser received incorrect awards',
+    new Awards(project, 'qauser').bootstrap().total(),
+    Matchers.equalTo(45)
   )
 }

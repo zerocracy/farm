@@ -27,7 +27,6 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('QA review')
   def claim = new ClaimIn(xml)
   def job = claim.param('job')
-  def quality = claim.param('quality')
   def login = claim.author()
   new ClaimOut()
     .type('Make payment')
@@ -36,10 +35,8 @@ def exec(Project project, XML xml) {
     .param('reason', 'QA review')
     .param('minutes', 15)
     .postTo(project)
-  if (quality == 'good' || quality == 'acceptable') {
-    claim.copy()
-      .type('Finish order')
-      .param('reason', 'Passed QA review.')
-      .postTo(project)
-  }
+  claim.copy()
+    .type('Finish order')
+    .param('reason', 'Passed QA review.')
+    .postTo(project)
 }
