@@ -18,9 +18,9 @@ package com.zerocracy.stk.pm.staff.elections
 
 import com.jcabi.log.Logger
 import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.Claims
@@ -28,6 +28,8 @@ import com.zerocracy.pm.cost.Ledger
 import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pm.staff.Elections
 import com.zerocracy.pm.staff.Roles
+import com.zerocracy.pm.staff.ranks.RnkBoost
+import com.zerocracy.pm.staff.ranks.RnkRev
 import com.zerocracy.pm.staff.votes.VsBanned
 import com.zerocracy.pm.staff.votes.VsNoRoom
 import com.zerocracy.pm.staff.votes.VsRate
@@ -35,7 +37,6 @@ import com.zerocracy.pm.staff.votes.VsSpeed
 import com.zerocracy.pm.staff.votes.VsVacation
 import com.zerocracy.pm.staff.votes.VsWorkload
 import com.zerocracy.pmo.Pmo
-import org.cactoos.iterable.Shuffled
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
@@ -53,7 +54,13 @@ def exec(Project project, XML xml) {
   Elections elections = new Elections(project).bootstrap()
   Farm farm = binding.variables.farm
   Project pmo = new Pmo(farm)
-  for (String job : new Shuffled<>(wbs.iterate())) {
+  def jobs = wbs.iterate().toList().with {
+    lst ->
+      [new RnkBoost(project), new RnkRev(project)].each { lst.sort(it) }
+      lst
+  }
+
+  for (String job : jobs) {
     String role = wbs.role(job)
     List<String> logins = roles.findByRole(role)
     if (logins.empty) {
