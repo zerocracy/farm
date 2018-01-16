@@ -42,7 +42,13 @@ import org.xembly.Directives;
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings(
+    {
+        "PMD.AvoidDuplicateLiterals",
+        "PMD.NPathComplexity",
+        "PMD.CyclomaticComplexity"
+    }
+)
 public final class Roles {
 
     /**
@@ -102,6 +108,14 @@ public final class Roles {
      */
     public void assign(final String person, final String role)
         throws IOException {
+        if (!role.matches("DEV|REV|QA|PO|TST|ARC")) {
+            throw new SoftException(
+                new Par(
+                    "The role %s is not one of those we recognize.",
+                    "Try to use DEV, REV, ARC, QA, PO, or TST."
+                ).say(role)
+            );
+        }
         if ("REV".equals(role) && this.hasRole(person, "ARC")) {
             throw new SoftException(
                 new Par(

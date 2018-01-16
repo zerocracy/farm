@@ -78,6 +78,19 @@ public final class People {
     }
 
     /**
+     * Everybody.
+     * @return List of everybody
+     * @throws IOException If fails
+     */
+    public Iterable<String> everybody() throws IOException {
+        try (final Item item = this.item()) {
+            return new Xocument(item.path()).xpath(
+                "/people/person/@id"
+            );
+        }
+    }
+
+    /**
      * Touch this dude.
      * @param uid User ID
      * @throws IOException If fails

@@ -144,10 +144,8 @@ public final class TkApp extends TkWrap {
                                                                         .toString()
                                                                 )
                                                             ),
-                                                            new FkRegex(
-                                                                "/board",
-                                                                new TkBoard(farm)
-                                                            ),
+                                                            new FkRegex("/board", new TkBoard(farm)),
+                                                            new FkRegex("/gang", new TkGang(farm)),
                                                             new FkRegex(
                                                                 "/me",
                                                                 (Take) req -> new RsRedirect(
