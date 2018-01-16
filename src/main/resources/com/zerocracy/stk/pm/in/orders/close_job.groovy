@@ -25,7 +25,7 @@ import java.security.SecureRandom
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Close issue')
+  new Assume(project, xml).type('Close job')
   def claim = new ClaimIn(xml)
   def qa = new Roles(project).bootstrap().findByRole('QA')
   if (qa.empty) {

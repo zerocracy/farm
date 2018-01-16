@@ -18,7 +18,7 @@ SOFTWARE.
 <claims xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/zerocracy/datum/0.37/xsd/pm/claims.xsd" version="0.1" updated="2017-03-27T11:18:09.228Z">
   <claim id="3">
     <created>2017-03-27T11:18:09.228Z</created>
-    <type>Close issue</type>
+    <type>Close job</type>
     <author>yegor256</author>
     <token>test;C123;yegor256</token>
     <params>
