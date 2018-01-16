@@ -17,9 +17,9 @@
 package com.zerocracy.radars.github;
 
 import com.jcabi.github.Comment;
+import com.zerocracy.Farm;
 import com.zerocracy.Par;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.SoftException;
+import com.zerocracy.SoftException;
 import java.io.IOException;
 import java.util.regex.Pattern;
 

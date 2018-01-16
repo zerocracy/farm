@@ -17,8 +17,7 @@
 package com.zerocracy;
 
 import com.jcabi.log.Logger;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.farm.fake.FkFarm;
+import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.pmo.Catalog;
 import java.io.IOException;
 import java.util.regex.Matcher;

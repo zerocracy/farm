@@ -16,10 +16,10 @@
  */
 package com.zerocracy.pm.in;
 
+import com.zerocracy.Item;
+import com.zerocracy.Project;
+import com.zerocracy.SoftException;
 import com.zerocracy.Xocument;
-import com.zerocracy.jstk.Item;
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.SoftException;
 import com.zerocracy.pm.cost.Boosts;
 import com.zerocracy.pm.cost.Estimates;
 import com.zerocracy.pm.cost.Rates;

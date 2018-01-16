@@ -16,10 +16,10 @@
  */
 package com.zerocracy.farm.props;
 
+import com.zerocracy.Farm;
+import com.zerocracy.Project;
+import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.guts.Guts;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.farm.fake.FkFarm;
 import java.io.IOException;
 import lombok.EqualsAndHashCode;
 import org.cactoos.iterable.Mapped;

@@ -16,10 +16,10 @@
  */
 package com.zerocracy.pm.cost;
 
+import com.zerocracy.Item;
+import com.zerocracy.Project;
 import com.zerocracy.Xocument;
-import com.zerocracy.jstk.Item;
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.cash.Cash;
+import com.zerocracy.cash.Cash;
 import java.io.IOException;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.UncheckedScalar;

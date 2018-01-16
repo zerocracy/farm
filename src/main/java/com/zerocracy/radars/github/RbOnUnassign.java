@@ -19,8 +19,8 @@ package com.zerocracy.radars.github;
 
 import com.jcabi.github.Github;
 import com.jcabi.github.Issue;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Project;
+import com.zerocracy.Farm;
+import com.zerocracy.Project;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.in.Orders;
 import java.io.IOException;

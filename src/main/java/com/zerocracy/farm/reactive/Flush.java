@@ -16,7 +16,7 @@
  */
 package com.zerocracy.farm.reactive;
 
-import com.zerocracy.jstk.Project;
+import com.zerocracy.Project;
 import java.io.Closeable;
 import org.cactoos.Proc;
 import org.cactoos.Scalar;

@@ -17,7 +17,7 @@
 package com.zerocracy.radars.github;
 
 import com.jcabi.github.Comment;
-import com.zerocracy.jstk.Farm;
+import com.zerocracy.Farm;
 import java.io.IOException;
 
 /**

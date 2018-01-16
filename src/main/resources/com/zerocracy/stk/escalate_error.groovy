@@ -19,8 +19,8 @@ package com.zerocracy.stk
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
 import com.zerocracy.farm.props.Props
-import com.zerocracy.jstk.Farm
-import com.zerocracy.jstk.Project
+import com.zerocracy.Farm
+import com.zerocracy.Project
 import com.zerocracy.pm.ClaimIn
 import io.sentry.Sentry
 import io.sentry.event.Event

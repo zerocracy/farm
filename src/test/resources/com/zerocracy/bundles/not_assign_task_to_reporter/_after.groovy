@@ -17,7 +17,7 @@
 package com.zerocracy.bundles.not_assign_task_to_reporter
 
 import com.jcabi.xml.XML
-import com.zerocracy.jstk.Project
+import com.zerocracy.Project
 import com.zerocracy.pm.staff.Elections
 
 def exec(Project project, XML xml) {

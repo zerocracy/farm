@@ -17,8 +17,8 @@
 package com.zerocracy.farm.sync;
 
 import com.jcabi.log.Logger;
-import com.zerocracy.jstk.Item;
-import com.zerocracy.jstk.Project;
+import com.zerocracy.Item;
+import com.zerocracy.Project;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;

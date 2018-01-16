@@ -17,7 +17,7 @@
 package com.zerocracy.bundles.assign_qa_user
 
 import com.jcabi.xml.XML
-import com.zerocracy.jstk.Project
+import com.zerocracy.Project
 import com.zerocracy.pm.scope.Wbs
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers

@@ -16,8 +16,8 @@
  */
 package com.zerocracy.farm.strict;
 
-import com.zerocracy.jstk.Item;
-import com.zerocracy.jstk.Project;
+import com.zerocracy.Item;
+import com.zerocracy.Project;
 import java.io.IOException;
 import java.util.regex.Pattern;
 import lombok.EqualsAndHashCode;

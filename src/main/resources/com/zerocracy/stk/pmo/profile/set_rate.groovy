@@ -19,10 +19,10 @@ package com.zerocracy.stk.pmo.profile
 import com.jcabi.xml.XML
 import com.zerocracy.Par
 import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Project
-import com.zerocracy.jstk.SoftException
-import com.zerocracy.jstk.cash.Cash
-import com.zerocracy.jstk.cash.CashParsingException
+import com.zerocracy.Project
+import com.zerocracy.SoftException
+import com.zerocracy.cash.Cash
+import com.zerocracy.cash.CashParsingException
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.People
 

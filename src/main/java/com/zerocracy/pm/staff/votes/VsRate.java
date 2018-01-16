@@ -17,8 +17,8 @@
 package com.zerocracy.pm.staff.votes;
 
 import com.jcabi.log.Logger;
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.cash.Cash;
+import com.zerocracy.Project;
+import com.zerocracy.cash.Cash;
 import com.zerocracy.pm.cost.Rates;
 import com.zerocracy.pm.staff.Votes;
 import java.io.IOException;

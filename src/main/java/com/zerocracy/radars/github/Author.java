@@ -17,7 +17,7 @@
 package com.zerocracy.radars.github;
 
 import com.jcabi.github.User;
-import com.zerocracy.jstk.Farm;
+import com.zerocracy.Farm;
 import com.zerocracy.pmo.GoodPeople;
 import com.zerocracy.pmo.People;
 import java.io.IOException;

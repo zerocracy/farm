@@ -18,7 +18,7 @@ package com.zerocracy.stk
 
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Project
+import com.zerocracy.Project
 import com.zerocracy.pm.ClaimIn
 
 def exec(Project project, XML xml) {

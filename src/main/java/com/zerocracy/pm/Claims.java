@@ -18,9 +18,9 @@ package com.zerocracy.pm;
 
 import com.jcabi.aspects.Tv;
 import com.jcabi.xml.XML;
+import com.zerocracy.Item;
+import com.zerocracy.Project;
 import com.zerocracy.Xocument;
-import com.zerocracy.jstk.Item;
-import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Comparator;

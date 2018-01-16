@@ -16,8 +16,8 @@
  */
 package com.zerocracy.tk;
 
+import com.zerocracy.Farm;
 import com.zerocracy.farm.props.Props;
-import com.zerocracy.jstk.Farm;
 import java.io.IOException;
 import java.util.regex.Pattern;
 import org.takes.Take;

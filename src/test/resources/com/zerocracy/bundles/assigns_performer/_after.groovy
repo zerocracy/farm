@@ -17,7 +17,7 @@
 package com.zerocracy.bundles.assigns_performer
 
 import com.jcabi.xml.XML
-import com.zerocracy.jstk.Project
+import com.zerocracy.Project
 import com.zerocracy.pm.in.Orders
 
 def exec(Project project, XML xml) {

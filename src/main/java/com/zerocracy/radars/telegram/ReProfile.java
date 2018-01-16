@@ -17,7 +17,7 @@
 package com.zerocracy.radars.telegram;
 
 import com.jcabi.xml.XMLDocument;
-import com.zerocracy.jstk.Farm;
+import com.zerocracy.Farm;
 import com.zerocracy.pmo.Pmo;
 import com.zerocracy.radars.ClaimOnQuestion;
 import com.zerocracy.radars.Question;

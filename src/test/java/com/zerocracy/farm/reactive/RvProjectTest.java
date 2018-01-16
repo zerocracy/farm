@@ -17,11 +17,11 @@
 package com.zerocracy.farm.reactive;
 
 import com.jcabi.aspects.Tv;
+import com.zerocracy.Farm;
+import com.zerocracy.Project;
 import com.zerocracy.RunsInThreads;
+import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.sync.SyncFarm;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.farm.fake.FkFarm;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
 import com.zerocracy.pmo.Pmo;

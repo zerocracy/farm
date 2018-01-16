@@ -16,7 +16,7 @@
  */
 package com.zerocracy.pmo.banks;
 
-import com.zerocracy.jstk.cash.Cash;
+import com.zerocracy.cash.Cash;
 import java.io.IOException;
 
 /**

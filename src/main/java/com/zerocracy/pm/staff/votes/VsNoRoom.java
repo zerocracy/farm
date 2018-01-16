@@ -17,7 +17,7 @@
 package com.zerocracy.pm.staff.votes;
 
 import com.zerocracy.Par;
-import com.zerocracy.jstk.Project;
+import com.zerocracy.Project;
 import com.zerocracy.pm.staff.Votes;
 import com.zerocracy.pmo.Agenda;
 import com.zerocracy.pmo.Awards;

@@ -22,7 +22,7 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.Sorts;
 import com.zerocracy.Par;
-import com.zerocracy.jstk.Project;
+import com.zerocracy.Project;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;

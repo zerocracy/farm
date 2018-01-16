@@ -16,11 +16,11 @@
  */
 package com.zerocracy.pmo.banks;
 
+import com.zerocracy.Farm;
 import com.zerocracy.Par;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.SoftException;
-import com.zerocracy.jstk.cash.Cash;
+import com.zerocracy.Project;
+import com.zerocracy.SoftException;
+import com.zerocracy.cash.Cash;
 import com.zerocracy.pm.cost.Ledger;
 import com.zerocracy.pmo.People;
 import java.io.IOException;

@@ -17,10 +17,10 @@
 package com.zerocracy.entry;
 
 import com.jcabi.aspects.Loggable;
+import com.zerocracy.Farm;
 import com.zerocracy.farm.S3Farm;
 import com.zerocracy.farm.SmartFarm;
 import com.zerocracy.farm.props.Props;
-import com.zerocracy.jstk.Farm;
 import com.zerocracy.radars.github.GithubRoutine;
 import com.zerocracy.radars.github.TkGithub;
 import com.zerocracy.radars.slack.SlackRadar;

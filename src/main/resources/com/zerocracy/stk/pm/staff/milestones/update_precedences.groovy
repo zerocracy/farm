@@ -18,7 +18,7 @@ package com.zerocracy.stk.pm.staff.milestones
 
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Project
+import com.zerocracy.Project
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()

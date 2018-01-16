@@ -20,8 +20,8 @@ import com.jcabi.xml.XML
 import com.ullink.slack.simpleslackapi.SlackSession
 import com.ullink.slack.simpleslackapi.SlackUser
 import com.zerocracy.entry.ExtSlack
-import com.zerocracy.jstk.Farm
-import com.zerocracy.jstk.Project
+import com.zerocracy.Farm
+import com.zerocracy.Project
 import org.mockito.Mockito
 
 def exec(Project project, XML xml) {

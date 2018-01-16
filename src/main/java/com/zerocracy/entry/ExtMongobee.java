@@ -20,7 +20,7 @@ import com.github.mongobee.Mongobee;
 import com.github.mongobee.exception.MongobeeException;
 import com.github.zafarkhaja.semver.Version;
 import com.mongodb.MongoClient;
-import com.zerocracy.jstk.Farm;
+import com.zerocracy.Farm;
 import java.io.IOException;
 import org.bson.BsonDocument;
 import org.bson.BsonString;

@@ -17,9 +17,9 @@
 package com.zerocracy.farm.guts;
 
 import com.jcabi.matchers.XhtmlMatchers;
-import com.zerocracy.jstk.Item;
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.farm.fake.FkFarm;
+import com.zerocracy.Item;
+import com.zerocracy.Project;
+import com.zerocracy.farm.fake.FkFarm;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;

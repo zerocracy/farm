@@ -17,7 +17,7 @@
 package com.zerocracy.bundles.assign_role
 
 import com.jcabi.xml.XML
-import com.zerocracy.jstk.Project
+import com.zerocracy.Project
 import com.zerocracy.pm.staff.Roles
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers

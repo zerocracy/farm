@@ -18,11 +18,11 @@ package com.zerocracy.farm.reactive;
 
 import com.jcabi.log.VerboseRunnable;
 import com.jcabi.log.VerboseThreads;
+import com.zerocracy.Farm;
+import com.zerocracy.Project;
 import com.zerocracy.ShutUp;
+import com.zerocracy.Stakeholder;
 import com.zerocracy.farm.guts.Guts;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.Stakeholder;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

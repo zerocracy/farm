@@ -16,7 +16,7 @@
  */
 package com.zerocracy.radars.github;
 
-import com.zerocracy.jstk.Farm;
+import com.zerocracy.Farm;
 import java.io.IOException;
 import javax.json.JsonObject;
 

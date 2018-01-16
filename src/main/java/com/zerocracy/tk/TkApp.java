@@ -17,8 +17,8 @@
 package com.zerocracy.tk;
 
 import com.jcabi.log.Logger;
+import com.zerocracy.Farm;
 import com.zerocracy.farm.props.Props;
-import com.zerocracy.jstk.Farm;
 import com.zerocracy.tk.profile.TkAgenda;
 import com.zerocracy.tk.profile.TkAwards;
 import com.zerocracy.tk.profile.TkProfile;

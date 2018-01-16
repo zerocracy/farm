@@ -17,7 +17,7 @@
 package com.zerocracy.entry;
 
 import com.ullink.slack.simpleslackapi.SlackSession;
-import com.zerocracy.jstk.Farm;
+import com.zerocracy.Farm;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.cactoos.Scalar;

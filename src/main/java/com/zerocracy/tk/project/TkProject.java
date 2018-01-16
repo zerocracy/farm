@@ -16,9 +16,9 @@
  */
 package com.zerocracy.tk.project;
 
+import com.zerocracy.Farm;
+import com.zerocracy.Project;
 import com.zerocracy.farm.props.Props;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.cost.Estimates;
 import com.zerocracy.pm.cost.Ledger;
 import com.zerocracy.pm.cost.Rates;

@@ -28,7 +28,7 @@ import com.jcabi.github.Issue;
 import com.jcabi.github.Repo;
 import com.jcabi.github.Smarts;
 import com.jcabi.log.Logger;
-import com.zerocracy.jstk.Farm;
+import com.zerocracy.Farm;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Iterator;
