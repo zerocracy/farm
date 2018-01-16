@@ -43,6 +43,12 @@ SOFTWARE.
           <th>
             <xsl:text>User</xsl:text>
           </th>
+          <th>
+            <xsl:text>Mentor</xsl:text>
+          </th>
+          <th>
+            <xsl:text>Rate</xsl:text>
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -63,6 +69,19 @@ SOFTWARE.
         <a href="/u/{login}">
           <xsl:text>z</xsl:text>
         </a>
+      </td>
+      <td>
+        <a href="https://github.com/{mentor}">
+          <xsl:text>@</xsl:text>
+          <xsl:value-of select="mentor"/>
+        </a>
+        <xsl:text>/</xsl:text>
+        <a href="/u/{mentor}">
+          <xsl:text>z</xsl:text>
+        </a>
+      </td>
+      <td style="text-align:right;">
+        <xsl:value-of select="rate"/>
       </td>
     </tr>
   </xsl:template>

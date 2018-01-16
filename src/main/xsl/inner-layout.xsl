@@ -47,6 +47,11 @@ SOFTWARE.
             </a>
           </li>
           <li>
+            <a href="http://www.0crat.com/gang">
+              <xsl:text>Gang</xsl:text>
+            </a>
+          </li>
+          <li>
             <a href="http://datum.zerocracy.com/pages/policy.html">
               <xsl:text>Policy</xsl:text>
             </a>
