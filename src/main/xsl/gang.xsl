@@ -29,7 +29,10 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="people">
     <p>
-      <xsl:text>To join us you have</xsl:text>
+      <xsl:text>There are </xsl:text>
+      <xsl:value-of select="count(user)"/>
+      <xsl:text> users already registered with us.</xsl:text>
+      <xsl:text> To join us too you have</xsl:text>
       <xsl:text> to apply, by asking Zerocrat in a chat,</xsl:text>
       <xsl:text> see </xsl:text>
       <a href="http://datum.zerocracy.com/pages/policy.html#2">
@@ -45,15 +48,27 @@ SOFTWARE.
           </th>
           <th>
             <xsl:text>Mentor/</xsl:text>
-            <a href="http://datum.zerocracy.com/pages/policy.html#1">
-              <xsl:text>&#xA7;1</xsl:text>
-            </a>
+            <sub>
+              <xsl:text>/</xsl:text>
+              <a href="http://datum.zerocracy.com/pages/policy.html#1">
+                <xsl:text>&#xA7;1</xsl:text>
+              </a>
+            </sub>
           </th>
           <th>
-            <xsl:text>Rate/</xsl:text>
-            <a href="http://datum.zerocracy.com/pages/policy.html#16">
-              <xsl:text>&#xA7;16</xsl:text>
-            </a>
+            <xsl:text>Rate</xsl:text>
+            <sub>
+              <xsl:text>/</xsl:text>
+              <a href="http://datum.zerocracy.com/pages/policy.html#16">
+                <xsl:text>&#xA7;16</xsl:text>
+              </a>
+            </sub>
+          </th>
+          <th>
+            <xsl:text>Reputation</xsl:text>
+          </th>
+          <th>
+            <xsl:text>Agenda</xsl:text>
           </th>
         </tr>
       </thead>
@@ -71,20 +86,27 @@ SOFTWARE.
           <xsl:text>@</xsl:text>
           <xsl:value-of select="login"/>
         </a>
-        <xsl:text>/</xsl:text>
-        <a href="/u/{login}">
-          <xsl:text>z</xsl:text>
-        </a>
+        <sub>
+          <xsl:text>/</xsl:text>
+          <a href="/u/{login}">
+            <xsl:text>z</xsl:text>
+          </a>
+        </sub>
+        <xsl:if test="vacation">
+          <xsl:text>(on vacation)</xsl:text>
+        </xsl:if>
       </td>
       <td>
         <a href="https://github.com/{mentor}">
           <xsl:text>@</xsl:text>
           <xsl:value-of select="mentor"/>
         </a>
-        <xsl:text>/</xsl:text>
-        <a href="/u/{mentor}">
-          <xsl:text>z</xsl:text>
-        </a>
+        <sub>
+          <xsl:text>/</xsl:text>
+          <a href="/u/{mentor}">
+            <xsl:text>z</xsl:text>
+          </a>
+        </sub>
       </td>
       <td style="text-align:right;">
         <xsl:choose>
@@ -95,6 +117,12 @@ SOFTWARE.
             <xsl:text>?</xsl:text>
           </xsl:otherwise>
         </xsl:choose>
+      </td>
+      <td style="text-align:right;">
+        <xsl:text>?</xsl:text>
+      </td>
+      <td style="text-align:right;">
+        <xsl:text>?</xsl:text>
       </td>
     </tr>
   </xsl:template>
