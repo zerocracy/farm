@@ -76,20 +76,10 @@ public final class DyErrors {
             .table(DyErrors.TABLE)
             .put(
                 new Attributes()
-                    .with(
-                        DyErrors.ATTR_COMMENT,
-                        String.format(
-                            "%s#%d#%d",
-                            comment.issue().repo()
-                                .coordinates(),
-                            comment.issue().number(),
-                            comment.number()
-                        )
-                    )
+                    .with(DyErrors.ATTR_COMMENT, DyErrors.hash(comment))
                     .with(
                         DyErrors.ATTR_CREATED,
-                        new Comment.Smart(comment)
-                            .createdAt().getTime()
+                        new Comment.Smart(comment).createdAt().getTime()
                     )
             );
     }
@@ -128,6 +118,20 @@ public final class DyErrors {
     }
 
     /**
+     * Remove a comment from table.
+     * @param comment Comment to remove
+     * @throws IOException If fails
+     */
+    public void remove(final Comment comment) throws IOException {
+        this.region
+            .table(DyErrors.TABLE)
+            .delete(
+                new Attributes()
+                    .with(DyErrors.ATTR_COMMENT, DyErrors.hash(comment))
+            );
+    }
+
+    /**
      * Make a Github comment from DynamoDB item.
      * @param github Github client
      * @param item DynamoDB item
@@ -145,5 +149,20 @@ public final class DyErrors {
             .get(Integer.valueOf(parts[1]))
             .comments()
             .get(Integer.valueOf(parts[2]));
+    }
+
+    /**
+     * Hash key for comment.
+     * @param comment A comment
+     * @return Hash string
+     */
+    private static String hash(final Comment comment) {
+        return String.format(
+            "%s#%d#%d",
+            comment.issue().repo()
+                .coordinates(),
+            comment.issue().number(),
+            comment.number()
+        );
     }
 }

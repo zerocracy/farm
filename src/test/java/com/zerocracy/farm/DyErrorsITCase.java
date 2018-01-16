@@ -54,7 +54,10 @@ public final class DyErrorsITCase {
         final Issue issue = repo.issues()
             .create("A bug", "RuntimeException in main()");
         final Comment comment = issue.comments().post("error");
+        final Comment deleted = issue.comments().post("to-delete");
         errors.add(comment);
+        errors.add(deleted);
+        errors.remove(deleted);
         MatcherAssert.assertThat(
             "Error comment was not found",
             errors.iterate(github, 2, 0L),
