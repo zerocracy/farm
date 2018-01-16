@@ -17,8 +17,9 @@
 package com.zerocracy.farm;
 
 import com.jcabi.xml.XML;
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.SoftException;
+import com.zerocracy.Par;
+import com.zerocracy.Project;
+import com.zerocracy.SoftException;
 import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.staff.Roles;
 import java.io.IOException;
@@ -140,29 +141,27 @@ public final class Assume {
                 .allRoles(claim.author());
             if (mine.isEmpty()) {
                 throw new SoftException(
-                    String.format(
-                        // @checkstyle LineLength (1 line)
-                        "You need to have one of these roles in order to do what you're trying to do: %s. I'm sorry to say this, but at the moment you've got no roles in this project (your GitHub login is \"%s\").",
-                        String.join(", ", roles),
-                        claim.author()
-                    )
+                    new Par(
+                        "You need to have one of these roles",
+                        "in order to do what you're trying to do: %s.",
+                        "I'm sorry to say this, but at the moment you've got",
+                        "no roles in this project",
+                        "(your GitHub login is \"%s\")."
+                    ).say(String.join(", ", roles), claim.author())
                 );
             }
             throw new SoftException(
-                String.format(
-                    // @checkstyle LineLength (1 line)
-                    "You can't do that, unless you have one of these roles: %s. Your current roles are: %s.",
-                    String.join(", ", roles),
-                    String.join(", ", mine)
-                )
+                new Par(
+                    "You can't do that, unless you have one of these roles:",
+                    "%s. Your current roles are: %s."
+                ).say(String.join(", ", roles), String.join(", ", mine))
             );
         }
         throw new SoftException(
-            String.format(
-                // @checkstyle LineLength (1 line)
-                "You're not allowed to do this, you need one of these roles: %s.",
-                String.join(", ", roles)
-            )
+            new Par(
+                "You're not allowed to do this,",
+                "you need one of these roles: %s."
+            ).say(String.join(", ", roles))
         );
     }
 

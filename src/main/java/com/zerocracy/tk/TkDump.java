@@ -16,7 +16,7 @@
  */
 package com.zerocracy.tk;
 
-import com.zerocracy.jstk.Farm;
+import com.zerocracy.Farm;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -66,12 +66,19 @@ public final class TkDump implements Take {
                 )
             );
         }
+        final File file = new File("./heapdump.hprof");
+        if (!file.exists()) {
+            throw new RsForward(
+                new RsFlash(
+                    String.format("File doesn't exist: %s", file),
+                    Level.SEVERE
+                )
+            );
+        }
         return new RsWithType(
             new RsWithBody(
                 new BufferedInputStream(
-                    new FileInputStream(
-                        new File("./heapdump.hprof")
-                    )
+                    new FileInputStream(file)
                 )
             ),
             "application/octet-stream"

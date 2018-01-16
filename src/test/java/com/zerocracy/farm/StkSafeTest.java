@@ -17,11 +17,11 @@
 package com.zerocracy.farm;
 
 import com.jcabi.xml.XML;
+import com.zerocracy.Project;
+import com.zerocracy.SoftException;
+import com.zerocracy.Stakeholder;
+import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.PropsFarm;
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.SoftException;
-import com.zerocracy.jstk.Stakeholder;
-import com.zerocracy.jstk.farm.fake.FkProject;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
 import org.hamcrest.MatcherAssert;
@@ -70,7 +70,7 @@ public final class StkSafeTest {
         ).process(project, claim);
         MatcherAssert.assertThat(
             new Claims(project).iterate(),
-            Matchers.iterableWithSize(1)
+            Matchers.iterableWithSize(2)
         );
     }
 

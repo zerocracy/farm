@@ -16,13 +16,13 @@
  */
 package com.zerocracy.farm.reactive;
 
+import com.zerocracy.Farm;
+import com.zerocracy.Project;
+import com.zerocracy.SoftException;
 import com.zerocracy.farm.MismatchException;
+import com.zerocracy.farm.fake.FkFarm;
+import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.PropsFarm;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.SoftException;
-import com.zerocracy.jstk.farm.fake.FkFarm;
-import com.zerocracy.jstk.farm.fake.FkProject;
 import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.Claims;
 import com.zerocracy.pmo.Pmo;
@@ -50,7 +50,7 @@ public final class StkGroovyTest {
             new InputOf(
                 String.join(
                     "\n",
-                    "import com.zerocracy.jstk.Project",
+                    "import com.zerocracy.Project",
                     "import com.jcabi.xml.XML",
                     "import com.zerocracy.pm.ClaimOut",
                     "import com.zerocracy.farm.props.Props",
@@ -78,8 +78,8 @@ public final class StkGroovyTest {
             new InputOf(
                 String.join(
                     "\n",
-                    "import com.zerocracy.jstk.Project ",
-                    "import com.zerocracy.jstk.SoftException",
+                    "import com.zerocracy.Project ",
+                    "import com.zerocracy.SoftException",
                     "import com.jcabi.xml.XML ",
                     "def exec(Project project, XML xml) { ",
                     "throw new SoftException('intended')",
@@ -98,7 +98,7 @@ public final class StkGroovyTest {
             new InputOf(
                 String.join(
                     "\n",
-                    "import com.zerocracy.jstk.Project  ",
+                    "import com.zerocracy.Project  ",
                     "import com.zerocracy.farm.MismatchException",
                     "import com.jcabi.xml.XML  ",
                     "def exec(Project project, XML xml) {  ",
@@ -118,7 +118,7 @@ public final class StkGroovyTest {
                 new InputOf(
                     String.join(
                         "\n",
-                        "import com.zerocracy.jstk.Project   ",
+                        "import com.zerocracy.Project   ",
                         "import com.jcabi.xml.XML   ",
                         "def exec(Project project, XML xml) {   ",
                         "throw new IllegalStateException('boom!')",

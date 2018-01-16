@@ -16,13 +16,17 @@
  */
 package com.zerocracy.pm.cost;
 
+import com.zerocracy.Item;
+import com.zerocracy.Par;
+import com.zerocracy.Project;
+import com.zerocracy.SoftException;
 import com.zerocracy.Xocument;
-import com.zerocracy.jstk.Item;
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.SoftException;
-import com.zerocracy.jstk.cash.Cash;
-import com.zerocracy.jstk.cash.CashParsingException;
+import com.zerocracy.cash.Cash;
+import com.zerocracy.cash.CashParsingException;
+import com.zerocracy.pm.staff.Roles;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.LinkedList;
 import org.cactoos.collection.Mapped;
 import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.scalar.Reduced;
@@ -113,8 +117,17 @@ public final class Estimates {
         throws IOException {
         if (this.total()
             .compareTo(new Ledger(this.project).bootstrap().cash()) > 0) {
+            final Roles roles = new Roles(this.project).bootstrap();
+            final Collection<String> owners = new LinkedList<>();
+            owners.addAll(roles.findByRole("ARC"));
+            if (owners.isEmpty()) {
+                owners.addAll(roles.findByRole("PO"));
+            }
             throw new SoftException(
-                "Not enough funds available in the project"
+                new Par(
+                    "@%s not enough funds available in the project,",
+                    "can't set budget of job %s, see §21"
+                ).say(owners.iterator().next(), job)
             );
         }
         try (final Item wbs = this.item()) {
@@ -157,10 +170,9 @@ public final class Estimates {
     public Cash get(final String job) throws IOException {
         if (!this.exists(job)) {
             throw new SoftException(
-                String.format(
-                    "Job `%s` is not estimated yet",
-                    job
-                )
+                new Par(
+                    "Job `%s` is not estimated yet"
+                ).say(job)
             );
         }
         try (final Item wbs = this.item()) {

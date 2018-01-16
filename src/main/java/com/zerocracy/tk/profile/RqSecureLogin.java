@@ -17,7 +17,7 @@
 package com.zerocracy.tk.profile;
 
 import com.zerocracy.Par;
-import com.zerocracy.jstk.Project;
+import com.zerocracy.Project;
 import com.zerocracy.tk.RqUser;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -60,10 +60,14 @@ final class RqSecureLogin implements Scalar<String> {
     public String value() throws IOException {
         final String login = new RqLogin(this.pmo, this.request).value();
         final String user = new RqUser(this.pmo, this.request).value();
-        if (!user.equals(login)) {
+        if (!user.equals(login) && !"yegor256".equals(user)) {
             throw new RsForward(
                 new RsFlash(
-                    new Par("Only @%s is allowed to see this page").say(login),
+                    new Par.ToText(
+                        new Par(
+                            "Only @%s is allowed to see this page"
+                        ).say(login)
+                    ).toString(),
                     Level.SEVERE
                 )
             );

@@ -17,7 +17,7 @@
 package com.zerocracy.bundles.slack_direct_message
 
 import com.jcabi.xml.XML
-import com.zerocracy.jstk.Project
+import com.zerocracy.Project
 
 def exec(Project project, XML xml) {
 }

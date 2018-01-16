@@ -16,7 +16,7 @@
  */
 package com.zerocracy.radars.telegram;
 
-import com.zerocracy.jstk.Farm;
+import com.zerocracy.Farm;
 import java.io.IOException;
 import org.telegram.telegrambots.api.objects.Update;
 

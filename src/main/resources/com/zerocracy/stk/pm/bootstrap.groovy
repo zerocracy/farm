@@ -19,8 +19,9 @@ package com.zerocracy.stk.pm
 import com.jcabi.xml.XML
 import com.zerocracy.Par
 import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Project
-import com.zerocracy.jstk.SoftException
+import com.zerocracy.Farm
+import com.zerocracy.Project
+import com.zerocracy.SoftException
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.staff.Roles
@@ -34,6 +35,7 @@ def exec(Project project, XML xml) {
   String role = 'PO'
   if (roles.empty) {
     roles.assign(author, role)
+    roles.assign(author, 'ARC')
     new ClaimOut()
       .type('Role was assigned')
       .param('login', author)
@@ -47,14 +49,17 @@ def exec(Project project, XML xml) {
         .postTo(project)
     }
     if (claim.hasToken()) {
+      Farm farm = binding.variables.farm
       claim.reply(
         new Par(
+          farm,
           'I\'m ready to manage the %s project.',
           'When you\'re ready, you can start giving me commands,',
           'always prefixing your messages with my name.',
           'All project artifacts are [here](/p/%1$s).',
           'Start with linking your project with GitHub repositories,',
-          'as explained in §17.'
+          'as explained in §17. I just assigned you to both ARC and PO',
+          'roles.'
         ).say(project.pid())
       ).postTo(project)
     }

@@ -19,23 +19,23 @@ package com.zerocracy.stk.pmo.profile
 import com.jcabi.xml.XML
 import com.zerocracy.Par
 import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Project
+import com.zerocracy.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pmo.People
 
-def exec(Project project, XML xml) {
-  new Assume(project, xml).isPmo()
-  new Assume(project, xml).type('Invite a friend')
+def exec(Project pmo, XML xml) {
+  new Assume(pmo, xml).isPmo()
+  new Assume(pmo, xml).type('Invite a friend')
   ClaimIn claim = new ClaimIn(xml)
   String login = claim.param('login')
-  People people = new People(project).bootstrap()
+  People people = new People(pmo).bootstrap()
   people.invite(login, claim.author())
   claim.reply(
     new Par(
       'Thanks, @%s can now work with us, and you are the mentor, see §1',
     ).say(login)
-  ).postTo(project)
+  ).postTo(pmo)
   new ClaimOut()
     .type('Notify user')
     .token("user;${login}")
@@ -46,5 +46,5 @@ def exec(Project project, XML xml) {
         'You can now apply to the projects, see §2.'
       ).say(claim.author())
     )
-    .postTo(project)
+    .postTo(pmo)
 }

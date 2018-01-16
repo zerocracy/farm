@@ -17,8 +17,7 @@
 package com.zerocracy;
 
 import com.jcabi.log.Logger;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.farm.fake.FkFarm;
+import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.pmo.Catalog;
 import java.io.IOException;
 import java.util.regex.Matcher;
@@ -79,7 +78,7 @@ public final class Par {
         out = Par.replace(
             out, Pattern.compile("(?<= |^)@([a-z-0-9]{3,})"),
             matcher -> String.format(
-                "[%s](http://www.0crat.com/u/%s)",
+                "%s[/z](http://www.0crat.com/u/%s)",
                 matcher.group(0), matcher.group(1)
             )
         );
@@ -98,7 +97,8 @@ public final class Par {
             }
         );
         out = Par.replace(
-            out, Pattern.compile("gh:([a-zA-Z0-9-]+/[a-zA-Z0-9-]+)#(\\d+)"),
+            out,
+            Pattern.compile("(?<= |^)gh:([a-zA-Z0-9-]+/[a-zA-Z0-9-.]+)#(\\d+)"),
             matcher -> String.format(
                 "[#%s](https://github.com/%s/issues/%1$s)",
                 matcher.group(2), matcher.group(1)
@@ -118,21 +118,21 @@ public final class Par {
             }
         );
         out = Par.replace(
-            out, Pattern.compile("§(\\d+)"),
+            out, Pattern.compile("(?<= |^)§(\\d+)"),
             matcher -> String.format(
                 "[%s](http://datum.zerocracy.com/pages/policy.html#%s)",
                 matcher.group(0), matcher.group(1)
             )
         );
         out = Par.replace(
-            out, Pattern.compile("(\\[[^]]+])\\((/\\d{4}/[^)]+)\\)"),
+            out, Pattern.compile("(?<= |^)(\\[[^]]+])\\((/\\d{4}/[^)]+)\\)"),
             matcher -> String.format(
                 "%s(http://www.yegor256.com%s)",
                 matcher.group(1), matcher.group(2)
             )
         );
         out = Par.replace(
-            out, Pattern.compile("(\\[[^]]+])\\((/[^)]+)\\)"),
+            out, Pattern.compile("(?<= |^)(\\[[^]]+])\\((/[^)]+)\\)"),
             matcher -> String.format(
                 "%s(http://www.0crat.com%s)",
                 matcher.group(1), matcher.group(2)
@@ -165,5 +165,29 @@ public final class Par {
         }
         matcher.appendTail(out);
         return out.toString();
+    }
+
+    /**
+     * To plain text.
+     */
+    public static final class ToText {
+        /**
+         * The par.
+         */
+        private final String par;
+        /**
+         * Ctor.
+         * @param txt The par
+         */
+        public ToText(final String txt) {
+            this.par = txt;
+        }
+        @Override
+        public String toString() {
+            return this.par
+                .replaceAll("\\[/z]\\([^)]+\\)", "")
+                .replaceAll("\\[([^]]+)]\\([^)]+\\)", "$1")
+                .replaceAll("`([^`]+)", "$1");
+        }
     }
 }

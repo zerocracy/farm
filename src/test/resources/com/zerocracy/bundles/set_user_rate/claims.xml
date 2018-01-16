@@ -35,4 +35,14 @@ SOFTWARE.
       <param name="rate">$100</param>
     </params>
   </claim>
+  <claim id="3">
+    <created>2017-07-21T20:32:19.716Z</created>
+    <type>Apply to a project</type>
+    <token>test;C123;user42</token>
+    <author>user42</author>
+    <params>
+      <param name="project">PMO</param>
+      <param name="rate">$10</param>
+    </params>
+  </claim>
 </claims>

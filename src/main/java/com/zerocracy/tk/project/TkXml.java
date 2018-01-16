@@ -16,9 +16,9 @@
  */
 package com.zerocracy.tk.project;
 
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Item;
-import com.zerocracy.jstk.Project;
+import com.zerocracy.Farm;
+import com.zerocracy.Item;
+import com.zerocracy.Project;
 import java.io.IOException;
 import org.cactoos.text.TextOf;
 import org.takes.Response;

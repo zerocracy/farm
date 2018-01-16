@@ -16,9 +16,8 @@
  */
 package com.zerocracy.radars.github;
 
-import com.zerocracy.jstk.Farm;
+import com.zerocracy.Farm;
 import java.io.IOException;
-import java.util.Arrays;
 import javax.json.JsonObject;
 
 /**
@@ -31,48 +30,12 @@ import javax.json.JsonObject;
 public interface Reaction {
 
     /**
-     * Empty.
-     */
-    Reaction EMPTY = (farm, event) -> {
-        // none
-    };
-
-    /**
      * Do something about it.
      * @param farm Farm
      * @param event Event just happened
+     * @return Result
      * @throws IOException If fails on I/O
      */
-    void react(Farm farm, JsonObject event) throws IOException;
+    String react(Farm farm, JsonObject event) throws IOException;
 
-    /**
-     * Reactions chained.
-     */
-    final class Chain implements Reaction {
-        /**
-         * Reactions.
-         */
-        private final Iterable<Reaction> reactions;
-        /**
-         * Ctor.
-         * @param list All reactions
-         */
-        public Chain(final Iterable<Reaction> list) {
-            this.reactions = list;
-        }
-        /**
-         * Ctor.
-         * @param list All reactions
-         */
-        public Chain(final Reaction... list) {
-            this(Arrays.asList(list));
-        }
-        @Override
-        public void react(final Farm farm, final JsonObject event)
-            throws IOException {
-            for (final Reaction reaction : this.reactions) {
-                reaction.react(farm, event);
-            }
-        }
-    }
 }

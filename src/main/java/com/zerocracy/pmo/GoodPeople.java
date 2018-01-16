@@ -17,7 +17,7 @@
 package com.zerocracy.pmo;
 
 import com.zerocracy.Par;
-import com.zerocracy.jstk.SoftException;
+import com.zerocracy.SoftException;
 import java.io.IOException;
 import java.util.Iterator;
 import org.takes.misc.Href;

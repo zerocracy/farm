@@ -19,7 +19,7 @@ package com.zerocracy.farm.ruled;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSLDocument;
-import com.zerocracy.jstk.Project;
+import com.zerocracy.Project;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Path;

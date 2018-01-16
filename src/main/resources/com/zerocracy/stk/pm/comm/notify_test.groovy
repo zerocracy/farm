@@ -18,8 +18,8 @@ package com.zerocracy.stk.pm.comm
 
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Item
-import com.zerocracy.jstk.Project
+import com.zerocracy.Item
+import com.zerocracy.Project
 import com.zerocracy.pm.ClaimIn
 // notify test: print message to text file
 

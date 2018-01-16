@@ -16,17 +16,19 @@
  */
 package com.zerocracy.pm.staff;
 
+import com.zerocracy.Item;
 import com.zerocracy.Par;
+import com.zerocracy.Project;
+import com.zerocracy.SoftException;
 import com.zerocracy.Xocument;
-import com.zerocracy.jstk.Item;
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.SoftException;
 import com.zerocracy.pm.in.Orders;
+import com.zerocracy.pm.scope.Wbs;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import org.cactoos.collection.CollectionOf;
+import org.cactoos.collection.Filtered;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.list.SolidList;
 import org.cactoos.text.JoinedText;
@@ -40,6 +42,7 @@ import org.xembly.Directives;
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class Roles {
 
     /**
@@ -99,6 +102,38 @@ public final class Roles {
      */
     public void assign(final String person, final String role)
         throws IOException {
+        if ("REV".equals(role) && this.hasRole(person, "ARC")) {
+            throw new SoftException(
+                new Par(
+                    "The architect @%s can't be a reviewer",
+                    "at the same time, see §34"
+                ).say(person)
+            );
+        }
+        if ("ARC".equals(role) && this.hasRole(person, "REV")) {
+            throw new SoftException(
+                new Par(
+                    "The reviewer @%s can't be",
+                    "an architect at the same time, see §34"
+                ).say(person)
+            );
+        }
+        if ("ARC".equals(role) && this.findByRole("ARC").size() > 1) {
+            throw new SoftException(
+                // @checkstyle LineLength (1 line)
+                new Par("A project can't have more than two ARCs, see §34: @%s").say(
+                    new JoinedText(", @", this.findByRole("ARC"))
+                )
+            );
+        }
+        if ("PO".equals(role) && this.findByRole("PO").size() > 1) {
+            throw new SoftException(
+                // @checkstyle LineLength (1 line)
+                new Par("A project can't have more than two POs, see §34: @%s").say(
+                    new JoinedText(", @", this.findByRole("PO"))
+                )
+            );
+        }
         try (final Item roles = this.item()) {
             final String login = person.toLowerCase(Locale.ENGLISH);
             new Xocument(roles.path()).modify(
@@ -161,16 +196,36 @@ public final class Roles {
                 ).say(person, role)
             );
         }
+        if ("PO".equals(role) && this.findByRole(role).size() < 2) {
+            throw new SoftException(
+                new Par(
+                    "You can't remove all",
+                    "product owners from the project, see §34"
+                ).say()
+            );
+        }
+        if ("ARC".equals(role) && this.findByRole(role).size() < 2) {
+            throw new SoftException(
+                new Par(
+                    "You can't remove all",
+                    "architects from the project, see §34"
+                ).say()
+            );
+        }
+        final Wbs wbs = new Wbs(this.project).bootstrap();
         final Collection<String> jobs = new CollectionOf<>(
-            new Orders(this.project).bootstrap().jobs(person)
+            new Filtered<>(
+                job -> wbs.role(job).equals(role),
+                new Orders(this.project).bootstrap().jobs(person)
+            )
         );
         if (!jobs.isEmpty()) {
             throw new SoftException(
                 new Par(
                     "There are still %d job(s) assigned to @%s,",
-                    "can't resign: %s"
+                    "can't resign role %s: %s"
                 ).say(
-                    jobs.size(), person,
+                    jobs.size(), person, role,
                     new JoinedText(", ", jobs).asString()
                 )
             );

@@ -19,7 +19,7 @@ package com.zerocracy.radars.github;
 
 import com.jcabi.github.Github;
 import com.jcabi.github.Issue;
-import com.zerocracy.jstk.Farm;
+import com.zerocracy.Farm;
 import com.zerocracy.pm.ClaimOut;
 import java.io.IOException;
 import javax.json.JsonObject;

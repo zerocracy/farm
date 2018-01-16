@@ -16,11 +16,11 @@
  */
 package com.zerocracy.pmo;
 
-import com.jcabi.log.Logger;
+import com.zerocracy.Farm;
+import com.zerocracy.Item;
+import com.zerocracy.Par;
+import com.zerocracy.Project;
 import com.zerocracy.Xocument;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Item;
-import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -83,10 +83,9 @@ public final class Bots {
         final JsonObject bot = json.getJsonObject("bot");
         if (bot == null) {
             throw new IllegalArgumentException(
-                String.format(
-                    "can't find bot ID in %s",
-                    json
-                )
+                new Par(
+                    "can't find bot ID in %s"
+                ).say(json)
             );
         }
         final String bid = bot.getString("bot_user_id");
@@ -121,10 +120,6 @@ public final class Bots {
                     .set(new DateAsText().asString())
             );
         }
-        Logger.info(
-            this, "New bot \"%s\" registered for \"%s\"",
-            bid, team
-        );
         return team;
     }
 

@@ -16,9 +16,9 @@
  */
 package com.zerocracy.tk;
 
+import com.zerocracy.Farm;
 import com.zerocracy.Par;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Project;
+import com.zerocracy.Project;
 import com.zerocracy.pmo.People;
 import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
@@ -80,10 +80,12 @@ public final class RqUser implements Scalar<String> {
                 if (!people.hasMentor(login)) {
                     throw new RsForward(
                         new RsFlash(
-                            new Par(
-                                "You @%s must be invited",
-                                "to us by someone we already know, see §1."
-                            ).say(login),
+                            new Par.ToText(
+                                new Par(
+                                    "You (@%s) must be invited",
+                                    "to us by someone we already know, see §1"
+                                ).say(login)
+                            ).toString(),
                             Level.WARNING
                         )
                     );

@@ -32,10 +32,10 @@ import com.paypal.svcs.types.ap.Receiver;
 import com.paypal.svcs.types.ap.ReceiverList;
 import com.paypal.svcs.types.common.ErrorData;
 import com.paypal.svcs.types.common.RequestEnvelope;
+import com.zerocracy.Farm;
+import com.zerocracy.cash.Cash;
+import com.zerocracy.cash.CashParsingException;
 import com.zerocracy.farm.props.Props;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.cash.Cash;
-import com.zerocracy.jstk.cash.CashParsingException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
@@ -134,6 +134,7 @@ final class Paypal implements Bank {
      * @param memo Memo
      * @return Request
      * @throws UnsupportedEncodingException If fails
+     * @link https://developer.paypal.com/docs/classic/api/adaptive-payments/Pay_API_Operation/
      */
     private static PayRequest request(final String email,
         final double amount, final String memo)
@@ -150,6 +151,7 @@ final class Paypal implements Bank {
         request.setSenderEmail("yegor@tpc2.com");
         request.setRequestEnvelope(env);
         request.setCurrencyCode("USD");
+        request.setFeesPayer("SENDER");
         request.setCancelUrl("http://www.zerocracy.com?cancel");
         request.setReturnUrl("http://www.zerocracy.com?return");
         request.setActionType("PAY");

@@ -17,7 +17,7 @@
 package com.zerocracy.bundles.awards_points_to_arc_for_pull_request
 
 import com.jcabi.xml.XML
-import com.zerocracy.jstk.Project
+import com.zerocracy.Project
 import com.zerocracy.pmo.Awards
 
 def exec(Project project, XML xml) {

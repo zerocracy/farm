@@ -16,11 +16,14 @@
  */
 package com.zerocracy.pm.in;
 
+import com.zerocracy.Item;
+import com.zerocracy.Par;
+import com.zerocracy.Project;
+import com.zerocracy.SoftException;
 import com.zerocracy.Xocument;
-import com.zerocracy.jstk.Item;
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.SoftException;
+import com.zerocracy.pm.scope.Wbs;
 import java.io.IOException;
+import org.cactoos.collection.CollectionOf;
 import org.xembly.Directives;
 
 /**
@@ -64,12 +67,33 @@ public final class Impediments {
      */
     public void register(final String job, final String reason)
         throws IOException {
+        final Wbs wbs = new Wbs(this.project).bootstrap();
+        if (!wbs.exists(job)) {
+            throw new SoftException(
+                new Par(
+                    "Job %s is not in scope, can't put it on hold"
+                ).say(job)
+            );
+        }
+        if ("REV".equals(wbs.role(job))) {
+            throw new SoftException(
+                new Par(
+                    "It's a code review job %s, can't put it on hold"
+                ).say(job)
+            );
+        }
         if (!new Orders(this.project).bootstrap().assigned(job)) {
             throw new SoftException(
-                String.format(
-                    "Job `%s` is not assigned, can't put it on hold",
-                    job
-                )
+                new Par(
+                    "Job %s is not assigned, can't put it on hold"
+                ).say(job)
+            );
+        }
+        if (new CollectionOf<>(this.jobs()).contains(job)) {
+            throw new SoftException(
+                new Par(
+                    "Job %s is already on hold"
+                ).say(job)
             );
         }
         try (final Item item = this.item()) {

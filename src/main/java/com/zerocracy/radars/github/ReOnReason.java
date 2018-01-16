@@ -16,7 +16,7 @@
  */
 package com.zerocracy.radars.github;
 
-import com.zerocracy.jstk.Farm;
+import com.zerocracy.Farm;
 import java.io.IOException;
 import javax.json.JsonObject;
 
@@ -50,10 +50,15 @@ public final class ReOnReason implements Reaction {
     }
 
     @Override
-    public void react(final Farm farm, final JsonObject event)
+    public String react(final Farm farm, final JsonObject event)
         throws IOException {
-        if (event.getString("reason").equals(this.reason)) {
-            this.origin.react(farm, event);
+        final String input  = event.getString("reason");
+        final String result;
+        if (input.equals(this.reason)) {
+            result = this.origin.react(farm, event);
+        } else {
+            result = String.format("\"%s\" is not \"%s\"", input, this.reason);
         }
+        return result;
     }
 }

@@ -3,7 +3,7 @@ package com.zerocracy.stk.pm.in.orders
 import com.jcabi.xml.XML
 import com.zerocracy.Par
 import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Project
+import com.zerocracy.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.in.Impediments
@@ -32,7 +32,8 @@ def exec(Project project, XML xml) {
       orders.olderThan(time.minusDays(days))
     )
   ).forEach { String job ->
-    if (wbs.role(job) != 'REV') {
+    String worker = orders.performer(job)
+    if (wbs.role(job) != 'REV' && worker != 'yegor256') {
       new ClaimOut()
         .type('Cancel order')
         .token("job;$job")
@@ -45,7 +46,7 @@ def exec(Project project, XML xml) {
           'message',
           new Par(
             'The order at %s cancelled for @%s, it is over %d day(s), see §8'
-          ).say(job, orders.performer(job), days)
+          ).say(job, worker, days)
         )
         .postTo(project)
     }

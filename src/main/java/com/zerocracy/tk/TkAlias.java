@@ -16,8 +16,9 @@
  */
 package com.zerocracy.tk;
 
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Project;
+import com.zerocracy.Farm;
+import com.zerocracy.Par;
+import com.zerocracy.Project;
 import com.zerocracy.pmo.People;
 import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
@@ -72,10 +73,11 @@ public final class TkAlias implements Take {
         people.link(login, rel, href);
         return new RsForward(
             new RsFlash(
-                String.format(
-                    "Thanks, @%s now has an alias, @rel='%s', @href='%s'",
-                    login, rel, href
-                )
+                new Par.ToText(
+                    new Par(
+                        "Thanks, @%s now has an alias, @rel='%s', @href='%s'"
+                    ).say(login, rel, href)
+                ).toString()
             )
         );
     }

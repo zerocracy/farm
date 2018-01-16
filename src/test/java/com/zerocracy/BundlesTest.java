@@ -19,15 +19,15 @@ package com.zerocracy;
 import com.jcabi.aspects.Tv;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.mongodb.client.model.Filters;
 import com.zerocracy.farm.SmartFarm;
+import com.zerocracy.farm.fake.FkFarm;
+import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.reactive.RvAlive;
 import com.zerocracy.farm.reactive.StkGroovy;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.farm.fake.FkFarm;
-import com.zerocracy.jstk.farm.fake.FkProject;
 import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.Claims;
+import com.zerocracy.pm.Footprint;
 import com.zerocracy.pmo.Catalog;
 import java.io.File;
 import java.io.IOException;
@@ -40,10 +40,6 @@ import java.util.Comparator;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
-import org.apache.log4j.FileAppender;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
-import org.apache.log4j.spi.LoggingEvent;
 import org.cactoos.Func;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.InputWithFallback;
@@ -62,7 +58,6 @@ import org.cactoos.text.JoinedText;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -94,8 +89,6 @@ public final class BundlesTest {
 
     private Path home;
 
-    private FileAppender appender;
-
     @Parameterized.Parameters(name = "{0}")
     public static Collection<Object[]> bundles() {
         return new SolidList<Object[]>(
@@ -126,33 +119,6 @@ public final class BundlesTest {
                 .map(Path::toFile)
                 .forEach(File::delete);
         }
-        final Thread thread = Thread.currentThread();
-        this.appender = new FileAppender(
-            new PatternLayout("%t %p %m\n"),
-            this.home.resolve("test.log").toString(),
-            false
-        ) {
-            @Override
-            public void doAppend(final LoggingEvent event) {
-                if (Thread.currentThread().equals(thread)) {
-                    super.doAppend(event);
-                }
-            }
-        };
-        Logger.getRootLogger().addAppender(this.appender);
-    }
-
-    @After
-    public void after() throws IOException {
-        Logger.getRootLogger().removeAppender(this.appender);
-        MatcherAssert.assertThat(
-            String.format(
-                "There were some exceptions in the log, see %s",
-                this.appender.getFile()
-            ),
-            new TextOf(new File(this.appender.getFile())).asString(),
-            Matchers.not(Matchers.containsString("Exception"))
-        );
     }
 
     @Test
@@ -237,6 +203,17 @@ public final class BundlesTest {
                 String.format("%s_after", this.bundle),
                 farm
             ).process(project, null);
+            try (final Footprint footprint = new Footprint(farm, project)) {
+                MatcherAssert.assertThat(
+                    footprint.collection().find(
+                        Filters.and(
+                            Filters.eq("project", project.pid()),
+                            Filters.eq("type", "Error")
+                        )
+                    ),
+                    Matchers.emptyIterable()
+                );
+            }
         }
     }
 

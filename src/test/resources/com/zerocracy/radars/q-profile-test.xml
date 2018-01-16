@@ -18,6 +18,20 @@ SOFTWARE.
 <test target="q-profile.xml">
   <cmd>
     <text>rate</text>
-    <code>profile.rate.show</code>
+    <code>Set rate</code>
+  </cmd>
+  <cmd>
+    <text>apply C3T46CUJJ $10</text>
+    <code>Apply to a project</code>
+    <opts>
+      <opt>
+        <name>project</name>
+        <value>C3T46CUJJ</value>
+      </opt>
+      <opt>
+        <name>rate</name>
+        <value>$10</value>
+      </opt>
+    </opts>
   </cmd>
 </test>

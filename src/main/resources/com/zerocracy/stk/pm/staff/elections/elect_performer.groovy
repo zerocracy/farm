@@ -19,8 +19,8 @@ package com.zerocracy.stk.pm.staff.elections
 import com.jcabi.log.Logger
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Farm
-import com.zerocracy.jstk.Project
+import com.zerocracy.Farm
+import com.zerocracy.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.Claims
@@ -28,12 +28,12 @@ import com.zerocracy.pm.cost.Ledger
 import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pm.staff.Elections
 import com.zerocracy.pm.staff.Roles
-import com.zerocracy.pm.staff.voters.VtrBanned
-import com.zerocracy.pm.staff.voters.VtrNoRoom
-import com.zerocracy.pm.staff.voters.VtrRate
-import com.zerocracy.pm.staff.voters.VtrSpeed
-import com.zerocracy.pm.staff.voters.VtrVacation
-import com.zerocracy.pm.staff.voters.VtrWorkload
+import com.zerocracy.pm.staff.votes.VsBanned
+import com.zerocracy.pm.staff.votes.VsNoRoom
+import com.zerocracy.pm.staff.votes.VsRate
+import com.zerocracy.pm.staff.votes.VsSpeed
+import com.zerocracy.pm.staff.votes.VsVacation
+import com.zerocracy.pm.staff.votes.VsWorkload
 import com.zerocracy.pmo.Pmo
 import org.cactoos.iterable.Shuffled
 
@@ -63,12 +63,12 @@ def exec(Project project, XML xml) {
     boolean done = elections.elect(
       job, logins,
       [
-        (new VtrRate(project, logins))        : 2,
-        (new VtrNoRoom(pmo, 3))      : -100,
-        (new VtrBanned(project, job)): -100,
-        (new VtrVacation(pmo))       : -100,
-        (new VtrWorkload(pmo, 15))   : 1,
-        (new VtrSpeed(pmo, logins))          : 3
+        (new VsRate(project, logins)): 2,
+        (new VsNoRoom(pmo))          : role == 'REV' ? 0 : -100,
+        (new VsBanned(project, job)) : -100,
+        (new VsVacation(pmo))        : -100,
+        (new VsWorkload(pmo, logins)): 1,
+        (new VsSpeed(pmo, logins))   : 3
       ]
     )
     if (done && elections.elected(job)) {

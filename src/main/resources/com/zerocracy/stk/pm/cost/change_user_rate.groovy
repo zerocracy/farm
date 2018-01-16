@@ -19,10 +19,10 @@ package com.zerocracy.stk.pm.cost
 import com.jcabi.xml.XML
 import com.zerocracy.Par
 import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Farm
-import com.zerocracy.jstk.Project
-import com.zerocracy.jstk.SoftException
-import com.zerocracy.jstk.cash.Cash
+import com.zerocracy.Farm
+import com.zerocracy.Project
+import com.zerocracy.SoftException
+import com.zerocracy.cash.Cash
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.cost.Rates
@@ -61,7 +61,7 @@ def exec(Project project, XML xml) {
     }
   } else {
     msg = new Par(
-      'Hourly rate of @%s set to %s'
+      'Hourly rate of @%s was changed from zero to %s'
     ).say(login, rate)
   }
   rates.set(login, rate)

@@ -17,11 +17,11 @@
 package com.zerocracy.tk.project;
 
 import com.jcabi.matchers.XhtmlMatchers;
+import com.zerocracy.Farm;
+import com.zerocracy.Project;
+import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.footprint.FtFarm;
 import com.zerocracy.farm.props.PropsFarm;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.farm.fake.FkFarm;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.pmo.Catalog;

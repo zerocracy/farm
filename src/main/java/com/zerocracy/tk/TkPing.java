@@ -19,8 +19,8 @@ package com.zerocracy.tk;
 import com.jcabi.http.request.JdkRequest;
 import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseThreads;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Project;
+import com.zerocracy.Farm;
+import com.zerocracy.Project;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
 import com.zerocracy.pmo.Catalog;
@@ -115,14 +115,19 @@ public final class TkPing implements Take {
      */
     private String ping(final Project project) throws IOException {
         final Claims claims = new Claims(project).bootstrap();
+        final Catalog catalog = new Catalog(this.farm).bootstrap();
         final String out;
-        if (new Catalog(this.farm).bootstrap().pause(project.pid())) {
-            out = String.format("%s/pause", project.pid());
-        } else if (claims.iterate().isEmpty()) {
-            new ClaimOut().type(TkPing.TYPE).postTo(project);
-            out = project.pid();
+        if (catalog.exists(project.pid())) {
+            if (catalog.pause(project.pid())) {
+                out = String.format("%s/pause", project.pid());
+            } else if (claims.iterate().isEmpty()) {
+                new ClaimOut().type(TkPing.TYPE).postTo(project);
+                out = project.pid();
+            } else {
+                out = String.format("%s/none", project.pid());
+            }
         } else {
-            out = String.format("%s/none", project.pid());
+            out = String.format("%s/absent", project.pid());
         }
         return out;
     }

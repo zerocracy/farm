@@ -16,9 +16,9 @@
  */
 package com.zerocracy.pmo;
 
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.cash.Cash;
-import com.zerocracy.jstk.farm.fake.FkProject;
+import com.zerocracy.Project;
+import com.zerocracy.cash.Cash;
+import com.zerocracy.farm.fake.FkProject;
 import java.nio.file.Files;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -79,7 +79,6 @@ public final class PeopleTest {
     public void setsUserWallet() throws Exception {
         final People people = new People(new FkProject()).bootstrap();
         final String uid = "yegor256-1";
-        people.wallet(uid, "btc", "68739473849732849732849327");
         people.wallet(uid, "paypal", "yegor256@gmail.com");
         MatcherAssert.assertThat(
             people.wallet(uid),
@@ -106,7 +105,7 @@ public final class PeopleTest {
         );
         final People people = new People(project).bootstrap();
         final String uid = "karato90";
-        people.wallet(uid, "btc", "test");
+        people.wallet(uid, "paypal", "tes1t@example.com");
         people.rate(uid, new Cash.S("$27"));
     }
 

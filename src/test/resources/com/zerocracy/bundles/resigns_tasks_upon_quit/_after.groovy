@@ -17,7 +17,7 @@
 package com.zerocracy.bundles.resigns_tasks_upon_quit
 
 import com.jcabi.xml.XML
-import com.zerocracy.jstk.Project
+import com.zerocracy.Project
 
 def exec(Project project, XML xml) {
 // @todo #235:30min This test started to fail after `remove_assignee`

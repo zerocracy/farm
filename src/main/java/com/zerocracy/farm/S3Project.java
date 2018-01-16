@@ -17,8 +17,8 @@
 package com.zerocracy.farm;
 
 import com.jcabi.s3.Bucket;
-import com.zerocracy.jstk.Item;
-import com.zerocracy.jstk.Project;
+import com.zerocracy.Item;
+import com.zerocracy.Project;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;

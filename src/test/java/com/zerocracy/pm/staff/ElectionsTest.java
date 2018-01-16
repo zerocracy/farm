@@ -16,12 +16,12 @@
  */
 package com.zerocracy.pm.staff;
 
+import com.zerocracy.Farm;
 import com.zerocracy.RunsInThreads;
+import com.zerocracy.farm.fake.FkFarm;
+import com.zerocracy.farm.fake.FkProject;
+import com.zerocracy.farm.spy.SpyProject;
 import com.zerocracy.farm.sync.SyncFarm;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.farm.fake.FkFarm;
-import com.zerocracy.jstk.farm.fake.FkProject;
-import com.zerocracy.jstk.farm.spy.SpyProject;
 import com.zerocracy.pmo.Pmo;
 import java.security.SecureRandom;
 import java.util.Collection;
@@ -55,7 +55,7 @@ public final class ElectionsTest {
         elections.elect(
             job,
             new SolidList<>("yegor256", "jeff"),
-            new StickyMap<Voter, Integer>(
+            new StickyMap<Votes, Integer>(
                 new MapEntry<>(
                     (login, log) -> {
                         log.append("just some log");
@@ -85,7 +85,7 @@ public final class ElectionsTest {
         elections.elect(
             job,
             new SolidList<>("loser", "loser2", "win", "yegor"),
-            new StickyMap<Voter, Integer>(
+            new StickyMap<Votes, Integer>(
                 new MapEntry<>(
                     (login, log) -> 1.0d / (double) login.length(),
                     1
@@ -106,7 +106,7 @@ public final class ElectionsTest {
         elections.elect(
             job,
             new SolidList<>("myfriend"),
-            new StickyMap<Voter, Integer>(
+            new StickyMap<Votes, Integer>(
                 new MapEntry<>(
                     (login, log) -> 1.0d / (double) login.length(),
                     1
@@ -124,7 +124,7 @@ public final class ElectionsTest {
         elections.elect(
             job,
             new SolidList<>("somebody"),
-            new StickyMap<Voter, Integer>(
+            new StickyMap<Votes, Integer>(
                 new MapEntry<>(
                     (login, log) -> 1.0d,
                     -1
@@ -141,7 +141,7 @@ public final class ElectionsTest {
         elections.elect(
             job,
             new SolidList<>("david"),
-            new StickyMap<Voter, Integer>(
+            new StickyMap<Votes, Integer>(
                 new MapEntry<>((login, log) -> 1.0d, -1)
             )
         );
@@ -159,7 +159,7 @@ public final class ElectionsTest {
         ).bootstrap();
         final String job = "gh:test/test#92";
         // @checkstyle DiamondOperatorCheck (1 line)
-        final Map<Voter, Integer> voters = new SolidMap<Voter, Integer>(
+        final Map<Votes, Integer> voters = new SolidMap<Votes, Integer>(
             new MapEntry<>((login, log) -> 1.0d, -1)
         );
         final Iterable<String> logins = new StickyList<>("james");
@@ -191,7 +191,7 @@ public final class ElectionsTest {
             final String job = "gh:test/test#550";
             final Iterable<String> users = new SolidList<>("alex", "alex2");
             // @checkstyle DiamondOperatorCheck (1 line)
-            final Map<Voter, Integer> voters = new SolidMap<Voter, Integer>(
+            final Map<Votes, Integer> voters = new SolidMap<Votes, Integer>(
                 new MapEntry<>(
                     (login, log) -> 1.0d / (double) login.length(),
                     1

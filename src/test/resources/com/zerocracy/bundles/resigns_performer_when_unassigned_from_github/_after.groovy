@@ -17,7 +17,7 @@
 package com.zerocracy.bundles.resigns_performer_when_unassigned_from_github
 
 import com.jcabi.xml.XML
-import com.zerocracy.jstk.Project
+import com.zerocracy.Project
 import com.zerocracy.pm.in.Orders
 
 def exec(Project project, XML xml) {

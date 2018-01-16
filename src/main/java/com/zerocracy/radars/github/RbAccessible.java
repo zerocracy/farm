@@ -19,7 +19,8 @@ package com.zerocracy.radars.github;
 import com.jcabi.aspects.Tv;
 import com.jcabi.github.Coordinates;
 import com.jcabi.github.Github;
-import com.zerocracy.jstk.Farm;
+import com.zerocracy.Farm;
+import com.zerocracy.Par;
 import java.io.IOException;
 import javax.json.JsonObject;
 import org.cactoos.text.SubText;
@@ -59,13 +60,17 @@ public final class RbAccessible implements Rebound {
         } catch (final AssertionError ex) {
             throw new RsForward(
                 new RsFlash(
-                    String.format(
-                        "Repository %s is not accessible for @%s: %s",
-                        repo, github.users().self().login(),
-                        new SubText(
-                            ex.getLocalizedMessage(), 0, Tv.HUNDRED
-                        ).asString()
-                    )
+                    new Par.ToText(
+                        new Par(
+                            "Repository %s is not accessible for @%s: %s"
+                        ).say(
+                            repo,
+                            github.users().self().login(),
+                            new SubText(
+                                ex.getLocalizedMessage(), 0, Tv.HUNDRED
+                            ).asString()
+                        )
+                    ).toString()
                 )
             );
         }

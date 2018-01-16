@@ -18,8 +18,8 @@ package com.zerocracy.tk.project;
 
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Project;
+import com.zerocracy.Farm;
+import com.zerocracy.Project;
 import com.zerocracy.pm.Footprint;
 import com.zerocracy.tk.RsPage;
 import java.io.IOException;

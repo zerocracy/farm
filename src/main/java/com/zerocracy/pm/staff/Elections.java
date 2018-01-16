@@ -19,10 +19,10 @@ package com.zerocracy.pm.staff;
 import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSL;
 import com.jcabi.xml.XSLDocument;
+import com.zerocracy.Item;
+import com.zerocracy.Project;
 import com.zerocracy.Xocument;
-import com.zerocracy.jstk.Item;
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.farm.fake.FkItem;
+import com.zerocracy.farm.fake.FkItem;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -100,7 +100,7 @@ public final class Elections {
      * @checkstyle ExecutableStatementCountCheck (200 lines)
      */
     public boolean elect(final String job, final Iterable<String> logins,
-        final Map<Voter, Integer> voters) throws IOException {
+        final Map<Votes, Integer> voters) throws IOException {
         final String date = new DateAsText().asString();
         final Directives dirs = new Directives()
             .xpath(
@@ -121,7 +121,7 @@ public final class Elections {
             .add("election")
             .attr("date", date);
         final StringBuilder log = new StringBuilder(0);
-        for (final Map.Entry<Voter, Integer> ent : voters.entrySet()) {
+        for (final Map.Entry<Votes, Integer> ent : voters.entrySet()) {
             dirs.add("vote")
                 .attr("author", ent.getKey().getClass().getName())
                 .attr("weight", ent.getValue());
@@ -129,7 +129,7 @@ public final class Elections {
                 log.setLength(0);
                 dirs.add("person")
                     .attr("login", login)
-                    .attr("points", ent.getKey().vote(login, log))
+                    .attr("points", ent.getKey().take(login, log))
                     .set(log.toString())
                     .up();
             }

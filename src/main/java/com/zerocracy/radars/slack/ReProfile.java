@@ -19,7 +19,7 @@ package com.zerocracy.radars.slack;
 import com.jcabi.xml.XMLDocument;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
-import com.zerocracy.jstk.Farm;
+import com.zerocracy.Farm;
 import com.zerocracy.pmo.Pmo;
 import com.zerocracy.radars.ClaimOnQuestion;
 import com.zerocracy.radars.Question;

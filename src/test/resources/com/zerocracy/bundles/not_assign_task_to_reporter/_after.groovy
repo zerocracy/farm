@@ -17,22 +17,12 @@
 package com.zerocracy.bundles.not_assign_task_to_reporter
 
 import com.jcabi.xml.XML
-import com.zerocracy.jstk.Project
+import com.zerocracy.Project
 import com.zerocracy.pm.staff.Elections
-/**
- * @todo #93:30min Task reporter is already added to bans.xml. However, this
- *  test still fails for some reason. It could be because the election
- *  mechanism is broken (https://github.com/zerocracy/farm/issues/150), or that
- *  the test setup or data is not complete. Let's find out what's wrong and
- *  revise the test appropriately, perhaps even rewriting it.
- */
+
 def exec(Project project, XML xml) {
-  new Elections(project).bootstrap()
-  // @todo #258:30m This assertion `elections.elected(job)` always failing
-  //  on Rultor but passing locally and on Shippable. It related to #258 bug.
-  //  This `assert` should be uncommented after #258 fix.
-//  String job = 'gh:test/farm#1'
-//  assert elections.elected(job)
-//  assert elections.winner(job) == 'g4s8'
-//  assert elections.reason(job) == 'reason'
+  Elections elections = new Elections(project).bootstrap()
+  String job = 'gh:test/farm#1'
+  assert elections.elected(job)
+  assert elections.winner(job) == 'g4s8'
 }

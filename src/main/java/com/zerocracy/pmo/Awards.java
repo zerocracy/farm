@@ -16,11 +16,10 @@
  */
 package com.zerocracy.pmo;
 
-import com.jcabi.log.Logger;
+import com.zerocracy.Farm;
+import com.zerocracy.Item;
+import com.zerocracy.Project;
 import com.zerocracy.Xocument;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Item;
-import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import org.cactoos.time.DateAsText;
 import org.xembly.Directives;
@@ -103,10 +102,6 @@ public final class Awards {
                     .set(job)
             );
         }
-        Logger.info(
-            this, "New award added, points=%d, job=\"%s\", reason=\"%s\"",
-            points, job, reason
-        );
     }
 
     /**

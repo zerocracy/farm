@@ -18,26 +18,26 @@ package com.zerocracy.stk.pmo.profile
 
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Project
-import com.zerocracy.jstk.SoftException
+import com.zerocracy.Project
+import com.zerocracy.SoftException
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.People
 
-def exec(Project project, XML xml) {
-  new Assume(project, xml).isPmo()
-  new Assume(project, xml).type('Change vacation mode')
+def exec(Project pmo, XML xml) {
+  new Assume(pmo, xml).isPmo()
+  new Assume(pmo, xml).type('Change vacation mode')
   ClaimIn claim = new ClaimIn(xml)
   String mode = claim.param('mode')
-  People people = new People(project).bootstrap()
+  People people = new People(pmo).bootstrap()
   if ('on' == mode) {
     people.vacation(claim.author(), true)
     if (claim.hasToken()) {
-      claim.reply('You are on vacation now').postTo(project)
+      claim.reply('You are on vacation now').postTo(pmo)
     }
   } else if ('off' == mode) {
     people.vacation(claim.author(), false)
     if (claim.hasToken()) {
-      claim.reply('Your vacation has been ended').postTo(project)
+      claim.reply('Your vacation has been ended').postTo(pmo)
     }
   } else {
     throw new SoftException(

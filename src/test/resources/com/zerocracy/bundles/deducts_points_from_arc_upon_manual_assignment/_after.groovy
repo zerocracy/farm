@@ -17,7 +17,7 @@
 package com.zerocracy.bundles.deducts_points_from_arc_upon_manual_assignment
 
 import com.jcabi.xml.XML
-import com.zerocracy.jstk.Project
+import com.zerocracy.Project
 import com.zerocracy.pmo.Awards
 
 def exec(Project project, XML xml) {

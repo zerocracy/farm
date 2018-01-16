@@ -16,7 +16,8 @@
  */
 package com.zerocracy.tk.profile;
 
-import com.zerocracy.jstk.Project;
+import com.zerocracy.Par;
+import com.zerocracy.Project;
 import com.zerocracy.pmo.People;
 import java.io.IOException;
 import java.util.Locale;
@@ -64,7 +65,9 @@ public final class RqLogin implements Scalar<String> {
         if (!people.find("github", login).iterator().hasNext()) {
             throw new RsForward(
                 new RsFlash(
-                    String.format("User \"@%s\" not found", login),
+                    new Par.ToText(
+                        new Par("User @%s not found").say(login)
+                    ).toString(),
                     Level.SEVERE
                 )
             );

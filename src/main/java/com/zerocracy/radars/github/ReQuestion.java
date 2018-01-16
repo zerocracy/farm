@@ -18,8 +18,8 @@ package com.zerocracy.radars.github;
 
 import com.jcabi.github.Comment;
 import com.jcabi.xml.XMLDocument;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Project;
+import com.zerocracy.Farm;
+import com.zerocracy.Project;
 import com.zerocracy.radars.ClaimOnQuestion;
 import com.zerocracy.radars.Question;
 import java.io.IOException;

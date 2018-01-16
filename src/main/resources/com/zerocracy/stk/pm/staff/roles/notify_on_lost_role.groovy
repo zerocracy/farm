@@ -19,7 +19,8 @@ package com.zerocracy.stk.pm.staff.roles
 import com.jcabi.xml.XML
 import com.zerocracy.Par
 import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Project
+import com.zerocracy.Farm
+import com.zerocracy.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 
@@ -29,12 +30,14 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   String login = claim.param('login')
   String role = claim.param('role')
+  Farm farm = binding.variables.farm
   new ClaimOut()
     .type('Notify user')
     .token("user;${login}")
     .param(
       'message',
       new Par(
+        farm,
         'You just lost role %s in the %s project'
       ).say(role, project.pid())
     )

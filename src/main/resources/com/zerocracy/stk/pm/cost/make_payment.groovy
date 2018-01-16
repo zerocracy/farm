@@ -17,10 +17,11 @@
 package com.zerocracy.stk.pm.cost
 
 import com.jcabi.xml.XML
+import com.zerocracy.Par
 import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Farm
-import com.zerocracy.jstk.Project
-import com.zerocracy.jstk.cash.Cash
+import com.zerocracy.Farm
+import com.zerocracy.Project
+import com.zerocracy.cash.Cash
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.staff.Roles
@@ -40,19 +41,26 @@ def exec(Project project, XML xml) {
   }
   if (claim.hasParam('cash')) {
     Cash price = new Cash.S(claim.param('cash'))
-    Farm farm = binding.variables.farm
-    String msg = new Payroll(farm).pay(
-      project, login, price,
-      "Payment for ${job} (${minutes} minutes): ${reason}"
-    )
-    new ClaimOut()
-      .type('Notify user')
-      .param('login', login)
-      .param('message', msg)
-      .postTo(project)
-    new ClaimOut()
-      .type('Notify project')
-      .param('message', msg)
-      .postTo(project)
+    if (price != Cash.ZERO) {
+      Farm farm = binding.variables.farm
+      String msg = new Payroll(farm).pay(
+        project, login, price,
+        "Payment for ${job} (${minutes} minutes): ${reason}"
+      )
+      new ClaimOut()
+        .type('Notify user')
+        .param('login', login)
+        .param('message', msg)
+        .postTo(project)
+      new ClaimOut()
+        .type('Notify project')
+        .param(
+        'message',
+          new Par(
+            'We just paid %s to @%s for %s: payment ID is `%s`'
+          ).say(price, login, job, msg)
+        )
+        .postTo(project)
+    }
   }
 }

@@ -156,6 +156,12 @@ SOFTWARE.
     </opts>
   </cmd>
   <cmd>
+    <code>Bootstrap</code>
+    <regex>bootstrap</regex>
+    <label>bootstrap</label>
+    <help>Bootstrap it right after adding Zerocrat to a Slack channel</help>
+  </cmd>
+  <cmd>
     <code>Destroy</code>
     <regex>destroy</regex>
     <label>destroy</label>

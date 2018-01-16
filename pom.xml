@@ -79,11 +79,6 @@ SOFTWARE.
   </properties>
   <dependencies>
     <dependency>
-      <groupId>com.zerocracy</groupId>
-      <artifactId>jstk</artifactId>
-      <version>0.21</version>
-    </dependency>
-    <dependency>
       <groupId>org.cactoos</groupId>
       <artifactId>cactoos</artifactId>
       <version>0.28.2</version>
@@ -162,7 +157,7 @@ SOFTWARE.
     <dependency>
       <groupId>org.takes</groupId>
       <artifactId>takes</artifactId>
-      <version>1.7</version>
+      <version>1.8</version>
     </dependency>
     <dependency>
       <groupId>org.reflections</groupId>

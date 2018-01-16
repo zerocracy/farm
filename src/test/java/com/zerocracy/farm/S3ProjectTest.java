@@ -18,9 +18,9 @@ package com.zerocracy.farm;
 
 import com.jcabi.s3.Bucket;
 import com.jcabi.s3.fake.FkBucket;
+import com.zerocracy.Item;
+import com.zerocracy.Project;
 import com.zerocracy.Xocument;
-import com.zerocracy.jstk.Item;
-import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.pmo.Agenda;
 import java.nio.file.Files;

@@ -17,10 +17,11 @@
 package com.zerocracy.radars.github;
 
 import com.jcabi.github.Github;
+import com.zerocracy.Farm;
+import com.zerocracy.Par;
 import com.zerocracy.entry.ExtDynamo;
 import com.zerocracy.entry.ExtGithub;
 import com.zerocracy.farm.props.Props;
-import com.zerocracy.jstk.Farm;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -89,20 +90,18 @@ public final class TkGithub implements Take, Runnable {
                             new RbByActions(
                                 new RbOnComment(
                                     new ReLogged(
-                                        new Reaction.Chain(
-                                            new ReOnReason(
-                                                "mention",
-                                                new ReOnComment(
-                                                    new ExtGithub(frm).value(),
-                                                    new ReSafe(
-                                                        new ReNotMine(
-                                                            new ReIfAddressed(
-                                                                new ReQuestion()
-                                                            )
+                                        new ReOnReason(
+                                            "mention",
+                                            new ReOnComment(
+                                                new ExtGithub(frm).value(),
+                                                new ReSafe(
+                                                    new ReNotMine(
+                                                        new ReIfAddressed(
+                                                            new ReQuestion()
                                                         )
-                                                    ),
-                                                    new ExtDynamo(frm).value().table("0crat-github")
-                                                )
+                                                    )
+                                                ),
+                                                new ExtDynamo(frm).value().table("0crat-github")
                                             )
                                         )
                                     )
@@ -161,8 +160,10 @@ public final class TkGithub implements Take, Runnable {
         if (!body.iterator().hasNext()) {
             throw new RsForward(
                 new RsFlash(
-                    // @checkstyle LineLength (1 line)
-                    "We expect this URL to be called by GitHub with JSON as 'payload' form parameter"
+                    new Par(
+                        "We expect this URL to be called by GitHub",
+                        "with JSON as 'payload' form parameter"
+                    ).say()
                 )
             );
         }
@@ -170,10 +171,9 @@ public final class TkGithub implements Take, Runnable {
         if (new Quota(github).over()) {
             throw new RsForward(
                 new RsWithBody(
-                    String.format(
-                        "GitHub API is over quota: %s",
-                        new Quota(github)
-                    )
+                    new Par(
+                        "GitHub API is over quota: %s"
+                    ).say(new Quota(github))
                 ),
                 HttpURLConnection.HTTP_UNAVAILABLE
             );

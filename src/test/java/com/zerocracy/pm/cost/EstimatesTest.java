@@ -16,9 +16,9 @@
  */
 package com.zerocracy.pm.cost;
 
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.cash.Cash;
-import com.zerocracy.jstk.farm.fake.FkProject;
+import com.zerocracy.Project;
+import com.zerocracy.cash.Cash;
+import com.zerocracy.farm.fake.FkProject;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;

@@ -20,8 +20,8 @@ import com.jcabi.github.Github;
 import com.jcabi.github.Limit;
 import com.jcabi.github.Limits;
 import com.jcabi.log.Logger;
+import com.zerocracy.Farm;
 import com.zerocracy.entry.ExtGithub;
-import com.zerocracy.jstk.Farm;
 import java.io.IOException;
 
 /**

@@ -16,8 +16,8 @@
  */
 package com.zerocracy.tk.project;
 
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Project;
+import com.zerocracy.Farm;
+import com.zerocracy.Project;
 import com.zerocracy.pmo.Catalog;
 import com.zerocracy.tk.RsPage;
 import com.zerocracy.tk.XeXsl;

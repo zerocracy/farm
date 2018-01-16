@@ -17,8 +17,8 @@
 package com.zerocracy.tk;
 
 import com.jcabi.log.Logger;
+import com.zerocracy.Farm;
 import com.zerocracy.farm.props.Props;
-import com.zerocracy.jstk.Farm;
 import com.zerocracy.tk.profile.TkAgenda;
 import com.zerocracy.tk.profile.TkAwards;
 import com.zerocracy.tk.profile.TkProfile;
@@ -28,7 +28,6 @@ import com.zerocracy.tk.project.TkDonate;
 import com.zerocracy.tk.project.TkFootprint;
 import com.zerocracy.tk.project.TkPay;
 import com.zerocracy.tk.project.TkProject;
-import com.zerocracy.tk.project.TkPublic;
 import com.zerocracy.tk.project.TkReport;
 import com.zerocracy.tk.project.TkXml;
 import io.sentry.Sentry;
@@ -162,10 +161,6 @@ public final class TkApp extends TkWrap {
                                                             new FkRegex(
                                                                 "/p/(PMO|[A-Z0-9]{9})",
                                                                 new TkProject(farm)
-                                                            ),
-                                                            new FkRegex(
-                                                                "/pp/([A-Z0-9]{9})",
-                                                                new TkPublic(farm)
                                                             ),
                                                             new FkRegex(
                                                                 "/footprint/(PMO|[A-Z0-9]{9})",

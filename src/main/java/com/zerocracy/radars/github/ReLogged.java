@@ -17,7 +17,7 @@
 package com.zerocracy.radars.github;
 
 import com.jcabi.log.Logger;
-import com.zerocracy.jstk.Farm;
+import com.zerocracy.Farm;
 import java.io.IOException;
 import javax.json.JsonObject;
 
@@ -44,7 +44,7 @@ public final class ReLogged implements Reaction {
     }
 
     @Override
-    public void react(final Farm farm, final JsonObject event)
+    public String react(final Farm farm, final JsonObject event)
         throws IOException {
         Logger.info(
             this,
@@ -52,7 +52,7 @@ public final class ReLogged implements Reaction {
             event.getJsonObject("repository").getString("full_name"),
             event.getString("reason")
         );
-        this.reaction.react(farm, event);
+        return this.reaction.react(farm, event);
     }
 
 }

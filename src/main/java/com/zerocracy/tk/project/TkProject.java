@@ -16,9 +16,9 @@
  */
 package com.zerocracy.tk.project;
 
+import com.zerocracy.Farm;
+import com.zerocracy.Project;
 import com.zerocracy.farm.props.Props;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.cost.Estimates;
 import com.zerocracy.pm.cost.Ledger;
 import com.zerocracy.pm.cost.Rates;
@@ -60,6 +60,7 @@ public final class TkProject implements TkRegex {
     }
 
     @Override
+    @SuppressWarnings("PMD.ExcessiveMethodLength")
     public Response act(final RqRegex req) throws IOException {
         return new RsPage(
             this.farm,
@@ -67,8 +68,10 @@ public final class TkProject implements TkRegex {
             req,
             () -> {
                 final Project project = new RqProject(this.farm, req);
+                final String login = new RqUser(this.farm, req).value();
                 final Catalog catalog = new Catalog(this.farm).bootstrap();
                 final String user = new RqUser(this.farm, req).value();
+                final Roles roles = new Roles(project).bootstrap();
                 final String pid = project.pid();
                 return new XeChain(
                     new XeAppend("project", pid),
@@ -87,6 +90,20 @@ public final class TkProject implements TkRegex {
                                     Boolean.toString(catalog.published(pid))
                                 ),
                                 new XeWhen(
+                                    catalog.published(pid),
+                                    new XeChain(
+                                        new XeAppend(
+                                            "architects",
+                                            new XeTransform<>(
+                                                roles.findByRole("ARC"),
+                                                usr -> new XeAppend(
+                                                    "architect", usr
+                                                )
+                                            )
+                                        )
+                                    )
+                                ),
+                                new XeWhen(
                                     rates.exists(user),
                                     () -> new XeAppend(
                                         "rate",
@@ -96,36 +113,44 @@ public final class TkProject implements TkRegex {
                                 new XeAppend(
                                     "roles",
                                     new XeTransform<String>(
-                                        new Roles(project).bootstrap().allRoles(
-                                            user
-                                        ),
+                                        roles.allRoles(user),
                                         role -> new XeAppend("role", role)
                                     )
                                 ),
-                                new XeAppend(
-                                    "stripe_key",
-                                    new Props(this.farm).get("//stripe/key", "")
-                                ),
-                                new XeAppend(
-                                    "cash",
-                                    new Ledger(project).bootstrap()
-                                        .cash().toString()
-                                ),
-                                new XeAppend(
-                                    "estimates",
-                                    new Estimates(project).bootstrap()
-                                        .total().toString()
-                                ),
-                                new XeAppend(
-                                    "deficit",
-                                    Boolean.toString(
-                                        new Ledger(project).bootstrap()
-                                            .deficit()
+                                new XeWhen(
+                                    "yegor256".equals(login)
+                                        || roles.hasRole(login, "PO"),
+                                    new XeChain(
+                                        new XeAppend(
+                                            "stripe_key",
+                                            new Props(this.farm).get(
+                                                "//stripe/key", ""
+                                            )
+                                        ),
+                                        new XeAppend(
+                                            "cash",
+                                            new Ledger(project).bootstrap()
+                                                .cash().toString()
+                                        ),
+                                        new XeAppend(
+                                            "estimates",
+                                            new Estimates(project).bootstrap()
+                                                .total().toString()
+                                        ),
+                                        new XeAppend(
+                                            "deficit",
+                                            Boolean.toString(
+                                                new Ledger(project).bootstrap()
+                                                    .deficit()
+                                            )
+                                        ),
+                                        new XeAppend(
+                                            "fee",
+                                            catalog.fee(
+                                                project.pid()
+                                            ).toString()
+                                        )
                                     )
-                                ),
-                                new XeAppend(
-                                    "fee",
-                                    catalog.fee(project.pid()).toString()
                                 )
                             );
                         }

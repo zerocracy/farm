@@ -16,16 +16,17 @@
  */
 package com.zerocracy.pmo;
 
-import com.jcabi.log.Logger;
+import com.zerocracy.Farm;
+import com.zerocracy.Item;
+import com.zerocracy.Par;
+import com.zerocracy.Project;
+import com.zerocracy.SoftException;
 import com.zerocracy.Xocument;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Item;
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.SoftException;
-import com.zerocracy.jstk.cash.Cash;
+import com.zerocracy.cash.Cash;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
+import org.cactoos.collection.CollectionOf;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.list.SolidList;
 import org.cactoos.time.DateAsText;
@@ -39,7 +40,7 @@ import org.xembly.Directives;
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@SuppressWarnings("PMD.TooManyMethods")
+@SuppressWarnings({ "PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals" })
 public final class Catalog {
 
     /**
@@ -81,6 +82,18 @@ public final class Catalog {
     }
 
     /**
+     * Is it a sandbox project.
+     * @param pid Project ID
+     * @return TRUE if sandbox
+     * @checkstyle NonStaticMethodCheck (3 lines)
+     */
+    public boolean sandbox(final String pid) {
+        return new CollectionOf<>(
+            "C3T46CUJJ", "C63314D6Z", "C7JGJ00DP"
+        ).contains(pid);
+    }
+
+    /**
      * Delete it entirely.
      * @param pid Project ID
      * @throws IOException If fails
@@ -88,7 +101,7 @@ public final class Catalog {
     public void delete(final String pid) throws IOException {
         if (!this.exists(pid)) {
             throw new IllegalArgumentException(
-                String.format("Project \"%s\" doesn't exist, can't delete", pid)
+                new Par("Project %s doesn't exist, can't delete").say(pid)
             );
         }
         try (final Item item = this.item()) {
@@ -109,7 +122,7 @@ public final class Catalog {
     public void add(final String pid, final String prefix) throws IOException {
         if (this.exists(pid)) {
             throw new IllegalArgumentException(
-                String.format("Project \"%s\" already exists", pid)
+                new Par("Project %s already exists").say(pid)
             );
         }
         try (final Item item = this.item()) {
@@ -127,10 +140,6 @@ public final class Catalog {
                     .add("publish").set(Boolean.toString(false))
             );
         }
-        Logger.info(
-            this, "New project \"%s\" added, prefix is \"%s\"",
-            pid, prefix
-        );
     }
 
     /**
@@ -175,7 +184,7 @@ public final class Catalog {
     public boolean pause(final String pid) throws IOException {
         if (!this.exists(pid)) {
             throw new IllegalArgumentException(
-                String.format("Project \"%s\" doesn't exist", pid)
+                new Par("Project %s doesn't exist").say(pid)
             );
         }
         try (final Item item = this.item()) {
@@ -200,7 +209,7 @@ public final class Catalog {
         final boolean pause) throws IOException {
         if (!this.exists(pid)) {
             throw new IllegalArgumentException(
-                String.format("Project \"%s\" doesn't exist, can't pause", pid)
+                new Par("Project %s doesn't exist, can't pause").say(pid)
             );
         }
         try (final Item item = this.item()) {
@@ -221,9 +230,9 @@ public final class Catalog {
     public Cash fee(final String pid) throws IOException {
         if (!this.exists(pid)) {
             throw new IllegalArgumentException(
-                String.format(
-                    "Project \"%s\" doesn't exist, can't get fee", pid
-                )
+                new Par(
+                    "Project %s doesn't exist, can't get fee"
+                ).say(pid)
             );
         }
         try (final Item item = this.item()) {
@@ -249,9 +258,9 @@ public final class Catalog {
     public void fee(final String pid, final Cash fee) throws IOException {
         if (!this.exists(pid)) {
             throw new IllegalArgumentException(
-                String.format(
-                    "Project \"%s\" doesn't exist, can't set fee", pid
-                )
+                new Par(
+                    "Project %s doesn't exist, can't set fee"
+                ).say(pid)
             );
         }
         try (final Item item = this.item()) {
@@ -271,11 +280,19 @@ public final class Catalog {
      */
     public void publish(final String pid, final boolean status)
         throws IOException {
+        if (this.links(pid, "github").isEmpty()) {
+            throw new SoftException(
+                new Par(
+                    "Project %s is not linked to any GitHub repositories,",
+                    "it can't be published on the board, see §26"
+                ).say(pid)
+            );
+        }
         if (!this.exists(pid)) {
             throw new IllegalArgumentException(
-                String.format(
-                    "Project \"%s\" doesn't exist, can't publish", pid
-                )
+                new Par(
+                    "Project %s doesn't exist, can't publish, see §26"
+                ).say(pid)
             );
         }
         try (final Item item = this.item()) {
@@ -285,10 +302,6 @@ public final class Catalog {
                 ).strict(1).set(Boolean.toString(status))
             );
         }
-        Logger.info(
-            this, "Project \"%s\" publishing success changed to \"%s\"",
-            pid, status
-        );
     }
 
     /**
@@ -300,9 +313,9 @@ public final class Catalog {
     public boolean published(final String pid) throws IOException {
         if (!this.exists(pid)) {
             throw new IllegalArgumentException(
-                String.format(
-                    "Project \"%s\" doesn't exist, can't check publish", pid
-                )
+                new Par(
+                    "Project \"%s\" doesn't exist, can't check publish"
+                ).say(pid)
             );
         }
         try (final Item item = this.item()) {
@@ -328,17 +341,16 @@ public final class Catalog {
         throws IOException {
         if (!this.exists(pid)) {
             throw new IllegalArgumentException(
-                String.format(
-                    "Project \"%s\" doesn't exist, can't add link", pid
-                )
+                new Par(
+                    "Project %s doesn't exist, can't add link"
+                ).say(pid)
             );
         }
         if (this.hasLink(pid, rel, href)) {
             throw new SoftException(
-                String.format(
-                    "Project `%s` already has link, rel=`%s`, href=`%s`",
-                    pid, rel, href
-                )
+                new Par(
+                    "Project %s already has link, rel=`%s`, href=`%s`"
+                ).say(pid, rel, href)
             );
         }
         try (final Item item = this.item()) {
@@ -352,10 +364,6 @@ public final class Catalog {
                     .attr("href", href)
             );
         }
-        Logger.info(
-            this, "Project \"%s\" got a new link, rel=\"%s\", href=\"%s\"",
-            pid, rel, href
-        );
     }
 
     /**
@@ -369,9 +377,9 @@ public final class Catalog {
         throws IOException {
         if (!this.exists(pid)) {
             throw new IllegalArgumentException(
-                String.format(
-                    "Project \"%s\" doesn't exist, can't unlink", pid
-                )
+                new Par(
+                    "Project %s doesn't exist, can't unlink"
+                ).say(pid)
             );
         }
         try (final Item item = this.item()) {
@@ -389,10 +397,6 @@ public final class Catalog {
                     .remove()
             );
         }
-        Logger.info(
-            this, "Project \"%s\" lost a link, rel=\"%s\", href=\"%s\"",
-            pid, rel, href
-        );
     }
 
     /**
@@ -404,9 +408,9 @@ public final class Catalog {
     public Collection<String> links(final String pid) throws IOException {
         if (!this.exists(pid)) {
             throw new IllegalArgumentException(
-                String.format(
-                    "Project \"%s\" doesn't exist, can't get links", pid
-                )
+                new Par(
+                    "Project %s doesn't exist, can't get links"
+                ).say(pid)
             );
         }
         try (final Item item = this.item()) {
@@ -429,6 +433,32 @@ public final class Catalog {
     }
 
     /**
+     * Get project links by REL.
+     * @param pid Project ID
+     * @param rel REL to look for
+     * @return Links found
+     * @throws IOException If fails
+     */
+    public Collection<String> links(final String pid, final String rel)
+        throws IOException {
+        if (!this.exists(pid)) {
+            throw new IllegalArgumentException(
+                new Par(
+                    "Project %s doesn't exist, can't get links"
+                ).say(pid)
+            );
+        }
+        try (final Item item = this.item()) {
+            return new Xocument(item).xpath(
+                String.format(
+                    "/catalog/project[@id='%s']/links/link[@rel='%s']/@href",
+                    pid, rel
+                )
+            );
+        }
+    }
+
+    /**
      * Project has this link?
      * @param pid Project ID
      * @param rel REL
@@ -440,9 +470,9 @@ public final class Catalog {
         final String href) throws IOException {
         if (!this.exists(pid)) {
             throw new IllegalArgumentException(
-                String.format(
-                    "Project \"%s\" doesn't exist, can't check link", pid
-                )
+                new Par(
+                    "Project %s doesn't exist, can't check link"
+                ).say(pid)
             );
         }
         try (final Item item = this.item()) {
@@ -466,9 +496,9 @@ public final class Catalog {
         throws IOException {
         if (!this.exists(pid)) {
             throw new IllegalArgumentException(
-                String.format(
-                    "Project \"%s\" doesn't exist, can't set parent", pid
-                )
+                new Par(
+                    "Project %s doesn't exist, can't set parent"
+                ).say(pid)
             );
         }
         try (final Item item = this.item()) {
@@ -480,10 +510,6 @@ public final class Catalog {
                     .set(parent)
             );
         }
-        Logger.info(
-            this, "Project \"%s\" got a parent \"%s\"",
-            pid, parent
-        );
     }
 
     /**
@@ -496,9 +522,9 @@ public final class Catalog {
         throws IOException {
         if (!this.exists(pid)) {
             throw new IllegalArgumentException(
-                String.format(
-                    "Project \"%s\" doesn't exist, can't change title", pid
-                )
+                new Par(
+                    "Project %s doesn't exist, can't change title"
+                ).say(pid)
             );
         }
         try (final Item item = this.item()) {
@@ -521,9 +547,9 @@ public final class Catalog {
     public String title(final String pid) throws IOException {
         if (!this.exists(pid)) {
             throw new IllegalArgumentException(
-                String.format(
-                    "Project \"%s\" doesn't exist, can't get title", pid
-                )
+                new Par(
+                    "Project %s doesn't exist, can't get title"
+                ).say(pid)
             );
         }
         try (final Item item = this.item()) {

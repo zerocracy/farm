@@ -17,9 +17,9 @@
 package com.zerocracy.tk.profile;
 
 import com.jcabi.matchers.XhtmlMatchers;
+import com.zerocracy.Farm;
+import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.props.PropsFarm;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.farm.fake.FkFarm;
 import com.zerocracy.pmo.People;
 import com.zerocracy.tk.TkApp;
 import java.net.HttpURLConnection;
