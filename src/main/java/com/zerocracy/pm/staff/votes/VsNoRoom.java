@@ -14,12 +14,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pm.staff.voters;
+package com.zerocracy.pm.staff.votes;
 
 import com.zerocracy.Par;
 import com.zerocracy.jstk.Project;
-import com.zerocracy.pm.staff.Voter;
+import com.zerocracy.pm.staff.Votes;
 import com.zerocracy.pmo.Agenda;
+import com.zerocracy.pmo.Awards;
 import java.io.IOException;
 import org.cactoos.iterable.LengthOf;
 
@@ -30,7 +31,7 @@ import org.cactoos.iterable.LengthOf;
  * @version $Id$
  * @since 0.12
  */
-public final class VtrNoRoom implements Voter {
+public final class VsNoRoom implements Votes {
 
     /**
      * The PMO.
@@ -38,43 +39,58 @@ public final class VtrNoRoom implements Voter {
     private final Project pmo;
 
     /**
-     * Max.
-     */
-    private final int max;
-
-    /**
      * Ctor.
      * @param pkt Current project
-     * @param threshold Max
      */
-    public VtrNoRoom(final Project pkt, final int threshold) {
+    public VsNoRoom(final Project pkt) {
         this.pmo = pkt;
-        this.max = threshold;
     }
 
     @Override
-    public double vote(final String login, final StringBuilder log)
+    public double take(final String login, final StringBuilder log)
         throws IOException {
         final int total = new LengthOf(
             new Agenda(this.pmo, login).bootstrap().jobs()
         ).intValue();
         final double rate;
-        if (total >= this.max) {
+        final int max = this.threshold(login);
+        if (total >= max) {
             rate = 1.0d;
             log.append(
                 new Par(
                     "%d job(s) already, max is %d"
-                ).say(total, this.max)
+                ).say(total, max)
             );
         } else {
             rate = 0.0d;
             log.append(
                 new Par(
                     "%d job(s) out of %d"
-                ).say(total, this.max)
+                ).say(total, max)
             );
         }
         return rate;
     }
 
+    /**
+     * Max jobs for user, depends on awards.
+     * @param login A user
+     * @return Jobs threshold
+     * @throws IOException If fails
+     * @checkstyle MagicNumberCheck (20 lines)
+     */
+    private int threshold(final String login) throws IOException {
+        final int points = new Awards(this.pmo, login).bootstrap().total();
+        final int max;
+        if (points < 500) {
+            max = 3;
+        } else if (points < 2000) {
+            max = 5;
+        } else if (points < 4000) {
+            max = 10;
+        } else {
+            max = 15;
+        }
+        return max;
+    }
 }

@@ -57,7 +57,7 @@ def exec(Project project, XML xml) {
         .param(
         'message',
           new Par(
-            'We just paid %s to @%s for %s: `%s`'
+            'We just paid %s to @%s for %s: payment ID is `%s`'
           ).say(price, login, job, msg)
         )
         .postTo(project)

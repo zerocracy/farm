@@ -25,6 +25,7 @@ import com.zerocracy.pm.ClaimIn
 import io.sentry.Sentry
 import io.sentry.event.Event
 import io.sentry.event.EventBuilder
+import io.sentry.event.interfaces.MessageInterface
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Error')
@@ -32,9 +33,10 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Props props = new Props(farm)
   Sentry.capture(
-    new EventBuilder()
-      .withMessage(claim.param('message') + '\n\n' + claim.param('stacktrace'))
-      .withRelease(props.get('//build/version', ''))
-      .withLevel(Event.Level.ERROR)
+    new EventBuilder().withTag('pid', project.pid()).withSentryInterface(
+      new MessageInterface(
+        claim.param('message') + '\n\n' + claim.param('stacktrace')
+      )
+    ).withRelease(props.get('//build/version', '')).withLevel(Event.Level.ERROR)
   )
 }

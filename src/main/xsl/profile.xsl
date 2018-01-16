@@ -126,6 +126,7 @@ SOFTWARE.
         <xsl:text>.</xsl:text>
       </p>
     </xsl:if>
+    <xsl:apply-templates select="links"/>
     <xsl:apply-templates select="wallet"/>
     <xsl:apply-templates select="projects"/>
     <xsl:apply-templates select="skills"/>

@@ -14,33 +14,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pm.staff.voters;
+package com.zerocracy.bundles.assign_qa_user
 
-import com.zerocracy.jstk.farm.fake.FkProject;
-import com.zerocracy.pmo.People;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.Test;
+import com.jcabi.xml.XML
+import com.zerocracy.jstk.Project
+import com.zerocracy.pm.scope.Wbs
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
 
-/**
- * Test case for {@link VtrVacation}.
- * @author Kirill (g4s8.public@gmail.com)
- * @version $Id$
- * @since 0.16
- * @checkstyle JavadocMethodCheck (500 lines)
- */
-public final class VtrVacationTest {
-
-    @Test
-    public void highRankForVacationTest() throws Exception {
-        final FkProject project = new FkProject();
-        final String uid = "g4s8";
-        final People people = new People(project).bootstrap();
-        people.invite(uid, uid);
-        people.vacation(uid, true);
-        MatcherAssert.assertThat(
-            new VtrVacation(project).vote(uid, new StringBuilder()),
-            Matchers.equalTo(1.0D)
-        );
-    }
+def exec(Project project, XML xml) {
+  MatcherAssert.assertThat(
+    new Wbs(project).bootstrap().role('gh:test/test#1'),
+    Matchers.equalTo('DEV')
+  )
 }

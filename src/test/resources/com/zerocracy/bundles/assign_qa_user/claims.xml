@@ -15,23 +15,15 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<test target="q-profile.xml">
-  <cmd>
-    <text>rate</text>
-    <code>Set rate</code>
-  </cmd>
-  <cmd>
-    <text>apply C3T46CUJJ $10</text>
-    <code>Apply to a project</code>
-    <opts>
-      <opt>
-        <name>project</name>
-        <value>C3T46CUJJ</value>
-      </opt>
-      <opt>
-        <name>rate</name>
-        <value>$10</value>
-      </opt>
-    </opts>
-  </cmd>
-</test>
+<claims xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/zerocracy/datum/0.37/xsd/pm/claims.xsd" version="0.1" updated="2017-03-27T11:18:09.228Z">
+  <claim id="3">
+    <created>2017-03-27T11:18:09.228Z</created>
+    <type>Close issue</type>
+    <author>yegor256</author>
+    <token>test;C123;yegor256</token>
+    <params>
+      <param name="login">yegor256</param>
+      <param name="job">gh:test/test#1</param>
+    </params>
+  </claim>
+</claims>

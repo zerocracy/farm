@@ -79,7 +79,7 @@ public final class Par {
         out = Par.replace(
             out, Pattern.compile("(?<= |^)@([a-z-0-9]{3,})"),
             matcher -> String.format(
-                "[%s](http://www.0crat.com/u/%s)",
+                "%s[/z](http://www.0crat.com/u/%s)",
                 matcher.group(0), matcher.group(1)
             )
         );
@@ -99,7 +99,7 @@ public final class Par {
         );
         out = Par.replace(
             out,
-            Pattern.compile("(?<= |^)gh:([a-zA-Z0-9-]+/[a-zA-Z0-9-]+)#(\\d+)"),
+            Pattern.compile("(?<= |^)gh:([a-zA-Z0-9-]+/[a-zA-Z0-9-.]+)#(\\d+)"),
             matcher -> String.format(
                 "[#%s](https://github.com/%s/issues/%1$s)",
                 matcher.group(2), matcher.group(1)
@@ -186,6 +186,7 @@ public final class Par {
         @Override
         public String toString() {
             return this.par
+                .replaceAll("\\[/z]\\([^)]+\\)", "")
                 .replaceAll("\\[([^]]+)]\\([^)]+\\)", "$1")
                 .replaceAll("`([^`]+)", "$1");
         }

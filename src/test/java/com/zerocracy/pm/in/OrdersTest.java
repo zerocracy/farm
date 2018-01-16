@@ -38,5 +38,4 @@ public final class OrdersTest {
         new Wbs(project).bootstrap().add(job);
         orders.assign(job, "yegor256", "just for fun");
     }
-
 }

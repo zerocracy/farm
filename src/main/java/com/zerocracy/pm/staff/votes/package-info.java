@@ -14,32 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.radars.slack;
-
-import com.ullink.slack.simpleslackapi.SlackSession;
-import com.ullink.slack.simpleslackapi.events.SlackChannelJoined;
-import com.zerocracy.jstk.Farm;
-import java.io.IOException;
 
 /**
- * Invite to the channel.
+ * Voters.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.1
+ * @since 0.12
  */
-final class ReInvite implements Reaction<SlackChannelJoined> {
-
-    @Override
-    public boolean react(final Farm farm, final SlackChannelJoined event,
-        final SlackSession session) throws IOException {
-        session.disconnect();
-        session.connect();
-        session.sendMessage(
-            event.getSlackChannel(),
-            "Thanks for inviting me here."
-        );
-        return true;
-    }
-
-}
+package com.zerocracy.pm.staff.votes;

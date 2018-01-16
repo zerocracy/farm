@@ -23,6 +23,7 @@ import com.zerocracy.jstk.Project;
 import com.zerocracy.jstk.SoftException;
 import com.zerocracy.pm.scope.Wbs;
 import java.io.IOException;
+import org.cactoos.collection.CollectionOf;
 import org.xembly.Directives;
 
 /**
@@ -85,6 +86,13 @@ public final class Impediments {
             throw new SoftException(
                 new Par(
                     "Job %s is not assigned, can't put it on hold"
+                ).say(job)
+            );
+        }
+        if (new CollectionOf<>(this.jobs()).contains(job)) {
+            throw new SoftException(
+                new Par(
+                    "Job %s is already on hold"
                 ).say(job)
             );
         }

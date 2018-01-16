@@ -14,12 +14,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.zerocracy.bundles.assign_qa_user
 
-/**
- * Voters.
- *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.12
- */
-package com.zerocracy.pm.staff.voters;
+import com.jcabi.github.Github
+import com.jcabi.github.Issue
+import com.jcabi.github.Repos
+import com.jcabi.xml.XML
+import com.zerocracy.entry.ExtGithub
+import com.zerocracy.jstk.Farm
+import com.zerocracy.jstk.Project
+
+def exec(Project project, XML xml) {
+  Farm farm = binding.variables.farm
+  Github github = new ExtGithub(farm).value()
+  def repo = github.repos().create(new Repos.RepoCreate('test', false))
+  new Issue.Smart(repo.issues().create('Hello, world', ''))
+}

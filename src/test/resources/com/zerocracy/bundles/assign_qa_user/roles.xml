@@ -15,23 +15,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<test target="q-profile.xml">
-  <cmd>
-    <text>rate</text>
-    <code>Set rate</code>
-  </cmd>
-  <cmd>
-    <text>apply C3T46CUJJ $10</text>
-    <code>Apply to a project</code>
-    <opts>
-      <opt>
-        <name>project</name>
-        <value>C3T46CUJJ</value>
-      </opt>
-      <opt>
-        <name>rate</name>
-        <value>$10</value>
-      </opt>
-    </opts>
-  </cmd>
-</test>
+<roles xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/zerocracy/datum/0.37/xsd/pm/staff/roles.xsd" version="0.1" updated="2017-03-27T11:18:09.228Z">
+  <person id="yegor256">
+    <role>ARC</role>
+  </person>
+  <person id="test">
+    <role>QA</role>
+  </person>
+</roles>

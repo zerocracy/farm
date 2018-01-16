@@ -14,32 +14,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.radars.slack;
+package com.zerocracy.stk.pm.qa
 
-import com.ullink.slack.simpleslackapi.SlackSession;
-import com.ullink.slack.simpleslackapi.events.SlackChannelJoined;
-import com.zerocracy.jstk.Farm;
-import java.io.IOException;
+import com.jcabi.xml.XML
+import com.zerocracy.Par
+import com.zerocracy.farm.Assume
+import com.zerocracy.jstk.Project
+import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pm.scope.Wbs
 
-/**
- * Invite to the channel.
- *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.1
- */
-final class ReInvite implements Reaction<SlackChannelJoined> {
-
-    @Override
-    public boolean react(final Farm farm, final SlackChannelJoined event,
-        final SlackSession session) throws IOException {
-        session.disconnect();
-        session.connect();
-        session.sendMessage(
-            event.getSlackChannel(),
-            "Thanks for inviting me here."
-        );
-        return true;
-    }
-
+def exec(Project project, XML xml) {
+  new Assume(project, xml).notPmo()
+  new Assume(project, xml).type('Assign QA')
+  def claim = new ClaimIn(xml)
+  def job = claim.param('job')
+  new Wbs(project).bootstrap().add(job)
+  claim.reply(
+    new Par('@%s please review this job as in §30.')
+      .say(claim.param('assignee'))
+  )
 }
