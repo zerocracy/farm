@@ -46,7 +46,7 @@ def exec(Project project, XML xml) {
   orders.resign(job)
   claim.reply(
     new Par(
-      '@%s resigned from %s, please stop working',
+      'The user @%s resigned from %s, please stop working',
     ).say(performer, job)
   ).postTo(project)
   new ClaimOut()
