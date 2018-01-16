@@ -299,7 +299,11 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="architects">
     <p>
-      <xsl:text>Architect(s): </xsl:text>
+      <xsl:text>Architect</xsl:text>
+      <xsl:if test="count(architect) &gt; 1">
+        <xsl:text>s</xsl:text>
+      </xsl:if>
+      <xsl:text>: </xsl:text>
       <xsl:for-each select="architect">
         <xsl:if test="position() &gt; 1">
           <xsl:text>, </xsl:text>
