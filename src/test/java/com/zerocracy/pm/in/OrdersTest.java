@@ -16,8 +16,8 @@
  */
 package com.zerocracy.pm.in;
 
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.farm.fake.FkProject;
+import com.zerocracy.Project;
+import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.pm.scope.Wbs;
 import org.junit.Test;
 
@@ -38,5 +38,4 @@ public final class OrdersTest {
         new Wbs(project).bootstrap().add(job);
         orders.assign(job, "yegor256", "just for fun");
     }
-
 }

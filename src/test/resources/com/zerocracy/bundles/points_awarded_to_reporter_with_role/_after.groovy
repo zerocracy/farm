@@ -17,7 +17,7 @@
 package com.zerocracy.bundles.points_awarded_to_reporter_with_role
 
 import com.jcabi.xml.XML
-import com.zerocracy.jstk.Project
+import com.zerocracy.Project
 import com.zerocracy.pmo.Awards
 
 def exec(Project project, XML xml) {

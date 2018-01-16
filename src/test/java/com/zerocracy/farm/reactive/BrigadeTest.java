@@ -18,12 +18,12 @@ package com.zerocracy.farm.reactive;
 
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.zerocracy.Project;
+import com.zerocracy.Stakeholder;
 import com.zerocracy.farm.MismatchException;
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.Stakeholder;
-import com.zerocracy.jstk.farm.fake.FkFarm;
-import com.zerocracy.jstk.farm.fake.FkProject;
-import com.zerocracy.jstk.farm.fake.FkStakeholder;
+import com.zerocracy.farm.fake.FkFarm;
+import com.zerocracy.farm.fake.FkProject;
+import com.zerocracy.farm.fake.FkStakeholder;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
 import java.nio.file.Files;
@@ -60,7 +60,7 @@ public final class BrigadeTest {
             new TeeInput(
                 String.join(
                     "\n",
-                    "import com.zerocracy.jstk.Project",
+                    "import com.zerocracy.Project",
                     "import com.jcabi.xml.XML",
                     "import com.zerocracy.pm.ClaimOut",
                     "def exec(Project project, XML xml) {",

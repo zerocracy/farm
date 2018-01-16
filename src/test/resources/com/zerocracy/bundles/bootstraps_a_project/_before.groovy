@@ -17,7 +17,7 @@
 package com.zerocracy.bundles.bootstraps_a_project
 
 import com.jcabi.xml.XML
-import com.zerocracy.jstk.Project
+import com.zerocracy.Project
 
 def exec(Project project, XML xml) {
 }

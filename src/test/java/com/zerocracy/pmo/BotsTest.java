@@ -16,7 +16,7 @@
  */
 package com.zerocracy.pmo;
 
-import com.zerocracy.jstk.farm.fake.FkProject;
+import com.zerocracy.farm.fake.FkProject;
 import javax.json.Json;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;

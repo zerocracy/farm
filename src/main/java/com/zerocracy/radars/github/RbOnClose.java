@@ -19,8 +19,8 @@ package com.zerocracy.radars.github;
 import com.jcabi.github.Github;
 import com.jcabi.github.Issue;
 import com.jcabi.github.Label;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Project;
+import com.zerocracy.Farm;
+import com.zerocracy.Project;
 import com.zerocracy.pm.ClaimOut;
 import java.io.IOException;
 import java.util.Arrays;
@@ -50,10 +50,9 @@ public final class RbOnClose implements Rebound {
         } else {
             final Project project = new GhProject(farm, issue.repo());
             new ClaimOut()
-                .type("Finish order")
+                .type("Close issue")
                 .token(new TokenOfIssue(issue))
                 .param("job", new Job(issue))
-                .param("reason", "GitHub issue was closed, order is finished.")
                 .postTo(project);
             new ClaimOut()
                 .type("Remove job from WBS")

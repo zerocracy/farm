@@ -16,16 +16,17 @@
  */
 package com.zerocracy.pmo;
 
+import com.zerocracy.Farm;
+import com.zerocracy.Item;
 import com.zerocracy.Par;
+import com.zerocracy.Project;
+import com.zerocracy.SoftException;
 import com.zerocracy.Xocument;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Item;
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.SoftException;
-import com.zerocracy.jstk.cash.Cash;
+import com.zerocracy.cash.Cash;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
+import org.cactoos.collection.CollectionOf;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.list.SolidList;
 import org.cactoos.time.DateAsText;
@@ -39,7 +40,7 @@ import org.xembly.Directives;
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@SuppressWarnings("PMD.TooManyMethods")
+@SuppressWarnings({ "PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals" })
 public final class Catalog {
 
     /**
@@ -78,6 +79,18 @@ public final class Catalog {
             new Xocument(team).bootstrap("pmo/catalog");
         }
         return this;
+    }
+
+    /**
+     * Is it a sandbox project.
+     * @param pid Project ID
+     * @return TRUE if sandbox
+     * @checkstyle NonStaticMethodCheck (3 lines)
+     */
+    public boolean sandbox(final String pid) {
+        return new CollectionOf<>(
+            "C3T46CUJJ", "C63314D6Z", "C7JGJ00DP"
+        ).contains(pid);
     }
 
     /**
@@ -267,10 +280,18 @@ public final class Catalog {
      */
     public void publish(final String pid, final boolean status)
         throws IOException {
+        if (this.links(pid, "github").isEmpty()) {
+            throw new SoftException(
+                new Par(
+                    "Project %s is not linked to any GitHub repositories,",
+                    "it can't be published on the board, see §26"
+                ).say(pid)
+            );
+        }
         if (!this.exists(pid)) {
             throw new IllegalArgumentException(
                 new Par(
-                    "Project \"%s\" doesn't exist, can't publish"
+                    "Project %s doesn't exist, can't publish, see §26"
                 ).say(pid)
             );
         }
@@ -406,6 +427,32 @@ public final class Catalog {
                             pid
                         )
                     )
+                )
+            );
+        }
+    }
+
+    /**
+     * Get project links by REL.
+     * @param pid Project ID
+     * @param rel REL to look for
+     * @return Links found
+     * @throws IOException If fails
+     */
+    public Collection<String> links(final String pid, final String rel)
+        throws IOException {
+        if (!this.exists(pid)) {
+            throw new IllegalArgumentException(
+                new Par(
+                    "Project %s doesn't exist, can't get links"
+                ).say(pid)
+            );
+        }
+        try (final Item item = this.item()) {
+            return new Xocument(item).xpath(
+                String.format(
+                    "/catalog/project[@id='%s']/links/link[@rel='%s']/@href",
+                    pid, rel
                 )
             );
         }

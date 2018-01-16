@@ -16,10 +16,10 @@
  */
 package com.zerocracy.pm.in;
 
+import com.zerocracy.Item;
+import com.zerocracy.Project;
+import com.zerocracy.SoftException;
 import com.zerocracy.Xocument;
-import com.zerocracy.jstk.Item;
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.SoftException;
 import com.zerocracy.pm.cost.Boosts;
 import com.zerocracy.pm.cost.Estimates;
 import com.zerocracy.pm.cost.Rates;
@@ -96,15 +96,6 @@ public final class Orders {
                 )
             );
         }
-        final Rates rates = new Rates(this.project).bootstrap();
-        if (rates.exists(login)) {
-            new Estimates(this.project).bootstrap().update(
-                job, rates.rate(login).mul(
-                    (long) new Boosts(this.project).bootstrap().factor(job)
-                // @checkstyle MagicNumber (1 line)
-                ).div(4L)
-            );
-        }
         try (final Item wbs = this.item()) {
             new Xocument(wbs.path()).modify(
                 new Directives()
@@ -120,6 +111,19 @@ public final class Orders {
                     .set(reason)
             );
         }
+        final String role = new Wbs(this.project).bootstrap().role(job);
+        int factor = 2;
+        if ("REV".equals(role)) {
+            factor = 1;
+        }
+        final Rates rates = new Rates(this.project).bootstrap();
+        if (rates.exists(login)) {
+            new Estimates(this.project).bootstrap().update(
+                // @checkstyle MagicNumber (1 line)
+                job, rates.rate(login).mul((long) factor).div(4L)
+            );
+        }
+        new Boosts(this.project).bootstrap().boost(job, factor);
     }
 
     /**

@@ -16,8 +16,8 @@
  */
 package com.zerocracy.farm.reactive;
 
+import com.zerocracy.Item;
 import com.zerocracy.Xocument;
-import com.zerocracy.jstk.Item;
 import java.io.IOException;
 import java.nio.file.Path;
 import lombok.EqualsAndHashCode;

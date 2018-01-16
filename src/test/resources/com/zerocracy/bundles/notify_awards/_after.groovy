@@ -22,8 +22,8 @@ import com.jcabi.github.Github
 import com.jcabi.github.Issue
 import com.jcabi.xml.XML
 import com.zerocracy.entry.ExtGithub
-import com.zerocracy.jstk.Farm
-import com.zerocracy.jstk.Project
+import com.zerocracy.Farm
+import com.zerocracy.Project
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 

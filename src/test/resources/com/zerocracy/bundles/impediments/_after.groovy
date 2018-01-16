@@ -17,7 +17,7 @@
 package com.zerocracy.bundles.impediments
 
 import com.jcabi.xml.XML
-import com.zerocracy.jstk.Project
+import com.zerocracy.Project
 import com.zerocracy.pm.in.Orders
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers

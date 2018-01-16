@@ -17,7 +17,7 @@
 package com.zerocracy.bundles.jobs_to_remind
 
 import com.jcabi.xml.XML
-import com.zerocracy.jstk.Project
+import com.zerocracy.Project
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.time.Reminders
 import org.hamcrest.MatcherAssert

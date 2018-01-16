@@ -16,8 +16,8 @@
  */
 package com.zerocracy.farm.props;
 
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.farm.fake.FkFarm;
+import com.zerocracy.Farm;
+import com.zerocracy.farm.fake.FkFarm;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;

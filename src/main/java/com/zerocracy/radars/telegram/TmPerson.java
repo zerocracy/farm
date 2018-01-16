@@ -16,7 +16,7 @@
  */
 package com.zerocracy.radars.telegram;
 
-import com.zerocracy.jstk.Farm;
+import com.zerocracy.Farm;
 import com.zerocracy.pmo.GoodPeople;
 import com.zerocracy.pmo.People;
 import java.io.IOException;

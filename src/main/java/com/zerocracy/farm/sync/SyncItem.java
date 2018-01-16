@@ -16,7 +16,7 @@
  */
 package com.zerocracy.farm.sync;
 
-import com.zerocracy.jstk.Item;
+import com.zerocracy.Item;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.concurrent.locks.Lock;

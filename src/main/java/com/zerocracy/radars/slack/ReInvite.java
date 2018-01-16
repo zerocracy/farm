@@ -18,7 +18,7 @@ package com.zerocracy.radars.slack;
 
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackChannelJoined;
-import com.zerocracy.jstk.Farm;
+import com.zerocracy.Farm;
 import java.io.IOException;
 
 /**

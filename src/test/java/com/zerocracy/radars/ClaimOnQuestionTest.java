@@ -17,7 +17,7 @@
 package com.zerocracy.radars;
 
 import com.jcabi.xml.XMLDocument;
-import com.zerocracy.jstk.farm.fake.FkProject;
+import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.pm.Claims;
 import java.util.Collection;
 import org.cactoos.list.SolidList;

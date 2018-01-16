@@ -16,8 +16,8 @@
  */
 package com.zerocracy.farm.reactive;
 
+import com.zerocracy.Farm;
 import com.zerocracy.farm.guts.Guts;
-import com.zerocracy.jstk.Farm;
 import org.cactoos.scalar.NumberEnvelope;
 import org.cactoos.scalar.NumberOf;
 

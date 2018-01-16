@@ -18,7 +18,7 @@ package com.zerocracy.farm.reactive;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
-import com.zerocracy.jstk.Project;
+import com.zerocracy.Project;
 import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.Claims;
 import java.io.IOException;

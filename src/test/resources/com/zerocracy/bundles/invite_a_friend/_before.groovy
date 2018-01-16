@@ -16,13 +16,16 @@
  */
 package com.zerocracy.bundles.invite_a_friend
 
+import com.jcabi.github.Repos
 import com.jcabi.xml.XML
-import com.zerocracy.jstk.Farm
-import com.zerocracy.jstk.Project
+import com.zerocracy.Farm
+import com.zerocracy.Project
+import com.zerocracy.entry.ExtGithub
 import com.zerocracy.pmo.Awards
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
+  new ExtGithub(farm).value().repos().create(new Repos.RepoCreate('test', false))
   new Awards(farm, 'high').bootstrap().add(
     1111, 'gh:test/test#1', 'test'
   )

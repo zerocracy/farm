@@ -16,7 +16,7 @@
  */
 package com.zerocracy.pm.scope;
 
-import com.zerocracy.jstk.farm.fake.FkProject;
+import com.zerocracy.farm.fake.FkProject;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;

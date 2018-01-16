@@ -19,7 +19,7 @@ package com.zerocracy.stk.pmo.profile
 import com.jcabi.xml.XML
 import com.zerocracy.Par
 import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Project
+import com.zerocracy.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pmo.Awards
@@ -36,7 +36,7 @@ def exec(Project project, XML xml) {
         '@%s you must have at least 1000 reputation to invite someone,',
         ' as in §1'
       ).say(author)
-    )
+    ).postTo(project)
     return
   }
   String login = claim.param('login')
@@ -55,7 +55,7 @@ def exec(Project project, XML xml) {
       new Par(
         'You have been invited to Zerocracy by @%s, as required in §1.',
         'You can now apply to the projects, see §2.'
-      ).say(claim.author())
+      ).say(author)
     )
     .postTo(project)
 }

@@ -17,10 +17,10 @@
 package com.zerocracy.tk;
 
 import com.jcabi.xml.XML;
+import com.zerocracy.Farm;
+import com.zerocracy.Item;
+import com.zerocracy.Project;
 import com.zerocracy.Xocument;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Item;
-import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.scope.Wbs;
 import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.pmo.Catalog;
@@ -98,14 +98,22 @@ public final class TkBoard implements Take {
         final Project project = this.farm.find(
             String.format("@id='%s'", node.xpath("@id").get(0))
         ).iterator().next();
+        final Catalog catalog = new Catalog(this.farm).bootstrap();
+        final Roles roles = new Roles(project).bootstrap();
         return new XeAppend(
             "project",
-            new XeAppend("id", project.pid()),
-            new XeAppend("title", new Catalog(this.farm).title(project.pid())),
             new XeAppend(
-                "mine",
-                Boolean.toString(
-                    new Roles(project).bootstrap().hasAnyRole(user)
+                "sandbox",
+                Boolean.toString(catalog.sandbox(project.pid()))
+            ),
+            new XeAppend("id", project.pid()),
+            new XeAppend("title", catalog.title(project.pid())),
+            new XeAppend("mine", Boolean.toString(roles.hasAnyRole(user))),
+            new XeAppend(
+                "architects",
+                new XeTransform<>(
+                    roles.findByRole("ARC"),
+                    login -> new XeAppend("architect", login)
                 )
             ),
             new XeAppend(

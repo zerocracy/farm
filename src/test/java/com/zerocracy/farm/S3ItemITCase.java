@@ -18,8 +18,8 @@ package com.zerocracy.farm;
 
 import com.jcabi.s3.Ocket;
 import com.jcabi.s3.Region;
+import com.zerocracy.Item;
 import com.zerocracy.Xocument;
-import com.zerocracy.jstk.Item;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Ignore;

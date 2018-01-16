@@ -19,8 +19,8 @@ package com.zerocracy.stk.pm.comm
 import com.jcabi.xml.XML
 import com.zerocracy.entry.ExtTelegram
 import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Farm
-import com.zerocracy.jstk.Project
+import com.zerocracy.Farm
+import com.zerocracy.Project
 import com.zerocracy.pm.ClaimIn
 import org.telegram.telegrambots.api.methods.send.SendMessage
 

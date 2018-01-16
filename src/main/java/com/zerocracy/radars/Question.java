@@ -196,7 +196,11 @@ public final class Question {
     private boolean parse(final XML cmd, final String part,
         final List<String> parts) {
         boolean matches = false;
-        if (part.matches(cmd.xpath("regex/text() ").get(0))) {
+        final Pattern pattern = Pattern.compile(
+            cmd.xpath("regex/text() ").get(0),
+            Pattern.CASE_INSENSITIVE
+        );
+        if (pattern.matcher(part).matches()) {
             this.rcode.set(cmd.xpath("code/text()").get(0));
             final Collection<XML> subs = cmd.nodes("cmds/cmd");
             if (subs.isEmpty()) {
@@ -241,7 +245,7 @@ public final class Question {
                         String.join(
                             "\n  ",
                             new Sorted<String>(
-                                new Mapped<>(
+                                new Mapped<XML, String>(
                                     item -> String.format(
                                         "\\* `<%s>`: %s",
                                         item.xpath("name/text()").get(0),
@@ -257,7 +261,8 @@ public final class Question {
             }
             final String param = parts.remove(0);
             final Pattern regex = Pattern.compile(
-                opt.xpath("regex/text()").get(0)
+                opt.xpath("regex/text()").get(0),
+                Pattern.CASE_INSENSITIVE
             );
             if (regex.matcher(param).matches()) {
                 this.rparams.put(name, param);

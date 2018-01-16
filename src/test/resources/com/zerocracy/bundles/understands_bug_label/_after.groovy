@@ -17,7 +17,7 @@
 package com.zerocracy.bundles.understands_bug_label
 
 import com.jcabi.xml.XML
-import com.zerocracy.jstk.Project
+import com.zerocracy.Project
 import com.zerocracy.pm.scope.Wbs
 
 def exec(Project project, XML xml) {

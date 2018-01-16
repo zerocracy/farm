@@ -16,7 +16,7 @@
  */
 package com.zerocracy.tk;
 
-import com.zerocracy.jstk.Farm;
+import com.zerocracy.Farm;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;

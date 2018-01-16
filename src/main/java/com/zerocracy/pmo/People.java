@@ -17,14 +17,14 @@
 package com.zerocracy.pmo;
 
 import com.jcabi.xml.XML;
+import com.zerocracy.Farm;
+import com.zerocracy.Item;
 import com.zerocracy.Par;
+import com.zerocracy.Project;
+import com.zerocracy.SoftException;
 import com.zerocracy.Xocument;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Item;
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.SoftException;
-import com.zerocracy.jstk.cash.Cash;
-import com.zerocracy.jstk.cash.CashParsingException;
+import com.zerocracy.cash.Cash;
+import com.zerocracy.cash.CashParsingException;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.regex.Pattern;
@@ -75,6 +75,19 @@ public final class People {
             new Xocument(item.path()).bootstrap("pmo/people");
         }
         return this;
+    }
+
+    /**
+     * Everybody.
+     * @return List of everybody
+     * @throws IOException If fails
+     */
+    public Iterable<String> everybody() throws IOException {
+        try (final Item item = this.item()) {
+            return new Xocument(item.path()).xpath(
+                "/people/person/@id"
+            );
+        }
     }
 
     /**

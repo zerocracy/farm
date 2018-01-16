@@ -17,9 +17,9 @@
 package com.zerocracy.tk.project.reports;
 
 import com.jcabi.xml.XML;
+import com.zerocracy.Project;
+import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.PropsFarm;
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.farm.fake.FkProject;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
 import com.zerocracy.pm.Footprint;

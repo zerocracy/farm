@@ -16,8 +16,8 @@
  */
 package com.zerocracy.farm.ruled;
 
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Project;
+import com.zerocracy.Farm;
+import com.zerocracy.Project;
 import java.io.IOException;
 import lombok.EqualsAndHashCode;
 import org.cactoos.iterable.Mapped;

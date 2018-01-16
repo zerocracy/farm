@@ -18,7 +18,7 @@ package com.zerocracy.stk.pm.comm
 
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Project
+import com.zerocracy.Project
 import com.zerocracy.pm.ClaimIn
 
 // The token must look like: job;gh:zerocracy/farm#123

@@ -22,7 +22,6 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSL;
 import com.jcabi.xml.XSLDocument;
-import com.zerocracy.jstk.Item;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;

@@ -16,7 +16,7 @@
  */
 package com.zerocracy.pm.staff;
 
-import com.zerocracy.jstk.farm.fake.FkProject;
+import com.zerocracy.farm.fake.FkProject;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -34,7 +34,7 @@ public final class RolesTest {
     public void addsAndRemovesRoles() throws Exception {
         final Roles roles = new Roles(new FkProject()).bootstrap();
         final String person = "davvd";
-        final String role = "ARC";
+        final String role = "QA";
         MatcherAssert.assertThat(
             roles.hasRole(person, role),
             Matchers.is(false)

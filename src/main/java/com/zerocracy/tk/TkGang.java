@@ -14,30 +14,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.tk.project;
+package com.zerocracy.tk;
 
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Project;
-import com.zerocracy.pmo.Catalog;
-import com.zerocracy.pmo.Pmo;
-import com.zerocracy.tk.RsPage;
+import com.zerocracy.Farm;
+import com.zerocracy.pmo.People;
 import java.io.IOException;
+import org.takes.Request;
 import org.takes.Response;
-import org.takes.facets.fork.RqRegex;
-import org.takes.facets.fork.TkRegex;
-import org.takes.facets.forward.RsFailure;
+import org.takes.Take;
 import org.takes.rs.xe.XeAppend;
 import org.takes.rs.xe.XeChain;
+import org.takes.rs.xe.XeTransform;
 
 /**
- * Project public page.
+ * Gang of all people.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.19
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-public final class TkPublic implements TkRegex {
+public final class TkGang implements Take {
 
     /**
      * Farm.
@@ -48,30 +45,28 @@ public final class TkPublic implements TkRegex {
      * Ctor.
      * @param frm Farm
      */
-    public TkPublic(final Farm frm) {
+    public TkGang(final Farm frm) {
         this.farm = frm;
     }
 
     @Override
-    public Response act(final RqRegex req) throws IOException {
+    public Response act(final Request req) throws IOException {
         return new RsPage(
             this.farm,
-            "/xsl/public.xsl",
+            "/xsl/gang.xsl",
             req,
-            () -> {
-                final String pid = req.matcher().group(1);
-                final Project pmo = new Pmo(this.farm);
-                final Catalog catalog = new Catalog(pmo).bootstrap();
-                if (!catalog.exists(pid)) {
-                    throw new RsFailure(
-                        String.format("Project \"%s\" not found", pid)
-                    );
-                }
-                return new XeChain(
-                    new XeAppend("project", pid),
-                    new XeAppend("title", catalog.title(pid))
-                );
-            }
+            () -> new XeAppend(
+                "people",
+                new XeTransform<>(
+                    new People(this.farm).everybody(),
+                    login -> new XeAppend(
+                        "user",
+                        new XeChain(
+                            new XeAppend("login", login)
+                        )
+                    )
+                )
+            )
         );
     }
 

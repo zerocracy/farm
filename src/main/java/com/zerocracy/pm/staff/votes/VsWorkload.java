@@ -17,7 +17,7 @@
 package com.zerocracy.pm.staff.votes;
 
 import com.jcabi.log.Logger;
-import com.zerocracy.jstk.Project;
+import com.zerocracy.Project;
 import com.zerocracy.pm.staff.Votes;
 import com.zerocracy.pmo.Agenda;
 import java.io.IOException;

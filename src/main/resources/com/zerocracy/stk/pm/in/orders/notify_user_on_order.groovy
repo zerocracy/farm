@@ -19,8 +19,8 @@ package com.zerocracy.stk.pm.in.orders
 import com.jcabi.xml.XML
 import com.zerocracy.Par
 import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Farm
-import com.zerocracy.jstk.Project
+import com.zerocracy.Farm
+import com.zerocracy.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 
@@ -36,8 +36,9 @@ def exec(Project project, XML xml) {
       'message',
       new Par(
         farm,
-        "The job %s was assigned to you in %s a minute ago:\n```\n%s\n```"
-      ).say(claim.param('job'), project.pid(), new Par.ToText(claim.param('reason')))
+        "The job %s was assigned to you in %s a minute ago:\n"
+      ).say(claim.param('job'), project.pid()) +
+      "```\n${new Par.ToText(claim.param('reason'))}\n```"
     )
     .postTo(project)
 }

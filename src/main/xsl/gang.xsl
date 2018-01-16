@@ -21,39 +21,49 @@ SOFTWARE.
   <xsl:include href="/xsl/inner-layout.xsl"/>
   <xsl:template match="page" mode="head">
     <title>
-      <xsl:value-of select="title"/>
+      <xsl:text>Gang</xsl:text>
     </title>
   </xsl:template>
   <xsl:template match="page" mode="inner">
+    <xsl:apply-templates select="people"/>
+  </xsl:template>
+  <xsl:template match="people">
     <p>
-      <img src="http://www.0crat.com/badge/{project}.svg"/>
-    </p>
-    <p>
-      <xsl:text>The project </xsl:text>
-      <code>
-        <xsl:value-of select="project"/>
-        <xsl:text>/</xsl:text>
-        <xsl:value-of select="title"/>
-      </code>
-      <xsl:text> is managed by Zerocrat according to this </xsl:text>
-      <a href="http://datum.zerocracy.com/pages/policy.html">
-        <xsl:text>Policy</xsl:text>
-      </a>
-      <xsl:text>. </xsl:text>
-      <xsl:text>If you want to join as a developer, start at </xsl:text>
+      <xsl:text>To join us you have</xsl:text>
+      <xsl:text> to apply, by asking Zerocrat in a chat,</xsl:text>
+      <xsl:text> see </xsl:text>
       <a href="http://datum.zerocracy.com/pages/policy.html#2">
         <xsl:text>&#xA7;2</xsl:text>
       </a>
-      <xsl:text>. </xsl:text>
-      <xsl:text>We also recommend you to join this </xsl:text>
-      <a href="https://t.me/joinchat/AAAAAEJFMRzsRTRxM3ec6A">
-        <xsl:text>Telegram chat</xsl:text>
-      </a>
-      <xsl:text> to find someone who can </xsl:text>
-      <a href="http://datum.zerocracy.com/pages/policy.html#1">
-        <xsl:text>invite</xsl:text>
-      </a>
-      <xsl:text> you and explain how Zerocrat works.</xsl:text>
+      <xsl:text>.</xsl:text>
     </p>
+    <table>
+      <thead>
+        <tr>
+          <th>
+            <xsl:text>User</xsl:text>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <xsl:apply-templates select="user">
+          <xsl:sort select="login"/>
+        </xsl:apply-templates>
+      </tbody>
+    </table>
+  </xsl:template>
+  <xsl:template match="user">
+    <tr>
+      <td>
+        <a href="https://github.com/{login}">
+          <xsl:text>@</xsl:text>
+          <xsl:value-of select="login"/>
+        </a>
+        <xsl:text>/</xsl:text>
+        <a href="/u/{login}">
+          <xsl:text>z</xsl:text>
+        </a>
+      </td>
+    </tr>
   </xsl:template>
 </xsl:stylesheet>

@@ -16,8 +16,10 @@
  */
 package com.zerocracy.farm;
 
+import com.zerocracy.Farm;
+import com.zerocracy.Stakeholder;
+import com.zerocracy.entry.ExtFarm;
 import com.zerocracy.farm.footprint.FtFarm;
-import com.zerocracy.farm.props.ExtFarm;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.farm.reactive.RvFarm;
 import com.zerocracy.farm.reactive.StkGroovy;
@@ -25,8 +27,6 @@ import com.zerocracy.farm.ruled.RdFarm;
 import com.zerocracy.farm.strict.StrictFarm;
 import com.zerocracy.farm.sync.SyncFarm;
 import com.zerocracy.farm.uplinked.UplinkedFarm;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Stakeholder;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
 import org.cactoos.Scalar;

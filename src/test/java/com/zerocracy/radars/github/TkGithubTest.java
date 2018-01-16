@@ -16,9 +16,9 @@
  */
 package com.zerocracy.radars.github;
 
+import com.zerocracy.Farm;
+import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.props.PropsFarm;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.farm.fake.FkFarm;
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;

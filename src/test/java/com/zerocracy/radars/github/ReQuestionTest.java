@@ -22,8 +22,8 @@ import com.jcabi.github.Issue;
 import com.jcabi.github.Repo;
 import com.jcabi.github.Repos;
 import com.jcabi.github.mock.MkGithub;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.farm.fake.FkFarm;
+import com.zerocracy.Farm;
+import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.pmo.People;
 import org.junit.Test;
 

@@ -17,8 +17,8 @@
 package com.zerocracy.bundles.set_user_rate
 
 import com.jcabi.xml.XML
-import com.zerocracy.jstk.Project
-import com.zerocracy.jstk.cash.Cash
+import com.zerocracy.Project
+import com.zerocracy.cash.Cash
 import com.zerocracy.pmo.People
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
