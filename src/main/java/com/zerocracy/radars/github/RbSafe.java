@@ -75,15 +75,17 @@ public final class RbSafe implements Rebound {
                 },
                 new FuncOf<>(
                     throwable -> {
-                        new DyErrors(new ExtDynamo(farm).value())
-                            .add(
-                                new ThrottledComments(
-                                    RbSafe.issue(github, event).comments()
-                                ).post(
-                                    new TxtUnrecoverableError(
-                                        throwable, new Props(farm)
-                                    ).asString()
-                                )
+                        new DyErrors.Github(
+                            new DyErrors(new ExtDynamo(farm).value()),
+                            github
+                        ).add(
+                            new ThrottledComments(
+                                RbSafe.issue(github, event).comments()
+                            ).post(
+                                new TxtUnrecoverableError(
+                                    throwable, new Props(farm)
+                                ).asString()
+                            )
                         );
                         Sentry.capture(throwable);
                         throw new IOException(throwable);

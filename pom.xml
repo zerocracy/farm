@@ -661,8 +661,7 @@ SOFTWARE.
       </activation>
       <properties>
         <test.dynamo.key>AAAAAAAAAAAAAAAAAAAA</test.dynamo.key>
-        <test.dynamo.secret>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-        </test.dynamo.secret>
+        <test.dynamo.secret>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</test.dynamo.secret>
       </properties>
       <build>
         <plugins>

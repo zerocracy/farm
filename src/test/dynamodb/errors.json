@@ -1,14 +1,22 @@
 {
   "AttributeDefinitions": [
     {
-      "AttributeName": "comment",
+      "AttributeName": "system",
       "AttributeType": "S"
+    },
+    {
+      "AttributeName": "created",
+      "AttributeType": "N"
     }
   ],
   "KeySchema": [
     {
-      "AttributeName": "comment",
+      "AttributeName": "system",
       "KeyType": "HASH"
+    },
+    {
+      "AttributeName": "created",
+      "KeyType": "RANGE"
     }
   ],
   "ProvisionedThroughput": {

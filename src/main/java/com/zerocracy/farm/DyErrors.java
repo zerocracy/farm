@@ -20,12 +20,12 @@ import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
 import com.amazonaws.services.dynamodbv2.model.Condition;
 import com.jcabi.dynamo.Attributes;
+import com.jcabi.dynamo.Conditions;
 import com.jcabi.dynamo.Item;
+import com.jcabi.dynamo.QueryValve;
 import com.jcabi.dynamo.Region;
-import com.jcabi.dynamo.ScanValve;
 import com.jcabi.github.Comment;
 import com.jcabi.github.Coordinates;
-import com.jcabi.github.Github;
 import java.io.IOException;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -45,13 +45,17 @@ public final class DyErrors {
      */
     private static final String TABLE = "0crat-errors";
     /**
-     * Comment id attribute.
+     * Comment location.
      */
-    private static final String ATTR_COMMENT = "comment";
+    private static final String ATTR_LOCATION = "location";
     /**
      * Created timestamp attribute.
      */
     private static final String ATTR_CREATED = "created";
+    /**
+     * Comment system, e.g. 'github'.
+     */
+    private static final String ATTR_SYSTEM = "system";
 
     /**
      * DynamoDB region.
@@ -68,38 +72,43 @@ public final class DyErrors {
 
     /**
      * Add a comment.
-     * @param comment Github comment
+     * @param system Comment system
+     * @param location Comment location
+     * @param timestamp Created timestamp
      * @throws IOException If fails
      */
-    public void add(final Comment comment) throws IOException {
+    public void add(final String system, final String location,
+        final long timestamp) throws IOException {
         this.region
             .table(DyErrors.TABLE)
             .put(
                 new Attributes()
-                    .with(DyErrors.ATTR_COMMENT, DyErrors.hash(comment))
-                    .with(
-                        DyErrors.ATTR_CREATED,
-                        new Comment.Smart(comment).createdAt().getTime()
-                    )
+                    .with(DyErrors.ATTR_SYSTEM, system)
+                    .with(DyErrors.ATTR_LOCATION, location)
+                    .with(DyErrors.ATTR_CREATED, timestamp)
             );
     }
 
     /**
      * Iterate comments.
-     * @param github Github client
+     * @param system Comment system, e.g. 'github'
      * @param limit Result limit
      * @param hours Hours filter
      * @return Github comments with errors
      */
-    public Iterable<Comment> iterate(final Github github,
+    public Iterable<String> iterate(final String system,
         final int limit,
         final long hours) {
         return new Mapped<>(
-            (Item item) -> DyErrors.comment(github, item),
+            (Item item) -> item.get(DyErrors.ATTR_LOCATION).getS(),
             this.region
                 .table(DyErrors.TABLE)
                 .frame()
-                .through(new ScanValve().withLimit(limit))
+                .through(
+                    new QueryValve().withLimit(limit)
+                        .withAttributeToGet(DyErrors.ATTR_LOCATION)
+                )
+                .where(DyErrors.ATTR_SYSTEM, Conditions.equalTo(system))
                 .where(
                     DyErrors.ATTR_CREATED,
                     new Condition()
@@ -119,50 +128,117 @@ public final class DyErrors {
 
     /**
      * Remove a comment from table.
-     * @param comment Comment to remove
+     * @param system Comment system
+     * @param timestamp Comment timestamp
      * @throws IOException If fails
      */
-    public void remove(final Comment comment) throws IOException {
+    public void remove(final String system, final long timestamp)
+        throws IOException {
         this.region
             .table(DyErrors.TABLE)
             .delete(
                 new Attributes()
-                    .with(DyErrors.ATTR_COMMENT, DyErrors.hash(comment))
+                    .with(DyErrors.ATTR_SYSTEM, system)
+                    .with(DyErrors.ATTR_CREATED, timestamp)
             );
     }
 
     /**
-     * Make a Github comment from DynamoDB item.
-     * @param github Github client
-     * @param item DynamoDB item
-     * @return Github comment
-     * @throws IOException If fails
+     * Github comment system wrapper.
      */
-    private static Comment comment(final Github github, final Item item)
-        throws IOException {
-        final String comment = item.get(DyErrors.ATTR_COMMENT).getS();
-        final String[] parts = comment.split("#");
-        return github
-            .repos()
-            .get(new Coordinates.Simple(parts[0]))
-            .issues()
-            .get(Integer.valueOf(parts[1]))
-            .comments()
-            .get(Integer.valueOf(parts[2]));
-    }
+    public static final class Github {
+        /**
+         * Comment system.
+         */
+        private static final String SYSTEM = "github";
 
-    /**
-     * Hash key for comment.
-     * @param comment A comment
-     * @return Hash string
-     */
-    private static String hash(final Comment comment) {
-        return String.format(
-            "%s#%d#%d",
-            comment.issue().repo()
-                .coordinates(),
-            comment.issue().number(),
-            comment.number()
-        );
+        /**
+         * Errors table.
+         */
+        private final DyErrors errors;
+        /**
+         * Github client.
+         */
+        private final com.jcabi.github.Github client;
+
+        /**
+         * Ctor.
+         * @param errors Errors table
+         * @param github Github client
+         */
+        public Github(final DyErrors errors,
+            final com.jcabi.github.Github github) {
+            this.errors = errors;
+            this.client = github;
+        }
+
+        /**
+         * Iterate Github comments.
+         * @param limit Comments limit
+         * @param hours Time frame
+         * @return Github comments
+         */
+        public Iterable<Comment> iterate(final int limit, final long hours) {
+            return new Mapped<>(
+                this::comment,
+                this.errors.iterate(DyErrors.Github.SYSTEM, limit, hours)
+            );
+        }
+
+        /**
+         * Add Github comment.
+         * @param comment A comment
+         * @throws IOException If fails
+         */
+        public void add(final Comment comment) throws IOException {
+            this.errors.add(
+                DyErrors.Github.SYSTEM,
+                DyErrors.Github.location(comment),
+                new Comment.Smart(comment).createdAt().getTime()
+            );
+        }
+
+        /**
+         * Remove Github comment.
+         * @param comment A comment
+         * @throws IOException If fails
+         */
+        public void remove(final Comment comment) throws IOException {
+            this.errors.remove(
+                DyErrors.Github.SYSTEM,
+                new Comment.Smart(comment).createdAt().getTime()
+            );
+        }
+
+        /**
+         * Make a Github comment from location.
+         * @param location Comment location
+         * @return Github comment
+         */
+        private Comment comment(final String location) {
+            final String[] parts = location.split("#");
+            return this.client
+                .repos()
+                .get(new Coordinates.Simple(parts[0]))
+                .issues()
+                .get(Integer.valueOf(parts[1]))
+                .comments()
+                .get(Integer.valueOf(parts[2]));
+        }
+
+        /**
+         * Make comment location.
+         * @param comment Github comment
+         * @return Location string
+         */
+        private static String location(final Comment comment) {
+            return String.format(
+                "%s#%d#%d",
+                comment.issue().repo()
+                    .coordinates(),
+                comment.issue().number(),
+                comment.number()
+            );
+        }
     }
 }

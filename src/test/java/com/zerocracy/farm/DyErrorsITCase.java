@@ -38,17 +38,20 @@ import org.junit.Test;
 public final class DyErrorsITCase {
     @Test
     public void fetchItems() throws Exception {
-        final DyErrors errors = new DyErrors(
-            new Region.Simple(
-                new Credentials.Direct(
-                    Credentials.TEST,
-                    Integer.valueOf(
-                        System.getProperty("dynamo.port")
+        final MkGithub github = new MkGithub();
+        final DyErrors.Github errors = new DyErrors.Github(
+            new DyErrors(
+                new Region.Simple(
+                    new Credentials.Direct(
+                        Credentials.TEST,
+                        Integer.valueOf(
+                            System.getProperty("dynamo.port")
+                        )
                     )
                 )
-            )
+            ),
+            github
         );
-        final MkGithub github = new MkGithub();
         final Repo repo = github.repos()
             .create(new Repos.RepoCreate("test", false));
         final Issue issue = repo.issues()
@@ -60,7 +63,7 @@ public final class DyErrorsITCase {
         errors.remove(deleted);
         MatcherAssert.assertThat(
             "Error comment was not found",
-            errors.iterate(github, 2, 0L),
+            errors.iterate(2, 0L),
             Matchers.not(Matchers.emptyIterable())
         );
     }

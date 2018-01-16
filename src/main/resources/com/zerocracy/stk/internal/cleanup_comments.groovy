@@ -35,10 +35,12 @@ def exec(Project project, XML xml) {
     return
   }
   def github = new ExtGithub(farm).value()
-  def errors = new DyErrors(new ExtDynamo(farm).value())
-    errors.iterate(github, 10, 72L)
-    .each {
-      errors.remove(it)
-      it.remove()
-    }
+  def errors = new DyErrors.Github(
+    new DyErrors(new ExtDynamo(farm).value()),
+    github
+  )
+  errors.iterate(10, 72L).each {
+    errors.remove(it)
+    it.remove()
+  }
 }
