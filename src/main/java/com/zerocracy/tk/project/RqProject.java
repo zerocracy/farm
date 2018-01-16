@@ -19,17 +19,14 @@ package com.zerocracy.tk.project;
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Project;
-import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.pmo.Catalog;
 import com.zerocracy.pmo.Pmo;
-import com.zerocracy.tk.RqUser;
 import java.io.IOException;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.scalar.SolidScalar;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.forward.RsFailure;
-import org.takes.facets.forward.RsForward;
 
 /**
  * Project from the request.
@@ -50,9 +47,8 @@ final class RqProject implements Project {
      * Ctor.
      * @param farm Farm
      * @param req Request
-     * @throws IOException If fails
      */
-    RqProject(final Farm farm, final RqRegex req) throws IOException {
+    RqProject(final Farm farm, final RqRegex req) {
         this.pkt = new SolidScalar<>(
             () -> {
                 final String name = req.matcher().group(1);
@@ -63,16 +59,9 @@ final class RqProject implements Project {
                         String.format("Project \"%s\" not found", name)
                     );
                 }
-                final Project project = farm.find(
+                return farm.find(
                     String.format("@id='%s'", name)
                 ).iterator().next();
-                final String login = new RqUser(farm, req).value();
-                if (!"yegor256".equals(login)
-                    && !new Roles(project).bootstrap()
-                    .hasRole(login, "ARC", "PO")) {
-                    throw new RsForward(String.format("/pp/%s", name));
-                }
-                return project;
             }
         );
     }
