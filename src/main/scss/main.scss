@@ -26,11 +26,12 @@ section {
 }
 
 article {
-  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 100%;
+  width: 1280px;
 
   &.narrow {
-    margin-left: auto;
-    margin-right: auto;
     width: 800px;
   }
 }
