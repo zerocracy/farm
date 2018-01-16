@@ -58,7 +58,7 @@ def exec(Project project, XML xml) {
         '@%s wants to join you guys.',
         'If you want to add them to the project,',
         'just assign `DEV` role and that\'s it.',
-        'The hourly rate suggested by @%1$s is %s (profile rate is %s).',
+        'The hourly rate suggested is %s (profile rate is %s).',
         'You can use that rate or define another one, see §13.'
       ).say(claim.author(), rate, std)
     )
