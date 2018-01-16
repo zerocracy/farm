@@ -270,7 +270,7 @@ public final class Question {
                 this.rcode.set(null);
                 this.rhelp.set(
                     String.format(
-                        "Argument \"%s\" doesn't match regex \"%s\"",
+                        "Argument \"%s\" doesn't match regex `%s`",
                         param, regex
                     )
                 );
