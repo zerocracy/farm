@@ -56,7 +56,7 @@ public final class SyncFarmTest {
             final Project project = farm.find("@id='ABCZZFE03'")
                 .iterator().next();
             final Roles roles = new Roles(project);
-            final String role = "PO";
+            final String role = "QA";
             MatcherAssert.assertThat(
                 inc -> {
                     final String person = String.format(

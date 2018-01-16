@@ -34,7 +34,7 @@ public final class RolesTest {
     public void addsAndRemovesRoles() throws Exception {
         final Roles roles = new Roles(new FkProject()).bootstrap();
         final String person = "davvd";
-        final String role = "ARC";
+        final String role = "QA";
         MatcherAssert.assertThat(
             roles.hasRole(person, role),
             Matchers.is(false)

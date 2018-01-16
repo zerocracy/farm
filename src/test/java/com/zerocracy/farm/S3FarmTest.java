@@ -86,12 +86,13 @@ public final class S3FarmTest {
         final Roles roles = new Roles(project);
         for (int idx = 0; idx < Tv.FIVE; ++idx) {
             final String person = String.format("yegor%d", idx);
-            final String role = "ARC";
+            final String role = "QA";
             roles.assign(person, role);
             MatcherAssert.assertThat(
                 roles.hasRole(person, role),
                 Matchers.is(true)
             );
+            roles.resign(person, role);
         }
     }
 

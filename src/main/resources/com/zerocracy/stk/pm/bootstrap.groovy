@@ -35,6 +35,7 @@ def exec(Project project, XML xml) {
   String role = 'PO'
   if (roles.empty) {
     roles.assign(author, role)
+    roles.assign(author, 'ARC')
     new ClaimOut()
       .type('Role was assigned')
       .param('login', author)
@@ -57,7 +58,8 @@ def exec(Project project, XML xml) {
           'always prefixing your messages with my name.',
           'All project artifacts are [here](/p/%1$s).',
           'Start with linking your project with GitHub repositories,',
-          'as explained in §17.'
+          'as explained in §17. I just assigned you to both ARC and PO',
+          'roles.'
         ).say(project.pid())
       ).postTo(project)
     }

@@ -99,6 +99,7 @@ public final class TkBoard implements Take {
             String.format("@id='%s'", node.xpath("@id").get(0))
         ).iterator().next();
         final Catalog catalog = new Catalog(this.farm).bootstrap();
+        final Roles roles = new Roles(project).bootstrap();
         return new XeAppend(
             "project",
             new XeAppend(
@@ -107,10 +108,12 @@ public final class TkBoard implements Take {
             ),
             new XeAppend("id", project.pid()),
             new XeAppend("title", catalog.title(project.pid())),
+            new XeAppend("mine", Boolean.toString(roles.hasAnyRole(user))),
             new XeAppend(
-                "mine",
-                Boolean.toString(
-                    new Roles(project).bootstrap().hasAnyRole(user)
+                "architects",
+                new XeTransform<>(
+                    roles.findByRole("ARC"),
+                    login -> new XeAppend("architect", login)
                 )
             ),
             new XeAppend(

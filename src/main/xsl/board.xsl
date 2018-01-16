@@ -61,6 +61,9 @@ SOFTWARE.
             <xsl:text>Title</xsl:text>
           </th>
           <th>
+            <xsl:text>ARC</xsl:text>
+          </th>
+          <th>
             <xsl:text>GitHub Repositories</xsl:text>
           </th>
           <th>
@@ -94,6 +97,9 @@ SOFTWARE.
         </xsl:if>
       </td>
       <td>
+        <xsl:apply-templates select="architects"/>
+      </td>
+      <td>
         <xsl:apply-templates select="repositories"/>
       </td>
       <td style="text-align:right;">
@@ -114,6 +120,17 @@ SOFTWARE.
         <xsl:value-of select="jobs"/>
       </td>
     </tr>
+  </xsl:template>
+  <xsl:template match="architects">
+    <xsl:for-each select="architect">
+      <xsl:if test="position() &gt; 1">
+        <xsl:text>, </xsl:text>
+      </xsl:if>
+      <a href="/u/{.}">
+        <xsl:text>@</xsl:text>
+        <xsl:value-of select="."/>
+      </a>
+    </xsl:for-each>
   </xsl:template>
   <xsl:template match="repositories">
     <xsl:for-each select="repository">

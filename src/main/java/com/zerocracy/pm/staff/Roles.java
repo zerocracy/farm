@@ -105,15 +105,33 @@ public final class Roles {
         if ("REV".equals(role) && this.hasRole(person, "ARC")) {
             throw new SoftException(
                 new Par(
-                    "The architect @%s can't be a reviewer at the same time"
+                    "The architect @%s can't be a reviewer",
+                    "at the same time, see §34"
                 ).say(person)
             );
         }
         if ("ARC".equals(role) && this.hasRole(person, "REV")) {
             throw new SoftException(
                 new Par(
-                    "The reviewer @%s can't be a architect at the same time"
+                    "The reviewer @%s can't be",
+                    "an architect at the same time, see §34"
                 ).say(person)
+            );
+        }
+        if ("ARC".equals(role) && this.findByRole("ARC").size() > 1) {
+            throw new SoftException(
+                // @checkstyle LineLength (1 line)
+                new Par("A project can't have more than two ARCs, see §34: @%s").say(
+                    new JoinedText(", @", this.findByRole("ARC"))
+                )
+            );
+        }
+        if ("PO".equals(role) && this.findByRole("PO").size() > 1) {
+            throw new SoftException(
+                // @checkstyle LineLength (1 line)
+                new Par("A project can't have more than two POs, see §34: @%s").say(
+                    new JoinedText(", @", this.findByRole("PO"))
+                )
             );
         }
         try (final Item roles = this.item()) {
@@ -181,7 +199,16 @@ public final class Roles {
         if ("PO".equals(role) && this.findByRole(role).size() < 2) {
             throw new SoftException(
                 new Par(
-                    "You can't remove all product owners from the project"
+                    "You can't remove all",
+                    "product owners from the project, see §34"
+                ).say()
+            );
+        }
+        if ("ARC".equals(role) && this.findByRole(role).size() < 2) {
+            throw new SoftException(
+                new Par(
+                    "You can't remove all",
+                    "architects from the project, see §34"
                 ).say()
             );
         }

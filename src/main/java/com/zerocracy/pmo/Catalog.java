@@ -89,7 +89,7 @@ public final class Catalog {
      */
     public boolean sandbox(final String pid) {
         return new CollectionOf<>(
-            ""
+            "C3T46CUJJ", "C63314D6Z", "C7JGJ00DP"
         ).contains(pid);
     }
 
