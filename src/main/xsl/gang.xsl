@@ -44,10 +44,16 @@ SOFTWARE.
             <xsl:text>User</xsl:text>
           </th>
           <th>
-            <xsl:text>Mentor</xsl:text>
+            <xsl:text>Mentor/</xsl:text>
+            <a href="http://datum.zerocracy.com/pages/policy.html#1">
+              <xsl:text>&#xA7;1</xsl:text>
+            </a>
           </th>
           <th>
-            <xsl:text>Rate</xsl:text>
+            <xsl:text>Rate/</xsl:text>
+            <a href="http://datum.zerocracy.com/pages/policy.html#16">
+              <xsl:text>&#xA7;16</xsl:text>
+            </a>
           </th>
         </tr>
       </thead>
@@ -81,7 +87,14 @@ SOFTWARE.
         </a>
       </td>
       <td style="text-align:right;">
-        <xsl:value-of select="rate"/>
+        <xsl:choose>
+          <xsl:when test="rate">
+            <xsl:value-of select="rate"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:text>?</xsl:text>
+          </xsl:otherwise>
+        </xsl:choose>
       </td>
     </tr>
   </xsl:template>

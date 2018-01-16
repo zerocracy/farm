@@ -32,6 +32,7 @@ import org.takes.Take;
 import org.takes.rs.xe.XeAppend;
 import org.takes.rs.xe.XeChain;
 import org.takes.rs.xe.XeSource;
+import org.takes.rs.xe.XeWhen;
 
 /**
  * Gang of all people.
@@ -41,6 +42,7 @@ import org.takes.rs.xe.XeSource;
  * @since 0.19
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class TkGang implements Take {
 
     /**
@@ -89,7 +91,10 @@ public final class TkGang implements Take {
             new XeChain(
                 new XeAppend("login", node.xpath("@id").get(0)),
                 new XeAppend("mentor", node.xpath("mentor/text()").get(0)),
-                new XeAppend("rate", node.xpath("rate/text()").get(0))
+                new XeWhen(
+                    !node.nodes("rate").isEmpty(),
+                    new XeAppend("rate", node.xpath("rate/text()").get(0))
+                )
             )
         );
     }
