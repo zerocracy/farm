@@ -93,7 +93,7 @@ public final class TkGang implements Take {
                 new XeAppend("mentor", node.xpath("mentor/text()").get(0)),
                 new XeWhen(
                     !node.nodes("rate").isEmpty(),
-                    new XeAppend("rate", node.xpath("rate/text()").get(0))
+                    () -> new XeAppend("rate", node.xpath("rate/text()").get(0))
                 )
             )
         );
