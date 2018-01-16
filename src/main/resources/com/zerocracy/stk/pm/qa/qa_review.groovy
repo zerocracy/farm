@@ -14,46 +14,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.in.orders
+package com.zerocracy.stk.pm.qa
 
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
 import com.zerocracy.jstk.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
-import com.zerocracy.pm.cost.Boosts
-import com.zerocracy.pm.cost.Estimates
-import com.zerocracy.pm.in.Orders
-import java.time.Duration
-import java.time.ZonedDateTime
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Finish order')
-  ClaimIn claim = new ClaimIn(xml)
-  String job = claim.param('job')
-  Orders orders = new Orders(project).bootstrap()
-  def duration = Duration.between(orders.startTime(job), ZonedDateTime.now())
-  String login = orders.performer(job)
-  Estimates estimates = new Estimates(project).bootstrap()
-  def extra = claim.params().with {
-    it.containsKey('quality') && it['quality'] == 'good' ? 15 : 0
-  }
-  ClaimOut out = new ClaimOut()
+  new Assume(project, xml).type('QA review')
+  def claim = new ClaimIn(xml)
+  def job = claim.param('job')
+  def quality = claim.param('quality')
+  def login = claim.author()
+  new ClaimOut()
     .type('Make payment')
     .param('job', job)
     .param('login', login)
-    .param('reason', 'Order was successfully finished')
-    .param('minutes', new Boosts(project).bootstrap().factor(job) * 15 + extra)
-  if (estimates.exists(job)) {
-    out = out.param('cash', estimates.get(job))
-  }
-  out.postTo(project)
-  orders.resign(job)
-  new ClaimOut()
-    .type('Order was finished')
-    .param('job', job)
-    .param('login', login)
-    .param('duration', duration.toString())
+    .param('reason', 'QA review')
+    .param('minutes', 15)
     .postTo(project)
+  if (quality == 'good' || quality == 'acceptable') {
+    claim.copy()
+      .type('Finish order')
+      .param('reason', 'Passed QA review.')
+      .postTo(project)
+  }
 }
