@@ -57,7 +57,7 @@ def exec(Project project, XML xml) {
     } else {
       msg = new Par(
         'Hourly rate of @%s changed from %s to %s'
-      ).say(login, rate)
+      ).say(login, before, rate)
     }
   } else {
     msg = new Par(
