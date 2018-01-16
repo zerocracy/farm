@@ -26,6 +26,7 @@ import com.zerocracy.jstk.cash.Cash;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
+import org.cactoos.collection.CollectionOf;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.list.SolidList;
 import org.cactoos.time.DateAsText;
@@ -78,6 +79,18 @@ public final class Catalog {
             new Xocument(team).bootstrap("pmo/catalog");
         }
         return this;
+    }
+
+    /**
+     * Is it a sandbox project.
+     * @param pid Project ID
+     * @return TRUE if sandbox
+     * @checkstyle NonStaticMethodCheck (3 lines)
+     */
+    public boolean sandbox(final String pid) {
+        return new CollectionOf<>(
+            ""
+        ).contains(pid);
     }
 
     /**

@@ -26,9 +26,9 @@ import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.in.Orders
 
-def exec(Project project, XML xml) {
-  new Assume(project, xml).isPmo()
-  new Assume(project, xml).type('Quit a project')
+def exec(Project pmo, XML xml) {
+  new Assume(pmo, xml).isPmo()
+  new Assume(pmo, xml).type('Quit a project')
   ClaimIn claim = new ClaimIn(xml)
   Farm farm = binding.variables.farm
   String pid = claim.param('project')
@@ -57,5 +57,5 @@ def exec(Project project, XML xml) {
     new Par(
       'You are not in the project %s anymore.'
     ).say(pid)
-  ).postTo(project)
+  ).postTo(pmo)
 }

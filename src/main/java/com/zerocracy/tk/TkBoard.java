@@ -98,10 +98,15 @@ public final class TkBoard implements Take {
         final Project project = this.farm.find(
             String.format("@id='%s'", node.xpath("@id").get(0))
         ).iterator().next();
+        final Catalog catalog = new Catalog(this.farm).bootstrap();
         return new XeAppend(
             "project",
+            new XeAppend(
+                "sandbox",
+                Boolean.toString(catalog.sandbox(project.pid()))
+            ),
             new XeAppend("id", project.pid()),
-            new XeAppend("title", new Catalog(this.farm).title(project.pid())),
+            new XeAppend("title", catalog.title(project.pid())),
             new XeAppend(
                 "mine",
                 Boolean.toString(

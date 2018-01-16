@@ -44,7 +44,8 @@ SOFTWARE.
       <a href="http://datum.zerocracy.com/pages/policy.html#2">
         <xsl:text>&#xA7;2</xsl:text>
       </a>
-      <xsl:text>. To add your project to this board you have to publish it, see </xsl:text>
+      <xsl:text>.</xsl:text>
+      <xsl:text> To add your project to this board you have to publish it, see </xsl:text>
       <a href="http://datum.zerocracy.com/pages/policy.html#26">
         <xsl:text>&#xA7;26</xsl:text>
       </a>
@@ -78,12 +79,19 @@ SOFTWARE.
   <xsl:template match="project">
     <tr>
       <td>
-        <code>
-          <xsl:value-of select="id"/>
-        </code>
+        <a href="/p/{id}">
+          <code>
+            <xsl:value-of select="id"/>
+          </code>
+        </a>
       </td>
       <td>
         <xsl:value-of select="title"/>
+        <xsl:if test="sandbox='true'">
+          <span style="display:block;font-size:0.8em;color:gray;">
+            <xsl:text>sandbox</xsl:text>
+          </span>
+        </xsl:if>
       </td>
       <td>
         <xsl:apply-templates select="repositories"/>

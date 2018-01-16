@@ -26,10 +26,10 @@ import com.zerocracy.jstk.cash.CashParsingException
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.People
 
-def exec(Project project, XML xml) {
-  new Assume(project, xml).isPmo()
-  new Assume(project, xml).type('Set rate')
-  People people = new People(project).bootstrap()
+def exec(Project pmo, XML xml) {
+  new Assume(pmo, xml).isPmo()
+  new Assume(pmo, xml).type('Set rate')
+  People people = new People(pmo).bootstrap()
   ClaimIn claim = new ClaimIn(xml)
   String author = claim.author()
   if (!claim.hasParam('rate')) {
@@ -50,5 +50,5 @@ def exec(Project project, XML xml) {
     new Par(
       'Rate of @%s set to %s'
     ).say(author, rate)
-  ).postTo(project)
+  ).postTo(pmo)
 }
