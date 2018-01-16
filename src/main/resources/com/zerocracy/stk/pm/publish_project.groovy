@@ -35,19 +35,21 @@ def exec(Project project, XML xml) {
     catalog.publish(project.pid(), true)
     claim.reply(
       new Par(
-        'The project is visible now at the [board](/board)'
+        'The project is visible now at the [board](/board), according to §26'
       ).say()
     ).postTo(project)
   } else if ('off' == mode) {
     catalog.publish(project.pid(), false)
     claim.reply(
       new Par(
-        'The project is not visible anymore at the [board](/board)'
+        'The project is not visible anymore at the [board](/board), as in §26'
       ).say()
     ).postTo(project)
   } else {
     claim.reply(
-      new Par("Incorrect mode, possible values are 'on' or 'off'").say()
+      new Par(
+        "Incorrect mode, possible values are 'on' or 'off', see §26"
+      ).say()
     ).postTo(project)
   }
 }

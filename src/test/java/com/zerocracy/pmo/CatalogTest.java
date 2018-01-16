@@ -37,6 +37,7 @@ import org.xembly.Directives;
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class CatalogTest {
 
     @Test
@@ -74,6 +75,7 @@ public final class CatalogTest {
         final String pid = "67WE334FF";
         final Catalog catalog = new Catalog(new FkProject()).bootstrap();
         catalog.add(pid, "2017/01/67WE334FF/");
+        catalog.link(pid, "github", "yegor256/pdd");
         catalog.publish(pid, true);
         MatcherAssert.assertThat(
             catalog.published(pid),

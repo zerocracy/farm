@@ -91,7 +91,7 @@ SOFTWARE.
       <td>
         <xsl:value-of select="title"/>
         <xsl:if test="sandbox='true'">
-          <span style="display:block;font-size:0.8em;color:gray;">
+          <span style="display:block;font-size:0.8em;color:gray;line-height:1em;">
             <xsl:text>sandbox</xsl:text>
           </span>
         </xsl:if>
