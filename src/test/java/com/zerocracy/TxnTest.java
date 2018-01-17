@@ -33,7 +33,7 @@ import org.junit.Test;
  */
 public final class TxnTest {
     @Test
-    public void commit() throws Exception {
+    public void commitLocalChangedAndPublishToProject() throws Exception {
         final String file = "test";
         final byte[] payload = {(byte) 42};
         final FkProject pkt = new FkProject();
@@ -45,7 +45,6 @@ public final class TxnTest {
         }
         try (final Item item = pkt.acq(file)) {
             MatcherAssert.assertThat(
-                "File's content",
                 Files.readAllBytes(item.path()),
                 Matchers.equalTo(payload)
             );
@@ -54,7 +53,7 @@ public final class TxnTest {
 
     @Test
     @Ignore("Not implemented")
-    public void close() throws Exception {
+    public void deleteLocalChangedOnClose() throws Exception {
         final String file = "empty";
         final byte[] payload = {(byte) 11};
         final FkProject pkt = new FkProject();
@@ -65,7 +64,6 @@ public final class TxnTest {
         }
         try (final Item item = pkt.acq(file)) {
             MatcherAssert.assertThat(
-                "File exist",
                 item.path().toFile().exists(),
                 Matchers.is(false)
             );
