@@ -37,7 +37,7 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   People people = new People(farm)
   Cash rate = new Cash.S(claim.param('rate'))
-  if (people.wallet(login).empty) {
+  if (people.wallet(login).empty && rate != Cash.ZERO) {
     throw new SoftException(
       new Par(
         '@%s doesn\'t have a payment method configured yet,',
