@@ -16,10 +16,11 @@
  */
 package com.zerocracy.pm.staff.ranks;
 
-import com.zerocracy.Project;
 import com.zerocracy.pm.scope.Wbs;
 import java.io.IOException;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Give higher rank for 'REV' jobs.
@@ -35,29 +36,47 @@ public final class RnkRev implements Comparator<String> {
     private static final String REV = "REV";
 
     /**
-     * A project.
+     * WBS.
      */
-    private final Project project;
+    private final Wbs wbs;
+    /**
+     * REV jobs cache.
+     */
+    private final Map<String, Boolean> cache;
 
     /**
      * Ctor.
-     * @param project A project
+     * @param wbs WBS
      */
-    public RnkRev(final Project project) {
-        this.project = project;
+    public RnkRev(final Wbs wbs) {
+        this.wbs = wbs;
+        this.cache = new HashMap<>(1);
     }
 
     @SuppressWarnings("IfStatementWithTooManyBranches")
     @Override
     public int compare(final String left, final String right) {
         try {
-            final Wbs wbs = new Wbs(this.project).bootstrap();
-            return Boolean.compare(
-                RnkRev.REV.equals(wbs.role(right)),
-                RnkRev.REV.equals(wbs.role(left))
-            );
+            return Boolean.compare(this.isRev(right), this.isRev(left));
         } catch (final IOException err) {
             throw new IllegalStateException(err);
         }
+    }
+
+    /**
+     * Does this job has REV role.
+     * @param job A job to check
+     * @return True if REV role
+     * @throws IOException If fails
+     */
+    private boolean isRev(final String job) throws IOException {
+        final boolean rev;
+        if (this.cache.containsKey(job)) {
+            rev = this.cache.get(job);
+        } else {
+            rev = RnkRev.REV.equals(this.wbs.role(job));
+            this.cache.put(job, rev);
+        }
+        return rev;
     }
 }

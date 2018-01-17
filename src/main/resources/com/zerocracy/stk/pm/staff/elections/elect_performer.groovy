@@ -24,6 +24,7 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.Claims
+import com.zerocracy.pm.cost.Boosts
 import com.zerocracy.pm.cost.Ledger
 import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pm.staff.Elections
@@ -56,7 +57,10 @@ def exec(Project project, XML xml) {
   Project pmo = new Pmo(farm)
   def jobs = wbs.iterate().toList().with {
     lst ->
-      [new RnkBoost(project), new RnkRev(project)].each { lst.sort(it) }
+      [
+        new RnkBoost(new Boosts(project).bootstrap()),
+        new RnkRev(new Wbs(project).bootstrap())
+      ].each { lst.sort(it) }
       lst
   }
 

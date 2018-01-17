@@ -47,7 +47,7 @@ public final class RnkRevTest {
             wbs.add(job);
         }
         wbs.role(first, "REV");
-        list.sort(new RnkRev(project));
+        list.sort(new RnkRev(wbs));
         MatcherAssert.assertThat(
             "REV job is not first",
             list.get(0),

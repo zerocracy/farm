@@ -48,7 +48,7 @@ public final class RnkBoostTest {
             boosts.boost(job, 1);
         }
         boosts.boost(first, 2);
-        list.sort(new RnkBoost(project));
+        list.sort(new RnkBoost(boosts));
         MatcherAssert.assertThat(
             "Boosted job is not first",
             list.get(0),
