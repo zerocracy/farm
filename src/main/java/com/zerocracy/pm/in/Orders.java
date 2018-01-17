@@ -19,6 +19,7 @@ package com.zerocracy.pm.in;
 import com.zerocracy.Item;
 import com.zerocracy.Project;
 import com.zerocracy.SoftException;
+import com.zerocracy.Txn;
 import com.zerocracy.Xocument;
 import com.zerocracy.pm.cost.Boosts;
 import com.zerocracy.pm.cost.Estimates;
@@ -88,42 +89,50 @@ public final class Orders {
                 )
             );
         }
-        if (!new Wbs(this.project).bootstrap().exists(job)) {
-            throw new SoftException(
-                String.format(
-                    "Job `%s` doesn't exist in WBS, can't create order",
-                    job
-                )
-            );
+        try (final Txn txn = new Txn(this.project)) {
+            if (!new Wbs(txn).bootstrap().exists(job)) {
+                throw new SoftException(
+                    String.format(
+                        "Job `%s` doesn't exist in WBS, can't create order",
+                        job
+                    )
+                );
+            }
+            try (final Item wbs = Orders.item(txn)) {
+                new Xocument(wbs.path()).modify(
+                    new Directives()
+                        .xpath(
+                            String.format(
+                                "/orders[not(order[@job='%s'])]",
+                                job
+                            )
+                        )
+                        .strict(1)
+                        .add("order")
+                        .attr("job", job)
+                        .add("created").set(new DateAsText().asString()).up()
+                        .add("performer")
+                        .set(login)
+                        .up()
+                        .add("reason")
+                        .set(reason)
+                );
+            }
+            final String role = new Wbs(txn).bootstrap().role(job);
+            int factor = 2;
+            if ("REV".equals(role)) {
+                factor = 1;
+            }
+            final Rates rates = new Rates(txn).bootstrap();
+            if (rates.exists(login)) {
+                new Estimates(txn).bootstrap().update(
+                    // @checkstyle MagicNumber (1 line)
+                    job, rates.rate(login).mul((long) factor).div(4L)
+                );
+            }
+            new Boosts(txn).bootstrap().boost(job, factor);
+            txn.commit();
         }
-        try (final Item wbs = this.item()) {
-            new Xocument(wbs.path()).modify(
-                new Directives()
-                    .xpath(String.format("/orders[not(order[@job='%s'])]", job))
-                    .strict(1)
-                    .add("order")
-                    .attr("job", job)
-                    .add("created").set(new DateAsText().asString()).up()
-                    .add("performer")
-                    .set(login)
-                    .up()
-                    .add("reason")
-                    .set(reason)
-            );
-        }
-        final String role = new Wbs(this.project).bootstrap().role(job);
-        int factor = 2;
-        if ("REV".equals(role)) {
-            factor = 1;
-        }
-        final Rates rates = new Rates(this.project).bootstrap();
-        if (rates.exists(login)) {
-            new Estimates(this.project).bootstrap().update(
-                // @checkstyle MagicNumber (1 line)
-                job, rates.rate(login).mul((long) factor).div(4L)
-            );
-        }
-        new Boosts(this.project).bootstrap().boost(job, factor);
     }
 
     /**
@@ -267,6 +276,16 @@ public final class Orders {
      * @throws IOException If fails
      */
     private Item item() throws IOException {
-        return this.project.acq("orders.xml");
+        return Orders.item(this.project);
+    }
+
+    /**
+     * Item in project.
+     * @param pkt A project
+     * @return Item
+     * @throws IOException If fails
+     */
+    private static Item item(final Project pkt) throws IOException {
+        return pkt.acq("orders.xml");
     }
 }
