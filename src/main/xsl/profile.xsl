@@ -145,6 +145,7 @@ SOFTWARE.
         <xsl:text>.</xsl:text>
       </p>
     </xsl:if>
+    <xsl:apply-templates select="identification"/>
     <xsl:apply-templates select="links"/>
     <xsl:apply-templates select="wallet"/>
     <xsl:apply-templates select="projects"/>
@@ -235,6 +236,24 @@ SOFTWARE.
   <xsl:template match="links[not(link)]">
     <p>
       <xsl:text>It's weird, no links?!</xsl:text>
+    </p>
+  </xsl:template>
+  <xsl:template match="identification[.='']">
+    <p>
+      <xsl:text>We don't really know who you are. </xsl:text>
+      <a href="https://www.yoti.com/connect/90e1d6cf-d036-4a80-980b-05ac66d56b2b">
+        <xsl:text>Identify yourself</xsl:text>
+      </a>
+      <xsl:text>.</xsl:text>
+    </p>
+  </xsl:template>
+  <xsl:template match="identification[.!='']">
+    <p>
+      <xsl:text>We know you as: </xsl:text>
+      <code>
+        <xsl:value-of select="."/>
+      </code>
+      <xsl:text>.</xsl:text>
     </p>
   </xsl:template>
 </xsl:stylesheet>

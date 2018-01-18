@@ -91,6 +91,61 @@ public final class People {
     }
 
     /**
+     * Set details.
+     * @param uid User ID
+     * @param text Text to save
+     * @throws IOException If fails
+     */
+    public void details(final String uid, final String text)
+        throws IOException {
+        if (!this.hasMentor(uid)) {
+            throw new SoftException(
+                new Par(
+                    "User @%s is not with us yet"
+                ).say(uid)
+            );
+        }
+        if (!text.isEmpty()) {
+            throw new SoftException(
+                new Par(
+                    "User @%s details can't be empty"
+                ).say(uid)
+            );
+        }
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                People.start(uid)
+                    .addIf("details")
+                    .set(text)
+            );
+        }
+    }
+
+    /**
+     * Get user details.
+     * @param uid User ID
+     * @return Details of the user
+     * @throws IOException If fails
+     */
+    public String details(final String uid) throws IOException {
+        try (final Item item = this.item()) {
+            final Iterator<String> items = new Xocument(item.path()).xpath(
+                String.format(
+                    "/people/person[@id='%s']/details/text()",
+                    uid
+                )
+            ).iterator();
+            final String text;
+            if (items.hasNext()) {
+                text = items.next();
+            } else {
+                text = "";
+            }
+            return text;
+        }
+    }
+
+    /**
      * Invite that person and set a mentor.
      * @param uid User ID
      * @param mentor User ID of the mentor
