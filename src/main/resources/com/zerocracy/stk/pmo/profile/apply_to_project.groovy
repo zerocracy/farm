@@ -23,6 +23,7 @@ import com.zerocracy.Project
 import com.zerocracy.SoftException
 import com.zerocracy.cash.Cash
 import com.zerocracy.farm.Assume
+import com.zerocracy.farm.props.Props
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.staff.Roles
@@ -44,7 +45,8 @@ def exec(Project pmo, XML xml) {
     )
   }
   String author = claim.author()
-  Cash std = new People(pmo).rate(author)
+  People people = new People(pmo).bootstrap()
+  Cash std = people.rate(author)
   if (rate > std) {
     throw new SoftException(
       new Par(
@@ -58,6 +60,15 @@ def exec(Project pmo, XML xml) {
       new Par(
         'The rate %s is too high for a sandbox project %s, sorry, see §33'
       ).say(rate, pid)
+    )
+  }
+  if (rate > Cash.ZERO && people.details(author).empty) {
+    throw new SoftException(
+      new Par(
+        'In order to work for money you have to identify yourself first;',
+        'please, click this link and follow the instructions:',
+        'https://www.yoti.com/connect/%s'
+      ).say(new Props(farm).get('//yoti/app_id'))
     )
   }
   Roles roles = new Roles(farm.find("@id='${pid}'")[0]).bootstrap()

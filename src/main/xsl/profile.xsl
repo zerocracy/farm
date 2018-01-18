@@ -240,11 +240,15 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="identification[.='']">
     <p>
-      <xsl:text>We don't really know who you are. </xsl:text>
+      <xsl:text>We don't really know </xsl:text>
+      <span style="color:darkred;">
+        <xsl:text>who you are</xsl:text>
+      </span>
+      <xsl:text>; please, </xsl:text>
       <a href="https://www.yoti.com/connect/90e1d6cf-d036-4a80-980b-05ac66d56b2b">
-        <xsl:text>Identify yourself</xsl:text>
+        <xsl:text>identify</xsl:text>
       </a>
-      <xsl:text>.</xsl:text>
+      <xsl:text> yourself.</xsl:text>
     </p>
   </xsl:template>
   <xsl:template match="identification[.!='']">
