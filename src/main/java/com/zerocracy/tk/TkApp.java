@@ -60,6 +60,7 @@ import org.takes.tk.TkClasspath;
 import org.takes.tk.TkGzip;
 import org.takes.tk.TkMeasured;
 import org.takes.tk.TkRedirect;
+import org.takes.tk.TkText;
 import org.takes.tk.TkVersioned;
 import org.takes.tk.TkWithHeaders;
 import org.takes.tk.TkWithType;
@@ -112,6 +113,10 @@ public final class TkApp extends TkWrap {
                                                     new Concat<>(
                                                         new SolidList<>(forks),
                                                         new SolidList<>(
+                                                            new FkRegex(
+                                                                ".well-known/pki-validation/D6638B2C18C6793068D454E91E692397.txt",
+                                                                new TkText("30265BD04DBC892A0B22A97C81F04337B49CBBB18BE62476FEA4E78EC8C26FD4 comodoca.com 5a60937406a7f\n")
+                                                            ),
                                                             new FkRegex("/", new TkIndex(farm)),
                                                             new FkRegex("/heapdump", new TkDump(farm)),
                                                             new FkRegex("/guts", new TkGuts(farm)),

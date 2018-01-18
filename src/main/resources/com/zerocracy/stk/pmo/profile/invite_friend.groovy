@@ -30,11 +30,11 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Invite a friend')
   def claim = new ClaimIn(xml)
   def author = claim.author()
-  if (new Awards(project, author).bootstrap().total() < 1000) {
+  if (new Awards(project, author).bootstrap().total() < 1024) {
     claim.reply(
       new Par(
-        '@%s you must have at least 1000 reputation to invite someone,',
-        ' as in §1'
+        '@%s you must have at least 1024 reputation to invite someone,',
+        'as in §1'
       ).say(author)
     ).postTo(project)
     return
