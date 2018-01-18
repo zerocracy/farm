@@ -100,172 +100,188 @@ public final class TkApp extends TkWrap {
     public TkApp(final Farm farm, final Props props,
         final FkRegex... forks) throws IOException {
         super(
-            new TkFallback(
-                new TkWithHeaders(
-                    new TkVersioned(
-                        new TkMeasured(
-                            new TkGzip(
-                                new TkFlash(
-                                    new TkAppAuth(
-                                        new TkForward(
-                                            new TkFork(
-                                                new SolidList<Fork>(
-                                                    new Concat<>(
-                                                        new SolidList<>(forks),
-                                                        new SolidList<>(
-                                                            new FkRegex(
-                                                                "/\\.well-known/pki-validation/D6638B2C18C6793068D454E91E692397\\.txt",
-                                                                new TkText("30265BD04DBC892A0B22A97C81F04337B49CBBB18BE62476FEA4E78EC8C26FD4 comodoca.com 5a60937406a7f\n")
-                                                            ),
-                                                            new FkRegex("/", new TkIndex(farm)),
-                                                            new FkRegex("/heapdump", new TkDump(farm)),
-                                                            new FkRegex("/guts", new TkGuts(farm)),
-                                                            new FkRegex(
-                                                                "/org/takes/.+\\.xsl",
-                                                                new TkClasspath()
-                                                            ),
-                                                            new FkRegex("/ping", new TkPing(farm)),
-                                                            new FkRegex("/robots.txt", ""),
-                                                            new FkRegex(
-                                                                "/xsl/[a-z\\-]+\\.xsl",
-                                                                new TkWithType(
-                                                                    new TkRefresh("./src/main/xsl"),
-                                                                    "text/xsl"
+            new TkSslOnly(
+                new TkFallback(
+                    new TkWithHeaders(
+                        new TkVersioned(
+                            new TkMeasured(
+                                new TkGzip(
+                                    new TkFlash(
+                                        new TkAppAuth(
+                                            new TkForward(
+                                                new TkFork(
+                                                    new SolidList<Fork>(
+                                                        new Concat<>(
+                                                            new SolidList<>(forks),
+                                                            new SolidList<>(
+                                                                new FkRegex(
+                                                                    "/\\.well-known/pki-validation/D6638B2C18C6793068D454E91E692397\\.txt",
+                                                                    new TkText("30265BD04DBC892A0B22A97C81F04337B49CBBB18BE62476FEA4E78EC8C26FD4 comodoca.com 5a60937406a7f\n")
+                                                                ),
+                                                                new FkRegex("/", new TkIndex(farm)),
+                                                                new FkRegex("/heapdump", new TkDump(farm)),
+                                                                new FkRegex("/guts", new TkGuts(farm)),
+                                                                new FkRegex(
+                                                                    "/org/takes/.+\\.xsl",
+                                                                    new TkClasspath()
+                                                                ),
+                                                                new FkRegex("/ping", new TkPing(farm)),
+                                                                new FkRegex("/robots.txt", ""),
+                                                                new FkRegex(
+                                                                    "/xsl/[a-z\\-]+\\.xsl",
+                                                                    new TkWithType(
+                                                                        new TkRefresh("./src/main/xsl"),
+                                                                        "text/xsl"
+                                                                    )
+                                                                ),
+                                                                new FkRegex(
+                                                                    "/css/[a-z]+\\.css",
+                                                                    new TkWithType(
+                                                                        new TkRefresh("./src/main/scss"),
+                                                                        "text/css"
+                                                                    )
+                                                                ),
+                                                                new FkRegex(
+                                                                    "/png/[a-z]+\\.png",
+                                                                    new TkWithType(
+                                                                        new TkClasspath(),
+                                                                        "image/png"
+                                                                    )
+                                                                ),
+                                                                new FkRegex(
+                                                                    "/svg/[a-z]+\\.svg",
+                                                                    new TkWithType(
+                                                                        new TkClasspath(),
+                                                                        "image/svg+xml"
+                                                                    )
+                                                                ),
+                                                                new FkRegex(
+                                                                    "/add_to_slack",
+                                                                    new TkRedirect(
+                                                                        new Href("https://slack.com/oauth/authorize")
+                                                                            .with("scope", "bot")
+                                                                            .with("client_id", props.get("//slack/client_id", ""))
+                                                                            .toString()
+                                                                    )
+                                                                ),
+                                                                new FkRegex("/board", new TkBoard(farm)),
+                                                                new FkRegex("/gang", new TkGang(farm)),
+                                                                new FkRegex(
+                                                                    "/me",
+                                                                    (Take) req -> new RsRedirect(
+                                                                        String.format("/u/%s", new RqUser(farm, req).value())
+                                                                    )
+                                                                ),
+                                                                new FkRegex(
+                                                                    "/badge/(PMO|[A-Z0-9]{9})\\.svg",
+                                                                    new TkBadge()
+                                                                ),
+                                                                new FkRegex(
+                                                                    "/p/(PMO|[A-Z0-9]{9})",
+                                                                    new TkProject(farm)
+                                                                ),
+                                                                new FkRegex(
+                                                                    "/footprint/(PMO|[A-Z0-9]{9})",
+                                                                    new TkFootprint(farm)
+                                                                ),
+                                                                new FkRegex(
+                                                                    "/report/(PMO|[A-Z0-9]{9})",
+                                                                    new TkReport(farm)
+                                                                ),
+                                                                new FkRegex(
+                                                                    "/pay/(PMO|[A-Z0-9]{9})",
+                                                                    new TkPay(farm)
+                                                                ),
+                                                                new FkRegex(
+                                                                    "/donate/(PMO|[A-Z0-9]{9})",
+                                                                    new TkDonate(farm)
+                                                                ),
+                                                                new FkRegex(
+                                                                    "/a/(PMO|[A-Z0-9]{9})",
+                                                                    new TkArtifact(farm)
+                                                                ),
+                                                                new FkRegex(
+                                                                    "/xml/(PMO|[A-Z0-9]{9})",
+                                                                    new TkXml(farm)
+                                                                ),
+                                                                new FkRegex(
+                                                                    "/u/([a-zA-Z0-9-]+)/awards",
+                                                                    new TkAwards(farm)
+                                                                ),
+                                                                new FkRegex(
+                                                                    "/u/([a-zA-Z0-9-]+)/agenda",
+                                                                    new TkAgenda(farm)
+                                                                ),
+                                                                new FkRegex(
+                                                                    "/u/([a-zA-Z0-9-]+)",
+                                                                    new TkProfile(farm)
                                                                 )
-                                                            ),
-                                                            new FkRegex(
-                                                                "/css/[a-z]+\\.css",
-                                                                new TkWithType(
-                                                                    new TkRefresh("./src/main/scss"),
-                                                                    "text/css"
-                                                                )
-                                                            ),
-                                                            new FkRegex(
-                                                                "/add_to_slack",
-                                                                new TkRedirect(
-                                                                    new Href("https://slack.com/oauth/authorize")
-                                                                        .with("scope", "bot")
-                                                                        .with("client_id", props.get("//slack/client_id", ""))
-                                                                        .toString()
-                                                                )
-                                                            ),
-                                                            new FkRegex("/board", new TkBoard(farm)),
-                                                            new FkRegex("/gang", new TkGang(farm)),
-                                                            new FkRegex(
-                                                                "/me",
-                                                                (Take) req -> new RsRedirect(
-                                                                    String.format("/u/%s", new RqUser(farm, req).value())
-                                                                )
-                                                            ),
-                                                            new FkRegex(
-                                                                "/badge/(PMO|[A-Z0-9]{9})\\.svg",
-                                                                new TkBadge()
-                                                            ),
-                                                            new FkRegex(
-                                                                "/p/(PMO|[A-Z0-9]{9})",
-                                                                new TkProject(farm)
-                                                            ),
-                                                            new FkRegex(
-                                                                "/footprint/(PMO|[A-Z0-9]{9})",
-                                                                new TkFootprint(farm)
-                                                            ),
-                                                            new FkRegex(
-                                                                "/report/(PMO|[A-Z0-9]{9})",
-                                                                new TkReport(farm)
-                                                            ),
-                                                            new FkRegex(
-                                                                "/pay/(PMO|[A-Z0-9]{9})",
-                                                                new TkPay(farm)
-                                                            ),
-                                                            new FkRegex(
-                                                                "/donate/(PMO|[A-Z0-9]{9})",
-                                                                new TkDonate(farm)
-                                                            ),
-                                                            new FkRegex(
-                                                                "/a/(PMO|[A-Z0-9]{9})",
-                                                                new TkArtifact(farm)
-                                                            ),
-                                                            new FkRegex(
-                                                                "/xml/(PMO|[A-Z0-9]{9})",
-                                                                new TkXml(farm)
-                                                            ),
-                                                            new FkRegex(
-                                                                "/u/([a-zA-Z0-9-]+)/awards",
-                                                                new TkAwards(farm)
-                                                            ),
-                                                            new FkRegex(
-                                                                "/u/([a-zA-Z0-9-]+)/agenda",
-                                                                new TkAgenda(farm)
-                                                            ),
-                                                            new FkRegex(
-                                                                "/u/([a-zA-Z0-9-]+)",
-                                                                new TkProfile(farm)
                                                             )
                                                         )
                                                     )
                                                 )
-                                            )
-                                        ),
-                                        farm
+                                            ),
+                                            farm
+                                        )
                                     )
                                 )
                             )
-                        )
+                        ),
+                        String.format(
+                            "X-Zerocracy-Version: %s %s %s",
+                            props.get("//build/version", ""),
+                            props.get("//build/revision", ""),
+                            props.get("//build/date", "")
+                        ),
+                        "Vary: Cookie"
                     ),
-                    String.format(
-                        "X-Zerocracy-Version: %s %s %s",
-                        props.get("//build/version", ""),
-                        props.get("//build/revision", ""),
-                        props.get("//build/date", "")
-                    ),
-                    "Vary: Cookie"
-                ),
-                new FbChain(
-                    new FbStatus(
-                        HttpURLConnection.HTTP_NOT_FOUND,
-                        (Fallback) req -> new Opt.Single<>(
-                            new RsWithStatus(
-                                new RsText(req.throwable().getMessage()),
-                                req.code()
+                    new FbChain(
+                        new FbStatus(
+                            HttpURLConnection.HTTP_NOT_FOUND,
+                            (Fallback) req -> new Opt.Single<>(
+                                new RsWithStatus(
+                                    new RsText(req.throwable().getMessage()),
+                                    req.code()
+                                )
                             )
-                        )
-                    ),
-                    req -> {
-                        Logger.error(req, "%[exception]s", req.throwable());
-                        return new Opt.Empty<>();
-                    },
-                    new FbLog4j(),
-                    req -> {
-                        Sentry.capture(req.throwable());
-                        return new Opt.Empty<>();
-                    },
-                    req -> new Opt.Single<>(
-                        new RsWithStatus(
-                            new RsWithType(
-                                new RsVelocity(
-                                    TkApp.class.getResource("error.html.vm"),
-                                    new RsVelocity.Pair(
-                                        "error",
-                                        StringEscapeUtils.escapeHtml4(
-                                            new TextOf(
-                                                new BytesOf(
-                                                    req.throwable()
-                                                )
-                                            ).asString()
+                        ),
+                        req -> {
+                            Logger.error(req, "%[exception]s", req.throwable());
+                            return new Opt.Empty<>();
+                        },
+                        new FbLog4j(),
+                        req -> {
+                            Sentry.capture(req.throwable());
+                            return new Opt.Empty<>();
+                        },
+                        req -> new Opt.Single<>(
+                            new RsWithStatus(
+                                new RsWithType(
+                                    new RsVelocity(
+                                        TkApp.class.getResource("error.html.vm"),
+                                        new RsVelocity.Pair(
+                                            "error",
+                                            StringEscapeUtils.escapeHtml4(
+                                                new TextOf(
+                                                    new BytesOf(
+                                                        req.throwable()
+                                                    )
+                                                ).asString()
+                                            )
+                                        ),
+                                        new RsVelocity.Pair(
+                                            "version",
+                                            props.get("//build/version", "")
+                                        ),
+                                        new RsVelocity.Pair(
+                                            "revision",
+                                            props.get("//build/revision", "")
                                         )
                                     ),
-                                    new RsVelocity.Pair(
-                                        "version",
-                                        props.get("//build/version", "")
-                                    ),
-                                    new RsVelocity.Pair(
-                                        "revision",
-                                        props.get("//build/revision", "")
-                                    )
+                                    "text/html"
                                 ),
-                                "text/html"
-                            ),
-                            HttpURLConnection.HTTP_INTERNAL_ERROR
+                                HttpURLConnection.HTTP_INTERNAL_ERROR
+                            )
                         )
                     )
                 )
