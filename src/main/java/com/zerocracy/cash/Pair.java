@@ -142,6 +142,11 @@ final class Pair implements Comparable<Pair>, Serializable {
      */
     @SuppressWarnings("PMD.ProhibitPublicStaticMethods")
     public static Pair valueOf(final String text) throws CashParsingException {
+        if (text.isEmpty()) {
+            throw new CashParsingException(
+                "It's an empty string, not a cash value"
+            );
+        }
         final boolean negative;
         final Matcher matcher;
         if (text.charAt(0) == '(' && text.charAt(text.length() - 1) == ')') {
@@ -166,7 +171,14 @@ final class Pair implements Comparable<Pair>, Serializable {
             if (negative) {
                 val = val.negate();
             }
-            pair = new Pair(val, Pair.parse(matcher.group(1)));
+            try {
+                pair = new Pair(val, Pair.parse(matcher.group(1)));
+            } catch (final CashParsingException ex) {
+                throw new CashParsingException(
+                    String.format("Can't parse \"%s\"", text),
+                    ex
+                );
+            }
         }
         return pair;
     }

@@ -22,6 +22,7 @@ import com.zerocracy.farm.props.Props;
 import com.zerocracy.tk.profile.TkAgenda;
 import com.zerocracy.tk.profile.TkAwards;
 import com.zerocracy.tk.profile.TkProfile;
+import com.zerocracy.tk.profile.TkYoti;
 import com.zerocracy.tk.project.TkArtifact;
 import com.zerocracy.tk.project.TkBadge;
 import com.zerocracy.tk.project.TkDonate;
@@ -120,6 +121,7 @@ public final class TkApp extends TkWrap {
                                                                 ),
                                                                 new FkRegex("/", new TkIndex(farm)),
                                                                 new FkRegex("/privacy", new TkRedirect("http://datum.zerocracy.com/pages/terms.html#privacy")),
+                                                                new FkRegex("/yoti", new TkYoti(farm)),
                                                                 new FkRegex("/heapdump", new TkDump(farm)),
                                                                 new FkRegex("/guts", new TkGuts(farm)),
                                                                 new FkRegex(

@@ -125,7 +125,7 @@ SOFTWARE.
           <xsl:text>24</xsl:text>
         </xsl:otherwise>
       </xsl:choose>
-      <xsl:text>.</xsl:text>
+      <xsl:text>).</xsl:text>
     </p>
   </xsl:template>
   <xsl:template match="details">
