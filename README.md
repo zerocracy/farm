@@ -1,4 +1,4 @@
-<img src="http://www.zerocracy.com/logo.svg" width="64px" height="64px"/>
+<img src="https://www.0crat.com/svg/logo.svg" width="64px" height="64px"/>
 
 [![Managed by Zerocracy](https://www.0crat.com/badge/C3NDPUA8L.svg)](https://www.0crat.com/p/C3NDPUA8L)
 [![DevOps By Rultor.com](http://www.rultor.com/b/zerocracy/farm)](http://www.rultor.com/p/zerocracy/farm)
