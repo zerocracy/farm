@@ -50,6 +50,10 @@ public final class ReProfile implements Reaction {
             .claim()
             .token(new TmToken(update))
             .author(new TmPerson(farm, update).uid())
+            .param("update_id", update.getUpdateId())
+            .param("chat_id", update.getMessage().getChatId())
+            .param("message_id", update.getMessage().getMessageId())
+            .param("date", update.getMessage().getDate())
             .postTo(new Pmo(farm));
         return question.matches();
     }
