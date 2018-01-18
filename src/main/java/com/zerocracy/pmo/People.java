@@ -105,7 +105,7 @@ public final class People {
                 ).say(uid)
             );
         }
-        if (!text.isEmpty()) {
+        if (text.isEmpty()) {
             throw new SoftException(
                 new Par(
                     "User @%s details can't be empty"
