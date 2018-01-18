@@ -23,7 +23,9 @@ import com.yoti.api.client.YotiClientBuilder;
 import com.zerocracy.Farm;
 import com.zerocracy.Par;
 import com.zerocracy.farm.props.Props;
+import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pmo.People;
+import com.zerocracy.pmo.Pmo;
 import com.zerocracy.tk.RqUser;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -88,6 +90,11 @@ public final class TkYoti implements TkRegex {
         );
         final String user = new RqUser(this.farm, req).value();
         new People(this.farm).bootstrap().details(user, name);
+        new ClaimOut().type("Notify user").token("user;yegor256").param(
+            "message", new Par(
+                "We just identified @%s as \"%\" via Yoti"
+            ).say(user, name)
+        ).postTo(new Pmo(this.farm));
         return new RsForward(
             new RsFlash(
                 new Par(

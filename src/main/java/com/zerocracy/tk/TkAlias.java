@@ -19,6 +19,7 @@ package com.zerocracy.tk;
 import com.zerocracy.Farm;
 import com.zerocracy.Par;
 import com.zerocracy.Project;
+import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pmo.People;
 import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
@@ -71,6 +72,11 @@ public final class TkAlias implements Take {
         }
         final String login = new RqUser(this.farm, req).value();
         people.link(login, rel, href);
+        new ClaimOut().type("Notify user").token("user;yegor256").param(
+            "message", new Par(
+                "We just linked @%s via %s as \"%s\""
+            ).say(login, rel, href)
+        ).postTo(pmo);
         return new RsForward(
             new RsFlash(
                 new Par.ToText(

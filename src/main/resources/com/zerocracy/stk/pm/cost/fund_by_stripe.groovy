@@ -49,4 +49,9 @@ def exec(Project project, XML xml) {
       ).say(project.pid(), amount)
     )
     .postTo(project)
+  new ClaimOut().type('Notify user').token('user;yegor256').param(
+    'message', new Par(
+    'We just funded %s for %s via Stripe'
+  ).say(project.pid(), amount)
+  ).postTo(project)
 }
