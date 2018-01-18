@@ -27,7 +27,7 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="page" mode="inner">
     <p>
-      <img src="//badge/{project}.svg"/>
+      <img src="/badge/{project}.svg"/>
     </p>
     <xsl:if test="pause = 'true'">
       <p>
@@ -77,7 +77,7 @@ SOFTWARE.
         </xsl:choose>
       </a>
       <xsl:text>, </xsl:text>
-      <a href="https://www.0crat.com/board">
+      <a href="/board">
         <xsl:choose>
           <xsl:when test="published='true'">
             <xsl:text>visible</xsl:text>

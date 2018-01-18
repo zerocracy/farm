@@ -106,6 +106,25 @@ SOFTWARE.
           </a>
         </xsl:otherwise>
       </xsl:choose>
+      <xsl:text> (max </xsl:text>
+      <a href="http://datum.zerocracy.com/pages/policy.html#3">
+        <xsl:text>allowed</xsl:text>
+      </a>
+      <xsl:text>: </xsl:text>
+      <xsl:choose>
+        <xsl:when test="/page/awards &lt; 512">
+          <xsl:text>3</xsl:text>
+        </xsl:when>
+        <xsl:when test="/page/awards &lt; 2048">
+          <xsl:text>8</xsl:text>
+        </xsl:when>
+        <xsl:when test="/page/awards &lt; 4096">
+          <xsl:text>16</xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:text>24</xsl:text>
+        </xsl:otherwise>
+      </xsl:choose>
       <xsl:text>.</xsl:text>
     </p>
   </xsl:template>
