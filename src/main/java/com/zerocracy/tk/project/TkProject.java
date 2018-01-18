@@ -71,7 +71,6 @@ public final class TkProject implements TkRegex {
                 final String login = new RqUser(this.farm, req).value();
                 final Catalog catalog = new Catalog(this.farm).bootstrap();
                 final String user = new RqUser(this.farm, req).value();
-                final Roles roles = new Roles(project).bootstrap();
                 final String pid = project.pid();
                 return new XeChain(
                     new XeAppend("project", pid),
@@ -79,6 +78,7 @@ public final class TkProject implements TkRegex {
                     new XeWhen(
                         !"PMO".equals(pid),
                         () -> {
+                            final Roles roles = new Roles(project).bootstrap();
                             final Rates rates = new Rates(project).bootstrap();
                             return new XeChain(
                                 new XeAppend(
