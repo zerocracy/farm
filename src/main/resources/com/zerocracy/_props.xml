@@ -27,6 +27,7 @@ SOFTWARE.
   <yoti>
     <pem>${yoti.pem}</pem>
     <sdk_id>${yoti.sdk_id}</sdk_id>
+    <app_id>${yoti.app_id}</app_id>
   </yoti>
   <github>
     <app.client_id>${github.app.client_id}</app.client_id>

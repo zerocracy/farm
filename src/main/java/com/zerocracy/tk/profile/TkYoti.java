@@ -65,7 +65,9 @@ public final class TkYoti implements TkRegex {
         final Props props = new Props(this.farm);
         final String token = new RqHref.Smart(req).single("token");
         final Path pem = Files.createTempFile("", ".pem");
-        new LengthOf(new TeeInput(props.get("//yoti/pem"), pem)).intValue();
+        new LengthOf(
+            new TeeInput(props.get("//yoti/pem").trim(), pem)
+        ).intValue();
         final HumanProfile profile;
         try {
             profile = YotiClientBuilder.newInstance()
