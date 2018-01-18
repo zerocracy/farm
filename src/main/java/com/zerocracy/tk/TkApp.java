@@ -119,6 +119,7 @@ public final class TkApp extends TkWrap {
                                                                     new TkText("30265BD04DBC892A0B22A97C81F04337B49CBBB18BE62476FEA4E78EC8C26FD4 comodoca.com 5a60937406a7f\n")
                                                                 ),
                                                                 new FkRegex("/", new TkIndex(farm)),
+                                                                new FkRegex("/privacy", new TkRedirect("http://datum.zerocracy.com/pages/terms.html#privacy")),
                                                                 new FkRegex("/heapdump", new TkDump(farm)),
                                                                 new FkRegex("/guts", new TkGuts(farm)),
                                                                 new FkRegex(
