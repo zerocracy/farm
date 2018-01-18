@@ -28,7 +28,7 @@ SOFTWARE.
         <ul>
           <li>
             <a href="/">
-              <img src="/images/logo.svg" class="logo"/>
+              <img src="/svg/logo.svg" class="logo"/>
             </a>
           </li>
         </ul>

@@ -82,6 +82,7 @@ SOFTWARE.
   <xsl:template match="user">
     <tr>
       <td>
+        <img src="https://socatar.com/github/{login}" style="width:32px;height:32px;border-radius:3px;vertical-align:middle;"/>
         <a href="https://github.com/{login}">
           <xsl:text>@</xsl:text>
           <xsl:value-of select="login"/>

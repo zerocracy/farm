@@ -41,7 +41,8 @@ public final class TkSslOnlyTest {
         final Request req = new RqFake(
             Arrays.asList(
                 "GET /something/there",
-                "Host: www.0crat.com"
+                "Host: www.0crat.com",
+                "X-Forwarded-Proto: http"
             ),
             ""
         );

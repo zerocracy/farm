@@ -78,7 +78,7 @@ public final class Par {
         out = Par.replace(
             out, Pattern.compile("(?<= |^)@([a-z-0-9]{3,})"),
             matcher -> String.format(
-                "%s[/z](http://www.0crat.com/u/%s)",
+                "%s[/z](https://www.0crat.com/u/%s)",
                 matcher.group(0), matcher.group(1)
             )
         );
@@ -91,7 +91,7 @@ public final class Par {
                     title = catalog.title(title);
                 }
                 return String.format(
-                    "[%s](http://www.0crat.com/p/%s)",
+                    "[%s](https://www.0crat.com/p/%s)",
                     title, matcher.group(0)
                 );
             }
@@ -134,7 +134,7 @@ public final class Par {
         out = Par.replace(
             out, Pattern.compile("(?<= |^)(\\[[^]]+])\\((/[^)]+)\\)"),
             matcher -> String.format(
-                "%s(http://www.0crat.com%s)",
+                "%s(https://www.0crat.com%s)",
                 matcher.group(1), matcher.group(2)
             )
         );

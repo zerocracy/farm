@@ -17,10 +17,10 @@
 package com.zerocracy.tk;
 
 import java.io.IOException;
-import java.net.URI;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
+import org.takes.rq.RqHeaders;
 import org.takes.rq.RqHref;
 import org.takes.rs.RsRedirect;
 
@@ -48,17 +48,19 @@ public final class TkSslOnly implements Take {
     }
 
     @Override
+    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     public Response act(final Request req) throws IOException {
         final String href = new RqHref.Base(req).href().bare();
-        final URI uri = URI.create(href);
+        final String proto = new RqHeaders.Smart(
+            new RqHeaders.Base(req)
+        ).single("x-forwarded-proto", "https");
         final Response answer;
-        if ("http".equalsIgnoreCase(uri.getScheme())
-            && "www.0crat.com".equalsIgnoreCase(uri.getHost())) {
+        if ("https".equalsIgnoreCase(proto)) {
+            answer = this.origin.act(req);
+        } else {
             answer = new RsRedirect(
                 href.replaceAll("^http", "https")
             );
-        } else {
-            answer = this.origin.act(req);
         }
         return answer;
     }

@@ -31,7 +31,7 @@ SOFTWARE.
     <div class="center">
       <p>
         <a href="/">
-          <img src="/images/logo.svg" style="width:128px;height:128px;"/>
+          <img src="/svg/logo.svg" style="width:128px;height:128px;"/>
         </a>
       </p>
       <p>

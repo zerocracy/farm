@@ -41,7 +41,7 @@ public final class PeopleTest {
         final String rel = "slack";
         final String alias = "U67WE3343P";
         people.link(uid, rel, alias);
-        people.link(uid, "jira", "http://www.0crat.com/jira");
+        people.link(uid, "jira", "https://www.0crat.com/jira");
         MatcherAssert.assertThat(
             people.find(rel, alias),
             Matchers.not(Matchers.emptyIterable())

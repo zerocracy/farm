@@ -23,7 +23,7 @@ SOFTWARE.
         <meta charset="utf-8"/>
         <meta name="description" content="Project managers that never sleep, fail, or miss anything"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <link rel="shortcut icon" href="/images/logo.png"/>
+        <link rel="shortcut icon" href="/png/logo.png"/>
         <link rel="stylesheet" href="/css/main.css"/>
         <xsl:apply-templates select="." mode="head"/>
       </head>
