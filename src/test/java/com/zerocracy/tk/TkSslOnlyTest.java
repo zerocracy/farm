@@ -40,7 +40,7 @@ public final class TkSslOnlyTest {
     public void redirects() throws Exception {
         final Request req = new RqFake(
             Arrays.asList(
-                "GET /something/there",
+                "GET /one/two?a=1",
                 "Host: www.0crat.com",
                 "X-Forwarded-Proto: http"
             ),
@@ -54,7 +54,7 @@ public final class TkSslOnlyTest {
                     )
                 ).act(req)
             ).print(),
-            Matchers.containsString("https://")
+            Matchers.containsString("https://www.0crat.com/one/two?a=1")
         );
     }
 

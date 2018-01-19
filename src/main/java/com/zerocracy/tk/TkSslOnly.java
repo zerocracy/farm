@@ -50,7 +50,7 @@ public final class TkSslOnly implements Take {
     @Override
     @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     public Response act(final Request req) throws IOException {
-        final String href = new RqHref.Base(req).href().bare();
+        final String href = new RqHref.Base(req).href().toString();
         final String proto = new RqHeaders.Smart(
             new RqHeaders.Base(req)
         ).single("x-forwarded-proto", "https");
