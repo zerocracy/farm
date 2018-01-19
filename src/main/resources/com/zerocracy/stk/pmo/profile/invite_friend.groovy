@@ -58,4 +58,9 @@ def exec(Project project, XML xml) {
       ).say(author)
     )
     .postTo(project)
+  new ClaimOut().type('Notify user').token('user;yegor256').param(
+    'message', new Par(
+      'New user @%s was invited by @%s'
+    ).say(login, author)
+  ).postTo(project)
 }
