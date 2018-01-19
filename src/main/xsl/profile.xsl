@@ -22,7 +22,7 @@ SOFTWARE.
   <xsl:template match="page" mode="head">
     <title>
       <xsl:text>@</xsl:text>
-      <xsl:value-of select="identity/login"/>
+      <xsl:value-of select="page/owner"/>
     </title>
   </xsl:template>
   <xsl:template match="page" mode="inner">
@@ -80,12 +80,22 @@ SOFTWARE.
           </span>
         </xsl:when>
         <xsl:otherwise>
-          <a href="/u/{/page/owner}/awards">
+          <xsl:variable name="total">
             <xsl:if test=". &gt;= 0">
               <xsl:text>+</xsl:text>
             </xsl:if>
             <xsl:value-of select="."/>
-          </a>
+          </xsl:variable>
+          <xsl:choose>
+            <xsl:when test="/page/owner=/identity/login">
+              <a href="/u/{/page/owner}/awards">
+                <xsl:value-of select="$total"/>
+              </a>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="$total"/>
+            </xsl:otherwise>
+          </xsl:choose>
         </xsl:otherwise>
       </xsl:choose>
       <xsl:text>.</xsl:text>
@@ -101,9 +111,16 @@ SOFTWARE.
           </span>
         </xsl:when>
         <xsl:otherwise>
-          <a href="/u/{/page/owner}/agenda">
-            <xsl:value-of select="."/>
-          </a>
+          <xsl:choose>
+            <xsl:when test="/page/owner=/identity/login">
+              <a href="/u/{/page/owner}/agenda">
+                <xsl:value-of select="."/>
+              </a>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="."/>
+            </xsl:otherwise>
+          </xsl:choose>
         </xsl:otherwise>
       </xsl:choose>
       <xsl:text> (max </xsl:text>
