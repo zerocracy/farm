@@ -22,7 +22,7 @@ SOFTWARE.
   <xsl:template match="page" mode="head">
     <title>
       <xsl:text>@</xsl:text>
-      <xsl:value-of select="page/owner"/>
+      <xsl:value-of select="owner"/>
     </title>
   </xsl:template>
   <xsl:template match="page" mode="inner">
