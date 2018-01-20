@@ -60,9 +60,9 @@ public final class TkUpload implements TkRegex {
         final Project project = new RqProject(this.farm, req);
         final RqMtSmart form = new RqMtSmart(new RqMtBase(req));
         final String body =
-            new RqPrint(form.single("file")).printBody();
+            new RqPrint(form.single("file")).printBody().trim();
         final String artifact =
-            new RqPrint(form.single("artifact")).printBody();
+            new RqPrint(form.single("artifact")).printBody().trim();
         try (final Item item = project.acq(artifact)) {
             new LengthOf(new TeeInput(body, item.path())).intValue();
         }
