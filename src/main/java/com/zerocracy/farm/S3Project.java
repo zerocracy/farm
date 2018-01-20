@@ -16,14 +16,23 @@
  */
 package com.zerocracy.farm;
 
+import com.amazonaws.services.s3.model.ObjectListing;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.jcabi.s3.Bucket;
 import com.zerocracy.Item;
 import com.zerocracy.Project;
+import com.zerocracy.farm.fake.FkItem;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.StringUtils;
+import org.cactoos.collection.Joined;
+import org.cactoos.collection.Mapped;
+import org.cactoos.time.DateAsText;
+import org.xembly.Directive;
+import org.xembly.Directives;
+import org.xembly.Xembler;
 
 /**
  * Project in S3.
@@ -82,19 +91,50 @@ final class S3Project implements Project {
     }
 
     @Override
-    public Item acq(final String file) {
-        if (!file.matches("[a-z0-9\\-/]+\\.[a-z]+")) {
-            throw new IllegalArgumentException(
-                String.format(
-                    "Unacceptable file name: \"%s\"", file
-                )
+    public Item acq(final String file) throws IOException {
+        final Item item;
+        if ("_list.xml".equals(file)) {
+            final ObjectListing listing = this.bucket.region().aws()
+                .listObjects(this.bucket.name(), this.prefix);
+            item = new FkItem(
+                new Xembler(
+                    new Directives().add("items").append(
+                        new Joined<Directive>(
+                            new Mapped<S3ObjectSummary, Iterable<Directive>>(
+                                sum -> new Directives()
+                                    .add("item")
+                                    .add("name")
+                                    .set(
+                                        sum.getKey().substring(
+                                            this.prefix.length()
+                                        )
+                                    )
+                                    .up()
+                                    .add("size").set(sum.getSize()).up()
+                                    .add("modified")
+                                    .set(new DateAsText(sum.getLastModified()))
+                                    .up(),
+                                listing.getObjectSummaries()
+                            )
+                        )
+                    )
+                ).xmlQuietly()
+            );
+        } else {
+            if (!file.matches("[a-z0-9\\-/]+\\.[a-z]+")) {
+                throw new IllegalArgumentException(
+                    String.format(
+                        "Unacceptable file name: \"%s\"", file
+                    )
+                );
+            }
+            final String key = String.format("%s%s", this.prefix, file);
+            item = new S3Item(
+                this.bucket.ocket(key),
+                this.temp.resolve(key)
             );
         }
-        final String key = String.format("%s%s", this.prefix, file);
-        return new S3Item(
-            this.bucket.ocket(key),
-            this.temp.resolve(key)
-        );
+        return item;
     }
 
 }

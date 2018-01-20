@@ -26,10 +26,12 @@ import com.zerocracy.tk.profile.TkYoti;
 import com.zerocracy.tk.project.TkArtifact;
 import com.zerocracy.tk.project.TkBadge;
 import com.zerocracy.tk.project.TkDonate;
+import com.zerocracy.tk.project.TkFiles;
 import com.zerocracy.tk.project.TkFootprint;
 import com.zerocracy.tk.project.TkPay;
 import com.zerocracy.tk.project.TkProject;
 import com.zerocracy.tk.project.TkReport;
+import com.zerocracy.tk.project.TkUpload;
 import com.zerocracy.tk.project.TkXml;
 import io.sentry.Sentry;
 import java.io.IOException;
@@ -190,6 +192,14 @@ public final class TkApp extends TkWrap {
                                                                 new FkRegex(
                                                                     "/report/(PMO|[A-Z0-9]{9})",
                                                                     new TkReport(farm)
+                                                                ),
+                                                                new FkRegex(
+                                                                    "/files/(PMO|[A-Z0-9]{9})",
+                                                                    new TkFiles(farm)
+                                                                ),
+                                                                new FkRegex(
+                                                                    "/upload/(PMO|[A-Z0-9]{9})",
+                                                                    new TkUpload(farm)
                                                                 ),
                                                                 new FkRegex(
                                                                     "/pay/(PMO|[A-Z0-9]{9})",

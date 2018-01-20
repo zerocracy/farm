@@ -231,6 +231,10 @@ SOFTWARE.
     </p>
     <p>
       <xsl:text>Integration: </xsl:text>
+      <a href="/files/{project}">
+        <xsl:text>Files</xsl:text>
+      </a>
+      <xsl:text>, </xsl:text>
       <a href="/report/{project}">
         <xsl:text>Reports</xsl:text>
       </a>

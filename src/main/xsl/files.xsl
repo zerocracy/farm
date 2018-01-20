@@ -21,39 +21,58 @@ SOFTWARE.
   <xsl:include href="/xsl/inner-layout.xsl"/>
   <xsl:template match="page" mode="head">
     <title>
+      <xsl:text>Files @</xsl:text>
       <xsl:value-of select="artifact"/>
-      <xsl:text> @</xsl:text>
-      <xsl:value-of select="project"/>
     </title>
   </xsl:template>
   <xsl:template match="page" mode="inner">
+    <form action="/upload/{project}" method="post" autocomplete="off">
+      <label>
+        <xsl:text>Upload file: </xsl:text>
+      </label>
+      <input type="text" name="artifact" size="20" maxlength="60" placeholder="e.g. vesting.xml"/>
+      <input type="file" name="file"/>
+      <button type="submit">
+        <xsl:text>Upload</xsl:text>
+      </button>
+    </form>
     <p>
-      <code>
-        <xsl:value-of select="artifact"/>
-      </code>
-      <xsl:text> at </xsl:text>
+      <xsl:text>All files available at </xsl:text>
       <a href="/p/{project}">
         <xsl:value-of select="title"/>
       </a>
-      <xsl:text>.</xsl:text>
+      <xsl:text>:</xsl:text>
     </p>
-    <p>
-      <span style="color:red">
-        <xsl:text>Note</xsl:text>
-      </span>
-      <xsl:text>: Please, use </xsl:text>
-      <a href="https://www.google.com/chrome/browser/desktop/index.html">
-        <xsl:text>Google Chrome</xsl:text>
-      </a>
-      <xsl:text> to see the document correctly.</xsl:text>
-    </p>
-    <xsl:value-of select="xml" disable-output-escaping="yes"/>
-    <p>
-      <xsl:text>You can download this artifact as </xsl:text>
-      <a href="/xml/{project}?file={file}">
-        <xsl:text>XML</xsl:text>
-      </a>
-      <xsl:text>.</xsl:text>
-    </p>
+    <table>
+      <thead>
+        <tr>
+          <th>
+            <xsl:text>File</xsl:text>
+          </th>
+          <th>
+            <xsl:text>Size</xsl:text>
+          </th>
+          <th>
+            <xsl:text>Modified</xsl:text>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <xsl:apply-templates select="items"/>
+      </tbody>
+    </table>
+  </xsl:template>
+  <xsl:template match="item">
+    <tr>
+      <td>
+        <xsl:value-of select="name"/>
+      </td>
+      <th>
+        <xsl:value-of select="size"/>
+      </th>
+      <th>
+        <xsl:value-of select="modified"/>
+      </th>
+    </tr>
   </xsl:template>
 </xsl:stylesheet>

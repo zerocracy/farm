@@ -16,27 +16,31 @@
  */
 package com.zerocracy.tk.project;
 
+import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Project;
+import com.zerocracy.pmo.Catalog;
+import com.zerocracy.tk.RsPage;
 import java.io.IOException;
-import org.cactoos.text.TextOf;
 import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
-import org.takes.rq.RqHref;
-import org.takes.rs.RsWithBody;
-import org.takes.rs.RsWithType;
+import org.takes.rs.xe.XeAppend;
+import org.takes.rs.xe.XeChain;
+import org.takes.rs.xe.XeDirectives;
+import org.xembly.Directives;
 
 /**
- * Artifact content, in XML.
+ * Files page.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.17
+ * @since 0.20
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-public final class TkXml implements TkRegex {
+public final class TkFiles implements TkRegex {
 
     /**
      * Farm.
@@ -47,24 +51,30 @@ public final class TkXml implements TkRegex {
      * Ctor.
      * @param frm Farm
      */
-    public TkXml(final Farm frm) {
+    public TkFiles(final Farm frm) {
         this.farm = frm;
     }
 
     @Override
     public Response act(final RqRegex req) throws IOException {
-        final Project project = new RqProject(this.farm, req);
-        final String artifact = new RqHref.Smart(
-            new RqHref.Base(req)
-        ).single("file");
-        try (final Item item = project.acq(artifact)) {
-            return new RsWithType(
-                new RsWithBody(
-                    new TextOf(item.path()).asString()
-                ),
-                "application/xml"
-            );
-        }
+        return new RsPage(
+            this.farm,
+            "/xsl/files.xsl",
+            req,
+            () -> {
+                final Project project = new RqProject(this.farm, req);
+                final Catalog catalog = new Catalog(this.farm).bootstrap();
+                final XML list;
+                try (final Item item = project.acq("_list.xml")) {
+                    list = new XMLDocument(item.path());
+                }
+                return new XeChain(
+                    new XeAppend("project", project.pid()),
+                    new XeAppend("title", catalog.title(project.pid())),
+                    new XeDirectives(Directives.copyOf(list.node()))
+                );
+            }
+        );
     }
 
 }

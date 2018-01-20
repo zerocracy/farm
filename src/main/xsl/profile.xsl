@@ -87,7 +87,7 @@ SOFTWARE.
             <xsl:value-of select="."/>
           </xsl:variable>
           <xsl:choose>
-            <xsl:when test="/page/owner=/identity/login">
+            <xsl:when test="/page/owner=/page/identity/login">
               <a href="/u/{/page/owner}/awards">
                 <xsl:value-of select="$total"/>
               </a>
@@ -112,7 +112,7 @@ SOFTWARE.
         </xsl:when>
         <xsl:otherwise>
           <xsl:choose>
-            <xsl:when test="/page/owner=/identity/login">
+            <xsl:when test="/page/owner=/page/identity/login">
               <a href="/u/{/page/owner}/agenda">
                 <xsl:value-of select="."/>
               </a>
