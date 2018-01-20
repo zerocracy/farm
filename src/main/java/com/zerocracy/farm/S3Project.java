@@ -112,7 +112,12 @@ final class S3Project implements Project {
                                     .up()
                                     .add("size").set(sum.getSize()).up()
                                     .add("modified")
-                                    .set(new DateAsText(sum.getLastModified()))
+                                    .set(
+                                        new DateAsText(
+                                            sum.getLastModified()
+                                        ).asString()
+                                    )
+                                    .up()
                                     .up(),
                                 listing.getObjectSummaries()
                             )

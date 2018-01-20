@@ -26,7 +26,7 @@ SOFTWARE.
     </title>
   </xsl:template>
   <xsl:template match="page" mode="inner">
-    <form action="/upload/{project}" method="post" autocomplete="off">
+    <form action="/upload/{project}" method="post" autocomplete="off" enctype="multipart/form-data">
       <label>
         <xsl:text>Upload file: </xsl:text>
       </label>
@@ -67,12 +67,12 @@ SOFTWARE.
       <td>
         <xsl:value-of select="name"/>
       </td>
-      <th>
+      <td style="text-align:right;">
         <xsl:value-of select="size"/>
-      </th>
-      <th>
+      </td>
+      <td>
         <xsl:value-of select="modified"/>
-      </th>
+      </td>
     </tr>
   </xsl:template>
 </xsl:stylesheet>
