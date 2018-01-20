@@ -27,9 +27,10 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="page" mode="inner">
     <p>
-      <xsl:text>ATTENTION</xsl:text>
-      <xsl:text>:</xsl:text>
-      <xsl:text>Be very careful will this form!</xsl:text>
+      <span style="color:darkred">
+        <xsl:text>ATTENTION</xsl:text>
+      </span>
+      <xsl:text>: Be very careful will this form!</xsl:text>
       <xsl:text> You can easily break things if you don't know what you are doing.</xsl:text>
       <xsl:text> The best way to modify a file is to download it first, make changes locally and upload back.</xsl:text>
     </p>
@@ -68,6 +69,13 @@ SOFTWARE.
         <xsl:apply-templates select="items"/>
       </tbody>
     </table>
+    <p>
+      <xsl:text>You can download them all in one </xsl:text>
+      <a href="/archive/{project}">
+        <xsl:text>ZIP archive</xsl:text>
+      </a>
+      <xsl:text>.</xsl:text>
+    </p>
   </xsl:template>
   <xsl:template match="item">
     <tr>

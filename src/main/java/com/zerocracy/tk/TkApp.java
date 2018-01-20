@@ -23,6 +23,7 @@ import com.zerocracy.tk.profile.TkAgenda;
 import com.zerocracy.tk.profile.TkAwards;
 import com.zerocracy.tk.profile.TkProfile;
 import com.zerocracy.tk.profile.TkYoti;
+import com.zerocracy.tk.project.TkArchive;
 import com.zerocracy.tk.project.TkArtifact;
 import com.zerocracy.tk.project.TkBadge;
 import com.zerocracy.tk.project.TkDonate;
@@ -200,6 +201,10 @@ public final class TkApp extends TkWrap {
                                                                 new FkRegex(
                                                                     "/upload/(PMO|[A-Z0-9]{9})",
                                                                     new TkUpload(farm)
+                                                                ),
+                                                                new FkRegex(
+                                                                    "/archive/(PMO|[A-Z0-9]{9})",
+                                                                    new TkArchive(farm)
                                                                 ),
                                                                 new FkRegex(
                                                                     "/pay/(PMO|[A-Z0-9]{9})",
