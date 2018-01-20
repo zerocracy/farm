@@ -16,9 +16,9 @@
  */
 package com.zerocracy.pm.time;
 
+import com.zerocracy.Item;
+import com.zerocracy.Project;
 import com.zerocracy.Xocument;
-import com.zerocracy.jstk.Item;
-import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import org.cactoos.time.DateAsText;
 import org.xembly.Directives;

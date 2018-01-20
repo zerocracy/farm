@@ -17,12 +17,12 @@
 package com.zerocracy.farm;
 
 import com.jcabi.xml.XML;
+import com.zerocracy.Farm;
 import com.zerocracy.Par;
+import com.zerocracy.Project;
+import com.zerocracy.SoftException;
+import com.zerocracy.Stakeholder;
 import com.zerocracy.farm.props.Props;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.SoftException;
-import com.zerocracy.jstk.Stakeholder;
 import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.ClaimOut;
 import io.sentry.Sentry;
@@ -105,6 +105,25 @@ public final class StkSafe implements Stakeholder {
             }
             // @checkstyle IllegalCatchCheck (1 line)
         } catch (final Throwable ex) {
+            final StringBuilder msg = new StringBuilder(
+                String.format(
+                    "Claim #%d in %s: type=\"%s\", stakeholder=\"%s\"",
+                    claim.cid(), project.pid(), claim.type(),
+                    this.identifier
+                )
+            );
+            if (claim.hasAuthor()) {
+                msg.append(String.format(", author=\"%s\"", claim.author()));
+            }
+            if (claim.hasToken()) {
+                msg.append(String.format(", token=\"%s\"", claim.token()));
+            }
+            new ClaimOut().type("Error")
+                .param("origin_id", claim.cid())
+                .param("origin_type", claim.type())
+                .param("message", msg.toString())
+                .param("stacktrace", new TextOf(ex).asString())
+                .postTo(project);
             final Props props = new Props(this.farm);
             if (props.has("//testing")) {
                 throw new IllegalStateException(ex);
@@ -132,25 +151,6 @@ public final class StkSafe implements Stakeholder {
                     ).say()
                 ).postTo(project);
             }
-            final StringBuilder msg = new StringBuilder(
-                String.format(
-                    "Claim #%d in %s: type=\"%s\", stakeholder=\"%s\"",
-                    claim.cid(), project.pid(), claim.type(),
-                    this.identifier
-                )
-            );
-            if (claim.hasAuthor()) {
-                msg.append(String.format(", author=\"%s\"", claim.author()));
-            }
-            if (claim.hasToken()) {
-                msg.append(String.format(", token=\"%s\"", claim.token()));
-            }
-            new ClaimOut().type("Error")
-                .param("origin_id", claim.cid())
-                .param("origin_type", claim.type())
-                .param("message", msg.toString())
-                .param("stacktrace", new TextOf(ex).asString())
-                .postTo(project);
         }
     }
 }

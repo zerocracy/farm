@@ -17,8 +17,8 @@
 package com.zerocracy.bundles.show_wallet
 
 import com.jcabi.xml.XML
-import com.zerocracy.jstk.Item
-import com.zerocracy.jstk.Project
+import com.zerocracy.Item
+import com.zerocracy.Project
 
 def exec(Project project, XML xml) {
   Item item = project.acq('test.txt')

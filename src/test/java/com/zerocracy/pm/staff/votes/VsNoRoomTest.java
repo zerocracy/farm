@@ -16,7 +16,7 @@
  */
 package com.zerocracy.pm.staff.votes;
 
-import com.zerocracy.jstk.farm.fake.FkProject;
+import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.pmo.Agenda;
 import com.zerocracy.pmo.Awards;
 import org.hamcrest.MatcherAssert;
@@ -45,6 +45,7 @@ public final class VsNoRoomTest {
         for (int num = 1; num < total; ++num) {
             agenda.add(
                 String.format("gh:test/test#%d", num),
+                "QA",
                 String.format("https://test/%d", num)
             );
         }

@@ -16,7 +16,7 @@
  */
 package com.zerocracy.tk;
 
-import com.zerocracy.jstk.Farm;
+import com.zerocracy.Farm;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,7 +36,7 @@ import org.takes.rs.RsWithType;
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.20
- * @todo #360:30min Download and analyze heap dump from http://www.0crat.com/heapdump
+ * @todo #360:30min Download and analyze heap dump from https://www.0crat.com/heapdump
  *  after next out of memory error,
  *  then fix memory leaks
  *  and remove this debug class.

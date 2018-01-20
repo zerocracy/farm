@@ -16,11 +16,11 @@
  */
 package com.zerocracy.tk.project;
 
+import com.zerocracy.Farm;
 import com.zerocracy.Par;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.cash.Cash;
-import com.zerocracy.jstk.cash.CashParsingException;
+import com.zerocracy.Project;
+import com.zerocracy.cash.Cash;
+import com.zerocracy.cash.CashParsingException;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.tk.RqUser;
 import java.io.IOException;

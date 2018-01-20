@@ -16,7 +16,7 @@
  */
 package com.zerocracy.pmo;
 
-import com.zerocracy.jstk.farm.fake.FkProject;
+import com.zerocracy.farm.fake.FkProject;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -34,9 +34,9 @@ public final class AgendaTest {
     public void addsAndRemovesAgenda() throws Exception {
         final Agenda agenda = new Agenda(new FkProject(), "yegor").bootstrap();
         final String first = "gh:test/test#1";
-        agenda.add(first, "https://github.com/test");
+        agenda.add(first, "REV", "https://github.com/test");
         final String second = "gh:test/test#2";
-        agenda.add(second, "https://github.com/test/test");
+        agenda.add(second, "QA", "https://github.com/test/test");
         agenda.remove(first);
         MatcherAssert.assertThat(agenda.jobs(), Matchers.hasItem(second));
     }

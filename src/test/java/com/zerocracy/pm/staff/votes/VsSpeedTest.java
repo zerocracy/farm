@@ -16,7 +16,7 @@
  */
 package com.zerocracy.pm.staff.votes;
 
-import com.zerocracy.jstk.farm.fake.FkProject;
+import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.pmo.Speed;
 import java.util.concurrent.TimeUnit;
 import org.cactoos.list.ListOf;

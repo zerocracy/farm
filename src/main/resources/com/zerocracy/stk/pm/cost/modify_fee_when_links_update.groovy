@@ -23,9 +23,9 @@ import com.jcabi.xml.XML
 import com.zerocracy.Par
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Farm
-import com.zerocracy.jstk.Project
-import com.zerocracy.jstk.cash.Cash
+import com.zerocracy.Farm
+import com.zerocracy.Project
+import com.zerocracy.cash.Cash
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pmo.Catalog
 

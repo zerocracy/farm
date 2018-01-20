@@ -16,7 +16,7 @@
  */
 package com.zerocracy.entry;
 
-import com.zerocracy.jstk.Farm;
+import com.zerocracy.Farm;
 import com.zerocracy.radars.telegram.TmZerocrat;
 import org.cactoos.Scalar;
 import org.cactoos.func.SolidFunc;

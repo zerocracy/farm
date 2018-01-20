@@ -19,7 +19,7 @@ package com.zerocracy.farm;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.jcabi.log.Logger;
 import com.jcabi.s3.Ocket;
-import com.zerocracy.jstk.Item;
+import com.zerocracy.Item;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;

@@ -17,9 +17,10 @@
 package com.zerocracy.stk.pm.in.orders
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Project
+import com.zerocracy.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 
@@ -30,13 +31,15 @@ def exec(Project project, XML xml) {
   String job = claim.param('job')
   String login = claim.param('login')
   String role = claim.param('role')
+  Farm farm = binding.variables.farm
   new ClaimOut()
     .type('Notify project')
     .param(
       'message',
       new Par(
-        'The job %s was assigned to @%s (role is %s):\n```\n%s\n```'
-      ).say(job, login, role, claim.param('reason'))
+        farm,
+        'The job %s was assigned to @%s (role is %s):'
+      ).say(job, login, role) + "\n\n```\n${claim.param('reason')}\n```"
     )
     .postTo(project)
 }

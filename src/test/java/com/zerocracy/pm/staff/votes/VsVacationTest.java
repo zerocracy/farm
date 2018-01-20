@@ -16,7 +16,7 @@
  */
 package com.zerocracy.pm.staff.votes;
 
-import com.zerocracy.jstk.farm.fake.FkProject;
+import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.pmo.People;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;

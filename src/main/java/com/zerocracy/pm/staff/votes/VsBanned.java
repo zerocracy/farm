@@ -16,7 +16,7 @@
  */
 package com.zerocracy.pm.staff.votes;
 
-import com.zerocracy.jstk.Project;
+import com.zerocracy.Project;
 import com.zerocracy.pm.staff.Bans;
 import com.zerocracy.pm.staff.Votes;
 import java.io.IOException;

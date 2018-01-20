@@ -17,19 +17,21 @@
 package com.zerocracy.stk.pmo.profile
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Project
-import com.zerocracy.jstk.SoftException
-import com.zerocracy.jstk.cash.Cash
-import com.zerocracy.jstk.cash.CashParsingException
+import com.zerocracy.Project
+import com.zerocracy.SoftException
+import com.zerocracy.cash.Cash
+import com.zerocracy.cash.CashParsingException
+import com.zerocracy.farm.props.Props
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.People
 
-def exec(Project project, XML xml) {
-  new Assume(project, xml).isPmo()
-  new Assume(project, xml).type('Set rate')
-  People people = new People(project).bootstrap()
+def exec(Project pmo, XML xml) {
+  new Assume(pmo, xml).isPmo()
+  new Assume(pmo, xml).type('Set rate')
+  People people = new People(pmo).bootstrap()
   ClaimIn claim = new ClaimIn(xml)
   String author = claim.author()
   if (!claim.hasParam('rate')) {
@@ -45,10 +47,20 @@ def exec(Project project, XML xml) {
   } catch (CashParsingException ex) {
     throw new SoftException(ex.message)
   }
+  if (rate > Cash.ZERO && people.details(author).empty) {
+    Farm farm = binding.variables.farm
+    throw new SoftException(
+      new Par(
+        'In order to work for money you have to identify yourself first;',
+        'please, click this link and follow the instructions:',
+        'https://www.yoti.com/connect/%s'
+      ).say(new Props(farm).get('//yoti/app_id', ''))
+    )
+  }
   people.rate(author, rate)
   claim.reply(
     new Par(
       'Rate of @%s set to %s'
     ).say(author, rate)
-  ).postTo(project)
+  ).postTo(pmo)
 }

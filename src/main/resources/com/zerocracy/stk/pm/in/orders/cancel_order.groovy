@@ -19,8 +19,8 @@ package com.zerocracy.stk.pm.in.orders
 import com.jcabi.xml.XML
 import com.zerocracy.Par
 import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Project
-import com.zerocracy.jstk.SoftException
+import com.zerocracy.Project
+import com.zerocracy.SoftException
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.in.Orders
@@ -46,7 +46,7 @@ def exec(Project project, XML xml) {
   orders.resign(job)
   claim.reply(
     new Par(
-      '@%s resigned from %s, please stop working',
+      'The user @%s resigned from %s, please stop working',
     ).say(performer, job)
   ).postTo(project)
   new ClaimOut()

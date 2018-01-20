@@ -16,7 +16,7 @@
  */
 package com.zerocracy.tk.profile;
 
-import com.zerocracy.jstk.Farm;
+import com.zerocracy.Farm;
 import com.zerocracy.pmo.Pmo;
 import com.zerocracy.tk.RsPage;
 import com.zerocracy.tk.XeXsl;

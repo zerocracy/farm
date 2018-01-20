@@ -18,8 +18,8 @@ package com.zerocracy.farm;
 
 import com.jcabi.s3.Ocket;
 import com.jcabi.s3.fake.FkOcket;
+import com.zerocracy.Item;
 import com.zerocracy.Xocument;
-import com.zerocracy.jstk.Item;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;

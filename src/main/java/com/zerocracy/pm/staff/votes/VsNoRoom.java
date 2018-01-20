@@ -17,7 +17,7 @@
 package com.zerocracy.pm.staff.votes;
 
 import com.zerocracy.Par;
-import com.zerocracy.jstk.Project;
+import com.zerocracy.Project;
 import com.zerocracy.pm.staff.Votes;
 import com.zerocracy.pmo.Agenda;
 import com.zerocracy.pmo.Awards;
@@ -82,14 +82,14 @@ public final class VsNoRoom implements Votes {
     private int threshold(final String login) throws IOException {
         final int points = new Awards(this.pmo, login).bootstrap().total();
         final int max;
-        if (points < 500) {
+        if (points < 512) {
             max = 3;
-        } else if (points < 2000) {
-            max = 5;
-        } else if (points < 4000) {
-            max = 10;
+        } else if (points < 2048) {
+            max = 8;
+        } else if (points < 4096) {
+            max = 16;
         } else {
-            max = 15;
+            max = 24;
         }
         return max;
     }

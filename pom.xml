@@ -79,11 +79,6 @@ SOFTWARE.
   </properties>
   <dependencies>
     <dependency>
-      <groupId>com.zerocracy</groupId>
-      <artifactId>jstk</artifactId>
-      <version>0.21</version>
-    </dependency>
-    <dependency>
       <groupId>org.cactoos</groupId>
       <artifactId>cactoos</artifactId>
       <version>0.28.2</version>
@@ -97,6 +92,17 @@ SOFTWARE.
       <groupId>io.sentry</groupId>
       <artifactId>sentry-log4j</artifactId>
       <version>1.5.5</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.yoti</groupId>
+      <artifactId>yoti-sdk-api</artifactId>
+      <version>1.3</version>
+    </dependency>
+    <dependency>
+      <groupId>com.yoti</groupId>
+      <artifactId>yoti-sdk-impl</artifactId>
+      <version>1.3</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
@@ -162,7 +168,7 @@ SOFTWARE.
     <dependency>
       <groupId>org.takes</groupId>
       <artifactId>takes</artifactId>
-      <version>1.8</version>
+      <version>1.8.1</version>
     </dependency>
     <dependency>
       <groupId>org.reflections</groupId>

@@ -16,13 +16,14 @@
  */
 package com.zerocracy.pm.cost;
 
+import com.zerocracy.Item;
 import com.zerocracy.Par;
+import com.zerocracy.Project;
+import com.zerocracy.SoftException;
 import com.zerocracy.Xocument;
-import com.zerocracy.jstk.Item;
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.SoftException;
-import com.zerocracy.jstk.cash.Cash;
-import com.zerocracy.jstk.cash.CashParsingException;
+import com.zerocracy.cash.Cash;
+import com.zerocracy.cash.CashParsingException;
+import com.zerocracy.pm.scope.Wbs;
 import com.zerocracy.pm.staff.Roles;
 import java.io.IOException;
 import java.util.Collection;
@@ -130,8 +131,9 @@ public final class Estimates {
                 ).say(owners.iterator().next(), job)
             );
         }
-        try (final Item wbs = this.item()) {
-            final Xocument xoc = new Xocument(wbs.path());
+        final String role = new Wbs(this.project).bootstrap().role(job);
+        try (final Item estimates = this.item()) {
+            final Xocument xoc = new Xocument(estimates.path());
             xoc.modify(
                 new Directives()
                     .xpath(String.format("/estimates/order[@id= '%s']", job))
@@ -139,6 +141,7 @@ public final class Estimates {
                     .xpath("/estimates")
                     .add("order")
                     .attr("id", job)
+                    .add("role").set(role).up()
                     .add("created").set(new DateAsText().asString()).up()
                     .add("cash")
                     .set(cash)

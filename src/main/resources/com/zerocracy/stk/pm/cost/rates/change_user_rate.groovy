@@ -14,15 +14,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.cost
+package com.zerocracy.stk.pm.cost.rates
 
 import com.jcabi.xml.XML
 import com.zerocracy.Par
 import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Farm
-import com.zerocracy.jstk.Project
-import com.zerocracy.jstk.SoftException
-import com.zerocracy.jstk.cash.Cash
+import com.zerocracy.Farm
+import com.zerocracy.Project
+import com.zerocracy.SoftException
+import com.zerocracy.cash.Cash
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.cost.Rates
@@ -37,7 +37,7 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   People people = new People(farm)
   Cash rate = new Cash.S(claim.param('rate'))
-  if (people.wallet(login).empty) {
+  if (people.wallet(login).empty && rate != Cash.ZERO) {
     throw new SoftException(
       new Par(
         '@%s doesn\'t have a payment method configured yet,',
@@ -57,7 +57,7 @@ def exec(Project project, XML xml) {
     } else {
       msg = new Par(
         'Hourly rate of @%s changed from %s to %s'
-      ).say(login, rate)
+      ).say(login, before, rate)
     }
   } else {
     msg = new Par(

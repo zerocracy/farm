@@ -17,9 +17,9 @@
 package com.zerocracy.farm.reactive;
 
 import com.jcabi.xml.XML;
+import com.zerocracy.Project;
+import com.zerocracy.Stakeholder;
 import com.zerocracy.farm.MismatchException;
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.Stakeholder;
 import java.io.IOException;
 import org.cactoos.BiFunc;
 import org.cactoos.iterable.Filtered;

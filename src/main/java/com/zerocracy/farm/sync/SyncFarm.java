@@ -17,10 +17,10 @@
 package com.zerocracy.farm.sync;
 
 import com.jcabi.aspects.Tv;
+import com.zerocracy.Farm;
+import com.zerocracy.Project;
 import com.zerocracy.farm.SmartLock;
 import com.zerocracy.farm.guts.Guts;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

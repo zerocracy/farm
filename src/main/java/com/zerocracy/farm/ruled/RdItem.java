@@ -16,9 +16,9 @@
  */
 package com.zerocracy.farm.ruled;
 
-import com.zerocracy.jstk.Item;
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.farm.fake.FkItem;
+import com.zerocracy.Item;
+import com.zerocracy.Project;
+import com.zerocracy.farm.fake.FkItem;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;

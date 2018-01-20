@@ -16,28 +16,31 @@
  */
 package com.zerocracy.tk.project;
 
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Project;
+import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
+import com.zerocracy.Farm;
+import com.zerocracy.Item;
+import com.zerocracy.Project;
 import com.zerocracy.pmo.Catalog;
-import com.zerocracy.pmo.Pmo;
 import com.zerocracy.tk.RsPage;
 import java.io.IOException;
 import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
-import org.takes.facets.forward.RsFailure;
 import org.takes.rs.xe.XeAppend;
 import org.takes.rs.xe.XeChain;
+import org.takes.rs.xe.XeDirectives;
+import org.xembly.Directives;
 
 /**
- * Project public page.
+ * Files page.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.19
+ * @since 0.20
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-public final class TkPublic implements TkRegex {
+public final class TkFiles implements TkRegex {
 
     /**
      * Farm.
@@ -48,7 +51,7 @@ public final class TkPublic implements TkRegex {
      * Ctor.
      * @param frm Farm
      */
-    public TkPublic(final Farm frm) {
+    public TkFiles(final Farm frm) {
         this.farm = frm;
     }
 
@@ -56,20 +59,19 @@ public final class TkPublic implements TkRegex {
     public Response act(final RqRegex req) throws IOException {
         return new RsPage(
             this.farm,
-            "/xsl/public.xsl",
+            "/xsl/files.xsl",
             req,
             () -> {
-                final String pid = req.matcher().group(1);
-                final Project pmo = new Pmo(this.farm);
-                final Catalog catalog = new Catalog(pmo).bootstrap();
-                if (!catalog.exists(pid)) {
-                    throw new RsFailure(
-                        String.format("Project \"%s\" not found", pid)
-                    );
+                final Project project = new RqProject(this.farm, req);
+                final Catalog catalog = new Catalog(this.farm).bootstrap();
+                final XML list;
+                try (final Item item = project.acq("_list.xml")) {
+                    list = new XMLDocument(item.path());
                 }
                 return new XeChain(
-                    new XeAppend("project", pid),
-                    new XeAppend("title", catalog.title(pid))
+                    new XeAppend("project", project.pid()),
+                    new XeAppend("title", catalog.title(project.pid())),
+                    new XeDirectives(Directives.copyOf(list.node()))
                 );
             }
         );

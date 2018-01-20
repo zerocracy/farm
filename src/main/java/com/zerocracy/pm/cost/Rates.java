@@ -16,13 +16,13 @@
  */
 package com.zerocracy.pm.cost;
 
+import com.zerocracy.Item;
 import com.zerocracy.Par;
+import com.zerocracy.Project;
+import com.zerocracy.SoftException;
 import com.zerocracy.Xocument;
-import com.zerocracy.jstk.Item;
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.SoftException;
-import com.zerocracy.jstk.cash.Cash;
-import com.zerocracy.jstk.cash.CashParsingException;
+import com.zerocracy.cash.Cash;
+import com.zerocracy.cash.CashParsingException;
 import java.io.IOException;
 import org.cactoos.time.DateAsText;
 import org.xembly.Directives;
@@ -113,10 +113,9 @@ public final class Rates {
     public Cash rate(final String login) throws IOException {
         if (!this.exists(login)) {
             throw new SoftException(
-                String.format(
-                    "Rate for @%s is not set",
-                    login
-                )
+                new Par(
+                    "Rate for @%s is not set"
+                ).say(login)
             );
         }
         try (final Item item = this.item()) {

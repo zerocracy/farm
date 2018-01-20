@@ -16,9 +16,9 @@
  */
 package com.zerocracy.pmo;
 
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.cash.Cash;
-import com.zerocracy.jstk.farm.fake.FkProject;
+import com.zerocracy.Project;
+import com.zerocracy.cash.Cash;
+import com.zerocracy.farm.fake.FkProject;
 import java.nio.file.Files;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -41,7 +41,7 @@ public final class PeopleTest {
         final String rel = "slack";
         final String alias = "U67WE3343P";
         people.link(uid, rel, alias);
-        people.link(uid, "jira", "http://www.0crat.com/jira");
+        people.link(uid, "jira", "https://www.0crat.com/jira");
         MatcherAssert.assertThat(
             people.find(rel, alias),
             Matchers.not(Matchers.emptyIterable())
@@ -99,7 +99,7 @@ public final class PeopleTest {
                 "",
                 "<people xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'",
                 " xsi:noNamespaceSchemaLocation='",
-                "https://raw.githubusercontent.com/zerocracy/datum/0.7.1",
+                "http://datum.zerocracy.com/0.7.1",
                 "/xsd/project/people.xsd'/>"
             ).getBytes()
         );

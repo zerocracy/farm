@@ -17,9 +17,9 @@
 package com.zerocracy.tk.profile;
 
 import com.jcabi.matchers.XhtmlMatchers;
+import com.zerocracy.Farm;
+import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.props.PropsFarm;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.farm.fake.FkFarm;
 import com.zerocracy.pmo.Agenda;
 import com.zerocracy.pmo.Awards;
 import com.zerocracy.pmo.Catalog;
@@ -51,7 +51,7 @@ public final class TkProfileTest {
         people.touch(uid);
         people.invite(uid, "mentor");
         new Awards(farm, uid).bootstrap().add(1, "gh:test/test#1", "reason");
-        new Agenda(farm, uid).bootstrap().add("gh:test/test#2", "#");
+        new Agenda(farm, uid).bootstrap().add("gh:test/test#2", "QA", "#");
         final String pid = "9A0007788";
         new Projects(farm, uid).bootstrap().add(pid);
         new Catalog(farm).bootstrap().add(pid, "2018/01/9A0007788/");

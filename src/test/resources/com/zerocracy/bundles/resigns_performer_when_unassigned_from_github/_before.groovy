@@ -22,9 +22,9 @@ import com.jcabi.github.Issue
 import com.jcabi.github.Repos
 import com.jcabi.xml.XML
 import com.zerocracy.entry.ExtGithub
-import com.zerocracy.jstk.Farm
-import com.zerocracy.jstk.Project
-import com.zerocracy.jstk.farm.fake.FkFarm
+import com.zerocracy.Farm
+import com.zerocracy.Project
+import com.zerocracy.farm.fake.FkFarm
 import com.zerocracy.pmo.People
 import com.zerocracy.radars.github.RbOnUnassign
 import javax.json.Json

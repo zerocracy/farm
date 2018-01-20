@@ -31,7 +31,7 @@ SOFTWARE.
     <div class="center">
       <p>
         <a href="/">
-          <img src="http://www.zerocracy.com/logo.svg" style="width:128px;height:128px;"/>
+          <img src="/svg/logo.svg" style="width:128px;height:128px;"/>
         </a>
       </p>
       <p>
@@ -65,6 +65,15 @@ SOFTWARE.
         </xsl:call-template>
       </p>
       <p>
+        <xsl:if test="identity">
+          <a href="/u/{identity/login}">
+            <span title="GitHub user currently logged in">
+              <xsl:text>@</xsl:text>
+              <xsl:value-of select="identity/login"/>
+            </span>
+          </a>
+          <xsl:text> &#xB7; </xsl:text>
+        </xsl:if>
         <a href="http://datum.zerocracy.com/pages/policy.html">
           <xsl:text>Policy</xsl:text>
         </a>
@@ -74,13 +83,6 @@ SOFTWARE.
         </a>
         <xsl:text> &#xB7; </xsl:text>
         <xsl:if test="identity">
-          <a href="/u/{identity/login}">
-            <span title="GitHub user currently logged in">
-              <xsl:text>@</xsl:text>
-              <xsl:value-of select="identity/login"/>
-            </span>
-          </a>
-          <xsl:text> &#xB7; </xsl:text>
           <a href="{links/link[@rel='takes:logout']/@href}" title="Log out">
             <xsl:text>Exit</xsl:text>
           </a>

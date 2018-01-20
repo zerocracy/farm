@@ -17,7 +17,7 @@
 package com.zerocracy.radars.telegram;
 
 import com.jcabi.xml.XMLDocument;
-import com.zerocracy.jstk.Farm;
+import com.zerocracy.Farm;
 import com.zerocracy.pmo.Pmo;
 import com.zerocracy.radars.ClaimOnQuestion;
 import com.zerocracy.radars.Question;
@@ -50,6 +50,10 @@ public final class ReProfile implements Reaction {
             .claim()
             .token(new TmToken(update))
             .author(new TmPerson(farm, update).uid())
+            .param("update_id", update.getUpdateId())
+            .param("chat_id", update.getMessage().getChatId())
+            .param("message_id", update.getMessage().getMessageId())
+            .param("date", update.getMessage().getDate())
             .postTo(new Pmo(farm));
         return question.matches();
     }

@@ -16,8 +16,8 @@
  */
 package com.zerocracy.farm.strict;
 
-import com.zerocracy.jstk.Item;
-import com.zerocracy.jstk.Project;
+import com.zerocracy.Item;
+import com.zerocracy.Project;
 import java.io.IOException;
 import java.util.regex.Pattern;
 import lombok.EqualsAndHashCode;
@@ -39,6 +39,7 @@ final class StrictProject implements Project {
     private static final Pattern PMO = Pattern.compile(
         String.join(
             "|",
+            "(_[a-z]+\\.xml)",
             "(test\\.txt)",
             "(claims\\.xml)",
             "(catalog\\.xml)",
@@ -57,11 +58,14 @@ final class StrictProject implements Project {
     private static final Pattern PROJECT = Pattern.compile(
         String.join(
             "|",
+            "(_[a-z]+\\.xml)",
             "(guts\\.xml)",
             "(claims\\.xml)",
             "(roles\\.xml)",
             "(ledger\\.xml)",
             "(rates\\.xml)",
+            "(vesting\\.xml)",
+            "(equity\\.xml)",
             "(elections\\.xml)",
             "(estimates\\.xml)",
             "(budget\\.xml)",

@@ -19,21 +19,21 @@ package com.zerocracy.stk.pmo
 import com.jcabi.xml.XML
 import com.zerocracy.Par
 import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Project
+import com.zerocracy.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Catalog
 
-def exec(Project project, XML xml) {
-  new Assume(project, xml).isPmo()
-  new Assume(project, xml).type('Set parent project')
-  new Assume(project, xml).roles('PO')
+def exec(Project pmo, XML xml) {
+  new Assume(pmo, xml).isPmo()
+  new Assume(pmo, xml).type('Set parent project')
+  new Assume(pmo, xml).roles('PO')
   ClaimIn claim = new ClaimIn(xml)
   String child = claim.param('child')
   String parent = claim.param('parent')
-  new Catalog(project).parent(child, parent)
+  new Catalog(pmo).parent(child, parent)
   claim.reply(
     new Par(
       'Done, the project %s is a child of %s'
     ).say(child, parent)
-  ).postTo(project)
+  ).postTo(pmo)
 }

@@ -17,7 +17,7 @@
 package com.zerocracy.radars.slack;
 
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
-import com.zerocracy.jstk.Farm;
+import com.zerocracy.Farm;
 import com.zerocracy.pmo.GoodPeople;
 import com.zerocracy.pmo.People;
 import java.io.IOException;

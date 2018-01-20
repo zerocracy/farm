@@ -32,17 +32,17 @@ import com.paypal.svcs.types.ap.Receiver;
 import com.paypal.svcs.types.ap.ReceiverList;
 import com.paypal.svcs.types.common.ErrorData;
 import com.paypal.svcs.types.common.RequestEnvelope;
+import com.zerocracy.Farm;
+import com.zerocracy.cash.Cash;
+import com.zerocracy.cash.CashParsingException;
 import com.zerocracy.farm.props.Props;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.cash.Cash;
-import com.zerocracy.jstk.cash.CashParsingException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import org.cactoos.map.MapEntry;
-import org.cactoos.map.MapOf;
+import org.cactoos.map.SolidMap;
 
 /**
  * Paypal payment method.
@@ -79,7 +79,7 @@ final class Paypal implements Bank {
         final String details) throws IOException {
         final Props props = new Props(this.farm);
         final AdaptivePaymentsService service = new AdaptivePaymentsService(
-            new MapOf<String, String>(
+            new SolidMap<String, String>(
                 new MapEntry<>("mode", props.get("//paypal/mode")),
                 new MapEntry<>(
                     "acct1.UserName",

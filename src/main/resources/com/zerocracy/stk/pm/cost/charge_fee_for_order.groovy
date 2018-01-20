@@ -19,9 +19,9 @@ package com.zerocracy.stk.pm.cost
 import com.jcabi.xml.XML
 import com.zerocracy.Par
 import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Farm
-import com.zerocracy.jstk.Project
-import com.zerocracy.jstk.cash.Cash
+import com.zerocracy.Farm
+import com.zerocracy.Project
+import com.zerocracy.cash.Cash
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.cost.Ledger
@@ -55,8 +55,8 @@ def exec(Project project, XML xml) {
       .param(
         'message',
         new Par(
-          'Management fee %s has been deducted, see §23'
-        ).say(fee)
+          'Management fee %s has been deducted for %s, see §23'
+        ).say(fee, job)
       )
       .postTo(project)
   }

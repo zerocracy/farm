@@ -17,8 +17,8 @@
 package com.zerocracy.bundles.collect_speed
 
 import com.jcabi.xml.XML
-import com.zerocracy.jstk.Farm
-import com.zerocracy.jstk.Project
+import com.zerocracy.Farm
+import com.zerocracy.Project
 import com.zerocracy.pmo.Speed
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers

@@ -16,10 +16,10 @@
  */
 package com.zerocracy.pmo;
 
+import com.zerocracy.Farm;
+import com.zerocracy.Item;
+import com.zerocracy.Project;
 import com.zerocracy.Xocument;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Item;
-import com.zerocracy.jstk.Project;
 import java.io.IOException;
 import org.cactoos.collection.Mapped;
 import org.cactoos.iterable.ItemAt;
