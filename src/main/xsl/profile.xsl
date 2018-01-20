@@ -22,7 +22,7 @@ SOFTWARE.
   <xsl:template match="page" mode="head">
     <title>
       <xsl:text>@</xsl:text>
-      <xsl:value-of select="identity/login"/>
+      <xsl:value-of select="owner"/>
     </title>
   </xsl:template>
   <xsl:template match="page" mode="inner">
@@ -80,12 +80,22 @@ SOFTWARE.
           </span>
         </xsl:when>
         <xsl:otherwise>
-          <a href="/u/{/page/owner}/awards">
+          <xsl:variable name="total">
             <xsl:if test=". &gt;= 0">
               <xsl:text>+</xsl:text>
             </xsl:if>
             <xsl:value-of select="."/>
-          </a>
+          </xsl:variable>
+          <xsl:choose>
+            <xsl:when test="/page/owner=/page/identity/login">
+              <a href="/u/{/page/owner}/awards">
+                <xsl:value-of select="$total"/>
+              </a>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="$total"/>
+            </xsl:otherwise>
+          </xsl:choose>
         </xsl:otherwise>
       </xsl:choose>
       <xsl:text>.</xsl:text>
@@ -101,12 +111,38 @@ SOFTWARE.
           </span>
         </xsl:when>
         <xsl:otherwise>
-          <a href="/u/{/page/owner}/agenda">
-            <xsl:value-of select="."/>
-          </a>
+          <xsl:choose>
+            <xsl:when test="/page/owner=/page/identity/login">
+              <a href="/u/{/page/owner}/agenda">
+                <xsl:value-of select="."/>
+              </a>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="."/>
+            </xsl:otherwise>
+          </xsl:choose>
         </xsl:otherwise>
       </xsl:choose>
-      <xsl:text>.</xsl:text>
+      <xsl:text> (max </xsl:text>
+      <a href="http://datum.zerocracy.com/pages/policy.html#3">
+        <xsl:text>allowed</xsl:text>
+      </a>
+      <xsl:text>: </xsl:text>
+      <xsl:choose>
+        <xsl:when test="/page/awards &lt; 512">
+          <xsl:text>3</xsl:text>
+        </xsl:when>
+        <xsl:when test="/page/awards &lt; 2048">
+          <xsl:text>8</xsl:text>
+        </xsl:when>
+        <xsl:when test="/page/awards &lt; 4096">
+          <xsl:text>16</xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:text>24</xsl:text>
+        </xsl:otherwise>
+      </xsl:choose>
+      <xsl:text>).</xsl:text>
     </p>
   </xsl:template>
   <xsl:template match="details">
@@ -126,6 +162,7 @@ SOFTWARE.
         <xsl:text>.</xsl:text>
       </p>
     </xsl:if>
+    <xsl:apply-templates select="identification"/>
     <xsl:apply-templates select="links"/>
     <xsl:apply-templates select="wallet"/>
     <xsl:apply-templates select="projects"/>
@@ -216,6 +253,28 @@ SOFTWARE.
   <xsl:template match="links[not(link)]">
     <p>
       <xsl:text>It's weird, no links?!</xsl:text>
+    </p>
+  </xsl:template>
+  <xsl:template match="identification[.='']">
+    <p>
+      <xsl:text>We don't really know </xsl:text>
+      <span style="color:darkred;">
+        <xsl:text>who you are</xsl:text>
+      </span>
+      <xsl:text>; please, </xsl:text>
+      <a href="https://www.yoti.com/connect/90e1d6cf-d036-4a80-980b-05ac66d56b2b">
+        <xsl:text>identify</xsl:text>
+      </a>
+      <xsl:text> yourself.</xsl:text>
+    </p>
+  </xsl:template>
+  <xsl:template match="identification[.!='']">
+    <p>
+      <xsl:text>We know you as: </xsl:text>
+      <code>
+        <xsl:value-of select="."/>
+      </code>
+      <xsl:text>.</xsl:text>
     </p>
   </xsl:template>
 </xsl:stylesheet>

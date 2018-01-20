@@ -45,6 +45,7 @@ public final class VsNoRoomTest {
         for (int num = 1; num < total; ++num) {
             agenda.add(
                 String.format("gh:test/test#%d", num),
+                "QA",
                 String.format("https://test/%d", num)
             );
         }

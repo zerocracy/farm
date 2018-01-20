@@ -5,14 +5,14 @@
         <title>0crat: error</title>
         <meta name="description" content="Internal application error"/>
         <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-        <link rel="shortcut icon" href="http://www.zerocracy.com/logo.png"/>
+        <link rel="shortcut icon" href="/png/logo.png"/>
         <link rel="stylesheet" href="/css/main.css"/>
         <title>oops...</title>
     </head>
     <body>
         <p>
             <a href="/">
-                <img src="http://www.zerocracy.com/logo.svg" class="logo" />
+                <img src="/svg/logo.svg" class="logo" />
             </a>
         </p>
         <h1>Internal application error</h1>

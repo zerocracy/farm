@@ -18,8 +18,8 @@ package com.zerocracy.farm;
 
 import com.zerocracy.Farm;
 import com.zerocracy.Stakeholder;
+import com.zerocracy.entry.ExtFarm;
 import com.zerocracy.farm.footprint.FtFarm;
-import com.zerocracy.farm.props.ExtFarm;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.farm.reactive.RvFarm;
 import com.zerocracy.farm.reactive.StkGroovy;

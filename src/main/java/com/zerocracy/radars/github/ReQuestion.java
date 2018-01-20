@@ -57,6 +57,9 @@ public final class ReQuestion implements Response {
             .token(new TokenOfComment(comment))
             .author(new Author(farm, comment.author()).login())
             .param("job", new Job(comment.issue()))
+            .param("repo", comment.issue().repo().coordinates())
+            .param("issue", comment.issue().number())
+            .param("comment", comment.number())
             .postTo(project);
         return question.matches();
     }

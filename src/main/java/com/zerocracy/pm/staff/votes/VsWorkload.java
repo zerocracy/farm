@@ -27,7 +27,7 @@ import org.cactoos.collection.Filtered;
 import org.cactoos.iterable.LengthOf;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.map.MapEntry;
-import org.cactoos.map.MapOf;
+import org.cactoos.map.SolidMap;
 import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.scalar.SolidScalar;
 
@@ -54,7 +54,7 @@ public final class VsWorkload implements Votes {
     public VsWorkload(final Project pmo, final Collection<String> others) {
         this.jobs = new IoCheckedScalar<>(
             new SolidScalar<>(
-                () -> new MapOf<>(
+                () -> new SolidMap<>(
                     new Mapped<>(
                         login -> new MapEntry<>(
                             login,

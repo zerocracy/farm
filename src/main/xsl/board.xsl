@@ -21,7 +21,7 @@ SOFTWARE.
   <xsl:include href="/xsl/inner-layout.xsl"/>
   <xsl:template match="page" mode="head">
     <title>
-      <xsl:text>board</xsl:text>
+      <xsl:text>Board</xsl:text>
     </title>
   </xsl:template>
   <xsl:template match="page" mode="inner">

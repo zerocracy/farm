@@ -22,8 +22,8 @@ SOFTWARE.
   <xsl:template match="page" mode="head">
     <title>
       <xsl:value-of select="artifact"/>
-      <xsl:text> @ </xsl:text>
-      <xsl:value-of select="artifact"/>
+      <xsl:text> @</xsl:text>
+      <xsl:value-of select="project"/>
     </title>
   </xsl:template>
   <xsl:template match="page" mode="inner">
@@ -50,7 +50,7 @@ SOFTWARE.
     <xsl:value-of select="xml" disable-output-escaping="yes"/>
     <p>
       <xsl:text>You can download this artifact as </xsl:text>
-      <a href="/xml/{project}?a={artifact}">
+      <a href="/xml/{project}?file={file}">
         <xsl:text>XML</xsl:text>
       </a>
       <xsl:text>.</xsl:text>

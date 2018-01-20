@@ -14,29 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.in.orders
 
-import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
-import com.zerocracy.Project
-import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.staff.Roles
-import java.security.SecureRandom
-
-def exec(Project project, XML xml) {
-  new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Close issue')
-  def claim = new ClaimIn(xml)
-  def qa = new Roles(project).bootstrap().findByRole('QA')
-  if (qa.empty) {
-    claim.copy()
-      .type('Finish order')
-      .param('reason', 'GitHub issue was closed, order is finished.')
-      .postTo(project)
-  } else {
-    claim.copy()
-      .type('Assign QA')
-      .param('assignee', qa.size() > 1 ? qa[new SecureRandom().nextInt(qa.size() - 1)] : qa.first())
-      .postTo(project)
-  }
-}
+/**
+ * Ranks tests.
+ *
+ * @author Kirill (g4s8.public@gmail.com)
+ * @version $Id$
+ * @since 0.18.8
+ */
+package com.zerocracy.pm.staff.ranks;

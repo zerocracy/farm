@@ -25,6 +25,7 @@ import com.zerocracy.pm.ClaimOut;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.concurrent.TimeUnit;
 import javax.json.JsonObject;
 
 /**
@@ -50,12 +51,14 @@ public final class RbOnClose implements Rebound {
         } else {
             final Project project = new GhProject(farm, issue.repo());
             new ClaimOut()
-                .type("Close issue")
+                .type("Close job")
                 .token(new TokenOfIssue(issue))
                 .param("job", new Job(issue))
                 .postTo(project);
             new ClaimOut()
                 .type("Remove job from WBS")
+                // @checkstyle MagicNumber (1 line)
+                .until(TimeUnit.MINUTES.toSeconds(10L))
                 .token(new TokenOfIssue(issue))
                 .param("reason", "GitHub issue was closed, job must go off.")
                 .param("job", new Job(issue))

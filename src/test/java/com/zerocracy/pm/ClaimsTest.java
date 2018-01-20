@@ -78,7 +78,7 @@ public final class ClaimsTest {
                         "<claims",
                         "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'",
                         // @checkstyle LineLength (1 line)
-                        "xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/zerocracy/datum/0.27/xsd/pm/claims.xsd'",
+                        "xsi:noNamespaceSchemaLocation='http://datum.zerocracy.com/0.27/xsd/pm/claims.xsd'",
                         "version='0.1' updated='2017-03-27T11:18:09.228Z'/>"
                     ),
                     item.path()

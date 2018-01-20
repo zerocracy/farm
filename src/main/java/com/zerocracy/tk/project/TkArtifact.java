@@ -65,17 +65,15 @@ public final class TkArtifact implements TkRegex {
                 ).single("a");
                 final Catalog catalog = new Catalog(this.farm).bootstrap();
                 final String pid = project.pid();
+                final String file = String.format(
+                    "%s.xml", artifact.replaceAll("^.+/", "")
+                );
                 return new XeChain(
                     new XeAppend("project", pid),
                     new XeAppend("title", catalog.title(pid)),
                     new XeAppend("artifact", artifact),
-                    new XeXsl(
-                        project,
-                        String.format(
-                            "%s.xml", artifact.replaceAll("^.+/", "")
-                        ),
-                        String.format("%s.xsl", artifact)
-                    )
+                    new XeAppend("file", file),
+                    new XeXsl(project, file, String.format("%s.xsl", artifact))
                 );
             }
         );

@@ -113,10 +113,9 @@ public final class Rates {
     public Cash rate(final String login) throws IOException {
         if (!this.exists(login)) {
             throw new SoftException(
-                String.format(
-                    "Rate for @%s is not set",
-                    login
-                )
+                new Par(
+                    "Rate for @%s is not set"
+                ).say(login)
             );
         }
         try (final Item item = this.item()) {

@@ -19,6 +19,7 @@ package com.zerocracy.tk.project;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.farm.props.Props;
+import com.zerocracy.pm.cost.Equity;
 import com.zerocracy.pm.cost.Estimates;
 import com.zerocracy.pm.cost.Ledger;
 import com.zerocracy.pm.cost.Rates;
@@ -71,7 +72,6 @@ public final class TkProject implements TkRegex {
                 final String login = new RqUser(this.farm, req).value();
                 final Catalog catalog = new Catalog(this.farm).bootstrap();
                 final String user = new RqUser(this.farm, req).value();
-                final Roles roles = new Roles(project).bootstrap();
                 final String pid = project.pid();
                 return new XeChain(
                     new XeAppend("project", pid),
@@ -79,6 +79,7 @@ public final class TkProject implements TkRegex {
                     new XeWhen(
                         !"PMO".equals(pid),
                         () -> {
+                            final Roles roles = new Roles(project).bootstrap();
                             final Rates rates = new Rates(project).bootstrap();
                             return new XeChain(
                                 new XeAppend(
@@ -109,6 +110,11 @@ public final class TkProject implements TkRegex {
                                         "rate",
                                         rates.rate(user).toString()
                                     )
+                                ),
+                                new XeAppend(
+                                    "ownership",
+                                    new Equity(project).bootstrap()
+                                        .ownership(user)
                                 ),
                                 new XeAppend(
                                     "roles",

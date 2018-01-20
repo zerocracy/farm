@@ -54,7 +54,7 @@ def exec(Project project, XML xml) {
       'message',
       new Par(
         '%s: %+d point(s) just awarded to @%s,',
-        'total is [%+d](http://www.0crat.com/u/%s)',
+        'total is [%+d](https://www.0crat.com/u/%s)',
       ).say(reason, points, login, awards.total(), login)
     )
     .postTo(project)

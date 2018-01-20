@@ -40,4 +40,13 @@ public class CashParsingException extends IOException {
         super(cause);
     }
 
+    /**
+     * Ctor.
+     * @param cause Cause
+     * @param thr Original exception
+     */
+    public CashParsingException(final String cause, final Throwable thr) {
+        super(cause, thr);
+    }
+
 }
