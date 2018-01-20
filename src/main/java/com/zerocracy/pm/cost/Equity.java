@@ -20,8 +20,8 @@ import com.zerocracy.Item;
 import com.zerocracy.Project;
 import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
-import com.zerocracy.cash.CashParsingException;
 import java.io.IOException;
+import java.util.Iterator;
 import org.xembly.Directives;
 
 /**
@@ -52,10 +52,41 @@ public final class Equity {
      * @throws IOException If fails
      */
     public Equity bootstrap() throws IOException {
-        try (final Item wbs = this.item()) {
-            new Xocument(wbs.path()).bootstrap("pm/cost/equity");
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).bootstrap("pm/cost/equity");
         }
         return this;
+    }
+
+    /**
+     * Get ownership of the user.
+     * @param login The GitHub login
+     * @return Ownership of the user
+     * @throws IOException If fails
+     */
+    public String ownership(final String login) throws IOException {
+        try (final Item item = this.item()) {
+            final Iterator<String> texts = new Xocument(item.path()).xpath(
+                String.format(
+                    "/equity/owners/owner[@id='%s']/text()", login
+                )
+            ).iterator();
+            final String text;
+            if (texts.hasNext()) {
+                final double share = Double.parseDouble(texts.next());
+                final double mul = 10000.0d;
+                final Cash value = this.cap().mul((long) (share * mul))
+                    .div((long) (this.shares() * mul));
+                text = String.format(
+                    "%.2f shares = %s/%.2f%% of %s",
+                    // @checkstyle MagicNumber (1 line)
+                    share, value, share * 100.0d / this.shares(), this.cap()
+                );
+            } else {
+                text = "";
+            }
+            return text;
+        }
     }
 
     /**
@@ -66,18 +97,8 @@ public final class Equity {
      */
     public void add(final String login, final Cash value) throws IOException {
         try (final Item item = this.item()) {
-            final Cash cap = new Cash.S(
-                new Xocument(item).xpath(
-                    "/equity/cap/text()"
-                ).get(0)
-            );
-            final double shares = Double.parseDouble(
-                new Xocument(item).xpath(
-                    "/equity/shares/text()"
-                ).get(0)
-            );
-            final double inc = value.decimal().doubleValue() * shares
-                / cap.decimal().doubleValue();
+            final double inc = value.decimal().doubleValue() * this.shares()
+                / this.cap().decimal().doubleValue();
             new Xocument(item).modify(
                 new Directives()
                     .xpath(
@@ -93,8 +114,36 @@ public final class Equity {
                     )
                     .xset(String.format(". + %.4f", inc))
             );
-        } catch (final CashParsingException ex) {
-            throw new IllegalStateException(ex);
+        }
+    }
+
+    /**
+     * Cap.
+     * @return Cap
+     * @throws IOException If fails
+     */
+    public Cash cap() throws IOException {
+        try (final Item item = this.item()) {
+            return new Cash.S(
+                new Xocument(item).xpath(
+                    "/equity/cap/text()"
+                ).get(0)
+            );
+        }
+    }
+
+    /**
+     * Shares total.
+     * @return Cap
+     * @throws IOException If fails
+     */
+    public double shares() throws IOException {
+        try (final Item item = this.item()) {
+            return Double.parseDouble(
+                new Xocument(item).xpath(
+                    "/equity/shares/text()"
+                ).get(0)
+            );
         }
     }
 

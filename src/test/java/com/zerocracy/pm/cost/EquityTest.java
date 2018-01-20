@@ -25,6 +25,7 @@ import org.cactoos.io.LengthOf;
 import org.cactoos.io.TeeInput;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
@@ -60,7 +61,8 @@ public final class EquityTest {
                 )
             ).intValue();
         }
-        equity.add("yegor256", new Cash.S("$500"));
+        final String login = "yegor256";
+        equity.add(login, new Cash.S("$500"));
         try (final Item item = pkt.acq("equity.xml")) {
             MatcherAssert.assertThat(
                 XhtmlMatchers.xhtml(new TextOf(item.path()).asString()),
@@ -68,7 +70,20 @@ public final class EquityTest {
                     "/equity/owners/owner[@id='yegor256' and .= '162.5']"
                 )
             );
+            MatcherAssert.assertThat(
+                equity.ownership(login),
+                Matchers.equalTo("162.50 shares = $1300.00/0.33% of $400000.00")
+            );
         }
+    }
+
+    @Test
+    public void worksWithEmptyEquity() throws Exception {
+        final Equity equity = new Equity(new FkProject()).bootstrap();
+        MatcherAssert.assertThat(
+            equity.ownership("jeff"),
+            Matchers.equalTo("")
+        );
     }
 
 }

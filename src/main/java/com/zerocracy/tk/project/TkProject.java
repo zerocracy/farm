@@ -19,6 +19,7 @@ package com.zerocracy.tk.project;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.farm.props.Props;
+import com.zerocracy.pm.cost.Equity;
 import com.zerocracy.pm.cost.Estimates;
 import com.zerocracy.pm.cost.Ledger;
 import com.zerocracy.pm.cost.Rates;
@@ -109,6 +110,11 @@ public final class TkProject implements TkRegex {
                                         "rate",
                                         rates.rate(user).toString()
                                     )
+                                ),
+                                new XeAppend(
+                                    "ownership",
+                                    new Equity(project).bootstrap()
+                                        .ownership(user)
                                 ),
                                 new XeAppend(
                                     "roles",

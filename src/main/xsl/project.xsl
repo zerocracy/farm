@@ -117,6 +117,15 @@ SOFTWARE.
       </xsl:choose>
       <xsl:text>.</xsl:text>
     </p>
+    <xsl:if test="ownership != ''">
+      <p>
+        <xsl:text>You own: </xsl:text>
+        <code>
+          <xsl:value-of select="ownership"/>
+        </code>
+        <xsl:text>.</xsl:text>
+      </p>
+    </xsl:if>
     <xsl:apply-templates select="architects"/>
     <xsl:apply-templates select="project_links"/>
     <xsl:apply-templates select="." mode="artifacts"/>
