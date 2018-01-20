@@ -62,7 +62,7 @@ public final class TkUpload implements TkRegex {
         final String body = new RqPrint(
             new RqMtSmart(new RqMtBase(req)).single("file")
         ).printBody();
-        final String artifact = new RqFormSmart(req).single("name");
+        final String artifact = new RqFormSmart(req).single("artifact");
         try (final Item item = project.acq(artifact)) {
             new LengthOf(new TeeInput(body, item.path())).intValue();
         }

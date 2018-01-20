@@ -22,7 +22,7 @@ SOFTWARE.
   <xsl:template match="page" mode="head">
     <title>
       <xsl:text>Files @</xsl:text>
-      <xsl:value-of select="artifact"/>
+      <xsl:value-of select="project"/>
     </title>
   </xsl:template>
   <xsl:template match="page" mode="inner">
@@ -49,7 +49,7 @@ SOFTWARE.
           <th>
             <xsl:text>File</xsl:text>
           </th>
-          <th>
+          <th style="text-align:right;">
             <xsl:text>Size</xsl:text>
           </th>
           <th>
@@ -65,7 +65,11 @@ SOFTWARE.
   <xsl:template match="item">
     <tr>
       <td>
-        <xsl:value-of select="name"/>
+        <a href="/a/{/page/project}?a={name}">
+          <code>
+            <xsl:value-of select="name"/>
+          </code>
+        </a>
       </td>
       <td style="text-align:right;">
         <xsl:value-of select="size"/>
