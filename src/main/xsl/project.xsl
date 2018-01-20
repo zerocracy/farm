@@ -227,6 +227,14 @@ SOFTWARE.
       <a href="/a/{project}?a=pm/cost/estimates">
         <xsl:text>Estimates</xsl:text>
       </a>
+      <xsl:text>, </xsl:text>
+      <a href="/a/{project}?a=pm/cost/vesting">
+        <xsl:text>Vesting</xsl:text>
+      </a>
+      <xsl:text>, </xsl:text>
+      <a href="/a/{project}?a=pm/cost/equity">
+        <xsl:text>Equity</xsl:text>
+      </a>
       <xsl:text>.</xsl:text>
     </p>
     <p>

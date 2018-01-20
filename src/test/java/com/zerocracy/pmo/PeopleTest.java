@@ -99,7 +99,7 @@ public final class PeopleTest {
                 "",
                 "<people xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'",
                 " xsi:noNamespaceSchemaLocation='",
-                "https://raw.githubusercontent.com/zerocracy/datum/0.7.1",
+                "http://datum.zerocracy.com/0.7.1",
                 "/xsd/project/people.xsd'/>"
             ).getBytes()
         );

@@ -24,17 +24,15 @@ import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.cash.CashParsingException;
 import java.io.IOException;
-import org.cactoos.time.DateAsText;
-import org.xembly.Directives;
 
 /**
- * Rates.
+ * Vesting rates.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.19
+ * @since 0.20
  */
-public final class Rates {
+public final class Vesting {
 
     /**
      * Project.
@@ -45,7 +43,7 @@ public final class Rates {
      * Ctor.
      * @param pkt Project
      */
-    public Rates(final Project pkt) {
+    public Vesting(final Project pkt) {
         this.project = pkt;
     }
 
@@ -54,54 +52,11 @@ public final class Rates {
      * @return Itself
      * @throws IOException If fails
      */
-    public Rates bootstrap() throws IOException {
+    public Vesting bootstrap() throws IOException {
         try (final Item wbs = this.item()) {
-            new Xocument(wbs.path()).bootstrap("pm/cost/rates");
+            new Xocument(wbs.path()).bootstrap("pm/cost/vesting");
         }
         return this;
-    }
-
-    /**
-     * Set rate of a person.
-     * @param login User GitHub login
-     * @param rate His rate
-     * @throws IOException If fails
-     */
-    public void set(final String login, final Cash rate) throws IOException {
-        if (rate.compareTo(new Cash.S("$300")) > 0) {
-            throw new SoftException(
-                new Par(
-                    "This is too high (%s), we do not work with rates",
-                    "higher than $300"
-                ).say(rate)
-            );
-        }
-        if (!rate.equals(Cash.ZERO) && rate.compareTo(new Cash.S("$10")) < 0) {
-            throw new SoftException(
-                new Par(
-                    "This is too low (%s), we do not work with rates",
-                    "lower than $10"
-                ).say(rate)
-            );
-        }
-        try (final Item item = this.item()) {
-            new Xocument(item).modify(
-                new Directives()
-                    .xpath(String.format("/rates/person[@id='%s']", login))
-                    .remove()
-            );
-            if (!rate.equals(Cash.ZERO)) {
-                new Xocument(item).modify(
-                    new Directives()
-                        .xpath("/rates")
-                        .add("person")
-                        .attr("id", login)
-                        .add("created").set(new DateAsText().asString()).up()
-                        .add("rate")
-                        .set(rate)
-                );
-            }
-        }
     }
 
     /**
@@ -114,14 +69,17 @@ public final class Rates {
         if (!this.exists(login)) {
             throw new SoftException(
                 new Par(
-                    "Rate for @%s is not set"
+                    "Vesting rate for @%s is not set"
                 ).say(login)
             );
         }
         try (final Item item = this.item()) {
             return new Cash.S(
                 new Xocument(item).xpath(
-                    String.format("/rates/person[@id='%s']/rate/text()", login)
+                    String.format(
+                        "/vesting/person[@id='%s']/rate/text()",
+                        login
+                    )
                 ).get(0)
             );
         } catch (final CashParsingException ex) {
@@ -138,7 +96,7 @@ public final class Rates {
     public boolean exists(final String login) throws IOException {
         try (final Item item = this.item()) {
             return !new Xocument(item).nodes(
-                String.format("/rates/person[@id='%s']/rate", login)
+                String.format("/vesting/person[@id='%s']/rate", login)
             ).isEmpty();
         }
     }
@@ -149,6 +107,6 @@ public final class Rates {
      * @throws IOException If fails
      */
     private Item item() throws IOException {
-        return this.project.acq("rates.xml");
+        return this.project.acq("vesting.xml");
     }
 }
