@@ -31,9 +31,15 @@ def exec(Project project, XML xml) {
     Matchers.hasItem(project.pid())
   )
   Farm farm = binding.variables.farm
+  def catalog = new Catalog(farm).bootstrap()
   MatcherAssert.assertThat(
     'Project title should be set from channel prop',
-    new Catalog(farm).title(project.pid()),
+    catalog.title(project.pid()),
     Matchers.equalTo('Test')
+  )
+  MatcherAssert.assertThat(
+    'Slack links is invalid',
+    catalog.links(project.pid(),'slack'),
+    Matchers.contains(Matchers.equalTo(project.pid()))
   )
 }
