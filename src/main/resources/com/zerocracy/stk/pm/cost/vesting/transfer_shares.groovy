@@ -49,6 +49,15 @@ def exec(Project project, XML xml) {
     Cash reward = (vesting.rate(login).mul(minutes) / 60).add(cash.mul(-1L))
     new Equity(project).bootstrap().add(login, reward)
     new ClaimOut()
+      .type('Equity transferred')
+      .param('login', login)
+      .param('job', job)
+      .param('reward', reward)
+      .param('vesting_rate', vesting.rate(login))
+      .param('minutes', minutes)
+      .param('cash', cash)
+      .postTo(project)
+    new ClaimOut()
       .type('Notify user')
       .param('login', login)
       .param(
@@ -58,14 +67,14 @@ def exec(Project project, XML xml) {
         ).say(reward, project.pid(), job)
       )
       .postTo(project)
-      new ClaimOut()
-        .type('Notify project')
-        .param(
-          'message',
-          new Par(
-            'We just transferred %s of shares for %s to @%s'
-          ).say(reward, job, login)
-        )
-        .postTo(project)
+    new ClaimOut()
+      .type('Notify project')
+      .param(
+        'message',
+        new Par(
+          'We just transferred %s of shares for %s to @%s'
+        ).say(reward, job, login)
+      )
+      .postTo(project)
   }
 }
