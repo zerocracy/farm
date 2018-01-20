@@ -26,6 +26,13 @@ SOFTWARE.
     </title>
   </xsl:template>
   <xsl:template match="page" mode="inner">
+    <p>
+      <xsl:text>ATTENTION</xsl:text>
+      <xsl:text>:</xsl:text>
+      <xsl:text>Be very careful will this form!</xsl:text>
+      <xsl:text> You can easily break things if you don't know what you are doing.</xsl:text>
+      <xsl:text> The best way to modify a file is to download it first, make changes locally and upload back.</xsl:text>
+    </p>
     <form action="/upload/{project}" method="post" autocomplete="off" enctype="multipart/form-data">
       <label>
         <xsl:text>Upload file: </xsl:text>

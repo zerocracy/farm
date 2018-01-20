@@ -16,11 +16,14 @@
  */
 package com.zerocracy.tk.project;
 
+import com.jcabi.xml.StrictXML;
+import com.jcabi.xml.XMLDocument;
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Par;
 import com.zerocracy.Project;
 import java.io.IOException;
+import java.util.logging.Level;
 import org.cactoos.io.LengthOf;
 import org.cactoos.io.TeeInput;
 import org.takes.Response;
@@ -57,14 +60,27 @@ public final class TkUpload implements TkRegex {
 
     @Override
     public Response act(final RqRegex req) throws IOException {
-        final Project project = new RqProject(this.farm, req);
         final RqMtSmart form = new RqMtSmart(new RqMtBase(req));
-        final String body =
-            new RqPrint(form.single("file")).printBody().trim();
         final String artifact =
             new RqPrint(form.single("artifact")).printBody().trim();
+        if (!artifact.matches("^[a-z]+\\.xml$")) {
+            throw new RsForward(
+                new RsFlash(
+                    String.format("Invalid artifact name \"%s\"", artifact),
+                    Level.SEVERE
+                )
+            );
+        }
+        final Project project = new RqProject(this.farm, req);
+        final String body =
+            new RqPrint(form.single("file")).printBody().trim();
         try (final Item item = project.acq(artifact)) {
-            new LengthOf(new TeeInput(body, item.path())).intValue();
+            new LengthOf(
+                new TeeInput(
+                    new StrictXML(new XMLDocument(body)).toString(),
+                    item.path()
+                )
+            ).intValue();
         }
         return new RsForward(
             new RsFlash(
@@ -74,7 +90,7 @@ public final class TkUpload implements TkRegex {
                     ).say(artifact, project.pid(), body.length())
                 ).toString()
             ),
-            String.format("/p/%s", project.pid())
+            String.format("/files/%s", project.pid())
         );
     }
 
