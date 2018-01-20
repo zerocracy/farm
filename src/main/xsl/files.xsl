@@ -27,9 +27,9 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="page" mode="inner">
     <p>
-      <span style="color:darkred">
+      <strong style="color:darkred">
         <xsl:text>ATTENTION</xsl:text>
-      </span>
+      </strong>
       <xsl:text>: Be very careful will this form!</xsl:text>
       <xsl:text> You can easily break things if you don't know what you are doing.</xsl:text>
       <xsl:text> The best way to modify a file is to download it first, make changes locally and upload back.</xsl:text>

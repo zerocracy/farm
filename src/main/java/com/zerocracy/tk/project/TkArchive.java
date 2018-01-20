@@ -32,7 +32,7 @@ import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
 import org.takes.rs.RsWithBody;
-import org.takes.rs.RsWithHeader;
+import org.takes.rs.RsWithType;
 
 /**
  * Download the entire archive.
@@ -78,7 +78,7 @@ public final class TkArchive implements TkRegex {
                 out.closeEntry();
             }
         }
-        return new RsWithHeader(
+        return new RsWithType(
             new RsWithBody(new BytesOf(zip).asBytes()),
             "application/zip"
         );
