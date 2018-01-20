@@ -29,7 +29,6 @@ import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
 import org.takes.facets.forward.RsForward;
 import org.takes.rq.RqPrint;
-import org.takes.rq.form.RqFormSmart;
 import org.takes.rq.multipart.RqMtBase;
 import org.takes.rq.multipart.RqMtSmart;
 
@@ -59,10 +58,11 @@ public final class TkUpload implements TkRegex {
     @Override
     public Response act(final RqRegex req) throws IOException {
         final Project project = new RqProject(this.farm, req);
-        final String body = new RqPrint(
-            new RqMtSmart(new RqMtBase(req)).single("file")
-        ).printBody();
-        final String artifact = new RqFormSmart(req).single("artifact");
+        final RqMtSmart form = new RqMtSmart(new RqMtBase(req));
+        final String body =
+            new RqPrint(form.single("file")).printBody();
+        final String artifact =
+            new RqPrint(form.single("artifact")).printBody();
         try (final Item item = project.acq(artifact)) {
             new LengthOf(new TeeInput(body, item.path())).intValue();
         }

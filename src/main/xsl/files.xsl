@@ -65,7 +65,7 @@ SOFTWARE.
   <xsl:template match="item">
     <tr>
       <td>
-        <a href="/a/{/page/project}?a={name}">
+        <a href="/xml/{/page/project}?file={name}">
           <code>
             <xsl:value-of select="name"/>
           </code>
