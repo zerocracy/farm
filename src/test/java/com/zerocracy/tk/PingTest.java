@@ -16,8 +16,8 @@
  */
 package com.zerocracy.tk;
 
+import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.props.PropsFarm;
-import com.zerocracy.jstk.farm.fake.FkFarm;
 import java.net.HttpURLConnection;
 import java.util.Arrays;
 import java.util.Collection;
@@ -54,6 +54,8 @@ public final class PingTest {
                 {"/xsl/index.xsl"},
                 {"/xsl/layout.xsl"},
                 {"/badge/123456789.svg"},
+                {"/svg/logo.svg"},
+                {"/png/logo.png"},
                 {"/"},
                 {"/org/takes/rs/xe/memory.xsl"},
                 {"/add_to_slack"},

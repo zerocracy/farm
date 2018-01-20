@@ -18,8 +18,8 @@ package com.zerocracy.farm;
 
 import com.jcabi.xml.XML;
 import com.zerocracy.Par;
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.SoftException;
+import com.zerocracy.Project;
+import com.zerocracy.SoftException;
 import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.staff.Roles;
 import java.io.IOException;

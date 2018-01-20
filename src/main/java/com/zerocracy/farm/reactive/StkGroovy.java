@@ -17,11 +17,11 @@
 package com.zerocracy.farm.reactive;
 
 import com.jcabi.xml.XML;
+import com.zerocracy.Farm;
+import com.zerocracy.Project;
+import com.zerocracy.SoftException;
+import com.zerocracy.Stakeholder;
 import com.zerocracy.farm.MismatchException;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.SoftException;
-import com.zerocracy.jstk.Stakeholder;
 import groovy.lang.Binding;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyCodeSource;

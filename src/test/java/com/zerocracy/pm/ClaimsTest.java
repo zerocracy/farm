@@ -19,14 +19,14 @@ package com.zerocracy.pm;
 import com.jcabi.aspects.Tv;
 import com.jcabi.s3.Bucket;
 import com.jcabi.s3.fake.FkBucket;
+import com.zerocracy.Farm;
+import com.zerocracy.Item;
+import com.zerocracy.Project;
 import com.zerocracy.RunsInThreads;
 import com.zerocracy.Xocument;
 import com.zerocracy.farm.S3Farm;
+import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.sync.SyncFarm;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Item;
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.farm.fake.FkProject;
 import java.nio.file.Files;
 import java.util.concurrent.TimeUnit;
 import org.cactoos.io.LengthOf;
@@ -78,7 +78,7 @@ public final class ClaimsTest {
                         "<claims",
                         "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'",
                         // @checkstyle LineLength (1 line)
-                        "xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/zerocracy/datum/0.27/xsd/pm/claims.xsd'",
+                        "xsi:noNamespaceSchemaLocation='http://datum.zerocracy.com/0.27/xsd/pm/claims.xsd'",
                         "version='0.1' updated='2017-03-27T11:18:09.228Z'/>"
                     ),
                     item.path()

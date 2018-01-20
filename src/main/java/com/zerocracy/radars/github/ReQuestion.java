@@ -18,8 +18,8 @@ package com.zerocracy.radars.github;
 
 import com.jcabi.github.Comment;
 import com.jcabi.xml.XMLDocument;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Project;
+import com.zerocracy.Farm;
+import com.zerocracy.Project;
 import com.zerocracy.radars.ClaimOnQuestion;
 import com.zerocracy.radars.Question;
 import java.io.IOException;
@@ -57,6 +57,9 @@ public final class ReQuestion implements Response {
             .token(new TokenOfComment(comment))
             .author(new Author(farm, comment.author()).login())
             .param("job", new Job(comment.issue()))
+            .param("repo", comment.issue().repo().coordinates())
+            .param("issue", comment.issue().number())
+            .param("comment", comment.number())
             .postTo(project);
         return question.matches();
     }

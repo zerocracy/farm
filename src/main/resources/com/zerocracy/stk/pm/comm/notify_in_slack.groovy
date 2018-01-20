@@ -24,8 +24,8 @@ import com.ullink.slack.simpleslackapi.SlackUser
 import com.zerocracy.entry.ExtSlack
 import com.zerocracy.farm.Assume
 import com.zerocracy.farm.props.Props
-import com.zerocracy.jstk.Farm
-import com.zerocracy.jstk.Project
+import com.zerocracy.Farm
+import com.zerocracy.Project
 import com.zerocracy.pm.ClaimIn
 
 // Token must look like: slack;C43789437;yegor256;direct

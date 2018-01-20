@@ -17,7 +17,7 @@
 package com.zerocracy.bundles.adds_new_pull_request_to_wbs
 
 import com.jcabi.xml.XML
-import com.zerocracy.jstk.Project
+import com.zerocracy.Project
 import com.zerocracy.pm.scope.Wbs
 
 def exec(Project project, XML xml) {

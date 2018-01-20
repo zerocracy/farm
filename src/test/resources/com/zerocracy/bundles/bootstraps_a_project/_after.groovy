@@ -17,8 +17,8 @@
 package com.zerocracy.bundles.bootstraps_a_project
 
 import com.jcabi.xml.XML
-import com.zerocracy.jstk.Farm
-import com.zerocracy.jstk.Project
+import com.zerocracy.Farm
+import com.zerocracy.Project
 import com.zerocracy.pmo.Catalog
 import com.zerocracy.pmo.Projects
 import org.hamcrest.MatcherAssert

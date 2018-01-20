@@ -18,11 +18,11 @@ package com.zerocracy.pm;
 
 import com.jcabi.xml.XML;
 import com.mongodb.client.model.Filters;
+import com.zerocracy.Farm;
+import com.zerocracy.Project;
 import com.zerocracy.RunsInThreads;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.farm.sync.SyncFarm;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Project;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;

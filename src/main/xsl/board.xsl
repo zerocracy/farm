@@ -21,7 +21,7 @@ SOFTWARE.
   <xsl:include href="/xsl/inner-layout.xsl"/>
   <xsl:template match="page" mode="head">
     <title>
-      <xsl:text>board</xsl:text>
+      <xsl:text>Board</xsl:text>
     </title>
   </xsl:template>
   <xsl:template match="page" mode="inner">
@@ -35,17 +35,18 @@ SOFTWARE.
   <xsl:template match="projects[project]">
     <p>
       <xsl:text>To join any of these projects you have</xsl:text>
-      <xsl:text> to apply, by asking </xsl:text>
-      <code>
-        <xsl:text>@0crat</xsl:text>
-      </code>
-      <xsl:text> in a chat,</xsl:text>
+      <xsl:text> to apply, by asking Zerocrat in a chat,</xsl:text>
       <xsl:text> see </xsl:text>
       <a href="http://datum.zerocracy.com/pages/policy.html#2">
         <xsl:text>&#xA7;2</xsl:text>
       </a>
       <xsl:text>.</xsl:text>
-      <xsl:text> To add your project to this board you have to publish it, see </xsl:text>
+      <xsl:text> If you are just starting to work with us, you have to try to join "sandbox" projects, see </xsl:text>
+      <a href="http://datum.zerocracy.com/pages/policy.html#33">
+        <xsl:text>&#xA7;33</xsl:text>
+      </a>
+      <xsl:text>.</xsl:text>
+      <xsl:text> In order to add your project to the board you have to "publish" it, see </xsl:text>
       <a href="http://datum.zerocracy.com/pages/policy.html#26">
         <xsl:text>&#xA7;26</xsl:text>
       </a>
@@ -91,7 +92,7 @@ SOFTWARE.
       <td>
         <xsl:value-of select="title"/>
         <xsl:if test="sandbox='true'">
-          <span style="display:block;font-size:0.8em;color:gray;">
+          <span style="display:block;font-size:0.8em;color:gray;line-height:1em;">
             <xsl:text>sandbox</xsl:text>
           </span>
         </xsl:if>

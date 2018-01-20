@@ -19,7 +19,7 @@ package com.zerocracy.radars.slack;
 import com.jcabi.log.Logger;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
-import com.zerocracy.jstk.Farm;
+import com.zerocracy.Farm;
 import org.cactoos.Func;
 import org.cactoos.func.FuncOf;
 import org.cactoos.func.FuncWithFallback;

@@ -21,10 +21,11 @@ SOFTWARE.
     <html lang="en">
       <head>
         <meta charset="utf-8"/>
-        <meta name="description" content="Project managers that never sleep, fail, or miss anything"/>
+        <meta name="description" content="Zerocrat is a project manager that never sleeps"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <link rel="shortcut icon" href="http://www.zerocracy.com/logo.png"/>
+        <link rel="shortcut icon" href="/png/logo.png"/>
         <link rel="stylesheet" href="/css/main.css"/>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/sortable/0.8.0/js/sortable.min.js">&#xA0;</script>
         <xsl:apply-templates select="." mode="head"/>
       </head>
       <body>

@@ -17,8 +17,8 @@
 package com.zerocracy.pm.staff.votes;
 
 import com.jcabi.log.Logger;
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.cash.Cash;
+import com.zerocracy.Project;
+import com.zerocracy.cash.Cash;
 import com.zerocracy.pm.cost.Rates;
 import com.zerocracy.pm.staff.Votes;
 import java.io.IOException;
@@ -27,7 +27,7 @@ import java.util.Map;
 import org.cactoos.collection.Filtered;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.map.MapEntry;
-import org.cactoos.map.MapOf;
+import org.cactoos.map.SolidMap;
 import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.scalar.SolidScalar;
 
@@ -56,7 +56,7 @@ public final class VsRate implements Votes {
             new SolidScalar<>(
                 () -> {
                     final Rates all = new Rates(project).bootstrap();
-                    return new MapOf<String, Cash>(
+                    return new SolidMap<String, Cash>(
                         new Mapped<>(
                             login -> new MapEntry<>(
                                 login,

@@ -16,9 +16,9 @@
  */
 package com.zerocracy.tk.project;
 
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Item;
-import com.zerocracy.jstk.Project;
+import com.zerocracy.Farm;
+import com.zerocracy.Item;
+import com.zerocracy.Project;
 import java.io.IOException;
 import org.cactoos.text.TextOf;
 import org.takes.Response;
@@ -54,12 +54,9 @@ public final class TkXml implements TkRegex {
     @Override
     public Response act(final RqRegex req) throws IOException {
         final Project project = new RqProject(this.farm, req);
-        final String artifact = String.format(
-            "%s.xml",
-            new RqHref.Smart(
-                new RqHref.Base(req)
-            ).single("a").replaceAll("^.+/", "")
-        );
+        final String artifact = new RqHref.Smart(
+            new RqHref.Base(req)
+        ).single("file");
         try (final Item item = project.acq(artifact)) {
             return new RsWithType(
                 new RsWithBody(

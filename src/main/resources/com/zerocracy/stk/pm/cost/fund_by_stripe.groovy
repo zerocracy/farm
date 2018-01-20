@@ -19,8 +19,8 @@ package com.zerocracy.stk.pm.cost
 import com.jcabi.xml.XML
 import com.zerocracy.Par
 import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Project
-import com.zerocracy.jstk.cash.Cash
+import com.zerocracy.Project
+import com.zerocracy.cash.Cash
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.cost.Ledger
@@ -49,4 +49,9 @@ def exec(Project project, XML xml) {
       ).say(project.pid(), amount)
     )
     .postTo(project)
+  new ClaimOut().type('Notify user').token('user;yegor256').param(
+    'message', new Par(
+      'We just funded %s for %s via Stripe'
+    ).say(project.pid(), amount)
+  ).postTo(project)
 }

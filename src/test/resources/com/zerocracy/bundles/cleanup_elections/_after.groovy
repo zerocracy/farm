@@ -17,7 +17,7 @@
 package com.zerocracy.bundles.cleanup_elections
 
 import com.jcabi.xml.XML
-import com.zerocracy.jstk.Project
+import com.zerocracy.Project
 import com.zerocracy.pm.staff.Elections
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers

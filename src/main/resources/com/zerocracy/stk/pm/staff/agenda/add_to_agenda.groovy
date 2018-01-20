@@ -18,7 +18,7 @@ package com.zerocracy.stk.pm.staff.agenda
 
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Project
+import com.zerocracy.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pmo.Agenda
@@ -29,8 +29,9 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
   String login = claim.param('login')
+  String role = claim.param('role')
   Agenda agenda = new Agenda(project, login).bootstrap()
-  agenda.add(job, 'https://github.com/')
+  agenda.add(job, role, 'https://github.com/')
   new ClaimOut()
     .type('Agenda was updated')
     .param('login', login)

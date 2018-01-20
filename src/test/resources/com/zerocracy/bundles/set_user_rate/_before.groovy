@@ -17,7 +17,9 @@
 package com.zerocracy.bundles.set_user_rate
 
 import com.jcabi.xml.XML
-import com.zerocracy.jstk.Project
+import com.zerocracy.Project
+import com.zerocracy.pmo.People
 
 def exec(Project project, XML xml) {
+  new People(project).bootstrap().details('user42', 'something')
 }

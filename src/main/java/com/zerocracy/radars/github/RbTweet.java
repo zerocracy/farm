@@ -24,7 +24,7 @@ import com.jcabi.dynamo.Table;
 import com.jcabi.github.Coordinates;
 import com.jcabi.github.Github;
 import com.jcabi.github.Repo;
-import com.zerocracy.jstk.Farm;
+import com.zerocracy.Farm;
 import java.io.IOException;
 import java.util.Iterator;
 import javax.json.JsonObject;

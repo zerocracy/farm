@@ -16,7 +16,7 @@
  */
 package com.zerocracy.tk.project.reports;
 
-import com.zerocracy.jstk.Project;
+import com.zerocracy.Project;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;

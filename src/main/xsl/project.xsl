@@ -27,7 +27,7 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="page" mode="inner">
     <p>
-      <img src="http://www.0crat.com/badge/{project}.svg"/>
+      <img src="/badge/{project}.svg"/>
     </p>
     <xsl:if test="pause = 'true'">
       <p>
@@ -39,6 +39,29 @@ SOFTWARE.
           <xsl:text>&#xA7;24</xsl:text>
         </a>
         <xsl:text>.</xsl:text>
+      </p>
+    </xsl:if>
+    <xsl:if test="roles[not(role)]">
+      <p>
+        <xsl:text>The project is managed by Zerocrat according to this </xsl:text>
+        <a href="http://datum.zerocracy.com/pages/policy.html">
+          <xsl:text>Policy</xsl:text>
+        </a>
+        <xsl:text>. </xsl:text>
+        <xsl:text>If you want to join as a developer, start at </xsl:text>
+        <a href="http://datum.zerocracy.com/pages/policy.html#2">
+          <xsl:text>&#xA7;2</xsl:text>
+        </a>
+        <xsl:text>. </xsl:text>
+        <xsl:text>We also recommend you to join this </xsl:text>
+        <a href="https://t.me/joinchat/AAAAAEJFMRzsRTRxM3ec6A">
+          <xsl:text>Telegram chat</xsl:text>
+        </a>
+        <xsl:text> to find someone who can </xsl:text>
+        <a href="http://datum.zerocracy.com/pages/policy.html#1">
+          <xsl:text>invite</xsl:text>
+        </a>
+        <xsl:text> you and explain how Zerocrat works.</xsl:text>
       </p>
     </xsl:if>
     <p>
@@ -54,7 +77,7 @@ SOFTWARE.
         </xsl:choose>
       </a>
       <xsl:text>, </xsl:text>
-      <a href="http://www.0crat.com/board">
+      <a href="/board">
         <xsl:choose>
           <xsl:when test="published='true'">
             <xsl:text>visible</xsl:text>
@@ -94,9 +117,17 @@ SOFTWARE.
       </xsl:choose>
       <xsl:text>.</xsl:text>
     </p>
-    <p>
-      <xsl:apply-templates select="project_links"/>
-    </p>
+    <xsl:if test="ownership != ''">
+      <p>
+        <xsl:text>You own: </xsl:text>
+        <code>
+          <xsl:value-of select="ownership"/>
+        </code>
+        <xsl:text>.</xsl:text>
+      </p>
+    </xsl:if>
+    <xsl:apply-templates select="architects"/>
+    <xsl:apply-templates select="project_links"/>
     <xsl:apply-templates select="." mode="artifacts"/>
   </xsl:template>
   <xsl:template match="page[project!='PMO']" mode="artifacts">
@@ -205,10 +236,22 @@ SOFTWARE.
       <a href="/a/{project}?a=pm/cost/estimates">
         <xsl:text>Estimates</xsl:text>
       </a>
+      <xsl:text>, </xsl:text>
+      <a href="/a/{project}?a=pm/cost/vesting">
+        <xsl:text>Vesting</xsl:text>
+      </a>
+      <xsl:text>, </xsl:text>
+      <a href="/a/{project}?a=pm/cost/equity">
+        <xsl:text>Equity</xsl:text>
+      </a>
       <xsl:text>.</xsl:text>
     </p>
     <p>
       <xsl:text>Integration: </xsl:text>
+      <a href="/files/{project}">
+        <xsl:text>Files</xsl:text>
+      </a>
+      <xsl:text>, </xsl:text>
       <a href="/report/{project}">
         <xsl:text>Reports</xsl:text>
       </a>
@@ -275,6 +318,25 @@ SOFTWARE.
       <xsl:text>.</xsl:text>
     </p>
   </xsl:template>
+  <xsl:template match="architects">
+    <p>
+      <xsl:text>Architect</xsl:text>
+      <xsl:if test="count(architect) &gt; 1">
+        <xsl:text>s</xsl:text>
+      </xsl:if>
+      <xsl:text>: </xsl:text>
+      <xsl:for-each select="architect">
+        <xsl:if test="position() &gt; 1">
+          <xsl:text>, </xsl:text>
+        </xsl:if>
+        <a href="/u/{.}">
+          <xsl:text>@</xsl:text>
+          <xsl:value-of select="."/>
+        </a>
+      </xsl:for-each>
+      <xsl:text>.</xsl:text>
+    </p>
+  </xsl:template>
   <xsl:template match="roles[role]">
     <xsl:text> (your roles: </xsl:text>
     <xsl:for-each select="role">
@@ -285,25 +347,31 @@ SOFTWARE.
     </xsl:for-each>
     <xsl:text>)</xsl:text>
   </xsl:template>
-  <xsl:template match="project_links[not(link)]">
-    <xsl:text>The project has no links.</xsl:text>
-  </xsl:template>
-  <xsl:template match="project_links[link]">
-    <xsl:value-of select="count(link)"/>
-    <xsl:text> link</xsl:text>
-    <xsl:if test="count(link) &gt; 1">
-      <xsl:text>s</xsl:text>
-    </xsl:if>
-    <xsl:text>: </xsl:text>
-    <xsl:for-each select="link">
-      <xsl:if test="position() &gt; 1">
-        <xsl:text>, </xsl:text>
-      </xsl:if>
-      <code>
-        <xsl:value-of select="."/>
-      </code>
-    </xsl:for-each>
-    <xsl:text>.</xsl:text>
+  <xsl:template match="project_links">
+    <p>
+      <xsl:choose>
+        <xsl:when test="link">
+          <xsl:value-of select="count(link)"/>
+          <xsl:text> link</xsl:text>
+          <xsl:if test="count(link) &gt; 1">
+            <xsl:text>s</xsl:text>
+          </xsl:if>
+          <xsl:text>: </xsl:text>
+          <xsl:for-each select="link">
+            <xsl:if test="position() &gt; 1">
+              <xsl:text>, </xsl:text>
+            </xsl:if>
+            <code>
+              <xsl:value-of select="."/>
+            </code>
+          </xsl:for-each>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:text>The project has no links</xsl:text>
+        </xsl:otherwise>
+      </xsl:choose>
+      <xsl:text>.</xsl:text>
+    </p>
   </xsl:template>
   <xsl:template match="page" mode="js">
     <xsl:element name="script">

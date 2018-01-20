@@ -16,7 +16,7 @@
  */
 package com.zerocracy.pm;
 
-import com.zerocracy.jstk.Project;
+import com.zerocracy.Project;
 import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.Date;

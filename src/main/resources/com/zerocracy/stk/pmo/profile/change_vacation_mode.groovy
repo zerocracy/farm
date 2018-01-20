@@ -18,8 +18,8 @@ package com.zerocracy.stk.pmo.profile
 
 import com.jcabi.xml.XML
 import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Project
-import com.zerocracy.jstk.SoftException
+import com.zerocracy.Project
+import com.zerocracy.SoftException
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.People
 

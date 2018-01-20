@@ -21,8 +21,8 @@ import com.jcabi.github.Issue
 import com.jcabi.github.Repos
 import com.jcabi.xml.XML
 import com.zerocracy.entry.ExtGithub
-import com.zerocracy.jstk.Farm
-import com.zerocracy.jstk.Project
+import com.zerocracy.Farm
+import com.zerocracy.Project
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm

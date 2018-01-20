@@ -16,12 +16,12 @@
  */
 package com.zerocracy.pm.staff;
 
+import com.zerocracy.Farm;
 import com.zerocracy.RunsInThreads;
+import com.zerocracy.farm.fake.FkFarm;
+import com.zerocracy.farm.fake.FkProject;
+import com.zerocracy.farm.spy.SpyProject;
 import com.zerocracy.farm.sync.SyncFarm;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.farm.fake.FkFarm;
-import com.zerocracy.jstk.farm.fake.FkProject;
-import com.zerocracy.jstk.farm.spy.SpyProject;
 import com.zerocracy.pmo.Pmo;
 import java.security.SecureRandom;
 import java.util.Collection;

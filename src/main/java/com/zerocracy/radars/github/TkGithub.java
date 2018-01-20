@@ -17,11 +17,11 @@
 package com.zerocracy.radars.github;
 
 import com.jcabi.github.Github;
+import com.zerocracy.Farm;
 import com.zerocracy.Par;
 import com.zerocracy.entry.ExtDynamo;
 import com.zerocracy.entry.ExtGithub;
 import com.zerocracy.farm.props.Props;
-import com.zerocracy.jstk.Farm;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;

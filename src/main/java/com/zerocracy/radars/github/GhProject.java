@@ -18,11 +18,11 @@ package com.zerocracy.radars.github;
 
 import com.jcabi.github.Comment;
 import com.jcabi.github.Repo;
+import com.zerocracy.Farm;
+import com.zerocracy.Item;
 import com.zerocracy.Par;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Item;
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.SoftException;
+import com.zerocracy.Project;
+import com.zerocracy.SoftException;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Locale;

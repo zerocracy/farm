@@ -17,7 +17,7 @@
 package com.zerocracy.pmo;
 
 import com.zerocracy.Par;
-import com.zerocracy.jstk.SoftException;
+import com.zerocracy.SoftException;
 import java.io.IOException;
 import java.util.Iterator;
 import org.takes.misc.Href;
@@ -58,7 +58,7 @@ public final class GoodPeople {
         if (!list.hasNext()) {
             throw new SoftException(
                 new Par("I don't know who you are, please click here: %s").say(
-                    new Href("http://www.0crat.com/alias")
+                    new Href("https://www.0crat.com/alias")
                         .with("rel", rel)
                         .with("href", alias)
                 )

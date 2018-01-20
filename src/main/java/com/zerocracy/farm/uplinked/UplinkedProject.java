@@ -16,9 +16,9 @@
  */
 package com.zerocracy.farm.uplinked;
 
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Item;
-import com.zerocracy.jstk.Project;
+import com.zerocracy.Farm;
+import com.zerocracy.Item;
+import com.zerocracy.Project;
 import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
 import java.util.Collection;

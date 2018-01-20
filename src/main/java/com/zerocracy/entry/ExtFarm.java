@@ -14,11 +14,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.farm.props;
+package com.zerocracy.entry;
 
+import com.zerocracy.Farm;
+import com.zerocracy.Project;
 import com.zerocracy.farm.guts.Guts;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Project;
 import com.zerocracy.radars.github.Quota;
 import java.io.IOException;
 import lombok.EqualsAndHashCode;

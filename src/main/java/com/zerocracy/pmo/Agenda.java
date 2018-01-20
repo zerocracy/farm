@@ -16,12 +16,12 @@
  */
 package com.zerocracy.pmo;
 
+import com.zerocracy.Farm;
+import com.zerocracy.Item;
 import com.zerocracy.Par;
+import com.zerocracy.Project;
+import com.zerocracy.SoftException;
 import com.zerocracy.Xocument;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Item;
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.SoftException;
 import java.io.IOException;
 import org.cactoos.time.DateAsText;
 import org.xembly.Directives;
@@ -106,10 +106,11 @@ public final class Agenda {
     /**
      * Add an order to the agenda.
      * @param job Job ID
+     * @param role The role
      * @param href HREF of the ticket
      * @throws IOException If fails
      */
-    public void add(final String job, final String href)
+    public void add(final String job, final String role, final String href)
         throws IOException {
         if (this.exists(job)) {
             throw new SoftException(
@@ -124,9 +125,8 @@ public final class Agenda {
                     .xpath("/agenda")
                     .add("order")
                     .attr("job", job)
-                    .add("href")
-                    .set(href)
-                    .up()
+                    .add("href").set(href).up()
+                    .add("role").set(role).up()
                     .add("added").set(new DateAsText().asString()).up()
                     .add("project")
                     .set(this.pmo.pid())

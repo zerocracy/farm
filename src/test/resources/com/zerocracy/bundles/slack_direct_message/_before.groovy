@@ -21,8 +21,8 @@ import com.ullink.slack.simpleslackapi.SlackChannel
 import com.ullink.slack.simpleslackapi.SlackSession
 import com.ullink.slack.simpleslackapi.SlackUser
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted
-import com.zerocracy.jstk.Project
-import com.zerocracy.jstk.farm.fake.FkFarm
+import com.zerocracy.Project
+import com.zerocracy.farm.fake.FkFarm
 import com.zerocracy.radars.slack.ReProfile
 import org.mockito.Mockito
 

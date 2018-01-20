@@ -17,14 +17,16 @@
 package com.zerocracy.stk.pmo.profile
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Par
+import com.zerocracy.Project
+import com.zerocracy.SoftException
+import com.zerocracy.cash.Cash
 import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Farm
-import com.zerocracy.jstk.Project
-import com.zerocracy.jstk.SoftException
-import com.zerocracy.jstk.cash.Cash
+import com.zerocracy.farm.props.Props
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
+import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.Awards
 import com.zerocracy.pmo.Catalog
 import com.zerocracy.pmo.People
@@ -43,38 +45,51 @@ def exec(Project pmo, XML xml) {
     )
   }
   String author = claim.author()
-  Cash std = new People(pmo).rate(author)
+  People people = new People(pmo).bootstrap()
+  Cash std = people.rate(author)
   if (rate > std) {
     throw new SoftException(
       new Par(
         'Your profile rate is %s,',
-        'you can\'t suggest higher rate of %s for this project'
-      ).say(std, rate)
+        'you can\'t suggest higher rate of %s for the project %s'
+      ).say(std, rate, pid)
     )
   }
   if (rate > new Cash.S('$16') && catalog.sandbox(pid)) {
     throw new SoftException(
       new Par(
-        'The rate %s is too high for a sandbox project, sorry, see §33'
-      ).say(rate)
+        'The rate %s is too high for a sandbox project %s, sorry, see §33'
+      ).say(rate, pid)
     )
   }
-  int reputation = new Awards(pmo, author).bootstrap().total()
-  if (reputation < 256 && !catalog.sandbox(pid)) {
+  if (rate > Cash.ZERO && people.details(author).empty) {
     throw new SoftException(
       new Par(
-        'Your reputation is %d, which is not big enough to apply;',
-        'you can only apply to one of our sandbox projects, see §33'
-      ).say(reputation)
+        'In order to work for money you have to identify yourself first;',
+        'please, click this link and follow the instructions:',
+        'https://www.yoti.com/connect/%s'
+      ).say(new Props(farm).get('//yoti/app_id'))
     )
   }
-  if (reputation > 1024 && catalog.sandbox(pid)) {
-    throw new SoftException(
-      new Par(
-        'Your reputation is %d,',
-        'which is too high for a sandbox project, see §33'
-      ).say(reputation)
-    )
+  Roles roles = new Roles(farm.find("@id='${pid}'")[0]).bootstrap()
+  if (!roles.hasAnyRole(author)) {
+    int reputation = new Awards(pmo, author).bootstrap().total()
+    if (reputation < 256 && !catalog.sandbox(pid)) {
+      throw new SoftException(
+        new Par(
+          'Your reputation is %d, which is not big enough to apply to %s;',
+          'you can only apply to one of our sandbox projects, see §33'
+        ).say(reputation, pid)
+      )
+    }
+    if (reputation > 1024 && catalog.sandbox(pid)) {
+      throw new SoftException(
+        new Par(
+          'Your reputation is %d,',
+          'which is too high for a sandbox project %s, see §33'
+        ).say(reputation, pid)
+      )
+    }
   }
   new ClaimOut()
     .type('Notify project')
@@ -82,11 +97,11 @@ def exec(Project pmo, XML xml) {
       'message',
       new Par(
         '@%s wants to join you guys.',
-        'If you want to add them to the project,',
+        'If you want to add them to the project %s,',
         'just assign `DEV` role and that\'s it.',
         'The hourly rate suggested is %s (profile rate is %s).',
         'You can use that rate or define another one, see §13.'
-      ).say(claim.author(), rate, std)
+      ).say(claim.author(), pid, rate, std)
     )
     .postTo(farm.find("@id='${pid}'")[0])
   claim.reply(

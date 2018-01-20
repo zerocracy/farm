@@ -21,8 +21,8 @@ import com.zerocracy.Par
 import com.zerocracy.entry.ExtBucket
 import com.zerocracy.farm.Assume
 import com.zerocracy.farm.S3Farm
-import com.zerocracy.jstk.Farm
-import com.zerocracy.jstk.Project
+import com.zerocracy.Farm
+import com.zerocracy.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.Catalog

@@ -16,9 +16,10 @@
  */
 package com.zerocracy.pm.cost;
 
-import com.zerocracy.jstk.Project;
-import com.zerocracy.jstk.cash.Cash;
-import com.zerocracy.jstk.farm.fake.FkProject;
+import com.zerocracy.Project;
+import com.zerocracy.cash.Cash;
+import com.zerocracy.farm.fake.FkProject;
+import com.zerocracy.pm.scope.Wbs;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -53,13 +54,16 @@ public final class EstimatesTest {
             )
         );
         final Estimates estimates = new Estimates(project).bootstrap();
-        final String job = "gh:yegor256/pdd#4";
-        estimates.update(job, new Cash.S("$45"));
+        final String first = "gh:yegor256/pdd#4";
+        new Wbs(project).bootstrap().add(first);
+        estimates.update(first, new Cash.S("$45"));
         MatcherAssert.assertThat(
-            estimates.get(job),
+            estimates.get(first),
             Matchers.equalTo(new Cash.S("$45.00"))
         );
-        estimates.update("gh:test/test#1", new Cash.S("$100"));
+        final String second = "gh:yegor256/pdd#1";
+        new Wbs(project).bootstrap().add(second);
+        estimates.update(second, new Cash.S("$100"));
         MatcherAssert.assertThat(
             estimates.total(),
             Matchers.equalTo(new Cash.S("$145.00"))

@@ -17,11 +17,11 @@
 package com.zerocracy.stk.pm
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Par
+import com.zerocracy.Project
+import com.zerocracy.SoftException
 import com.zerocracy.farm.Assume
-import com.zerocracy.jstk.Farm
-import com.zerocracy.jstk.Project
-import com.zerocracy.jstk.SoftException
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.staff.Roles
@@ -61,6 +61,11 @@ def exec(Project project, XML xml) {
           'as explained in §17. I just assigned you to both ARC and PO',
           'roles.'
         ).say(project.pid())
+      ).postTo(project)
+      new ClaimOut().type('Notify user').token('user;yegor256').param(
+        'message', new Par(
+          'We just bootstrapped @%s by @%s'
+        ).say(project.pid(), author)
       ).postTo(project)
     }
   } else {

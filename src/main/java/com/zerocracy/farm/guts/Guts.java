@@ -18,9 +18,9 @@ package com.zerocracy.farm.guts;
 
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Item;
-import com.zerocracy.jstk.Project;
+import com.zerocracy.Farm;
+import com.zerocracy.Item;
+import com.zerocracy.Project;
 import java.io.IOException;
 import org.cactoos.Func;
 import org.cactoos.Scalar;

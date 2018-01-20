@@ -20,7 +20,7 @@ import com.jcabi.github.Github;
 import com.jcabi.github.RtPagination;
 import com.jcabi.http.Request;
 import com.jcabi.http.response.RestResponse;
-import com.zerocracy.jstk.Farm;
+import com.zerocracy.Farm;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.Collection;

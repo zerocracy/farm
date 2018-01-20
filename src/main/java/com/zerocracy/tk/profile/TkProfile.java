@@ -16,8 +16,8 @@
  */
 package com.zerocracy.tk.profile;
 
-import com.zerocracy.jstk.Farm;
-import com.zerocracy.jstk.Project;
+import com.zerocracy.Farm;
+import com.zerocracy.Project;
 import com.zerocracy.pmo.Agenda;
 import com.zerocracy.pmo.Awards;
 import com.zerocracy.pmo.Catalog;
@@ -110,6 +110,10 @@ public final class TkProfile implements TkRegex {
                                     people.links(login),
                                     link -> new XeAppend("link", link)
                                 )
+                            ),
+                            new XeAppend(
+                                "identification",
+                                people.details(login)
                             )
                         )
                     ),

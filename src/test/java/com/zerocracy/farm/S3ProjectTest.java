@@ -18,9 +18,9 @@ package com.zerocracy.farm;
 
 import com.jcabi.s3.Bucket;
 import com.jcabi.s3.fake.FkBucket;
+import com.zerocracy.Item;
+import com.zerocracy.Project;
 import com.zerocracy.Xocument;
-import com.zerocracy.jstk.Item;
-import com.zerocracy.jstk.Project;
 import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.pmo.Agenda;
 import java.nio.file.Files;
@@ -48,7 +48,7 @@ public final class S3ProjectTest {
         final String person = "yegor256";
         new Agenda(project, person).bootstrap();
         final String job = "gh:test/test#1";
-        new Agenda(project, person).add(job, "https://github.com/test");
+        new Agenda(project, person).add(job, "QA", "https://github.com/test");
         MatcherAssert.assertThat(
             new Agenda(project, person).jobs(),
             Matchers.hasItem(job)
