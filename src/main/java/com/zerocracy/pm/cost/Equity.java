@@ -112,7 +112,7 @@ public final class Equity {
                             "/equity/owners/owner[@id='%s']", login
                         )
                     )
-                    .xset(String.format(". + %.4f", inc))
+                    .xset(String.format(". + %.8f", inc))
             );
         }
     }
