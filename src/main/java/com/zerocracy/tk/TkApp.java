@@ -127,6 +127,7 @@ public final class TkApp extends TkWrap {
                                                                 new FkRegex("/yoti", new TkYoti(farm)),
                                                                 new FkRegex("/heapdump", new TkDump(farm)),
                                                                 new FkRegex("/guts", new TkGuts(farm)),
+                                                                new FkRegex("/shutdown", new TkShutdown()),
                                                                 new FkRegex(
                                                                     "/org/takes/.+\\.xsl",
                                                                     new TkClasspath()
