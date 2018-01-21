@@ -17,6 +17,7 @@
 package com.zerocracy.pmo;
 
 import com.zerocracy.farm.fake.FkProject;
+import java.time.LocalDateTime;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -27,16 +28,38 @@ import org.junit.Test;
  * @version $Id$
  * @since 0.12
  * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle MagicNumberCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class AwardsTest {
 
     @Test
     public void addsAndRemovesPoints() throws Exception {
         final Awards awards = new Awards(new FkProject(), "yegor").bootstrap();
-        awards.add(1, "gh:test/test#1", "just for fun");
-        awards.add(-1, "gh:test/test#2", "just for fun 2");
-        awards.add(1, "gh:test/test#3", "just for fun 3");
+        awards.add(1, "gh:test/test#1", "just for fun 1", LocalDateTime.now());
+        awards.add(-1, "gh:test/test#2", "just for fun 2", LocalDateTime.now());
+        awards.add(1, "gh:test/test#3", "just for fun 3", LocalDateTime.now());
         MatcherAssert.assertThat(awards.total(), Matchers.equalTo(1));
+    }
+
+    @Test
+    public void pointsOnlyLastNinetyDays() throws Exception {
+        final Awards awards = new Awards(new FkProject(), "fabriciofx")
+            .bootstrap();
+        awards.add(
+            1, "gh:test/test#1", "just for fun 1",
+            LocalDateTime.now().minusDays(91)
+        );
+        awards.add(
+            2, "gh:test/test#2", "just for fun 2",
+            LocalDateTime.now().minusDays(90)
+        );
+        awards.add(
+            3, "gh:test/test#3", "just for fun 3",
+            LocalDateTime.now().minusDays(30)
+        );
+        awards.add(4, "gh:test/test#4", "just for fun 4", LocalDateTime.now());
+        MatcherAssert.assertThat(awards.total(), Matchers.equalTo(9));
     }
 
 }
