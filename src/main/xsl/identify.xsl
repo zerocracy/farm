@@ -31,6 +31,16 @@ SOFTWARE.
       </a>
     </p>
     <xsl:apply-templates select="identification"/>
+    <p>
+      <xsl:text>According to our </xsl:text>
+      <a href="http://datum.zerocracy.com/pages/terms.html#kyc">
+        <xsl:text>Terms</xsl:text>
+      </a>
+      <xsl:text> we identify each project contributor, if they work for money.</xsl:text>
+    </p>
+    <p>
+      <img src="https://www.yoti.com/images/logo.svg" style="height:32px;"/>
+    </p>
   </xsl:template>
   <xsl:template match="identification[.='']">
     <p>
@@ -47,9 +57,6 @@ SOFTWARE.
         <xsl:text>here</xsl:text>
       </a>
       <xsl:text>.</xsl:text>
-    </p>
-    <p>
-      <img src="https://www.yoti.com/images/logo.svg" style="height:32px;"/>
     </p>
   </xsl:template>
   <xsl:template match="identification[.!='']">
