@@ -32,6 +32,7 @@ import org.xembly.Directives;
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.19
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class Impediments {
     /**
@@ -104,10 +105,24 @@ public final class Impediments {
                     .attr("id", job)
                     .add("impediment")
                     .attr("type", "unknown")
-                    .set(reason)
+                    .set(new Par.ToText(reason).toString())
                     .up()
                     .up()
             );
+        }
+    }
+
+    /**
+     * The impediment exists?
+     * @param job The job
+     * @return TRUE if exists
+     * @throws IOException If fails
+     */
+    public boolean exists(final String job) throws IOException {
+        try (final Item item = this.item()) {
+            return !new Xocument(item.path()).nodes(
+                String.format("/impediments/order[@id='%s']", job)
+            ).isEmpty();
         }
     }
 
