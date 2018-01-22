@@ -16,7 +16,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <claims xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/zerocracy/datum/0.27/xsd/pm/claims.xsd" version="0.1" updated="2017-09-04T10:16:00.000Z">
-    <claim id="1">
+    <claim id="3">
         <created>2017-07-21T20:32:19.716Z</created>
         <type>Award points were added</type>
         <token>test;C123;user42</token>
