@@ -233,11 +233,11 @@ public final class Roles {
                 new Orders(this.project).bootstrap().jobs(person)
             )
         );
-        if (!jobs.isEmpty()) {
+        if (!jobs.isEmpty() && this.allRoles(person).size() == 1) {
             throw new SoftException(
                 new Par(
                     "There are still %d job(s) assigned to @%s,",
-                    "can't resign role %s: %s"
+                    "can't resign role %s, since it's the last one: %s"
                 ).say(
                     jobs.size(), person, role,
                     new JoinedText(", ", jobs).asString()
