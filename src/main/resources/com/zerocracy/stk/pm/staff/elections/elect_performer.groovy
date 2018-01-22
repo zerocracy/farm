@@ -63,12 +63,10 @@ def exec(Project project, XML xml) {
       ].each { lst.sort(it) }
       lst
   }
-
   for (String job : jobs) {
     String role = wbs.role(job)
     List<String> logins = roles.findByRole(role)
     if (logins.empty) {
-      Logger.info(this, 'No %ss in %s, cannot elect', role, project.pid())
       return
     }
     boolean done = elections.elect(
