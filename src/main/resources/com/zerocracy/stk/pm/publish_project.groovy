@@ -22,6 +22,7 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pmo.Catalog
 
 def exec(Project project, XML xml) {
@@ -38,12 +39,22 @@ def exec(Project project, XML xml) {
         'The project is visible now at the [board](/board), according to §26'
       ).say()
     ).postTo(project)
+    new ClaimOut().type('Notify user').token('user;yegor256').param(
+      'message', new Par(
+        'The project %s was published by @%s'
+      ).say(project.pid(), claim.author())
+    ).postTo(project)
   } else if ('off' == mode) {
     catalog.publish(project.pid(), false)
     claim.reply(
       new Par(
         'The project is not visible anymore at the [board](/board), as in §26'
       ).say()
+    ).postTo(project)
+    new ClaimOut().type('Notify user').token('user;yegor256').param(
+      'message', new Par(
+        'The project %s was unpublished by @%s'
+      ).say(project.pid(), claim.author())
     ).postTo(project)
   } else {
     claim.reply(

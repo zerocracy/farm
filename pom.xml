@@ -95,6 +95,17 @@ SOFTWARE.
       <scope>runtime</scope>
     </dependency>
     <dependency>
+      <groupId>com.yoti</groupId>
+      <artifactId>yoti-sdk-api</artifactId>
+      <version>1.3</version>
+    </dependency>
+    <dependency>
+      <groupId>com.yoti</groupId>
+      <artifactId>yoti-sdk-impl</artifactId>
+      <version>1.3</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
       <groupId>com.github.zafarkhaja</groupId>
       <artifactId>java-semver</artifactId>
       <version>0.9.0</version>
@@ -157,7 +168,7 @@ SOFTWARE.
     <dependency>
       <groupId>org.takes</groupId>
       <artifactId>takes</artifactId>
-      <version>1.8</version>
+      <version>1.8.1</version>
     </dependency>
     <dependency>
       <groupId>org.reflections</groupId>

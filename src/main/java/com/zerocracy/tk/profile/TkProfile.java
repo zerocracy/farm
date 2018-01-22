@@ -110,6 +110,10 @@ public final class TkProfile implements TkRegex {
                                     people.links(login),
                                     link -> new XeAppend("link", link)
                                 )
+                            ),
+                            new XeAppend(
+                                "identification",
+                                people.details(login)
                             )
                         )
                     ),

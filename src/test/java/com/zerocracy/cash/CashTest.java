@@ -265,4 +265,26 @@ public final class CashTest {
         );
     }
 
+    /**
+     * Cash can catch invalid formatting.
+     * @throws Exception If some problem inside
+     */
+    @Test
+    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
+    public void catchesBrokenFormatting() throws Exception {
+        final String[] mistakes = {
+            "", "10$", "500", "$  90",
+        };
+        for (final String mistake : mistakes) {
+            try {
+                new Cash.S(mistake);
+            } catch (final CashParsingException ex) {
+                MatcherAssert.assertThat(
+                    ex.getLocalizedMessage(),
+                    Matchers.containsString(mistake)
+                );
+            }
+        }
+    }
+
 }

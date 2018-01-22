@@ -27,7 +27,7 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="page" mode="inner">
     <p>
-      <img src="http://www.0crat.com/badge/{project}.svg"/>
+      <img src="/badge/{project}.svg"/>
     </p>
     <xsl:if test="pause = 'true'">
       <p>
@@ -77,7 +77,7 @@ SOFTWARE.
         </xsl:choose>
       </a>
       <xsl:text>, </xsl:text>
-      <a href="http://www.0crat.com/board">
+      <a href="/board">
         <xsl:choose>
           <xsl:when test="published='true'">
             <xsl:text>visible</xsl:text>
@@ -115,8 +115,27 @@ SOFTWARE.
           </a>
         </xsl:otherwise>
       </xsl:choose>
+      <xsl:if test="vesting">
+        <xsl:text>; your </xsl:text>
+        <a href="http://datum.zerocracy.com/pages/policy.html#37">
+          <xsl:text>vesting</xsl:text>
+        </a>
+        <xsl:text> rate is </xsl:text>
+        <span style="color:darkgreen">
+          <xsl:value-of select="vesting"/>
+        </span>
+      </xsl:if>
       <xsl:text>.</xsl:text>
     </p>
+    <xsl:if test="ownership != ''">
+      <p>
+        <xsl:text>You own: </xsl:text>
+        <code>
+          <xsl:value-of select="ownership"/>
+        </code>
+        <xsl:text>.</xsl:text>
+      </p>
+    </xsl:if>
     <xsl:apply-templates select="architects"/>
     <xsl:apply-templates select="project_links"/>
     <xsl:apply-templates select="." mode="artifacts"/>
@@ -227,10 +246,22 @@ SOFTWARE.
       <a href="/a/{project}?a=pm/cost/estimates">
         <xsl:text>Estimates</xsl:text>
       </a>
+      <xsl:text>, </xsl:text>
+      <a href="/a/{project}?a=pm/cost/vesting">
+        <xsl:text>Vesting</xsl:text>
+      </a>
+      <xsl:text>, </xsl:text>
+      <a href="/a/{project}?a=pm/cost/equity">
+        <xsl:text>Equity</xsl:text>
+      </a>
       <xsl:text>.</xsl:text>
     </p>
     <p>
       <xsl:text>Integration: </xsl:text>
+      <a href="/files/{project}">
+        <xsl:text>Files</xsl:text>
+      </a>
+      <xsl:text>, </xsl:text>
       <a href="/report/{project}">
         <xsl:text>Reports</xsl:text>
       </a>

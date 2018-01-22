@@ -32,9 +32,7 @@ SOFTWARE.
       <xsl:text>There are </xsl:text>
       <xsl:value-of select="count(user)"/>
       <xsl:text> users already registered with us.</xsl:text>
-      <xsl:text> To join us too you have</xsl:text>
-      <xsl:text> to apply, by asking Zerocrat in a chat,</xsl:text>
-      <xsl:text> see </xsl:text>
+      <xsl:text> To join us too you have to apply, see </xsl:text>
       <a href="http://datum.zerocracy.com/pages/policy.html#2">
         <xsl:text>&#xA7;2</xsl:text>
       </a>
@@ -82,6 +80,8 @@ SOFTWARE.
   <xsl:template match="user">
     <tr>
       <td>
+        <img src="https://socatar.com/github/{login}" style="width:30px;height:30px;border-radius:3px;vertical-align:middle;"/>
+        <xsl:text> </xsl:text>
         <a href="https://github.com/{login}">
           <xsl:text>@</xsl:text>
           <xsl:value-of select="login"/>
@@ -114,7 +114,7 @@ SOFTWARE.
             <xsl:value-of select="rate"/>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:text>?</xsl:text>
+            <xsl:text>&#x2014;</xsl:text>
           </xsl:otherwise>
         </xsl:choose>
       </td>

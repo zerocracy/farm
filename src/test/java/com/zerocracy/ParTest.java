@@ -41,17 +41,17 @@ public final class ParTest {
                 "see [me](/p/PMO?a=1)",
                 "and gh:test2-0/test.-4#455",
                 "and again %1$s"
-            ).say("yegor256", 1),
+            ).say("jack", 1),
             Matchers.equalTo(
                 new JoinedText(
                     " ",
-                    "@yegor256[/z](http://www.0crat.com/u/yegor256) is a `DEV`",
-                    "in [C63314D6Z](http://www.0crat.com/p/C63314D6Z)",
+                    "@jack[/z](https://www.0crat.com/u/jack) is a `DEV`",
+                    "in [C63314D6Z](https://www.0crat.com/p/C63314D6Z)",
                     "and has one job, as in",
                     "[§1](http://datum.zerocracy.com/pages/policy.html#1)",
-                    "see [me](http://www.0crat.com/p/PMO?a=1)",
+                    "see [me](https://www.0crat.com/p/PMO?a=1)",
                     "and [#455](https://github.com/test2-0/test.-4/issues/455)",
-                    "and again yegor256"
+                    "and again jack"
                 ).asString()
             )
         );

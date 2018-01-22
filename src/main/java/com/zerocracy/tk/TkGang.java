@@ -72,7 +72,7 @@ public final class TkGang implements Take {
                             input -> sources.add(TkGang.source(input)),
                             true
                         ),
-                        new Xocument(item).nodes("/people/person")
+                        new Xocument(item).nodes("/people/person[mentor]")
                     ).value();
                 }
                 return new XeAppend("people", new XeChain(sources));

@@ -28,7 +28,7 @@ SOFTWARE.
         <ul>
           <li>
             <a href="/">
-              <img src="http://www.zerocracy.com/logo.svg" class="logo"/>
+              <img src="/svg/logo.svg" class="logo"/>
             </a>
           </li>
         </ul>
@@ -42,12 +42,12 @@ SOFTWARE.
             </a>
           </li>
           <li>
-            <a href="http://www.0crat.com/board">
+            <a href="/board">
               <xsl:text>Board</xsl:text>
             </a>
           </li>
           <li>
-            <a href="http://www.0crat.com/gang">
+            <a href="/gang">
               <xsl:text>Gang</xsl:text>
             </a>
           </li>

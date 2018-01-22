@@ -38,7 +38,7 @@ release:
     git fetch
     git add settings.xml
     git commit -m 'settings.xml' && git push -f heroku $(git symbolic-ref --short HEAD):master && git reset HEAD~1
-    curl -f --connect-timeout 15 --retry 5 --retry-delay 30 http://www.0crat.com > /dev/null
+    curl -f --connect-timeout 15 --retry 5 --retry-delay 30 https://www.0crat.com > /dev/null
   commanders:
   - yegor256
 merge:

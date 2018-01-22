@@ -54,6 +54,8 @@ public final class PingTest {
                 {"/xsl/index.xsl"},
                 {"/xsl/layout.xsl"},
                 {"/badge/123456789.svg"},
+                {"/svg/logo.svg"},
+                {"/png/logo.png"},
                 {"/"},
                 {"/org/takes/rs/xe/memory.xsl"},
                 {"/add_to_slack"},

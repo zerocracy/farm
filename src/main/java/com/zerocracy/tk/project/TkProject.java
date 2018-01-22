@@ -19,9 +19,11 @@ package com.zerocracy.tk.project;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.farm.props.Props;
+import com.zerocracy.pm.cost.Equity;
 import com.zerocracy.pm.cost.Estimates;
 import com.zerocracy.pm.cost.Ledger;
 import com.zerocracy.pm.cost.Rates;
+import com.zerocracy.pm.cost.Vesting;
 import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.pmo.Catalog;
 import com.zerocracy.pmo.Pmo;
@@ -71,7 +73,6 @@ public final class TkProject implements TkRegex {
                 final String login = new RqUser(this.farm, req).value();
                 final Catalog catalog = new Catalog(this.farm).bootstrap();
                 final String user = new RqUser(this.farm, req).value();
-                final Roles roles = new Roles(project).bootstrap();
                 final String pid = project.pid();
                 return new XeChain(
                     new XeAppend("project", pid),
@@ -79,7 +80,10 @@ public final class TkProject implements TkRegex {
                     new XeWhen(
                         !"PMO".equals(pid),
                         () -> {
+                            final Roles roles = new Roles(project).bootstrap();
                             final Rates rates = new Rates(project).bootstrap();
+                            final Vesting vesting =
+                                new Vesting(project).bootstrap();
                             return new XeChain(
                                 new XeAppend(
                                     "pause",
@@ -109,6 +113,18 @@ public final class TkProject implements TkRegex {
                                         "rate",
                                         rates.rate(user).toString()
                                     )
+                                ),
+                                new XeWhen(
+                                    vesting.exists(user),
+                                    () -> new XeAppend(
+                                        "vesting",
+                                        vesting.rate(user).toString()
+                                    )
+                                ),
+                                new XeAppend(
+                                    "ownership",
+                                    new Equity(project).bootstrap()
+                                        .ownership(user)
                                 ),
                                 new XeAppend(
                                     "roles",
