@@ -18,6 +18,7 @@ package com.zerocracy.tk.profile;
 
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
+import com.zerocracy.farm.props.Props;
 import com.zerocracy.pmo.People;
 import com.zerocracy.pmo.Pmo;
 import com.zerocracy.tk.RqUser;
@@ -63,6 +64,10 @@ public final class TkIdentify implements TkRegex {
                 final String user = new RqUser(pmo, req).value();
                 final People people = new People(pmo).bootstrap();
                 return new XeChain(
+                    new XeAppend(
+                        "yoti_app_id",
+                        new Props(this.farm).get("//yoti/app_id", "")
+                    ),
                     new XeAppend(
                         "identification",
                         people.details(user)

@@ -49,7 +49,8 @@ def exec(Project project, XML xml) {
   if (!bans.reasons(job).empty) {
     items.add(
       new Par(
-        'These users are banned: ' + bans.reasons(job).join('; ')
+        'These users are banned: ' +
+        new Par.ToText(bans.reasons(job).join('; ')).toString()
       ).say()
     )
   }

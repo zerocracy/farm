@@ -39,10 +39,17 @@ SOFTWARE.
         <xsl:text>who you are</xsl:text>
       </span>
       <xsl:text>; please, </xsl:text>
-      <a href="https://www.yoti.com/connect/90e1d6cf-d036-4a80-980b-05ac66d56b2b">
+      <a href="https://www.yoti.com/connect/{/page/yoti_app_id}">
         <xsl:text>identify</xsl:text>
       </a>
-      <xsl:text> yourself.</xsl:text>
+      <xsl:text> yourself, as required </xsl:text>
+      <a href="http://datum.zerocracy.com/pages/terms.html#kyc">
+        <xsl:text>here</xsl:text>
+      </a>
+      <xsl:text>.</xsl:text>
+    </p>
+    <p>
+      <img src="https://www.yoti.com/images/logo.svg" style="height:32px;"/>
     </p>
   </xsl:template>
   <xsl:template match="identification[.!='']">

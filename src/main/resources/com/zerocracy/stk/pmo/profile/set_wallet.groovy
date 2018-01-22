@@ -18,9 +18,9 @@ package com.zerocracy.stk.pmo.profile
 
 import com.jcabi.xml.XML
 import com.zerocracy.Par
-import com.zerocracy.farm.Assume
 import com.zerocracy.Project
 import com.zerocracy.SoftException
+import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.People
 
@@ -45,6 +45,15 @@ def exec(Project pmo, XML xml) {
       new Par(
         'Your wallet is `%s` at "%s"'
       ).say(people.wallet(author), people.bank(author))
+    )
+  }
+  if (people.details(author).empty) {
+    throw new SoftException(
+      new Par(
+        'In order to work for money you have to identify yourself first;',
+        'please, click this link and follow the instructions:',
+        'https://www.0crat.com/identify'
+      ).say()
     )
   }
   String bank = claim.param('bank')
