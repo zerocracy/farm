@@ -262,7 +262,7 @@ SOFTWARE.
         <xsl:text>who you are</xsl:text>
       </span>
       <xsl:text>; please, </xsl:text>
-      <a href="https://www.yoti.com/connect/90e1d6cf-d036-4a80-980b-05ac66d56b2b">
+      <a href="/identify">
         <xsl:text>identify</xsl:text>
       </a>
       <xsl:text> yourself.</xsl:text>
