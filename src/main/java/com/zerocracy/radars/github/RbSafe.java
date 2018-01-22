@@ -21,6 +21,8 @@ import com.jcabi.github.Issue;
 import com.jcabi.github.mock.MkGithub;
 import com.zerocracy.Farm;
 import com.zerocracy.SoftException;
+import com.zerocracy.entry.ExtDynamo;
+import com.zerocracy.farm.DyErrors;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.msg.TxtUnrecoverableError;
 import io.sentry.Sentry;
@@ -73,12 +75,17 @@ public final class RbSafe implements Rebound {
                 },
                 new FuncOf<>(
                     throwable -> {
-                        new ThrottledComments(
-                            RbSafe.issue(github, event).comments()
-                        ).post(
-                            new TxtUnrecoverableError(
-                                throwable, new Props(farm)
-                            ).asString()
+                        new DyErrors.Github(
+                            new DyErrors(new ExtDynamo(farm).value()),
+                            github
+                        ).add(
+                            new ThrottledComments(
+                                RbSafe.issue(github, event).comments()
+                            ).post(
+                                new TxtUnrecoverableError(
+                                    throwable, new Props(farm)
+                                ).asString()
+                            )
                         );
                         Sentry.capture(throwable);
                         throw new IOException(throwable);
