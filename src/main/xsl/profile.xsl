@@ -270,7 +270,11 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="identification[.!='']">
     <p>
-      <xsl:text>We know you as: </xsl:text>
+      <xsl:text>We </xsl:text>
+      <a href="/identify">
+        <xsl:text>know</xsl:text>
+      </a>
+      <xsl:text> you as: </xsl:text>
       <code>
         <xsl:value-of select="."/>
       </code>

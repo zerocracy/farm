@@ -41,10 +41,10 @@ public final class RnkBoost implements Comparator<String> {
 
     /**
      * Ctor.
-     * @param boosts Boosts
+     * @param bsts Boosts
      */
-    public RnkBoost(final Boosts boosts) {
-        this.boosts = boosts;
+    public RnkBoost(final Boosts bsts) {
+        this.boosts = bsts;
         this.cache = new HashMap<>(1);
     }
 
