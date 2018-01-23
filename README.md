@@ -3,42 +3,20 @@
 [![Managed by Zerocracy](https://www.0crat.com/badge/C3NDPUA8L.svg)](https://www.0crat.com/p/C3NDPUA8L)
 [![DevOps By Rultor.com](http://www.rultor.com/b/zerocracy/farm)](http://www.rultor.com/p/zerocracy/farm)
 
-[![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.svg)](https://gitter.im/zerocracy/Lobby)
-
 [![Stability of Webhook](http://www.rehttp.net/b?u=http%3A%2F%2Fwww.0crat.com%2Fghook)](http://www.rehttp.net/i?u=http%3A%2F%2Fwww.0crat.com%2Fghook)
 [![Availability at SixNines](http://www.sixnines.io/b/2b3a)](http://www.sixnines.io/h/2b3a)
 [![Run Status](https://api.shippable.com/projects/58469fb83ee1d30f00c9b66e/badge?branch=master)](https://app.shippable.com/projects/58469fb83ee1d30f00c9b66e)
 [![PDD status](http://www.0pdd.com/svg?name=zerocracy/farm)](http://www.0pdd.com/p?name=zerocracy/farm)
 
-Stakeholders' Farm.
+Stakeholders' Farm
 
-It's a manager of Java stakeholders.
+It's a core repository of Zerocrat. It contains our persistence layer (`com.zerocracy.farm`),
+a collection of Java stakeholders (`com.zerocracy.stk`) and interface layer for the
+integration with Slack, GitHub, Telegram, and so on (`com.stakeholder.radars`).
 
-This is what is has to do (in chronological order):
-
-  - [ ] DEVs join projects, POs give them roles
-  - [ ] 0crat elects DEVs, assigns tasks, closes tasks
-  - [ ] POs fund projects, 0crat pays devs (plus our commission)
-  - [ ] 0crat creates online profiles for DEVs with statistics
-  - [ ] 0crat predicts scope
-  - [ ] 0crat estimates schedule and budget
-  - [ ] 0crat suggests optimization plans (scope, budget, staff)
-  - [ ] 0crat identifies, analyzes, and manages risks
-  - [ ] 0crat benchmarks projects and makes suggestions for POs
-  - [ ] Besides GitHub we work with JIRA, Trello, Bitbucket
-
-This is our marketing plan (in chronological order):
-
-  - [ ] We randomly assign tasks in open source projects to programmers
-  - [ ] Some of them become interested
-  - [ ] They start joining projects officially, getting `DEV` roles
-  - [ ] 0crat manages open source projects (25 projects)
-  - [ ] We invite ARCs to manage their private projects, for free
-  - [ ] Some of them will be interested to hire most active DEVs
-  - [ ] They will start funding their accounts and pay
-  - [ ] We improve their back-end reporting, they become happy
-  - [ ] We start charging our comission, no more free accounts
-  - [ ] We grow and dominate the market
+The data model (XML, XSD, XSL documents) is in
+[zerocracy/datum](https://github.com/zerocracy/datum) repository. They
+are released separately and have different versions.
 
 ## Claims
 
