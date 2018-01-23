@@ -17,8 +17,9 @@
 package com.zerocracy.stk.pm.in.impediments
 
 import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
+import com.zerocracy.Par
 import com.zerocracy.Project
+import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.in.Impediments
 
@@ -27,10 +28,13 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Register impediment')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
+  String author = claim.author()
   new Impediments(project)
     .bootstrap()
-    .register(job, 'The user just asked to wait a bit.')
+    .register(job, new Par('@%s asked to wait a bit').say(author))
   claim.reply(
-    'The impediment was registered successfully'
+    new Par(
+      'The impediment for %s was registered successfully by @%s'
+    ).say(job, author)
   ).postTo(project)
 }

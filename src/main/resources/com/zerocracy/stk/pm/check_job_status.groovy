@@ -36,6 +36,7 @@ def exec(Project project, XML xml) {
   Wbs wbs = new Wbs(project).bootstrap()
   if (wbs.exists(job)) {
     items.add(new Par('The job %s is in scope').say(job))
+    items.add(new Par('The role is %s').say(wbs.role(job)))
     Orders orders = new Orders(project).bootstrap()
     if (orders.assigned(job)) {
       items.add(new Par('The job is assigned to @%s').say(orders.performer(job)))
@@ -49,7 +50,8 @@ def exec(Project project, XML xml) {
   if (!bans.reasons(job).empty) {
     items.add(
       new Par(
-        'These users are banned: ' + bans.reasons(job).join('; ')
+        'These users are banned: ' +
+        new Par.ToText(bans.reasons(job).join('; ')).toString()
       ).say()
     )
   }
