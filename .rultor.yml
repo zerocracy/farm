@@ -18,7 +18,7 @@ install: |-
   java -version
 deploy:
   script: |
-    curl -f https://www.ocrat.com/shutdown > /dev/null
+    curl -f https://www.0crat.com/shutdown > /dev/null
     mvn clean install -Prultor --settings ../settings.xml --quiet
     mvn clean --quiet
     pdd --source=$(pwd) --verbose --file=zc-farm.xml
