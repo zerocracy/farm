@@ -115,6 +115,16 @@ SOFTWARE.
           </a>
         </xsl:otherwise>
       </xsl:choose>
+      <xsl:if test="vesting">
+        <xsl:text>; your </xsl:text>
+        <a href="http://datum.zerocracy.com/pages/policy.html#37">
+          <xsl:text>vesting</xsl:text>
+        </a>
+        <xsl:text> rate is </xsl:text>
+        <span style="color:darkgreen">
+          <xsl:value-of select="vesting"/>
+        </span>
+      </xsl:if>
       <xsl:text>.</xsl:text>
     </p>
     <xsl:if test="ownership != ''">

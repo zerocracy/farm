@@ -59,7 +59,7 @@ public final class TxtUnrecoverableError implements Text {
             "",
             "There is an unrecoverable failure on my side.",
             " Please, submit it",
-            " [here](https://github.com/zerocracy/datum):",
+            " [here](https://github.com/zerocracy/farm/issues):",
             "\n\n```\n",
             StringUtils.abbreviate(
                 new TextOf(

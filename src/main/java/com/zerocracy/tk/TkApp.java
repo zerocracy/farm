@@ -21,6 +21,7 @@ import com.zerocracy.Farm;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.tk.profile.TkAgenda;
 import com.zerocracy.tk.profile.TkAwards;
+import com.zerocracy.tk.profile.TkIdentify;
 import com.zerocracy.tk.profile.TkProfile;
 import com.zerocracy.tk.profile.TkYoti;
 import com.zerocracy.tk.project.TkArchive;
@@ -123,6 +124,7 @@ public final class TkApp extends TkWrap {
                                                                     new TkText("30265BD04DBC892A0B22A97C81F04337B49CBBB18BE62476FEA4E78EC8C26FD4 comodoca.com 5a60937406a7f\n")
                                                                 ),
                                                                 new FkRegex("/", new TkIndex(farm)),
+                                                                new FkRegex("/identify", new TkIdentify(farm)),
                                                                 new FkRegex("/privacy", new TkRedirect("http://datum.zerocracy.com/pages/terms.html#privacy")),
                                                                 new FkRegex("/yoti", new TkYoti(farm)),
                                                                 new FkRegex("/heapdump", new TkDump(farm)),

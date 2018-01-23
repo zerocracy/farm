@@ -752,5 +752,31 @@ SOFTWARE.
         </pluginManagement>
       </build>
     </profile>
+    <profile>
+      <id>test-proxy</id>
+      <activation>
+        <property>
+          <name>test.proxy.host</name>
+        </property>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <artifactId>maven-surefire-plugin</artifactId>
+              <configuration combine.children="append">
+                <argLine>-Dhttp.proxyPort=${test.proxy.port} -Dhttp.proxyHost=${test.proxy.host}</argLine>
+              </configuration>
+            </plugin>
+            <plugin>
+              <artifactId>maven-failsafe-plugin</artifactId>
+              <configuration combine.children="append">
+                <argLine>-Dhttp.proxyPort=${test.proxy.port} -Dhttp.proxyHost=${test.proxy.host}</argLine>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
   </profiles>
 </project>

@@ -55,20 +55,15 @@ def exec(Project project, XML xml) {
   Elections elections = new Elections(project).bootstrap()
   Farm farm = binding.variables.farm
   Project pmo = new Pmo(farm)
-  def jobs = wbs.iterate().toList().with {
-    lst ->
-      [
-        new RnkBoost(new Boosts(project).bootstrap()),
-        new RnkRev(new Wbs(project).bootstrap())
-      ].each { lst.sort(it) }
-      lst
-  }
-
+  List<String> jobs = wbs.iterate().toList()
+  [
+    new RnkBoost(new Boosts(project).bootstrap()),
+    new RnkRev(new Wbs(project).bootstrap())
+  ].each { jobs.sort(it) }
   for (String job : jobs) {
     String role = wbs.role(job)
     List<String> logins = roles.findByRole(role)
     if (logins.empty) {
-      Logger.info(this, 'No %ss in %s, cannot elect', role, project.pid())
       return
     }
     boolean done = elections.elect(

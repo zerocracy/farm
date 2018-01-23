@@ -23,6 +23,7 @@ import com.zerocracy.pm.cost.Equity;
 import com.zerocracy.pm.cost.Estimates;
 import com.zerocracy.pm.cost.Ledger;
 import com.zerocracy.pm.cost.Rates;
+import com.zerocracy.pm.cost.Vesting;
 import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.pmo.Catalog;
 import com.zerocracy.pmo.Pmo;
@@ -81,6 +82,8 @@ public final class TkProject implements TkRegex {
                         () -> {
                             final Roles roles = new Roles(project).bootstrap();
                             final Rates rates = new Rates(project).bootstrap();
+                            final Vesting vesting =
+                                new Vesting(project).bootstrap();
                             return new XeChain(
                                 new XeAppend(
                                     "pause",
@@ -109,6 +112,13 @@ public final class TkProject implements TkRegex {
                                     () -> new XeAppend(
                                         "rate",
                                         rates.rate(user).toString()
+                                    )
+                                ),
+                                new XeWhen(
+                                    vesting.exists(user),
+                                    () -> new XeAppend(
+                                        "vesting",
+                                        vesting.rate(user).toString()
                                     )
                                 ),
                                 new XeAppend(
