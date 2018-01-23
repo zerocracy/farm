@@ -14,25 +14,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.staff.milestones
+package com.zerocracy.bundles.add_milestone
 
 import com.jcabi.xml.XML
 import com.zerocracy.Project
-import com.zerocracy.farm.Assume
-import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.time.Milestones
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Add milestone')
-  ClaimIn claim = new ClaimIn(xml)
-  String milestone = claim.param('milestone')
-  LocalDate date = LocalDate.parse(
-    claim.param('date'),
-    DateTimeFormatter.ISO_DATE_TIME
+  MatcherAssert.assertThat(
+    new Milestones(project).bootstrap().iterate(),
+    Matchers.hasItem(Matchers.equalTo('gh:ML-test'))
   )
-  new Milestones(project).bootstrap().add("gh:$milestone", date)
 }
