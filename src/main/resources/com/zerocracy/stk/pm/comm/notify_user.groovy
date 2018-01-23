@@ -21,6 +21,7 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pmo.Catalog
 import com.zerocracy.pmo.People
 
 // The token must look like: yegor256
@@ -37,11 +38,13 @@ def exec(Project project, XML xml) {
   String login = parts[1]
   Farm farm = binding.variables.farm
   People people = new People(farm).bootstrap()
-  for (String uid : people.links(login, 'slack')) {
-    claim.copy()
-      .type('Notify in Slack')
-      .token("slack;${project.pid()};${login};${uid}")
-      .postTo(project)
+  new Catalog(farm).bootstrap().links(project.pid(), 'slack').each {
+    for (String uid : people.links(login, 'slack')) {
+      claim.copy()
+        .type('Notify in Slack')
+        .token("slack;${it};${login};${uid}")
+        .postTo(project)
+    }
   }
   for (String uid : people.links(login, 'telegram')) {
     claim.copy()
