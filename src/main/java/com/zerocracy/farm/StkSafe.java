@@ -134,7 +134,8 @@ public final class StkSafe implements Stakeholder {
                         "I can't do it for technical reasons, I'm very sorry.",
                         " If you don't know what to do,",
                         " submit this error as a ticket",
-                        " [here](https://github.com/zerocracy/datum):\n\n```\n",
+                        " [here](https://github.com/zerocracy/farm/issues):",
+                        "\n\n```\n",
                         new FormattedText(
                             "%s %s %s\n%s\n%s",
                             props.get("//build/version", ""),
