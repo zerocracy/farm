@@ -118,7 +118,8 @@ public final class StkSafe implements Stakeholder {
             if (claim.hasToken()) {
                 msg.append(String.format(", token=\"%s\"", claim.token()));
             }
-            new ClaimOut().type("Error")
+            new ClaimOut()
+                .type("Error")
                 .param("origin_id", claim.cid())
                 .param("origin_type", claim.type())
                 .param("message", msg.toString())
@@ -128,6 +129,7 @@ public final class StkSafe implements Stakeholder {
             if (props.has("//testing")) {
                 throw new IllegalStateException(ex);
             }
+            Sentry.capture(ex);
             if (claim.hasToken() && !claim.type().startsWith("Notify")) {
                 claim.reply(
                     new Par(
