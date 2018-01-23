@@ -17,8 +17,11 @@
 package com.zerocracy;
 
 import java.io.Closeable;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -56,7 +59,12 @@ public final class Txn implements Project, Closeable {
         this.items = new HashMap<>(1);
     }
 
-    @SuppressWarnings("IOResourceOpenedButNotSafelyClosed")
+    @SuppressWarnings(
+        {
+            "IOResourceOpenedButNotSafelyClosed",
+            "NestedIfDepthCheck"
+        }
+        )
     @Override
     public Item acq(final String file) throws IOException {
         final Txn.TxnItem item;
@@ -67,7 +75,7 @@ public final class Txn implements Project, Closeable {
                 if (this.items.containsKey(file)) {
                     item = this.items.get(file);
                 } else {
-                    item = new Txn.TxnItem(this.origin.acq(file));
+                    item = this.item(file);
                     this.items.put(file, item);
                 }
             }
@@ -88,6 +96,9 @@ public final class Txn implements Project, Closeable {
         if (!this.committed.compareAndSet(false, true)) {
             throw new IOException("Already committed");
         }
+        new IoCheckedScalar<>(
+            new And(Txn.TxnItem::commit, this.items.values())
+        ).value();
     }
 
     @Override
@@ -101,29 +112,55 @@ public final class Txn implements Project, Closeable {
     }
 
     /**
+     * Create new item.
+     * @param file Source file.
+     * @return New TxnItem
+     * @throws IOException If fails
+     */
+    private Txn.TxnItem item(final String file) throws IOException {
+        final File tmp = File.createTempFile("txn_", ".tmp");
+        final Item src = this.origin.acq(file);
+        if (src.path().toFile().exists()) {
+            Files.copy(
+                src.path(),
+                tmp.toPath(),
+                StandardCopyOption.REPLACE_EXISTING
+            );
+        }
+        return new Txn.TxnItem(src, tmp);
+    }
+
+    /**
      * Transaction item.
-     * @todo #409:30min Txn.Item is not implemented.
-     *  This class should keep local changes for single item
-     *  and push them to origin item on commit. Also it should revert
-     *  all local changes when transaction closed without commit() call.
      */
     private static final class TxnItem implements Item {
         /**
          * Origin item.
          */
         private final Item origin;
+        /**
+         * Temporary file.
+         */
+        private final File tmp;
+        /**
+         * Committed flag.
+         */
+        private final AtomicBoolean commited;
 
         /**
          * Ctor.
          * @param origin Origin item
+         * @param tmp Temp file
          */
-        private TxnItem(final Item origin) {
+        private TxnItem(final Item origin, final File tmp) {
             this.origin = origin;
+            this.tmp = tmp;
+            this.commited = new AtomicBoolean();
         }
 
         @Override
-        public Path path() throws IOException {
-            return this.origin.path();
+        public Path path() {
+            return this.tmp.toPath();
         }
 
         @Override
@@ -132,13 +169,33 @@ public final class Txn implements Project, Closeable {
         }
 
         /**
+         * Commit changes for single item.
+         * @throws IOException If fails
+         */
+        public void commit() throws IOException {
+            if (!this.commited.compareAndSet(false, true)) {
+                throw new IOException("This item was committed");
+            }
+        }
+
+        /**
          * Close this item with origin if force.
          * @param force True if close origin item
          * @throws IOException If fails
          */
         public void close(final boolean force) throws IOException {
+            if (this.commited.get()) {
+                Files.move(
+                    this.tmp.toPath(),
+                    this.origin.path(),
+                    StandardCopyOption.REPLACE_EXISTING
+                );
+            }
             if (force) {
                 this.origin.close();
+            }
+            if (force && this.tmp.exists() && !this.tmp.delete()) {
+                throw new IOException("Failed to delete tmp file");
             }
         }
     }
