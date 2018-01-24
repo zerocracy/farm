@@ -36,7 +36,15 @@ def exec(Project project, XML xml) {
   Collection<String> items = []
   Wbs wbs = new Wbs(project).bootstrap()
   if (wbs.exists(job)) {
-    items.add(new Par('The job %s is in scope').say(job))
+    items.add(
+      new Par(
+        'The job %s is in scope for ' +
+        Logger.format(
+          '%[ms]s',
+          System.currentTimeMillis() - wbs.created(job).time
+        )
+      ).say(job)
+    )
     items.add(new Par('The role is %s').say(wbs.role(job)))
     Orders orders = new Orders(project).bootstrap()
     if (orders.assigned(job)) {
