@@ -133,9 +133,9 @@ SOFTWARE.
         <code>
           <xsl:value-of select="ownership"/>
         </code>
-        <xsl:text> (download </xsl:text>
+        <xsl:text> (</xsl:text>
         <a href="/equity/{project}">
-          <xsl:text>STA</xsl:text>
+          <xsl:text>proof</xsl:text>
         </a>
         <xsl:text>).</xsl:text>
       </p>

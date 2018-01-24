@@ -210,7 +210,7 @@ public final class TkApp extends TkWrap {
                                                                     new TkArchive(farm)
                                                                 ),
                                                                 new FkRegex(
-                                                                    "/equity/[A-Z0-9]{9}",
+                                                                    "/equity/([A-Z0-9]{9})",
                                                                     new TkEquity(farm)
                                                                 ),
                                                                 new FkRegex(
