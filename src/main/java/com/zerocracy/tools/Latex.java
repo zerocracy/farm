@@ -87,7 +87,7 @@ public final class Latex {
                 "-halt-on-error",
                 file
             ).directory(dir).start(),
-            Level.INFO,
+            Level.WARNING,
             Level.WARNING
         ).stdout();
         if (out.contains("Error")) {
