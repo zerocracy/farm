@@ -45,6 +45,17 @@ SOFTWARE.
     <xsl:apply-templates select="details"/>
     <xsl:apply-templates select="awards"/>
     <xsl:apply-templates select="agenda"/>
+    <xsl:if test="identity/login = 'yegor256'">
+      <form action="/kyc/{owner}" method="post" autocomplete="off">
+        <label>
+          <xsl:text>Identity: </xsl:text>
+        </label>
+        <input type="text" name="details" size="30" placeholder="e.g. JEFF LEBOWSKY 23-12-1976 @EMAIL"/>
+        <button type="submit">
+          <xsl:text>Identify</xsl:text>
+        </button>
+      </form>
+    </xsl:if>
   </xsl:template>
   <xsl:template match="rate">
     <p>

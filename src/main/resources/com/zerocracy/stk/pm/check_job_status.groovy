@@ -16,10 +16,11 @@
  */
 package com.zerocracy.stk.pm
 
+import com.jcabi.log.Logger
 import com.jcabi.xml.XML
 import com.zerocracy.Par
-import com.zerocracy.farm.Assume
 import com.zerocracy.Project
+import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.in.Impediments
 import com.zerocracy.pm.in.Orders
@@ -39,7 +40,14 @@ def exec(Project project, XML xml) {
     items.add(new Par('The role is %s').say(wbs.role(job)))
     Orders orders = new Orders(project).bootstrap()
     if (orders.assigned(job)) {
-      items.add(new Par('The job is assigned to @%s').say(orders.performer(job)))
+      items.add(
+        new Par(
+          'The job is assigned to @%s for ' +
+          Logger.format(
+            '%[ms]s',
+            System.currentTimeMillis() - orders.startTime(job).time
+          )
+      ).say(orders.performer(job)))
     } else {
       items.add(new Par('The job is not assigned to anyone').say())
     }

@@ -22,6 +22,7 @@ import com.zerocracy.farm.props.Props;
 import com.zerocracy.tk.profile.TkAgenda;
 import com.zerocracy.tk.profile.TkAwards;
 import com.zerocracy.tk.profile.TkIdentify;
+import com.zerocracy.tk.profile.TkKyc;
 import com.zerocracy.tk.profile.TkProfile;
 import com.zerocracy.tk.profile.TkYoti;
 import com.zerocracy.tk.project.TkArchive;
@@ -228,6 +229,10 @@ public final class TkApp extends TkWrap {
                                                                 new FkRegex(
                                                                     "/xml/(PMO|[A-Z0-9]{9})",
                                                                     new TkXml(farm)
+                                                                ),
+                                                                new FkRegex(
+                                                                    "/kyc/([a-zA-Z0-9-]+)",
+                                                                    new TkKyc(farm)
                                                                 ),
                                                                 new FkRegex(
                                                                     "/u/([a-zA-Z0-9-]+)/awards",
