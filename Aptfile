@@ -1,3 +1,5 @@
 texlive-base
 texlive-latex-base
+texlive-binaries
+texlive-common
 texlive-lang-english
