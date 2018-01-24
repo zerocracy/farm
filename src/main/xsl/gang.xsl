@@ -25,6 +25,9 @@ SOFTWARE.
     </title>
   </xsl:template>
   <xsl:template match="page" mode="inner">
+    <h1>
+      <xsl:text>Gang</xsl:text>
+    </h1>
     <xsl:apply-templates select="people"/>
   </xsl:template>
   <xsl:template match="people">

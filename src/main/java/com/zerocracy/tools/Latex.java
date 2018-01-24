@@ -16,15 +16,11 @@
  */
 package com.zerocracy.tools;
 
-import com.google.common.io.Files;
-import com.jcabi.log.VerboseProcess;
-import java.io.File;
+import com.jcabi.http.request.JdkRequest;
 import java.io.IOException;
-import java.util.logging.Level;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
-import org.cactoos.io.LengthOf;
-import org.cactoos.io.TeeInput;
+import org.cactoos.text.TextOf;
 
 /**
  * LaTeX document.
@@ -63,36 +59,27 @@ public final class Latex {
      * @throws IOException If fails
      */
     public Input pdf() throws IOException {
-        final File dir = Files.createTempDir();
-        final File doc = new File(dir, "document.tex");
-        new LengthOf(new TeeInput(this.source, doc)).intValue();
-        for (int idx = 0; idx < 2; ++idx) {
-            Latex.compile(dir, doc.getName());
-        }
-        return new InputOf(new File(dir, "document.pdf"));
-    }
-
-    /**
-     * Compile latex in the directory.
-     * @param dir Directory
-     * @param file File name
-     * @throws IOException If fails
-     */
-    private static void compile(final File dir, final String file)
-        throws IOException {
-        final String out = new VerboseProcess(
-            new ProcessBuilder().command(
-                "pdflatex",
-                "-interaction=errorstopmode",
-                "-halt-on-error",
-                file
-            ).directory(dir).start(),
-            Level.WARNING,
-            Level.WARNING
-        ).stdout();
-        if (out.contains("Error")) {
-            throw new IllegalArgumentException("failed to compile latex");
-        }
+        final String boundary = "-------------------------748329778239743829";
+        final String body = String.join(
+            "",
+            boundary, "\n",
+            "Content-Disposition: form-data; name=\"pole\"",
+            new TextOf(this.source).asString()
+        );
+        final byte[] bytes = new JdkRequest("https://tex.mendelu.cz/en/")
+            .method("POST")
+            .header(
+                "Content-type",
+                String.format(
+                    "multipart/form-data; boundary=%s", boundary
+                )
+            )
+            .header("Content-Length", body.getBytes().length)
+            .header("Content-Encoding", "utf-8")
+            .body().set(body).back()
+            .fetch()
+            .binary();
+        return new InputOf(bytes);
     }
 
 }

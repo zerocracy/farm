@@ -108,18 +108,13 @@ SOFTWARE.
         </ul>
         <ul>
           <li>
+            <a href="https://github.com/zerocracy">GitHub</a>
+          </li>
+          <li>
             <a href="https://twitter.com/0crat">Twitter</a>
           </li>
           <li>
             <a href="https://www.facebook.com/zerocracy/">Facebook</a>
-          </li>
-        </ul>
-        <ul>
-          <li>
-            <img src="https://img.shields.io/github/stars/zerocracy/farm.svg?style=flat-square"/>
-          </li>
-          <li>
-            <img src="http://www.sixnines.io/b/2b3a?style=flat"/>
           </li>
         </ul>
       </nav>

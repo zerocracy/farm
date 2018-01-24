@@ -25,6 +25,9 @@ SOFTWARE.
     </title>
   </xsl:template>
   <xsl:template match="page" mode="inner">
+    <h1>
+      <xsl:text>Board</xsl:text>
+    </h1>
     <xsl:apply-templates select="projects"/>
   </xsl:template>
   <xsl:template match="projects[not(project)]">
