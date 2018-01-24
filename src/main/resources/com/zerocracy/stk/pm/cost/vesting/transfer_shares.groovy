@@ -63,7 +63,7 @@ def exec(Project project, XML xml) {
       .param(
         'message',
         new Par(
-          'You earned %s of new shares in %s for %s'
+          'You earned %s of new share in %s for %s'
         ).say(reward, project.pid(), job)
       )
       .postTo(project)
@@ -72,7 +72,7 @@ def exec(Project project, XML xml) {
       .param(
         'message',
         new Par(
-          'We just transferred %s of shares for %s to @%s'
+          'We just transferred %s of share for %s to @%s'
         ).say(reward, job, login)
       )
       .postTo(project)

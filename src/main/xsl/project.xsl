@@ -133,7 +133,11 @@ SOFTWARE.
         <code>
           <xsl:value-of select="ownership"/>
         </code>
-        <xsl:text>.</xsl:text>
+        <xsl:text> (download </xsl:text>
+        <a href="/equity/{project}">
+          <xsl:text>STA</xsl:text>
+        </a>
+        <xsl:text>).</xsl:text>
       </p>
     </xsl:if>
     <xsl:apply-templates select="architects"/>

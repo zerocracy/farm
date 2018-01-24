@@ -17,11 +17,15 @@
 package com.zerocracy.pm.cost;
 
 import com.zerocracy.Item;
+import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
+import com.zerocracy.tools.Latex;
 import java.io.IOException;
 import java.util.Iterator;
+import org.cactoos.Input;
+import org.cactoos.io.ResourceOf;
 import org.xembly.Directives;
 
 /**
@@ -59,34 +63,47 @@ public final class Equity {
     }
 
     /**
+     * Get ownership of the user, in PDF.
+     * @param login The GitHub login
+     * @return PDF document
+     * @throws IOException If fails
+     */
+    public Input pdf(final String login) throws IOException {
+        final double share = this.share(login);
+        if (share == 0.0d) {
+            throw new IllegalArgumentException(
+                new Par(
+                    "@%s doesn't have any share in %s"
+                ).say(login, this.project.pid())
+            );
+        }
+        return new Latex(
+            new ResourceOf("/com/zerocracy/pm/cost/equity.tex")
+        ).pdf();
+    }
+
+    /**
      * Get ownership of the user.
      * @param login The GitHub login
      * @return Ownership of the user
      * @throws IOException If fails
      */
     public String ownership(final String login) throws IOException {
-        try (final Item item = this.item()) {
-            final Iterator<String> texts = new Xocument(item.path()).xpath(
-                String.format(
-                    "/equity/owners/owner[@id='%s']/text()", login
-                )
-            ).iterator();
-            final String text;
-            if (texts.hasNext()) {
-                final double share = Double.parseDouble(texts.next());
-                final double mul = 10000.0d;
-                final Cash value = this.cap().mul((long) (share * mul))
-                    .div((long) (this.shares() * mul));
-                text = String.format(
-                    "%.2f shares = %s/%.2f%% of %s",
-                    // @checkstyle MagicNumber (1 line)
-                    share, value, share * 100.0d / this.shares(), this.cap()
-                );
-            } else {
-                text = "";
-            }
-            return text;
+        final double share = this.share(login);
+        final String text;
+        if (share > 0.0d) {
+            final double mul = 10000.0d;
+            final Cash value = this.cap().mul((long) (share * mul))
+                .div((long) (this.shares() * mul));
+            text = String.format(
+                "%.2f shares = %s/%.2f%% of %s",
+                // @checkstyle MagicNumber (1 line)
+                share, value, share * 100.0d / this.shares(), this.cap()
+            );
+        } else {
+            text = "";
         }
+        return text;
     }
 
     /**
@@ -144,6 +161,27 @@ public final class Equity {
                     "/equity/shares/text()"
                 ).get(0)
             );
+        }
+    }
+
+    /**
+     * Get share per the user.
+     * @param login The GitHub login
+     * @return Shares or zero
+     * @throws IOException If fails
+     */
+    public double share(final String login) throws IOException {
+        try (final Item item = this.item()) {
+            final Iterator<String> texts = new Xocument(item.path()).xpath(
+                String.format(
+                    "/equity/owners/owner[@id='%s']/text()", login
+                )
+            ).iterator();
+            double shares = 0.0d;
+            if (texts.hasNext()) {
+                shares = Double.parseDouble(texts.next());
+            }
+            return shares;
         }
     }
 
