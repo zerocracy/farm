@@ -78,7 +78,7 @@ public final class Equity {
             );
         }
         return new Latex(
-            new ResourceOf("/com/zerocracy/pm/cost/equity.tex")
+            new ResourceOf("com/zerocracy/pm/cost/equity.tex")
         ).pdf();
     }
 
