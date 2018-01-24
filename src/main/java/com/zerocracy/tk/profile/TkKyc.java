@@ -68,18 +68,18 @@ public final class TkKyc implements TkRegex {
         }
         final String details = new RqFormSmart(req).single("details");
         final String login = new RqSecureLogin(new Pmo(this.farm), req).value();
-        new People(this.farm).bootstrap().details(user, details);
+        new People(this.farm).bootstrap().details(login, details);
         new ClaimOut()
             .type("User identified")
-            .param("login", user)
+            .param("login", login)
             .param("details", details)
             .param("system", "manual")
-            .author(login)
+            .author(user)
             .postTo(new Pmo(this.farm));
         new ClaimOut().type("Notify user").token("user;yegor256").param(
             "message", new Par(
-                "We just identified @%s as \"%s\" manually"
-            ).say(user, details)
+                "We just identified @%s as `%s` manually"
+            ).say(login, details)
         ).postTo(new Pmo(this.farm));
         new ClaimOut()
             .type("Notify user")
@@ -93,9 +93,9 @@ public final class TkKyc implements TkRegex {
             new RsFlash(
                 new Par(
                     "@%s have been successfully identified as `%s`"
-                ).say(user, details)
+                ).say(login, details)
             ),
-            String.format("/u/%s", user)
+            String.format("/u/%s", login)
         );
     }
 
