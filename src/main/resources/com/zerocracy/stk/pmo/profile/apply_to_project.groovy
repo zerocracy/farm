@@ -23,7 +23,6 @@ import com.zerocracy.Project
 import com.zerocracy.SoftException
 import com.zerocracy.cash.Cash
 import com.zerocracy.farm.Assume
-import com.zerocracy.farm.props.Props
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.staff.Roles
@@ -67,8 +66,8 @@ def exec(Project pmo, XML xml) {
       new Par(
         'In order to work for money you have to identify yourself first;',
         'please, click this link and follow the instructions:',
-        'https://www.yoti.com/connect/%s'
-      ).say(new Props(farm).get('//yoti/app_id'))
+        'https://www.0crat.com/identify'
+      ).say()
     )
   }
   Roles roles = new Roles(farm.find("@id='${pid}'")[0]).bootstrap()

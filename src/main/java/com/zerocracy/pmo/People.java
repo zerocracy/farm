@@ -197,19 +197,19 @@ public final class People {
      * @throws IOException If fails
      */
     public void rate(final String uid, final Cash rate) throws IOException {
-        if (rate.compareTo(new Cash.S("$300")) > 0) {
+        if (rate.compareTo(new Cash.S("$256")) > 0) {
             throw new SoftException(
                 new Par(
                     "This is too high (%s),",
-                    "we do not work with rates higher than $300"
+                    "we do not work with rates higher than $256, see §16"
                 ).say(rate)
             );
         }
-        if (rate.compareTo(new Cash.S("$10")) < 0) {
+        if (rate.compareTo(new Cash.S("$16")) < 0) {
             throw new SoftException(
                 new Par(
                     "This is too low (%s),",
-                    "we do not work with rates lower than $10"
+                    "we do not work with rates lower than $16, see §16"
                 ).say(rate)
             );
         }
@@ -217,7 +217,7 @@ public final class People {
             throw new SoftException(
                 new Par(
                     "You must configure your wallet first,",
-                    "before setting the rate to %s"
+                    "before setting the rate to %s, see §20"
                 ).say(rate)
             );
         }
@@ -267,10 +267,10 @@ public final class People {
         final String wallet) throws IOException {
         if (!bank.matches("paypal")) {
             throw new SoftException(
-                String.format(
-                    "Bank name `%s` is invalid, we accept only `paypal`",
-                    bank
-                )
+                new Par(
+                    "Bank name `%s` is invalid,",
+                    "we accept only `paypal`, see §20"
+                ).say(bank)
             );
         }
         final Pattern email = Pattern.compile(

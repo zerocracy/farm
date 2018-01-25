@@ -18,6 +18,7 @@ SOFTWARE.
 <claims xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.27/xsd/pm/claims.xsd" version="0.1" updated="2017-03-27T11:18:09.228Z">
   <claim id="1">
     <type>Register impediment</type>
+    <author>yegor256</author>
     <token>job;gh:test/test#1</token>
     <params>
       <param name="job">gh:test/test#1</param>

@@ -38,7 +38,7 @@ SOFTWARE.
     <p>
       <xsl:text>Recent claims:</xsl:text>
     </p>
-    <table>
+    <table data-sortable="true">
       <thead>
         <tr>
           <th>

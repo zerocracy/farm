@@ -14,40 +14,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pm.in;
+package com.zerocracy.tools;
 
-import com.zerocracy.Project;
-import com.zerocracy.farm.fake.FkProject;
-import com.zerocracy.pm.scope.Wbs;
+import java.io.File;
+import org.cactoos.Input;
+import org.cactoos.io.LengthOf;
+import org.cactoos.io.TeeInput;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
- * Test case for {@link Impediments}.
- *
- * @author Kirill (g4s8.public@gmail.com)
+ * Test case for {@link Latex}.
+ * @author Yegor Bugayenko (yegor@woquo.com)
  * @version $Id$
- * @since 0.19
- *  @checkstyle JavadocMethodCheck (500 lines)
+ * @since 0.111
  */
-public final class ImpedimentsTest {
+public final class LatexTest {
 
+    /**
+     * Latex can render PDF.
+     * @throws Exception If some problem inside
+     */
     @Test
-    public void registerImpediment() throws Exception {
-        final Project project = new FkProject();
-        final Impediments imp = new Impediments(project).bootstrap();
-        final String job = "gh:test/test#1";
-        new Wbs(project).bootstrap().add(job);
-        new Orders(project).bootstrap().assign(job, "yegor256", "no reason");
-        imp.register(job, "test");
+    public void renders() throws Exception {
+        final Input pdf = new Latex(
+            "\\documentclass{article}\\begin{document}test\\end{document}"
+        ).pdf();
+        final File temp = new File("/tmp/bill.pdf");
+        new LengthOf(new TeeInput(pdf, temp)).intValue();
         MatcherAssert.assertThat(
-            imp.jobs(),
-            Matchers.contains(job)
-        );
-        MatcherAssert.assertThat(
-            imp.exists(job),
-            Matchers.is(true)
+            new LengthOf(pdf).intValue(),
+            Matchers.greaterThan(0)
         );
     }
+
 }

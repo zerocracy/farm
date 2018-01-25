@@ -23,6 +23,7 @@ def exec(Project project, XML xml) {
   )
   Orders orders = new Orders(project).bootstrap()
   Wbs wbs = new Wbs(project).bootstrap()
+  Impediments impediments = new Impediments(project).bootstrap()
   List<String> waiting = new Impediments(project).bootstrap().jobs().toList()
   int days = 10
   new Limited<>(
@@ -33,22 +34,29 @@ def exec(Project project, XML xml) {
     )
   ).forEach { String job ->
     String worker = orders.performer(job)
-    if (wbs.role(job) != 'REV' && worker != 'yegor256') {
-      new ClaimOut()
-        .type('Cancel order')
-        .token("job;$job")
-        .param('job', job)
-        .param('reason', new Par('It is older than %d day(s), see §8').say(days))
-        .postTo(project)
-      new ClaimOut()
-        .type('Notify project')
-        .param(
-          'message',
-          new Par(
-            'The order at %s cancelled for @%s, it is over %d day(s), see §8'
-          ).say(job, worker, days)
-        )
-        .postTo(project)
+    if (wbs.role(job) == 'REV') {
+      return
     }
+    if (worker == 'yegor256') {
+      return
+    }
+    if (impediments.exists(job)) {
+      return
+    }
+    new ClaimOut()
+      .type('Cancel order')
+      .token("job;$job")
+      .param('job', job)
+      .param('reason', new Par('It is older than %d day(s), see §8').say(days))
+      .postTo(project)
+    new ClaimOut()
+      .type('Notify project')
+      .param(
+        'message',
+        new Par(
+          'The order at %s cancelled for @%s, it is over %d day(s), see §8'
+        ).say(job, worker, days)
+      )
+      .postTo(project)
   }
 }

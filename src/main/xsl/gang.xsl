@@ -25,6 +25,9 @@ SOFTWARE.
     </title>
   </xsl:template>
   <xsl:template match="page" mode="inner">
+    <h1>
+      <xsl:text>Gang</xsl:text>
+    </h1>
     <xsl:apply-templates select="people"/>
   </xsl:template>
   <xsl:template match="people">
@@ -38,7 +41,7 @@ SOFTWARE.
       </a>
       <xsl:text>.</xsl:text>
     </p>
-    <table>
+    <table data-sortable="true">
       <thead>
         <tr>
           <th>
@@ -72,7 +75,7 @@ SOFTWARE.
       </thead>
       <tbody>
         <xsl:apply-templates select="user">
-          <xsl:sort select="login"/>
+          <xsl:sort select="awards" order="descending" data-type="number"/>
         </xsl:apply-templates>
       </tbody>
     </table>
@@ -118,8 +121,35 @@ SOFTWARE.
           </xsl:otherwise>
         </xsl:choose>
       </td>
-      <td style="text-align:right;">
-        <xsl:text>?</xsl:text>
+      <td>
+        <xsl:attribute name="style">
+          <xsl:text>text-align:right;color:</xsl:text>
+          <xsl:choose>
+            <xsl:when test="awards &gt; 1024">
+              <xsl:text>darkgreen</xsl:text>
+            </xsl:when>
+            <xsl:when test="awards &lt; 0">
+              <xsl:text>darkred</xsl:text>
+            </xsl:when>
+            <xsl:when test="awards = 0">
+              <xsl:text>inherit</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:text>orange</xsl:text>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:attribute>
+        <xsl:choose>
+          <xsl:when test="awards = 0">
+            <xsl:text>&#x2014;</xsl:text>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:if test="awards &gt; 0">
+              <xsl:text>+</xsl:text>
+            </xsl:if>
+            <xsl:value-of select="awards"/>
+          </xsl:otherwise>
+        </xsl:choose>
       </td>
       <td style="text-align:right;">
         <xsl:text>?</xsl:text>

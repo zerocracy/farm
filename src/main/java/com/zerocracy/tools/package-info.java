@@ -14,32 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.bootstraps_a_project
 
-import com.jcabi.xml.XML
-import com.zerocracy.Farm
-import com.zerocracy.Project
-import com.zerocracy.pmo.Catalog
-import com.zerocracy.pmo.Projects
-import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
-
-def exec(Project project, XML xml) {
-  MatcherAssert.assertThat(
-    'User projects updated',
-    new Projects(project, 'yegor256').bootstrap().iterate(),
-    Matchers.hasItem(project.pid())
-  )
-  Farm farm = binding.variables.farm
-  def catalog = new Catalog(farm).bootstrap()
-  MatcherAssert.assertThat(
-    'Project title should be set from channel prop',
-    catalog.title(project.pid()),
-    Matchers.equalTo('Test')
-  )
-  MatcherAssert.assertThat(
-    'Slack links is invalid',
-    catalog.links(project.pid(),'slack'),
-    Matchers.contains(Matchers.equalTo(project.pid()))
-  )
-}
+/**
+ * Tools.
+ *
+ * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @version $Id$
+ * @since 0.20
+ */
+package com.zerocracy.tools;
