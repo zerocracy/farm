@@ -34,6 +34,9 @@ def exec(Project project, XML xml) {
   String job = claim.param('job')
   String login = claim.param('login')
   int minutes = Integer.parseInt(claim.param('minutes'))
+  if (minutes < 0) {
+    return
+  }
   Roles roles = new Roles(project).bootstrap()
   if (!roles.hasAnyRole(login)) {
     return
@@ -50,6 +53,7 @@ def exec(Project project, XML xml) {
     new Equity(project).bootstrap().add(login, reward)
     new ClaimOut()
       .type('Equity transferred')
+      .param('cause', claim.cid())
       .param('login', login)
       .param('job', job)
       .param('reward', reward)
@@ -59,20 +63,22 @@ def exec(Project project, XML xml) {
       .postTo(project)
     new ClaimOut()
       .type('Notify user')
+      .param('cause', claim.cid())
       .param('login', login)
       .param(
         'message',
         new Par(
-          'You earned %s of new shares in %s for %s'
+          'You earned %s of new share in %s for %s'
         ).say(reward, project.pid(), job)
       )
       .postTo(project)
     new ClaimOut()
       .type('Notify project')
+      .param('cause', claim.cid())
       .param(
         'message',
         new Par(
-          'We just transferred %s of shares for %s to @%s'
+          'We just transferred %s of share for %s to @%s'
         ).say(reward, job, login)
       )
       .postTo(project)

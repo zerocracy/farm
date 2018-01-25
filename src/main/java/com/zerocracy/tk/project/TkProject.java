@@ -98,7 +98,7 @@ public final class TkProject implements TkRegex {
                                     new XeChain(
                                         new XeAppend(
                                             "architects",
-                                            new XeTransform<>(
+                                            new XeTransform<String>(
                                                 roles.findByRole("ARC"),
                                                 usr -> new XeAppend(
                                                     "architect", usr

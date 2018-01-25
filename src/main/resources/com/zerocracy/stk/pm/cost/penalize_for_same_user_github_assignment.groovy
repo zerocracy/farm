@@ -45,6 +45,7 @@ def exec(Project project, XML xml) {
   if (issue.author().login().equalsIgnoreCase(claim.param('login'))) {
     new ClaimOut()
       .type('Make payment')
+      .param('cause', claim.cid())
       .param('job', job)
       .param('login', claim.author())
       .param(

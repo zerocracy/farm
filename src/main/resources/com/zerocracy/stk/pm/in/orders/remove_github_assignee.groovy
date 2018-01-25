@@ -49,6 +49,7 @@ def exec(Project project, XML xml) {
     issue.assign('')
     new ClaimOut()
       .type('GitHub issue lost an assignee')
+      .param('cause', claim.cid())
       .param('login', login)
       .param('repo', issue.repo().coordinates())
       .param('issue', issue.number())

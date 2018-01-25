@@ -44,13 +44,15 @@ def exec(Project pmo, XML xml) {
   for (String job : orders.jobs(login)) {
     orders.resign(job)
     new ClaimOut()
-        .type('Order was canceled')
-        .param('job', job)
-        .param('login', login)
-        .postTo(target)
+      .type('Order was canceled')
+      .param('cause', claim.cid())
+      .param('job', job)
+      .param('login', login)
+      .postTo(target)
   }
   new ClaimOut()
     .type('Resign all roles')
+    .param('cause', claim.cid())
     .param('login', claim.author())
     .postTo(target)
   claim.reply(

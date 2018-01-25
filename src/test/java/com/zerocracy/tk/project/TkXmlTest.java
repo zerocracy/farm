@@ -62,7 +62,9 @@ public final class TkXmlTest {
                         new RqWithHeaders(
                             new RqFake(
                                 "GET",
-                                String.format("/xml/%s?a=pm/staff/roles", pid)
+                                String.format(
+                                    "/xml/%s?file=pm/staff/roles", pid
+                                )
                             ),
                             // @checkstyle LineLength (1 line)
                             "Cookie: PsCookie=0975A5A5-F6DB193E-AF18000A-75726E3A-74657374-3A310005-6C6F6769-6E000879-65676F72-323536AE"

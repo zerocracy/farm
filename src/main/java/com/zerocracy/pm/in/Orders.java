@@ -27,13 +27,13 @@ import com.zerocracy.pm.cost.Rates;
 import com.zerocracy.pm.scope.Wbs;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import java.time.chrono.ChronoZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import org.cactoos.list.SolidList;
 import org.cactoos.text.JoinedText;
 import org.cactoos.time.DateAsText;
-import org.cactoos.time.ZonedDateTimeOf;
+import org.cactoos.time.DateOf;
 import org.xembly.Directives;
 
 /**
@@ -213,7 +213,7 @@ public final class Orders {
      * @return Start DateTime
      * @throws IOException If fails
      */
-    public ZonedDateTime startTime(final String job) throws IOException {
+    public Date startTime(final String job) throws IOException {
         if (!this.assigned(job)) {
             throw new SoftException(
                 String.format(
@@ -222,7 +222,7 @@ public final class Orders {
             );
         }
         try (final Item orders = this.item()) {
-            return new ZonedDateTimeOf(
+            return new DateOf(
                 new Xocument(orders.path()).xpath(
                     String.format(
                         "/orders/order[@job='%s']/created/text()",

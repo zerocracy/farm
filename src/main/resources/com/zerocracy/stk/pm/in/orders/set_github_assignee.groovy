@@ -44,6 +44,7 @@ def exec(Project project, XML xml) {
     new Issue.Smart(issue).assign(login)
     new ClaimOut()
       .type('GitHub issue got an assignee')
+      .param('cause', claim.cid())
       .param('login', login)
       .param('repo', issue.repo().coordinates())
       .param('issue', issue.number())

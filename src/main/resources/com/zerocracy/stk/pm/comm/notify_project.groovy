@@ -17,15 +17,20 @@
 package com.zerocracy.stk.pm.comm
 
 import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
+import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pmo.Catalog
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Notify project')
+  Farm farm = binding.variables.farm
   ClaimIn claim = new ClaimIn(xml)
-  claim.copy()
-    .type('Notify')
-    .token("slack;${project.pid()}")
-    .postTo(project)
+  new Catalog(farm).bootstrap().links(project.pid(), 'slack').each {
+    claim.copy()
+      .type('Notify')
+      .token("slack;${it}")
+      .postTo(project)
+  }
 }

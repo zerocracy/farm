@@ -45,5 +45,9 @@ public final class ImpedimentsTest {
             imp.jobs(),
             Matchers.contains(job)
         );
+        MatcherAssert.assertThat(
+            imp.exists(job),
+            Matchers.is(true)
+        );
     }
 }

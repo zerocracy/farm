@@ -35,6 +35,7 @@ def exec(Project project, XML xml) {
   }
   new ClaimOut()
     .type('Agenda was updated')
+    .param('cause', claim.cid())
     .param('login', login)
     .postTo(project)
 }

@@ -31,7 +31,7 @@ import org.cactoos.time.DateOf;
  * @version $Id$
  * @since 0.9
  */
-@SuppressWarnings("PMD.TooManyMethods")
+@SuppressWarnings({ "PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods" })
 public final class ClaimIn {
 
     /**
@@ -66,11 +66,11 @@ public final class ClaimIn {
                 )
             );
         }
-        return new ClaimOut(
-            new ClaimOut.Notify(
-                this.token(), msg
-            )
-        );
+        return new ClaimOut()
+            .type("Notify")
+            .token(this.token())
+            .param("message", msg)
+            .param("cause", this.cid());
     }
 
     /**
@@ -87,6 +87,7 @@ public final class ClaimIn {
             out.author(this.author());
         }
         out.params(this.params());
+        out.param("cause", this.cid());
         return out;
     }
 
