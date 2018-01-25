@@ -54,7 +54,11 @@ def exec(Project project, XML xml) {
   Repo repo = github.repos().get(
     new Coordinates.Simple(parts[1])
   )
-  String message = claim.param('message')
+  String message = String.format(
+    '%s\n\n<!-- claim_id: %d -->',
+    claim.param('message'),
+    claim.cid()
+  )
   Issue issue = repo.issues().get(
     Integer.parseInt(parts[2])
   )
