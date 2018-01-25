@@ -21,6 +21,8 @@ import com.zerocracy.Farm;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.tk.profile.TkAgenda;
 import com.zerocracy.tk.profile.TkAwards;
+import com.zerocracy.tk.profile.TkIdentify;
+import com.zerocracy.tk.profile.TkKyc;
 import com.zerocracy.tk.profile.TkProfile;
 import com.zerocracy.tk.profile.TkYoti;
 import com.zerocracy.tk.project.TkArchive;
@@ -28,6 +30,7 @@ import com.zerocracy.tk.project.TkArtifact;
 import com.zerocracy.tk.project.TkBadge;
 import com.zerocracy.tk.project.TkClaim;
 import com.zerocracy.tk.project.TkDonate;
+import com.zerocracy.tk.project.TkEquity;
 import com.zerocracy.tk.project.TkFiles;
 import com.zerocracy.tk.project.TkFootprint;
 import com.zerocracy.tk.project.TkPay;
@@ -124,6 +127,7 @@ public final class TkApp extends TkWrap {
                                                                     new TkText("30265BD04DBC892A0B22A97C81F04337B49CBBB18BE62476FEA4E78EC8C26FD4 comodoca.com 5a60937406a7f\n")
                                                                 ),
                                                                 new FkRegex("/", new TkIndex(farm)),
+                                                                new FkRegex("/identify", new TkIdentify(farm)),
                                                                 new FkRegex("/privacy", new TkRedirect("http://datum.zerocracy.com/pages/terms.html#privacy")),
                                                                 new FkRegex("/yoti", new TkYoti(farm)),
                                                                 new FkRegex("/heapdump", new TkDump(farm)),
@@ -212,6 +216,10 @@ public final class TkApp extends TkWrap {
                                                                     new TkArchive(farm)
                                                                 ),
                                                                 new FkRegex(
+                                                                    "/equity/([A-Z0-9]{9})",
+                                                                    new TkEquity(farm)
+                                                                ),
+                                                                new FkRegex(
                                                                     "/pay/(PMO|[A-Z0-9]{9})",
                                                                     new TkPay(farm)
                                                                 ),
@@ -226,6 +234,10 @@ public final class TkApp extends TkWrap {
                                                                 new FkRegex(
                                                                     "/xml/(PMO|[A-Z0-9]{9})",
                                                                     new TkXml(farm)
+                                                                ),
+                                                                new FkRegex(
+                                                                    "/kyc/([a-zA-Z0-9-]+)",
+                                                                    new TkKyc(farm)
                                                                 ),
                                                                 new FkRegex(
                                                                     "/u/([a-zA-Z0-9-]+)/awards",

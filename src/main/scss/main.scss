@@ -14,7 +14,7 @@
 // SOFTWARE.
 
 @import "//fonts.googleapis.com/css?family=Nunito";
-@import "//cdn.rawgit.com/yegor256/tacit/gh-pages/tacit-css-1.2.7.min.css";
+@import "//cdn.rawgit.com/yegor256/tacit/gh-pages/tacit-css-1.2.8.min.css";
 
 body {
   font-family: 'Nunito', sans-serif;
@@ -55,6 +55,10 @@ footer {
   p {
     text-align: center;
   }
+}
+
+table th {
+  cursor: pointer;
 }
 
 header {

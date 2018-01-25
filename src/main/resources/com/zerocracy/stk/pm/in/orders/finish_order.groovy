@@ -17,15 +17,14 @@
 package com.zerocracy.stk.pm.in.orders
 
 import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
 import com.zerocracy.Project
+import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.cost.Boosts
 import com.zerocracy.pm.cost.Estimates
 import com.zerocracy.pm.in.Orders
-import java.time.Duration
-import java.time.ZonedDateTime
+import java.util.concurrent.TimeUnit
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
@@ -33,7 +32,7 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
   Orders orders = new Orders(project).bootstrap()
-  def duration = Duration.between(orders.startTime(job), ZonedDateTime.now())
+  long minutes = (System.currentTimeMillis() - orders.startTime(job).time) / TimeUnit.MINUTES.toMillis(1L)
   String login = orders.performer(job)
   Estimates estimates = new Estimates(project).bootstrap()
   ClaimOut out = new ClaimOut()
@@ -51,6 +50,6 @@ def exec(Project project, XML xml) {
     .type('Order was finished')
     .param('job', job)
     .param('login', login)
-    .param('duration', duration.toString())
+    .param('minutes', minutes)
     .postTo(project)
 }

@@ -25,10 +25,12 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.staff.Roles
+import com.zerocracy.pmo.Catalog
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Bootstrap')
+  Farm farm = binding.variables.farm
   Roles roles = new Roles(project).bootstrap()
   ClaimIn claim = new ClaimIn(xml)
   String author = claim.author()
@@ -36,6 +38,11 @@ def exec(Project project, XML xml) {
   if (roles.empty) {
     roles.assign(author, role)
     roles.assign(author, 'ARC')
+    new Catalog(farm).bootstrap().link(
+      project.pid(),
+      'slack',
+      project.pid()
+    )
     new ClaimOut()
       .type('Role was assigned')
       .param('login', author)
@@ -49,7 +56,6 @@ def exec(Project project, XML xml) {
         .postTo(project)
     }
     if (claim.hasToken()) {
-      Farm farm = binding.variables.farm
       claim.reply(
         new Par(
           farm,

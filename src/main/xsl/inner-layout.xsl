@@ -41,21 +41,25 @@ SOFTWARE.
               <xsl:value-of select="identity/login"/>
             </a>
           </li>
+          <xsl:text> </xsl:text>
           <li>
             <a href="/board">
               <xsl:text>Board</xsl:text>
             </a>
           </li>
+          <xsl:text> </xsl:text>
           <li>
             <a href="/gang">
               <xsl:text>Gang</xsl:text>
             </a>
           </li>
+          <xsl:text> </xsl:text>
           <li>
             <a href="http://datum.zerocracy.com/pages/policy.html">
               <xsl:text>Policy</xsl:text>
             </a>
           </li>
+          <xsl:text> </xsl:text>
           <li>
             <a href="http://datum.zerocracy.com/pages/terms.html">
               <xsl:text>Terms</xsl:text>
@@ -100,6 +104,17 @@ SOFTWARE.
             <xsl:call-template name="takes_memory">
               <xsl:with-param name="memory" select="memory"/>
             </xsl:call-template>
+          </li>
+        </ul>
+        <ul>
+          <li>
+            <a href="https://github.com/zerocracy">GitHub</a>
+          </li>
+          <li>
+            <a href="https://twitter.com/0crat">Twitter</a>
+          </li>
+          <li>
+            <a href="https://www.facebook.com/zerocracy/">Facebook</a>
           </li>
         </ul>
       </nav>
