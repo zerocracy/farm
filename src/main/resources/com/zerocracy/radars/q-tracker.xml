@@ -79,10 +79,17 @@ SOFTWARE.
     <label>status</label>
     <help>Check the status of the job</help>
   </cmd>
-  <!--
-    @todo #73:30min Add command to rate the quality, the format is
-     'quality is good|bad|acceptable', this command should trigger
-     'Finish order' with 'quality' param (see #73 comments for details)
-     and pay 15 min to QA user.
-  -->
+  <cmd>
+    <code>QA review</code>
+    <regex>quality is</regex>
+    <label>quality</label>
+    <help>Review a task</help>
+    <opts>
+      <opt>
+        <name>quality</name>
+        <regex>good|bad|acceptable</regex>
+        <help>good, bad or acceptable</help>
+      </opt>
+    </opts>
+  </cmd>
 </question>

@@ -35,16 +35,22 @@ def exec(Project project, XML xml) {
   long minutes = (System.currentTimeMillis() - orders.startTime(job).time) / TimeUnit.MINUTES.toMillis(1L)
   String login = orders.performer(job)
   Estimates estimates = new Estimates(project).bootstrap()
-  ClaimOut out = new ClaimOut()
-    .type('Make payment')
-    .param('job', job)
-    .param('login', login)
-    .param('reason', 'Order was successfully finished')
-    .param('minutes', new Boosts(project).bootstrap().factor(job) * 15)
-  if (estimates.exists(job)) {
-    out = out.param('cash', estimates.get(job))
+  def quality = claim.params().with {
+    it.containsKey('quality') ? it['quality'] : 'acceptable'
   }
-  out.postTo(project)
+  if (quality == 'good' || quality == 'acceptable') {
+    def extra = quality == 'good' ? 5 : 0
+    ClaimOut out = new ClaimOut()
+      .type('Make payment')
+      .param('job', job)
+      .param('login', login)
+      .param('reason', 'Order was successfully finished')
+      .param('minutes', new Boosts(project).bootstrap().factor(job) * 15 + extra)
+    if (estimates.exists(job)) {
+      out = out.param('cash', estimates.get(job))
+    }
+    out.postTo(project)
+  }
   orders.resign(job)
   new ClaimOut()
     .type('Order was finished')
