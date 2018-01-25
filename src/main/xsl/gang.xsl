@@ -67,6 +67,12 @@ SOFTWARE.
           </th>
           <th>
             <xsl:text>Reputation</xsl:text>
+            <sub>
+              <xsl:text>/</xsl:text>
+              <a href="http://datum.zerocracy.com/pages/policy.html#18">
+                <xsl:text>&#xA7;18</xsl:text>
+              </a>
+            </sub>
           </th>
           <th>
             <xsl:text>Agenda</xsl:text>
@@ -152,7 +158,7 @@ SOFTWARE.
         </xsl:choose>
       </td>
       <td style="text-align:right;">
-        <xsl:text>?</xsl:text>
+        <xsl:value-of select="agenda"/>
       </td>
     </tr>
   </xsl:template>

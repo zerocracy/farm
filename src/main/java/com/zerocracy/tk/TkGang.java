@@ -20,12 +20,14 @@ import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Xocument;
+import com.zerocracy.pmo.Agenda;
 import com.zerocracy.pmo.Awards;
 import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
 import org.cactoos.func.FuncOf;
+import org.cactoos.iterable.LengthOf;
 import org.cactoos.scalar.And;
 import org.takes.Request;
 import org.takes.Response;
@@ -98,6 +100,14 @@ public final class TkGang implements Take {
                     "awards",
                     Integer.toString(
                         new Awards(this.farm, login).bootstrap().total()
+                    )
+                ),
+                new XeAppend(
+                    "agenda",
+                    Integer.toString(
+                        new LengthOf(
+                            new Agenda(this.farm, login).bootstrap().jobs()
+                        ).intValue()
                     )
                 ),
                 new XeWhen(
