@@ -17,7 +17,7 @@
 package com.zerocracy.bundles.review_quality
 
 import com.jcabi.xml.XML
-import com.zerocracy.jstk.Project
+import com.zerocracy.Project
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pmo.Awards
 import org.hamcrest.MatcherAssert
