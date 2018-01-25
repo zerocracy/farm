@@ -55,7 +55,7 @@ SOFTWARE.
       </a>
       <xsl:text>.</xsl:text>
     </p>
-    <table>
+    <table data-sortable="true">
       <thead>
         <tr>
           <th>

@@ -41,7 +41,7 @@ SOFTWARE.
       </a>
       <xsl:text>.</xsl:text>
     </p>
-    <table>
+    <table data-sortable="true">
       <thead>
         <tr>
           <th>
@@ -75,7 +75,7 @@ SOFTWARE.
       </thead>
       <tbody>
         <xsl:apply-templates select="user">
-          <xsl:sort select="login"/>
+          <xsl:sort select="awards" order="descending" data-type="number"/>
         </xsl:apply-templates>
       </tbody>
     </table>
@@ -121,9 +121,9 @@ SOFTWARE.
           </xsl:otherwise>
         </xsl:choose>
       </td>
-      <td style="text-align:right;">
+      <td>
         <xsl:attribute name="style">
-          <xsl:text>color:</xsl:text>
+          <xsl:text>text-align:right;color:</xsl:text>
           <xsl:choose>
             <xsl:when test="awards &gt; 1024">
               <xsl:text>darkgreen</xsl:text>
