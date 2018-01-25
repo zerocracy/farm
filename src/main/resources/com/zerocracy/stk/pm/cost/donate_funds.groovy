@@ -40,6 +40,7 @@ def exec(Project project, XML xml) {
   )
   new ClaimOut()
     .type('Notify project')
+    .param('cause', claim.cid())
     .param(
       'message',
       new Par(

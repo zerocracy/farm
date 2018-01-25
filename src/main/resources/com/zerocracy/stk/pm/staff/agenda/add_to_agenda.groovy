@@ -34,6 +34,7 @@ def exec(Project project, XML xml) {
   agenda.add(job, role, 'https://github.com/')
   new ClaimOut()
     .type('Agenda was updated')
+    .param('cause', claim.cid())
     .param('login', login)
     .postTo(project)
 }

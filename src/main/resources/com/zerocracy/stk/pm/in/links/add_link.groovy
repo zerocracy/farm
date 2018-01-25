@@ -43,6 +43,7 @@ def exec(Project project, XML xml) {
   ).postTo(project)
   new ClaimOut()
     .type('Project link was added')
+    .param('cause', claim.cid())
     .param('rel', rel)
     .param('href', href)
     .postTo(project)

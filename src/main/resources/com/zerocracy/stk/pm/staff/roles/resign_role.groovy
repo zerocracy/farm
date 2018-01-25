@@ -48,6 +48,7 @@ def exec(Project project, XML xml) {
   ).postTo(project)
   new ClaimOut()
     .type('Role was resigned')
+    .param('cause', claim.cid())
     .param('login', login)
     .param('role', role)
     .postTo(project)

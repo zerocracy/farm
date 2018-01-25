@@ -32,6 +32,7 @@ def exec(Project project, XML xml) {
   Cash rate = new Cash.S(claim.param('rate'))
   new ClaimOut()
     .type('Notify user')
+    .param('cause', claim.cid())
     .token("user;${login}")
     .param(
       'message',

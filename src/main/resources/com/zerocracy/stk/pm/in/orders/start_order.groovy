@@ -75,6 +75,7 @@ def exec(Project project, XML xml) {
   claim.reply(msg).postTo(project)
   new ClaimOut()
     .type('Order was given')
+    .param('cause', claim.cid())
     .param('job', job)
     .param('role', role)
     .param('login', login)

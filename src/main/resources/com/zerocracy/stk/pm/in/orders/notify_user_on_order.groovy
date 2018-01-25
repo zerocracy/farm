@@ -31,6 +31,7 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   new ClaimOut()
     .type('Notify user')
+    .param('cause', claim.cid())
     .token("user;${claim.param('login')}")
     .param(
       'message',

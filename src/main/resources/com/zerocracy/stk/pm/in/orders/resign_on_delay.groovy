@@ -45,12 +45,14 @@ def exec(Project project, XML xml) {
     }
     new ClaimOut()
       .type('Cancel order')
+      .param('cause', claim.cid())
       .token("job;$job")
       .param('job', job)
       .param('reason', new Par('It is older than %d day(s), see §8').say(days))
       .postTo(project)
     new ClaimOut()
       .type('Notify project')
+      .param('cause', claim.cid())
       .param(
         'message',
         new Par(
