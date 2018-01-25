@@ -133,14 +133,19 @@ SOFTWARE.
         <code>
           <xsl:value-of select="ownership"/>
         </code>
-        <xsl:text>.</xsl:text>
+        <xsl:text> (</xsl:text>
+        <a href="/equity/{project}">
+          <xsl:text>proof</xsl:text>
+        </a>
+        <xsl:text>).</xsl:text>
       </p>
     </xsl:if>
     <xsl:apply-templates select="architects"/>
     <xsl:apply-templates select="project_links"/>
+    <xsl:apply-templates select="." mode="cash"/>
     <xsl:apply-templates select="." mode="artifacts"/>
   </xsl:template>
-  <xsl:template match="page[project!='PMO']" mode="artifacts">
+  <xsl:template match="page[project!='PMO' and cash]" mode="cash">
     <xsl:if test="identity/login = 'yegor256'">
       <form action="/donate/{project}" method="post" autocomplete="off">
         <label>
@@ -204,6 +209,8 @@ SOFTWARE.
       <input name="email" id="email" type="hidden"/>
       <input type="submit"/>
     </form>
+  </xsl:template>
+  <xsl:template match="page[project!='PMO']" mode="artifacts">
     <p>
       <xsl:text>Scope: </xsl:text>
       <a href="/a/{project}?a=pm/scope/wbs">

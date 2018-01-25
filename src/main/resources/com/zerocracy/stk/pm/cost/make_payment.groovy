@@ -50,15 +50,20 @@ def exec(Project project, XML xml) {
       new ClaimOut()
         .type('Notify user')
         .param('login', login)
-        .param('message', msg)
+        .param(
+          'message',
+          new Par(
+            'We just paid you %s (`%s`) for %s: %s'
+          ).say(price, msg, job, reason)
+        )
         .postTo(project)
       new ClaimOut()
         .type('Notify project')
         .param(
-        'message',
+          'message',
           new Par(
-            'We just paid %s to @%s for %s: payment ID is `%s`'
-          ).say(price, login, job, msg)
+            'We just paid %s (`%s`) to @%s for %s: %s'
+          ).say(price, msg, login, job, reason)
         )
         .postTo(project)
     }

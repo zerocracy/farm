@@ -16,38 +16,31 @@
  */
 package com.zerocracy.tk.profile;
 
-import com.yoti.api.client.FileKeyPairSource;
-import com.yoti.api.client.HumanProfile;
-import com.yoti.api.client.ProfileException;
-import com.yoti.api.client.YotiClientBuilder;
 import com.zerocracy.Farm;
 import com.zerocracy.Par;
-import com.zerocracy.farm.props.Props;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pmo.People;
 import com.zerocracy.pmo.Pmo;
 import com.zerocracy.tk.RqUser;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import org.cactoos.io.LengthOf;
-import org.cactoos.io.TeeInput;
+import java.util.logging.Level;
 import org.takes.Response;
 import org.takes.facets.flash.RsFlash;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
 import org.takes.facets.forward.RsForward;
-import org.takes.rq.RqHref;
+import org.takes.rq.form.RqFormSmart;
 
 /**
- * Yoti callback page.
+ * Kyc explicit identification.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.20
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-public final class TkYoti implements TkRegex {
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+public final class TkKyc implements TkRegex {
 
     /**
      * Farm.
@@ -58,56 +51,51 @@ public final class TkYoti implements TkRegex {
      * Ctor.
      * @param frm Farm
      */
-    public TkYoti(final Farm frm) {
+    public TkKyc(final Farm frm) {
         this.farm = frm;
     }
 
     @Override
     public Response act(final RqRegex req) throws IOException {
-        final Props props = new Props(this.farm);
-        final String token = new RqHref.Smart(req).single("token");
-        final Path pem = Files.createTempFile("", ".pem");
-        new LengthOf(
-            new TeeInput(props.get("//yoti/pem").trim(), pem)
-        ).intValue();
-        final HumanProfile profile;
-        try {
-            profile = YotiClientBuilder.newInstance()
-                .forApplication(props.get("//yoti/sdk_id"))
-                .withKeyPair(FileKeyPairSource.fromFile(pem.toFile()))
-                .build()
-                .getActivityDetails(token)
-                .getUserProfile();
-        } catch (final ProfileException ex) {
-            throw new IOException(ex);
-        }
-        final String name = String.format(
-            "%s %s %d-%d-%d @Yoti",
-            profile.getGivenNames(), profile.getFamilyName(),
-            profile.getDateOfBirth().getDay(),
-            profile.getDateOfBirth().getMonth(),
-            profile.getDateOfBirth().getYear()
-        );
         final String user = new RqUser(this.farm, req).value();
-        new People(this.farm).bootstrap().details(user, name);
+        if (!"yegor256".equals(user)) {
+            throw new RsForward(
+                new RsFlash(
+                    "You are not allowed to do this, sorry",
+                    Level.WARNING
+                )
+            );
+        }
+        final String details = new RqFormSmart(req).single("details");
+        final String login = new RqSecureLogin(new Pmo(this.farm), req).value();
+        new People(this.farm).bootstrap().details(login, details);
         new ClaimOut()
             .type("User identified")
-            .param("login", user)
-            .param("details", name)
-            .param("system", "yoti")
+            .param("login", login)
+            .param("details", details)
+            .param("system", "manual")
+            .author(user)
             .postTo(new Pmo(this.farm));
         new ClaimOut().type("Notify user").token("user;yegor256").param(
             "message", new Par(
-                "We just identified @%s as \"%s\" via Yoti"
-            ).say(user, name)
+                "We just identified @%s as `%s` manually"
+            ).say(login, details)
         ).postTo(new Pmo(this.farm));
+        new ClaimOut()
+            .type("Notify user")
+            .token(String.format("user;%s", login))
+            .param(
+                "message",
+                new Par("We just identified you as `%s`").say(details)
+            )
+            .postTo(new Pmo(this.farm));
         return new RsForward(
             new RsFlash(
                 new Par(
-                    "@%s have been successfully identified as %s"
-                ).say(user, name)
+                    "@%s have been successfully identified as `%s`"
+                ).say(login, details)
             ),
-            String.format("/u/%s", user)
+            String.format("/u/%s", login)
         );
     }
 
