@@ -40,6 +40,15 @@ SOFTWARE.
         <xsl:text>&#xA7;2</xsl:text>
       </a>
       <xsl:text>.</xsl:text>
+      <xsl:text> If you want these programmers to work with your project,</xsl:text>
+      <xsl:text> you have to publish it on the </xsl:text>
+      <xsl:text>Board</xsl:text>
+      <xsl:text>, as explained in </xsl:text>
+      <a href="http://datum.zerocracy.com/pages/policy.html#26">
+        <xsl:text>&#xA7;26</xsl:text>
+      </a>
+      <xsl:text>, we will automatically notify the best</xsl:text>
+      <xsl:text> and the most relevant candidates; they will apply, if interested.</xsl:text>
     </p>
     <table data-sortable="true">
       <thead>
