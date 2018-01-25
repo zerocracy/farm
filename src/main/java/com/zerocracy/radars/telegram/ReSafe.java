@@ -17,15 +17,9 @@
 package com.zerocracy.radars.telegram;
 
 import com.zerocracy.Farm;
-import com.zerocracy.SoftException;
-import com.zerocracy.farm.props.Props;
-import com.zerocracy.msg.TxtUnrecoverableError;
-import io.sentry.Sentry;
+import com.zerocracy.err.FbReaction;
+import com.zerocracy.err.FbSend;
 import java.io.IOException;
-import org.cactoos.func.FuncOf;
-import org.cactoos.func.FuncWithFallback;
-import org.cactoos.func.IoCheckedFunc;
-import org.cactoos.text.TextOf;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
 
@@ -39,11 +33,14 @@ import org.telegram.telegrambots.api.objects.Update;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class ReSafe implements Reaction {
-
     /**
      * Origin reaction.
      */
     private final Reaction origin;
+    /**
+     * Reaction with fallback.
+     */
+    private final FbReaction fbr;
 
     /**
      * Ctor.
@@ -51,44 +48,23 @@ public final class ReSafe implements Reaction {
      */
     public ReSafe(final Reaction reaction) {
         this.origin = reaction;
+        this.fbr = new FbReaction();
     }
 
     @Override
     public boolean react(final TmZerocrat bot, final Farm farm,
         final Update update) throws IOException {
-        return new IoCheckedFunc<>(
-            new FuncWithFallback<Boolean, Boolean>(
-                smart -> {
-                    boolean result = false;
-                    try {
-                        result = this.origin.react(bot, farm, update);
-                    } catch (final SoftException ex) {
-                        bot.post(
-                            new SendMessage()
-                                .enableMarkdown(true)
-                                .setChatId(update.getMessage().getChatId())
-                                .setText(new TextOf(ex.getMessage()).asString())
-                        );
-                    }
-                    return result;
-                },
-                new FuncOf<>(
-                    throwable -> {
-                        bot.post(
-                            new SendMessage()
-                                .enableMarkdown(true)
-                                .setChatId(update.getMessage().getChatId())
-                                .setText(
-                                    new TxtUnrecoverableError(
-                                        throwable, new Props(farm)
-                                    ).asString()
-                                )
-                        );
-                        Sentry.capture(throwable);
-                        throw new IOException(throwable);
-                    }
-                )
+        return this.fbr.react(
+            () -> this.origin.react(bot, farm, update),
+            new FbSend(
+                msg -> bot.post(
+                    new SendMessage()
+                        .enableMarkdown(true)
+                        .setChatId(update.getMessage().getChatId())
+                        .setText(msg)
+                ),
+                farm
             )
-        ).apply(true);
+        );
     }
 }

@@ -22,6 +22,8 @@ import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.SoftException;
 import com.zerocracy.Stakeholder;
+import com.zerocracy.err.FbReaction;
+import com.zerocracy.err.ReFallback;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.ClaimOut;
@@ -40,9 +42,7 @@ import org.cactoos.text.TextOf;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
- * @todo #272:30min Error handling in `StkSafe::process` method is similar to
- *  `ReSafe` in telegram, slack and github error handling. We need to refactor
- *  it. Let's use one class for it, now it's placed in `TxtUnrecoverableError`.
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @EqualsAndHashCode(of = "identifier")
 public final class StkSafe implements Stakeholder {
@@ -61,6 +61,10 @@ public final class StkSafe implements Stakeholder {
      * Stakeholder unique identifier.
      */
     private final String identifier;
+    /**
+     * Reaction with fallback.
+     */
+    private final FbReaction fbr;
 
     /**
      * Ctor.
@@ -72,6 +76,7 @@ public final class StkSafe implements Stakeholder {
         this.identifier = sid;
         this.farm = frm;
         this.origin = stk;
+        this.fbr = new FbReaction(false);
     }
 
     @Override
@@ -85,54 +90,103 @@ public final class StkSafe implements Stakeholder {
     public void process(final Project project,
         final XML xml) throws IOException {
         final ClaimIn claim = new ClaimIn(xml);
-        try {
-            this.origin.process(project, xml);
-        } catch (final MismatchException ex) {
-            throw ex;
-        } catch (final SoftException ex) {
-            if (claim.hasToken()) {
-                new ClaimIn(xml).reply(ex.getMessage()).postTo(project);
+        this.fbr.react(
+            () -> {
+                this.origin.process(project, xml);
+                return true;
+            },
+            new StkFallback(claim, project)
+        );
+    }
+
+    /**
+     * Reaction fallback.
+     */
+    private class StkFallback implements ReFallback {
+        /**
+         * Claim.
+         */
+        private final ClaimIn clm;
+        /**
+         * Project.
+         */
+        private final Project proj;
+
+        /**
+         * Ctor.
+         * @param claim A claim
+         * @param project Project
+         */
+        StkFallback(
+            final ClaimIn claim,
+            final Project project
+        ) {
+            this.clm = claim;
+            this.proj = project;
+        }
+
+        @Override
+        public void process(final SoftException err)
+            throws IOException {
+            if (this.clm.hasToken()) {
+                this.clm.reply(err.getMessage())
+                    .postTo(this.proj);
             } else {
                 Sentry.capture(
                     new IllegalArgumentException(
                         String.format(
                             "Claim #%d \"%s\" has no token in %s",
-                            claim.cid(), claim.type(), this.identifier
+                            this.clm.cid(),
+                            this.clm.type(),
+                            StkSafe.this.identifier
                         ),
-                        ex
+                        err
                     )
                 );
             }
-            // @checkstyle IllegalCatchCheck (1 line)
-        } catch (final Throwable ex) {
+        }
+
+        @Override
+        public void process(final Exception err) throws IOException {
+            if (MismatchException.class.equals(err.getClass())) {
+                throw (IOException) err;
+            }
             final StringBuilder msg = new StringBuilder(
                 String.format(
+                    // @checkstyle LineLength (1 line)
                     "Claim #%d in %s: type=\"%s\", stakeholder=\"%s\"",
-                    claim.cid(), project.pid(), claim.type(),
-                    this.identifier
+                    this.clm.cid(), this.proj.pid(), this.clm.type(),
+                    StkSafe.this.identifier
                 )
             );
-            if (claim.hasAuthor()) {
-                msg.append(String.format(", author=\"%s\"", claim.author()));
+            if (this.clm.hasAuthor()) {
+                msg.append(
+                    String.format(", author=\"%s\"", this.clm.author())
+                );
             }
-            if (claim.hasToken()) {
-                msg.append(String.format(", token=\"%s\"", claim.token()));
+            if (this.clm.hasToken()) {
+                msg.append(
+                    String.format(", token=\"%s\"", this.clm.token())
+                );
             }
             new ClaimOut()
                 .type("Error")
-                .param("origin_id", claim.cid())
-                .param("origin_type", claim.type())
+                .param("origin_id", this.clm.cid())
+                .param("origin_type", this.clm.type())
                 .param("message", msg.toString())
-                .param("stacktrace", new TextOf(ex).asString())
-                .postTo(project);
-            final Props props = new Props(this.farm);
+                .param("stacktrace", new TextOf(err).asString())
+                .postTo(this.proj);
+            final Props props = new Props(StkSafe.this.farm);
             if (props.has("//testing")) {
-                throw new IllegalStateException(ex);
+                throw new IllegalStateException(err);
             }
-            Sentry.capture(ex);
-            if (claim.hasToken() && !claim.type().startsWith("Notify")) {
-                claim.reply(
+            Sentry.capture(err);
+            if (
+                this.clm.hasToken() && !this.clm.type().startsWith("Notify")
+                ) {
+                this.clm.reply(
                     new Par(
+                        // @checkstyle LineLength (5 line)
                         "I can't do it for technical reasons, I'm very sorry.",
                         " If you don't know what to do,",
                         " submit this error as a ticket",
@@ -143,16 +197,16 @@ public final class StkSafe implements Stakeholder {
                             props.get("//build/version", ""),
                             props.get("//build/revision", ""),
                             props.get("//build/date", ""),
-                            ExceptionUtils.getMessage(ex),
+                            ExceptionUtils.getMessage(err),
                             StringUtils.abbreviate(
-                                new TextOf(new BytesOf(ex)).asString(),
+                                new TextOf(new BytesOf(err)).asString(),
                                 // @checkstyle MagicNumber (1 line)
                                 1000
                             )
                         ).asString(),
                         "\n```\n\nCc @yegor256"
                     ).say()
-                ).postTo(project);
+                ).postTo(this.proj);
             }
         }
     }

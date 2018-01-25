@@ -19,13 +19,11 @@ package com.zerocracy.radars.github;
 import com.jcabi.github.Comment;
 import com.zerocracy.Farm;
 import com.zerocracy.SoftException;
+import com.zerocracy.err.FbReaction;
+import com.zerocracy.err.ReFallback;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.msg.TxtUnrecoverableError;
-import io.sentry.Sentry;
 import java.io.IOException;
-import org.cactoos.func.FuncOf;
-import org.cactoos.func.FuncWithFallback;
-import org.cactoos.func.IoCheckedFunc;
 
 /**
  * Safe Reaction on GitHub comment.
@@ -35,11 +33,14 @@ import org.cactoos.func.IoCheckedFunc;
  * @since 0.10
  */
 public final class ReSafe implements Response {
-
     /**
      * Response.
      */
     private final Response origin;
+    /**
+     * Reaction with fallback.
+     */
+    private final FbReaction fbr;
 
     /**
      * Ctor.
@@ -47,36 +48,30 @@ public final class ReSafe implements Response {
      */
     public ReSafe(final Response rsp) {
         this.origin = rsp;
+        this.fbr = new FbReaction();
     }
 
     @Override
     public boolean react(final Farm farm, final Comment.Smart comment)
         throws IOException {
-        return new IoCheckedFunc<>(
-            new FuncWithFallback<Boolean, Boolean>(
-                smart -> {
-                    boolean result = false;
-                    try {
-                        result = this.origin.react(farm, comment);
-                    } catch (final SoftException ex) {
-                        comment.issue().comments().post(
-                            ex.getLocalizedMessage()
-                        );
-                    }
-                    return result;
-                },
-                new FuncOf<>(
-                    throwable -> {
-                        new ThrottledComments(comment.issue().comments()).post(
-                            new TxtUnrecoverableError(
-                                throwable, new Props(farm)
-                            ).asString()
-                        );
-                        Sentry.capture(throwable);
-                        throw new IOException(throwable);
-                    }
-                )
-            )
-        ).apply(true);
+        return this.fbr.react(
+            () -> this.origin.react(farm, comment),
+            new ReFallback() {
+                @Override
+                public void process(final SoftException err)
+                    throws IOException {
+                    comment.issue().comments().post(err.getLocalizedMessage());
+                }
+
+                @Override
+                public void process(final Exception err) throws IOException {
+                    new ThrottledComments(comment.issue().comments()).post(
+                        new TxtUnrecoverableError(
+                            err, new Props(farm)
+                        ).asString()
+                    );
+                }
+            }
+        );
     }
 }
