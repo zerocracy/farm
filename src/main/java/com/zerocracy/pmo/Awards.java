@@ -21,6 +21,9 @@ import com.zerocracy.Item;
 import com.zerocracy.Project;
 import com.zerocracy.Xocument;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import org.cactoos.time.DateAsText;
 import org.xembly.Directives;
 
@@ -79,10 +82,14 @@ public final class Awards {
      * @param points How many points
      * @param job Job ID
      * @param reason The reason
+     * @param added When they were added
      * @throws IOException If fails
+     * @checkstyle ParameterNumberCheck (5 lines)
      */
-    public void add(final int points, final String job, final String reason)
+    public void add(final int points, final String job, final String reason,
+        final LocalDateTime added)
         throws IOException {
+        final Date date = Date.from(added.atZone(ZoneId.of("UTC")).toInstant());
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()
@@ -91,7 +98,7 @@ public final class Awards {
                     .add("points")
                     .set(points)
                     .up()
-                    .add("added").set(new DateAsText().asString()).up()
+                    .add("added").set(new DateAsText(date).asString()).up()
                     .add("project")
                     .set(this.pmo.pid())
                     .up()
@@ -113,7 +120,14 @@ public final class Awards {
         try (final Item item = this.item()) {
             return Integer.parseInt(
                 new Xocument(item.path()).xpath(
-                    "sum(/awards/award/points/text())"
+                    String.format(
+                        "sum(/awards/award[added > '%s']/points/text())",
+                        new DateAsText(
+                            // @checkstyle MagicNumberCheck (1 line)
+                            LocalDateTime.now().minusDays(90),
+                            "yyyy-MM-dd"
+                        ).asString()
+                    )
                 ).get(0)
             );
         }

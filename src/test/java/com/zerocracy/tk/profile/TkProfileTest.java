@@ -26,6 +26,7 @@ import com.zerocracy.pmo.Catalog;
 import com.zerocracy.pmo.People;
 import com.zerocracy.pmo.Projects;
 import com.zerocracy.tk.TkApp;
+import java.time.LocalDateTime;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 import org.takes.Take;
@@ -50,7 +51,9 @@ public final class TkProfileTest {
         final People people = new People(farm).bootstrap();
         people.touch(uid);
         people.invite(uid, "mentor");
-        new Awards(farm, uid).bootstrap().add(1, "gh:test/test#1", "reason");
+        new Awards(farm, uid).bootstrap().add(
+            1, "gh:test/test#1", "reason", LocalDateTime.now()
+        );
         new Agenda(farm, uid).bootstrap().add("gh:test/test#2", "QA", "#");
         final String pid = "9A0007788";
         new Projects(farm, uid).bootstrap().add(pid);

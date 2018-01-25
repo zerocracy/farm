@@ -19,6 +19,7 @@ package com.zerocracy.pm.staff.votes;
 import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.pmo.Agenda;
 import com.zerocracy.pmo.Awards;
+import java.time.LocalDateTime;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -39,7 +40,7 @@ public final class VsNoRoomTest {
         final String user = "g4s8";
         final Awards awards = new Awards(project, user).bootstrap();
         final int points = 2935;
-        awards.add(points, "gh:test/test#1", "initial");
+        awards.add(points, "gh:test/test#1", "initial", LocalDateTime.now());
         final Agenda agenda = new Agenda(project, user).bootstrap();
         final int total = 10;
         for (int num = 1; num < total; ++num) {
