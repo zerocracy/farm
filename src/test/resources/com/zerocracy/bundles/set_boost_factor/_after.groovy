@@ -17,7 +17,7 @@
 package com.zerocracy.bundles.set_boost_factor
 
 import com.jcabi.xml.XML
-import com.zerocracy.jstk.Project
+import com.zerocracy.Project
 import com.zerocracy.pm.cost.Boosts
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
