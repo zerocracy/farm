@@ -18,13 +18,13 @@ package com.zerocracy.stk.internal
 
 import com.jcabi.log.Logger
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
+import com.zerocracy.Project
 import com.zerocracy.entry.ExtDynamo
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.farm.DyErrors
 import com.zerocracy.farm.props.Props
-import com.zerocracy.jstk.Farm
-import com.zerocracy.jstk.Project
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()

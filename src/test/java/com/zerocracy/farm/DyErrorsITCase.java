@@ -23,6 +23,7 @@ import com.jcabi.github.Issue;
 import com.jcabi.github.Repo;
 import com.jcabi.github.Repos;
 import com.jcabi.github.mock.MkGithub;
+import java.util.concurrent.TimeUnit;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -57,6 +58,7 @@ public final class DyErrorsITCase {
         final Issue issue = repo.issues()
             .create("A bug", "RuntimeException in main()");
         final Comment comment = issue.comments().post("error");
+        Thread.sleep(TimeUnit.SECONDS.toMillis(1L));
         final Comment deleted = issue.comments().post("to-delete");
         errors.add(comment);
         errors.add(deleted);
