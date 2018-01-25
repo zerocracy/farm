@@ -14,29 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk
 
-import com.jcabi.xml.XML
-import com.zerocracy.Farm
-import com.zerocracy.Project
-import com.zerocracy.farm.Assume
-import com.zerocracy.farm.props.Props
-import com.zerocracy.pm.ClaimIn
-import io.sentry.Sentry
-import io.sentry.event.Event
-import io.sentry.event.EventBuilder
-
-def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Error')
-  ClaimIn claim = new ClaimIn(xml)
-  Farm farm = binding.variables.farm
-  Props props = new Props(farm)
-  Sentry.capture(
-    new EventBuilder()
-      .withTag('pid', project.pid())
-      .withCulprit(claim.param('stacktrace'))
-      .withMessage(claim.param('message'))
-      .withRelease(props.get('//build/version', ''))
-      .withLevel(Event.Level.ERROR)
-  )
-}
+/**
+ * Tools, tests.
+ *
+ * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @version $Id$
+ * @since 0.20
+ */
+package com.zerocracy.tools;

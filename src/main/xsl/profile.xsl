@@ -38,13 +38,32 @@ SOFTWARE.
           <xsl:text>@</xsl:text>
           <xsl:value-of select="owner"/>
         </a>
-        <xsl:text>.</xsl:text>
+        <xsl:text> (</xsl:text>
+        <a href="http://datum.zerocracy.com/pages/terms.html#kyc">
+          <xsl:choose>
+            <xsl:when test="identified='true'">
+              <xsl:text>identified</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:text>not identified yet</xsl:text>
+            </xsl:otherwise>
+          </xsl:choose>
+        </a>
+        <xsl:text>).</xsl:text>
       </p>
     </xsl:if>
     <xsl:apply-templates select="rate"/>
     <xsl:apply-templates select="details"/>
     <xsl:apply-templates select="awards"/>
     <xsl:apply-templates select="agenda"/>
+    <xsl:if test="identity/login = 'yegor256'">
+      <form action="/kyc/{owner}" method="post" autocomplete="off">
+        <input type="text" name="details" size="50" placeholder="e.g. JEFF LEBOWSKY 23-12-1976 @EMAIL"/>
+        <button type="submit">
+          <xsl:text>Identify</xsl:text>
+        </button>
+      </form>
+    </xsl:if>
   </xsl:template>
   <xsl:template match="rate">
     <p>
@@ -262,7 +281,7 @@ SOFTWARE.
         <xsl:text>who you are</xsl:text>
       </span>
       <xsl:text>; please, </xsl:text>
-      <a href="https://www.yoti.com/connect/90e1d6cf-d036-4a80-980b-05ac66d56b2b">
+      <a href="/identify">
         <xsl:text>identify</xsl:text>
       </a>
       <xsl:text> yourself.</xsl:text>
@@ -270,7 +289,11 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="identification[.!='']">
     <p>
-      <xsl:text>We know you as: </xsl:text>
+      <xsl:text>We </xsl:text>
+      <a href="/identify">
+        <xsl:text>know</xsl:text>
+      </a>
+      <xsl:text> you as: </xsl:text>
       <code>
         <xsl:value-of select="."/>
       </code>

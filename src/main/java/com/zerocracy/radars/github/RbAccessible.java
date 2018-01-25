@@ -19,6 +19,7 @@ package com.zerocracy.radars.github;
 import com.jcabi.aspects.Tv;
 import com.jcabi.github.Coordinates;
 import com.jcabi.github.Github;
+import com.jcabi.log.Logger;
 import com.zerocracy.Farm;
 import com.zerocracy.Par;
 import java.io.IOException;
@@ -58,14 +59,18 @@ public final class RbAccessible implements Rebound {
         try {
             github.repos().get(new Coordinates.Simple(repo)).stars().star();
         } catch (final AssertionError ex) {
+            final String self = github.users().self().login();
+            Logger.warn(
+                this, "%s is not accessible for @%s, can't process event",
+                repo, self
+            );
             throw new RsForward(
                 new RsFlash(
                     new Par.ToText(
                         new Par(
                             "Repository %s is not accessible for @%s: %s"
                         ).say(
-                            repo,
-                            github.users().self().login(),
+                            repo, self,
                             new SubText(
                                 ex.getLocalizedMessage(), 0, Tv.HUNDRED
                             ).asString()
