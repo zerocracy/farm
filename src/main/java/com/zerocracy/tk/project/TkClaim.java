@@ -19,6 +19,7 @@ package com.zerocracy.tk.project;
 import com.mongodb.client.model.Filters;
 import com.zerocracy.Farm;
 import com.zerocracy.pm.Footprint;
+import com.zerocracy.tk.RsPage;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import org.bson.Document;
@@ -29,8 +30,8 @@ import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
 import org.takes.rs.RsWithStatus;
-import org.takes.rs.xe.RsXembly;
 import org.takes.rs.xe.XeAppend;
+import org.takes.rs.xe.XeChain;
 import org.takes.rs.xe.XeTransform;
 
 /**
@@ -39,9 +40,6 @@ import org.takes.rs.xe.XeTransform;
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.20
- * @todo #380:30min Single claim xsl is missing.
- *  We need to display one claim xml as a single page
- *  to show it in election link.
  * @todo #380:30min Add link to election claim instead of
  *  election full election text in chats. See
  *  https://github.com/zerocracy/farm/issues/380#issue-287764148
@@ -72,14 +70,20 @@ public final class TkClaim implements TkRegex {
                     0,
                     src -> new RsWithStatus(HttpURLConnection.HTTP_NOT_FOUND),
                     new Mapped<Document, Response>(
-                        doc -> new RsXembly(
-                            new XeAppend(
-                                "claim",
-                                new XeTransform<>(
-                                    doc.entrySet(),
-                                    ent -> new XeAppend(
-                                        ent.getKey(),
-                                        ent.getValue().toString()
+                        doc -> new RsPage(
+                            this.farm,
+                            "/xsl/claim.xsl",
+                            request,
+                            () -> new XeChain(
+                                new XeAppend("project", pkt.pid()),
+                                new XeAppend(
+                                    "claim",
+                                    new XeTransform<>(
+                                        doc.entrySet(),
+                                        ent -> new XeAppend(
+                                            ent.getKey(),
+                                            ent.getValue().toString()
+                                        )
                                     )
                                 )
                             )

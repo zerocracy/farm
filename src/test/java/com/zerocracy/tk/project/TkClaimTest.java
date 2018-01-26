@@ -73,13 +73,14 @@ public final class TkClaimTest {
                                 String.format("/footprint/%s/%d", pid, cid)
                             ),
                             // @checkstyle LineLength (1 line)
-                            "Cookie: PsCookie=0975A5A5-F6DB193E-AF18000A-75726E3A-74657374-3A310005-6C6F6769-6E000879-65676F72-323536AE"
+                            "Cookie: PsCookie=0975A5A5-F6DB193E-AF18000A-75726E3A-74657374-3A310005-6C6F6769-6E000879-65676F72-323536AE",
+                            "Accept: application/xml"
                         )
                     )
                 ).printBody()
             ),
             XhtmlMatchers.hasXPaths(
-                String.format("/claim/cid[text() = %d]", cid)
+                String.format("/page/claim/cid[text() = %d]", cid)
             )
         );
     }

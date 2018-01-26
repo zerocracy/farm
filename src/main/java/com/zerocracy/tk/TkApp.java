@@ -197,7 +197,7 @@ public final class TkApp extends TkWrap {
                                                                     new TkFootprint(farm)
                                                                 ),
                                                                 new FkRegex(
-                                                                    "/footprint/([A-Z0-9]{9})/([A-Zaz0-9]+)",
+                                                                    "/footprint/([A-Z0-9]{9})/([0-9]+)",
                                                                     new TkClaim(farm)
                                                                 ),
                                                                 new FkRegex(

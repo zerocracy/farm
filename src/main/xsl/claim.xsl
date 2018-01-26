@@ -21,66 +21,68 @@ SOFTWARE.
   <xsl:include href="/xsl/inner-layout.xsl"/>
   <xsl:template match="page" mode="head">
     <title>
-      <xsl:value-of select="project"/>
+      <xsl:value-of select="claim/cid"/>
     </title>
   </xsl:template>
   <xsl:template match="page" mode="inner">
     <p>
-      <xsl:text>Footprint at </xsl:text>
+      <xsl:text>Back to </xsl:text>
       <a href="/p/{project}">
         <xsl:value-of select="project"/>
       </a>
-      <xsl:text>.</xsl:text>
     </p>
-    <xsl:apply-templates select="claims"/>
-  </xsl:template>
-  <xsl:template match="claims">
-    <p>
-      <xsl:text>Recent claims:</xsl:text>
-    </p>
-    <table data-sortable="true">
-      <thead>
-        <tr>
-          <th>
-            <xsl:text>Created</xsl:text>
-          </th>
-          <th>
-            <xsl:text>Type</xsl:text>
-          </th>
-          <th>
-            <xsl:text>Details</xsl:text>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <xsl:apply-templates select="claim"/>
-      </tbody>
-    </table>
+    <xsl:apply-templates select="claim"/>
   </xsl:template>
   <xsl:template match="claim">
-    <tr>
-      <td>
-        <a href="/footprint/{/page/project}/{@id}">
-          <xsl:value-of select="created"/>
-        </a>
-      </td>
-      <td>
-        <xsl:text>"</xsl:text>
+    <h1>
+      <xsl:text>Claim #</xsl:text>
+      <xsl:value-of select="cid"/>
+    </h1>
+    <p>
+      <xsl:text>Type: </xsl:text>
+      <code>
         <xsl:value-of select="type"/>
-        <xsl:text>"</xsl:text>
-      </td>
-      <td>
-        <xsl:for-each select="*[not(name() = 'type') and not(name() = 'created') and not(name() = '_id') and not(name() = 'cid') and not(name() = 'project') and not(name() = 'closed')]">
-          <xsl:if test="position() &gt; 1">
-            <xsl:text>; </xsl:text>
-          </xsl:if>
-          <xsl:value-of select="name()"/>
-          <xsl:text>:</xsl:text>
+      </code>
+    </p>
+    <p>
+      <xsl:text>Created: </xsl:text>
+      <xsl:value-of select="created"/>
+    </p>
+    <p>
+      <xsl:text>Author: </xsl:text>
+      <xsl:choose>
+        <xsl:when test="author">
+          <a href="/u/{author}">
+            <xsl:text>@</xsl:text>
+            <xsl:value-of select="author"/>
+          </a>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:text>&#x2014;</xsl:text>
+        </xsl:otherwise>
+      </xsl:choose>
+    </p>
+    <p>
+      <xsl:text>Token: </xsl:text>
+      <xsl:choose>
+        <xsl:when test="token">
           <code>
-            <xsl:value-of select="."/>
+            <xsl:value-of select="token"/>
           </code>
-        </xsl:for-each>
-      </td>
-    </tr>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:text>&#x2014;</xsl:text>
+        </xsl:otherwise>
+      </xsl:choose>
+    </p>
+    <xsl:for-each select="*[not(name() = 'type') and not(name() = 'created') and not(name() = '_id') and not(name() = 'cid') and not(name() = 'project') and not(name() = 'closed')]">
+      <p>
+        <xsl:value-of select="name()"/>
+        <xsl:text>:</xsl:text>
+      </p>
+      <pre>
+        <xsl:value-of select="."/>
+      </pre>
+    </xsl:for-each>
   </xsl:template>
 </xsl:stylesheet>
