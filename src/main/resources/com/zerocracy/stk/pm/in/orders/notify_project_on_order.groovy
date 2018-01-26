@@ -34,6 +34,7 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   new ClaimOut()
     .type('Notify project')
+    .param('cause', claim.cid())
     .param(
       'message',
       new Par(

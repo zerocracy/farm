@@ -41,6 +41,7 @@ def exec(Project project, XML xml) {
     wbs.add(job)
     new ClaimOut()
       .type('Job was added to WBS')
+      .param('cause', claim.cid())
       .param('job', job)
       .postTo(project)
   }
@@ -57,6 +58,7 @@ def exec(Project project, XML xml) {
     orders.resign(job)
     new ClaimOut()
       .type('Order was canceled')
+      .param('cause', claim.cid())
       .param('job', job)
       .param('login', performer)
       .postTo(project)

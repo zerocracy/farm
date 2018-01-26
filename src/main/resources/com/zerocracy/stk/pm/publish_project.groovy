@@ -25,6 +25,7 @@ import com.zerocracy.farm.props.Props
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pmo.Catalog
+import com.zerocracy.pmo.Pmo
 import twitter4j.Twitter
 import twitter4j.TwitterFactory
 import twitter4j.auth.AccessToken
@@ -43,6 +44,17 @@ def exec(Project project, XML xml) {
         'The project is visible now at the [board](/board), according to §26'
       ).say()
     ).postTo(project)
+    new ClaimOut().type('Notify user').token('user;yegor256').param(
+      'message', new Par(
+        'The project %s was published by @%s'
+      ).say(project.pid(), claim.author())
+    ).param('cause', claim.cid()).postTo(project)
+    new ClaimOut()
+      .type('Project was published')
+      .param('cause', claim.cid())
+      .param('author', claim.author())
+      .param('pid', project.pid())
+      .postTo(new Pmo(farm))
     String message = new Par('The project %s was published by @%s')
       .say(project.pid(), claim.author())
     new ClaimOut().type('Notify user').token('user;yegor256')
@@ -70,7 +82,7 @@ def exec(Project project, XML xml) {
       'message', new Par(
         'The project %s was unpublished by @%s'
       ).say(project.pid(), claim.author())
-    ).postTo(project)
+    ).param('cause', claim.cid()).postTo(project)
   } else {
     claim.reply(
       new Par(

@@ -33,8 +33,6 @@ def exec(Project project, XML xml) {
   Issue issue = repo.issues().create('Test', '')
   new Issue.Smart(issue).assign('g4s8')
   new Agenda(project, 'g4s8').bootstrap().add(
-    "gh:${repo.coordinates()}#${issue.number()}",
-    'QA',
-    'http://github.com'
+    "gh:${repo.coordinates()}#${issue.number()}", 'QA'
   )
 }

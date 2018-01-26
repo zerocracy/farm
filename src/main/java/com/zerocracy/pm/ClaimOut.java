@@ -56,7 +56,8 @@ public final class ClaimOut implements Iterable<Directive> {
             new Directives()
                 .add("claim")
                 .attr("id", ClaimOut.cid())
-                .add("created").set(new DateAsText().asString()).up()
+                .add("created").set(new DateAsText().asString())
+                .up()
         );
     }
 
@@ -181,10 +182,8 @@ public final class ClaimOut implements Iterable<Directive> {
             .xpath(String.format("param[@name='%s']", name))
             .remove()
             .pop()
-            .add("param")
-            .attr("name", name)
-            .set(value)
-            .up().up();
+            .add("param").attr("name", name).set(value).up()
+            .up();
         return this;
     }
 
@@ -214,37 +213,6 @@ public final class ClaimOut implements Iterable<Directive> {
             String.format("%1$tj%1$tH%1$tM000", new Date())
         );
         return ClaimOut.COUNTER.incrementAndGet() + body;
-    }
-
-    /**
-     * Notify.
-     */
-    public static final class Notify implements Iterable<Directive> {
-        /**
-         * Token.
-         */
-        private final String token;
-        /**
-         * Message.
-         */
-        private final String msg;
-        /**
-         * Ctor.
-         * @param tkn Token
-         * @param message Message
-         */
-        public Notify(final String tkn, final String message) {
-            this.token = tkn;
-            this.msg = message;
-        }
-        @Override
-        public Iterator<Directive> iterator() {
-            return new ClaimOut()
-                .type("Notify")
-                .token(this.token)
-                .param("message", this.msg)
-                .iterator();
-        }
     }
 
 }

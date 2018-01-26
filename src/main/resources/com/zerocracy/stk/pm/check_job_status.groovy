@@ -16,11 +16,14 @@
  */
 package com.zerocracy.stk.pm
 
+import com.jcabi.log.Logger
 import com.jcabi.xml.XML
 import com.zerocracy.Par
-import com.zerocracy.farm.Assume
 import com.zerocracy.Project
+import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pm.cost.Boosts
+import com.zerocracy.pm.cost.Estimates
 import com.zerocracy.pm.in.Impediments
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.scope.Wbs
@@ -35,14 +38,37 @@ def exec(Project project, XML xml) {
   Collection<String> items = []
   Wbs wbs = new Wbs(project).bootstrap()
   if (wbs.exists(job)) {
-    items.add(new Par('The job %s is in scope').say(job))
+    items.add(
+      new Par(
+        'The job %s is [in scope](http://datum.zerocracy.com/pages/policy.html#14) for ' +
+        Logger.format(
+          '%[ms]s',
+          System.currentTimeMillis() - wbs.created(job).time
+        )
+      ).say(job)
+    )
     items.add(new Par('The role is %s').say(wbs.role(job)))
     Orders orders = new Orders(project).bootstrap()
     if (orders.assigned(job)) {
-      items.add(new Par('The job is assigned to @%s').say(orders.performer(job)))
+      items.add(
+        new Par(
+          'The job is assigned to @%s for [' +
+            Logger.format(
+              '%[ms]s',
+              System.currentTimeMillis() - orders.startTime(job).time
+            ) +
+            '](http://datum.zerocracy.com/pages/policy.html#8)'
+      ).say(orders.performer(job)))
     } else {
       items.add(new Par('The job is not assigned to anyone').say())
     }
+    Boosts boosts = new Boosts(project).bootstrap()
+    items.add(
+      new Par(
+        'The [budget](http://datum.zerocracy.com/pages/policy.html#4) is ' +
+          boosts.factor(job) * 15 + ' minutes'
+      ).say()
+    )
   } else {
     items.add(new Par('The job %s is not in scope').say(job))
   }
@@ -50,14 +76,38 @@ def exec(Project project, XML xml) {
   if (!bans.reasons(job).empty) {
     items.add(
       new Par(
-        'These users are banned: ' +
-        new Par.ToText(bans.reasons(job).join('; ')).toString()
+        'These users are banned and won\'t be assigned:\n    * ' +
+        new Par.ToText(bans.reasons(job).join('\n    * ')).toString()
+      ).say()
+    )
+  }
+  Estimates estimates = new Estimates(project).bootstrap()
+  if (estimates.exists(job)) {
+    items.add(
+      new Par(
+        'There is a monetary reward attached'
+      ).say()
+    )
+  } else {
+    items.add(
+      new Par(
+        'There is no monetary reward attached, it\'s a [free](http://datum.zerocracy.com/pages/policy.html#2) job'
       ).say()
     )
   }
   Impediments impediments = new Impediments(project).bootstrap()
   if (new ListOf<>(impediments.jobs()).contains(job)) {
-    items.add(new Par('The job has an impediment').say())
+    items.add(
+      new Par(
+        'The job has an [impediment](http://datum.zerocracy.com/pages/policy.html#9)'
+      ).say()
+    )
+  } else {
+    items.add(
+      new Par(
+        'The job doesn\'t have any [impediments](http://datum.zerocracy.com/pages/policy.html#9)'
+      ).say()
+    )
   }
   claim.reply(
     new Par(

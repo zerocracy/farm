@@ -41,28 +41,19 @@ SOFTWARE.
               <xsl:value-of select="identity/login"/>
             </a>
           </li>
-          <xsl:text> </xsl:text>
           <li>
             <a href="/board">
               <xsl:text>Board</xsl:text>
             </a>
           </li>
-          <xsl:text> </xsl:text>
           <li>
             <a href="/gang">
               <xsl:text>Gang</xsl:text>
             </a>
           </li>
-          <xsl:text> </xsl:text>
           <li>
             <a href="http://datum.zerocracy.com/pages/policy.html">
               <xsl:text>Policy</xsl:text>
-            </a>
-          </li>
-          <xsl:text> </xsl:text>
-          <li>
-            <a href="http://datum.zerocracy.com/pages/terms.html">
-              <xsl:text>Terms</xsl:text>
             </a>
           </li>
           <li>
@@ -108,18 +99,18 @@ SOFTWARE.
         </ul>
         <ul>
           <li>
+            <a href="http://datum.zerocracy.com/pages/terms.html">
+              <xsl:text>Terms</xsl:text>
+            </a>
+          </li>
+          <li>
+            <a href="https://github.com/zerocracy">GitHub</a>
+          </li>
+          <li>
             <a href="https://twitter.com/0crat">Twitter</a>
           </li>
           <li>
             <a href="https://www.facebook.com/zerocracy/">Facebook</a>
-          </li>
-        </ul>
-        <ul>
-          <li>
-            <img src="https://img.shields.io/github/stars/zerocracy/farm.svg?style=flat-square"/>
-          </li>
-          <li>
-            <img src="http://www.sixnines.io/b/2b3a?style=flat"/>
           </li>
         </ul>
       </nav>

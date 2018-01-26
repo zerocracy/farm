@@ -34,9 +34,9 @@ public final class AgendaTest {
     public void addsAndRemovesAgenda() throws Exception {
         final Agenda agenda = new Agenda(new FkProject(), "yegor").bootstrap();
         final String first = "gh:test/test#1";
-        agenda.add(first, "REV", "https://github.com/test");
+        agenda.add(first, "REV");
         final String second = "gh:test/test#2";
-        agenda.add(second, "QA", "https://github.com/test/test");
+        agenda.add(second, "QA");
         agenda.remove(first);
         MatcherAssert.assertThat(agenda.jobs(), Matchers.hasItem(second));
     }

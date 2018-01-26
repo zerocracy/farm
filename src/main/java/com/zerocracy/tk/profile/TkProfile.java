@@ -118,6 +118,10 @@ public final class TkProfile implements TkRegex {
                         )
                     ),
                     new XeAppend(
+                        "identified",
+                        Boolean.toString(!people.details(login).isEmpty())
+                    ),
+                    new XeAppend(
                         "rate",
                         people.rate(login).toString()
                     ),

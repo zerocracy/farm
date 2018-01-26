@@ -43,6 +43,7 @@ def exec(Project project, XML xml) {
     ).postTo(project)
     new ClaimOut()
       .type('Order was canceled')
+      .param('cause', claim.cid())
       .param('job', job)
       .param('voluntarily', false)
       .param('login', performer)
@@ -56,6 +57,7 @@ def exec(Project project, XML xml) {
   }
   new ClaimOut()
     .type('Job removed from WBS')
+    .param('cause', claim.cid())
     .param('job', job)
     .postTo(project)
 }

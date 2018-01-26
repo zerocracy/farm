@@ -36,6 +36,7 @@ def exec(Project project, XML xml) {
   awards.add(minutes, job, new Par.ToText(reason).toString())
   new ClaimOut()
     .type('Award points were added')
+    .param('cause', claim.cid())
     .param('job', job)
     .param('login', login)
     .param('points', minutes)

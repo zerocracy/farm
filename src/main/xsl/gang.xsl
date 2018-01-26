@@ -25,6 +25,9 @@ SOFTWARE.
     </title>
   </xsl:template>
   <xsl:template match="page" mode="inner">
+    <h1>
+      <xsl:text>Gang</xsl:text>
+    </h1>
     <xsl:apply-templates select="people"/>
   </xsl:template>
   <xsl:template match="people">
@@ -37,8 +40,17 @@ SOFTWARE.
         <xsl:text>&#xA7;2</xsl:text>
       </a>
       <xsl:text>.</xsl:text>
+      <xsl:text> If you want these programmers to work with your project,</xsl:text>
+      <xsl:text> you have to publish it on the </xsl:text>
+      <xsl:text>Board</xsl:text>
+      <xsl:text>, as explained in </xsl:text>
+      <a href="http://datum.zerocracy.com/pages/policy.html#26">
+        <xsl:text>&#xA7;26</xsl:text>
+      </a>
+      <xsl:text>, we will automatically notify the best</xsl:text>
+      <xsl:text> and the most relevant candidates; they will apply, if interested.</xsl:text>
     </p>
-    <table>
+    <table data-sortable="true">
       <thead>
         <tr>
           <th>
@@ -64,6 +76,12 @@ SOFTWARE.
           </th>
           <th>
             <xsl:text>Reputation</xsl:text>
+            <sub>
+              <xsl:text>/</xsl:text>
+              <a href="http://datum.zerocracy.com/pages/policy.html#18">
+                <xsl:text>&#xA7;18</xsl:text>
+              </a>
+            </sub>
           </th>
           <th>
             <xsl:text>Agenda</xsl:text>
@@ -72,7 +90,7 @@ SOFTWARE.
       </thead>
       <tbody>
         <xsl:apply-templates select="user">
-          <xsl:sort select="login"/>
+          <xsl:sort select="awards" order="descending" data-type="number"/>
         </xsl:apply-templates>
       </tbody>
     </table>
@@ -118,11 +136,38 @@ SOFTWARE.
           </xsl:otherwise>
         </xsl:choose>
       </td>
-      <td style="text-align:right;">
-        <xsl:text>?</xsl:text>
+      <td>
+        <xsl:attribute name="style">
+          <xsl:text>text-align:right;color:</xsl:text>
+          <xsl:choose>
+            <xsl:when test="awards &gt; 1024">
+              <xsl:text>darkgreen</xsl:text>
+            </xsl:when>
+            <xsl:when test="awards &lt; 0">
+              <xsl:text>darkred</xsl:text>
+            </xsl:when>
+            <xsl:when test="awards = 0">
+              <xsl:text>inherit</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:text>orange</xsl:text>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:attribute>
+        <xsl:choose>
+          <xsl:when test="awards = 0">
+            <xsl:text>&#x2014;</xsl:text>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:if test="awards &gt; 0">
+              <xsl:text>+</xsl:text>
+            </xsl:if>
+            <xsl:value-of select="awards"/>
+          </xsl:otherwise>
+        </xsl:choose>
       </td>
       <td style="text-align:right;">
-        <xsl:text>?</xsl:text>
+        <xsl:value-of select="agenda"/>
       </td>
     </tr>
   </xsl:template>
