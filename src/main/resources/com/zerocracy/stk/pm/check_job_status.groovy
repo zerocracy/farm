@@ -52,11 +52,12 @@ def exec(Project project, XML xml) {
     if (orders.assigned(job)) {
       items.add(
         new Par(
-          'The job is assigned to @%s for ' +
-          Logger.format(
-            '%[ms]s',
-            System.currentTimeMillis() - orders.startTime(job).time
-          )
+          'The job is assigned to @%s for [' +
+            Logger.format(
+              '%[ms]s',
+              System.currentTimeMillis() - orders.startTime(job).time
+            ) +
+            '](http://datum.zerocracy.com/pages/policy.html#8)'
       ).say(orders.performer(job)))
     } else {
       items.add(new Par('The job is not assigned to anyone').say())
@@ -75,7 +76,7 @@ def exec(Project project, XML xml) {
   if (!bans.reasons(job).empty) {
     items.add(
       new Par(
-        'These users are banned and won\'t be assigned:\n    ' +
+        'These users are banned and won\'t be assigned:\n    * ' +
         new Par.ToText(bans.reasons(job).join('\n    * ')).toString()
       ).say()
     )
