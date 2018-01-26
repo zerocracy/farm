@@ -40,7 +40,7 @@ def exec(Project project, XML xml) {
       new Par(
         farm,
         'The job %s was assigned to @%s (role is %s),',
-        'here is [why](/p/%s/%s)'
+        'here is [why](/footprint/%s/%s)'
       ).say(job, login, role, project.pid(), claim.param('reason'))
     )
     .postTo(project)

@@ -33,6 +33,7 @@ import org.junit.Test;
  * @version $Id$
  * @since 0.10
  * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class OrdersTest {
 
@@ -58,12 +59,12 @@ public final class OrdersTest {
         );
         final String login = "dmarkov";
         new Rates(project).bootstrap().set(login, new Cash.S("$50"));
-        final String job = "gh:yegor256/0pdd#13";
+        final String job = "gh:yegor256/0pdd#19";
         final Wbs wbs = new Wbs(project).bootstrap();
         wbs.add(job);
         wbs.role(job, "REV");
         final Orders orders = new Orders(project).bootstrap();
-        orders.assign(job, login, "just for fun");
+        orders.assign(job, login, "just for fun again");
         MatcherAssert.assertThat(
             new Estimates(project).bootstrap().get(job),
             Matchers.equalTo(new Cash.S("$12.50"))
