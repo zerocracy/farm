@@ -31,6 +31,7 @@ def exec(Project project, XML xml) {
   if (claim.hasParam('voluntarily') && claim.param('voluntarily') == 'true') {
     new ClaimOut()
       .type('Make payment')
+      .param('cause', claim.cid())
       .param('job', job)
       .param('login', claim.param('login'))
       .param(

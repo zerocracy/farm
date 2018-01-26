@@ -73,6 +73,7 @@ def exec(Project project, XML xml) {
   rates.set(login, rate)
   new ClaimOut()
     .type('User rate was changed')
+    .param('cause', claim.cid())
     .param('login', login)
     .param('rate', rate)
     .postTo(project)

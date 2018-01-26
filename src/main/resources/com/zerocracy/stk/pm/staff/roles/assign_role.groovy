@@ -56,6 +56,7 @@ def exec(Project project, XML xml) {
     ).say(role, login, project.pid())
     new ClaimOut()
       .type('Role was assigned')
+      .param('cause', claim.cid())
       .param('login', login)
       .param('role', role)
       .postTo(project)

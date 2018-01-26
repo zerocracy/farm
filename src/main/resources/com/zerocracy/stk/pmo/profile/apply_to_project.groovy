@@ -92,6 +92,7 @@ def exec(Project pmo, XML xml) {
   }
   new ClaimOut()
     .type('Notify project')
+    .param('cause', claim.cid())
     .param(
       'message',
       new Par(

@@ -31,6 +31,7 @@ def exec(Project project, XML xml) {
   if (claim.hasAuthor() && claim.hasParam('manual')) {
     new ClaimOut()
       .type('Make payment')
+      .param('cause', claim.cid())
       .param('job', job)
       .param('login', claim.author())
       .param(

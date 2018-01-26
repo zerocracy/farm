@@ -37,7 +37,7 @@ public final class ClaimInTest {
     public void readsParts() throws Exception {
         final ClaimIn claim = new ClaimIn(
             new XMLDocument(
-                "<claim><author>yegor256</author></claim>"
+                "<claim id='1'><author>yegor256</author></claim>"
             ).nodes("/claim").get(0)
         );
         MatcherAssert.assertThat(
@@ -50,18 +50,21 @@ public final class ClaimInTest {
     public void buildsClaimOut() throws Exception {
         final ClaimIn claim = new ClaimIn(
             new XMLDocument(
-                "<claim><author>yegor256</author><token>X</token></claim>"
+                "<claim id='1'><author>jeff</author><token>X</token></claim>"
             ).nodes("/claim ").get(0)
         );
         MatcherAssert.assertThat(
-            new Xembler(
-                new Directives().add("claims").append(
-                    claim.reply("hello")
-                )
-            ).xmlQuietly(),
+            XhtmlMatchers.xhtml(
+                new Xembler(
+                    new Directives().add("claims").append(
+                        claim.reply("hello")
+                    )
+                ).xmlQuietly()
+            ),
             XhtmlMatchers.hasXPaths(
                 "/claims/claim[type='Notify']",
                 "/claims/claim[token='X']",
+                "/claims/claim/params/param[@name='cause']",
                 "/claims/claim/params/param[@name='message' and .='hello']"
             )
         );

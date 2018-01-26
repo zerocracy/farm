@@ -42,6 +42,7 @@ def exec(Project project, XML xml) {
     def extra = quality == 'good' ? 5 : 0
     ClaimOut out = new ClaimOut()
       .type('Make payment')
+      .param('cause', claim.cid())
       .param('job', job)
       .param('login', login)
       .param('reason', 'Order was successfully finished')
@@ -54,6 +55,7 @@ def exec(Project project, XML xml) {
   orders.resign(job)
   new ClaimOut()
     .type('Order was finished')
+    .param('cause', claim.cid())
     .param('job', job)
     .param('login', login)
     .param('minutes', minutes)

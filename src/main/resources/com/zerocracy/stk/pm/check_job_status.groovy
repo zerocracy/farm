@@ -22,6 +22,7 @@ import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pm.cost.Estimates
 import com.zerocracy.pm.in.Impediments
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.scope.Wbs
@@ -68,6 +69,14 @@ def exec(Project project, XML xml) {
       new Par(
         'These users are banned: ' +
         new Par.ToText(bans.reasons(job).join('; ')).toString()
+      ).say()
+    )
+  }
+  Estimates estimates = new Estimates(project).bootstrap()
+  if (estimates.exists(job)) {
+    items.add(
+      new Par(
+        'There is a monetary reward attached'
       ).say()
     )
   }

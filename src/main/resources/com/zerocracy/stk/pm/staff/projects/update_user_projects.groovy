@@ -35,6 +35,7 @@ def exec(Project project, XML xml) {
     projects.add(project.pid())
     new ClaimOut()
       .type('User projects were updated')
+      .param('cause', claim.cid())
       .param('login', login)
       .postTo(project)
   }
