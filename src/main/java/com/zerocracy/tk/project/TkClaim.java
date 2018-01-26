@@ -46,6 +46,7 @@ import org.takes.rs.xe.XeTransform;
  *  for details. It should be in format /footprint/(project)/(claim-id)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class TkClaim implements TkRegex {
     /**
      * A farm.

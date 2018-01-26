@@ -39,17 +39,17 @@ SOFTWARE.
       <xsl:value-of select="cid"/>
     </h1>
     <p>
-      <xsl:text>Type: </xsl:text>
+      <xsl:text>type: </xsl:text>
       <code>
         <xsl:value-of select="type"/>
       </code>
     </p>
     <p>
-      <xsl:text>Created: </xsl:text>
+      <xsl:text>created: </xsl:text>
       <xsl:value-of select="created"/>
     </p>
     <p>
-      <xsl:text>Author: </xsl:text>
+      <xsl:text>author: </xsl:text>
       <xsl:choose>
         <xsl:when test="author">
           <a href="/u/{author}">
@@ -63,7 +63,7 @@ SOFTWARE.
       </xsl:choose>
     </p>
     <p>
-      <xsl:text>Token: </xsl:text>
+      <xsl:text>token: </xsl:text>
       <xsl:choose>
         <xsl:when test="token">
           <code>
@@ -75,6 +75,14 @@ SOFTWARE.
         </xsl:otherwise>
       </xsl:choose>
     </p>
+    <xsl:if test="cause">
+      <p>
+        <xsl:text>cause: </xsl:text>
+        <a href="/footprint/{/page/project}/{cid}">
+          <xsl:value-of select="cause"/>
+        </a>
+      </p>
+    </xsl:if>
     <xsl:for-each select="*[not(name() = 'type') and not(name() = 'created') and not(name() = '_id') and not(name() = 'cid') and not(name() = 'project') and not(name() = 'closed')]">
       <p>
         <xsl:value-of select="name()"/>
