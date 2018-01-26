@@ -30,14 +30,15 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   String login = claim.param('login')
   Awards awards = new Awards(project, login).bootstrap()
-  if (awards.total() <= -200) {
+  Integer current = awards.total()
+  if (current <= -200) {
     // @todo 390:30min We should remove people from people.xml
     //  when their score goes below 200. Let's implement that.
     //  We should also notify the person in case that happens.
     String job = claim.param('job')
     String reason = new Par('@%s: Score of %d is too low and will be reset.')
-      .say(login, awards.total())
-    Integer points = -awards.total()
+      .say(login, current)
+    Integer points = -current
     awards.add(points, job, new Par.ToText(reason).toString())
     new ClaimOut()
       .type('Award points were added')
