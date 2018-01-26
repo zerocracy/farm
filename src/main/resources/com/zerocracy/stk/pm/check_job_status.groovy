@@ -67,8 +67,8 @@ def exec(Project project, XML xml) {
   if (!bans.reasons(job).empty) {
     items.add(
       new Par(
-        'These users are banned: ' +
-        new Par.ToText(bans.reasons(job).join('; ')).toString()
+        'These users are banned:\n    ' +
+        new Par.ToText(bans.reasons(job).join('\n    * ')).toString()
       ).say()
     )
   }
@@ -77,6 +77,12 @@ def exec(Project project, XML xml) {
     items.add(
       new Par(
         'There is a monetary reward attached'
+      ).say()
+    )
+  } else {
+    items.add(
+      new Par(
+        'There is no monetary reward attached, it\'s a free job'
       ).say()
     )
   }
