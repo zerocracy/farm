@@ -67,6 +67,6 @@ def exec(Project project, XML xml) {
     .type('Start order')
     .param('login', login)
     .param('manual', true)
-    .param('reason', new Par('Per request of @%s').say(claim.author()))
+    .param('reason', claim.cid())
     .postTo(project)
 }

@@ -82,7 +82,7 @@ SOFTWARE.
     <xsl:if test="cause">
       <p>
         <xsl:text>cause: </xsl:text>
-        <a href="/footprint/{/page/project}/{cid}">
+        <a href="/footprint/{/page/project}/{cause}">
           <xsl:value-of select="cause"/>
         </a>
       </p>

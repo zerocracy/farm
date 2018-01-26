@@ -40,10 +40,6 @@ import org.takes.rs.xe.XeTransform;
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.20
- * @todo #380:30min Add link to election claim instead of
- *  election full election text in chats. See
- *  https://github.com/zerocracy/farm/issues/380#issue-287764148
- *  for details. It should be in format /footprint/(project)/(claim-id)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
