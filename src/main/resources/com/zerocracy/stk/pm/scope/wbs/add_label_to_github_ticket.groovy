@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.cost
+package com.zerocracy.stk.pm.scope.wbs
 
 import com.jcabi.github.Github
 import com.jcabi.github.Issue
@@ -38,7 +38,7 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
   Issue.Smart issue = new Issue.Smart(new Job.Issue(github, job))
-  new IssueLabels.Smart(issue.labels()).addIfAbsent('in', '3a6622')
+  new IssueLabels.Smart(issue.labels()).addIfAbsent('scope', '3a6622')
   // @todo #403:30min Right now we are adding the label 'in' to the issue
   //  to a Github job that is in WBS. We should also remove it when the issue
   //  is removed from WBS (out of scope).
