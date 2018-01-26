@@ -87,7 +87,7 @@ SOFTWARE.
         </a>
       </p>
     </xsl:if>
-    <xsl:for-each select="*[not(name() = 'type') and not(name() = 'created') and not(name() = '_id') and not(name() = 'cid') and not(name() = 'project') and not(name() = 'closed')]">
+    <xsl:for-each select="*[not(name() = 'type') and not(name() = 'created') and not(name() = '_id') and not(name() = 'cid') and not(name() = 'cause') and not(name() = 'project') and not(name() = 'closed')]">
       <p>
         <xsl:value-of select="name()"/>
         <xsl:text>:</xsl:text>
