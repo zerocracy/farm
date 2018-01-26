@@ -63,7 +63,9 @@ public final class TkClaim implements TkRegex {
 
     @Override
     public Response act(final RqRegex request) throws IOException {
-        final RqProject pkt = new RqProject(this.farm, request, "PO", "ARC");
+        final RqProject pkt = new RqProject(
+            this.farm, request, "PO", "ARC", "DEV", "REV"
+        );
         final long cid = Long.valueOf(request.matcher().group(2));
         try (final Footprint ftp = new Footprint(this.farm, pkt)) {
             return new IoCheckedScalar<>(
