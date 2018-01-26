@@ -27,6 +27,10 @@ SOFTWARE.
   <xsl:template match="page" mode="inner">
     <p>
       <xsl:text>Back to </xsl:text>
+      <a href="/footprint/{project}">
+        <xsl:text>Footprint</xsl:text>
+      </a>
+      <xsl:text> of </xsl:text>
       <a href="/p/{project}">
         <xsl:value-of select="project"/>
       </a>

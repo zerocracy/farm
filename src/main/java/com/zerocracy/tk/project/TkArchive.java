@@ -60,7 +60,7 @@ public final class TkArchive implements TkRegex {
     @Override
     @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     public Response act(final RqRegex req) throws IOException {
-        final Project project = new RqProject(this.farm, req);
+        final Project project = new RqProject(this.farm, req, "PO");
         final XML list;
         try (final Item item = project.acq("_list.xml")) {
             list = new XMLDocument(item.path());

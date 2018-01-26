@@ -65,7 +65,7 @@ public final class TkFootprint implements TkRegex {
             "/xsl/footprint.xsl",
             req,
             () -> {
-                final Project project = new RqProject(this.farm, req);
+                final Project project = new RqProject(this.farm, req, "PO");
                 final Collection<Document> docs;
                 try (final Footprint footprint =
                     new Footprint(this.farm, project)) {

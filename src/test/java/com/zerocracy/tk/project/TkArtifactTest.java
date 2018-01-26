@@ -27,6 +27,7 @@ import com.zerocracy.pmo.Pmo;
 import com.zerocracy.tk.TkApp;
 import java.net.HttpURLConnection;
 import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.takes.Take;
 import org.takes.facets.hamcrest.HmRsStatus;
@@ -54,7 +55,7 @@ public final class TkArtifactTest {
                     "/a/ABCDEF098?a=pm/staff/roles"
                 )
             ),
-            new HmRsStatus(HttpURLConnection.HTTP_MOVED_PERM)
+            Matchers.not(new HmRsStatus(HttpURLConnection.HTTP_OK))
         );
     }
 
