@@ -229,7 +229,7 @@ SOFTWARE.
     <dependency>
       <groupId>com.jcabi</groupId>
       <artifactId>jcabi-xml</artifactId>
-      <version>0.21</version>
+      <version>0.21.1</version>
     </dependency>
     <dependency>
       <groupId>com.jcabi.incubator</groupId>
@@ -633,6 +633,32 @@ SOFTWARE.
             </executions>
           </plugin>
         </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>test-proxy</id>
+      <activation>
+        <property>
+          <name>test.proxy.host</name>
+        </property>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <artifactId>maven-surefire-plugin</artifactId>
+              <configuration combine.children="append">
+                <argLine>-Dhttp.proxyPort=${test.proxy.port} -Dhttp.proxyHost=${test.proxy.host}</argLine>
+              </configuration>
+            </plugin>
+            <plugin>
+              <artifactId>maven-failsafe-plugin</artifactId>
+              <configuration combine.children="append">
+                <argLine>-Dhttp.proxyPort=${test.proxy.port} -Dhttp.proxyHost=${test.proxy.host}</argLine>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
       </build>
     </profile>
   </profiles>

@@ -55,6 +55,7 @@ def exec(Project project, XML xml) {
     if (reminders.add(job, login, label)) {
       new ClaimOut()
         .type('New reminder posted')
+        .param('cause', claim.cid())
         .param('job', job)
         .param('label', label)
         .param('login', login)

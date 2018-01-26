@@ -19,17 +19,20 @@ package com.zerocracy.bundles.notifies_in_github
 import com.jcabi.github.Comment
 import com.jcabi.github.Coordinates
 import com.jcabi.github.Github
+import com.jcabi.github.Issue
+import com.jcabi.github.Repo
 import com.jcabi.xml.XML
-import com.zerocracy.entry.ExtGithub
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.entry.ExtGithub
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
-  def repo = github.repos().get(new Coordinates.Simple('test/test'))
-  def issue = repo.issues().get(1)
-  assert 'Hey, what\'s up, how is it going?' == new Comment.Smart(
+  Repo repo = github.repos().get(new Coordinates.Simple('test/test'))
+  Issue issue = repo.issues().get(1)
+  String body = new Comment.Smart(
     issue.comments().iterate(new Date()).iterator().next()
   ).body()
+  assert body.startsWith('Hey, what\'s up, how is it going?')
 }

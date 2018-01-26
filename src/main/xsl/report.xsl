@@ -80,7 +80,7 @@ SOFTWARE.
     <p>
       <xsl:value-of select="/page/title" disable-output-escaping="yes"/>
     </p>
-    <table>
+    <table data-sortable="true">
       <thead>
         <tr>
           <xsl:for-each select="row[1]/*">

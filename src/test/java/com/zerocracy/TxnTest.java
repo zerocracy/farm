@@ -20,7 +20,6 @@ import com.zerocracy.farm.fake.FkProject;
 import java.nio.file.Files;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -52,7 +51,6 @@ public final class TxnTest {
     }
 
     @Test
-    @Ignore("Not implemented")
     public void deleteLocalChangedOnClose() throws Exception {
         final String file = "empty";
         final byte[] payload = {(byte) 11};

@@ -17,13 +17,14 @@
 package com.zerocracy.stk.pm
 
 import com.jcabi.xml.XML
-import com.zerocracy.Par
-import com.zerocracy.farm.Assume
 import com.zerocracy.Farm
+import com.zerocracy.Par
 import com.zerocracy.Project
+import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pmo.Catalog
+import com.zerocracy.pmo.Pmo
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
@@ -43,7 +44,13 @@ def exec(Project project, XML xml) {
       'message', new Par(
         'The project %s was published by @%s'
       ).say(project.pid(), claim.author())
-    ).postTo(project)
+    ).param('cause', claim.cid()).postTo(project)
+    new ClaimOut()
+      .type('Project was published')
+      .param('cause', claim.cid())
+      .param('author', claim.author())
+      .param('pid', project.pid())
+      .postTo(new Pmo(farm))
   } else if ('off' == mode) {
     catalog.publish(project.pid(), false)
     claim.reply(
@@ -55,7 +62,7 @@ def exec(Project project, XML xml) {
       'message', new Par(
         'The project %s was unpublished by @%s'
       ).say(project.pid(), claim.author())
-    ).postTo(project)
+    ).param('cause', claim.cid()).postTo(project)
   } else {
     claim.reply(
       new Par(

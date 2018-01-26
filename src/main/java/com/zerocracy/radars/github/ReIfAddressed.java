@@ -66,7 +66,7 @@ public final class ReIfAddressed implements Response {
                         "Are you speaking to me or about me",
                         String.format(
                             // @checkstyle LineLength (1 line)
-                            "[here](https://github.com/%s/issues/%d#issuecomment-%d)",
+                            "[here](https://github.com/%s/issues/%d#issuecomment-%d).",
                             comment.issue().repo().coordinates(),
                             comment.issue().number(), comment.number()
                         ),

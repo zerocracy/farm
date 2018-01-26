@@ -57,11 +57,6 @@ SOFTWARE.
             </a>
           </li>
           <li>
-            <a href="http://datum.zerocracy.com/pages/terms.html">
-              <xsl:text>Terms</xsl:text>
-            </a>
-          </li>
-          <li>
             <a href="{links/link[@rel='takes:logout']/@href}" title="Log out">
               <xsl:text>Exit</xsl:text>
             </a>
@@ -100,6 +95,22 @@ SOFTWARE.
             <xsl:call-template name="takes_memory">
               <xsl:with-param name="memory" select="memory"/>
             </xsl:call-template>
+          </li>
+        </ul>
+        <ul>
+          <li>
+            <a href="http://datum.zerocracy.com/pages/terms.html">
+              <xsl:text>Terms</xsl:text>
+            </a>
+          </li>
+          <li>
+            <a href="https://github.com/zerocracy">GitHub</a>
+          </li>
+          <li>
+            <a href="https://twitter.com/0crat">Twitter</a>
+          </li>
+          <li>
+            <a href="https://www.facebook.com/zerocracy/">Facebook</a>
           </li>
         </ul>
       </nav>

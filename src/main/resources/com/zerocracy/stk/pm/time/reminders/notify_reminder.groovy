@@ -13,6 +13,7 @@ def exec(Project project, XML xml) {
   def claim = new ClaimIn(xml)
   new ClaimOut()
     .type('Notify job')
+    .param('cause', claim.cid())
     .token("job;${claim.param('job')}")
     .param(
       'message',

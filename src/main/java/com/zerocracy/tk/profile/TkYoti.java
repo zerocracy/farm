@@ -90,9 +90,15 @@ public final class TkYoti implements TkRegex {
         );
         final String user = new RqUser(this.farm, req).value();
         new People(this.farm).bootstrap().details(user, name);
+        new ClaimOut()
+            .type("User identified")
+            .param("login", user)
+            .param("details", name)
+            .param("system", "yoti")
+            .postTo(new Pmo(this.farm));
         new ClaimOut().type("Notify user").token("user;yegor256").param(
             "message", new Par(
-                "We just identified @%s as \"%\" via Yoti"
+                "We just identified @%s as \"%s\" via Yoti"
             ).say(user, name)
         ).postTo(new Pmo(this.farm));
         return new RsForward(

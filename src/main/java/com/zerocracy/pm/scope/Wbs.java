@@ -23,7 +23,9 @@ import com.zerocracy.SoftException;
 import com.zerocracy.Xocument;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Date;
 import org.cactoos.time.DateAsText;
+import org.cactoos.time.DateOf;
 import org.xembly.Directives;
 
 /**
@@ -170,6 +172,27 @@ public final class Wbs {
             return new Xocument(wbs.path()).xpath(
                 String.format("/wbs/job[@id='%s']/role/text()", job)
             ).get(0);
+        }
+    }
+
+    /**
+     * Get job creating time.
+     * @param job The job to add
+     * @return The time when it was added to WBS
+     * @throws IOException If fails
+     */
+    public Date created(final String job) throws IOException {
+        if (!this.exists(job)) {
+            throw new SoftException(
+                new Par("Job %s doesn't exist, can't check date").say(job)
+            );
+        }
+        try (final Item wbs = this.item()) {
+            return new DateOf(
+                new Xocument(wbs.path()).xpath(
+                    String.format("/wbs/job[@id='%s']/created/text()", job)
+                ).get(0)
+            ).value();
         }
     }
 
