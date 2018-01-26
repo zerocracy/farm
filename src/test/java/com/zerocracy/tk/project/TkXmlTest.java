@@ -63,7 +63,7 @@ public final class TkXmlTest {
                             new RqFake(
                                 "GET",
                                 String.format(
-                                    "/xml/%s?file=pm/staff/roles", pid
+                                    "/xml/%s?file=roles.xml", pid
                                 )
                             ),
                             // @checkstyle LineLength (1 line)
@@ -72,7 +72,7 @@ public final class TkXmlTest {
                     )
                 ).printBody()
             ),
-            XhtmlMatchers.hasXPaths("/")
+            XhtmlMatchers.hasXPaths("/roles")
         );
     }
 

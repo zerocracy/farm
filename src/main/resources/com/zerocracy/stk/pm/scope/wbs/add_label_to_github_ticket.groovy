@@ -14,34 +14,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.in.orders
+package com.zerocracy.stk.pm.scope.wbs
 
+import com.jcabi.github.Github
+import com.jcabi.github.Issue
+import com.jcabi.github.IssueLabels
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
-import com.zerocracy.Par
-import com.zerocracy.farm.Assume
 import com.zerocracy.Project
+import com.zerocracy.entry.ExtGithub
+import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
+import com.zerocracy.radars.github.Job
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Order was given')
+  new Assume(project, xml).type('Job was added to WBS')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
-  String login = claim.param('login')
-  String role = claim.param('role')
+  if (!job.startsWith('gh:')) {
+    return
+  }
   Farm farm = binding.variables.farm
-  new ClaimOut()
-    .type('Notify project')
-    .param('cause', claim.cid())
-    .param(
-      'message',
-      new Par(
-        farm,
-        'The job %s was assigned to @%s (role is %s),',
-        'here is [why](/footprint/%s/%s)'
-      ).say(job, login, role, project.pid(), claim.param('reason'))
-    )
-    .postTo(project)
+  Github github = new ExtGithub(farm).value()
+  Issue.Smart issue = new Issue.Smart(new Job.Issue(github, job))
+  new IssueLabels.Smart(issue.labels()).addIfAbsent('scope', '3a6622')
+  // @todo #403:30min Right now we are adding the label 'in' to the issue
+  //  to a Github job that is in WBS. We should also remove it when the issue
+  //  is removed from WBS (out of scope).
 }

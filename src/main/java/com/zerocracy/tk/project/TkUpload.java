@@ -71,7 +71,7 @@ public final class TkUpload implements TkRegex {
                 )
             );
         }
-        final Project project = new RqProject(this.farm, req);
+        final Project project = new RqProject(this.farm, req, "PO");
         final String body =
             new RqPrint(form.single("file")).printBody().trim();
         try (final Item item = project.acq(artifact)) {
