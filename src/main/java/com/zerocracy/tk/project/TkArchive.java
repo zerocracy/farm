@@ -20,7 +20,11 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
+import com.zerocracy.Par;
 import com.zerocracy.Project;
+import com.zerocracy.pm.ClaimOut;
+import com.zerocracy.pmo.Pmo;
+import com.zerocracy.tk.RqUser;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -78,6 +82,11 @@ public final class TkArchive implements TkRegex {
                 out.closeEntry();
             }
         }
+        new ClaimOut().type("Notify user").token("user;yegor256").param(
+            "message", new Par(
+                "Project %s was archived by @%s"
+            ).say(project.pid(), new RqUser(this.farm, req).value())
+        ).postTo(new Pmo(this.farm));
         return new RsWithType(
             new RsWithBody(new BytesOf(zip).asBytes()),
             "application/zip"

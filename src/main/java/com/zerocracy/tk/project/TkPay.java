@@ -30,6 +30,8 @@ import com.zerocracy.cash.Cash;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pmo.Catalog;
+import com.zerocracy.pmo.Pmo;
+import com.zerocracy.tk.RqUser;
 import java.io.IOException;
 import org.cactoos.map.MapEntry;
 import org.cactoos.map.StickyMap;
@@ -103,12 +105,19 @@ public final class TkPay implements TkRegex {
                 Double.parseDouble(form.single("cents")) / 100.0d
             )
         );
+        final String user = new RqUser(this.farm, req).value();
         new ClaimOut()
             .type("Funded by Stripe")
             .param("amount", amount)
             .param("stripe_customer", customer)
             .param("email", email)
+            .author(user)
             .postTo(project);
+        new ClaimOut().type("Notify user").token("user;yegor256").param(
+            "message", new Par(
+                "Project %s was funded for %s by @%s"
+            ).say(project.pid(), amount, user)
+        ).postTo(new Pmo(this.farm));
         return new RsForward(
             new RsFlash(
                 new Par.ToText(
