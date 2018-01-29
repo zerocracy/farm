@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.modifies_wbs
+package com.zerocracy.bundles.adds_label_to_issue_in_wbs
 
 import com.jcabi.github.Github
 import com.jcabi.github.Issue
@@ -33,5 +33,5 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
   Issue.Smart issue = new Issue.Smart(new Job.Issue(github, job))
-  assert new IssueLabels.Smart(issue.labels()).contains('in')
+  assert new IssueLabels.Smart(issue.labels()).contains('scope')
 }

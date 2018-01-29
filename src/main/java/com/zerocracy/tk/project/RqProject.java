@@ -18,15 +18,20 @@ package com.zerocracy.tk.project;
 
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
+import com.zerocracy.Par;
 import com.zerocracy.Project;
+import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.pmo.Catalog;
 import com.zerocracy.pmo.Pmo;
+import com.zerocracy.tk.RqUser;
 import java.io.IOException;
+import java.util.logging.Level;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.scalar.SolidScalar;
+import org.takes.facets.flash.RsFlash;
 import org.takes.facets.fork.RqRegex;
-import org.takes.facets.forward.RsFailure;
+import org.takes.facets.forward.RsForward;
 
 /**
  * Project from the request.
@@ -47,21 +52,36 @@ final class RqProject implements Project {
      * Ctor.
      * @param farm Farm
      * @param req Request
+     * @param required Roles required to get access
      */
-    RqProject(final Farm farm, final RqRegex req) {
+    RqProject(final Farm farm, final RqRegex req, final String... required) {
         this.pkt = new SolidScalar<>(
             () -> {
-                final String name = req.matcher().group(1);
+                final String pid = req.matcher().group(1);
                 final Project pmo = new Pmo(farm);
                 final Catalog catalog = new Catalog(pmo).bootstrap();
-                if (!catalog.exists(name)) {
-                    throw new RsFailure(
-                        String.format("Project \"%s\" not found", name)
+                if (!catalog.exists(pid)) {
+                    throw new RsForward(
+                        new RsFlash(
+                            new Par("Project %s not found").say(pid),
+                            Level.WARNING
+                        )
                     );
                 }
-                return farm.find(
-                    String.format("@id='%s'", name)
+                final Project project = farm.find(
+                    String.format("@id='%s'", pid)
                 ).iterator().next();
+                final String user = new RqUser(farm, req).value();
+                final Roles roles = new Roles(project).bootstrap();
+                if (required.length > 0 && !roles.hasRole(user, required)) {
+                    throw new RsForward(
+                        new RsFlash(
+                            new Par("You have no roles in %s").say(pid),
+                            Level.WARNING
+                        )
+                    );
+                }
+                return project;
             }
         );
     }

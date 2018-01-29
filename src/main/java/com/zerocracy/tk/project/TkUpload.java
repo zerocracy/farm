@@ -22,6 +22,9 @@ import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Par;
 import com.zerocracy.Project;
+import com.zerocracy.pm.ClaimOut;
+import com.zerocracy.pmo.Pmo;
+import com.zerocracy.tk.RqUser;
 import java.io.IOException;
 import java.util.logging.Level;
 import org.cactoos.io.LengthOf;
@@ -71,7 +74,7 @@ public final class TkUpload implements TkRegex {
                 )
             );
         }
-        final Project project = new RqProject(this.farm, req);
+        final Project project = new RqProject(this.farm, req, "PO");
         final String body =
             new RqPrint(form.single("file")).printBody().trim();
         try (final Item item = project.acq(artifact)) {
@@ -82,6 +85,11 @@ public final class TkUpload implements TkRegex {
                 )
             ).intValue();
         }
+        new ClaimOut().type("Notify user").token("user;yegor256").param(
+            "message", new Par(
+                "File `%s` uploaded manually to %s by @%s"
+            ).say(artifact, project.pid(), new RqUser(this.farm, req).value())
+        ).postTo(new Pmo(this.farm));
         return new RsForward(
             new RsFlash(
                 new Par.ToText(

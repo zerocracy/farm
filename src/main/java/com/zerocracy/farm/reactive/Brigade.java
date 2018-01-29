@@ -19,6 +19,7 @@ package com.zerocracy.farm.reactive;
 import com.jcabi.xml.XML;
 import com.zerocracy.Project;
 import com.zerocracy.Stakeholder;
+import com.zerocracy.Txn;
 import com.zerocracy.farm.MismatchException;
 import java.io.IOException;
 import org.cactoos.BiFunc;
@@ -78,8 +79,9 @@ final class Brigade implements BiFunc<Project, XML, Integer> {
     private static boolean process(final Stakeholder stk, final Project project,
         final XML xml) throws IOException {
         boolean done;
-        try {
-            stk.process(project, xml);
+        try (final Txn txn = new Txn(project)) {
+            stk.process(txn, xml);
+            txn.commit();
             done = true;
         } catch (final MismatchException ex) {
             done = false;

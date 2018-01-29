@@ -79,6 +79,6 @@ def exec(Project project, XML xml) {
     .param('job', job)
     .param('role', role)
     .param('login', login)
-    .param('reason', reason)
+    .param('reason', claim.cid())
     .postTo(project)
 }
