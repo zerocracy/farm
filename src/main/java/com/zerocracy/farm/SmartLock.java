@@ -56,6 +56,14 @@ public final class SmartLock implements Lock {
      */
     private final AtomicReference<Thread> owner = new AtomicReference<>();
 
+    /**
+     * Full stack trace of this lock holder.
+     * @return The stacktrace
+     */
+    public StackTraceElement[] stacktrace() {
+        return this.owner.get().getStackTrace();
+    }
+
     @Override
     public String toString() {
         final String text;

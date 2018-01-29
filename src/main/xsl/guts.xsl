@@ -141,7 +141,7 @@ SOFTWARE.
         </xsl:if>
         <xsl:value-of select="@pid"/>
         <xsl:text>:</xsl:text>
-        <xsl:value-of select="."/>
+        <xsl:value-of select="@label"/>
       </xsl:for-each>
       <xsl:text>.</xsl:text>
     </p>
