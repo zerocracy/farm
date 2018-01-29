@@ -67,7 +67,7 @@ public final class TkDonate implements TkRegex {
                 )
             );
         }
-        final Project project = new RqProject(this.farm, req);
+        final Project project = new RqProject(this.farm, req, "PO");
         final RqFormSmart form = new RqFormSmart(new RqGreedy(req));
         final Cash amount;
         try {

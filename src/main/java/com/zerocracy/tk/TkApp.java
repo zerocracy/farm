@@ -28,6 +28,7 @@ import com.zerocracy.tk.profile.TkYoti;
 import com.zerocracy.tk.project.TkArchive;
 import com.zerocracy.tk.project.TkArtifact;
 import com.zerocracy.tk.project.TkBadge;
+import com.zerocracy.tk.project.TkClaim;
 import com.zerocracy.tk.project.TkDonate;
 import com.zerocracy.tk.project.TkEquity;
 import com.zerocracy.tk.project.TkFiles;
@@ -194,6 +195,10 @@ public final class TkApp extends TkWrap {
                                                                 new FkRegex(
                                                                     "/footprint/(PMO|[A-Z0-9]{9})",
                                                                     new TkFootprint(farm)
+                                                                ),
+                                                                new FkRegex(
+                                                                    "/footprint/([A-Z0-9]{9})/([0-9]+)",
+                                                                    new TkClaim(farm)
                                                                 ),
                                                                 new FkRegex(
                                                                     "/report/(PMO|[A-Z0-9]{9})",

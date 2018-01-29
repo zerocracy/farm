@@ -112,7 +112,7 @@ public final class TkReport implements TkRegex {
             "/xsl/report.xsl",
             req,
             () -> {
-                final Project project = new RqProject(this.farm, req);
+                final Project project = new RqProject(this.farm, req, "PO");
                 final Collection<Document> docs;
                 try (final Footprint footprint =
                     new Footprint(this.farm, project)) {
