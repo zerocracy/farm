@@ -155,17 +155,19 @@ public final class Ledger {
      */
     @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     private Cash sum(final String acc, final String col) throws IOException {
-        final Iterable<String> values = new Xocument(this.item()).xpath(
-            String.format(
-                "//balance/account[name='%s']/%s/text()",
-                acc, col
-            )
-        );
-        Cash sum = Cash.ZERO;
-        for (final String val : values) {
-            sum = sum.add(new Cash.S(val));
+        try (final Item item = this.item()) {
+            final Iterable<String> values = new Xocument(item).xpath(
+                String.format(
+                    "//balance/account[name='%s']/%s/text()",
+                    acc, col
+                )
+            );
+            Cash sum = Cash.ZERO;
+            for (final String val : values) {
+                sum = sum.add(new Cash.S(val));
+            }
+            return sum;
         }
-        return sum;
     }
 
     /**
