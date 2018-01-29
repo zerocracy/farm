@@ -61,7 +61,14 @@ public final class SmartLock implements Lock {
      * @return The stacktrace
      */
     public StackTraceElement[] stacktrace() {
-        return this.owner.get().getStackTrace();
+        final Thread thread = this.owner.get();
+        final StackTraceElement[] array;
+        if (thread == null) {
+            array = new StackTraceElement[0];
+        } else {
+            array = thread.getStackTrace();
+        }
+        return array;
     }
 
     @Override
