@@ -39,56 +39,59 @@ import org.takes.rq.RqWithHeaders;
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class RqProjectTest {
 
     @Test
     public void buildsProject() throws Exception {
-        final Farm farm = new SmartFarm(new FkFarm()).value();
-        final Catalog catalog = new Catalog(new Pmo(farm)).bootstrap();
-        final String pid = "A1B2C3D4F";
-        catalog.add(pid, String.format("2017/07/%s/", pid));
-        catalog.link(pid, "github", "test/test");
-        final Project project = farm.find(
-            String.format("@id='%s'", pid)
-        ).iterator().next();
-        final Roles roles = new Roles(project).bootstrap();
-        final String uid = "yegor256";
-        roles.assign(uid, "PO");
-        new People(new Pmo(farm)).bootstrap().invite(uid, "mentor");
-        MatcherAssert.assertThat(
-            new RqProject(
-                farm,
-                new RqRegex.Fake(
-                    new RqWithHeaders(
-                        new RqFake(),
-                        String.format("TkAuth: name=%s;login=%1$s", uid)
-                    ),
-                    "/p/(.*)",
-                    String.format("/p/%s", pid)
-                )
-            ).pid(),
-            Matchers.equalTo(pid)
-        );
+        try (final Farm farm = new SmartFarm(new FkFarm()).value()) {
+            final Catalog catalog = new Catalog(new Pmo(farm)).bootstrap();
+            final String pid = "A1B2C3D4F";
+            catalog.add(pid, String.format("2017/07/%s/", pid));
+            catalog.link(pid, "github", "test/test");
+            final Project project = farm.find(
+                String.format("@id='%s'", pid)
+            ).iterator().next();
+            final Roles roles = new Roles(project).bootstrap();
+            final String uid = "yegor256";
+            roles.assign(uid, "PO");
+            new People(new Pmo(farm)).bootstrap().invite(uid, "mentor");
+            MatcherAssert.assertThat(
+                new RqProject(
+                    farm,
+                    new RqRegex.Fake(
+                        new RqWithHeaders(
+                            new RqFake(),
+                            String.format("TkAuth: name=%s;login=%1$s", uid)
+                        ),
+                        "/p/(.*)",
+                        String.format("/p/%s", pid)
+                    )
+                ).pid(),
+                Matchers.equalTo(pid)
+            );
+        }
     }
 
     @Test
     public void buildsPmo() throws Exception {
-        final Farm farm = new SmartFarm(new FkFarm()).value();
-        new People(new Pmo(farm)).bootstrap().invite("yegor256", "mentor");
-        MatcherAssert.assertThat(
-            new RqProject(
-                farm,
-                new RqRegex.Fake(
-                    new RqWithHeaders(
-                        new RqFake(),
-                        "TkAuth: name=yegor256;login=yegor256"
-                    ),
-                    "/p/(.*)",
-                    "/p/PMO"
-                )
-            ).pid(),
-            Matchers.equalTo("PMO")
-        );
+        try (final Farm farm = new SmartFarm(new FkFarm()).value()) {
+            new People(new Pmo(farm)).bootstrap().invite("yegor256", "mentor");
+            MatcherAssert.assertThat(
+                new RqProject(
+                    farm,
+                    new RqRegex.Fake(
+                        new RqWithHeaders(
+                            new RqFake(),
+                            "TkAuth: name=yegor256;login=yegor256"
+                        ),
+                        "/p/(.*)",
+                        "/p/PMO"
+                    )
+                ).pid(),
+                Matchers.equalTo("PMO")
+            );
+        }
     }
 
 }
