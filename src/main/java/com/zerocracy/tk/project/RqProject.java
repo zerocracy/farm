@@ -60,7 +60,7 @@ final class RqProject implements Project {
                 final String pid = req.matcher().group(1);
                 final Project pmo = new Pmo(farm);
                 final Catalog catalog = new Catalog(pmo).bootstrap();
-                if (!catalog.exists(pid)) {
+                if (!"PMO".equals(pid) && !catalog.exists(pid)) {
                     throw new RsForward(
                         new RsFlash(
                             new Par("Project %s not found").say(pid),
