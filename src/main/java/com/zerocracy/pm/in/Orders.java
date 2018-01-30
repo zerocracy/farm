@@ -19,6 +19,7 @@ package com.zerocracy.pm.in;
 import com.zerocracy.Item;
 import com.zerocracy.Project;
 import com.zerocracy.SoftException;
+import com.zerocracy.Txn;
 import com.zerocracy.Xocument;
 import com.zerocracy.pm.cost.Boosts;
 import com.zerocracy.pm.scope.Wbs;
@@ -94,32 +95,35 @@ public final class Orders {
                 )
             );
         }
-        try (final Item wbs = Orders.item(this.project)) {
-            new Xocument(wbs.path()).modify(
-                new Directives()
-                    .xpath(
-                        String.format(
-                            "/orders[not(order[@job='%s'])]",
-                            job
+        try (final Txn txn = new Txn(this.project)) {
+            try (final Item wbs = Orders.item(this.project)) {
+                new Xocument(wbs.path()).modify(
+                    new Directives()
+                        .xpath(
+                            String.format(
+                                "/orders[not(order[@job='%s'])]",
+                                job
+                            )
                         )
-                    )
-                    .strict(1)
-                    .add("order")
-                    .attr("job", job)
-                    .add("created").set(new DateAsText().asString()).up()
-                    .add("performer")
-                    .set(login)
-                    .up()
-                    .add("reason")
-                    .set(reason)
-            );
+                        .strict(1)
+                        .add("order")
+                        .attr("job", job)
+                        .add("created").set(new DateAsText().asString()).up()
+                        .add("performer")
+                        .set(login)
+                        .up()
+                        .add("reason")
+                        .set(reason)
+                );
+            }
+            final String role = new Wbs(this.project).bootstrap().role(job);
+            int factor = 2;
+            if ("REV".equals(role)) {
+                factor = 1;
+            }
+            new Boosts(this.project).bootstrap().boost(job, factor);
+            txn.commit();
         }
-        final String role = new Wbs(this.project).bootstrap().role(job);
-        int factor = 2;
-        if ("REV".equals(role)) {
-            factor = 1;
-        }
-        new Boosts(this.project).bootstrap().boost(job, factor);
     }
 
     /**
