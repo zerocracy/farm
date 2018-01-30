@@ -21,10 +21,14 @@ import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
+import com.zerocracy.farm.props.Props
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pmo.Catalog
 import com.zerocracy.pmo.Pmo
+import twitter4j.Twitter
+import twitter4j.TwitterFactory
+import twitter4j.auth.AccessToken
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
@@ -51,6 +55,27 @@ def exec(Project project, XML xml) {
       .param('author', claim.author())
       .param('pid', project.pid())
       .postTo(new Pmo(farm))
+    new ClaimOut().type('Notify user').token('user;yegor256').param(
+      'message',
+      new Par('The project %s was published by @%s')
+        .say(project.pid(), claim.author())
+    ).postTo(project)
+    Props props = new Props(farm)
+    // @todo #404:30min Use of the Twitter API in this project is neither reusable
+    //  nor testable. Let's introduce an interface that will serve as our frontend
+    //  for the Twitter API. We should have a real implementation and also a fake
+    //  one for testing. This interface should be used where the twitter API is
+    //  currently used, and we should add tests for the usage of Twitter.
+    Twitter twitter = new TwitterFactory().instance
+    twitter.setOAuthConsumer(props.get('//twitter/key'), props.get('//twitter/secret'))
+    twitter.setOAuthAccessToken(
+      new AccessToken(props.get('//twitter/token'), props.get('//twitter/tsecret'))
+    )
+    twitter.updateStatus(
+      new Par(
+        'A new project "%s" was published on our board just a minute ago, feel free to apply and join!'
+      ).say(catalog.title(project.pid()))
+    )
   } else if ('off' == mode) {
     catalog.publish(project.pid(), false)
     claim.reply(
