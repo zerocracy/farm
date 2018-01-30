@@ -61,7 +61,8 @@ def exec(Project project, XML xml) {
               System.currentTimeMillis() - orders.startTime(job).time
             ) +
             '](http://datum.zerocracy.com/pages/policy.html#8)'
-      ).say(performer))
+        ).say(performer)
+      )
       Vesting vesting = new Vesting(project).bootstrap()
       Estimates estimates = new Estimates(project).bootstrap()
       if (estimates.exists(job)) {

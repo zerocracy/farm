@@ -229,9 +229,8 @@ public interface Cash extends Comparable<Cash>, Serializable {
                     "Cash divider can't be zero"
                 );
             }
-            return this.decimal().divide(
-                divider.decimal(), BigDecimal.ROUND_HALF_DOWN
-            ).doubleValue();
+            return this.decimal().doubleValue()
+                / divider.decimal().doubleValue();
         }
 
         @Override
