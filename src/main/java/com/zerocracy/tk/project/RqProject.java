@@ -41,6 +41,7 @@ import org.takes.facets.forward.RsForward;
  * @since 0.12
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 final class RqProject implements Project {
 
     /**
@@ -60,7 +61,7 @@ final class RqProject implements Project {
                 final String pid = req.matcher().group(1);
                 final Project pmo = new Pmo(farm);
                 final Catalog catalog = new Catalog(pmo).bootstrap();
-                if (!catalog.exists(pid)) {
+                if (!"PMO".equals(pid) && !catalog.exists(pid)) {
                     throw new RsForward(
                         new RsFlash(
                             new Par("Project %s not found").say(pid),
@@ -72,14 +73,24 @@ final class RqProject implements Project {
                     String.format("@id='%s'", pid)
                 ).iterator().next();
                 final String user = new RqUser(farm, req).value();
-                final Roles roles = new Roles(project).bootstrap();
-                if (required.length > 0 && !roles.hasRole(user, required)) {
+                if ("PMO".equals(pid) && !"yegor256".equals(user)) {
                     throw new RsForward(
                         new RsFlash(
-                            new Par("You have no roles in %s").say(pid),
+                            new Par("Only our CEO can see the PMO").say(),
                             Level.WARNING
                         )
                     );
+                }
+                if (!"PMO".equals(pid)) {
+                    final Roles roles = new Roles(project).bootstrap();
+                    if (required.length > 0 && !roles.hasRole(user, required)) {
+                        throw new RsForward(
+                            new RsFlash(
+                                new Par("You have no roles in %s").say(pid),
+                                Level.WARNING
+                            )
+                        );
+                    }
                 }
                 return project;
             }

@@ -25,6 +25,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 import org.cactoos.time.DateAsText;
+import org.cactoos.time.ZonedDateTimeAsText;
 import org.xembly.Directive;
 import org.xembly.Directives;
 
@@ -156,7 +157,7 @@ public final class ClaimOut implements Iterable<Directive> {
             .pop()
             .add("until")
             .set(
-                new DateAsText(
+                new ZonedDateTimeAsText(
                     ZonedDateTime.now().plusSeconds(seconds)
                 ).asString()
             )

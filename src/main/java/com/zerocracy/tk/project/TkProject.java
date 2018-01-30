@@ -70,7 +70,6 @@ public final class TkProject implements TkRegex {
             req,
             () -> {
                 final Project project = new RqProject(this.farm, req);
-                final String login = new RqUser(this.farm, req).value();
                 final Catalog catalog = new Catalog(this.farm).bootstrap();
                 final String user = new RqUser(this.farm, req).value();
                 final String pid = project.pid();
@@ -134,8 +133,8 @@ public final class TkProject implements TkRegex {
                                     )
                                 ),
                                 new XeWhen(
-                                    "yegor256".equals(login)
-                                        || roles.hasRole(login, "PO"),
+                                    "yegor256".equals(user)
+                                        || roles.hasRole(user, "PO"),
                                     new XeChain(
                                         new XeAppend(
                                             "stripe_key",

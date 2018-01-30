@@ -69,6 +69,14 @@ public interface Cash extends Comparable<Cash>, Serializable {
     Cash div(long divider);
 
     /**
+     * Divide by.
+     *
+     * @param divider Divider
+     * @return Ratio
+     */
+    double div(Cash divider);
+
+    /**
      * Convert it to {@link BigDecimal}.
      * @return Big decimal
      */
@@ -212,6 +220,18 @@ public interface Cash extends Comparable<Cash>, Serializable {
                 prs[num] = this.pairs[num].div(divider);
             }
             return new Cash.S(prs, this.qts);
+        }
+
+        @Override
+        public double div(final Cash divider) {
+            if (divider.equals(Cash.ZERO)) {
+                throw new IllegalArgumentException(
+                    "Cash divider can't be zero"
+                );
+            }
+            return this.decimal().divide(
+                divider.decimal(), BigDecimal.ROUND_HALF_DOWN
+            ).doubleValue();
         }
 
         @Override

@@ -34,7 +34,7 @@ import com.zerocracy.pmo.Pmo;
 import com.zerocracy.tk.RqUser;
 import java.io.IOException;
 import org.cactoos.map.MapEntry;
-import org.cactoos.map.StickyMap;
+import org.cactoos.map.SolidMap;
 import org.takes.Response;
 import org.takes.facets.flash.RsFlash;
 import org.takes.facets.fork.RqRegex;
@@ -75,7 +75,7 @@ public final class TkPay implements TkRegex {
         final String customer;
         try {
             customer = Customer.create(
-                new StickyMap<String, Object>(
+                new SolidMap<String, Object>(
                     new MapEntry<>("email", email),
                     new MapEntry<>("source", form.single("token")),
                     new MapEntry<>(
