@@ -14,28 +14,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.staff.bans
+package com.zerocracy.stk.pm.staff.elections
 
 import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
 import com.zerocracy.Project
+import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
-import com.zerocracy.pm.staff.Bans
+import com.zerocracy.pm.staff.Elections
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Order was canceled')
+  new Assume(project, xml).type(
+    'Impediment was registered',
+    'Order was canceled',
+    'Order was finished',
+    'Order was given',
+    'Job was added to WBS',
+    'Job removed from WBS',
+    'User was banned'
+  )
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
-  String performer = claim.param('login')
-  new Bans(project).bootstrap().ban(
-    job, performer, 'User was resigned from the ticket'
-  )
-  new ClaimOut()
-    .type('User was banned')
-    .param('cause', claim.cid())
-    .param('login', performer)
-    .param('job', job)
-    .postTo(project)
+  Elections elections = new Elections(project).bootstrap()
+  if (elections.exists(job)) {
+    elections.remove(job)
+  }
 }
