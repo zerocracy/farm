@@ -55,10 +55,11 @@ def exec(Project project, XML xml) {
       .param('author', claim.author())
       .param('pid', project.pid())
       .postTo(new Pmo(farm))
-    String message = new Par('The project %s was published by @%s')
-      .say(project.pid(), claim.author())
-    new ClaimOut().type('Notify user').token('user;yegor256')
-      .param('message', message).postTo(project)
+    new ClaimOut().type('Notify user').token('user;yegor256').param(
+      'message',
+      new Par('The project %s was published by @%s')
+        .say(project.pid(), claim.author())
+    ).postTo(project)
     Props props = new Props(farm)
     // @todo #404:30min Use of the Twitter API in this project is neither reusable
     //  nor testable. Let's introduce an interface that will serve as our frontend
@@ -70,7 +71,11 @@ def exec(Project project, XML xml) {
     twitter.setOAuthAccessToken(
       new AccessToken(props.get('//twitter/token'), props.get('//twitter/tsecret'))
     )
-    twitter.updateStatus(message)
+    twitter.updateStatus(
+      new Par(
+        'A new project "%s" was published on our board just a minute ago, feel free to apply and join!'
+      ).say(catalog.title(project.pid()))
+    )
   } else if ('off' == mode) {
     catalog.publish(project.pid(), false)
     claim.reply(
