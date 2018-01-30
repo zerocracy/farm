@@ -52,14 +52,16 @@ def exec(Project project, XML xml) {
   if (parts.length > 2) {
     if (parts.length > 3) {
       SlackUser user = session.findUserByUserName(parts[2])
-      def channel = session.openDirectMessageChannel(user).reply.slackChannel
       if (user == null) {
         Logger.warn(
           this, 'Failed to notify @%s (%s), since there is no direct chat',
           user.id, user.realName
         )
       } else {
-        session.sendMessage(channel, message)
+        session.sendMessage(
+          session.openDirectMessageChannel(user).reply.slackChannel,
+          message
+        )
       }
     } else {
       SlackChannel channel = session.findChannelById(parts[1])
