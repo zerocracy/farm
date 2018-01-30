@@ -48,6 +48,11 @@ def exec(Project project, XML xml) {
       .param('login', author)
       .param('role', role)
       .postTo(project)
+    new ClaimOut()
+      .type('Role was assigned')
+      .param('login', author)
+      .param('role', 'ARC')
+      .postTo(project)
     if (claim.hasParam('channel')) {
       claim.copy()
         .type('Set title')
