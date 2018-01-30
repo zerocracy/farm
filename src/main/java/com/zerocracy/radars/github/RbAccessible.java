@@ -54,8 +54,15 @@ public final class RbAccessible implements Rebound {
     @SuppressWarnings("PMD.PreserveStackTrace")
     public String react(final Farm farm, final Github github,
         final JsonObject event) throws IOException {
-        final String repo = event.getJsonObject("repository")
-            .getString("full_name");
+        final JsonObject obj = event.getJsonObject("repository");
+        if (obj == null) {
+            throw new RsForward(
+                new RsFlash(
+                    "There is no repository information in this webhook"
+                )
+            );
+        }
+        final String repo = obj.getString("full_name");
         try {
             github.repos().get(new Coordinates.Simple(repo)).stars().star();
         } catch (final AssertionError ex) {
