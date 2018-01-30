@@ -140,7 +140,7 @@ SOFTWARE.
         <xsl:attribute name="style">
           <xsl:text>text-align:right;color:</xsl:text>
           <xsl:choose>
-            <xsl:when test="awards &gt; 1024">
+            <xsl:when test="awards &gt; 256">
               <xsl:text>darkgreen</xsl:text>
             </xsl:when>
             <xsl:when test="awards &lt; 0">

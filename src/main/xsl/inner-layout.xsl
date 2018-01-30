@@ -42,13 +42,13 @@ SOFTWARE.
             </a>
           </li>
           <li>
-            <a href="/board">
-              <xsl:text>Board</xsl:text>
+            <a href="/u/{identity/login}/agenda">
+              <xsl:text>Agenda</xsl:text>
             </a>
           </li>
           <li>
-            <a href="/gang">
-              <xsl:text>Gang</xsl:text>
+            <a href="/board">
+              <xsl:text>Board</xsl:text>
             </a>
           </li>
           <li>
@@ -98,6 +98,11 @@ SOFTWARE.
           </li>
         </ul>
         <ul>
+          <li>
+            <a href="/gang">
+              <xsl:text>Gang</xsl:text>
+            </a>
+          </li>
           <li>
             <a href="http://datum.zerocracy.com/pages/terms.html">
               <xsl:text>Terms</xsl:text>

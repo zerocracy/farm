@@ -207,6 +207,14 @@ public final class Xocument {
     public String xpath(final String xpath, final String def)
         throws FileNotFoundException {
         final List<String> vals = this.xpath(xpath);
+        if (vals.size() > 1) {
+            throw new IllegalStateException(
+                String.format(
+                    "Too many values (%d) for XPath \"%s\"",
+                    vals.size(), xpath
+                )
+            );
+        }
         final String val;
         if (vals.isEmpty()) {
             val = def;

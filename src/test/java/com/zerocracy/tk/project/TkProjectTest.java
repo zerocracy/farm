@@ -73,6 +73,7 @@ public final class TkProjectTest {
                 ).printBody()
             ),
             XhtmlMatchers.hasXPaths(
+                String.format("/page[project='%s']", pid),
                 "/page/project_links[link='github:test/test']"
             )
         );

@@ -67,6 +67,10 @@ SOFTWARE.
         </winner>
         <reason>
           <xsl:for-each select="$table/user">
+            <xsl:if test="position() &gt; 1">
+              <xsl:text>
+</xsl:text>
+            </xsl:if>
             <xsl:variable name="login" select="@login"/>
             <xsl:text>@</xsl:text>
             <xsl:value-of select="@login"/>
