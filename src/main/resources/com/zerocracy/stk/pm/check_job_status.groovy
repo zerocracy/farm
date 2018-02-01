@@ -75,8 +75,8 @@ def exec(Project project, XML xml) {
         if (rates.exists(performer)) {
           items.add(
             new Par(
-              '@%s will get %.2f of their hourly rate for this job'
-            ).say(performer, estimates.get(job) / rates.rate(performer))
+              '@%s will get %d%% of their hourly rate for this job'
+            ).say(performer, 100.0d * (estimates.get(job) / rates.rate(performer)))
           )
         }
       } else {
@@ -114,7 +114,7 @@ def exec(Project project, XML xml) {
     items.add(
       new Par(
         'The [budget](http://datum.zerocracy.com/pages/policy.html#4) is ' +
-          boosts.factor(job) * 15 + ' minutes'
+          boosts.factor(job) * 15 + ' minutes/points'
       ).say()
     )
   } else {
