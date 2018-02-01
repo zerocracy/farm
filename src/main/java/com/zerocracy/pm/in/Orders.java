@@ -22,8 +22,6 @@ import com.zerocracy.SoftException;
 import com.zerocracy.Txn;
 import com.zerocracy.Xocument;
 import com.zerocracy.pm.cost.Boosts;
-import com.zerocracy.pm.cost.Estimates;
-import com.zerocracy.pm.cost.Rates;
 import com.zerocracy.pm.scope.Wbs;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -89,16 +87,16 @@ public final class Orders {
                 )
             );
         }
+        if (!new Wbs(this.project).bootstrap().exists(job)) {
+            throw new SoftException(
+                String.format(
+                    "Job `%s` doesn't exist in WBS, can't create order",
+                    job
+                )
+            );
+        }
         try (final Txn txn = new Txn(this.project)) {
-            if (!new Wbs(txn).bootstrap().exists(job)) {
-                throw new SoftException(
-                    String.format(
-                        "Job `%s` doesn't exist in WBS, can't create order",
-                        job
-                    )
-                );
-            }
-            try (final Item wbs = Orders.item(txn)) {
+            try (final Item wbs = Orders.item(this.project)) {
                 new Xocument(wbs.path()).modify(
                     new Directives()
                         .xpath(
@@ -118,19 +116,12 @@ public final class Orders {
                         .set(reason)
                 );
             }
-            final String role = new Wbs(txn).bootstrap().role(job);
+            final String role = new Wbs(this.project).bootstrap().role(job);
             int factor = 2;
             if ("REV".equals(role)) {
                 factor = 1;
             }
-            final Rates rates = new Rates(txn).bootstrap();
-            if (rates.exists(login)) {
-                new Estimates(txn).bootstrap().update(
-                    // @checkstyle MagicNumber (1 line)
-                    job, rates.rate(login).mul((long) factor).div(4L)
-                );
-            }
-            new Boosts(txn).bootstrap().boost(job, factor);
+            new Boosts(this.project).bootstrap().boost(job, factor);
             txn.commit();
         }
     }

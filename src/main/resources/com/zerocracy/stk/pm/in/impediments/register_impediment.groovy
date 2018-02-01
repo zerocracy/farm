@@ -21,6 +21,7 @@ import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.in.Impediments
 
 def exec(Project project, XML xml) {
@@ -29,12 +30,19 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
   String author = claim.author()
+  String reason = new Par('@%s asked to wait a bit').say(author)
   new Impediments(project)
     .bootstrap()
-    .register(job, new Par('@%s asked to wait a bit').say(author))
+    .register(job, reason)
   claim.reply(
     new Par(
       'The impediment for %s was registered successfully by @%s'
     ).say(job, author)
   ).postTo(project)
+  new ClaimOut()
+    .type('Impediment was registered')
+    .param('cause', claim.cid())
+    .param('job', job)
+    .param('reason', reason)
+    .postTo(project)
 }

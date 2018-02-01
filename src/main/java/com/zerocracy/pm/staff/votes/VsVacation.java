@@ -57,10 +57,10 @@ public final class VsVacation implements Votes {
     ) throws IOException {
         final double vote;
         if (this.people.bootstrap().vacation(login)) {
-            log.append("On vacation");
+            log.append("The user is on vacation");
             vote = 1.0D;
         } else {
-            log.append("Not on vacation");
+            log.append("The user is not on vacation");
             vote = 0.0D;
         }
         return vote;

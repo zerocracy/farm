@@ -23,7 +23,6 @@ import org.cactoos.Text;
 import org.cactoos.io.BytesOf;
 import org.cactoos.text.JoinedText;
 import org.cactoos.text.TextOf;
-import org.cactoos.text.UncheckedText;
 
 /**
  * Error message for unrecoverable failure.
@@ -75,10 +74,5 @@ public final class TxtUnrecoverableError implements Text {
             ),
             " /cc @yegor256"
         ).asString();
-    }
-
-    @Override
-    public int compareTo(final Text text) {
-        return new UncheckedText(this).compareTo(text);
     }
 }

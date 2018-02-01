@@ -21,6 +21,7 @@ import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.SoftException;
 import com.zerocracy.Xocument;
+import com.zerocracy.pm.in.Orders;
 import java.io.IOException;
 import org.cactoos.iterable.ItemAt;
 import org.cactoos.iterable.Mapped;
@@ -102,9 +103,17 @@ public final class Boosts {
                 ).say(job, factor)
             );
         }
-        new Estimates(this.project).bootstrap().boost(
-            job, (double) factor / (double) this.factor(job)
-        );
+        final Orders orders = new Orders(this.project).bootstrap();
+        if (orders.assigned(job)) {
+            final String login = orders.performer(job);
+            final Rates rates = new Rates(this.project).bootstrap();
+            if (rates.exists(login)) {
+                new Estimates(this.project).bootstrap().update(
+                    // @checkstyle MagicNumber (1 line)
+                    job, rates.rate(login).mul((long) factor).div(4L)
+                );
+            }
+        }
         try (final Item item = this.item()) {
             final Xocument xoc = new Xocument(item);
             final String xpath = String.format("/boosts/boost[@id='%s']", job);

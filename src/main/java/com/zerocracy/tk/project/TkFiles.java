@@ -62,7 +62,7 @@ public final class TkFiles implements TkRegex {
             "/xsl/files.xsl",
             req,
             () -> {
-                final Project project = new RqProject(this.farm, req);
+                final Project project = new RqProject(this.farm, req, "PO");
                 final Catalog catalog = new Catalog(this.farm).bootstrap();
                 final XML list;
                 try (final Item item = project.acq("_list.xml")) {

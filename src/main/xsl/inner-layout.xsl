@@ -41,28 +41,19 @@ SOFTWARE.
               <xsl:value-of select="identity/login"/>
             </a>
           </li>
-          <xsl:text> </xsl:text>
+          <li>
+            <a href="/u/{identity/login}/agenda">
+              <xsl:text>Agenda</xsl:text>
+            </a>
+          </li>
           <li>
             <a href="/board">
               <xsl:text>Board</xsl:text>
             </a>
           </li>
-          <xsl:text> </xsl:text>
-          <li>
-            <a href="/gang">
-              <xsl:text>Gang</xsl:text>
-            </a>
-          </li>
-          <xsl:text> </xsl:text>
           <li>
             <a href="http://datum.zerocracy.com/pages/policy.html">
               <xsl:text>Policy</xsl:text>
-            </a>
-          </li>
-          <xsl:text> </xsl:text>
-          <li>
-            <a href="http://datum.zerocracy.com/pages/terms.html">
-              <xsl:text>Terms</xsl:text>
             </a>
           </li>
           <li>
@@ -107,6 +98,16 @@ SOFTWARE.
           </li>
         </ul>
         <ul>
+          <li>
+            <a href="/gang">
+              <xsl:text>Gang</xsl:text>
+            </a>
+          </li>
+          <li>
+            <a href="http://datum.zerocracy.com/pages/terms.html">
+              <xsl:text>Terms</xsl:text>
+            </a>
+          </li>
           <li>
             <a href="https://github.com/zerocracy">GitHub</a>
           </li>

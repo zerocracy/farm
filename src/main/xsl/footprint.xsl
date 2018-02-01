@@ -60,7 +60,9 @@ SOFTWARE.
   <xsl:template match="claim">
     <tr>
       <td>
-        <xsl:value-of select="created"/>
+        <a href="/footprint/{/page/project}/{cid}">
+          <xsl:value-of select="created"/>
+        </a>
       </td>
       <td>
         <xsl:text>"</xsl:text>
@@ -68,7 +70,7 @@ SOFTWARE.
         <xsl:text>"</xsl:text>
       </td>
       <td>
-        <xsl:for-each select="*[not(name() = 'type') and not(name() = 'created') and not(name() = '_id') and not(name() = 'cid') and not(name() = 'project') and not(name() = 'closed')]">
+        <xsl:for-each select="*[not(name() = 'type') and not(name() = 'created') and not(name() = '_id') and not(name() = 'cid') and not(name() = 'project') and not(name() = 'closed') and not(name() = 'cause')]">
           <xsl:if test="position() &gt; 1">
             <xsl:text>; </xsl:text>
           </xsl:if>
