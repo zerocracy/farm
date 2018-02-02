@@ -86,6 +86,9 @@ SOFTWARE.
           <th>
             <xsl:text>Agenda</xsl:text>
           </th>
+          <th>
+            <xsl:text>Projects</xsl:text>
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -168,6 +171,9 @@ SOFTWARE.
       </td>
       <td style="text-align:right;">
         <xsl:value-of select="agenda"/>
+      </td>
+      <td style="text-align:right">
+        <xsl:value-of select="projects"/>
       </td>
     </tr>
   </xsl:template>
