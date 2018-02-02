@@ -74,7 +74,7 @@ SOFTWARE.
               </a>
             </sub>
           </th>
-          <th>
+          <th data-sortable-type="numeric">
             <xsl:text>Reputation</xsl:text>
             <sub>
               <xsl:text>/</xsl:text>
