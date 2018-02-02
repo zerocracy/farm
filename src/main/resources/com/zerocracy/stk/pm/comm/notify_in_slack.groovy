@@ -54,8 +54,8 @@ def exec(Project project, XML xml) {
       SlackUser user = session.findUserByUserName(parts[2])
       if (user == null) {
         Logger.warn(
-          this, 'Failed to notify @%s (%s), since there is no direct chat',
-          user.id, user.realName
+          this, 'Failed to notify %s, since there is no direct chat',
+          parts[2]
         )
       } else {
         session.sendMessage(

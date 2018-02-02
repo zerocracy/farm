@@ -26,4 +26,13 @@ SOFTWARE.
       <param name="login">me</param>
     </params>
   </claim>
+  <claim id="4">
+    <created>2017-03-27T11:18:09.228Z</created>
+    <type>Check job status</type>
+    <token>job;gh:test/test#1</token>
+    <author>yegor256</author>
+    <params>
+      <param name="job">gh:test/test#1</param>
+    </params>
+  </claim>
 </claims>

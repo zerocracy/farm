@@ -75,7 +75,7 @@ def exec(Project project, XML xml) {
         if (rates.exists(performer)) {
           items.add(
             new Par(
-              '@%s will get %d%% of their hourly rate for this job'
+              '@%s will get %.0f%% of their hourly rate for this job'
             ).say(performer, 100.0d * (estimates.get(job) / rates.rate(performer)))
           )
         }
