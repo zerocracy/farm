@@ -19,14 +19,9 @@ package com.zerocracy.radars.slack;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.Farm;
-import com.zerocracy.SoftException;
-import com.zerocracy.farm.props.Props;
-import com.zerocracy.msg.TxtUnrecoverableError;
-import io.sentry.Sentry;
+import com.zerocracy.err.FbReaction;
+import com.zerocracy.err.FbSend;
 import java.io.IOException;
-import org.cactoos.func.FuncOf;
-import org.cactoos.func.FuncWithFallback;
-import org.cactoos.func.IoCheckedFunc;
 
 /**
  * Safe reaction.
@@ -36,11 +31,14 @@ import org.cactoos.func.IoCheckedFunc;
  * @since 0.1
  */
 public final class ReSafe implements Reaction<SlackMessagePosted> {
-
     /**
      * Reaction.
      */
     private final Reaction<SlackMessagePosted> origin;
+    /**
+     * Reaction with fallback.
+     */
+    private final FbReaction fbr;
 
     /**
      * Ctor.
@@ -48,38 +46,19 @@ public final class ReSafe implements Reaction<SlackMessagePosted> {
      */
     public ReSafe(final Reaction<SlackMessagePosted> tgt) {
         this.origin = tgt;
+        this.fbr = new FbReaction();
     }
 
     @Override
     public boolean react(final Farm farm, final SlackMessagePosted event,
         final SlackSession session) throws IOException {
-        return new IoCheckedFunc<>(
-            new FuncWithFallback<Boolean, Boolean>(
-                smart -> {
-                    boolean result = false;
-                    try {
-                        result = this.origin.react(farm, event, session);
-                    } catch (final SoftException ex) {
-                        session.sendMessage(
-                            event.getChannel(), ex.getMessage()
-                        );
-                    }
-                    return result;
-                },
-                new FuncOf<>(
-                    throwable -> {
-                        session.sendMessage(
-                            event.getChannel(),
-                            new TxtUnrecoverableError(
-                                throwable, new Props(farm)
-                            ).asString()
-                        );
-                        Sentry.capture(throwable);
-                        throw new IOException(throwable);
-                    }
-                )
+        return this.fbr.react(
+            () -> this.origin.react(farm, event, session),
+            new FbSend(
+                msg -> session.sendMessage(event.getChannel(), msg),
+                farm
             )
-        ).apply(true);
+        );
     }
 
 }
