@@ -98,7 +98,7 @@ SOFTWARE.
   <xsl:template match="user">
     <tr>
       <td>
-        <img src="https://socatar.com/github/{login}" style="width:30px;height:30px;border-radius:3px;vertical-align:middle;"/>
+        <img src="https://socatar.com/github/{login}/90-90" style="width:30px;height:30px;border-radius:3px;vertical-align:middle;"/>
         <xsl:text> </xsl:text>
         <a href="https://github.com/{login}">
           <xsl:text>@</xsl:text>
