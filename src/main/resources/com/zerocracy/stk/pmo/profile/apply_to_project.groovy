@@ -33,8 +33,8 @@ import com.zerocracy.pmo.People
 /**
  *
  * @todo #382:30min On 'apply' we should add person to `candidates.xml`
- *  project's file. Then PO can assign a new role to someone from this list.
- *  When a role is assigned,
+ *  project's file. Then PO can assign a new role only to someone
+ *  from this list. When a role is assigned,
  *  the person should be removed from `candidates.xml`.
  *  Also, we should remove people from `candidates.xml`
  *  after 20 days, automatically.
