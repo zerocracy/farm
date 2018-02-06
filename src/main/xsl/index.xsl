@@ -39,10 +39,19 @@ SOFTWARE.
         <xsl:text> that never sleeps.</xsl:text>
       </p>
       <p>
-        <span title="Current version of the bot">
-          <xsl:text>v</xsl:text>
-          <xsl:value-of select="version/name"/>
-        </span>
+        <xsl:choose>
+          <xsl:when test="contains(version/name,'SNAPSHOT')">
+            <span title="The bot was deployed manually, without any specific version">
+              <xsl:text>&#x26A1;</xsl:text>
+            </span>
+          </xsl:when>
+          <xsl:otherwise>
+            <span title="Current version of the bot">
+              <xsl:text>v</xsl:text>
+              <xsl:value-of select="version/name"/>
+            </span>
+          </xsl:otherwise>
+        </xsl:choose>
         <xsl:text> &#xB7; </xsl:text>
         <span title="Claims processed over the last week">
           <xsl:value-of select="claims"/>
