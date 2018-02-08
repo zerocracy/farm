@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.chrono.ChronoZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collection;
 import java.util.Date;
 import org.cactoos.list.SolidList;
 import org.cactoos.text.JoinedText;
@@ -155,7 +156,7 @@ public final class Orders {
      * @return List of jobs
      * @throws IOException If fails of it there is no assignee
      */
-    public Iterable<String> iterate() throws IOException {
+    public Collection<String> iterate() throws IOException {
         try (final Item wbs = this.item()) {
             return new Xocument(wbs.path()).xpath(
                 "/orders/order/@job  "

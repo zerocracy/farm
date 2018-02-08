@@ -21,6 +21,7 @@ import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Project;
 import com.zerocracy.Xocument;
+import com.zerocracy.pm.in.Orders;
 import com.zerocracy.pm.scope.Wbs;
 import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.pmo.Catalog;
@@ -126,6 +127,12 @@ public final class TkBoard implements Take {
             new XeAppend(
                 "jobs",
                 Integer.toString(new Wbs(project).bootstrap().iterate().size())
+            ),
+            new XeAppend(
+                "orders",
+                Integer.toString(
+                    new Orders(project).bootstrap().iterate().size()
+                )
             ),
             new XeAppend(
                 "members",
