@@ -41,23 +41,25 @@ def exec(Project project, XML xml) {
   if (role == 'REV') {
     String arc = new Roles(project).bootstrap().findByRole('ARC')[0]
     msg = new Par(
-      'This pull request %s is assigned to @%s.',
+      'This pull request %s is assigned to @%s, here is',
+      '[why](/footprint/%s/%s).',
       'The budget is 15 minutes, see §4.',
       'Please, read §27 and',
       'when you decide to accept the changes,',
       'inform @%s (the architect) right in this ticket.',
       'If you decide that this PR should not be accepted ever,',
       'also inform the architect.'
-    ).say(job, login, arc)
+    ).say(job, login, project.pid(), claim.cid(), arc)
   } else {
     msg = new Par(
-      'The job %s assigned to @%s.',
+      'The job %s assigned to @%s, here is',
+      '[why](/footprint/%s/%s)',
       'The budget is 30 minutes, see §4.',
       'Please, read §8 and §9.',
       'If the task is not clear,',
       'read [this](/2015/02/16/it-is-not-a-school.html)',
       'and [this](/2015/01/15/how-to-cut-corners.html).'
-    ).say(job, login)
+    ).say(job, login, project.pid(), claim.cid())
   }
   if (!new Roles(project).bootstrap().hasAnyRole(login)) {
     msg += new Par(

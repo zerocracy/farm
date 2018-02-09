@@ -87,6 +87,7 @@ def exec(Project project, XML xml) {
         .param('job', job)
         .param('role', role)
         .param('reason', elections.reason(job))
+        .param('public', true)
         .postTo(project)
       break
     }
