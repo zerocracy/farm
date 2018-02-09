@@ -20,7 +20,7 @@ import com.jcabi.github.Comment;
 import com.zerocracy.Farm;
 import com.zerocracy.SoftException;
 import com.zerocracy.farm.props.Props;
-import com.zerocracy.msg.TxtUnrecoverableError;
+import com.zerocracy.tools.TxtUnrecoverableError;
 import io.sentry.Sentry;
 import java.io.IOException;
 import org.cactoos.func.FuncOf;
