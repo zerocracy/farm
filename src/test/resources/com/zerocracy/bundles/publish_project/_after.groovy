@@ -14,19 +14,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.comm
+package com.zerocracy.bundles.publish_project
 
 import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
+import com.zerocracy.Farm
 import com.zerocracy.Item
 import com.zerocracy.Project
-import com.zerocracy.pm.ClaimIn
-// notify test: print message to text file
+import com.zerocracy.pmo.Catalog
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
 
-static exec(Project project, XML xml) {
-  new Assume(project, xml).type('Notify test')
+
+def exec(Project project, XML xml) {
+  Farm farm = binding.variables.farm
+  MatcherAssert.assertThat(
+    new Catalog(farm).bootstrap().published(project.pid()),
+    Matchers.is(true)
+  )
   Item item = project.acq('test.txt')
-  ClaimIn claim = new ClaimIn(xml)
-  item.path().toFile().append("${claim.param('message')}\n")
-  item.close()
+  try {
+    MatcherAssert.assertThat(
+      item.path().toFile().newReader().readLines().join('\n'),
+      Matchers.stringContainsInOrder(
+        Arrays.asList(
+          "The project",
+          project.pid(),
+          "was published"
+        )
+      )
+    )
+  } finally {
+    item.close()
+  }
 }

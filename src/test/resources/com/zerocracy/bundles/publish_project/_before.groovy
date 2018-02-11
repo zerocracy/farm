@@ -14,19 +14,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.comm
+package com.zerocracy.bundles.publish_project
 
+import com.jcabi.github.Repo
+import com.jcabi.github.Repos
 import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
-import com.zerocracy.Item
+import com.zerocracy.Farm
 import com.zerocracy.Project
-import com.zerocracy.pm.ClaimIn
-// notify test: print message to text file
+import com.zerocracy.entry.ExtGithub
+import com.zerocracy.pmo.Catalog
 
-static exec(Project project, XML xml) {
-  new Assume(project, xml).type('Notify test')
-  Item item = project.acq('test.txt')
-  ClaimIn claim = new ClaimIn(xml)
-  item.path().toFile().append("${claim.param('message')}\n")
-  item.close()
+def exec(Project project, XML xml) {
+  Farm farm = binding.variables.farm
+  Repo repo = new ExtGithub(farm).value().repos()
+    .create(new Repos.RepoCreate('test', false))
+  new Catalog(farm).bootstrap()
+    .link(project.pid(), 'github', repo.coordinates().toString())
 }
+
+

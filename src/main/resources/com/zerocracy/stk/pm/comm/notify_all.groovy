@@ -17,16 +17,24 @@
 package com.zerocracy.stk.pm.comm
 
 import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
-import com.zerocracy.Item
 import com.zerocracy.Project
+import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-// notify test: print message to text file
 
-static exec(Project project, XML xml) {
-  new Assume(project, xml).type('Notify test')
-  Item item = project.acq('test.txt')
-  ClaimIn claim = new ClaimIn(xml)
-  item.path().toFile().append("${claim.param('message')}\n")
-  item.close()
+/**
+ * @todo #384:30min Let's implement this stakeholder.
+ *  This script should send a notification
+ *  to all users, who is not on vacation.
+ *  Let's mention in the notification, that if they don't want to
+ *  receive them anymore, they just have to turn the vacation mode ON.
+ *  Also 'publish_project' bundle test should be fixed.
+ */
+def exec(Project project, XML xml) {
+  new Assume(project, xml).type('Notify all')
+
+  // should be replaced with actual implementation
+  new ClaimIn(xml)
+    .copy()
+    .type('Notify test')
+    .postTo(project)
 }
