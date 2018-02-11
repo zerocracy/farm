@@ -53,6 +53,8 @@ public final class RbPingArchitect implements Rebound {
                 answer = "No architects here";
             } else if (arcs.contains(author)) {
                 answer = "The architect is speaking";
+            } else if (issue.isPull() && !roles.findByRole("REV").isEmpty()) {
+                answer = "Some REV will pick it up";
             } else {
                 final String intro = String.join(", @", arcs);
                 if (issue.isPull()) {

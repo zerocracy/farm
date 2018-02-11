@@ -32,9 +32,11 @@ import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pm.staff.ranks.RnkBoost
 import com.zerocracy.pm.staff.ranks.RnkRev
 import com.zerocracy.pm.staff.votes.VsBanned
+import com.zerocracy.pm.staff.votes.VsHardCap
 import com.zerocracy.pm.staff.votes.VsNoRoom
 import com.zerocracy.pm.staff.votes.VsRandom
 import com.zerocracy.pm.staff.votes.VsRate
+import com.zerocracy.pm.staff.votes.VsSafe
 import com.zerocracy.pm.staff.votes.VsSpeed
 import com.zerocracy.pm.staff.votes.VsVacation
 import com.zerocracy.pm.staff.votes.VsWorkload
@@ -71,13 +73,14 @@ def exec(Project project, XML xml) {
     boolean done = elections.elect(
       job, logins,
       [
-        (new VsRate(project, logins))     : 2,
-        (new VsNoRoom(pmo))               : role == 'REV' ? 0 : -100,
-        (new VsBanned(project, job))      : -100,
-        (new VsVacation(pmo))             : -100,
-        (new VsWorkload(pmo, logins))     : 1,
-        (new VsSpeed(pmo, logins))        : 3,
-        (new VsRandom(new SecureRandom())): 1
+        (new VsSafe(new VsHardCap(pmo, 24)))          : -100,
+        (new VsSafe(new VsRate(project, logins)))     : 2,
+        (new VsSafe(new VsNoRoom(pmo)))               : role == 'REV' ? 0 : -100,
+        (new VsSafe(new VsBanned(project, job)))      : -100,
+        (new VsSafe(new VsVacation(pmo)))             : -100,
+        (new VsSafe(new VsWorkload(pmo, logins)))     : 1,
+        (new VsSafe(new VsSpeed(pmo, logins)))        : 3,
+        (new VsSafe(new VsRandom(new SecureRandom())) : 1
       ]
     )
     if (done && elections.elected(job)) {
@@ -87,6 +90,7 @@ def exec(Project project, XML xml) {
         .param('job', job)
         .param('role', role)
         .param('reason', elections.reason(job))
+        .param('public', true)
         .postTo(project)
       break
     }

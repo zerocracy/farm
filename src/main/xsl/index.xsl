@@ -39,10 +39,19 @@ SOFTWARE.
         <xsl:text> that never sleeps.</xsl:text>
       </p>
       <p>
-        <span title="Current version of the bot">
-          <xsl:text>v</xsl:text>
-          <xsl:value-of select="version/name"/>
-        </span>
+        <xsl:choose>
+          <xsl:when test="contains(version/name,'SNAPSHOT')">
+            <span title="The bot was deployed manually, without any specific version">
+              <xsl:text>&#x26A1;</xsl:text>
+            </span>
+          </xsl:when>
+          <xsl:otherwise>
+            <span title="Current version of the bot">
+              <xsl:text>v</xsl:text>
+              <xsl:value-of select="version/name"/>
+            </span>
+          </xsl:otherwise>
+        </xsl:choose>
         <xsl:text> &#xB7; </xsl:text>
         <span title="Claims processed over the last week">
           <xsl:value-of select="claims"/>
@@ -65,20 +74,21 @@ SOFTWARE.
         </xsl:call-template>
       </p>
       <p>
-        <xsl:if test="not(identity)">
-          <a href="{links/link[@rel='takes:github']/@href}" title="Log in using your GitHub account">
-            <xsl:text>Login</xsl:text>
-          </a>
-        </xsl:if>
-        <xsl:if test="identity">
-          <xsl:text> &#xB7; </xsl:text>
-          <a href="/u/{identity/login}">
-            <span title="GitHub user currently logged in">
-              <xsl:text>@</xsl:text>
-              <xsl:value-of select="identity/login"/>
-            </span>
-          </a>
-        </xsl:if>
+        <xsl:choose>
+          <xsl:when test="identity">
+            <a href="/u/{identity/login}">
+              <span title="GitHub user currently logged in">
+                <xsl:text>@</xsl:text>
+                <xsl:value-of select="identity/login"/>
+              </span>
+            </a>
+          </xsl:when>
+          <xsl:otherwise>
+            <a href="{links/link[@rel='takes:github']/@href}" title="Log in using your GitHub account">
+              <xsl:text>Login</xsl:text>
+            </a>
+          </xsl:otherwise>
+        </xsl:choose>
         <xsl:text> &#xB7; </xsl:text>
         <a href="http://datum.zerocracy.com/pages/policy.html">
           <xsl:text>Policy</xsl:text>
