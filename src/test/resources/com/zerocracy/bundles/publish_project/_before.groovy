@@ -31,5 +31,3 @@ def exec(Project project, XML xml) {
   new Catalog(farm).bootstrap()
     .link(project.pid(), 'github', repo.coordinates().toString())
 }
-
-

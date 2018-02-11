@@ -37,9 +37,9 @@ def exec(Project project, XML xml) {
       item.path().toFile().newReader().readLines().join('\n'),
       Matchers.stringContainsInOrder(
         Arrays.asList(
-          "The project",
+          'The project,
           project.pid(),
-          "was published"
+          'was published'
         )
       )
     )
