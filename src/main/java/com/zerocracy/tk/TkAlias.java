@@ -27,7 +27,6 @@ import java.util.logging.Level;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
-import org.takes.facets.flash.RsFlash;
 import org.takes.facets.forward.RsForward;
 import org.takes.rq.RqHref;
 
@@ -64,7 +63,7 @@ public final class TkAlias implements Take {
         final People people = new People(pmo).bootstrap();
         if (people.find(rel, href).iterator().hasNext()) {
             throw new RsForward(
-                new RsFlash(
+                new RsParFlash(
                     "We've been already introduced, thanks!",
                     Level.WARNING
                 )
@@ -78,12 +77,11 @@ public final class TkAlias implements Take {
             ).say(login, rel, href)
         ).postTo(pmo);
         return new RsForward(
-            new RsFlash(
-                new Par.ToText(
-                    new Par(
-                        "Thanks, @%s now has an alias, @rel='%s', @href='%s'"
-                    ).say(login, rel, href)
-                ).toString()
+            new RsParFlash(
+                new Par(
+                    "Thanks, @%s now has an alias, @rel='%s', @href='%s'"
+                ).say(login, rel, href),
+                Level.WARNING
             )
         );
     }

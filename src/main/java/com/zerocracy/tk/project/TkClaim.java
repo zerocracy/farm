@@ -23,6 +23,7 @@ import com.zerocracy.pm.Footprint;
 import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.tk.RqUser;
 import com.zerocracy.tk.RsPage;
+import com.zerocracy.tk.RsParFlash;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.logging.Level;
@@ -31,7 +32,6 @@ import org.cactoos.iterable.ItemAt;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.scalar.IoCheckedScalar;
 import org.takes.Response;
-import org.takes.facets.flash.RsFlash;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
 import org.takes.facets.forward.RsForward;
@@ -83,7 +83,7 @@ public final class TkClaim implements TkRegex {
                                 if (!doc.keySet().contains("public")
                                     && !roles.hasRole(user, "PO")) {
                                     throw new RsForward(
-                                        new RsFlash(
+                                        new RsParFlash(
                                             new Par("Access denied").say(),
                                             Level.WARNING
                                         )

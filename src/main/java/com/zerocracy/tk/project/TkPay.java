@@ -32,11 +32,12 @@ import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pmo.Catalog;
 import com.zerocracy.pmo.Pmo;
 import com.zerocracy.tk.RqUser;
+import com.zerocracy.tk.RsParFlash;
 import java.io.IOException;
+import java.util.logging.Level;
 import org.cactoos.map.MapEntry;
 import org.cactoos.map.SolidMap;
 import org.takes.Response;
-import org.takes.facets.flash.RsFlash;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
 import org.takes.facets.forward.RsForward;
@@ -94,7 +95,7 @@ public final class TkPay implements TkRegex {
         } catch (final APIException | APIConnectionException | CardException
             | AuthenticationException | InvalidRequestException ex) {
             throw new RsForward(
-                new RsFlash(ex),
+                new RsParFlash(ex),
                 String.format("/p/%s", project.pid())
             );
         }
@@ -119,13 +120,12 @@ public final class TkPay implements TkRegex {
             ).say(project.pid(), amount, user)
         ).postTo(new Pmo(this.farm));
         return new RsForward(
-            new RsFlash(
-                new Par.ToText(
-                    new Par(
-                        "The project %s was successfully funded for %s.",
-                        "The ledger will be updated in a few minutes."
-                    ).say(project.pid(), amount)
-                ).toString()
+            new RsParFlash(
+                new Par(
+                    "The project %s was successfully funded for %s.",
+                    "The ledger will be updated in a few minutes."
+                ).say(project.pid(), amount),
+                Level.INFO
             ),
             String.format("/p/%s", project.pid())
         );

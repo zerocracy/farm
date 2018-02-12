@@ -17,6 +17,7 @@
 package com.zerocracy;
 
 import com.jcabi.aspects.Tv;
+import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.mongodb.client.model.Filters;
@@ -77,8 +78,16 @@ import org.reflections.scanners.ResourcesScanner;
  * @checkstyle VisibilityModifierCheck (500 lines)
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
  * @checkstyle DiamondOperatorCheck (500 lines)
+ * @checkstyle ExecutableStatementCountCheck (500 lines)
  */
-@SuppressWarnings("PMD.ExcessiveImports")
+@SuppressWarnings
+    (
+        {
+            "PMD.ExcessiveImports",
+            "PMD.ExcessiveMethodLength",
+            "PMD.AvoidInstantiatingObjectsInLoops"
+        }
+    )
 @RunWith(Parameterized.class)
 public final class BundlesTest {
 
@@ -133,34 +142,43 @@ public final class BundlesTest {
                 )
             ).asString()
         );
+        final String pmo = "PMO";
         final String pid;
         if (setup.nodes("/setup/pmo").isEmpty()) {
             pid = this.name.toUpperCase(Locale.ENGLISH)
                 .replaceAll("[^A-Z0-9]", "")
                 .substring(0, Tv.NINE);
         } else {
-            pid = "PMO";
+            pid = pmo;
         }
         try (final Farm farm = this.farm()) {
             final Project project = farm.find(
                 String.format("@id='%s'", pid)
             ).iterator().next();
-            new Catalog(farm).bootstrap().add(pid, "PMO/");
-            new And(
-                path -> {
-                    new LengthOf(
-                        new TeeInput(
-                            new ResourceOf(path),
-                            new OutputTo(
-                                this.home.resolve(
-                                    path.substring(path.lastIndexOf('/') + 1)
+            final Catalog catalog = new Catalog(farm).bootstrap();
+            catalog.add(pmo, String.format("%s/", pmo));
+            if (!pmo.equals(pid)) {
+                catalog.add(pid, String.format("2018/01/%s/", pid));
+            }
+            for (final String pfx : new String[] {pid, pmo}) {
+                new And(
+                    path -> {
+                        new LengthOf(
+                            new TeeInput(
+                                new ResourceOf(path),
+                                new OutputTo(
+                                    this.home.resolve(pfx).resolve(
+                                        path.substring(
+                                            path.lastIndexOf('/') + 1
+                                        )
+                                    )
                                 )
                             )
-                        )
-                    ).intValue();
-                },
-                BundlesTest.resources(this.bundle)
-            ).value();
+                        ).intValue();
+                    },
+                    BundlesTest.resources(this.bundle)
+                ).value();
+            }
             new StkGroovy(
                 new ResourceOf(
                     String.format("%s/_before.groovy", this.bundle)
@@ -173,7 +191,7 @@ public final class BundlesTest {
                     x -> {
                         TimeUnit.SECONDS.sleep(1L);
                         final Claims claims = new Claims(project).bootstrap();
-                        com.jcabi.log.Logger.info(
+                        Logger.info(
                             this, "alive=%d, %d claims: %s",
                             new RvAlive(farm).intValue(),
                             claims.iterate().size(),
@@ -220,7 +238,9 @@ public final class BundlesTest {
     private Farm farm() {
         return new SmartFarm(
             new FkFarm(
-                (Func<String, Project>) pid -> new FkProject(this.home, pid),
+                (Func<String, Project>) pid -> new FkProject(
+                    this.home.resolve(pid), pid
+                ),
                 this.home.toString()
             )
         ).value();
