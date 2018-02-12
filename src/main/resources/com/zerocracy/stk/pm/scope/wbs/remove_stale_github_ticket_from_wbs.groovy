@@ -35,13 +35,9 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
   Wbs wbs = new Wbs(project).bootstrap()
-  Orders orders = new Orders(project).bootstrap()
 //  Date threshold = java.sql.Date.valueOf(LocalDate.now().minusDays(5))
   int done = 0
   for (String job : wbs.iterate()) {
-    if (orders.assigned(job)) {
-      continue
-    }
     if (!new Quota(github).quiet()) {
       return
     }

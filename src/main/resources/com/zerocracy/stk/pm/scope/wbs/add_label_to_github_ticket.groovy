@@ -19,6 +19,7 @@ package com.zerocracy.stk.pm.scope.wbs
 import com.jcabi.github.Github
 import com.jcabi.github.Issue
 import com.jcabi.github.IssueLabels
+import com.jcabi.log.Logger
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
@@ -38,7 +39,11 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
   Issue.Smart issue = new Issue.Smart(new Job.Issue(github, job))
-  new IssueLabels.Smart(issue.labels()).addIfAbsent('scope', '3a6622')
+  try {
+    new IssueLabels.Smart(issue.labels()).addIfAbsent('scope', '3a6622')
+  } catch (AssertionError ex) {
+    Logger.warn(this, "Can't add label to issue %s: %s", issue, ex.localizedMessage)
+  }
   // @todo #403:30min Right now we are adding the label 'in' to the issue
   //  to a Github job that is in WBS. We should also remove it when the issue
   //  is removed from WBS (out of scope).
