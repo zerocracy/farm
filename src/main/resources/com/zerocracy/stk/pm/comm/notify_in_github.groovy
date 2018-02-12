@@ -58,8 +58,9 @@ def exec(Project project, XML xml) {
   )
   Props props = new Props(farm)
   String message = String.format(
-    '%s\n\n<!-- claim_id: %d, version: %s, hash: %s -->',
+    '%s\n\n<!-- https://www.0crat.com/footprint/%s/%d, version: %s, hash: %s -->',
     claim.param('message'),
+    project.pid(),
     claim.cid(),
     props.get('//build/version', ''),
     props.get('//build/revision', '')
