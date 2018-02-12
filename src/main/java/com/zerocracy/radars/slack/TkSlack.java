@@ -75,7 +75,6 @@ public final class TkSlack implements Take {
                 "Slack didn't authorize you, sorry!"
             );
         }
-        final Bots bots = new Bots(this.farm).bootstrap();
         final Props props = new Props(this.farm);
         final JsonObject json =
             new JdkRequest("https://slack.com/api/oauth.access")
@@ -104,6 +103,7 @@ public final class TkSlack implements Take {
                 )
             );
         }
+        final Bots bots = new Bots(this.farm).bootstrap();
         final String team = bots.register(json);
         new AsyncFunc<Boolean, Boolean>(
             input -> {
