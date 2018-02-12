@@ -38,11 +38,14 @@ SOFTWARE.
           Remember, that a mentor will receive financial bonuses from us
           and positive or negative
           <a href="http://datum.zerocracy.com/pages/policy.html#18">points</a>
-          depending on your actions, so read this
+          depending on your actions,
+          so keep in mind that user more likely invite you if you match
+          these criteria: you have open source contributions and positive
+          Stackoverflow reputation (read
           <a href="http://www.yegor256.com/2014/10/29/how-much-do-you-cost.html">
-            blog post
+            this blog post
           </a>
-          before sending join request.
+          for more details).
         </p>
       </section>
       <form method="post" action="/join">
