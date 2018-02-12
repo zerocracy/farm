@@ -73,4 +73,17 @@ public final class ParTest {
         );
     }
 
+    @Test
+    public void turnsItIntoHtml() throws Exception {
+        MatcherAssert.assertThat(
+            new Par.ToHtml(
+                new Par("`Hey` you @%s").say("jeffy")
+            ).toString(),
+            Matchers.equalTo(
+                // @checkstyle LineLength (1 line)
+                "<code>Hey</code> you @jeffy<a href='https://www.0crat.com/u/jeffy'>/z</a>"
+            )
+        );
+    }
+
 }

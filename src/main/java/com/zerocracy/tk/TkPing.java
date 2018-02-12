@@ -20,6 +20,7 @@ import com.jcabi.http.request.JdkRequest;
 import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseThreads;
 import com.zerocracy.Farm;
+import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
@@ -38,7 +39,6 @@ import org.cactoos.iterable.Shuffled;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
-import org.takes.facets.flash.RsFlash;
 import org.takes.facets.forward.RsForward;
 import org.takes.rq.RqHref;
 import org.takes.rs.RsText;
@@ -117,8 +117,8 @@ public final class TkPing implements Take {
         throws IOException {
         if (!type.matches("Ping($| [a-z]+)")) {
             throw new RsForward(
-                new RsFlash(
-                    String.format("Invalid claim type \"%s\"", type),
+                new RsParFlash(
+                    new Par("Invalid claim type \"%s\"").say(type),
                     Level.SEVERE
                 )
             );

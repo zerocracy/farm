@@ -22,10 +22,12 @@ import com.zerocracy.Par;
 import com.zerocracy.entry.ExtDynamo;
 import com.zerocracy.entry.ExtGithub;
 import com.zerocracy.farm.props.Props;
+import com.zerocracy.tk.RsParFlash;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
+import java.util.logging.Level;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
@@ -34,7 +36,6 @@ import org.cactoos.func.UncheckedProc;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
-import org.takes.facets.flash.RsFlash;
 import org.takes.facets.forward.RsForward;
 import org.takes.rq.RqForm;
 import org.takes.rq.form.RqFormBase;
@@ -159,11 +160,12 @@ public final class TkGithub implements Take, Runnable {
         final Iterable<String> body = form.param("payload");
         if (!body.iterator().hasNext()) {
             throw new RsForward(
-                new RsFlash(
+                new RsParFlash(
                     new Par(
                         "We expect this URL to be called by GitHub",
                         "with JSON as 'payload' form parameter"
-                    ).say()
+                    ).say(),
+                    Level.WARNING
                 )
             );
         }
