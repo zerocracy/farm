@@ -27,12 +27,12 @@ import com.zerocracy.pm.ClaimIn
  *  to all users, who is not on vacation.
  *  Let's mention in the notification, that if they don't want to
  *  receive them anymore, they just have to turn the vacation mode ON.
- *  Also 'publish_project' bundle test should be fixed.
+ *  Also 'publish_project' bundle test should be fixed. And
+ *  'Notify test' claim in this script should be replaced with
+ *  actual implementation.
  */
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Notify all')
-
-  // should be replaced with actual implementation
   new ClaimIn(xml)
     .copy()
     .type('Notify test')
