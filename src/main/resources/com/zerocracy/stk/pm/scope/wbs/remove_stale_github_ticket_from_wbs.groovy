@@ -39,9 +39,6 @@ def exec(Project project, XML xml) {
 //  Date threshold = java.sql.Date.valueOf(LocalDate.now().minusDays(5))
   int done = 0
   for (String job : wbs.iterate()) {
-    if (orders.assigned(job)) {
-      continue
-    }
     if (!new Quota(github).quiet()) {
       return
     }
