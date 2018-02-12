@@ -24,7 +24,6 @@ import com.zerocracy.pmo.Catalog
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 
-
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   MatcherAssert.assertThat(

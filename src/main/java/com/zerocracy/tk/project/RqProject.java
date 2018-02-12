@@ -24,12 +24,12 @@ import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.pmo.Catalog;
 import com.zerocracy.pmo.Pmo;
 import com.zerocracy.tk.RqUser;
+import com.zerocracy.tk.RsParFlash;
 import java.io.IOException;
 import java.util.logging.Level;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.scalar.SolidScalar;
-import org.takes.facets.flash.RsFlash;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.forward.RsForward;
 
@@ -63,7 +63,7 @@ final class RqProject implements Project {
                 final Catalog catalog = new Catalog(pmo).bootstrap();
                 if (!"PMO".equals(pid) && !catalog.exists(pid)) {
                     throw new RsForward(
-                        new RsFlash(
+                        new RsParFlash(
                             new Par("Project %s not found").say(pid),
                             Level.WARNING
                         )
@@ -75,7 +75,7 @@ final class RqProject implements Project {
                 final String user = new RqUser(farm, req).value();
                 if ("PMO".equals(pid) && !"yegor256".equals(user)) {
                     throw new RsForward(
-                        new RsFlash(
+                        new RsParFlash(
                             new Par("Only our CEO can see the PMO").say(),
                             Level.WARNING
                         )
@@ -85,7 +85,7 @@ final class RqProject implements Project {
                     final Roles roles = new Roles(project).bootstrap();
                     if (required.length > 0 && !roles.hasRole(user, required)) {
                         throw new RsForward(
-                            new RsFlash(
+                            new RsParFlash(
                                 new Par(
                                     // @checkstyle LineLength (1 line)
                                     "You don't have any of these roles in %s to view the page: %s"

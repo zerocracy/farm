@@ -111,6 +111,10 @@ public final class StkSafe implements Stakeholder {
             if (claim.hasToken()) {
                 msg.append(String.format(", token=\"%s\"", claim.token()));
             }
+            final Props props = new Props(this.farm);
+            if (props.has("//testing")) {
+                throw new IllegalStateException(ex);
+            }
             new ClaimOut()
                 .type("Error")
                 .param("origin_id", claim.cid())
@@ -118,10 +122,6 @@ public final class StkSafe implements Stakeholder {
                 .param("message", msg.toString())
                 .param("stacktrace", new TextOf(ex).asString())
                 .postTo(project);
-            final Props props = new Props(this.farm);
-            if (props.has("//testing")) {
-                throw new IllegalStateException(ex);
-            }
             Sentry.capture(ex);
             if (claim.hasToken() && !claim.type().startsWith("Notify")) {
                 claim.reply(

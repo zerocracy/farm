@@ -35,6 +35,7 @@ import org.cactoos.text.JoinedText;
  * @since 0.19
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class Par {
 
     /**
@@ -83,7 +84,7 @@ public final class Par {
             )
         );
         out = Par.replace(
-            out, Pattern.compile("(?<= |^)([A-Z0-9]{9})"),
+            out, Pattern.compile("(?<= |^)(C[A-Z0-9]{8})"),
             matcher -> {
                 String title = matcher.group(0);
                 final Catalog catalog = new Catalog(this.farm).bootstrap();
@@ -187,7 +188,31 @@ public final class Par {
             return this.par
                 .replaceAll("\\[/z]\\([^)]+\\)", "")
                 .replaceAll("\\[([^]]+)]\\([^)]+\\)", "$1")
-                .replaceAll("`([^`]+)", "$1");
+                .replaceAll("`([^`]+)`", "$1");
+        }
+    }
+
+    /**
+     * To HTML.
+     */
+    public static final class ToHtml {
+        /**
+         * The par.
+         */
+        private final String par;
+        /**
+         * Ctor.
+         * @param txt The par
+         */
+        public ToHtml(final String txt) {
+            this.par = txt;
+        }
+        @Override
+        public String toString() {
+            return this.par
+                .replaceAll("\\[(/z)]\\(([^)]+)\\)", "<a href='$2'>$1</a>")
+                .replaceAll("\\[([^]]+)]\\(([^)]+)\\)", "<a href='$2'>$1</a>")
+                .replaceAll("`([^`]+)`", "<code>$1</code>");
         }
     }
 }

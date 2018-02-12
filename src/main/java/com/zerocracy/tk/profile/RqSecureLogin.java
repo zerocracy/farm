@@ -19,10 +19,10 @@ package com.zerocracy.tk.profile;
 import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.tk.RqUser;
+import com.zerocracy.tk.RsParFlash;
 import java.io.IOException;
 import java.util.logging.Level;
 import org.cactoos.Scalar;
-import org.takes.facets.flash.RsFlash;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.forward.RsForward;
 
@@ -62,12 +62,10 @@ final class RqSecureLogin implements Scalar<String> {
         final String user = new RqUser(this.pmo, this.request).value();
         if (!user.equals(login) && !"yegor256".equals(user)) {
             throw new RsForward(
-                new RsFlash(
-                    new Par.ToText(
-                        new Par(
-                            "Only @%s is allowed to see this page"
-                        ).say(login)
-                    ).toString(),
+                new RsParFlash(
+                    new Par(
+                        "Only @%s is allowed to see this page"
+                    ).say(login),
                     Level.SEVERE
                 )
             );

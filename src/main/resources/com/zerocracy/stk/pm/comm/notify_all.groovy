@@ -33,6 +33,7 @@ import com.zerocracy.pm.ClaimIn
  */
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Notify all')
+  new Assume(project, xml).notPmo()
   new ClaimIn(xml)
     .copy()
     .type('Notify test')

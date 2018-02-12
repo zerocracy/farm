@@ -25,8 +25,8 @@ import com.zerocracy.pm.ClaimIn
 
 static exec(Project project, XML xml) {
   new Assume(project, xml).type('Notify test')
-  Item item = project.acq('test.txt')
   ClaimIn claim = new ClaimIn(xml)
+  Item item = project.acq('test.txt')
   item.path().toFile().append("${claim.param('message')}\n")
   item.close()
 }
