@@ -39,8 +39,8 @@ def exec(Project project, XML xml) {
         'message',
         new Par(
           'The project %s is properly funded,',
-          'cash balance is [%s](/p/%1$s?a=pm/cost/ledger)',
-          '([%s](/p/%1$s?a=pm/cost/estimates) in active orders),',
+          'cash balance is [%s](/p/%1$s?a=pm/cost/ledger) and',
+          '[%s](/p/%1$s?a=pm/cost/estimates) is in active orders;',
           'we will continue to assign jobs to performers.',
         ).say(project.pid(), cash, locked)
       )
@@ -54,10 +54,10 @@ def exec(Project project, XML xml) {
         'message',
         new Par(
           'The project %s is out of funds,',
-          'cash balance is [%s](/p/%1$s?a=pm/cost/ledger)',
-          '([%s](/p/%1$s?a=pm/cost/estimates) in active orders),',
-          'we temporarily stop assigning jobs, see §21.',
-          'Please, fund the project ASAP.'
+          'cash balance is [%s](/p/%1$s?a=pm/cost/ledger) and',
+          '[%s](/p/%1$s?a=pm/cost/estimates) is in active orders;',
+          'we temporarily stop assigning jobs, see §21;',
+          'please, fund the project ASAP'
         ).say(project.pid(), cash, locked)
       )
       .postTo(project)

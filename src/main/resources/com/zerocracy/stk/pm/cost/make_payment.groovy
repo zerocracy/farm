@@ -49,7 +49,8 @@ def exec(Project project, XML xml) {
       )
       new ClaimOut()
         .type('Notify user')
-        .param('login', login)
+        .token("user;${login}")
+        .param('cause', claim.cid())
         .param(
           'message',
           new Par(
@@ -59,6 +60,7 @@ def exec(Project project, XML xml) {
         .postTo(project)
       new ClaimOut()
         .type('Notify project')
+        .param('cause', claim.cid())
         .param(
           'message',
           new Par(

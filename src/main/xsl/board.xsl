@@ -75,6 +75,11 @@ SOFTWARE.
           </th>
           <th>
             <xsl:text>Jobs</xsl:text>
+            <a href="#1">
+              <sup>
+                <xsl:text>1</xsl:text>
+              </sup>
+            </a>
           </th>
         </tr>
       </thead>
@@ -82,6 +87,13 @@ SOFTWARE.
         <xsl:apply-templates select="project"/>
       </tbody>
     </table>
+    <p>
+      <sup id="1">
+        <xsl:text>1</xsl:text>
+      </sup>
+      <xsl:text>The amount of currently assigned jobs in the project
+        and the total amount of jobs.</xsl:text>
+    </p>
   </xsl:template>
   <xsl:template match="project">
     <tr>
@@ -121,6 +133,8 @@ SOFTWARE.
         </xsl:if>
       </td>
       <td style="text-align:right;">
+        <xsl:value-of select="orders"/>
+        <xsl:text>/</xsl:text>
         <xsl:value-of select="jobs"/>
       </td>
     </tr>

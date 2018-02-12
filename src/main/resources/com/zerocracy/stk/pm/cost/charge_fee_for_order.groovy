@@ -33,31 +33,47 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
   String login = claim.param('login')
+  String[] trial = ['G930TRU1E']
   Farm farm = binding.variables.farm
   Cash fee = new Catalog(farm).bootstrap().fee(project.pid())
   if (fee != Cash.ZERO) {
-    new Ledger(project).bootstrap().add(
-      new Ledger.Transaction(
-        fee,
-        'expenses', 'fee',
-        'liabilities', 'zerocracy',
-        "Zerocracy fee for ${job} completed by @${login}"
-      ),
-      new Ledger.Transaction(
-        fee,
-        'liabilities', 'zerocracy',
-        'assets', 'cash',
-        "Zerocracy fee paid in cash for ${job}"
+    if (trial.contains(project.pid())) {
+      new ClaimOut()
+        .type('Notify project')
+        .param('cause', claim.cid())
+        .param(
+          'message',
+          new Par(
+            'The management fee %s has not been deducted for %s, as in §23,',
+            'because your project is in the free trial period'
+          ).say(fee, job)
+        )
+        .postTo(project)
+    } else {
+      new Ledger(project).bootstrap().add(
+        new Ledger.Transaction(
+          fee,
+          'expenses', 'fee',
+          'liabilities', 'zerocracy',
+          "Zerocracy fee for ${job} completed by @${login}"
+        ),
+        new Ledger.Transaction(
+          fee,
+          'liabilities', 'zerocracy',
+          'assets', 'cash',
+          "Zerocracy fee paid in cash for ${job}"
+        )
       )
-    )
-    new ClaimOut()
-      .type('Notify project')
-      .param(
-        'message',
-        new Par(
-          'Management fee %s has been deducted for %s, see §23'
-        ).say(fee, job)
-      )
-      .postTo(project)
+      new ClaimOut()
+        .type('Notify project')
+        .param('cause', claim.cid())
+        .param(
+          'message',
+          new Par(
+            'Management fee %s has been deducted for %s, see §23'
+          ).say(fee, job)
+        )
+        .postTo(project)
+    }
   }
 }

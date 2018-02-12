@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.cactoos.map.MapEntry;
-import org.cactoos.map.StickyMap;
+import org.cactoos.map.SolidMap;
 
 /**
  * Pair.
@@ -61,7 +61,7 @@ final class Pair implements Comparable<Pair>, Serializable {
      * @checkstyle DiamondOperatorCheck (5 lines)
      */
     private static final Map<Character, Currency> BY_SYMBOL =
-        new StickyMap<Character, Currency>(
+        new SolidMap<Character, Currency>(
             new MapEntry<>(Currency.USD.symbol(), Currency.USD),
             new MapEntry<>(Currency.EUR.symbol(), Currency.EUR),
             new MapEntry<>(Currency.RUR.symbol(), Currency.RUR),
@@ -74,7 +74,7 @@ final class Pair implements Comparable<Pair>, Serializable {
      * @checkstyle DiamondOperatorCheck (5 lines)
      */
     private static final Map<String, Currency> BY_ISO =
-        new StickyMap<String, Currency>(
+        new SolidMap<String, Currency>(
             new MapEntry<>(Currency.USD.toString(), Currency.USD),
             new MapEntry<>(Currency.EUR.toString(), Currency.EUR),
             new MapEntry<>(Currency.RUR.toString(), Currency.RUR),

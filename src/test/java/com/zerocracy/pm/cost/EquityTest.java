@@ -26,6 +26,7 @@ import org.cactoos.io.TeeInput;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -87,6 +88,7 @@ public final class EquityTest {
     }
 
     @Test
+    @Ignore
     public void createsPdf() throws Exception {
         final Project pkt = new FkProject();
         final Equity equity = new Equity(pkt).bootstrap();

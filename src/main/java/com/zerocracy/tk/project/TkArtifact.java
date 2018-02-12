@@ -59,7 +59,7 @@ public final class TkArtifact implements TkRegex {
             "/xsl/artifact.xsl",
             req,
             () -> {
-                final Project project = new RqProject(this.farm, req);
+                final Project project = new RqProject(this.farm, req, "PO");
                 final String artifact = new RqHref.Smart(
                     new RqHref.Base(req)
                 ).single("a");

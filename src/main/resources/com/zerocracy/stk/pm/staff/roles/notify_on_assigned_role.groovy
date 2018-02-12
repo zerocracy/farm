@@ -17,12 +17,13 @@
 package com.zerocracy.stk.pm.staff.roles
 
 import com.jcabi.xml.XML
-import com.zerocracy.Par
-import com.zerocracy.farm.Assume
 import com.zerocracy.Farm
+import com.zerocracy.Par
 import com.zerocracy.Project
+import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
+import com.zerocracy.pm.cost.Rates
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
@@ -31,15 +32,20 @@ def exec(Project project, XML xml) {
   String login = claim.param('login')
   String role = claim.param('role')
   Farm farm = binding.variables.farm
+  String msg = new Par(
+    farm,
+    'You just got role %s in the %s project; '
+  ).say(role, project.pid())
+  Rates rates = new Rates(project).bootstrap()
+  if (rates.exists(login)) {
+    msg += new Par('your rate is %s').say(rates.rate(login))
+  } else {
+    msg += 'you work for free'
+  }
   new ClaimOut()
     .type('Notify user')
+    .param('cause', claim.cid())
     .token("user;${login}")
-    .param(
-      'message',
-      new Par(
-        farm,
-        'You just got role %s in the %s project'
-      ).say(role, project.pid())
-    )
+    .param('message', msg)
     .postTo(project)
 }

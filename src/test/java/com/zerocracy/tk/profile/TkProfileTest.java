@@ -51,7 +51,7 @@ public final class TkProfileTest {
         people.touch(uid);
         people.invite(uid, "mentor");
         new Awards(farm, uid).bootstrap().add(1, "gh:test/test#1", "reason");
-        new Agenda(farm, uid).bootstrap().add("gh:test/test#2", "QA", "#");
+        new Agenda(farm, uid).bootstrap().add("gh:test/test#2", "QA");
         final String pid = "9A0007788";
         new Projects(farm, uid).bootstrap().add(pid);
         new Catalog(farm).bootstrap().add(pid, "2018/01/9A0007788/");

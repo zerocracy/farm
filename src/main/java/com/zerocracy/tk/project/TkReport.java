@@ -36,7 +36,7 @@ import java.util.Map;
 import org.bson.Document;
 import org.cactoos.list.SolidList;
 import org.cactoos.map.MapEntry;
-import org.cactoos.map.StickyMap;
+import org.cactoos.map.SolidMap;
 import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
@@ -69,7 +69,7 @@ public final class TkReport implements TkRegex {
      * @checkstyle DiamondOperatorCheck (5 lines)
      */
     private static final Map<String, FtReport> REPORTS =
-        new StickyMap<String, FtReport>(
+        new SolidMap<String, FtReport>(
             new MapEntry<>("order-champions", new OrderChampions()),
             new MapEntry<>("award-champions", new AwardChampions()),
             new MapEntry<>("orders-given-by-week", new OrdersGivenByWeek())
@@ -112,7 +112,7 @@ public final class TkReport implements TkRegex {
             "/xsl/report.xsl",
             req,
             () -> {
-                final Project project = new RqProject(this.farm, req);
+                final Project project = new RqProject(this.farm, req, "PO");
                 final Collection<Document> docs;
                 try (final Footprint footprint =
                     new Footprint(this.farm, project)) {

@@ -51,6 +51,7 @@ def exec(Project project, XML xml) {
   ).postTo(project)
   new ClaimOut()
     .type('Order was canceled')
+    .param('cause', claim.cid())
     .param('job', job)
     .param('voluntarily', claim.hasAuthor() && claim.author() == performer)
     .param('login', performer)

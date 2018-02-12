@@ -40,6 +40,15 @@ SOFTWARE.
         <xsl:text>&#xA7;2</xsl:text>
       </a>
       <xsl:text>.</xsl:text>
+      <xsl:text> If you want these programmers to work with your project,</xsl:text>
+      <xsl:text> you have to publish it on the </xsl:text>
+      <xsl:text>Board</xsl:text>
+      <xsl:text>, as explained in </xsl:text>
+      <a href="http://datum.zerocracy.com/pages/policy.html#26">
+        <xsl:text>&#xA7;26</xsl:text>
+      </a>
+      <xsl:text>, we will automatically notify the best</xsl:text>
+      <xsl:text> and the most relevant candidates; they will apply, if interested.</xsl:text>
     </p>
     <table data-sortable="true">
       <thead>
@@ -65,8 +74,14 @@ SOFTWARE.
               </a>
             </sub>
           </th>
-          <th>
+          <th data-sortable-type="numeric">
             <xsl:text>Reputation</xsl:text>
+            <sub>
+              <xsl:text>/</xsl:text>
+              <a href="http://datum.zerocracy.com/pages/policy.html#18">
+                <xsl:text>&#xA7;18</xsl:text>
+              </a>
+            </sub>
           </th>
           <th>
             <xsl:text>Agenda</xsl:text>
@@ -83,7 +98,7 @@ SOFTWARE.
   <xsl:template match="user">
     <tr>
       <td>
-        <img src="https://socatar.com/github/{login}" style="width:30px;height:30px;border-radius:3px;vertical-align:middle;"/>
+        <img src="https://socatar.com/github/{login}/90-90" style="width:30px;height:30px;border-radius:3px;vertical-align:middle;"/>
         <xsl:text> </xsl:text>
         <a href="https://github.com/{login}">
           <xsl:text>@</xsl:text>
@@ -125,7 +140,7 @@ SOFTWARE.
         <xsl:attribute name="style">
           <xsl:text>text-align:right;color:</xsl:text>
           <xsl:choose>
-            <xsl:when test="awards &gt; 1024">
+            <xsl:when test="awards &gt; 256">
               <xsl:text>darkgreen</xsl:text>
             </xsl:when>
             <xsl:when test="awards &lt; 0">
@@ -152,7 +167,7 @@ SOFTWARE.
         </xsl:choose>
       </td>
       <td style="text-align:right;">
-        <xsl:text>?</xsl:text>
+        <xsl:value-of select="agenda"/>
       </td>
     </tr>
   </xsl:template>

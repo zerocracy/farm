@@ -31,12 +31,15 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
 import org.cactoos.Func;
 import org.cactoos.func.AsyncFunc;
 import org.cactoos.iterable.Shuffled;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
+import org.takes.facets.flash.RsFlash;
+import org.takes.facets.forward.RsForward;
 import org.takes.rq.RqHref;
 import org.takes.rs.RsText;
 
@@ -49,11 +52,6 @@ import org.takes.rs.RsText;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class TkPing implements Take {
-
-    /**
-     * The type.
-     */
-    private static final String TYPE = "Ping";
 
     /**
      * Executor service.
@@ -87,6 +85,7 @@ public final class TkPing implements Take {
         this.total.incrementAndGet();
         final Collection<String> done = new LinkedList<>();
         final long start = System.currentTimeMillis();
+        final String type = new RqHref.Smart(req).single("type", "Ping");
         for (final Project project : new Shuffled<>(this.farm.find(""))) {
             if (System.currentTimeMillis() - start
                 // @checkstyle MagicNumber (1 line)
@@ -94,7 +93,7 @@ public final class TkPing implements Take {
                 done.add(this.stop(req));
                 break;
             }
-            done.add(this.ping(project));
+            done.add(this.ping(project, type));
         }
         return new RsText(
             Logger.format(
@@ -110,10 +109,20 @@ public final class TkPing implements Take {
     /**
      * This project needs a run.
      * @param project The project
+     * @param type The type of claim to post
      * @return TRUE if needs a run
      * @throws IOException If fails
      */
-    private String ping(final Project project) throws IOException {
+    private String ping(final Project project, final String type)
+        throws IOException {
+        if (!type.matches("Ping($| [a-z]+)")) {
+            throw new RsForward(
+                new RsFlash(
+                    String.format("Invalid claim type \"%s\"", type),
+                    Level.SEVERE
+                )
+            );
+        }
         final Claims claims = new Claims(project).bootstrap();
         final Catalog catalog = new Catalog(this.farm).bootstrap();
         final String out;
@@ -121,7 +130,7 @@ public final class TkPing implements Take {
             if (catalog.pause(project.pid())) {
                 out = String.format("%s/pause", project.pid());
             } else if (claims.iterate().isEmpty()) {
-                new ClaimOut().type(TkPing.TYPE).postTo(project);
+                new ClaimOut().type(type).postTo(project);
                 out = project.pid();
             } else {
                 out = String.format("%s/none", project.pid());

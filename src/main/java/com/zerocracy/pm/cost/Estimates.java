@@ -90,25 +90,6 @@ public final class Estimates {
     }
 
     /**
-     * Update job estimate by factor.
-     * @param job The job to estimate
-     * @param factor The factor to use
-     * @throws IOException If fails
-     */
-    public void boost(final String job, final double factor)
-        throws IOException {
-        if (this.exists(job)) {
-            final double mul = 10000.0d;
-            this.update(
-                job,
-                this.get(job)
-                    .mul((long) (factor * mul))
-                    .div((long) mul)
-            );
-        }
-    }
-
-    /**
      * Change job estimate.
      * @param job The job to estimate
      * @param cash Value

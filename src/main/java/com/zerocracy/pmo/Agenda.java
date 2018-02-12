@@ -22,6 +22,7 @@ import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.SoftException;
 import com.zerocracy.Xocument;
+import com.zerocracy.cash.Cash;
 import java.io.IOException;
 import org.cactoos.time.DateAsText;
 import org.xembly.Directives;
@@ -107,11 +108,9 @@ public final class Agenda {
      * Add an order to the agenda.
      * @param job Job ID
      * @param role The role
-     * @param href HREF of the ticket
      * @throws IOException If fails
      */
-    public void add(final String job, final String role, final String href)
-        throws IOException {
+    public void add(final String job, final String role) throws IOException {
         if (this.exists(job)) {
             throw new SoftException(
                 new Par(
@@ -125,7 +124,6 @@ public final class Agenda {
                     .xpath("/agenda")
                     .add("order")
                     .attr("job", job)
-                    .add("href").set(href).up()
                     .add("role").set(role).up()
                     .add("added").set(new DateAsText().asString()).up()
                     .add("project")
@@ -140,12 +138,70 @@ public final class Agenda {
      * @throws IOException If fails
      */
     public void remove(final String job) throws IOException {
+        if (!this.exists(job)) {
+            throw new SoftException(
+                new Par(
+                    "Job %s is not in the agenda of @%s, can't remove"
+                ).say(job, this.login)
+            );
+        }
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()
                     .xpath(String.format("/agenda/order[@job='%s']", job))
                     .strict(1)
                     .remove()
+            );
+        }
+    }
+
+    /**
+     * Add estimate.
+     * @param job The job to mark
+     * @param cash The estimate
+     * @throws IOException If fails
+     */
+    public void estimate(final String job, final Cash cash) throws IOException {
+        if (!this.exists(job)) {
+            throw new SoftException(
+                new Par(
+                    "Job %s is not in the agenda of @%s, can't set estimate"
+                ).say(job, this.login)
+            );
+        }
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                new Directives()
+                    .xpath(String.format("/agenda/order[@job='%s' ]", job))
+                    .strict(1)
+                    .addIf("estimate")
+                    .set(cash)
+            );
+        }
+    }
+
+    /**
+     * Add estimate.
+     * @param job The job to mark
+     * @param reason The reason
+     * @throws IOException If fails
+     */
+    public void impediment(final String job,
+        final String reason) throws IOException {
+        if (!this.exists(job)) {
+            throw new SoftException(
+                new Par(
+                    "Job %s is not in the agenda of @%s, can't set impediment"
+                ).say(job, this.login)
+            );
+        }
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                new Directives()
+                    .xpath(String.format("/agenda/order[@job= '%s' ]", job))
+                    .strict(1)
+                    .addIf("impediment")
+                    .set(reason)
             );
         }
     }

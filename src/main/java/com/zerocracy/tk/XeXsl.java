@@ -29,7 +29,7 @@ import org.cactoos.func.UncheckedFunc;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.InputStreamOf;
 import org.cactoos.map.MapEntry;
-import org.cactoos.map.StickyMap;
+import org.cactoos.map.SolidMap;
 import org.cactoos.text.TextOf;
 import org.cactoos.time.DateAsText;
 import org.takes.rs.xe.XeAppend;
@@ -106,7 +106,7 @@ public final class XeXsl implements XeSource {
                             )
                         )
                     ),
-                    new StickyMap<String, Object>(
+                    new SolidMap<String, Object>(
                         new MapEntry<>("today", new DateAsText().asString())
                     ),
                     uri.toString()

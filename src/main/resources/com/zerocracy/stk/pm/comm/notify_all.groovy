@@ -14,11 +14,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.zerocracy.stk.pm.comm
+
+import com.jcabi.xml.XML
+import com.zerocracy.Project
+import com.zerocracy.farm.Assume
+import com.zerocracy.pm.ClaimIn
 
 /**
- * Common messages.
- * @author Kirill (g4s8.public@gmail.com)
- * @version $Id$
- * @since 0.17
+ * @todo #384:30min Let's implement this stakeholder.
+ *  This script should send a notification
+ *  to all users, who is not on vacation.
+ *  Let's mention in the notification, that if they don't want to
+ *  receive them anymore, they just have to turn the vacation mode ON.
+ *  Also 'publish_project' bundle test should be fixed. And
+ *  'Notify test' claim in this script should be replaced with
+ *  actual implementation.
  */
-package com.zerocracy.msg;
+def exec(Project project, XML xml) {
+  new Assume(project, xml).type('Notify all')
+  new ClaimIn(xml)
+    .copy()
+    .type('Notify test')
+    .postTo(project)
+}

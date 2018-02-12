@@ -37,6 +37,7 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   new ClaimOut()
     .type('Notify user')
+    .param('cause', claim.cid())
     .token("user;${login}")
     .param(
       'message',
@@ -49,6 +50,7 @@ def exec(Project project, XML xml) {
     .postTo(project)
   new ClaimOut()
     .type('Notify job')
+    .param('cause', claim.cid())
     .token("job;${job}")
     .param(
       'message',

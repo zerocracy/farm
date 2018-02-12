@@ -14,27 +14,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.in.orders
+package com.zerocracy.stk.pm.staff.elections
 
 import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
 import com.zerocracy.Project
-import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
-import com.zerocracy.pmo.Agenda
+import com.zerocracy.farm.Assume
+import com.zerocracy.pm.scope.Wbs
+import com.zerocracy.pm.staff.Elections
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Order was finished', 'Order was canceled')
-  ClaimIn claim = new ClaimIn(xml)
-  String job = claim.param('job')
-  String login = claim.param('login')
-  Agenda agenda = new Agenda(project, login).bootstrap()
-  if (agenda.exists(job)) {
-    agenda.remove(job)
+  new Assume(project, xml).type(
+    'User rate was changed',
+    'Agenda was updated',
+    'Award points were added',
+    'Role was assigned',
+    'Role was resigned',
+    'User projects were updated',
+    'Speed was updated'
+  )
+  Wbs wbs = new Wbs(project).bootstrap()
+  Elections elections = new Elections(project).bootstrap()
+  for (String job : wbs.iterate()) {
+    if (elections.exists(job)) {
+      elections.remove(job)
+    }
   }
-  new ClaimOut()
-    .type('Agenda was updated')
-    .param('login', login)
-    .postTo(project)
 }

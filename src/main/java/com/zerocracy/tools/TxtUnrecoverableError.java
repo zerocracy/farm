@@ -14,16 +14,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.msg;
+package com.zerocracy.tools;
 
 import com.zerocracy.farm.props.Props;
 import java.io.IOException;
-import org.apache.commons.lang3.StringUtils;
+import java.util.Collection;
+import java.util.LinkedList;
 import org.cactoos.Text;
-import org.cactoos.io.BytesOf;
 import org.cactoos.text.JoinedText;
-import org.cactoos.text.TextOf;
-import org.cactoos.text.UncheckedText;
 
 /**
  * Error message for unrecoverable failure.
@@ -61,13 +59,7 @@ public final class TxtUnrecoverableError implements Text {
             " Please, submit it",
             " [here](https://github.com/zerocracy/farm/issues):",
             "\n\n```\n",
-            StringUtils.abbreviate(
-                new TextOf(
-                    new BytesOf(this.err)
-                ).asString(),
-                // @checkstyle MagicNumber (1 line)
-                1000
-            ),
+            String.join("\n", TxtUnrecoverableError.messages(this.err)),
             "\n```\n\n",
             String.format(
                 "[%s](https://github.com/zerocracy/farm/tree/%1$s)",
@@ -77,8 +69,24 @@ public final class TxtUnrecoverableError implements Text {
         ).asString();
     }
 
-    @Override
-    public int compareTo(final Text text) {
-        return new UncheckedText(this).compareTo(text);
+    /**
+     * Get messages from exception trace.
+     * @param error The error
+     * @return Messages
+     */
+    private static Collection<String> messages(final Throwable error) {
+        final Collection<String> list = new LinkedList<>();
+        list.add(
+            String.format(
+                "%s: %s",
+                error.getClass().getName(),
+                error.getMessage()
+            )
+        );
+        final Throwable cause = error.getCause();
+        if (cause != null) {
+            list.addAll(TxtUnrecoverableError.messages(cause));
+        }
+        return list;
     }
 }

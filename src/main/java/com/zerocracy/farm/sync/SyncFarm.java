@@ -25,10 +25,10 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
 import lombok.EqualsAndHashCode;
 import org.cactoos.iterable.Joined;
 import org.cactoos.iterable.Mapped;
+import org.cactoos.text.TextOf;
 import org.xembly.Directive;
 import org.xembly.Directives;
 
@@ -51,7 +51,7 @@ public final class SyncFarm implements Farm {
     /**
      * Pool of locks.
      */
-    private final Map<Project, Lock> pool;
+    private final Map<Project, SmartLock> pool;
 
     /**
      * Terminator.
@@ -109,9 +109,16 @@ public final class SyncFarm implements Farm {
                     .append(
                         new Joined<Directive>(
                             new Mapped<>(
-                                ent -> new Directives().add("lock")
+                                ent -> new Directives()
+                                    .add("lock")
                                     .attr("pid", ent.getKey().pid())
-                                    .set(ent.getValue().toString()).up(),
+                                    .attr("label", ent.getValue().toString())
+                                    .set(
+                                        new TextOf(
+                                            ent.getValue().stacktrace()
+                                        )
+                                    )
+                                    .up(),
                                 this.pool.entrySet()
                             )
                         )

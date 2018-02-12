@@ -59,11 +59,21 @@ public final class VsBanned implements Votes {
             .reasons(this.job, login);
         final double rate;
         if (new LengthOf(reasons).intValue() > 0) {
-            log.append("Banned from this job because: ")
-                .append(new JoinedText(", ", reasons).asString());
+            log.append(
+                String.format(
+                    "Banned from %s because: %s",
+                    this.job,
+                    new JoinedText(", ", reasons).asString()
+                )
+            );
             rate = 1.0;
         } else {
-            log.append("There are no bans");
+            log.append(
+                String.format(
+                    "There are no bans in %s",
+                    this.job
+                )
+            );
             rate = 0.0;
         }
         return rate;

@@ -53,6 +53,7 @@ def exec(Project project, XML xml) {
     new Equity(project).bootstrap().add(login, reward)
     new ClaimOut()
       .type('Equity transferred')
+      .param('cause', claim.cid())
       .param('login', login)
       .param('job', job)
       .param('reward', reward)
@@ -62,7 +63,8 @@ def exec(Project project, XML xml) {
       .postTo(project)
     new ClaimOut()
       .type('Notify user')
-      .param('login', login)
+      .param('cause', claim.cid())
+      .token("user;${login}")
       .param(
         'message',
         new Par(
@@ -72,6 +74,7 @@ def exec(Project project, XML xml) {
       .postTo(project)
     new ClaimOut()
       .type('Notify project')
+      .param('cause', claim.cid())
       .param(
         'message',
         new Par(
