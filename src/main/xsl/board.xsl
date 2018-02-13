@@ -97,7 +97,7 @@ SOFTWARE.
         <sup id="2">
           <xsl:text>2</xsl:text>
         </sup>
-        <xsl:text>The crossed-out project is not properly funded
+        <xsl:text>Crossed-out projects are not properly funded
           at the moment and new jobs are not assigned to programmers;
           the situation may change at any moment.</xsl:text>
       </xsl:if>

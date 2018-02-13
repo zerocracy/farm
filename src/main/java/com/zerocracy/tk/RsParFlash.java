@@ -49,7 +49,7 @@ public final class RsParFlash extends RsWrap {
      */
     public RsParFlash(final String text, final Level level)
         throws UnsupportedEncodingException {
-        super(new RsFlash(new Par.ToHtml(text).toString(), level));
+        super(new RsFlash(new Par.ToText(text).toString(), level));
     }
 
 }
