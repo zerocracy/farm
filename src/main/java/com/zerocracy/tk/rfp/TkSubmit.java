@@ -18,6 +18,8 @@ package com.zerocracy.tk.rfp;
 
 import com.zerocracy.Farm;
 import com.zerocracy.Par;
+import com.zerocracy.pm.ClaimOut;
+import com.zerocracy.pmo.Pmo;
 import com.zerocracy.pmo.Rfps;
 import com.zerocracy.tk.RqUser;
 import com.zerocracy.tk.RsParFlash;
@@ -69,7 +71,15 @@ public final class TkSubmit implements Take {
         }
         final RqFormSmart form = new RqFormSmart(new RqGreedy(req));
         final String sow = form.single("sow");
-        rfps.post(user, sow);
+        final int rid = rfps.post(user, sow);
+        new ClaimOut().type("Notify all").param(
+            "message",
+            new Par(
+                "New RFP #%d was published,",
+                "you can [join](/rfps) as an architect"
+            ).say(rid)
+        // @checkstyle MagicNumber (1 line)
+        ).param("min", 512).postTo(new Pmo(this.farm));
         return new RsForward(
             new RsParFlash(
                 new Par("The statement of work has been updated, thanks").say(),

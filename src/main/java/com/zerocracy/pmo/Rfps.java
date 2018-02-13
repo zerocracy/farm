@@ -194,9 +194,10 @@ public final class Rfps {
      * Post RFP information.
      * @param login The owner's login
      * @param sow Statement of work
+     * @return ID of the RFP
      * @throws IOException If fails
      */
-    public void post(final String login, final String sow) throws IOException {
+    public int post(final String login, final String sow) throws IOException {
         if (!this.exists(login)) {
             throw new IllegalArgumentException(
                 new Par("RFP doesn't exist, you need to pay first").say()
@@ -207,6 +208,11 @@ public final class Rfps {
                 new Directives().xpath(
                     String.format("/rfps/rfp[login='%s']/sow", login)
                 ).strict(1).set(sow).up()
+            );
+            return Integer.parseInt(
+                new Xocument(item).xpath(
+                    String.format("//rfp[login= '%s']/@id", login)
+                ).get(0)
             );
         }
     }

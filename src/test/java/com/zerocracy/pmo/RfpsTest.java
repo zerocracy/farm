@@ -52,7 +52,10 @@ public final class RfpsTest {
         final Rfps rfps = new Rfps(new FkProject()).bootstrap();
         final String login = "yegor";
         final int rid = rfps.pay(login, "paid $10", "yegor@zerocracy.com");
-        rfps.post(login, "This is the work");
+        MatcherAssert.assertThat(
+            rfps.post(login, "This is the work"),
+            Matchers.equalTo(1)
+        );
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
                 new Xembler(rfps.toXembly()).xmlQuietly()
