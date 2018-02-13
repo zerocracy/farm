@@ -48,10 +48,11 @@ public final class RfpsTest {
     }
 
     @Test
-    public void printsToXembly() throws Exception {
+    public void printsListToXembly() throws Exception {
         final Rfps rfps = new Rfps(new FkProject()).bootstrap();
         final String login = "yegor";
         final int rid = rfps.pay(login, "paid $10", "yegor@zerocracy.com");
+        rfps.post(login, "This is the work");
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
                 new Xembler(rfps.toXembly()).xmlQuietly()
@@ -60,6 +61,13 @@ public final class RfpsTest {
                 String.format("/rfps/rfp[id=%d]", rid)
             )
         );
+    }
+
+    @Test
+    public void printsSingleToXembly() throws Exception {
+        final Rfps rfps = new Rfps(new FkProject()).bootstrap();
+        final String login = "yegor1";
+        final int rid = rfps.pay(login, "paid $7", "yegor@qulice.com");
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
                 new Xembler(rfps.toXembly(login)).xmlQuietly()

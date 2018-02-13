@@ -80,7 +80,8 @@ public final class Rfps {
     public Iterable<Directive> toXembly() throws IOException {
         try (final Item item = this.item()) {
             final Directives dirs = new Directives().add("rfps");
-            for (final XML rfp : new Xocument(item.path()).nodes("//rfp")) {
+            for (final XML rfp
+                : new Xocument(item.path()).nodes("//rfp[sow!='']")) {
                 dirs.add("rfp")
                     .add("id").set(rfp.xpath("@id").get(0)).up()
                     .add("created").set(rfp.xpath("created/text()").get(0)).up()
@@ -112,6 +113,7 @@ public final class Rfps {
                 .add("id").set(rfp.xpath("@id").get(0)).up()
                 .add("created").set(rfp.xpath("created/text()").get(0)).up()
                 .add("paid").set(rfp.xpath("paid/text()").get(0)).up()
+                .add("email").set(rfp.xpath("email/text()").get(0)).up()
                 .add("sow");
             final Iterator<String> sow = rfp.xpath("sow/text()").iterator();
             if (sow.hasNext()) {

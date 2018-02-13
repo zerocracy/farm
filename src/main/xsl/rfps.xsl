@@ -28,6 +28,18 @@ SOFTWARE.
     <h1>
       <xsl:text>RFPs</xsl:text>
     </h1>
+    <xsl:apply-templates select="rfps"/>
+  </xsl:template>
+  <xsl:template match="rfps[not(rfp)]">
+    <p>
+      <xsl:text>There are no new RFPs, sorry, see </xsl:text>
+      <a href="http://datum.zerocracy.com/pages/policy.html#40">
+        <xsl:text>&#xA7;40</xsl:text>
+      </a>
+      <xsl:text>.</xsl:text>
+    </p>
+  </xsl:template>
+  <xsl:template match="rfps[rfp]">
     <p>
       <xsl:text>This is a full list of RFPs available for purchase now, see </xsl:text>
       <a href="http://datum.zerocracy.com/pages/policy.html#40">
@@ -50,7 +62,7 @@ SOFTWARE.
         </tr>
       </thead>
       <tbody>
-        <xsl:apply-templates select="rfp/rfp"/>
+        <xsl:apply-templates select="rfp"/>
       </tbody>
     </table>
   </xsl:template>
