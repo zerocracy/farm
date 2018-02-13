@@ -71,7 +71,7 @@ public final class TkRfp implements Take {
                     ),
                     new XeWhen(
                         rfps.exists(user),
-                        new XeDirectives(rfps.toXembly(user))
+                        () -> new XeDirectives(rfps.toXembly(user))
                     )
                 );
             }
