@@ -64,14 +64,14 @@ def exec(Project pmo, XML xml) {
   if (rate < new Cash.S('$16')) {
     throw new SoftException(
       new Par(
-        'The rate %s is too low, see §33'
+        'The rate %s is too low, see §16'
       ).say(rate)
     )
   }
   if (rate > new Cash.S('$256')) {
     throw new SoftException(
       new Par(
-        'The rate %s is too high, see §33'
+        'The rate %s is too high, see §16'
       ).say(rate)
     )
   }
