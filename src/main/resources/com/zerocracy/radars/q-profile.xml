@@ -79,7 +79,7 @@ SOFTWARE.
     <help>Purchase a single RFP, 256 points will be charged</help>
     <opts>
       <opt>
-        <name>rfp</name>
+        <name>id</name>
         <regex>[0-9]+</regex>
         <help>RFP ID, which can be found at https://www.0crat.com/rfps</help>
       </opt>

@@ -30,11 +30,11 @@ def exec(Project pmo, XML xml) {
   new Assume(pmo, xml).isPmo()
   new Assume(pmo, xml).type('Purchase RFP')
   ClaimIn claim = new ClaimIn(xml)
-  int rid = Integer.parseInt(claim.param('rfp'))
+  int rid = Integer.parseInt(claim.param('id'))
   Rfps rfps = new Rfps(pmo).bootstrap()
   if (!rfps.exists(rid)) {
     throw new SoftException(
-      new Par('RFP #%d doesn\'t exist').say(rid)
+      new Par('RFP #%d doesn\'t exist, see [full list](/rfps)').say(rid)
     )
   }
   String author = claim.author()

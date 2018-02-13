@@ -59,10 +59,14 @@ SOFTWARE.
       </p>
       <p>
         <xsl:text>Pay </xsl:text>
-        <a href="#" class="pay" data-cents="6400">
+        <span style="text-decoration: line-through">
           <xsl:text>$64.00</xsl:text>
+        </span>
+        <xsl:text> </xsl:text>
+        <a href="#" class="pay" data-cents="800">
+          <xsl:text>$8.00</xsl:text>
         </a>
-        <xsl:text> to continue (non-refundable!).</xsl:text>
+        <xsl:text> to continue. The payment is not refundable!</xsl:text>
       </p>
     </xsl:if>
     <xsl:apply-templates select="rfp"/>
@@ -83,11 +87,18 @@ SOFTWARE.
           </xsl:choose>
         </textarea>
         <button type="submit">
-          <xsl:if test="not(rfp)">
-            <xsl:attribute name="disabled">
-              <xsl:text>disabled</xsl:text>
-            </xsl:attribute>
-          </xsl:if>
+          <xsl:choose>
+            <xsl:when test="rfp">
+              <xsl:attribute name="type">
+                <xsl:text>submit</xsl:text>
+              </xsl:attribute>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:attribute name="disabled">
+                <xsl:text>disabled</xsl:text>
+              </xsl:attribute>
+            </xsl:otherwise>
+          </xsl:choose>
           <xsl:text>Update</xsl:text>
         </button>
       </fieldset>
