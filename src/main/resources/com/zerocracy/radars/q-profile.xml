@@ -73,6 +73,19 @@ SOFTWARE.
     </opts>
   </cmd>
   <cmd>
+    <code>Purchase RFP</code>
+    <regex>rfp</regex>
+    <label>rfp</label>
+    <help>Purchase a single RFP, 256 points will be charged</help>
+    <opts>
+      <opt>
+        <name>rfp</name>
+        <regex>[0-9]+</regex>
+        <help>RFP ID, which can be found at https://www.0crat.com/rfps</help>
+      </opt>
+    </opts>
+  </cmd>
+  <cmd>
     <code>Quit a project</code>
     <regex>quit</regex>
     <label>quit</label>

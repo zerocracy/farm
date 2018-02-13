@@ -14,37 +14,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.tk.project;
+package com.zerocracy.tk.rfp;
 
 import com.zerocracy.Farm;
 import com.zerocracy.Par;
-import com.zerocracy.Project;
-import com.zerocracy.cash.Cash;
-import com.zerocracy.pm.ClaimOut;
-import com.zerocracy.pmo.Catalog;
-import com.zerocracy.pmo.Pmo;
+import com.zerocracy.pmo.Rfps;
 import com.zerocracy.tk.RqUser;
 import com.zerocracy.tk.RsParFlash;
 import com.zerocracy.tk.Stripe;
 import java.io.IOException;
 import java.util.logging.Level;
+import org.takes.Request;
 import org.takes.Response;
-import org.takes.facets.fork.RqRegex;
-import org.takes.facets.fork.TkRegex;
+import org.takes.Take;
 import org.takes.facets.forward.RsForward;
 import org.takes.rq.RqGreedy;
 import org.takes.rq.form.RqFormSmart;
 
 /**
- * Pay page.
+ * Pay for RFP.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.19
+ * @since 0.20
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public final class TkPay implements TkRegex {
+public final class TkPrepay implements Take {
 
     /**
      * Farm.
@@ -55,61 +51,42 @@ public final class TkPay implements TkRegex {
      * Ctor.
      * @param frm Farm
      */
-    public TkPay(final Farm frm) {
+    public TkPrepay(final Farm frm) {
         this.farm = frm;
     }
 
     @Override
-    public Response act(final RqRegex req) throws IOException {
-        final Project project = new RqProject(this.farm, req, "PO");
+    public Response act(final Request req) throws IOException {
+        final String user = new RqUser(this.farm, req).value();
+        final Rfps rfps = new Rfps(this.farm).bootstrap();
+        if (rfps.exists(user)) {
+            throw new RsForward(
+                new RsParFlash(
+                    new Par("You have already paid").say(),
+                    Level.WARNING
+                ),
+                "/rfp"
+            );
+        }
         final RqFormSmart form = new RqFormSmart(new RqGreedy(req));
         final String email = form.single("email");
         final String customer;
         try {
             customer = new Stripe(this.farm).pay(
-                form.single("token"),
-                email,
-                String.format(
-                    "%s/%s",
-                    project.pid(),
-                    new Catalog(this.farm).title(project.pid())
-                )
+                form.single("token"), email, "RFP"
             );
         } catch (final Stripe.PaymentException ex) {
-            throw new RsForward(
-                new RsParFlash(ex),
-                String.format("/p/%s", project.pid())
-            );
+            throw new RsForward(new RsParFlash(ex), "/rfp");
         }
-        final Cash amount = new Cash.S(
-            String.format(
-                "USD %.2f",
-                // @checkstyle MagicNumber (1 line)
-                Double.parseDouble(form.single("cents")) / 100.0d
-            )
+        final int rid = rfps.pay(
+            user, String.format("Stripe ID: %s", customer), email
         );
-        final String user = new RqUser(this.farm, req).value();
-        new ClaimOut()
-            .type("Funded by Stripe")
-            .param("amount", amount)
-            .param("stripe_customer", customer)
-            .param("email", email)
-            .author(user)
-            .postTo(project);
-        new ClaimOut().type("Notify user").token("user;yegor256").param(
-            "message", new Par(
-                "Project %s was funded for %s by @%s"
-            ).say(project.pid(), amount, user)
-        ).postTo(new Pmo(this.farm));
         return new RsForward(
             new RsParFlash(
-                new Par(
-                    "The project %s was successfully funded for %s.",
-                    "The ledger will be updated in a few minutes."
-                ).say(project.pid(), amount),
+                new Par("The RFP #%d has been paid, thanks").say(rid),
                 Level.INFO
             ),
-            String.format("/p/%s", project.pid())
+            "/rfp"
         );
     }
 

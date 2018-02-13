@@ -100,6 +100,11 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="user">
     <tr>
+      <xsl:if test="login = /page/identity/login">
+        <xsl:attribute name="style">
+          <xsl:text>background-color:darkseagreen</xsl:text>
+        </xsl:attribute>
+      </xsl:if>
       <td>
         <img src="https://socatar.com/github/{login}/90-90" style="width:30px;height:30px;border-radius:3px;vertical-align:middle;"/>
         <xsl:text> </xsl:text>
