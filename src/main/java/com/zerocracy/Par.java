@@ -161,7 +161,7 @@ public final class Par {
         final IoCheckedFunc<Matcher, String> safe =
             new IoCheckedFunc<>(replace);
         while (matcher.find()) {
-            final String rep = safe.apply(matcher);
+            final String rep = safe.apply(matcher).replace("$", "\\$");
             matcher.appendReplacement(out, rep);
         }
         matcher.appendTail(out);

@@ -38,7 +38,7 @@ public final class ParTest {
                 "@%s is a DEV",
                 "in C63314D6Z",
                 "and has %d job(s), as in §1",
-                "see [me](/p/PMO?a=1)",
+                "see [$50](/p/C6331EE6Z?a=1)",
                 "and gh:test2-0/test.-4#455",
                 "and again %1$s"
             ).say("jack-me", 1),
@@ -49,7 +49,7 @@ public final class ParTest {
                     "in [C63314D6Z](https://www.0crat.com/p/C63314D6Z)",
                     "and has one job, as in",
                     "[§1](http://datum.zerocracy.com/pages/policy.html#1)",
-                    "see [me](https://www.0crat.com/p/PMO?a=1)",
+                    "see [$50](https://www.0crat.com/p/C6331EE6Z?a=1)",
                     "and [#455](https://github.com/test2-0/test.-4/issues/455)",
                     "and again jack-me"
                 ).asString()
