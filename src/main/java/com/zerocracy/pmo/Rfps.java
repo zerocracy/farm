@@ -23,6 +23,7 @@ import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.Xocument;
 import java.io.IOException;
+import java.util.Iterator;
 import org.cactoos.time.DateAsText;
 import org.xembly.Directive;
 import org.xembly.Directives;
@@ -83,8 +84,14 @@ public final class Rfps {
                 dirs.add("rfp")
                     .add("id").set(rfp.xpath("@id").get(0)).up()
                     .add("created").set(rfp.xpath("created/text()").get(0)).up()
-                    .add("sow").set(rfp.xpath("sow/text()").get(0)).up()
-                    .up();
+                    .add("sow");
+                final Iterator<String> sow = rfp.xpath("sow/text()").iterator();
+                if (sow.hasNext()) {
+                    dirs.set(sow.next());
+                } else {
+                    dirs.set("");
+                }
+                dirs.up().up();
             }
             return dirs;
         }
@@ -101,12 +108,18 @@ public final class Rfps {
             final XML rfp = new Xocument(item.path()).nodes(
                 String.format("//rfp[login='%s']", uid)
             ).get(0);
-            return new Directives().add("rfp")
+            final Directives dirs = new Directives().add("rfp")
                 .add("id").set(rfp.xpath("@id").get(0)).up()
                 .add("created").set(rfp.xpath("created/text()").get(0)).up()
                 .add("paid").set(rfp.xpath("paid/text()").get(0)).up()
-                .add("sow").set(rfp.xpath("sow/text()").get(0)).up()
-                .up();
+                .add("sow");
+            final Iterator<String> sow = rfp.xpath("sow/text()").iterator();
+            if (sow.hasNext()) {
+                dirs.set(sow.next());
+            } else {
+                dirs.set("");
+            }
+            return dirs.up().up();
         }
     }
 

@@ -52,13 +52,20 @@ public final class RfpsTest {
         final Rfps rfps = new Rfps(new FkProject()).bootstrap();
         final String login = "yegor";
         final int rid = rfps.pay(login, "paid $10", "yegor@zerocracy.com");
-        rfps.post(login, "Please, do it, товарищ!");
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
                 new Xembler(rfps.toXembly()).xmlQuietly()
             ),
             XhtmlMatchers.hasXPath(
                 String.format("/rfps/rfp[id=%d]", rid)
+            )
+        );
+        MatcherAssert.assertThat(
+            XhtmlMatchers.xhtml(
+                new Xembler(rfps.toXembly(login)).xmlQuietly()
+            ),
+            XhtmlMatchers.hasXPath(
+                String.format("/rfp/id[.=%d]", rid)
             )
         );
     }
