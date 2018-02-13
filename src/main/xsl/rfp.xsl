@@ -73,7 +73,7 @@ SOFTWARE.
     <form action="/rfp-post" method="post">
       <fieldset>
         <label>Statement of work:</label>
-        <textarea name="sow" style="width:100%;height:10em;">
+        <textarea name="sow" style="width:100%;height:18em;">
           <xsl:choose>
             <xsl:when test="rfp">
               <xsl:value-of select="rfp/sow"/>
@@ -116,7 +116,11 @@ SOFTWARE.
     <p>
       <xsl:text>ID: #</xsl:text>
       <xsl:value-of select="id"/>
-      <xsl:text>.</xsl:text>
+      <xsl:text> (it is visible in the </xsl:text>
+      <a href="/rfps">
+        <xsl:text>list</xsl:text>
+      </a>
+      <xsl:text>)</xsl:text>
     </p>
     <p>
       <xsl:text>Created: </xsl:text>

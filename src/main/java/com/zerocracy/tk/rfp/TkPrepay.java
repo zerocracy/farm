@@ -18,6 +18,8 @@ package com.zerocracy.tk.rfp;
 
 import com.zerocracy.Farm;
 import com.zerocracy.Par;
+import com.zerocracy.pm.ClaimOut;
+import com.zerocracy.pmo.Pmo;
 import com.zerocracy.pmo.Rfps;
 import com.zerocracy.tk.RqUser;
 import com.zerocracy.tk.RsParFlash;
@@ -81,6 +83,11 @@ public final class TkPrepay implements Take {
         final int rid = rfps.pay(
             user, String.format("Stripe ID: %s", customer), email
         );
+        new ClaimOut().type("Notify user").token("user;yegor256").param(
+            "message", new Par(
+                "RFP #%d has been paid by @%s: %s"
+            ).say(rid, user, email)
+        ).postTo(new Pmo(this.farm));
         return new RsForward(
             new RsParFlash(
                 new Par("The RFP #%d has been paid, thanks").say(rid),

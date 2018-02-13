@@ -57,13 +57,14 @@ def exec(Project pmo, XML xml) {
   awards.add(points, job, new Par.ToText(reason).toString())
   claim.reply(
     new Par(
-      'Thanks for purchasing RFP #%d',
-      'the email of the client is: %s'
-    ).say(rid, email)
+      'Thanks for purchasing RFP #%d;',
+      'the email of the client is %s;',
+      'we deducted %d points from your reputation, according to §40'
+    ).say(rid, email, -points)
   ).postTo(pmo)
   new ClaimOut().type('Notify user').token('user;yegor256').param(
     'message', new Par(
-      'RFP #%d has be purchased by @%s: %s'
+      'RFP #%d has been purchased by @%s: %s'
     ).say(rid, author, email)
   ).param('cause', claim.cid()).postTo(pmo)
 }
