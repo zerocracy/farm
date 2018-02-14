@@ -123,7 +123,7 @@ public final class Elections {
         final StringBuilder log = new StringBuilder(0);
         for (final Map.Entry<Votes, Integer> ent : voters.entrySet()) {
             dirs.add("vote")
-                .attr("author", ent.getKey().getClass().getName())
+                .attr("author", ent.getKey().toString())
                 .attr("weight", ent.getValue());
             for (final String login : logins) {
                 log.setLength(0);

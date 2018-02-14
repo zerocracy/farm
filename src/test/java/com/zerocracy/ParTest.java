@@ -38,20 +38,20 @@ public final class ParTest {
                 "@%s is a DEV",
                 "in C63314D6Z",
                 "and has %d job(s), as in §1",
-                "see [me](/p/PMO?a=1)",
+                "see [$50](/p/C6331EE6Z?a=1)",
                 "and gh:test2-0/test.-4#455",
                 "and again %1$s"
-            ).say("jack", 1),
+            ).say("jack-me", 1),
             Matchers.equalTo(
                 new JoinedText(
                     " ",
-                    "@jack[/z](https://www.0crat.com/u/jack) is a `DEV`",
+                    "@jack-me[/z](https://www.0crat.com/u/jack-me) is a `DEV`",
                     "in [C63314D6Z](https://www.0crat.com/p/C63314D6Z)",
                     "and has one job, as in",
                     "[§1](http://datum.zerocracy.com/pages/policy.html#1)",
-                    "see [me](https://www.0crat.com/p/PMO?a=1)",
+                    "see [$50](https://www.0crat.com/p/C6331EE6Z?a=1)",
                     "and [#455](https://github.com/test2-0/test.-4/issues/455)",
-                    "and again jack"
+                    "and again jack-me"
                 ).asString()
             )
         );
@@ -70,6 +70,19 @@ public final class ParTest {
         MatcherAssert.assertThat(
             new Par.ToText(new Par("`It` is @%s").say("dmarkov")).toString(),
             Matchers.equalTo("It is @dmarkov")
+        );
+    }
+
+    @Test
+    public void turnsItIntoHtml() throws Exception {
+        MatcherAssert.assertThat(
+            new Par.ToHtml(
+                new Par("`Hey` you @%s").say("jeffy")
+            ).toString(),
+            Matchers.equalTo(
+                // @checkstyle LineLength (1 line)
+                "<code>Hey</code> you @jeffy<a href='https://www.0crat.com/u/jeffy'>/z</a>"
+            )
         );
     }
 

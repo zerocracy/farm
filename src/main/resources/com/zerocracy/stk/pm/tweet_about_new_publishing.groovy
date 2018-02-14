@@ -31,6 +31,9 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Project was published')
   Farm farm = binding.variables.farm
   Props props = new Props(farm)
+  if (props.get('//testing', 'no') == 'yes') {
+    return
+  }
   // @todo #404:30min Use of the Twitter API in this project is neither reusable
   //  nor testable. Let's introduce an interface that will serve as our frontend
   //  for the Twitter API. We should have a real implementation and also a fake

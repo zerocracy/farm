@@ -14,13 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.resigns_performer_when_unassigned_from_github
 
-import com.jcabi.xml.XML
-import com.zerocracy.Project
-import com.zerocracy.pm.in.Orders
-
-def exec(Project project, XML xml) {
-  def orders = new Orders(project).bootstrap()
-  assert !orders.assigned('gh:test/test#1')
-}
+/**
+ * Requests for proposal (RFP).
+ *
+ * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @version $Id$
+ * @since 0.20
+ */
+package com.zerocracy.tk.rfp;

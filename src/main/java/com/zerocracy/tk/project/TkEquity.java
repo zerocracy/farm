@@ -21,11 +21,11 @@ import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.pm.cost.Equity;
 import com.zerocracy.tk.RqUser;
+import com.zerocracy.tk.RsParFlash;
 import java.io.IOException;
 import java.util.logging.Level;
 import org.cactoos.io.BytesOf;
 import org.takes.Response;
-import org.takes.facets.flash.RsFlash;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
 import org.takes.facets.forward.RsForward;
@@ -62,12 +62,10 @@ public final class TkEquity implements TkRegex {
         final Equity equity = new Equity(project).bootstrap();
         if (equity.ownership(user).isEmpty()) {
             throw new RsForward(
-                new RsFlash(
-                    new Par.ToText(
-                        new Par(
-                            "You don't own anything in %s"
-                        ).say(project.pid())
-                    ).toString(),
+                new RsParFlash(
+                    new Par(
+                        "You don't own anything in %s"
+                    ).say(project.pid()),
                     Level.SEVERE
                 ),
                 String.format("/p/%s", project.pid())

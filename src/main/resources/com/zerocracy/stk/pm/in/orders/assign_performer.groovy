@@ -40,6 +40,7 @@ def exec(Project project, XML xml) {
         .param('job', job)
         .param('login', winner)
         .param('reason', reason)
+        .param('public', true)
         .postTo(project)
     }
   }

@@ -86,6 +86,9 @@ SOFTWARE.
           <th>
             <xsl:text>Agenda</xsl:text>
           </th>
+          <th>
+            <xsl:text>Projects</xsl:text>
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -97,8 +100,13 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="user">
     <tr>
+      <xsl:if test="login = /page/identity/login">
+        <xsl:attribute name="style">
+          <xsl:text>background-color:darkseagreen</xsl:text>
+        </xsl:attribute>
+      </xsl:if>
       <td>
-        <img src="https://socatar.com/github/{login}" style="width:30px;height:30px;border-radius:3px;vertical-align:middle;"/>
+        <img src="https://socatar.com/github/{login}/90-90" style="width:30px;height:30px;border-radius:3px;vertical-align:middle;"/>
         <xsl:text> </xsl:text>
         <a href="https://github.com/{login}">
           <xsl:text>@</xsl:text>
@@ -168,6 +176,9 @@ SOFTWARE.
       </td>
       <td style="text-align:right;">
         <xsl:value-of select="agenda"/>
+      </td>
+      <td style="text-align:right">
+        <xsl:value-of select="projects"/>
       </td>
     </tr>
   </xsl:template>

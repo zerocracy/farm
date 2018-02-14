@@ -71,10 +71,19 @@ SOFTWARE.
       <nav>
         <ul>
           <li>
-            <span title="Current version of the bot">
-              <xsl:text>v</xsl:text>
-              <xsl:value-of select="version/name"/>
-            </span>
+            <xsl:choose>
+              <xsl:when test="contains(version/name,'SNAPSHOT')">
+                <span title="The bot was deployed manually, without any specific version">
+                  <xsl:text>&#x26A1;</xsl:text>
+                </span>
+              </xsl:when>
+              <xsl:otherwise>
+                <span title="Current version of the bot">
+                  <xsl:text>v</xsl:text>
+                  <xsl:value-of select="version/name"/>
+                </span>
+              </xsl:otherwise>
+            </xsl:choose>
           </li>
           <li>
             <span title="Current version of datum">

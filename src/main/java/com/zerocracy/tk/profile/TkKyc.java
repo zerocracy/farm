@@ -22,10 +22,10 @@ import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pmo.People;
 import com.zerocracy.pmo.Pmo;
 import com.zerocracy.tk.RqUser;
+import com.zerocracy.tk.RsParFlash;
 import java.io.IOException;
 import java.util.logging.Level;
 import org.takes.Response;
-import org.takes.facets.flash.RsFlash;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
 import org.takes.facets.forward.RsForward;
@@ -60,7 +60,7 @@ public final class TkKyc implements TkRegex {
         final String user = new RqUser(this.farm, req).value();
         if (!"yegor256".equals(user)) {
             throw new RsForward(
-                new RsFlash(
+                new RsParFlash(
                     "You are not allowed to do this, sorry",
                     Level.WARNING
                 )
@@ -90,10 +90,11 @@ public final class TkKyc implements TkRegex {
             )
             .postTo(new Pmo(this.farm));
         return new RsForward(
-            new RsFlash(
+            new RsParFlash(
                 new Par(
                     "@%s have been successfully identified as `%s`"
-                ).say(login, details)
+                ).say(login, details),
+                Level.INFO
             ),
             String.format("/u/%s", login)
         );

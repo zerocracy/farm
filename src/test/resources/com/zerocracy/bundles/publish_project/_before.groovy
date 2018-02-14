@@ -14,11 +14,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.zerocracy.bundles.publish_project
 
-/**
- * Common messages.
- * @author Kirill (g4s8.public@gmail.com)
- * @version $Id$
- * @since 0.17
- */
-package com.zerocracy.msg;
+import com.jcabi.github.Repo
+import com.jcabi.github.Repos
+import com.jcabi.xml.XML
+import com.zerocracy.Farm
+import com.zerocracy.Project
+import com.zerocracy.entry.ExtGithub
+import com.zerocracy.pmo.Catalog
+
+def exec(Project project, XML xml) {
+  Farm farm = binding.variables.farm
+  Repo repo = new ExtGithub(farm).value().repos()
+    .create(new Repos.RepoCreate('test', false))
+  new Catalog(farm).bootstrap()
+    .link(project.pid(), 'github', repo.coordinates().toString())
+}
