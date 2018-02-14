@@ -18,7 +18,6 @@ package com.zerocracy.bundles.publish_project
 
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
-import com.zerocracy.Item
 import com.zerocracy.Project
 import com.zerocracy.pmo.Catalog
 import org.hamcrest.MatcherAssert
@@ -30,19 +29,4 @@ def exec(Project project, XML xml) {
     new Catalog(farm).bootstrap().published(project.pid()),
     Matchers.is(true)
   )
-  Item item = project.acq('test.txt')
-  try {
-    MatcherAssert.assertThat(
-      item.path().toFile().newReader().readLines().join('\n'),
-      Matchers.stringContainsInOrder(
-        Arrays.asList(
-          'The project',
-          project.pid(),
-          'was published'
-        )
-      )
-    )
-  } finally {
-    item.close()
-  }
 }

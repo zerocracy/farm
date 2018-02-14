@@ -63,8 +63,8 @@ SOFTWARE.
           <xsl:text>$64.00</xsl:text>
         </span>
         <xsl:text> </xsl:text>
-        <a href="#" class="pay" data-cents="800">
-          <xsl:text>$8.00</xsl:text>
+        <a href="#" class="pay" data-cents="1600">
+          <xsl:text>$16.00</xsl:text>
         </a>
         <xsl:text> to continue. The payment is not refundable!</xsl:text>
       </p>

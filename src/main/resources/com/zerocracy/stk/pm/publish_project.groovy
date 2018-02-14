@@ -32,7 +32,7 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   String mode = claim.param('mode')
   Farm farm = binding.variables.farm
-  Catalog catalog = new Catalog(farm)
+  Catalog catalog = new Catalog(farm).bootstrap()
   if ('on' == mode) {
     catalog.publish(project.pid(), true)
     claim.reply(

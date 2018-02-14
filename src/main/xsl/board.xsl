@@ -92,7 +92,8 @@ SOFTWARE.
         <xsl:text>1</xsl:text>
       </sup>
       <xsl:text>The amount of currently assigned jobs in the project
-        and the total amount of jobs.</xsl:text>
+        and the total amount of jobs; the bigger the difference
+        the higher the deficit, if you join you will get jobs immediately.</xsl:text>
       <xsl:if test="project[deficit='true']">
         <sup id="2">
           <xsl:text>2</xsl:text>
