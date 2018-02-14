@@ -20,7 +20,7 @@ import com.jcabi.xml.XML
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 
-def project(Project pmo, XML xml) {
+def exec(Project pmo, XML xml) {
   new Assume(pmo, xml).isPmo()
   /**
    * @todo #492:30min Let's implement this stakeholder. It will take
