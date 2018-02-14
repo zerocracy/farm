@@ -45,6 +45,7 @@ final class StrictProject implements Project {
             "(catalog\\.xml)",
             "(bots\\.xml)",
             "(people\\.xml)",
+            "(rfps\\.xml)",
             "(awards/[a-zA-Z0-9-]+\\.xml)",
             "(agenda/[a-zA-Z0-9-]+\\.xml)",
             "(projects/[a-zA-Z0-9-]+\\.xml)",

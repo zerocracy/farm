@@ -25,7 +25,6 @@ import java.util.logging.Level;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
-import org.takes.facets.flash.RsFlash;
 import org.takes.facets.forward.RsForward;
 import org.takes.rs.RsWithBody;
 import org.takes.rs.RsWithType;
@@ -60,7 +59,7 @@ public final class TkDump implements Take {
     public Response act(final Request request) throws IOException {
         if (!"g4s8".equals(new RqUser(this.farm, request).value())) {
             throw new RsForward(
-                new RsFlash(
+                new RsParFlash(
                     "You are not allowed to see this page, sorry.",
                     Level.WARNING
                 )
@@ -69,7 +68,7 @@ public final class TkDump implements Take {
         final File file = new File("./heapdump.hprof");
         if (!file.exists()) {
             throw new RsForward(
-                new RsFlash(
+                new RsParFlash(
                     String.format("File doesn't exist: %s", file),
                     Level.SEVERE
                 )

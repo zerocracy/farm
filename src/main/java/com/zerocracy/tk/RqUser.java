@@ -30,7 +30,6 @@ import org.cactoos.scalar.SolidScalar;
 import org.takes.Request;
 import org.takes.facets.auth.Identity;
 import org.takes.facets.auth.RqAuth;
-import org.takes.facets.flash.RsFlash;
 import org.takes.facets.forward.RsForward;
 
 /**
@@ -68,7 +67,7 @@ public final class RqUser implements Scalar<String> {
                 final Identity identity = new RqAuth(req).identity();
                 if (identity.equals(Identity.ANONYMOUS)) {
                     throw new RsForward(
-                        new RsFlash(
+                        new RsParFlash(
                             "You must be logged in",
                             Level.WARNING
                         )
@@ -79,13 +78,11 @@ public final class RqUser implements Scalar<String> {
                 final People people = new People(pmo).bootstrap();
                 if (!people.hasMentor(login)) {
                     throw new RsForward(
-                        new RsFlash(
-                            new Par.ToText(
-                                new Par(
-                                    "You (@%s) must be invited",
-                                    "to us by someone we already know, see §1"
-                                ).say(login)
-                            ).toString(),
+                        new RsParFlash(
+                            new Par(
+                                "You (@%s) must be invited",
+                                "to us by someone we already know, see §1"
+                            ).say(login),
                             Level.WARNING
                         )
                     );
