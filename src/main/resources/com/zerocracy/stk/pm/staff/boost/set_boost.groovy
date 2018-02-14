@@ -28,5 +28,5 @@ def exec(Project project, XML xml) {
   def claim = new ClaimIn(xml)
   def factor = Integer.valueOf(claim.param('factor').replaceAll('x$', ''))
   new Boosts(project).bootstrap().boost(claim.param('job'), factor)
-  claim.reply("Boost ${factor}x was set")
+  claim.reply("Boost ${factor}x was set").postTo(project)
 }

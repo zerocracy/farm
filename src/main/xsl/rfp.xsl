@@ -86,7 +86,7 @@ SOFTWARE.
             </xsl:otherwise>
           </xsl:choose>
         </textarea>
-        <button type="submit">
+        <button>
           <xsl:choose>
             <xsl:when test="rfp">
               <xsl:attribute name="type">
