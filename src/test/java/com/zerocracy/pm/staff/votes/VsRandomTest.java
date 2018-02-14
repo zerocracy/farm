@@ -16,43 +16,28 @@
  */
 package com.zerocracy.pm.staff.votes;
 
-import com.zerocracy.pm.staff.Votes;
-import java.security.SecureRandom;
 import java.util.Random;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Test;
+import org.mockito.Mockito;
 
 /**
- * Random rate.
- * <p>
- * Returns double value between 0.0 and 1.0
+ * Test case for {@link VsRandom}.
  *
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
- * @since 0.21
+ * @since 0.20
+ * @checkstyle JavadocMethodCheck (500 lines)
  */
-public final class VsRandom implements Votes {
-    /**
-     * Random.
-     */
-    private final Random rnd;
-
-    /**
-     * Default constructor with {@link SecureRandom}.
-     */
-    public VsRandom() {
-        this(new SecureRandom());
-    }
-
-    /**
-     * Ctor.
-     * @param random Random source.
-     */
-    public VsRandom(final Random random) {
-        this.rnd = random;
-    }
-
-    @Override
-    public double take(final String login, final StringBuilder log) {
-        log.append("Entropy");
-        return this.rnd.nextDouble();
+public final class VsRandomTest {
+    @Test
+    public void voteDependsOnRandom() {
+        final Random rnd = Mockito.mock(Random.class);
+        Mockito.when(rnd.nextDouble()).thenReturn(1.0);
+        MatcherAssert.assertThat(
+            new VsRandom(rnd).take("user", new StringBuilder(0)),
+            Matchers.equalTo(1.0)
+        );
     }
 }
