@@ -16,15 +16,22 @@
  */
 package com.zerocracy.farm;
 
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.jcabi.s3.Bucket;
 import com.jcabi.s3.Ocket;
 import com.jcabi.s3.fake.FkOcket;
 import com.zerocracy.Item;
 import com.zerocracy.Xocument;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.FileTime;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.xembly.Directives;
 
@@ -35,7 +42,7 @@ import org.xembly.Directives;
  * @since 0.1
  * @checkstyle JavadocMethodCheck (500 lines)
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 public final class S3ItemTest {
 
     @Test
@@ -116,4 +123,103 @@ public final class S3ItemTest {
         }
     }
 
+    /**
+     * Test with ocket which simulates async work of real S3 client.
+     * @checkstyle AnonInnerLengthCheck (500 lines)
+     * @todo #511:30min S3Item does not handle InterruptedException properly.
+     *  It should not allow reading from io.channel stream if thread was
+     *  interrupted because it automatically check thread status before
+     *  reading and can throw `ClosedChannelException`.
+     */
+    @Test
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @Ignore
+    public void handleThreadInterruptionCorrectly() throws Exception {
+        final Path target = Files.createTempFile("", "");
+        final Ocket okt = new OcktInterrupted(
+            new FkOcket(
+                Files.createTempDirectory("").toFile(),
+                "bucket-1", "test.txt"
+            )
+        );
+        try (final Item item = new S3Item(okt, target)) {
+            Files.write(
+                item.path(),
+                new byte[]{(byte) 1, (byte) 0},
+                StandardOpenOption.WRITE
+            );
+        }
+    }
+
+    /**
+     * Ocket implementation which thread will be interrupted after first read.
+     */
+    private static final class OcktInterrupted implements Ocket {
+        /**
+         * Origin ocket.
+         */
+        private final Ocket origin;
+
+        /**
+         * Ctor.
+         * @param origin Origin ocket
+         */
+        OcktInterrupted(final Ocket origin) {
+            this.origin = origin;
+        }
+
+        @Override
+        public Bucket bucket() {
+            return this.origin.bucket();
+        }
+
+        @Override
+        public String key() {
+            return this.origin.key();
+        }
+
+        @Override
+        public ObjectMetadata meta() throws IOException {
+            return this.origin.meta();
+        }
+
+        @Override
+        public boolean exists() throws IOException {
+            return this.origin.exists();
+        }
+
+        @Override
+        public void read(final OutputStream output)
+            throws IOException {
+            this.origin.read(output);
+        }
+
+        @SuppressWarnings({"ResultOfMethodCallIgnored", "PMD.EmptyCatchBlock"})
+        @Override
+        public void write(
+            final InputStream input,
+            final ObjectMetadata meta
+        ) throws IOException {
+            final Thread thread = new Thread(
+                () -> {
+                    try {
+                        Thread.currentThread().interrupt();
+                        input.read();
+                    } catch (final IOException ignored) {
+                    }
+                }
+            );
+            thread.start();
+            try {
+                thread.join();
+            } catch (final InterruptedException ignored) {
+            }
+            input.read();
+        }
+
+        @Override
+        public int compareTo(final Ocket other) {
+            return this.origin.compareTo(other);
+        }
+    }
 }
