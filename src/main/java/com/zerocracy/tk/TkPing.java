@@ -103,27 +103,36 @@ public final class TkPing implements Take {
                 )
             );
         }
-        final Claims claims = new Claims(project).bootstrap();
         final Catalog catalog = new Catalog(this.farm).bootstrap();
         final String out;
         if (catalog.exists(project.pid())) {
             if (catalog.pause(project.pid())) {
                 out = String.format("%s/pause", project.pid());
-            } else if (claims.iterate().isEmpty()) {
-                this.executor.submit(
-                    () -> {
-                        new ClaimOut().type(type).postTo(project);
-                        return null;
-                    }
-                );
-                out = project.pid();
             } else {
-                out = String.format("%s/busy", project.pid());
+                this.post(project, new ClaimOut().type(type));
+                out = project.pid();
             }
         } else {
             out = String.format("%s/absent", project.pid());
         }
         return out;
+    }
+
+    /**
+     * Post a claim.
+     * @param project The project
+     * @param claim The claim
+     */
+    private void post(final Project project, final ClaimOut claim) {
+        this.executor.submit(
+            () -> {
+                final Claims claims = new Claims(project).bootstrap();
+                if (claims.iterate().isEmpty()) {
+                    claim.postTo(project);
+                }
+                return null;
+            }
+        );
     }
 
 }
