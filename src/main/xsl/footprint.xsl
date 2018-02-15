@@ -38,49 +38,33 @@ SOFTWARE.
     <p>
       <xsl:text>Recent claims:</xsl:text>
     </p>
-    <table data-sortable="true">
-      <thead>
-        <tr>
-          <th>
-            <xsl:text>Created</xsl:text>
-          </th>
-          <th>
-            <xsl:text>Type</xsl:text>
-          </th>
-          <th>
-            <xsl:text>Details</xsl:text>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <xsl:apply-templates select="claim"/>
-      </tbody>
-    </table>
+    <xsl:apply-templates select="claim"/>
   </xsl:template>
   <xsl:template match="claim">
-    <tr>
-      <td>
-        <a href="/footprint/{/page/project}/{cid}">
-          <xsl:value-of select="created"/>
+    <p>
+      <span style="display:block;">
+        <a href="/footprint/{/page/project}/{cid}" title="{created}">
+          <xsl:value-of select="ago"/>
         </a>
-      </td>
-      <td>
-        <xsl:text>"</xsl:text>
-        <xsl:value-of select="type"/>
-        <xsl:text>"</xsl:text>
-      </td>
-      <td>
-        <xsl:for-each select="*[not(name() = 'type') and not(name() = 'created') and not(name() = '_id') and not(name() = 'cid') and not(name() = 'project') and not(name() = 'closed') and not(name() = 'cause')]">
-          <xsl:if test="position() &gt; 1">
-            <xsl:text>; </xsl:text>
-          </xsl:if>
-          <xsl:value-of select="name()"/>
-          <xsl:text>:</xsl:text>
-          <code>
-            <xsl:value-of select="."/>
-          </code>
-        </xsl:for-each>
-      </td>
-    </tr>
+        <xsl:text>: </xsl:text>
+        <code>
+          <xsl:value-of select="type"/>
+        </code>
+      </span>
+      <xsl:for-each select="*[not(name() = 'type') and not(name() = 'created') and not(name() = '_id') and not(name() = 'cid') and not(name() = 'project') and not(name() = 'closed') and not(name() = 'cause')]">
+        <xsl:value-of select="name()"/>
+        <xsl:text>:</xsl:text>
+        <code>
+          <xsl:choose>
+            <xsl:when test="string-length(.) &gt; 32">
+              <xsl:text>...</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="."/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </code>
+      </xsl:for-each>
+    </p>
   </xsl:template>
 </xsl:stylesheet>

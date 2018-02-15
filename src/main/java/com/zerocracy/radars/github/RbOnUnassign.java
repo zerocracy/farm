@@ -20,6 +20,7 @@ package com.zerocracy.radars.github;
 import com.jcabi.github.Github;
 import com.jcabi.github.Issue;
 import com.zerocracy.Farm;
+import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.in.Orders;
@@ -50,7 +51,10 @@ public final class RbOnUnassign implements Rebound {
             new ClaimOut()
                 .type("Notify")
                 .token(new TokenOfIssue(issue))
-                .param("message", "To cancel the order use `refuse` as in §6")
+                .param(
+                    "message",
+                    new Par("To cancel the order use `refuse` as in §6").say()
+                )
                 .postTo(project);
         }
         return new FormattedText(
