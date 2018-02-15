@@ -55,7 +55,9 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="claims">
     <p>
-      <xsl:text>Recent claims:</xsl:text>
+      <xsl:text>Found </xsl:text>
+      <xsl:value-of select="count(claim)"/>
+      <xsl:text> claims:</xsl:text>
     </p>
     <xsl:apply-templates select="claim"/>
     <p>
@@ -74,10 +76,11 @@ SOFTWARE.
           <xsl:value-of select="ago"/>
           <xsl:text> ago</xsl:text>
         </span>
-        <xsl:text>: </xsl:text>
-        <code>
+        <xsl:text>: "</xsl:text>
+        <stong>
           <xsl:value-of select="type"/>
-        </code>
+        </stong>
+        <xsl:text>"</xsl:text>
       </span>
       <xsl:for-each select="*[not(name() = 'type') and not(name() = 'created') and not(name() = '_id') and not(name() = 'cid') and not(name() = 'project') and not(name() = 'closed') and not(name() = 'cause') and not(name() = 'ago')]">
         <xsl:if test="position() &gt; 1">
