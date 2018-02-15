@@ -118,7 +118,7 @@ public final class TkPing implements Take {
                 );
                 out = project.pid();
             } else {
-                out = String.format("%s/none", project.pid());
+                out = String.format("%s/busy", project.pid());
             }
         } else {
             out = String.format("%s/absent", project.pid());
