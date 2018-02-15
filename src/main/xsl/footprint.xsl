@@ -37,16 +37,16 @@ SOFTWARE.
         <xsl:attribute name="placeholder">
           <xsl:text>{login:'yegor256', type:'User was banned'}</xsl:text>
         </xsl:attribute>
-        <xsl:if test="query">
+        <xsl:if test="query != '{}'">
           <xsl:attribute name="value">
             <xsl:value-of select="query"/>
           </xsl:attribute>
         </xsl:if>
       </input>
-      <label style="font-style:80%;">
+      <label style="font-size:80%;color:gray;">
         <xsl:text>This is JSON to query our MongoDB database of claims, see </xsl:text>
         <a href="https://docs.mongodb.com/manual/tutorial/query-documents/">
-          <xsl:text>the manual.</xsl:text>
+          <xsl:text>the manual</xsl:text>
         </a>
         <xsl:text>.</xsl:text>
       </label>
@@ -58,6 +58,9 @@ SOFTWARE.
       <xsl:text>Recent claims:</xsl:text>
     </p>
     <xsl:apply-templates select="claim"/>
+    <p>
+      <xsl:text>There is more, but we don't support paging yet.</xsl:text>
+    </p>
   </xsl:template>
   <xsl:template match="claim">
     <p>
