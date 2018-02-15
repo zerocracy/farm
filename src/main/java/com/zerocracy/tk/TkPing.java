@@ -54,6 +54,11 @@ import org.takes.rs.RsText;
 public final class TkPing implements Take {
 
     /**
+     * Max time to consume.
+     */
+    private static final long MAX = TimeUnit.MINUTES.toMillis(1L);
+
+    /**
      * Executor service.
      */
     private final ExecutorService executor;
@@ -87,9 +92,7 @@ public final class TkPing implements Take {
         final long start = System.currentTimeMillis();
         final String type = new RqHref.Smart(req).single("type", "Ping");
         for (final Project project : new Shuffled<>(this.farm.find(""))) {
-            if (System.currentTimeMillis() - start
-                // @checkstyle MagicNumber (1 line)
-                > TimeUnit.SECONDS.toMillis(5L)) {
+            if (System.currentTimeMillis() - start > TkPing.MAX) {
                 done.add(this.stop(req));
                 break;
             }
