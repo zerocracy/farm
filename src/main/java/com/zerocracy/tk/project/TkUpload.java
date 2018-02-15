@@ -22,12 +22,15 @@ import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Par;
 import com.zerocracy.Project;
+import com.zerocracy.pm.ClaimOut;
+import com.zerocracy.pmo.Pmo;
+import com.zerocracy.tk.RqUser;
+import com.zerocracy.tk.RsParFlash;
 import java.io.IOException;
 import java.util.logging.Level;
 import org.cactoos.io.LengthOf;
 import org.cactoos.io.TeeInput;
 import org.takes.Response;
-import org.takes.facets.flash.RsFlash;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
 import org.takes.facets.forward.RsForward;
@@ -65,8 +68,8 @@ public final class TkUpload implements TkRegex {
             new RqPrint(form.single("artifact")).printBody().trim();
         if (!artifact.matches("^[a-z]+\\.xml$")) {
             throw new RsForward(
-                new RsFlash(
-                    String.format("Invalid artifact name \"%s\"", artifact),
+                new RsParFlash(
+                    new Par("Invalid artifact name \"%s\"").say(artifact),
                     Level.SEVERE
                 )
             );
@@ -82,13 +85,17 @@ public final class TkUpload implements TkRegex {
                 )
             ).intValue();
         }
+        new ClaimOut().type("Notify user").token("user;yegor256").param(
+            "message", new Par(
+                "File `%s` uploaded manually to %s by @%s"
+            ).say(artifact, project.pid(), new RqUser(this.farm, req).value())
+        ).postTo(new Pmo(this.farm));
         return new RsForward(
-            new RsFlash(
-                new Par.ToText(
-                    new Par(
-                        "File `%s` was uploaded to %s (%d chars)"
-                    ).say(artifact, project.pid(), body.length())
-                ).toString()
+            new RsParFlash(
+                new Par(
+                    "File `%s` was uploaded to %s (%d chars)"
+                ).say(artifact, project.pid(), body.length()),
+                Level.INFO
             ),
             String.format("/files/%s", project.pid())
         );

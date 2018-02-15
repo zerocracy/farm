@@ -29,6 +29,8 @@ import com.zerocracy.tk.TkAlias;
 import com.zerocracy.tk.TkApp;
 import io.sentry.Sentry;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.takes.facets.fork.FkRegex;
 import org.takes.facets.fork.TkMethods;
 import org.takes.http.Exit;
@@ -79,9 +81,17 @@ public final class Main {
             );
         }
         Sentry.init(props.get("//sentry/dsn", ""));
+        final Path temp = Paths.get("./s3farm").normalize();
+        if (!temp.toFile().mkdir()) {
+            throw new IllegalStateException(
+                String.format(
+                    "Failed to mkdir \"%s\"", temp
+                )
+            );
+        }
         try (
             final Farm farm = new SmartFarm(
-                new S3Farm(new ExtBucket().value())
+                new S3Farm(new ExtBucket().value(), temp)
             ).value();
             final SlackRadar radar = new SlackRadar(farm)
         ) {

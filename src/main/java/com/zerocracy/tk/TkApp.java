@@ -38,6 +38,10 @@ import com.zerocracy.tk.project.TkProject;
 import com.zerocracy.tk.project.TkReport;
 import com.zerocracy.tk.project.TkUpload;
 import com.zerocracy.tk.project.TkXml;
+import com.zerocracy.tk.rfp.TkPrepay;
+import com.zerocracy.tk.rfp.TkRfp;
+import com.zerocracy.tk.rfp.TkRfps;
+import com.zerocracy.tk.rfp.TkSubmit;
 import io.sentry.Sentry;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -176,6 +180,10 @@ public final class TkApp extends TkWrap {
                                                                             .toString()
                                                                     )
                                                                 ),
+                                                                new FkRegex("/rfp", new TkRfp(farm)),
+                                                                new FkRegex("/rfps", new TkRfps(farm)),
+                                                                new FkRegex("/rfp-pay", new TkPrepay(farm)),
+                                                                new FkRegex("/rfp-post", new TkSubmit(farm)),
                                                                 new FkRegex("/board", new TkBoard(farm)),
                                                                 new FkRegex("/gang", new TkGang(farm)),
                                                                 new FkRegex(

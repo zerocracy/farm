@@ -18,10 +18,15 @@ package com.zerocracy.tk.project;
 
 import com.mongodb.client.model.Filters;
 import com.zerocracy.Farm;
+import com.zerocracy.Par;
 import com.zerocracy.pm.Footprint;
+import com.zerocracy.pm.staff.Roles;
+import com.zerocracy.tk.RqUser;
 import com.zerocracy.tk.RsPage;
+import com.zerocracy.tk.RsParFlash;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.util.logging.Level;
 import org.bson.Document;
 import org.cactoos.iterable.ItemAt;
 import org.cactoos.iterable.Mapped;
@@ -29,6 +34,7 @@ import org.cactoos.scalar.IoCheckedScalar;
 import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
+import org.takes.facets.forward.RsForward;
 import org.takes.rs.RsWithStatus;
 import org.takes.rs.xe.XeAppend;
 import org.takes.rs.xe.XeChain;
@@ -59,9 +65,9 @@ public final class TkClaim implements TkRegex {
 
     @Override
     public Response act(final RqRegex request) throws IOException {
-        final RqProject pkt = new RqProject(
-            this.farm, request, "PO", "ARC", "DEV", "REV"
-        );
+        final RqProject pkt = new RqProject(this.farm, request);
+        final String user = new RqUser(this.farm, request).value();
+        final Roles roles = new Roles(pkt).bootstrap();
         final long cid = Long.valueOf(request.matcher().group(2));
         try (final Footprint ftp = new Footprint(this.farm, pkt)) {
             return new IoCheckedScalar<>(
@@ -73,19 +79,30 @@ public final class TkClaim implements TkRegex {
                             this.farm,
                             "/xsl/claim.xsl",
                             request,
-                            () -> new XeChain(
-                                new XeAppend("project", pkt.pid()),
-                                new XeAppend(
-                                    "claim",
-                                    new XeTransform<>(
-                                        doc.entrySet(),
-                                        ent -> new XeAppend(
-                                            ent.getKey(),
-                                            ent.getValue().toString()
+                            () -> {
+                                if (!doc.keySet().contains("public")
+                                    && !roles.hasRole(user, "PO")) {
+                                    throw new RsForward(
+                                        new RsParFlash(
+                                            new Par("Access denied").say(),
+                                            Level.WARNING
+                                        )
+                                    );
+                                }
+                                return new XeChain(
+                                    new XeAppend("project", pkt.pid()),
+                                    new XeAppend(
+                                        "claim",
+                                        new XeTransform<>(
+                                            doc.entrySet(),
+                                            ent -> new XeAppend(
+                                                ent.getKey(),
+                                                ent.getValue().toString()
+                                            )
                                         )
                                     )
-                                )
-                            )
+                                );
+                            }
                         ),
                         ftp.collection().find(
                             Filters.and(

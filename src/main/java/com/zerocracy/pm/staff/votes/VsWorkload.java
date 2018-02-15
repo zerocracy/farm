@@ -59,7 +59,7 @@ public final class VsWorkload implements Votes {
                         login -> new MapEntry<>(
                             login,
                             new LengthOf(
-                                new Agenda(pmo, login).jobs()
+                                new Agenda(pmo, login).bootstrap().jobs()
                             ).intValue()
                         ),
                         others

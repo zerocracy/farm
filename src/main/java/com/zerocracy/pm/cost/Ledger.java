@@ -95,35 +95,10 @@ public final class Ledger {
      * @throws IOException If fails
      */
     public Cash cash() throws IOException {
-        try (final Item item = this.item()) {
-            return new Cash.S(
-                new Xocument(item).xpath(
-                    "//balance/account[name='assets']/dt/text()",
-                    "0"
-                )
-            ).add(
-                new Cash.S(
-                    new Xocument(item).xpath(
-                        "//balance/account[name='assets']/ct/text()",
-                        "0"
-                    )
-                ).mul(-1L)
-            ).add(
-                new Cash.S(
-                    new Xocument(item).xpath(
-                        "//balance/account[name='liabilities']/ct/text()",
-                        "0"
-                    )
-                ).mul(-1L)
-            ).add(
-                new Cash.S(
-                    new Xocument(item).xpath(
-                        "//balance/account[name='liabilities']/dt/text()",
-                        "0"
-                    )
-                )
-            );
-        }
+        return this.sum("assets", "dt")
+            .add(this.sum("assets", "ct").mul(-1L))
+            .add(this.sum("liabilities", "ct").mul(-1L))
+            .add(this.sum("liabilities", "dt"));
     }
 
     /**
@@ -169,6 +144,30 @@ public final class Ledger {
             new Xocument(wbs.path()).bootstrap("pm/cost/ledger");
         }
         return this;
+    }
+
+    /**
+     * Summarize balance lines.
+     * @param acc The account
+     * @param col The column (either "ct" or "dt")
+     * @return The sum
+     * @throws IOException If fails
+     */
+    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
+    private Cash sum(final String acc, final String col) throws IOException {
+        try (final Item item = this.item()) {
+            final Iterable<String> values = new Xocument(item).xpath(
+                String.format(
+                    "//balance/account[name='%s']/%s/text()",
+                    acc, col
+                )
+            );
+            Cash sum = Cash.ZERO;
+            for (final String val : values) {
+                sum = sum.add(new Cash.S(val));
+            }
+            return sum;
+        }
     }
 
     /**

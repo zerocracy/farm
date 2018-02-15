@@ -101,13 +101,13 @@ public final class Claims {
         try (final Item item = this.item()) {
             final Iterable<XML> found = new Limited<>(1, this.iterate());
             if (found.iterator().hasNext()) {
+                final XML next = found.iterator().next();
                 new Xocument(item).modify(
                     new Directives().xpath(
                         String.format(
-                            "/claims/claim[@id='%d']",
-                            Long.parseLong(
-                                found.iterator().next().xpath("@id").get(0)
-                            )
+                            "/claims/claim[@id='%d' and type='%s']",
+                            Long.parseLong(next.xpath("@id").get(0)),
+                            next.xpath("type/text()").get(0)
                         )
                     ).strict(1).remove()
                 );

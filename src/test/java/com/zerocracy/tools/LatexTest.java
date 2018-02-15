@@ -22,6 +22,7 @@ import org.cactoos.io.LengthOf;
 import org.cactoos.io.TeeInput;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -37,6 +38,7 @@ public final class LatexTest {
      * @throws Exception If some problem inside
      */
     @Test
+    @Ignore
     public void renders() throws Exception {
         final Input pdf = new Latex(
             "\\documentclass{article}\\begin{document}test\\end{document}"

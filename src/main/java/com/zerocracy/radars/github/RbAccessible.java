@@ -22,10 +22,11 @@ import com.jcabi.github.Github;
 import com.jcabi.log.Logger;
 import com.zerocracy.Farm;
 import com.zerocracy.Par;
+import com.zerocracy.tk.RsParFlash;
 import java.io.IOException;
+import java.util.logging.Level;
 import javax.json.JsonObject;
 import org.cactoos.text.SubText;
-import org.takes.facets.flash.RsFlash;
 import org.takes.facets.forward.RsForward;
 
 /**
@@ -54,8 +55,16 @@ public final class RbAccessible implements Rebound {
     @SuppressWarnings("PMD.PreserveStackTrace")
     public String react(final Farm farm, final Github github,
         final JsonObject event) throws IOException {
-        final String repo = event.getJsonObject("repository")
-            .getString("full_name");
+        final JsonObject obj = event.getJsonObject("repository");
+        if (obj == null) {
+            throw new RsForward(
+                new RsParFlash(
+                    "There is no repository information in this webhook",
+                    Level.WARNING
+                )
+            );
+        }
+        final String repo = obj.getString("full_name");
         try {
             github.repos().get(new Coordinates.Simple(repo)).stars().star();
         } catch (final AssertionError ex) {
@@ -65,17 +74,14 @@ public final class RbAccessible implements Rebound {
                 repo, self
             );
             throw new RsForward(
-                new RsFlash(
-                    new Par.ToText(
-                        new Par(
-                            "Repository %s is not accessible for @%s: %s"
-                        ).say(
-                            repo, self,
-                            new SubText(
-                                ex.getLocalizedMessage(), 0, Tv.HUNDRED
-                            ).asString()
-                        )
-                    ).toString()
+                new RsParFlash(
+                    new Par("Repository %s is not accessible for @%s: %s").say(
+                        repo, self,
+                        new SubText(
+                            ex.getLocalizedMessage(), 0, Tv.HUNDRED
+                        ).asString()
+                    ),
+                    Level.WARNING
                 )
             );
         }

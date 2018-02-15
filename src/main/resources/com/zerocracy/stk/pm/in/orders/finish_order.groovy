@@ -43,7 +43,6 @@ def exec(Project project, XML xml) {
     ClaimOut out = new ClaimOut()
       .type('Make payment')
       .param('cause', claim.cid())
-      .param('job', job)
       .param('login', login)
       .param('reason', 'Order was successfully finished')
       .param('minutes', new Boosts(project).bootstrap().factor(job) * 15 + extra)

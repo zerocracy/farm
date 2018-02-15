@@ -42,13 +42,13 @@ SOFTWARE.
             </a>
           </li>
           <li>
-            <a href="/board">
-              <xsl:text>Board</xsl:text>
+            <a href="/u/{identity/login}/agenda">
+              <xsl:text>Agenda</xsl:text>
             </a>
           </li>
           <li>
-            <a href="/gang">
-              <xsl:text>Gang</xsl:text>
+            <a href="/board">
+              <xsl:text>Board</xsl:text>
             </a>
           </li>
           <li>
@@ -71,10 +71,19 @@ SOFTWARE.
       <nav>
         <ul>
           <li>
-            <span title="Current version of the bot">
-              <xsl:text>v</xsl:text>
-              <xsl:value-of select="version/name"/>
-            </span>
+            <xsl:choose>
+              <xsl:when test="contains(version/name,'SNAPSHOT')">
+                <span title="The bot was deployed manually, without any specific version">
+                  <xsl:text>&#x26A1;</xsl:text>
+                </span>
+              </xsl:when>
+              <xsl:otherwise>
+                <span title="Current version of the bot">
+                  <xsl:text>v</xsl:text>
+                  <xsl:value-of select="version/name"/>
+                </span>
+              </xsl:otherwise>
+            </xsl:choose>
           </li>
           <li>
             <span title="Current version of datum">
@@ -98,6 +107,11 @@ SOFTWARE.
           </li>
         </ul>
         <ul>
+          <li>
+            <a href="/gang">
+              <xsl:text>Gang</xsl:text>
+            </a>
+          </li>
           <li>
             <a href="http://datum.zerocracy.com/pages/terms.html">
               <xsl:text>Terms</xsl:text>

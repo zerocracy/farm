@@ -25,6 +25,7 @@ import com.zerocracy.farm.props.Props;
 import com.zerocracy.pmo.Bots;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import javax.json.JsonObject;
 import org.cactoos.func.AsyncFunc;
 import org.takes.Request;
 import org.takes.Response;
@@ -74,9 +75,8 @@ public final class TkSlack implements Take {
                 "Slack didn't authorize you, sorry!"
             );
         }
-        final Bots bots = new Bots(this.farm).bootstrap();
         final Props props = new Props(this.farm);
-        final String team = bots.register(
+        final JsonObject json =
             new JdkRequest("https://slack.com/api/oauth.access")
                 .uri()
                 .queryParam(
@@ -94,8 +94,17 @@ public final class TkSlack implements Take {
                 .assertStatus(HttpURLConnection.HTTP_OK)
                 .as(JsonResponse.class)
                 .json()
-                .readObject()
-        );
+                .readObject();
+        if (!json.getBoolean("ok")) {
+            throw new RsForward(
+                String.format(
+                    "Slack authentication error: '%s'",
+                    json.getString("error")
+                )
+            );
+        }
+        final Bots bots = new Bots(this.farm).bootstrap();
+        final String team = bots.register(json);
         new AsyncFunc<Boolean, Boolean>(
             input -> {
                 this.radar.refresh();

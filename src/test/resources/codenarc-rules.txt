@@ -218,7 +218,6 @@ ruleset {
     ClassSize
     CyclomaticComplexity
     MethodCount
-    MethodSize
     NestedBlockDepth
 
     // rulesets/unnecessary.xml

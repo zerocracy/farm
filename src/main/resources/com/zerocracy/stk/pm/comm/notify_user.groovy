@@ -17,13 +17,12 @@
 package com.zerocracy.stk.pm.comm
 
 import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Catalog
 import com.zerocracy.pmo.People
-
 // The token must look like: yegor256
 
 def exec(Project project, XML xml) {
@@ -38,7 +37,13 @@ def exec(Project project, XML xml) {
   String login = parts[1]
   Farm farm = binding.variables.farm
   People people = new People(farm).bootstrap()
-  new Catalog(farm).bootstrap().links(project.pid(), 'slack').each {
+  Catalog catalog = new Catalog(farm).bootstrap()
+  if (!catalog.exists(project.pid())) {
+    throw new IllegalStateException(
+      "Project ${project.pid()} doesn't exist in the catalog, can't notify user"
+    )
+  }
+  catalog.links(project.pid(), 'slack').each {
     for (String uid : people.links(login, 'slack')) {
       claim.copy()
         .type('Notify in Slack')

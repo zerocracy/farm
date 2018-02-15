@@ -24,6 +24,7 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.cost.Boosts
 import com.zerocracy.pm.cost.Estimates
+import com.zerocracy.pm.cost.Rates
 import com.zerocracy.pm.cost.Vesting
 import com.zerocracy.pm.in.Impediments
 import com.zerocracy.pm.in.Orders
@@ -51,6 +52,7 @@ def exec(Project project, XML xml) {
     items.add(new Par('The role is %s').say(wbs.role(job)))
     Orders orders = new Orders(project).bootstrap()
     if (orders.assigned(job)) {
+      String performer = orders.performer(job)
       items.add(
         new Par(
           'The job is assigned to @%s for [' +
@@ -59,7 +61,8 @@ def exec(Project project, XML xml) {
               System.currentTimeMillis() - orders.startTime(job).time
             ) +
             '](http://datum.zerocracy.com/pages/policy.html#8)'
-      ).say(orders.performer(job)))
+        ).say(performer)
+      )
       Vesting vesting = new Vesting(project).bootstrap()
       Estimates estimates = new Estimates(project).bootstrap()
       if (estimates.exists(job)) {
@@ -68,6 +71,14 @@ def exec(Project project, XML xml) {
             'There is a monetary reward attached'
           ).say()
         )
+        Rates rates = new Rates(project).bootstrap()
+        if (rates.exists(performer)) {
+          items.add(
+            new Par(
+              '@%s will get %.0f%% of their hourly rate for this job'
+            ).say(performer, 100.0d * (estimates.get(job) / rates.rate(performer)))
+          )
+        }
       } else {
         items.add(
           new Par(
@@ -103,7 +114,7 @@ def exec(Project project, XML xml) {
     items.add(
       new Par(
         'The [budget](http://datum.zerocracy.com/pages/policy.html#4) is ' +
-          boosts.factor(job) * 15 + ' minutes'
+          boosts.factor(job) * 15 + ' minutes/points'
       ).say()
     )
   } else {

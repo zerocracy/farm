@@ -30,6 +30,7 @@ import com.paypal.svcs.types.ap.PayRequest;
 import com.paypal.svcs.types.ap.PayResponse;
 import com.paypal.svcs.types.ap.Receiver;
 import com.paypal.svcs.types.ap.ReceiverList;
+import com.paypal.svcs.types.common.AckCode;
 import com.paypal.svcs.types.common.ErrorData;
 import com.paypal.svcs.types.common.RequestEnvelope;
 import com.zerocracy.Farm;
@@ -198,6 +199,14 @@ final class Paypal implements Bank {
             }
             throw new IOException(
                 String.format("Failed to pay through PayPal: %s", msgs)
+            );
+        }
+        if (response.getResponseEnvelope().getAck() != AckCode.SUCCESS) {
+            throw new IOException(
+                String.format(
+                    "PayPal ACK code is not SUCCESS: %s",
+                    response.getResponseEnvelope().getAck()
+                )
             );
         }
         return response;

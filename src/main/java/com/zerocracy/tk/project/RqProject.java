@@ -24,12 +24,12 @@ import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.pmo.Catalog;
 import com.zerocracy.pmo.Pmo;
 import com.zerocracy.tk.RqUser;
+import com.zerocracy.tk.RsParFlash;
 import java.io.IOException;
 import java.util.logging.Level;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.scalar.SolidScalar;
-import org.takes.facets.flash.RsFlash;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.forward.RsForward;
 
@@ -41,6 +41,7 @@ import org.takes.facets.forward.RsForward;
  * @since 0.12
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 final class RqProject implements Project {
 
     /**
@@ -60,9 +61,9 @@ final class RqProject implements Project {
                 final String pid = req.matcher().group(1);
                 final Project pmo = new Pmo(farm);
                 final Catalog catalog = new Catalog(pmo).bootstrap();
-                if (!catalog.exists(pid)) {
+                if (!"PMO".equals(pid) && !catalog.exists(pid)) {
                     throw new RsForward(
-                        new RsFlash(
+                        new RsParFlash(
                             new Par("Project %s not found").say(pid),
                             Level.WARNING
                         )
@@ -72,14 +73,27 @@ final class RqProject implements Project {
                     String.format("@id='%s'", pid)
                 ).iterator().next();
                 final String user = new RqUser(farm, req).value();
-                final Roles roles = new Roles(project).bootstrap();
-                if (required.length > 0 && !roles.hasRole(user, required)) {
+                if ("PMO".equals(pid) && !"yegor256".equals(user)) {
                     throw new RsForward(
-                        new RsFlash(
-                            new Par("You have no roles in %s").say(pid),
+                        new RsParFlash(
+                            new Par("Only our CEO can see the PMO").say(),
                             Level.WARNING
                         )
                     );
+                }
+                if (!"PMO".equals(pid)) {
+                    final Roles roles = new Roles(project).bootstrap();
+                    if (required.length > 0 && !roles.hasRole(user, required)) {
+                        throw new RsForward(
+                            new RsParFlash(
+                                new Par(
+                                    // @checkstyle LineLength (1 line)
+                                    "You don't have any of these roles in %s to view the page: %s"
+                                ).say(pid, String.join(", ", required)),
+                                Level.WARNING
+                            )
+                        );
+                    }
                 }
                 return project;
             }

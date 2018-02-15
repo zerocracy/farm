@@ -56,6 +56,21 @@ public final class SmartLock implements Lock {
      */
     private final AtomicReference<Thread> owner = new AtomicReference<>();
 
+    /**
+     * Full stack trace of this lock holder.
+     * @return The stacktrace
+     */
+    public StackTraceElement[] stacktrace() {
+        final Thread thread = this.owner.get();
+        final StackTraceElement[] array;
+        if (thread == null) {
+            array = new StackTraceElement[0];
+        } else {
+            array = thread.getStackTrace();
+        }
+        return array;
+    }
+
     @Override
     public String toString() {
         final String text;
@@ -78,31 +93,37 @@ public final class SmartLock implements Lock {
 
     @Override
     public void lock() {
+        this.origin.lock();
         this.start.set(System.currentTimeMillis());
         this.owner.set(Thread.currentThread());
-        this.origin.lock();
     }
 
     @Override
     public void lockInterruptibly() throws InterruptedException {
+        this.origin.lockInterruptibly();
         this.start.set(System.currentTimeMillis());
         this.owner.set(Thread.currentThread());
-        this.origin.lockInterruptibly();
     }
 
     @Override
     public boolean tryLock() {
-        this.start.set(System.currentTimeMillis());
-        this.owner.set(Thread.currentThread());
-        return this.origin.tryLock();
+        final boolean done = this.origin.tryLock();
+        if (done) {
+            this.start.set(System.currentTimeMillis());
+            this.owner.set(Thread.currentThread());
+        }
+        return done;
     }
 
     @Override
     public boolean tryLock(final long time, final TimeUnit unit)
         throws InterruptedException {
-        this.start.set(System.currentTimeMillis());
-        this.owner.set(Thread.currentThread());
-        return this.origin.tryLock(time, unit);
+        final boolean done = this.origin.tryLock(time, unit);
+        if (done) {
+            this.start.set(System.currentTimeMillis());
+            this.owner.set(Thread.currentThread());
+        }
+        return done;
     }
 
     @Override

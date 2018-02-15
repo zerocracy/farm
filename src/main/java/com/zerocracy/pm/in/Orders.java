@@ -19,6 +19,7 @@ package com.zerocracy.pm.in;
 import com.zerocracy.Item;
 import com.zerocracy.Project;
 import com.zerocracy.SoftException;
+import com.zerocracy.Txn;
 import com.zerocracy.Xocument;
 import com.zerocracy.pm.cost.Boosts;
 import com.zerocracy.pm.scope.Wbs;
@@ -26,6 +27,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.chrono.ChronoZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collection;
 import java.util.Date;
 import org.cactoos.list.SolidList;
 import org.cactoos.text.JoinedText;
@@ -94,32 +96,35 @@ public final class Orders {
                 )
             );
         }
-        try (final Item wbs = Orders.item(this.project)) {
-            new Xocument(wbs.path()).modify(
-                new Directives()
-                    .xpath(
-                        String.format(
-                            "/orders[not(order[@job='%s'])]",
-                            job
+        try (final Txn txn = new Txn(this.project)) {
+            try (final Item wbs = Orders.item(this.project)) {
+                new Xocument(wbs.path()).modify(
+                    new Directives()
+                        .xpath(
+                            String.format(
+                                "/orders[not(order[@job='%s'])]",
+                                job
+                            )
                         )
-                    )
-                    .strict(1)
-                    .add("order")
-                    .attr("job", job)
-                    .add("created").set(new DateAsText().asString()).up()
-                    .add("performer")
-                    .set(login)
-                    .up()
-                    .add("reason")
-                    .set(reason)
-            );
+                        .strict(1)
+                        .add("order")
+                        .attr("job", job)
+                        .add("created").set(new DateAsText().asString()).up()
+                        .add("performer")
+                        .set(login)
+                        .up()
+                        .add("reason")
+                        .set(reason)
+                );
+            }
+            final String role = new Wbs(this.project).bootstrap().role(job);
+            int factor = 2;
+            if ("REV".equals(role)) {
+                factor = 1;
+            }
+            new Boosts(this.project).bootstrap().boost(job, factor);
+            txn.commit();
         }
-        final String role = new Wbs(this.project).bootstrap().role(job);
-        int factor = 2;
-        if ("REV".equals(role)) {
-            factor = 1;
-        }
-        new Boosts(this.project).bootstrap().boost(job, factor);
     }
 
     /**
@@ -151,7 +156,7 @@ public final class Orders {
      * @return List of jobs
      * @throws IOException If fails of it there is no assignee
      */
-    public Iterable<String> iterate() throws IOException {
+    public Collection<String> iterate() throws IOException {
         try (final Item wbs = this.item()) {
             return new Xocument(wbs.path()).xpath(
                 "/orders/order/@job  "
