@@ -72,8 +72,9 @@ SOFTWARE.
         <xsl:text> </xsl:text>
         <span title="{created}">
           <xsl:value-of select="ago"/>
+          <xsl:text> ago</xsl:text>
         </span>
-        <xsl:text> ago: </xsl:text>
+        <xsl:text>: </xsl:text>
         <code>
           <xsl:value-of select="type"/>
         </code>
