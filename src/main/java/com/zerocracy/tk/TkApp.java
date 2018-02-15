@@ -141,7 +141,6 @@ public final class TkApp extends TkWrap {
                                                                     "/org/takes/.+\\.xsl",
                                                                     new TkClasspath()
                                                                 ),
-                                                                new FkRegex("/ping", new TkPing(farm)),
                                                                 new FkRegex("/robots.txt", ""),
                                                                 new FkRegex(
                                                                     "/xsl/[a-z\\-]+\\.xsl",
