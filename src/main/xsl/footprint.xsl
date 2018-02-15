@@ -43,15 +43,18 @@ SOFTWARE.
   <xsl:template match="claim">
     <p>
       <span style="display:block;">
-        <a href="/footprint/{/page/project}/{cid}" title="{created}">
-          <xsl:value-of select="ago"/>
+        <a href="/footprint/{/page/project}/{cid}">
+          <xsl:text>#</xsl:text>
+          <xsl:value-of select="cid"/>
         </a>
-        <xsl:text>: </xsl:text>
+        <xsl:text> </xsl:text>
+        <xsl:value-of select="ago"/>
+        <xsl:text> ago: </xsl:text>
         <code>
           <xsl:value-of select="type"/>
         </code>
       </span>
-      <xsl:for-each select="*[not(name() = 'type') and not(name() = 'created') and not(name() = '_id') and not(name() = 'cid') and not(name() = 'project') and not(name() = 'closed') and not(name() = 'cause')]">
+      <xsl:for-each select="*[not(name() = 'type') and not(name() = 'created') and not(name() = '_id') and not(name() = 'cid') and not(name() = 'project') and not(name() = 'closed') and not(name() = 'cause') and not(name() = 'ago')]">
         <xsl:if test="position() &gt; 1">
           <xsl:text> </xsl:text>
         </xsl:if>
