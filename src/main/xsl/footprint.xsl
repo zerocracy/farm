@@ -77,12 +77,24 @@ SOFTWARE.
           <xsl:text> ago</xsl:text>
         </span>
         <xsl:text>: "</xsl:text>
-        <stong>
+        <strong>
           <xsl:value-of select="type"/>
-        </stong>
-        <xsl:text>"</xsl:text>
+        </strong>
+        <xsl:text>"/</xsl:text>
+        <xsl:choose>
+          <xsl:when test="contains(version,'SNAPSHOT')">
+            <span title="The bot was deployed manually, without any specific version">
+              <xsl:text>&#x26A1;</xsl:text>
+            </span>
+          </xsl:when>
+          <xsl:otherwise>
+            <span title="The version of the bot">
+              <xsl:value-of select="version"/>
+            </span>
+          </xsl:otherwise>
+        </xsl:choose>
       </span>
-      <xsl:for-each select="*[not(name() = 'type') and not(name() = 'created') and not(name() = '_id') and not(name() = 'cid') and not(name() = 'project') and not(name() = 'closed') and not(name() = 'cause') and not(name() = 'ago')]">
+      <xsl:for-each select="*[not(name() = 'type') and not(name() = 'version') and not(name() = 'created') and not(name() = '_id') and not(name() = 'cid') and not(name() = 'project') and not(name() = 'closed') and not(name() = 'cause') and not(name() = 'ago')]">
         <xsl:if test="position() &gt; 1">
           <xsl:text> </xsl:text>
         </xsl:if>
