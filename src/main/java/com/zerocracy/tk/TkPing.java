@@ -56,7 +56,12 @@ public final class TkPing implements Take {
     /**
      * Max time to consume.
      */
-    private static final long MAX = TimeUnit.MINUTES.toMillis(1L);
+    private static final long MAX = TimeUnit.SECONDS.toMillis(15L);
+
+    /**
+     * Max parallel pings.
+     */
+    private static final int TOP = 5;
 
     /**
      * Executor service.
@@ -151,8 +156,7 @@ public final class TkPing implements Take {
      */
     private String stop(final Request req) {
         final String out;
-        // @checkstyle MagicNumber (1 line)
-        if (this.total.get() < 3) {
+        if (this.total.get() < TkPing.TOP) {
             final String arg = "loop";
             new AsyncFunc<>(
                 (Func<Integer, Integer>) idx -> new JdkRequest(
