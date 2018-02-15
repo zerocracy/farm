@@ -40,7 +40,7 @@ def exec(Project project, XML xml) {
   }
   if (quality == 'good' || quality == 'acceptable') {
     def extra = quality == 'good' ? 5 : 0
-    ClaimOut out = new ClaimOut()
+    ClaimOut out = claim.copy()
       .type('Make payment')
       .param('cause', claim.cid())
       .param('login', login)
