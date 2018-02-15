@@ -14,13 +14,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.resigns_performer_when_unassigned_from_github
+package com.zerocracy.stk.pmo.people
 
 import com.jcabi.xml.XML
 import com.zerocracy.Project
-import com.zerocracy.pm.in.Orders
+import com.zerocracy.farm.Assume
 
-def exec(Project project, XML xml) {
-  def orders = new Orders(project).bootstrap()
-  assert !orders.assigned('gh:test/test#1')
+def exec(Project pmo, XML xml) {
+  new Assume(pmo, xml).isPmo()
+  /**
+   * @todo #492:30min Let's implement this stakeholder. It will take
+   *  a random user from the list, which has the oldest updated attribute,
+   *  go to its GitHub account, fetch all repositories he owns and contributes
+   *  to and fetch the most popular languages from them.
+   *  GitHub provides that information.
+   */
 }

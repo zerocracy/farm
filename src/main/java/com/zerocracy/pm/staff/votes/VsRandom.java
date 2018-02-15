@@ -14,19 +14,45 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.publish_project
+package com.zerocracy.pm.staff.votes;
 
-import com.jcabi.xml.XML
-import com.zerocracy.Farm
-import com.zerocracy.Project
-import com.zerocracy.pmo.Catalog
-import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
+import com.zerocracy.pm.staff.Votes;
+import java.security.SecureRandom;
+import java.util.Random;
 
-def exec(Project project, XML xml) {
-  Farm farm = binding.variables.farm
-  MatcherAssert.assertThat(
-    new Catalog(farm).bootstrap().published(project.pid()),
-    Matchers.is(true)
-  )
+/**
+ * Random rate.
+ * <p>
+ * Returns double value between 0.0 and 1.0
+ *
+ * @author Kirill (g4s8.public@gmail.com)
+ * @version $Id$
+ * @since 0.21
+ */
+public final class VsRandom implements Votes {
+    /**
+     * Random.
+     */
+    private final Random rnd;
+
+    /**
+     * Default constructor with {@link SecureRandom}.
+     */
+    public VsRandom() {
+        this(new SecureRandom());
+    }
+
+    /**
+     * Ctor.
+     * @param random Random source.
+     */
+    public VsRandom(final Random random) {
+        this.rnd = random;
+    }
+
+    @Override
+    public double take(final String login, final StringBuilder log) {
+        log.append("Entropy");
+        return this.rnd.nextDouble();
+    }
 }

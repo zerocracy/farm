@@ -14,19 +14,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.publish_project
+package com.zerocracy.pm.staff.votes;
 
-import com.jcabi.xml.XML
-import com.zerocracy.Farm
-import com.zerocracy.Project
-import com.zerocracy.pmo.Catalog
-import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
+import java.util.Random;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Test;
+import org.mockito.Mockito;
 
-def exec(Project project, XML xml) {
-  Farm farm = binding.variables.farm
-  MatcherAssert.assertThat(
-    new Catalog(farm).bootstrap().published(project.pid()),
-    Matchers.is(true)
-  )
+/**
+ * Test case for {@link VsRandom}.
+ *
+ * @author Kirill (g4s8.public@gmail.com)
+ * @version $Id$
+ * @since 0.20
+ * @checkstyle JavadocMethodCheck (500 lines)
+ */
+public final class VsRandomTest {
+    @Test
+    public void voteDependsOnRandom() {
+        final Random rnd = Mockito.mock(Random.class);
+        Mockito.when(rnd.nextDouble()).thenReturn(1.0);
+        MatcherAssert.assertThat(
+            new VsRandom(rnd).take("user", new StringBuilder(0)),
+            Matchers.equalTo(1.0)
+        );
+    }
 }
