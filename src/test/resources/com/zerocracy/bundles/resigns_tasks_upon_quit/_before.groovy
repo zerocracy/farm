@@ -23,6 +23,7 @@ import com.zerocracy.entry.ExtGithub
 import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.pm.ClaimOut
+import com.zerocracy.pmo.Pmo
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
@@ -36,5 +37,5 @@ def exec(Project project, XML xml) {
     .token("job;gh:${repo.coordinates()}#${issue.number()}")
     .author('cmiranda')
     .param('project', project.pid())
-    .postTo(project)
+    .postTo(new Pmo(farm))
 }
