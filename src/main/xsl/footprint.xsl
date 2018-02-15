@@ -21,17 +21,36 @@ SOFTWARE.
   <xsl:include href="/xsl/inner-layout.xsl"/>
   <xsl:template match="page" mode="head">
     <title>
-      <xsl:value-of select="project"/>
+      <xsl:value-of select="title"/>
     </title>
   </xsl:template>
   <xsl:template match="page" mode="inner">
     <p>
       <xsl:text>Footprint at </xsl:text>
       <a href="/p/{project}">
-        <xsl:value-of select="project"/>
+        <xsl:value-of select="title"/>
       </a>
       <xsl:text>.</xsl:text>
     </p>
+    <form action="" method="get">
+      <input name="q" type="text" style="width:100%">
+        <xsl:attribute name="placeholder">
+          <xsl:text>{login:'yegor256', type:'User was banned'}</xsl:text>
+        </xsl:attribute>
+        <xsl:if test="query">
+          <xsl:attribute name="value">
+            <xsl:value-of select="query"/>
+          </xsl:attribute>
+        </xsl:if>
+      </input>
+      <label style="font-style:80%;">
+        <xsl:text>This is JSON to query our MongoDB database of claims, see </xsl:text>
+        <a href="https://docs.mongodb.com/manual/tutorial/query-documents/">
+          <xsl:text>the manual.</xsl:text>
+        </a>
+        <xsl:text>.</xsl:text>
+      </label>
+    </form>
     <xsl:apply-templates select="claims"/>
   </xsl:template>
   <xsl:template match="claims">
