@@ -17,7 +17,7 @@ SOFTWARE.
 -->
 <claims xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/zerocracy/datum/0.28/xsd/pm/claims.xsd" updated="2017-07-21T20:31:44.512Z" version="1">
   <claim id="1">
-    <type>QA review</type>
+    <type>Complete QA review</type>
     <created>2017-07-21T20:32:19.716Z</created>
     <author>qauser</author>
     <params>
@@ -26,7 +26,7 @@ SOFTWARE.
     </params>
   </claim>
   <claim id="2">
-    <type>QA review</type>
+    <type>Complete QA review</type>
     <created>2017-07-21T20:32:19.716Z</created>
     <author>qauser</author>
     <params>
@@ -35,7 +35,7 @@ SOFTWARE.
     </params>
   </claim>
   <claim id="3">
-    <type>QA review</type>
+    <type>Complete QA review</type>
     <created>2017-07-21T20:32:19.716Z</created>
     <author>qauser</author>
     <params>

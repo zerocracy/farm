@@ -80,7 +80,7 @@ SOFTWARE.
     <help>Check the status of the job</help>
   </cmd>
   <cmd>
-    <code>QA review</code>
+    <code>Complete QA review</code>
     <regex>quality is</regex>
     <label>quality</label>
     <help>Review a task</help>

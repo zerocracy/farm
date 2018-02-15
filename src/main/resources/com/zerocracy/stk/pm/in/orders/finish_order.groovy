@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pm.in.orders
 
 import com.jcabi.xml.XML
+import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
@@ -50,6 +51,12 @@ def exec(Project project, XML xml) {
       out = out.param('cash', estimates.get(job))
     }
     out.postTo(project)
+  } else {
+    new ClaimOut()
+      .type('Notify job')
+      .param('job', job)
+      .param('message', new Par('Quality is low, no payment, see §31').say())
+      .postTo(project)
   }
   orders.resign(job)
   new ClaimOut()
