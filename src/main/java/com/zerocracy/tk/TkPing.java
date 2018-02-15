@@ -16,7 +16,6 @@
  */
 package com.zerocracy.tk;
 
-import com.jcabi.http.request.JdkRequest;
 import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseThreads;
 import com.zerocracy.Farm;
@@ -30,11 +29,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
-import org.cactoos.Func;
-import org.cactoos.func.AsyncFunc;
 import org.cactoos.iterable.Shuffled;
 import org.takes.Request;
 import org.takes.Response;
@@ -54,16 +49,6 @@ import org.takes.rs.RsText;
 public final class TkPing implements Take {
 
     /**
-     * Max time to consume.
-     */
-    private static final long MAX = TimeUnit.SECONDS.toMillis(15L);
-
-    /**
-     * Max parallel pings.
-     */
-    private static final int TOP = 5;
-
-    /**
      * Executor service.
      */
     private final ExecutorService executor;
@@ -74,54 +59,41 @@ public final class TkPing implements Take {
     private final Farm farm;
 
     /**
-     * Ping counter.
-     */
-    private final AtomicInteger total;
-
-    /**
      * Ctor.
      * @param frm Farm
      */
     public TkPing(final Farm frm) {
         this.farm = frm;
-        this.total = new AtomicInteger();
-        this.executor = Executors.newSingleThreadExecutor(
+        this.executor = Executors.newFixedThreadPool(
+            Runtime.getRuntime().availableProcessors(),
             new VerboseThreads(TkPing.class)
         );
     }
 
     @Override
     public Response act(final Request req) throws IOException {
-        this.total.incrementAndGet();
         final Collection<String> done = new LinkedList<>();
-        final long start = System.currentTimeMillis();
         final String type = new RqHref.Smart(req).single("type", "Ping");
         for (final Project project : new Shuffled<>(this.farm.find(""))) {
-            if (System.currentTimeMillis() - start > TkPing.MAX) {
-                done.add(this.stop(req));
-                break;
-            }
-            done.add(this.ping(project, type));
+            done.add(this.post(project, type));
         }
         return new RsText(
             Logger.format(
-                "%d (%d) in %[ms]s: %s",
+                "%d done: %s",
                 done.size(),
-                this.total.decrementAndGet(),
-                System.currentTimeMillis() - start,
                 String.join("; ", done)
             )
         );
     }
 
     /**
-     * This project needs a run.
+     * Post a ping.
      * @param project The project
      * @param type The type of claim to post
-     * @return TRUE if needs a run
+     * @return Summary
      * @throws IOException If fails
      */
-    private String ping(final Project project, final String type)
+    private String post(final Project project, final String type)
         throws IOException {
         if (!type.matches("Ping($| [a-z]+)")) {
             throw new RsForward(
@@ -138,39 +110,18 @@ public final class TkPing implements Take {
             if (catalog.pause(project.pid())) {
                 out = String.format("%s/pause", project.pid());
             } else if (claims.iterate().isEmpty()) {
-                new ClaimOut().type(type).postTo(project);
+                this.executor.submit(
+                    () -> {
+                        new ClaimOut().type(type).postTo(project);
+                        return null;
+                    }
+                );
                 out = project.pid();
             } else {
                 out = String.format("%s/none", project.pid());
             }
         } else {
             out = String.format("%s/absent", project.pid());
-        }
-        return out;
-    }
-
-    /**
-     * Ping itself.
-     * @param req Request received
-     * @return Status
-     */
-    private String stop(final Request req) {
-        final String out;
-        if (this.total.get() < TkPing.TOP) {
-            final String arg = "loop";
-            new AsyncFunc<>(
-                (Func<Integer, Integer>) idx -> new JdkRequest(
-                    new RqHref.Base(req)
-                        .href()
-                        .without(arg)
-                        .with(arg, idx)
-                        .toString()
-                ).fetch().status(),
-                this.executor
-            ).apply(this.total.get());
-            out = "re-stop";
-        } else {
-            out = String.format("Too many: %d", this.total.get());
         }
         return out;
     }
