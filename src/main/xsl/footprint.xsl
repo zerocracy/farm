@@ -70,7 +70,9 @@ SOFTWARE.
           <xsl:value-of select="cid"/>
         </a>
         <xsl:text> </xsl:text>
-        <xsl:value-of select="ago"/>
+        <span title="{created}">
+          <xsl:value-of select="ago"/>
+        </span>
         <xsl:text> ago: </xsl:text>
         <code>
           <xsl:value-of select="type"/>
