@@ -125,10 +125,7 @@ public final class StkSafe implements Stakeholder {
             Sentry.capture(ex);
             if (claim.hasToken() && !claim.type().startsWith("Notify")) {
                 claim.reply(
-                    String.format(
-                        "%s\n\ncc @yegor256",
-                        new TxtUnrecoverableError(ex, props).asString()
-                    )
+                    new TxtUnrecoverableError(ex, props).asString()
                 ).postTo(project);
             }
         }
