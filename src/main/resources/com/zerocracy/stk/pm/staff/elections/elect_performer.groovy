@@ -26,6 +26,7 @@ import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.Claims
 import com.zerocracy.pm.cost.Boosts
 import com.zerocracy.pm.cost.Ledger
+import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pm.staff.Elections
 import com.zerocracy.pm.staff.Roles
@@ -55,6 +56,7 @@ def exec(Project project, XML xml) {
   }
   Wbs wbs = new Wbs(project).bootstrap()
   Roles roles = new Roles(project).bootstrap()
+  Orders orders = new Orders(project).bootstrap()
   Elections elections = new Elections(project).bootstrap()
   Farm farm = binding.variables.farm
   Project pmo = new Pmo(farm)
@@ -64,6 +66,9 @@ def exec(Project project, XML xml) {
     new RnkRev(new Wbs(project).bootstrap())
   ].each { jobs.sort(it) }
   for (String job : jobs) {
+    if (orders.assigned(job)) {
+      continue
+    }
     if (elections.exists(job)) {
       continue
     }
