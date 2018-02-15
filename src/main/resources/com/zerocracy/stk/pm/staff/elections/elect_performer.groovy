@@ -64,6 +64,9 @@ def exec(Project project, XML xml) {
     new RnkRev(new Wbs(project).bootstrap())
   ].each { jobs.sort(it) }
   for (String job : jobs) {
+    if (elections.elected(job)) {
+      continue
+    }
     String role = wbs.role(job)
     List<String> logins = roles.findByRole(role)
     if (logins.empty) {
