@@ -56,6 +56,8 @@ SOFTWARE.
     <xsl:apply-templates select="details"/>
     <xsl:apply-templates select="awards"/>
     <xsl:apply-templates select="agenda"/>
+    <xsl:apply-templates select="mentor"/>
+    <xsl:apply-templates select="students"/>
     <xsl:if test="identity/login = 'yegor256'">
       <form action="/kyc/{owner}" method="post" autocomplete="off">
         <input type="text" name="details" size="50" placeholder="e.g. JEFF LEBOWSKY 23-12-1976 @EMAIL"/>
@@ -298,6 +300,39 @@ SOFTWARE.
         <xsl:value-of select="."/>
       </code>
       <xsl:text>.</xsl:text>
+    </p>
+  </xsl:template>
+  <xsl:template match="mentor">
+    <p>
+      <xsl:text>Your mentor: </xsl:text>
+      <xsl:element name="a">
+        <xsl:attribute name="href">
+          <xsl:value-of select="concat('/u/', text())"/>
+        </xsl:attribute>
+        <xsl:value-of select="text()"/>
+      </xsl:element>
+    </p>
+  </xsl:template>
+  <xsl:template match="students[not(student)]">
+    <p>
+      <xsl:text>You don't have students yet.</xsl:text>
+    </p>
+  </xsl:template>
+  <xsl:template match="students[student]">
+    <p>
+      <xsl:text>Your students: </xsl:text>
+      <xsl:element name="ul">
+        <xsl:for-each select="student">
+          <li>
+            <xsl:element name="a">
+              <xsl:attribute name="href">
+                <xsl:value-of select="concat('/u/', text())"/>
+              </xsl:attribute>
+              <xsl:value-of select="text()"/>
+            </xsl:element>
+          </li>
+        </xsl:for-each>
+      </xsl:element>
     </p>
   </xsl:template>
 </xsl:stylesheet>

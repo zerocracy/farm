@@ -46,7 +46,7 @@ import org.xembly.Directives;
  *  https://github.com/zerocracy/farm/issues/366#issuecomment-359568311
  *  It should be done after #386 bug to avoid conflicts.
  */
-@SuppressWarnings({ "PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals" })
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals"})
 public final class People {
 
     /**
@@ -486,6 +486,40 @@ public final class People {
                     )
                 )
             ).value();
+        }
+    }
+
+    /**
+     * Mentor of a person.
+     * @param uid Person's login
+     * @return Mentor's login
+     * @throws IOException If fails
+     */
+    public String mentor(final String uid) throws IOException {
+        try (final Item item = this.item()) {
+            return new Xocument(item.path()).xpath(
+                String.format(
+                    "/people/person[@id='%s']/mentor/text()",
+                    uid
+                )
+            ).get(0);
+        }
+    }
+
+    /**
+     * Students of a person.
+     * @param uid Person's login
+     * @return Iterable with student ids
+     * @throws IOException If fails
+     */
+    public Iterable<String> students(final String uid) throws IOException {
+        try (final Item item = this.item()) {
+            return new Xocument(item.path()).xpath(
+                String.format(
+                    "/people/person[mentor/text()='%s']/@id",
+                    uid
+                )
+            );
         }
     }
 
