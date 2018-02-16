@@ -55,8 +55,19 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="claims">
     <p>
-      <xsl:text>Found </xsl:text>
-      <xsl:value-of select="count(claim)"/>
+      <xsl:choose>
+        <xsl:when test="count(claim) &gt; 1">
+          <xsl:text>Found </xsl:text>
+          <xsl:value-of select="count(claim)"/>
+          <xsl:text> claims (in reverse chronological order)</xsl:text>
+        </xsl:when>
+        <xsl:when test="count(claim) = 1">
+          <xsl:text>Found one claim</xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:text>No claims found</xsl:text>
+        </xsl:otherwise>
+      </xsl:choose>
       <xsl:text> claims:</xsl:text>
     </p>
     <xsl:apply-templates select="claim"/>
