@@ -18,9 +18,21 @@ package com.zerocracy.bundles.modifies_wbs
 
 import com.jcabi.xml.XML
 import com.zerocracy.Project
+import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.scope.Wbs
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
   def wbs = new Wbs(project).bootstrap()
   assert wbs.exists('gh:test/test#1')
+  def orders = new Orders(project).bootstrap()
+  MatcherAssert.assertThat(
+    orders.assigned('gh:test/test#3'),
+    Matchers.is(true)
+  )
+  MatcherAssert.assertThat(
+    orders.performer('gh:test/test#3'),
+    Matchers.equalTo('g4s8')
+  )
 }

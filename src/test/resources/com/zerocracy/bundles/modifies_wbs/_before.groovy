@@ -17,16 +17,22 @@
 package com.zerocracy.bundles.modifies_wbs
 
 import com.jcabi.github.Github
+import com.jcabi.github.Issue
 import com.jcabi.github.Repos
 import com.jcabi.xml.XML
-import com.zerocracy.entry.ExtGithub
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.entry.ExtGithub
+import com.zerocracy.pmo.People
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
+  def people = new People(farm).bootstrap()
+  people.invite('g4s8', '0crat')
   Github github = new ExtGithub(farm).value()
   def repo = github.repos().create(new Repos.RepoCreate('test', false))
   repo.issues().create('Hello, world', '')
   repo.issues().create('Hello, world', '')
+  def assigned = new Issue.Smart(repo.issues().create('Hello, world', ''))
+  assigned.assign('g4s8')
 }
