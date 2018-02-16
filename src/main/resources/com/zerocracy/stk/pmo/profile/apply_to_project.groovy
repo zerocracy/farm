@@ -30,6 +30,15 @@ import com.zerocracy.pmo.Awards
 import com.zerocracy.pmo.Catalog
 import com.zerocracy.pmo.People
 
+/**
+ *
+ * @todo #382:30min On 'apply' we should add person to `candidates.xml`
+ *  project's file. Then PO can assign a new role only to someone
+ *  from this list. When a role is assigned,
+ *  the person should be removed from `candidates.xml`.
+ *  Also, we should remove people from `candidates.xml`
+ *  after 20 days, automatically.
+ */
 def exec(Project pmo, XML xml) {
   new Assume(pmo, xml).isPmo()
   new Assume(pmo, xml).type('Apply to a project')
