@@ -25,7 +25,7 @@ import com.zerocracy.pm.ClaimIn
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Assign QA inspector')
-  def claim = new ClaimIn(xml)
+  ClaimIn claim = new ClaimIn(xml)
   claim.reply(
     new Par('@%s please review this job, as in §30').say(
       claim.param('assignee')

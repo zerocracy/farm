@@ -31,14 +31,19 @@ def exec(Project project, XML xml) {
   String job = claim.param('job')
   Orders orders = new Orders(project).bootstrap()
   if (orders.assigned(job)) {
-    String qa = new Roles(project).bootstrap().findByRole('QA')
+    List<String> qa = new Roles(project).bootstrap().findByRole('QA')
     if (qa.empty) {
       claim.copy()
         .type('Finish order')
         .param('reason', 'GitHub issue was closed, order is finished')
         .postTo(project)
     } else {
-      String inspector = qa.size() > 1 ? qa[new SecureRandom().nextInt(qa.size() - 1)] : qa.first()
+      String inspector
+      if (qa.size() > 1) {
+        inspector = qa[new SecureRandom().nextInt(qa.size() - 1)]
+      } else {
+        inspector = qa.first()
+      }
       claim.copy()
         .type('Assign QA inspector')
         .param('assignee', inspector)
