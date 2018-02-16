@@ -18,12 +18,29 @@ package com.zerocracy.bundles.impediments
 
 import com.jcabi.xml.XML
 import com.zerocracy.Project
+import com.zerocracy.pm.in.Impediments
 import com.zerocracy.pm.in.Orders
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 
+/**
+ * @todo #447:30min register_impediment stakeholder should pay attention
+ *  to impediment count requested by user and not allow to register new
+ *  impediments if threshold has been reached. See #447 comments for details.
+ */
 def exec(Project project, XML xml) {
   def orders = new Orders(project).bootstrap()
+  def impediments = new Impediments(project).bootstrap().jobs()
+  MatcherAssert.assertThat(
+    'impediment was not registered for job #1',
+    impediments,
+    Matchers.hasItem('gh:test/test#1')
+  )
+//  MatcherAssert.assertThat(
+//    'impediment was registered for job #2',
+//    impediments,
+//    Matchers.not(Matchers.hasItem('gh:test/test#2'))
+//  )
   MatcherAssert.assertThat(
     'order #1 was unassigned',
     orders.assigned('gh:test/test#1'),
