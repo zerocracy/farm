@@ -20,11 +20,15 @@ import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Xocument;
+import com.zerocracy.pmo.Agenda;
+import com.zerocracy.pmo.Awards;
 import com.zerocracy.pmo.Pmo;
+import com.zerocracy.pmo.Projects;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
 import org.cactoos.func.FuncOf;
+import org.cactoos.iterable.LengthOf;
 import org.cactoos.scalar.And;
 import org.takes.Request;
 import org.takes.Response;
@@ -69,7 +73,7 @@ public final class TkGang implements Take {
                 try (final Item item = new Pmo(this.farm).acq("people.xml")) {
                     new And(
                         new FuncOf<>(
-                            input -> sources.add(TkGang.source(input)),
+                            input -> sources.add(this.source(input)),
                             true
                         ),
                         new Xocument(item).nodes("/people/person[mentor]")
@@ -84,13 +88,38 @@ public final class TkGang implements Take {
      * Create source for one user.
      * @param node XML node
      * @return Source
+     * @throws IOException If fails
      */
-    private static XeSource source(final XML node) {
+    private XeSource source(final XML node) throws IOException {
+        final String login = node.xpath("@id").get(0);
         return new XeAppend(
             "user",
             new XeChain(
                 new XeAppend("login", node.xpath("@id").get(0)),
                 new XeAppend("mentor", node.xpath("mentor/text()").get(0)),
+                new XeAppend(
+                    "awards",
+                    Integer.toString(
+                        new Awards(this.farm, login).bootstrap().total()
+                    )
+                ),
+                new XeAppend(
+                    "agenda",
+                    Integer.toString(
+                        new LengthOf(
+                            new Agenda(this.farm, login).bootstrap().jobs()
+                        ).intValue()
+                    )
+                ),
+                new XeAppend(
+                    "projects",
+                    Integer.toString(
+                        new LengthOf(
+                            new Projects(this.farm, login).bootstrap()
+                                .iterate()
+                        ).intValue()
+                    )
+                ),
                 new XeWhen(
                     !node.nodes("vacation").isEmpty()
                         && "true".equals(node.xpath("vacation/text()")),

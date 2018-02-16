@@ -53,6 +53,8 @@ public final class RbPingArchitect implements Rebound {
                 answer = "No architects here";
             } else if (arcs.contains(author)) {
                 answer = "The architect is speaking";
+            } else if (issue.isPull() && !roles.findByRole("REV").isEmpty()) {
+                answer = "Some REV will pick it up";
             } else {
                 final String intro = String.join(", @", arcs);
                 if (issue.isPull()) {
@@ -78,7 +80,7 @@ public final class RbPingArchitect implements Rebound {
                     new Par(
                         "@%s I'm not managing this repo, remove the",
                         "[webhook](https://github.com/%s/settings/hooks)",
-                        "or contact me in [Slack](http://www.zerocracy.com)",
+                        "or contact me in Slack, as explained in §11",
                         "//cc @yegor256"
                     ).say(author, issue.repo().coordinates())
                 );

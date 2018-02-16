@@ -27,7 +27,7 @@ SOFTWARE.
   <xsl:template match="page" mode="inner">
     <p>
       <a href="https://github.com/{identity/login}">
-        <img src="https://socatar.com/github/{identity/login}" style="width:64px;height:64px;border-radius:5px;"/>
+        <img src="https://socatar.com/github/{identity/login}/192-192" style="width:64px;height:64px;border-radius:5px;"/>
       </a>
     </p>
     <xsl:apply-templates select="identification"/>
@@ -37,6 +37,7 @@ SOFTWARE.
         <xsl:text>Terms</xsl:text>
       </a>
       <xsl:text> we identify each project contributor, if they work for money.</xsl:text>
+      <xsl:text> We use a number of third-party ID verification providers:</xsl:text>
     </p>
     <p>
       <img src="https://www.yoti.com/images/logo.svg" style="height:32px;"/>
@@ -57,6 +58,16 @@ SOFTWARE.
         <xsl:text>here</xsl:text>
       </a>
       <xsl:text>.</xsl:text>
+    </p>
+    <p>
+      <xsl:text>If you, for some reason, can't identify yourself via our providers,</xsl:text>
+      <xsl:text> you can email us a photocopy of your passport or any other ID document to </xsl:text>
+      <a href="mailto:identity@zerocracy.com">
+        <xsl:text>identity@zerocracy.com</xsl:text>
+      </a>
+      <xsl:text>. In the email you will have to explain why you can't use third-party services. </xsl:text>
+      <xsl:text> Sometimes this may happen, if your ID is too old or your country is not in the list of supported countries.</xsl:text>
+      <xsl:text> We can only accept your ID by email as an exception.</xsl:text>
     </p>
   </xsl:template>
   <xsl:template match="identification[.!='']">

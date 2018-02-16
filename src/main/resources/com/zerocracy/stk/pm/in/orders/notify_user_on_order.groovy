@@ -31,14 +31,15 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   new ClaimOut()
     .type('Notify user')
+    .param('cause', claim.cid())
     .token("user;${claim.param('login')}")
     .param(
       'message',
       new Par(
         farm,
-        "The job %s was assigned to you in %s as %s a minute ago:\n"
-      ).say(claim.param('job'), project.pid(), claim.param('role')) +
-      "```\n${new Par.ToText(claim.param('reason'))}\n```"
+        'The job %s was assigned to you in %s as %s a minute ago,',
+        'here is [why](/footprint/%s/%s)'
+      ).say(claim.param('job'), project.pid(), claim.param('role'), project.pid(), claim.param('reason'))
     )
     .postTo(project)
 }

@@ -48,6 +48,11 @@ def exec(Project project, XML xml) {
       .param('login', author)
       .param('role', role)
       .postTo(project)
+    new ClaimOut()
+      .type('Role was assigned')
+      .param('login', author)
+      .param('role', 'ARC')
+      .postTo(project)
     if (claim.hasParam('channel')) {
       claim.copy()
         .type('Set title')
@@ -72,7 +77,7 @@ def exec(Project project, XML xml) {
         'message', new Par(
           'We just bootstrapped @%s by @%s'
         ).say(project.pid(), author)
-      ).postTo(project)
+      ).param('cause', claim.cid()).postTo(project)
     }
   } else {
     if (roles.hasRole(author, role)) {

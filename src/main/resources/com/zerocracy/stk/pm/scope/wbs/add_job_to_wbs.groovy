@@ -42,6 +42,7 @@ def exec(Project project, XML xml) {
   ).postTo(project)
   new ClaimOut()
     .type('Job was added to WBS')
+    .param('cause', claim.cid())
     .param('job', job)
     .param('role', role)
     .postTo(project)

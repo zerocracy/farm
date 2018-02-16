@@ -23,10 +23,10 @@ import com.zerocracy.cash.Cash;
 import com.zerocracy.cash.CashParsingException;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.tk.RqUser;
+import com.zerocracy.tk.RsParFlash;
 import java.io.IOException;
 import java.util.logging.Level;
 import org.takes.Response;
-import org.takes.facets.flash.RsFlash;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
 import org.takes.facets.forward.RsForward;
@@ -61,20 +61,20 @@ public final class TkDonate implements TkRegex {
     public Response act(final RqRegex req) throws IOException {
         if (!"yegor256".equals(new RqUser(this.farm, req).value())) {
             throw new RsForward(
-                new RsFlash(
+                new RsParFlash(
                     "You are not allowed to donate, sorry",
                     Level.WARNING
                 )
             );
         }
-        final Project project = new RqProject(this.farm, req);
+        final Project project = new RqProject(this.farm, req, "PO");
         final RqFormSmart form = new RqFormSmart(new RqGreedy(req));
         final Cash amount;
         try {
             amount = new Cash.S(form.single("amount"));
         } catch (final CashParsingException ex) {
             throw new RsForward(
-                new RsFlash(ex),
+                new RsParFlash(ex),
                 String.format("/p/%s", project.pid())
             );
         }
@@ -83,12 +83,11 @@ public final class TkDonate implements TkRegex {
             .param("amount", amount)
             .postTo(project);
         return new RsForward(
-            new RsFlash(
-                new Par.ToText(
-                    new Par(
-                        "You successfully donated %s to the project %s"
-                    ).say(amount, project.pid())
-                ).toString()
+            new RsParFlash(
+                new Par(
+                    "You successfully donated %s to the project %s"
+                ).say(amount, project.pid()),
+                Level.INFO
             ),
             String.format("/p/%s", project.pid())
         );

@@ -41,6 +41,7 @@ def exec(Project project, XML xml) {
   if (logins.empty) {
     new ClaimOut()
       .type('Notify project')
+      .param('cause', claim.cid())
       .param(
         'message',
         new Par(
@@ -54,6 +55,7 @@ def exec(Project project, XML xml) {
   if (logins.size() > 1) {
     new ClaimOut()
       .type('Notify project')
+      .param('cause', claim.cid())
       .param(
         'message',
         new Par(
@@ -70,6 +72,7 @@ def exec(Project project, XML xml) {
   if (issue.pull) {
     new ClaimOut()
       .type('Make payment')
+      .param('cause', claim.cid())
       .param('job', job)
       .param('login', logins[0])
       .param(

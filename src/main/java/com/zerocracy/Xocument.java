@@ -68,7 +68,7 @@ public final class Xocument {
     /**
      * Current DATUM version.
      */
-    public static final String VERSION = "0.52.1";
+    public static final String VERSION = "0.54.1";
 
     /**
      * Cache of documents.
@@ -207,6 +207,14 @@ public final class Xocument {
     public String xpath(final String xpath, final String def)
         throws FileNotFoundException {
         final List<String> vals = this.xpath(xpath);
+        if (vals.size() > 1) {
+            throw new IllegalStateException(
+                String.format(
+                    "Too many values (%d) for XPath \"%s\"",
+                    vals.size(), xpath
+                )
+            );
+        }
         final String val;
         if (vals.isEmpty()) {
             val = def;

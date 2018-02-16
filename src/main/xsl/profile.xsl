@@ -28,7 +28,7 @@ SOFTWARE.
   <xsl:template match="page" mode="inner">
     <p>
       <a href="https://github.com/{owner}">
-        <img src="https://socatar.com/github/{owner}" style="width:64px;height:64px;border-radius:5px;"/>
+        <img src="https://socatar.com/github/{owner}/192-192" style="width:64px;height:64px;border-radius:5px;"/>
       </a>
     </p>
     <xsl:if test="not(details)">
@@ -38,13 +38,32 @@ SOFTWARE.
           <xsl:text>@</xsl:text>
           <xsl:value-of select="owner"/>
         </a>
-        <xsl:text>.</xsl:text>
+        <xsl:text> (</xsl:text>
+        <a href="http://datum.zerocracy.com/pages/terms.html#kyc">
+          <xsl:choose>
+            <xsl:when test="identified='true'">
+              <xsl:text>identified</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:text>not identified yet</xsl:text>
+            </xsl:otherwise>
+          </xsl:choose>
+        </a>
+        <xsl:text>).</xsl:text>
       </p>
     </xsl:if>
     <xsl:apply-templates select="rate"/>
     <xsl:apply-templates select="details"/>
     <xsl:apply-templates select="awards"/>
     <xsl:apply-templates select="agenda"/>
+    <xsl:if test="identity/login = 'yegor256'">
+      <form action="/kyc/{owner}" method="post" autocomplete="off">
+        <input type="text" name="details" size="50" placeholder="e.g. JEFF LEBOWSKY 23-12-1976 @EMAIL"/>
+        <button type="submit">
+          <xsl:text>Identify</xsl:text>
+        </button>
+      </form>
+    </xsl:if>
   </xsl:template>
   <xsl:template match="rate">
     <p>

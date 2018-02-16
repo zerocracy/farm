@@ -19,11 +19,11 @@ package com.zerocracy.tk.profile;
 import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.pmo.People;
+import com.zerocracy.tk.RsParFlash;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.logging.Level;
 import org.cactoos.Scalar;
-import org.takes.facets.flash.RsFlash;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.forward.RsForward;
 
@@ -64,10 +64,8 @@ public final class RqLogin implements Scalar<String> {
         final People people = new People(this.pmo).bootstrap();
         if (!people.find("github", login).iterator().hasNext()) {
             throw new RsForward(
-                new RsFlash(
-                    new Par.ToText(
-                        new Par("User @%s not found").say(login)
-                    ).toString(),
+                new RsParFlash(
+                    new Par("User @%s not found").say(login),
                     Level.SEVERE
                 )
             );

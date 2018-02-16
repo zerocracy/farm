@@ -42,23 +42,18 @@ SOFTWARE.
             </a>
           </li>
           <li>
+            <a href="/u/{identity/login}/agenda">
+              <xsl:text>Agenda</xsl:text>
+            </a>
+          </li>
+          <li>
             <a href="/board">
               <xsl:text>Board</xsl:text>
             </a>
           </li>
           <li>
-            <a href="/gang">
-              <xsl:text>Gang</xsl:text>
-            </a>
-          </li>
-          <li>
             <a href="http://datum.zerocracy.com/pages/policy.html">
               <xsl:text>Policy</xsl:text>
-            </a>
-          </li>
-          <li>
-            <a href="http://datum.zerocracy.com/pages/terms.html">
-              <xsl:text>Terms</xsl:text>
             </a>
           </li>
           <li>
@@ -76,10 +71,19 @@ SOFTWARE.
       <nav>
         <ul>
           <li>
-            <span title="Current version of the bot">
-              <xsl:text>v</xsl:text>
-              <xsl:value-of select="version/name"/>
-            </span>
+            <xsl:choose>
+              <xsl:when test="contains(version/name,'SNAPSHOT')">
+                <span title="The bot was deployed manually, without any specific version">
+                  <xsl:text>&#x26A1;</xsl:text>
+                </span>
+              </xsl:when>
+              <xsl:otherwise>
+                <span title="Current version of the bot">
+                  <xsl:text>v</xsl:text>
+                  <xsl:value-of select="version/name"/>
+                </span>
+              </xsl:otherwise>
+            </xsl:choose>
           </li>
           <li>
             <span title="Current version of datum">
@@ -100,6 +104,27 @@ SOFTWARE.
             <xsl:call-template name="takes_memory">
               <xsl:with-param name="memory" select="memory"/>
             </xsl:call-template>
+          </li>
+        </ul>
+        <ul>
+          <li>
+            <a href="/gang">
+              <xsl:text>Gang</xsl:text>
+            </a>
+          </li>
+          <li>
+            <a href="http://datum.zerocracy.com/pages/terms.html">
+              <xsl:text>Terms</xsl:text>
+            </a>
+          </li>
+          <li>
+            <a href="https://github.com/zerocracy">GitHub</a>
+          </li>
+          <li>
+            <a href="https://twitter.com/0crat">Twitter</a>
+          </li>
+          <li>
+            <a href="https://www.facebook.com/zerocracy/">Facebook</a>
           </li>
         </ul>
       </nav>

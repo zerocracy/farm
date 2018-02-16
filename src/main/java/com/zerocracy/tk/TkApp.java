@@ -22,12 +22,15 @@ import com.zerocracy.farm.props.Props;
 import com.zerocracy.tk.profile.TkAgenda;
 import com.zerocracy.tk.profile.TkAwards;
 import com.zerocracy.tk.profile.TkIdentify;
+import com.zerocracy.tk.profile.TkKyc;
 import com.zerocracy.tk.profile.TkProfile;
 import com.zerocracy.tk.profile.TkYoti;
 import com.zerocracy.tk.project.TkArchive;
 import com.zerocracy.tk.project.TkArtifact;
 import com.zerocracy.tk.project.TkBadge;
+import com.zerocracy.tk.project.TkClaim;
 import com.zerocracy.tk.project.TkDonate;
+import com.zerocracy.tk.project.TkEquity;
 import com.zerocracy.tk.project.TkFiles;
 import com.zerocracy.tk.project.TkFootprint;
 import com.zerocracy.tk.project.TkPay;
@@ -35,6 +38,10 @@ import com.zerocracy.tk.project.TkProject;
 import com.zerocracy.tk.project.TkReport;
 import com.zerocracy.tk.project.TkUpload;
 import com.zerocracy.tk.project.TkXml;
+import com.zerocracy.tk.rfp.TkPrepay;
+import com.zerocracy.tk.rfp.TkRfp;
+import com.zerocracy.tk.rfp.TkRfps;
+import com.zerocracy.tk.rfp.TkSubmit;
 import io.sentry.Sentry;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -129,11 +136,11 @@ public final class TkApp extends TkWrap {
                                                                 new FkRegex("/yoti", new TkYoti(farm)),
                                                                 new FkRegex("/heapdump", new TkDump(farm)),
                                                                 new FkRegex("/guts", new TkGuts(farm)),
+                                                                new FkRegex("/shutdown", new TkShutdown()),
                                                                 new FkRegex(
                                                                     "/org/takes/.+\\.xsl",
                                                                     new TkClasspath()
                                                                 ),
-                                                                new FkRegex("/ping", new TkPing(farm)),
                                                                 new FkRegex("/robots.txt", ""),
                                                                 new FkRegex(
                                                                     "/xsl/[a-z\\-]+\\.xsl",
@@ -172,6 +179,10 @@ public final class TkApp extends TkWrap {
                                                                             .toString()
                                                                     )
                                                                 ),
+                                                                new FkRegex("/rfp", new TkRfp(farm)),
+                                                                new FkRegex("/rfps", new TkRfps(farm)),
+                                                                new FkRegex("/rfp-pay", new TkPrepay(farm)),
+                                                                new FkRegex("/rfp-post", new TkSubmit(farm)),
                                                                 new FkRegex("/board", new TkBoard(farm)),
                                                                 new FkRegex("/gang", new TkGang(farm)),
                                                                 new FkRegex(
@@ -193,6 +204,10 @@ public final class TkApp extends TkWrap {
                                                                     new TkFootprint(farm)
                                                                 ),
                                                                 new FkRegex(
+                                                                    "/footprint/([A-Z0-9]{9})/([0-9]+)",
+                                                                    new TkClaim(farm)
+                                                                ),
+                                                                new FkRegex(
                                                                     "/report/(PMO|[A-Z0-9]{9})",
                                                                     new TkReport(farm)
                                                                 ),
@@ -209,6 +224,10 @@ public final class TkApp extends TkWrap {
                                                                     new TkArchive(farm)
                                                                 ),
                                                                 new FkRegex(
+                                                                    "/equity/([A-Z0-9]{9})",
+                                                                    new TkEquity(farm)
+                                                                ),
+                                                                new FkRegex(
                                                                     "/pay/(PMO|[A-Z0-9]{9})",
                                                                     new TkPay(farm)
                                                                 ),
@@ -223,6 +242,10 @@ public final class TkApp extends TkWrap {
                                                                 new FkRegex(
                                                                     "/xml/(PMO|[A-Z0-9]{9})",
                                                                     new TkXml(farm)
+                                                                ),
+                                                                new FkRegex(
+                                                                    "/kyc/([a-zA-Z0-9-]+)",
+                                                                    new TkKyc(farm)
                                                                 ),
                                                                 new FkRegex(
                                                                     "/u/([a-zA-Z0-9-]+)/awards",

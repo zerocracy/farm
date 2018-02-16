@@ -26,6 +26,7 @@ import org.cactoos.io.TeeInput;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -83,6 +84,36 @@ public final class EquityTest {
         MatcherAssert.assertThat(
             equity.ownership("jeff"),
             Matchers.equalTo("")
+        );
+    }
+
+    @Test
+    @Ignore
+    public void createsPdf() throws Exception {
+        final Project pkt = new FkProject();
+        final Equity equity = new Equity(pkt).bootstrap();
+        try (final Item item = pkt.acq("equity.xml")) {
+            new LengthOf(
+                new TeeInput(
+                    String.join(
+                        " ",
+                        "<equity",
+                        "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'",
+                        // @checkstyle LineLength (1 line)
+                        "xsi:noNamespaceSchemaLocation='http://datum.zerocracy.com/0.52/xsd/pm/cost/equity.xsd'",
+                        "version='0.1' updated='2017-03-27T11:18:09.228Z'>",
+                        "<cap>$300000</cap>",
+                        "<shares>70000</shares>",
+                        "<owners><owner id='dmarkov'>500</owner></owners>",
+                        "</equity>"
+                    ),
+                    item.path()
+                )
+            ).intValue();
+        }
+        MatcherAssert.assertThat(
+            equity.pdf("dmarkov"),
+            Matchers.notNullValue()
         );
     }
 

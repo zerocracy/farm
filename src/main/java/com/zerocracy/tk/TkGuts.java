@@ -24,7 +24,6 @@ import org.cactoos.scalar.IoCheckedScalar;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
-import org.takes.facets.flash.RsFlash;
 import org.takes.facets.forward.RsForward;
 import org.takes.rs.RsWithBody;
 import org.takes.rs.RsWithType;
@@ -56,7 +55,7 @@ public final class TkGuts implements Take {
     public Response act(final Request req) throws IOException {
         if (!"yegor256".equals(new RqUser(this.farm, req).value())) {
             throw new RsForward(
-                new RsFlash(
+                new RsParFlash(
                     "You are not allowed to see this page, sorry",
                     Level.WARNING
                 )

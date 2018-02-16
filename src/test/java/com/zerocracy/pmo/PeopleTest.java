@@ -43,6 +43,10 @@ public final class PeopleTest {
         people.link(uid, rel, alias);
         people.link(uid, "jira", "https://www.0crat.com/jira");
         MatcherAssert.assertThat(
+            people.iterate(),
+            Matchers.hasItem(uid)
+        );
+        MatcherAssert.assertThat(
             people.find(rel, alias),
             Matchers.not(Matchers.emptyIterable())
         );

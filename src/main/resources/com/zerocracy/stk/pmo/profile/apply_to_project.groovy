@@ -61,6 +61,20 @@ def exec(Project pmo, XML xml) {
       ).say(rate, pid)
     )
   }
+  if (rate < new Cash.S('$16')) {
+    throw new SoftException(
+      new Par(
+        'The rate %s is too low, see §16'
+      ).say(rate)
+    )
+  }
+  if (rate > new Cash.S('$256')) {
+    throw new SoftException(
+      new Par(
+        'The rate %s is too high, see §16'
+      ).say(rate)
+    )
+  }
   if (rate > Cash.ZERO && people.details(author).empty) {
     throw new SoftException(
       new Par(
@@ -92,6 +106,7 @@ def exec(Project pmo, XML xml) {
   }
   new ClaimOut()
     .type('Notify project')
+    .param('cause', claim.cid())
     .param(
       'message',
       new Par(

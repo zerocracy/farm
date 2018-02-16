@@ -17,8 +17,14 @@
 package com.zerocracy.pm.in;
 
 import com.zerocracy.Project;
+import com.zerocracy.cash.Cash;
 import com.zerocracy.farm.fake.FkProject;
+import com.zerocracy.pm.cost.Estimates;
+import com.zerocracy.pm.cost.Ledger;
+import com.zerocracy.pm.cost.Rates;
 import com.zerocracy.pm.scope.Wbs;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
@@ -27,6 +33,7 @@ import org.junit.Test;
  * @version $Id$
  * @since 0.10
  * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class OrdersTest {
 
@@ -37,5 +44,30 @@ public final class OrdersTest {
         final String job = "gh:yegor256/0pdd#13";
         new Wbs(project).bootstrap().add(job);
         orders.assign(job, "yegor256", "just for fun");
+    }
+
+    @Test
+    public void setsEstimatesOnAssign() throws Exception {
+        final Project project = new FkProject();
+        new Ledger(project).bootstrap().add(
+            new Ledger.Transaction(
+                new Cash.S("$1000"),
+                "assets", "cash",
+                "income", "sponsor",
+                "There is some funding just arrived"
+            )
+        );
+        final String login = "dmarkov";
+        new Rates(project).bootstrap().set(login, new Cash.S("$50"));
+        final String job = "gh:yegor256/0pdd#19";
+        final Wbs wbs = new Wbs(project).bootstrap();
+        wbs.add(job);
+        wbs.role(job, "REV");
+        final Orders orders = new Orders(project).bootstrap();
+        orders.assign(job, login, "just for fun again");
+        MatcherAssert.assertThat(
+            new Estimates(project).bootstrap().get(job),
+            Matchers.equalTo(new Cash.S("$12.50"))
+        );
     }
 }

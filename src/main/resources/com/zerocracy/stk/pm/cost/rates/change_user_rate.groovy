@@ -60,13 +60,20 @@ def exec(Project project, XML xml) {
       ).say(login, before, rate)
     }
   } else {
-    msg = new Par(
-      'Hourly rate of @%s was changed from zero to %s'
-    ).say(login, rate)
+    if (rate == Cash.ZERO) {
+      msg = new Par(
+        'Hourly rate of @%s remains zero'
+      ).say(login)
+    } else {
+      msg = new Par(
+        'Hourly rate of @%s was changed from zero to %s'
+      ).say(login, rate)
+    }
   }
   rates.set(login, rate)
   new ClaimOut()
     .type('User rate was changed')
+    .param('cause', claim.cid())
     .param('login', login)
     .param('rate', rate)
     .postTo(project)

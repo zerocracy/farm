@@ -40,6 +40,11 @@ import org.xembly.Directives;
  * @version $Id$
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @todo #366:30min Let's keep person reputation, agenda and project count
+ *  inside `people.xml` and update them when reputation, agenda or projects
+ *  changed as described in
+ *  https://github.com/zerocracy/farm/issues/366#issuecomment-359568311
+ *  It should be done after #386 bug to avoid conflicts.
  */
 @SuppressWarnings({ "PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals" })
 public final class People {
@@ -75,6 +80,19 @@ public final class People {
             new Xocument(item.path()).bootstrap("pmo/people");
         }
         return this;
+    }
+
+    /**
+     * Get them all.
+     * @return List of them
+     * @throws IOException If fails
+     */
+    public Iterable<String> iterate() throws IOException {
+        try (final Item item = this.item()) {
+            return new Xocument(item.path()).xpath(
+                "/people/person/@id"
+            );
+        }
     }
 
     /**

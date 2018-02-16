@@ -45,6 +45,7 @@ def exec(Project project, XML xml) {
       .assertStatus(HttpURLConnection.HTTP_NO_CONTENT)
     new ClaimOut()
       .type('GitHub user was followed')
+      .param('cause', claim.cid())
       .param('login', login)
       .postTo(project)
   }

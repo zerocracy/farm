@@ -287,4 +287,16 @@ public final class CashTest {
         }
     }
 
+    /**
+     * Cash can divide by cash.
+     * @throws Exception If some problem inside
+     */
+    @Test
+    public void dividesCashByCash() throws Exception {
+        MatcherAssert.assertThat(
+            new Cash.S("USD 90").div(new Cash.S("$180")),
+            Matchers.equalTo(0.5d)
+        );
+    }
+
 }

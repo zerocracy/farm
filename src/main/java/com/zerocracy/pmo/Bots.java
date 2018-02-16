@@ -83,9 +83,7 @@ public final class Bots {
         final JsonObject bot = json.getJsonObject("bot");
         if (bot == null) {
             throw new IllegalArgumentException(
-                new Par(
-                    "can't find bot ID in %s"
-                ).say(json)
+                new Par("Can't find bot ID in: %s").say(json)
             );
         }
         final String bid = bot.getString("bot_user_id");

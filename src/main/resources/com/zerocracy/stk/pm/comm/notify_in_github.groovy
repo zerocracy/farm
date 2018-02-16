@@ -22,15 +22,17 @@ import com.jcabi.github.Github
 import com.jcabi.github.Issue
 import com.jcabi.github.Repo
 import com.jcabi.xml.XML
-import com.zerocracy.entry.ExtGithub
-import com.zerocracy.farm.Assume
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.entry.ExtGithub
+import com.zerocracy.farm.Assume
+import com.zerocracy.farm.props.Props
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.radars.github.GhTube
 import com.zerocracy.radars.github.Quota
 import com.zerocracy.radars.github.ThrottledComments
 import java.util.concurrent.TimeUnit
+
 // Token must look like: zerocracy/farm;123;6
 //   - repository coordinates
 //   - issue cid
@@ -54,7 +56,15 @@ def exec(Project project, XML xml) {
   Repo repo = github.repos().get(
     new Coordinates.Simple(parts[1])
   )
-  String message = claim.param('message')
+  Props props = new Props(farm)
+  String message = String.format(
+    '%s\n\n<!-- https://www.0crat.com/footprint/%s/%d, version: %s, hash: %s -->',
+    claim.param('message'),
+    project.pid(),
+    claim.cid(),
+    props.get('//build/version', ''),
+    props.get('//build/revision', '')
+  )
   Issue issue = repo.issues().get(
     Integer.parseInt(parts[2])
   )

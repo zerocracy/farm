@@ -21,64 +21,96 @@ SOFTWARE.
   <xsl:include href="/xsl/inner-layout.xsl"/>
   <xsl:template match="page" mode="head">
     <title>
-      <xsl:value-of select="project"/>
+      <xsl:value-of select="title"/>
     </title>
   </xsl:template>
   <xsl:template match="page" mode="inner">
     <p>
       <xsl:text>Footprint at </xsl:text>
       <a href="/p/{project}">
-        <xsl:value-of select="project"/>
+        <xsl:value-of select="title"/>
       </a>
       <xsl:text>.</xsl:text>
     </p>
+    <form action="" method="get">
+      <input name="q" type="text" style="width:100%">
+        <xsl:attribute name="placeholder">
+          <xsl:text>{login:'yegor256', type:'User was banned'}</xsl:text>
+        </xsl:attribute>
+        <xsl:if test="query != '{}'">
+          <xsl:attribute name="value">
+            <xsl:value-of select="query"/>
+          </xsl:attribute>
+        </xsl:if>
+      </input>
+      <label style="font-size:80%;color:gray;">
+        <xsl:text>This is JSON to query our MongoDB database of claims, see </xsl:text>
+        <a href="https://docs.mongodb.com/manual/tutorial/query-documents/">
+          <xsl:text>the manual</xsl:text>
+        </a>
+        <xsl:text>.</xsl:text>
+      </label>
+    </form>
     <xsl:apply-templates select="claims"/>
   </xsl:template>
   <xsl:template match="claims">
     <p>
-      <xsl:text>Recent claims:</xsl:text>
+      <xsl:text>Found </xsl:text>
+      <xsl:value-of select="count(claim)"/>
+      <xsl:text> claims:</xsl:text>
     </p>
-    <table>
-      <thead>
-        <tr>
-          <th>
-            <xsl:text>Created</xsl:text>
-          </th>
-          <th>
-            <xsl:text>Type</xsl:text>
-          </th>
-          <th>
-            <xsl:text>Details</xsl:text>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <xsl:apply-templates select="claim"/>
-      </tbody>
-    </table>
+    <xsl:apply-templates select="claim"/>
+    <p>
+      <xsl:text>There is more, but we don't support paging yet.</xsl:text>
+    </p>
   </xsl:template>
   <xsl:template match="claim">
-    <tr>
-      <td>
-        <xsl:value-of select="created"/>
-      </td>
-      <td>
-        <xsl:text>"</xsl:text>
-        <xsl:value-of select="type"/>
-        <xsl:text>"</xsl:text>
-      </td>
-      <td>
-        <xsl:for-each select="*[not(name() = 'type') and not(name() = 'created') and not(name() = '_id') and not(name() = 'cid') and not(name() = 'project') and not(name() = 'closed')]">
-          <xsl:if test="position() &gt; 1">
-            <xsl:text>; </xsl:text>
-          </xsl:if>
-          <xsl:value-of select="name()"/>
-          <xsl:text>:</xsl:text>
-          <code>
-            <xsl:value-of select="."/>
-          </code>
-        </xsl:for-each>
-      </td>
-    </tr>
+    <p>
+      <span style="display:block;">
+        <a href="/footprint/{/page/project}/{cid}">
+          <xsl:text>#</xsl:text>
+          <xsl:value-of select="cid"/>
+        </a>
+        <xsl:text> </xsl:text>
+        <span title="{created}">
+          <xsl:value-of select="ago"/>
+          <xsl:text> ago</xsl:text>
+        </span>
+        <xsl:text>: "</xsl:text>
+        <strong>
+          <xsl:value-of select="type"/>
+        </strong>
+        <xsl:text>"/</xsl:text>
+        <xsl:choose>
+          <xsl:when test="contains(version,'SNAPSHOT')">
+            <span title="The bot was deployed manually, without any specific version">
+              <xsl:text>&#x26A1;</xsl:text>
+            </span>
+          </xsl:when>
+          <xsl:otherwise>
+            <span title="The version of the bot">
+              <xsl:value-of select="version"/>
+            </span>
+          </xsl:otherwise>
+        </xsl:choose>
+      </span>
+      <xsl:for-each select="*[not(name() = 'type') and not(name() = 'version') and not(name() = 'created') and not(name() = '_id') and not(name() = 'cid') and not(name() = 'project') and not(name() = 'closed') and not(name() = 'cause') and not(name() = 'ago')]">
+        <xsl:if test="position() &gt; 1">
+          <xsl:text> </xsl:text>
+        </xsl:if>
+        <xsl:value-of select="name()"/>
+        <xsl:text>:</xsl:text>
+        <code>
+          <xsl:choose>
+            <xsl:when test="string-length(.) &gt; 32">
+              <xsl:text>...</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="."/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </code>
+      </xsl:for-each>
+    </p>
   </xsl:template>
 </xsl:stylesheet>

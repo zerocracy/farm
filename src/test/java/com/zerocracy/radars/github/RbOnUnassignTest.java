@@ -67,9 +67,7 @@ public final class RbOnUnassignTest {
                             .add("login", username)
                     ).build()
             ),
-            Matchers.containsString(
-                String.format("was assigned to %s", username)
-            )
+            Matchers.containsString("Issue #1 was unassigned")
         );
     }
 }

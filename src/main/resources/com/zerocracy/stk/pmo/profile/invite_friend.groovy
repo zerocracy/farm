@@ -49,6 +49,7 @@ def exec(Project project, XML xml) {
   ).postTo(project)
   new ClaimOut()
     .type('Notify user')
+    .param('cause', claim.cid())
     .token("user;${login}")
     .param(
       'message',
@@ -62,5 +63,5 @@ def exec(Project project, XML xml) {
     'message', new Par(
       'New user @%s was invited by @%s'
     ).say(login, author)
-  ).postTo(project)
+  ).param('cause', claim.cid()).postTo(project)
 }

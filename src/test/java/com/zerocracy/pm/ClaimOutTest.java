@@ -37,11 +37,12 @@ public final class ClaimOutTest {
         final Claims claims = new Claims(new FkProject()).bootstrap();
         claims.add(
             new Concat<Directive>(
-                new ClaimOut.Notify(
-                    "test;token",
-                    "hello, world"
-                ),
-                new ClaimOut().type("hello")
+                new ClaimOut()
+                    .type("notify")
+                    .token("test;token")
+                    .param("message", "hello, world"),
+                new ClaimOut()
+                    .type("hello")
             )
         );
         MatcherAssert.assertThat(

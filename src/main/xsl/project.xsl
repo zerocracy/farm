@@ -31,7 +31,7 @@ SOFTWARE.
     </p>
     <xsl:if test="pause = 'true'">
       <p>
-        <strong>
+        <strong style="color:darkred;">
           <xsl:text>Attention</xsl:text>
         </strong>
         <xsl:text>: the project is on pause, see </xsl:text>
@@ -133,14 +133,23 @@ SOFTWARE.
         <code>
           <xsl:value-of select="ownership"/>
         </code>
-        <xsl:text>.</xsl:text>
+        <xsl:text> (</xsl:text>
+        <a href="/equity/{project}">
+          <xsl:text>proof</xsl:text>
+        </a>
+        <xsl:text>).</xsl:text>
       </p>
     </xsl:if>
     <xsl:apply-templates select="architects"/>
     <xsl:apply-templates select="project_links"/>
-    <xsl:apply-templates select="." mode="artifacts"/>
+    <xsl:if test="project!='PMO' and cash">
+      <xsl:apply-templates select="." mode="cash"/>
+    </xsl:if>
+    <xsl:if test="roles/role='ARC' or roles/role='PO'">
+      <xsl:apply-templates select="." mode="artifacts"/>
+    </xsl:if>
   </xsl:template>
-  <xsl:template match="page[project!='PMO']" mode="artifacts">
+  <xsl:template match="page" mode="cash">
     <xsl:if test="identity/login = 'yegor256'">
       <form action="/donate/{project}" method="post" autocomplete="off">
         <label>
@@ -204,6 +213,8 @@ SOFTWARE.
       <input name="email" id="email" type="hidden"/>
       <input type="submit"/>
     </form>
+  </xsl:template>
+  <xsl:template match="page[project!='PMO']" mode="artifacts">
     <p>
       <xsl:text>Scope: </xsl:text>
       <a href="/a/{project}?a=pm/scope/wbs">

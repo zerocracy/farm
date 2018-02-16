@@ -31,12 +31,13 @@ def exec(Project project, XML xml) {
   if (qa.empty) {
     claim.copy()
       .type('Finish order')
-      .param('reason', 'GitHub issue was closed, order is finished.')
+      .param('reason', 'GitHub issue was closed, order is finished')
       .postTo(project)
   } else {
+    String inspector = qa.size() > 1 ? qa[new SecureRandom().nextInt(qa.size() - 1)] : qa.first()
     claim.copy()
-      .type('Assign QA')
-      .param('assignee', qa.size() > 1 ? qa[new SecureRandom().nextInt(qa.size() - 1)] : qa.first())
+      .type('Assign QA inspector')
+      .param('assignee', inspector)
       .postTo(project)
   }
 }

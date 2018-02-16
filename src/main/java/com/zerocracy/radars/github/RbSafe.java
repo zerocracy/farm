@@ -24,7 +24,7 @@ import com.zerocracy.SoftException;
 import com.zerocracy.entry.ExtDynamo;
 import com.zerocracy.farm.DyErrors;
 import com.zerocracy.farm.props.Props;
-import com.zerocracy.msg.TxtUnrecoverableError;
+import com.zerocracy.tools.TxtUnrecoverableError;
 import io.sentry.Sentry;
 import java.io.IOException;
 import javax.json.JsonObject;

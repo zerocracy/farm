@@ -55,6 +55,7 @@ def exec(Project project, XML xml) {
     }
     new ClaimOut()
       .type('Make payment')
+      .param('cause', claim.cid())
       .param('job', job)
       .param('login', author)
       .param('reason', new Par('Bug was reported, see §29').say())

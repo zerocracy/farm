@@ -18,20 +18,16 @@ package com.zerocracy.farm;
 
 import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
-import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.SoftException;
 import com.zerocracy.Stakeholder;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.ClaimOut;
+import com.zerocracy.tools.TxtUnrecoverableError;
 import io.sentry.Sentry;
 import java.io.IOException;
 import lombok.EqualsAndHashCode;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.cactoos.io.BytesOf;
-import org.cactoos.text.FormattedText;
 import org.cactoos.text.TextOf;
 
 /**
@@ -40,9 +36,6 @@ import org.cactoos.text.TextOf;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
- * @todo #272:30min Error handling in `StkSafe::process` method is similar to
- *  `ReSafe` in telegram, slack and github error handling. We need to refactor
- *  it. Let's use one class for it, now it's placed in `TxtUnrecoverableError`.
  */
 @EqualsAndHashCode(of = "identifier")
 public final class StkSafe implements Stakeholder {
@@ -118,38 +111,21 @@ public final class StkSafe implements Stakeholder {
             if (claim.hasToken()) {
                 msg.append(String.format(", token=\"%s\"", claim.token()));
             }
-            new ClaimOut().type("Error")
+            final Props props = new Props(this.farm);
+            if (props.has("//testing")) {
+                throw new IllegalStateException(ex);
+            }
+            new ClaimOut()
+                .type("Error")
                 .param("origin_id", claim.cid())
                 .param("origin_type", claim.type())
                 .param("message", msg.toString())
                 .param("stacktrace", new TextOf(ex).asString())
                 .postTo(project);
-            final Props props = new Props(this.farm);
-            if (props.has("//testing")) {
-                throw new IllegalStateException(ex);
-            }
+            Sentry.capture(ex);
             if (claim.hasToken() && !claim.type().startsWith("Notify")) {
                 claim.reply(
-                    new Par(
-                        "I can't do it for technical reasons, I'm very sorry.",
-                        " If you don't know what to do,",
-                        " submit this error as a ticket",
-                        " [here](https://github.com/zerocracy/farm/issues):",
-                        "\n\n```\n",
-                        new FormattedText(
-                            "%s %s %s\n%s\n%s",
-                            props.get("//build/version", ""),
-                            props.get("//build/revision", ""),
-                            props.get("//build/date", ""),
-                            ExceptionUtils.getMessage(ex),
-                            StringUtils.abbreviate(
-                                new TextOf(new BytesOf(ex)).asString(),
-                                // @checkstyle MagicNumber (1 line)
-                                1000
-                            )
-                        ).asString(),
-                        "\n```\n\nCc @yegor256"
-                    ).say()
+                    new TxtUnrecoverableError(ex, props).asString()
                 ).postTo(project);
             }
         }

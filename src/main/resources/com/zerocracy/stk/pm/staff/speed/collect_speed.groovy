@@ -17,21 +17,28 @@
 package com.zerocracy.stk.pm.staff.speed
 
 import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pmo.Speed
-import java.time.Duration
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Order was finished')
   new Assume(project, xml).notPmo()
   Farm farm = binding.variables.farm
-  def claim = new ClaimIn(xml)
-  def job = claim.param('job')
-  def duration = Duration.parse(claim.param('duration'))
-  new Speed(farm, claim.param('login'))
+  ClaimIn claim = new ClaimIn(xml)
+  String job = claim.param('job')
+  long minutes = Long.parseLong(claim.param('minutes'))
+  String login = claim.param('login')
+  new Speed(farm, login)
     .bootstrap()
-    .add(project.pid(), job, duration.toMinutes())
+    .add(project.pid(), job, minutes)
+  new ClaimOut()
+    .type('Speed was updated')
+    .param('cause', claim.cid())
+    .param('login', login)
+    .param('job', job)
+    .postTo(project)
 }
