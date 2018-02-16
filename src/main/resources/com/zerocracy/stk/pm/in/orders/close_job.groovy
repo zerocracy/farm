@@ -17,27 +17,36 @@
 package com.zerocracy.stk.pm.in.orders
 
 import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
 import com.zerocracy.Project
+import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.staff.Roles
 import java.security.SecureRandom
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Close job')
-  def claim = new ClaimIn(xml)
-  def qa = new Roles(project).bootstrap().findByRole('QA')
-  if (qa.empty) {
-    claim.copy()
-      .type('Finish order')
-      .param('reason', 'GitHub issue was closed, order is finished')
-      .postTo(project)
+  ClaimIn claim = new ClaimIn(xml)
+  String job = claim.param('job')
+  Orders orders = new Orders(project).bootstrap()
+  if (orders.assigned(job)) {
+    String qa = new Roles(project).bootstrap().findByRole('QA')
+    if (qa.empty) {
+      claim.copy()
+        .type('Finish order')
+        .param('reason', 'GitHub issue was closed, order is finished')
+        .postTo(project)
+    } else {
+      String inspector = qa.size() > 1 ? qa[new SecureRandom().nextInt(qa.size() - 1)] : qa.first()
+      claim.copy()
+        .type('Assign QA inspector')
+        .param('assignee', inspector)
+        .postTo(project)
+    }
   } else {
-    String inspector = qa.size() > 1 ? qa[new SecureRandom().nextInt(qa.size() - 1)] : qa.first()
     claim.copy()
-      .type('Assign QA inspector')
-      .param('assignee', inspector)
+      .type('Remove job from WBS')
       .postTo(project)
   }
 }
