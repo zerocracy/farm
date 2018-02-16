@@ -68,7 +68,7 @@ SOFTWARE.
           <xsl:text>No claims found</xsl:text>
         </xsl:otherwise>
       </xsl:choose>
-      <xsl:text> claims:</xsl:text>
+      <xsl:text>:</xsl:text>
     </p>
     <xsl:apply-templates select="claim"/>
     <p>
