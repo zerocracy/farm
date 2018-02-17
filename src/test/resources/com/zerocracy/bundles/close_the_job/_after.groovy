@@ -32,6 +32,7 @@ import org.hamcrest.Matchers
  *  and check it in 'Close job' and 'Remove job from WBS' scripts, then
  *  commented tests will be worked. Also policy have to be updated.
  */
+@SuppressWarnings('UnnecessaryObjectReferences')
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Wbs wbs = new Wbs(project).bootstrap()
@@ -60,19 +61,19 @@ def exec(Project project, XML xml) {
     wbs.iterate(),
     Matchers.not(Matchers.contains(Matchers.equalTo('gh:test/test#3')))
   )
-//  MatcherAssert.assertThat(
-//    'Assignee didn\'t receive awards for issue closed by ARC',
-//    new Awards(farm, 'dev3').bootstrap().total(),
-//    Matchers.greaterThan(0)
-//  )
+  MatcherAssert.assertThat(
+    'Assignee didn\'t receive awards for issue closed by ARC',
+    new Awards(farm, 'dev3').bootstrap().total(),
+    Matchers.greaterThan(0)
+  )
   MatcherAssert.assertThat(
     'Issue requested to close by PO still in WBS',
     wbs.iterate(),
     Matchers.not(Matchers.contains(Matchers.equalTo('gh:test/test#4')))
   )
-//  MatcherAssert.assertThat(
-//    'Assignee didn\'t receive awards for issue closed by PO',
-//    new Awards(farm, 'dev4').bootstrap().total(),
-//    Matchers.greaterThan(0)
-//  )
+  MatcherAssert.assertThat(
+    'Assignee didn\'t receive awards for issue closed by PO',
+    new Awards(farm, 'dev4').bootstrap().total(),
+    Matchers.greaterThan(0)
+  )
 }

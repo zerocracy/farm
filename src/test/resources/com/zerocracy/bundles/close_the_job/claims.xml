@@ -16,60 +16,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <claims xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.54.2/xsd/pm/claims.xsd" version="0.1" updated="2017-03-27T11:18:09.228Z">
-  <claim id="1">
-    <created>2017-03-27T11:18:09.228Z</created>
-    <type>Request order start</type>
-    <token>job;gh:test/test#1</token>
-    <author>assigner</author>
-    <params>
-      <param name="job">gh:test/test#1</param>
-      <param name="login">dev1</param>
-    </params>
-  </claim>
-  <claim id="2">
-    <created>2017-03-27T11:18:09.228Z</created>
-    <type>Request order start</type>
-    <token>job;gh:test/test#2</token>
-    <author>assigner</author>
-    <params>
-      <param name="job">gh:test/test#2</param>
-      <param name="login">dev2</param>
-    </params>
-  </claim>
-  <claim id="3">
-    <created>2017-03-27T11:18:09.228Z</created>
-    <type>Request order start</type>
-    <token>job;gh:test/test#3</token>
-    <author>assigner</author>
-    <params>
-      <param name="job">gh:test/test#3</param>
-      <param name="login">dev3</param>
-    </params>
-  </claim>
-  <claim id="4">
-    <created>2017-03-27T11:18:09.228Z</created>
-    <type>Request order start</type>
-    <token>job;gh:test/test#4</token>
-    <author>assigner</author>
-    <params>
-      <param name="job">gh:test/test#4</param>
-      <param name="login">dev4</param>
-    </params>
-  </claim>
   <claim id="5">
     <created>2017-03-27T11:18:09.228Z</created>
     <type>Close job</type>
     <author>test</author>
     <token>test;test</token>
-    <params>
-      <param name="job">gh:test/test#1</param>
-    </params>
-  </claim>
-  <claim id="6">
-    <created>2017-03-27T11:18:09.228Z</created>
-    <type>Remove job from WBS</type>
-    <token>job;gh:test/test#1</token>
-    <author>test</author>
     <params>
       <param name="job">gh:test/test#1</param>
     </params>
@@ -83,15 +34,6 @@ SOFTWARE.
       <param name="job">gh:test/test#2</param>
     </params>
   </claim>
-  <claim id="8">
-    <created>2017-03-27T11:18:09.228Z</created>
-    <type>Remove job from WBS</type>
-    <token>job;gh:test/test#2</token>
-    <author>rultor</author>
-    <params>
-      <param name="job">gh:test/test#2</param>
-    </params>
-  </claim>
   <claim id="9">
     <created>2017-03-27T11:18:09.228Z</created>
     <type>Close job</type>
@@ -101,29 +43,11 @@ SOFTWARE.
       <param name="job">gh:test/test#3</param>
     </params>
   </claim>
-  <claim id="10">
-    <created>2017-03-27T11:18:09.228Z</created>
-    <type>Remove job from WBS</type>
-    <token>job;gh:test/test#3</token>
-    <author>architect</author>
-    <params>
-      <param name="job">gh:test/test#3</param>
-    </params>
-  </claim>
   <claim id="11">
     <created>2017-03-27T11:18:09.228Z</created>
     <type>Close job</type>
     <author>owner</author>
     <token>test;owner</token>
-    <params>
-      <param name="job">gh:test/test#4</param>
-    </params>
-  </claim>
-  <claim id="12">
-    <created>2017-03-27T11:18:09.228Z</created>
-    <type>Remove job from WBS</type>
-    <token>job;gh:test/test#4</token>
-    <author>owner</author>
     <params>
       <param name="job">gh:test/test#4</param>
     </params>
