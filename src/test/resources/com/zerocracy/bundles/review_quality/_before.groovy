@@ -14,44 +14,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.comm
+package com.zerocracy.bundles.review_quality
 
+import com.jcabi.github.Github
+import com.jcabi.github.Repos
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
-import com.zerocracy.Par
 import com.zerocracy.Project
-import com.zerocracy.farm.Assume
-import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pmo.Awards
-import com.zerocracy.pmo.People
+import com.zerocracy.entry.ExtGithub
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Notify all')
-  new Assume(project, xml).notPmo()
-  ClaimIn claim = new ClaimIn(xml)
-  int min = 0
-  if (claim.hasParam('min')) {
-    min = Integer.parseInt(claim.param('min'))
-  }
   Farm farm = binding.variables.farm
-  People people = new People(farm).bootstrap()
-  for (String uid : people.iterate()) {
-    if (people.vacation(uid)) {
-      continue
-    }
-    if (new Awards(farm, uid).bootstrap().total() < min) {
-      continue
-    }
-    claim.copy()
-      .type('Notify user')
-      .token("user;${uid}")
-      .param(
-        'message',
-        claim.param('message') + new Par(
-          '\n\nYou received this message because your reputation is over %d',
-          'and you are not on vacation, as in §38.'
-        ).say(min)
-      )
-      .postTo(project)
-  }
+  Github github = new ExtGithub(farm).value()
+  def repo = github.repos().create(new Repos.RepoCreate('test', false))
+  repo.issues().create('title 1', 'body 1')
+  repo.issues().create('title 2', 'body 2')
+  repo.issues().create('title 3', 'body 3')
 }

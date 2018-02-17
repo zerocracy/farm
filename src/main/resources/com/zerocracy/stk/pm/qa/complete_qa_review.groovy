@@ -14,42 +14,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.comm
+package com.zerocracy.stk.pm.qa
 
 import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
 import com.zerocracy.Project
+import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-
-// The token must look like: job;gh:zerocracy/farm#123
+import com.zerocracy.pm.ClaimOut
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Notify job')
-  ClaimIn claim = new ClaimIn(xml)
-  if (!claim.hasToken()) {
-    throw new IllegalArgumentException(
-      "Claim of type '${claim.type()}' in ${project.pid()} has not token"
-    )
-  }
-  String[] parts = claim.token().split(';')
-  if (parts[0] != 'job') {
-    throw new IllegalArgumentException(
-      "Something is wrong with this token: ${claim.token()}"
-    )
-  }
-  String[] slices = parts[1].split(':')
-  if (slices[0] == 'gh') {
-    String[] coords = slices[1].split('#')
-    claim.copy()
-      .type('Notify in GitHub')
-      .token("github;${coords[0]};${coords[1]}")
-      .postTo(project)
-  } else {
-    throw new IllegalStateException(
-      String.format(
-        'I don\'t know how to notify job "%s"',
-        parts[1]
-      )
-    )
-  }
+  new Assume(project, xml).notPmo()
+  new Assume(project, xml).type('Complete QA review')
+  def claim = new ClaimIn(xml)
+  def job = claim.param('job')
+  def inspector = claim.author()
+  new ClaimOut()
+    .type('Make payment')
+    .param('job', job)
+    .param('login', inspector)
+    .param('reason', 'QA review completed')
+    .param('minutes', 15)
+    .postTo(project)
+  claim.copy()
+    .type('Finish order')
+    .param('reason', 'Passed QA review')
+    .postTo(project)
 }

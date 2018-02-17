@@ -14,42 +14,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.comm
+package com.zerocracy.stk.internal
 
+import com.jcabi.log.Logger
 import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
+import com.zerocracy.Farm
 import com.zerocracy.Project
-import com.zerocracy.pm.ClaimIn
-
-// The token must look like: job;gh:zerocracy/farm#123
+import com.zerocracy.entry.ExtDynamo
+import com.zerocracy.entry.ExtGithub
+import com.zerocracy.farm.Assume
+import com.zerocracy.farm.DyErrors
+import com.zerocracy.farm.props.Props
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Notify job')
-  ClaimIn claim = new ClaimIn(xml)
-  if (!claim.hasToken()) {
-    throw new IllegalArgumentException(
-      "Claim of type '${claim.type()}' in ${project.pid()} has not token"
-    )
+  new Assume(project, xml).notPmo()
+  new Assume(project, xml).type('Ping')
+  Farm farm = binding.variables.farm
+  if (new Props(farm).has('//testing')) {
+    Logger.info(this, 'skip in testing mode')
+    return
   }
-  String[] parts = claim.token().split(';')
-  if (parts[0] != 'job') {
-    throw new IllegalArgumentException(
-      "Something is wrong with this token: ${claim.token()}"
-    )
-  }
-  String[] slices = parts[1].split(':')
-  if (slices[0] == 'gh') {
-    String[] coords = slices[1].split('#')
-    claim.copy()
-      .type('Notify in GitHub')
-      .token("github;${coords[0]};${coords[1]}")
-      .postTo(project)
-  } else {
-    throw new IllegalStateException(
-      String.format(
-        'I don\'t know how to notify job "%s"',
-        parts[1]
-      )
-    )
+  def github = new ExtGithub(farm).value()
+  def errors = new DyErrors.Github(
+    new DyErrors(new ExtDynamo(farm).value()),
+    github
+  )
+  errors.iterate(10, 72L).each {
+    errors.remove(it)
+    it.remove()
   }
 }

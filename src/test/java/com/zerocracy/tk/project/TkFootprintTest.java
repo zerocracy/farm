@@ -75,7 +75,7 @@ public final class TkFootprintTest {
                     )
                 ).printBody()
             ),
-            XhtmlMatchers.hasXPaths("//xhtml:table")
+            XhtmlMatchers.hasXPaths("//xhtml:article")
         );
     }
 

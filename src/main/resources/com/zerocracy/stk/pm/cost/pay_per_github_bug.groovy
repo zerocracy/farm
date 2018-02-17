@@ -62,5 +62,14 @@ def exec(Project project, XML xml) {
       .param('minutes', 15)
       .param('cash', rate.mul(15) / 60)
       .postTo(project)
+  } else if (claim.hasToken()) {
+    claim.reply(
+      new Par(
+        'Thanks for your contribution!',
+        'If you would be a member of [the project](/p/%s),',
+        'you would now earn +15 reputation points, as explained in §29.',
+        'You can join and apply to it, see §2.'
+      ).say(project.pid())
+    )
   }
 }

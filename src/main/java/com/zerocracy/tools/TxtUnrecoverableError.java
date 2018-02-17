@@ -78,7 +78,9 @@ public final class TxtUnrecoverableError implements Text {
         final Collection<String> list = new LinkedList<>();
         list.add(
             String.format(
-                "%s: %s",
+                "%s[%d] %s: %s",
+                error.getStackTrace()[0].getClassName(),
+                error.getStackTrace()[0].getLineNumber(),
                 error.getClass().getName(),
                 error.getMessage()
             )

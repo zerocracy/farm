@@ -14,23 +14,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.qa
+package com.zerocracy.bundles.review_quality
 
 import com.jcabi.xml.XML
-import com.zerocracy.Par
-import com.zerocracy.farm.Assume
 import com.zerocracy.Project
-import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.scope.Wbs
+import com.zerocracy.pm.in.Orders
+import com.zerocracy.pmo.Awards
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Assign QA')
-  def claim = new ClaimIn(xml)
-  def job = claim.param('job')
-  new Wbs(project).bootstrap().add(job)
-  claim.reply(
-    new Par('@%s please review this job as in §30.')
-      .say(claim.param('assignee'))
+  def orders = new Orders(project).bootstrap()
+  MatcherAssert.assertThat(
+    'job 1 still exists',
+    orders.assigned('gh:test/test#1'),
+    Matchers.is(false)
+  )
+  MatcherAssert.assertThat(
+    'job 2 still exists',
+    orders.assigned('gh:test/test#2'),
+    Matchers.is(false)
+  )
+  MatcherAssert.assertThat(
+    'job 3 still exists',
+    orders.assigned('gh:test/test#3'),
+    Matchers.is(false)
+  )
+  MatcherAssert.assertThat(
+    'qauser received incorrect awards',
+    new Awards(project, 'qauser').bootstrap().total(),
+    Matchers.equalTo(45)
   )
 }
