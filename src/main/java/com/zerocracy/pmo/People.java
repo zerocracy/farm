@@ -46,9 +46,12 @@ import org.xembly.Directives;
  *  https://github.com/zerocracy/farm/issues/366#issuecomment-359568311
  *  It should be done after #386 bug to avoid conflicts.
  */
-@SuppressWarnings({ "PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals" })
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals"})
 public final class People {
-
+    /**
+     * Max students for a person.
+     */
+    private static final int MAX_STUDENTS = 16;
     /**
      * Project.
      */
@@ -179,6 +182,19 @@ public final class People {
             );
         }
         try (final Item item = this.item()) {
+            if (
+                new Xocument(item.path())
+                    .nodes(
+                        String.format(
+                            "/people/person[mentor/text()='%s']",
+                            mentor
+                        )
+                    ).size() >= People.MAX_STUDENTS
+                ) {
+                throw new SoftException(
+                    "You can not invite more than 16 students"
+                );
+            }
             new Xocument(item.path()).modify(
                 People.start(uid)
                     .push()
