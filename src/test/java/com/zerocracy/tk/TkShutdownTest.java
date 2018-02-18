@@ -16,11 +16,15 @@
  */
 package com.zerocracy.tk;
 
+import com.zerocracy.farm.fake.FkFarm;
+import com.zerocracy.farm.props.PropsFarm;
 import java.net.HttpURLConnection;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 import org.takes.facets.hamcrest.HmRsStatus;
 import org.takes.rq.RqFake;
+import org.takes.rq.RqWithHeader;
+import org.takes.rq.RqWrap;
 
 /**
  * Test case for {@link TkShutdown}.
@@ -33,9 +37,38 @@ import org.takes.rq.RqFake;
 public final class TkShutdownTest {
     @Test
     public void returnOk() throws Exception {
+        final String auth = "123";
+        System.setProperty("shutdown.key", auth);
         MatcherAssert.assertThat(
-            new TkShutdown().act(new RqFake()),
+            new TkApp(new PropsFarm(new FkFarm())).act(
+                new RqWithHeader(
+                    new TkShutdownTest.RqShutdown(),
+                    "X-Auth",
+                    auth
+                )
+            ),
             new HmRsStatus(HttpURLConnection.HTTP_OK)
         );
+    }
+
+    @Test
+    public void returnForbiddenIfNotAuthorized() throws Exception {
+        MatcherAssert.assertThat(
+            new TkApp(new PropsFarm(new FkFarm()))
+                .act(new TkShutdownTest.RqShutdown()),
+            new HmRsStatus(HttpURLConnection.HTTP_FORBIDDEN)
+        );
+    }
+
+    /**
+     * Shutdown fake request.
+     */
+    private static final class RqShutdown extends RqWrap {
+        /**
+         * Ctor.
+         */
+        RqShutdown() {
+            super(new RqFake("GET", "/shutdown"));
+        }
     }
 }

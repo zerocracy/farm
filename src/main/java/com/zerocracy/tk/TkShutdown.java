@@ -16,10 +16,14 @@
  */
 package com.zerocracy.tk;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
+import org.takes.rq.RqHeaders;
 import org.takes.rs.RsEmpty;
+import org.takes.rs.RsWithStatus;
 
 /**
  * Shutdown the app.
@@ -31,13 +35,22 @@ import org.takes.rs.RsEmpty;
  *  This take will be called by Rultor during deploy.
  *  We should stop all background threads, services, wait until they stopped
  *  and return 200-OK status to Rultor.
- * @todo #297:30min Shutdown endpoint can be accessed without
- *  authentication. We should verify that /shutdown request was sent by
- *  Rultor during deploy. It can be implemented with auth header.
  */
 public final class TkShutdown implements Take {
     @Override
-    public Response act(final Request request) {
-        return new RsEmpty();
+    public Response act(final Request req) throws IOException {
+        final Response rsp;
+        if (
+            new RqHeaders.Smart(
+                new RqHeaders.Base(req)
+            ).single("X-Auth", "").equals(
+                System.getProperty("shutdown.key", "")
+            )
+            ) {
+            rsp = new RsEmpty();
+        } else {
+            rsp = new RsWithStatus(HttpURLConnection.HTTP_FORBIDDEN);
+        }
+        return rsp;
     }
 }

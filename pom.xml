@@ -779,5 +779,31 @@ SOFTWARE.
         </pluginManagement>
       </build>
     </profile>
+    <profile>
+      <id>shutdown</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>exec-maven-plugin</artifactId>
+            <groupId>org.codehaus.mojo</groupId>
+            <executions>
+              <execution>
+                <id>shutdown</id>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>${basedir}/scripts/shutdown.sh</executable>
+                  <arguments>
+                    <argument>${shutdown.key}</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
 </project>
