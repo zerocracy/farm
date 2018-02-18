@@ -21,11 +21,16 @@ import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.zerocracy.Farm;
 import com.zerocracy.farm.props.Props;
+import de.flapdoodle.embed.mongo.MongodExecutable;
+import de.flapdoodle.embed.mongo.MongodProcess;
+import de.flapdoodle.embed.mongo.MongodStarter;
+import de.flapdoodle.embed.mongo.config.MongodConfigBuilder;
+import de.flapdoodle.embed.mongo.config.Net;
+import de.flapdoodle.embed.mongo.distribution.Version;
+import de.flapdoodle.embed.process.runtime.Network;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import org.cactoos.Scalar;
 import org.cactoos.list.SolidList;
 import org.cactoos.scalar.SolidScalar;
@@ -49,33 +54,34 @@ public final class ExtMongo implements Scalar<MongoClient> {
     private static final UncheckedScalar<Integer> FAKE = new UncheckedScalar<>(
         new SolidScalar<>(
             () -> {
-                final ServerSocket socket = new ServerSocket();
                 final int port;
-                try {
+                try (ServerSocket socket = new ServerSocket()) {
                     socket.setReuseAddress(true);
                     socket.bind(new InetSocketAddress("localhost", 0));
                     port = socket.getLocalPort();
-                } finally {
-                    socket.close();
                 }
-                final Path dir = Files.createTempDirectory("mongo-log");
-                final Process mongod = new ProcessBuilder()
-                    .command(
-                        "mongod",
-                        "--quiet",
-                        "--logpath",
-                        dir.resolve("log.txt").toAbsolutePath().toString(),
-                        "--dbpath",
-                        Files.createTempDirectory("ft").toString(),
-                        "--port",
-                        Integer.toString(port)
-                    )
-                    .redirectInput(ProcessBuilder.Redirect.INHERIT)
-                    .redirectOutput(ProcessBuilder.Redirect.INHERIT)
-                    .redirectError(ProcessBuilder.Redirect.INHERIT)
-                    .start();
+                final MongodStarter runtime =
+                    MongodStarter.getDefaultInstance();
+                final MongodExecutable executable = runtime.prepare(
+                    new MongodConfigBuilder()
+                        .net(
+                            new Net(
+                                "localhost",
+                                port,
+                                Network.localhostIsIPv6()
+                            )
+                        )
+                        .version(Version.Main.V3_5)
+                        .build()
+                );
+                final MongodProcess process = executable.start();
                 Runtime.getRuntime().addShutdownHook(
-                    new Thread(mongod::destroy)
+                    new Thread(
+                        () -> {
+                            process.stop();
+                            executable.stop();
+                        }
+                    )
                 );
                 return port;
             }
