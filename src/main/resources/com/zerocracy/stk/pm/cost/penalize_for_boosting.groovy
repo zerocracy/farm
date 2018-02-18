@@ -14,19 +14,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.staff.boost
+package com.zerocracy.stk.pm.cost
 
 import com.jcabi.xml.XML
-import com.zerocracy.Project
+import com.zerocracy.Par
 import com.zerocracy.farm.Assume
+import com.zerocracy.Project
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.cost.Boosts
+import com.zerocracy.pm.ClaimOut
+import com.zerocracy.pm.staff.Roles
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Set boost')
   ClaimIn claim = new ClaimIn(xml)
-  int factor = Integer.valueOf(claim.param('factor').replaceAll('x$', ''))
-  new Boosts(project).bootstrap().boost(claim.param('job'), factor)
-  claim.reply("Boost ${factor}x was set").postTo(project)
+  String job = claim.param('job')
+  if (claim.hasAuthor() && new Roles(project).allRoles(claim.author()).contains("ARC")) {
+    new ClaimOut()
+      .type('Make payment')
+      .param('cause', claim.cid())
+      .param('job', job)
+      .param('login', claim.author())
+      .param(
+        'reason',
+        new Par('Boosting tasks against our principles, see §15').say()
+      )
+      .param('minutes', -10)
+      .postTo(project)
+  }
 }
