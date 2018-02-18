@@ -21,11 +21,13 @@ import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.zerocracy.Farm;
 import com.zerocracy.farm.props.Props;
+import de.flapdoodle.embed.mongo.Command;
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import de.flapdoodle.embed.mongo.MongodProcess;
 import de.flapdoodle.embed.mongo.MongodStarter;
 import de.flapdoodle.embed.mongo.config.MongodConfigBuilder;
 import de.flapdoodle.embed.mongo.config.Net;
+import de.flapdoodle.embed.mongo.config.RuntimeConfigBuilder;
 import de.flapdoodle.embed.mongo.distribution.Version;
 import de.flapdoodle.embed.process.runtime.Network;
 import java.io.IOException;
@@ -35,6 +37,7 @@ import org.cactoos.Scalar;
 import org.cactoos.list.SolidList;
 import org.cactoos.scalar.SolidScalar;
 import org.cactoos.scalar.UncheckedScalar;
+import org.slf4j.LoggerFactory;
 
 /**
  * MongoDB server connector.
@@ -60,9 +63,15 @@ public final class ExtMongo implements Scalar<MongoClient> {
                     socket.bind(new InetSocketAddress("localhost", 0));
                     port = socket.getLocalPort();
                 }
-                final MongodStarter runtime =
-                    MongodStarter.getDefaultInstance();
-                final MongodExecutable executable = runtime.prepare(
+                final MongodStarter starter = MongodStarter.getInstance(
+                    new RuntimeConfigBuilder()
+                        .defaultsWithLogger(
+                            Command.MongoD,
+                            LoggerFactory.getLogger(ExtMongo.class)
+                        )
+                        .build()
+                );
+                final MongodExecutable executable = starter.prepare(
                     new MongodConfigBuilder()
                         .net(
                             new Net(
