@@ -29,7 +29,7 @@ def exec(Project project, XML xml) {
     Matchers.equalTo(42)
   )
   MatcherAssert.assertThat(
-    new Awards(project, "yegor256").bootstrap().total(),
+    new Awards(project, 'yegor256').bootstrap().total(),
     Matchers.equalTo(-10)
   )
 }

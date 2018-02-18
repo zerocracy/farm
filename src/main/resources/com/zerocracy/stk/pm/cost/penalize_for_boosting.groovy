@@ -29,7 +29,7 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Set boost')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
-  if (claim.hasAuthor() && new Roles(project).allRoles(claim.author()).contains("ARC")) {
+  if (claim.hasAuthor() && new Roles(project).allRoles(claim.author()).contains('ARC')) {
     new ClaimOut()
       .type('Make payment')
       .param('cause', claim.cid())
