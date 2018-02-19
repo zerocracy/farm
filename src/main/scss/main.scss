@@ -103,19 +103,3 @@ header {
 
   &.millis-fast { color: green; }
 }
-
-input, textarea {
-    width: 70%;
-    float: right;
-}
-
-textarea {
-    vertical-align: top;
-    height: 5em;
-    resize: vertical;
-}
-
-label {
-  width: 20%;
-  text-align: right;
-}

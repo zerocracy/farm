@@ -31,25 +31,25 @@ SOFTWARE.
       </h1>
       <section>
         <p>
-          Fill this form to send a join request to all high-ranked users.
-          Someone may decide to
+          <xsl:text>Fill this form to send a join request to all high-ranked users.
+          Someone may decide to</xsl:text>
           <a href="http://datum.zerocracy.com/pages/policy.html#1">invite</a>
-          you and become your mentor.
+          <xsl:text>you and become your mentor.
           Remember, that a mentor will receive financial bonuses from us
-          and positive or negative
+          and positive or negative</xsl:text>
           <a href="http://datum.zerocracy.com/pages/policy.html#18">points</a>
-          depending on your actions,
+          <xsl:text>depending on your actions,
           so keep in mind that user more likely invite you if you match
           these criteria: you have open source contributions and positive
-          Stackoverflow reputation (read
+          Stackoverflow reputation (read</xsl:text>
           <a href="http://www.yegor256.com/2014/10/29/how-much-do-you-cost.html">
             this blog post
           </a>
-          for more details).
+          <xsl:text>for more details).</xsl:text>
           <br/>
-          Also you have to provide
+          <xsl:text>Also you have to provide</xsl:text>
           <a href="https://www.16personalities.com/free-personality-test">personality test</a>
-          result.
+          <xsl:text>result.</xsl:text>
         </p>
       </section>
       <form method="post" action="/join">
