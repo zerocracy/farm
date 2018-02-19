@@ -27,81 +27,63 @@ SOFTWARE.
   <xsl:template match="page" mode="body">
     <div class="center" style="margin-top: 0px">
       <h1>
-        Request to join
+        <xsl:text>Request to join</xsl:text>
       </h1>
       <section>
         <p>
           <xsl:text>Fill this form to send a join request to all high-ranked users.
-          Someone may decide to</xsl:text>
-          <a href="http://datum.zerocracy.com/pages/policy.html#1">invite</a>
-          <xsl:text>you and become your mentor.
+          Someone may decide to </xsl:text>
+          <a href="http://datum.zerocracy.com/pages/policy.html#1">
+            <xsl:text>invite</xsl:text>
+          </a>
+          <xsl:text> you and become your mentor.
           Remember, that a mentor will receive financial bonuses from us
-          and positive or negative</xsl:text>
-          <a href="http://datum.zerocracy.com/pages/policy.html#18">points</a>
-          <xsl:text>depending on your actions,
+          and positive or negative </xsl:text>
+          <a href="http://datum.zerocracy.com/pages/policy.html#18">
+            <xsl:text>points</xsl:text>
+          </a>
+          <xsl:text> depending on your actions,
           so keep in mind that user more likely invite you if you match
           these criteria: you have open source contributions and positive
-          Stackoverflow reputation (read</xsl:text>
+          Stackoverflow reputation (read </xsl:text>
           <a href="http://www.yegor256.com/2014/10/29/how-much-do-you-cost.html">
-            this blog post
+            <xsl:text>this blog post</xsl:text>
           </a>
-          <xsl:text>for more details).</xsl:text>
-          <br/>
-          <xsl:text>Also you have to provide</xsl:text>
-          <a href="https://www.16personalities.com/free-personality-test">personality test</a>
-          <xsl:text>result.</xsl:text>
+          <xsl:text> for more details). Also you have to provide </xsl:text>
+          <a href="https://www.16personalities.com/free-personality-test">
+            <xsl:text>personality test</xsl:text>
+          </a>
+          <xsl:text> result.</xsl:text>
         </p>
       </section>
       <form method="post" action="/join">
         <fieldset>
-          <legend>
-            <h6>
-              <xsl:text>Personal info</xsl:text>
-            </h6>
-          </legend>
-          <p>
-            <label for="inp-name">
-              <xsl:text>Name: </xsl:text>
-            </label>
-            <input id="inp-name" type="text" required="required" name="name"/>
-          </p>
-          <p>
-            <label for="inp-personality">
-              <xsl:text>Personality: </xsl:text>
-            </label>
-            <input id="inp-personality" type="text" required="required" name="personality" placeholder="INTJ-A" pattern="[A-Z]{4}-[A-Z]"/>
-          </p>
-          <p>
-            <label for="inp-about">About:</label>
-            <textarea id="inp-about" required="required" name="about"/>
-          </p>
+          <label for="inp-name">
+            <xsl:text>Name: </xsl:text>
+          </label>
+          <input id="inp-name" type="text" required="required" name="name"/>
+          <label for="inp-personality">
+            <xsl:text>Personality: </xsl:text>
+          </label>
+          <input id="inp-personality" type="text" required="required" name="personality" placeholder="INTJ-A" pattern="[A-Z]{4}-[A-Z]"/>
+          <label for="inp-about">
+            <xsl:text>About: </xsl:text>
+          </label>
+          <textarea id="inp-about" required="required" name="about"/>
+          <label for="inp-github">
+            <xsl:text>Github: </xsl:text>
+          </label>
+          <input id="inp-github" type="url" placeholder="https://github.com/username" required="required" name="github" pattern="((http|https):\/\/)?github\.com\/[a-zA-Z0-9]+"/>
+          <label for="inp-stackoverflow">
+            <xsl:text>SO: </xsl:text>
+          </label>
+          <input id="inp-stackoverflow" type="url" placeholder="https://stackoverflow.com/users/1" name="so"/>
+          <label for="inp-telegram">
+            <xsl:text>Telegram: </xsl:text>
+          </label>
+          <input id="inp-telegram" type="text" placeholder="username" name="telegram" required="required"/>
+          <input type="submit"/>
         </fieldset>
-        <fieldset>
-          <legend>
-            <h6>
-              <xsl:text>Social links</xsl:text>
-            </h6>
-          </legend>
-          <p>
-            <label for="inp-github">
-              <xsl:text>Github: </xsl:text>
-            </label>
-            <input id="inp-github" type="url" placeholder="https://github.com/username" required="required" name="github" pattern="((http|https):\/\/)?github\.com\/[a-zA-Z0-9]+"/>
-          </p>
-          <p>
-            <label for="inp-stackoverflow">
-              <xsl:text>SO: </xsl:text>
-            </label>
-            <input id="inp-stackoverflow" type="url" placeholder="https://stackoverflow.com/users/1" name="so"/>
-          </p>
-          <p>
-            <label for="inp-telegram">
-              <xsl:text>Telegram: </xsl:text>
-            </label>
-            <input id="inp-telegram" type="text" placeholder="username" name="telegram" required="required"/>
-          </p>
-        </fieldset>
-        <input type="submit"/>
       </form>
     </div>
   </xsl:template>
