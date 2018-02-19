@@ -16,13 +16,19 @@
  */
 package com.zerocracy.stk.pm.scope.wbs
 
+import com.jcabi.github.Github
+import com.jcabi.github.Issue
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Par
-import com.zerocracy.farm.Assume
 import com.zerocracy.Project
+import com.zerocracy.entry.ExtGithub
+import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.scope.Wbs
+import com.zerocracy.pmo.People
+import com.zerocracy.radars.github.Job
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
@@ -40,6 +46,23 @@ def exec(Project project, XML xml) {
   claim.reply(
     new Par('Job %s is now in scope, role is %s').say(job, role)
   ).postTo(project)
+  Farm farm = binding.variables.farm
+  Github github = new ExtGithub(farm).value()
+  Issue issue = new Issue.Smart(new Job.Issue(github, job))
+  if (issue.hasAssignee()) {
+    People people = new People(farm).bootstrap()
+    Iterator<String> find = people.find('github', issue.assignee().login()).iterator()
+    if (find.hasNext()) {
+      String login = find.next()
+      if (people.hasMentor(login)) {
+        claim.copy()
+            .type('Start order')
+            .param('login', login)
+            .param('reason', claim.cid())
+            .postTo(project)
+      }
+    }
+  }
   new ClaimOut()
     .type('Job was added to WBS')
     .param('cause', claim.cid())

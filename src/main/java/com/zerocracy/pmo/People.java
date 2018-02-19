@@ -35,11 +35,10 @@ import org.xembly.Directives;
 
 /**
  * Data about people.
- *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @since 0.1
  * @todo #366:30min Let's keep person reputation, agenda and project count
  *  inside `people.xml` and update them when reputation, agenda or projects
  *  changed as described in
@@ -54,7 +53,10 @@ import org.xembly.Directives;
         }
     )
 public final class People {
-
+    /**
+     * Max students for a person.
+     */
+    private static final int MAX_STUDENTS = 16;
     /**
      * Project.
      */
@@ -185,6 +187,21 @@ public final class People {
             );
         }
         try (final Item item = this.item()) {
+            if (
+                new Xocument(item.path())
+                    .nodes(
+                        String.format(
+                            "/people/person[mentor/text()='%s']",
+                            mentor
+                        )
+                    ).size() >= People.MAX_STUDENTS
+                ) {
+                throw new SoftException(
+                    new Par(
+                        "You can not invite more than %d students, see §1"
+                    ).say(People.MAX_STUDENTS)
+                );
+            }
             new Xocument(item.path()).modify(
                 People.start(uid)
                     .push()
@@ -392,7 +409,6 @@ public final class People {
      * <p>There can be multiple aliases for a single user ID. Each alias
      * comes from some other system, where that user is present. For example,
      * "email", "twitter", "github", "jira", etc.
-     *
      * @param uid User ID
      * @param rel REL for the alias, e.g. "github"
      * @param alias Alias, e.g. "yegor256"

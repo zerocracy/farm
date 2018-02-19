@@ -27,7 +27,6 @@ import com.zerocracy.pmo.People
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Notify all')
-  new Assume(project, xml).notPmo()
   ClaimIn claim = new ClaimIn(xml)
   int min = 0
   if (claim.hasParam('min')) {

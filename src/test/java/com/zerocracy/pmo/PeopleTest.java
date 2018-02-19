@@ -17,10 +17,13 @@
 package com.zerocracy.pmo;
 
 import com.zerocracy.Project;
+import com.zerocracy.SoftException;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.farm.fake.FkProject;
 import java.nio.file.Files;
 import java.util.List;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.iterable.RangeOf;
 import org.cactoos.list.ListOf;
 import org.cactoos.scalar.And;
 import org.hamcrest.MatcherAssert;
@@ -180,5 +183,19 @@ public final class PeopleTest {
                 )
             )
         );
+    }
+
+    @Test(expected = SoftException.class)
+    public void inviteSixteen() throws Exception {
+        final String mentor = "mnt";
+        final People people = new People(new FkProject()).bootstrap();
+        new And(
+            (String std) -> people.invite(std, mentor),
+            new Mapped<>(
+                (Integer num) -> String.format("student%d", num),
+                // @checkstyle MagicNumber (1 line)
+                new RangeOf<>(0, 16, x -> x + 1)
+            )
+        ).value();
     }
 }

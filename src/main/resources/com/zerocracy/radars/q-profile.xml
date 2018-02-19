@@ -125,7 +125,6 @@ SOFTWARE.
         <help>Bank, like "paypal|btc|bch|eth|ltc"</help>
       </opt>
       <opt>
-        <optional>true</optional>
         <name>wallet</name>
         <regex>.+</regex>
         <help>Technical payment details, e.g. PayPal email or Bitcoin wallet number</help>
