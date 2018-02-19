@@ -87,6 +87,11 @@ public final class Question {
         this.rparams = new HashMap<>(0);
     }
 
+    @Override
+    public String toString() {
+        return this.text;
+    }
+
     /**
      * Does it match?
      * @return TRUE if the question was understood
@@ -143,7 +148,7 @@ public final class Question {
         this.rhelp.set("");
         this.parse(
             this.config.nodes("/question/cmd"),
-            new ArrayList<>(Arrays.asList(this.text.split("\\s+")))
+            new ArrayList<>(Arrays.asList(this.text.trim().split("\\s+")))
         );
     }
 

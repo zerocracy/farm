@@ -28,8 +28,8 @@ import com.zerocracy.pmo.People
 def exec(Project project, XML xml) {
   new Assume(project, xml).isPmo()
   new Assume(project, xml).type('Invite a friend')
-  def claim = new ClaimIn(xml)
-  def author = claim.author()
+  ClaimIn claim = new ClaimIn(xml)
+  String author = claim.author()
   if (new Awards(project, author).bootstrap().total() < 1024) {
     claim.reply(
       new Par(

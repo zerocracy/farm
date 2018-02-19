@@ -17,18 +17,19 @@
 package com.zerocracy.bundles.impediments
 
 import com.jcabi.github.Github
+import com.jcabi.github.Repo
 import com.jcabi.github.Repos
 import com.jcabi.xml.XML
-import com.zerocracy.entry.ExtGithub
 import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.pmo.Awards
+import com.zerocracy.entry.ExtGithub
 
 def exec(Project project, XML xml) {
-  Farm farm = binding.variables.farm
-  Github github = new ExtGithub(farm).value()
-  new Awards(farm, 'yegor256').bootstrap().add(100, 'gh:test/test#100', 'initial')
-  def repo = github.repos().create(new Repos.RepoCreate('test', false))
-  repo.issues().create('Waiting', '')
-  repo.issues().create('Waiting2', '')
+    Farm farm = binding.variables.farm
+    Github github = new ExtGithub(farm).value()
+    new Awards(farm, 'yegor256').bootstrap().add(100, 'gh:test/test#100', 'initial')
+    Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
+    repo.issues().create('Waiting', '')
+    repo.issues().create('Waiting2', '')
 }

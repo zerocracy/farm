@@ -56,7 +56,9 @@ generate a claim we use `com.zerocracy.pm.ClaimOut`.
 
 ## How to contribute
 
-Please, see [CONTRIBUTING.md](https://github.com/zerocracy/farm/blob/master/CONTRIBUTING.md).
+Just fork it, make changes, run `mvn clean install -Pqulice`, and submit
+a pull request. Read
+[this](http://www.yegor256.com/2014/04/15/github-guidelines.html), if lost.
 
 ## License
 

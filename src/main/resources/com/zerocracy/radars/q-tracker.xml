@@ -81,7 +81,7 @@ SOFTWARE.
   </cmd>
   <cmd>
     <code>Complete QA review</code>
-    <regex>quality is</regex>
+    <regex>quality</regex>
     <label>quality</label>
     <help>Review a task</help>
     <opts>

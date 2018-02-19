@@ -24,7 +24,7 @@ import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
-  def orders = new Orders(project).bootstrap()
+  Orders orders = new Orders(project).bootstrap()
   MatcherAssert.assertThat(
     'job 1 still exists',
     orders.assigned('gh:test/test#1'),

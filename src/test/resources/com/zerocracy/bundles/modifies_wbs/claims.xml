@@ -43,4 +43,13 @@ SOFTWARE.
       <param name="job">gh:test/test#2</param>
     </params>
   </claim>
+  <claim id="10">
+    <type>Add job to WBS</type>
+    <created>2016-12-29T09:03:21.684Z</created>
+    <author>yegor256</author>
+    <token>github;test/test;3</token>
+    <params>
+      <param name="job">gh:test/test#3</param>
+    </params>
+  </claim>
 </claims>

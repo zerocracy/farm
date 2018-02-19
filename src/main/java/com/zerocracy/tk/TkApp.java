@@ -136,6 +136,13 @@ public final class TkApp extends TkWrap {
                                                                 new FkRegex("/yoti", new TkYoti(farm)),
                                                                 new FkRegex("/heapdump", new TkDump(farm)),
                                                                 new FkRegex("/guts", new TkGuts(farm)),
+                                                                new FkRegex(
+                                                                    "/spam",
+                                                                    (Take) req -> new RsPage(
+                                                                        farm, "/xsl/spam.xsl", req
+                                                                    )
+                                                                ),
+                                                                new FkRegex("/spam-send", new TkSpam(farm)),
                                                                 new FkRegex("/shutdown", new TkShutdown()),
                                                                 new FkRegex(
                                                                     "/org/takes/.+\\.xsl",
@@ -204,7 +211,7 @@ public final class TkApp extends TkWrap {
                                                                     new TkFootprint(farm)
                                                                 ),
                                                                 new FkRegex(
-                                                                    "/footprint/([A-Z0-9]{9})/([0-9]+)",
+                                                                    "/footprint/(PMO|[A-Z0-9]{9})/([0-9]+)",
                                                                     new TkClaim(farm)
                                                                 ),
                                                                 new FkRegex(

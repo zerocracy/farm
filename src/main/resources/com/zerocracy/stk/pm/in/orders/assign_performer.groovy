@@ -32,8 +32,8 @@ def exec(Project project, XML xml) {
   Elections elections = new Elections(project).bootstrap()
   for (String job : wbs.iterate()) {
     if (!orders.assigned(job) && elections.elected(job)) {
-      def winner = elections.winner(job)
-      def reason = elections.reason(job)
+      String winner = elections.winner(job)
+      String reason = elections.reason(job)
       new ClaimOut()
         .type('Start order')
         .token("job;${job}")

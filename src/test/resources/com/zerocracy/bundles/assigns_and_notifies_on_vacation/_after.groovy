@@ -19,17 +19,19 @@ package com.zerocracy.bundles.assigns_and_notifies_on_vacation
 import com.jcabi.github.Comment
 import com.jcabi.github.Coordinates
 import com.jcabi.github.Github
+import com.jcabi.github.Issue
+import com.jcabi.github.Repo
 import com.jcabi.xml.XML
-import com.zerocracy.entry.ExtGithub
 import com.zerocracy.Project
+import com.zerocracy.entry.ExtGithub
 import com.zerocracy.pm.in.Orders
 
 def exec(Project project, XML xml) {
-  def orders = new Orders(project).bootstrap()
+  Orders orders = new Orders(project).bootstrap()
   assert orders.performer('gh:test/test#1') == 'yegor256'
   Github github = new ExtGithub(binding.variables.farm).value()
-  def repo = github.repos().get(new Coordinates.Simple('test/test'))
-  def issue = repo.issues().get(1)
+  Repo repo = github.repos().get(new Coordinates.Simple('test/test'))
+  Issue issue = repo.issues().get(1)
   assert new Comment.Smart(
     issue.comments().iterate(new Date()).iterator().next()
   ).body().contains('is on vacation')

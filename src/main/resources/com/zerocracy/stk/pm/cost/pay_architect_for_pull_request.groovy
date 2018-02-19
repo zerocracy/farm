@@ -77,7 +77,9 @@ def exec(Project project, XML xml) {
       .param('login', logins[0])
       .param(
         'reason',
-        new Par('Payment to ARC for a closed pull request, as in §28').say()
+        new Par(
+          'Payment to ARC for a closed pull request, as in §28'
+        ).say()
       )
       .param('minutes', 15)
       .postTo(project)

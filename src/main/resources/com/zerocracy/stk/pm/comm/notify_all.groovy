@@ -27,9 +27,11 @@ import com.zerocracy.pmo.People
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Notify all')
-  new Assume(project, xml).notPmo()
   ClaimIn claim = new ClaimIn(xml)
-  int min = Integer.parseInt(claim.param('min'))
+  int min = 0
+  if (claim.hasParam('min')) {
+    min = Integer.parseInt(claim.param('min'))
+  }
   Farm farm = binding.variables.farm
   People people = new People(farm).bootstrap()
   for (String uid : people.iterate()) {
