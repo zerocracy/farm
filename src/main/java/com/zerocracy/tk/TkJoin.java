@@ -16,39 +16,21 @@
  */
 package com.zerocracy.tk;
 
-import com.zerocracy.Farm;
 import java.io.IOException;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
+import org.takes.rs.RsEmpty;
 
 /**
- * Join Zerocracy form page.
- *
+ * Join Zerocracy form.
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.20
  */
 public final class TkJoin implements Take {
-    /**
-     * A farm.
-     */
-    private final Farm farm;
-
-    /**
-     * Ctor.
-     * @param farm Farm
-     */
-    public TkJoin(final Farm farm) {
-        this.farm = farm;
-    }
-
     @Override
     public Response act(final Request req) throws IOException {
-        return new RsPage(
-            this.farm,
-            "/xsl/join.xsl",
-            req
-        );
+        return new RsEmpty();
     }
 }

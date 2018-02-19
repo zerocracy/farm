@@ -56,7 +56,7 @@ SOFTWARE.
           <xsl:text> result.</xsl:text>
         </p>
       </section>
-      <form method="post" action="/join">
+      <form method="post" action="/join-post">
         <fieldset>
           <label for="inp-name">
             <xsl:text>Name: </xsl:text>
