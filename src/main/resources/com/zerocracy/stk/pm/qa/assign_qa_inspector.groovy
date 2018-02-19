@@ -27,8 +27,10 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Assign QA inspector')
   ClaimIn claim = new ClaimIn(xml)
   claim.reply(
-    new Par('@%s please review this job, as in §30').say(
-      claim.param('assignee')
-    )
+    new Par(
+      '@%s please review this job, as in §30;',
+      'the job will be fully closed and all payments will be made',
+      'when the quality review is completed'
+    ).say(claim.param('assignee'))
   ).postTo(project)
 }

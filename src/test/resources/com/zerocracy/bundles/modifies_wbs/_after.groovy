@@ -21,6 +21,6 @@ import com.zerocracy.Project
 import com.zerocracy.pm.scope.Wbs
 
 def exec(Project project, XML xml) {
-  def wbs = new Wbs(project).bootstrap()
+  Wbs wbs = new Wbs(project).bootstrap()
   assert wbs.exists('gh:test/test#1')
 }

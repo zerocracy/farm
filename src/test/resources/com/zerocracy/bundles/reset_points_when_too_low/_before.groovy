@@ -28,6 +28,6 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
   github.repos().create(new Repos.RepoCreate('test', false))
-  def awards = new Awards(project, 'yegor256').bootstrap()
+  Awards awards = new Awards(project, 'yegor256').bootstrap()
   awards.add(-200, 'gh:test/test#1', 'Test')
 }

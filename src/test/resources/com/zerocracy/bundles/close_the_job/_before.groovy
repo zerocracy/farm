@@ -14,37 +14,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm
+package com.zerocracy.bundles.close_the_job
 
+import com.jcabi.github.Github
+import com.jcabi.github.Repo
+import com.jcabi.github.Repos
 import com.jcabi.xml.XML
-import com.zerocracy.Par
-import com.zerocracy.farm.Assume
 import com.zerocracy.Farm
 import com.zerocracy.Project
-import com.zerocracy.SoftException
-import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pmo.Catalog
+import com.zerocracy.entry.ExtGithub
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Set title')
-  new Assume(project, xml).roles('PO')
-  ClaimIn claim = new ClaimIn(xml)
-  String pid = project.pid()
   Farm farm = binding.variables.farm
-  Catalog catalog = new Catalog(farm).bootstrap()
-  if (!claim.hasParam('title')) {
-    throw new SoftException(
-      new Par(
-        'Project title is "%s".',
-        'To change it just say `title MyProject`, for example.'
-      ).say(catalog.title(pid))
-    )
-  }
-  String title = claim.param('title')
-  catalog.title(pid, title)
-  claim.reply(
-    new Par(
-      'Done, title changed to "%s"'
-    ).say(title)
-  ).postTo(project)
+  Github github = new ExtGithub(farm).value()
+  Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
+  repo.issues().create('for test', '')
+  repo.issues().create('for rultor', '')
+  repo.issues().create('for arc', '')
+  repo.issues().create('for po', '')
 }

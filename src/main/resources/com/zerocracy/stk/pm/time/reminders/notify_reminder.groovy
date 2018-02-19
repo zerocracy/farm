@@ -10,7 +10,7 @@ import com.zerocracy.pm.ClaimOut
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('New reminder posted')
-  def claim = new ClaimIn(xml)
+  ClaimIn claim = new ClaimIn(xml)
   new ClaimOut()
     .type('Notify job')
     .param('cause', claim.cid())

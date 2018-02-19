@@ -21,6 +21,7 @@ SOFTWARE.
   <xsl:include href="/xsl/inner-layout.xsl"/>
   <xsl:template match="page" mode="head">
     <title>
+      <xsl:text>Footprint @ </xsl:text>
       <xsl:value-of select="title"/>
     </title>
   </xsl:template>
