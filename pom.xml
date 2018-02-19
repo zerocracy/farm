@@ -528,6 +528,28 @@ SOFTWARE.
                   ]]></source>
                 </configuration>
               </execution>
+              <execution>
+                <id>groovy-regex</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>execute</goal>
+                </goals>
+                <configuration>
+                  <classpathScope>compile</classpathScope>
+                  <source><![CDATA[
+                    import groovy.io.FileType
+                    def dir = new File("src/main/resources/com/zerocracy/stk")
+                    dir.eachFileRecurse (FileType.FILES) { file ->
+                      if (file.text.findAll('def [a-z]+ = ')) {
+                        throw new Exception(
+                          'Don\'t use def, explicitly specify types in ' + file
+                        )
+                      }
+                    }
+                    println('All Groovy files are clean!')
+                  ]]></source>
+                </configuration>
+              </execution>
             </executions>
           </plugin>
         </plugins>
