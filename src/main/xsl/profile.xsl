@@ -305,12 +305,9 @@ SOFTWARE.
   <xsl:template match="mentor">
     <p>
       <xsl:text>Your mentor: </xsl:text>
-      <xsl:element name="a">
-        <xsl:attribute name="href">
-          <xsl:value-of select="concat('/u/', text())"/>
-        </xsl:attribute>
+      <a href="/u/{.}">
         <xsl:value-of select="text()"/>
-      </xsl:element>
+      </a>
     </p>
   </xsl:template>
   <xsl:template match="students[not(student)]">
@@ -324,12 +321,9 @@ SOFTWARE.
       <xsl:element name="ul">
         <xsl:for-each select="student">
           <li>
-            <xsl:element name="a">
-              <xsl:attribute name="href">
-                <xsl:value-of select="concat('/u/', text())"/>
-              </xsl:attribute>
+            <a href="/u/{.}">
               <xsl:value-of select="text()"/>
-            </xsl:element>
+            </a>
           </li>
         </xsl:for-each>
       </xsl:element>
