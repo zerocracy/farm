@@ -46,6 +46,10 @@ SOFTWARE.
             this blog post
           </a>
           for more details).
+          <br/>
+          Also you have to provide
+          <a href="https://www.16personalities.com/free-personality-test">personality test</a>
+          result.
         </p>
       </section>
       <form method="post" action="/join">
@@ -60,6 +64,12 @@ SOFTWARE.
               <xsl:text>Name: </xsl:text>
             </label>
             <input id="inp-name" type="text" required="required" name="name"/>
+          </p>
+          <p>
+            <label for="inp-personality">
+              <xsl:text>Personality: </xsl:text>
+            </label>
+            <input id="inp-personality" type="text" required="required" name="personality" placeholder="INTJ-A" pattern="[A-Z]{4}-[A-Z]"/>
           </p>
           <p>
             <label for="inp-about">About:</label>
