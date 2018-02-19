@@ -145,4 +145,17 @@ public final class PeopleTest {
             Matchers.is(false)
         );
     }
+
+    @Test
+    public void breakupTest() throws Exception {
+        final People people = new People(new FkProject()).bootstrap();
+        final String uid = "john";
+        final String friend = "jimmy";
+        people.invite(friend, uid);
+        people.breakup(friend);
+        MatcherAssert.assertThat(
+            people.hasMentor(friend),
+            Matchers.is(false)
+        );
+    }
 }

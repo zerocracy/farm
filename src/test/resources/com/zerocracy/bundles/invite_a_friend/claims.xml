@@ -34,4 +34,22 @@ SOFTWARE.
     </params>
     <created>2017-01-15T01:00:00.000Z</created>
   </claim>
+  <claim id="3">
+    <type>Invite a friend</type>
+    <token>job;gh:test/test#1</token>
+    <author>high</author>
+    <params>
+      <param name="login">tmp</param>
+    </params>
+    <created>2017-01-15T01:00:00.000Z</created>
+  </claim>
+  <claim id="4">
+    <type>Breakup</type>
+    <token>job;gh:test/test#1</token>
+    <author>high</author>
+    <params>
+      <param name="login">tmp</param>
+    </params>
+    <created>2017-01-15T01:00:00.000Z</created>
+  </claim>
 </claims>
