@@ -115,6 +115,7 @@ public final class QuestionTest {
         final String[] files = {
             "q-profile-test.xml",
             "q-project-test.xml",
+            "q-tracker-test.xml",
         };
         for (final String file : files) {
             final XML test = new XMLDocument(
@@ -128,6 +129,7 @@ public final class QuestionTest {
                     target, cmd.xpath("text/text()").get(0)
                 );
                 MatcherAssert.assertThat(
+                    String.format("Question '%s' doesn't match", question),
                     question.matches(),
                     Matchers.equalTo(true)
                 );

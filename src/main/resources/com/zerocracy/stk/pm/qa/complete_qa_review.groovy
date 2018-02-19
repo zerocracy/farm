@@ -25,9 +25,10 @@ import com.zerocracy.pm.ClaimOut
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Complete QA review')
-  def claim = new ClaimIn(xml)
-  def job = claim.param('job')
-  def inspector = claim.author()
+  ClaimIn claim = new ClaimIn(xml)
+  String job = claim.param('job')
+  String inspector = claim.author()
+
   new ClaimOut()
     .type('Make payment')
     .param('job', job)

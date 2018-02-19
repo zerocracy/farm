@@ -14,25 +14,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.modifies_wbs
+package com.zerocracy.stk.internal
 
+import com.jcabi.github.Github
+import com.jcabi.log.Logger
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Project
-import com.zerocracy.pm.in.Orders
-import com.zerocracy.pm.scope.Wbs
-import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
+import com.zerocracy.entry.ExtDynamo
+import com.zerocracy.entry.ExtGithub
+import com.zerocracy.farm.Assume
+import com.zerocracy.farm.DyErrors
+import com.zerocracy.farm.props.Props
 
 def exec(Project project, XML xml) {
-  Wbs wbs = new Wbs(project).bootstrap()
-  assert wbs.exists('gh:test/test#1')
-  def orders = new Orders(project).bootstrap()
-  MatcherAssert.assertThat(
-    orders.assigned('gh:test/test#3'),
-    Matchers.is(true)
+  new Assume(project, xml).notPmo()
+  new Assume(project, xml).type('Ping')
+  Farm farm = binding.variables.farm
+  if (new Props(farm).has('//testing')) {
+    Logger.info(this, 'skip in testing mode')
+    return
+  }
+  Github github = new ExtGithub(farm).value()
+  DyErrors.Github errors = new DyErrors.Github(
+    new DyErrors(new ExtDynamo(farm).value()),
+    github
   )
-  MatcherAssert.assertThat(
-    orders.performer('gh:test/test#3'),
-    Matchers.equalTo('g4s8')
-  )
+  errors.iterate(10, 72L).each {
+    errors.remove(it)
+    it.remove()
+  }
 }

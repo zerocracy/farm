@@ -36,11 +36,11 @@ def exec(Project project, XML xml) {
   long minutes = (System.currentTimeMillis() - orders.startTime(job).time) / TimeUnit.MINUTES.toMillis(1L)
   String login = orders.performer(job)
   Estimates estimates = new Estimates(project).bootstrap()
-  def quality = claim.params().with {
+  String quality = claim.params().with {
     it.containsKey('quality') ? it['quality'] : 'acceptable'
   }
   if (quality == 'good' || quality == 'acceptable') {
-    def extra = quality == 'good' ? 5 : 0
+    int extra = quality == 'good' ? 5 : 0
     ClaimOut out = claim.copy()
       .type('Make payment')
       .param('cause', claim.cid())
@@ -54,6 +54,7 @@ def exec(Project project, XML xml) {
   } else {
     new ClaimOut()
       .type('Notify job')
+      .token("job;${job}")
       .param('job', job)
       .param('message', new Par('Quality is low, no payment, see §31').say())
       .postTo(project)

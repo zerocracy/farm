@@ -26,6 +26,11 @@ import com.zerocracy.pm.ClaimIn
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Notify job')
   ClaimIn claim = new ClaimIn(xml)
+  if (!claim.hasToken()) {
+    throw new IllegalArgumentException(
+      "Claim of type '${claim.type()}' in ${project.pid()} has no token"
+    )
+  }
   String[] parts = claim.token().split(';')
   if (parts[0] != 'job') {
     throw new IllegalArgumentException(

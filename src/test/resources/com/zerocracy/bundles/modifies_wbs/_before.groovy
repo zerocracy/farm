@@ -18,6 +18,7 @@ package com.zerocracy.bundles.modifies_wbs
 
 import com.jcabi.github.Github
 import com.jcabi.github.Issue
+import com.jcabi.github.Repo
 import com.jcabi.github.Repos
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
@@ -30,7 +31,7 @@ def exec(Project project, XML xml) {
   def people = new People(farm).bootstrap()
   people.invite('g4s8', '0crat')
   Github github = new ExtGithub(farm).value()
-  def repo = github.repos().create(new Repos.RepoCreate('test', false))
+  Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
   repo.issues().create('Hello, world', '')
   repo.issues().create('Hello, world', '')
   def assigned = new Issue.Smart(repo.issues().create('Hello, world', ''))
