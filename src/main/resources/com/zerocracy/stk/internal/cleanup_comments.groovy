@@ -28,8 +28,8 @@ import com.zerocracy.farm.DyErrors
 import com.zerocracy.farm.props.Props
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Ping')
+  new Assume(project, xml).isPmo()
+  new Assume(project, xml).type('Ping hourly')
   Farm farm = binding.variables.farm
   if (new Props(farm).has('//testing')) {
     Logger.info(this, 'skip in testing mode')
