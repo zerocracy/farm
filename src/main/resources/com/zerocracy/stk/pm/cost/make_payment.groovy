@@ -56,10 +56,28 @@ def exec(Project project, XML xml) {
   }
   if (price != Cash.ZERO) {
     Farm farm = binding.variables.farm
-    String msg = new Payroll(farm).pay(
-      project, login, price,
-      "Payment for ${job} (${minutes} minutes): ${reason}"
-    )
+    String msg
+    try {
+      msg = new Payroll(farm).pay(
+        project, login, price,
+        "Payment for ${job} (${minutes} minutes): ${reason}"
+      )
+    } catch (IOException ex) {
+      new ClaimOut()
+        .type('Notify user')
+        .token("user;${login}")
+        .param('cause', claim.cid())
+        .param(
+          'message',
+          new Par(
+            'We are very sorry, but we failed to pay you %s for %s: "%s";',
+            'please, ask your mentor to help you out or',
+            'submit a ticket to https://github.com/zerocracy/farm'
+          ).say(price, job, ex.message)
+        )
+        .postTo(project)
+      throw ex
+    }
     new ClaimOut()
       .type('Notify user')
       .token("user;${login}")

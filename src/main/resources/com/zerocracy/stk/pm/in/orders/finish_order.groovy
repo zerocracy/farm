@@ -19,11 +19,13 @@ package com.zerocracy.stk.pm.in.orders
 import com.jcabi.xml.XML
 import com.zerocracy.Par
 import com.zerocracy.Project
+import com.zerocracy.cash.Cash
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.cost.Boosts
 import com.zerocracy.pm.cost.Estimates
+import com.zerocracy.pm.cost.Rates
 import com.zerocracy.pm.in.Orders
 import java.util.concurrent.TimeUnit
 
@@ -45,10 +47,15 @@ def exec(Project project, XML xml) {
       .type('Make payment')
       .param('cause', claim.cid())
       .param('login', login)
-      .param('reason', 'Order was successfully finished')
+      .param('reason', new Par('Order was finished, quality was "%s"').say(quality))
       .param('minutes', new Boosts(project).bootstrap().factor(job) * 15 + extra)
     if (estimates.exists(job)) {
-      out = out.param('cash', estimates.get(job))
+      Cash price = estimates.get(job)
+      Rates rates = new Rates(project).bootstrap()
+      if (extra > 0 && rates.exists(login)) {
+        price = price.add(rates.rate(login).mul(extra) / 60)
+      }
+      out = out.param('cash', price)
     }
     out.postTo(project)
   } else {
