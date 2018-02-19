@@ -1,0 +1,27 @@
+{
+  "AttributeDefinitions": [
+    {
+      "AttributeName": "system",
+      "AttributeType": "S"
+    },
+    {
+      "AttributeName": "created",
+      "AttributeType": "N"
+    }
+  ],
+  "KeySchema": [
+    {
+      "AttributeName": "system",
+      "KeyType": "HASH"
+    },
+    {
+      "AttributeName": "created",
+      "KeyType": "RANGE"
+    }
+  ],
+  "ProvisionedThroughput": {
+    "ReadCapacityUnits": "1",
+    "WriteCapacityUnits": "1"
+  },
+  "TableName": "0crat-errors"
+}

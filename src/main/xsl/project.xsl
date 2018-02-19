@@ -145,7 +145,7 @@ SOFTWARE.
     <xsl:if test="project!='PMO' and cash">
       <xsl:apply-templates select="." mode="cash"/>
     </xsl:if>
-    <xsl:if test="roles/role='ARC' or roles/role='PO'">
+    <xsl:if test="roles/role='ARC' or roles/role='PO' or project='PMO'">
       <xsl:apply-templates select="." mode="artifacts"/>
     </xsl:if>
   </xsl:template>

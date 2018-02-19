@@ -6,6 +6,7 @@ import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
+import com.zerocracy.pm.cost.Boosts
 import com.zerocracy.pm.in.Impediments
 import com.zerocracy.pm.in.Orders
 import java.time.ZoneOffset
@@ -21,6 +22,7 @@ def exec(Project project, XML xml) {
     claim.created().toInstant(), ZoneOffset.UTC
   )
   Orders orders = new Orders(project).bootstrap()
+  Boosts boosts = new Boosts(project).bootstrap()
   Impediments impediments = new Impediments(project).bootstrap()
   List<String> waiting = new Impediments(project).bootstrap().jobs().toList()
   int days = 10
@@ -44,6 +46,14 @@ def exec(Project project, XML xml) {
       .token("job;$job")
       .param('job', job)
       .param('reason', new Par('It is older than %d day(s), see §8').say(days))
+      .postTo(project)
+    new ClaimOut()
+      .type('Make payment')
+      .param('cause', claim.cid())
+      .param('job', job)
+      .param('login', worker)
+      .param('reason', new Par('Resigned on delay, see §8').say())
+      .param('minutes', boosts.factor(job) * -15)
       .postTo(project)
     new ClaimOut()
       .type('Notify project')

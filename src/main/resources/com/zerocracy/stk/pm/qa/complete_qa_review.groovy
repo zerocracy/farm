@@ -17,17 +17,26 @@
 package com.zerocracy.stk.pm.qa
 
 import com.jcabi.xml.XML
+import com.zerocracy.Par
 import com.zerocracy.Project
+import com.zerocracy.SoftException
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
+import com.zerocracy.pm.staff.Roles
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Complete QA review')
-  def claim = new ClaimIn(xml)
-  def job = claim.param('job')
-  def inspector = claim.author()
+  ClaimIn claim = new ClaimIn(xml)
+  String job = claim.param('job')
+  String inspector = claim.author()
+  Roles roles = new Roles(project).bootstrap()
+  if (!roles.hasRole(inspector, 'QA', 'ARC')) {
+    throw new SoftException(
+      new Par('You need to have either QA or ARC roles to do that').say()
+    )
+  }
   new ClaimOut()
     .type('Make payment')
     .param('job', job)
