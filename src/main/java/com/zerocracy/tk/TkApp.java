@@ -145,6 +145,13 @@ public final class TkApp extends TkWrap {
                                                                 new FkRegex("/spam-send", new TkSpam(farm)),
                                                                 new FkRegex("/shutdown", new TkShutdown()),
                                                                 new FkRegex(
+                                                                    "/join",
+                                                                    (Take) req -> new RsPage(
+                                                                        farm, "/xsl/join.xsl", req
+                                                                    )
+                                                                ),
+                                                                new FkRegex("/join-post", new TkJoin()),
+                                                                new FkRegex(
                                                                     "/org/takes/.+\\.xsl",
                                                                     new TkClasspath()
                                                                 ),
