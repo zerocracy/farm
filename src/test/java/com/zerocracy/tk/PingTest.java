@@ -59,7 +59,6 @@ public final class PingTest {
                 {"/"},
                 {"/org/takes/rs/xe/memory.xsl"},
                 {"/add_to_slack"},
-                {"/ping"},
             }
         );
     }

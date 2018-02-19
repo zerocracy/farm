@@ -23,7 +23,6 @@ import com.zerocracy.SoftException;
 import com.zerocracy.Stakeholder;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.pm.ClaimIn;
-import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.tools.TxtUnrecoverableError;
 import io.sentry.Sentry;
 import java.io.IOException;
@@ -115,7 +114,7 @@ public final class StkSafe implements Stakeholder {
             if (props.has("//testing")) {
                 throw new IllegalStateException(ex);
             }
-            new ClaimOut()
+            claim.copy()
                 .type("Error")
                 .param("origin_id", claim.cid())
                 .param("origin_type", claim.type())
@@ -125,10 +124,7 @@ public final class StkSafe implements Stakeholder {
             Sentry.capture(ex);
             if (claim.hasToken() && !claim.type().startsWith("Notify")) {
                 claim.reply(
-                    String.format(
-                        "%s\n\ncc @yegor256",
-                        new TxtUnrecoverableError(ex, props).asString()
-                    )
+                    new TxtUnrecoverableError(ex, props).asString()
                 ).postTo(project);
             }
         }

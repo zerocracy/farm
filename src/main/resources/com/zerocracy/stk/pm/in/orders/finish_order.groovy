@@ -17,12 +17,15 @@
 package com.zerocracy.stk.pm.in.orders
 
 import com.jcabi.xml.XML
+import com.zerocracy.Par
 import com.zerocracy.Project
+import com.zerocracy.cash.Cash
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.cost.Boosts
 import com.zerocracy.pm.cost.Estimates
+import com.zerocracy.pm.cost.Rates
 import com.zerocracy.pm.in.Orders
 import java.util.concurrent.TimeUnit
 
@@ -35,16 +38,34 @@ def exec(Project project, XML xml) {
   long minutes = (System.currentTimeMillis() - orders.startTime(job).time) / TimeUnit.MINUTES.toMillis(1L)
   String login = orders.performer(job)
   Estimates estimates = new Estimates(project).bootstrap()
-  ClaimOut out = claim.copy()
-    .type('Make payment')
-    .param('cause', claim.cid())
-    .param('login', login)
-    .param('reason', 'Order was successfully finished')
-    .param('minutes', new Boosts(project).bootstrap().factor(job) * 15)
-  if (estimates.exists(job)) {
-    out = out.param('cash', estimates.get(job))
+  String quality = claim.params().with {
+    it.containsKey('quality') ? it['quality'] : 'acceptable'
   }
-  out.postTo(project)
+  if (quality == 'good' || quality == 'acceptable') {
+    int extra = quality == 'good' ? 5 : 0
+    ClaimOut out = claim.copy()
+      .type('Make payment')
+      .param('cause', claim.cid())
+      .param('login', login)
+      .param('reason', new Par('Order was finished, quality was "%s"').say(quality))
+      .param('minutes', new Boosts(project).bootstrap().factor(job) * 15 + extra)
+    if (estimates.exists(job)) {
+      Cash price = estimates.get(job)
+      Rates rates = new Rates(project).bootstrap()
+      if (extra > 0 && rates.exists(login)) {
+        price = price.add(rates.rate(login).mul(extra) / 60)
+      }
+      out = out.param('cash', price)
+    }
+    out.postTo(project)
+  } else {
+    new ClaimOut()
+      .type('Notify job')
+      .token("job;${job}")
+      .param('job', job)
+      .param('message', new Par('Quality is low, no payment, see §31').say())
+      .postTo(project)
+  }
   orders.resign(job)
   new ClaimOut()
     .type('Order was finished')

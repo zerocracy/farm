@@ -24,6 +24,7 @@ import com.mongodb.client.model.Updates;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.entry.ExtMongo;
+import com.zerocracy.farm.props.Props;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Map;
@@ -72,11 +73,13 @@ public final class Footprint implements Closeable {
     /**
      * Add new claim, it was just opened.
      * @param xml The claim XML
+     * @throws IOException If fails
      */
-    public void open(final XML xml) {
+    public void open(final XML xml) throws IOException {
         final ClaimIn claim = new ClaimIn(xml);
         Document doc = new Document()
             .append("cid", claim.cid())
+            .append("version", new Props().get("//build/version", ""))
             .append("project", this.pid)
             .append("type", claim.type())
             .append("created", claim.created());

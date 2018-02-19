@@ -99,6 +99,7 @@ public final class Main {
             new ExtTelegram(farm).value();
             radar.refresh();
             new GithubRoutine(farm).start();
+            new Pings(farm).start();
             new FtCli(
                 new TkApp(
                     farm,

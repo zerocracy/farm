@@ -17,25 +17,41 @@
 package com.zerocracy.stk.pm.comm
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
+import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pmo.Awards
+import com.zerocracy.pmo.People
 
-/**
- * @todo #384:30min Let's implement this stakeholder.
- *  This script should send a notification
- *  to all users, who is not on vacation.
- *  Let's mention in the notification, that if they don't want to
- *  receive them anymore, they just have to turn the vacation mode ON.
- *  Also 'publish_project' bundle test should be fixed. And
- *  'Notify test' claim in this script should be replaced with
- *  actual implementation.
- */
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Notify all')
   new Assume(project, xml).notPmo()
-  new ClaimIn(xml)
-    .copy()
-    .type('Notify test')
-    .postTo(project)
+  ClaimIn claim = new ClaimIn(xml)
+  int min = 0
+  if (claim.hasParam('min')) {
+    min = Integer.parseInt(claim.param('min'))
+  }
+  Farm farm = binding.variables.farm
+  People people = new People(farm).bootstrap()
+  for (String uid : people.iterate()) {
+    if (people.vacation(uid)) {
+      continue
+    }
+    if (new Awards(farm, uid).bootstrap().total() < min) {
+      continue
+    }
+    claim.copy()
+      .type('Notify user')
+      .token("user;${uid}")
+      .param(
+        'message',
+        claim.param('message') + new Par(
+          '\n\nYou received this message because your reputation is over %d',
+          'and you are not on vacation, as in §38.'
+        ).say(min)
+      )
+      .postTo(project)
+  }
 }

@@ -92,7 +92,16 @@ SOFTWARE.
         <xsl:text>1</xsl:text>
       </sup>
       <xsl:text>The amount of currently assigned jobs in the project
-        and the total amount of jobs.</xsl:text>
+        and the total amount of jobs; the bigger the difference
+        the higher the deficit, if you join you will get jobs immediately.</xsl:text>
+      <xsl:if test="project[deficit='true']">
+        <sup id="2">
+          <xsl:text>2</xsl:text>
+        </sup>
+        <xsl:text>Crossed-out projects are not properly funded
+          at the moment and new jobs are not assigned to programmers;
+          the situation may change at any moment.</xsl:text>
+      </xsl:if>
     </p>
   </xsl:template>
   <xsl:template match="project">
@@ -133,9 +142,26 @@ SOFTWARE.
         </xsl:if>
       </td>
       <td style="text-align:right;">
-        <xsl:value-of select="orders"/>
-        <xsl:text>/</xsl:text>
-        <xsl:value-of select="jobs"/>
+        <xsl:variable name="txt">
+          <xsl:value-of select="orders"/>
+          <xsl:text>/</xsl:text>
+          <xsl:value-of select="jobs"/>
+        </xsl:variable>
+        <xsl:choose>
+          <xsl:when test="deficit = 'true'">
+            <span style="text-decoration:line-through;color:darkred;">
+              <xsl:value-of select="$txt"/>
+            </span>
+            <a href="#2">
+              <sup>
+                <xsl:text>2</xsl:text>
+              </sup>
+            </a>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$txt"/>
+          </xsl:otherwise>
+        </xsl:choose>
       </td>
     </tr>
   </xsl:template>

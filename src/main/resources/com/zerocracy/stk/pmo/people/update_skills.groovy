@@ -14,23 +14,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.qa
+package com.zerocracy.stk.pmo.people
 
 import com.jcabi.xml.XML
-import com.zerocracy.Par
-import com.zerocracy.farm.Assume
 import com.zerocracy.Project
-import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.scope.Wbs
+import com.zerocracy.farm.Assume
 
-def exec(Project project, XML xml) {
-  new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Assign QA')
-  def claim = new ClaimIn(xml)
-  def job = claim.param('job')
-  new Wbs(project).bootstrap().add(job)
-  claim.reply(
-    new Par('@%s please review this job as in §30.')
-      .say(claim.param('assignee'))
-  )
+def exec(Project pmo, XML xml) {
+  new Assume(pmo, xml).isPmo()
+  /**
+   * @todo #492:30min Let's implement this stakeholder. It will take
+   *  a random user from the list, which has the oldest updated attribute,
+   *  go to its GitHub account, fetch all repositories he owns and contributes
+   *  to and fetch the most popular languages from them.
+   *  GitHub provides that information.
+   */
 }

@@ -26,6 +26,7 @@ import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.Claims
 import com.zerocracy.pm.cost.Boosts
 import com.zerocracy.pm.cost.Ledger
+import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pm.staff.Elections
 import com.zerocracy.pm.staff.Roles
@@ -34,6 +35,7 @@ import com.zerocracy.pm.staff.ranks.RnkRev
 import com.zerocracy.pm.staff.votes.VsBanned
 import com.zerocracy.pm.staff.votes.VsHardCap
 import com.zerocracy.pm.staff.votes.VsNoRoom
+import com.zerocracy.pm.staff.votes.VsRandom
 import com.zerocracy.pm.staff.votes.VsRate
 import com.zerocracy.pm.staff.votes.VsSafe
 import com.zerocracy.pm.staff.votes.VsSpeed
@@ -54,6 +56,7 @@ def exec(Project project, XML xml) {
   }
   Wbs wbs = new Wbs(project).bootstrap()
   Roles roles = new Roles(project).bootstrap()
+  Orders orders = new Orders(project).bootstrap()
   Elections elections = new Elections(project).bootstrap()
   Farm farm = binding.variables.farm
   Project pmo = new Pmo(farm)
@@ -63,6 +66,12 @@ def exec(Project project, XML xml) {
     new RnkRev(new Wbs(project).bootstrap())
   ].each { jobs.sort(it) }
   for (String job : jobs) {
+    if (orders.assigned(job)) {
+      continue
+    }
+    if (elections.exists(job)) {
+      continue
+    }
     String role = wbs.role(job)
     List<String> logins = roles.findByRole(role)
     if (logins.empty) {
@@ -71,13 +80,14 @@ def exec(Project project, XML xml) {
     boolean done = elections.elect(
       job, logins,
       [
-        (new VsSafe(new VsHardCap(pmo, 24)))        : -100,
-        (new VsSafe(new VsRate(project, logins)))   : 2,
-        (new VsSafe(new VsNoRoom(pmo)))             : role == 'REV' ? 0 : -100,
-        (new VsSafe(new VsBanned(project, job)))    : -100,
-        (new VsSafe(new VsVacation(pmo)))           : -100,
-        (new VsSafe(new VsWorkload(pmo, logins)))   : 1,
-        (new VsSafe(new VsSpeed(pmo, logins)))      : 3
+        (new VsSafe(new VsHardCap(pmo, 24)))     : -100,
+        (new VsSafe(new VsRate(project, logins))): 2,
+        (new VsSafe(new VsNoRoom(pmo)))          : role == 'REV' ? 0 : -100,
+        (new VsSafe(new VsBanned(project, job))) : -100,
+        (new VsSafe(new VsVacation(pmo)))        : -100,
+        (new VsSafe(new VsWorkload(pmo, logins))): 1,
+        (new VsSafe(new VsSpeed(pmo, logins)))   : 3,
+        (new VsSafe(new VsRandom()))             : 1
       ]
     )
     if (done && elections.elected(job)) {
@@ -87,7 +97,6 @@ def exec(Project project, XML xml) {
         .param('job', job)
         .param('role', role)
         .param('reason', elections.reason(job))
-        .param('public', true)
         .postTo(project)
       break
     }

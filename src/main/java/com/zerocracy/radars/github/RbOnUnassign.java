@@ -20,6 +20,7 @@ package com.zerocracy.radars.github;
 import com.jcabi.github.Github;
 import com.jcabi.github.Issue;
 import com.zerocracy.Farm;
+import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.in.Orders;
@@ -44,20 +45,20 @@ public final class RbOnUnassign implements Rebound {
         final Issue.Smart issue = new Issue.Smart(
             new IssueOfEvent(github, event)
         );
-        final String login = new GhIssueEvent(event).assignee();
         final String job = new Job(issue).toString();
         final Project project = new GhProject(farm, issue.repo());
         if (new Orders(project).bootstrap().assigned(job)) {
             new ClaimOut()
-                .type("Cancel order")
+                .type("Notify")
                 .token(new TokenOfIssue(issue))
-                .param("job", new Job(issue))
-                .param("reason", "GitHub issue was unassigned")
+                .param(
+                    "message",
+                    new Par("To cancel the order use `refuse` as in §6").say()
+                )
                 .postTo(project);
         }
         return new FormattedText(
-            "Issue #%d was resigned (was assigned to %s) via Github",
-            issue.number(), login
+            "Issue #%d was unassigned", issue.number()
         ).asString();
     }
 }

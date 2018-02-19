@@ -16,27 +16,18 @@
  */
 package com.zerocracy.tk.project;
 
-import com.stripe.exception.APIConnectionException;
-import com.stripe.exception.APIException;
-import com.stripe.exception.AuthenticationException;
-import com.stripe.exception.CardException;
-import com.stripe.exception.InvalidRequestException;
-import com.stripe.model.Customer;
-import com.stripe.net.RequestOptions;
 import com.zerocracy.Farm;
 import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.cash.Cash;
-import com.zerocracy.farm.props.Props;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pmo.Catalog;
 import com.zerocracy.pmo.Pmo;
 import com.zerocracy.tk.RqUser;
 import com.zerocracy.tk.RsParFlash;
+import com.zerocracy.tk.Stripe;
 import java.io.IOException;
 import java.util.logging.Level;
-import org.cactoos.map.MapEntry;
-import org.cactoos.map.SolidMap;
 import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
@@ -75,25 +66,16 @@ public final class TkPay implements TkRegex {
         final String email = form.single("email");
         final String customer;
         try {
-            customer = Customer.create(
-                new SolidMap<String, Object>(
-                    new MapEntry<>("email", email),
-                    new MapEntry<>("source", form.single("token")),
-                    new MapEntry<>(
-                        "description",
-                        String.format(
-                            "%s/%s",
-                            project.pid(),
-                            new Catalog(this.farm).title(project.pid())
-                        )
-                    )
-                ),
-                new RequestOptions.RequestOptionsBuilder().setApiKey(
-                    new Props(this.farm).get("//stripe/secret", "")
-                ).build()
-            ).getId();
-        } catch (final APIException | APIConnectionException | CardException
-            | AuthenticationException | InvalidRequestException ex) {
+            customer = new Stripe(this.farm).pay(
+                form.single("token"),
+                email,
+                String.format(
+                    "%s/%s",
+                    project.pid(),
+                    new Catalog(this.farm).title(project.pid())
+                )
+            );
+        } catch (final Stripe.PaymentException ex) {
             throw new RsForward(
                 new RsParFlash(ex),
                 String.format("/p/%s", project.pid())

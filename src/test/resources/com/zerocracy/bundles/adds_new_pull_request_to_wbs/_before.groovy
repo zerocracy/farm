@@ -17,11 +17,13 @@
 package com.zerocracy.bundles.adds_new_pull_request_to_wbs
 
 import com.jcabi.github.Github
+import com.jcabi.github.Pull
+import com.jcabi.github.Repo
 import com.jcabi.github.Repos
 import com.jcabi.xml.XML
-import com.zerocracy.entry.ExtGithub
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.fake.FkFarm
 import com.zerocracy.radars.github.RbOnPullRequest
 import javax.json.Json
@@ -29,8 +31,8 @@ import javax.json.Json
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
-  def repo = github.repos().create(new Repos.RepoCreate('test', false))
-  def pull = repo.pulls().create('New PR', 'master', 'master')
+  Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
+  Pull pull = repo.pulls().create('New PR', 'master', 'master')
   new RbOnPullRequest().react(
     new FkFarm(project),
     github,

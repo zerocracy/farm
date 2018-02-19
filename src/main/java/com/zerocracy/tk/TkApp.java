@@ -38,6 +38,10 @@ import com.zerocracy.tk.project.TkProject;
 import com.zerocracy.tk.project.TkReport;
 import com.zerocracy.tk.project.TkUpload;
 import com.zerocracy.tk.project.TkXml;
+import com.zerocracy.tk.rfp.TkPrepay;
+import com.zerocracy.tk.rfp.TkRfp;
+import com.zerocracy.tk.rfp.TkRfps;
+import com.zerocracy.tk.rfp.TkSubmit;
 import io.sentry.Sentry;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -132,13 +136,19 @@ public final class TkApp extends TkWrap {
                                                                 new FkRegex("/yoti", new TkYoti(farm)),
                                                                 new FkRegex("/heapdump", new TkDump(farm)),
                                                                 new FkRegex("/guts", new TkGuts(farm)),
+                                                                new FkRegex(
+                                                                    "/spam",
+                                                                    (Take) req -> new RsPage(
+                                                                        farm, "/xsl/spam.xsl", req
+                                                                    )
+                                                                ),
+                                                                new FkRegex("/spam-send", new TkSpam(farm)),
                                                                 new FkRegex("/shutdown", new TkShutdown()),
                                                                 new FkRegex("/join", new TkJoin(farm)),
                                                                 new FkRegex(
                                                                     "/org/takes/.+\\.xsl",
                                                                     new TkClasspath()
                                                                 ),
-                                                                new FkRegex("/ping", new TkPing(farm)),
                                                                 new FkRegex("/robots.txt", ""),
                                                                 new FkRegex(
                                                                     "/xsl/[a-z\\-]+\\.xsl",
@@ -177,6 +187,10 @@ public final class TkApp extends TkWrap {
                                                                             .toString()
                                                                     )
                                                                 ),
+                                                                new FkRegex("/rfp", new TkRfp(farm)),
+                                                                new FkRegex("/rfps", new TkRfps(farm)),
+                                                                new FkRegex("/rfp-pay", new TkPrepay(farm)),
+                                                                new FkRegex("/rfp-post", new TkSubmit(farm)),
                                                                 new FkRegex("/board", new TkBoard(farm)),
                                                                 new FkRegex("/gang", new TkGang(farm)),
                                                                 new FkRegex(

@@ -23,6 +23,7 @@ import com.zerocracy.Xocument;
 import com.zerocracy.pmo.Agenda;
 import com.zerocracy.pmo.Awards;
 import com.zerocracy.pmo.Pmo;
+import com.zerocracy.pmo.Projects;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -107,6 +108,15 @@ public final class TkGang implements Take {
                     Integer.toString(
                         new LengthOf(
                             new Agenda(this.farm, login).bootstrap().jobs()
+                        ).intValue()
+                    )
+                ),
+                new XeAppend(
+                    "projects",
+                    Integer.toString(
+                        new LengthOf(
+                            new Projects(this.farm, login).bootstrap()
+                                .iterate()
                         ).intValue()
                     )
                 ),
