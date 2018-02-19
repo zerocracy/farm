@@ -16,14 +16,15 @@
  */
 package com.zerocracy.tk;
 
+import com.zerocracy.farm.props.Props;
 import java.io.IOException;
-import java.net.HttpURLConnection;
+import java.util.logging.Level;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
+import org.takes.facets.forward.RsForward;
 import org.takes.rq.RqHeaders;
 import org.takes.rs.RsEmpty;
-import org.takes.rs.RsWithStatus;
 
 /**
  * Shutdown the app.
@@ -37,20 +38,31 @@ import org.takes.rs.RsWithStatus;
  *  and return 200-OK status to Rultor.
  */
 public final class TkShutdown implements Take {
+    /**
+     * Properties.
+     */
+    private final Props props;
+
+    /**
+     * Ctor.
+     * @param properties Properties.
+     */
+    public TkShutdown(final Props properties) {
+        this.props = properties;
+    }
+
     @Override
     public Response act(final Request req) throws IOException {
-        final Response rsp;
-        if (
-            new RqHeaders.Smart(
-                new RqHeaders.Base(req)
-            ).single("X-Auth", "").equals(
-                System.getProperty("shutdown.key", "")
-            )
-            ) {
-            rsp = new RsEmpty();
-        } else {
-            rsp = new RsWithStatus(HttpURLConnection.HTTP_FORBIDDEN);
+        final String hdr = new RqHeaders.Smart(new RqHeaders.Base(req))
+            .single("X-Auth", "");
+        if (!hdr.equals(this.props.get("//shutdown/header"))) {
+            throw new RsForward(
+                new RsParFlash(
+                    "You are not allowed to shutdown",
+                    Level.WARNING
+                )
+            );
         }
-        return rsp;
+        return new RsEmpty();
     }
 }

@@ -784,20 +784,24 @@ SOFTWARE.
       <build>
         <plugins>
           <plugin>
-            <artifactId>exec-maven-plugin</artifactId>
-            <groupId>org.codehaus.mojo</groupId>
+            <groupId>org.codehaus.gmaven</groupId>
+            <artifactId>groovy-maven-plugin</artifactId>
+            <version>2.0</version>
             <executions>
               <execution>
                 <id>shutdown</id>
                 <phase>initialize</phase>
                 <goals>
-                  <goal>exec</goal>
+                  <goal>execute</goal>
                 </goals>
                 <configuration>
-                  <executable>${basedir}/scripts/shutdown.sh</executable>
-                  <arguments>
-                    <argument>${shutdown.key}</argument>
-                  </arguments>
+                  <classpathScope>compile</classpathScope>
+                  <source><![CDATA[
+                    def con = new URL("https://www.0crat.com/shutdown").openConnection() as HttpURLConnection
+                    con.requestMethod = 'GET'
+                    con.setRequestProperty('X-Auth', '${shutdown.key}')
+                    def resp = con.responseCode
+                    ]]></source>
                 </configuration>
               </execution>
             </executions>

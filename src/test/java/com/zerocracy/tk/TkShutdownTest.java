@@ -28,7 +28,6 @@ import org.takes.rq.RqWrap;
 
 /**
  * Test case for {@link TkShutdown}.
- *
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.20
@@ -37,26 +36,15 @@ import org.takes.rq.RqWrap;
 public final class TkShutdownTest {
     @Test
     public void returnOk() throws Exception {
-        final String auth = "123";
-        System.setProperty("shutdown.key", auth);
         MatcherAssert.assertThat(
             new TkApp(new PropsFarm(new FkFarm())).act(
                 new RqWithHeader(
                     new TkShutdownTest.RqShutdown(),
                     "X-Auth",
-                    auth
+                    "123"
                 )
             ),
             new HmRsStatus(HttpURLConnection.HTTP_OK)
-        );
-    }
-
-    @Test
-    public void returnForbiddenIfNotAuthorized() throws Exception {
-        MatcherAssert.assertThat(
-            new TkApp(new PropsFarm(new FkFarm()))
-                .act(new TkShutdownTest.RqShutdown()),
-            new HmRsStatus(HttpURLConnection.HTTP_FORBIDDEN)
         );
     }
 
