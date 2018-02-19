@@ -54,6 +54,7 @@ def exec(Project project, XML xml) {
   } else {
     new ClaimOut()
       .type('Notify job')
+      .token("job;${job}")
       .param('job', job)
       .param('message', new Par('Quality is low, no payment, see §31').say())
       .postTo(project)

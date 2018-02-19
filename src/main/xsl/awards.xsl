@@ -27,11 +27,6 @@ SOFTWARE.
     </title>
   </xsl:template>
   <xsl:template match="page" mode="inner">
-    <p>
-      <a href="https://github.com/{identity/login}">
-        <img src="https://socatar.com/github/{identity/login}/192-192" style="width:64px;height:64px;border-radius:5px;"/>
-      </a>
-    </p>
     <xsl:value-of select="xml" disable-output-escaping="yes"/>
   </xsl:template>
 </xsl:stylesheet>
