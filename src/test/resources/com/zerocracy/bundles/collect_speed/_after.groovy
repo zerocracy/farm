@@ -25,7 +25,7 @@ import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
-  def speed = new Speed(farm, 'g4s8').bootstrap()
+  Speed speed = new Speed(farm, 'g4s8').bootstrap()
   MatcherAssert.assertThat(
     'Order was not found in speed.xml',
     speed.jobs().first(),

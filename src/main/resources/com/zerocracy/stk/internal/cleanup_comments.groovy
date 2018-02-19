@@ -16,6 +16,7 @@
  */
 package com.zerocracy.stk.internal
 
+import com.jcabi.github.Github
 import com.jcabi.log.Logger
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
@@ -34,8 +35,8 @@ def exec(Project project, XML xml) {
     Logger.info(this, 'skip in testing mode')
     return
   }
-  def github = new ExtGithub(farm).value()
-  def errors = new DyErrors.Github(
+  Github github = new ExtGithub(farm).value()
+  DyErrors.Github errors = new DyErrors.Github(
     new DyErrors(new ExtDynamo(farm).value()),
     github
   )

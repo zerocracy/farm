@@ -19,11 +19,12 @@ package com.zerocracy.bundles.zerocrat_assignment_adds_to_wbs
 import com.jcabi.github.Event
 import com.jcabi.github.Github
 import com.jcabi.github.Issue
+import com.jcabi.github.Repo
 import com.jcabi.github.Repos
 import com.jcabi.xml.XML
-import com.zerocracy.entry.ExtGithub
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.fake.FkFarm
 import com.zerocracy.radars.github.RbOnAssign
 import javax.json.Json
@@ -31,8 +32,8 @@ import javax.json.Json
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
-  def repo = github.repos().create(new Repos.RepoCreate('test', false))
-  def issue = new Issue.Smart(repo.issues().create('Hello, world', ''))
+  Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
+  Issue issue = new Issue.Smart(repo.issues().create('Hello, world', ''))
   issue.assign('0crat')
   repo.issueEvents().create(
     Event.ASSIGNED, issue.number(), 'yegor256',

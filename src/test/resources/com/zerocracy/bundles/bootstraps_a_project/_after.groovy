@@ -31,7 +31,7 @@ def exec(Project project, XML xml) {
     Matchers.hasItem(project.pid())
   )
   Farm farm = binding.variables.farm
-  def catalog = new Catalog(farm).bootstrap()
+  Catalog catalog = new Catalog(farm).bootstrap()
   MatcherAssert.assertThat(
     'Project title should be set from channel prop',
     catalog.title(project.pid()),

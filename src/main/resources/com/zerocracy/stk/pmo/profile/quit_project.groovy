@@ -39,7 +39,7 @@ def exec(Project pmo, XML xml) {
     )
   }
   Project target = projects[0]
-  def login = claim.author()
+  String login = claim.author()
   Orders orders = new Orders(target).bootstrap()
   for (String job : orders.jobs(login)) {
     orders.resign(job)
