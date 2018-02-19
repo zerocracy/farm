@@ -35,16 +35,15 @@ import org.xembly.Directives;
 
 /**
  * Data about people.
- *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @todo #366:30min Let's keep person reputation, agenda and project count
- *  inside `people.xml` and update them when reputation, agenda or projects
- *  changed as described in
- *  https://github.com/zerocracy/farm/issues/366#issuecomment-359568311
- *  It should be done after #386 bug to avoid conflicts.
+ * inside `people.xml` and update them when reputation, agenda or projects
+ * changed as described in
+ * https://github.com/zerocracy/farm/issues/366#issuecomment-359568311
+ * It should be done after #386 bug to avoid conflicts.
+ * @since 0.1
  */
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals"})
 public final class People {
@@ -192,7 +191,9 @@ public final class People {
                     ).size() >= People.MAX_STUDENTS
                 ) {
                 throw new SoftException(
-                    "You can not invite more than 16 students"
+                    new Par(
+                        "You can not invite more than %d students, see §1"
+                    ).say(People.MAX_STUDENTS)
                 );
             }
             new Xocument(item.path()).modify(
@@ -382,7 +383,6 @@ public final class People {
      * <p>There can be multiple aliases for a single user ID. Each alias
      * comes from some other system, where that user is present. For example,
      * "email", "twitter", "github", "jira", etc.
-     *
      * @param uid User ID
      * @param rel REL for the alias, e.g. "github"
      * @param alias Alias, e.g. "yegor256"
