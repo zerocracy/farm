@@ -14,25 +14,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.staff.milestones
+package com.zerocracy.radars.github;
 
-import com.jcabi.xml.XML
-import com.zerocracy.Project
-import com.zerocracy.farm.Assume
-import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.time.Milestones
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+import com.jcabi.github.Github;
+import com.zerocracy.Farm;
+import java.io.IOException;
+import javax.json.JsonObject;
 
-
-def exec(Project project, XML xml) {
-  new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Add milestone')
-  ClaimIn claim = new ClaimIn(xml)
-  String milestone = claim.param('milestone')
-  LocalDate date = LocalDate.parse(
-    claim.param('date'),
-    DateTimeFormatter.ISO_DATE_TIME
-  )
-  new Milestones(project).bootstrap().add("gh:$milestone", date)
+/**
+ * Milestone rebound.
+ *
+ * @author Kirill (g4s8.public@gmail.com)
+ * @version $Id$
+ * @since 0.21
+ * @todo #186:30min Let's implement this `Rebound`. It should
+ *  post a claim with type 'Add milestone' and params
+ *  'milestone' and 'date' on github web-hook with new milestone.
+ *  Milestone param is a label of milestone, date is a milestone date.
+ */
+public final class RbMilestone implements Rebound {
+    @Override
+    public String react(
+        final Farm farm,
+        final Github github,
+        final JsonObject event
+    ) throws IOException {
+        throw new UnsupportedOperationException("#react()");
+    }
 }
