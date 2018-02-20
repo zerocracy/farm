@@ -50,31 +50,38 @@ SOFTWARE.
     </p>
     <form method="post" action="/join-post">
       <fieldset>
-        <label for="inp-name">
-          <xsl:text>Name:</xsl:text>
+        <label for="inp-github">
+          <xsl:text>Your </xsl:text>
+          <a href="https://github.com/">
+            <xsl:text>GitHub</xsl:text>
+          </a>
+          <xsl:text> account:</xsl:text>
         </label>
-        <input id="inp-name" type="text" required="required" name="name"/>
+        <input id="inp-github" type="text" placeholder="@yegor256" required="required" name="github" size="18" pattern="@[a-zA-Z0-9-]+"/>
         <label for="inp-personality">
+          <xsl:text>Your </xsl:text>
           <a href="https://www.16personalities.com/free-personality-test">
-            <xsl:text>Personality</xsl:text>
+            <xsl:text>personality type</xsl:text>
           </a>
           <xsl:text>:</xsl:text>
         </label>
-        <input id="inp-personality" type="text" required="required" name="personality" placeholder="INTJ-A" size="12" pattern="[A-Z]{4}-[A-Z]"/>
+        <input id="inp-personality" type="text" required="required" name="personality" placeholder="INTJ-A" size="8" pattern="[IE][NS][TF][PJ]-[AT]"/>
         <label for="inp-about">
-          <xsl:text>About you:</xsl:text>
+          <xsl:text>A few good words about you (keep it short):</xsl:text>
         </label>
         <textarea id="inp-about" required="required" name="about" style="width:100%;height:6em;"/>
-        <label for="inp-github">
-          <xsl:text>Github:</xsl:text>
-        </label>
-        <input id="inp-github" type="text" placeholder="@yegor256" required="required" name="github" size="20" pattern="@[a-zA-Z0-9-]+"/>
         <label for="inp-stackoverflow">
-          <xsl:text>StackOverflow user ID:</xsl:text>
+          <a href="https://stackoverflow.com">
+            <xsl:text>StackOverflow</xsl:text>
+          </a>
+          <xsl:text> user ID:</xsl:text>
         </label>
-        <input id="inp-stackoverflow" type="number" placeholder="187141" name="stackoverflow"/>
+        <input id="inp-stackoverflow" type="number" placeholder="187141" size="12" name="stackoverflow"/>
         <label for="inp-telegram">
-          <xsl:text>Telegram ID:</xsl:text>
+          <a href="https://telegram.org/">
+            <xsl:text>Telegram</xsl:text>
+          </a>
+          <xsl:text> ID:</xsl:text>
         </label>
         <input id="inp-telegram" type="text" placeholder="username" name="telegram" required="required"/>
         <input type="submit"/>
@@ -82,8 +89,8 @@ SOFTWARE.
     </form>
     <p>
       <xsl:text>Right after you submit this form,</xsl:text>
-      <xsl:text> we will send your information for all users with 1024+ reputation.</xsl:text>
-      <xsl:text> Some of them way become interested and will contant you in Telegram.</xsl:text>
+      <xsl:text> we will send your information to all users with 1024+ reputation.</xsl:text>
+      <xsl:text> Some of them way become interested and will contact you in Telegram.</xsl:text>
     </p>
   </xsl:template>
 </xsl:stylesheet>
