@@ -83,4 +83,7 @@ SOFTWARE.
     <token>${telegram.token}</token>
     <username>zerocrat_bot</username>
   </telegram>
+  <shutdown>
+    <header>${shutdown.key}</header>
+  </shutdown>
 </props>
