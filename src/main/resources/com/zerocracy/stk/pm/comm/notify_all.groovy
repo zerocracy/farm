@@ -41,16 +41,21 @@ def exec(Project project, XML xml) {
     if (new Awards(farm, uid).bootstrap().total() < min) {
       continue
     }
+    String tail
+    if (min == 0) {
+      tail = new Par(
+        'You received this message you are not on vacation, as in §38.'
+      ).say()
+    } else {
+      tail = new Par(
+        'You received this message because your reputation is over %d',
+        'and you are not on vacation, as in §38.'
+      ).say(min)
+    }
     claim.copy()
       .type('Notify user')
       .token("user;${uid}")
-      .param(
-        'message',
-        claim.param('message') + new Par(
-          '\n\nYou received this message because your reputation is over %d',
-          'and you are not on vacation, as in §38.'
-        ).say(min)
-      )
+      .param('message', claim.param('message') + '\n\n' + tail)
       .postTo(project)
   }
 }
