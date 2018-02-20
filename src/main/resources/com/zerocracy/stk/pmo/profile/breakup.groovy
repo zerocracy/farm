@@ -27,10 +27,10 @@ def exec(Project project, XML xml) {
     new Assume(project, xml).isPmo()
     new Assume(project, xml).type('Breakup')
     Farm farm = binding.variables.farm
-    def claim = new ClaimIn(xml)
-    def author = claim.author()
-    def login = claim.param('login')
-    def people = new People(farm).bootstrap()
+    ClaimIn claim = new ClaimIn(xml)
+    String author = claim.author()
+    String login = claim.param('login')
+    People people = new People(farm).bootstrap()
     if (people.hasMentor(login) && people.mentor(login) == author) {
         people.breakup(login)
     }

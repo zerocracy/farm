@@ -23,7 +23,7 @@ import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
-  def orders = new Orders(project).bootstrap()
+  Orders orders = new Orders(project).bootstrap()
   MatcherAssert.assertThat(
     'order #1 was unassigned',
     orders.assigned('gh:test/test#1'),

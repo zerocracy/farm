@@ -152,6 +152,16 @@ SOFTWARE.
       <version>${mongo.version}</version>
     </dependency>
     <dependency>
+      <groupId>de.flapdoodle.embed</groupId>
+      <artifactId>de.flapdoodle.embed.mongo</artifactId>
+      <version>2.0.3</version>
+    </dependency>
+    <dependency>
+      <groupId>de.flapdoodle.embed</groupId>
+      <artifactId>de.flapdoodle.embed.process</artifactId>
+      <version>2.0.2</version>
+    </dependency>
+    <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
     </dependency>
@@ -200,6 +210,11 @@ SOFTWARE.
       <groupId>com.amazonaws</groupId>
       <artifactId>aws-java-sdk-dynamodb</artifactId>
       <version>1.11.211</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.25</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -328,6 +343,21 @@ SOFTWARE.
       <artifactId>tyrus-standalone-client</artifactId>
       <version>1.13.1</version>
       <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.coinbase.api</groupId>
+      <artifactId>coinbase-java</artifactId>
+      <version>1.10.0</version>
+    </dependency>
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+      <version>2.8.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.joda</groupId>
+      <artifactId>joda-money</artifactId>
+      <version>0.9.1</version>
     </dependency>
     <dependency>
       <groupId>org.glassfish.jersey.core</groupId>
@@ -510,6 +540,28 @@ SOFTWARE.
                       throw new Exception('CodeNarc violations see above')
                     }
                     println('All ' + xml.xpath('//PackageSummary/@totalFiles').get(0) + ' Groovy files are clean!')
+                  ]]></source>
+                </configuration>
+              </execution>
+              <execution>
+                <id>groovy-regex</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>execute</goal>
+                </goals>
+                <configuration>
+                  <classpathScope>compile</classpathScope>
+                  <source><![CDATA[
+                    import groovy.io.FileType
+                    def dir = new File("src/main/resources/com/zerocracy/stk")
+                    dir.eachFileRecurse (FileType.FILES) { file ->
+                      if (file.text.findAll('def [a-z]+ = ')) {
+                        throw new Exception(
+                          'Don\'t use def, explicitly specify types in ' + file
+                        )
+                      }
+                    }
+                    println('All Groovy files are clean!')
                   ]]></source>
                 </configuration>
               </execution>

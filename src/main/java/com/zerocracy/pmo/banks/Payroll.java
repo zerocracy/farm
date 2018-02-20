@@ -24,6 +24,9 @@ import com.zerocracy.cash.Cash;
 import com.zerocracy.pm.cost.Ledger;
 import com.zerocracy.pmo.People;
 import java.io.IOException;
+import java.util.Map;
+import org.cactoos.map.MapEntry;
+import org.cactoos.map.MapOf;
 
 /**
  * Payroll.
@@ -31,9 +34,15 @@ import java.io.IOException;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.19
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class Payroll {
+
+    /**
+     * Banks we work with.
+     */
+    private final Map<String, Bank> banks;
 
     /**
      * Farm.
@@ -46,6 +55,13 @@ public final class Payroll {
      */
     public Payroll(final Farm frm) {
         this.farm = frm;
+        this.banks = new MapOf<String, Bank>(
+            new MapEntry<>("paypal", new Paypal(frm)),
+            new MapEntry<>("btc", new Crypto(frm, "BTC")),
+            new MapEntry<>("bch", new Crypto(frm, "BCH")),
+            new MapEntry<>("eth", new Crypto(frm, "ETH")),
+            new MapEntry<>("ltc", new Crypto(frm, "LTC"))
+        );
     }
 
     /**
@@ -71,16 +87,14 @@ public final class Payroll {
             );
         }
         final String method = people.bank(login);
-        final Bank bank;
-        if ("paypal".equals(method)) {
-            bank = new Paypal(this.farm);
-        } else {
+        if (!this.banks.containsKey(method)) {
             throw new SoftException(
                 new Par(
                     "@%s has an unsupported payment method \"%s\""
                 ).say(login, method)
             );
         }
+        final Bank bank = this.banks.get(method);
         final Cash commission = bank.fee(amount);
         final String pid = bank.pay(
             wallet, amount, new Par.ToText(reason).toString()

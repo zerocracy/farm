@@ -24,7 +24,7 @@ import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
-  def reminders = new Reminders(project).bootstrap()
+  Reminders reminders = new Reminders(project).bootstrap()
   MatcherAssert.assertThat(
     'order #1 shouldn\'t be added to reminders',
     reminders.labels('gh:test/test#1'),
@@ -46,7 +46,7 @@ def exec(Project project, XML xml) {
       Matchers.contains('8 days')
     )
   )
-  def orders = new Orders(project).bootstrap()
+  Orders orders = new Orders(project).bootstrap()
   MatcherAssert.assertThat(
     'order #4 was not unassigned',
     orders.assigned('gh:test/test#4'),

@@ -17,13 +17,14 @@
 package com.zerocracy.stk.pm.cost
 
 import com.jcabi.xml.XML
-import com.zerocracy.Par
-import com.zerocracy.farm.Assume
 import com.zerocracy.Farm
+import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
+import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
+import com.zerocracy.pm.cost.Rates
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.banks.Payroll
 
@@ -39,14 +40,29 @@ def exec(Project project, XML xml) {
   if (!roles.hasAnyRole(login)) {
     return
   }
+  if (minutes < 0) {
+    return
+  }
+  Cash price
   if (claim.hasParam('cash')) {
-    Cash price = new Cash.S(claim.param('cash'))
-    if (price != Cash.ZERO) {
-      Farm farm = binding.variables.farm
-      String msg = new Payroll(farm).pay(
+    price = new Cash.S(claim.param('cash'))
+  } else {
+    Cash rate = Cash.ZERO
+    Rates rates = new Rates(project).bootstrap()
+    if (rates.exists(login)) {
+      rate = rates.rate(login)
+    }
+    price = rate.mul(minutes) / 60
+  }
+  if (price != Cash.ZERO) {
+    Farm farm = binding.variables.farm
+    String msg
+    try {
+      msg = new Payroll(farm).pay(
         project, login, price,
         "Payment for ${job} (${minutes} minutes): ${reason}"
       )
+    } catch (IOException ex) {
       new ClaimOut()
         .type('Notify user')
         .token("user;${login}")
@@ -54,20 +70,34 @@ def exec(Project project, XML xml) {
         .param(
           'message',
           new Par(
-            'We just paid you %s (`%s`) for %s: %s'
-          ).say(price, msg, job, reason)
+            'We are very sorry, but we failed to pay you %s for %s: "%s";',
+            'please, ask your mentor to help you out or',
+            'submit a ticket to https://github.com/zerocracy/farm'
+          ).say(price, job, ex.message)
         )
         .postTo(project)
-      new ClaimOut()
-        .type('Notify project')
-        .param('cause', claim.cid())
-        .param(
-          'message',
-          new Par(
-            'We just paid %s (`%s`) to @%s for %s: %s'
-          ).say(price, msg, login, job, reason)
-        )
-        .postTo(project)
+      throw ex
     }
+    new ClaimOut()
+      .type('Notify user')
+      .token("user;${login}")
+      .param('cause', claim.cid())
+      .param(
+        'message',
+        new Par(
+          'We just paid you %s (`%s`) for %s: %s'
+        ).say(price, msg, job, reason)
+      )
+      .postTo(project)
+    new ClaimOut()
+      .type('Notify project')
+      .param('cause', claim.cid())
+      .param(
+        'message',
+        new Par(
+          'We just paid %s (`%s`) to @%s for %s: %s'
+        ).say(price, msg, login, job, reason)
+      )
+      .postTo(project)
   }
 }

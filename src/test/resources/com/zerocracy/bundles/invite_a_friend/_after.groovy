@@ -25,7 +25,7 @@ import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
     Farm farm = binding.variables.farm
-    def people = new People(farm).bootstrap()
+    People people = new People(farm).bootstrap()
     MatcherAssert.assertThat(
         'High reputation user\'s friend was not invited',
         people.hasMentor('hfriend'),

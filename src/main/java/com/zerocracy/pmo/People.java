@@ -27,28 +27,36 @@ import com.zerocracy.cash.Cash;
 import com.zerocracy.cash.CashParsingException;
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.regex.Pattern;
 import org.cactoos.iterable.ItemAt;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.scalar.UncheckedScalar;
+import org.cactoos.time.DateAsText;
 import org.xembly.Directives;
 
 /**
  * Data about people.
- *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @since 0.1
  * @todo #366:30min Let's keep person reputation, agenda and project count
  *  inside `people.xml` and update them when reputation, agenda or projects
  *  changed as described in
  *  https://github.com/zerocracy/farm/issues/366#issuecomment-359568311
  *  It should be done after #386 bug to avoid conflicts.
  */
-@SuppressWarnings({ "PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals" })
+@SuppressWarnings
+    (
+        {
+            "PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals",
+            "PMD.NPathComplexity", "PMD.CyclomaticComplexity"
+        }
+    )
 public final class People {
-
+    /**
+     * Max students for a person.
+     */
+    private static final int MAX_STUDENTS = 16;
     /**
      * Project.
      */
@@ -179,6 +187,21 @@ public final class People {
             );
         }
         try (final Item item = this.item()) {
+            if (
+                new Xocument(item.path())
+                    .nodes(
+                        String.format(
+                            "/people/person[mentor/text()='%s']",
+                            mentor
+                        )
+                    ).size() >= People.MAX_STUDENTS
+                ) {
+                throw new SoftException(
+                    new Par(
+                        "You can not invite more than %d students, see §1"
+                    ).say(People.MAX_STUDENTS)
+                );
+            }
             new Xocument(item.path()).modify(
                 People.start(uid)
                     .push()
@@ -316,26 +339,46 @@ public final class People {
      * @param bank Bank
      * @param wallet Wallet value
      * @throws IOException If fails
+     * @checkstyle CyclomaticComplexityCheck (100 lines)
      */
     public void wallet(final String uid, final String bank,
         final String wallet) throws IOException {
-        if (!bank.matches("paypal")) {
+        if (!bank.matches("paypal|btc|bch|eth|ltc")) {
             throw new SoftException(
                 new Par(
-                    "Bank name `%s` is invalid,",
-                    "we accept only `paypal`, see §20"
+                    "Bank name `%s` is invalid, we accept only",
+                    "`paypal`, `btc`, `bch`, `eth`, or `ltc`, see §20"
                 ).say(bank)
             );
         }
-        final Pattern email = Pattern.compile(
-            "\\b[\\w.%-]+@[-.\\w]+\\.[A-Za-z]{2,4}\\b"
-        );
-        if (!email.matcher(wallet).matches()) {
+        if ("paypal".equals(wallet)
+            && !wallet.matches("\\b[\\w.%-]+@[-.\\w]+\\.[A-Za-z]{2,4}\\b")) {
             throw new SoftException(
-                String.format(
-                    "Email `%s` is not valid",
-                    wallet
-                )
+                new Par("Email `%s` is not valid").say(wallet)
+            );
+        }
+        if ("btc".equals(wallet)
+            && !wallet.matches("(1|3|bc1)[a-zA-Z0-9]{20,40}")) {
+            throw new SoftException(
+                new Par("Bitcoin address is not valid: `%s`").say(wallet)
+            );
+        }
+        if ("bch".equals(wallet)
+            && !wallet.matches("[pq]{41}")) {
+            throw new SoftException(
+                new Par("Bitcoin Cash address is not valid: `%s`").say(wallet)
+            );
+        }
+        if ("eth".equals(wallet)
+            && !wallet.matches("[0-9a-f]{42}")) {
+            throw new SoftException(
+                new Par("Etherium address is not valid: `%s`").say(wallet)
+            );
+        }
+        if ("ltc".equals(wallet)
+            && !wallet.matches("[0-9a-zA-Z]{35}")) {
+            throw new SoftException(
+                new Par("Litecoin address is not valid: `%s`").say(wallet)
             );
         }
         try (final Item item = this.item()) {
@@ -402,7 +445,6 @@ public final class People {
      * <p>There can be multiple aliases for a single user ID. Each alias
      * comes from some other system, where that user is present. For example,
      * "email", "twitter", "github", "jira", etc.
-     *
      * @param uid User ID
      * @param rel REL for the alias, e.g. "github"
      * @param alias Alias, e.g. "yegor256"
@@ -549,6 +591,10 @@ public final class People {
             )
             .add("person")
             .attr("id", uid)
+            .add("reputation").set("0").up()
+            .add("jobs").set("0").up()
+            .add("projects").set("0").up()
+            .add("skills").attr("updated", new DateAsText().asString()).up()
             .add("links")
             .add("link")
             .attr("rel", "github")

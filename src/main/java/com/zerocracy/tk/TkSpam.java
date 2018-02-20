@@ -55,7 +55,8 @@ public final class TkSpam implements TkRegex {
 
     @Override
     public Response act(final RqRegex req) throws IOException {
-        if (!"yegor256".equals(new RqUser(this.farm, req).value())) {
+        final String author = new RqUser(this.farm, req).value();
+        if (!"yegor256".equals(author)) {
             throw new RsForward(
                 new RsParFlash(
                     "You are not allowed to see this page, sorry",
@@ -67,6 +68,11 @@ public final class TkSpam implements TkRegex {
         final String body = form.single("body");
         new ClaimOut().type("Notify all").param(
             "message", new Par(body).say()
+        ).postTo(new Pmo(this.farm));
+        new ClaimOut().type("Notify user").token("user;yegor256").param(
+            "message", new Par(
+                "Spam request has been submitted by @%s"
+            ).say(author)
         ).postTo(new Pmo(this.farm));
         return new RsForward(
             new RsParFlash(

@@ -134,11 +134,10 @@ SOFTWARE.
       <opt>
         <optional>true</optional>
         <name>bank</name>
-        <regex>[a-z]+</regex>
-        <help>Bank, e.g. "paypal" or "bitcoin"</help>
+        <regex>(paypal|btc|bch|eth|ltc)</regex>
+        <help>Bank, like "paypal|btc|bch|eth|ltc"</help>
       </opt>
       <opt>
-        <optional>true</optional>
         <name>wallet</name>
         <regex>.+</regex>
         <help>Technical payment details, e.g. PayPal email or Bitcoin wallet number</help>
