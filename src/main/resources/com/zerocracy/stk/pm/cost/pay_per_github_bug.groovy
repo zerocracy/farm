@@ -62,6 +62,6 @@ def exec(Project project, XML xml) {
         'you would now earn +15 reputation points, as explained in §29.',
         'You can join and apply to it, see §2.'
       ).say(project.pid())
-    )
+    ).postTo(project)
   }
 }

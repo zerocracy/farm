@@ -60,7 +60,7 @@ public final class TkRfp implements Take {
             "/xsl/rfp.xsl",
             req,
             () -> {
-                final String user = new RqUser(this.farm, req).value();
+                final String user = new RqUser(this.farm, req, false).value();
                 final Rfps rfps = new Rfps(this.farm).bootstrap();
                 return new XeChain(
                     new XeAppend(

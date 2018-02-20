@@ -306,6 +306,7 @@ SOFTWARE.
     <p>
       <xsl:text>Your mentor is </xsl:text>
       <a href="/u/{.}">
+        <xsl:text>@</xsl:text>
         <xsl:value-of select="text()"/>
       </a>
       <xsl:text>.</xsl:text>
@@ -337,6 +338,7 @@ SOFTWARE.
           <xsl:text>, </xsl:text>
         </xsl:if>
         <a href="/u/{.}">
+          <xsl:text>@</xsl:text>
           <xsl:value-of select="text()"/>
         </a>
       </xsl:for-each>
