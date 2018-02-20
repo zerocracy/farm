@@ -532,6 +532,40 @@ public final class People {
     }
 
     /**
+     * Mentor of a person.
+     * @param uid Person's login
+     * @return Mentor's login
+     * @throws IOException If fails
+     */
+    public String mentor(final String uid) throws IOException {
+        try (final Item item = this.item()) {
+            return new Xocument(item.path()).xpath(
+                String.format(
+                    "/people/person[@id='%s']/mentor/text()",
+                    uid
+                )
+            ).get(0);
+        }
+    }
+
+    /**
+     * Students of a person.
+     * @param uid Person's login
+     * @return Iterable with student ids
+     * @throws IOException If fails
+     */
+    public Iterable<String> students(final String uid) throws IOException {
+        try (final Item item = this.item()) {
+            return new Xocument(item.path()).xpath(
+                String.format(
+                    "/people/person[mentor/text()='%s']/@id",
+                    uid
+                )
+            );
+        }
+    }
+
+    /**
      * The item.
      * @return Item
      * @throws IOException If fails

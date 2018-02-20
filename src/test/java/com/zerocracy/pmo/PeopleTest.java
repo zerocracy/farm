@@ -21,8 +21,10 @@ import com.zerocracy.SoftException;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.farm.fake.FkProject;
 import java.nio.file.Files;
+import java.util.List;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.iterable.RangeOf;
+import org.cactoos.list.ListOf;
 import org.cactoos.scalar.And;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -147,6 +149,39 @@ public final class PeopleTest {
         MatcherAssert.assertThat(
             people.vacation(uid),
             Matchers.is(false)
+        );
+    }
+
+    @Test
+    public void mentorTest() throws Exception {
+        final People people = new People(new FkProject()).bootstrap();
+        final String uid = "datum";
+        final String mentor = "0crat";
+        people.invite(uid, mentor);
+        MatcherAssert.assertThat(
+            people.mentor(uid),
+            Matchers.equalTo(mentor)
+        );
+    }
+
+    @Test
+    public void studentsTest() throws Exception {
+        final People ppl = new People(new FkProject()).bootstrap();
+        final String mentor = "mentor";
+        final List<String> students = new ListOf<>(
+            "student1",
+            "student2",
+            "student3"
+        );
+        new And((String std) -> ppl.invite(std, mentor), students).value();
+        MatcherAssert.assertThat(
+            ppl.students(mentor),
+            Matchers.allOf(
+                Matchers.iterableWithSize(students.size()),
+                Matchers.hasItems(
+                    students.toArray(new String[students.size()])
+                )
+            )
         );
     }
 
