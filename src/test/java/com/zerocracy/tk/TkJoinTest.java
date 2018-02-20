@@ -17,16 +17,17 @@
 package com.zerocracy.tk;
 
 import com.jcabi.matchers.XhtmlMatchers;
+import com.zerocracy.Farm;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.props.PropsFarm;
 import java.net.HttpURLConnection;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.takes.facets.hamcrest.HmRsHeader;
 import org.takes.facets.hamcrest.HmRsStatus;
 import org.takes.rq.RqFake;
+import org.takes.rq.RqWithBody;
 import org.takes.rs.RsPrint;
 
 /**
@@ -35,13 +36,12 @@ import org.takes.rs.RsPrint;
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.20
- * @todo #520:30min TkJoin does not handle POST requests.
- *  It can be sent from join page on submit. Let's process this request
- *  and send gathered information to all users with reputation 1024+
  * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class TkJoinTest {
+
     @Test
     public void renderJoinPage() throws Exception {
         MatcherAssert.assertThat(
@@ -57,15 +57,21 @@ public final class TkJoinTest {
     }
 
     @Test
-    @Ignore
     public void acceptRequestAndRedirectOnPost() throws Exception {
+        final Farm farm = new PropsFarm(new FkFarm());
         MatcherAssert.assertThat(
-            new TkApp(new PropsFarm(new FkFarm())).act(
-                new RqFake("POST", "/join")
+            new TkApp(farm).act(
+                new RqWithBody(
+                    new RqWithUser(
+                        farm,
+                        new RqFake("POST", "/join-post")
+                    ),
+                    "personality=INTJ-A&stackoverflow=187141"
+                )
             ),
             Matchers.allOf(
                 new HmRsStatus(HttpURLConnection.HTTP_SEE_OTHER),
-                new HmRsHeader("Location", "/")
+                new HmRsHeader("Location", "/join")
             )
         );
     }

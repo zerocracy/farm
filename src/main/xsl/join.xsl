@@ -16,7 +16,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" version="1.0">
-  <xsl:output method="html" doctype-system="about:legacy-compat" encoding="utf-8" indent="yes"/>
+  <xsl:output method="html" doctype-system="about:legacy-compat" encoding="UTF-8" indent="yes"/>
   <xsl:strip-space elements="*"/>
   <xsl:include href="/xsl/inner-layout.xsl"/>
   <xsl:template match="page" mode="head">
@@ -50,14 +50,6 @@ SOFTWARE.
     </p>
     <form method="post" action="/join-post">
       <fieldset>
-        <label for="inp-github">
-          <xsl:text>Your </xsl:text>
-          <a href="https://github.com/">
-            <xsl:text>GitHub</xsl:text>
-          </a>
-          <xsl:text> account:</xsl:text>
-        </label>
-        <input id="inp-github" type="text" placeholder="@yegor256" required="required" name="github" size="18" pattern="@[a-zA-Z0-9-]+"/>
         <label for="inp-personality">
           <xsl:text>Your </xsl:text>
           <a href="https://www.16personalities.com/free-personality-test">

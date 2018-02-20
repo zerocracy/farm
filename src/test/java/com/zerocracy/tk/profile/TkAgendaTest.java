@@ -21,14 +21,13 @@ import com.zerocracy.Farm;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pmo.People;
+import com.zerocracy.tk.RqWithUser;
 import com.zerocracy.tk.TkApp;
 import java.net.HttpURLConnection;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
-import org.takes.Take;
 import org.takes.facets.hamcrest.HmRsStatus;
 import org.takes.rq.RqFake;
-import org.takes.rq.RqWithHeaders;
 import org.takes.rs.RsPrint;
 
 /**
@@ -45,19 +44,13 @@ public final class TkAgendaTest {
     @Test
     public void rendersAgendaPage() throws Exception {
         final Farm farm = new PropsFarm(new FkFarm());
-        final String uid = "yegor256";
-        final People people = new People(farm).bootstrap();
-        people.touch(uid);
-        people.invite(uid, "mentor");
-        final Take take = new TkApp(farm);
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
                 new RsPrint(
-                    take.act(
-                        new RqWithHeaders(
-                            new RqFake("GET", "/u/Yegor256/agenda"),
-                            // @checkstyle LineLength (1 line)
-                            "Cookie: PsCookie=0975A5A5-F6DB193E-AF18000A-75726E3A-74657374-3A310005-6C6F6769-6E000879-65676F72-323536AE"
+                    new TkApp(farm).act(
+                        new RqWithUser(
+                            farm,
+                            new RqFake("GET", "/u/Yegor256/agenda")
                         )
                     )
                 ).printBody()
@@ -67,38 +60,16 @@ public final class TkAgendaTest {
     }
 
     @Test
-    public void redirectsWhenAccessingDifferentUsersAgenda() throws Exception {
-        final Farm farm = new PropsFarm(new FkFarm());
-        new People(farm).bootstrap().touch("yegor256");
-        new People(farm).bootstrap().touch("carlosmiranda");
-        final Take app = new TkApp(farm);
-        MatcherAssert.assertThat(
-            new RsPrint(
-                app.act(
-                    new RqWithHeaders(
-                        new RqFake("GET", "/u/carlosmiranda/agenda"),
-                        // @checkstyle LineLength (1 line)
-                        "Cookie: PsCookie=0975A5A5-F6DB193E-AF18000A-75726E3A-74657374-3A310005-6C6F6769-6E000879-65676F72-323536AE"
-                    )
-                )
-            ),
-            new HmRsStatus(HttpURLConnection.HTTP_SEE_OTHER)
-        );
-    }
-
-    @Test
     public void redirectsWhenAccessingNonexistentUsersAgenda()
         throws Exception {
         final Farm farm = new PropsFarm(new FkFarm());
         new People(farm).bootstrap().touch("yegor256");
-        final Take app = new TkApp(farm);
         MatcherAssert.assertThat(
             new RsPrint(
-                app.act(
-                    new RqWithHeaders(
-                        new RqFake("GET", "/u/foo-user/agenda"),
-                        // @checkstyle LineLength (1 line)
-                        "Cookie: PsCookie=0975A5A5-F6DB193E-AF18000A-75726E3A-74657374-3A310005-6C6F6769-6E000879-65676F72-323536AE"
+                new TkApp(farm).act(
+                    new RqWithUser(
+                        farm,
+                        new RqFake("GET", "/u/foo-user/agenda")
                     )
                 )
             ),

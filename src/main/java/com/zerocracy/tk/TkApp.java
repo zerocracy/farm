@@ -123,7 +123,7 @@ public final class TkApp extends TkWrap {
                                             new TkForward(
                                                 new TkFork(
                                                     new SolidList<Fork>(
-                                                        new Concat<>(
+                                                        new Concat<Fork>(
                                                             new SolidList<>(forks),
                                                             new SolidList<>(
                                                                 new FkRegex(
@@ -150,7 +150,7 @@ public final class TkApp extends TkWrap {
                                                                         farm, "/xsl/join.xsl", req
                                                                     )
                                                                 ),
-                                                                new FkRegex("/join-post", new TkJoin()),
+                                                                new FkRegex("/join-post", new TkJoin(farm)),
                                                                 new FkRegex(
                                                                     "/org/takes/.+\\.xsl",
                                                                     new TkClasspath()
