@@ -304,29 +304,43 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="mentor">
     <p>
-      <xsl:text>Your mentor: </xsl:text>
+      <xsl:text>Your mentor is </xsl:text>
       <a href="/u/{.}">
         <xsl:value-of select="text()"/>
       </a>
+      <xsl:text>.</xsl:text>
     </p>
   </xsl:template>
   <xsl:template match="students[not(student)]">
     <p>
-      <xsl:text>You don't have students yet.</xsl:text>
+      <xsl:text>You don't have any </xsl:text>
+      <a href="http://datum.zerocracy.com/pages/policy.html#1">
+        <xsl:text>students</xsl:text>
+      </a>
+      <xsl:text> yet.</xsl:text>
     </p>
   </xsl:template>
   <xsl:template match="students[student]">
     <p>
-      <xsl:text>Your students: </xsl:text>
-      <xsl:element name="ul">
-        <xsl:for-each select="student">
-          <li>
-            <a href="/u/{.}">
-              <xsl:value-of select="text()"/>
-            </a>
-          </li>
-        </xsl:for-each>
-      </xsl:element>
+      <xsl:text>Your </xsl:text>
+      <xsl:value-of select="count(student)"/>
+      <xsl:text> </xsl:text>
+      <a href="http://datum.zerocracy.com/pages/policy.html#1">
+        <xsl:text>student</xsl:text>
+        <xsl:if test="count(student) &gt; 1">
+          <xsl:text>s</xsl:text>
+        </xsl:if>
+      </a>
+      <xsl:text>: </xsl:text>
+      <xsl:for-each select="student">
+        <xsl:if test="position() &gt; 1">
+          <xsl:text>, </xsl:text>
+        </xsl:if>
+        <a href="/u/{.}">
+          <xsl:value-of select="text()"/>
+        </a>
+      </xsl:for-each>
+      <xsl:text>.</xsl:text>
     </p>
   </xsl:template>
 </xsl:stylesheet>

@@ -84,7 +84,7 @@ SOFTWARE.
     <p>
       <xsl:text>Right after you submit this form,</xsl:text>
       <xsl:text> we will send your information to all users with 1024+ reputation.</xsl:text>
-      <xsl:text> Some of them way become interested and will contact you in Telegram.</xsl:text>
+      <xsl:text> Some of them may become interested and will contact you in Telegram.</xsl:text>
     </p>
   </xsl:template>
 </xsl:stylesheet>
