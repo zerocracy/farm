@@ -71,13 +71,15 @@ SOFTWARE.
         </label>
         <textarea id="inp-about" required="required" name="about" style="width:100%;height:6em;"/>
         <label for="inp-stackoverflow">
+          <xsl:text>Your </xsl:text>
           <a href="https://stackoverflow.com">
             <xsl:text>StackOverflow</xsl:text>
           </a>
           <xsl:text> user ID:</xsl:text>
         </label>
-        <input id="inp-stackoverflow" type="number" placeholder="187141" size="12" name="stackoverflow"/>
+        <input id="inp-stackoverflow" type="number" placeholder="187141" size="8" name="stackoverflow"/>
         <label for="inp-telegram">
+          <xsl:text>Your </xsl:text>
           <a href="https://telegram.org/">
             <xsl:text>Telegram</xsl:text>
           </a>
