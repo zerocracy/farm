@@ -29,7 +29,7 @@ import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
-  def wbs = new Wbs(project).bootstrap()
+  Wbs wbs = new Wbs(project).bootstrap()
   String wbsIn = 'gh:test/test#1'
   String wbsOut = 'gh:test/test#2'
   MatcherAssert.assertThat(

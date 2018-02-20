@@ -28,7 +28,7 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   if (!claim.hasToken()) {
     throw new IllegalArgumentException(
-      "Claim of type '${claim.type()}' in ${project.pid()} has not token"
+      "Claim of type '${claim.type()}' in ${project.pid()} has no token"
     )
   }
   String[] parts = claim.token().split(';')

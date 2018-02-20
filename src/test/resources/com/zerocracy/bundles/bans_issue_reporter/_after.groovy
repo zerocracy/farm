@@ -22,7 +22,7 @@ import com.zerocracy.pm.staff.Bans
 
 def exec(Project project, XML xml) {
   String job = 'gh:test/test#1'
-  def bans = new Bans(project).bootstrap()
+  Bans bans = new Bans(project).bootstrap()
   assert !bans.reasons(job, 'test').empty
   assert bans.reasons(job, 'test')[0] != 'The user reported the ticket.'
 }

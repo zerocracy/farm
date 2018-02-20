@@ -120,8 +120,8 @@ final class Paypal implements Bank {
             | HttpErrorException | IOException ex) {
             throw new IOException(
                 String.format(
-                    "Failed to pay %s to %s with memo \"%s\"",
-                    amount, target, details
+                    "Failed to pay %s to %s with memo \"%s\": %s",
+                    amount, target, details, ex.getMessage()
                 ),
                 ex
             );

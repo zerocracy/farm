@@ -25,8 +25,8 @@ import com.zerocracy.pm.cost.Boosts
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Set boost')
-  def claim = new ClaimIn(xml)
-  def factor = Integer.valueOf(claim.param('factor').replaceAll('x$', ''))
+  ClaimIn claim = new ClaimIn(xml)
+  int factor = Integer.valueOf(claim.param('factor').replaceAll('x$', ''))
   new Boosts(project).bootstrap().boost(claim.param('job'), factor)
   claim.reply("Boost ${factor}x was set").postTo(project)
 }

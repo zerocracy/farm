@@ -17,15 +17,16 @@
 package com.zerocracy.bundles.no_points_awarded_to_reporter_without_role
 
 import com.jcabi.github.Github
+import com.jcabi.github.Repo
 import com.jcabi.github.Repos
 import com.jcabi.xml.XML
-import com.zerocracy.entry.ExtGithub
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.entry.ExtGithub
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value().relogin('yegor256')
-  def repo = github.repos().create(new Repos.RepoCreate('test', false))
+  Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
   repo.issues().create('Hello, world', '')
 }
