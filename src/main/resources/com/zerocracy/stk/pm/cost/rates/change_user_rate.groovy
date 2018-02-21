@@ -17,14 +17,13 @@
 package com.zerocracy.stk.pm.cost.rates
 
 import com.jcabi.xml.XML
-import com.zerocracy.Par
-import com.zerocracy.farm.Assume
 import com.zerocracy.Farm
+import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.SoftException
 import com.zerocracy.cash.Cash
+import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.cost.Rates
 import com.zerocracy.pmo.People
 
@@ -71,9 +70,8 @@ def exec(Project project, XML xml) {
     }
   }
   rates.set(login, rate)
-  new ClaimOut()
+  claim.copy()
     .type('User rate was changed')
-    .param('cause', claim.cid())
     .param('login', login)
     .param('rate', rate)
     .postTo(project)

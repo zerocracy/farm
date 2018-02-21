@@ -17,13 +17,12 @@
 package com.zerocracy.stk.pm.cost
 
 import com.jcabi.xml.XML
-import com.zerocracy.Par
-import com.zerocracy.farm.Assume
 import com.zerocracy.Farm
+import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
+import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.cost.Ledger
 import com.zerocracy.pmo.Catalog
 
@@ -38,9 +37,8 @@ def exec(Project project, XML xml) {
   Cash fee = new Catalog(farm).bootstrap().fee(project.pid())
   if (fee != Cash.ZERO) {
     if (trial.contains(project.pid())) {
-      new ClaimOut()
+      claim.copy()
         .type('Notify project')
-        .param('cause', claim.cid())
         .param(
           'message',
           new Par(
@@ -64,9 +62,8 @@ def exec(Project project, XML xml) {
           "Zerocracy fee paid in cash for ${job}"
         )
       )
-      new ClaimOut()
+      claim.copy()
         .type('Notify project')
-        .param('cause', claim.cid())
         .param(
           'message',
           new Par(

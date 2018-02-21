@@ -21,7 +21,6 @@ import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pmo.Speed
 
 def exec(Project project, XML xml) {
@@ -35,9 +34,8 @@ def exec(Project project, XML xml) {
   new Speed(farm, login)
     .bootstrap()
     .add(project.pid(), job, minutes)
-  new ClaimOut()
+  claim.copy()
     .type('Speed was updated')
-    .param('cause', claim.cid())
     .param('login', login)
     .param('job', job)
     .postTo(project)

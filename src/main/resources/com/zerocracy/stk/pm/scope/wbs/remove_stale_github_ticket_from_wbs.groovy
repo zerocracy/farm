@@ -19,11 +19,10 @@ package com.zerocracy.stk.pm.scope.wbs
 import com.jcabi.github.Github
 import com.jcabi.github.Issue
 import com.jcabi.xml.XML
-import com.zerocracy.entry.ExtGithub
-import com.zerocracy.farm.Assume
 import com.zerocracy.Farm
 import com.zerocracy.Project
-import com.zerocracy.pm.ClaimOut
+import com.zerocracy.entry.ExtGithub
+import com.zerocracy.farm.Assume
 import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.radars.github.Job
 import com.zerocracy.radars.github.Quota
@@ -52,7 +51,7 @@ def exec(Project project, XML xml) {
 //    if (closed > threshold) {
 //      continue
 //    }
-    new ClaimOut()
+    claim.copy()
       .type('Remove job from WBS')
       .token("job;${job}")
       .param('job', job)

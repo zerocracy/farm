@@ -19,13 +19,12 @@ package com.zerocracy.stk.pm.cost
 import com.jcabi.github.Github
 import com.jcabi.github.Issue
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Par
+import com.zerocracy.Project
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
-import com.zerocracy.Farm
-import com.zerocracy.Project
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.radars.github.Job
 
@@ -39,9 +38,8 @@ def exec(Project project, XML xml) {
   }
   List<String> logins = new Roles(project).bootstrap().findByRole('ARC')
   if (logins.empty) {
-    new ClaimOut()
+    claim.copy()
       .type('Notify project')
-      .param('cause', claim.cid())
       .param(
         'message',
         new Par(
@@ -53,9 +51,8 @@ def exec(Project project, XML xml) {
     return
   }
   if (logins.size() > 1) {
-    new ClaimOut()
+    claim.copy()
       .type('Notify project')
-      .param('cause', claim.cid())
       .param(
         'message',
         new Par(
@@ -70,9 +67,8 @@ def exec(Project project, XML xml) {
   Github github = new ExtGithub(farm).value()
   Issue.Smart issue = new Issue.Smart(new Job.Issue(github, job))
   if (issue.pull) {
-    new ClaimOut()
+    claim.copy()
       .type('Make payment')
-      .param('cause', claim.cid())
       .param('job', job)
       .param('login', logins[0])
       .param(

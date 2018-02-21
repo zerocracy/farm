@@ -24,7 +24,6 @@ import com.zerocracy.SoftException
 import com.zerocracy.cash.Cash
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.Awards
 import com.zerocracy.pmo.Catalog
@@ -104,9 +103,8 @@ def exec(Project pmo, XML xml) {
       )
     }
   }
-  new ClaimOut()
+  claim.copy()
     .type('Notify project')
-    .param('cause', claim.cid())
     .param(
       'message',
       new Par(

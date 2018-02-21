@@ -17,10 +17,9 @@
 package com.zerocracy.stk.pm.staff.bans
 
 import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
 import com.zerocracy.Project
+import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.staff.Bans
 
 def exec(Project project, XML xml) {
@@ -32,9 +31,8 @@ def exec(Project project, XML xml) {
   new Bans(project).bootstrap().ban(
     job, performer, 'User was resigned from the ticket'
   )
-  new ClaimOut()
+  claim.copy()
     .type('User was banned')
-    .param('cause', claim.cid())
     .param('login', performer)
     .param('job', job)
     .postTo(project)

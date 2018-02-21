@@ -17,12 +17,11 @@
 package com.zerocracy.stk.pm.staff.roles
 
 import com.jcabi.xml.XML
-import com.zerocracy.Par
-import com.zerocracy.farm.Assume
 import com.zerocracy.Farm
+import com.zerocracy.Par
 import com.zerocracy.Project
+import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.Projects
 
@@ -46,9 +45,8 @@ def exec(Project project, XML xml) {
       'see [full list](/a/%3$s?a=pm/staff/roles) of roles.'
     ).say(role, login, project.pid())
   ).postTo(project)
-  new ClaimOut()
+  claim.copy()
     .type('Role was resigned')
-    .param('cause', claim.cid())
     .param('login', login)
     .param('role', role)
     .postTo(project)

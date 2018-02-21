@@ -22,7 +22,6 @@ import com.zerocracy.Project
 import com.zerocracy.SoftException
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pmo.People
 
 def exec(Project pmo, XML xml) {
@@ -60,7 +59,7 @@ def exec(Project pmo, XML xml) {
   String bank = claim.param('bank')
   String wallet = claim.param('wallet')
   people.wallet(author, bank, wallet)
-  new ClaimOut().type('Notify user').token('user;yegor256').param(
+  claim.copy().type('Notify user').token('user;yegor256').param(
     'message', new Par(
       'The wallet was modified by @%s, set to `%s` at `%s`'
     ).say(author, wallet, bank)

@@ -17,12 +17,11 @@
 package com.zerocracy.stk.pm.staff.awards
 
 import com.jcabi.xml.XML
-import com.zerocracy.Par
-import com.zerocracy.farm.Assume
 import com.zerocracy.Farm
+import com.zerocracy.Par
 import com.zerocracy.Project
+import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pmo.Awards
 
 def exec(Project project, XML xml) {
@@ -35,7 +34,7 @@ def exec(Project project, XML xml) {
   Awards awards = new Awards(project, login).bootstrap()
   String reason = claim.param('reason')
   Farm farm = binding.variables.farm
-  new ClaimOut()
+  claim.copy()
     .type('Notify user')
     .param('cause', claim.cid())
     .token("user;${login}")
@@ -48,9 +47,8 @@ def exec(Project project, XML xml) {
       ).say(points, job, project.pid(), awards.total(), login, reason)
     )
     .postTo(project)
-  new ClaimOut()
+  claim.copy()
     .type('Notify job')
-    .param('cause', claim.cid())
     .token("job;${job}")
     .param(
       'message',

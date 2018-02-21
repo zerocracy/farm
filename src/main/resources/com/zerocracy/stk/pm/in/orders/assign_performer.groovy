@@ -17,9 +17,9 @@
 package com.zerocracy.stk.pm.in.orders
 
 import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
 import com.zerocracy.Project
-import com.zerocracy.pm.ClaimOut
+import com.zerocracy.farm.Assume
+import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pm.staff.Elections
@@ -27,6 +27,7 @@ import com.zerocracy.pm.staff.Elections
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Ping')
+  ClaimIn claim = new ClaimIn(xml)
   Wbs wbs = new Wbs(project).bootstrap()
   Orders orders = new Orders(project).bootstrap()
   Elections elections = new Elections(project).bootstrap()
@@ -34,7 +35,7 @@ def exec(Project project, XML xml) {
     if (!orders.assigned(job) && elections.elected(job)) {
       String winner = elections.winner(job)
       String reason = elections.reason(job)
-      new ClaimOut()
+      claim.copy()
         .type('Start order')
         .token("job;${job}")
         .param('job', job)

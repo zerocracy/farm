@@ -20,7 +20,6 @@ import com.jcabi.xml.XML
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.in.Impediments
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.time.Reminders
@@ -53,9 +52,8 @@ def exec(Project project, XML xml) {
     String label = entry.value
     String login = orders.performer(job)
     if (reminders.add(job, login, label)) {
-      new ClaimOut()
+      claim.copy()
         .type('New reminder posted')
-        .param('cause', claim.cid())
         .param('job', job)
         .param('label', label)
         .param('login', login)

@@ -17,13 +17,12 @@
 package com.zerocracy.stk.pmo.profile
 
 import com.jcabi.xml.XML
-import com.zerocracy.Par
-import com.zerocracy.farm.Assume
 import com.zerocracy.Farm
+import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.SoftException
+import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.in.Orders
 
 def exec(Project pmo, XML xml) {
@@ -43,16 +42,14 @@ def exec(Project pmo, XML xml) {
   Orders orders = new Orders(target).bootstrap()
   for (String job : orders.jobs(login)) {
     orders.resign(job)
-    new ClaimOut()
+    claim.copy()
       .type('Order was canceled')
-      .param('cause', claim.cid())
       .param('job', job)
       .param('login', login)
       .postTo(target)
   }
-  new ClaimOut()
+  claim.copy()
     .type('Resign all roles')
-    .param('cause', claim.cid())
     .param('login', claim.author())
     .postTo(target)
   claim.reply(

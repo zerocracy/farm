@@ -19,10 +19,9 @@ package com.zerocracy.stk.pm.in.orders
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Par
-import com.zerocracy.farm.Assume
 import com.zerocracy.Project
+import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
@@ -32,9 +31,8 @@ def exec(Project project, XML xml) {
   String login = claim.param('login')
   String role = claim.param('role')
   Farm farm = binding.variables.farm
-  new ClaimOut()
+  claim.copy()
     .type('Notify project')
-    .param('cause', claim.cid())
     .param(
       'message',
       new Par(

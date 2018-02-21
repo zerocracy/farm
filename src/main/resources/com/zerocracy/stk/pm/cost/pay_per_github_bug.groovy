@@ -25,7 +25,6 @@ import com.zerocracy.Project
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.radars.github.Job
 
@@ -46,9 +45,8 @@ def exec(Project project, XML xml) {
   String author = issue.author().login().toLowerCase(Locale.ENGLISH)
   Roles roles = new Roles(project).bootstrap()
   if (roles.hasAnyRole(author)) {
-    new ClaimOut()
+    claim.copy()
       .type('Make payment')
-      .param('cause', claim.cid())
       .param('job', job)
       .param('login', author)
       .param('reason', new Par('Bug was reported, see §29').say())
@@ -57,11 +55,11 @@ def exec(Project project, XML xml) {
   } else if (claim.hasToken()) {
     claim.reply(
       new Par(
-        'Thanks for your contribution!',
+        'Thanks for your contribution, @%s!',
         'If you would be a member of [the project](/p/%s),',
         'you would now earn +15 reputation points, as explained in §29.',
         'You can join and apply to it, see §2.'
-      ).say(project.pid())
+      ).say(author, project.pid())
     ).postTo(project)
   }
 }

@@ -25,7 +25,6 @@ import com.zerocracy.Project
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pmo.People
 import com.zerocracy.radars.github.Job
@@ -63,9 +62,8 @@ def exec(Project project, XML xml) {
       }
     }
   }
-  new ClaimOut()
+  claim.copy()
     .type('Job was added to WBS')
-    .param('cause', claim.cid())
     .param('job', job)
     .param('role', role)
     .postTo(project)

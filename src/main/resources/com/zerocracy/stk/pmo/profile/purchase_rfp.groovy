@@ -22,7 +22,6 @@ import com.zerocracy.Project
 import com.zerocracy.SoftException
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pmo.Awards
 import com.zerocracy.pmo.Rfps
 
@@ -62,7 +61,7 @@ def exec(Project pmo, XML xml) {
       'we deducted %d points from your reputation, according to §40'
     ).say(rid, email, -points)
   ).postTo(pmo)
-  new ClaimOut().type('Notify user').token('user;yegor256').param(
+  claim.copy().type('Notify user').token('user;yegor256').param(
     'message', new Par(
       'RFP #%d has been purchased by @%s: %s'
     ).say(rid, author, email)

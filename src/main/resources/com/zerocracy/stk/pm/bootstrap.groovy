@@ -23,7 +23,6 @@ import com.zerocracy.Project
 import com.zerocracy.SoftException
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.Catalog
 
@@ -43,12 +42,12 @@ def exec(Project project, XML xml) {
       'slack',
       project.pid()
     )
-    new ClaimOut()
+    claim.copy()
       .type('Role was assigned')
       .param('login', author)
       .param('role', role)
       .postTo(project)
-    new ClaimOut()
+    claim.copy()
       .type('Role was assigned')
       .param('login', author)
       .param('role', 'ARC')
@@ -73,7 +72,7 @@ def exec(Project project, XML xml) {
           'roles.'
         ).say(project.pid())
       ).postTo(project)
-      new ClaimOut().type('Notify user').token('user;yegor256').param(
+      claim.copy().type('Notify user').token('user;yegor256').param(
         'message', new Par(
           'We just bootstrapped @%s by @%s'
         ).say(project.pid(), author)
