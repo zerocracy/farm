@@ -18,13 +18,13 @@ package com.zerocracy.bundles.resigns_tasks_upon_quit
 
 import com.jcabi.xml.XML
 import com.zerocracy.Project
+import com.zerocracy.pm.in.Orders
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
-// @todo #235:30min This test started to fail after `remove_assignee`
-//  script fix. In this test stakeholder can't find assignee in MkIssue
-//  which throws an exception: XPath
-//  '/github/repos/repo[@coords='test/test']/issues/issue[number='2']' not found
-
-//  Orders orders = new Orders(project).bootstrap()
-//  assert orders.jobs('cmiranda').empty
+  MatcherAssert.assertThat(
+    new Orders(project).bootstrap().jobs('cmiranda'),
+    Matchers.emptyIterable()
+  )
 }
