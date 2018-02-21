@@ -17,15 +17,22 @@
 package com.zerocracy.stk.pm.staff.milestones
 
 import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
 import com.zerocracy.Project
+import com.zerocracy.farm.Assume
+import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pm.time.Milestones
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
-/**
- * @todo #166:30min let's implement this stakeholder. It will update
- *  milestones.xml, taking information from GitHub milestones. It has to be
- *  triggered by GitHub webhook: when milestones are updated. For each
- *  milestone, it has to add gh: prefix to the name found on GitHub.
- */
+  new Assume(project, xml).type('Add milestone')
+  ClaimIn claim = new ClaimIn(xml)
+  String milestone = claim.param('milestone')
+  LocalDate date = LocalDate.parse(
+    claim.param('date'),
+    DateTimeFormatter.ISO_DATE_TIME
+  )
+  new Milestones(project).bootstrap().add("gh:$milestone", date)
 }

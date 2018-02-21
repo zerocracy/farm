@@ -17,11 +17,13 @@
 package com.zerocracy.bundles.understands_bug_label
 
 import com.jcabi.github.Github
+import com.jcabi.github.Issue
+import com.jcabi.github.Repo
 import com.jcabi.github.Repos
 import com.jcabi.xml.XML
-import com.zerocracy.entry.ExtGithub
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.fake.FkFarm
 import com.zerocracy.radars.github.RbOnBug
 import javax.json.Json
@@ -29,8 +31,8 @@ import javax.json.Json
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
-  def repo = github.repos().create(new Repos.RepoCreate('bugs', false))
-  def issue = repo.issues().create('A bug', '')
+  Repo repo = github.repos().create(new Repos.RepoCreate('bugs', false))
+  Issue issue = repo.issues().create('A bug', '')
   new RbOnBug().react(
     new FkFarm(project),
     github,

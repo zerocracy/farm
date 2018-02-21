@@ -29,10 +29,10 @@ import com.zerocracy.pmo.Pmo
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Set on pause')
   new Assume(project, xml).roles('PO')
-  def claim = new ClaimIn(xml)
+  ClaimIn claim = new ClaimIn(xml)
   String pid = project.pid()
   Farm farm = binding.variables.farm
-  def catalog = new Catalog(new Pmo(farm)).bootstrap()
+  Catalog catalog = new Catalog(new Pmo(farm)).bootstrap()
   if (!claim.hasParam('flag')) {
     throw new SoftException(
       new Par(

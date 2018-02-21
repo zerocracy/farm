@@ -31,6 +31,11 @@ SOFTWARE.
     <p>
       <xsl:text>Be careful, this message will be delivered to all users!</xsl:text>
       <xsl:text> Please, make it short.</xsl:text>
+      <xsl:text> The text will go through </xsl:text>
+      <code>
+        <xsl:text>Par</xsl:text>
+      </code>
+      <xsl:text>, you can use formatting.</xsl:text>
     </p>
     <form action="/spam-send" method="post">
       <fieldset>

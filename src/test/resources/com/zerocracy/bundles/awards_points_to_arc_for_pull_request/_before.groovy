@@ -17,6 +17,7 @@
 package com.zerocracy.bundles.awards_points_to_arc_for_pull_request
 
 import com.jcabi.github.Pull
+import com.jcabi.github.Repo
 import com.jcabi.github.Repos
 import com.jcabi.github.mock.MkGithub
 import com.jcabi.xml.XML
@@ -27,7 +28,7 @@ import com.zerocracy.entry.ExtGithub
 def exec(Project project, XML xml) {
     Farm farm = binding.variables.farm
     MkGithub github = new ExtGithub(farm).value() as MkGithub
-    def repo = github.repos().create(new Repos.RepoCreate('test', false))
+    Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
     Pull pull = repo.pulls().create('Test PR', 'test', 'the test')
     github.relogin('cmiranda')
         .repos().get(repo.coordinates())

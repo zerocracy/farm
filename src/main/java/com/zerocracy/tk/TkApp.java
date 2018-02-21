@@ -88,7 +88,7 @@ import org.takes.tk.TkWrap;
  * @checkstyle LineLength (500 lines)
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
  */
-@SuppressWarnings({ "PMD.AvoidDuplicateLiterals", "PMD.ExcessiveImports" })
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.ExcessiveImports"})
 public final class TkApp extends TkWrap {
 
     /**
@@ -123,7 +123,7 @@ public final class TkApp extends TkWrap {
                                             new TkForward(
                                                 new TkFork(
                                                     new SolidList<Fork>(
-                                                        new Concat<>(
+                                                        new Concat<Fork>(
                                                             new SolidList<>(forks),
                                                             new SolidList<>(
                                                                 new FkRegex(
@@ -143,7 +143,14 @@ public final class TkApp extends TkWrap {
                                                                     )
                                                                 ),
                                                                 new FkRegex("/spam-send", new TkSpam(farm)),
-                                                                new FkRegex("/shutdown", new TkShutdown()),
+                                                                new FkRegex("/shutdown", new TkShutdown(props)),
+                                                                new FkRegex(
+                                                                    "/join",
+                                                                    (Take) req -> new RsPage(
+                                                                        farm, "/xsl/join.xsl", req
+                                                                    )
+                                                                ),
+                                                                new FkRegex("/join-post", new TkJoin(farm)),
                                                                 new FkRegex(
                                                                     "/org/takes/.+\\.xsl",
                                                                     new TkClasspath()
@@ -211,7 +218,7 @@ public final class TkApp extends TkWrap {
                                                                     new TkFootprint(farm)
                                                                 ),
                                                                 new FkRegex(
-                                                                    "/footprint/([A-Z0-9]{9})/([0-9]+)",
+                                                                    "/footprint/(PMO|[A-Z0-9]{9})/([0-9]+)",
                                                                     new TkClaim(farm)
                                                                 ),
                                                                 new FkRegex(

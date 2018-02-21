@@ -27,7 +27,7 @@ import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.radars.github.Job
 
 def exec(Project project, XML xml) {
-  def wbs = new Wbs(project).bootstrap()
+  Wbs wbs = new Wbs(project).bootstrap()
   String job = 'gh:test/test#1'
   assert wbs.exists(job)
   Farm farm = binding.variables.farm

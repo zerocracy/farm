@@ -22,15 +22,11 @@ import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pmo.Agenda;
 import com.zerocracy.pmo.Awards;
-import com.zerocracy.pmo.Catalog;
-import com.zerocracy.pmo.People;
-import com.zerocracy.pmo.Projects;
+import com.zerocracy.tk.RqWithUser;
 import com.zerocracy.tk.TkApp;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
-import org.takes.Take;
 import org.takes.rq.RqFake;
-import org.takes.rq.RqWithHeaders;
 import org.takes.rs.RsPrint;
 
 /**
@@ -47,23 +43,15 @@ public final class TkProfileTest {
     public void rendersHomePage() throws Exception {
         final Farm farm = new PropsFarm(new FkFarm());
         final String uid = "yegor256";
-        final People people = new People(farm).bootstrap();
-        people.touch(uid);
-        people.invite(uid, "mentor");
         new Awards(farm, uid).bootstrap().add(1, "gh:test/test#1", "reason");
         new Agenda(farm, uid).bootstrap().add("gh:test/test#2", "QA");
-        final String pid = "9A0007788";
-        new Projects(farm, uid).bootstrap().add(pid);
-        new Catalog(farm).bootstrap().add(pid, "2018/01/9A0007788/");
-        final Take take = new TkApp(farm);
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
                 new RsPrint(
-                    take.act(
-                        new RqWithHeaders(
-                            new RqFake("GET", "/u/Yegor256"),
-                            // @checkstyle LineLength (1 line)
-                            "Cookie: PsCookie=0975A5A5-F6DB193E-AF18000A-75726E3A-74657374-3A310005-6C6F6769-6E000879-65676F72-323536AE"
+                    new TkApp(farm).act(
+                        new RqWithUser(
+                            farm,
+                            new RqFake("GET", "/u/Yegor256")
                         )
                     )
                 ).printBody()

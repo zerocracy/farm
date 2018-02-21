@@ -16,6 +16,7 @@
  */
 package com.zerocracy.stk.internal
 
+import com.jcabi.github.Github
 import com.jcabi.log.Logger
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
@@ -27,15 +28,15 @@ import com.zerocracy.farm.DyErrors
 import com.zerocracy.farm.props.Props
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Ping')
+  new Assume(project, xml).isPmo()
+  new Assume(project, xml).type('Ping hourly')
   Farm farm = binding.variables.farm
   if (new Props(farm).has('//testing')) {
     Logger.info(this, 'skip in testing mode')
     return
   }
-  def github = new ExtGithub(farm).value()
-  def errors = new DyErrors.Github(
+  Github github = new ExtGithub(farm).value()
+  DyErrors.Github errors = new DyErrors.Github(
     new DyErrors(new ExtDynamo(farm).value()),
     github
   )

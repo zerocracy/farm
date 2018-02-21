@@ -53,7 +53,17 @@ public final class RqUser implements Scalar<String> {
      * @param req Request
      */
     public RqUser(final Farm farm, final Request req) {
-        this(new Pmo(farm), req);
+        this(farm, req, true);
+    }
+
+    /**
+     * Ctor.
+     * @param farm Farm
+     * @param req Request
+     * @param invited TRUE if we need a user to be invited already
+     */
+    public RqUser(final Farm farm, final Request req, final boolean invited) {
+        this(new Pmo(farm), req, invited);
     }
 
     /**
@@ -62,6 +72,16 @@ public final class RqUser implements Scalar<String> {
      * @param req Request
      */
     public RqUser(final Project pmo, final Request req) {
+        this(pmo, req, true);
+    }
+
+    /**
+     * Ctor.
+     * @param pmo The PMO
+     * @param req Request
+     * @param invited TRUE if we need a user to be invited already
+     */
+    public RqUser(final Project pmo, final Request req, final boolean invited) {
         this.user = new SolidScalar<>(
             () -> {
                 final Identity identity = new RqAuth(req).identity();
@@ -75,8 +95,7 @@ public final class RqUser implements Scalar<String> {
                 }
                 final String login = identity.properties()
                     .get("login").toLowerCase(Locale.ENGLISH);
-                final People people = new People(pmo).bootstrap();
-                if (!people.hasMentor(login)) {
+                if (invited && !new People(pmo).bootstrap().hasMentor(login)) {
                     throw new RsForward(
                         new RsParFlash(
                             new Par(

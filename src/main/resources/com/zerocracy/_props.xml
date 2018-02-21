@@ -39,6 +39,11 @@ SOFTWARE.
     <client_id>${slack.client_id}</client_id>
     <client_secret>${slack.client_secret}</client_secret>
   </slack>
+  <coinbase>
+    <key>${coinbase.key}</key>
+    <secret>${coinbase.secret}</secret>
+    <account>${coinbase.account}</account>
+  </coinbase>
   <paypal>
     <mode>${paypal.mode}</mode>
     <username>${paypal.username}</username>
@@ -78,4 +83,7 @@ SOFTWARE.
     <token>${telegram.token}</token>
     <username>zerocrat_bot</username>
   </telegram>
+  <shutdown>
+    <header>${shutdown.key}</header>
+  </shutdown>
 </props>

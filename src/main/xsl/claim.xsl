@@ -21,7 +21,10 @@ SOFTWARE.
   <xsl:include href="/xsl/inner-layout.xsl"/>
   <xsl:template match="page" mode="head">
     <title>
+      <xsl:text>#</xsl:text>
       <xsl:value-of select="claim/cid"/>
+      <xsl:text> @ </xsl:text>
+      <xsl:value-of select="project"/>
     </title>
   </xsl:template>
   <xsl:template match="page" mode="inner">

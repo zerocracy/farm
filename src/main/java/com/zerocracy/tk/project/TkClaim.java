@@ -67,7 +67,6 @@ public final class TkClaim implements TkRegex {
     public Response act(final RqRegex request) throws IOException {
         final RqProject pkt = new RqProject(this.farm, request);
         final String user = new RqUser(this.farm, request).value();
-        final Roles roles = new Roles(pkt).bootstrap();
         final long cid = Long.valueOf(request.matcher().group(2));
         try (final Footprint ftp = new Footprint(this.farm, pkt)) {
             return new IoCheckedScalar<>(
@@ -80,8 +79,12 @@ public final class TkClaim implements TkRegex {
                             "/xsl/claim.xsl",
                             request,
                             () -> {
-                                if (!doc.keySet().contains("public")
-                                    && !roles.hasRole(user, "PO")) {
+                                final boolean allowed =
+                                    doc.keySet().contains("public")
+                                    || "PMO".equals(pkt.pid())
+                                    || new Roles(pkt).bootstrap()
+                                        .hasRole(user, "PO");
+                                if (!allowed) {
                                     throw new RsForward(
                                         new RsParFlash(
                                             new Par("Access denied").say(),
@@ -115,4 +118,5 @@ public final class TkClaim implements TkRegex {
             ).value();
         }
     }
+
 }

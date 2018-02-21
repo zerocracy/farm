@@ -41,7 +41,7 @@ import org.takes.facets.forward.RsForward;
  * @since 0.12
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({ "PMD.AvoidDuplicateLiterals", "PMD.CyclomaticComplexity" })
 final class RqProject implements Project {
 
     /**
@@ -90,6 +90,16 @@ final class RqProject implements Project {
                                     // @checkstyle LineLength (1 line)
                                     "You don't have any of these roles in %s to view the page: %s"
                                 ).say(pid, String.join(", ", required)),
+                                Level.WARNING
+                            )
+                        );
+                    }
+                    if (required.length == 0 && !roles.hasAnyRole(user)) {
+                        throw new RsForward(
+                            new RsParFlash(
+                                new Par(
+                                    "You are not a member of %s"
+                                ).say(pid),
                                 Level.WARNING
                             )
                         );

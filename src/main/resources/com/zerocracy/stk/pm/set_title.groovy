@@ -40,7 +40,7 @@ def exec(Project project, XML xml) {
       ).say(catalog.title(pid))
     )
   }
-  def title = claim.param('title')
+  String title = claim.param('title')
   catalog.title(pid, title)
   claim.reply(
     new Par(

@@ -138,6 +138,17 @@ public final class TkProfile implements TkRegex {
                                 new Agenda(pmo, login).bootstrap().jobs()
                             ).intValue()
                         )
+                    ),
+                    new XeAppend(
+                        "mentor",
+                        people.mentor(login)
+                    ),
+                    new XeAppend(
+                        "students",
+                        new XeTransform<>(
+                            people.students(login),
+                            st -> new XeAppend("student", st)
+                        )
                     )
                 );
             }
