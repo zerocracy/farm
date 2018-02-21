@@ -16,16 +16,25 @@
  */
 package com.zerocracy.bundles.awards_points_to_arc_for_pull_request
 
-import com.jcabi.github.Github
+import com.jcabi.github.Pull
 import com.jcabi.github.Repos
+import com.jcabi.github.mock.MkGithub
 import com.jcabi.xml.XML
-import com.zerocracy.entry.ExtGithub
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.entry.ExtGithub
 
 def exec(Project project, XML xml) {
-  Farm farm = binding.variables.farm
-  Github github = new ExtGithub(farm).value()
-  def repo = github.repos().create(new Repos.RepoCreate('test', false))
-  repo.pulls().create('Test PR', 'test', 'the test')
+    Farm farm = binding.variables.farm
+    MkGithub github = new ExtGithub(farm).value() as MkGithub
+    def repo = github.repos().create(new Repos.RepoCreate('test', false))
+    Pull pull = repo.pulls().create('Test PR', 'test', 'the test')
+    github.relogin('cmiranda')
+        .repos().get(repo.coordinates())
+        .pulls().get(pull.number())
+        .comments().post('PR accepted', 'cmt', '', 1)
+    github.relogin('dmarkov')
+        .repos().get(repo.coordinates())
+        .pulls().get(pull.number())
+        .comments().post('rultor merge', 'cmt', '', 1)
 }
