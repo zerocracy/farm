@@ -132,16 +132,23 @@ SOFTWARE.
         </xsl:if>
       </td>
       <td>
-        <a href="https://github.com/{mentor}">
-          <xsl:text>@</xsl:text>
-          <xsl:value-of select="mentor"/>
-        </a>
-        <sub>
-          <xsl:text>/</xsl:text>
-          <a href="/u/{mentor}">
-            <xsl:text>z</xsl:text>
-          </a>
-        </sub>
+        <xsl:choose>
+          <xsl:when test="mentor='0crat'">
+            <xsl:text>&#x2014;</xsl:text>
+          </xsl:when>
+          <xsl:otherwise>
+            <a href="https://github.com/{mentor}">
+              <xsl:text>@</xsl:text>
+              <xsl:value-of select="mentor"/>
+            </a>
+            <sub>
+              <xsl:text>/</xsl:text>
+              <a href="/u/{mentor}">
+                <xsl:text>z</xsl:text>
+              </a>
+            </sub>
+          </xsl:otherwise>
+        </xsl:choose>
       </td>
       <td style="text-align:right;">
         <xsl:choose>
@@ -184,16 +191,17 @@ SOFTWARE.
         </xsl:choose>
       </td>
       <td>
+        <xsl:variable name="days" select="speed div (24 * 60)"/>
         <xsl:attribute name="style">
           <xsl:text>text-align:right;color:</xsl:text>
           <xsl:choose>
-            <xsl:when test="speed &gt; 8">
+            <xsl:when test="$days &gt; 8">
               <xsl:text>darkred</xsl:text>
             </xsl:when>
-            <xsl:when test="speed &lt; 4">
+            <xsl:when test="$days &lt; 4">
               <xsl:text>orange</xsl:text>
             </xsl:when>
-            <xsl:when test="speed = 0">
+            <xsl:when test="$days = 0">
               <xsl:text>inherit</xsl:text>
             </xsl:when>
             <xsl:otherwise>
@@ -202,11 +210,11 @@ SOFTWARE.
           </xsl:choose>
         </xsl:attribute>
         <xsl:choose>
-          <xsl:when test="speed = 0">
+          <xsl:when test="$days = 0">
             <xsl:text>&#x2014;</xsl:text>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:value-of select="format-number(speed div (24 * 60),'0.0')"/>
+            <xsl:value-of select="format-number($days,'0.0')"/>
           </xsl:otherwise>
         </xsl:choose>
       </td>
