@@ -83,6 +83,15 @@ SOFTWARE.
               </a>
             </sub>
           </th>
+          <th data-sortable-type="numeric">
+            <xsl:text>Speed</xsl:text>
+            <sub>
+              <xsl:text>/</xsl:text>
+              <a href="http://www.zerocracy.com/policy.html#36">
+                <xsl:text>&#xA7;36</xsl:text>
+              </a>
+            </sub>
+          </th>
           <th>
             <xsl:text>Agenda</xsl:text>
           </th>
@@ -173,6 +182,23 @@ SOFTWARE.
             <xsl:value-of select="awards"/>
           </xsl:otherwise>
         </xsl:choose>
+      </td>
+      <td>
+        <xsl:attribute name="style">
+          <xsl:text>text-align:right;color:</xsl:text>
+          <xsl:choose>
+            <xsl:when test="speed &gt; 8">
+              <xsl:text>darkred</xsl:text>
+            </xsl:when>
+            <xsl:when test="awards &lt; 4">
+              <xsl:text>orange</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:text>green</xsl:text>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:attribute>
+        <xsl:value-of select="format-number(speed,'0.0')"/>
       </td>
       <td style="text-align:right;">
         <xsl:value-of select="agenda"/>

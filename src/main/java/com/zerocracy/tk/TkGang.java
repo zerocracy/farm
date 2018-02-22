@@ -24,6 +24,7 @@ import com.zerocracy.pmo.Agenda;
 import com.zerocracy.pmo.Awards;
 import com.zerocracy.pmo.Pmo;
 import com.zerocracy.pmo.Projects;
+import com.zerocracy.pmo.Speed;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -101,6 +102,12 @@ public final class TkGang implements Take {
                     "awards",
                     Integer.toString(
                         new Awards(this.farm, login).bootstrap().total()
+                    )
+                ),
+                new XeAppend(
+                    "speed",
+                    Double.toString(
+                        new Speed(this.farm, login).bootstrap().avg()
                     )
                 ),
                 new XeAppend(

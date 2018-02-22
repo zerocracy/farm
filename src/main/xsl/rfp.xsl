@@ -72,8 +72,13 @@ SOFTWARE.
     <xsl:apply-templates select="rfp"/>
     <form action="/rfp-post" method="post">
       <fieldset>
-        <label>Statement of work:</label>
-        <textarea name="sow" style="width:100%;height:18em;">
+        <label>
+          <xsl:text>Statement of work (</xsl:text>
+          <xsl:text>please, keep it as short as this input area;</xsl:text>
+          <xsl:text> don't use any formatting or HTML, just plain text in one paragraph</xsl:text>
+          <xsl:text>):</xsl:text>
+        </label>
+        <textarea name="sow" style="width:100%;height:10em;">
           <xsl:choose>
             <xsl:when test="rfp">
               <xsl:value-of select="rfp/sow"/>

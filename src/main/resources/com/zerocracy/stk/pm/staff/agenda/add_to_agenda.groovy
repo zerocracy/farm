@@ -31,6 +31,9 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
   Orders orders = new Orders(project).bootstrap()
+  if (!orders.assigned(job)) {
+    return
+  }
   String owner = orders.performer(job)
   String role = new Wbs(project).bootstrap().role(job)
   Agenda agenda = new Agenda(project, owner).bootstrap()

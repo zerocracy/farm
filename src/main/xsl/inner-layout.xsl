@@ -52,8 +52,18 @@ SOFTWARE.
             </a>
           </li>
           <li>
+            <a href="/gang">
+              <xsl:text>Gang</xsl:text>
+            </a>
+          </li>
+          <li>
             <a href="http://www.zerocracy.com/policy.html">
               <xsl:text>Policy</xsl:text>
+            </a>
+          </li>
+          <li>
+            <a href="http://www.zerocracy.com/terms.html">
+              <xsl:text>Terms</xsl:text>
             </a>
           </li>
           <li>
@@ -108,17 +118,10 @@ SOFTWARE.
         </ul>
         <ul>
           <li>
-            <a href="/gang">
-              <xsl:text>Gang</xsl:text>
-            </a>
-          </li>
-          <li>
-            <a href="http://www.zerocracy.com/terms.html">
-              <xsl:text>Terms</xsl:text>
-            </a>
-          </li>
-          <li>
             <a href="https://github.com/zerocracy">GitHub</a>
+          </li>
+          <li>
+            <a href="https://t.me/joinchat/AAAAAEJFMRzsRTRxM3ec6A">Telegram</a>
           </li>
           <li>
             <a href="https://twitter.com/0crat">Twitter</a>

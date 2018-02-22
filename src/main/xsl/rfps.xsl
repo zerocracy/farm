@@ -73,8 +73,9 @@ SOFTWARE.
           <xsl:value-of select="id"/>
         </code>
       </td>
-      <td>
-        <xsl:value-of select="created"/>
+      <td title="{created}">
+        <xsl:value-of select="ago"/>
+        <xsl:text> ago</xsl:text>
       </td>
       <td>
         <xsl:value-of select="sow"/>

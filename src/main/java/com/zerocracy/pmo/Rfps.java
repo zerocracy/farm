@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pmo;
 
+import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
@@ -25,6 +26,7 @@ import com.zerocracy.Xocument;
 import java.io.IOException;
 import java.util.Iterator;
 import org.cactoos.time.DateAsText;
+import org.cactoos.time.DateOf;
 import org.xembly.Directive;
 import org.xembly.Directives;
 
@@ -77,6 +79,7 @@ public final class Rfps {
      * @return List of all RFPs
      * @throws IOException If fails
      */
+    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     public Iterable<Directive> toXembly() throws IOException {
         try (final Item item = this.item()) {
             final Directives dirs = new Directives().add("rfps");
@@ -85,6 +88,17 @@ public final class Rfps {
                 dirs.add("rfp")
                     .add("id").set(rfp.xpath("@id").get(0)).up()
                     .add("created").set(rfp.xpath("created/text()").get(0)).up()
+                    .add("ago")
+                    .set(
+                        Logger.format(
+                            "%[ms]s",
+                            System.currentTimeMillis()
+                            - new DateOf(
+                                rfp.xpath("created/text()").get(0)
+                            ).value().getTime()
+                        )
+                    )
+                    .up()
                     .add("sow");
                 final Iterator<String> sow = rfp.xpath("sow/text()").iterator();
                 if (sow.hasNext()) {
