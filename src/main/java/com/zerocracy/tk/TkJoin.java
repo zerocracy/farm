@@ -55,7 +55,7 @@ public final class TkJoin implements TkRegex {
 
     @Override
     public Response act(final RqRegex req) throws IOException {
-        final String author = new RqUser(this.farm, req).value();
+        final String author = new RqUser(this.farm, req, false).value();
         final People people = new People(this.farm).bootstrap();
         if (people.hasMentor(author)) {
             throw new RsForward(

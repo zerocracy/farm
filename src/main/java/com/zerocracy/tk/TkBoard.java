@@ -70,7 +70,7 @@ public final class TkBoard implements Take {
             "/xsl/board.xsl",
             req,
             () -> {
-                final String user = new RqUser(this.farm, req).value();
+                final String user = new RqUser(this.farm, req, false).value();
                 final Collection<XeSource> sources = new LinkedList<>();
                 try (final Item item = new Pmo(this.farm).acq("catalog.xml")) {
                     new And(
