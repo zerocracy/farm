@@ -75,7 +75,7 @@ SOFTWARE.
             </sub>
           </th>
           <th data-sortable-type="numeric">
-            <xsl:text>Reputation</xsl:text>
+            <xsl:text>Rep.</xsl:text>
             <sub>
               <xsl:text>/</xsl:text>
               <a href="http://www.zerocracy.com/policy.html#18">
@@ -93,7 +93,7 @@ SOFTWARE.
             </sub>
           </th>
           <th>
-            <xsl:text>Agenda</xsl:text>
+            <xsl:text>Jobs</xsl:text>
           </th>
           <th>
             <xsl:text>Projects</xsl:text>
@@ -190,15 +190,25 @@ SOFTWARE.
             <xsl:when test="speed &gt; 8">
               <xsl:text>darkred</xsl:text>
             </xsl:when>
-            <xsl:when test="awards &lt; 4">
+            <xsl:when test="speed &lt; 4">
               <xsl:text>orange</xsl:text>
+            </xsl:when>
+            <xsl:when test="speed = 0">
+              <xsl:text>inherit</xsl:text>
             </xsl:when>
             <xsl:otherwise>
               <xsl:text>green</xsl:text>
             </xsl:otherwise>
           </xsl:choose>
         </xsl:attribute>
-        <xsl:value-of select="format-number(speed,'0.0')"/>
+        <xsl:choose>
+          <xsl:when test="speed = 0">
+            <xsl:text>&#x2014;</xsl:text>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="format-number(speed div (24 * 60),'0.0')"/>
+          </xsl:otherwise>
+        </xsl:choose>
       </td>
       <td style="text-align:right;">
         <xsl:value-of select="agenda"/>
