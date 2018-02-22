@@ -58,7 +58,7 @@ public final class TkSubmit implements Take {
 
     @Override
     public Response act(final Request req) throws IOException {
-        final String user = new RqUser(this.farm, req).value();
+        final String user = new RqUser(this.farm, req, false).value();
         final Rfps rfps = new Rfps(this.farm).bootstrap();
         if (!rfps.exists(user)) {
             throw new RsForward(

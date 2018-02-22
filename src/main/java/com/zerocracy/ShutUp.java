@@ -48,7 +48,7 @@ public final class ShutUp {
     public void close() {
         this.service.shutdown();
         try {
-            final long seconds = 10L;
+            final long seconds = 30L;
             if (!this.service.awaitTermination(seconds, TimeUnit.SECONDS)) {
                 this.service.shutdownNow();
                 throw new IllegalStateException(
