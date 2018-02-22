@@ -71,19 +71,23 @@ public final class TkSubmit implements Take {
         }
         final RqFormSmart form = new RqFormSmart(new RqGreedy(req));
         final String sow = form.single("sow");
+        final boolean complete = rfps.complete(user);
         final int rid = rfps.post(user, sow);
-        new ClaimOut().type("Notify all").param(
-            "message",
-            new Par(
-                "New RFP #%d was published,",
-                "you can [join](/rfps) as an architect;",
-                "a potential client needs an architect and the system",
-                "selected you, as one of the best developers we have in house;",
-                "you can 'buy' this RFP and get in touch with the client,",
-                "see §40"
-            ).say(rid)
-        // @checkstyle MagicNumber (1 line)
-        ).param("min", 512).postTo(new Pmo(this.farm));
+        if (!complete) {
+            new ClaimOut().type("Notify all").param(
+                "message",
+                new Par(
+                    "New RFP #%d was published,",
+                    "you can [join](/rfps) as an architect;",
+                    "a potential client needs an architect and the system",
+                    "selected you, as one of the best developers",
+                    "we have in house;",
+                    "you can 'buy' this RFP and get in touch with the client,",
+                    "see §40"
+                ).say(rid)
+            // @checkstyle MagicNumber (1 line)
+            ).param("min", 512).postTo(new Pmo(this.farm));
+        }
         return new RsForward(
             new RsParFlash(
                 new Par("The statement of work has been updated, thanks").say(),

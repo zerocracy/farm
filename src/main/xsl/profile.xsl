@@ -186,6 +186,7 @@ SOFTWARE.
     <xsl:apply-templates select="identification"/>
     <xsl:apply-templates select="links"/>
     <xsl:apply-templates select="wallet"/>
+    <xsl:apply-templates select="debt"/>
     <xsl:apply-templates select="projects"/>
     <xsl:apply-templates select="skills"/>
   </xsl:template>
@@ -341,6 +342,30 @@ SOFTWARE.
           <xsl:text>@</xsl:text>
           <xsl:value-of select="text()"/>
         </a>
+      </xsl:for-each>
+      <xsl:text>.</xsl:text>
+    </p>
+  </xsl:template>
+  <xsl:template match="debt[items/item]">
+    <p>
+      <xsl:text>We owe you these </xsl:text>
+      <xsl:value-of select="count(items/item)"/>
+      <xsl:if test="count(items/item) &gt; 1">
+        <xsl:text>s</xsl:text>
+      </xsl:if>
+      <xsl:text> payments: </xsl:text>
+      <xsl:for-each select="items/item">
+        <xsl:if test="position() &gt; 1">
+          <xsl:text>; </xsl:text>
+        </xsl:if>
+        <strong>
+          <xsl:value-of select="amount"/>
+        </strong>
+        <xsl:text>: </xsl:text>
+        <xsl:value-of select="details"/>
+        <xsl:text> (</xsl:text>
+        <xsl:value-of select="reason"/>
+        <xsl:text>)</xsl:text>
       </xsl:for-each>
       <xsl:text>.</xsl:text>
     </p>

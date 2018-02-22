@@ -260,6 +260,20 @@ public final class Rfps {
     }
 
     /**
+     * RFP exists for this owner and contains SOW?
+     * @param uid User ID
+     * @return TRUE if it exists
+     * @throws IOException If fails
+     */
+    public boolean complete(final String uid) throws IOException {
+        try (final Item item = this.item()) {
+            return !new Xocument(item).nodes(
+                String.format("//rfp[login='%s' and sow!='']", uid)
+            ).isEmpty();
+        }
+    }
+
+    /**
      * The item.
      * @return Item
      * @throws IOException If fails
