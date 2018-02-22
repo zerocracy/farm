@@ -195,17 +195,17 @@ SOFTWARE.
         <xsl:attribute name="style">
           <xsl:text>text-align:right;color:</xsl:text>
           <xsl:choose>
-            <xsl:when test="$days &gt; 8">
+            <xsl:when test="$days &gt; 10">
               <xsl:text>darkred</xsl:text>
             </xsl:when>
-            <xsl:when test="$days &lt; 4">
-              <xsl:text>orange</xsl:text>
+            <xsl:when test="$days &lt; 6">
+              <xsl:text>darkgreen</xsl:text>
             </xsl:when>
             <xsl:when test="$days = 0">
               <xsl:text>inherit</xsl:text>
             </xsl:when>
             <xsl:otherwise>
-              <xsl:text>green</xsl:text>
+              <xsl:text>orange</xsl:text>
             </xsl:otherwise>
           </xsl:choose>
         </xsl:attribute>
