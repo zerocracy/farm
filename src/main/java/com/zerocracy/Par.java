@@ -121,7 +121,7 @@ public final class Par {
         out = Par.replace(
             out, Pattern.compile("(?<= |^)§(\\d+)"),
             matcher -> String.format(
-                "[%s](http://datum.zerocracy.com/pages/policy.html#%s)",
+                "[%s](http://www.zerocracy.com/policy.html#%s)",
                 matcher.group(0), matcher.group(1)
             )
         );
@@ -140,7 +140,7 @@ public final class Par {
             )
         );
         out = Par.replace(
-            out, Pattern.compile("(?<= |^)(ARC|DEV|REV|PO)"),
+            out, Pattern.compile("(?<= |^)(ARC|DEV|REV|PO|QA)"),
             matcher -> String.format("`%s`", matcher.group(0))
         );
         return out;

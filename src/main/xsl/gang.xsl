@@ -36,7 +36,7 @@ SOFTWARE.
       <xsl:value-of select="count(user)"/>
       <xsl:text> users already registered with us.</xsl:text>
       <xsl:text> To join us too you have to apply, see </xsl:text>
-      <a href="http://datum.zerocracy.com/pages/policy.html#2">
+      <a href="http://www.zerocracy.com/policy.html#2">
         <xsl:text>&#xA7;2</xsl:text>
       </a>
       <xsl:text>.</xsl:text>
@@ -44,7 +44,7 @@ SOFTWARE.
       <xsl:text> you have to publish it on the </xsl:text>
       <xsl:text>Board</xsl:text>
       <xsl:text>, as explained in </xsl:text>
-      <a href="http://datum.zerocracy.com/pages/policy.html#26">
+      <a href="http://www.zerocracy.com/policy.html#26">
         <xsl:text>&#xA7;26</xsl:text>
       </a>
       <xsl:text>, we will automatically notify the best</xsl:text>
@@ -60,7 +60,7 @@ SOFTWARE.
             <xsl:text>Mentor/</xsl:text>
             <sub>
               <xsl:text>/</xsl:text>
-              <a href="http://datum.zerocracy.com/pages/policy.html#1">
+              <a href="http://www.zerocracy.com/policy.html#1">
                 <xsl:text>&#xA7;1</xsl:text>
               </a>
             </sub>
@@ -69,7 +69,7 @@ SOFTWARE.
             <xsl:text>Rate</xsl:text>
             <sub>
               <xsl:text>/</xsl:text>
-              <a href="http://datum.zerocracy.com/pages/policy.html#16">
+              <a href="http://www.zerocracy.com/policy.html#16">
                 <xsl:text>&#xA7;16</xsl:text>
               </a>
             </sub>
@@ -78,7 +78,7 @@ SOFTWARE.
             <xsl:text>Reputation</xsl:text>
             <sub>
               <xsl:text>/</xsl:text>
-              <a href="http://datum.zerocracy.com/pages/policy.html#18">
+              <a href="http://www.zerocracy.com/policy.html#18">
                 <xsl:text>&#xA7;18</xsl:text>
               </a>
             </sub>

@@ -42,7 +42,7 @@ def exec(Project project, XML xml) {
   if (wbs.exists(job)) {
     items.add(
       new Par(
-        'The job %s is [in scope](http://datum.zerocracy.com/pages/policy.html#14) for ' +
+        'The job %s is [in scope](http://www.zerocracy.com/policy.html#14) for ' +
         Logger.format(
           '%[ms]s',
           System.currentTimeMillis() - wbs.created(job).time
@@ -60,7 +60,7 @@ def exec(Project project, XML xml) {
               '%[ms]s',
               System.currentTimeMillis() - orders.startTime(job).time
             ) +
-            '](http://datum.zerocracy.com/pages/policy.html#8)'
+            '](http://www.zerocracy.com/policy.html#8)'
         ).say(performer)
       )
       Vesting vesting = new Vesting(project).bootstrap()
@@ -82,14 +82,14 @@ def exec(Project project, XML xml) {
       } else {
         items.add(
           new Par(
-            'There is no monetary reward attached, it\'s a [free](http://datum.zerocracy.com/pages/policy.html#2) job'
+            'There is no monetary reward attached, it\'s a [free](http://www.zerocracy.com/policy.html#2) job'
           ).say()
         )
       }
       if (vesting.exists(orders.performer(job))) {
         items.add(
           new Par(
-            'Some equity will be [vested](http://datum.zerocracy.com/pages/policy.html#37) on completion'
+            'Some equity will be [vested](http://www.zerocracy.com/policy.html#37) on completion'
           ).say()
         )
       }
@@ -97,13 +97,13 @@ def exec(Project project, XML xml) {
       if (new ListOf<>(impediments.jobs()).contains(job)) {
         items.add(
           new Par(
-            'The job has an [impediment](http://datum.zerocracy.com/pages/policy.html#9)'
+            'The job has an [impediment](http://www.zerocracy.com/policy.html#9)'
           ).say()
         )
       } else {
         items.add(
           new Par(
-            'The job doesn\'t have any [impediments](http://datum.zerocracy.com/pages/policy.html#9)'
+            'The job doesn\'t have any [impediments](http://www.zerocracy.com/policy.html#9)'
           ).say()
         )
       }
@@ -113,7 +113,7 @@ def exec(Project project, XML xml) {
     Boosts boosts = new Boosts(project).bootstrap()
     items.add(
       new Par(
-        'The [budget](http://datum.zerocracy.com/pages/policy.html#4) is ' +
+        'The [budget](http://www.zerocracy.com/policy.html#4) is ' +
           boosts.factor(job) * 15 + ' minutes/points'
       ).say()
     )

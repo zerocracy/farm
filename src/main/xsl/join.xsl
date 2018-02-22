@@ -31,13 +31,13 @@ SOFTWARE.
     <p>
       <xsl:text>Fill this form to send a join request to all high-ranked users.</xsl:text>
       <xsl:text> Someone may decide to </xsl:text>
-      <a href="http://datum.zerocracy.com/pages/policy.html#1">
+      <a href="http://www.zerocracy.com/policy.html#1">
         <xsl:text>invite</xsl:text>
       </a>
       <xsl:text> you and become your mentor.</xsl:text>
       <xsl:text> Remember, that a mentor will receive financial bonuses from us</xsl:text>
       <xsl:text> and positive or negative </xsl:text>
-      <a href="http://datum.zerocracy.com/pages/policy.html#18">
+      <a href="http://www.zerocracy.com/policy.html#18">
         <xsl:text>points</xsl:text>
       </a>
       <xsl:text> depending on your actions,</xsl:text>

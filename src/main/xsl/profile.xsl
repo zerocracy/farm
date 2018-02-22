@@ -39,7 +39,7 @@ SOFTWARE.
           <xsl:value-of select="owner"/>
         </a>
         <xsl:text> (</xsl:text>
-        <a href="http://datum.zerocracy.com/pages/terms.html#kyc">
+        <a href="http://www.zerocracy.com/terms.html#kyc">
           <xsl:choose>
             <xsl:when test="identified='true'">
               <xsl:text>identified</xsl:text>
@@ -70,7 +70,7 @@ SOFTWARE.
   <xsl:template match="rate">
     <p>
       <xsl:text>Hourly </xsl:text>
-      <a href="http://datum.zerocracy.com/pages/policy.html#16">
+      <a href="http://www.zerocracy.com/policy.html#16">
         <xsl:text>rate</xsl:text>
       </a>
       <xsl:text> is </xsl:text>
@@ -90,7 +90,7 @@ SOFTWARE.
   <xsl:template match="awards">
     <p>
       <xsl:text>Total </xsl:text>
-      <a href="http://datum.zerocracy.com/pages/policy.html#18">
+      <a href="http://www.zerocracy.com/policy.html#18">
         <xsl:text>points</xsl:text>
       </a>
       <xsl:text> earned: </xsl:text>
@@ -145,7 +145,7 @@ SOFTWARE.
         </xsl:otherwise>
       </xsl:choose>
       <xsl:text> (max </xsl:text>
-      <a href="http://datum.zerocracy.com/pages/policy.html#3">
+      <a href="http://www.zerocracy.com/policy.html#3">
         <xsl:text>allowed</xsl:text>
       </a>
       <xsl:text>: </xsl:text>
@@ -177,7 +177,7 @@ SOFTWARE.
         <xsl:text>You should start talking to our bot</xsl:text>
         <xsl:text> through one of our supported media, like</xsl:text>
         <xsl:text> Telegram or Slack. More details you can find in </xsl:text>
-        <a href="http://datum.zerocracy.com/pages/policy.html">
+        <a href="http://www.zerocracy.com/policy.html">
           <xsl:text>our policy</xsl:text>
         </a>
         <xsl:text>.</xsl:text>
@@ -199,7 +199,7 @@ SOFTWARE.
   <xsl:template match="wallet">
     <p>
       <xsl:text>The </xsl:text>
-      <a href="http://datum.zerocracy.com/pages/policy.html#20">
+      <a href="http://www.zerocracy.com/policy.html#20">
         <xsl:text>wallet</xsl:text>
       </a>
       <xsl:text> is </xsl:text>
@@ -315,7 +315,7 @@ SOFTWARE.
   <xsl:template match="students[not(student)]">
     <p>
       <xsl:text>You don't have any </xsl:text>
-      <a href="http://datum.zerocracy.com/pages/policy.html#1">
+      <a href="http://www.zerocracy.com/policy.html#1">
         <xsl:text>students</xsl:text>
       </a>
       <xsl:text> yet.</xsl:text>
@@ -326,7 +326,7 @@ SOFTWARE.
       <xsl:text>Your </xsl:text>
       <xsl:value-of select="count(student)"/>
       <xsl:text> </xsl:text>
-      <a href="http://datum.zerocracy.com/pages/policy.html#1">
+      <a href="http://www.zerocracy.com/policy.html#1">
         <xsl:text>student</xsl:text>
         <xsl:if test="count(student) &gt; 1">
           <xsl:text>s</xsl:text>

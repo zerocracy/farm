@@ -35,7 +35,7 @@ SOFTWARE.
           <xsl:text>Attention</xsl:text>
         </strong>
         <xsl:text>: the project is on pause, see </xsl:text>
-        <a href="http://datum.zerocracy.com/pages/policy.html#24">
+        <a href="http://www.zerocracy.com/policy.html#24">
           <xsl:text>&#xA7;24</xsl:text>
         </a>
         <xsl:text>.</xsl:text>
@@ -44,12 +44,12 @@ SOFTWARE.
     <xsl:if test="roles[not(role)]">
       <p>
         <xsl:text>The project is managed by Zerocrat according to this </xsl:text>
-        <a href="http://datum.zerocracy.com/pages/policy.html">
+        <a href="http://www.zerocracy.com/policy.html">
           <xsl:text>Policy</xsl:text>
         </a>
         <xsl:text>. </xsl:text>
         <xsl:text>If you want to join as a developer, start at </xsl:text>
-        <a href="http://datum.zerocracy.com/pages/policy.html#2">
+        <a href="http://www.zerocracy.com/policy.html#2">
           <xsl:text>&#xA7;2</xsl:text>
         </a>
         <xsl:text>. </xsl:text>
@@ -58,7 +58,7 @@ SOFTWARE.
           <xsl:text>Telegram chat</xsl:text>
         </a>
         <xsl:text> to find someone who can </xsl:text>
-        <a href="http://datum.zerocracy.com/pages/policy.html#1">
+        <a href="http://www.zerocracy.com/policy.html#1">
           <xsl:text>invite</xsl:text>
         </a>
         <xsl:text> you and explain how Zerocrat works.</xsl:text>
@@ -66,7 +66,7 @@ SOFTWARE.
     </xsl:if>
     <p>
       <xsl:text>Project (</xsl:text>
-      <a href="http://datum.zerocracy.com/pages/policy.html#24">
+      <a href="http://www.zerocracy.com/policy.html#24">
         <xsl:choose>
           <xsl:when test="pause='false'">
             <xsl:text>alive</xsl:text>
@@ -100,7 +100,7 @@ SOFTWARE.
       <xsl:choose>
         <xsl:when test="rate">
           <xsl:text>Your </xsl:text>
-          <a href="http://datum.zerocracy.com/pages/policy.html#16">
+          <a href="http://www.zerocracy.com/policy.html#16">
             <xsl:text>rate</xsl:text>
           </a>
           <xsl:text> here is </xsl:text>
@@ -110,14 +110,14 @@ SOFTWARE.
         </xsl:when>
         <xsl:otherwise>
           <xsl:text>You are working in this project </xsl:text>
-          <a href="http://datum.zerocracy.com/pages/policy.html#16">
+          <a href="http://www.zerocracy.com/policy.html#16">
             <xsl:text>for free</xsl:text>
           </a>
         </xsl:otherwise>
       </xsl:choose>
       <xsl:if test="vesting">
         <xsl:text>; your </xsl:text>
-        <a href="http://datum.zerocracy.com/pages/policy.html#37">
+        <a href="http://www.zerocracy.com/policy.html#37">
           <xsl:text>vesting</xsl:text>
         </a>
         <xsl:text> rate is </xsl:text>
@@ -184,7 +184,7 @@ SOFTWARE.
         <xsl:value-of select="estimates"/>
       </a>
       <xsl:text>, </xsl:text>
-      <a href="http://datum.zerocracy.com/pages/policy.html#23">
+      <a href="http://www.zerocracy.com/policy.html#23">
         <xsl:text>fee</xsl:text>
       </a>
       <xsl:text>: </xsl:text>

@@ -52,7 +52,7 @@ SOFTWARE.
             </a>
           </li>
           <li>
-            <a href="http://datum.zerocracy.com/pages/policy.html">
+            <a href="http://www.zerocracy.com/policy.html">
               <xsl:text>Policy</xsl:text>
             </a>
           </li>
@@ -113,7 +113,7 @@ SOFTWARE.
             </a>
           </li>
           <li>
-            <a href="http://datum.zerocracy.com/pages/terms.html">
+            <a href="http://www.zerocracy.com/terms.html">
               <xsl:text>Terms</xsl:text>
             </a>
           </li>
