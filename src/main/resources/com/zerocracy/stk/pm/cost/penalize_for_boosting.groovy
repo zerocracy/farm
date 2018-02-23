@@ -27,7 +27,8 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Set boost')
   ClaimIn claim = new ClaimIn(xml)
-  if (claim.hasAuthor() && new Roles(project).allRoles(claim.author()).contains('ARC')) {
+  Roles roles = new Roles(project).bootstrap()
+  if (claim.hasAuthor() && roles.hasRole(claim.author(), 'ARC')) {
     claim.copy()
       .type('Make payment')
       .param(
