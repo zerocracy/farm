@@ -22,6 +22,7 @@ import com.jcabi.github.Repo
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Par
+import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
 import com.zerocracy.entry.ExtGithub
@@ -60,7 +61,7 @@ def exec(Project project, XML xml) {
       .postTo(project)
   }
   if (!free && catalog.fee(project.pid()) == Cash.ZERO) {
-    Cash fee = new Cash.S('$4')
+    Cash fee = new Policy().get('23.fee', Cash.ZERO)
     catalog.fee(project.pid(), fee)
     claim.copy()
       .type('Notify project')

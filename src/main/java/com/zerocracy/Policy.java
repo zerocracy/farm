@@ -19,6 +19,7 @@ package com.zerocracy;
 import com.jcabi.xml.XMLDocument;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.farm.props.Props;
+import com.zerocracy.farm.props.PropsFarm;
 import java.io.IOException;
 import java.net.URL;
 import org.cactoos.io.InputOf;
@@ -42,6 +43,13 @@ public final class Policy {
      * Farm.
      */
     private final Farm farm;
+
+    /**
+     * Ctor.
+     */
+    public Policy() {
+        this(new PropsFarm());
+    }
 
     /**
      * Ctor.

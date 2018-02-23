@@ -39,6 +39,11 @@ def exec(Project project, XML xml) {
   Github github = new ExtGithub(farm).value()
   Issue.Smart issue = new Issue.Smart(new Job.Issue(github, job))
   String author = issue.author().login().toLowerCase(Locale.ENGLISH)
-  new Bans(project).bootstrap()
-      .ban(job, author, 'This user reported the ticket')
+  new Bans(project)
+    .bootstrap()
+    .ban(job, author, 'This user reported the ticket')
+  claim.copy()
+    .type('User was banned')
+    .param('reason', 'The user reported GitHub issue')
+    .postTo(project)
 }

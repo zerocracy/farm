@@ -65,7 +65,7 @@ public final class TkRfps implements Take {
                 final String user = new RqUser(this.farm, req).value();
                 final Awards awards = new Awards(this.farm, user).bootstrap();
                 final int reputation = awards.total();
-                if (awards.total() < new Policy(this.farm).get("40.min", 0)) {
+                if (awards.total() < new Policy().get("40.min", 0)) {
                     throw new RsForward(
                         new RsParFlash(
                             new Par(

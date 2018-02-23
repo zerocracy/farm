@@ -18,6 +18,7 @@ package com.zerocracy.stk.pm.staff.awards
 
 import com.jcabi.xml.XML
 import com.zerocracy.Par
+import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
@@ -30,13 +31,14 @@ def exec(Project project, XML xml) {
   String login = claim.param('login')
   Awards awards = new Awards(project, login).bootstrap()
   Integer current = awards.total()
-  if (current <= -200) {
+  if (current <= new Policy().get('44.threshold', -256)) {
     // @todo #390:30min We should remove people from people.xml
     //  when their score goes below 200. Let's implement that.
     //  We should also notify the person in case that happens.
     String job = claim.param('job')
-    String reason = new Par('@%s: Score of %d is too low and will be reset.')
-      .say(login, current)
+    String reason = new Par(
+      'The score of @%s %d is too low and will be reset'
+    ).say(login, current)
     Integer points = -current
     awards.add(points, job, new Par.ToText(reason).toString())
     claim.copy()

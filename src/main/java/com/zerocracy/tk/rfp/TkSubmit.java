@@ -90,7 +90,7 @@ public final class TkSubmit implements Take {
                         "see §40"
                     ).say(rid)
                 )
-                .param("min", new Policy(this.farm).get("40.min", 0))
+                .param("min", new Policy().get("40.min", 0))
                 .postTo(new Pmo(this.farm));
         }
         return new RsForward(

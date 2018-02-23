@@ -38,7 +38,7 @@ import org.xembly.Directives;
  * @since 0.20
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({ "PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods" })
 public final class Rfps {
 
     /**
@@ -228,6 +228,20 @@ public final class Rfps {
                     String.format("//rfp[login= '%s']/@id", login)
                 ).get(0)
             );
+        }
+    }
+
+    /**
+     * Get RFP owner.
+     * @param rid RFP ID
+     * @return Owner, user login
+     * @throws IOException If fails
+     */
+    public String owner(final int rid) throws IOException {
+        try (final Item item = this.item()) {
+            return new Xocument(item).xpath(
+                String.format("//rfp[@id='%s']/login/text()", rid)
+            ).get(0);
         }
     }
 

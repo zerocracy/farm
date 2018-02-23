@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.deducts_points_from_arc_upon_manual_assignment
+package com.zerocracy.bundles.reset_points_when_too_low
 
 import com.jcabi.github.Github
 import com.jcabi.github.Repos
@@ -29,5 +29,5 @@ def exec(Project project, XML xml) {
   Github github = new ExtGithub(farm).value()
   github.repos().create(new Repos.RepoCreate('test', false))
   Awards awards = new Awards(project, 'yegor256').bootstrap()
-  awards.add(-200, 'gh:test/test#1', 'Test')
+  awards.add(-500, 'gh:test/test#1', 'Test')
 }

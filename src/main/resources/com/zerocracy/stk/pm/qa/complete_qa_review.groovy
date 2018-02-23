@@ -18,6 +18,7 @@ package com.zerocracy.stk.pm.qa
 
 import com.jcabi.xml.XML
 import com.zerocracy.Par
+import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.SoftException
 import com.zerocracy.farm.Assume
@@ -41,7 +42,7 @@ def exec(Project project, XML xml) {
     .param('job', job)
     .param('login', inspector)
     .param('reason', 'QA review completed')
-    .param('minutes', 8)
+    .param('minutes', new Policy().get('30.price', 8))
     .postTo(project)
   claim.copy()
     .type('Finish order')

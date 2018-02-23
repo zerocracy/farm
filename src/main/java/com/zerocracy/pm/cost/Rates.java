@@ -18,6 +18,7 @@ package com.zerocracy.pm.cost;
 
 import com.zerocracy.Item;
 import com.zerocracy.Par;
+import com.zerocracy.Policy;
 import com.zerocracy.Project;
 import com.zerocracy.SoftException;
 import com.zerocracy.Xocument;
@@ -68,20 +69,22 @@ public final class Rates {
      * @throws IOException If fails
      */
     public void set(final String login, final Cash rate) throws IOException {
-        if (rate.compareTo(new Cash.S("$300")) > 0) {
+        final Cash max = new Policy().get("16.max", new Cash.S("$256"));
+        if (rate.compareTo(max) > 0) {
             throw new SoftException(
                 new Par(
                     "This is too high (%s), we do not work with rates",
-                    "higher than $300"
-                ).say(rate)
+                    "higher than %s"
+                ).say(rate, max)
             );
         }
-        if (!rate.equals(Cash.ZERO) && rate.compareTo(new Cash.S("$10")) < 0) {
+        final Cash min = new Policy().get("16.min", Cash.ZERO);
+        if (!rate.equals(Cash.ZERO) && rate.compareTo(min) < 0) {
             throw new SoftException(
                 new Par(
                     "This is too low (%s), we do not work with rates",
-                    "lower than $10"
-                ).say(rate)
+                    "lower than %s"
+                ).say(rate, min)
             );
         }
         try (final Item item = this.item()) {

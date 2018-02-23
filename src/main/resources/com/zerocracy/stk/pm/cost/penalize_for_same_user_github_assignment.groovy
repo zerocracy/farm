@@ -21,6 +21,7 @@ import com.jcabi.github.Issue
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Par
+import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
@@ -50,7 +51,7 @@ def exec(Project project, XML xml) {
         'reason',
         new Par('It is strongly discouraged to assign jobs to their creators, see §19').say()
       )
-      .param('minutes', -15)
+      .param('minutes', new Policy().get('19.self-penalty', -15))
       .postTo(project)
   }
 }

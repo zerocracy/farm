@@ -21,12 +21,14 @@ import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
 import com.zerocracy.farm.Assume
+import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.cost.Estimates
 import com.zerocracy.pm.cost.Ledger
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Ping')
+  ClaimIn claim = new ClaimIn(xml)
   Ledger ledger = new Ledger(project).bootstrap()
   Cash cash = ledger.cash()
   Cash locked = new Estimates(project).bootstrap().total()

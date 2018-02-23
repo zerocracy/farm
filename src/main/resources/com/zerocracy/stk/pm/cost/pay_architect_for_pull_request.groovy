@@ -21,6 +21,7 @@ import com.jcabi.github.Issue
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Par
+import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
@@ -77,7 +78,7 @@ def exec(Project project, XML xml) {
           'Payment to ARC for a closed pull request, as in §28'
         ).say()
       )
-      .param('minutes', 15)
+      .param('minutes', new Policy().get('28.price', 10))
       .postTo(project)
   }
 }

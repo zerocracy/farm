@@ -24,7 +24,7 @@ SOFTWARE.
     <params>
       <param name="job">gh:test/test#1</param>
       <param name="login">yegor256</param>
-      <param name="points">-200</param>
+      <param name="points">-500</param>
       <param name="reason">Test reason</param>
     </params>
   </claim>

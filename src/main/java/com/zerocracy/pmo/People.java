@@ -20,6 +20,7 @@ import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Par;
+import com.zerocracy.Policy;
 import com.zerocracy.Project;
 import com.zerocracy.SoftException;
 import com.zerocracy.Xocument;
@@ -53,10 +54,7 @@ import org.xembly.Directives;
         }
     )
 public final class People {
-    /**
-     * Max students for a person.
-     */
-    private static final int MAX_STUDENTS = 16;
+
     /**
      * Project.
      */
@@ -209,19 +207,20 @@ public final class People {
             );
         }
         try (final Item item = this.item()) {
-            if (
-                new Xocument(item.path())
-                    .nodes(
-                        String.format(
-                            "/people/person[mentor/text()='%s']",
-                            mentor
-                        )
-                    ).size() >= People.MAX_STUDENTS
-                ) {
+            final int max = new Policy().get("1.max-students", 16);
+            final int current = new Xocument(item.path())
+                .nodes(
+                    String.format(
+                        "/people/person[mentor/text()='%s']",
+                        mentor
+                    )
+                ).size();
+            if (current >= max) {
                 throw new SoftException(
                     new Par(
-                        "You can not invite more than %d students, see §1"
-                    ).say(People.MAX_STUDENTS)
+                        "You can not invite more than %d students;",
+                        "you already have %d, see §1"
+                    ).say(max, current)
                 );
             }
             new Xocument(item.path()).modify(
@@ -260,20 +259,22 @@ public final class People {
      * @throws IOException If fails
      */
     public void rate(final String uid, final Cash rate) throws IOException {
-        if (rate.compareTo(new Cash.S("$256")) > 0) {
+        final Cash max = new Policy().get("16.max", new Cash.S("$256"));
+        if (rate.compareTo(max) > 0) {
             throw new SoftException(
                 new Par(
                     "This is too high (%s),",
-                    "we do not work with rates higher than $256, see §16"
-                ).say(rate)
+                    "we do not work with rates higher than %s, see §16"
+                ).say(rate, max)
             );
         }
-        if (rate.compareTo(new Cash.S("$16")) < 0) {
+        final Cash min = new Policy().get("16.min", Cash.ZERO);
+        if (rate.compareTo(min) < 0) {
             throw new SoftException(
                 new Par(
                     "This is too low (%s),",
-                    "we do not work with rates lower than $16, see §16"
-                ).say(rate)
+                    "we do not work with rates lower than %s, see §16"
+                ).say(rate, min)
             );
         }
         if (this.wallet(uid).isEmpty()) {

@@ -18,6 +18,7 @@ package com.zerocracy.stk.pm.in.orders
 
 import com.jcabi.xml.XML
 import com.zerocracy.Par
+import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
 import com.zerocracy.farm.Assume
@@ -42,7 +43,7 @@ def exec(Project project, XML xml) {
     it.containsKey('quality') ? it['quality'] : 'acceptable'
   }
   if (quality == 'good' || quality == 'acceptable') {
-    int extra = quality == 'good' ? 5 : 0
+    int extra = quality == 'good' ? new Policy().get('31.bonus', 5) : 0
     ClaimOut out = claim.copy()
       .type('Make payment')
       .param('cause', claim.cid())

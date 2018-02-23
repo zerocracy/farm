@@ -55,7 +55,7 @@ def exec(Project project, XML xml) {
       new Par('The project %s was published by @%s').say(
         project.pid(), claim.author()
       )
-    ).param('min', new Policy(farm).get('33.min-live', 0)).postTo(project)
+    ).param('min', new Policy().get('33.min-live', 0)).postTo(project)
   } else if ('off' == mode) {
     catalog.publish(project.pid(), false)
     claim.reply(

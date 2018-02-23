@@ -21,6 +21,7 @@ import com.jcabi.github.Issue
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Par
+import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
@@ -50,7 +51,7 @@ def exec(Project project, XML xml) {
       .param('job', job)
       .param('login', author)
       .param('reason', new Par('Bug was reported, see §29').say())
-      .param('minutes', 15)
+      .param('minutes', new Policy().get('29.price', 15))
       .postTo(project)
   } else if (claim.hasToken() && author != '0pdd') {
     claim.reply(

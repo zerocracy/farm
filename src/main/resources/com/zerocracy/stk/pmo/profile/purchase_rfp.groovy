@@ -17,7 +17,6 @@
 package com.zerocracy.stk.pmo.profile
 
 import com.jcabi.xml.XML
-import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
@@ -41,8 +40,7 @@ def exec(Project pmo, XML xml) {
   String author = claim.author()
   Awards awards = new Awards(pmo, author).bootstrap()
   int reputation = awards.total()
-  Farm farm = binding.variables.farm
-  if (reputation < new Policy(farm).get('40.min', 0)) {
+  if (reputation < new Policy().get('40.min', 512)) {
     throw new SoftException(
       new Par(
         'Your reputation is %d, it is too low;',
@@ -51,7 +49,8 @@ def exec(Project pmo, XML xml) {
     )
   }
   String job = 'gh:zerocracy/datum#1'
-  int points = -256
+  int points = new Policy().get('40.price', -256)
+  String owner = rfps.owner(rid)
   String email = rfps.buy(rid, author)
   String reason = new Par(
     'RFP #%d has been purchased: %s'
@@ -63,6 +62,15 @@ def exec(Project pmo, XML xml) {
       'the email of the client is %s;',
       'we deducted %d points from your reputation, according to §40'
     ).say(rid, email, -points)
+  ).postTo(pmo)
+  claim.copy().type('Notify user').token("user;${owner}").param(
+    'message',
+    new Par(
+      'Your RFP #%d has been purchased by @%s;',
+      'he/she will get in touch with you shortly,',
+      'since he/she now knows your email;',
+      'wish you luck in your new project!'
+    ).say(rid, author)
   ).postTo(pmo)
   claim.copy().type('Notify user').token('user;yegor256').param(
     'message', new Par(

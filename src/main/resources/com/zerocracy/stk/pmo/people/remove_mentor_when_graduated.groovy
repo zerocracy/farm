@@ -18,6 +18,7 @@ package com.zerocracy.stk.pmo.people
 
 import com.jcabi.xml.XML
 import com.zerocracy.Par
+import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
@@ -37,17 +38,18 @@ def exec(Project pmo, XML xml) {
       return
     }
     int reputation = new Awards(pmo, uid).bootstrap().total()
-    if (reputation < 2048) {
+    int threshold = new Policy().get('43.threshold', 2048)
+    if (reputation < threshold) {
       return
     }
     people.graduate(uid)
     claim.reply(
       new Par(
-        'Since your reputation is over 2048,',
+        'Since your reputation is over %d,',
         'you don\'t need a mentor anymore, as explained in §43;',
         'you successfully graduated and don\'t need any help anymore;',
         'congratulations!'
-      ).say()
+      ).say(threshold)
     ).postTo(pmo)
     claim.copy().type('Notify user').token('user;yegor256').param(
       'message', new Par(
