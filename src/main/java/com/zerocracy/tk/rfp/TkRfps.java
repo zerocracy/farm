@@ -18,6 +18,7 @@ package com.zerocracy.tk.rfp;
 
 import com.zerocracy.Farm;
 import com.zerocracy.Par;
+import com.zerocracy.Policy;
 import com.zerocracy.pmo.Awards;
 import com.zerocracy.pmo.Rfps;
 import com.zerocracy.tk.RqUser;
@@ -64,8 +65,7 @@ public final class TkRfps implements Take {
                 final String user = new RqUser(this.farm, req).value();
                 final Awards awards = new Awards(this.farm, user).bootstrap();
                 final int reputation = awards.total();
-                // @checkstyle MagicNumber (1 line)
-                if (awards.total() < 512) {
+                if (awards.total() < new Policy(this.farm).get("40.min", 0)) {
                     throw new RsForward(
                         new RsParFlash(
                             new Par(

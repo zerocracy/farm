@@ -18,6 +18,7 @@ package com.zerocracy.tk.rfp;
 
 import com.zerocracy.Farm;
 import com.zerocracy.Par;
+import com.zerocracy.Policy;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pmo.Pmo;
 import com.zerocracy.pmo.Rfps;
@@ -74,19 +75,23 @@ public final class TkSubmit implements Take {
         final boolean complete = rfps.complete(user);
         final int rid = rfps.post(user, sow);
         if (!complete) {
-            new ClaimOut().type("Notify all").param(
-                "message",
-                new Par(
-                    "New RFP #%d was published,",
-                    "you can [join](/rfps) as an architect;",
-                    "a potential client needs an architect and the system",
-                    "selected you, as one of the best developers",
-                    "we have in house;",
-                    "you can 'buy' this RFP and get in touch with the client,",
-                    "see §40"
-                ).say(rid)
-            // @checkstyle MagicNumber (1 line)
-            ).param("min", 512).postTo(new Pmo(this.farm));
+            new ClaimOut()
+                .type("Notify all")
+                .param(
+                    "message",
+                    new Par(
+                        "New RFP #%d was published,",
+                        "you can [join](/rfps) as an architect;",
+                        "a potential client needs an architect and the system",
+                        "selected you, as one of the best developers",
+                        "we have in house;",
+                        "you can 'buy' this RFP",
+                        "and get in touch with the client,",
+                        "see §40"
+                    ).say(rid)
+                )
+                .param("min", new Policy(this.farm).get("40.min", 0))
+                .postTo(new Pmo(this.farm));
         }
         return new RsForward(
             new RsParFlash(

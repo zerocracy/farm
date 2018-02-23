@@ -17,7 +17,9 @@
 package com.zerocracy.stk.pmo.profile
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Par
+import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.SoftException
 import com.zerocracy.farm.Assume
@@ -39,7 +41,8 @@ def exec(Project pmo, XML xml) {
   String author = claim.author()
   Awards awards = new Awards(pmo, author).bootstrap()
   int reputation = awards.total()
-  if (reputation < 512) {
+  Farm farm = binding.variables.farm
+  if (reputation < new Policy(farm).get('40.min', 0)) {
     throw new SoftException(
       new Par(
         'Your reputation is %d, it is too low;',
