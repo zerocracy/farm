@@ -117,6 +117,28 @@ public final class People {
     }
 
     /**
+     * Set mentor to '0crat'.
+     * @param uid User ID
+     * @throws IOException If fails
+     */
+    public void graduate(final String uid) throws IOException {
+        if (!this.hasMentor(uid)) {
+            throw new SoftException(
+                new Par(
+                    "User @%s is not with us yet"
+                ).say(uid)
+            );
+        }
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                People.start(uid)
+                    .addIf("mentor")
+                    .set("0crat")
+            );
+        }
+    }
+
+    /**
      * Set details.
      * @param uid User ID
      * @param text Text to save

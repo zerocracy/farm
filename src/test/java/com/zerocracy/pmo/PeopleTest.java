@@ -198,4 +198,17 @@ public final class PeopleTest {
             )
         ).value();
     }
+
+    @Test
+    public void graduate() throws Exception {
+        final People people = new People(new FkProject()).bootstrap();
+        final String uid = "yegor11";
+        people.invite(uid, "the-mentor");
+        people.graduate(uid);
+        MatcherAssert.assertThat(
+            people.mentor(uid),
+            Matchers.equalTo("0crat")
+        );
+    }
+
 }
