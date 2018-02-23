@@ -39,11 +39,11 @@ def exec(Project pmo, XML xml) {
   String author = claim.author()
   Awards awards = new Awards(pmo, author).bootstrap()
   int reputation = awards.total()
-  if (reputation < 2048) {
+  if (reputation < 512) {
     throw new SoftException(
       new Par(
         'Your reputation is %d, it is too low;',
-        'must be at least 2048, see §40'
+        'must be at least +512, see §40'
       ).say(reputation)
     )
   }

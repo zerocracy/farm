@@ -65,7 +65,7 @@ public final class TkRfps implements Take {
                 final Awards awards = new Awards(this.farm, user).bootstrap();
                 final int reputation = awards.total();
                 // @checkstyle MagicNumber (1 line)
-                if (awards.total() < 2048) {
+                if (awards.total() < 512) {
                     throw new RsForward(
                         new RsParFlash(
                             new Par(
