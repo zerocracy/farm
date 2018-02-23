@@ -474,6 +474,7 @@ SOFTWARE.
             <configuration>
               <excludes combine.children="append">
                 <exclude>checkstyle:/src/main/resources/png/.*</exclude>
+                <exclude>checkstyle:/src/main/resources/com/zerocracy/tk/project/badge.sketch</exclude>
                 <exclude>findbugs:.*</exclude>
                 <exclude>codenarc:**/*</exclude>
                 <exclude>duplicatefinder:.*</exclude>
