@@ -26,16 +26,16 @@ import com.zerocracy.Project
 import com.zerocracy.entry.ExtGithub
 
 def exec(Project project, XML xml) {
-    Farm farm = binding.variables.farm
-    MkGithub github = new ExtGithub(farm).value() as MkGithub
-    Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
-    Pull pull = repo.pulls().create('Test PR', 'test', 'the test')
-    github.relogin('cmiranda')
-        .repos().get(repo.coordinates())
-        .pulls().get(pull.number())
-        .comments().post('PR accepted', 'cmt', '', 1)
-    github.relogin('dmarkov')
-        .repos().get(repo.coordinates())
-        .pulls().get(pull.number())
-        .comments().post('rultor merge', 'cmt', '', 1)
+  Farm farm = binding.variables.farm
+  MkGithub github = new ExtGithub(farm).value() as MkGithub
+  Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
+  Pull pull = repo.pulls().create('Test PR', 'test', 'the test')
+  github.relogin('cmiranda')
+    .repos().get(repo.coordinates())
+    .pulls().get(pull.number())
+    .comments().post('PR accepted', 'cmt', '', 1)
+  github.relogin('dmarkov')
+    .repos().get(repo.coordinates())
+    .pulls().get(pull.number())
+    .comments().post('rultor merge', 'cmt', '', 1)
 }

@@ -88,27 +88,27 @@ def exec(Project project, XML xml) {
 }
 
 def issueQuality(Project project, String job) {
-    Farm farm = binding.variables.farm
-    Roles roles = new Roles(project).bootstrap()
-    Orders orders = new Orders(project).bootstrap()
-    List<String> arcs = roles.findByRole('ARC')
-    String performer = orders.performer(job)
-    Issue.Smart issue = new Issue.Smart(new Job.Issue(new ExtGithub(farm).value(), job))
-    if (issue.pull) {
-        List<String> authors = new ListOf<>(
-            new Mapped<>(
-                { Comment cmt -> new Comment.Smart(cmt).author().login() },
-                issue.comments().iterate(issue.createdAt())
-            )
-        )
-        boolean hasArc = new Or(
-            new FuncOf<String, Boolean>({ String author -> arcs.contains(authors) }),
-            authors
-        ).value()
-        if (hasArc && authors.contains(performer)) {
-            return 'acceptable'
-        }
-        return 'bad'
+  Farm farm = binding.variables.farm
+  Roles roles = new Roles(project).bootstrap()
+  Orders orders = new Orders(project).bootstrap()
+  List<String> arcs = roles.findByRole('ARC')
+  String performer = orders.performer(job)
+  Issue.Smart issue = new Issue.Smart(new Job.Issue(new ExtGithub(farm).value(), job))
+  if (issue.pull) {
+    List<String> authors = new ListOf<>(
+      new Mapped<>(
+        { Comment cmt -> new Comment.Smart(cmt).author().login() },
+        issue.comments().iterate(issue.createdAt())
+      )
+    )
+    boolean hasArc = new Or(
+      new FuncOf<String, Boolean>({ String author -> arcs.contains(authors) }),
+      authors
+    ).value()
+    if (hasArc && authors.contains(performer)) {
+      return 'acceptable'
     }
-    'acceptable'
+    return 'bad'
+  }
+  'acceptable'
 }
