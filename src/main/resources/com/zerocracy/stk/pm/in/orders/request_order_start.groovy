@@ -18,11 +18,10 @@ package com.zerocracy.stk.pm.in.orders
 
 import com.jcabi.xml.XML
 import com.zerocracy.Par
-import com.zerocracy.farm.Assume
 import com.zerocracy.Project
 import com.zerocracy.SoftException
+import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.scope.Wbs
 
@@ -39,9 +38,8 @@ def exec(Project project, XML xml) {
   Wbs wbs = new Wbs(project).bootstrap()
   if (!wbs.exists(job)) {
     wbs.add(job)
-    new ClaimOut()
+    claim.copy()
       .type('Job was added to WBS')
-      .param('cause', claim.cid())
       .param('job', job)
       .postTo(project)
   }
@@ -56,9 +54,8 @@ def exec(Project project, XML xml) {
       )
     }
     orders.resign(job)
-    new ClaimOut()
+    claim.copy()
       .type('Order was canceled')
-      .param('cause', claim.cid())
       .param('job', job)
       .param('login', performer)
       .postTo(project)

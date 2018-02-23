@@ -39,7 +39,7 @@ SOFTWARE.
           <xsl:value-of select="owner"/>
         </a>
         <xsl:text> (</xsl:text>
-        <a href="http://datum.zerocracy.com/pages/terms.html#kyc">
+        <a href="http://www.zerocracy.com/terms.html#kyc">
           <xsl:choose>
             <xsl:when test="identified='true'">
               <xsl:text>identified</xsl:text>
@@ -56,6 +56,8 @@ SOFTWARE.
     <xsl:apply-templates select="details"/>
     <xsl:apply-templates select="awards"/>
     <xsl:apply-templates select="agenda"/>
+    <xsl:apply-templates select="mentor"/>
+    <xsl:apply-templates select="students"/>
     <xsl:if test="identity/login = 'yegor256'">
       <form action="/kyc/{owner}" method="post" autocomplete="off">
         <input type="text" name="details" size="50" placeholder="e.g. JEFF LEBOWSKY 23-12-1976 @EMAIL"/>
@@ -68,7 +70,7 @@ SOFTWARE.
   <xsl:template match="rate">
     <p>
       <xsl:text>Hourly </xsl:text>
-      <a href="http://datum.zerocracy.com/pages/policy.html#16">
+      <a href="http://www.zerocracy.com/policy.html#16">
         <xsl:text>rate</xsl:text>
       </a>
       <xsl:text> is </xsl:text>
@@ -88,7 +90,7 @@ SOFTWARE.
   <xsl:template match="awards">
     <p>
       <xsl:text>Total </xsl:text>
-      <a href="http://datum.zerocracy.com/pages/policy.html#18">
+      <a href="http://www.zerocracy.com/policy.html#18">
         <xsl:text>points</xsl:text>
       </a>
       <xsl:text> earned: </xsl:text>
@@ -143,7 +145,7 @@ SOFTWARE.
         </xsl:otherwise>
       </xsl:choose>
       <xsl:text> (max </xsl:text>
-      <a href="http://datum.zerocracy.com/pages/policy.html#3">
+      <a href="http://www.zerocracy.com/policy.html#3">
         <xsl:text>allowed</xsl:text>
       </a>
       <xsl:text>: </xsl:text>
@@ -175,7 +177,7 @@ SOFTWARE.
         <xsl:text>You should start talking to our bot</xsl:text>
         <xsl:text> through one of our supported media, like</xsl:text>
         <xsl:text> Telegram or Slack. More details you can find in </xsl:text>
-        <a href="http://datum.zerocracy.com/pages/policy.html">
+        <a href="http://www.zerocracy.com/policy.html">
           <xsl:text>our policy</xsl:text>
         </a>
         <xsl:text>.</xsl:text>
@@ -184,6 +186,7 @@ SOFTWARE.
     <xsl:apply-templates select="identification"/>
     <xsl:apply-templates select="links"/>
     <xsl:apply-templates select="wallet"/>
+    <xsl:apply-templates select="debt"/>
     <xsl:apply-templates select="projects"/>
     <xsl:apply-templates select="skills"/>
   </xsl:template>
@@ -197,7 +200,7 @@ SOFTWARE.
   <xsl:template match="wallet">
     <p>
       <xsl:text>The </xsl:text>
-      <a href="http://datum.zerocracy.com/pages/policy.html#20">
+      <a href="http://www.zerocracy.com/policy.html#20">
         <xsl:text>wallet</xsl:text>
       </a>
       <xsl:text> is </xsl:text>
@@ -297,6 +300,73 @@ SOFTWARE.
       <code>
         <xsl:value-of select="."/>
       </code>
+      <xsl:text>.</xsl:text>
+    </p>
+  </xsl:template>
+  <xsl:template match="mentor">
+    <p>
+      <xsl:text>Your mentor is </xsl:text>
+      <a href="/u/{.}">
+        <xsl:text>@</xsl:text>
+        <xsl:value-of select="text()"/>
+      </a>
+      <xsl:text>.</xsl:text>
+    </p>
+  </xsl:template>
+  <xsl:template match="students[not(student)]">
+    <p>
+      <xsl:text>You don't have any </xsl:text>
+      <a href="http://www.zerocracy.com/policy.html#1">
+        <xsl:text>students</xsl:text>
+      </a>
+      <xsl:text> yet.</xsl:text>
+    </p>
+  </xsl:template>
+  <xsl:template match="students[student]">
+    <p>
+      <xsl:text>Your </xsl:text>
+      <xsl:value-of select="count(student)"/>
+      <xsl:text> </xsl:text>
+      <a href="http://www.zerocracy.com/policy.html#1">
+        <xsl:text>student</xsl:text>
+        <xsl:if test="count(student) &gt; 1">
+          <xsl:text>s</xsl:text>
+        </xsl:if>
+      </a>
+      <xsl:text>: </xsl:text>
+      <xsl:for-each select="student">
+        <xsl:if test="position() &gt; 1">
+          <xsl:text>, </xsl:text>
+        </xsl:if>
+        <a href="/u/{.}">
+          <xsl:text>@</xsl:text>
+          <xsl:value-of select="text()"/>
+        </a>
+      </xsl:for-each>
+      <xsl:text>.</xsl:text>
+    </p>
+  </xsl:template>
+  <xsl:template match="debt[items/item]">
+    <p>
+      <xsl:text>We owe you these </xsl:text>
+      <xsl:value-of select="count(items/item)"/>
+      <xsl:if test="count(items/item) &gt; 1">
+        <xsl:text>s</xsl:text>
+      </xsl:if>
+      <xsl:text> payments: </xsl:text>
+      <xsl:for-each select="items/item">
+        <xsl:if test="position() &gt; 1">
+          <xsl:text>; </xsl:text>
+        </xsl:if>
+        <strong>
+          <xsl:value-of select="amount"/>
+        </strong>
+        <xsl:text>: </xsl:text>
+        <xsl:value-of select="details"/>
+        <xsl:text> (</xsl:text>
+        <xsl:value-of select="reason"/>
+        <xsl:text>)</xsl:text>
+      </xsl:for-each>
       <xsl:text>.</xsl:text>
     </p>
   </xsl:template>

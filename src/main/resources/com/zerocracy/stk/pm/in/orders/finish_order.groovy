@@ -59,7 +59,7 @@ def exec(Project project, XML xml) {
     }
     out.postTo(project)
   } else {
-    new ClaimOut()
+    claim.copy()
       .type('Notify job')
       .token("job;${job}")
       .param('job', job)
@@ -67,9 +67,8 @@ def exec(Project project, XML xml) {
       .postTo(project)
   }
   orders.resign(job)
-  new ClaimOut()
+  claim.copy()
     .type('Order was finished')
-    .param('cause', claim.cid())
     .param('job', job)
     .param('login', login)
     .param('minutes', minutes)

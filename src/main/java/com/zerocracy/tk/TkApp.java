@@ -88,7 +88,7 @@ import org.takes.tk.TkWrap;
  * @checkstyle LineLength (500 lines)
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
  */
-@SuppressWarnings({ "PMD.AvoidDuplicateLiterals", "PMD.ExcessiveImports" })
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.ExcessiveImports"})
 public final class TkApp extends TkWrap {
 
     /**
@@ -123,7 +123,7 @@ public final class TkApp extends TkWrap {
                                             new TkForward(
                                                 new TkFork(
                                                     new SolidList<Fork>(
-                                                        new Concat<>(
+                                                        new Concat<Fork>(
                                                             new SolidList<>(forks),
                                                             new SolidList<>(
                                                                 new FkRegex(
@@ -132,7 +132,7 @@ public final class TkApp extends TkWrap {
                                                                 ),
                                                                 new FkRegex("/", new TkIndex(farm)),
                                                                 new FkRegex("/identify", new TkIdentify(farm)),
-                                                                new FkRegex("/privacy", new TkRedirect("http://datum.zerocracy.com/pages/terms.html#privacy")),
+                                                                new FkRegex("/privacy", new TkRedirect("http://www.zerocracy.com/terms.html#privacy")),
                                                                 new FkRegex("/yoti", new TkYoti(farm)),
                                                                 new FkRegex("/heapdump", new TkDump(farm)),
                                                                 new FkRegex("/guts", new TkGuts(farm)),
@@ -143,14 +143,14 @@ public final class TkApp extends TkWrap {
                                                                     )
                                                                 ),
                                                                 new FkRegex("/spam-send", new TkSpam(farm)),
-                                                                new FkRegex("/shutdown", new TkShutdown()),
+                                                                new FkRegex("/shutdown", new TkShutdown(props)),
                                                                 new FkRegex(
                                                                     "/join",
                                                                     (Take) req -> new RsPage(
                                                                         farm, "/xsl/join.xsl", req
                                                                     )
                                                                 ),
-                                                                new FkRegex("/join-post", new TkJoin()),
+                                                                new FkRegex("/join-post", new TkJoin(farm)),
                                                                 new FkRegex(
                                                                     "/org/takes/.+\\.xsl",
                                                                     new TkClasspath()

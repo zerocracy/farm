@@ -31,7 +31,7 @@ SOFTWARE.
     <div class="center">
       <p>
         <a href="/">
-          <img src="/svg/logo.svg" style="width:128px;height:128px;"/>
+          <img src="/svg/zerocrat.svg" style="height:128px;"/>
         </a>
       </p>
       <p>
@@ -90,11 +90,11 @@ SOFTWARE.
           </xsl:otherwise>
         </xsl:choose>
         <xsl:text> &#xB7; </xsl:text>
-        <a href="http://datum.zerocracy.com/pages/policy.html">
+        <a href="http://www.zerocracy.com/policy.html">
           <xsl:text>Policy</xsl:text>
         </a>
         <xsl:text> &#xB7; </xsl:text>
-        <a href="http://datum.zerocracy.com/pages/terms.html">
+        <a href="http://www.zerocracy.com/terms.html">
           <xsl:text>Terms</xsl:text>
         </a>
         <xsl:if test="identity">

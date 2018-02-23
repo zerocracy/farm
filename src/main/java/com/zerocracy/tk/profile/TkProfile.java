@@ -21,6 +21,7 @@ import com.zerocracy.Project;
 import com.zerocracy.pmo.Agenda;
 import com.zerocracy.pmo.Awards;
 import com.zerocracy.pmo.Catalog;
+import com.zerocracy.pmo.Debts;
 import com.zerocracy.pmo.People;
 import com.zerocracy.pmo.Pmo;
 import com.zerocracy.pmo.Projects;
@@ -73,6 +74,7 @@ public final class TkProfile implements TkRegex {
                 final String login = new RqLogin(pmo, req).value();
                 final People people = new People(pmo).bootstrap();
                 final Catalog catalog = new Catalog(pmo).bootstrap();
+                final Debts debts = new Debts(pmo).bootstrap();
                 return new XeChain(
                     new XeAppend("owner", login),
                     new XeWhen(
@@ -114,6 +116,10 @@ public final class TkProfile implements TkRegex {
                             new XeAppend(
                                 "identification",
                                 people.details(login)
+                            ),
+                            new XeWhen(
+                                debts.exists(login),
+                                new XeDirectives(debts.toXembly(login))
                             )
                         )
                     ),
@@ -137,6 +143,17 @@ public final class TkProfile implements TkRegex {
                             new LengthOf(
                                 new Agenda(pmo, login).bootstrap().jobs()
                             ).intValue()
+                        )
+                    ),
+                    new XeAppend(
+                        "mentor",
+                        people.mentor(login)
+                    ),
+                    new XeAppend(
+                        "students",
+                        new XeTransform<>(
+                            people.students(login),
+                            st -> new XeAppend("student", st)
                         )
                     )
                 );

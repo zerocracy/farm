@@ -33,7 +33,7 @@ SOFTWARE.
   <xsl:template match="rfps[not(rfp)]">
     <p>
       <xsl:text>There are no new RFPs, sorry, see </xsl:text>
-      <a href="http://datum.zerocracy.com/pages/policy.html#40">
+      <a href="http://www.zerocracy.com/policy.html#40">
         <xsl:text>&#xA7;40</xsl:text>
       </a>
       <xsl:text>.</xsl:text>
@@ -42,7 +42,7 @@ SOFTWARE.
   <xsl:template match="rfps[rfp]">
     <p>
       <xsl:text>This is a full list of RFPs available for purchase now, see </xsl:text>
-      <a href="http://datum.zerocracy.com/pages/policy.html#40">
+      <a href="http://www.zerocracy.com/policy.html#40">
         <xsl:text>&#xA7;40</xsl:text>
       </a>
       <xsl:text>:</xsl:text>
@@ -73,8 +73,9 @@ SOFTWARE.
           <xsl:value-of select="id"/>
         </code>
       </td>
-      <td>
-        <xsl:value-of select="created"/>
+      <td title="{created}">
+        <xsl:value-of select="ago"/>
+        <xsl:text> ago</xsl:text>
       </td>
       <td>
         <xsl:value-of select="sow"/>

@@ -18,10 +18,9 @@ package com.zerocracy.stk.pm.cost
 
 import com.jcabi.xml.XML
 import com.zerocracy.Par
-import com.zerocracy.farm.Assume
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
-import com.zerocracy.pm.ClaimOut
+import com.zerocracy.farm.Assume
 import com.zerocracy.pm.cost.Estimates
 import com.zerocracy.pm.cost.Ledger
 
@@ -33,7 +32,7 @@ def exec(Project project, XML xml) {
   Cash locked = new Estimates(project).bootstrap().total()
   if (ledger.deficit() && cash > locked) {
     ledger.deficit(false)
-    new ClaimOut()
+    claim.copy()
       .type('Notify project')
       .param(
         'message',
@@ -48,7 +47,7 @@ def exec(Project project, XML xml) {
   }
   if (!ledger.deficit() && cash < locked) {
     ledger.deficit(true)
-    new ClaimOut()
+    claim.copy()
       .type('Notify project')
       .param(
         'message',

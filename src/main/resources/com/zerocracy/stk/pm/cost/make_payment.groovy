@@ -23,9 +23,9 @@ import com.zerocracy.Project
 import com.zerocracy.cash.Cash
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.cost.Rates
 import com.zerocracy.pm.staff.Roles
+import com.zerocracy.pmo.Debts
 import com.zerocracy.pmo.banks.Payroll
 
 def exec(Project project, XML xml) {
@@ -62,41 +62,41 @@ def exec(Project project, XML xml) {
         project, login, price,
         "Payment for ${job} (${minutes} minutes): ${reason}"
       )
-    } catch (IOException ex) {
-      new ClaimOut()
+      claim.copy()
         .type('Notify user')
         .token("user;${login}")
-        .param('cause', claim.cid())
+        .param(
+          'message',
+          new Par(
+            'We just paid you %s (`%s`) for %s: %s'
+          ).say(price, msg, job, reason)
+        )
+        .postTo(project)
+    } catch (IOException ex) {
+      new Debts(farm).add(
+        login, price, "${reason} at ${job}", ex.message
+      )
+      claim.copy()
+        .type('Notify user')
+        .token("user;${login}")
         .param(
           'message',
           new Par(
             'We are very sorry, but we failed to pay you %s for %s: "%s";',
-            'please, ask your mentor to help you out or',
-            'submit a ticket to https://github.com/zerocracy/farm'
+            'this amount was added to the list of payments we owe you;',
+            'we will try to send them all together very soon;',
+            'we will keep you informed'
           ).say(price, job, ex.message)
         )
         .postTo(project)
-      throw ex
     }
-    new ClaimOut()
-      .type('Notify user')
-      .token("user;${login}")
-      .param('cause', claim.cid())
-      .param(
-        'message',
-        new Par(
-          'We just paid you %s (`%s`) for %s: %s'
-        ).say(price, msg, job, reason)
-      )
-      .postTo(project)
-    new ClaimOut()
+    claim.copy()
       .type('Notify project')
-      .param('cause', claim.cid())
       .param(
         'message',
         new Par(
-          'We just paid %s (`%s`) to @%s for %s: %s'
-        ).say(price, msg, login, job, reason)
+          'We just paid %s to @%s for %s: %s'
+        ).say(price, login, job, reason)
       )
       .postTo(project)
   }

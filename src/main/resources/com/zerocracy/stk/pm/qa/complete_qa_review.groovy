@@ -22,7 +22,6 @@ import com.zerocracy.Project
 import com.zerocracy.SoftException
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.staff.Roles
 
 def exec(Project project, XML xml) {
@@ -37,12 +36,12 @@ def exec(Project project, XML xml) {
       new Par('You need to have either QA or ARC roles to do that').say()
     )
   }
-  new ClaimOut()
+  claim.copy()
     .type('Make payment')
     .param('job', job)
     .param('login', inspector)
     .param('reason', 'QA review completed')
-    .param('minutes', 15)
+    .param('minutes', 8)
     .postTo(project)
   claim.copy()
     .type('Finish order')

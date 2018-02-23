@@ -16,15 +16,18 @@
  */
 package com.zerocracy.tk;
 
+import com.zerocracy.farm.fake.FkFarm;
+import com.zerocracy.farm.props.PropsFarm;
 import java.net.HttpURLConnection;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 import org.takes.facets.hamcrest.HmRsStatus;
 import org.takes.rq.RqFake;
+import org.takes.rq.RqWithHeader;
+import org.takes.rq.RqWrap;
 
 /**
  * Test case for {@link TkShutdown}.
- *
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.20
@@ -34,8 +37,26 @@ public final class TkShutdownTest {
     @Test
     public void returnOk() throws Exception {
         MatcherAssert.assertThat(
-            new TkShutdown().act(new RqFake()),
+            new TkApp(new PropsFarm(new FkFarm())).act(
+                new RqWithHeader(
+                    new TkShutdownTest.RqShutdown(),
+                    "X-Auth",
+                    "123"
+                )
+            ),
             new HmRsStatus(HttpURLConnection.HTTP_OK)
         );
+    }
+
+    /**
+     * Shutdown fake request.
+     */
+    private static final class RqShutdown extends RqWrap {
+        /**
+         * Ctor.
+         */
+        RqShutdown() {
+            super(new RqFake("GET", "/shutdown"));
+        }
     }
 }

@@ -22,7 +22,6 @@ import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.Claims
 import com.zerocracy.pm.cost.Boosts
 import com.zerocracy.pm.cost.Ledger
@@ -46,6 +45,7 @@ import com.zerocracy.pmo.Pmo
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Ping')
+  ClaimIn claim = new ClaimIn(xml)
   Claims claims = new Claims(project)
   if (!claims.iterate().empty && !new ClaimIn(xml).hasParam('force')) {
     Logger.info(this, 'Still %d claims, can\'t elect', claims.iterate().size())
@@ -91,7 +91,7 @@ def exec(Project project, XML xml) {
       ]
     )
     if (done && elections.elected(job)) {
-      new ClaimOut()
+      claim.copy()
         .type('Performer was elected')
         .param('login', elections.winner(job))
         .param('job', job)

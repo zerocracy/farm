@@ -117,6 +117,28 @@ public final class People {
     }
 
     /**
+     * Set mentor to '0crat'.
+     * @param uid User ID
+     * @throws IOException If fails
+     */
+    public void graduate(final String uid) throws IOException {
+        if (!this.hasMentor(uid)) {
+            throw new SoftException(
+                new Par(
+                    "User @%s is not with us yet"
+                ).say(uid)
+            );
+        }
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                People.start(uid)
+                    .addIf("mentor")
+                    .set("0crat")
+            );
+        }
+    }
+
+    /**
      * Set details.
      * @param uid User ID
      * @param text Text to save
@@ -564,6 +586,23 @@ public final class People {
                     )
                 )
             ).value();
+        }
+    }
+
+    /**
+     * Students of a person.
+     * @param uid Person's login
+     * @return Iterable with student ids
+     * @throws IOException If fails
+     */
+    public Iterable<String> students(final String uid) throws IOException {
+        try (final Item item = this.item()) {
+            return new Xocument(item.path()).xpath(
+                String.format(
+                    "/people/person[mentor/text()='%s']/@id",
+                    uid
+                )
+            );
         }
     }
 

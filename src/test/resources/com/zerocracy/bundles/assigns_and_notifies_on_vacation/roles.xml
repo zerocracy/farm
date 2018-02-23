@@ -19,4 +19,7 @@ SOFTWARE.
   <person id="yegor256">
     <role>ARC</role>
   </person>
+  <person id="test">
+    <role>DEV</role>
+  </person>
 </roles>

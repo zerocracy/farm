@@ -20,7 +20,6 @@ import com.jcabi.xml.XML
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.cost.Estimates
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.scope.Wbs
@@ -32,6 +31,9 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
   Orders orders = new Orders(project).bootstrap()
+  if (!orders.assigned(job)) {
+    return
+  }
   String owner = orders.performer(job)
   String role = new Wbs(project).bootstrap().role(job)
   Agenda agenda = new Agenda(project, owner).bootstrap()
@@ -40,9 +42,8 @@ def exec(Project project, XML xml) {
   if (estimates.exists(job)) {
     agenda.estimate(job, estimates.get(job))
   }
-  new ClaimOut()
+  claim.copy()
     .type('Agenda was updated')
-    .param('cause', claim.cid())
     .param('login', owner)
     .postTo(project)
 }

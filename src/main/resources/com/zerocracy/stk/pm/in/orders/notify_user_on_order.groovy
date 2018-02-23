@@ -17,21 +17,19 @@
 package com.zerocracy.stk.pm.in.orders
 
 import com.jcabi.xml.XML
-import com.zerocracy.Par
-import com.zerocracy.farm.Assume
 import com.zerocracy.Farm
+import com.zerocracy.Par
 import com.zerocracy.Project
+import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Order was given')
   ClaimIn claim = new ClaimIn(xml)
   Farm farm = binding.variables.farm
-  new ClaimOut()
+  claim.copy()
     .type('Notify user')
-    .param('cause', claim.cid())
     .token("user;${claim.param('login')}")
     .param(
       'message',

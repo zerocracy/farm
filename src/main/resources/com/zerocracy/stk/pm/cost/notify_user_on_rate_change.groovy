@@ -18,11 +18,10 @@ package com.zerocracy.stk.pm.cost
 
 import com.jcabi.xml.XML
 import com.zerocracy.Par
-import com.zerocracy.farm.Assume
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
+import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
@@ -30,9 +29,8 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   String login = claim.param('login')
   Cash rate = new Cash.S(claim.param('rate'))
-  new ClaimOut()
+  claim.copy()
     .type('Notify user')
-    .param('cause', claim.cid())
     .token("user;${login}")
     .param(
       'message',

@@ -16,7 +16,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" version="1.0">
-  <xsl:output method="html" doctype-system="about:legacy-compat" encoding="utf-8" indent="yes"/>
+  <xsl:output method="html" doctype-system="about:legacy-compat" encoding="UTF-8" indent="yes"/>
   <xsl:strip-space elements="*"/>
   <xsl:include href="/xsl/inner-layout.xsl"/>
   <xsl:template match="page" mode="head">
@@ -31,13 +31,13 @@ SOFTWARE.
     <p>
       <xsl:text>Fill this form to send a join request to all high-ranked users.</xsl:text>
       <xsl:text> Someone may decide to </xsl:text>
-      <a href="http://datum.zerocracy.com/pages/policy.html#1">
+      <a href="http://www.zerocracy.com/policy.html#1">
         <xsl:text>invite</xsl:text>
       </a>
       <xsl:text> you and become your mentor.</xsl:text>
       <xsl:text> Remember, that a mentor will receive financial bonuses from us</xsl:text>
       <xsl:text> and positive or negative </xsl:text>
-      <a href="http://datum.zerocracy.com/pages/policy.html#18">
+      <a href="http://www.zerocracy.com/policy.html#18">
         <xsl:text>points</xsl:text>
       </a>
       <xsl:text> depending on your actions,</xsl:text>
@@ -50,14 +50,6 @@ SOFTWARE.
     </p>
     <form method="post" action="/join-post">
       <fieldset>
-        <label for="inp-github">
-          <xsl:text>Your </xsl:text>
-          <a href="https://github.com/">
-            <xsl:text>GitHub</xsl:text>
-          </a>
-          <xsl:text> account:</xsl:text>
-        </label>
-        <input id="inp-github" type="text" placeholder="@yegor256" required="required" name="github" size="18" pattern="@[a-zA-Z0-9-]+"/>
         <label for="inp-personality">
           <xsl:text>Your </xsl:text>
           <a href="https://www.16personalities.com/free-personality-test">
@@ -92,7 +84,7 @@ SOFTWARE.
     <p>
       <xsl:text>Right after you submit this form,</xsl:text>
       <xsl:text> we will send your information to all users with 1024+ reputation.</xsl:text>
-      <xsl:text> Some of them way become interested and will contact you in Telegram.</xsl:text>
+      <xsl:text> Some of them may become interested and will contact you in Telegram.</xsl:text>
     </p>
   </xsl:template>
 </xsl:stylesheet>

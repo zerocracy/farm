@@ -22,6 +22,7 @@ import com.zerocracy.pmo.Pmo;
 import com.zerocracy.radars.ClaimOnQuestion;
 import com.zerocracy.radars.Question;
 import java.io.IOException;
+import org.telegram.telegrambots.api.objects.Message;
 import org.telegram.telegrambots.api.objects.Update;
 
 /**
@@ -43,7 +44,7 @@ public final class ReProfile implements Reaction {
                     "/com/zerocracy/radars/q-profile.xml"
                 )
             ),
-            update.getMessage().getText().trim()
+            new ReProfile.MsgText(update.getMessage()).toString()
         );
         // @checkstyle LineLength (1 line)
         new ClaimOnQuestion(question, "Remember, this chat is for managing your personal profile; to manage a project, please open or create a new Slack channel and invite the bot there.")
@@ -56,5 +57,34 @@ public final class ReProfile implements Reaction {
             .param("date", update.getMessage().getDate())
             .postTo(new Pmo(farm));
         return question.matches();
+    }
+
+    /**
+     * Telegram message text.
+     */
+    private static final class MsgText {
+        /**
+         * A message.
+         */
+        private final Message msg;
+
+        /**
+         * Ctor.
+         * @param message Telegram message
+         */
+        private MsgText(final Message message) {
+            this.msg = message;
+        }
+
+        @Override
+        public String toString() {
+            final String txt;
+            if (this.msg.isCommand()) {
+                txt = this.msg.getText().substring(1);
+            } else {
+                txt = this.msg.getText();
+            }
+            return txt.trim();
+        }
     }
 }

@@ -36,7 +36,7 @@ SOFTWARE.
       <xsl:value-of select="count(user)"/>
       <xsl:text> users already registered with us.</xsl:text>
       <xsl:text> To join us too you have to apply, see </xsl:text>
-      <a href="http://datum.zerocracy.com/pages/policy.html#2">
+      <a href="http://www.zerocracy.com/policy.html#2">
         <xsl:text>&#xA7;2</xsl:text>
       </a>
       <xsl:text>.</xsl:text>
@@ -44,7 +44,7 @@ SOFTWARE.
       <xsl:text> you have to publish it on the </xsl:text>
       <xsl:text>Board</xsl:text>
       <xsl:text>, as explained in </xsl:text>
-      <a href="http://datum.zerocracy.com/pages/policy.html#26">
+      <a href="http://www.zerocracy.com/policy.html#26">
         <xsl:text>&#xA7;26</xsl:text>
       </a>
       <xsl:text>, we will automatically notify the best</xsl:text>
@@ -60,7 +60,7 @@ SOFTWARE.
             <xsl:text>Mentor/</xsl:text>
             <sub>
               <xsl:text>/</xsl:text>
-              <a href="http://datum.zerocracy.com/pages/policy.html#1">
+              <a href="http://www.zerocracy.com/policy.html#1">
                 <xsl:text>&#xA7;1</xsl:text>
               </a>
             </sub>
@@ -69,22 +69,31 @@ SOFTWARE.
             <xsl:text>Rate</xsl:text>
             <sub>
               <xsl:text>/</xsl:text>
-              <a href="http://datum.zerocracy.com/pages/policy.html#16">
+              <a href="http://www.zerocracy.com/policy.html#16">
                 <xsl:text>&#xA7;16</xsl:text>
               </a>
             </sub>
           </th>
           <th data-sortable-type="numeric">
-            <xsl:text>Reputation</xsl:text>
+            <xsl:text>Rep.</xsl:text>
             <sub>
               <xsl:text>/</xsl:text>
-              <a href="http://datum.zerocracy.com/pages/policy.html#18">
+              <a href="http://www.zerocracy.com/policy.html#18">
                 <xsl:text>&#xA7;18</xsl:text>
               </a>
             </sub>
           </th>
+          <th data-sortable-type="numeric">
+            <xsl:text>Speed</xsl:text>
+            <sub>
+              <xsl:text>/</xsl:text>
+              <a href="http://www.zerocracy.com/policy.html#36">
+                <xsl:text>&#xA7;36</xsl:text>
+              </a>
+            </sub>
+          </th>
           <th>
-            <xsl:text>Agenda</xsl:text>
+            <xsl:text>Jobs</xsl:text>
           </th>
           <th>
             <xsl:text>Projects</xsl:text>
@@ -123,16 +132,23 @@ SOFTWARE.
         </xsl:if>
       </td>
       <td>
-        <a href="https://github.com/{mentor}">
-          <xsl:text>@</xsl:text>
-          <xsl:value-of select="mentor"/>
-        </a>
-        <sub>
-          <xsl:text>/</xsl:text>
-          <a href="/u/{mentor}">
-            <xsl:text>z</xsl:text>
-          </a>
-        </sub>
+        <xsl:choose>
+          <xsl:when test="mentor='0crat'">
+            <xsl:text>&#x2014;</xsl:text>
+          </xsl:when>
+          <xsl:otherwise>
+            <a href="https://github.com/{mentor}">
+              <xsl:text>@</xsl:text>
+              <xsl:value-of select="mentor"/>
+            </a>
+            <sub>
+              <xsl:text>/</xsl:text>
+              <a href="/u/{mentor}">
+                <xsl:text>z</xsl:text>
+              </a>
+            </sub>
+          </xsl:otherwise>
+        </xsl:choose>
       </td>
       <td style="text-align:right;">
         <xsl:choose>
@@ -171,6 +187,34 @@ SOFTWARE.
               <xsl:text>+</xsl:text>
             </xsl:if>
             <xsl:value-of select="awards"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </td>
+      <td>
+        <xsl:variable name="days" select="speed div (24 * 60)"/>
+        <xsl:attribute name="style">
+          <xsl:text>text-align:right;color:</xsl:text>
+          <xsl:choose>
+            <xsl:when test="$days &gt; 10">
+              <xsl:text>darkred</xsl:text>
+            </xsl:when>
+            <xsl:when test="$days &lt; 6">
+              <xsl:text>darkgreen</xsl:text>
+            </xsl:when>
+            <xsl:when test="$days = 0">
+              <xsl:text>inherit</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:text>orange</xsl:text>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:attribute>
+        <xsl:choose>
+          <xsl:when test="$days = 0">
+            <xsl:text>&#x2014;</xsl:text>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="format-number($days,'0.0')"/>
           </xsl:otherwise>
         </xsl:choose>
       </td>

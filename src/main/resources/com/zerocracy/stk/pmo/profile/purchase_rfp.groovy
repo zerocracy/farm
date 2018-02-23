@@ -17,12 +17,13 @@
 package com.zerocracy.stk.pmo.profile
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Par
+import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.SoftException
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pmo.Awards
 import com.zerocracy.pmo.Rfps
 
@@ -40,11 +41,12 @@ def exec(Project pmo, XML xml) {
   String author = claim.author()
   Awards awards = new Awards(pmo, author).bootstrap()
   int reputation = awards.total()
-  if (reputation < 2048) {
+  Farm farm = binding.variables.farm
+  if (reputation < new Policy(farm).get('40.min', 0)) {
     throw new SoftException(
       new Par(
         'Your reputation is %d, it is too low;',
-        'must be at least 2048, see §40'
+        'must be at least +512, see §40'
       ).say(reputation)
     )
   }
@@ -62,7 +64,7 @@ def exec(Project pmo, XML xml) {
       'we deducted %d points from your reputation, according to §40'
     ).say(rid, email, -points)
   ).postTo(pmo)
-  new ClaimOut().type('Notify user').token('user;yegor256').param(
+  claim.copy().type('Notify user').token('user;yegor256').param(
     'message', new Par(
       'RFP #%d has been purchased by @%s: %s'
     ).say(rid, author, email)

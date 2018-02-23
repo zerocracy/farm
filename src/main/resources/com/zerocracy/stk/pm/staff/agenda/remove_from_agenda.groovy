@@ -17,10 +17,9 @@
 package com.zerocracy.stk.pm.staff.agenda
 
 import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
 import com.zerocracy.Project
+import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pmo.Agenda
 
 def exec(Project project, XML xml) {
@@ -33,9 +32,8 @@ def exec(Project project, XML xml) {
   if (agenda.exists(job)) {
     agenda.remove(job)
   }
-  new ClaimOut()
+  claim.copy()
     .type('Agenda was updated')
-    .param('cause', claim.cid())
     .param('login', login)
     .postTo(project)
 }

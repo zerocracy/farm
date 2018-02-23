@@ -18,10 +18,9 @@ package com.zerocracy.stk.pmo.profile
 
 import com.jcabi.xml.XML
 import com.zerocracy.Par
-import com.zerocracy.farm.Assume
 import com.zerocracy.Project
+import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pmo.Awards
 import com.zerocracy.pmo.People
 
@@ -47,9 +46,8 @@ def exec(Project project, XML xml) {
       'Thanks, @%s can now work with us, and you are the mentor, see §1',
     ).say(login)
   ).postTo(project)
-  new ClaimOut()
+  claim.copy()
     .type('Notify user')
-    .param('cause', claim.cid())
     .token("user;${login}")
     .param(
       'message',
@@ -59,7 +57,7 @@ def exec(Project project, XML xml) {
       ).say(author)
     )
     .postTo(project)
-  new ClaimOut().type('Notify user').token('user;yegor256').param(
+  claim.copy().type('Notify user').token('user;yegor256').param(
     'message', new Par(
       'New user @%s was invited by @%s'
     ).say(login, author)

@@ -21,7 +21,6 @@ import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.in.Impediments
 
 def exec(Project project, XML xml) {
@@ -39,9 +38,8 @@ def exec(Project project, XML xml) {
       'The impediment for %s was registered successfully by @%s'
     ).say(job, author)
   ).postTo(project)
-  new ClaimOut()
+  claim.copy()
     .type('Impediment was registered')
-    .param('cause', claim.cid())
     .param('job', job)
     .param('reason', reason)
     .postTo(project)

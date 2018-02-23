@@ -20,18 +20,19 @@ import com.jcabi.github.Coordinates
 import com.jcabi.github.Github
 import com.jcabi.github.Repo
 import com.jcabi.xml.XML
-import com.zerocracy.Par
-import com.zerocracy.entry.ExtGithub
-import com.zerocracy.farm.Assume
 import com.zerocracy.Farm
+import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
-import com.zerocracy.pm.ClaimOut
+import com.zerocracy.entry.ExtGithub
+import com.zerocracy.farm.Assume
+import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Catalog
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Project link was added', 'Project link was removed')
+  ClaimIn claim = new ClaimIn(xml)
   Farm farm = binding.variables.farm
   Catalog catalog = new Catalog(farm).bootstrap()
   Github github = new ExtGithub(farm).value()
@@ -47,7 +48,7 @@ def exec(Project project, XML xml) {
   }
   if (free && catalog.fee(project.pid()) != Cash.ZERO) {
     catalog.fee(project.pid(), Cash.ZERO)
-    new ClaimOut()
+    claim.copy()
       .type('Notify project')
       .param(
         'message',
@@ -61,7 +62,7 @@ def exec(Project project, XML xml) {
   if (!free && catalog.fee(project.pid()) == Cash.ZERO) {
     Cash fee = new Cash.S('$4')
     catalog.fee(project.pid(), fee)
-    new ClaimOut()
+    claim.copy()
       .type('Notify project')
       .param(
         'message',

@@ -18,19 +18,14 @@ package com.zerocracy.tk.project;
 
 import com.jcabi.matchers.XhtmlMatchers;
 import com.zerocracy.Farm;
-import com.zerocracy.Project;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.footprint.FtFarm;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pm.ClaimOut;
-import com.zerocracy.pm.staff.Roles;
-import com.zerocracy.pmo.Catalog;
-import com.zerocracy.pmo.People;
-import com.zerocracy.pmo.Pmo;
+import com.zerocracy.tk.RqWithUser;
 import com.zerocracy.tk.TkApp;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
-import org.takes.Take;
 import org.takes.rq.RqFake;
 import org.takes.rq.RqWithHeaders;
 import org.takes.rs.RsPrint;
@@ -48,35 +43,24 @@ public final class TkReportTest {
     @Test
     public void rendersReport() throws Exception {
         final Farm farm = new FtFarm(new PropsFarm(new FkFarm()));
-        final Catalog catalog = new Catalog(new Pmo(farm)).bootstrap();
-        final String pid = "A1B2C3DXF";
-        catalog.add(pid, String.format("2017/10/%s/", pid));
-        final Project project = farm.find(
-            String.format("@id='%s'", pid)
-        ).iterator().next();
-        final Roles roles = new Roles(project).bootstrap();
         final String uid = "yegor256";
-        roles.assign(uid, "PO");
-        new People(new Pmo(farm)).bootstrap().invite(uid, "mentor");
         new ClaimOut()
             .type("Order was given")
             .param("login", uid)
-            .postTo(project);
-        final Take take = new TkApp(farm);
+            .postTo(farm.find("@id='C00000000'").iterator().next());
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
                 new RsPrint(
-                    take.act(
+                    new TkApp(farm).act(
                         new RqWithHeaders(
-                            new RqFake(
-                                "GET",
-                                String.format(
-                                    "/report/%s?report=orders-given-by-week",
-                                    pid
+                            new RqWithUser(
+                                farm,
+                                new RqFake(
+                                    "GET",
+                                    // @checkstyle LineLength (1 line)
+                                    "/report/C00000000?report=orders-given-by-week"
                                 )
                             ),
-                            // @checkstyle LineLength (1 line)
-                            "Cookie: PsCookie=0975A5A5-F6DB193E-AF18000A-75726E3A-74657374-3A310005-6C6F6769-6E000879-65676F72-323536AE",
                             "Accept: application/xml"
                         )
                     )

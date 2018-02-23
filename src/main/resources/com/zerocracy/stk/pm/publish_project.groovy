@@ -19,10 +19,10 @@ package com.zerocracy.stk.pm
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Par
+import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pmo.Catalog
 import com.zerocracy.pmo.Pmo
 
@@ -40,23 +40,22 @@ def exec(Project project, XML xml) {
         'The project is visible now at the [board](/board), according to §26'
       ).say()
     ).postTo(project)
-    new ClaimOut().type('Notify user').token('user;yegor256').param(
+    claim.copy().type('Notify user').token('user;yegor256').param(
       'message', new Par(
         'The project %s was published by @%s'
       ).say(project.pid(), claim.author())
     ).param('cause', claim.cid()).postTo(project)
-    new ClaimOut()
+    claim.copy()
       .type('Project was published')
-      .param('cause', claim.cid())
       .param('author', claim.author())
       .param('pid', project.pid())
       .postTo(new Pmo(farm))
-    new ClaimOut().type('Notify all').param(
+    claim.copy().type('Notify all').param(
       'message',
       new Par('The project %s was published by @%s').say(
         project.pid(), claim.author()
       )
-    ).param('min', 512).postTo(project)
+    ).param('min', new Policy(farm).get('33.min-live', 0)).postTo(project)
   } else if ('off' == mode) {
     catalog.publish(project.pid(), false)
     claim.reply(
@@ -64,7 +63,7 @@ def exec(Project project, XML xml) {
         'The project is not visible anymore at the [board](/board), as in §26'
       ).say()
     ).postTo(project)
-    new ClaimOut().type('Notify user').token('user;yegor256').param(
+    claim.copy().type('Notify user').token('user;yegor256').param(
       'message', new Par(
         'The project %s was unpublished by @%s'
       ).say(project.pid(), claim.author())

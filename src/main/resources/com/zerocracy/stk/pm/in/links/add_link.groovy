@@ -17,12 +17,11 @@
 package com.zerocracy.stk.pm.in.links
 
 import com.jcabi.xml.XML
-import com.zerocracy.Par
-import com.zerocracy.farm.Assume
 import com.zerocracy.Farm
+import com.zerocracy.Par
 import com.zerocracy.Project
+import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pmo.Catalog
 
 def exec(Project project, XML xml) {
@@ -41,9 +40,8 @@ def exec(Project project, XML xml) {
       'The project is linked with rel=`%s` and href=`%s`, by §17'
     ).say(rel, href)
   ).postTo(project)
-  new ClaimOut()
+  claim.copy()
     .type('Project link was added')
-    .param('cause', claim.cid())
     .param('rel', rel)
     .param('href', href)
     .postTo(project)

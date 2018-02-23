@@ -17,10 +17,9 @@
 package com.zerocracy.stk.pm.staff.projects
 
 import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
 import com.zerocracy.Project
+import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pmo.Projects
 
 def exec(Project project, XML xml) {
@@ -33,9 +32,8 @@ def exec(Project project, XML xml) {
   Projects projects = new Projects(project, login).bootstrap()
   if (!projects.exists(project.pid())) {
     projects.add(project.pid())
-    new ClaimOut()
+    claim.copy()
       .type('User projects were updated')
-      .param('cause', claim.cid())
       .param('login', login)
       .postTo(project)
   }

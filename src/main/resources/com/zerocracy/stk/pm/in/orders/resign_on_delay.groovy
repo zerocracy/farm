@@ -5,7 +5,6 @@ import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.cost.Boosts
 import com.zerocracy.pm.in.Impediments
 import com.zerocracy.pm.in.Orders
@@ -40,24 +39,21 @@ def exec(Project project, XML xml) {
     if (impediments.exists(job)) {
       return
     }
-    new ClaimOut()
+    claim.copy()
       .type('Cancel order')
-      .param('cause', claim.cid())
       .token("job;$job")
       .param('job', job)
       .param('reason', new Par('It is older than %d day(s), see §8').say(days))
       .postTo(project)
-    new ClaimOut()
+    claim.copy()
       .type('Make payment')
-      .param('cause', claim.cid())
       .param('job', job)
       .param('login', worker)
       .param('reason', new Par('Resigned on delay, see §8').say())
       .param('minutes', boosts.factor(job) * -15)
       .postTo(project)
-    new ClaimOut()
+    claim.copy()
       .type('Notify project')
-      .param('cause', claim.cid())
       .param(
         'message',
         new Par(

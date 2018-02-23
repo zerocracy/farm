@@ -20,13 +20,11 @@ import com.jcabi.matchers.XhtmlMatchers;
 import com.zerocracy.Farm;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.props.PropsFarm;
-import com.zerocracy.pmo.People;
+import com.zerocracy.tk.RqWithUser;
 import com.zerocracy.tk.TkApp;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
-import org.takes.Take;
 import org.takes.rq.RqFake;
-import org.takes.rq.RqWithHeaders;
 import org.takes.rs.RsPrint;
 
 /**
@@ -42,19 +40,13 @@ public final class TkAwardsTest {
     @Test
     public void rendersAgendaPage() throws Exception {
         final Farm farm = new PropsFarm(new FkFarm());
-        final String uid = "yegor256";
-        final People people = new People(farm).bootstrap();
-        people.touch(uid);
-        people.invite(uid, "mentor");
-        final Take take = new TkApp(farm);
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
                 new RsPrint(
-                    take.act(
-                        new RqWithHeaders(
-                            new RqFake("GET", "/u/yegor256/awards"),
-                            // @checkstyle LineLength (1 line)
-                            "Cookie: PsCookie=0975A5A5-F6DB193E-AF18000A-75726E3A-74657374-3A310005-6C6F6769-6E000879-65676F72-323536AE"
+                    new TkApp(farm).act(
+                        new RqWithUser(
+                            farm,
+                            new RqFake("GET", "/u/yegor256/awards")
                         )
                     )
                 ).printBody()

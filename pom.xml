@@ -473,6 +473,8 @@ SOFTWARE.
             <artifactId>qulice-maven-plugin</artifactId>
             <configuration>
               <excludes combine.children="append">
+                <exclude>checkstyle:/src/main/resources/png/.*</exclude>
+                <exclude>checkstyle:/src/main/resources/com/zerocracy/tk/project/badge.sketch</exclude>
                 <exclude>findbugs:.*</exclude>
                 <exclude>codenarc:**/*</exclude>
                 <exclude>duplicatefinder:.*</exclude>
@@ -564,6 +566,83 @@ SOFTWARE.
                     println('All Groovy files are clean!')
                   ]]></source>
                 </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>0.8.0</version>
+            <configuration>
+              <output>file</output>
+              <excludes>
+                <exclude>**/*.sketch</exclude>
+              </excludes>
+            </configuration>
+            <executions>
+              <execution>
+                <id>jacoco-initialize</id>
+                <goals>
+                  <goal>prepare-agent</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>jacoco-check</id>
+                <phase>test</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+                <configuration>
+                  <rules>
+                    <rule>
+                      <element>BUNDLE</element>
+                      <limits>
+                        <limit>
+                          <counter>INSTRUCTION</counter>
+                          <value>COVEREDRATIO</value>
+                          <minimum>0.60</minimum>
+                        </limit>
+                        <limit>
+                          <counter>LINE</counter>
+                          <value>COVEREDRATIO</value>
+                          <minimum>0.65</minimum>
+                        </limit>
+                        <!--
+                          @todo #474:30min branch coverage, complexity coverage and class coverage
+                           limits are disabled, because current coverage is too low.
+                           Let's add tests and increase class and branch coverage.
+                        -->
+                        <!--<limit>-->
+                        <!--<counter>BRANCH</counter>-->
+                        <!--<value>COVEREDRATIO</value>-->
+                        <!--<minimum>0.65</minimum>-->
+                        <!--</limit>-->
+                        <!--<limit>-->
+                        <!--<counter>COMPLEXITY</counter>-->
+                        <!--<value>COVEREDRATIO</value>-->
+                        <!--<minimum>0.57</minimum>-->
+                        <!--</limit>-->
+                        <limit>
+                          <counter>METHOD</counter>
+                          <value>COVEREDRATIO</value>
+                          <minimum>0.57</minimum>
+                        </limit>
+                        <!--<limit>-->
+                        <!--<counter>CLASS</counter>-->
+                        <!--<value>MISSEDCOUNT</value>-->
+                        <!--<maximum>15</maximum>-->
+                        <!--</limit>-->
+                      </limits>
+                    </rule>
+                  </rules>
+                </configuration>
+              </execution>
+              <execution>
+                <id>jacoco-site</id>
+                <phase>install</phase>
+                <goals>
+                  <goal>report</goal>
+                </goals>
               </execution>
             </executions>
           </plugin>
@@ -829,6 +908,36 @@ SOFTWARE.
             </plugin>
           </plugins>
         </pluginManagement>
+      </build>
+    </profile>
+    <profile>
+      <id>shutdown</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.gmaven</groupId>
+            <artifactId>groovy-maven-plugin</artifactId>
+            <version>2.0</version>
+            <executions>
+              <execution>
+                <id>shutdown</id>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>execute</goal>
+                </goals>
+                <configuration>
+                  <classpathScope>compile</classpathScope>
+                  <source><![CDATA[
+                    def con = new URL("https://www.0crat.com/shutdown").openConnection() as HttpURLConnection
+                    con.requestMethod = 'GET'
+                    con.setRequestProperty('X-Auth', '${shutdown.key}')
+                    def resp = con.responseCode
+                    ]]></source>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
       </build>
     </profile>
   </profiles>

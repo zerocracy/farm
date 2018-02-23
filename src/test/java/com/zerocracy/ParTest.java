@@ -48,7 +48,7 @@ public final class ParTest {
                     "@jack-me[/z](https://www.0crat.com/u/jack-me) is a `DEV`",
                     "in [C63314D6Z](https://www.0crat.com/p/C63314D6Z)",
                     "and has one job, as in",
-                    "[§1](http://datum.zerocracy.com/pages/policy.html#1)",
+                    "[§1](http://www.zerocracy.com/policy.html#1)",
                     "see [$50](https://www.0crat.com/p/C6331EE6Z?a=1)",
                     "and [#455](https://github.com/test2-0/test.-4/issues/455)",
                     "and again jack-me"

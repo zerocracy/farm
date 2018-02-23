@@ -22,7 +22,6 @@ import com.zerocracy.Project
 import com.zerocracy.cash.Cash
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.cost.Equity
 import com.zerocracy.pm.cost.Vesting
 import com.zerocracy.pm.staff.Roles
@@ -51,9 +50,8 @@ def exec(Project project, XML xml) {
   if (vesting.exists(login)) {
     Cash reward = (vesting.rate(login).mul(minutes) / 60).add(cash.mul(-1L))
     new Equity(project).bootstrap().add(login, reward)
-    new ClaimOut()
+    claim.copy()
       .type('Equity transferred')
-      .param('cause', claim.cid())
       .param('login', login)
       .param('job', job)
       .param('reward', reward)
@@ -61,9 +59,8 @@ def exec(Project project, XML xml) {
       .param('minutes', minutes)
       .param('cash', cash)
       .postTo(project)
-    new ClaimOut()
+    claim.copy()
       .type('Notify user')
-      .param('cause', claim.cid())
       .token("user;${login}")
       .param(
         'message',
@@ -72,9 +69,8 @@ def exec(Project project, XML xml) {
         ).say(reward, project.pid(), job)
       )
       .postTo(project)
-    new ClaimOut()
+    claim.copy()
       .type('Notify project')
-      .param('cause', claim.cid())
       .param(
         'message',
         new Par(

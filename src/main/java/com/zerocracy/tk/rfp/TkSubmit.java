@@ -18,6 +18,7 @@ package com.zerocracy.tk.rfp;
 
 import com.zerocracy.Farm;
 import com.zerocracy.Par;
+import com.zerocracy.Policy;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pmo.Pmo;
 import com.zerocracy.pmo.Rfps;
@@ -58,7 +59,7 @@ public final class TkSubmit implements Take {
 
     @Override
     public Response act(final Request req) throws IOException {
-        final String user = new RqUser(this.farm, req).value();
+        final String user = new RqUser(this.farm, req, false).value();
         final Rfps rfps = new Rfps(this.farm).bootstrap();
         if (!rfps.exists(user)) {
             throw new RsForward(
@@ -71,15 +72,27 @@ public final class TkSubmit implements Take {
         }
         final RqFormSmart form = new RqFormSmart(new RqGreedy(req));
         final String sow = form.single("sow");
+        final boolean complete = rfps.complete(user);
         final int rid = rfps.post(user, sow);
-        new ClaimOut().type("Notify all").param(
-            "message",
-            new Par(
-                "New RFP #%d was published,",
-                "you can [join](/rfps) as an architect"
-            ).say(rid)
-        // @checkstyle MagicNumber (1 line)
-        ).param("min", 512).postTo(new Pmo(this.farm));
+        if (!complete) {
+            new ClaimOut()
+                .type("Notify all")
+                .param(
+                    "message",
+                    new Par(
+                        "New RFP #%d was published,",
+                        "you can [join](/rfps) as an architect;",
+                        "a potential client needs an architect and the system",
+                        "selected you, as one of the best developers",
+                        "we have in house;",
+                        "you can 'buy' this RFP",
+                        "and get in touch with the client,",
+                        "see §40"
+                    ).say(rid)
+                )
+                .param("min", new Policy(this.farm).get("40.min", 0))
+                .postTo(new Pmo(this.farm));
+        }
         return new RsForward(
             new RsParFlash(
                 new Par("The statement of work has been updated, thanks").say(),

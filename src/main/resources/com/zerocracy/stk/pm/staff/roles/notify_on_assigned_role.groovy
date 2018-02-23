@@ -22,7 +22,6 @@ import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.cost.Rates
 
 def exec(Project project, XML xml) {
@@ -42,9 +41,8 @@ def exec(Project project, XML xml) {
   } else {
     msg += 'you work for free'
   }
-  new ClaimOut()
+  claim.copy()
     .type('Notify user')
-    .param('cause', claim.cid())
     .token("user;${login}")
     .param('message', msg)
     .postTo(project)
