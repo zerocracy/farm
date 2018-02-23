@@ -73,7 +73,9 @@ def exec(Project project, XML xml) {
         )
         .postTo(project)
     } catch (IOException ex) {
-      new Debts(farm).add(login, price, reason, ex.message)
+      new Debts(farm).add(
+        login, price, "${reason} at ${job}", ex.message
+      )
       claim.copy()
         .type('Notify user')
         .token("user;${login}")
