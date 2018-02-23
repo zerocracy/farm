@@ -262,7 +262,7 @@ public final class People {
                             "/people/person[@id='%s']/mentor",
                             uid
                         )
-                    ).remove()
+                    ).set("0crat")
             );
         }
     }

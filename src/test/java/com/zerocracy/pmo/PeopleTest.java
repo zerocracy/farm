@@ -158,8 +158,8 @@ public final class PeopleTest {
         people.invite(friend, uid);
         people.breakup(friend);
         MatcherAssert.assertThat(
-            people.hasMentor(friend),
-            Matchers.is(false)
+            people.mentor(friend),
+            Matchers.is("0crat")
         );
     }
 
