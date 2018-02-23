@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="98px" height="25px" viewBox="0 0 98 25" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg width="97px" height="25px" viewBox="0 0 97 25" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <!-- Generator: Sketch 43.2 (39069) - http://www.bohemiancoding.com/sketch -->
     <title>Group</title>
     <desc>Created with Sketch.</desc>
     <defs></defs>
     <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <g id="Group">
-            <rect id="Rectangle-path" fill="#D0011B" fill-rule="nonzero" x="0" y="0" width="71.5601872" height="24.8709339"></rect>
-            <rect id="Rectangle-path" fill="#010101" fill-rule="nonzero" x="71.5039002" y="0" width="26.4960998" height="24.8709339"></rect>
+            <rect id="Rectangle-path" fill="#D0011B" fill-rule="nonzero" x="0" y="0" width="71.5601872" height="25"></rect>
+            <rect id="Rectangle-path" fill="#010101" fill-rule="nonzero" x="71.5039002" y="0" width="25" height="25"></rect>
             <path d="M83.9968799,4.25824176 L83.9968799,20.7417582 C83.9968799,21.196938 84.3656687,21.5659341 84.8205928,21.5659341 C85.2755169,21.5659341 85.6443058,21.196938 85.6443058,20.7417582 L85.6443058,4.25824176 C85.6443058,3.80306202 85.2755169,3.43406593 84.8205928,3.43406593 C84.3656687,3.43406593 83.9968799,3.80306202 83.9968799,4.25824176 Z" id="Line" fill="#FFFFFF" fill-rule="nonzero"></path>
             <path d="M77.6817473,17.4450549 L94.1560062,17.4450549 C94.6109303,17.4450549 94.9797192,17.0760589 94.9797192,16.6208791 C94.9797192,16.1656994 94.6109303,15.7967033 94.1560062,15.7967033 L77.6817473,15.7967033 C77.2268232,15.7967033 76.8580343,16.1656994 76.8580343,16.6208791 C76.8580343,17.0760589 77.2268232,17.4450549 77.6817473,17.4450549 Z" id="Line" fill="#FFFFFF" fill-rule="nonzero"></path>
             <path d="M78.0963626,17.3330355 L92.2367682,9.09127721 C92.6298604,8.86216279 92.762895,8.35758561 92.5339093,7.96427253 C92.3049235,7.57095945 91.8006297,7.43785013 91.4075375,7.66696455 L77.2671319,15.9087228 C76.8740397,16.1378372 76.7410052,16.6424144 76.9699909,17.0357275 C77.1989766,17.4290405 77.7032704,17.5621499 78.0963626,17.3330355 Z" id="Line" fill="#FFFFFF" fill-rule="nonzero"></path>

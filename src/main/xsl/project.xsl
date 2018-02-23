@@ -336,6 +336,10 @@ SOFTWARE.
       <a href="/a/{project}?a=pm/claims">
         <xsl:text>Claims</xsl:text>
       </a>
+      <xsl:text>, </xsl:text>
+      <a href="/a/{project}?a=pmo/debts">
+        <xsl:text>Debts</xsl:text>
+      </a>
       <xsl:text>.</xsl:text>
     </p>
   </xsl:template>
