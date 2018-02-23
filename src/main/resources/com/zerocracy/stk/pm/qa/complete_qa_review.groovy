@@ -41,7 +41,7 @@ def exec(Project project, XML xml) {
     .param('job', job)
     .param('login', inspector)
     .param('reason', 'QA review completed')
-    .param('minutes', 15)
+    .param('minutes', 8)
     .postTo(project)
   claim.copy()
     .type('Finish order')

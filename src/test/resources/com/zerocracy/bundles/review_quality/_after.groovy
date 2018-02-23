@@ -43,6 +43,6 @@ def exec(Project project, XML xml) {
   MatcherAssert.assertThat(
     'qauser received incorrect awards',
     new Awards(project, 'qauser').bootstrap().total(),
-    Matchers.equalTo(45)
+    Matchers.equalTo(24)
   )
 }
