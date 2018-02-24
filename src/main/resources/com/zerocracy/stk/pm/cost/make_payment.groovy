@@ -19,6 +19,7 @@ package com.zerocracy.stk.pm.cost
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Par
+import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
 import com.zerocracy.farm.Assume
@@ -26,6 +27,7 @@ import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.cost.Rates
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.Debts
+import com.zerocracy.pmo.People
 import com.zerocracy.pmo.banks.Payroll
 
 def exec(Project project, XML xml) {
@@ -55,7 +57,25 @@ def exec(Project project, XML xml) {
     price = rate.mul(minutes) / 60
   }
   if (price != Cash.ZERO) {
+    String tail = ''
     Farm farm = binding.variables.farm
+    People people = new People(farm).bootstrap()
+    if (!claim.hasParam('no-tuition-fee') && people.hasMentor(login) && people.mentor(login) != '0crat') {
+      int share = new Policy().get('45.share', 8)
+      price = price.mul(100 - share) / 100
+      Cash fee = price.mul(share) / 100
+      String mentor = people.mentor(login)
+      claim.copy()
+        .type('Make payment')
+        .param('login', mentor)
+        .param('minutes', 0)
+        .param('cash', fee)
+        .param('no-tuition-fee', true)
+        .postTo(project)
+      tail = new Par(
+        'the tuition fee %s was deducted and sent to @%s, the mentor, according to §45'
+      ).say(fee, mentor)
+    }
     String msg
     try {
       msg = new Payroll(farm).pay(
@@ -69,7 +89,7 @@ def exec(Project project, XML xml) {
           'message',
           new Par(
             'We just paid you %s (`%s`) for %s: %s'
-          ).say(price, msg, job, reason)
+          ).say(price, msg, job, reason) + tail
         )
         .postTo(project)
     } catch (IOException ex) {
@@ -86,7 +106,7 @@ def exec(Project project, XML xml) {
             'this amount was added to the list of payments we owe you;',
             'we will try to send them all together very soon;',
             'we will keep you informed'
-          ).say(price, job, ex.message)
+          ).say(price, job, ex.message) + tail
         )
         .postTo(project)
     }

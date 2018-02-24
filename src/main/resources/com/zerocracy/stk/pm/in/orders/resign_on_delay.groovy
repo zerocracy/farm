@@ -2,6 +2,7 @@ package com.zerocracy.stk.pm.in.orders
 
 import com.jcabi.xml.XML
 import com.zerocracy.Par
+import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
@@ -24,7 +25,7 @@ def exec(Project project, XML xml) {
   Boosts boosts = new Boosts(project).bootstrap()
   Impediments impediments = new Impediments(project).bootstrap()
   List<String> waiting = new Impediments(project).bootstrap().jobs().toList()
-  int days = 10
+  int days = new Policy().get('8.days', 10)
   new Limited<>(
     5,
     new Filtered(
