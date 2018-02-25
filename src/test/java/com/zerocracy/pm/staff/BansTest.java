@@ -46,19 +46,4 @@ public final class BansTest {
         );
     }
 
-    @Test
-    public void notAllowDuplicatedBans() throws Exception {
-        final Bans bans = new Bans(new FkProject()).bootstrap();
-        final String job = "gh:test/test#2";
-        final String login = "jimmy";
-        bans.ban(job, login, "one");
-        bans.ban(job, login, "two");
-        MatcherAssert.assertThat(
-            bans.reasons(job, login),
-            Matchers.allOf(
-                Matchers.iterableWithSize(1),
-                Matchers.hasItem(Matchers.startsWith("tw"))
-            )
-        );
-    }
 }

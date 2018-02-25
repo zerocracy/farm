@@ -114,13 +114,6 @@ public final class Bans {
         try (final Item item = this.item()) {
             new Xocument(item).modify(
                 new Directives()
-                    .xpath(
-                        String.format(
-                            "/bans/ban[@job = '%s' and login/text() = '%s']",
-                            job,
-                            login
-                        )
-                    ).remove()
                     .xpath("/bans")
                     .add("ban")
                     .attr("job", job)
