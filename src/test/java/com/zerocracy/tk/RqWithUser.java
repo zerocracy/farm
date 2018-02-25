@@ -22,7 +22,11 @@ import com.zerocracy.pmo.Catalog;
 import com.zerocracy.pmo.People;
 import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
+import org.cactoos.map.MapEntry;
+import org.cactoos.map.SolidMap;
 import org.takes.Request;
+import org.takes.facets.auth.Identity;
+import org.takes.facets.auth.PsCookie;
 import org.takes.rq.RqWithHeaders;
 import org.takes.rq.RqWrap;
 
@@ -67,8 +71,20 @@ public final class RqWithUser extends RqWrap {
         new People(new Pmo(farm)).bootstrap().invite(uid, "mentor");
         return new RqWithHeaders(
             req,
-            // @checkstyle LineLength (1 line)
-            "Cookie: PsCookie=0975A5A5-F6DB193E-AF18000A-75726E3A-74657374-3A310005-6C6F6769-6E000879-65676F72-323536AE"
+            String.format(
+                "Cookie: %s=%s",
+                PsCookie.class.getSimpleName(),
+                new String(
+                    new CcSecure(farm).encode(
+                        new Identity.Simple(
+                            String.format("urn:github:%s", uid),
+                            new SolidMap<String, String>(
+                                new MapEntry<>("login", uid)
+                            )
+                        )
+                    )
+                )
+            )
         );
     }
 

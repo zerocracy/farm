@@ -55,7 +55,7 @@ public final class TkShutdown implements Take {
     public Response act(final Request req) throws IOException {
         final String hdr = new RqHeaders.Smart(new RqHeaders.Base(req))
             .single("X-Auth", "");
-        if (!hdr.equals(this.props.get("//shutdown/header"))) {
+        if (!hdr.equals(this.props.get("//shutdown/header", "test"))) {
             throw new RsForward(
                 new RsParFlash(
                     "You are not allowed to shutdown",

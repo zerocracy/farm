@@ -18,45 +18,31 @@ package com.zerocracy.tk;
 
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.props.PropsFarm;
-import java.net.HttpURLConnection;
 import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Test;
-import org.takes.facets.hamcrest.HmRsStatus;
-import org.takes.rq.RqFake;
-import org.takes.rq.RqWithHeader;
-import org.takes.rq.RqWrap;
+import org.takes.facets.auth.Identity;
+import org.takes.facets.auth.codecs.Codec;
 
 /**
- * Test case for {@link TkShutdown}.
- * @author Kirill (g4s8.public@gmail.com)
+ * Test case for {@link CcSecure}.
+ * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.20
+ * @since 0.21
  * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-public final class TkShutdownTest {
+public final class CcSecureTest {
+
     @Test
-    public void returnOk() throws Exception {
+    public void encodesAndDecodes() throws Exception {
+        final Codec codec = new CcSecure(new PropsFarm(new FkFarm()));
         MatcherAssert.assertThat(
-            new TkApp(new PropsFarm(new FkFarm())).act(
-                new RqWithHeader(
-                    new TkShutdownTest.RqShutdown(),
-                    "X-Auth",
-                    "test"
-                )
-            ),
-            new HmRsStatus(HttpURLConnection.HTTP_OK)
+            codec.decode(
+                codec.encode(new Identity.Simple("urn:github:yegor256"))
+            ).urn(),
+            Matchers.endsWith("yegor256")
         );
     }
 
-    /**
-     * Shutdown fake request.
-     */
-    private static final class RqShutdown extends RqWrap {
-        /**
-         * Ctor.
-         */
-        RqShutdown() {
-            super(new RqFake("GET", "/shutdown"));
-        }
-    }
 }
