@@ -51,5 +51,6 @@ def exec(Project pmo, XML xml) {
         )
       )
       .postTo(pmo)
+    debts.remove(uid)
   }
 }
