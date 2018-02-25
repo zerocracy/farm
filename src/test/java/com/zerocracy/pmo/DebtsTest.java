@@ -42,7 +42,7 @@ public final class DebtsTest {
         debts.add(uid, new Cash.S("$5"), "details 1", "reason 1");
         debts.add(uid, new Cash.S("$6"), "details 2", "reason 2");
         MatcherAssert.assertThat(
-            debts.remove(uid),
+            debts.amount(uid),
             Matchers.equalTo(new Cash.S("$11"))
         );
     }

@@ -125,19 +125,19 @@ public final class Debts {
     }
 
     /**
-     * Remove the debt.
+     * The size of the debt.
      * @param uid The owner's login
-     * @return The amount if exists
+     * @return The amount
      * @throws IOException If fails
      */
-    public Cash remove(final String uid) throws IOException {
+    public Cash amount(final String uid) throws IOException {
         if (!this.exists(uid)) {
             throw new IllegalArgumentException(
-                new Par("@%s doesn't have a debt").say(uid)
+                new Par("@%s doesn't have a debt, can't calculate").say(uid)
             );
         }
         try (final Item item = this.item()) {
-            final Cash cash = new IoCheckedScalar<>(
+            return new IoCheckedScalar<>(
                 new Reduced<Cash, Cash>(
                     Cash.ZERO,
                     Cash::add,
@@ -152,13 +152,27 @@ public final class Debts {
                     )
                 )
             ).value();
+        }
+    }
+
+    /**
+     * Remove the debt.
+     * @param uid The owner's login
+     * @throws IOException If fails
+     */
+    public void remove(final String uid) throws IOException {
+        if (!this.exists(uid)) {
+            throw new IllegalArgumentException(
+                new Par("@%s doesn't have a debt").say(uid)
+            );
+        }
+        try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()
                     .xpath(String.format("/debts/debt[@login= '%s']", uid))
                     .strict(1)
                     .remove()
             );
-            return cash;
         }
     }
 
@@ -167,9 +181,9 @@ public final class Debts {
      * @return Logins
      * @throws IOException If fails
      */
-    public Collection<String> users() throws IOException {
+    public Collection<String> iterate() throws IOException {
         try (final Item item = this.item()) {
-            return new Xocument(item).xpath("//debt/@login");
+            return new Xocument(item).xpath("/debts/debt/@login");
         }
     }
 

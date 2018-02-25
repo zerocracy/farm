@@ -69,7 +69,7 @@ SOFTWARE.
           </a>
           <xsl:text> user ID:</xsl:text>
         </label>
-        <input id="inp-stackoverflow" type="number" placeholder="187141" size="8" name="stackoverflow"/>
+        <input id="inp-stackoverflow" type="number" placeholder="187141" size="6" name="stackoverflow"/>
         <label for="inp-telegram">
           <xsl:text>Your </xsl:text>
           <a href="https://telegram.org/">
@@ -77,7 +77,7 @@ SOFTWARE.
           </a>
           <xsl:text> ID:</xsl:text>
         </label>
-        <input id="inp-telegram" type="text" placeholder="username" name="telegram" required="required"/>
+        <input id="inp-telegram" type="text" placeholder="username" name="telegram" size="10" required="required"/>
         <input type="submit"/>
       </fieldset>
     </form>

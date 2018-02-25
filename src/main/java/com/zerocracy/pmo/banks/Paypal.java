@@ -34,11 +34,12 @@ import com.paypal.svcs.types.common.AckCode;
 import com.paypal.svcs.types.common.ErrorData;
 import com.paypal.svcs.types.common.RequestEnvelope;
 import com.zerocracy.Farm;
+import com.zerocracy.Par;
+import com.zerocracy.SoftException;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.cash.CashParsingException;
 import com.zerocracy.farm.props.Props;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -78,6 +79,14 @@ final class Paypal implements Bank {
     @Override
     public String pay(final String target, final Cash amount,
         final String details) throws IOException {
+        if (amount.compareTo(new Cash.S("$20")) < 0) {
+            throw new SoftException(
+                new Par(
+                    "The amount %s is too small,",
+                    "we won't send now to avoid big PayPal commission"
+                ).say(amount)
+            );
+        }
         final Props props = new Props(this.farm);
         final AdaptivePaymentsService service = new AdaptivePaymentsService(
             new SolidMap<String, String>(
@@ -103,7 +112,7 @@ final class Paypal implements Bank {
         try {
             return Paypal.valid(
                 service.pay(
-                    Paypal.request(
+                    this.request(
                         target,
                         amount.decimal().doubleValue(),
                         details
@@ -135,12 +144,12 @@ final class Paypal implements Bank {
      * @param amount Amount to pay, in USD
      * @param memo Memo
      * @return Request
-     * @throws UnsupportedEncodingException If fails
+     * @throws IOException If fails
      * @link https://developer.paypal.com/docs/classic/api/adaptive-payments/Pay_API_Operation/
      */
-    private static PayRequest request(final String email,
+    private PayRequest request(final String email,
         final double amount, final String memo)
-        throws UnsupportedEncodingException {
+        throws IOException {
         final RequestEnvelope env = new RequestEnvelope();
         env.setErrorLanguage("en_US");
         final Receiver receiver = new Receiver();
@@ -150,12 +159,12 @@ final class Paypal implements Bank {
         request.setReceiverList(
             new ReceiverList(Collections.singletonList(receiver))
         );
-        request.setSenderEmail("yegor@tpc2.com");
+        request.setSenderEmail(new Props(this.farm).get("//paypal/email"));
         request.setRequestEnvelope(env);
         request.setCurrencyCode("USD");
         request.setFeesPayer("SENDER");
-        request.setCancelUrl("http://www.zerocracy.com?cancel");
-        request.setReturnUrl("http://www.zerocracy.com?return");
+        request.setCancelUrl("http://www.zerocracy.com/terms.html#cancel");
+        request.setReturnUrl("http://www.zerocracy.com/terms.html#return");
         request.setActionType("PAY");
         request.setMemo(memo);
         Logger.info(Paypal.class, request.toNVPString());

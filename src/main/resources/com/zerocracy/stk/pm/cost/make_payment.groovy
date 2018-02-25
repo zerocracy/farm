@@ -74,9 +74,11 @@ def exec(Project project, XML xml) {
         .param('minutes', 0)
         .param('cash', fee)
         .param('no-tuition-fee', true)
+        .param('message', new Par('Tuition fee from @%s').say(login))
         .postTo(project)
       tail = new Par(
-        'the tuition fee %s was deducted and sent to @%s, the mentor, according to §45'
+        'the tuition fee %s was deducted',
+        'and sent to @%s (your mentor), according to §45'
       ).say(fee, mentor)
     }
     String msg
@@ -96,9 +98,8 @@ def exec(Project project, XML xml) {
         )
         .postTo(project)
     } catch (IOException ex) {
-      new Debts(farm).add(
-        login, price, "${reason} at ${job}", ex.message
-      )
+      Debts debts = new Debts(farm).bootstrap()
+      debts.add(login, price, "${reason} at ${job}", ex.message)
       claim.copy()
         .type('Notify user')
         .token("user;${login}")
@@ -108,7 +109,7 @@ def exec(Project project, XML xml) {
             'We are very sorry, but we failed to pay you %s for %s: "%s";',
             'this amount was added to the list of payments we owe you;',
             'we will try to send them all together very soon;',
-            'we will keep you informed'
+            'we will keep you informed, see §20'
           ).say(price, job, ex.message) + tail
         )
         .postTo(project)

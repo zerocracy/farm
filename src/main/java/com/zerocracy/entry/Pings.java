@@ -78,6 +78,12 @@ final class Pings {
             ),
             1L, 1L, TimeUnit.HOURS
         );
+        this.executor.scheduleWithFixedDelay(
+            new RunnableOf<>(
+                (Proc<Void>) input -> this.post("Ping daily")
+            ),
+            1L, 1L, TimeUnit.DAYS
+        );
     }
 
     /**

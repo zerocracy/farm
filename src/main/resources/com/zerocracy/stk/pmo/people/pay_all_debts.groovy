@@ -17,44 +17,39 @@
 package com.zerocracy.stk.pmo.people
 
 import com.jcabi.xml.XML
+import com.jcabi.xml.XMLDocument
 import com.zerocracy.Par
-import com.zerocracy.Policy
 import com.zerocracy.Project
+import com.zerocracy.cash.Cash
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pmo.Awards
-import com.zerocracy.pmo.People
+import com.zerocracy.pmo.Debts
+import org.xembly.Xembler
 
 def exec(Project pmo, XML xml) {
   new Assume(pmo, xml).isPmo()
-  new Assume(pmo, xml).type('Ping hourly')
-  People people = new People(pmo).bootstrap()
+  new Assume(pmo, xml).type('Ping daily')
+  Debts debts = new Debts(pmo).bootstrap()
   ClaimIn claim = new ClaimIn(xml)
-  people.iterate().each { uid ->
-    if (!people.hasMentor(uid)) {
+  debts.iterate().each { uid ->
+    Cash debt = debts.amount(uid)
+    if (debt < new Cash.S('$50')) {
       return
     }
-    if (people.mentor(uid) == '0crat') {
-      return
-    }
-    int reputation = new Awards(pmo, uid).bootstrap().total()
-    int threshold = new Policy().get('43.threshold', 2048)
-    if (reputation < threshold) {
-      return
-    }
-    people.graduate(uid)
-    claim.reply(
-      new Par(
-        'Since your reputation is over %d,',
-          'you don\'t need a mentor anymore, as explained in §43;',
-        'you successfully graduated and won\'t pay the tuition fee;',
-        'congratulations!'
-      ).say(threshold)
-    ).postTo(pmo)
-    claim.copy().type('Notify user').token('user;yegor256').param(
-      'message', new Par(
-        'The user @%s just graduated with reputation of %d!'
-      ).say(uid, reputation)
-    ).postTo(pmo)
+    claim.copy()
+      .type('Make payment')
+      .param('cash', debt)
+      .param('no-tuition-fee', true)
+      .param('minutes', 0)
+      .param('login', uid)
+      .param(
+        'message',
+        new Par('Debt repayment, per §20: %s').say(
+          new XMLDocument(new Xembler(debts.toXembly(uid)).xmlQuietly()).xpath(
+            '//item/amount/text()'
+          ).join(', ')
+        )
+      )
+      .postTo(pmo)
   }
 }
