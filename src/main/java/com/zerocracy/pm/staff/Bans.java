@@ -126,6 +126,26 @@ public final class Bans {
     }
 
     /**
+     * Check ban exists.
+     * @param job Banned job
+     * @param login Banned user
+     * @return True if banned
+     * @throws IOException If failed
+     */
+    public boolean exists(final String job, final String login)
+        throws IOException {
+        try (final Item item = this.item()) {
+            return !new Xocument(item).nodes(
+                String.format(
+                    "/bans/ban[@job = '%s' and login/text() = '%s']",
+                    job,
+                    login
+                )
+            ).isEmpty();
+        }
+    }
+
+    /**
      * The item.
      * @return Item
      * @throws IOException If fails
