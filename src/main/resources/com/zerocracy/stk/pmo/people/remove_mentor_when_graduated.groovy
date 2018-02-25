@@ -47,7 +47,7 @@ def exec(Project pmo, XML xml) {
       new Par(
         'Since your reputation is over %d,',
         'you don\'t need a mentor anymore, as explained in §43;',
-        'you successfully graduated and don\'t need any help anymore;',
+        'you successfully graduated and won\'t pay the tuition fee;',
         'congratulations!'
       ).say(threshold)
     ).postTo(pmo)

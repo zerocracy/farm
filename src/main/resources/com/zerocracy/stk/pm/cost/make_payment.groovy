@@ -45,6 +45,9 @@ def exec(Project project, XML xml) {
   if (minutes < 0) {
     return
   }
+  if (login == 'yegor256') {
+    return
+  }
   Cash price
   if (claim.hasParam('cash')) {
     price = new Cash.S(claim.param('cash'))
