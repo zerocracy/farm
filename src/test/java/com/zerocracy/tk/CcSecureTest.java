@@ -37,10 +37,13 @@ public final class CcSecureTest {
     @Test
     public void encodesAndDecodes() throws Exception {
         final Codec codec = new CcSecure(new PropsFarm(new FkFarm()));
+        final String encoding = "UTF-8";
+        final String code = new String(
+            codec.encode(new Identity.Simple("urn:github:yegor256")),
+            encoding
+        );
         MatcherAssert.assertThat(
-            codec.decode(
-                codec.encode(new Identity.Simple("urn:github:yegor256"))
-            ).urn(),
+            codec.decode(code.getBytes(encoding)).urn(),
             Matchers.endsWith("yegor256")
         );
     }
