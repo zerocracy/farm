@@ -26,7 +26,7 @@ import com.zerocracy.Project
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.staff.Roles
+import com.zerocracy.pmo.People
 import com.zerocracy.radars.github.Job
 
 def exec(Project project, XML xml) {
@@ -44,8 +44,8 @@ def exec(Project project, XML xml) {
     return
   }
   String author = issue.author().login().toLowerCase(Locale.ENGLISH)
-  Roles roles = new Roles(project).bootstrap()
-  if (roles.hasAnyRole(author)) {
+  People people = new People(farm).bootstrap()
+  if (people.find('github', author).iterator().hasNext()) {
     claim.copy()
       .type('Make payment')
       .param('job', job)

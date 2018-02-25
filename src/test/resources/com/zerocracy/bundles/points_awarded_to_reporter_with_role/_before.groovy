@@ -16,17 +16,20 @@
  */
 package com.zerocracy.bundles.points_awarded_to_reporter_with_role
 
-import com.jcabi.github.Github
 import com.jcabi.github.Repo
 import com.jcabi.github.Repos
+import com.jcabi.github.mock.MkGithub
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.entry.ExtGithub
+import com.zerocracy.pmo.People
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
-  Github github = new ExtGithub(farm).value()
+  String author = 'skapral'
+  new People(farm).bootstrap().invite(author, '0crat')
+  MkGithub github = new ExtGithub(farm).value() as MkGithub
   Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
-  repo.issues().create('Hello, world', '')
+  github.relogin(author).repos().get(repo.coordinates()).issues().create('Hello, world', '')
 }
