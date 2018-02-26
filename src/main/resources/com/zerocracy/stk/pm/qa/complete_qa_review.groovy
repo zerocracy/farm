@@ -25,6 +25,12 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.staff.Roles
 
+/**
+ * @todo #646:30min We should place the demand for review into the XML document
+ *  'pm/qa/reviews.xml' and then place the mark there, when the review is completed.
+ *  When the order gets removed from orders.xml we automatically
+ *  destroy the review (should happen in Datum by auto update).
+ */
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Complete QA review')
