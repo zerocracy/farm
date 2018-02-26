@@ -23,6 +23,7 @@ import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.Awards
 import com.zerocracy.pmo.Catalog
 import com.zerocracy.pmo.People
@@ -50,6 +51,10 @@ def exec(Project pmo, XML xml) {
         return
       }
       Project pkt = farm.find("@id='${pid}'")[0]
+      Roles roles = new Roles(pkt).bootstrap()
+      if (roles.hasRole(uid, 'PO', 'ARC')) {
+        return
+      }
       claim.copy()
         .type('Resign all roles')
         .param('login', uid)
