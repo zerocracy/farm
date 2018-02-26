@@ -20,6 +20,8 @@ import com.jcabi.matchers.XhtmlMatchers;
 import com.zerocracy.Farm;
 import com.zerocracy.farm.SmartFarm;
 import com.zerocracy.farm.fake.FkFarm;
+import com.zerocracy.pm.staff.Roles;
+import com.zerocracy.pmo.Pmo;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 import org.takes.Take;
@@ -38,7 +40,9 @@ public final class TkGutsTest {
 
     @Test
     public void rendersXml() throws Exception {
-        try (final Farm farm = new SmartFarm(new FkFarm()).value()) {
+        final Farm raw = new FkFarm();
+        new Roles(new Pmo(raw)).bootstrap().assign("yegor256", "PO");
+        try (final Farm farm = new SmartFarm(raw).value()) {
             final Take take = new TkApp(farm);
             MatcherAssert.assertThat(
                 XhtmlMatchers.xhtml(

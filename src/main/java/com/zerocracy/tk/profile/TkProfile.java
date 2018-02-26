@@ -71,7 +71,7 @@ public final class TkProfile implements TkRegex {
             req,
             () -> {
                 final String user = new RqUser(this.farm, req).value();
-                final String login = new RqLogin(pmo, req).value();
+                final String login = new RqLogin(this.farm, req).value();
                 final People people = new People(pmo).bootstrap();
                 final Catalog catalog = new Catalog(pmo).bootstrap();
                 final Debts debts = new Debts(pmo).bootstrap();

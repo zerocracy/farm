@@ -133,8 +133,10 @@ public final class TkProject implements TkRegex {
                                     )
                                 ),
                                 new XeWhen(
-                                    "yegor256".equals(user)
-                                        || roles.hasRole(user, "PO"),
+                                    new Roles(
+                                        new Pmo(this.farm)
+                                    ).bootstrap().hasAnyRole(user)
+                                    || roles.hasRole(user, "PO"),
                                     new XeChain(
                                         new XeAppend(
                                             "stripe_key",

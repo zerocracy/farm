@@ -40,4 +40,13 @@ def exec(Project project, XML xml) {
     .type('All roles were resigned')
     .param('login', login)
     .postTo(project)
+  claim.copy()
+    .type('Notify project')
+    .param(
+      'message',
+      new Par(
+        'Project member @%s was resigned from all project roles',
+      ).say(login)
+    )
+    .postTo(project)
 }

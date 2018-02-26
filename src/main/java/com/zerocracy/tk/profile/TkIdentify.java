@@ -21,7 +21,6 @@ import com.zerocracy.Project;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.pmo.People;
 import com.zerocracy.pmo.Pmo;
-import com.zerocracy.tk.RqUser;
 import com.zerocracy.tk.RsPage;
 import java.io.IOException;
 import org.takes.Response;
@@ -61,7 +60,7 @@ public final class TkIdentify implements TkRegex {
             "/xsl/identify.xsl",
             req,
             () -> {
-                final String user = new RqUser(pmo, req).value();
+                final String user = new RqSecureLogin(this.farm, req).value();
                 final People people = new People(pmo).bootstrap();
                 return new XeChain(
                     new XeAppend(

@@ -58,7 +58,7 @@ public final class TkAwards implements TkRegex {
                 new Pmo(this.farm),
                 String.format(
                     "awards/%s.xml",
-                    new RqSecureLogin(new Pmo(this.farm), req).value()
+                    new RqSecureLogin(this.farm, req).value()
                 ),
                 "pmo/awards.xsl"
             )

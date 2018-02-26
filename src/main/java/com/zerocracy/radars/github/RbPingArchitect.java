@@ -73,19 +73,15 @@ public final class RbPingArchitect implements Rebound {
                 answer = String.format("Architects notified: %s", arcs);
             }
         } catch (final SoftException ex) {
-            if ("yegor256".equals(author)) {
-                answer = "It's a ticket from @yegor256";
-            } else {
-                new ThrottledComments(issue.comments()).post(
-                    new Par(
-                        "@%s I'm not managing this repo, remove the",
-                        "[webhook](https://github.com/%s/settings/hooks)",
-                        "or contact me in Slack, as explained in §11",
-                        "//cc @yegor256"
-                    ).say(author, issue.repo().coordinates())
-                );
-                answer = "This repo is not managed";
-            }
+            new ThrottledComments(issue.comments()).post(
+                new Par(
+                    "@%s I'm not managing this repo, remove the",
+                    "[webhook](https://github.com/%s/settings/hooks)",
+                    "or contact me in Slack, as explained in §11",
+                    "//cc @yegor256"
+                ).say(author, issue.repo().coordinates())
+            );
+            answer = "This repo is not managed";
         }
         return answer;
     }

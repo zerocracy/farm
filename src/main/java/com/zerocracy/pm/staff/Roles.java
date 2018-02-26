@@ -293,6 +293,11 @@ public final class Roles {
      */
     public boolean hasRole(final String person, final String... list)
         throws IOException {
+        if (list.length == 0) {
+            throw new IllegalArgumentException(
+                "The list of roles can't be empty, use hasAnyRoles() instead"
+            );
+        }
         try (final Item roles = this.item()) {
             return new Xocument(roles).nodes(
                 String.format(

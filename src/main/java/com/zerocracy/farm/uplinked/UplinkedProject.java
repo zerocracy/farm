@@ -53,8 +53,11 @@ final class UplinkedProject implements Project {
                     "awards/[a-zA-Z0-9-]+\\.xml",
                     "agenda/[a-zA-Z0-9-]+\\.xml",
                     "projects/[a-zA-Z0-9-]+\\.xml",
+                    "speed/[a-zA-Z0-9-]+\\.xml",
                     "catalog\\.xml",
-                    "people\\.xml"
+                    "people\\.xml",
+                    "rfps\\.xml",
+                    "debts\\.xml"
                 )
             )
         )

@@ -20,6 +20,7 @@ import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
 import org.takes.rs.RsWithBody;
+import org.takes.rs.RsWithHeaders;
 import org.takes.rs.RsWithType;
 
 /**
@@ -34,11 +35,14 @@ public final class TkBadge implements TkRegex {
 
     @Override
     public Response act(final RqRegex req) {
-        return new RsWithType(
-            new RsWithBody(
-                this.getClass().getResourceAsStream("badge.svg")
+        return new RsWithHeaders(
+            new RsWithType(
+                new RsWithBody(
+                    this.getClass().getResourceAsStream("badge.svg")
+                ),
+                "image/svg+xml"
             ),
-            "image/svg+xml"
+            "Cache-Control: no-cache"
         );
     }
 
