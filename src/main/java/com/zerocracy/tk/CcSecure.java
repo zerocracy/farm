@@ -20,11 +20,11 @@ import com.zerocracy.Farm;
 import com.zerocracy.farm.props.Props;
 import java.io.IOException;
 import org.takes.facets.auth.Identity;
+import org.takes.facets.auth.codecs.CcAes;
 import org.takes.facets.auth.codecs.CcCompact;
 import org.takes.facets.auth.codecs.CcHex;
 import org.takes.facets.auth.codecs.CcSafe;
 import org.takes.facets.auth.codecs.CcSalted;
-import org.takes.facets.auth.codecs.CcXor;
 import org.takes.facets.auth.codecs.Codec;
 
 /**
@@ -50,7 +50,7 @@ final class CcSecure implements Codec {
     CcSecure(final Farm farm) throws IOException {
         this.origin = new CcSafe(
             new CcHex(
-                new CcXor(
+                new CcAes(
                     new CcSalted(new CcCompact()),
                     new Props(farm).get(
                         "//security/xor.key",
