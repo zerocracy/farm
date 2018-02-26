@@ -44,7 +44,4 @@ def exec(Project project, XML xml) {
   } catch (AssertionError ex) {
     Logger.warn(this, "Can't add label to issue %s: %s", issue, ex.localizedMessage)
   }
-  // @todo #403:30min Right now we are adding the label 'in' to the issue
-  //  to a Github job that is in WBS. We should also remove it when the issue
-  //  is removed from WBS (out of scope).
 }

@@ -14,20 +14,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.adds_label_to_issue_in_wbs
+package com.zerocracy.stk.pm.scope.wbs
 
 import com.jcabi.github.Github
-import com.jcabi.github.Repo
-import com.jcabi.github.Repos
+import com.jcabi.github.Issue
+import com.jcabi.github.IssueLabels
+import com.jcabi.log.Logger
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.entry.ExtGithub
+import com.zerocracy.farm.Assume
+import com.zerocracy.pm.ClaimIn
+import com.zerocracy.radars.github.Job
 
 def exec(Project project, XML xml) {
+  new Assume(project, xml).notPmo()
+  new Assume(project, xml).type('Job removed from WBS')
+  ClaimIn claim = new ClaimIn(xml)
+  String job = claim.param('job')
+  if (!job.startsWith('gh:')) {
+    return
+  }
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
-  Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
-  repo.issues().create('Hello, world', '')
-  repo.issues().create('Remove me from WBS', '')
+  Issue.Smart issue = new Issue.Smart(new Job.Issue(github, job))
+  try {
+    new IssueLabels.Smart(issue.labels()).removeIfExists('scope')
+  } catch (AssertionError ex) {
+    Logger.warn(this, "Can't remove label from issue %s: %s", issue, ex.localizedMessage)
+  }
 }

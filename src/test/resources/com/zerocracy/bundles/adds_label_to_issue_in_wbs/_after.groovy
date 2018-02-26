@@ -25,13 +25,35 @@ import com.zerocracy.Project
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.radars.github.Job
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
   Wbs wbs = new Wbs(project).bootstrap()
-  String job = 'gh:test/test#1'
-  assert wbs.exists(job)
+  String wbsIn = 'gh:test/test#1'
+  String wbsOut = 'gh:test/test#2'
+  MatcherAssert.assertThat(
+    'issue #1 is not in WBS',
+    wbs.exists(wbsIn),
+    Matchers.is(true)
+  )
+  MatcherAssert.assertThat(
+    'issue #2 in WBS',
+    wbs.exists(wbsOut),
+    Matchers.is(false)
+  )
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
-  Issue.Smart issue = new Issue.Smart(new Job.Issue(github, job))
-  assert new IssueLabels.Smart(issue.labels()).contains('scope')
+  Issue.Smart issueIn = new Issue.Smart(new Job.Issue(github, wbsIn))
+  Issue.Smart issueOut = new Issue.Smart(new Job.Issue(github, wbsOut))
+  MatcherAssert.assertThat(
+    'Issue in WBS does not contain "scope" label',
+    new IssueLabels.Smart(issueIn.labels()).contains('scope'),
+    Matchers.is(true)
+  )
+  MatcherAssert.assertThat(
+    'Issue not in WBS contains "scope" label',
+    new IssueLabels.Smart(issueOut.labels()).contains('scope'),
+    Matchers.is(false)
+  )
 }
