@@ -22,7 +22,7 @@ SOFTWARE.
     <date>${timestamp}</date>
   </build>
   <security>
-    <xor.key><![CDATA[${xor.key}]]></xor.key>
+    <aes.key><![CDATA[${aes.key}]]></aes.key>
   </security>
   <yoti>
     <pem>${yoti.pem}</pem>

@@ -53,7 +53,7 @@ final class CcSecure implements Codec {
                 new CcAes(
                     new CcSalted(new CcCompact()),
                     new Props(farm).get(
-                        "//security/xor.key",
+                        "//security/aes.key",
                         "0123456701234567"
                     )
                 )
