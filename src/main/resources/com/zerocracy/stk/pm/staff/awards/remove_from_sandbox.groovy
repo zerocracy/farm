@@ -32,7 +32,6 @@ def exec(Project project, XML xml) {
   String login = claim.param('login')
   Awards awards = new Awards(project, login).bootstrap()
   Farm farm = binding.variables.farm
-
   Integer current = awards.total()
   if (current >= new Policy().get('33.sandbox-rep-threshold', 1024)) {
     Projects projects = new Projects(farm, login).bootstrap()
