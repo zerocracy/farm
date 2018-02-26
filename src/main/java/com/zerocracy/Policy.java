@@ -22,6 +22,7 @@ import com.zerocracy.farm.props.Props;
 import com.zerocracy.farm.props.PropsFarm;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Iterator;
 import org.cactoos.io.InputOf;
 import org.cactoos.text.TextOf;
 
@@ -94,13 +95,21 @@ public final class Policy {
         if (new Props(this.farm).has("//testing")) {
             result = test;
         } else {
-            result = new XMLDocument(
+            final Iterator<String> items = new XMLDocument(
                 new TextOf(
                     new InputOf(
                         new URL("http://www.zerocracy.com/policy.html")
                     )
                 ).asString()
-            ).xpath(String.format("//*[@id='%s']/text()", param)).get(0);
+            ).xpath(String.format("//*[@id='%s']/text()", param)).iterator();
+            if (!items.hasNext()) {
+                throw new IllegalArgumentException(
+                    String.format(
+                        "Policy item '%s' not found", param
+                    )
+                );
+            }
+            result = items.next();
         }
         return result;
     }

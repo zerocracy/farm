@@ -73,6 +73,7 @@ def exec(Project project, XML xml) {
         .param('login', mentor)
         .param('minutes', 0)
         .param('cash', fee)
+        .param('student', login)
         .param('no-tuition-fee', true)
         .param('message', new Par('Tuition fee from @%s').say(login))
         .postTo(project)

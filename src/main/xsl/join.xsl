@@ -29,7 +29,7 @@ SOFTWARE.
       <xsl:text>Join us</xsl:text>
     </h1>
     <p>
-      <xsl:text>Fill this form to send a join request to all high-ranked users.</xsl:text>
+      <xsl:text>Fill out this form to send a join request to all high-ranked users.</xsl:text>
       <xsl:text> Someone may decide to </xsl:text>
       <a href="http://www.zerocracy.com/policy.html#1">
         <xsl:text>invite</xsl:text>
@@ -57,7 +57,7 @@ SOFTWARE.
           </a>
           <xsl:text>:</xsl:text>
         </label>
-        <input id="inp-personality" type="text" required="required" name="personality" placeholder="INTJ-A" size="8" pattern="[IE][NS][TF][PJ]-[AT]"/>
+        <input id="inp-personality" type="text" required="required" name="personality" placeholder="INTJ-A" size="8" maxlength="6" pattern="[IE][NS][TF][PJ]-[AT]"/>
         <label for="inp-about">
           <xsl:text>A few good words about you (keep it short):</xsl:text>
         </label>
@@ -84,7 +84,10 @@ SOFTWARE.
     <p>
       <xsl:text>Right after you submit this form,</xsl:text>
       <xsl:text> we will send your information to all users with 1024+ reputation.</xsl:text>
-      <xsl:text> Some of them may become interested and will contact you in Telegram.</xsl:text>
+      <xsl:text> Some of them may become interested and will contact you in Telegram,</xsl:text>
+      <xsl:text> but there is no guarantee.</xsl:text>
+      <xsl:text> If you get no response in the next few days,</xsl:text>
+      <xsl:text> feel free to fill out this form again.</xsl:text>
     </p>
   </xsl:template>
 </xsl:stylesheet>
