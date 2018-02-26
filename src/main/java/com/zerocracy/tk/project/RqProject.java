@@ -40,8 +40,15 @@ import org.takes.facets.forward.RsForward;
  * @version $Id$
  * @since 0.12
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @checkstyle CyclomaticComplexityCheck (500 lines)
  */
-@SuppressWarnings({ "PMD.AvoidDuplicateLiterals", "PMD.CyclomaticComplexity" })
+@SuppressWarnings
+    (
+        {
+            "PMD.AvoidDuplicateLiterals",
+            "PMD.CyclomaticComplexity"
+        }
+    )
 final class RqProject implements Project {
 
     /**
@@ -81,7 +88,7 @@ final class RqProject implements Project {
                         )
                     );
                 }
-                if (!"PMO".equals(pid)) {
+                if (!"PMO".equals(pid) && !"yegor256".equals(user)) {
                     final Roles roles = new Roles(project).bootstrap();
                     if (required.length > 0 && !roles.hasRole(user, required)) {
                         throw new RsForward(

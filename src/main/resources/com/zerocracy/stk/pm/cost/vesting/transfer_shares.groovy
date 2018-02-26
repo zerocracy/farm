@@ -33,7 +33,10 @@ def exec(Project project, XML xml) {
   String job = claim.param('job')
   String login = claim.param('login')
   int minutes = Integer.parseInt(claim.param('minutes'))
-  if (minutes < 0) {
+  if (minutes <= 0) {
+    return
+  }
+  if (claim.hasParam('student')) {
     return
   }
   Roles roles = new Roles(project).bootstrap()
