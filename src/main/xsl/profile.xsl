@@ -348,7 +348,11 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="debt[items/item]">
     <p>
-      <xsl:text>We owe you these </xsl:text>
+      <xsl:text>We </xsl:text>
+      <a href="http://www.zerocracy.com/policy.html#20">
+        <xsl:text>owe you</xsl:text>
+      </a>
+      <xsl:text> these </xsl:text>
       <xsl:value-of select="count(items/item)"/>
       <xsl:if test="count(items/item) &gt; 1">
         <xsl:text>s</xsl:text>
