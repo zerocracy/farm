@@ -61,10 +61,9 @@ def exec(Project project, XML xml) {
     ).say(job, login, project.pid(), claim.cid())
   }
   if (!new Roles(project).bootstrap().hasAnyRole(login)) {
-    msg += new Par(
-      ' @%s is not a member of this project yet,',
-      'but they can request to join.',
-      'Check your [profile](/u/%1$s) and follow the instructions.'
+    msg += ' ' + new Par(
+      '@%s is not a member of this project yet,',
+      'but they can request to join'
     ).say(login)
   }
   if (new People(project).bootstrap().vacation(login)) {

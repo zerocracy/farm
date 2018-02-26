@@ -70,6 +70,16 @@ public final class RqLogin implements Scalar<String> {
                 )
             );
         }
+        if (!new People(this.farm).bootstrap().hasMentor(login)) {
+            throw new RsForward(
+                new RsParFlash(
+                    new Par(
+                        "@%s is not invited to us yet, see §1"
+                    ).say(login),
+                    Level.WARNING
+                )
+            );
+        }
         return login;
     }
 }
