@@ -16,6 +16,7 @@
  */
 package com.zerocracy.radars.github;
 
+import com.jcabi.aspects.Tv;
 import com.jcabi.github.Github;
 import com.jcabi.github.Issue;
 import com.jcabi.github.Label;
@@ -26,6 +27,7 @@ import com.zerocracy.pm.scope.Wbs;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.concurrent.TimeUnit;
 import javax.json.JsonObject;
 
 /**
@@ -57,6 +59,7 @@ public final class RbOnClose implements Rebound {
                     .type("Close job")
                     .token(new TokenOfIssue(issue))
                     .param("job", job)
+                    .until(TimeUnit.MINUTES.toSeconds((long) Tv.FIFTEEN))
                     .param("reason", "GitHub issue was closed")
                     .postTo(project);
             }
