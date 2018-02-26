@@ -16,11 +16,15 @@
  */
 package com.zerocracy.stk.pm.in.orders
 
+import com.jcabi.github.Comment
+import com.jcabi.github.Issue
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
+import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
@@ -28,6 +32,13 @@ import com.zerocracy.pm.cost.Boosts
 import com.zerocracy.pm.cost.Estimates
 import com.zerocracy.pm.cost.Rates
 import com.zerocracy.pm.in.Orders
+import com.zerocracy.pm.staff.Roles
+import com.zerocracy.radars.github.Job
+import org.cactoos.collection.Mapped
+import org.cactoos.func.FuncOf
+import org.cactoos.list.ListOf
+import org.cactoos.scalar.Or
+
 import java.util.concurrent.TimeUnit
 
 def exec(Project project, XML xml) {
@@ -40,7 +51,7 @@ def exec(Project project, XML xml) {
   String login = orders.performer(job)
   Estimates estimates = new Estimates(project).bootstrap()
   String quality = claim.params().with {
-    it.containsKey('quality') ? it['quality'] : 'acceptable'
+    it.containsKey('quality') ? it['quality'] : issueQuality(project, job)
   }
   if (quality == 'good' || quality == 'acceptable') {
     int extra = quality == 'good' ? new Policy().get('31.bonus', 5) : 0
@@ -74,4 +85,30 @@ def exec(Project project, XML xml) {
     .param('login', login)
     .param('minutes', minutes)
     .postTo(project)
+}
+
+def issueQuality(Project project, String job) {
+  Farm farm = binding.variables.farm
+  Roles roles = new Roles(project).bootstrap()
+  Orders orders = new Orders(project).bootstrap()
+  List<String> arcs = roles.findByRole('ARC')
+  String performer = orders.performer(job)
+  Issue.Smart issue = new Issue.Smart(new Job.Issue(new ExtGithub(farm).value(), job))
+  if (issue.pull) {
+    List<String> authors = new ListOf<>(
+      new Mapped<>(
+        { Comment cmt -> new Comment.Smart(cmt).author().login() },
+        issue.comments().iterate(issue.createdAt())
+      )
+    )
+    boolean hasArc = new Or(
+      new FuncOf<String, Boolean>({ String author -> arcs.contains(authors) }),
+      authors
+    ).value()
+    if (hasArc && authors.contains(performer)) {
+      return 'acceptable'
+    }
+    return 'bad'
+  }
+  'acceptable'
 }
