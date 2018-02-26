@@ -46,4 +46,15 @@ public final class BansTest {
         );
     }
 
+    @Test
+    public void checkExistence() throws Exception {
+        final Bans bans = new Bans(new FkProject()).bootstrap();
+        final String job = "gh:test/test#2";
+        final String login = "jimmy";
+        bans.ban(job, login, "test");
+        MatcherAssert.assertThat(
+            bans.exists(job, login),
+            Matchers.is(true)
+        );
+    }
 }

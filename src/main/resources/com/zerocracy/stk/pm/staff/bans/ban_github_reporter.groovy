@@ -19,10 +19,10 @@ package com.zerocracy.stk.pm.staff.bans
 import com.jcabi.github.Github
 import com.jcabi.github.Issue
 import com.jcabi.xml.XML
-import com.zerocracy.entry.ExtGithub
-import com.zerocracy.farm.Assume
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.entry.ExtGithub
+import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.staff.Bans
 import com.zerocracy.radars.github.Job
@@ -39,11 +39,12 @@ def exec(Project project, XML xml) {
   Github github = new ExtGithub(farm).value()
   Issue.Smart issue = new Issue.Smart(new Job.Issue(github, job))
   String author = issue.author().login().toLowerCase(Locale.ENGLISH)
-  new Bans(project)
-    .bootstrap()
-    .ban(job, author, 'This user reported the ticket')
-  claim.copy()
-    .type('User was banned')
-    .param('reason', 'The user reported GitHub issue')
-    .postTo(project)
+  Bans bans = new Bans(project).bootstrap()
+  if (!bans.exists(job, author)) {
+    bans.ban(job, author, 'This user reported the ticket')
+    claim.copy()
+      .type('User was banned')
+      .param('reason', 'The user reported GitHub issue')
+      .postTo(project)
+  }
 }

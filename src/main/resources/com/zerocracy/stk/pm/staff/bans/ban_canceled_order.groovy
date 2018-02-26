@@ -28,12 +28,13 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
   String performer = claim.param('login')
-  new Bans(project).bootstrap().ban(
-    job, performer, 'User was resigned from the ticket'
-  )
-  claim.copy()
-    .type('User was banned')
-    .param('login', performer)
-    .param('job', job)
-    .postTo(project)
+  Bans bans = new Bans(project).bootstrap()
+  if (!bans.exists(job, performer)) {
+    bans.ban(job, performer, 'User was resigned from the ticket')
+    claim.copy()
+      .type('User was banned')
+      .param('login', performer)
+      .param('job', job)
+      .postTo(project)
+  }
 }
