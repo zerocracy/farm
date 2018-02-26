@@ -85,12 +85,15 @@ public final class Debts {
      */
     public Iterable<Directive> toXembly(final String uid) throws IOException {
         try (final Item item = this.item()) {
-            final Iterator<XML> debt = new Xocument(item.path()).nodes(
+            final Iterator<XML> debts = new Xocument(item.path()).nodes(
                 String.format("/debts/debt[@login='%s']", uid)
             ).iterator();
             final Directives dirs = new Directives();
-            if (debt.hasNext()) {
-                dirs.add("debt").append(Directives.copyOf(debt.next().node()));
+            if (debts.hasNext()) {
+                final XML debt = debts.next();
+                dirs.add("debt")
+                    .attr("total", this.amount(uid))
+                    .append(Directives.copyOf(debt.node()));
             }
             return dirs;
         }

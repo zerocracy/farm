@@ -354,10 +354,13 @@ SOFTWARE.
       </a>
       <xsl:text> these </xsl:text>
       <xsl:value-of select="count(items/item)"/>
+      <xsl:text> payment</xsl:text>
       <xsl:if test="count(items/item) &gt; 1">
-        <xsl:text>s</xsl:text>
+        <xsl:text>s (</xsl:text>
+        <xsl:value-of select="@total"/>
+        <xsl:text> total)</xsl:text>
       </xsl:if>
-      <xsl:text> payments: </xsl:text>
+      <xsl:text>: </xsl:text>
       <xsl:for-each select="items/item">
         <xsl:if test="position() &gt; 1">
           <xsl:text>; </xsl:text>

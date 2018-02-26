@@ -52,12 +52,14 @@ public final class DebtsTest {
         final Debts debts = new Debts(new FkProject()).bootstrap();
         final String uid = "0crat";
         debts.add(uid, new Cash.S("$99"), "details-1", "reason-1");
+        debts.add(uid, new Cash.S("$17"), "details-15", "reason-15");
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
                 new Xembler(debts.toXembly(uid)).xmlQuietly()
             ),
             XhtmlMatchers.hasXPath(
-                String.format("/debt[@login='%s']/items/item", uid)
+                String.format("/debt[@login='%s']/items/item", uid),
+                "/debt[@total='$116']"
             )
         );
     }
