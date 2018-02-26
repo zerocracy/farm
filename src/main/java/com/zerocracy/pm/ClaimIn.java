@@ -83,9 +83,6 @@ public final class ClaimIn {
         if (this.hasToken()) {
             out.token(this.token());
         }
-        if (this.hasAuthor()) {
-            out.author(this.author());
-        }
         out.params(this.params());
         out.param("cause", this.cid());
         return out;

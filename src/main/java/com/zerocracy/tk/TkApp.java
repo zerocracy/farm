@@ -206,8 +206,8 @@ public final class TkApp extends TkWrap {
                                                                     )
                                                                 ),
                                                                 new FkRegex(
-                                                                    "/badge/(PMO|[A-Z0-9]{9})\\.svg",
-                                                                    new TkBadge()
+                                                                    "/badge/([A-Z0-9]{9})\\.svg",
+                                                                    new TkBadge(farm)
                                                                 ),
                                                                 new FkRegex(
                                                                     "/p/(PMO|[A-Z0-9]{9})",
