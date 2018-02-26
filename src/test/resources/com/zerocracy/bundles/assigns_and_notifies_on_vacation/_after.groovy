@@ -25,6 +25,9 @@ import com.jcabi.xml.XML
 import com.zerocracy.Project
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.pm.in.Orders
+import org.cactoos.collection.Mapped
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
   Orders orders = new Orders(project).bootstrap()
@@ -32,7 +35,11 @@ def exec(Project project, XML xml) {
   Github github = new ExtGithub(binding.variables.farm).value()
   Repo repo = github.repos().get(new Coordinates.Simple('test/test'))
   Issue issue = repo.issues().get(1)
-  assert new Comment.Smart(
-    issue.comments().iterate(new Date()).iterator().next()
-  ).body().contains('is on vacation')
+  MatcherAssert.assertThat(
+    new Mapped(
+      { new Comment.Smart(it as Comment).body() },
+      issue.comments().iterate(new Date())
+    ),
+    Matchers.hasItem(Matchers.containsString('is on vacation'))
+  )
 }
