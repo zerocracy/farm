@@ -28,6 +28,6 @@ import com.zerocracy.farm.Assume
  *  Also test in 'invite_a_friend/_after.groovy' should be uncommented.
  */
 def exec(Project project, XML xml) {
-    new Assume(project, xml).isPmo()
-    new Assume(project, xml).type('Breakup')
+  new Assume(project, xml).isPmo()
+  new Assume(project, xml).type('Breakup')
 }

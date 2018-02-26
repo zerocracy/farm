@@ -24,14 +24,14 @@ import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.People
 
 def exec(Project project, XML xml) {
-    new Assume(project, xml).isPmo()
-    new Assume(project, xml).type('Breakup')
-    Farm farm = binding.variables.farm
-    ClaimIn claim = new ClaimIn(xml)
-    String author = claim.author()
-    String login = claim.param('login')
-    People people = new People(farm).bootstrap()
-    if (people.hasMentor(login) && people.mentor(login) == author) {
-        people.breakup(login)
-    }
+  new Assume(project, xml).isPmo()
+  new Assume(project, xml).type('Breakup')
+  Farm farm = binding.variables.farm
+  ClaimIn claim = new ClaimIn(xml)
+  String author = claim.author()
+  String login = claim.param('login')
+  People people = new People(farm).bootstrap()
+  if (people.hasMentor(login) && people.mentor(login) == author) {
+    people.breakup(login)
+  }
 }

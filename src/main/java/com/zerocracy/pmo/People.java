@@ -278,13 +278,9 @@ public final class People {
     public void breakup(final String uid) throws IOException {
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
-                new Directives()
-                    .xpath(
-                        String.format(
-                            "/people/person[@id='%s']/mentor",
-                            uid
-                        )
-                    ).set("0crat")
+                new Directives().xpath(
+                    String.format("/people/person[@id='%s']/mentor", uid)
+                ).set("0crat")
             );
         }
     }
