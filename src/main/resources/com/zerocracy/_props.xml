@@ -55,6 +55,9 @@ SOFTWARE.
     <key>${stripe.key}</key>
     <secret>${stripe.secret}</secret>
   </stripe>
+  <cloudconvert>
+    <key>${cloudconvert.key}</key>
+  </cloudconvert>
   <s3>
     <key>${s3.key}</key>
     <secret>${s3.secret}</secret>

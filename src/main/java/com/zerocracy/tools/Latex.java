@@ -17,10 +17,14 @@
 package com.zerocracy.tools;
 
 import com.jcabi.http.request.JdkRequest;
+import com.jcabi.http.response.RestResponse;
+import com.zerocracy.farm.props.Props;
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import javax.json.Json;
+import javax.json.JsonObject;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
-import org.cactoos.text.TextOf;
 
 /**
  * LaTeX document.
@@ -35,21 +39,13 @@ public final class Latex {
     /**
      * The source.
      */
-    private final Input source;
+    private final String source;
 
     /**
      * Ctor.
      * @param src LaTeX source
      */
     public Latex(final String src) {
-        this(new InputOf(src));
-    }
-
-    /**
-     * Ctor.
-     * @param src LaTeX source
-     */
-    public Latex(final Input src) {
         this.source = src;
     }
 
@@ -59,27 +55,36 @@ public final class Latex {
      * @throws IOException If fails
      */
     public Input pdf() throws IOException {
-        final String boundary = "-------------------------748329778239743829";
-        final String body = String.join(
-            "",
-            boundary, "\n",
-            "Content-Disposition: form-data; name=\"pole\"",
-            new TextOf(this.source).asString()
-        );
-        final byte[] bytes = new JdkRequest("https://tex.mendelu.cz/en/")
+        final JsonObject req = Json.createObjectBuilder()
+            .add("apikey", new Props().get("//cloudconvert/key", ""))
+            .add("inputformat", "tex")
+            .add("outputformat", "pdf")
+            .add("wait", true)
+            .add("input", "raw")
+            .add("download", "inline")
+            .add("filename", "article.tex")
+            .add("file", this.source)
+            .build();
+        final String body = req.toString();
+        final String uri = "https://api.cloudconvert.com/convert";
+        final String loc = new JdkRequest(uri)
             .method("POST")
-            .header(
-                "Content-type",
-                String.format(
-                    "multipart/form-data; boundary=%s", boundary
-                )
-            )
-            .header("Content-Length", body.getBytes().length)
-            .header("Content-Encoding", "utf-8")
+            .header("Content-type", "application/json")
+            .header("Content-Length", body.getBytes("UTF-8").length)
             .body().set(body).back()
             .fetch()
-            .binary();
-        return new InputOf(bytes);
+            .as(RestResponse.class)
+            .assertStatus(HttpURLConnection.HTTP_SEE_OTHER)
+            .headers()
+            .get("Location")
+            .get(0);
+        return new InputOf(
+            new JdkRequest(loc)
+                .fetch()
+                .as(RestResponse.class)
+                .assertStatus(HttpURLConnection.HTTP_OK)
+                .binary()
+        );
     }
 
 }

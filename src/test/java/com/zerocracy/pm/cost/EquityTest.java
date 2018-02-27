@@ -73,7 +73,7 @@ public final class EquityTest {
             );
             MatcherAssert.assertThat(
                 equity.ownership(login),
-                Matchers.equalTo("162.50 shares = $1300.00/0.33% of $400000.00")
+                Matchers.equalTo("162.50 shares = $1296.00/0.33% of $400000.00")
             );
         }
     }

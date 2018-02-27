@@ -31,7 +31,7 @@ import org.junit.Test;
  * @version $Id$
  * @since 0.111
  */
-public final class LatexTest {
+public final class LatexITCase {
 
     /**
      * Latex can render PDF.
