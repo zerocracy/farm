@@ -17,6 +17,7 @@
 package com.zerocracy.pmo;
 
 import com.jcabi.matchers.XhtmlMatchers;
+import com.zerocracy.Par;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.farm.fake.FkProject;
 import org.hamcrest.MatcherAssert;
@@ -51,15 +52,20 @@ public final class DebtsTest {
     public void printsSingleToXembly() throws Exception {
         final Debts debts = new Debts(new FkProject()).bootstrap();
         final String uid = "0crat";
-        debts.add(uid, new Cash.S("$99"), "details-1", "reason-1");
+        debts.add(
+            uid, new Cash.S("$99"),
+            new Par("details-1 as in §1").say(),
+            "reason-1"
+        );
         debts.add(uid, new Cash.S("$17"), "details-15", "reason-15");
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
                 new Xembler(debts.toXembly(uid)).xmlQuietly()
             ),
-            XhtmlMatchers.hasXPath(
-                String.format("/debt[@login='%s']/items/item", uid),
-                "/debt[@total='$116']"
+            XhtmlMatchers.hasXPaths(
+                "/debt[@total='$116.00']",
+                "/debt[count(item)=2]",
+                "/debt/item[details='details-1 as in §1 (reason-1)']"
             )
         );
     }

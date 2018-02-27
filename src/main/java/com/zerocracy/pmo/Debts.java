@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pmo;
 
+import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
@@ -26,10 +27,12 @@ import com.zerocracy.cash.Cash;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
+import org.cactoos.collection.Joined;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.scalar.Reduced;
 import org.cactoos.time.DateAsText;
+import org.cactoos.time.DateOf;
 import org.xembly.Directive;
 import org.xembly.Directives;
 
@@ -91,9 +94,40 @@ public final class Debts {
             final Directives dirs = new Directives();
             if (debts.hasNext()) {
                 final XML debt = debts.next();
-                dirs.add("debt")
-                    .attr("total", this.amount(uid))
-                    .append(Directives.copyOf(debt.node()));
+                dirs.add("debt").attr("total", this.amount(uid)).append(
+                    new Joined<>(
+                        new Mapped<XML, Iterable<Directive>>(
+                            xml -> new Directives().add("item")
+                                .add("ago")
+                                .set(
+                                    Logger.format(
+                                        "%[ms]s",
+                                        System.currentTimeMillis()
+                                        - new DateOf(
+                                            xml.xpath("created/text()").get(0)
+                                        ).value().getTime()
+                                    )
+                                )
+                                .up()
+                                .add("amount")
+                                .set(xml.xpath("amount/text()").get(0))
+                                .up()
+                                .add("details")
+                                .set(
+                                    new Par.ToText(
+                                        String.format(
+                                            "%s (%s)",
+                                            xml.xpath("details/text()").get(0),
+                                            xml.xpath("reason/text()").get(0)
+                                        )
+                                    ).toString()
+                                )
+                                .up()
+                                .up(),
+                            debt.nodes("items/item")
+                        )
+                    )
+                );
             }
             return dirs;
         }

@@ -28,7 +28,7 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Notify PMO')
   ClaimIn claim = new ClaimIn(xml)
   Farm farm = binding.variables.farm
-  Roles roles = new Roles(new Pmo(farm)).bootstrap()
+  Roles roles = new Roles(new Pmo(farm))
   roles.everybody().each { uid ->
     claim.copy()
       .type('Notify user')
