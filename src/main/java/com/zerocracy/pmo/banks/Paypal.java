@@ -34,8 +34,6 @@ import com.paypal.svcs.types.common.AckCode;
 import com.paypal.svcs.types.common.ErrorData;
 import com.paypal.svcs.types.common.RequestEnvelope;
 import com.zerocracy.Farm;
-import com.zerocracy.Par;
-import com.zerocracy.SoftException;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.cash.CashParsingException;
 import com.zerocracy.farm.props.Props;
@@ -79,14 +77,6 @@ final class Paypal implements Bank {
     @Override
     public String pay(final String target, final Cash amount,
         final String details) throws IOException {
-        if (amount.compareTo(new Cash.S("$20")) < 0) {
-            throw new SoftException(
-                new Par(
-                    "The amount %s is too small,",
-                    "we won't send now to avoid big PayPal commission"
-                ).say(amount)
-            );
-        }
         final Props props = new Props(this.farm);
         final AdaptivePaymentsService service = new AdaptivePaymentsService(
             new SolidMap<String, String>(

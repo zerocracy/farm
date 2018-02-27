@@ -26,7 +26,6 @@ import com.jcabi.aspects.Tv;
 import com.jcabi.log.Logger;
 import com.zerocracy.Farm;
 import com.zerocracy.Par;
-import com.zerocracy.SoftException;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.cash.Currency;
 import com.zerocracy.farm.props.Props;
@@ -87,14 +86,6 @@ final class Crypto implements Bank {
     @Override
     public String pay(final String target, final Cash amount,
         final String details) throws IOException {
-        if (amount.compareTo(new Cash.S("$20")) < 0) {
-            throw new SoftException(
-                new Par(
-                    "The amount %s is too small,",
-                    "we won't send now to avoid big %s commission"
-                ).say(amount, this.currency)
-            );
-        }
         final Props props = new Props(this.farm);
         final Coinbase base = new CoinbaseBuilder().withApiKey(
             props.get("//coinbase/key"), props.get("//coinbase/secret")
