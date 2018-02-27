@@ -34,7 +34,7 @@ def exec(Project pmo, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   debts.iterate().each { uid ->
     Cash debt = debts.amount(uid)
-    if (debt < new Policy().get('20.debt-threshold', new Cash.S('$50'))) {
+    if (debt < new Policy().get('46.threshold', new Cash.S('$50'))) {
       return
     }
     claim.copy()
