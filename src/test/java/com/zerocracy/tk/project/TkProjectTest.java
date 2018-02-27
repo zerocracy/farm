@@ -20,6 +20,8 @@ import com.jcabi.matchers.XhtmlMatchers;
 import com.zerocracy.Farm;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.props.PropsFarm;
+import com.zerocracy.pm.staff.Roles;
+import com.zerocracy.pmo.Pmo;
 import com.zerocracy.tk.RqWithUser;
 import com.zerocracy.tk.TkApp;
 import org.hamcrest.MatcherAssert;
@@ -40,7 +42,9 @@ public final class TkProjectTest {
 
     @Test
     public void rendersProjectPage() throws Exception {
-        final Farm farm = new PropsFarm(new FkFarm());
+        final Farm raw = new FkFarm();
+        new Roles(new Pmo(raw)).bootstrap().assign("yegor256", "PO");
+        final Farm farm = new PropsFarm(raw);
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
                 new RsPrint(
