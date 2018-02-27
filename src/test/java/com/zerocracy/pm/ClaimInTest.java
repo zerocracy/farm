@@ -50,7 +50,11 @@ public final class ClaimInTest {
     public void buildsClaimOut() throws Exception {
         final ClaimIn claim = new ClaimIn(
             new XMLDocument(
-                "<claim id='1'><author>jeff</author><token>X</token></claim>"
+                String.join(
+                    "",
+                    "<claim id='1'><type>ZZ</type>",
+                    "<author>jeff</author><token>X</token></claim>"
+                )
             ).nodes("/claim ").get(0)
         );
         MatcherAssert.assertThat(

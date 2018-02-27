@@ -53,7 +53,7 @@ def exec(Project project, XML xml) {
       .param('reason', new Par('Bug was reported, see §29').say())
       .param('minutes', new Policy().get('29.price', 15))
       .postTo(project)
-  } else if (claim.hasToken() && author != '0pdd') {
+  } else if (author != '0pdd') {
     claim.reply(
       new Par(
         'Thanks for your contribution, @%s!',

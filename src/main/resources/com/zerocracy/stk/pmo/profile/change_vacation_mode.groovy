@@ -31,14 +31,10 @@ def exec(Project pmo, XML xml) {
   People people = new People(pmo).bootstrap()
   if ('on' == mode) {
     people.vacation(claim.author(), true)
-    if (claim.hasToken()) {
-      claim.reply('You are on vacation now').postTo(pmo)
-    }
+    claim.reply('You are on vacation now').postTo(pmo)
   } else if ('off' == mode) {
     people.vacation(claim.author(), false)
-    if (claim.hasToken()) {
-      claim.reply('Your vacation has been ended').postTo(pmo)
-    }
+    claim.reply('Your vacation has been ended').postTo(pmo)
   } else {
     throw new SoftException(
       "Incorrect vacation mode. Possible modes are 'on' or 'off'"
