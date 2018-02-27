@@ -310,7 +310,11 @@ SOFTWARE.
         <xsl:text>@</xsl:text>
         <xsl:value-of select="text()"/>
       </a>
-      <xsl:text>.</xsl:text>
+      <xsl:text> (</xsl:text>
+      <a href="http://www.zerocracy.com/policy.html#45">
+        <xsl:text>tuition fee</xsl:text>
+      </a>
+      <xsl:text> goes there).</xsl:text>
     </p>
   </xsl:template>
   <xsl:template match="students[not(student)]">

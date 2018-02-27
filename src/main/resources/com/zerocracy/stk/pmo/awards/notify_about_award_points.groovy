@@ -14,29 +14,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.staff.projects
+package com.zerocracy.stk.pmo.awards
 
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
+import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pmo.Projects
+import com.zerocracy.pmo.Awards
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
-  new Assume(project, xml).type(
-    'Role was assigned', 'Order was given'
-  )
+  new Assume(project, xml).type('Award points were added')
   ClaimIn claim = new ClaimIn(xml)
+  String job = claim.param('job')
   String login = claim.param('login')
+  Integer points = Integer.parseInt(claim.param('points'))
   Farm farm = binding.variables.farm
-  Projects projects = new Projects(farm, login).bootstrap()
-  if (!projects.exists(project.pid())) {
-    projects.add(project.pid())
-    claim.copy()
-      .type('User projects were updated')
-      .param('login', login)
-      .postTo(project)
-  }
+  Awards awards = new Awards(farm, login).bootstrap()
+  String reason = claim.param('reason')
+  claim.copy()
+    .type('Notify user')
+    .token("user;${login}")
+    .param(
+      'message',
+      new Par(
+        farm,
+        'You got %+d point(s) in the job %s in %s,',
+        'your total is [%+d](/u/%s/awards), see §18: %s'
+      ).say(points, job, project.pid(), awards.total(), login, reason)
+    )
+    .postTo(project)
+  claim.copy()
+    .type('Notify job')
+    .token("job;${job}")
+    .param(
+      'message',
+      new Par(
+        '%s: %+d point(s) just awarded to @%s,',
+        'total is [%+d](https://www.0crat.com/u/%s)',
+      ).say(reason, points, login, awards.total(), login)
+    )
+    .postTo(project)
 }

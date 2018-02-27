@@ -140,7 +140,7 @@ public final class Par {
             )
         );
         out = Par.replace(
-            out, Pattern.compile("(?<= |^)(ARC|DEV|REV|PO|QA)"),
+            out, Pattern.compile("(?<= |^)(ARC|DEV|REV|PO|QA|TST|HLP)"),
             matcher -> String.format("`%s`", matcher.group(0))
         );
         return out;

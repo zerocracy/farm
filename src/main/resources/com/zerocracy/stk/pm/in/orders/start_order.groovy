@@ -64,7 +64,7 @@ def exec(Project project, XML xml) {
   if (!new Roles(project).bootstrap().hasAnyRole(login)) {
     msg += ' ' + new Par(
       '@%s is not a member of this project yet,',
-      'but they can request to join'
+      'but they can request to join, as §1 explains'
     ).say(login)
   }
   Farm farm = binding.variables.farm

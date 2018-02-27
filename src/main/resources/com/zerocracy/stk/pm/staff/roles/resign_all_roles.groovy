@@ -17,31 +17,31 @@
 package com.zerocracy.stk.pm.staff.roles
 
 import com.jcabi.xml.XML
-import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.staff.Roles
-import com.zerocracy.pmo.Projects
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Resign all roles')
   ClaimIn claim = new ClaimIn(xml)
   String login = claim.param('login')
-  new Roles(project).bootstrap().resign(login)
-  Farm farm = binding.variables.farm
-  new Projects(farm, login).bootstrap().remove(project.pid())
-  if (claim.hasToken()) {
-    claim.reply(
-      new Par('All roles resigned from @%s').say(login)
-    ).postTo(project)
+  Roles roles = new Roles(project).bootstrap()
+  claim.reply(
+    new Par('All roles were resigned from @%s in %s').say(
+      login, project.pid()
+    )
+  ).postTo(project)
+  roles.allRoles(login).each { role ->
+    roles.resign(login, role)
+    claim.copy()
+      .type('Role was resigned')
+      .param('login', login)
+      .param('role', role)
+      .postTo(project)
   }
-  claim.copy()
-    .type('All roles were resigned')
-    .param('login', login)
-    .postTo(project)
   claim.copy()
     .type('Notify project')
     .param(

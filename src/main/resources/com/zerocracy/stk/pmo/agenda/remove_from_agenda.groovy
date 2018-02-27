@@ -14,30 +14,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.staff.awards
+package com.zerocracy.stk.pmo.agenda
 
 import com.jcabi.xml.XML
-import com.zerocracy.Par
-import com.zerocracy.Policy
+import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pmo.Agenda
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Order was canceled')
+  new Assume(project, xml).type('Order was finished', 'Order was canceled')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
-  if (claim.hasParam('voluntarily') && claim.param('voluntarily') == 'true') {
-    claim.copy()
-      .type('Make payment')
-      .param('job', job)
-      .param('login', claim.param('login'))
-      .param(
-        'reason',
-        new Par('Tasks refusal is discouraged, see §6').say()
-      )
-      .param('minutes', new Policy().get('6.penalty', -15))
-      .postTo(project)
+  String login = claim.param('login')
+  Farm farm = binding.variables.farm
+  Agenda agenda = new Agenda(farm, login).bootstrap()
+  if (agenda.exists(job)) {
+    agenda.remove(job)
   }
+  claim.copy()
+    .type('Agenda was updated')
+    .param('login', login)
+    .postTo(project)
 }

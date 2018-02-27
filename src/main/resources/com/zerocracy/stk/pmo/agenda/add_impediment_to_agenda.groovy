@@ -14,48 +14,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.staff.awards
+package com.zerocracy.stk.pmo.agenda
 
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
-import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pmo.Awards
+import com.zerocracy.pm.in.Impediments
+import com.zerocracy.pm.in.Orders
+import com.zerocracy.pmo.Agenda
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Award points were added')
+  new Assume(project, xml).type('Impediment was registered')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
-  String login = claim.param('login')
-  Integer points = Integer.parseInt(claim.param('points'))
+  Orders orders = new Orders(project).bootstrap()
+  String owner = orders.performer(job)
   Farm farm = binding.variables.farm
-  Awards awards = new Awards(farm, login).bootstrap()
-  String reason = claim.param('reason')
+  Agenda agenda = new Agenda(farm, owner).bootstrap()
+  Impediments impediments = new Impediments(project).bootstrap()
+  if (impediments.exists(job)) {
+    agenda.impediment(job, 'on hold')
+  }
   claim.copy()
-    .type('Notify user')
-    .param('cause', claim.cid())
-    .token("user;${login}")
-    .param(
-      'message',
-      new Par(
-        farm,
-        'You got %+d point(s) in the job %s in %s,',
-        'your total is [%+d](/u/%s/awards), see §18: %s'
-      ).say(points, job, project.pid(), awards.total(), login, reason)
-    )
-    .postTo(project)
-  claim.copy()
-    .type('Notify job')
-    .token("job;${job}")
-    .param(
-      'message',
-      new Par(
-        '%s: %+d point(s) just awarded to @%s,',
-        'total is [%+d](https://www.0crat.com/u/%s)',
-      ).say(reason, points, login, awards.total(), login)
-    )
+    .type('Agenda was updated')
+    .param('login', owner)
     .postTo(project)
 }

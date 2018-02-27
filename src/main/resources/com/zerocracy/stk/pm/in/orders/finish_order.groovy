@@ -57,7 +57,6 @@ def exec(Project project, XML xml) {
     int extra = quality == 'good' ? new Policy().get('31.bonus', 5) : 0
     ClaimOut out = claim.copy()
       .type('Make payment')
-      .param('cause', claim.cid())
       .param('login', login)
       .param('reason', new Par('Order was finished, quality was "%s"').say(quality))
       .param('minutes', new Boosts(project).bootstrap().factor(job) * 15 + extra)

@@ -14,29 +14,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.staff.speed
+package com.zerocracy.stk.pmo.awards
 
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
+import com.zerocracy.Par
+import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pmo.Speed
+import com.zerocracy.pmo.Awards
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Order was finished')
   new Assume(project, xml).notPmo()
-  Farm farm = binding.variables.farm
+  new Assume(project, xml).type('Award points were added')
   ClaimIn claim = new ClaimIn(xml)
-  String job = claim.param('job')
-  long minutes = Long.parseLong(claim.param('minutes'))
   String login = claim.param('login')
-  new Speed(farm, login)
-    .bootstrap()
-    .add(project.pid(), job, minutes)
-  claim.copy()
-    .type('Speed was updated')
-    .param('login', login)
-    .param('job', job)
-    .postTo(project)
+  Farm farm = binding.variables.farm
+  Awards awards = new Awards(farm, login).bootstrap()
+  Integer current = awards.total()
+  if (current <= new Policy().get('44.threshold', -256)) {
+    // @todo #390:30min We should remove people from people.xml
+    //  when their score goes below 200. Let's implement that.
+    //  We should also notify the person in case that happens.
+    String job = claim.param('job')
+    String reason = new Par(
+      'The score of @%s %d is too low and will be reset'
+    ).say(login, current)
+    Integer points = -current
+    awards.add(points, job, new Par.ToText(reason).toString())
+    claim.copy()
+      .type('Award points were added')
+      .param('job', job)
+      .param('login', login)
+      .param('points', points)
+      .param('reason', reason)
+      .postTo(project)
+  }
 }
