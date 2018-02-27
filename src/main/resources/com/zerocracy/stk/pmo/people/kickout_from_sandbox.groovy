@@ -74,7 +74,7 @@ def exec(Project pmo, XML xml) {
           'you are welcome to join other projects!'
         ).say(reputation, threshold, pid)
       ).postTo(pmo)
-      claim.copy().type('Notify user').token('user;yegor256').param(
+      claim.copy().type('Notify PMO').param(
         'message', new Par(
           'The user @%s was kicked out of sandbox project %s',
           'because of too high reputation %d (over %d)'

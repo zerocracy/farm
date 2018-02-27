@@ -138,7 +138,7 @@ final class Crypto implements Bank {
             if (balance.getAmount().doubleValue() < Crypto.THRESHOLD
                 && this.permitted(base, account)) {
                 final Transfer bought = base.buy(this.money(Crypto.BUYIN));
-                new ClaimOut().type("Notify user").token("user;yegor256").param(
+                new ClaimOut().type("Notify PMO").param(
                     "message",
                     new Par("%s purchased @ Coinbase; %s; ID=%s; %s; %s").say(
                         bought.getBtc(),

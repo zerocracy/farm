@@ -59,9 +59,9 @@ def exec(Project project, XML xml) {
       ).say(author)
     )
     .postTo(project)
-  claim.copy().type('Notify user').token('user;yegor256').param(
+  claim.copy().type('Notify PMO').param(
     'message', new Par(
       'New user @%s was invited by @%s'
     ).say(login, author)
-  ).param('cause', claim.cid()).postTo(project)
+  ).postTo(project)
 }

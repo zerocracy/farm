@@ -72,9 +72,9 @@ def exec(Project pmo, XML xml) {
       'wish you luck in your new project!'
     ).say(rid, author)
   ).postTo(pmo)
-  claim.copy().type('Notify user').token('user;yegor256').param(
+  claim.copy().type('Notify PMO').param(
     'message', new Par(
       'RFP #%d has been purchased by @%s: %s'
     ).say(rid, author, email)
-  ).param('cause', claim.cid()).postTo(pmo)
+  ).postTo(pmo)
 }

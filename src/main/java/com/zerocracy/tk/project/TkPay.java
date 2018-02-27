@@ -96,7 +96,7 @@ public final class TkPay implements TkRegex {
             .param("email", email)
             .author(user)
             .postTo(project);
-        new ClaimOut().type("Notify user").token("user;yegor256").param(
+        new ClaimOut().type("Notify PMO").param(
             "message", new Par(
                 "Project %s was funded for %s by @%s"
             ).say(project.pid(), amount, user)

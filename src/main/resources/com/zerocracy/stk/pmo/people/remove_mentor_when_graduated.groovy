@@ -51,7 +51,7 @@ def exec(Project pmo, XML xml) {
         'congratulations!'
       ).say(threshold)
     ).postTo(pmo)
-    claim.copy().type('Notify user').token('user;yegor256').param(
+    claim.copy().type('Notify PMO').param(
       'message', new Par(
         'The user @%s just graduated with reputation of %d!'
       ).say(uid, reputation)

@@ -14,43 +14,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.cost
+package com.zerocracy.stk.pm.comm
 
 import com.jcabi.xml.XML
-import com.zerocracy.Par
+import com.zerocracy.Farm
 import com.zerocracy.Project
-import com.zerocracy.cash.Cash
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.cost.Ledger
+import com.zerocracy.pm.staff.Roles
+import com.zerocracy.pmo.Pmo
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Funded by Stripe')
+  new Assume(project, xml).type('Notify PMO')
   ClaimIn claim = new ClaimIn(xml)
-  Cash amount = new Cash.S(claim.param('amount'))
-  String customer = claim.param('stripe_customer')
-  String email = claim.param('email')
-  new Ledger(project).bootstrap().add(
-    new Ledger.Transaction(
-      amount,
-      'assets', 'cash',
-      'income', email.toLowerCase(Locale.ENGLISH),
-      "Funded by Stripe customer \"${customer}\""
-    )
-  )
-  claim.copy()
-    .type('Notify project')
-    .param(
-      'message',
-      new Par(
-        'The project %s has been funded via Stripe for %s'
-      ).say(project.pid(), amount)
-    )
-    .postTo(project)
-  claim.copy().type('Notify PMO').param(
-    'message', new Par(
-      'We just funded %s for %s via Stripe'
-    ).say(project.pid(), amount)
-  ).postTo(project)
+  Farm farm = binding.variables.farm
+  Roles roles = new Roles(new Pmo(farm)).bootstrap()
+  roles.everybody().each { uid ->
+    claim.copy()
+      .type('Notify user')
+      .token("user;${uid}")
+      .postTo(project)
+  }
 }

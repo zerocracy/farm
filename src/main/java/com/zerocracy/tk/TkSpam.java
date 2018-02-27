@@ -70,7 +70,7 @@ public final class TkSpam implements TkRegex {
         new ClaimOut().type("Notify all").param(
             "message", new Par(body).say()
         ).postTo(new Pmo(this.farm));
-        new ClaimOut().type("Notify user").token("user;yegor256").param(
+        new ClaimOut().type("Notify PMO").param(
             "message", new Par(
                 "Spam request has been submitted by @%s"
             ).say(user)

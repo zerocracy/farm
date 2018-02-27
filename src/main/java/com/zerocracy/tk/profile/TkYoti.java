@@ -96,7 +96,7 @@ public final class TkYoti implements TkRegex {
             .param("details", name)
             .param("system", "yoti")
             .postTo(new Pmo(this.farm));
-        new ClaimOut().type("Notify user").token("user;yegor256").param(
+        new ClaimOut().type("Notify PMO").param(
             "message", new Par(
                 "We just identified @%s as \"%s\" via Yoti"
             ).say(user, name)

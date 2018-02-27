@@ -85,7 +85,7 @@ public final class TkUpload implements TkRegex {
                 )
             ).intValue();
         }
-        new ClaimOut().type("Notify user").token("user;yegor256").param(
+        new ClaimOut().type("Notify PMO").param(
             "message", new Par(
                 "File `%s` uploaded manually to %s by @%s"
             ).say(artifact, project.pid(), new RqUser(this.farm, req).value())

@@ -72,11 +72,11 @@ def exec(Project project, XML xml) {
           'roles.'
         ).say(project.pid())
       ).postTo(project)
-      claim.copy().type('Notify user').token('user;yegor256').param(
+      claim.copy().type('Notify PMO').param(
         'message', new Par(
           'We just bootstrapped @%s by @%s'
         ).say(project.pid(), author)
-      ).param('cause', claim.cid()).postTo(project)
+      ).postTo(project)
     }
   } else {
     if (roles.hasRole(author, role)) {
