@@ -45,7 +45,7 @@ def exec(Project pmo, XML xml) {
       .param('login', uid)
       .param(
         'message',
-        new Par('Debt repayment, per §20: %s').say(
+        new Par('Debt repayment, per §46: %s').say(
           new XMLDocument(new Xembler(debts.toXembly(uid)).xmlQuietly()).xpath(
             '//item/amount/text()'
           ).join(', ')
