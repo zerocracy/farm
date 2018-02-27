@@ -160,11 +160,12 @@ public final class PeopleTest {
         people.invite(friend, uid);
         people.breakup(friend);
         MatcherAssert.assertThat(
-            people.mentor(friend),
-            Matchers.is("0crat")
+            people.hasMentor(friend),
+            Matchers.is(false)
         );
     }
 
+    @Test
     public void mentorTest() throws Exception {
         final People people = new People(new FkProject()).bootstrap();
         final String uid = "datum";

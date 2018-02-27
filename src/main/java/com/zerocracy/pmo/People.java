@@ -280,7 +280,7 @@ public final class People {
             new Xocument(item.path()).modify(
                 new Directives().xpath(
                     String.format("/people/person[@id='%s']/mentor", uid)
-                ).set("0crat")
+                ).remove()
             );
         }
     }
