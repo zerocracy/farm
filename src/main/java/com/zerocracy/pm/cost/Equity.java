@@ -88,8 +88,8 @@ public final class Equity {
                 .replace("[ENTITY]", doc.xpath("//entity/text()", "PROJECT"))
                 .replace("[ADDRESS]", doc.xpath("//address/text()", "USA"))
                 .replace("[CEO]", doc.xpath("//ceo/text()", "CEO"))
-                .replace("[SHARE]", String.format("%.2f", share))
-                .replace("[SHARES]", String.format("%.0f", this.shares()))
+                .replace("[SHARE]", String.format("%,.2f", share))
+                .replace("[SHARES]", String.format("%,.0f", this.shares()))
                 .replace("[PAR]", this.par().toString());
             return new Latex(latex).pdf();
         }
