@@ -17,10 +17,12 @@
 package com.zerocracy.bundles.awards_points_to_arc_for_pull_request
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.pmo.Awards
 
 def exec(Project project, XML xml) {
-  Awards awards = new Awards(project, 'dmarkov').bootstrap()
+  Farm farm = binding.variables.farm
+  Awards awards = new Awards(farm, 'dmarkov').bootstrap()
   assert awards.total() == 10
 }

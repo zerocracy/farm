@@ -17,6 +17,7 @@
 package com.zerocracy.bundles.review_quality
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pmo.Awards
@@ -40,9 +41,10 @@ def exec(Project project, XML xml) {
     orders.assigned('gh:test/test#3'),
     Matchers.is(false)
   )
+  Farm farm = binding.variables.farm
   MatcherAssert.assertThat(
     'qauser received incorrect awards',
-    new Awards(project, 'qauser').bootstrap().total(),
+    new Awards(farm, 'qauser').bootstrap().total(),
     Matchers.equalTo(24)
   )
 }

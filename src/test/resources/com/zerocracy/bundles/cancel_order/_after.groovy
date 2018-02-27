@@ -38,7 +38,7 @@ def exec(Project project, XML xml) {
     Matchers.equalTo('')
   )
   MatcherAssert.assertThat(
-    new Agenda(project, 'g4s8').bootstrap().exists('gh:test/test#1'),
+    new Agenda(farm, 'g4s8').bootstrap().exists('gh:test/test#1'),
     Matchers.equalTo(false)
   )
   MatcherAssert.assertThat(

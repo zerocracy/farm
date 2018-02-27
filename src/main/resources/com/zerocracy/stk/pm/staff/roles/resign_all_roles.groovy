@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pm.staff.roles
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
@@ -30,7 +31,8 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   String login = claim.param('login')
   new Roles(project).bootstrap().resign(login)
-  new Projects(project, login).bootstrap().remove(project.pid())
+  Farm farm = binding.variables.farm
+  new Projects(farm, login).bootstrap().remove(project.pid())
   if (claim.hasToken()) {
     claim.reply(
       new Par('All roles resigned from @%s').say(login)

@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pm.staff.agenda
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
@@ -36,7 +37,8 @@ def exec(Project project, XML xml) {
   }
   String owner = orders.performer(job)
   String role = new Wbs(project).bootstrap().role(job)
-  Agenda agenda = new Agenda(project, owner).bootstrap()
+  Farm farm = binding.variables.farm
+  Agenda agenda = new Agenda(farm, owner).bootstrap()
   agenda.add(job, role)
   Estimates estimates = new Estimates(project).bootstrap()
   if (estimates.exists(job)) {

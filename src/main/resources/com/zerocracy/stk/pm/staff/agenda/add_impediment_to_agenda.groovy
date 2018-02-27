@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pm.staff.agenda
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
@@ -31,7 +32,8 @@ def exec(Project project, XML xml) {
   String job = claim.param('job')
   Orders orders = new Orders(project).bootstrap()
   String owner = orders.performer(job)
-  Agenda agenda = new Agenda(project, owner).bootstrap()
+  Farm farm = binding.variables.farm
+  Agenda agenda = new Agenda(farm, owner).bootstrap()
   Impediments impediments = new Impediments(project).bootstrap()
   if (impediments.exists(job)) {
     agenda.impediment(job, 'on hold')

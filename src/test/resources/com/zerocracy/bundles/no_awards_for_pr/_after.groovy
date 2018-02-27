@@ -17,10 +17,12 @@
 package com.zerocracy.bundles.no_awards_for_pr
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.pmo.Awards
 
 def exec(Project project, XML xml) {
-  Awards awards = new Awards(project, 'test').bootstrap()
+  Farm farm = binding.variables.farm
+  Awards awards = new Awards(farm, 'test').bootstrap()
   assert awards.total() == 0
 }

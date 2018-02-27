@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pm.staff.agenda
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
@@ -28,7 +29,8 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
   String login = claim.param('login')
-  Agenda agenda = new Agenda(project, login).bootstrap()
+  Farm farm = binding.variables.farm
+  Agenda agenda = new Agenda(farm, login).bootstrap()
   if (agenda.exists(job)) {
     agenda.remove(job)
   }

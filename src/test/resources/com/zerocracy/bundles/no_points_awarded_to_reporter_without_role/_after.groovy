@@ -17,10 +17,12 @@
 package com.zerocracy.bundles.no_points_awarded_to_reporter_without_role
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.pmo.Awards
 
 def exec(Project project, XML xml) {
-  Awards awards = new Awards(project, 'yegor256').bootstrap()
+  Farm farm = binding.variables.farm
+  Awards awards = new Awards(farm, 'yegor256').bootstrap()
   assert awards.total() == 0
 }

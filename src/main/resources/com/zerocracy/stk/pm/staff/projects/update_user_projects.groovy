@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pm.staff.projects
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
@@ -29,7 +30,8 @@ def exec(Project project, XML xml) {
   )
   ClaimIn claim = new ClaimIn(xml)
   String login = claim.param('login')
-  Projects projects = new Projects(project, login).bootstrap()
+  Farm farm = binding.variables.farm
+  Projects projects = new Projects(farm, login).bootstrap()
   if (!projects.exists(project.pid())) {
     projects.add(project.pid())
     claim.copy()

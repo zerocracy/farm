@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pm.staff.awards
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
@@ -34,7 +35,8 @@ def exec(Project project, XML xml) {
     return
   }
   String reason = claim.param('reason')
-  Awards awards = new Awards(project, login).bootstrap()
+  Farm farm = binding.variables.farm
+  Awards awards = new Awards(farm, login).bootstrap()
   awards.add(minutes, job, new Par.ToText(reason).toString())
   claim.copy()
     .type('Award points were added')

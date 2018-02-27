@@ -31,9 +31,9 @@ def exec(Project project, XML xml) {
   String job = claim.param('job')
   String login = claim.param('login')
   Integer points = Integer.parseInt(claim.param('points'))
-  Awards awards = new Awards(project, login).bootstrap()
-  String reason = claim.param('reason')
   Farm farm = binding.variables.farm
+  Awards awards = new Awards(farm, login).bootstrap()
+  String reason = claim.param('reason')
   claim.copy()
     .type('Notify user')
     .param('cause', claim.cid())

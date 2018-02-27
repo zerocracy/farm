@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pm.staff.awards
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
@@ -29,7 +30,8 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Award points were added')
   ClaimIn claim = new ClaimIn(xml)
   String login = claim.param('login')
-  Awards awards = new Awards(project, login).bootstrap()
+  Farm farm = binding.variables.farm
+  Awards awards = new Awards(farm, login).bootstrap()
   Integer current = awards.total()
   if (current <= new Policy().get('44.threshold', -256)) {
     // @todo #390:30min We should remove people from people.xml

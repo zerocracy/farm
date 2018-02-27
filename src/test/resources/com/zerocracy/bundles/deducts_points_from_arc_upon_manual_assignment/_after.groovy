@@ -17,10 +17,12 @@
 package com.zerocracy.bundles.deducts_points_from_arc_upon_manual_assignment
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.pmo.Awards
 
 def exec(Project project, XML xml) {
-  Awards awards = new Awards(project, 'yegor256').bootstrap()
+  Farm farm = binding.variables.farm
+  Awards awards = new Awards(farm, 'yegor256').bootstrap()
   assert awards.total() == -5
 }
