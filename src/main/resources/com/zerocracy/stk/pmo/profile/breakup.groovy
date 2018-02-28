@@ -18,7 +18,9 @@ package com.zerocracy.stk.pmo.profile
 
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
+import com.zerocracy.Par
 import com.zerocracy.Project
+import com.zerocracy.SoftException
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.People
@@ -31,7 +33,20 @@ def exec(Project project, XML xml) {
   String author = claim.author()
   String login = claim.param('login')
   People people = new People(farm).bootstrap()
-  if (people.hasMentor(login) && people.mentor(login) == author) {
-    people.breakup(login)
+  if (!people.hasMentor(login)) {
+    throw new SoftException(
+      new Par('User @%s doesn\'t have a mentor').say(login)
+    )
   }
+  if (people.mentor(login) != author) {
+    throw new SoftException(
+      new Par('You are not a mentor of @%s').say(login)
+    )
+  }
+  people.breakup(login)
+  claim.reply(
+    new Par(
+      'User @%s is not your student anymore, see §47'
+    ).say()
+  ).postTo(project)
 }
