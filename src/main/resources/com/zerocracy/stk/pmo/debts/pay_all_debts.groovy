@@ -42,25 +42,39 @@ def exec(Project pmo, XML xml) {
     if (debt < new Policy().get('46.threshold', new Cash.S('$50'))) {
       return
     }
-    String pid = new Payroll(farm).pay(
-      new Ledger(new FkProject()).bootstrap(),
-      uid, debt,
-      new Par('Debt repayment, per §46: %s').say(
-        new XMLDocument(new Xembler(debts.toXembly(uid)).xmlQuietly()).xpath(
-          '//item/amount/text()'
-        ).join(', ')
+    try {
+      String pid = new Payroll(farm).pay(
+        new Ledger(new FkProject()).bootstrap(),
+        uid, debt,
+        new Par('Debt repayment, per §46: %s').say(
+          new XMLDocument(new Xembler(debts.toXembly(uid)).xmlQuietly()).xpath(
+            '//item/amount/text()'
+          ).join(', ')
+        )
       )
-    )
-    debts.remove(uid)
-    claim.copy()
-      .type('Notify user')
-      .token("user;${uid}")
-      .param(
-        'message',
-        new Par(
-          'We just paid you the debt of %s (`%s`)'
-        ).say(debt, pid)
-      )
-      .postTo(pmo)
+      debts.remove(uid)
+      claim.copy()
+        .type('Notify user')
+        .token("user;${uid}")
+        .param(
+          'message',
+          new Par(
+            'We just paid you the debt of %s (`%s`)'
+          ).say(debt, pid)
+        )
+        .postTo(pmo)
+    } catch (IOException ex) {
+      claim.copy()
+        .type('Notify user')
+        .token("user;${uid}")
+        .param(
+          'message',
+          new Par(
+            'We tried to pay your debt of %s, but failed (%s);',
+            'don\'t worry, we will retry very soon'
+          ).say(debt, ex.message)
+        )
+        .postTo(pmo)
+    }
   }
 }
