@@ -33,12 +33,12 @@ def exec(Project project, XML xml) {
     Roles roles = new Roles(project).bootstrap()
     if (claim.hasAuthor() && roles.hasRole(claim.author(), 'ARC')) {
         claim.copy()
-                .type('Make payment')
-                .param(
+            .type('Make payment')
+            .param(
                 'reason',
                 new Par('Boosting tasks is against our principles, see §15').say()
-        )
-                .param('minutes', -10)
-                .postTo(project)
+            )
+            .param('minutes', -10)
+            .postTo(project)
     }
 }
