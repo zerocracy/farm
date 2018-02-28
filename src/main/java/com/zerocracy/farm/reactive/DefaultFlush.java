@@ -105,7 +105,8 @@ final class DefaultFlush implements Flush {
             );
         }
         Logger.info(
-            this, "Seen #%d:\"%s/%d/%d\" at \"%s\" by %d stk, %[ms]s [%s]",
+            this,
+            "Seen #%d:\"%s/%d/%d\" at \"%s\" by %d stk, %[ms]s [%s, author=%B]",
             idx, claim.type(), claim.cid(), left,
             project.pid(),
             total,
@@ -120,7 +121,8 @@ final class DefaultFlush implements Flush {
                     ),
                     claim.params().entrySet()
                 )
-            ).asString()
+            ).asString(),
+            claim.hasAuthor()
         );
     }
 

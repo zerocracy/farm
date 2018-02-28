@@ -122,10 +122,7 @@ final class RdItem implements Item {
     public void close() throws IOException {
         try {
             final String dirty = this.dirty();
-            if (!dirty.isEmpty() && !(
-                "PMO".equals(this.project.pid())
-                && "roles.xml".equals(this.name))
-            ) {
+            if (!dirty.isEmpty()) {
                 final Path tmp = this.temp.value();
                 final Project proxy = file -> {
                     final Item item;
@@ -136,8 +133,11 @@ final class RdItem implements Item {
                     }
                     return item;
                 };
-                new RdAuto(proxy, tmp, dirty).propagate();
-                new RdRules(proxy, tmp, dirty).validate();
+                if (!"PMO".equals(this.project.pid())
+                    || !"roles.xml".equals(this.name)) {
+                    new RdAuto(proxy, tmp, dirty).propagate();
+                    new RdRules(proxy, tmp, dirty).validate();
+                }
                 new LengthOf(new TeeInput(tmp, this.origin.path())).intValue();
             }
         } finally {

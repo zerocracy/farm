@@ -46,6 +46,9 @@ def exec(Project project, XML xml) {
       ).say(points, job, project.pid(), awards.total(), login, reason)
     )
     .postTo(project)
+  if (claim.hasParam('student')) {
+    return
+  }
   claim.copy()
     .type('Notify job')
     .token("job;${job}")
