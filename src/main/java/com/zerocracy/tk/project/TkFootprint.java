@@ -26,6 +26,7 @@ import com.zerocracy.pm.Footprint;
 import com.zerocracy.pmo.Catalog;
 import com.zerocracy.tk.RsPage;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.Map;
 import org.bson.Document;
@@ -38,8 +39,10 @@ import org.takes.facets.fork.TkRegex;
 import org.takes.rq.RqHref;
 import org.takes.rs.xe.XeAppend;
 import org.takes.rs.xe.XeChain;
+import org.takes.rs.xe.XeLink;
 import org.takes.rs.xe.XeSource;
 import org.takes.rs.xe.XeTransform;
+import org.takes.rs.xe.XeWhen;
 
 /**
  * Footprint page.
@@ -51,6 +54,11 @@ import org.takes.rs.xe.XeTransform;
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class TkFootprint implements TkRegex {
+
+    /**
+     * How much per page.
+     */
+    private static final int SLICE = 50;
 
     /**
      * Farm.
@@ -68,6 +76,9 @@ public final class TkFootprint implements TkRegex {
     @Override
     public Response act(final RqRegex req) throws IOException {
         final String query = new RqHref.Smart(req).single("q", "");
+        final int skip = Integer.parseInt(
+            new RqHref.Smart(req).single("skip", "0")
+        );
         final BasicDBObject json;
         if (query.isEmpty()) {
             json = new BasicDBObject();
@@ -92,16 +103,34 @@ public final class TkFootprint implements TkRegex {
                                 )
                             )
                             .sort(Sorts.descending("created"))
-                            // @checkstyle MagicNumber (1 line)
-                            .limit(50)
+                            .limit(TkFootprint.SLICE)
+                            .skip(skip)
                     );
                     docs.size();
                 }
                 final Catalog catalog = new Catalog(this.farm).bootstrap();
+                final String url = String.format(
+                    "?q=%s&skip=", URLEncoder.encode(query, "UTF-8")
+                );
                 return new XeChain(
                     new XeAppend("project", project.pid()),
                     new XeAppend("title", catalog.title(project.pid())),
                     new XeAppend("query", query),
+                    new XeAppend("skip", Integer.toString(skip)),
+                    new XeWhen(
+                        skip >= TkFootprint.SLICE,
+                        new XeLink(
+                            "back",
+                            String.format("%s%d", url, skip - TkFootprint.SLICE)
+                        )
+                    ),
+                    new XeWhen(
+                        !docs.isEmpty(),
+                        new XeLink(
+                            "next",
+                            String.format("%s%d", url, skip + TkFootprint.SLICE)
+                        )
+                    ),
                     new XeAppend(
                         "claims",
                         new XeTransform<>(docs, TkFootprint::toSource)

@@ -52,7 +52,27 @@ SOFTWARE.
         <xsl:text>.</xsl:text>
       </label>
     </form>
+    <xsl:if test="skip &gt; 0">
+      <p>
+        <xsl:text>Start at </xsl:text>
+        <xsl:value-of select="skip + 1"/>
+        <xsl:text>.</xsl:text>
+      </p>
+    </xsl:if>
     <xsl:apply-templates select="claims"/>
+    <p>
+      <xsl:if test="links/link[@rel='back']">
+        <a href="{links/link[@rel='back']/@href}">
+          <xsl:text>Back</xsl:text>
+        </a>
+      </xsl:if>
+      <xsl:text> </xsl:text>
+      <xsl:if test="links/link[@rel='next']">
+        <a href="{links/link[@rel='next']/@href}">
+          <xsl:text>Next</xsl:text>
+        </a>
+      </xsl:if>
+    </p>
   </xsl:template>
   <xsl:template match="claims">
     <p>
