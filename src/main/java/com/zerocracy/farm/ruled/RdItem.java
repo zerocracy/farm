@@ -122,7 +122,10 @@ final class RdItem implements Item {
     public void close() throws IOException {
         try {
             final String dirty = this.dirty();
-            if (!dirty.isEmpty()) {
+            if (!dirty.isEmpty() && !(
+                "PMO".equals(this.project.pid())
+                && "roles.xml".equals(this.name))
+            ) {
                 final Path tmp = this.temp.value();
                 final Project proxy = file -> {
                     final Item item;

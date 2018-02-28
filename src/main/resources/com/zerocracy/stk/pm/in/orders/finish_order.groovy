@@ -101,7 +101,7 @@ def issueQuality(Project project, String job) {
       )
     )
     boolean hasArc = new Or(
-      new FuncOf<String, Boolean>({ String author -> arcs.contains(authors) }),
+      new FuncOf<String, Boolean>({ String author -> arcs.contains(author) }),
       authors
     ).value()
     if (hasArc && authors.contains(performer)) {

@@ -63,7 +63,7 @@ final class RqSecureLogin implements Scalar<String> {
         final String login = new RqLogin(this.farm, this.request).value();
         final String user = new RqUser(this.farm, this.request).value();
         if (!user.equals(login)
-            && !new Roles(new Pmo(this.farm)).hasAnyRole(user)) {
+            && !new Roles(new Pmo(this.farm)).bootstrap().hasAnyRole(user)) {
             throw new RsForward(
                 new RsParFlash(
                     new Par(
