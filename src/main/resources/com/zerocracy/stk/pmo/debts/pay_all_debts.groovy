@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pmo.people
+package com.zerocracy.stk.pmo.debts
 
 import com.jcabi.xml.XML
 import com.jcabi.xml.XMLDocument
@@ -29,7 +29,7 @@ import org.xembly.Xembler
 
 def exec(Project pmo, XML xml) {
   new Assume(pmo, xml).isPmo()
-  new Assume(pmo, xml).type('Ping daily')
+  new Assume(pmo, xml).type('Ping hourly')
   Debts debts = new Debts(pmo).bootstrap()
   ClaimIn claim = new ClaimIn(xml)
   debts.iterate().each { uid ->
