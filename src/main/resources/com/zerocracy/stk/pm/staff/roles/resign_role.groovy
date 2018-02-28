@@ -23,7 +23,6 @@ import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.staff.Roles
-import com.zerocracy.pmo.Projects
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
@@ -34,9 +33,6 @@ def exec(Project project, XML xml) {
   String role = claim.param('role')
   Roles roles = new Roles(project).bootstrap()
   roles.resign(login, role)
-  if (!roles.hasAnyRole(login)) {
-    new Projects(project, login).remove(project.pid())
-  }
   Farm farm = binding.variables.farm
   claim.reply(
     new Par(

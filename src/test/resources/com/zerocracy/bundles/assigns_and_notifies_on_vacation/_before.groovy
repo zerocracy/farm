@@ -30,5 +30,5 @@ def exec(Project project, XML xml) {
   Github github = new ExtGithub(farm).value()
   Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
   repo.issues().create('hello, world', '')
-  new People(project).bootstrap().vacation('yegor256', true)
+  new People(farm).bootstrap().vacation('yegor256', true)
 }

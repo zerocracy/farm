@@ -30,7 +30,8 @@ def exec(Project project, XML xml) {
     'Award points were added',
     'Role was assigned',
     'Role was resigned',
-    'User projects were updated',
+    'User joined new project',
+    'User left a project',
     'Speed was updated'
   )
   Wbs wbs = new Wbs(project).bootstrap()

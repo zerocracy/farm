@@ -59,25 +59,23 @@ def exec(Project project, XML xml) {
         .param('project', project.pid())
         .postTo(project)
     }
-    if (claim.hasToken()) {
-      claim.reply(
-        new Par(
-          farm,
-          'I\'m ready to manage the %s project.',
-          'When you\'re ready, you can start giving me commands,',
-          'always prefixing your messages with my name.',
-          'All project artifacts are [here](/p/%1$s).',
-          'Start with linking your project with GitHub repositories,',
-          'as explained in §17. I just assigned you to both ARC and PO',
-          'roles.'
-        ).say(project.pid())
-      ).postTo(project)
-      claim.copy().type('Notify user').token('user;yegor256').param(
-        'message', new Par(
-          'We just bootstrapped @%s by @%s'
-        ).say(project.pid(), author)
-      ).param('cause', claim.cid()).postTo(project)
-    }
+    claim.reply(
+      new Par(
+        farm,
+        'I\'m ready to manage the %s project.',
+        'When you\'re ready, you can start giving me commands,',
+        'always prefixing your messages with my name.',
+        'All project artifacts are [here](/p/%1$s).',
+        'Start with linking your project with GitHub repositories,',
+        'as explained in §17. I just assigned you to both ARC and PO',
+        'roles.'
+      ).say(project.pid())
+    ).postTo(project)
+    claim.copy().type('Notify PMO').param(
+      'message', new Par(
+        'We just bootstrapped @%s by @%s'
+      ).say(project.pid(), author)
+    ).postTo(project)
   } else {
     if (roles.hasRole(author, role)) {
       throw new SoftException(

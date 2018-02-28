@@ -19,6 +19,7 @@ package com.zerocracy.stk.pmo.people
 import com.jcabi.xml.XML
 import com.jcabi.xml.XMLDocument
 import com.zerocracy.Par
+import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
 import com.zerocracy.farm.Assume
@@ -33,7 +34,7 @@ def exec(Project pmo, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   debts.iterate().each { uid ->
     Cash debt = debts.amount(uid)
-    if (debt < new Cash.S('$50')) {
+    if (debt < new Policy().get('46.threshold', new Cash.S('$50'))) {
       return
     }
     claim.copy()
@@ -44,7 +45,7 @@ def exec(Project pmo, XML xml) {
       .param('login', uid)
       .param(
         'message',
-        new Par('Debt repayment, per §20: %s').say(
+        new Par('Debt repayment, per §46: %s').say(
           new XMLDocument(new Xembler(debts.toXembly(uid)).xmlQuietly()).xpath(
             '//item/amount/text()'
           ).join(', ')

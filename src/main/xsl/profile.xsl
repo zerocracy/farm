@@ -310,7 +310,11 @@ SOFTWARE.
         <xsl:text>@</xsl:text>
         <xsl:value-of select="text()"/>
       </a>
-      <xsl:text>.</xsl:text>
+      <xsl:text> (</xsl:text>
+      <a href="http://www.zerocracy.com/policy.html#45">
+        <xsl:text>tuition fee</xsl:text>
+      </a>
+      <xsl:text> goes there).</xsl:text>
     </p>
   </xsl:template>
   <xsl:template match="students[not(student)]">
@@ -346,26 +350,32 @@ SOFTWARE.
       <xsl:text>.</xsl:text>
     </p>
   </xsl:template>
-  <xsl:template match="debt[items/item]">
+  <xsl:template match="debt[item]">
     <p>
-      <xsl:text>We owe you these </xsl:text>
-      <xsl:value-of select="count(items/item)"/>
-      <xsl:if test="count(items/item) &gt; 1">
-        <xsl:text>s</xsl:text>
+      <xsl:text>We </xsl:text>
+      <a href="http://www.zerocracy.com/policy.html#20">
+        <xsl:text>owe you</xsl:text>
+      </a>
+      <xsl:text> these </xsl:text>
+      <xsl:value-of select="count(item)"/>
+      <xsl:text> payment</xsl:text>
+      <xsl:if test="count(item) &gt; 1">
+        <xsl:text>s (</xsl:text>
+        <xsl:value-of select="@total"/>
+        <xsl:text> total)</xsl:text>
       </xsl:if>
-      <xsl:text> payments: </xsl:text>
-      <xsl:for-each select="items/item">
+      <xsl:text>: </xsl:text>
+      <xsl:for-each select="item">
         <xsl:if test="position() &gt; 1">
           <xsl:text>; </xsl:text>
         </xsl:if>
         <strong>
           <xsl:value-of select="amount"/>
         </strong>
-        <xsl:text>: </xsl:text>
+        <xsl:text> </xsl:text>
+        <xsl:value-of select="ago"/>
+        <xsl:text> ago: </xsl:text>
         <xsl:value-of select="details"/>
-        <xsl:text> (</xsl:text>
-        <xsl:value-of select="reason"/>
-        <xsl:text>)</xsl:text>
       </xsl:for-each>
       <xsl:text>.</xsl:text>
     </p>

@@ -16,8 +16,8 @@
  */
 package com.zerocracy.tk.profile;
 
+import com.zerocracy.Farm;
 import com.zerocracy.Par;
-import com.zerocracy.Project;
 import com.zerocracy.pmo.People;
 import com.zerocracy.tk.RsParFlash;
 import java.io.IOException;
@@ -38,9 +38,9 @@ import org.takes.facets.forward.RsForward;
 public final class RqLogin implements Scalar<String> {
 
     /**
-     * PMO.
+     * Farm.
      */
-    private final Project pmo;
+    private final Farm farm;
 
     /**
      * RqRegex.
@@ -49,11 +49,11 @@ public final class RqLogin implements Scalar<String> {
 
     /**
      * Ctor.
-     * @param pkt Project
+     * @param frm The farm
      * @param req Request
      */
-    public RqLogin(final Project pkt, final RqRegex req) {
-        this.pmo = pkt;
+    public RqLogin(final Farm frm, final RqRegex req) {
+        this.farm = frm;
         this.request = req;
     }
 
@@ -61,12 +61,22 @@ public final class RqLogin implements Scalar<String> {
     public String value() throws IOException {
         final String login = this.request.matcher()
             .group(1).toLowerCase(Locale.ENGLISH);
-        final People people = new People(this.pmo).bootstrap();
+        final People people = new People(this.farm).bootstrap();
         if (!people.find("github", login).iterator().hasNext()) {
             throw new RsForward(
                 new RsParFlash(
                     new Par("User @%s not found").say(login),
                     Level.SEVERE
+                )
+            );
+        }
+        if (!new People(this.farm).bootstrap().hasMentor(login)) {
+            throw new RsForward(
+                new RsParFlash(
+                    new Par(
+                        "@%s is not invited to us yet, see §1"
+                    ).say(login),
+                    Level.WARNING
                 )
             );
         }

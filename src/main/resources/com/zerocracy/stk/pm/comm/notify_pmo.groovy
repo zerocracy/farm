@@ -14,12 +14,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.zerocracy.stk.pm.comm
 
-/**
- * Uplinked farm.
- *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.17
- */
-package com.zerocracy.farm.uplinked;
+import com.jcabi.xml.XML
+import com.zerocracy.Farm
+import com.zerocracy.Project
+import com.zerocracy.farm.Assume
+import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pm.staff.Roles
+import com.zerocracy.pmo.Pmo
+
+def exec(Project project, XML xml) {
+  new Assume(project, xml).type('Notify PMO')
+  ClaimIn claim = new ClaimIn(xml)
+  Farm farm = binding.variables.farm
+  Roles roles = new Roles(new Pmo(farm))
+  roles.everybody().each { uid ->
+    claim.copy()
+      .type('Notify user')
+      .token("user;${uid}")
+      .postTo(project)
+  }
+}

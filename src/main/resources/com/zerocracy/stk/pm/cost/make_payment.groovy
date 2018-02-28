@@ -25,7 +25,6 @@ import com.zerocracy.cash.Cash
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.cost.Rates
-import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.Debts
 import com.zerocracy.pmo.People
 import com.zerocracy.pmo.banks.Payroll
@@ -38,10 +37,6 @@ def exec(Project project, XML xml) {
   String login = claim.param('login')
   String reason = claim.param('reason')
   int minutes = Integer.parseInt(claim.param('minutes'))
-  Roles roles = new Roles(project).bootstrap()
-  if (!roles.hasAnyRole(login)) {
-    return
-  }
   if (minutes < 0) {
     return
   }
@@ -73,6 +68,7 @@ def exec(Project project, XML xml) {
         .param('login', mentor)
         .param('minutes', 0)
         .param('cash', fee)
+        .param('student', login)
         .param('no-tuition-fee', true)
         .param('message', new Par('Tuition fee from @%s').say(login))
         .postTo(project)

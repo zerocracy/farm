@@ -59,7 +59,7 @@ def exec(Project pmo, XML xml) {
   String bank = claim.param('bank')
   String wallet = claim.param('wallet')
   people.wallet(author, bank, wallet)
-  claim.copy().type('Notify user').token('user;yegor256').param(
+  claim.copy().type('Notify PMO').param(
     'message', new Par(
       'The wallet was modified by @%s, set to `%s` at `%s`'
     ).say(author, wallet, bank)

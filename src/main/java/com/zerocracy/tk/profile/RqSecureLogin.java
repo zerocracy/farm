@@ -16,8 +16,10 @@
  */
 package com.zerocracy.tk.profile;
 
+import com.zerocracy.Farm;
 import com.zerocracy.Par;
-import com.zerocracy.Project;
+import com.zerocracy.pm.staff.Roles;
+import com.zerocracy.pmo.Pmo;
 import com.zerocracy.tk.RqUser;
 import com.zerocracy.tk.RsParFlash;
 import java.io.IOException;
@@ -37,9 +39,9 @@ import org.takes.facets.forward.RsForward;
 final class RqSecureLogin implements Scalar<String> {
 
     /**
-     * PMO.
+     * Farm.
      */
-    private final Project pmo;
+    private final Farm farm;
 
     /**
      * RqRegex.
@@ -48,19 +50,20 @@ final class RqSecureLogin implements Scalar<String> {
 
     /**
      * Ctor.
-     * @param pkt Project
+     * @param frm The farm
      * @param req Request
      */
-    RqSecureLogin(final Project pkt, final RqRegex req) {
-        this.pmo = pkt;
+    RqSecureLogin(final Farm frm, final RqRegex req) {
+        this.farm = frm;
         this.request = req;
     }
 
     @Override
     public String value() throws IOException {
-        final String login = new RqLogin(this.pmo, this.request).value();
-        final String user = new RqUser(this.pmo, this.request).value();
-        if (!user.equals(login) && !"yegor256".equals(user)) {
+        final String login = new RqLogin(this.farm, this.request).value();
+        final String user = new RqUser(this.farm, this.request).value();
+        if (!user.equals(login)
+            && !new Roles(new Pmo(this.farm)).hasAnyRole(user)) {
             throw new RsForward(
                 new RsParFlash(
                     new Par(

@@ -18,6 +18,7 @@ package com.zerocracy.pmo.banks;
 
 import com.zerocracy.Farm;
 import com.zerocracy.Par;
+import com.zerocracy.Policy;
 import com.zerocracy.Project;
 import com.zerocracy.SoftException;
 import com.zerocracy.cash.Cash;
@@ -77,6 +78,15 @@ public final class Payroll {
     public String pay(final Project project,
         final String login, final Cash amount,
         final String reason) throws IOException {
+        final Cash min = new Policy().get("46.min", new Cash.S("$10"));
+        if (amount.compareTo(min) < 0) {
+            throw new SoftException(
+                new Par(
+                    "The amount %s is too small,",
+                    "we won't send now to avoid big payment commission"
+                ).say(amount)
+            );
+        }
         final People people = new People(this.farm).bootstrap();
         final String wallet = people.wallet(login);
         if (wallet.isEmpty()) {

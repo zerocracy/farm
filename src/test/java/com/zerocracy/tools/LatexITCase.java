@@ -14,47 +14,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.farm.uplinked;
+package com.zerocracy.tools;
 
-import com.zerocracy.Farm;
-import com.zerocracy.Project;
-import java.io.IOException;
-import lombok.EqualsAndHashCode;
-import org.cactoos.iterable.Mapped;
+import java.io.File;
+import org.cactoos.Input;
+import org.cactoos.io.LengthOf;
+import org.cactoos.io.TeeInput;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
- * Uplinked farm.
- *
- * @author Yegor Bugayenko (yegor256@gmail.com)
+ * Test case for {@link Latex}.
+ * @author Yegor Bugayenko (yegor@woquo.com)
  * @version $Id$
- * @since 0.18
+ * @since 0.111
  */
-@EqualsAndHashCode(of = "origin")
-public final class UplinkedFarm implements Farm {
+public final class LatexITCase {
 
     /**
-     * Original farm.
+     * Latex can render PDF.
+     * @throws Exception If some problem inside
      */
-    private final Farm origin;
-
-    /**
-     * Ctor.
-     * @param farm Original farm
-     */
-    public UplinkedFarm(final Farm farm) {
-        this.origin = farm;
-    }
-
-    @Override
-    public Iterable<Project> find(final String query) throws IOException {
-        return new Mapped<>(
-            pkt -> new UplinkedProject(pkt, this.origin),
-            this.origin.find(query)
+    @Test
+    @Ignore
+    public void renders() throws Exception {
+        final Input pdf = new Latex(
+            "\\documentclass{article}\\begin{document}test\\end{document}"
+        ).pdf();
+        final File temp = new File("/tmp/bill.pdf");
+        new LengthOf(new TeeInput(pdf, temp)).intValue();
+        MatcherAssert.assertThat(
+            new LengthOf(pdf).intValue(),
+            Matchers.greaterThan(0)
         );
     }
 
-    @Override
-    public void close() throws IOException {
-        this.origin.close();
-    }
 }

@@ -40,11 +40,11 @@ def exec(Project project, XML xml) {
         'The project is visible now at the [board](/board), according to §26'
       ).say()
     ).postTo(project)
-    claim.copy().type('Notify user').token('user;yegor256').param(
+    claim.copy().type('Notify PMO').param(
       'message', new Par(
         'The project %s was published by @%s'
       ).say(project.pid(), claim.author())
-    ).param('cause', claim.cid()).postTo(project)
+    ).postTo(project)
     claim.copy()
       .type('Project was published')
       .param('author', claim.author())
@@ -63,11 +63,11 @@ def exec(Project project, XML xml) {
         'The project is not visible anymore at the [board](/board), as in §26'
       ).say()
     ).postTo(project)
-    claim.copy().type('Notify user').token('user;yegor256').param(
+    claim.copy().type('Notify PMO').param(
       'message', new Par(
         'The project %s was unpublished by @%s'
       ).say(project.pid(), claim.author())
-    ).param('cause', claim.cid()).postTo(project)
+    ).postTo(project)
   } else {
     claim.reply(
       new Par(

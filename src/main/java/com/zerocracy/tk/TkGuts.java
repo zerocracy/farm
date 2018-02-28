@@ -18,6 +18,8 @@ package com.zerocracy.tk;
 
 import com.zerocracy.Farm;
 import com.zerocracy.farm.guts.Guts;
+import com.zerocracy.pm.staff.Roles;
+import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
 import java.util.logging.Level;
 import org.cactoos.scalar.IoCheckedScalar;
@@ -53,7 +55,8 @@ public final class TkGuts implements Take {
 
     @Override
     public Response act(final Request req) throws IOException {
-        if (!"yegor256".equals(new RqUser(this.farm, req).value())) {
+        final String user = new RqUser(this.farm, req).value();
+        if (!new Roles(new Pmo(this.farm)).bootstrap().hasAnyRole(user)) {
             throw new RsForward(
                 new RsParFlash(
                     "You are not allowed to see this page, sorry",

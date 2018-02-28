@@ -71,7 +71,7 @@ public final class TkAlias implements Take {
         }
         final String login = new RqUser(this.farm, req).value();
         people.link(login, rel, href);
-        new ClaimOut().type("Notify user").token("user;yegor256").param(
+        new ClaimOut().type("Notify PMO").param(
             "message", new Par(
                 "We just linked @%s via %s as \"%s\""
             ).say(login, rel, href)

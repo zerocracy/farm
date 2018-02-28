@@ -14,39 +14,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.staff.awards
+package com.zerocracy.stk.pm.scope.wbs
 
+import com.jcabi.github.Github
+import com.jcabi.github.Issue
+import com.jcabi.github.IssueLabels
+import com.jcabi.log.Logger
 import com.jcabi.xml.XML
-import com.zerocracy.Par
-import com.zerocracy.Policy
+import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pmo.Awards
+import com.zerocracy.radars.github.Job
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Award points were added')
+  new Assume(project, xml).type('Job removed from WBS')
   ClaimIn claim = new ClaimIn(xml)
-  String login = claim.param('login')
-  Awards awards = new Awards(project, login).bootstrap()
-  Integer current = awards.total()
-  if (current <= new Policy().get('44.threshold', -256)) {
-    // @todo #390:30min We should remove people from people.xml
-    //  when their score goes below 200. Let's implement that.
-    //  We should also notify the person in case that happens.
-    String job = claim.param('job')
-    String reason = new Par(
-      'The score of @%s %d is too low and will be reset'
-    ).say(login, current)
-    Integer points = -current
-    awards.add(points, job, new Par.ToText(reason).toString())
-    claim.copy()
-      .type('Award points were added')
-      .param('job', job)
-      .param('login', login)
-      .param('points', points)
-      .param('reason', reason)
-      .postTo(project)
+  String job = claim.param('job')
+  if (!job.startsWith('gh:')) {
+    return
+  }
+  Farm farm = binding.variables.farm
+  Github github = new ExtGithub(farm).value()
+  Issue.Smart issue = new Issue.Smart(new Job.Issue(github, job))
+  try {
+    new IssueLabels.Smart(issue.labels()).removeIfExists('scope')
+  } catch (AssertionError ex) {
+    Logger.warn(this, "Can't remove label from issue %s: %s", issue, ex.localizedMessage)
   }
 }

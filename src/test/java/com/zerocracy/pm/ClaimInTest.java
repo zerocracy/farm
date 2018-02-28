@@ -50,7 +50,11 @@ public final class ClaimInTest {
     public void buildsClaimOut() throws Exception {
         final ClaimIn claim = new ClaimIn(
             new XMLDocument(
-                "<claim id='1'><author>jeff</author><token>X</token></claim>"
+                String.join(
+                    "",
+                    "<claim id='1'><type>ZZ</type>",
+                    "<author>jeff</author><token>X</token></claim>"
+                )
             ).nodes("/claim ").get(0)
         );
         MatcherAssert.assertThat(
@@ -66,6 +70,35 @@ public final class ClaimInTest {
                 "/claims/claim[token='X']",
                 "/claims/claim/params/param[@name='cause']",
                 "/claims/claim/params/param[@name='message' and .='hello']"
+            )
+        );
+    }
+
+    @Test
+    public void makesCopy() throws Exception {
+        final ClaimIn claim = new ClaimIn(
+            new XMLDocument(
+                String.join(
+                    "",
+                    "<claim id='1'><author>yegor</author> ",
+                    "<type>the type</type> ",
+                    "<token>the-token</token> ",
+                    "<params><param name='a'>hello</param></params></claim>"
+                )
+            ).nodes("/claim   ").get(0)
+        );
+        MatcherAssert.assertThat(
+            XhtmlMatchers.xhtml(
+                new Xembler(
+                    new Directives().add("zz").append(
+                        claim.copy()
+                    )
+                ).xmlQuietly()
+            ),
+            XhtmlMatchers.hasXPaths(
+                "/zz/claim[type='the type']",
+                "/zz/claim[not(author)]",
+                "/zz/claim/params/param[@name='a' and .='hello']"
             )
         );
     }

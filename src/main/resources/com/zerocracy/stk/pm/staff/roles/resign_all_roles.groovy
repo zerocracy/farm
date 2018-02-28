@@ -22,22 +22,33 @@ import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.staff.Roles
-import com.zerocracy.pmo.Projects
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Resign all roles')
   ClaimIn claim = new ClaimIn(xml)
   String login = claim.param('login')
-  new Roles(project).bootstrap().resign(login)
-  new Projects(project, login).bootstrap().remove(project.pid())
-  if (claim.hasToken()) {
-    claim.reply(
-      new Par('All roles resigned from @%s').say(login)
-    ).postTo(project)
+  Roles roles = new Roles(project).bootstrap()
+  claim.reply(
+    new Par('All roles were resigned from @%s in %s').say(
+      login, project.pid()
+    )
+  ).postTo(project)
+  roles.allRoles(login).each { role ->
+    roles.resign(login, role)
+    claim.copy()
+      .type('Role was resigned')
+      .param('login', login)
+      .param('role', role)
+      .postTo(project)
   }
   claim.copy()
-    .type('All roles were resigned')
-    .param('login', login)
+    .type('Notify project')
+    .param(
+      'message',
+      new Par(
+        'Project member @%s was resigned from all project roles',
+      ).say(login)
+    )
     .postTo(project)
 }

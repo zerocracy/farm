@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pm.staff.roles
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.SoftException
@@ -33,7 +34,8 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).roles('ARC', 'PO')
   ClaimIn claim = new ClaimIn(xml)
   String login = claim.param('login')
-  People people = new People(project).bootstrap()
+  Farm farm = binding.variables.farm
+  People people = new People(farm).bootstrap()
   if (!people.hasMentor(login)) {
     throw new SoftException(
       new Par('Assignee @%s must be a registered person.').say(login)

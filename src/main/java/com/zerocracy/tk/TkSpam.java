@@ -19,6 +19,7 @@ package com.zerocracy.tk;
 import com.zerocracy.Farm;
 import com.zerocracy.Par;
 import com.zerocracy.pm.ClaimOut;
+import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -55,8 +56,8 @@ public final class TkSpam implements TkRegex {
 
     @Override
     public Response act(final RqRegex req) throws IOException {
-        final String author = new RqUser(this.farm, req).value();
-        if (!"yegor256".equals(author)) {
+        final String user = new RqUser(this.farm, req).value();
+        if (!new Roles(new Pmo(this.farm)).bootstrap().hasAnyRole(user)) {
             throw new RsForward(
                 new RsParFlash(
                     "You are not allowed to see this page, sorry",
@@ -69,10 +70,10 @@ public final class TkSpam implements TkRegex {
         new ClaimOut().type("Notify all").param(
             "message", new Par(body).say()
         ).postTo(new Pmo(this.farm));
-        new ClaimOut().type("Notify user").token("user;yegor256").param(
+        new ClaimOut().type("Notify PMO").param(
             "message", new Par(
                 "Spam request has been submitted by @%s"
-            ).say(author)
+            ).say(user)
         ).postTo(new Pmo(this.farm));
         return new RsForward(
             new RsParFlash(

@@ -58,7 +58,7 @@ public final class TkAgenda implements TkRegex {
                 new Pmo(this.farm),
                 String.format(
                     "agenda/%s.xml",
-                    new RqSecureLogin(new Pmo(this.farm), req).value()
+                    new RqSecureLogin(this.farm, req).value()
                 ),
                 "pmo/agenda.xsl"
             )

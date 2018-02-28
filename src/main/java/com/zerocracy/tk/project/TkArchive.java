@@ -82,7 +82,7 @@ public final class TkArchive implements TkRegex {
                 out.closeEntry();
             }
         }
-        new ClaimOut().type("Notify user").token("user;yegor256").param(
+        new ClaimOut().type("Notify PMO").param(
             "message", new Par(
                 "Project %s was archived by @%s"
             ).say(project.pid(), new RqUser(this.farm, req).value())

@@ -14,26 +14,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.staff.agenda
+package com.zerocracy.stk.pmo.awards
 
 import com.jcabi.xml.XML
+import com.zerocracy.Par
+import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pmo.Agenda
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Order was finished', 'Order was canceled')
+  new Assume(project, xml).type('Start order')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
-  String login = claim.param('login')
-  Agenda agenda = new Agenda(project, login).bootstrap()
-  if (agenda.exists(job)) {
-    agenda.remove(job)
+  if (claim.hasParam('manual')) {
+    claim.copy()
+      .type('Make payment')
+      .param('job', job)
+      .param('login', claim.param('login'))
+      .param(
+        'reason',
+        new Par('Manual assignment of issues is discouraged, see §19').say()
+      )
+      .param('minutes', new Policy().get('19.penalty', -5))
+      .postTo(project)
   }
-  claim.copy()
-    .type('Agenda was updated')
-    .param('login', login)
-    .postTo(project)
 }

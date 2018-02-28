@@ -21,8 +21,8 @@ import com.ullink.slack.simpleslackapi.SlackChannel
 import com.ullink.slack.simpleslackapi.SlackSession
 import com.ullink.slack.simpleslackapi.SlackUser
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted
+import com.zerocracy.Farm
 import com.zerocracy.Project
-import com.zerocracy.farm.fake.FkFarm
 import com.zerocracy.radars.slack.ReProfile
 import org.mockito.Mockito
 
@@ -30,7 +30,8 @@ def exec(Project project, XML xml) {
   SlackSession session = Mockito.mock(SlackSession)
   String person = '7YYZZT99S'
   SlackMessagePosted event = mockSession('@0crat hello', 'C123', 'user', person)
-  new ReProfile().react(new FkFarm(project), event, session)
+  Farm farm = binding.variables.farm
+  new ReProfile().react(farm, event, session)
 }
 
 static mockSession(String message, String channelId, String senderName, String senderId) {

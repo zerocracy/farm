@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import org.cactoos.Input;
 import org.cactoos.io.ResourceOf;
+import org.cactoos.text.TextOf;
 import org.xembly.Directives;
 
 /**
@@ -77,9 +78,22 @@ public final class Equity {
                 ).say(login, this.project.pid())
             );
         }
-        return new Latex(
-            new ResourceOf("com/zerocracy/pm/cost/equity.tex")
-        ).pdf();
+        try (final Item item = this.item()) {
+            final Xocument doc = new Xocument(item);
+            String latex = new TextOf(
+                new ResourceOf("com/zerocracy/pm/cost/equity.tex")
+            ).asString();
+            final String fmt = "%,.2f";
+            latex = latex
+                .replace("[OWNER]", login)
+                .replace("[ENTITY]", doc.xpath("//entity/text()", "PROJECT"))
+                .replace("[ADDRESS]", doc.xpath("//address/text()", "USA"))
+                .replace("[CEO]", doc.xpath("//ceo/text()", "CEO"))
+                .replace("[SHARE]", String.format(fmt, share))
+                .replace("[SHARES]", String.format(fmt, this.shares()))
+                .replace("[PAR]", this.par().toString());
+            return new Latex(latex).pdf();
+        }
     }
 
     /**
@@ -92,9 +106,7 @@ public final class Equity {
         final double share = this.share(login);
         final String text;
         if (share > 0.0d) {
-            final double mul = 10000.0d;
-            final Cash value = this.cap().mul((long) (share * mul))
-                .div((long) (this.shares() * mul));
+            final Cash value = this.par().mul((long) share);
             text = String.format(
                 "%.2f shares = %s/%.2f%% of %s",
                 // @checkstyle MagicNumber (1 line)
@@ -183,6 +195,16 @@ public final class Equity {
             }
             return shares;
         }
+    }
+
+    /**
+     * Par value per share.
+     * @return Par value
+     * @throws IOException If fails
+     */
+    public Cash par() throws IOException {
+        final double mul = 10000.0d;
+        return this.cap().mul((long) mul).div((long) (this.shares() * mul));
     }
 
     /**

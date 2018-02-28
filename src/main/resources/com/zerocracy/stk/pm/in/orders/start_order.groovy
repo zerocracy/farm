@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pm.in.orders
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
@@ -61,13 +62,13 @@ def exec(Project project, XML xml) {
     ).say(job, login, project.pid(), claim.cid())
   }
   if (!new Roles(project).bootstrap().hasAnyRole(login)) {
-    msg += new Par(
-      ' @%s is not a member of this project yet,',
-      'but they can request to join.',
-      'Check your [profile](/u/%1$s) and follow the instructions.'
+    msg += ' ' + new Par(
+      '@%s is not a member of this project yet,',
+      'but they can request to join, as §1 explains'
     ).say(login)
   }
-  if (new People(project).bootstrap().vacation(login)) {
+  Farm farm = binding.variables.farm
+  if (new People(farm).bootstrap().vacation(login)) {
     msg += new Par(
       'We should be aware that %s is on vacation!',
       'This ticket may be delayed.'

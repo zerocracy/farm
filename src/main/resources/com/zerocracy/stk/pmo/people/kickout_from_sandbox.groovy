@@ -17,44 +17,69 @@
 package com.zerocracy.stk.pmo.people
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.Awards
+import com.zerocracy.pmo.Catalog
 import com.zerocracy.pmo.People
+import com.zerocracy.pmo.Projects
 
 def exec(Project pmo, XML xml) {
   new Assume(pmo, xml).isPmo()
   new Assume(pmo, xml).type('Ping hourly')
   People people = new People(pmo).bootstrap()
+  Catalog catalog = new Catalog(pmo).bootstrap()
+  Farm farm = binding.variables.farm
   ClaimIn claim = new ClaimIn(xml)
   people.iterate().each { uid ->
     if (!people.hasMentor(uid)) {
       return
     }
-    if (people.mentor(uid) == '0crat') {
-      return
-    }
     int reputation = new Awards(pmo, uid).bootstrap().total()
-    int threshold = new Policy().get('43.threshold', 2048)
+    int threshold = new Policy().get('33.sandbox-rep-threshold', 1024)
     if (reputation < threshold) {
       return
     }
-    people.graduate(uid)
-    claim.reply(
-      new Par(
-        'Since your reputation is over %d,',
-          'you don\'t need a mentor anymore, as explained in §43;',
-        'you successfully graduated and won\'t pay the tuition fee;',
-        'congratulations!'
-      ).say(threshold)
-    ).postTo(pmo)
-    claim.copy().type('Notify PMO').param(
-      'message', new Par(
-        'The user @%s just graduated with reputation of %d!'
-      ).say(uid, reputation)
-    ).postTo(pmo)
+    Projects projects = new Projects(pmo, uid).bootstrap()
+    projects.iterate().each { pid ->
+      if (!catalog.sandbox(pid)) {
+        return
+      }
+      Project pkt = farm.find("@id='${pid}'")[0]
+      Roles roles = new Roles(pkt).bootstrap()
+      if (roles.hasRole(uid, 'PO', 'ARC')) {
+        return
+      }
+      claim.copy()
+        .type('Resign all roles')
+        .param('login', uid)
+        .param(
+          'reason',
+          new Par('Reputation %s of @%s is over %s').say(
+            reputation, uid, threshold
+          )
+        )
+        .postTo(pkt)
+      claim.copy().type('Notify user').token("user;${uid}").param(
+        'message',
+        new Par(
+          'Your reputation is %d (over %d);',
+          'according to §33 you may not work in sandbox projects anymore;',
+          'we resigned you from project %s;',
+          'you are welcome to join other projects!'
+        ).say(reputation, threshold, pid)
+      ).postTo(pmo)
+      claim.copy().type('Notify PMO').param(
+        'message', new Par(
+          'The user @%s was kicked out of sandbox project %s',
+          'because of too high reputation %d (over %d)'
+        ).say(uid, pid, reputation, threshold)
+      ).postTo(pmo)
+    }
   }
 }

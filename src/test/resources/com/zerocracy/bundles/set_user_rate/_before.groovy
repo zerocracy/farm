@@ -17,9 +17,11 @@
 package com.zerocracy.bundles.set_user_rate
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.pmo.People
 
 def exec(Project project, XML xml) {
-  new People(project).bootstrap().details('user42', 'something')
+  Farm farm = binding.variables.farm
+  new People(farm).bootstrap().details('user42', 'something')
 }

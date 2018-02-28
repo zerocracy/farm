@@ -19,4 +19,7 @@ SOFTWARE.
   <job id="gh:test/test#1">
     <created>2017-01-01T00:00:00.000Z</created>
   </job>
+  <job id="gh:test/test#2">
+    <created>2017-01-01T00:00:00.000Z</created>
+  </job>
 </wbs>

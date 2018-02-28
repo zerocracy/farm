@@ -75,7 +75,9 @@ public final class RqProjectTest {
 
     @Test
     public void buildsPmo() throws Exception {
-        try (final Farm farm = new SmartFarm(new FkFarm()).value()) {
+        final Farm raw = new FkFarm();
+        new Roles(new Pmo(raw)).bootstrap().assign("yegor256", "PO");
+        try (final Farm farm = new SmartFarm(raw).value()) {
             new People(new Pmo(farm)).bootstrap().invite("yegor256", "mentor");
             MatcherAssert.assertThat(
                 new RqProject(

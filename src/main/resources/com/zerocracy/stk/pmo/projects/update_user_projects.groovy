@@ -14,26 +14,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.staff.projects
+package com.zerocracy.stk.pmo.projects
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.Projects
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type(
-    'Role was assigned', 'Order was given'
+    'Role was assigned',
+    'Order was given',
+    'All roles were resigned',
+    'Role was resigned'
   )
   ClaimIn claim = new ClaimIn(xml)
   String login = claim.param('login')
-  Projects projects = new Projects(project, login).bootstrap()
-  if (!projects.exists(project.pid())) {
+  Farm farm = binding.variables.farm
+  Projects projects = new Projects(farm, login).bootstrap()
+  Roles roles = new Roles(project).bootstrap()
+  if (roles.hasAnyRole(login) && !projects.exists(project.pid())) {
+    new Projects(farm, login).remove(project.pid())
     projects.add(project.pid())
     claim.copy()
-      .type('User projects were updated')
+      .type('User joined new project')
+      .param('login', login)
+      .postTo(project)
+  }
+  if (!roles.hasAnyRole(login) && projects.exists(project.pid())) {
+    projects.remove(project.pid())
+    claim.copy()
+      .type('User left a project')
       .param('login', login)
       .postTo(project)
   }

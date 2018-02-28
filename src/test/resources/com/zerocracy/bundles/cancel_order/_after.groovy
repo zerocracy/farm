@@ -16,16 +16,15 @@
  */
 package com.zerocracy.bundles.cancel_order
 
-import com.jcabi.github.Coordinates
-import com.jcabi.github.Github
-import com.jcabi.github.Issue
-import com.jcabi.github.Repo
+import com.jcabi.github.*
 import com.jcabi.xml.XML
-import com.zerocracy.entry.ExtGithub
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.entry.ExtGithub
 import com.zerocracy.pm.staff.Bans
 import com.zerocracy.pmo.Agenda
+import org.cactoos.collection.Mapped
+import org.cactoos.list.ListOf
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 
@@ -33,16 +32,24 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
   Repo repo = github.repos().get(new Coordinates.Simple('test/test'))
+  Issue.Smart issue = new Issue.Smart(repo.issues().get(1))
   MatcherAssert.assertThat(
-    new Issue.Smart(repo.issues().get(1)).assignee().login(),
+    issue.assignee().login(),
     Matchers.equalTo('')
   )
   MatcherAssert.assertThat(
-    new Agenda(project, 'g4s8').bootstrap().exists('gh:test/test#1'),
+    new Agenda(farm, 'g4s8').bootstrap().exists('gh:test/test#1'),
     Matchers.equalTo(false)
   )
   MatcherAssert.assertThat(
     new Bans(project).bootstrap().reasons('gh:test/test#1', 'g4s8'),
     Matchers.iterableWithSize(1)
+  )
+  MatcherAssert.assertThat(
+    new Mapped<>(
+      {new Comment.Smart(it as Comment).body() },
+      issue.comments().iterate(new Date(0))
+    ),
+    Matchers.hasItem(Matchers.stringContainsInOrder(new ListOf<String>('please stop working', 'Test reason')))
   )
 }

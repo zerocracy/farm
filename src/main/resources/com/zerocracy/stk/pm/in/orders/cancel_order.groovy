@@ -43,10 +43,16 @@ def exec(Project project, XML xml) {
     )
   }
   orders.resign(job)
+  String reason
+  if (claim.hasParam('reason')) {
+    reason = claim.param('reason')
+  } else {
+    reason = 'Order was cancelled'
+  }
   claim.reply(
     new Par(
-      'The user @%s resigned from %s, please stop working',
-    ).say(performer, job)
+      'The user @%s resigned from %s, please stop working. Reason for job resignation: %s',
+    ).say(performer, job, reason)
   ).postTo(project)
   claim.copy()
     .type('Order was canceled')

@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pmo.profile
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
@@ -29,7 +30,8 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Invite a friend')
   ClaimIn claim = new ClaimIn(xml)
   String author = claim.author()
-  if (new Awards(project, author).bootstrap().total() < 1024) {
+  Farm farm = binding.variables.farm
+  if (new Awards(farm, author).bootstrap().total() < 1024) {
     claim.reply(
       new Par(
         '@%s you must have at least 1024 reputation to invite someone,',
@@ -39,7 +41,7 @@ def exec(Project project, XML xml) {
     return
   }
   String login = claim.param('login')
-  People people = new People(project).bootstrap()
+  People people = new People(farm).bootstrap()
   people.invite(login, author)
   claim.reply(
     new Par(
@@ -57,9 +59,9 @@ def exec(Project project, XML xml) {
       ).say(author)
     )
     .postTo(project)
-  claim.copy().type('Notify user').token('user;yegor256').param(
+  claim.copy().type('Notify PMO').param(
     'message', new Par(
       'New user @%s was invited by @%s'
     ).say(login, author)
-  ).param('cause', claim.cid()).postTo(project)
+  ).postTo(project)
 }

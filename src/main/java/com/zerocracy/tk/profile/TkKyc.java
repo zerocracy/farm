@@ -19,6 +19,7 @@ package com.zerocracy.tk.profile;
 import com.zerocracy.Farm;
 import com.zerocracy.Par;
 import com.zerocracy.pm.ClaimOut;
+import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.pmo.People;
 import com.zerocracy.pmo.Pmo;
 import com.zerocracy.tk.RqUser;
@@ -58,7 +59,7 @@ public final class TkKyc implements TkRegex {
     @Override
     public Response act(final RqRegex req) throws IOException {
         final String user = new RqUser(this.farm, req).value();
-        if (!"yegor256".equals(user)) {
+        if (!new Roles(new Pmo(this.farm)).hasAnyRole(user)) {
             throw new RsForward(
                 new RsParFlash(
                     "You are not allowed to do this, sorry",
@@ -67,7 +68,7 @@ public final class TkKyc implements TkRegex {
             );
         }
         final String details = new RqFormSmart(req).single("details");
-        final String login = new RqSecureLogin(new Pmo(this.farm), req).value();
+        final String login = new RqSecureLogin(this.farm, req).value();
         new People(this.farm).bootstrap().details(login, details);
         new ClaimOut()
             .type("User identified")
@@ -76,7 +77,7 @@ public final class TkKyc implements TkRegex {
             .param("system", "manual")
             .author(user)
             .postTo(new Pmo(this.farm));
-        new ClaimOut().type("Notify user").token("user;yegor256").param(
+        new ClaimOut().type("Notify PMO").param(
             "message", new Par(
                 "We just identified @%s as `%s` manually"
             ).say(login, details)

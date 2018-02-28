@@ -58,19 +58,18 @@ public final class ClaimIn {
      * @return OutClaim
      */
     public ClaimOut reply(final String msg) {
-        if (!this.hasToken()) {
-            throw new IllegalArgumentException(
-                String.format(
-                    "There is no token in \"%s\", can't reply",
-                    this.type()
-                )
-            );
+        final ClaimOut out;
+        if (this.hasToken()) {
+            out = this.copy()
+                .type("Notify")
+                .token(this.token())
+                .param("message", msg);
+        } else {
+            out = this.copy()
+                .type("Ignore me")
+                .param("message", msg);
         }
-        return new ClaimOut()
-            .type("Notify")
-            .token(this.token())
-            .param("message", msg)
-            .param("cause", this.cid());
+        return out;
     }
 
     /**
@@ -82,9 +81,6 @@ public final class ClaimIn {
         out.type(this.type());
         if (this.hasToken()) {
             out.token(this.token());
-        }
-        if (this.hasAuthor()) {
-            out.author(this.author());
         }
         out.params(this.params());
         out.param("cause", this.cid());

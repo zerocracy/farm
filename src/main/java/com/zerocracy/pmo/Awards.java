@@ -83,6 +83,14 @@ public final class Awards {
      */
     public void add(final int points, final String job, final String reason)
         throws IOException {
+        if (points == 0) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "Points can't be zero for %s: %s",
+                    job, reason
+                )
+            );
+        }
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()

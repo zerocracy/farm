@@ -29,4 +29,5 @@ def exec(Project project, XML xml) {
   Github github = new ExtGithub(farm).value()
   Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
   repo.issues().create('Hello, world', '')
+  repo.issues().create('Remove me from WBS', '')
 }

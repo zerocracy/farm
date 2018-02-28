@@ -22,6 +22,8 @@ import com.zerocracy.Project;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.cash.CashParsingException;
 import com.zerocracy.pm.ClaimOut;
+import com.zerocracy.pm.staff.Roles;
+import com.zerocracy.pmo.Pmo;
 import com.zerocracy.tk.RqUser;
 import com.zerocracy.tk.RsParFlash;
 import java.io.IOException;
@@ -59,7 +61,8 @@ public final class TkDonate implements TkRegex {
 
     @Override
     public Response act(final RqRegex req) throws IOException {
-        if (!"yegor256".equals(new RqUser(this.farm, req).value())) {
+        final String user = new RqUser(this.farm, req).value();
+        if (!new Roles(new Pmo(this.farm)).bootstrap().hasAnyRole(user)) {
             throw new RsForward(
                 new RsParFlash(
                     "You are not allowed to donate, sorry",

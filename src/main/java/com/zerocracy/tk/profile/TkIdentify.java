@@ -61,7 +61,7 @@ public final class TkIdentify implements TkRegex {
             "/xsl/identify.xsl",
             req,
             () -> {
-                final String user = new RqUser(pmo, req).value();
+                final String user = new RqUser(this.farm, req).value();
                 final People people = new People(pmo).bootstrap();
                 return new XeChain(
                     new XeAppend(

@@ -33,6 +33,7 @@ SOFTWARE.
     <params>
       <param name="job">gh:test/test#1</param>
       <param name="login">g4s8</param>
+      <param name="reason">Test reason</param>
     </params>
   </claim>
   <claim id="4">

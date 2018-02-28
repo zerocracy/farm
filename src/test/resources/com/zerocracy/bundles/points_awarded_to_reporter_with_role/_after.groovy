@@ -17,10 +17,16 @@
 package com.zerocracy.bundles.points_awarded_to_reporter_with_role
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.pmo.Awards
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
-  Awards awards = new Awards(project, 'test').bootstrap()
-  assert awards.total() == 15
+  Farm farm = binding.variables.farm
+  MatcherAssert.assertThat(
+    new Awards(farm, 'skapral').bootstrap().total(),
+    Matchers.greaterThan(0)
+  )
 }

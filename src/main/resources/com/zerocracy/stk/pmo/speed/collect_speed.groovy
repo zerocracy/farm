@@ -14,45 +14,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.scope.wbs
+package com.zerocracy.stk.pmo.speed
 
 import com.jcabi.xml.XML
-import com.zerocracy.Par
+import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.in.Orders
-import com.zerocracy.pm.scope.Wbs
+import com.zerocracy.pmo.Speed
 
 def exec(Project project, XML xml) {
+  new Assume(project, xml).type('Order was finished')
   new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Remove job from WBS')
-  new Assume(project, xml).roles('ARC', 'PO')
+  Farm farm = binding.variables.farm
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
-  Wbs wbs = new Wbs(project).bootstrap()
-  Orders orders = new Orders(project).bootstrap()
-  if (orders.assigned(job)) {
-    String performer = orders.performer(job)
-    orders.resign(job)
-    claim.reply(
-      new Par(
-        '@%s resigned from %s, since the job is not in scope anymore'
-      ).say(performer, job)
-    ).postTo(project)
-    claim.copy()
-      .type('Order was canceled')
-      .param('job', job)
-      .param('voluntarily', false)
-      .param('login', performer)
-      .postTo(project)
-  }
-  wbs.remove(job)
-  claim.reply(
-    new Par('The job %s is now out of scope').say(job)
-  ).postTo(project)
+  long minutes = Long.parseLong(claim.param('minutes'))
+  String login = claim.param('login')
+  new Speed(farm, login)
+    .bootstrap()
+    .add(project.pid(), job, minutes)
   claim.copy()
-    .type('Job removed from WBS')
+    .type('Speed was updated')
+    .param('login', login)
     .param('job', job)
     .postTo(project)
 }

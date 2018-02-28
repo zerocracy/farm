@@ -26,7 +26,6 @@ import com.zerocracy.farm.props.Props;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pmo.People;
 import com.zerocracy.pmo.Pmo;
-import com.zerocracy.tk.RqUser;
 import com.zerocracy.tk.RsParFlash;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -89,7 +88,7 @@ public final class TkYoti implements TkRegex {
             profile.getDateOfBirth().getMonth(),
             profile.getDateOfBirth().getYear()
         );
-        final String user = new RqUser(this.farm, req).value();
+        final String user = new RqSecureLogin(this.farm, req).value();
         new People(this.farm).bootstrap().details(user, name);
         new ClaimOut()
             .type("User identified")
@@ -97,7 +96,7 @@ public final class TkYoti implements TkRegex {
             .param("details", name)
             .param("system", "yoti")
             .postTo(new Pmo(this.farm));
-        new ClaimOut().type("Notify user").token("user;yegor256").param(
+        new ClaimOut().type("Notify PMO").param(
             "message", new Par(
                 "We just identified @%s as \"%s\" via Yoti"
             ).say(user, name)

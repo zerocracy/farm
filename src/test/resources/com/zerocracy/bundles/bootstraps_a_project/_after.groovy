@@ -25,12 +25,12 @@ import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
+  Farm farm = binding.variables.farm
   MatcherAssert.assertThat(
     'User projects updated',
-    new Projects(project, 'yegor256').bootstrap().iterate(),
+    new Projects(farm, 'yegor256').bootstrap().iterate(),
     Matchers.hasItem(project.pid())
   )
-  Farm farm = binding.variables.farm
   Catalog catalog = new Catalog(farm).bootstrap()
   MatcherAssert.assertThat(
     'Project title should be set from channel prop',

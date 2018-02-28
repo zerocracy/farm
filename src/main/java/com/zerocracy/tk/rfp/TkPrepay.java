@@ -83,7 +83,7 @@ public final class TkPrepay implements Take {
         final int rid = rfps.pay(
             user, String.format("Stripe ID: %s", customer), email
         );
-        new ClaimOut().type("Notify user").token("user;yegor256").param(
+        new ClaimOut().type("Notify PMO").param(
             "message", new Par(
                 "RFP #%d has been paid by @%s: %s"
             ).say(rid, user, email)

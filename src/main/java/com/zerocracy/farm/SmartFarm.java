@@ -26,7 +26,6 @@ import com.zerocracy.farm.reactive.StkGroovy;
 import com.zerocracy.farm.ruled.RdFarm;
 import com.zerocracy.farm.strict.StrictFarm;
 import com.zerocracy.farm.sync.SyncFarm;
-import com.zerocracy.farm.uplinked.UplinkedFarm;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
 import org.cactoos.Scalar;
@@ -61,13 +60,11 @@ public final class SmartFarm implements Scalar<Farm> {
         this.self = new SolidScalar<>(
             () -> new RvFarm(
                 new RdFarm(
-                    new UplinkedFarm(
-                        new FtFarm(
-                            new ExtFarm(
-                                new PropsFarm(
-                                    new StrictFarm(
-                                        new SyncFarm(farm)
-                                    )
+                    new FtFarm(
+                        new ExtFarm(
+                            new PropsFarm(
+                                new StrictFarm(
+                                    new SyncFarm(farm)
                                 )
                             )
                         )
