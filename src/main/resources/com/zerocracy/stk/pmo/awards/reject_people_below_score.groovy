@@ -24,6 +24,7 @@ import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Awards
+import com.zerocracy.pmo.People
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
@@ -34,9 +35,14 @@ def exec(Project project, XML xml) {
   Awards awards = new Awards(farm, login).bootstrap()
   Integer current = awards.total()
   if (current <= new Policy().get('44.threshold', -256)) {
-    // @todo #390:30min We should remove people from people.xml
-    //  when their score goes below 200. Let's implement that.
-    //  We should also notify the person in case that happens.
+    People people = new People(farm).bootstrap()
+    people.remove(login)
+    claim.copy()
+      .token("user;${login}")
+      .param(
+        'message',
+        new Par('Your reputation becomes too low, so you have been disconnected from your mentor as in §44').say()
+      ).postTo(project)
     String job = claim.param('job')
     String reason = new Par(
       'The score of @%s %d is too low and will be reset'

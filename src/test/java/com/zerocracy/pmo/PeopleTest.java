@@ -133,6 +133,18 @@ public final class PeopleTest {
     }
 
     @Test
+    public void removeTest() throws Exception {
+        final People people = new People(new FkProject()).bootstrap();
+        final String uid = "user";
+        people.invite(uid, "mntr");
+        people.remove(uid);
+        MatcherAssert.assertThat(
+            people.find("github", uid),
+            Matchers.emptyIterable()
+        );
+    }
+
+    @Test
     public void vacationTest() throws Exception {
         final People people = new People(new FkProject()).bootstrap();
         final String uid = "g4s8";

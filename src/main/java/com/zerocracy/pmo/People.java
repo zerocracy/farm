@@ -192,6 +192,21 @@ public final class People {
     }
 
     /**
+     * Remove a person.
+     * @param uid User Id
+     * @throws IOException If fails
+     */
+    public void remove(final String uid) throws IOException {
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                new Directives()
+                    .xpath(String.format("/people/person[@id='%s']", uid))
+                    .remove()
+            );
+        }
+    }
+
+    /**
      * Invite that person and set a mentor.
      * @param uid User ID
      * @param mentor User ID of the mentor
