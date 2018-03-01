@@ -101,9 +101,10 @@ public final class ExtTwitter implements Scalar<ExtTwitter.Tweets> {
         /**
          * Publish a tweet.
          * @param text Tweet text
+         * @return Tweet id
          * @throws IOException If fails
          */
-        void publish(final String text) throws IOException;
+        long publish(final String text) throws IOException;
     }
 
     /**
@@ -123,9 +124,9 @@ public final class ExtTwitter implements Scalar<ExtTwitter.Tweets> {
         }
 
         @Override
-        public void publish(final String text) throws IOException {
+        public long publish(final String text) throws IOException {
             try {
-                this.api.updateStatus(text);
+                return this.api.updateStatus(text).getId();
             } catch (final TwitterException err) {
                 throw new IOException(err);
             }
@@ -137,8 +138,9 @@ public final class ExtTwitter implements Scalar<ExtTwitter.Tweets> {
      */
     private static final class MkTweets implements ExtTwitter.Tweets {
         @Override
-        public void publish(final String text) {
+        public long publish(final String text) {
             Logger.debug(this, "tweet: %s", text);
+            return 0L;
         }
     }
 }

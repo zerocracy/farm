@@ -21,7 +21,7 @@ import com.zerocracy.Farm;
 import com.zerocracy.Par;
 import com.zerocracy.entry.ExtDynamo;
 import com.zerocracy.entry.ExtGithub;
-import com.zerocracy.farm.props.Props;
+import com.zerocracy.entry.ExtTwitter;
 import com.zerocracy.tk.RsParFlash;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -69,19 +69,9 @@ public final class TkGithub implements Take, Runnable {
      * Ctor.
      * @param frm Farm
      * @throws IOException If fails
-     */
-    public TkGithub(final Farm frm) throws IOException {
-        this(frm, new Props(frm));
-    }
-
-    /**
-     * Ctor.
-     * @param frm Farm
-     * @param props Props
-     * @throws IOException If fails
      * @checkstyle LineLength (400 lines)
      */
-    public TkGithub(final Farm frm, final Props props) throws IOException {
+    public TkGithub(final Farm frm) throws IOException {
         this(
             frm,
             new RbAccessible(
@@ -132,10 +122,7 @@ public final class TkGithub implements Take, Runnable {
                             new RbByActions(new RbOnUnassign(), "unassigned"),
                             new RbTweet(
                                 new ExtDynamo(frm).value().table("0crat-tweets"),
-                                props.get("//twitter/key"),
-                                props.get("//twitter/secret"),
-                                props.get("//twitter/token"),
-                                props.get("//twitter/tsecret")
+                                new ExtTwitter(frm).value()
                             )
                         )
                     )
