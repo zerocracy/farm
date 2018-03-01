@@ -54,7 +54,7 @@ SOFTWARE.
     </form>
     <xsl:if test="skip &gt; 0">
       <p>
-        <xsl:text>Start at </xsl:text>
+        <xsl:text>Starts at claim #</xsl:text>
         <xsl:value-of select="skip + 1"/>
         <xsl:text>.</xsl:text>
       </p>
@@ -92,9 +92,6 @@ SOFTWARE.
       <xsl:text>:</xsl:text>
     </p>
     <xsl:apply-templates select="claim"/>
-    <p>
-      <xsl:text>There is more, but we don't support paging yet.</xsl:text>
-    </p>
   </xsl:template>
   <xsl:template match="claim">
     <p>
