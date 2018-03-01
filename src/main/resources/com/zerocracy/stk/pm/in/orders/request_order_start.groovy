@@ -62,6 +62,7 @@ def exec(Project project, XML xml) {
   }
   claim.copy()
     .type('Start order')
+    .author(claim.author())
     .param('login', login)
     .param('manual', true)
     .param('reason', claim.cid())

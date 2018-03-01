@@ -135,7 +135,7 @@ public final class TkProject implements TkRegex {
                                 new XeWhen(
                                     new Roles(
                                         new Pmo(this.farm)
-                                    ).hasAnyRole(user)
+                                    ).bootstrap().hasAnyRole(user)
                                     || roles.hasRole(user, "PO"),
                                     new XeChain(
                                         new XeAppend(

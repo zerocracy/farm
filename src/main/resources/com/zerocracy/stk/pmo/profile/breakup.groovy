@@ -14,51 +14,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pmo.awards
+package com.zerocracy.stk.pmo.profile
 
-import com.jcabi.github.Github
-import com.jcabi.github.Issue
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Par
-import com.zerocracy.Policy
 import com.zerocracy.Project
-import com.zerocracy.entry.ExtGithub
+import com.zerocracy.SoftException
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.radars.github.Job
+import com.zerocracy.pmo.People
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Start order')
-  ClaimIn claim = new ClaimIn(xml)
-  String job = claim.param('job')
-  if (!claim.hasParam('manual')) {
-    return
-  }
-  if (!job.startsWith('gh:')) {
-    return
-  }
-  if (!claim.hasAuthor()) {
-    return
-  }
+  new Assume(project, xml).isPmo()
+  new Assume(project, xml).type('Breakup')
   Farm farm = binding.variables.farm
-  Github github = new ExtGithub(farm).value()
-  Issue.Smart issue = new Issue.Smart(new Job.Issue(github, job))
+  ClaimIn claim = new ClaimIn(xml)
   String author = claim.author()
-  if (issue.author().login().equalsIgnoreCase(author)) {
-    claim.copy()
-      .type('Make payment')
-      .param('job', job)
-      .param('login', author)
-      .param(
-        'reason',
-        new Par(
-          'It is strongly discouraged',
-          'to assign jobs to their creators, see §19'
-        ).say()
-      )
-      .param('minutes', new Policy().get('19.self-penalty', -15))
-      .postTo(project)
+  String login = claim.param('login')
+  People people = new People(farm).bootstrap()
+  if (!people.hasMentor(login)) {
+    throw new SoftException(
+      new Par('User @%s doesn\'t have a mentor').say(login)
+    )
   }
+  if (people.mentor(login) != author) {
+    throw new SoftException(
+      new Par('You are not a mentor of @%s').say(login)
+    )
+  }
+  people.breakup(login)
+  claim.reply(
+    new Par(
+      'User @%s is not your student anymore, see §47'
+    ).say()
+  ).postTo(project)
 }

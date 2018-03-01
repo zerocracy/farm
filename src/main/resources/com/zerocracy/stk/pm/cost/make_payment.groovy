@@ -24,6 +24,7 @@ import com.zerocracy.Project
 import com.zerocracy.cash.Cash
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pm.cost.Ledger
 import com.zerocracy.pm.cost.Rates
 import com.zerocracy.pmo.Debts
 import com.zerocracy.pmo.People
@@ -80,8 +81,8 @@ def exec(Project project, XML xml) {
     String msg
     try {
       msg = new Payroll(farm).pay(
-        project, login, price,
-        "Payment for ${job} (${minutes} minutes): ${reason}"
+        new Ledger(project).bootstrap(),
+        login, price, "Payment for ${job} (${minutes} minutes): ${reason}"
       )
       claim.copy()
         .type('Notify user')

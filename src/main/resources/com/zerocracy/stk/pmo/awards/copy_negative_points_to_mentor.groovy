@@ -35,16 +35,23 @@ def exec(Project project, XML xml) {
   }
   Farm farm = binding.variables.farm
   People people = new People(farm).bootstrap()
-  if (people.hasMentor(login) && people.mentor(login) != '0crat' && !claim.hasParam('student')) {
-    String mentor = people.mentor(login)
-    claim.copy()
-      .param('login', mentor)
-      .param('student', login)
-      .param(
-        'reason',
-        new Par('Mistake of @%s (your student): ').say(login) +
-          claim.param('reason')
-      )
-      .postTo(project)
+  if (!people.hasMentor(login)) {
+    return
   }
+  if (people.mentor(login) == '0crat') {
+    return
+  }
+  if (claim.hasParam('student')) {
+    return
+  }
+  String mentor = people.mentor(login)
+  claim.copy()
+    .param('login', mentor)
+    .param('student', login)
+    .param(
+      'reason',
+      new Par('Mistake of @%s (your student): ').say(login) +
+        claim.param('reason')
+    )
+    .postTo(project)
 }

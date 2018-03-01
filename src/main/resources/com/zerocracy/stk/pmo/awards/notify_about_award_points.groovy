@@ -46,15 +46,17 @@ def exec(Project project, XML xml) {
       ).say(points, job, project.pid(), awards.total(), login, reason)
     )
     .postTo(project)
+  if (claim.hasParam('student')) {
+    return
+  }
   claim.copy()
     .type('Notify job')
     .token("job;${job}")
     .param(
       'message',
       new Par(
-        '%s: %+d point(s) just awarded to @%s,',
-        'total is [%+d](https://www.0crat.com/u/%s)',
-      ).say(reason, points, login, awards.total(), login)
+        '%s: %+d point(s) just awarded to @%s'
+      ).say(reason, points, login)
     )
     .postTo(project)
 }

@@ -253,6 +253,38 @@ public final class People {
     }
 
     /**
+     * Person's mentor.
+     * @param uid User ID
+     * @return Id of person's mentor
+     * @throws IOException If fails
+     */
+    public String mentor(final String uid) throws IOException {
+        try (final Item item = this.item()) {
+            return new Xocument(item.path()).xpath(
+                String.format(
+                    "/people/person[@id='%s']/mentor/text()",
+                    uid
+                )
+            ).get(0);
+        }
+    }
+
+    /**
+     * Breakup with a person.
+     * @param uid User ID
+     * @throws IOException If fails
+     */
+    public void breakup(final String uid) throws IOException {
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                new Directives().xpath(
+                    String.format("/people/person[@id='%s']/mentor", uid)
+                ).remove()
+            );
+        }
+    }
+
+    /**
      * Set rate.
      * @param uid User ID
      * @param rate Rate of the user
@@ -551,23 +583,6 @@ public final class People {
                     )
                 )
             ).value();
-        }
-    }
-
-    /**
-     * Mentor of a person.
-     * @param uid Person's login
-     * @return Mentor's login
-     * @throws IOException If fails
-     */
-    public String mentor(final String uid) throws IOException {
-        try (final Item item = this.item()) {
-            return new Xocument(item.path()).xpath(
-                String.format(
-                    "/people/person[@id='%s']/mentor/text()",
-                    uid
-                )
-            ).get(0);
         }
     }
 
