@@ -19,12 +19,14 @@ package com.zerocracy.tk;
 import com.zerocracy.Farm;
 import com.zerocracy.farm.props.Props;
 import java.io.IOException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import org.takes.facets.auth.Identity;
+import org.takes.facets.auth.codecs.CcAes;
 import org.takes.facets.auth.codecs.CcCompact;
 import org.takes.facets.auth.codecs.CcHex;
 import org.takes.facets.auth.codecs.CcSafe;
 import org.takes.facets.auth.codecs.CcSalted;
-import org.takes.facets.auth.codecs.CcXor;
 import org.takes.facets.auth.codecs.Codec;
 
 /**
@@ -36,6 +38,10 @@ import org.takes.facets.auth.codecs.Codec;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 final class CcSecure implements Codec {
+    /**
+     * Instances of CcAes.
+     */
+    private static final Map<Farm, CcAes> INSTANCES = new ConcurrentHashMap<>();
 
     /**
      * Original codec.
@@ -50,10 +56,10 @@ final class CcSecure implements Codec {
     CcSecure(final Farm farm) throws IOException {
         this.origin = new CcSafe(
             new CcHex(
-                new CcXor(
-                    new CcSalted(new CcCompact()),
+                CcSecure.aes(
+                    farm,
                     new Props(farm).get(
-                        "//security/xor.key",
+                        "//security/aes.key",
                         "0123456701234567"
                     )
                 )
@@ -70,4 +76,18 @@ final class CcSecure implements Codec {
     public Identity decode(final byte[] bytes) throws IOException {
         return this.origin.decode(bytes);
     }
+
+    /**
+     * Create or fetch CcAes.
+     * @param farm Farm
+     * @param key AES key
+     * @return Instance of CcAes
+     */
+    private static CcAes aes(final Farm farm, final String key) {
+        return INSTANCES.computeIfAbsent(
+            farm,
+            k -> new CcAes(new CcSalted(new CcCompact()), key)
+        );
+    }
+
 }
