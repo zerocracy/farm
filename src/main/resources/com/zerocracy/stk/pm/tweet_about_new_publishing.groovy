@@ -20,35 +20,15 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
+import com.zerocracy.entry.ExtTwitter
 import com.zerocracy.farm.Assume
-import com.zerocracy.farm.props.Props
-import twitter4j.Twitter
-import twitter4j.TwitterFactory
-import twitter4j.auth.AccessToken
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Project was published')
   Farm farm = binding.variables.farm
-  Props props = new Props(farm)
-  if (props.get('//testing', 'no') == 'yes') {
-    return
-  }
-  // @todo #404:30min Use of the Twitter API in this project is neither reusable
-  //  nor testable. Let's introduce an interface that will serve as our frontend
-  //  for the Twitter API. We should have a real implementation and also a fake
-  //  one for testing. This interface should be used where the twitter API is
-  //  currently used, and we should add tests for the usage of Twitter.
-  Twitter twitter = new TwitterFactory().instance
-  twitter.setOAuthConsumer(
-    props.get('//twitter/key'),
-    props.get('//twitter/secret')
-  )
-  twitter.setOAuthAccessToken(
-    new AccessToken(props.get('//twitter/token'),
-    props.get('//twitter/tsecret'))
-  )
-  twitter.updateStatus(
+  ExtTwitter.Tweets tweets = new ExtTwitter(farm).value()
+  tweets.publish(
     new Par(
       farm,
       'A new project %s is looking for developers,',
