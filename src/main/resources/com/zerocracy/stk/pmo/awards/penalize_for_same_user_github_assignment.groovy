@@ -52,12 +52,12 @@ def exec(Project project, XML xml) {
       .param('job', job)
       .param('login', claim.author())
       .param(
-      'reason',
-      new Par(
-        'It is strongly discouraged',
-        'to assign jobs to their creators, see §19'
-      ).say()
-    )
+        'reason',
+        new Par(
+          'It is strongly discouraged',
+          'to assign jobs to their creators, see §19'
+        ).say()
+      )
       .param('minutes', new Policy().get('19.self-penalty', -15))
       .postTo(project)
   }
