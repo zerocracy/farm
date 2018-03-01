@@ -45,7 +45,7 @@ public final class ReProfile implements Reaction<SlackMessagePosted> {
             )
         );
         final Question question;
-        if(prts.length == 2) {
+        if (prts.length == 2) {
             question = new Question(qprofile, prts[1].trim());
         } else {
             question = new Question(qprofile, prts[0].trim());
