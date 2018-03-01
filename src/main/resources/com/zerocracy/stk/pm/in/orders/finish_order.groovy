@@ -51,7 +51,7 @@ def exec(Project project, XML xml) {
   String login = orders.performer(job)
   Estimates estimates = new Estimates(project).bootstrap()
   String quality = claim.params().with {
-    it.containsKey('quality') ? it['quality'] : issueQuality(project, job)
+    it.containsKey('quality') ? it['quality'] : 'acceptable'
   }
   if (quality == 'good' || quality == 'acceptable') {
     int extra = quality == 'good' ? new Policy().get('31.bonus', 5) : 0
@@ -97,7 +97,7 @@ def issueQuality(Project project, String job) {
     List<String> authors = new ListOf<>(
       new Mapped<>(
         { Comment cmt -> new Comment.Smart(cmt).author().login() },
-        issue.comments().iterate(issue.createdAt())
+        issue.comments().iterate(new Date(0))
       )
     )
     boolean hasArc = new Or(

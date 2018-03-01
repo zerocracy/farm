@@ -46,6 +46,7 @@ SOFTWARE.
   </coinbase>
   <paypal>
     <mode>${paypal.mode}</mode>
+    <email>${paypal.email}</email>
     <username>${paypal.username}</username>
     <password>${paypal.password}</password>
     <signature>${paypal.signature}</signature>
