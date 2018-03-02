@@ -64,12 +64,25 @@ public final class Main {
      * Main.
      * @param args Command line arguments
      * @throws IOException If fails on I/O
+     * @checkstyle IllegalCatchCheck (20 lines)
      */
     @Loggable
+    @SuppressWarnings("PMD.AvoidCatchingThrowable")
     public static void main(final String... args) throws IOException {
+        final Props props = new Props();
+        if (props.has("//testing")) {
+            throw new IllegalStateException(
+                "Hey, we are in the testing mode!"
+            );
+        }
+        Sentry.init(props.get("//sentry/dsn", ""));
         final long start = System.currentTimeMillis();
         try {
             new Main(args).exec();
+        } catch (final Throwable ex) {
+            Sentry.capture(ex);
+            Logger.error(Main.class, "The main app crashed: %[exception]s", ex);
+            throw new IOException(ex);
         } finally {
             Logger.info(
                 Main.class, "Finished after %[ms]s of activity",
@@ -84,17 +97,6 @@ public final class Main {
      */
     @SuppressWarnings("unchecked")
     public void exec() throws IOException {
-        final Props props = new Props();
-        if (props.has("//testing")) {
-            throw new IllegalStateException(
-                "Hey, we are in the testing mode!"
-            );
-        }
-        new AsyncFunc<>(
-            input -> {
-                Sentry.init(props.get("//sentry/dsn", ""));
-            }
-        ).exec(null);
         final Path temp = Paths.get("./s3farm").normalize();
         if (!temp.toFile().mkdir()) {
             throw new IllegalStateException(
