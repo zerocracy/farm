@@ -65,6 +65,7 @@ SOFTWARE.
     <bucket>${s3.bucket}</bucket>
   </s3>
   <mongo>
+    <dbname>${mongo.dbname}</dbname>
     <host>${mongo.host}</host>
     <port>${mongo.port}</port>
     <user>${mongo.user}</user>
