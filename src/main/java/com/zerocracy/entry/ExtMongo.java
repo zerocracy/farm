@@ -127,7 +127,7 @@ public final class ExtMongo implements Scalar<MongoClient> {
                 new SolidList<>(
                     MongoCredential.createCredential(
                         props.get("//mongo/user"),
-                        "admin",
+                        props.get("//mongo/dbname"),
                         props.get("//mongo/password").toCharArray()
                     )
                 )

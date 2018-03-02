@@ -22,6 +22,7 @@ import com.github.zafarkhaja.semver.Version;
 import com.jcabi.log.Logger;
 import com.mongodb.MongoClient;
 import com.zerocracy.Farm;
+import com.zerocracy.farm.props.Props;
 import java.io.IOException;
 import org.bson.BsonDocument;
 import org.bson.BsonString;
@@ -54,8 +55,9 @@ public final class ExtMongobee {
      * @throws IOException If fails
      */
     public void apply() throws IOException {
+        final Props props = new Props(this.farm);
         try (final MongoClient client = new ExtMongo(this.farm).value()) {
-            final String dbname = "footprint";
+            final String dbname = props.get("//mongo/dbname", "footprint");
             final Version version = Version.valueOf(
                 client.getDatabase(dbname).runCommand(
                     new BsonDocument("buildinfo", new BsonString(""))
