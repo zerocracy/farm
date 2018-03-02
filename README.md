@@ -202,6 +202,8 @@ the list of claims to be dispatched. There are also a few supplementary files:
     setting `/setup/pmo` to `true` will make sure that dispatching happens
     with a PMO project, not a regular one.
 
+More details you can find in the Javadoc section of `BundlesTest`.
+
 ## Radars
 
 There are a number of entry points, where users can communicate with our
