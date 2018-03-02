@@ -67,7 +67,15 @@ public final class Main {
      */
     @Loggable
     public static void main(final String... args) throws IOException {
-        new Main(args).exec();
+        final long start = System.currentTimeMillis();
+        try {
+            new Main(args).exec();
+        } finally {
+            Logger.info(
+                Main.class, "Finished after %[ms]s of activity",
+                System.currentTimeMillis() - start
+            );
+        }
     }
 
     /**
