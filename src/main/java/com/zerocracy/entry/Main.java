@@ -31,6 +31,7 @@ import io.sentry.Sentry;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.cactoos.func.AsyncFunc;
 import org.takes.facets.fork.FkRegex;
 import org.takes.facets.fork.TkMethods;
 import org.takes.http.Exit;
@@ -80,7 +81,11 @@ public final class Main {
                 "Hey, we are in the testing mode!"
             );
         }
-        Sentry.init(props.get("//sentry/dsn", ""));
+        new AsyncFunc<>(
+            input -> {
+                Sentry.init(props.get("//sentry/dsn", ""));
+            }
+        ).exec(null);
         final Path temp = Paths.get("./s3farm").normalize();
         if (!temp.toFile().mkdir()) {
             throw new IllegalStateException(
@@ -97,7 +102,11 @@ public final class Main {
         ) {
             new ExtMongobee(farm).apply();
             new ExtTelegram(farm).value();
-            radar.refresh();
+            new AsyncFunc<>(
+                input -> {
+                    radar.refresh();
+                }
+            ).exec(null);
             new GithubRoutine(farm).start();
             new Pings(farm).start();
             new FtCli(
