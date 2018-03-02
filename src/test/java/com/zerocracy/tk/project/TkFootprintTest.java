@@ -32,11 +32,6 @@ import org.takes.rs.RsPrint;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.13
- * @todo #155:30min This test and `FtParamTest` fail
- *  because they require proper 'mongod' installation.
- *  Locally test fails with error:
- *  "Cannot run program "mongod": error=2, No such file or directory",
- *  on Shippable it's 'MongoTimeoutException'.
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
