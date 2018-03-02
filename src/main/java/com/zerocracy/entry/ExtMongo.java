@@ -17,6 +17,7 @@
 package com.zerocracy.entry;
 
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.zerocracy.Farm;
@@ -33,6 +34,7 @@ import de.flapdoodle.embed.process.runtime.Network;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
+import java.util.concurrent.TimeUnit;
 import org.cactoos.Scalar;
 import org.cactoos.list.SolidList;
 import org.cactoos.scalar.SolidScalar;
@@ -130,7 +132,14 @@ public final class ExtMongo implements Scalar<MongoClient> {
                         props.get("//mongo/dbname"),
                         props.get("//mongo/password").toCharArray()
                     )
-                )
+                ),
+                MongoClientOptions.builder()
+                    // @checkstyle MagicNumber (5 lines)
+                    .maxWaitTime((int) TimeUnit.SECONDS.toMillis(5L))
+                    .socketTimeout((int) TimeUnit.SECONDS.toMillis(5L))
+                    .connectTimeout((int) TimeUnit.SECONDS.toMillis(5L))
+                    .serverSelectionTimeout((int) TimeUnit.SECONDS.toMillis(5L))
+                    .build()
             );
         }
         return client;
