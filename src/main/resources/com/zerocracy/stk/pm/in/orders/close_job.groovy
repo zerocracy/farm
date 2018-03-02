@@ -37,7 +37,7 @@ def exec(Project project, XML xml) {
   String job = claim.param('job')
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
-  if (new Issue.Smart(new Job.Issue(github, job)).open) {
+  if (job.startsWith('gh:') && new Issue.Smart(new Job.Issue(github, job)).open) {
     return
   }
   Orders orders = new Orders(project).bootstrap()
