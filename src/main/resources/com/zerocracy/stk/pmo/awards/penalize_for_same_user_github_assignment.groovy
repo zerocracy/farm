@@ -39,18 +39,24 @@ def exec(Project project, XML xml) {
   if (!job.startsWith('gh:')) {
     return
   }
+  if (!claim.hasAuthor()) {
+    return
+  }
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
   Issue.Smart issue = new Issue.Smart(new Job.Issue(github, job))
-  String author = claim.param('login')
-  if (issue.author().login().equalsIgnoreCase(author)) {
+  String assignee = claim.param('login')
+  if (issue.author().login().equalsIgnoreCase(assignee)) {
     claim.copy()
       .type('Make payment')
       .param('job', job)
-      .param('login', author)
+      .param('login', claim.author())
       .param(
         'reason',
-        new Par('It is strongly discouraged to assign jobs to their creators, see §19').say()
+        new Par(
+          'It is strongly discouraged',
+          'to assign jobs to their creators, see §19'
+        ).say()
       )
       .param('minutes', new Policy().get('19.self-penalty', -15))
       .postTo(project)

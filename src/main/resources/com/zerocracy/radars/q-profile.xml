@@ -42,6 +42,19 @@ SOFTWARE.
     </opts>
   </cmd>
   <cmd>
+    <code>Breakup</code>
+    <regex>breakup</regex>
+    <label>breakup</label>
+    <help>An opposite command to invite</help>
+    <opts>
+      <opt>
+        <name>login</name>
+        <regex>[A-Za-z0-9-]+</regex>
+        <help>GitHub login of your friend</help>
+      </opt>
+    </opts>
+  </cmd>
+  <cmd>
     <code>Change vacation mode</code>
     <regex>vacation</regex>
     <label>vacation</label>

@@ -133,8 +133,11 @@ final class RdItem implements Item {
                     }
                     return item;
                 };
-                new RdAuto(proxy, tmp, dirty).propagate();
-                new RdRules(proxy, tmp, dirty).validate();
+                if (!"PMO".equals(this.project.pid())
+                    || !"roles.xml".equals(this.name)) {
+                    new RdAuto(proxy, tmp, dirty).propagate();
+                    new RdRules(proxy, tmp, dirty).validate();
+                }
                 new LengthOf(new TeeInput(tmp, this.origin.path())).intValue();
             }
         } finally {

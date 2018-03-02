@@ -230,6 +230,7 @@ SOFTWARE.
       </xsl:if>
       <xsl:text>: </xsl:text>
       <xsl:for-each select="project">
+        <xsl:sort select="@title"/>
         <xsl:if test="position() &gt; 1">
           <xsl:text>, </xsl:text>
         </xsl:if>
@@ -303,7 +304,16 @@ SOFTWARE.
       <xsl:text>.</xsl:text>
     </p>
   </xsl:template>
-  <xsl:template match="mentor">
+  <xsl:template match="mentor[.='0crat']">
+    <p>
+      <xsl:text>You've been graduated, you don't pay the </xsl:text>
+      <a href="http://www.zerocracy.com/policy.html#45">
+        <xsl:text>tuition fee</xsl:text>
+      </a>
+      <xsl:text> anymore.</xsl:text>
+    </p>
+  </xsl:template>
+  <xsl:template match="mentor[.!='0crat']">
     <p>
       <xsl:text>Your mentor is </xsl:text>
       <a href="/u/{.}">
@@ -339,6 +349,7 @@ SOFTWARE.
       </a>
       <xsl:text>: </xsl:text>
       <xsl:for-each select="student">
+        <xsl:sort select="."/>
         <xsl:if test="position() &gt; 1">
           <xsl:text>, </xsl:text>
         </xsl:if>

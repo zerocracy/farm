@@ -25,6 +25,7 @@ import com.zerocracy.Project;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.in.Orders;
 import java.io.IOException;
+import java.util.Locale;
 import javax.json.JsonObject;
 import org.cactoos.text.FormattedText;
 
@@ -45,15 +46,22 @@ public final class RbOnUnassign implements Rebound {
         final Issue.Smart issue = new Issue.Smart(
             new IssueOfEvent(github, event)
         );
+        final String sender = event.getJsonObject("sender")
+            .getString("login").toLowerCase(Locale.ENGLISH);
         final String job = new Job(issue).toString();
         final Project project = new GhProject(farm, issue.repo());
-        if (new Orders(project).bootstrap().assigned(job)) {
+        final Orders orders = new Orders(project).bootstrap();
+        if (orders.assigned(job)) {
             new ClaimOut()
                 .type("Notify")
                 .token(new TokenOfIssue(issue))
                 .param(
                     "message",
-                    new Par("To cancel the order use `refuse` as in §6").say()
+                    new Par(
+                        "@%s I see that you unassigned this issue;",
+                        "the order is still assigned to @%s though;",
+                        "to cancel the order use `refuse`, as in §6"
+                    ).say(sender, orders.performer(job))
                 )
                 .postTo(project);
         }

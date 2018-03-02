@@ -28,11 +28,14 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Start order')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
+  if (!claim.hasAuthor()) {
+    return
+  }
   if (claim.hasParam('manual')) {
     claim.copy()
       .type('Make payment')
       .param('job', job)
-      .param('login', claim.param('login'))
+      .param('login', claim.author())
       .param(
         'reason',
         new Par('Manual assignment of issues is discouraged, see §19').say()

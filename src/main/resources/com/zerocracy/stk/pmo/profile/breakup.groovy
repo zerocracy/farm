@@ -14,36 +14,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.invite_a_friend
+package com.zerocracy.stk.pmo.profile
 
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
+import com.zerocracy.Par
 import com.zerocracy.Project
+import com.zerocracy.SoftException
+import com.zerocracy.farm.Assume
+import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.People
-import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
-    Farm farm = binding.variables.farm
-    People people = new People(farm).bootstrap()
-    MatcherAssert.assertThat(
-        'High reputation user\'s friend was not invited',
-        people.hasMentor('hfriend'),
-        Matchers.is(true)
+  new Assume(project, xml).isPmo()
+  new Assume(project, xml).type('Breakup')
+  Farm farm = binding.variables.farm
+  ClaimIn claim = new ClaimIn(xml)
+  String author = claim.author()
+  String login = claim.param('login')
+  People people = new People(farm).bootstrap()
+  if (!people.hasMentor(login)) {
+    throw new SoftException(
+      new Par('User @%s doesn\'t have a mentor').say(login)
     )
-    MatcherAssert.assertThat(
-        'Low reputation user\'s friend was invited',
-        people.hasMentor('lfriend'),
-        Matchers.is(false)
+  }
+  if (people.mentor(login) != author) {
+    throw new SoftException(
+      new Par('You are not a mentor of @%s').say(login)
     )
-    MatcherAssert.assertThat(
-        'Breakup with "tmp" user failed',
-        people.hasMentor('tmp'),
-        Matchers.is(false)
-    )
-//    MatcherAssert.assertThat(
-//        '256 points has not been deducted after breakup',
-//        new Awards(project, 'high').total(),
-//        Matchers.lessThanOrEqualTo(1000)
-//    )
+  }
+  people.breakup(login)
+  claim.reply(
+    new Par(
+      'User @%s is not your student anymore, see §47'
+    ).say()
+  ).postTo(project)
 }

@@ -19,7 +19,6 @@ package com.zerocracy.pmo.banks;
 import com.zerocracy.Farm;
 import com.zerocracy.Par;
 import com.zerocracy.Policy;
-import com.zerocracy.Project;
 import com.zerocracy.SoftException;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.pm.cost.Ledger;
@@ -67,7 +66,7 @@ public final class Payroll {
 
     /**
      * Pay to someone.
-     * @param project The project
+     * @param ledger The ledger to use
      * @param login The login to pay
      * @param amount The amount to pay
      * @param reason The reason
@@ -75,7 +74,7 @@ public final class Payroll {
      * @throws IOException If fails
      * @checkstyle ParameterNumberCheck (6 lines)
      */
-    public String pay(final Project project,
+    public String pay(final Ledger ledger,
         final String login, final Cash amount,
         final String reason) throws IOException {
         final Cash min = new Policy().get("46.min", new Cash.S("$10"));
@@ -109,7 +108,7 @@ public final class Payroll {
         final String pid = bank.pay(
             wallet, amount, new Par.ToText(reason).toString()
         );
-        new Ledger(project).bootstrap().add(
+        ledger.add(
             new Ledger.Transaction(
                 amount.add(commission),
                 "liabilities", method,

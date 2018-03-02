@@ -14,36 +14,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.invite_a_friend
+package com.zerocracy.stk.pmo.profile
 
 import com.jcabi.xml.XML
-import com.zerocracy.Farm
 import com.zerocracy.Project
-import com.zerocracy.pmo.People
-import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
+import com.zerocracy.farm.Assume
 
+/**
+ * @todo #450:30min Let's implement this stakeholder:
+ *  it should deduct 256 points from claim author for breakup.
+ *  At moment it's not possible because 'Make payment' script
+ *  and Awards requires job parameter, but in 'breakup' there is no any job.
+ *  Also test in 'invite_a_friend/_after.groovy' should be uncommented.
+ */
 def exec(Project project, XML xml) {
-    Farm farm = binding.variables.farm
-    People people = new People(farm).bootstrap()
-    MatcherAssert.assertThat(
-        'High reputation user\'s friend was not invited',
-        people.hasMentor('hfriend'),
-        Matchers.is(true)
-    )
-    MatcherAssert.assertThat(
-        'Low reputation user\'s friend was invited',
-        people.hasMentor('lfriend'),
-        Matchers.is(false)
-    )
-    MatcherAssert.assertThat(
-        'Breakup with "tmp" user failed',
-        people.hasMentor('tmp'),
-        Matchers.is(false)
-    )
-//    MatcherAssert.assertThat(
-//        '256 points has not been deducted after breakup',
-//        new Awards(project, 'high').total(),
-//        Matchers.lessThanOrEqualTo(1000)
-//    )
+  new Assume(project, xml).isPmo()
+  new Assume(project, xml).type('Breakup')
 }

@@ -50,6 +50,13 @@ SOFTWARE.
       <xsl:text>, we will automatically notify the best</xsl:text>
       <xsl:text> and the most relevant candidates; they will apply, if interested.</xsl:text>
     </p>
+    <p>
+      <xsl:text>Total reputation: </xsl:text>
+      <strong>
+        <xsl:value-of select="sum(user/awards)"/>
+      </strong>
+      <xsl:text>.</xsl:text>
+    </p>
     <table data-sortable="true">
       <thead>
         <tr>

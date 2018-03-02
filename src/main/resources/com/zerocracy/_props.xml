@@ -22,7 +22,7 @@ SOFTWARE.
     <date>${timestamp}</date>
   </build>
   <security>
-    <xor.key><![CDATA[${xor.key}]]></xor.key>
+    <aes.key><![CDATA[${aes.key}]]></aes.key>
   </security>
   <yoti>
     <pem>${yoti.pem}</pem>
@@ -46,6 +46,7 @@ SOFTWARE.
   </coinbase>
   <paypal>
     <mode>${paypal.mode}</mode>
+    <email>${paypal.email}</email>
     <username>${paypal.username}</username>
     <password>${paypal.password}</password>
     <signature>${paypal.signature}</signature>

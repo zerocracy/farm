@@ -25,13 +25,10 @@ import com.jcabi.github.Coordinates;
 import com.jcabi.github.Github;
 import com.jcabi.github.Repo;
 import com.zerocracy.Farm;
+import com.zerocracy.entry.ExtTwitter;
 import java.io.IOException;
 import java.util.Iterator;
 import javax.json.JsonObject;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
-import twitter4j.auth.AccessToken;
 
 /**
  * Tweet about a new repo.
@@ -61,21 +58,17 @@ public final class RbTweet implements Rebound {
     /**
      * Twitter client.
      */
-    private final transient Twitter twitter;
+    private final transient ExtTwitter.Tweets tweets;
 
     /**
      * Ctor.
      * @param tbl Dynamo table
-     * @param key Key
-     * @param secret Secret
-     * @param token Token
-     * @param tsecret Token secret
+     * @param tweets Twitter tweets
      * @checkstyle ParameterNumberCheck (5 lines)
      */
-    public RbTweet(final Table tbl, final String key, final String secret,
-        final String token, final String tsecret) {
+    public RbTweet(final Table tbl, final ExtTwitter.Tweets tweets) {
         this.table = tbl;
-        this.twitter = RbTweet.connect(key, secret, token, tsecret);
+        this.tweets = tweets;
     }
 
     @Override
@@ -112,20 +105,16 @@ public final class RbTweet implements Rebound {
         final String answer;
         long tweet = this.tweet(repo);
         if (tweet == 0L) {
-            try {
-                tweet = this.twitter.updateStatus(
-                    String.format(
-                        "We started to work with https://github.com/%s",
-                        repo.coordinates()
-                    )
-                ).getId();
-                this.mark(repo, tweet);
-                answer = String.format(
-                    "See https://twitter.com/0crat/success/%d", tweet
-                );
-            } catch (final TwitterException ex) {
-                throw new IOException(ex);
-            }
+            tweet = this.tweets.publish(
+                String.format(
+                    "We started to work with https://github.com/%s",
+                    repo.coordinates()
+                )
+            );
+            this.mark(repo, tweet);
+            answer = String.format(
+                "See https://twitter.com/0crat/success/%d", tweet
+            );
         } else {
             answer = String.format(
                 "Tweeted earlier: https://twitter.com/0crat/success/%d",
@@ -133,25 +122,6 @@ public final class RbTweet implements Rebound {
             );
         }
         return answer;
-    }
-
-    /**
-     * Connect to Twitter.
-     * @param key Key
-     * @param secret Secret
-     * @param token Token
-     * @param tsecret Token secret
-     * @return Twitter
-     * @checkstyle ParameterNumberCheck (5 lines)
-     */
-    @SuppressWarnings("PMD.UseObjectForClearerAPI")
-    private static Twitter connect(final String key, final String secret,
-        final String token, final String tsecret) {
-        final TwitterFactory factory = new TwitterFactory();
-        final Twitter twitter = factory.getInstance();
-        twitter.setOAuthConsumer(key, secret);
-        twitter.setOAuthAccessToken(new AccessToken(token, tsecret));
-        return twitter;
     }
 
     /**

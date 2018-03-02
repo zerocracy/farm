@@ -34,6 +34,7 @@ import org.junit.Test;
  * @since 0.17
  * @checkstyle JavadocMethodCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class RbOnUnassignTest {
 
     @Test
@@ -51,6 +52,11 @@ public final class RbOnUnassignTest {
                 github,
                 Json.createObjectBuilder()
                     .add("action", "unassigned")
+                    .add(
+                        "sender",
+                        Json.createObjectBuilder()
+                            .add("login", "yegor256")
+                    )
                     .add(
                         "issue",
                         Json.createObjectBuilder()

@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pm.cost
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
@@ -32,6 +33,7 @@ def exec(Project project, XML xml) {
   Ledger ledger = new Ledger(project).bootstrap()
   Cash cash = ledger.cash()
   Cash locked = new Estimates(project).bootstrap().total()
+  Farm farm = binding.variables.farm
   if (ledger.deficit() && cash > locked) {
     ledger.deficit(false)
     claim.copy()
@@ -39,6 +41,7 @@ def exec(Project project, XML xml) {
       .param(
         'message',
         new Par(
+          farm,
           'The project %s is properly funded,',
           'cash balance is [%s](/p/%1$s?a=pm/cost/ledger) and',
           '[%s](/p/%1$s?a=pm/cost/estimates) is in active orders;',
@@ -54,6 +57,7 @@ def exec(Project project, XML xml) {
       .param(
         'message',
         new Par(
+          farm,
           'The project %s is out of funds,',
           'cash balance is [%s](/p/%1$s?a=pm/cost/ledger) and',
           '[%s](/p/%1$s?a=pm/cost/estimates) is in active orders;',
