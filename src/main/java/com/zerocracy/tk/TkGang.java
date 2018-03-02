@@ -70,6 +70,7 @@ public final class TkGang implements Take {
             "/xsl/gang.xsl",
             req,
             () -> {
+                new RqUser(this.farm, req, false).value();
                 final Collection<XeSource> sources = new LinkedList<>();
                 try (final Item item = new Pmo(this.farm).acq("people.xml")) {
                     new And(
