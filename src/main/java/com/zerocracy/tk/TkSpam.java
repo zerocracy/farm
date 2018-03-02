@@ -69,12 +69,12 @@ public final class TkSpam implements TkRegex {
         final String body = form.single("body");
         new ClaimOut().type("Notify all").param(
             "message", new Par(body).say()
-        ).postTo(new Pmo(this.farm));
+        ).postTo(this.farm);
         new ClaimOut().type("Notify PMO").param(
             "message", new Par(
                 "Spam request has been submitted by @%s"
             ).say(user)
-        ).postTo(new Pmo(this.farm));
+        ).postTo(this.farm);
         return new RsForward(
             new RsParFlash(
                 new Par(

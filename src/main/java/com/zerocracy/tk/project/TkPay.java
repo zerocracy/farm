@@ -22,7 +22,6 @@ import com.zerocracy.Project;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pmo.Catalog;
-import com.zerocracy.pmo.Pmo;
 import com.zerocracy.tk.RqUser;
 import com.zerocracy.tk.RsParFlash;
 import com.zerocracy.tk.Stripe;
@@ -100,7 +99,7 @@ public final class TkPay implements TkRegex {
             "message", new Par(
                 "Project %s was funded for %s by @%s"
             ).say(project.pid(), amount, user)
-        ).postTo(new Pmo(this.farm));
+        ).postTo(this.farm);
         return new RsForward(
             new RsParFlash(
                 new Par(

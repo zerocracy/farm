@@ -25,7 +25,6 @@ import com.zerocracy.Par;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pmo.People;
-import com.zerocracy.pmo.Pmo;
 import com.zerocracy.tk.RsParFlash;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -95,12 +94,12 @@ public final class TkYoti implements TkRegex {
             .param("login", user)
             .param("details", name)
             .param("system", "yoti")
-            .postTo(new Pmo(this.farm));
+            .postTo(this.farm);
         new ClaimOut().type("Notify PMO").param(
             "message", new Par(
                 "We just identified @%s as \"%s\" via Yoti"
             ).say(user, name)
-        ).postTo(new Pmo(this.farm));
+        ).postTo(this.farm);
         return new RsForward(
             new RsParFlash(
                 new Par(

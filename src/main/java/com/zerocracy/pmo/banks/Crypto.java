@@ -30,7 +30,6 @@ import com.zerocracy.cash.Cash;
 import com.zerocracy.cash.Currency;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.pm.ClaimOut;
-import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import org.joda.money.Money;
@@ -138,7 +137,7 @@ final class Crypto implements Bank {
                         bought.getStatus(),
                         balance
                     )
-                ).postTo(new Pmo(this.farm));
+                ).postTo(this.farm);
             }
         } catch (final CoinbaseException ex) {
             throw new IOException("Failed to buy at Coinbase", ex);

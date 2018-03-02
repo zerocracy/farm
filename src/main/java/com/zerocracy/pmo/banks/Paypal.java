@@ -34,9 +34,11 @@ import com.paypal.svcs.types.common.AckCode;
 import com.paypal.svcs.types.common.ErrorData;
 import com.paypal.svcs.types.common.RequestEnvelope;
 import com.zerocracy.Farm;
+import com.zerocracy.Par;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.cash.CashParsingException;
 import com.zerocracy.farm.props.Props;
+import com.zerocracy.pm.ClaimOut;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
@@ -100,7 +102,7 @@ final class Paypal implements Bank {
             )
         );
         try {
-            return Paypal.valid(
+            return this.valid(
                 service.pay(
                     this.request(
                         target,
@@ -167,19 +169,26 @@ final class Paypal implements Bank {
      * @return Response
      * @throws IOException If fails
      */
-    private static PayResponse valid(final PayResponse response)
+    private PayResponse valid(final PayResponse response)
         throws IOException {
-        Logger.info(
-            Paypal.class,
-            // @checkstyle LineLength (1 line)
-            "Envelope/Ack=%s, PayKey=%s, PaymentExecStatus=%s, Envelope/Build=%s, Envelope/CorrelationId=%s, Envelope/Timestamp=%s",
-            response.getResponseEnvelope().getAck().getValue(),
-            response.getPayKey(),
-            response.getPaymentExecStatus(),
-            response.getResponseEnvelope().getBuild(),
-            response.getResponseEnvelope().getCorrelationId(),
-            response.getResponseEnvelope().getTimestamp()
-        );
+        new ClaimOut().type("Notify PMO").param(
+            "message",
+            new Par(
+                "PayPal payment has been sent;",
+                "Sender=%s,",
+                "Envelope/Ack=%s, PayKey=%s, PaymentExecStatus=%s,",
+                "Envelope/Build=%s, Envelope/CorrelationId=%s,",
+                "Envelope/Timestamp=%s"
+            ).say(
+                response.getSender(),
+                response.getResponseEnvelope().getAck().getValue(),
+                response.getPayKey(),
+                response.getPaymentExecStatus(),
+                response.getResponseEnvelope().getBuild(),
+                response.getResponseEnvelope().getCorrelationId(),
+                response.getResponseEnvelope().getTimestamp()
+            )
+        ).postTo(this.farm);
         final Collection<ErrorData> errors = response.getError();
         if (!errors.isEmpty()) {
             final Collection<String> msgs = new LinkedList<>();

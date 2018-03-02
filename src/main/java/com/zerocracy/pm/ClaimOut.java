@@ -16,7 +16,9 @@
  */
 package com.zerocracy.pm;
 
+import com.zerocracy.Farm;
 import com.zerocracy.Project;
+import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.Date;
@@ -75,8 +77,19 @@ public final class ClaimOut implements Iterable<Directive> {
      * @param project Project
      * @throws IOException If fails
      */
+    @SuppressWarnings("overloads")
     public void postTo(final Project project) throws IOException {
         new Claims(project).bootstrap().add(this);
+    }
+
+    /**
+     * Post it to the PMO.
+     * @param farm The farm
+     * @throws IOException If fails
+     */
+    @SuppressWarnings("overloads")
+    public void postTo(final Farm farm) throws IOException {
+        this.postTo(new Pmo(farm));
     }
 
     /**
