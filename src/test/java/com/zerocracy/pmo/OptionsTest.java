@@ -22,7 +22,8 @@ package com.zerocracy.pmo;
  * @version $Id$
  * @since 0.21
  * @todo #258:30min Options are not implemented. We should be able to
- *  access `options/username.xml` file to read and modify user options.
+ *  access `options/{username}.xml` file (where {username} is a person
+ *  name from `people.xml`) to read and modify user options.
  *  Also some mechanism should be invented to allow user to change this
  *  options.
  * @checkstyle JavadocMethodCheck (500 lines)
