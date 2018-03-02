@@ -56,6 +56,121 @@ One of the stakeholders will find that claim and reply to it. To read the
 claim we use `com.zerocracy.pm.ClaimIn`, which helps proceeding the XML. To
 generate a claim we use `com.zerocracy.pm.ClaimOut`.
 
+## Farm, Project, Item
+
+A **farm** is collection of projects.
+A **project** is a collection of items.
+An **item** is just a file, in most cases in XML format.
+
+For example, in order to assign a `DEV` role to @yegor256 in `C63314D6Z`, we
+should do this (provided, we already have the `farm`):
+
+```java
+Project project = farm.find("@id='C63314D6Z'").get(0);
+try (Item item = project.acq("roles.xml")) {
+  new Xocument(item).modify(
+    new Directives()
+      .xpath("/roles/people[@id='yegor256']")
+      .add("role")
+      .set("DEV")
+  );
+}
+```
+
+Here, we use `find()` in order to retrieve a list of projects by the
+provided XPath term `@id='C63314D6Z'`. They will be found inside `people.xml`
+and returned, if found. If a project is not found, it will be created
+by `find()`.
+
+Then, we use `acq()` to find and lock the file `roles.xml` in the project.
+Until `item.close()` is called, no other thread will be able to acquire
+any file in the project.
+
+Then, we modify the file using `Xocument`, which is a helper created
+exactly for XML reading and modifications of items. We provide it a list
+of [Xembly](https://github.com/yegor256/xembly) directives and it
+applies them to the XML document. It takes care about versioning and XSD
+validation.
+
+## Stakeholders
+
+A **stakeholder** is a software module (object of interface `Stakeholder`)
+that consumes claims. As soon
+as a new claims shows up in `claims.xml`, the classes from
+`com.zerocracy.farm.reactive` try to send it to all known stakeholders. We
+write them in [Groovy](http://groovy-lang.org/) and keep in
+`com.zerocracy.stk` package. For example, this stakeholder may react to
+a claim that requests to assign a new role to a user in a project:
+
+```groovy
+def exec(Project project, XML xml) {
+  new Assume(project, xml).notPmo()
+  new Assume(project, xml).type('Assign role')
+  new Assume(project, xml).roles('ARC', 'PO')
+  ClaimIn claim = new ClaimIn(xml)
+  String login = claim.param('login')
+  String role = claim.param('role')
+  new Roles(project).bootstrap().assign(login, role)
+  claim.copy()
+    .type('Role was assigned')
+    .postTo(project)
+  claim.reply(
+    new Par('Role %s was assigned to @%s').say(role, login)
+  ).postTo(project)
+```
+
+First, we use `Assume` in order to filter out incoming claims that we don't
+need. Remember, each stakeholder receives all claims in a project. This
+particular stakeholder needs just one claim of type `"Assign role"`. We
+also allow only the architect (`ARC`) and the product owner (`PO`) to send
+those role-assigning claims.
+
+Then, we create a very convenient helper class `ClaimIn`, which is designed
+to simplify our work with the incoming XML claim.
+
+Then, we take `login` and `role` out of the claim. They are the parameters
+of the claim.
+
+Then, we do the actual work of assigning the role to the user. Pay attention
+to the `.bootstrap()` call on `Roles`. It is important to always call
+those `boostrap()` methods on all data-representing objects, in order to ensure
+that the XML documents they represent are fully ready.
+
+Next, we create a new claim and post back to the project. We use `.copy()`
+in order to copy the incoming claim entirely. The outcoming claim of
+type `"Role was assigned"` will contain the same set of parameters as the
+incoming one had.
+
+Then, we reply to the original claim with a user-friendly message. If the
+incoming claim had an author (a real user), that user will receive a message,
+either in Telegram, or Slack or wherever that claim was submitted.
+
+Pay attention to the class `Par` we are using in order to format the message.
+This class is supposed to be used everywhere, since it formats the text
+correctly for all possible output devices and messengers.
+
+## Radars
+
+There are a number of entry points, where users can communicate with our
+chat bots, they are all implemented in `com.zerocracy.radars.*` packages. Each
+bot has its own implementation details, because systems are very different
+(Telegram, Slack, GitHub, etc.). The common part is the `Question` class,
+that parses the questions and translates them to claims.
+
+## Objects
+
+"Data-representing" objects stay in `com.zerocracy.pm` and `com.zerocracy.pmo`
+packages. They mostly represent XML documents from the storage, one class
+per document, e.g. `Boosts` for `boosts.xml` or `Roles` for `roles.xml`.
+They all are pretty straight-forward XML manipulators, where
+[jcabi-xml](https://github.com/jcabi/jcabi-xml) is used for XML reading
+and [Xembly](https://github.com/yegor256/xembly) for XML modifications.
+
+Validations are also supposed to happen in these objects. The majority
+of data problems will be filtered out by XSD Schemas, but not all of them.
+Sometimes we need Java to do the work of data validating. If it's needed,
+we try to validate the data in data-representing objects.
+
 ## How to contribute
 
 Just fork it, make changes, run `mvn clean install -Pqulice`, and submit

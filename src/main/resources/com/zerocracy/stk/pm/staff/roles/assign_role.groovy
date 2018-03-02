@@ -57,7 +57,6 @@ def exec(Project project, XML xml) {
     ).say(role, login, project.pid())
     claim.copy()
       .type('Role was assigned')
-      .param('login', login)
       .param('role', role)
       .postTo(project)
   }
@@ -65,7 +64,6 @@ def exec(Project project, XML xml) {
     Cash rate = new Cash.S(claim.param('rate'))
     claim.copy()
       .type('Change user rate')
-      .param('login', login)
       .param('rate', rate)
       .postTo(project)
   } else {
