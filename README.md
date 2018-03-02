@@ -92,6 +92,21 @@ of [Xembly](https://github.com/yegor256/xembly) directives and it
 applies them to the XML document. It takes care about versioning and XSD
 validation.
 
+## PMO
+
+PMO (project management office) is a project with a special status. It has
+its own set of items, own XSD schemas, everything on its own. We keep
+system information there, like list of all users (`people.xml`),
+list of all projects (`catalog.xml`), user awards (`awards/<uid>.xml`), etc.
+
+The best way to get access to PMO is through class `Pmo`, having an instance
+of a farm. For example, in a Groovy stakeholder:
+
+```groovy
+Farm farm = binding.variables.farm
+Project pmo = new Pmo(farm)
+```
+
 ## Stakeholders
 
 A **stakeholder** is a software module (object of interface `Stakeholder`)
@@ -117,6 +132,7 @@ def exec(Project project, XML xml) {
   claim.reply(
     new Par('Role %s was assigned to @%s').say(role, login)
   ).postTo(project)
+}
 ```
 
 First, we use `Assume` in order to filter out incoming claims that we don't
@@ -149,14 +165,6 @@ Pay attention to the class `Par` we are using in order to format the message.
 This class is supposed to be used everywhere, since it formats the text
 correctly for all possible output devices and messengers.
 
-## Radars
-
-There are a number of entry points, where users can communicate with our
-chat bots, they are all implemented in `com.zerocracy.radars.*` packages. Each
-bot has its own implementation details, because systems are very different
-(Telegram, Slack, GitHub, etc.). The common part is the `Question` class,
-that parses the questions and translates them to claims.
-
 ## Objects
 
 "Data-representing" objects stay in `com.zerocracy.pm` and `com.zerocracy.pmo`
@@ -170,6 +178,37 @@ Validations are also supposed to happen in these objects. The majority
 of data problems will be filtered out by XSD Schemas, but not all of them.
 Sometimes we need Java to do the work of data validating. If it's needed,
 we try to validate the data in data-representing objects.
+
+## Bundles
+
+In order to integrate and test the entire system we have a collection of
+"bundles" in `com.zerocracy.bundles` package,
+which are simulators of real projects. Each bundle is a collection
+of files, which we place into a fake project and run claims dispatcher,
+just like it would happen in a real project. `BundlesTest` does this.
+
+In order to create a new bundle you just copy an existing one and edit
+its files. The key file, of course, is the `claims.xml`, which contains
+the list of claims to be dispatched. There are also a few supplementary files:
+
+  * `_before.groovy` is a stakeholder that is called right before
+    all claims are dispatched; obviously, it doesn't receive anything
+    meaningful as an XML input.
+
+  * `_after.groovy` is a stakeholder that is called right after
+    all claims are dispatched.
+
+  * `_setup.xml` is a configuration file with information for `BundlesTest`;
+    setting `/setup/pmo` to `true` will make sure that dispatching happens
+    with a PMO project, not a regular one.
+
+## Radars
+
+There are a number of entry points, where users can communicate with our
+chat bots, they are all implemented in `com.zerocracy.radars.*` packages. Each
+bot has its own implementation details, because systems are very different
+(Telegram, Slack, GitHub, etc.). The common part is the `Question` class,
+that parses the questions and translates them to claims.
 
 ## How to contribute
 
