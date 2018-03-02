@@ -36,7 +36,7 @@ def exec(Project project, XML xml) {
   Integer current = awards.total()
   if (current <= new Policy().get('44.threshold', -256)) {
     People people = new People(farm).bootstrap()
-    people.remove(login)
+    people.breakup(login)
     claim.copy()
       .token("user;${login}")
       .param(

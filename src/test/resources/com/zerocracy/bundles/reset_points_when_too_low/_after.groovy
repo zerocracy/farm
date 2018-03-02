@@ -27,8 +27,8 @@ import org.hamcrest.Matchers
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   MatcherAssert.assertThat(
-    new People(farm).bootstrap().find('github', 'yegor256'),
-    Matchers.emptyIterable()
+    new People(farm).bootstrap().hasMentor('yegor256'),
+    Matchers.is(false)
   )
   MatcherAssert.assertThat(
     new Awards(farm, 'yegor256').bootstrap().total(),
