@@ -124,6 +124,7 @@ public final class SlackRadar implements AutoCloseable {
                 }
             }
         }
+        Logger.info(this, "Slack radar refreshed");
     }
 
     @Override

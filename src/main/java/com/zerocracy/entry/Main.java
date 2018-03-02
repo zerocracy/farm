@@ -17,6 +17,7 @@
 package com.zerocracy.entry;
 
 import com.jcabi.aspects.Loggable;
+import com.jcabi.log.Logger;
 import com.zerocracy.Farm;
 import com.zerocracy.farm.S3Farm;
 import com.zerocracy.farm.SmartFarm;
@@ -94,6 +95,7 @@ public final class Main {
                 )
             );
         }
+        Logger.info(this, "Farm is ready to start");
         try (
             final Farm farm = new SmartFarm(
                 new S3Farm(new ExtBucket().value(), temp)

@@ -16,6 +16,7 @@
  */
 package com.zerocracy.entry;
 
+import com.jcabi.log.Logger;
 import com.zerocracy.Farm;
 import com.zerocracy.radars.telegram.TmZerocrat;
 import org.cactoos.Scalar;
@@ -43,6 +44,7 @@ public final class ExtTelegram implements Scalar<TmZerocrat> {
                     ApiContextInitializer.init();
                     final TmZerocrat bot = new TmZerocrat(frm);
                     new TelegramBotsApi().registerBot(bot);
+                    Logger.info(ExtTelegram.class, "Telegram bot registered");
                     return bot;
                 }
             )

@@ -19,6 +19,7 @@ package com.zerocracy.entry;
 import com.github.mongobee.Mongobee;
 import com.github.mongobee.exception.MongobeeException;
 import com.github.zafarkhaja.semver.Version;
+import com.jcabi.log.Logger;
 import com.mongodb.MongoClient;
 import com.zerocracy.Farm;
 import java.io.IOException;
@@ -75,6 +76,7 @@ public final class ExtMongobee {
         } catch (final MongobeeException ex) {
             throw new IOException(ex);
         }
+        Logger.info(this, "MongoDB updated");
     }
 
 }
