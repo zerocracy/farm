@@ -33,7 +33,7 @@ def exec(Project project, XML xml) {
     if (claim.hasAuthor() && roles.hasRole(claim.author(), 'ARC')) {
         claim.copy()
             .type('Make payment')
-            .param("login", claim.author())
+            .param('login', claim.author())
             .param(
                 'reason',
                 new Par('Boosting tasks is against our principles, see §15').say()

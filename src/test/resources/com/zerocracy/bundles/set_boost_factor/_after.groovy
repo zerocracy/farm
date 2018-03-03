@@ -18,7 +18,6 @@ package com.zerocracy.bundles.set_boost_factor
 
 import com.jcabi.xml.XML
 import com.zerocracy.Project
-import com.zerocracy.farm.Assume
 import com.zerocracy.pm.cost.Boosts
 import com.zerocracy.pmo.Awards
 import com.zerocracy.pmo.Pmo

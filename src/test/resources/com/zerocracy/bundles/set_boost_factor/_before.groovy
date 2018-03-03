@@ -23,7 +23,6 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.entry.ExtGithub
-import com.zerocracy.pm.cost.Boosts
 import com.zerocracy.pm.staff.Roles
 
 def exec(Project project, XML xml) {
@@ -31,7 +30,7 @@ def exec(Project project, XML xml) {
   Github github = new ExtGithub(farm).value()
   Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
   repo.issues().create('Waiting', '')
-  new Roles(project).bootstrap().assign("yegor256", "ARC")
+  new Roles(project).bootstrap().assign('yegor256', 'ARC')
 }
 
 
