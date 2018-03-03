@@ -38,19 +38,20 @@ def exec(Project project, XML xml) {
     if (people.vacation(uid)) {
       continue
     }
-    if (new Awards(farm, uid).bootstrap().total() < min) {
+    int reputation = new Awards(farm, uid).bootstrap().total()
+    if (reputation < min) {
       continue
     }
     String tail
     if (min == 0) {
       tail = new Par(
-        'You received this message you are not on vacation, as in §38.'
+        'You received this message because you are not on vacation, as in §38'
       ).say()
     } else {
       tail = new Par(
-        'You received this message because your reputation is over %d',
-        'and you are not on vacation, as in §38.'
-      ).say(min)
+        'You received this message because your reputation %+d is over %+d',
+        'and you are not on vacation, as in §38'
+      ).say(reputation, min)
     }
     claim.copy()
       .type('Notify user')

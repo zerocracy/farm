@@ -75,9 +75,12 @@ public final class TkJoin implements TkRegex {
         new ClaimOut().type("Notify all").param(
             "message", new Par(
                 "A new user @%s (%s) would like to join us and needs a mentor;",
-                "you can get in touch with him/her (%s) to discuss;",
-                "if you become a mentor, you may earn some extra income;",
-                "[StackOverflow](https://stackoverflow.com/users/%d];",
+                "you can get in touch with him/her",
+                "(telegram: `%s`) to discuss;",
+                "if you become a mentor, you may earn",
+                "some extra income, see §45;",
+                "here is [StackOverflow](https://stackoverflow.com/users/%d)",
+                "profile of the user;",
                 "this is the message the user left for us: %s"
             ).say(author, personality, telegram, stko, about)
         // @checkstyle MagicNumber (1 line)

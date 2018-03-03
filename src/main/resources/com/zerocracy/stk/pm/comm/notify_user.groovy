@@ -48,6 +48,8 @@ def exec(Project project, XML xml) {
       claim.copy()
         .type('Notify in Slack')
         .token("slack;${it};${login};${uid}")
+        .param('login', uid)
+        .param('slack_login', login)
         .postTo(project)
     }
   }
@@ -55,6 +57,7 @@ def exec(Project project, XML xml) {
     claim.copy()
       .type('Notify in Telegram')
       .token("telegram;${uid}")
+      .param('login', uid)
       .postTo(project)
   }
 }

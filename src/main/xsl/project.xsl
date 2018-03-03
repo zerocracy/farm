@@ -27,7 +27,16 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="page" mode="inner">
     <p>
-      <img src="/badge/{project}.svg"/>
+      <xsl:choose>
+        <xsl:when test="project = 'PMO'">
+          <strong>
+            <xsl:text>PMO</xsl:text>
+          </strong>
+        </xsl:when>
+        <xsl:otherwise>
+          <img src="/badge/{project}.svg"/>
+        </xsl:otherwise>
+      </xsl:choose>
     </p>
     <xsl:if test="pause = 'true'">
       <p>
