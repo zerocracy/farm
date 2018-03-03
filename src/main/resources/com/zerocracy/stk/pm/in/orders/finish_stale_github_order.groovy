@@ -34,7 +34,7 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
   Orders orders = new Orders(project).bootstrap()
-  Date threshold = new Date().minus(5)
+  Date threshold = new Date() - 5
   ClaimIn claim = new ClaimIn(xml)
   int done = 0
   for (String job : orders.iterate()) {
