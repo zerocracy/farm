@@ -103,7 +103,7 @@ def exec(Project project, XML xml) {
         .param(
           'message',
           new Par(
-            'We are very sorry, but we failed to pay you %s for %s: "%s";',
+            'We are very sorry, but we failed to charge you %s for %s: "%s";',
             'this amount was added to the list of payments we owe you;',
             'we will try to send them all together very soon;',
             'we will keep you informed, see §20'

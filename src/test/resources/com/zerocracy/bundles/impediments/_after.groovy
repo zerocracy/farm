@@ -24,7 +24,7 @@ import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 
 /**
- * @todo #447:30min register_impediment stakeholder should pay attention
+ * @todo #447:30min register_impediment stakeholder should charge attention
  *  to impediment count requested by user and not allow to register new
  *  impediments if threshold has been reached. See #447 comments for details.
  */

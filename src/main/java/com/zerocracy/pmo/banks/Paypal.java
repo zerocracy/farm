@@ -121,7 +121,7 @@ final class Paypal implements Bank {
             | HttpErrorException | IOException ex) {
             throw new IOException(
                 String.format(
-                    "Failed to pay %s to %s with memo \"%s\": %s %s",
+                    "Failed to charge %s to %s with memo \"%s\": %s %s",
                     amount, target, details,
                     ex.getClass().getName(), ex.getMessage()
                 ),
@@ -133,7 +133,7 @@ final class Paypal implements Bank {
     /**
      * Make a request.
      * @param email Email
-     * @param amount Amount to pay, in USD
+     * @param amount Amount to charge, in USD
      * @param memo Memo
      * @return Request
      * @throws IOException If fails
@@ -207,7 +207,7 @@ final class Paypal implements Bank {
                 );
             }
             throw new IOException(
-                String.format("Failed to pay through PayPal: %s", msgs)
+                String.format("Failed to charge through PayPal: %s", msgs)
             );
         }
         if (response.getResponseEnvelope().getAck() != AckCode.SUCCESS) {

@@ -54,12 +54,17 @@ SOFTWARE.
       <strong>
         <xsl:value-of select="count(user[awards &gt; 256])"/>
       </strong>
-      <xsl:text> active users, +</xsl:text>
+      <xsl:text> </xsl:text>
+      <span style="color:darkgreen">
+        <xsl:text>active</xsl:text>
+      </span>
+      <xsl:text> users, +</xsl:text>
       <strong>
         <xsl:value-of select="sum(user/awards)"/>
       </strong>
       <xsl:text> total reputation (</xsl:text>
       <strong>
+        <xsl:text>+</xsl:text>
         <xsl:value-of select="format-number(sum(user/awards) div count(user) div 90,'0')"/>
       </strong>
       <xsl:text> per user daily).</xsl:text>

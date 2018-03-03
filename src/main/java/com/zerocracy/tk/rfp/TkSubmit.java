@@ -63,7 +63,7 @@ public final class TkSubmit implements Take {
         if (!rfps.exists(user)) {
             throw new RsForward(
                 new RsParFlash(
-                    new Par("You have to pay first, see §41").say(),
+                    new Par("You have to charge first, see §41").say(),
                     Level.WARNING
                 ),
                 "/rfp"

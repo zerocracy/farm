@@ -16,6 +16,7 @@
  */
 package com.zerocracy.entry;
 
+import com.jcabi.log.VerboseRunnable;
 import com.jcabi.log.VerboseThreads;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
@@ -67,20 +68,29 @@ final class Pings {
      */
     public void start() {
         this.executor.scheduleWithFixedDelay(
-            new RunnableOf<>(
-                (Proc<Void>) input -> this.post("Ping")
+            new VerboseRunnable(
+                new RunnableOf<>(
+                    (Proc<Void>) input -> this.post("Ping")
+                ),
+                true, true
             ),
             1L, 1L, TimeUnit.MINUTES
         );
         this.executor.scheduleWithFixedDelay(
-            new RunnableOf<>(
-                (Proc<Void>) input -> this.post("Ping hourly")
+            new VerboseRunnable(
+                new RunnableOf<>(
+                    (Proc<Void>) input -> this.post("Ping hourly")
+                ),
+                true, true
             ),
             1L, 1L, TimeUnit.HOURS
         );
         this.executor.scheduleWithFixedDelay(
-            new RunnableOf<>(
-                (Proc<Void>) input -> this.post("Ping daily")
+            new VerboseRunnable(
+                new RunnableOf<>(
+                    (Proc<Void>) input -> this.post("Ping daily")
+                ),
+                true, true
             ),
             1L, 1L, TimeUnit.DAYS
         );

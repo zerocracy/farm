@@ -195,7 +195,7 @@ public final class TkApp extends TkWrap {
                                                                 ),
                                                                 new FkRegex("/rfp", new TkRfp(farm)),
                                                                 new FkRegex("/rfps", new TkRfps(farm)),
-                                                                new FkRegex("/rfp-pay", new TkPrepay(farm)),
+                                                                new FkRegex("/rfp-charge", new TkPrepay(farm)),
                                                                 new FkRegex("/rfp-post", new TkSubmit(farm)),
                                                                 new FkRegex("/board", new TkBoard(farm)),
                                                                 new FkRegex("/gang", new TkGang(farm)),
@@ -242,7 +242,7 @@ public final class TkApp extends TkWrap {
                                                                     new TkEquity(farm)
                                                                 ),
                                                                 new FkRegex(
-                                                                    "/pay/(PMO|[A-Z0-9]{9})",
+                                                                    "/charge/(PMO|[A-Z0-9]{9})",
                                                                     new TkPay(farm)
                                                                 ),
                                                                 new FkRegex(
