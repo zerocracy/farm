@@ -179,7 +179,7 @@ public final class Rfps {
         final String email) throws IOException {
         if (this.exists(login)) {
             throw new IllegalArgumentException(
-                new Par("RFP exists already, no need to pay again").say()
+                new Par("RFP exists already, no need to charge again").say()
             );
         }
         try (final Item item = this.item()) {
@@ -214,7 +214,7 @@ public final class Rfps {
     public int post(final String login, final String sow) throws IOException {
         if (!this.exists(login)) {
             throw new IllegalArgumentException(
-                new Par("RFP doesn't exist, you need to pay first").say()
+                new Par("RFP doesn't exist, you need to charge first").say()
             );
         }
         try (final Item item = this.item()) {

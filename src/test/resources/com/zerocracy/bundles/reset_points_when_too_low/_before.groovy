@@ -23,11 +23,14 @@ import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.pmo.Awards
+import com.zerocracy.pmo.People
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
   github.repos().create(new Repos.RepoCreate('test', false))
+  People people = new People(farm).bootstrap()
+  people.invite('yegor256', '0crat')
   Awards awards = new Awards(farm, 'yegor256').bootstrap()
   awards.add(-500, 'gh:test/test#1', 'Test')
 }

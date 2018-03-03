@@ -76,12 +76,12 @@ public final class TkKyc implements TkRegex {
             .param("details", details)
             .param("system", "manual")
             .author(user)
-            .postTo(new Pmo(this.farm));
+            .postTo(this.farm);
         new ClaimOut().type("Notify PMO").param(
             "message", new Par(
                 "We just identified @%s as `%s` manually"
             ).say(login, details)
-        ).postTo(new Pmo(this.farm));
+        ).postTo(this.farm);
         new ClaimOut()
             .type("Notify user")
             .token(String.format("user;%s", login))
@@ -89,7 +89,7 @@ public final class TkKyc implements TkRegex {
                 "message",
                 new Par("We just identified you as `%s`").say(details)
             )
-            .postTo(new Pmo(this.farm));
+            .postTo(this.farm);
         return new RsForward(
             new RsParFlash(
                 new Par(

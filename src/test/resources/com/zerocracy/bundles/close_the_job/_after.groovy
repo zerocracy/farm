@@ -27,7 +27,7 @@ import org.hamcrest.Matchers
 /**
  * @todo #539:30min The ticket should be removed from WBS and performer
  *  should receive payment and awards only if ticket was closed by the reporter,
- *  ARC or PO. In other cases we should say "sorry, we won't pay".
+ *  ARC or PO. In other cases we should say "sorry, we won't charge".
  *  So let's provide who close an issue in claim params in `RbOnClose`
  *  and check it in 'Close job' and 'Remove job from WBS' scripts, then
  *  commented tests will be worked. Also policy have to be updated.

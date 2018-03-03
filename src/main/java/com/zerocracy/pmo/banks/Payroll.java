@@ -67,8 +67,8 @@ public final class Payroll {
     /**
      * Pay to someone.
      * @param ledger The ledger to use
-     * @param login The login to pay
-     * @param amount The amount to pay
+     * @param login The login to charge
+     * @param amount The amount to charge
      * @param reason The reason
      * @return Payment receipt (short summary of the payment)
      * @throws IOException If fails
@@ -91,8 +91,9 @@ public final class Payroll {
         if (wallet.isEmpty()) {
             throw new SoftException(
                 new Par(
-                    "@%s doesn't have payment method configured, we can't pay"
-                ).say(login)
+                    "@%s doesn't have payment method configured;",
+                    "we can't charge %s"
+                ).say(login, amount)
             );
         }
         final String method = people.bank(login);

@@ -20,9 +20,11 @@ import com.jcabi.xml.XML;
 import com.mongodb.MongoClient;
 import com.mongodb.client.model.Filters;
 import com.zerocracy.Farm;
+import com.zerocracy.Item;
 import com.zerocracy.Project;
 import com.zerocracy.RunsInThreads;
 import com.zerocracy.farm.fake.FkFarm;
+import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.farm.sync.SyncFarm;
 import com.zerocracy.pm.ClaimOut;
@@ -30,9 +32,16 @@ import com.zerocracy.pm.Claims;
 import com.zerocracy.pm.Footprint;
 import com.zerocracy.pmo.Pmo;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.bson.BsonDocument;
+import org.bson.BsonString;
+import org.cactoos.io.LengthOf;
+import org.cactoos.io.TeeInput;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.xembly.Directives;
+import org.xembly.Xembler;
 
 /**
  * Test case for {@link ExtMongo}.
@@ -44,6 +53,34 @@ import org.junit.Test;
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class ExtMongoTest {
+
+    @Test
+    @Ignore
+    public void connectsToProduction() throws Exception {
+        final Project project = new FkProject();
+        try (final Item item = project.acq("_props.xml")) {
+            new LengthOf(
+                new TeeInput(
+                    new Xembler(
+                        new Directives().add("props").add("mongo")
+                            .add("host").set("ds253918.mlab.com").up()
+                            .add("port").set("53918").up()
+                            .add("user").set("admin").up()
+                            .add("password").set("---").up()
+                            .add("dbname").set("footprint").up()
+                    ).xmlQuietly(),
+                    item.path()
+                )
+            ).value();
+        }
+        final MongoClient client = new ExtMongo(new FkFarm(project)).value();
+        MatcherAssert.assertThat(
+            client.getDatabase("footprint").runCommand(
+                new BsonDocument("buildinfo", new BsonString(""))
+            ).get("version").toString(),
+            Matchers.equalTo("3.5")
+        );
+    }
 
     @Test
     public void createsMongo() throws Exception {

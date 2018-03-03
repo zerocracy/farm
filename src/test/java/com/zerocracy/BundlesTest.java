@@ -69,6 +69,33 @@ import org.reflections.scanners.ResourcesScanner;
 
 /**
  * Test case for all bundles.
+ *
+ * <p>The concept of "bundles" is explained in the README.md. Each bundle
+ * is a simulation of a real project, with some (!) items inside. Not
+ * all items are present in each project, just some of them, which
+ * are necessary for a particular testing scenario. All bundles
+ * stay in {@code src/test/resources/com/zerocracy/bundles}.</p>
+ *
+ * <p>Here is how this test works. First, it copies all items into
+ * {@code target/testing-bundles/[PID]} and into
+ * {@code target/testing-bundles/PMO}. The first directory will
+ * contain items for the project, the second one for the PMO during
+ * the test.</p>
+ *
+ * <p>Before starting the test, {@code _before.groovy} runs, where
+ * you can access the project an the PMO via {@code binding.variables}.
+ * The best way to learn how it works is to study existing bundles.
+ * After the tests are successfully completed,
+ * {@code _after.groovy} runs.</p>
+ *
+ * <p>Logging is turned off by default. You can turn it on at
+ * {@code src/test/resources/log4j.properties}
+ * (see the instructions inside). Don't forget to turn it off before
+ * commit.</p>
+ *
+ * <p>This video should help you understand how to run these tests
+ * one by one: https://www.youtube.com/watch?v=oWEN-vKEEYk</p>
+ *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.11

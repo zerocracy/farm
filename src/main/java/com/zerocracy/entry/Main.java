@@ -17,6 +17,7 @@
 package com.zerocracy.entry;
 
 import com.jcabi.aspects.Loggable;
+import com.jcabi.log.Logger;
 import com.zerocracy.Farm;
 import com.zerocracy.farm.S3Farm;
 import com.zerocracy.farm.SmartFarm;
@@ -31,6 +32,7 @@ import io.sentry.Sentry;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.cactoos.func.AsyncFunc;
 import org.takes.facets.fork.FkRegex;
 import org.takes.facets.fork.TkMethods;
 import org.takes.http.Exit;
@@ -62,10 +64,31 @@ public final class Main {
      * Main.
      * @param args Command line arguments
      * @throws IOException If fails on I/O
+     * @checkstyle IllegalCatchCheck (20 lines)
      */
     @Loggable
+    @SuppressWarnings("PMD.AvoidCatchingThrowable")
     public static void main(final String... args) throws IOException {
-        new Main(args).exec();
+        final Props props = new Props();
+        if (props.has("//testing")) {
+            throw new IllegalStateException(
+                "Hey, we are in the testing mode!"
+            );
+        }
+        Sentry.init(props.get("//sentry/dsn", ""));
+        final long start = System.currentTimeMillis();
+        try {
+            new Main(args).exec();
+        } catch (final Throwable ex) {
+            Sentry.capture(ex);
+            Logger.error(Main.class, "The main app crashed: %[exception]s", ex);
+            throw new IOException(ex);
+        } finally {
+            Logger.info(
+                Main.class, "Finished after %[ms]s of activity",
+                System.currentTimeMillis() - start
+            );
+        }
     }
 
     /**
@@ -74,13 +97,6 @@ public final class Main {
      */
     @SuppressWarnings("unchecked")
     public void exec() throws IOException {
-        final Props props = new Props();
-        if (props.has("//testing")) {
-            throw new IllegalStateException(
-                "Hey, we are in the testing mode!"
-            );
-        }
-        Sentry.init(props.get("//sentry/dsn", ""));
         final Path temp = Paths.get("./s3farm").normalize();
         if (!temp.toFile().mkdir()) {
             throw new IllegalStateException(
@@ -89,6 +105,7 @@ public final class Main {
                 )
             );
         }
+        Logger.info(this, "Farm is ready to start");
         try (
             final Farm farm = new SmartFarm(
                 new S3Farm(new ExtBucket().value(), temp)
@@ -97,7 +114,11 @@ public final class Main {
         ) {
             new ExtMongobee(farm).apply();
             new ExtTelegram(farm).value();
-            radar.refresh();
+            new AsyncFunc<>(
+                input -> {
+                    radar.refresh();
+                }
+            ).exec(null);
             new GithubRoutine(farm).start();
             new Pings(farm).start();
             new FtCli(

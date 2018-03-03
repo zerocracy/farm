@@ -14,36 +14,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pmo.banks;
-
-import com.zerocracy.cash.Cash;
-import java.io.IOException;
+package com.zerocracy.pmo;
 
 /**
- * Paypal payment method.
- *
+ * Test case for {@link Options}.
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.19
+ * @since 0.21
+ * @todo #258:30min Options are not implemented. We should be able to
+ *  access `options/{username}.xml` file (where {username} is a person
+ *  name from `people.xml`) to read and modify user options.
+ *  Also some mechanism should be invented to allow user to change this
+ *  options.
+ * @checkstyle JavadocMethodCheck (500 lines)
  */
-interface Bank {
-
-    /**
-     * Calculate payment commission.
-     * @param amount The amount
-     * @return Fee amount
-     * @throws IOException If fails
-     */
-    Cash fee(Cash amount) throws IOException;
-
-    /**
-     * Pay.
-     * @param target The target to charge to
-     * @param amount The amount to charge
-     * @param details Payment details
-     * @return Payment ID
-     * @throws IOException If fails
-     */
-    String pay(String target, Cash amount, String details) throws IOException;
-
+public final class OptionsTest {
 }

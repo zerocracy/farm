@@ -66,9 +66,7 @@ public final class SlackRadar implements AutoCloseable {
                     new ReLogged<>(
                         new ReNotMine(
                             new ReIfDirect(
-                                new ReIfAddressed(
-                                    new ReProfile()
-                                ),
+                                new ReProfile(),
                                 new ReIfAddressed(
                                     new ReProject()
                                 )
@@ -124,6 +122,7 @@ public final class SlackRadar implements AutoCloseable {
                 }
             }
         }
+        Logger.info(this, "Slack radar refreshed");
     }
 
     @Override

@@ -40,7 +40,7 @@ def exec(Project project, XML xml) {
     throw new SoftException(
       new Par(
         '@%s doesn\'t have a payment method configured yet,',
-        'we won\'t be able to pay them.',
+        'we won\'t be able to charge them.',
         'That\'s why the rate %s can\'t be set.'
       ).say(login, rate)
     )

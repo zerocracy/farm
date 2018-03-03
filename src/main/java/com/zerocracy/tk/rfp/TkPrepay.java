@@ -18,12 +18,12 @@ package com.zerocracy.tk.rfp;
 
 import com.zerocracy.Farm;
 import com.zerocracy.Par;
+import com.zerocracy.cash.Cash;
 import com.zerocracy.pm.ClaimOut;
-import com.zerocracy.pmo.Pmo;
 import com.zerocracy.pmo.Rfps;
+import com.zerocracy.pmo.Stripe;
 import com.zerocracy.tk.RqUser;
 import com.zerocracy.tk.RsParFlash;
-import com.zerocracy.tk.Stripe;
 import java.io.IOException;
 import java.util.logging.Level;
 import org.takes.Request;
@@ -72,10 +72,15 @@ public final class TkPrepay implements Take {
         }
         final RqFormSmart form = new RqFormSmart(new RqGreedy(req));
         final String email = form.single("email");
+        final Cash amount = new Cash.S(
+            String.format(
+                "$%.2f", Double.parseDouble(form.single("cents")) / 100.0d
+            )
+        );
         final String customer;
         try {
             customer = new Stripe(this.farm).pay(
-                form.single("token"), email, "RFP"
+                form.single("token"), email, amount, "RFP"
             );
         } catch (final Stripe.PaymentException ex) {
             throw new RsForward(new RsParFlash(ex), "/rfp");
@@ -87,7 +92,7 @@ public final class TkPrepay implements Take {
             "message", new Par(
                 "RFP #%d has been paid by @%s: %s"
             ).say(rid, user, email)
-        ).postTo(new Pmo(this.farm));
+        ).postTo(this.farm);
         return new RsForward(
             new RsParFlash(
                 new Par("The RFP #%d has been paid, thanks").say(rid),

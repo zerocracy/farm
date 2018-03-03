@@ -20,6 +20,7 @@ import com.jcabi.xml.XMLDocument;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.Farm;
+import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.radars.ClaimOnQuestion;
 import com.zerocracy.radars.Question;
@@ -47,8 +48,13 @@ public final class ReProject implements Reaction<SlackMessagePosted> {
             event.getMessageContent().trim().split("\\s+", 2)[1].trim()
         );
         final Project project = new SkProject(farm, event);
-        // @checkstyle LineLength (1 line)
-        new ClaimOnQuestion(question, "Remember, this chat is for managing a project; to manage your personal profile, please open a private chat with the bot.")
+        final String tail = new Par(
+            farm,
+            "Remember, this chat is for managing project %s;",
+            "to manage your personal profile,",
+            "please open a private chat with the bot."
+        ).say(project.pid());
+        new ClaimOnQuestion(question, tail)
             .claim()
             .token(new SkToken(event))
             .author(new SkPerson(farm, event).uid())

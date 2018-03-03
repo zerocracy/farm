@@ -20,7 +20,6 @@ import com.zerocracy.Farm;
 import com.zerocracy.Par;
 import com.zerocracy.Policy;
 import com.zerocracy.pm.ClaimOut;
-import com.zerocracy.pmo.Pmo;
 import com.zerocracy.pmo.Rfps;
 import com.zerocracy.tk.RqUser;
 import com.zerocracy.tk.RsParFlash;
@@ -64,7 +63,7 @@ public final class TkSubmit implements Take {
         if (!rfps.exists(user)) {
             throw new RsForward(
                 new RsParFlash(
-                    new Par("You have to pay first, see §41").say(),
+                    new Par("You have to charge first, see §41").say(),
                     Level.WARNING
                 ),
                 "/rfp"
@@ -91,7 +90,7 @@ public final class TkSubmit implements Take {
                     ).say(rid)
                 )
                 .param("min", new Policy().get("40.min", 0))
-                .postTo(new Pmo(this.farm));
+                .postTo(this.farm);
         }
         return new RsForward(
             new RsParFlash(

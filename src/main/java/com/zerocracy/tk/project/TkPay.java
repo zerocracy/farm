@@ -21,11 +21,9 @@ import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.pm.ClaimOut;
-import com.zerocracy.pmo.Catalog;
-import com.zerocracy.pmo.Pmo;
+import com.zerocracy.pmo.Stripe;
 import com.zerocracy.tk.RqUser;
 import com.zerocracy.tk.RsParFlash;
-import com.zerocracy.tk.Stripe;
 import java.io.IOException;
 import java.util.logging.Level;
 import org.takes.Response;
@@ -64,23 +62,6 @@ public final class TkPay implements TkRegex {
         final Project project = new RqProject(this.farm, req, "PO");
         final RqFormSmart form = new RqFormSmart(new RqGreedy(req));
         final String email = form.single("email");
-        final String customer;
-        try {
-            customer = new Stripe(this.farm).pay(
-                form.single("token"),
-                email,
-                String.format(
-                    "%s/%s",
-                    project.pid(),
-                    new Catalog(this.farm).title(project.pid())
-                )
-            );
-        } catch (final Stripe.PaymentException ex) {
-            throw new RsForward(
-                new RsParFlash(ex),
-                String.format("/p/%s", project.pid())
-            );
-        }
         final Cash amount = new Cash.S(
             String.format(
                 "USD %.2f",
@@ -88,25 +69,45 @@ public final class TkPay implements TkRegex {
                 Double.parseDouble(form.single("cents")) / 100.0d
             )
         );
+        final Stripe stripe = new Stripe(this.farm);
+        final String customer;
+        final String pid;
+        try {
+            customer = stripe.register(
+                form.single("token"), email
+            );
+            pid = stripe.charge(
+                customer, amount,
+                new Par(this.farm, "Project %s funded").say(project.pid())
+            );
+        } catch (final Stripe.PaymentException ex) {
+            throw new RsForward(
+                new RsParFlash(ex),
+                String.format("/p/%s", project.pid())
+            );
+        }
         final String user = new RqUser(this.farm, req).value();
         new ClaimOut()
             .type("Funded by Stripe")
             .param("amount", amount)
             .param("stripe_customer", customer)
+            .param("payment_id", pid)
             .param("email", email)
             .author(user)
             .postTo(project);
         new ClaimOut().type("Notify PMO").param(
             "message", new Par(
-                "Project %s was funded for %s by @%s"
-            ).say(project.pid(), amount, user)
-        ).postTo(new Pmo(this.farm));
+                "Project %s was funded for %s by @%s;",
+                "customer `%s`, payment `%s`"
+            ).say(project.pid(), amount, user, customer, pid)
+        ).postTo(this.farm);
         return new RsForward(
             new RsParFlash(
                 new Par(
-                    "The project %s was successfully funded for %s.",
-                    "The ledger will be updated in a few minutes."
-                ).say(project.pid(), amount),
+                    "The project %s was successfully funded for %s;",
+                    "the ledger will be updated in a few minutes;",
+                    "payment ID is `%s`"
+                ).say(project.pid(), amount, pid),
                 Level.INFO
             ),
             String.format("/p/%s", project.pid())

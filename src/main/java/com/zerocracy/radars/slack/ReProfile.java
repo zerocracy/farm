@@ -38,14 +38,18 @@ public final class ReProfile implements Reaction<SlackMessagePosted> {
     @Override
     public boolean react(final Farm farm, final SlackMessagePosted event,
         final SlackSession session) throws IOException {
-        final Question question = new Question(
-            new XMLDocument(
-                this.getClass().getResource(
-                    "/com/zerocracy/radars/q-profile.xml"
-                )
-            ),
-            event.getMessageContent().trim().split("\\s+", 2)[1].trim()
+        final String[] prts = event.getMessageContent().trim().split("\\s+", 2);
+        final XMLDocument qprofile = new XMLDocument(
+            this.getClass().getResource(
+                "/com/zerocracy/radars/q-profile.xml"
+            )
         );
+        final Question question;
+        if (prts.length == 2) {
+            question = new Question(qprofile, prts[1].trim());
+        } else {
+            question = new Question(qprofile, prts[0].trim());
+        }
         // @checkstyle LineLength (1 line)
         new ClaimOnQuestion(question, "Remember, this chat is for managing your personal profile; to manage a project, please open or create a new channel and invite the bot there.")
             .claim()

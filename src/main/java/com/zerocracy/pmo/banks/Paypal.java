@@ -34,9 +34,11 @@ import com.paypal.svcs.types.common.AckCode;
 import com.paypal.svcs.types.common.ErrorData;
 import com.paypal.svcs.types.common.RequestEnvelope;
 import com.zerocracy.Farm;
+import com.zerocracy.Par;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.cash.CashParsingException;
 import com.zerocracy.farm.props.Props;
+import com.zerocracy.pm.ClaimOut;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
@@ -99,16 +101,15 @@ final class Paypal implements Bank {
                 )
             )
         );
+        final PayResponse response;
+        final PayRequest request;
         try {
-            return Paypal.valid(
-                service.pay(
-                    this.request(
-                        target,
-                        amount.decimal().doubleValue(),
-                        details
-                    )
-                )
-            ).getPayKey();
+            request = this.request(
+                target,
+                amount.decimal().doubleValue(),
+                details
+            );
+            response = Paypal.valid(service.pay(request));
         } catch (final SSLConfigurationException
             | InvalidCredentialException
             | InvalidResponseDataException
@@ -119,19 +120,46 @@ final class Paypal implements Bank {
             | HttpErrorException | IOException ex) {
             throw new IOException(
                 String.format(
-                    "Failed to pay %s to %s with memo \"%s\": %s %s",
+                    "Failed to charge %s to %s with memo \"%s\": %s %s",
                     amount, target, details,
                     ex.getClass().getName(), ex.getMessage()
                 ),
                 ex
             );
         }
+        new ClaimOut().type("Notify PMO").param(
+            "message",
+            new Par(
+                "PayPal payment has been sent;",
+                "Sender=%s, Receiver=%s,",
+                "Memo=\"%s\",",
+                "Amount=%s, Currency=%s,",
+                "TrackingId=%s",
+                "Ack=%s, PayKey=%s, PaymentExecStatus=%s,",
+                "Build=%s, CorrelationId=%s,",
+                "Timestamp=%s"
+            ).say(
+                request.getSenderEmail(),
+                request.getReceiverList().getReceiver().get(0).getEmail(),
+                request.getMemo(),
+                request.getReceiverList().getReceiver().get(0).getAmount(),
+                request.getCurrencyCode(),
+                request.getTrackingId(),
+                response.getResponseEnvelope().getAck().getValue(),
+                response.getPayKey(),
+                response.getPaymentExecStatus(),
+                response.getResponseEnvelope().getBuild(),
+                response.getResponseEnvelope().getCorrelationId(),
+                response.getResponseEnvelope().getTimestamp()
+            )
+        ).postTo(this.farm);
+        return response.getPayKey();
     }
 
     /**
      * Make a request.
      * @param email Email
-     * @param amount Amount to pay, in USD
+     * @param amount Amount to charge, in USD
      * @param memo Memo
      * @return Request
      * @throws IOException If fails
@@ -169,17 +197,6 @@ final class Paypal implements Bank {
      */
     private static PayResponse valid(final PayResponse response)
         throws IOException {
-        Logger.info(
-            Paypal.class,
-            // @checkstyle LineLength (1 line)
-            "Envelope/Ack=%s, PayKey=%s, PaymentExecStatus=%s, Envelope/Build=%s, Envelope/CorrelationId=%s, Envelope/Timestamp=%s",
-            response.getResponseEnvelope().getAck().getValue(),
-            response.getPayKey(),
-            response.getPaymentExecStatus(),
-            response.getResponseEnvelope().getBuild(),
-            response.getResponseEnvelope().getCorrelationId(),
-            response.getResponseEnvelope().getTimestamp()
-        );
         final Collection<ErrorData> errors = response.getError();
         if (!errors.isEmpty()) {
             final Collection<String> msgs = new LinkedList<>();
@@ -198,7 +215,7 @@ final class Paypal implements Bank {
                 );
             }
             throw new IOException(
-                String.format("Failed to pay through PayPal: %s", msgs)
+                String.format("Failed to charge through PayPal: %s", msgs)
             );
         }
         if (response.getResponseEnvelope().getAck() != AckCode.SUCCESS) {
@@ -206,6 +223,14 @@ final class Paypal implements Bank {
                 String.format(
                     "PayPal ACK code is not SUCCESS: %s",
                     response.getResponseEnvelope().getAck()
+                )
+            );
+        }
+        if (!"COMPLETED".equals(response.getPaymentExecStatus())) {
+            throw new IOException(
+                String.format(
+                    "PayPal exec status is not COMPLETED: %s",
+                    response.getPaymentExecStatus()
                 )
             );
         }
