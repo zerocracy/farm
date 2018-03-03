@@ -67,7 +67,7 @@ public final class TkGang implements Take {
     public Response act(final Request req) throws IOException {
         return new RsPage(
             this.farm,
-            "/xsl/gang.xsl",
+            "/xsl/team.xsl",
             req,
             () -> {
                 final Collection<XeSource> sources = new LinkedList<>();

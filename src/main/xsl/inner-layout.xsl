@@ -52,8 +52,8 @@ SOFTWARE.
             </a>
           </li>
           <li>
-            <a href="/gang">
-              <xsl:text>Gang</xsl:text>
+            <a href="/team">
+              <xsl:text>Team</xsl:text>
             </a>
           </li>
           <li>
