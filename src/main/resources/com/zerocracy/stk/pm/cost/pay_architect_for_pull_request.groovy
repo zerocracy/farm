@@ -45,7 +45,7 @@ def exec(Project project, XML xml) {
         'message',
         new Par(
           'There are no ARC roles in the project,',
-          'I can\'t charge for the pull request review by §28: %s',
+          'I can\'t pay for the pull request review by §28: %s',
         ).say(job)
       )
       .postTo(project)
@@ -58,7 +58,7 @@ def exec(Project project, XML xml) {
         'message',
         new Par(
           'There are too many ARC roles in the project (more than one),',
-          'I can\'t charge for the pull request review by §28: %s'
+          'I can\'t pay for the pull request review by §28: %s'
         ).say(job)
       )
       .postTo(project)

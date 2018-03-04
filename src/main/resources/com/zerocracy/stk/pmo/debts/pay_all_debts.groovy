@@ -70,7 +70,7 @@ def exec(Project pmo, XML xml) {
         .param(
           'message',
           new Par(
-            'We tried to charge your debt of %s, but failed (%s);',
+            'We tried to pay your debt of %s, but failed (%s);',
             'don\'t worry, we will retry very soon'
           ).say(debt, ex.message)
         )
@@ -78,7 +78,7 @@ def exec(Project pmo, XML xml) {
       claim.copy().type('Notify PMO').param(
         'message',
         new Par(
-          'We failed to charge the debt of %s to @%s: %s'
+          'We failed to pay the debt of %s to @%s: %s'
         ).say(debt, uid, ex.message)
       ).postTo(pmo)
     }

@@ -60,13 +60,13 @@ public final class RbPingArchitect implements Rebound {
                 if (issue.isPull()) {
                     new ThrottledComments(issue.comments()).post(
                         new Par(
-                            "@%s please, charge attention to this pull request"
+                            "@%s please, pay attention to this pull request"
                         ).say(intro)
                     );
                 } else {
                     new ThrottledComments(issue.comments()).post(
                         new Par(
-                            "@%s please, charge attention to this issue"
+                            "@%s please, pay attention to this issue"
                         ).say(intro)
                     );
                 }

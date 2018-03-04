@@ -38,7 +38,7 @@ interface Bank {
 
     /**
      * Pay.
-     * @param target The target to charge to
+     * @param target The target to pay to
      * @param amount The amount to charge
      * @param details Payment details
      * @return Payment ID

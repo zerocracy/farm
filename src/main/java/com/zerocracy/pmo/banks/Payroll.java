@@ -92,7 +92,7 @@ public final class Payroll {
             throw new SoftException(
                 new Par(
                     "@%s doesn't have payment method configured;",
-                    "we can't charge %s"
+                    "we can't pay %s"
                 ).say(login, amount)
             );
         }
