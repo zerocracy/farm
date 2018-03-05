@@ -25,6 +25,7 @@ import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.in.Orders
+import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.radars.github.Job
 
@@ -35,6 +36,12 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Close job')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
+  Wbs wbs = new Wbs(project).bootstrap()
+  if (!wbs.exists(job)) {
+    // If the job is not in scope, there is nothing to close. This may
+    // happen because of races between claims.
+    return
+  }
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
   if (job.startsWith('gh:') && new Issue.Smart(new Job.Issue(github, job)).open) {

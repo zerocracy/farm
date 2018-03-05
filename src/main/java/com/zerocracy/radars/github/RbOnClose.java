@@ -23,7 +23,6 @@ import com.jcabi.github.Label;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.pm.ClaimOut;
-import com.zerocracy.pm.scope.Wbs;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
@@ -53,16 +52,13 @@ public final class RbOnClose implements Rebound {
         } else {
             final Project project = new GhProject(farm, issue.repo());
             final String job = new Job(issue).toString();
-            final Wbs wbs = new Wbs(project).bootstrap();
-            if (wbs.exists(job)) {
-                new ClaimOut()
-                    .type("Close job")
-                    .token(new TokenOfIssue(issue))
-                    .param("job", job)
-                    .until(TimeUnit.MINUTES.toSeconds((long) Tv.FIFTEEN))
-                    .param("reason", "GitHub issue was closed")
-                    .postTo(project);
-            }
+            new ClaimOut()
+                .type("Close job")
+                .token(new TokenOfIssue(issue))
+                .param("job", job)
+                .until(TimeUnit.MINUTES.toSeconds((long) Tv.FIFTEEN))
+                .param("reason", "GitHub issue was closed")
+                .postTo(project);
             answer = "Asked WBS to take it out of scope";
         }
         return answer;
