@@ -33,7 +33,7 @@ def exec(Project project, XML xml) {
   Integer points = Integer.parseInt(claim.param('points'))
   Farm farm = binding.variables.farm
   Awards awards = new Awards(farm, login).bootstrap()
-  String reason = claim.param('reason')
+  String reason = new Par.ToText(claim.param('reason')).toString()
   claim.copy()
     .type('Notify user')
     .token("user;${login}")

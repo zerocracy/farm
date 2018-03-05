@@ -69,8 +69,8 @@ SOFTWARE.
   </cmd>
   <cmd>
     <code>Register impediment</code>
-    <regex>waiting|hold</regex>
-    <label>waiting</label>
+    <regex>waiting|hold|wait</regex>
+    <label>wait</label>
     <help>Register an impediment for a job</help>
   </cmd>
   <cmd>

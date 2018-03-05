@@ -20,4 +20,8 @@ SOFTWARE.
     <type>Ping</type>
     <created>2017-01-15T01:00:00.000Z</created>
   </claim>
+  <claim id="2">
+    <type>Ping</type>
+    <created>2017-01-16T01:00:00.000Z</created>
+  </claim>
 </claims>

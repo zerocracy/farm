@@ -17,12 +17,16 @@
 package com.zerocracy.stk.pm.time.reminders
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pm.cost.Ledger
 import com.zerocracy.pm.in.Impediments
 import com.zerocracy.pm.in.Orders
+import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pm.time.Reminders
+import com.zerocracy.pmo.Pmo
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 
@@ -30,20 +34,28 @@ import java.time.ZonedDateTime
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Ping')
+  if (new Ledger(project).bootstrap().deficit()) {
+    // We must not remind anyone if the project is not funded now. Simply
+    // because we can't force any actions at the moment. We will remind,
+    // but developers will be stuck anyway. They may lose their jobs
+    // because of that.
+    return
+  }
   ClaimIn claim = new ClaimIn(xml)
   Reminders reminders = new Reminders(project).bootstrap()
   ZonedDateTime claimTime = ZonedDateTime.ofInstant(
     claim.created().toInstant(), ZoneOffset.UTC
   )
   Orders orders = new Orders(project).bootstrap()
-  orders.metaClass.reminders = {
-    int days -> delegate.olderThan(claimTime.minusDays(days))
+  orders.metaClass.reminders = { int days ->
+    delegate.olderThan(claimTime.minusDays(days))
       .toList()
       .collectEntries { String job -> [job, "$days days"] }
   }
-  Map<String, String> expired = orders.reminders(5)
-    .plus(orders.reminders(8))
+  Map<String, String> expired = orders.reminders(5).plus(orders.reminders(8))
   Impediments impediments = new Impediments(project).bootstrap()
+  Farm farm = binding.variables.farm
+  Roles pmos = new Roles(new Pmo(farm)).bootstrap()
   for (Map.Entry<String, String> entry : expired.entrySet()) {
     String job = entry.key
     if (impediments.exists(job)) {
@@ -51,6 +63,11 @@ def exec(Project project, XML xml) {
     }
     String label = entry.value
     String login = orders.performer(job)
+    if (pmos.hasAnyRole(login)) {
+      // Members of PMO have special status, we should not bother them
+      // with any reminders, ever.
+      return
+    }
     if (reminders.add(job, login, label)) {
       claim.copy()
         .type('New reminder posted')

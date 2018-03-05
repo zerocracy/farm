@@ -107,7 +107,7 @@ final class Crypto implements Bank {
         } catch (final CoinbaseException ex) {
             throw new IOException(
                 String.format(
-                    "Failed to send %s to %s: %s",
+                    "Failed to send %s to %s via Coinbase: %s",
                     trn.getAmount(), trn.getTo(), trn.getNotes()
                 ),
                 ex
@@ -130,7 +130,11 @@ final class Crypto implements Bank {
                 final Transfer bought = base.buy(this.money(Crypto.BUYIN));
                 new ClaimOut().type("Notify PMO").param(
                     "message",
-                    new Par("%s purchased @ Coinbase; %s; ID=%s; %s; %s").say(
+                    new Par(
+                        "%s purchased @ Coinbase;",
+                        "createdAt=%s; transactionId=%s;",
+                        "status=%s; balance=%s"
+                    ).say(
                         bought.getBtc(),
                         bought.getCreatedAt(),
                         bought.getTransactionId(),

@@ -20,6 +20,7 @@ import com.zerocracy.Item;
 import com.zerocracy.Project;
 import com.zerocracy.Xocument;
 import java.io.IOException;
+import java.util.Collection;
 import org.cactoos.time.DateAsText;
 import org.xembly.Directives;
 
@@ -111,7 +112,7 @@ public final class Reminders {
      * @return Label list
      * @throws IOException If fails
      */
-    public Iterable<String> labels(final String job) throws IOException {
+    public Collection<String> labels(final String job) throws IOException {
         try (final Item item = this.item()) {
             return new Xocument(item.path())
                 .xpath(

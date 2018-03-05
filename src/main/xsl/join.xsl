@@ -29,13 +29,19 @@ SOFTWARE.
       <xsl:text>Join us</xsl:text>
     </h1>
     <p>
-      <xsl:text>Fill out this form to send a join request to all high-ranked users.</xsl:text>
+      <xsl:text>Are you a programmer?</xsl:text>
+      <xsl:text> Do you want to work fully remotely in interesting projects?</xsl:text>
+      <xsl:text> Fill out this form to send a join request to all our high-ranked users.</xsl:text>
       <xsl:text> Someone may decide to </xsl:text>
       <a href="http://www.zerocracy.com/policy.html#1">
         <xsl:text>invite</xsl:text>
       </a>
       <xsl:text> you and become your mentor.</xsl:text>
-      <xsl:text> Remember, that a mentor will receive financial bonuses from us</xsl:text>
+      <xsl:text> Remember, that a mentor will receive </xsl:text>
+      <a href="http://www.zerocracy.com/policy.html#45">
+        <xsl:text>financial bonuses</xsl:text>
+      </a>
+      <xsl:text> from us</xsl:text>
       <xsl:text> and positive or negative </xsl:text>
       <a href="http://www.zerocracy.com/policy.html#18">
         <xsl:text>points</xsl:text>
@@ -59,7 +65,7 @@ SOFTWARE.
         </label>
         <input id="inp-personality" type="text" required="required" name="personality" placeholder="INTJ-A" size="8" maxlength="6" pattern="[IE][NS][TF][PJ]-[AT]"/>
         <label for="inp-about">
-          <xsl:text>A few good words about you (keep it short):</xsl:text>
+          <xsl:text>Say a few good words about yourself (keep it short):</xsl:text>
         </label>
         <textarea id="inp-about" required="required" name="about" style="width:100%;height:6em;"/>
         <label for="inp-stackoverflow">
@@ -77,7 +83,7 @@ SOFTWARE.
           </a>
           <xsl:text> ID:</xsl:text>
         </label>
-        <input id="inp-telegram" type="text" placeholder="username" name="telegram" size="10" required="required"/>
+        <input id="inp-telegram" type="text" placeholder="username" name="telegram" size="14" required="required"/>
         <input type="submit"/>
       </fieldset>
     </form>
