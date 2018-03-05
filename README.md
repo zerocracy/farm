@@ -212,6 +212,11 @@ bot has its own implementation details, because systems are very different
 (Telegram, Slack, GitHub, etc.). The common part is the `Question` class,
 that parses the questions and translates them to claims.
 
+We try to keep radars lightweight and logic-free. It's not their job
+to make decisions about jobs, orders, roles, rates, etc. Their job is to
+translate the incoming information into claims. The rest will be done
+by stakeholders.
+
 ## How to contribute
 
 Just fork it, make changes, run `mvn clean install -Pqulice`, and submit

@@ -36,7 +36,7 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
   String login = claim.param('login')
-  String reason = claim.param('reason')
+  String reason = new Par.ToText(claim.param('reason')).toString()
   int minutes = Integer.parseInt(claim.param('minutes'))
   if (minutes < 0) {
     return
