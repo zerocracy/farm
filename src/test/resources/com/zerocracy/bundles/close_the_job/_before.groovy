@@ -17,6 +17,7 @@
 package com.zerocracy.bundles.close_the_job
 
 import com.jcabi.github.Github
+import com.jcabi.github.Issue
 import com.jcabi.github.Repo
 import com.jcabi.github.Repos
 import com.jcabi.xml.XML
@@ -28,8 +29,10 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
   Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
-  repo.issues().create('for test', '')
-  repo.issues().create('for rultor', '')
-  repo.issues().create('for arc', '')
-  repo.issues().create('for po', '')
+  [
+    repo.issues().create('for test', ''),
+    repo.issues().create('for rultor', ''),
+    repo.issues().create('for arc', ''),
+    repo.issues().create('for po', '')
+  ].each { new Issue.Smart(it).close() }
 }

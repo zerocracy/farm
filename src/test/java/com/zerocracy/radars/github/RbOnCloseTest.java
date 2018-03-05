@@ -23,11 +23,15 @@ import com.jcabi.github.Repos;
 import com.jcabi.github.mock.MkGithub;
 import com.jcabi.github.mock.MkStorage;
 import com.zerocracy.farm.fake.FkFarm;
+import com.zerocracy.pm.Claims;
+import com.zerocracy.pm.scope.Wbs;
 import java.io.IOException;
 import javax.json.Json;
+import javax.json.JsonObject;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.xembly.Directive;
 import org.xembly.Directives;
 
 /**
@@ -37,6 +41,7 @@ import org.xembly.Directives;
  * @since 0.16
  * @checkstyle LineLength (500 lines)
  * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class RbOnCloseTest {
 
@@ -51,37 +56,62 @@ public final class RbOnCloseTest {
             repo.issues().create("test", "")
         );
         issue.close();
-        storage.apply(
-            new Directives()
-                .xpath(
-                    String.format(
-                        "/github/repos/repo[@coords='%s']/issue-events/issue-event[issue='%d' and event='closed']/login",
-                        repo.coordinates(),
-                        issue.number()
-                    )
-                ).set("rultor")
-        );
+        storage.apply(RbOnCloseTest.closeEvent(issue));
         MatcherAssert.assertThat(
             "issue wasn't closed",
-            new RbOnClose().react(
-                new FkFarm(),
-                github,
-                Json.createObjectBuilder()
-                    .add(
-                        "issue",
-                        Json.createObjectBuilder().add(
-                            "number",
-                            issue.number()
-                        )
-                    ).add(
-                    "repository",
-                    Json.createObjectBuilder().add(
-                        "full_name",
-                        repo.coordinates().toString()
-                    )
-                ).build()
-            ),
+            new RbOnClose().react(new FkFarm(), github, RbOnCloseTest.json(issue)),
             Matchers.startsWith("Asked WBS")
         );
+    }
+
+    @Test
+    public void registerDelayedClaim() throws IOException {
+        final MkStorage storage = new MkStorage.InFile();
+        final Github github = new MkGithub(storage, "user");
+        final Repo repo = github.repos().create(
+            new Repos.RepoCreate("datum", false)
+        );
+        final Issue.Smart issue = new Issue.Smart(
+            repo.issues().create("bug", "")
+        );
+        issue.close();
+        storage.apply(RbOnCloseTest.closeEvent(issue));
+        final FkFarm farm = new FkFarm();
+        final GhProject pkt = new GhProject(farm, repo);
+        new Wbs(pkt).bootstrap().add(new Job(issue).toString());
+        new RbOnClose().react(farm, github, RbOnCloseTest.json(issue));
+        MatcherAssert.assertThat(
+            "issue is not delayed",
+            new Claims(pkt).bootstrap().iterate(),
+            Matchers.emptyIterable()
+        );
+    }
+
+    private static JsonObject json(final Issue issue) {
+        return Json.createObjectBuilder()
+            .add(
+                "issue",
+                Json.createObjectBuilder().add(
+                    "number",
+                    issue.number()
+                )
+            ).add(
+                "repository",
+                Json.createObjectBuilder().add(
+                    "full_name",
+                    issue.repo().coordinates().toString()
+                )
+            ).build();
+    }
+
+    private static Iterable<Directive> closeEvent(final Issue issue) {
+        return new Directives()
+            .xpath(
+                String.format(
+                    "/github/repos/repo[@coords='%s']/issue-events/issue-event[issue='%d' and event='closed']/login",
+                    issue.repo().coordinates(),
+                    issue.number()
+                )
+            ).set("rultor");
     }
 }

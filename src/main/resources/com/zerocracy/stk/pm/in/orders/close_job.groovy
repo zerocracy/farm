@@ -16,12 +16,18 @@
  */
 package com.zerocracy.stk.pm.in.orders
 
+import com.jcabi.github.Github
+import com.jcabi.github.Issue
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.staff.Roles
+import com.zerocracy.radars.github.Job
+
 import java.security.SecureRandom
 
 def exec(Project project, XML xml) {
@@ -29,6 +35,11 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Close job')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
+  Farm farm = binding.variables.farm
+  Github github = new ExtGithub(farm).value()
+  if (job.startsWith('gh:') && new Issue.Smart(new Job.Issue(github, job)).open) {
+    return
+  }
   Orders orders = new Orders(project).bootstrap()
   if (orders.assigned(job)) {
     List<String> qa = new Roles(project).bootstrap().findByRole('QA')
