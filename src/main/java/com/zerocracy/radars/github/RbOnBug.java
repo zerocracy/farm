@@ -21,6 +21,7 @@ import com.jcabi.github.Github;
 import com.jcabi.github.Issue;
 import com.zerocracy.Farm;
 import com.zerocracy.pm.ClaimOut;
+import com.zerocracy.pm.scope.Wbs;
 import java.io.IOException;
 import javax.json.JsonObject;
 import org.cactoos.text.FormattedText;
@@ -31,6 +32,7 @@ import org.cactoos.text.FormattedText;
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.12
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class RbOnBug implements Rebound {
 
@@ -40,15 +42,25 @@ public final class RbOnBug implements Rebound {
         final Issue.Smart issue = new Issue.Smart(
             new IssueOfEvent(github, event)
         );
-        new ClaimOut()
-            .type("Add job to WBS")
-            .token(new TokenOfIssue(issue))
-            .param("job", new Job(issue))
-            .param("reason", "GitHub label was attached")
-            .postTo(new GhProject(farm, issue.repo()));
-        return new FormattedText(
-            "Issue #%d added to WBS by 'bug' label",
-            issue.number()
-        ).asString();
+        final GhProject project = new GhProject(farm, issue.repo());
+        final String response;
+        if (new Wbs(project).bootstrap().exists(new Job(issue).toString())) {
+            response = new FormattedText(
+                "Issue #%d already in WBS",
+                issue.number()
+            ).asString();
+        } else {
+            new ClaimOut()
+                .type("Add job to WBS")
+                .token(new TokenOfIssue(issue))
+                .param("job", new Job(issue))
+                .param("reason", "GitHub label was attached")
+                .postTo(project);
+            response = new FormattedText(
+                "Issue #%d added to WBS by 'bug' label",
+                issue.number()
+            ).asString();
+        }
+        return response;
     }
 }
