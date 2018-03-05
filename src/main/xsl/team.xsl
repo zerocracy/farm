@@ -21,12 +21,12 @@ SOFTWARE.
   <xsl:include href="/xsl/inner-layout.xsl"/>
   <xsl:template match="page" mode="head">
     <title>
-      <xsl:text>Gang</xsl:text>
+      <xsl:text>Team</xsl:text>
     </title>
   </xsl:template>
   <xsl:template match="page" mode="inner">
     <h1>
-      <xsl:text>Gang</xsl:text>
+      <xsl:text>Team</xsl:text>
     </h1>
     <xsl:apply-templates select="people"/>
   </xsl:template>

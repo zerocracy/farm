@@ -43,7 +43,7 @@ SOFTWARE.
         <xsl:text> who knows how to work with Zerocrat, who understands</xsl:text>
         <xsl:text> our management principles and has enough experience</xsl:text>
         <xsl:text> and reputation. The full list of programmers is </xsl:text>
-        <a href="/gang">
+        <a href="/team">
           here
         </a>
         <xsl:text>. You need to make one of them interested in your project.</xsl:text>

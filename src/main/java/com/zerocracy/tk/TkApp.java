@@ -205,7 +205,8 @@ public final class TkApp extends TkWrap {
                                                                 new FkRegex("/rfp-charge", new TkPrepay(farm)),
                                                                 new FkRegex("/rfp-post", new TkSubmit(farm)),
                                                                 new FkRegex("/board", new TkBoard(farm)),
-                                                                new FkRegex("/gang", new TkGang(farm)),
+                                                                new FkRegex("/team", new TkGang(farm)),
+                                                                new FkRegex("/gang", new TkRedirect("/team")),
                                                                 new FkRegex(
                                                                     "/me",
                                                                     (Take) req -> new RsRedirect(
