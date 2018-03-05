@@ -21,14 +21,10 @@ import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.SoftException;
 import com.zerocracy.Xocument;
-import com.zerocracy.pm.in.Orders;
-import com.zerocracy.pm.scope.Wbs;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
-import org.cactoos.collection.CollectionOf;
-import org.cactoos.collection.Filtered;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.list.SolidList;
 import org.cactoos.text.JoinedText;
@@ -202,24 +198,6 @@ public final class Roles {
                     "You can't remove all",
                     "architects from the project, see §34"
                 ).say()
-            );
-        }
-        final Wbs wbs = new Wbs(this.project).bootstrap();
-        final Collection<String> jobs = new CollectionOf<>(
-            new Filtered<>(
-                job -> wbs.role(job).equals(role),
-                new Orders(this.project).bootstrap().jobs(person)
-            )
-        );
-        if (!jobs.isEmpty() && this.allRoles(person).size() == 1) {
-            throw new SoftException(
-                new Par(
-                    "There are still %d job(s) assigned to @%s,",
-                    "can't resign role %s, since it's the last one: %s"
-                ).say(
-                    jobs.size(), person, role,
-                    new JoinedText(", ", jobs).asString()
-                )
             );
         }
         try (final Item roles = this.item()) {

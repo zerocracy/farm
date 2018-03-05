@@ -38,19 +38,18 @@ def exec(Project pmo, XML xml) {
     )
   }
   Project target = projects[0]
-  String login = claim.author()
+  String author = claim.author()
   Orders orders = new Orders(target).bootstrap()
-  for (String job : orders.jobs(login)) {
-    orders.resign(job)
+  for (String job : orders.jobs(author)) {
     claim.copy()
-      .type('Order was canceled')
+      .type('Cancel order')
       .param('job', job)
-      .param('login', login)
+      .param('reason', new Par('@%s decided to quit the project').say(author))
       .postTo(target)
   }
   claim.copy()
     .type('Resign all roles')
-    .param('login', claim.author())
+    .param('login', author)
     .postTo(target)
   claim.reply(
     new Par(

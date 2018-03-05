@@ -71,7 +71,9 @@ def exec(Project pmo, XML xml) {
           'Your reputation is %d (over %d);',
           'according to §33 you may not work in sandbox projects anymore;',
           'we resigned you from project %s;',
-          'you are welcome to join other projects!'
+          'the jobs, which you may still have there, are still yours,',
+          'feel free to complete them;',
+          'you are welcome to join [other](/board) non-sandbox projects!'
         ).say(reputation, threshold, pid)
       ).postTo(pmo)
       claim.copy().type('Notify PMO').param(
