@@ -48,9 +48,10 @@ public final class ReIfAddressed implements Response {
     public boolean react(final Farm farm, final Comment.Smart comment)
         throws IOException {
         final String self = String.format(
-            "@%s", comment.issue().repo().github().users().self().login()
+            "@%s ", comment.issue().repo().github().users().self().login()
         );
-        if (!comment.body().trim().startsWith(self)) {
+        final String body = comment.body().trim();
+        if (!body.startsWith(self) || body.equals(self)) {
             throw new SoftException(
                 new Par(
                     "Are you speaking to me or about me",

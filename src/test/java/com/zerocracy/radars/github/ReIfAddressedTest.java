@@ -89,6 +89,41 @@ public final class ReIfAddressedTest {
     }
 
     /**
+     * ReIfAddressed throws a SoftException if the comment is misaddressed.
+     * @throws IOException If something goes wrong.
+     */
+    @Test(expected = SoftException.class)
+    public void complainsAboutMisaddressedComment() throws IOException {
+        final Comment.Smart initial = this.comment("@0crat-test hello");
+        final Farm fake = new FkFarm();
+        final ReIfAddressed ria = new ReIfAddressed(
+            (farm, comment) -> {
+                Assert.fail("SoftException expected here");
+                return true;
+            }
+        );
+        ria.react(fake, initial);
+    }
+
+    /**
+     * ReIfAddressed throws a SoftException if the comment is addressed but
+     * containing no other text.
+     * @throws IOException If something goes wrong.
+     */
+    @Test(expected = SoftException.class)
+    public void complainsAbouEmptyComment() throws IOException {
+        final Comment.Smart initial = this.comment("@0crat  ");
+        final Farm fake = new FkFarm();
+        final ReIfAddressed ria = new ReIfAddressed(
+            (farm, comment) -> {
+                Assert.fail("SoftException was expected");
+                return true;
+            }
+        );
+        ria.react(fake, initial);
+    }
+
+    /**
      * Mock a Comment for test. Jeff leaves a comment, then 0crat
      * logs in and reads it.
      * @param body The comment's body.
