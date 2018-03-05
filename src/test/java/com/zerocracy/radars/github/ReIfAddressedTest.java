@@ -111,7 +111,7 @@ public final class ReIfAddressedTest {
      * @throws IOException If something goes wrong.
      */
     @Test(expected = SoftException.class)
-    public void complainsAbouEmptyComment() throws IOException {
+    public void complainsAboutEmptyComment() throws IOException {
         final Comment.Smart initial = this.comment("@0crat  ");
         final Farm fake = new FkFarm();
         final ReIfAddressed ria = new ReIfAddressed(
