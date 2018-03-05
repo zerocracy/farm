@@ -59,6 +59,7 @@ import org.takes.facets.flash.TkFlash;
 import org.takes.facets.fork.FkRegex;
 import org.takes.facets.fork.Fork;
 import org.takes.facets.fork.TkFork;
+import org.takes.facets.fork.TkRegex;
 import org.takes.facets.forward.TkForward;
 import org.takes.misc.Concat;
 import org.takes.misc.Href;
@@ -131,6 +132,12 @@ public final class TkApp extends TkWrap {
                                                                     new TkText("30265BD04DBC892A0B22A97C81F04337B49CBBB18BE62476FEA4E78EC8C26FD4 comodoca.com 5a60937406a7f\n")
                                                                 ),
                                                                 new FkRegex("/", new TkIndex(farm)),
+                                                                new FkRegex(
+                                                                    "/home",
+                                                                    (TkRegex) req -> new RsRedirect(
+                                                                        String.format("/u/%s", new RqUser(farm, req).value())
+                                                                    )
+                                                                ),
                                                                 new FkRegex("/identify", new TkIdentify(farm)),
                                                                 new FkRegex("/privacy", new TkRedirect("http://www.zerocracy.com/terms.html#privacy")),
                                                                 new FkRegex("/yoti", new TkYoti(farm)),

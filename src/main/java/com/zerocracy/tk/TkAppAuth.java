@@ -69,7 +69,7 @@ final class TkAppAuth extends TkWrap {
                 new FkParams(
                     PsByFlag.class.getSimpleName(),
                     Pattern.compile(".+"),
-                    new TkRedirect()
+                    new TkRedirect("/home")
                 ),
                 new FkFixed(take)
             ),

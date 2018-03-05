@@ -25,6 +25,7 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.cost.Ledger
 import com.zerocracy.pm.cost.Rates
+import com.zerocracy.pm.staff.Roles
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
@@ -32,7 +33,7 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Pay extra')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
-  String login = claim.param('login')
+  String login = claim.param('login').replaceAll('^@', '')
   int minutes = Integer.parseInt(claim.param('minutes').replaceAll('min$', ''))
   if (minutes < 0) {
     throw new SoftException(
@@ -52,10 +53,17 @@ def exec(Project project, XML xml) {
       ).say()
     )
   }
+  if (!new Roles(project).bootstrap().hasAnyRole(login)) {
+    throw new SoftException(
+      new Par(
+        'The user @%s is not a member of this project, see §49'
+      ).say(login)
+    )
+  }
   if (!new Rates(project).bootstrap().exists(login)) {
     throw new SoftException(
       new Par(
-        'The user @%s is working for free in this project, see §49'
+        'The user @%s works for free in this project, see §49'
       ).say(login)
     )
   }
