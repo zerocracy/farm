@@ -52,9 +52,9 @@ public final class TkSlack implements Take {
     private final Farm farm;
 
     /**
-     * Radar.
+     * Refresh the SlackRadar asynchronously.
      */
-    private final SlackRadar radar;
+    private final AsyncFunc<Boolean, Boolean> refresh;
 
     /**
      * Ctor.
@@ -63,7 +63,12 @@ public final class TkSlack implements Take {
      */
     public TkSlack(final Farm frm, final SlackRadar rdr) {
         this.farm = frm;
-        this.radar = rdr;
+        this.refresh = new AsyncFunc<Boolean, Boolean>(
+            input -> {
+                rdr.refresh();
+            },
+            new VerboseThreads()
+        );
     }
 
     @Override
@@ -105,12 +110,7 @@ public final class TkSlack implements Take {
         }
         final Bots bots = new Bots(this.farm).bootstrap();
         final String team = bots.register(json);
-        new AsyncFunc<Boolean, Boolean>(
-            input -> {
-                this.radar.refresh();
-            },
-            new VerboseThreads()
-        ).apply(true);
+        this.refresh.apply(true);
         return new RsWithStatus(
             new RsWithHeader(
                 "Location",
