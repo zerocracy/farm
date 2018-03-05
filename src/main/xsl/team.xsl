@@ -67,7 +67,21 @@ SOFTWARE.
         <xsl:text>+</xsl:text>
         <xsl:value-of select="format-number(sum(user/awards) div count(user) div 90,'0')"/>
       </strong>
-      <xsl:text> per user daily).</xsl:text>
+      <xsl:text> per user daily). </xsl:text>
+      <a href="http://www.zerocracy.com/policy.html#18">Reputation</a>
+      <xsl:text> legend: </xsl:text>
+      <span style="color:darkgreen">
+        <xsl:text>trusted (more than 256) </xsl:text>
+      </span>
+      <span style="color:orange">
+        <xsl:text>sandbox (less than 256) </xsl:text>
+      </span>
+      <span>
+        <xsl:text>unknown (no reputation yet) </xsl:text>
+      </span>
+      <span style="color:darkred">
+        <xsl:text>negative reputation</xsl:text>
+      </span>
     </p>
     <table data-sortable="true">
       <thead>
