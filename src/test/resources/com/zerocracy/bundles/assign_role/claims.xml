@@ -26,4 +26,24 @@ SOFTWARE.
       <param name="login">g4s8</param>
     </params>
   </claim>
+  <claim id="4">
+    <created>2017-03-27T11:18:09.228Z</created>
+    <type>Set rate</type>
+    <author>yegor256</author>
+    <token>test;C123;yegor256</token>
+    <params>
+      <param name="rate">$32</param>
+      <param name="login">yegor256</param>
+    </params>
+  </claim>
+  <claim id="5">
+    <created>2017-03-27T11:18:09.228Z</created>
+    <type>Pay extra</type>
+    <author>yegor256</author>
+    <token>test;C123;yegor256</token>
+    <params>
+      <param name="minutes">45</param>
+      <param name="login">yegor256</param>
+    </params>
+  </claim>
 </claims>

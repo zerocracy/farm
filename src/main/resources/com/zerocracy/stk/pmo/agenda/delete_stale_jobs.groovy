@@ -12,5 +12,5 @@ import com.zerocracy.farm.Assume
  *  Also uncomment 'delete_stale_jobs' test assertion.
  */
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Ping daily')
+  new Assume(project, xml).type('Ping hourly')
 }

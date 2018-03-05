@@ -105,4 +105,22 @@ SOFTWARE.
       </opt>
     </opts>
   </cmd>
+  <cmd>
+    <code>Pay extra</code>
+    <regex>pay|extra</regex>
+    <label>pay</label>
+    <help>Pay a user some extra cash</help>
+    <opts>
+      <opt>
+        <name>minutes</name>
+        <regex>\d+min</regex>
+        <help>how many minutes to pay</help>
+      </opt>
+      <opt>
+        <name>login</name>
+        <regex>@[a-zA-Z0-9\-]+</regex>
+        <help>GitHub name of the user</help>
+      </opt>
+    </opts>
+  </cmd>
 </question>
