@@ -73,14 +73,14 @@ def exec(Project project, XML xml) {
     .param('login', login)
     .param('minutes', minutes)
     .param('no-tuition-fee', true)
-    .param('message', new Par('Direct payment from @%s').say(author))
+    .param('reason', new Par('Direct payment from @%s').say(author))
     .postTo(project)
   claim.copy()
     .type('Make payment')
     .param('login', author)
     .param('minutes', new Policy().get('49.penalty', -60))
     .param(
-      'message',
+      'reason',
       new Par(
         'Direct payment to @%s in %s, which is discouraged, see §49'
       ).say(login, job)

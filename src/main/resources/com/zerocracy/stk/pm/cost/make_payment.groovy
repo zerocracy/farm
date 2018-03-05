@@ -71,7 +71,7 @@ def exec(Project project, XML xml) {
         .param('cash', fee)
         .param('student', login)
         .param('no-tuition-fee', true)
-        .param('message', new Par('Tuition fee from @%s').say(login))
+        .param('reason', new Par('Tuition fee from @%s').say(login))
         .postTo(project)
       tail = new Par(
         'the tuition fee %s was deducted',
