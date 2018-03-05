@@ -26,9 +26,10 @@ import com.zerocracy.tk.RsPage;
 import com.zerocracy.tk.RsParFlash;
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import org.bson.Document;
 import org.cactoos.iterable.ItemAt;
 import org.cactoos.iterable.Mapped;
@@ -81,27 +82,23 @@ public final class TkClaim implements TkRegex {
         final String user = new RqUser(this.farm, request).value();
         final long cid = Long.valueOf(request.matcher().group(2));
         try (final Footprint ftp = new Footprint(this.farm, pkt)) {
-            final List<XeSource> children = new ArrayList<>(10);
-            for (
-                final Document child : ftp.collection().find(
-                    Filters.eq("cause", cid)
-                )
-            ) {
-                children.add(
-                    new XeChain(
-                        new XeAppend(
-                            "child",
-                            new XeTransform<>(
-                                child.entrySet(),
-                                ent -> new XeAppend(
-                                    ent.getKey(),
-                                    ent.getValue().toString()
-                                )
+            final List<XeSource> children = StreamSupport.stream(
+                ftp.collection().find(Filters.eq("cause", cid))
+                    .spliterator(), false
+            ).map(
+                document -> new XeChain(
+                    new XeAppend(
+                        "child",
+                        new XeTransform<>(
+                            document.entrySet(),
+                            ent -> new XeAppend(
+                                ent.getKey(),
+                                ent.getValue().toString()
                             )
                         )
                     )
-                );
-            }
+                )
+            ).collect(Collectors.toList());
             return new IoCheckedScalar<>(
                 new ItemAt<>(
                     0,
