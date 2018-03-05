@@ -23,6 +23,7 @@ import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
+import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.radars.github.Job
 import com.zerocracy.radars.github.Quota
@@ -33,7 +34,8 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
   Orders orders = new Orders(project).bootstrap()
-//  Date threshold = java.sql.Date.valueOf(LocalDate.now().minusDays(5))
+  Date threshold = new Date() - 5
+  ClaimIn claim = new ClaimIn(xml)
   int done = 0
   for (String job : orders.iterate()) {
     if (!new Quota(github).quiet()) {
@@ -43,10 +45,10 @@ def exec(Project project, XML xml) {
     if (issue.open) {
       continue
     }
-//    Date closed = new Event.Smart(issue.latestEvent(Event.CLOSED)).createdAt()
-//    if (closed > threshold) {
-//      continue
-//    }
+    Date closed = new Github.Time(issue.json().getString('closed_at')).date()
+    if (closed > threshold) {
+      continue
+    }
     claim.copy()
       .type('Finish order')
       .param('job', job)

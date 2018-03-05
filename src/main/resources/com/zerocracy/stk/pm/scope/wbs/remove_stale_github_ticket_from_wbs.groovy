@@ -23,6 +23,7 @@ import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
+import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.radars.github.Job
 import com.zerocracy.radars.github.Quota
@@ -33,7 +34,8 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
   Wbs wbs = new Wbs(project).bootstrap()
-//  Date threshold = java.sql.Date.valueOf(LocalDate.now().minusDays(5))
+  Date threshold = new Date() - 5
+  ClaimIn claim = new ClaimIn(xml)
   int done = 0
   for (String job : wbs.iterate()) {
     if (!new Quota(github).quiet()) {
@@ -43,14 +45,10 @@ def exec(Project project, XML xml) {
     if (issue.open) {
       continue
     }
-    // @todo #362:30min This verification is disabled because GitHub
-    //  goes over quota very soon, since some issues have too many events.
-    //  Let's find a way to make less requests to GitHub. The same problem
-    //  exists in finish_stale_github_order.groovy
-//    Date closed = new Event.Smart(issue.latestEvent(Event.CLOSED)).createdAt()
-//    if (closed > threshold) {
-//      continue
-//    }
+    Date closed = new Github.Time(issue.json().getString('closed_at')).date()
+    if (closed > threshold) {
+      continue
+    }
     claim.copy()
       .type('Remove job from WBS')
       .token("job;${job}")
