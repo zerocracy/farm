@@ -134,7 +134,7 @@ final class Paypal implements Bank {
                 "Sender=%s, Receiver=%s,",
                 "Memo=\"%s\",",
                 "Amount=%s, Currency=%s,",
-                "TrackingId=%s",
+                "TrackingId=%s,",
                 "Ack=%s, PayKey=%s, PaymentExecStatus=%s,",
                 "Build=%s, CorrelationId=%s,",
                 "Timestamp=%s"
