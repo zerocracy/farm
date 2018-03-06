@@ -29,15 +29,31 @@ import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pmo.People
 import com.zerocracy.radars.github.Job
 
+import javax.json.JsonObject
+
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Add job to WBS')
   new Assume(project, xml).roles('ARC', 'PO')
+  Farm farm = binding.variables.farm
+  Github github = new ExtGithub(farm).value()
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
+  Issue issue = new Issue.Smart(new Job.Issue(github, job))
   String role = 'DEV'
   if (claim.hasParam('role')) {
     role = claim.param('role')
+  }
+  if (role == 'REV' && issue.pull) {
+    JsonObject pull = issue.pull().json()
+    int lines = pull.getInt('additions') + pull.getInt('deletions')
+    if (lines < 10) {
+      claim.reply(
+        new Par('This pull request is too small: skipping review')
+          .say()
+      )
+      return 
+    }
   }
   Wbs wbs = new Wbs(project).bootstrap()
   wbs.add(job)
@@ -45,9 +61,6 @@ def exec(Project project, XML xml) {
   claim.reply(
     new Par('Job %s is now in scope, role is %s').say(job, role)
   ).postTo(project)
-  Farm farm = binding.variables.farm
-  Github github = new ExtGithub(farm).value()
-  Issue issue = new Issue.Smart(new Job.Issue(github, job))
   if (issue.hasAssignee()) {
     People people = new People(farm).bootstrap()
     Iterator<String> find = people.find('github', issue.assignee().login()).iterator()
@@ -55,10 +68,10 @@ def exec(Project project, XML xml) {
       String login = find.next()
       if (people.hasMentor(login)) {
         claim.copy()
-            .type('Start order')
-            .param('login', login)
-            .param('reason', claim.cid())
-            .postTo(project)
+          .type('Start order')
+          .param('login', login)
+          .param('reason', claim.cid())
+          .postTo(project)
       }
     }
   }
