@@ -34,12 +34,17 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Add job to WBS')
   new Assume(project, xml).roles('ARC', 'PO')
   ClaimIn claim = new ClaimIn(xml)
+  Wbs wbs = new Wbs(project).bootstrap()
   String job = claim.param('job')
+  if (claim.hasParam('label') && claim.param('label') == 'bug') {
+    if (wbs.exists(job)) {
+      return
+    }
+  }
   String role = 'DEV'
   if (claim.hasParam('role')) {
     role = claim.param('role')
   }
-  Wbs wbs = new Wbs(project).bootstrap()
   wbs.add(job)
   wbs.role(job, role)
   claim.reply(

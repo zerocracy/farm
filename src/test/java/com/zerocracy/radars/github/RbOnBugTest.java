@@ -21,7 +21,6 @@ import com.jcabi.github.Repos;
 import com.jcabi.github.mock.MkGithub;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
-import com.zerocracy.pm.scope.Wbs;
 import javax.json.Json;
 import javax.json.JsonObject;
 import org.hamcrest.MatcherAssert;
@@ -38,7 +37,7 @@ import org.junit.Test;
  */
 public final class RbOnBugTest {
     @Test
-    public void processInBugNotInWbs() throws Exception {
+    public void postAddToWbsClaim() throws Exception {
         final MkGithub github = new MkGithub();
         final Issue bug = github.repos()
             .create(new Repos.RepoCreate("datum", false))
@@ -50,24 +49,6 @@ public final class RbOnBugTest {
                 RbOnBugTest.payload(bug)
             ),
             Matchers.containsString("added to WBS")
-        );
-    }
-
-    @Test
-    public void skipIfNotInWbs() throws Exception {
-        final MkGithub github = new MkGithub();
-        final Issue bug = github.repos()
-            .create(new Repos.RepoCreate("farm", false))
-            .issues().create("feature", "");
-        final FkProject proj = new FkProject();
-        new Wbs(proj).bootstrap().add(new Job(bug).toString());
-        MatcherAssert.assertThat(
-            new RbOnBug().react(
-                new FkFarm(proj),
-                github,
-                RbOnBugTest.payload(bug)
-            ),
-            Matchers.containsString("already in WBS")
         );
     }
 
