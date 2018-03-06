@@ -64,9 +64,9 @@ def exec(Project project, XML xml) {
   } else {
     roles.assign(login, role)
     msg = new Par(
-      'Role %s was successfully assigned to @%s (%s followers),',
+      'Role %s was successfully assigned to @%s,',
       'see [full list](/a/%s?a=pm/staff/roles) of roles. '
-    ).say(role, login, user.followersCount(), project.pid())
+    ).say(role, login, project.pid())
     claim.copy()
       .type('Role was assigned')
       .param('role', role)
