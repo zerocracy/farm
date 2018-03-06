@@ -18,8 +18,9 @@ package com.zerocracy.stk.pm.cost
 
 import com.jcabi.xml.XML
 import com.zerocracy.Par
-import com.zerocracy.farm.Assume
+import com.zerocracy.Policy
 import com.zerocracy.Project
+import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.staff.Roles
 
@@ -36,7 +37,7 @@ def exec(Project project, XML xml) {
         'reason',
         new Par('Boosting tasks is against our principles, see §15').say()
       )
-      .param('minutes', new Policy().get('15.penalty', -5))
+      .param('minutes', new Policy().get('15.penalty', -10))
       .postTo(project)
   }
 }
