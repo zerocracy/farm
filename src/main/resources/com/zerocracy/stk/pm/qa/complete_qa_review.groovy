@@ -42,7 +42,7 @@ def exec(Project project, XML xml) {
   String quality = claim.param('quality')
   if (quality !=~ 'bad|good|acceptable') {
     throw new SoftException(
-      new Par('I didn\'t understand what is \"%\"').say(quality)
+      new Par('I didn\'t understand what is \"%s\"').say(quality)
     )
   }
   Reviews reviews = new Reviews(project).bootstrap()
