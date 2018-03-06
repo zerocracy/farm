@@ -19,6 +19,7 @@ SOFTWARE.
   <claim id="1">
     <type>Set boost</type>
     <token>job;gh:test/test#1</token>
+    <author>yegor256</author>
     <params>
       <param name="job">gh:test/test#1</param>
       <param name="factor">42x</param>

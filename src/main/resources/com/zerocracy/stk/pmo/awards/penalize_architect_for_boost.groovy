@@ -14,23 +14,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.set_boost_factor
+package com.zerocracy.stk.pm.cost
 
 import com.jcabi.xml.XML
+import com.zerocracy.Par
+import com.zerocracy.Policy
 import com.zerocracy.Project
-import com.zerocracy.pm.cost.Boosts
-import com.zerocracy.pmo.Awards
-import com.zerocracy.pmo.Pmo
-import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
+import com.zerocracy.farm.Assume
+import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pm.staff.Roles
 
 def exec(Project project, XML xml) {
-  MatcherAssert.assertThat(
-    new Boosts(project).bootstrap().factor('gh:test/test#1'),
-    Matchers.equalTo(42)
-  )
-  MatcherAssert.assertThat(
-      new Awards(new Pmo(binding.variables.farm), 'yegor256').bootstrap().total(),
-      Matchers.equalTo(-10)
-  )
+  new Assume(project, xml).notPmo()
+  new Assume(project, xml).type('Set boost')
+  ClaimIn claim = new ClaimIn(xml)
+  Roles roles = new Roles(project).bootstrap()
+  if (claim.hasAuthor() && roles.hasRole(claim.author(), 'ARC')) {
+    claim.copy()
+      .type('Make payment')
+      .param('login', claim.author())
+      .param(
+        'reason',
+        new Par('Boosting tasks is against our principles, see §15').say()
+      )
+      .param('minutes', new Policy().get('15.penalty', -10))
+      .postTo(project)
+  }
 }
