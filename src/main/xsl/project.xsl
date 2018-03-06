@@ -304,6 +304,13 @@ SOFTWARE.
       <xsl:text>.</xsl:text>
     </p>
     <p>
+      <xsl:text>Quality: </xsl:text>
+      <a href="/a/{project}?a=pm/qa/reviews">
+        <xsl:text>Reviews</xsl:text>
+      </a>
+      <xsl:text>.</xsl:text>
+    </p>
+    <p>
       <xsl:text>Staff: </xsl:text>
       <a href="/a/{project}?a=pm/staff/bans">
         <xsl:text>Bans</xsl:text>

@@ -26,10 +26,7 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.scope.Wbs
-import com.zerocracy.pm.staff.Roles
 import com.zerocracy.radars.github.Job
-
-import java.security.SecureRandom
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
@@ -49,24 +46,10 @@ def exec(Project project, XML xml) {
   }
   Orders orders = new Orders(project).bootstrap()
   if (orders.assigned(job)) {
-    List<String> qa = new Roles(project).bootstrap().findByRole('QA')
-    if (qa.empty) {
-      claim.copy()
-        .type('Finish order')
-        .param('reason', 'GitHub issue was closed, order is finished')
-        .postTo(project)
-    } else {
-      String inspector
-      if (qa.size() > 1) {
-        inspector = qa[new SecureRandom().nextInt(qa.size() - 1)]
-      } else {
-        inspector = qa.first()
-      }
-      claim.copy()
-        .type('Assign QA inspector')
-        .param('assignee', inspector)
-        .postTo(project)
-    }
+    claim.copy()
+      .type('Finish order')
+      .param('reason', 'Job was closed, order is finished')
+      .postTo(project)
   } else {
     claim.copy()
       .type('Remove job from WBS')

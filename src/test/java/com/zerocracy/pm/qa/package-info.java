@@ -14,29 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pmo.speed
 
-import com.jcabi.xml.XML
-import com.zerocracy.Farm
-import com.zerocracy.Project
-import com.zerocracy.farm.Assume
-import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pmo.Speed
-
-def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Order was finished')
-  new Assume(project, xml).notPmo()
-  Farm farm = binding.variables.farm
-  ClaimIn claim = new ClaimIn(xml)
-  String job = claim.param('job')
-  long age = Long.parseLong(claim.param('age'))
-  String login = claim.param('login')
-  new Speed(farm, login)
-    .bootstrap()
-    .add(project.pid(), job, age)
-  claim.copy()
-    .type('Speed was updated')
-    .param('login', login)
-    .param('job', job)
-    .postTo(project)
-}
+/**
+ * Quality management, tests.
+ *
+ * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @version $Id$
+ * @since 0.22
+ */
+package com.zerocracy.pm.qa;

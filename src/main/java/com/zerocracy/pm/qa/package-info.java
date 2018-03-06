@@ -14,21 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.review_quality
 
-import com.jcabi.github.Github
-import com.jcabi.github.Repo
-import com.jcabi.github.Repos
-import com.jcabi.xml.XML
-import com.zerocracy.Farm
-import com.zerocracy.Project
-import com.zerocracy.entry.ExtGithub
-
-def exec(Project project, XML xml) {
-  Farm farm = binding.variables.farm
-  Github github = new ExtGithub(farm).value()
-  Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
-  repo.issues().create('title 1', 'body 1')
-  repo.issues().create('title 2', 'body 2')
-  repo.issues().create('title 3', 'body 3')
-}
+/**
+ * Quality management.
+ *
+ * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @version $Id$
+ * @since 0.22
+ */
+package com.zerocracy.pm.qa;

@@ -19,18 +19,37 @@ package com.zerocracy.stk.pm.qa
 import com.jcabi.xml.XML
 import com.zerocracy.Par
 import com.zerocracy.Project
+import com.zerocracy.cash.Cash
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pm.qa.Reviews
+import com.zerocracy.pm.staff.Roles
+import java.security.SecureRandom
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Assign QA inspector')
+  new Assume(project, xml).type('Start QA review')
   ClaimIn claim = new ClaimIn(xml)
-  claim.reply(
+  String job = claim.param('job')
+  String performer = claim.param('login')
+  int minutes = Integer.parseInt(claim.param('minutes'))
+  Cash cash = new Cash.S(claim.param('cash'))
+  Cash bonus = new Cash.S(claim.param('bonus'))
+  List<String> qa = new Roles(project).bootstrap().findByRole('QA')
+  String inspector
+  if (qa.size() > 1) {
+    inspector = qa[new SecureRandom().nextInt(qa.size() - 1)]
+  } else {
+    inspector = qa.first()
+  }
+  Reviews reviews = new Reviews(project).bootstrap()
+  reviews.add(job, inspector, performer, cash, minutes, bonus)
+  claim.copy().type('Notify job').param(
+    'message',
     new Par(
-      '@%s please review this job, as in §30;',
+      '@%s please review this job completed by @%s, as in §30;',
       'the job will be fully closed and all payments will be made',
       'when the quality review is completed'
-    ).say(claim.param('assignee'))
+    ).say(inspector, performer)
   ).postTo(project)
 }

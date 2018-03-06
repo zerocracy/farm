@@ -23,14 +23,10 @@ import com.zerocracy.Project
 import com.zerocracy.SoftException
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pm.ClaimOut
+import com.zerocracy.pm.qa.Reviews
 import com.zerocracy.pm.staff.Roles
 
-/**
- * @todo #646:30min We should place the demand for review into the XML document
- *  'pm/qa/reviews.xml' and then place the mark there, when the review is completed.
- *  When the order gets removed from orders.xml we automatically
- *  destroy the review (should happen in Datum by auto update).
- */
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Complete QA review')
@@ -43,15 +39,33 @@ def exec(Project project, XML xml) {
       new Par('You need to have either QA or ARC roles to do that').say()
     )
   }
+  String quality = claim.param('quality')
+  if (quality !=~ 'bad|good|acceptable') {
+    throw new SoftException(
+      new Par('I didn\'t understand what is \"%\"').say(quality)
+    )
+  }
+  Reviews reviews = new Reviews(project).bootstrap()
+  if (!reviews.exists(job)) {
+    throw new SoftException(
+      new Par('Thanks, but QA review is not required in this job').say()
+    )
+  }
+  ClaimOut out = reviews.remove(job, quality == 'good', claim.copy())
+  if (quality == 'bad') {
+    claim.copy()
+      .type('Notify job')
+      .param('message', new Par('Quality is low, no payment, see §31').say())
+      .postTo(project)
+  } else {
+    out.type('Make payment')
+      .param('reason', new Par('Order was finished, quality is "%s"').say(quality))
+      .postTo(project)
+  }
   claim.copy()
     .type('Make payment')
-    .param('job', job)
     .param('login', inspector)
     .param('reason', 'QA review completed')
     .param('minutes', new Policy().get('30.price', 8))
-    .postTo(project)
-  claim.copy()
-    .type('Finish order')
-    .param('reason', 'Passed QA review')
     .postTo(project)
 }
