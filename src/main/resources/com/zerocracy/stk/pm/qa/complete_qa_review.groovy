@@ -55,6 +55,7 @@ def exec(Project project, XML xml) {
   if (quality == 'bad') {
     claim.copy()
       .type('Notify job')
+      .token("job;${job}")
       .param('message', new Par('Quality is low, no payment, see §31').say())
       .postTo(project)
   } else {

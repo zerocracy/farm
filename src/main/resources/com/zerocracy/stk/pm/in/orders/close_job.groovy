@@ -20,12 +20,14 @@ import com.jcabi.github.Github
 import com.jcabi.github.Issue
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
+import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.scope.Wbs
+import com.zerocracy.pm.staff.Roles
 import com.zerocracy.radars.github.Job
 
 def exec(Project project, XML xml) {
@@ -39,10 +41,29 @@ def exec(Project project, XML xml) {
     // happen because of races between claims.
     return
   }
-  Farm farm = binding.variables.farm
-  Github github = new ExtGithub(farm).value()
-  if (job.startsWith('gh:') && new Issue.Smart(new Job.Issue(github, job)).open) {
-    return
+  if (job.startsWith('gh:')) {
+    Farm farm = binding.variables.farm
+    Github github = new ExtGithub(farm).value()
+    Issue.Smart issue = new Issue.Smart(new Job.Issue(github, job))
+    if (issue.open) {
+      return
+    }
+    if (issue.author().login() != claim.author()
+      && !new Roles(project).bootstrap().hasRole(claim.author(), 'PO', 'ARC')) {
+      claim.copy()
+        .type('Notify job')
+        .token("job;${job}")
+        .param(
+          'message',
+          new Par(
+            'The issue is closed not by its creator,',
+            'I won\'t close the order;',
+            'please, re-open it and ask its creator to close it'
+          ).say()
+        )
+        .postTo(project)
+      return
+    }
   }
   Orders orders = new Orders(project).bootstrap()
   if (orders.assigned(job)) {

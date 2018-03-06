@@ -44,7 +44,7 @@ def exec(Project project, XML xml) {
   }
   Reviews reviews = new Reviews(project).bootstrap()
   reviews.add(job, inspector, performer, cash, minutes, bonus)
-  claim.copy().type('Notify job').param(
+  claim.copy().type('Notify job').token("job;${job}").param(
     'message',
     new Par(
       '@%s please review this job completed by @%s, as in §30;',
