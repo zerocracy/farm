@@ -72,37 +72,24 @@ public final class ReIfAddressedTest {
     }
 
     /**
-     * ReIfAddressed throws a SoftException if the comment is not addressed.
+     * ReIfAddressed delegates the addressed comment to the encapsulated
+     * Response.
      * @throws IOException If something goes wrong.
      */
-    @Test(expected = SoftException.class)
-    public void complainsAboutUnaddressedComment() throws IOException {
-        final Comment.Smart initial = this.comment("hello");
-        final Farm fake = new FkFarm();
+    @Test
+    public void ignoresInnocentComments() throws IOException {
+        final Comment.Smart initial = this.comment("How are you sir?");
         final ReIfAddressed ria = new ReIfAddressed(
             (farm, comment) -> {
-                Assert.fail("SoftException expected");
+                Assert.fail("shouldn't happen");
                 return true;
             }
         );
-        ria.react(fake, initial);
-    }
-
-    /**
-     * ReIfAddressed throws a SoftException if the comment is misaddressed.
-     * @throws IOException If something goes wrong.
-     */
-    @Test(expected = SoftException.class)
-    public void complainsAboutMisaddressedComment() throws IOException {
-        final Comment.Smart initial = this.comment("@0crat-test hello");
         final Farm fake = new FkFarm();
-        final ReIfAddressed ria = new ReIfAddressed(
-            (farm, comment) -> {
-                Assert.fail("SoftException expected here");
-                return true;
-            }
+        MatcherAssert.assertThat(
+            ria.react(fake, initial),
+            Matchers.equalTo(false)
         );
-        ria.react(fake, initial);
     }
 
     /**

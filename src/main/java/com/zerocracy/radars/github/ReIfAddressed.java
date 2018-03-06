@@ -21,6 +21,8 @@ import com.zerocracy.Farm;
 import com.zerocracy.Par;
 import com.zerocracy.SoftException;
 import java.io.IOException;
+import java.util.Locale;
+import java.util.regex.Pattern;
 
 /**
  * Response if not my comment.
@@ -47,26 +49,32 @@ public final class ReIfAddressed implements Response {
     @Override
     public boolean react(final Farm farm, final Comment.Smart comment)
         throws IOException {
-        final String self = String.format(
-            "@%s ", comment.issue().repo().github().users().self().login()
+        final String login = comment.issue().repo().github()
+            .users().self().login().toLowerCase(Locale.ENGLISH);
+        final Pattern mentioned = Pattern.compile(
+            String.format("@%s(?![a-zA-Z0-9-])", Pattern.quote(login))
         );
         final String body = comment.body().trim();
-        if (!body.startsWith(self) || body.equals(self)) {
-            throw new SoftException(
-                new Par(
-                    "Are you speaking to me or about me",
-                    String.format(
-                        // @checkstyle LineLength (1 line)
-                        "[here](https://github.com/%s/issues/%d#issuecomment-%d).",
-                        comment.issue().repo().coordinates(),
-                        comment.issue().number(), comment.number()
-                    ),
-                    "You must always start your message with my name",
-                    "if you want to address it to me, see §1."
-                ).say()
-            );
+        boolean done = false;
+        if (mentioned.matcher(body).find()) {
+            if (!body.startsWith(String.format("@%s ", login))) {
+                throw new SoftException(
+                    new Par(
+                        "Are you speaking to me or about me",
+                        String.format(
+                            // @checkstyle LineLength (1 line)
+                            "[here](https://github.com/%s/issues/%d#issuecomment-%d);",
+                            comment.issue().repo().coordinates(),
+                            comment.issue().number(), comment.number()
+                        ),
+                        "you must always start your message with my name",
+                        "if you want to address it to me, see §1"
+                    ).say()
+                );
+            }
+            done = this.origin.react(farm, comment);
         }
-        return this.origin.react(farm, comment);
+        return done;
     }
 
 }
