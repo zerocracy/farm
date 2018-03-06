@@ -30,6 +30,9 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Make payment')
   ClaimIn claim = new ClaimIn(xml)
+  if (!claim.hasParam('job')) {
+    return
+  }
   String job = claim.param('job')
   String login = claim.param('login')
   int minutes = Integer.parseInt(claim.param('minutes'))

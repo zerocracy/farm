@@ -69,16 +69,22 @@ public final class Claims {
 
     /**
      * Add new directives.
-     * @param dirs Directives
+     * @param claim The claim to add
      * @throws IOException If fails
      */
-    public void add(final Iterable<Directive> dirs) throws IOException {
-        if (!dirs.iterator().hasNext()) {
-            throw new IllegalArgumentException("Empty directives");
-        }
+    public void add(final XML claim) throws IOException {
+        this.add(Directives.copyOf(claim.node()));
+    }
+
+    /**
+     * Add new directives.
+     * @param claim The claim to add
+     * @throws IOException If fails
+     */
+    public void add(final Iterable<Directive> claim) throws IOException {
         try (final Item item = this.item()) {
             new Xocument(item).modify(
-                new Directives().xpath("/claims").append(dirs)
+                new Directives().xpath("/claims").append(claim)
             );
         }
         final int size = new LengthOf(this.iterate()).intValue();

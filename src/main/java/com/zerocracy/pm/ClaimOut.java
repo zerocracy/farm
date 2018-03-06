@@ -16,6 +16,10 @@
  */
 package com.zerocracy.pm;
 
+import com.jcabi.xml.ClasspathSources;
+import com.jcabi.xml.XMLDocument;
+import com.jcabi.xml.XSLChain;
+import com.jcabi.xml.XSLDocument;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.pmo.Pmo;
@@ -26,10 +30,12 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
+import org.cactoos.collection.Mapped;
 import org.cactoos.time.DateAsText;
 import org.cactoos.time.ZonedDateTimeAsText;
 import org.xembly.Directive;
 import org.xembly.Directives;
+import org.xembly.Xembler;
 
 /**
  * Claim.
@@ -37,6 +43,7 @@ import org.xembly.Directives;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.9
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings({ "PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods" })
 public final class ClaimOut implements Iterable<Directive> {
@@ -68,7 +75,7 @@ public final class ClaimOut implements Iterable<Directive> {
      * Ctor.
      * @param list List of dirs, if any
      */
-    public ClaimOut(final Iterable<Directive> list) {
+    ClaimOut(final Iterable<Directive> list) {
         this.dirs = new Directives(list);
     }
 
@@ -79,7 +86,24 @@ public final class ClaimOut implements Iterable<Directive> {
      */
     @SuppressWarnings("overloads")
     public void postTo(final Project project) throws IOException {
-        new Claims(project).bootstrap().add(this);
+        new Claims(project).bootstrap().add(
+            new XSLChain(
+                new Mapped<>(
+                    s -> XSLDocument.make(
+                        ClaimOut.class.getResourceAsStream(
+                            String.format("post-claim-out/%s.xsl", s)
+                        )
+                    ),
+                    "me-into-login",
+                    "normalize-login",
+                    "normalize-minutes",
+                    "validate-login",
+                    "validate-job"
+                )
+            )
+                .with(new ClasspathSources())
+                .transform(new XMLDocument(new Xembler(this).xmlQuietly()))
+        );
     }
 
     /**

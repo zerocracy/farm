@@ -85,7 +85,7 @@ SOFTWARE.
       </opt>
       <opt>
         <name>login</name>
-        <regex>[a-zA-Z0-9\-]+</regex>
+        <regex>@?[a-zA-Z0-9\-]+</regex>
         <help>GitHub login of the user</help>
       </opt>
       <opt>
@@ -109,7 +109,7 @@ SOFTWARE.
       </opt>
       <opt>
         <name>login</name>
-        <regex>[a-zA-Z0-9\-]+</regex>
+        <regex>@?[a-zA-Z0-9\-]+</regex>
         <help>GitHub login of the user</help>
       </opt>
     </opts>

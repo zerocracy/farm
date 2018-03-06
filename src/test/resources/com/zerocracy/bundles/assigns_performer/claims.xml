@@ -23,7 +23,7 @@ SOFTWARE.
     <author>yegor256</author>
     <params>
       <param name="job">gh:test/test#1</param>
-      <param name="login">me</param>
+      <param name="login">yegor256</param>
     </params>
   </claim>
   <claim id="4">

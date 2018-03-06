@@ -33,8 +33,8 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Pay extra')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
-  String login = claim.param('login').replaceAll('^@', '')
-  int minutes = Integer.parseInt(claim.param('minutes').replaceAll('min$', ''))
+  String login = claim.param('login')
+  int minutes = Integer.parseInt(claim.param('minutes'))
   if (minutes < 0) {
     throw new SoftException(
       new Par('Minutes %d can\'t be negative, see §49').say(minutes)

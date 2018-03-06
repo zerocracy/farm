@@ -61,7 +61,7 @@ public final class ClaimInTest {
             XhtmlMatchers.xhtml(
                 new Xembler(
                     new Directives().add("claims").append(
-                        claim.reply("hello")
+                        claim.reply("Hello")
                     )
                 ).xmlQuietly()
             ),
@@ -69,7 +69,7 @@ public final class ClaimInTest {
                 "/claims/claim[type='Notify']",
                 "/claims/claim[token='X']",
                 "/claims/claim/params/param[@name='cause']",
-                "/claims/claim/params/param[@name='message' and .='hello']"
+                "/claims/claim/params/param[@name='message' and .='Hello']"
             )
         );
     }

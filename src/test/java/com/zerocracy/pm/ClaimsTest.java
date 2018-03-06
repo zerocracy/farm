@@ -96,7 +96,7 @@ public final class ClaimsTest {
     @Test
     public void addsAndRemovesClaims() throws Exception {
         final Claims claims = new Claims(new FkProject()).bootstrap();
-        claims.add(new ClaimOut().token("test;test").type("hello"));
+        claims.add(new ClaimOut().token("test;test").type("Hello"));
         MatcherAssert.assertThat(
             claims.iterate().iterator().next().xpath("token/text()").get(0),
             Matchers.startsWith("test;")

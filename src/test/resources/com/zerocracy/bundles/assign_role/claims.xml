@@ -43,7 +43,7 @@ SOFTWARE.
     <token>test;C123;yegor256</token>
     <params>
       <param name="job">gh:test/test#1</param>
-      <param name="minutes">45min</param>
+      <param name="minutes">45</param>
       <param name="login">yegor256</param>
     </params>
   </claim>

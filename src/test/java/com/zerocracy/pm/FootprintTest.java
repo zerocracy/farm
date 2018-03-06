@@ -43,7 +43,7 @@ public final class FootprintTest {
     public void addsClaims() throws Exception {
         final Farm farm = new PropsFarm();
         final Project project = farm.find("@id='FOOTPRNTX'").iterator().next();
-        new ClaimOut().type("hello").postTo(project);
+        new ClaimOut().type("Hello").postTo(project);
         final XML xml = new Claims(project).iterate().iterator().next();
         try (final Footprint footprint = new Footprint(farm, project)) {
             footprint.open(xml);
@@ -65,7 +65,7 @@ public final class FootprintTest {
                     final Project project = farm.find(
                         String.format("@id='%09d'", inc.incrementAndGet())
                     ).iterator().next();
-                    new ClaimOut().type("hello dude").postTo(project);
+                    new ClaimOut().type("Version").postTo(project);
                     final XML xml = new Claims(project)
                         .iterate().iterator().next();
                     try (final Footprint footprint =

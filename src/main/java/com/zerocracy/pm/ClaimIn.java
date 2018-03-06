@@ -84,6 +84,12 @@ public final class ClaimIn {
         }
         out.params(this.params());
         out.param("cause", this.cid());
+        final StringBuilder flow = new StringBuilder("");
+        if (this.params().containsKey("flow")) {
+            flow.append(this.param("flow")).append("; ");
+        }
+        flow.append(this.type());
+        out.param("flow", flow.toString());
         return out;
     }
 

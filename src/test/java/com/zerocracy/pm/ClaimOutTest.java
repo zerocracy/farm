@@ -16,6 +16,8 @@
  */
 package com.zerocracy.pm;
 
+import com.jcabi.matchers.XhtmlMatchers;
+import com.zerocracy.Project;
 import com.zerocracy.farm.fake.FkProject;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -30,6 +32,7 @@ import org.xembly.Directive;
  * @since 0.10
  * @checkstyle JavadocMethodCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class ClaimOutTest {
 
     @Test
@@ -38,16 +41,38 @@ public final class ClaimOutTest {
         claims.add(
             new Concat<Directive>(
                 new ClaimOut()
-                    .type("notify")
+                    .type("Notify")
                     .token("test;token")
                     .param("message", "hello, world"),
                 new ClaimOut()
-                    .type("hello")
+                    .type("Hello")
             )
         );
         MatcherAssert.assertThat(
             claims.iterate(),
             Matchers.iterableWithSize(2)
+        );
+    }
+
+    @Test
+    public void postProcessesClaim() throws Exception {
+        final Project project = new FkProject();
+        new ClaimOut()
+            .type("Notify")
+            .token("test;token")
+            .param("login", "@yegor256")
+            .param("minutes", "45min")
+            .param("cause_type", "Ping")
+            .param("message", "hello, world")
+            .postTo(project);
+        MatcherAssert.assertThat(
+            XhtmlMatchers.xhtml(
+                new Claims(project).iterate().iterator().next()
+            ),
+            XhtmlMatchers.hasXPaths(
+                "/claim/params/param[@name='login' and .='yegor256']",
+                "/claim/params/param[@name='minutes' and .='45']"
+            )
         );
     }
 

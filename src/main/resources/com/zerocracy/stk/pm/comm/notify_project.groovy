@@ -29,7 +29,7 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   new Catalog(farm).bootstrap().links(project.pid(), 'slack').each {
     claim.copy()
-      .type('Notify')
+      .type('Notify in Slack')
       .token("slack;${it}")
       .postTo(project)
   }

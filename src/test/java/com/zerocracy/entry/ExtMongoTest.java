@@ -86,7 +86,7 @@ public final class ExtMongoTest {
     public void createsMongo() throws Exception {
         final Farm farm = new PropsFarm(new FkFarm());
         final Project project = new Pmo(farm);
-        new ClaimOut().type("hello").postTo(project);
+        new ClaimOut().type("Hello").postTo(project);
         final XML xml = new Claims(project).iterate().iterator().next();
         final MongoClient mongo = new ExtMongo(farm).value();
         final String pid = "12MONGO89";
@@ -110,7 +110,7 @@ public final class ExtMongoTest {
                     final MongoClient mongo = new ExtMongo(farm).value();
                     try (final Footprint footprint =
                         new Footprint(mongo, pid)) {
-                        new ClaimOut().type("hello dude").postTo(project);
+                        new ClaimOut().type("Version").postTo(project);
                         final XML xml = new Claims(project)
                             .iterate().iterator().next();
                         footprint.open(xml);

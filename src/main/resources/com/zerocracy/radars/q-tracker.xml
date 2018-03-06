@@ -56,7 +56,7 @@ SOFTWARE.
     <opts>
       <opt>
         <name>login</name>
-        <regex>me|@[a-zA-Z0-9\-]+</regex>
+        <regex>me|@?[a-zA-Z0-9\-]+</regex>
         <help>"me" or GitHub login of the person to assign</help>
       </opt>
     </opts>
@@ -118,7 +118,7 @@ SOFTWARE.
       </opt>
       <opt>
         <name>login</name>
-        <regex>@[a-zA-Z0-9\-]+</regex>
+        <regex>@?[a-zA-Z0-9\-]+</regex>
         <help>GitHub name of the user</help>
       </opt>
     </opts>

@@ -15,15 +15,25 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<claims xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.41.1/xsd/pm/claims.xsd" version="0.1" updated="2017-03-27T11:18:09.228Z">
-  <claim id="3">
-    <created>2017-03-27T11:18:09.228Z</created>
-    <type>Request order start</type>
-    <token>job;gh:test/test#1</token>
-    <author>yegor256</author>
-    <params>
-      <param name="job">gh:test/test#1</param>
-      <param name="login">yegor256</param>
-    </params>
-  </claim>
-</claims>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" version="2.0">
+  <xsl:output method="xml" indent="no"/>
+  <xsl:strip-space elements="*"/>
+  <xsl:variable name="regex" select="'gh:[a-zA-Z0-9-]+/[a-zA-Z0-9-]+#[0-9]+'"/>
+  <xsl:template match="param[@name='job']">
+    <xsl:copy>
+      <xsl:if test="not(matches(text(),$regex))">
+        <xsl:message terminate="yes">
+          <xsl:text>Job name "</xsl:text>
+          <xsl:value-of select="text()"/>
+          <xsl:text>" is not valid</xsl:text>
+        </xsl:message>
+      </xsl:if>
+      <xsl:apply-templates select="node()|@*"/>
+    </xsl:copy>
+  </xsl:template>
+  <xsl:template match="node()|@*">
+    <xsl:copy>
+      <xsl:apply-templates select="node()|@*"/>
+    </xsl:copy>
+  </xsl:template>
+</xsl:stylesheet>
