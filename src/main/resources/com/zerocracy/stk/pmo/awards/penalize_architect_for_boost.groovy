@@ -23,9 +23,6 @@ import com.zerocracy.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.staff.Roles
 
-/**
- * Penalize the ARCH for boosting a task.
- */
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Set boost')
@@ -39,7 +36,7 @@ def exec(Project project, XML xml) {
         'reason',
         new Par('Boosting tasks is against our principles, see §15').say()
       )
-      .param('minutes', -10)
+      .param('minutes', new Policy().get('15.penalty', -5))
       .postTo(project)
   }
 }
