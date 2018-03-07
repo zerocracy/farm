@@ -67,6 +67,7 @@ def exec(Project pmo, XML xml) {
         )
         .postTo(pmo)
     } catch (IOException ex) {
+      debts.failure(uid, ex.message)
       claim.copy()
         .type('Notify user')
         .token("user;${uid}")
