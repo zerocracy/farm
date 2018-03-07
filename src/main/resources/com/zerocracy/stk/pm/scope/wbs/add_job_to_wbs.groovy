@@ -34,12 +34,15 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Add job to WBS')
   new Assume(project, xml).roles('ARC', 'PO')
   ClaimIn claim = new ClaimIn(xml)
+  Wbs wbs = new Wbs(project).bootstrap()
   String job = claim.param('job')
+  if (claim.hasParam('quiet') && wbs.exists(job)) {
+    return
+  }
   String role = 'DEV'
   if (claim.hasParam('role')) {
     role = claim.param('role')
   }
-  Wbs wbs = new Wbs(project).bootstrap()
   wbs.add(job)
   wbs.role(job, role)
   claim.reply(
@@ -55,10 +58,10 @@ def exec(Project project, XML xml) {
       String login = find.next()
       if (people.hasMentor(login)) {
         claim.copy()
-            .type('Start order')
-            .param('login', login)
-            .param('reason', claim.cid())
-            .postTo(project)
+          .type('Start order')
+          .param('login', login)
+          .param('reason', claim.cid())
+          .postTo(project)
       }
     }
   }
