@@ -52,7 +52,7 @@ def exec(Project project, XML xml) {
         new Par('This pull request is too small: skipping review')
           .say()
       )
-      return 
+      return
     }
   }
   Wbs wbs = new Wbs(project).bootstrap()
