@@ -81,7 +81,7 @@ SOFTWARE.
         </a>
       </xsl:if>
       <xsl:if test="links/link[@rel='json']">
-        <xsl:text> </xsl:text>
+        <xsl:text>, </xsl:text>
         <a href="{links/link[@rel='json']/@href}">
           <xsl:text>JSON</xsl:text>
         </a>

@@ -15,7 +15,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" version="1.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" version="2.0">
   <xsl:output method="text" encoding="UTF-8"/>
   <xsl:template match="footprint">
     <xsl:apply-templates select="claims"/>
@@ -32,6 +32,10 @@ SOFTWARE.
 </xsl:text>
   </xsl:template>
   <xsl:template match="claim">
+    <xsl:if test="position() &gt; 1">
+      <xsl:text>,
+</xsl:text>
+    </xsl:if>
     <xsl:text>{
   "cid": </xsl:text>
     <xsl:value-of select="cid"/>
@@ -48,15 +52,17 @@ SOFTWARE.
   "params": {
 </xsl:text>
     <xsl:for-each select="*[not(name() = 'type') and not(name() = 'version') and not(name() = 'created') and not(name() = '_id') and not(name() = 'cid') and not(name() = 'project') and not(name() = 'closed') and not(name() = 'cause') and not(name() = 'ago')]">
+      <xsl:if test="position() &gt; 1">
+        <xsl:text>,
+</xsl:text>
+      </xsl:if>
       <xsl:text>    "</xsl:text>
       <xsl:value-of select="name()"/>
       <xsl:text>": "</xsl:text>
-      <xsl:value-of select="."/>
-      <xsl:text>",
-</xsl:text>
+      <xsl:value-of select="replace(.,'&quot;', '\&quot;')"/>
+      <xsl:text>"</xsl:text>
     </xsl:for-each>
     <xsl:text>}
-  },
-</xsl:text>
+  }</xsl:text>
   </xsl:template>
 </xsl:stylesheet>
