@@ -25,22 +25,16 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.qa.Reviews
-import com.zerocracy.pm.staff.Roles
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Complete QA review')
+  new Assume(project, xml).roles('ARC', 'QA')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
   String inspector = claim.author()
-  Roles roles = new Roles(project).bootstrap()
-  if (!roles.hasRole(inspector, 'QA', 'ARC')) {
-    throw new SoftException(
-      new Par('You need to have either QA or ARC roles to do that').say()
-    )
-  }
   String quality = claim.param('quality')
-  if (quality !=~ 'bad|good|acceptable') {
+  if (!(quality ==~ 'bad|good|acceptable')) {
     throw new SoftException(
       new Par('I didn\'t understand what is \"%s\"').say(quality)
     )
@@ -63,6 +57,10 @@ def exec(Project project, XML xml) {
       .param('reason', new Par('Order was finished, quality is "%s"').say(quality))
       .postTo(project)
   }
+  claim.copy()
+    .type('QA review completed')
+    .param('login', inspector)
+    .postTo(project)
   claim.copy()
     .type('Make payment')
     .param('login', inspector)

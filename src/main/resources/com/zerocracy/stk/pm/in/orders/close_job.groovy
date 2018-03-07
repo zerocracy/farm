@@ -22,6 +22,7 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
+import com.zerocracy.SoftException
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
@@ -37,16 +38,18 @@ def exec(Project project, XML xml) {
   String job = claim.param('job')
   Wbs wbs = new Wbs(project).bootstrap()
   if (!wbs.exists(job)) {
-    // If the job is not in scope, there is nothing to close. This may
-    // happen because of races between claims.
-    return
+    throw new SoftException(
+      new Par('The job is not in WBS, can\'t close').say()
+    )
   }
   if (job.startsWith('gh:')) {
     Farm farm = binding.variables.farm
     Github github = new ExtGithub(farm).value()
     Issue.Smart issue = new Issue.Smart(new Job.Issue(github, job))
     if (issue.open) {
-      return
+      throw new SoftException(
+        new Par('GitHub issue is still open, won\'t close').say()
+      )
     }
     if (issue.author().login() != claim.author()
       && !new Roles(project).bootstrap().hasRole(claim.author(), 'PO', 'ARC')) {

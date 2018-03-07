@@ -106,7 +106,7 @@ final class DefaultFlush implements Flush {
         }
         Logger.info(
             this,
-            "Seen #%d:\"%s/%d/%d\" at \"%s\" by %d stk, %[ms]s [%s, author=%B]",
+            "Seen #%d:\"%s/%d/%d\" at \"%s\" by %d stk, %[ms]s [%s]%s",
             idx, claim.type(), claim.cid(), left,
             project.pid(),
             total,
@@ -117,12 +117,13 @@ final class DefaultFlush implements Flush {
                     ent -> String.format(
                         "%s=%s", ent.getKey(),
                         // @checkstyle MagicNumber (1 line)
-                        new SubText(ent.getValue(), 0, 20).asString()
+                        new SubText(ent.getValue(), 0, 120).asString()
                     ),
                     claim.params().entrySet()
                 )
             ).asString(),
-            claim.hasAuthor()
+            // @checkstyle AvoidInlineConditionalsCheck (1 line)
+            claim.hasAuthor() ? String.format(", by @%s", claim.author()) : ""
         );
     }
 
