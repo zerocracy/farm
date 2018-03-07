@@ -26,7 +26,9 @@ import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
+import java.util.concurrent.TimeUnit;
 import org.cactoos.collection.Joined;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.scalar.IoCheckedScalar;
@@ -95,7 +97,7 @@ public final class Debts {
             if (debts.hasNext()) {
                 final XML debt = debts.next();
                 dirs.add("debt").attr("total", this.amount(uid)).append(
-                    new Joined<>(
+                    new Joined<Directive>(
                         new Mapped<XML, Iterable<Directive>>(
                             xml -> new Directives().add("item")
                                 .add("ago")
@@ -128,6 +130,20 @@ public final class Debts {
                         )
                     )
                 );
+                final Iterator<XML> failures = debt.nodes("failure").iterator();
+                if (failures.hasNext()) {
+                    final XML failure = failures.next();
+                    dirs.attr(
+                        "failed",
+                        String.format(
+                            "Failed to pay on %s (attempt #%d)",
+                            failure.xpath("created/text()").get(0),
+                            Integer.parseInt(
+                                failure.xpath("attempt/text()").get(0)
+                            )
+                        )
+                    );
+                }
             }
             return dirs;
         }
@@ -210,6 +226,68 @@ public final class Debts {
                     .strict(1)
                     .remove()
             );
+        }
+    }
+
+    /**
+     * Add failure to the debt.
+     * @param uid The owner's login
+     * @param reason The reason
+     * @throws IOException If fails
+     */
+    public void failure(final String uid,
+        final String reason) throws IOException {
+        if (!this.exists(uid)) {
+            throw new IllegalArgumentException(
+                new Par("@%s doesn't have a debt, can't add failure").say(uid)
+            );
+        }
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                new Directives()
+                    .xpath(
+                        String.format(
+                            "/debts/debt[@login='%s' and not(failure)]", uid
+                        )
+                    )
+                    .add("failure")
+                    .add("attempt").set(0)
+                    .xpath(
+                        String.format(
+                            "/debts/debt[@login='%s']/failure", uid
+                        )
+                    )
+                    .strict(1)
+                    .xpath("attempt").xset(". + 1").up()
+                    .addIf("created").set(new DateAsText().asString()).up()
+                    .addIf("reason").set(reason)
+            );
+        }
+    }
+
+    /**
+     * Is it expired and has to be paid now?
+     * @param uid The owner's login
+     * @return TRUE if yes
+     * @throws IOException If fails
+     */
+    public boolean expired(final String uid) throws IOException {
+        if (!this.exists(uid)) {
+            throw new IllegalArgumentException(
+                new Par("@%s doesn't have a debt, can't check it").say(uid)
+            );
+        }
+        try (final Item item = this.item()) {
+            final Date failed = new DateOf(
+                new Xocument(item.path()).xpath(
+                    String.format(
+                        "/debts/debt[@login='%s']/failure/created/text()", uid
+                    ),
+                    "2000-01-01T00:00:00Z"
+                )
+            ).value();
+            return System.currentTimeMillis() - failed.getTime()
+                > TimeUnit.DAYS.toMillis(1L);
         }
     }
 

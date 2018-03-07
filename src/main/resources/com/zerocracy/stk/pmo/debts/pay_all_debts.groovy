@@ -38,6 +38,9 @@ def exec(Project pmo, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   Farm farm = binding.variables.farm
   debts.iterate().each { uid ->
+    if (!debts.expired(uid)) {
+      return
+    }
     Cash debt = debts.amount(uid)
     if (debt < new Policy().get('46.threshold', new Cash.S('$50'))) {
       return

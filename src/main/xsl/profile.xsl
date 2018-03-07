@@ -375,6 +375,11 @@ SOFTWARE.
         <xsl:value-of select="@total"/>
         <xsl:text> total)</xsl:text>
       </xsl:if>
+      <xsl:if test="@failed">
+        <xsl:text> (</xsl:text>
+        <xsl:value-of select="@failed"/>
+        <xsl:text>)</xsl:text>
+      </xsl:if>
       <xsl:text>: </xsl:text>
       <xsl:for-each select="item">
         <xsl:if test="position() &gt; 1">

@@ -49,6 +49,16 @@ public final class DebtsTest {
     }
 
     @Test
+    public void addsFailure() throws Exception {
+        final Debts debts = new Debts(new FkProject()).bootstrap();
+        final String uid = "yegor256";
+        debts.add(uid, new Cash.S("$99"), "details-11", "reason-22");
+        MatcherAssert.assertThat(debts.expired(uid), Matchers.equalTo(true));
+        debts.failure(uid, "Can't pay over PayPal");
+        MatcherAssert.assertThat(debts.expired(uid), Matchers.equalTo(false));
+    }
+
+    @Test
     public void printsSingleToXembly() throws Exception {
         final Debts debts = new Debts(new FkProject()).bootstrap();
         final String uid = "0crat";
@@ -58,6 +68,7 @@ public final class DebtsTest {
             "reason-1"
         );
         debts.add(uid, new Cash.S("$17"), "details-15", "reason-15");
+        debts.failure(uid, "Can't pay by PayPal");
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
                 new Xembler(debts.toXembly(uid)).xmlQuietly()
@@ -65,7 +76,8 @@ public final class DebtsTest {
             XhtmlMatchers.hasXPaths(
                 "/debt[@total='$116.00']",
                 "/debt[count(item)=2]",
-                "/debt/item[details='details-1 as in §1 (reason-1)']"
+                "/debt/item[details='details-1 as in §1 (reason-1)']",
+                "/debt[@failed]"
             )
         );
     }
