@@ -135,7 +135,11 @@ public final class TkFootprint implements TkRegex {
                 new XeAppend("skip", Integer.toString(skip)),
                 new XeLink(
                     "plain",
-                    String.format("%s%d?format=plain", url, skip)
+                    String.format("%s%d&format=plain", url, skip)
+                ),
+                new XeLink(
+                    "json",
+                    String.format("%s%d&format=json", url, skip)
                 ),
                 new XeWhen(
                     skip >= slice,
