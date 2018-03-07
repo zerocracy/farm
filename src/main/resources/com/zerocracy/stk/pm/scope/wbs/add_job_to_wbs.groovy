@@ -36,10 +36,8 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   Wbs wbs = new Wbs(project).bootstrap()
   String job = claim.param('job')
-  if (claim.hasParam('label') && claim.param('label') == 'bug') {
-    if (wbs.exists(job)) {
-      return
-    }
+  if (claim.hasParam('quiet') && wbs.exists(job)) {
+    return
   }
   String role = 'DEV'
   if (claim.hasParam('role')) {
@@ -60,10 +58,10 @@ def exec(Project project, XML xml) {
       String login = find.next()
       if (people.hasMentor(login)) {
         claim.copy()
-            .type('Start order')
-            .param('login', login)
-            .param('reason', claim.cid())
-            .postTo(project)
+          .type('Start order')
+          .param('login', login)
+          .param('reason', claim.cid())
+          .postTo(project)
       }
     }
   }
