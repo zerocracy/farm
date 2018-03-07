@@ -36,10 +36,10 @@ import org.takes.rs.RsPrint;
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.20
- * @checkstyle JavadocMethodCheck (500 lines)
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @todo #489:30min Write more test cases for a claim's children.
  *  Currently only the no-children case is validated.
+ * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class TkClaimTest {
 
