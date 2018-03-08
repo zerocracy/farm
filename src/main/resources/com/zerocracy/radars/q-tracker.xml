@@ -46,7 +46,7 @@ SOFTWARE.
     <code>Close job</code>
     <regex>out</regex>
     <label>out</label>
-    <help>Remove this issue from scope (WBS)</help>
+    <help>Close the order and remove this job from scope</help>
   </cmd>
   <cmd>
     <code>Request order start</code>
