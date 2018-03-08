@@ -38,6 +38,6 @@ def exec(Project project, XML xml) {
     .type('Quit a project')
     .token("job;gh:${repo.coordinates()}#${issue.number()}")
     .author('cmiranda')
-    .param('project', project.pid())
+    .param('pid', project.pid())
     .postTo(new Pmo(farm))
 }

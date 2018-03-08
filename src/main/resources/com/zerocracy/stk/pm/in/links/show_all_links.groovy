@@ -29,7 +29,7 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Show links')
   new Assume(project, xml).roles('PO')
   ClaimIn claim = new ClaimIn(xml)
-  String pid = claim.param('project')
+  String pid = project.pid()
   Farm farm = binding.variables.farm
   Collection<String> links = new Catalog(farm).links(pid)
   claim.reply(

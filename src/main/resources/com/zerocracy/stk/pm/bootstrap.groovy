@@ -56,7 +56,6 @@ def exec(Project project, XML xml) {
       claim.copy()
         .type('Set title')
         .param('title', claim.param('channel'))
-        .param('project', project.pid())
         .postTo(project)
     }
     claim.reply(

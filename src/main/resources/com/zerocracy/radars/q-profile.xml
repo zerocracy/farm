@@ -74,7 +74,7 @@ SOFTWARE.
     <help>Send your profile to the project, intending to join them</help>
     <opts>
       <opt>
-        <name>project</name>
+        <name>pid</name>
         <regex>[A-Z0-9]{9}</regex>
         <help>Project ID you're applying to, find it [here](https://www.0crat.com/board)</help>
       </opt>
@@ -105,7 +105,7 @@ SOFTWARE.
     <help>Immediately exit the project</help>
     <opts>
       <opt>
-        <name>project</name>
+        <name>pid</name>
         <regex>[A-Z0-9]{9}</regex>
         <help>Project ID you're existing, find them in [your profile](https://www.0crat.com/me)</help>
       </opt>

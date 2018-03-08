@@ -29,7 +29,7 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Remove link')
   new Assume(project, xml).roles('PO')
   ClaimIn claim = new ClaimIn(xml)
-  String pid = claim.param('project')
+  String pid = project.pid()
   String rel = claim.param('rel')
   String href = claim.param('href')
   Farm farm = binding.variables.farm

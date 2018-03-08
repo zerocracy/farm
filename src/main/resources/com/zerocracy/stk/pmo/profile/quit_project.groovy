@@ -30,7 +30,7 @@ def exec(Project pmo, XML xml) {
   new Assume(pmo, xml).type('Quit a project')
   ClaimIn claim = new ClaimIn(xml)
   Farm farm = binding.variables.farm
-  String pid = claim.param('project')
+  String pid = claim.param('pid')
   Iterable<Project> projects = farm.find("@id='${pid}'")
   if (!projects.iterator().hasNext()) {
     throw new SoftException(

@@ -35,7 +35,7 @@ def exec(Project pmo, XML xml) {
   new Assume(pmo, xml).type('Apply to a project')
   ClaimIn claim = new ClaimIn(xml)
   Farm farm = binding.variables.farm
-  String pid = claim.param('project')
+  String pid = claim.param('pid')
   Catalog catalog = new Catalog(pmo).bootstrap()
   Cash rate = new Cash.S(claim.param('rate'))
   if (!catalog.exists(pid)) {

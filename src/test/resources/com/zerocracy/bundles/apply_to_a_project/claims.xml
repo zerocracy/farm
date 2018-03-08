@@ -23,7 +23,7 @@ SOFTWARE.
     <author>g4s8</author>
     <params>
       <param name="rate">$42</param>
-      <param name="project">XXXXXX000</param>
+      <param name="pid">XXXXXX000</param>
     </params>
   </claim>
 </claims>

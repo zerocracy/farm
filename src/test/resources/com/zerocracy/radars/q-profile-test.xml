@@ -25,7 +25,7 @@ SOFTWARE.
     <code>Apply to a project</code>
     <opts>
       <opt>
-        <name>project</name>
+        <name>pid</name>
         <value>C3T46CUJJ</value>
       </opt>
       <opt>
