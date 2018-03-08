@@ -43,7 +43,7 @@ SOFTWARE.
     </opts>
   </cmd>
   <cmd>
-    <code>Remove job from WBS</code>
+    <code>Close job</code>
     <regex>out</regex>
     <label>out</label>
     <help>Remove this issue from scope (WBS)</help>

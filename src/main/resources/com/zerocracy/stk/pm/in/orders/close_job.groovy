@@ -55,6 +55,7 @@ def exec(Project project, XML xml) {
       )
     }
     if (issue.author().login() != claim.author()
+      && !issue.pull
       && !new Roles(project).bootstrap().hasRole(claim.author(), 'PO', 'ARC')) {
       claim.copy()
         .type('Notify job')
