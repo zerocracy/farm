@@ -37,7 +37,8 @@ import org.takes.rs.RsPrint;
  * @version $Id$
  * @since 0.20
  * @todo #489:30min Write more test cases for a claim's children.
- *  Currently only the no-children case is validated.
+ *  Currently only the no-children case is validated, tests for one
+ *  and for more children are required.
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
