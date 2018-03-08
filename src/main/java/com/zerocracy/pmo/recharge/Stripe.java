@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pmo;
+package com.zerocracy.pmo.recharge;
 
 import com.stripe.exception.APIConnectionException;
 import com.stripe.exception.APIException;

@@ -14,46 +14,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm
+package com.zerocracy.stk.pm.cost.funding
 
 import com.jcabi.xml.XML
-import com.zerocracy.Par
-import com.zerocracy.farm.Assume
 import com.zerocracy.Farm
 import com.zerocracy.Project
-import com.zerocracy.SoftException
+import com.zerocracy.cash.Cash
+import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pmo.Catalog
-import com.zerocracy.pmo.Pmo
+import com.zerocracy.pm.cost.Estimates
+import com.zerocracy.pm.cost.Ledger
+import com.zerocracy.pmo.recharge.Recharge
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Set on pause')
-  new Assume(project, xml).roles('PO')
+  new Assume(project, xml).notPmo()
+  new Assume(project, xml).type('Make payment')
   ClaimIn claim = new ClaimIn(xml)
-  String pid = project.pid()
   Farm farm = binding.variables.farm
-  Catalog catalog = new Catalog(new Pmo(farm)).bootstrap()
-  if (!claim.hasParam('flag')) {
-    throw new SoftException(
-      new Par(
-        'The project is %s. To change the status say `pause on` or `pause off`'
-      ).say(catalog.pause(pid) ? 'on pause' : 'alive (not on pause)')
-    )
+  Recharge recharge = new Recharge(farm, project.pid())
+  if (!recharge.exists()) {
+    return
   }
-  boolean flag = claim.param('flag') == 'on'
-  catalog.pause(pid, flag)
-  if (flag) {
-    claim.copy()
-      .type('Project was paused')
-      .postTo(project)
-  } else {
-    claim.copy()
-      .type('Project was activated')
-      .postTo(project)
+  Ledger ledger = new Ledger(project).bootstrap()
+  Cash cash = ledger.cash()
+  Cash locked = new Estimates(project).bootstrap().total()
+  if (cash > locked.add(new Cash.S('$16'))) {
+    return
   }
-  claim.reply(
-    new Par(
-      'Done, the project is currently %s'
-    ).say(catalog.pause(pid) ? 'on pause' : 'alive (not on pause)')
-  ).postTo(project)
+  recharge.pay(claim.copy()).postTo(project)
 }

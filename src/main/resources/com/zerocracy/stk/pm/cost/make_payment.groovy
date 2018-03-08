@@ -85,6 +85,11 @@ def exec(Project project, XML xml) {
         login, price, "Payment for ${job} (${minutes} minutes): ${reason}"
       )
       claim.copy()
+        .type('Payment was made')
+        .param('amount', price)
+        .param('payment_id', msg)
+        .postTo(project)
+      claim.copy()
         .type('Notify user')
         .token("user;${login}")
         .param(
@@ -97,6 +102,10 @@ def exec(Project project, XML xml) {
     } catch (IOException ex) {
       Debts debts = new Debts(farm).bootstrap()
       debts.add(login, price, "${reason} at ${job}", ex.message)
+      claim.copy()
+        .type('Payment was added to debts')
+        .param('amount', price)
+        .postTo(project)
       claim.copy()
         .type('Notify user')
         .token("user;${login}")

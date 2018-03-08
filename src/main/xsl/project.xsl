@@ -213,7 +213,21 @@ SOFTWARE.
         <span style="color:darkred">
           <xsl:text>ATTENTION</xsl:text>
         </span>
-        <xsl:text>: The project is not funded, we can't assign any new tasks to anyone.</xsl:text>
+        <xsl:text>: The project is not </xsl:text>
+        <a href="http://www.zerocracy.com/policy.html#21">
+          <xsl:text>funded</xsl:text>
+        </a>
+        <xsl:text>, we can't assign any new tasks to anyone.</xsl:text>
+      </xsl:if>
+      <xsl:if test="recharge = 'true'">
+        <xsl:text> </xsl:text>
+        <span style="color:darkred">
+          <xsl:text>We automatically </xsl:text>
+          <a href="http://www.zerocracy.com/policy.html#22">
+            <xsl:text>recharge</xsl:text>
+          </a>
+          <xsl:text> your card.</xsl:text>
+        </span>
       </xsl:if>
     </p>
     <form id="form" style="display:none" action="/pay/{project}" method="post">

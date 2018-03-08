@@ -27,6 +27,7 @@ import com.zerocracy.pm.cost.Vesting;
 import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.pmo.Catalog;
 import com.zerocracy.pmo.Pmo;
+import com.zerocracy.pmo.recharge.Recharge;
 import com.zerocracy.tk.RqUser;
 import com.zerocracy.tk.RsPage;
 import java.io.IOException;
@@ -124,6 +125,10 @@ public final class TkProject implements TkRegex {
                                     "ownership",
                                     new Equity(project).bootstrap()
                                         .ownership(user)
+                                ),
+                                new XeWhen(
+                                    new Recharge(this.farm, pid).exists(),
+                                    new XeAppend("recharge", "true")
                                 ),
                                 new XeAppend(
                                     "roles",
