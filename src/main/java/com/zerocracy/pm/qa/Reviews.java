@@ -79,7 +79,7 @@ public final class Reviews {
         final Cash bonus) throws IOException {
         if (this.exists(job)) {
             throw new SoftException(
-                new Par("QA review for %s already exists").say(job)
+                new Par("Quality review for %s already exists").say(job)
             );
         }
         try (final Item reviews = this.item()) {
@@ -110,7 +110,7 @@ public final class Reviews {
         final ClaimOut claim) throws IOException {
         if (!this.exists(job)) {
             throw new SoftException(
-                new Par("There is no QA review for %s").say(job)
+                new Par("There is no quality review for %s").say(job)
             );
         }
         final XML review;
@@ -144,7 +144,9 @@ public final class Reviews {
     public String inspector(final String job) throws IOException {
         if (!this.exists(job)) {
             throw new SoftException(
-                new Par("There is no QA review for %s, no inspector").say(job)
+                new Par(
+                    "There is no quality review for %s, no inspector"
+                ).say(job)
             );
         }
         try (final Item reviews = this.item()) {

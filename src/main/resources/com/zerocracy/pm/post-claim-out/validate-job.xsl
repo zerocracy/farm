@@ -18,7 +18,7 @@ SOFTWARE.
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" version="2.0">
   <xsl:output method="xml" indent="no"/>
   <xsl:strip-space elements="*"/>
-  <xsl:variable name="regex" select="'gh:[a-zA-Z0-9-]+/[a-zA-Z0-9-]+#[0-9]+'"/>
+  <xsl:variable name="regex" select="'gh:[a-zA-Z0-9-]+/[a-zA-Z0-9-]+#[0-9]+|none'"/>
   <xsl:template match="param[@name='job']">
     <xsl:copy>
       <xsl:if test="not(matches(text(),$regex))">

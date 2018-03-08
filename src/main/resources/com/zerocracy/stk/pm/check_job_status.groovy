@@ -134,7 +134,7 @@ def exec(Project project, XML xml) {
   if (reviews.exists(job)) {
     items.add(
       new Par(
-        'The job is waiting QA review verdict by @%s'
+        'The job is waiting quality review verdict by @%s'
       ).say(reviews.inspector(job))
     )
   }

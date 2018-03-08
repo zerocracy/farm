@@ -42,7 +42,7 @@ def exec(Project project, XML xml) {
   Reviews reviews = new Reviews(project).bootstrap()
   if (!reviews.exists(job)) {
     throw new SoftException(
-      new Par('Thanks, but QA review is not required in this job').say()
+      new Par('Thanks, but quality review is not required in this job').say()
     )
   }
   ClaimOut out = reviews.remove(job, quality == 'good', claim.copy())
@@ -58,13 +58,13 @@ def exec(Project project, XML xml) {
       .postTo(project)
   }
   claim.copy()
-    .type('QA review completed')
+    .type('Quality review completed')
     .param('login', inspector)
     .postTo(project)
   claim.copy()
     .type('Make payment')
     .param('login', inspector)
-    .param('reason', 'QA review completed')
+    .param('reason', 'Quality review completed')
     .param('minutes', new Policy().get('30.price', 8))
     .postTo(project)
 }

@@ -19,11 +19,13 @@ package com.zerocracy.stk.pm
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Par
+import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.SoftException
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.staff.Roles
+import com.zerocracy.pmo.Awards
 import com.zerocracy.pmo.Catalog
 
 def exec(Project project, XML xml) {
@@ -33,56 +35,76 @@ def exec(Project project, XML xml) {
   Roles roles = new Roles(project).bootstrap()
   ClaimIn claim = new ClaimIn(xml)
   String author = claim.author()
-  String role = 'PO'
-  if (roles.empty) {
-    roles.assign(author, role)
-    roles.assign(author, 'ARC')
-    new Catalog(farm).bootstrap().link(
-      project.pid(),
-      'slack',
-      project.pid()
-    )
-    claim.copy()
-      .type('Role was assigned')
-      .param('login', author)
-      .param('role', role)
-      .postTo(project)
-    claim.copy()
-      .type('Role was assigned')
-      .param('login', author)
-      .param('role', 'ARC')
-      .postTo(project)
-    if (claim.hasParam('channel')) {
-      claim.copy()
-        .type('Set title')
-        .param('title', claim.param('channel'))
-        .postTo(project)
-    }
-    claim.reply(
-      new Par(
-        farm,
-        'I\'m ready to manage the %s project.',
-        'When you\'re ready, you can start giving me commands,',
-        'always prefixing your messages with my name.',
-        'All project artifacts are [here](/p/%1$s).',
-        'Start with linking your project with GitHub repositories,',
-        'as explained in §17. I just assigned you to both ARC and PO',
-        'roles.'
-      ).say(project.pid())
-    ).postTo(project)
-    claim.copy().type('Notify PMO').param(
-      'message', new Par(
-        'We just bootstrapped @%s by @%s'
-      ).say(project.pid(), author)
-    ).postTo(project)
-  } else {
-    if (roles.hasRole(author, role)) {
-      throw new SoftException(
-        'This project is already ready to go'
-      )
-    }
+  int reputation = new Awards(farm, author).bootstrap().total()
+  int min = new Policy().get('12.min', 1024)
+  if (reputation < min) {
     throw new SoftException(
-      'You are not a product owner here, cannot bootstrap it'
+      new Par(
+        'Your reputation %+d is lower than the required minimum of %+d, see §12'
+      ).say(reputation, min)
     )
   }
+  if (roles.hasRole(author, 'PO')) {
+    throw new SoftException(
+      new Par(
+        'This project is already ready to go;',
+        'you are a product owner, see §12'
+      ).say()
+    )
+  }
+  if (!roles.findByRole('PO').empty) {
+    throw new SoftException(
+      new Par(
+        'This project already has a product owner;',
+        'no need to bootstrap again, see §12'
+      ).say()
+    )
+  }
+  roles.assign(author, 'PO')
+  roles.assign(author, 'ARC')
+  new Catalog(farm).bootstrap().link(
+    project.pid(),
+    'slack',
+    project.pid()
+  )
+  claim.copy()
+    .type('Role was assigned')
+    .param('login', author)
+    .param('role', 'PO')
+    .postTo(project)
+  claim.copy()
+    .type('Role was assigned')
+    .param('login', author)
+    .param('role', 'ARC')
+    .postTo(project)
+  claim.copy()
+    .type('Make payment')
+    .param('login', author)
+    .param('job', 'none')
+    .param('minutes', new Policy().get('12.price', -256))
+    .param('reason', new Par('Project %s was bootstrapped').say(project.pid()))
+    .postTo(project)
+  if (claim.hasParam('channel')) {
+    claim.copy()
+      .type('Set title')
+      .param('title', claim.param('channel'))
+      .postTo(project)
+  }
+  claim.reply(
+    new Par(
+      farm,
+      'I\'m ready to manage the %s project.',
+      'When you\'re ready, you can start giving me commands,',
+      'always prefixing your messages with my name.',
+      'All project artifacts are [here](/p/%1$s).',
+      'Start with linking your project with GitHub repositories,',
+      'as explained in §17. I just assigned you to both ARC and PO',
+      'roles.'
+    ).say(project.pid())
+  ).postTo(project)
+  claim.copy().type('Notify PMO').param(
+    'message', new Par(
+      'We just bootstrapped @%s by @%s'
+    ).say(project.pid(), author)
+  ).postTo(project)
 }
