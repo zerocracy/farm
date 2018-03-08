@@ -21,6 +21,7 @@ import com.zerocracy.cash.Cash;
 import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.pm.ClaimOut;
 import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.xembly.Xembler;
 
@@ -47,6 +48,21 @@ public final class ReviewsTest {
             XhtmlMatchers.hasXPaths(
                 "/claim/params/param[@name='cash' and .='$25.00']"
             )
+        );
+    }
+
+    @Test
+    public void fetchesInspector() throws Exception {
+        final Reviews reviews = new Reviews(new FkProject()).bootstrap();
+        final String job = "gh:yegor256/0pdd#99";
+        final String inspector = "yegor1";
+        reviews.add(
+            job, inspector, "dmarkov1",
+            new Cash.S("$11"), 1, new Cash.S("$199")
+        );
+        MatcherAssert.assertThat(
+            reviews.inspector(job),
+            Matchers.equalTo(inspector)
         );
     }
 

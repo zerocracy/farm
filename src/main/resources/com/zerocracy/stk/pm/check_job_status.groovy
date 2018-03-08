@@ -28,6 +28,7 @@ import com.zerocracy.pm.cost.Rates
 import com.zerocracy.pm.cost.Vesting
 import com.zerocracy.pm.in.Impediments
 import com.zerocracy.pm.in.Orders
+import com.zerocracy.pm.qa.Reviews
 import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pm.staff.Bans
 import org.cactoos.list.ListOf
@@ -127,6 +128,14 @@ def exec(Project project, XML xml) {
         'These users are banned and won\'t be assigned:\n    * ' +
         new Par.ToText(bans.reasons(job).join('\n    * ')).toString()
       ).say()
+    )
+  }
+  Reviews reviews = new Reviews(project).bootstrap()
+  if (reviews.exists(job)) {
+    items.add(
+      new Par(
+        'The job is waiting QA review verdict by @%s'
+      ).say(reviews.inspector(job))
     )
   }
   items.add(

@@ -136,6 +136,25 @@ public final class Reviews {
     }
 
     /**
+     * This inspector of the job.
+     * @param job The job to check
+     * @return Name of inspector
+     * @throws IOException If fails
+     */
+    public String inspector(final String job) throws IOException {
+        if (!this.exists(job)) {
+            throw new SoftException(
+                new Par("There is no QA review for %s, no inspector").say(job)
+            );
+        }
+        try (final Item reviews = this.item()) {
+            return new Xocument(reviews.path()).xpath(
+                String.format("//review[@job='%s']/inspector/text()", job)
+            ).get(0);
+        }
+    }
+
+    /**
      * This job exists in reviews?
      * @param job The job to check
      * @return TRUE if it exists
