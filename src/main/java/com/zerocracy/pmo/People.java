@@ -102,6 +102,21 @@ public final class People {
     }
 
     /**
+     * Remove person.
+     * @param id Person id
+     * @throws IOException If fails
+     */
+    public void remove(final String id) throws IOException {
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                new Directives().xpath(
+                    String.format("/people/person[@id='%s']", id)
+                ).remove()
+            );
+        }
+    }
+
+    /**
      * Touch this dude.
      * @param uid User ID
      * @throws IOException If fails
