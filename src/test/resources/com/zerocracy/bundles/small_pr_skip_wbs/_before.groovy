@@ -14,11 +14,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.adds_new_pull_request_to_wbs
+package com.zerocracy.bundles.small_pr_skip_wbs
 
 import com.jcabi.xml.XML
 import com.zerocracy.Project
 
 def exec(Project project, XML xml) {
-// assert new Wbs(project).bootstrap().exists('gh:test/test#1')
+  // @todo #510:30min Let's implement a test for small-size pull requests.
+  //  At moment it's not possible because it requires to construct specific
+  //  json for PR with fields 'additions' and 'deletions' via MkStorage.
+  //  Also `add_new_pull_request_to_wbs` should be fixed.
+  //  See https://developer.github.com/v3/pulls/#get-a-single-pull-request
 }

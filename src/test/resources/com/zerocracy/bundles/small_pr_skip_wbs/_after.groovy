@@ -14,11 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.adds_new_pull_request_to_wbs
+package com.zerocracy.bundles.small_pr_skip_wbs
 
 import com.jcabi.xml.XML
 import com.zerocracy.Project
 
 def exec(Project project, XML xml) {
-// assert new Wbs(project).bootstrap().exists('gh:test/test#1')
 }
