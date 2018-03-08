@@ -16,40 +16,43 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <claims xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.54.2/xsd/pm/claims.xsd" version="0.1" updated="2017-03-27T11:18:09.228Z">
-  <claim id="5">
+  <claim id="1">
     <created>2017-03-27T11:18:09.228Z</created>
-    <type>Close job</type>
-    <author>test</author>
-    <token>test;test</token>
+    <type>Add job to WBS</type>
+    <author>manager</author>
+    <token>job;gh:test/test#1</token>
     <params>
       <param name="job">gh:test/test#1</param>
     </params>
   </claim>
-  <claim id="7">
+  <claim id="2147483640">
     <created>2017-03-27T11:18:09.228Z</created>
-    <type>Close job</type>
-    <author>rultor</author>
-    <token>test;C123;rultor</token>
+    <type>Start order</type>
+    <author>manager</author>
+    <token>job;gh:test/test#1</token>
     <params>
-      <param name="job">gh:test/test#2</param>
+      <param name="job">gh:test/test#1</param>
+      <param name="login">coder</param>
+      <param name="reason">Just for fun</param>
     </params>
   </claim>
-  <claim id="9">
+  <claim id="2147483641">
     <created>2017-03-27T11:18:09.228Z</created>
     <type>Close job</type>
-    <author>architect</author>
-    <token>test;architect</token>
+    <author>manager</author>
+    <token>job;gh:test/test#1</token>
     <params>
-      <param name="job">gh:test/test#3</param>
+      <param name="job">gh:test/test#1</param>
     </params>
   </claim>
-  <claim id="11">
+  <claim id="2147483642">
     <created>2017-03-27T11:18:09.228Z</created>
-    <type>Close job</type>
-    <author>owner</author>
-    <token>test;owner</token>
+    <type>Complete QA review</type>
+    <author>qa-guy</author>
+    <token>job;gh:test/test#1</token>
     <params>
-      <param name="job">gh:test/test#4</param>
+      <param name="job">gh:test/test#1</param>
+      <param name="quality">good</param>
     </params>
   </claim>
 </claims>

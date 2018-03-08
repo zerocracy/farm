@@ -31,9 +31,9 @@ import org.cactoos.text.FormattedText;
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.12
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class RbOnBug implements Rebound {
-
     @Override
     public String react(final Farm farm, final Github github,
         final JsonObject event) throws IOException {
@@ -45,6 +45,7 @@ public final class RbOnBug implements Rebound {
             .token(new TokenOfIssue(issue))
             .param("job", new Job(issue))
             .param("reason", "GitHub label was attached")
+            .param("quiet", true)
             .postTo(new GhProject(farm, issue.repo()));
         return new FormattedText(
             "Issue #%d added to WBS by 'bug' label",

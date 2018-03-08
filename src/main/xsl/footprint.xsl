@@ -66,12 +66,27 @@ SOFTWARE.
           <xsl:text>Back</xsl:text>
         </a>
       </xsl:if>
-      <xsl:text> </xsl:text>
       <xsl:if test="links/link[@rel='next']">
+        <xsl:text> </xsl:text>
         <a href="{links/link[@rel='next']/@href}">
           <xsl:text>Next</xsl:text>
         </a>
       </xsl:if>
+    </p>
+    <p>
+      <xsl:text>Download as </xsl:text>
+      <xsl:if test="links/link[@rel='plain']">
+        <a href="{links/link[@rel='plain']/@href}">
+          <xsl:text>text</xsl:text>
+        </a>
+      </xsl:if>
+      <xsl:if test="links/link[@rel='json']">
+        <xsl:text>, </xsl:text>
+        <a href="{links/link[@rel='json']/@href}">
+          <xsl:text>JSON</xsl:text>
+        </a>
+      </xsl:if>
+      <xsl:text>.</xsl:text>
     </p>
   </xsl:template>
   <xsl:template match="claims">

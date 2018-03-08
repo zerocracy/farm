@@ -56,6 +56,19 @@ One of the stakeholders will find that claim and reply to it. To read the
 claim we use `com.zerocracy.pm.ClaimIn`, which helps proceeding the XML. To
 generate a claim we use `com.zerocracy.pm.ClaimOut`.
 
+There are a number of params, which are typical for many claim types:
+
+  * `cause` is the ID of the claim that was preceeding the current one;
+
+  * `flow` is a semi-colon separated list of all claim types seen before
+    the current claim;
+
+  * `job` is the unique name of the job, for example `gh:test/test#1`;
+
+  * `login` is the GitHub login of the user who the claim should deal with;
+
+  * `reason` is a free text explanation of the reason.
+
 ## Farm, Project, Item
 
 A **farm** is collection of projects.

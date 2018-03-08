@@ -26,6 +26,7 @@ import com.zerocracy.pm.ClaimOut;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import javax.json.JsonObject;
 
@@ -55,6 +56,11 @@ public final class RbOnClose implements Rebound {
             new ClaimOut()
                 .type("Close job")
                 .token(new TokenOfIssue(issue))
+                .author(
+                    event.getJsonObject("sender")
+                        .getString("login")
+                        .toLowerCase(Locale.ENGLISH)
+                )
                 .param("job", job)
                 .until(TimeUnit.MINUTES.toSeconds((long) Tv.FIFTEEN))
                 .param("reason", "GitHub issue was closed")

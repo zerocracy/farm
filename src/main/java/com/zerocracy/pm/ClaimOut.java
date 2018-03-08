@@ -98,7 +98,8 @@ public final class ClaimOut implements Iterable<Directive> {
                     "normalize-login",
                     "normalize-minutes",
                     "validate-login",
-                    "validate-job"
+                    "validate-job",
+                    "validate-cause"
                 )
             )
                 .with(new ClasspathSources())

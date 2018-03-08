@@ -79,9 +79,10 @@ public final class TkJoin implements TkRegex {
                 "(telegram: `%s`) to discuss;",
                 "if you become a mentor, you may earn",
                 "some extra income, see §45;",
-                "here is [StackOverflow](https://stackoverflow.com/users/%d)",
-                "profile of the user;",
-                "this is the message the user left for us: %s"
+                "here are [GitHub](https://github.com/%1$s)",
+                "and [StackOverflow](https://stackoverflow.com/users/%d)",
+                "profiles of the user;",
+                "this is the message the user left for us:\n\n%s"
             ).say(author, personality, telegram, stko, about)
         // @checkstyle MagicNumber (1 line)
         ).param("min", 1024).postTo(this.farm);

@@ -95,13 +95,19 @@ public final class RbOnCloseTest {
                     "number",
                     issue.number()
                 )
-            ).add(
+            )
+            .add(
                 "repository",
                 Json.createObjectBuilder().add(
                     "full_name",
                     issue.repo().coordinates().toString()
                 )
-            ).build();
+            )
+            .add(
+                "sender",
+                Json.createObjectBuilder().add("login", "yegor")
+            )
+            .build();
     }
 
     private static Iterable<Directive> closeEvent(final Issue issue) {

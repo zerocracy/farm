@@ -130,6 +130,7 @@ public final class Reviews {
             cash = cash.add(bonus);
         }
         return claim
+            .param("login", review.xpath("performer/text()").get(0))
             .param("cash", cash)
             .param("minutes", review.xpath("minutes/text()").get(0));
     }

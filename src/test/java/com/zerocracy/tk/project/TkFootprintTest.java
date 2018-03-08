@@ -17,12 +17,18 @@
 package com.zerocracy.tk.project;
 
 import com.jcabi.matchers.XhtmlMatchers;
+import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
+import com.zerocracy.Project;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.props.PropsFarm;
+import com.zerocracy.pm.ClaimOut;
+import com.zerocracy.pm.Claims;
+import com.zerocracy.pm.Footprint;
 import com.zerocracy.tk.RqWithUser;
 import com.zerocracy.tk.TkApp;
 import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.takes.rq.RqFake;
 import org.takes.rs.RsPrint;
@@ -35,6 +41,7 @@ import org.takes.rs.RsPrint;
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class TkFootprintTest {
 
     @Test
@@ -56,6 +63,32 @@ public final class TkFootprintTest {
             ),
             XhtmlMatchers.hasXPaths("//xhtml:article")
         );
+    }
+
+    @Test
+    public void rendersListOfClaimsAsText() throws Exception {
+        final Farm farm = new PropsFarm();
+        final Project project = farm.find("@id='C00000000'").iterator().next();
+        new ClaimOut().type("Hello").postTo(project);
+        final XML xml = new Claims(project).iterate().iterator().next();
+        try (final Footprint footprint = new Footprint(farm, project)) {
+            footprint.open(xml);
+            footprint.close(xml);
+            MatcherAssert.assertThat(
+                new RsPrint(
+                    new TkApp(farm).act(
+                        new RqWithUser(
+                            farm,
+                            new RqFake(
+                                "GET",
+                                "/footprint/C00000000?format=plain"
+                            )
+                        )
+                    )
+                ).printBody(),
+                Matchers.containsString("\"Hello\"")
+            );
+        }
     }
 
 }

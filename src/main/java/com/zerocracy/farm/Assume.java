@@ -115,32 +115,38 @@ public final class Assume {
         }
         final ClaimIn claim = new ClaimIn(this.xml);
         if (claim.hasAuthor()) {
+            final String author = claim.author();
             final Collection<String> mine = new Roles(this.project)
                 .bootstrap()
-                .allRoles(claim.author());
+                .allRoles(author);
             if (mine.isEmpty()) {
                 throw new SoftException(
                     new Par(
-                        "You need to have one of these roles",
-                        "in order to do what you're trying to do: %s.",
+                        "You @%s need to have one of these roles",
+                        "in order to do \"%s\": %s;",
                         "I'm sorry to say this, but at the moment you've got",
-                        "no roles in this project",
-                        "(your GitHub login is \"%s\")."
-                    ).say(String.join(", ", roles), claim.author())
+                        "no roles in this project"
+                    ).say(author, claim.type(), String.join(", ", roles))
                 );
             }
             throw new SoftException(
                 new Par(
-                    "You can't do that, unless you have one of these roles:",
-                    "%s. Your current roles are: %s."
-                ).say(String.join(", ", roles), String.join(", ", mine))
+                    "You can't do \"%s\",",
+                    "unless you have one of these roles:",
+                    "%s; current roles of @%s are: %s"
+                ).say(
+                    claim.type(),
+                    String.join(", ", roles),
+                    author,
+                    String.join(", ", mine)
+                )
             );
         }
         throw new SoftException(
             new Par(
-                "You're not allowed to do this,",
-                "you need one of these roles: %s."
-            ).say(String.join(", ", roles))
+                "You're not allowed to do \"%s\",",
+                "you need one of these roles: %s"
+            ).say(claim.type(), String.join(", ", roles))
         );
     }
 

@@ -14,35 +14,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.staff.roles
+package com.zerocracy.bundles.close_job_with_quality_review
 
+import com.jcabi.github.Github
+import com.jcabi.github.Issue
+import com.jcabi.github.Repo
+import com.jcabi.github.Repos
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
-import com.zerocracy.Par
 import com.zerocracy.Project
-import com.zerocracy.farm.Assume
-import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.staff.Roles
+import com.zerocracy.entry.ExtGithub
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Resign role')
-  new Assume(project, xml).roles('ARC', 'PO')
-  ClaimIn claim = new ClaimIn(xml)
-  String login = claim.param('login')
-  String role = claim.param('role')
-  Roles roles = new Roles(project).bootstrap()
-  roles.resign(login, role)
   Farm farm = binding.variables.farm
-  claim.reply(
-    new Par(
-      farm,
-      'Role %s resigned from @%s in %s;',
-      'roles left for this user: [%s]',
-      'see [full list](/a/%3$s?a=pm/staff/roles) of roles'
-    ).say(role, login, roles.allRoles(login).join(', '), project.pid())
-  ).postTo(project)
-  claim.copy()
-    .type('Role was resigned')
-    .postTo(project)
+  Github github = new ExtGithub(farm).value()
+  Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
+  Issue.Smart issue = new Issue.Smart(repo.issues().create('for test', ''))
+  issue.close()
 }

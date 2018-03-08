@@ -38,12 +38,16 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
   ClaimIn claim = new ClaimIn(xml)
+  Wbs wbs = new Wbs(project).bootstrap()
   String job = claim.param('job')
-  Issue issue = new Issue.Smart(new Job.Issue(github, job))
+  if (claim.hasParam('quiet') && wbs.exists(job)) {
+    return
+  }
   String role = 'DEV'
   if (claim.hasParam('role')) {
     role = claim.param('role')
   }
+  Issue issue = new Issue.Smart(new Job.Issue(github, job))
   if (role == 'REV' && issue.pull) {
     JsonObject pull = issue.pull().json()
     int lines = pull.getInt('additions') + pull.getInt('deletions')
@@ -55,7 +59,6 @@ def exec(Project project, XML xml) {
       return
     }
   }
-  Wbs wbs = new Wbs(project).bootstrap()
   wbs.add(job)
   wbs.role(job, role)
   claim.reply(
