@@ -63,10 +63,10 @@ def exec(Project project, XML xml) {
         .param(
           'message',
           new Par(
-            'The issue is closed not by its creator,',
+            '@%s the issue is closed not by @%s (its creator);',
             'I won\'t close the order;',
-            'please, re-open it and ask its creator to close it'
-          ).say()
+            'please, re-open it and ask @%2$s to close it'
+          ).say(claim.author(), issue.author().login())
         )
         .postTo(project)
       return
