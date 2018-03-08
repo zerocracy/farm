@@ -46,8 +46,9 @@ def exec(Project project, XML xml) {
     price = estimates.get(job)
   }
   int minutes = new Boosts(project).bootstrap().factor(job) * 15
-  List<String> qa = new Roles(project).bootstrap().findByRole('QA')
-  if (qa.empty) {
+  Roles roles = new Roles(project).bootstrap()
+  List<String> qa = roles.findByRole('QA')
+  if (qa.empty || roles.hasRole(performer, 'ARC', 'PO')) {
     Farm farm = binding.variables.farm
     List<String> complaints = new JobAudit(farm, project).review(job)
     if (complaints.empty) {
