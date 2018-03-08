@@ -36,12 +36,16 @@ import org.takes.rs.RsPrint;
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.20
+ * @todo #489:30min Write more test cases for a claim's children.
+ *  Currently only the no-children case is validated, tests for one
+ *  and for more children are required.
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class TkClaimTest {
+
     @Test
-    public void renderClaimXml() throws Exception {
+    public void renderClaimWithNoChildrenXml() throws Exception {
         final Farm farm = new FtFarm(new PropsFarm(new FkFarm()));
         final long cid = 42L;
         final ClaimOut claim = new ClaimOut().type("test").cid(cid);
@@ -66,8 +70,10 @@ public final class TkClaimTest {
                 ).printBody()
             ),
             XhtmlMatchers.hasXPaths(
-                String.format("/page/claim/cid[text() = %d]", cid)
+                String.format("/page/claim/cid[text() = %d]", cid),
+                String.format("/page/children")
             )
         );
     }
+
 }
