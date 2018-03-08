@@ -39,7 +39,7 @@ def exec(Project project, XML xml) {
   Wbs wbs = new Wbs(project).bootstrap()
   if (!wbs.exists(job)) {
     throw new SoftException(
-      new Par('The job is not in WBS, can\'t close').say()
+      new Par('The job is not in WBS, won\'t close the order').say()
     )
   }
   if (job.startsWith('gh:')) {

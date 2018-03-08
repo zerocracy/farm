@@ -37,13 +37,12 @@ def exec(Project project, XML xml) {
   claim.reply(
     new Par(
       farm,
-      'Role %s resigned from @%s in %s,',
-      'see [full list](/a/%3$s?a=pm/staff/roles) of roles.'
-    ).say(role, login, project.pid())
+      'Role %s resigned from @%s in %s;',
+      'roles left for this user: [%s]',
+      'see [full list](/a/%3$s?a=pm/staff/roles) of roles'
+    ).say(role, login, roles.allRoles(login).join(', '), project.pid())
   ).postTo(project)
   claim.copy()
     .type('Role was resigned')
-    .param('login', login)
-    .param('role', role)
     .postTo(project)
 }

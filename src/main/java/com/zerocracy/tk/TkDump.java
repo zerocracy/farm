@@ -48,10 +48,10 @@ public final class TkDump implements Take {
 
     /**
      * Ctor.
-     * @param farm Farm
+     * @param frm Farm
      */
-    public TkDump(final Farm farm) {
-        this.farm = farm;
+    public TkDump(final Farm frm) {
+        this.farm = frm;
     }
 
     @Override
