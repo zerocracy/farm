@@ -38,6 +38,9 @@ def exec(Project project, XML xml) {
   String job = claim.param('job')
   Wbs wbs = new Wbs(project).bootstrap()
   if (!wbs.exists(job)) {
+    // @todo #536:30min Every time we close a ticket in GitHub, which was not a job,
+    //  or when we close a pull request, which was not merged, we should
+    //  add it to blanks.xml
     throw new SoftException(
       new Par('The job is not in WBS, won\'t close the order').say()
     )
