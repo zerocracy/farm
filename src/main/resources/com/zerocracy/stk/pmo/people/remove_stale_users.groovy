@@ -34,28 +34,25 @@ def exec(Project pmo, XML xml) {
   new Assume(pmo, xml).type('Ping daily')
   People people = new People(pmo).bootstrap()
   ClaimIn claim = new ClaimIn(xml)
-  people.iterate().each {
-    String username = people.link(it, 'github')
-    if (!exists(username)) {
+  people.iterate().each { uid ->
+    if (!exists(uid)) {
       claim.copy()
         .type('Notify user')
-        .token("user;$it")
+        .token("user;$uid")
         .param(
           'message',
           new Par(
             'We can\'t find your Github account: %s, ',
-            'please provide correct account and update your links,',
-            'otherwise your profile will be deleted in %d hours.'
-          ).say(it, 12)
+            'your profile will be deleted in %d hours.'
+          ).say(uid, 12)
       ).postTo(pmo)
       // @todo #555:30min Let's implement 'Delete user' stakeholder
-      //  which should find user by id from 'login' param, check his/her
-      //  existence on Github by link and delete if not exist. Also
-      //  'remove_stale_users._after' test should be fixed.
+      //  which should find user by id from 'login' param and delete it.
+      //  Also 'remove_stale_users._after' test should be fixed.
       claim.copy()
         .type('Delete user')
         .until(TimeUnit.HOURS.toSeconds(12))
-        .param('login', it)
+        .param('login', uid)
         .postTo(pmo)
     }
   }
