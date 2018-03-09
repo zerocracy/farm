@@ -59,7 +59,9 @@ import org.cactoos.text.JoinedText;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Assume;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -124,6 +126,14 @@ public final class BundlesTest {
     private String name;
 
     private Path home;
+
+    @BeforeClass
+    public static void maybeSkipThem() {
+        Assume.assumeTrue(
+            "Parameter skipBundlesTest found, skipping...",
+            System.getProperty("skipBundlesTest") == null
+        );
+    }
 
     @Parameterized.Parameters(name = "{0}")
     public static Collection<Object[]> bundles() {
