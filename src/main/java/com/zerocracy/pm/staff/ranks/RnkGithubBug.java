@@ -19,11 +19,9 @@ package com.zerocracy.pm.staff.ranks;
 import com.jcabi.github.Github;
 import com.jcabi.github.IssueLabels;
 import com.zerocracy.radars.github.Job;
-import java.io.IOException;
 import java.util.Comparator;
-import org.cactoos.Func;
-import org.cactoos.func.IoCheckedFunc;
-import org.cactoos.func.StickyFunc;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Give higher rank for github tickets with 'bug' label.
@@ -36,47 +34,40 @@ public final class RnkGithubBug implements Comparator<String> {
     /**
      * Function to check github bug label.
      */
-    private final Func<String, Boolean> bug;
+    private final Github ghb;
+    /**
+     * Bug jobs cache.
+     */
+    private final Map<String, Boolean> cache;
     /**
      * Ctor.
      * @param github Github
      */
     public RnkGithubBug(final Github github) {
-        this.bug = new StickyFunc<>(new RnkGithubBug.IsJob(github));
+        this.ghb = github;
+        this.cache = new HashMap<>(1);
     }
 
     @Override
     public int compare(final String left, final String right) {
-        try {
-            return Boolean.compare(
-                new IoCheckedFunc<>(this.bug).apply(right),
-                new IoCheckedFunc<>(this.bug).apply(left)
-            );
-        } catch (final IOException err) {
-            throw new IllegalArgumentException(err);
-        }
+        return Boolean.compare(this.isBug(right), this.isBug(left));
     }
 
     /**
-     * Is a job function.
+     * Does this job have 'bug' label.
+     * @param job Job id
+     * @return True if has
      */
-    private static final class IsJob implements Func<String, Boolean> {
-        /**
-         * Github.
-         */
-        private final Github ghb;
-        /**
-         * Ctor.
-         * @param github Github
-         */
-        private IsJob(final Github github) {
-            this.ghb = github;
-        }
-        @Override
-        public Boolean apply(final String input) throws Exception {
-            return input.startsWith("gh:") && new IssueLabels.Smart(
-                new Job.Issue(this.ghb, input).labels()
+    private boolean isBug(final String job) {
+        final boolean bug;
+        if (this.cache.containsKey(job)) {
+            bug = this.cache.get(job);
+        } else {
+            bug = job.startsWith("gh:") && new IssueLabels.Smart(
+                new Job.Issue(this.ghb, job).labels()
             ).contains("bug");
+            this.cache.put(job, bug);
         }
+        return bug;
     }
 }
