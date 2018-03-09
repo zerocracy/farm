@@ -99,9 +99,15 @@ SOFTWARE.
         </a>
         <xsl:if test="identity">
           <xsl:text> &#xB7; </xsl:text>
-          <a href="{links/link[@rel='takes:logout']/@href}" title="Log out">
-            <xsl:text>Exit</xsl:text>
-          </a>
+          <!--
+            @todo #533:30min Let's make this submit button and form looks like <a> link.
+             Also don't forget to do same with logout button in inner-layout.xsl
+          -->
+          <form action="{links/link[@rel='takes:logout']/@href}" method="post">
+            <button type="submit">
+              <xsl:text>Exit</xsl:text>
+            </button>
+          </form>
         </xsl:if>
       </p>
     </div>
