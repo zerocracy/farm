@@ -33,6 +33,9 @@ import org.xembly.Directives;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.12
+ * @todo #422:30min Modify agenda.xsd zerocracy/datum and make the element
+ *  order accept title as an attribute (same as job). Then, in method add(...)
+ *  from this class, make sure to specify the title as .attr("title", title).
  */
 public final class Agenda {
 
@@ -127,7 +130,6 @@ public final class Agenda {
                     .xpath("/agenda")
                     .add("order")
                     .attr("job", job)
-                    .attr("title", title)
                     .add("role").set(role).up()
                     .add("added").set(new DateAsText().asString()).up()
                     .add("project")
