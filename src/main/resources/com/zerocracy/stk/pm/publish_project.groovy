@@ -40,11 +40,6 @@ def exec(Project project, XML xml) {
         'The project is visible now at the [board](/board), according to §26'
       ).say()
     ).postTo(project)
-    claim.copy().type('Notify PMO').param(
-      'message', new Par(
-        'The project %s was published by @%s'
-      ).say(project.pid(), claim.author())
-    ).postTo(project)
     claim.copy()
       .type('Project was published')
       .param('author', claim.author())
@@ -52,9 +47,11 @@ def exec(Project project, XML xml) {
       .postTo(new Pmo(farm))
     claim.copy().type('Notify all').param(
       'message',
-      new Par('The project %s was published by @%s').say(
-        project.pid(), claim.author()
-      )
+      new Par(
+        farm,
+        'The project %s was published by @%s;',
+        'feel free to apply, as explained in §2'
+      ).say(project.pid(), claim.author())
     ).param('min', new Policy().get('33.min-live', 0)).postTo(project)
   } else if ('off' == mode) {
     catalog.publish(project.pid(), false)
