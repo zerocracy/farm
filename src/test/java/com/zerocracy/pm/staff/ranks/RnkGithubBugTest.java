@@ -44,16 +44,20 @@ public final class RnkGithubBugTest {
         final Repo repo = github.repos().create(
             new Repos.RepoCreate("bugs", false)
         );
-        final Issue feature = repo.issues().create("A feature", "");
+        final List<String> jobs = new ArrayList<>(3);
+        jobs.add(new Job(repo.issues().create("A feature 1", "")).toString());
         final Issue bug = repo.issues().create("A bug", "");
         new IssueLabels.Smart(bug.labels()).addIfAbsent("bug");
-        final List<String> jobs = new ArrayList<>(2);
         jobs.add(new Job(bug).toString());
+        jobs.add(new Job(repo.issues().create("A feature 2", "")).toString());
         jobs.sort(new RnkGithubBug(github));
-        jobs.add(new Job(feature).toString());
         MatcherAssert.assertThat(
             jobs,
-            Matchers.contains("gh:test/bugs#2", "gh:test/bugs#1")
+            Matchers.contains(
+                "gh:test/bugs#2",
+                "gh:test/bugs#1",
+                "gh:test/bugs#3"
+            )
         );
     }
 }
