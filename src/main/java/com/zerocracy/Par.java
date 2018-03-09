@@ -77,14 +77,14 @@ public final class Par {
             new JoinedText(" ", this.parts).asString(), args
         );
         out = Par.replace(
-            out, Pattern.compile("(?<= |^)@([a-z-0-9]{3,})"),
+            out, Par.pattern("@([a-z-0-9]{3,})"),
             matcher -> String.format(
                 "%s[/z](https://www.0crat.com/u/%s)",
                 matcher.group(0), matcher.group(1)
             )
         );
         out = Par.replace(
-            out, Pattern.compile("(?<= |^)(C[A-Z0-9]{8})"),
+            out, Par.pattern("(C[A-Z0-9]{8})"),
             matcher -> {
                 String title = matcher.group(0);
                 final Catalog catalog = new Catalog(this.farm).bootstrap();
@@ -99,14 +99,14 @@ public final class Par {
         );
         out = Par.replace(
             out,
-            Pattern.compile("(?<= |^)gh:([a-zA-Z0-9-]+/[a-zA-Z0-9-.]+)#(\\d+)"),
+            Par.pattern("gh:([a-zA-Z0-9-]+/[a-zA-Z0-9-.]+)#(\\d+)"),
             matcher -> String.format(
                 "[#%s](https://github.com/%s/issues/%1$s)",
                 matcher.group(2), matcher.group(1)
             )
         );
         out = Par.replace(
-            out, Pattern.compile("(\\d+) ([a-z]+)\\(s\\)"),
+            out, Par.pattern("(\\d+) ([a-z]+)\\(s\\)"),
             matcher -> {
                 final int count = Integer.parseInt(matcher.group(1));
                 final String txt;
@@ -119,31 +119,48 @@ public final class Par {
             }
         );
         out = Par.replace(
-            out, Pattern.compile("(?<= |^)§(\\d+)"),
+            out, Par.pattern("§(\\d+)"),
             matcher -> String.format(
                 "[%s](http://www.zerocracy.com/policy.html#%s)",
                 matcher.group(0), matcher.group(1)
             )
         );
         out = Par.replace(
-            out, Pattern.compile("(?<= |^)(\\[[^]]+])\\((/\\d{4}/[^)]+)\\)"),
+            out, Par.pattern("(\\[[^]]+])\\((/\\d{4}/[^)]+)\\)"),
             matcher -> String.format(
                 "%s(http://www.yegor256.com%s)",
                 matcher.group(1), matcher.group(2)
             )
         );
         out = Par.replace(
-            out, Pattern.compile("(?<= |^)(\\[[^]]+])\\((/[^)]+)\\)"),
+            out, Par.pattern("(\\[[^]]+])\\((/[^)]+)\\)"),
             matcher -> String.format(
                 "%s(https://www.0crat.com%s)",
                 matcher.group(1), matcher.group(2)
             )
         );
         out = Par.replace(
-            out, Pattern.compile("(?<= |^)(ARC|DEV|REV|PO|QA|TST|HLP)"),
+            out, Par.pattern("(ARC|DEV|REV|PO|QA|TST|HLP)"),
             matcher -> String.format("`%s`", matcher.group(0))
         );
         return out;
+    }
+
+    /**
+     * Create a pattern instance from regex.
+     * @param regex Regex
+     * @return Patter
+     * @throws IOException If fails
+     */
+    private static Pattern pattern(final String regex) throws IOException {
+        return Pattern.compile(
+            new JoinedText(
+                "",
+                "(?<= |^)",
+                regex,
+                "(?=(?:[^`]*`[^`]*`)*[^`]*$)"
+            ).asString()
+        );
     }
 
     /**

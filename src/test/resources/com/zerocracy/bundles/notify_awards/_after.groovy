@@ -37,6 +37,6 @@ def exec(Project project, XML xml) {
   String comment = new Comment.Smart(issue.comments().get(1)).body()
   MatcherAssert.assertThat(
     comment,
-    Matchers.startsWith('Test reason: +15 points just awarded to ')
+    Matchers.startsWith('Test reason: +15 point(s) just awarded to ')
   )
 }
