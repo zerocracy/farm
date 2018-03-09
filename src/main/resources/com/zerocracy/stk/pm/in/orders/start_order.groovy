@@ -20,9 +20,11 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
+import com.zerocracy.SoftException
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.in.Orders
+import com.zerocracy.pm.qa.Reviews
 import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.People
@@ -32,6 +34,15 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Start order')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
+  Reviews reviews = new Reviews(project).bootstrap()
+  if (reviews.exists(job)) {
+    throw new SoftException(
+      new Par(
+        'Job %s is pending quality review,',
+        'can\'t start a new order'
+      ).say(job)
+    )
+  }
   String login = claim.param('login')
   String reason = claim.param('reason')
   Orders orders = new Orders(project).bootstrap()
