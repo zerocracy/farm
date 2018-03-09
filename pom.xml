@@ -178,7 +178,7 @@ SOFTWARE.
     <dependency>
       <groupId>org.takes</groupId>
       <artifactId>takes</artifactId>
-      <version>1.8.7</version>
+      <version>1.9</version>
     </dependency>
     <dependency>
       <groupId>org.reflections</groupId>
