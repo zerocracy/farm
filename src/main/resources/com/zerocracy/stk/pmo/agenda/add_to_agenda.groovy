@@ -16,15 +16,18 @@
  */
 package com.zerocracy.stk.pmo.agenda
 
+import com.jcabi.github.Issue
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.cost.Estimates
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pmo.Agenda
+import com.zerocracy.radars.github.Job
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
@@ -38,8 +41,11 @@ def exec(Project project, XML xml) {
   String owner = orders.performer(job)
   String role = new Wbs(project).bootstrap().role(job)
   Farm farm = binding.variables.farm
+  Issue.Smart issue = new Issue.Smart(
+    new Job.Issue(new ExtGithub(farm).value(), job)
+  )
   Agenda agenda = new Agenda(farm, owner).bootstrap()
-  agenda.add(job, role)
+  agenda.add(job, issue.title(), role)
   Estimates estimates = new Estimates(project).bootstrap()
   if (estimates.exists(job)) {
     agenda.estimate(job, estimates.get(job))

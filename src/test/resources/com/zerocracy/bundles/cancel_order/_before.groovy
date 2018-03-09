@@ -30,9 +30,9 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
   Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
-  Issue issue = repo.issues().create('Test', '')
-  new Issue.Smart(issue).assign('g4s8')
+  Issue.Smart issue = new Issue.Smart(repo.issues().create('Test', ''))
+  issue.assign('g4s8')
   new Agenda(farm, 'g4s8').bootstrap().add(
-    "gh:${repo.coordinates()}#${issue.number()}", 'QA'
+    "gh:${repo.coordinates()}#${issue.number()}", issue.title(), 'QA'
   )
 }

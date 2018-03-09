@@ -44,7 +44,7 @@ public final class TkProfileTest {
         final Farm farm = new PropsFarm(new FkFarm());
         final String uid = "yegor256";
         new Awards(farm, uid).bootstrap().add(1, "gh:test/test#1", "reason");
-        new Agenda(farm, uid).bootstrap().add("gh:test/test#2", "QA");
+        new Agenda(farm, uid).bootstrap().add("gh:test/test#2", "Title", "QA");
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
                 new RsPrint(
