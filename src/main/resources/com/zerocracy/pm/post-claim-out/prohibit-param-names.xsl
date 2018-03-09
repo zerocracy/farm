@@ -23,8 +23,10 @@ SOFTWARE.
       <xsl:if test="@name='project' or @name='cid' or @name='type' or @name='version' or @name='created' or @name='author' or @name='token'">
         <xsl:message terminate="yes">
           <xsl:text>Claim param name "</xsl:text>
-          <xsl:value-of select="text()"/>
-          <xsl:text>" is prohibited to use, since it will clash with other claim attributes</xsl:text>
+          <xsl:value-of select="@name"/>
+          <xsl:text>" is prohibited to use in "</xsl:text>
+          <xsl:value-of select="../../type"/>
+          <xsl:text>", since it will clash with other claim attributes</xsl:text>
         </xsl:message>
       </xsl:if>
       <xsl:apply-templates select="node()|@*"/>
