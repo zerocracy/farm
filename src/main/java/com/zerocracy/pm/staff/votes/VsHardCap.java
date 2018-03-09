@@ -64,16 +64,16 @@ public final class VsHardCap implements Votes {
         if (mine > this.cap) {
             log.append(
                 Logger.format(
-                    "%d jobs in the agenda already, too many",
-                    mine
+                    "%d jobs in the agenda already, too many (max is %d)",
+                    mine, this.cap
                 )
             );
             vote = 1.0d;
         } else {
             log.append(
                 Logger.format(
-                    "%d jobs in the agenda, still enough room",
-                    mine
+                    "%d jobs in the agenda, still enough room (max is %d)",
+                    mine, this.cap
                 )
             );
             vote = 0.0d;
