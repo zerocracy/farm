@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pmo.awards
 
 import com.jcabi.xml.XML
+import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
@@ -27,7 +28,7 @@ def exec(Project pmo, XML xml) {
   new Assume(pmo, xml).isPmo()
   new Assume(pmo, xml).type('Ping daily')
   ClaimIn claim = new ClaimIn(xml)
-  Date outdated = claim.created() - 90
+  Date outdated = claim.created() - new Policy().get('18.days', 90)
   new People(pmo).bootstrap().iterate().each {
     new Awards(pmo, it).bootstrap().removeOlderThan(outdated)
   }

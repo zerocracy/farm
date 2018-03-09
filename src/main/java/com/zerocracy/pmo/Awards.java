@@ -21,7 +21,6 @@ import com.zerocracy.Item;
 import com.zerocracy.Project;
 import com.zerocracy.Xocument;
 import java.io.IOException;
-import java.time.Instant;
 import java.util.Date;
 import org.cactoos.text.JoinedText;
 import org.cactoos.time.DateAsText;
@@ -108,12 +107,7 @@ public final class Awards {
      */
     public void add(final int points, final String job, final String reason)
         throws IOException {
-        this.add(
-            points,
-            job,
-            reason,
-            Date.from(Instant.ofEpochMilli(System.currentTimeMillis()))
-        );
+        this.add(points, job, reason, new Date());
     }
 
     /**
