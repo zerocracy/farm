@@ -20,28 +20,58 @@ import com.jcabi.github.Github
 import com.jcabi.github.User
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
+import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
+import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.People
 
-@SuppressWarnings('CatchException')
+import java.util.concurrent.TimeUnit
+
 def exec(Project pmo, XML xml) {
   new Assume(pmo, xml).isPmo()
   new Assume(pmo, xml).type('Ping daily')
   People people = new People(pmo).bootstrap()
+  ClaimIn claim = new ClaimIn(xml)
+  people.iterate().each {
+    String username = people.link(it, 'github')
+    if (!exists(username)) {
+      claim.copy()
+        .type('Notify user')
+        .token("user;$it")
+        .param(
+          'message',
+          new Par(
+            'We can\'t find your Github account: %s, ',
+            'please provide correct account and update your links,',
+            'otherwise your profile will be deleted in %d hours.'
+          ).say(it, 12)
+      ).postTo(pmo)
+      // @todo #555:30min Let's implement 'Delete user' stakeholder
+      //  which should find user by id from 'login' param, check his/her
+      //  existence on Github by link and delete if not exist. Also
+      //  'remove_stale_users._after' test should be fixed.
+      claim.copy()
+        .type('Delete user')
+        .until(TimeUnit.HOURS.toSeconds(12))
+        .param('login', it)
+        .postTo(pmo)
+    }
+  }
+}
+
+@SuppressWarnings('CatchException')
+boolean exists(String username) {
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
-  people.iterate().each { id ->
-    people.links(id, 'github').each {
-      // @todo #555:30min It's not possible to check user existence because of
-      // jcabi-github bug: https://github.com/jcabi/jcabi-github/issues/1359
-      // let's replace this ugly construction with something else after bug fix.
-      try {
-        new User.Smart(github.users().get(it)).id()
-      } catch (Exception ignore) {
-        people.remove(id)
-      }
-    }
+  // @todo #555:30min It's not possible to check user existence because of
+  //  jcabi-github bug: https://github.com/jcabi/jcabi-github/issues/1359
+  //  let's replace this ugly construction with something else after bug fix.
+  try {
+    new User.Smart(github.users().get(username)).id()
+    return true
+  } catch (Exception ignore) {
+    return false
   }
 }

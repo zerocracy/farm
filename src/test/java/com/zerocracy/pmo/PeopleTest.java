@@ -235,4 +235,18 @@ public final class PeopleTest {
             Matchers.emptyIterable()
         );
     }
+
+    @Test
+    public void getSingleLink() throws Exception {
+        final People people = new People(new FkProject()).bootstrap();
+        final String uid = "linker";
+        people.invite(uid, uid);
+        final String rel = "some-rel11";
+        final String href = "some-href22";
+        people.link(uid, rel, href);
+        MatcherAssert.assertThat(
+            people.link(uid, rel),
+            Matchers.equalTo(href)
+        );
+    }
 }

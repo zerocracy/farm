@@ -560,6 +560,31 @@ public final class People {
     }
 
     /**
+     * Get single link by REL.
+     * @param uid User id
+     * @param rel Link rel
+     * @return Single link href
+     * @throws IOException If there is no links or too many
+     */
+    @SuppressWarnings("PMD.PrematureDeclaration")
+    public String link(final String uid, final String rel)
+        throws IOException {
+        final Iterator<String> links = this.links(uid, rel).iterator();
+        if (!links.hasNext()) {
+            throw new IOException(
+                String.format("No such link '%s' for '%s'", rel, uid)
+            );
+        }
+        final String link = links.next();
+        if (links.hasNext()) {
+            throw new IOException(
+                String.format("Too many links '%s' for '%s'", rel, uid)
+            );
+        }
+        return link;
+    }
+
+    /**
      * Set vacation mode.
      * @param uid User ID
      * @param mode TRUE if vacation mode on
