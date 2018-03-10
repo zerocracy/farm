@@ -128,7 +128,7 @@ public final class BundlesTest {
     private Path home;
 
     @BeforeClass
-    public static void maybeSkipThem() {
+    public static void checkShouldRun() {
         Assume.assumeTrue(
             "Parameter skipBundlesTest found, skipping...",
             System.getProperty("skipBundlesTest") == null
