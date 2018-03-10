@@ -36,6 +36,8 @@ import org.xembly.Directives;
  * @todo #422:30min Modify agenda.xsd zerocracy/datum and make the element
  *  order accept title as an attribute (same as job). Then, in method add(...)
  *  from this class, make sure to specify the title as .attr("title", title).
+ *  Afterwards, the title has be displayed on the Agenda page (agenda.xsl
+ *  has to be modified).
  */
 public final class Agenda {
 

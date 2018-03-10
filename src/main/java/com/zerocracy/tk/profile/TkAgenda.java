@@ -31,11 +31,6 @@ import org.takes.facets.fork.TkRegex;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.12
- * @todo #422:30min Display the title of the order on the Agenda page.
- *  The Issue's title is read from Github in add_to_agenda.groovy and
- *  in the agenda, it is an attribute of element order, same as its id (job).
- *  This has as impediment the modification of agenda.xsd to accept the
- *  title (see puzzle in Agenda.java, line 36.
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class TkAgenda implements TkRegex {
