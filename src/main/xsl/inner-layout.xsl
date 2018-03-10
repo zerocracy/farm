@@ -57,8 +57,8 @@ SOFTWARE.
             </a>
           </li>
           <li>
-            <form action="{links/link[@rel='takes:logout']/@href}" method="post">
-              <button type="submit">
+            <form action="{links/link[@rel='takes:logout']/@href}" method="post" style="display:list-item;margin:0;padding:0">
+              <button type="submit" class="link">
                 <xsl:text>Exit</xsl:text>
               </button>
             </form>
