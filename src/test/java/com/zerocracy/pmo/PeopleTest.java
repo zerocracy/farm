@@ -37,7 +37,7 @@ import org.junit.Test;
  * @since 0.1
  * @checkstyle JavadocMethodCheck (500 lines)
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 public final class PeopleTest {
 
     @Test
@@ -224,4 +224,16 @@ public final class PeopleTest {
         );
     }
 
+    @Test
+    public void reputation() throws Exception {
+        final People people = new People(new FkProject()).bootstrap();
+        final String uid = "user2345";
+        people.invite(uid, uid);
+        final int rep = 1024;
+        people.reputation(uid, rep);
+        MatcherAssert.assertThat(
+            people.reputation(uid),
+            Matchers.equalTo(rep)
+        );
+    }
 }

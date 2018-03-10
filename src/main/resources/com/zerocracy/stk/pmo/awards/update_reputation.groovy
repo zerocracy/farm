@@ -14,21 +14,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.awards_points
+package com.zerocracy.stk.pmo.awards
 
-import com.jcabi.github.Github
-import com.jcabi.github.Repo
-import com.jcabi.github.Repos
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
-import com.zerocracy.entry.ExtGithub
+import com.zerocracy.farm.Assume
+import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pmo.Awards
 import com.zerocracy.pmo.People
 
 def exec(Project project, XML xml) {
+  new Assume(project, xml).type('Award points were added')
+  ClaimIn claim = new ClaimIn(xml)
+  String login = claim.param('login')
   Farm farm = binding.variables.farm
-  Github github = new ExtGithub(farm).value()
-  new People(farm).bootstrap().invite('yegor-a', '0crat')
-  Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
-  repo.issues().create('hello, world', '')
+  Awards awards = new Awards(farm, login).bootstrap()
+  People people = new People(farm).bootstrap()
+  people.reputation(login, awards.total())
 }

@@ -20,9 +20,23 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.pmo.Awards
+import com.zerocracy.pmo.People
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
-  Awards awards = new Awards(farm, 'yegor-a').bootstrap()
-  assert awards.total() == 30
+  String login = 'yegor-a'
+  Awards awards = new Awards(farm, login).bootstrap()
+  MatcherAssert.assertThat(
+    'awards',
+    awards.total(),
+    Matchers.equalTo(30)
+  )
+  People people = new People(farm).bootstrap()
+  MatcherAssert.assertThat(
+    'reputation',
+    people.reputation(login),
+    Matchers.equalTo(30)
+  )
 }
