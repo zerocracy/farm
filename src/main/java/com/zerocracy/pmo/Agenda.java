@@ -29,7 +29,8 @@ import org.cactoos.time.DateAsText;
 import org.xembly.Directives;
 
 /**
- * Agenda of one person.
+ * Agenda of one person in one Project, tasks that
+ * are assigned to them in that Project.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
@@ -151,6 +152,20 @@ public final class Agenda {
                 new Directives()
                     .xpath(String.format("/agenda/order[@job='%s']", job))
                     .strict(1)
+                    .remove()
+            );
+        }
+    }
+
+    /**
+     * Remove all orders.
+     * @throws IOException If fails.
+     */
+    public void removeAll() throws IOException {
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                new Directives()
+                    .xpath("/agenda/order")
                     .remove()
             );
         }
