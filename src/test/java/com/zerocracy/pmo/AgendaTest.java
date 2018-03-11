@@ -27,6 +27,7 @@ import org.junit.Test;
  * @version $Id$
  * @since 0.12
  * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle AvoidDuplicateLiterals (600 lines)
  */
 public final class AgendaTest {
 
@@ -48,9 +49,9 @@ public final class AgendaTest {
     @Test
     public void removesAllOrders() throws Exception {
         final Agenda agenda = new Agenda(new FkProject(), "mihai").bootstrap();
-        agenda.add("gh:test2/test#1", "REV1");
-        agenda.add("gh:test2/test#2", "QA1");
-        agenda.add("gh:test2/test#3", "DEV1");
+        agenda.add("gh:test2/test#1", "REV");
+        agenda.add("gh:test2/test#2", "QA");
+        agenda.add("gh:test2/test#3", "DEV");
         MatcherAssert.assertThat(agenda.jobs(), Matchers.not(0));
         agenda.removeAll();
         MatcherAssert.assertThat(agenda.jobs(), Matchers.hasSize(0));
@@ -63,7 +64,7 @@ public final class AgendaTest {
     @Test
     public void removesSoleOrder() throws Exception {
         final Agenda agenda = new Agenda(new FkProject(), "john").bootstrap();
-        agenda.add("gh:test3/test#1", "REV2");
+        agenda.add("gh:test3/test#1", "ARC");
         MatcherAssert.assertThat(agenda.jobs(), Matchers.hasSize(1));
         agenda.removeAll();
         MatcherAssert.assertThat(agenda.jobs(), Matchers.hasSize(0));
