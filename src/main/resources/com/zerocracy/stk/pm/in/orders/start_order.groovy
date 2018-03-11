@@ -19,6 +19,7 @@ package com.zerocracy.stk.pm.in.orders
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Par
+import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.SoftException
 import com.zerocracy.farm.Assume
@@ -27,6 +28,7 @@ import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.qa.Reviews
 import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pm.staff.Roles
+import com.zerocracy.pmo.Agenda
 import com.zerocracy.pmo.People
 
 def exec(Project project, XML xml) {
@@ -44,6 +46,15 @@ def exec(Project project, XML xml) {
     )
   }
   String login = claim.param('login')
+  Farm farm = binding.variables.farm
+  if (new Agenda(farm, login).jobs() > new Policy().get('3.absolute-max', 32)) {
+    throw new SoftException(
+      new Par(
+        'User @%s has too many jobs in the agenda already,',
+        'I won\'t assign anymore, sorry, see §3'
+      ).say(login)
+    )
+  }
   String reason = claim.param('reason')
   Orders orders = new Orders(project).bootstrap()
   orders.assign(job, login, reason)
@@ -78,7 +89,6 @@ def exec(Project project, XML xml) {
       'but they can request to join, as §1 explains'
     ).say(login)
   }
-  Farm farm = binding.variables.farm
   if (new People(farm).bootstrap().vacation(login)) {
     msg += new Par(
       'We should be aware that %s is on vacation!',

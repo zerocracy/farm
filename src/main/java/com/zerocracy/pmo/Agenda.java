@@ -24,6 +24,7 @@ import com.zerocracy.SoftException;
 import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
 import java.io.IOException;
+import java.util.Collection;
 import org.cactoos.time.DateAsText;
 import org.xembly.Directives;
 
@@ -82,7 +83,7 @@ public final class Agenda {
      * @return List of job IDs
      * @throws IOException If fails
      */
-    public Iterable<String> jobs() throws IOException {
+    public Collection<String> jobs() throws IOException {
         try (final Item item = this.item()) {
             return new Xocument(item.path()).xpath(
                 "/agenda/order/@job"

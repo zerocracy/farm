@@ -22,7 +22,6 @@ import com.zerocracy.pm.staff.Votes;
 import com.zerocracy.pmo.Agenda;
 import com.zerocracy.pmo.Awards;
 import java.io.IOException;
-import org.cactoos.iterable.LengthOf;
 
 /**
  * Says "yes" when there is no room for this developer.
@@ -49,9 +48,7 @@ public final class VsNoRoom implements Votes {
     @Override
     public double take(final String login, final StringBuilder log)
         throws IOException {
-        final int total = new LengthOf(
-            new Agenda(this.pmo, login).bootstrap().jobs()
-        ).intValue();
+        final int total = new Agenda(this.pmo, login).bootstrap().jobs().size();
         final double rate;
         final int max = this.threshold(login);
         if (total >= max) {
