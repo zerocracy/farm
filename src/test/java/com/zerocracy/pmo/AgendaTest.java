@@ -41,4 +41,43 @@ public final class AgendaTest {
         MatcherAssert.assertThat(agenda.jobs(), Matchers.hasItem(second));
     }
 
+    /**
+     * Agenda can remove all the orders.
+     * @throws Exception If something goes wrong.
+     */
+    @Test
+    public void removesAllOrders() throws Exception {
+        final Agenda agenda = new Agenda(new FkProject(), "mihai").bootstrap();
+        agenda.add("gh:test2/test#1", "REV1");
+        agenda.add("gh:test2/test#2", "QA1");
+        agenda.add("gh:test2/test#3", "DEV1");
+        MatcherAssert.assertThat(agenda.jobs(), Matchers.not(0));
+        agenda.removeAll();
+        MatcherAssert.assertThat(agenda.jobs(), Matchers.hasSize(0));
+    }
+
+    /**
+     * Agenda can remove the only order.
+     * @throws Exception If something goes wrong.
+     */
+    @Test
+    public void removesSoleOrder() throws Exception {
+        final Agenda agenda = new Agenda(new FkProject(), "john").bootstrap();
+        agenda.add("gh:test3/test#1", "REV2");
+        MatcherAssert.assertThat(agenda.jobs(), Matchers.hasSize(1));
+        agenda.removeAll();
+        MatcherAssert.assertThat(agenda.jobs(), Matchers.hasSize(0));
+    }
+
+    /**
+     * Agenda can "remove" orders if it's empty.
+     * @throws Exception If something goes wrong.
+     */
+    @Test
+    public void removesOrdersFromEmptyAgenda() throws Exception {
+        final Agenda agenda = new Agenda(new FkProject(), "jane").bootstrap();
+        MatcherAssert.assertThat(agenda.jobs(), Matchers.hasSize(0));
+        agenda.removeAll();
+        MatcherAssert.assertThat(agenda.jobs(), Matchers.hasSize(0));
+    }
 }
