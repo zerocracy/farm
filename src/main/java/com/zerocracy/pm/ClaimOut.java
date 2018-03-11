@@ -90,7 +90,7 @@ public final class ClaimOut implements Iterable<Directive> {
             new XSLChain(
                 new Mapped<>(
                     s -> XSLDocument.make(
-                        ClaimOut.class.getResourceAsStream(
+                        ClaimOut.class.getResource(
                             String.format("post-claim-out/%s.xsl", s)
                         )
                     ),

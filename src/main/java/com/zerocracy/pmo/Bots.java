@@ -122,6 +122,22 @@ public final class Bots {
     }
 
     /**
+     * Get team name by ID.
+     * @param bot Bot ID
+     * @return Team name
+     * @throws IOException If fails
+     */
+    public String name(final String bot) throws IOException {
+        try (final Item item = this.item()) {
+            return new Xocument(item.path()).xpath(
+                String.format(
+                    "/bots/bot[@id='%s']/team_name/text()", bot
+                )
+            ).get(0);
+        }
+    }
+
+    /**
      * Get all bot access tokens.
      * @return Tokens
      * @throws IOException If fails
