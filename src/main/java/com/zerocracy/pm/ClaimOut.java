@@ -101,7 +101,8 @@ public final class ClaimOut implements Iterable<Directive> {
                     "validate-job",
                     "validate-role",
                     "validate-cause",
-                    "prohibit-param-names"
+                    "prohibit-param-names",
+                    "prohibit-duplicated-flow"
                 )
             )
                 .with(new ClasspathSources())

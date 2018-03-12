@@ -47,11 +47,13 @@ def exec(Project project, XML xml) {
   }
   String login = claim.param('login')
   Farm farm = binding.variables.farm
-  if (new Agenda(farm, login).jobs() > new Policy().get('3.absolute-max', 32)) {
+  int agenda = new Agenda(farm, login).bootstrap().jobs().size()
+  if (agenda > new Policy().get('3.absolute-max', 32)) {
     throw new SoftException(
       new Par(
-        'User @%s has too many jobs in the agenda already,',
-        'I won\'t assign anymore, sorry, see §3'
+        'User @%s already has %d jobs in the agenda already;',
+        'this is way too many;',
+        'I won\'t assign any more, sorry, see §3'
       ).say(login)
     )
   }
