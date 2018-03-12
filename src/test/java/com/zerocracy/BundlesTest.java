@@ -129,9 +129,10 @@ public final class BundlesTest {
 
     @BeforeClass
     public static void checkShouldRun() {
-        Assume.assumeTrue(
+        Assume.assumeThat(
             "Parameter skipBundlesTest found, skipping...",
-            System.getProperty("skipBundlesTest") == null
+            System.getProperty("skipBundlesTest"),
+            Matchers.nullValue()
         );
     }
 
