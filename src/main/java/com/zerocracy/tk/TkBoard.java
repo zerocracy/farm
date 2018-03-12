@@ -106,7 +106,7 @@ public final class TkBoard implements Take {
             "project",
             new XeAppend(
                 "sandbox",
-                Boolean.toString(catalog.sandbox(project.pid()))
+                Boolean.toString(catalog.sandbox().contains(project.pid()))
             ),
             new XeAppend("id", project.pid()),
             new XeAppend("title", catalog.title(project.pid())),
