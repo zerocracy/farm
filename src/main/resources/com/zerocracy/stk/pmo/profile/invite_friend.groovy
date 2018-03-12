@@ -16,14 +16,18 @@
  */
 package com.zerocracy.stk.pmo.profile
 
+import com.jcabi.github.User
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
+import com.zerocracy.SoftException
+import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Awards
 import com.zerocracy.pmo.People
+import org.cactoos.text.AbbreviatedText
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).isPmo()
@@ -41,6 +45,18 @@ def exec(Project project, XML xml) {
     return
   }
   String login = claim.param('login')
+  User.Smart user = new User.Smart(
+    new ExtGithub(farm).value().users().get(login)
+  )
+  try {
+    user.json()
+  } catch (AssertionError ex) {
+    throw new SoftException(
+      new Par(
+        'We can\'t find @%s in Github: https://github.com/%1$s: %s'
+      ).say(login, new AbbreviatedText(ex.message, 100).asString())
+    )
+  }
   People people = new People(farm).bootstrap()
   people.invite(login, author)
   claim.reply(
