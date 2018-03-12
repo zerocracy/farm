@@ -60,8 +60,9 @@ def exec(Project pmo, XML xml) {
       ).postTo(pmo)
       claim.copy().type('Notify PMO').param(
         'message', new Par(
+          farm,
           'The user @%s was promoted to REV in %s',
-          'because of too reputation %d (over %d)'
+          'because of high enough reputation %+d (over %+d)'
         ).say(uid, pid, reputation, threshold)
       ).postTo(pmo)
     }
