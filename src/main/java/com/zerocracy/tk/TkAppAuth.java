@@ -30,6 +30,7 @@ import org.takes.facets.auth.social.PsGithub;
 import org.takes.facets.fork.FkFixed;
 import org.takes.facets.fork.FkParams;
 import org.takes.facets.fork.TkFork;
+import org.takes.facets.previous.TkPrevious;
 import org.takes.tk.TkRedirect;
 import org.takes.tk.TkWrap;
 
@@ -69,7 +70,7 @@ final class TkAppAuth extends TkWrap {
                 new FkParams(
                     PsByFlag.class.getSimpleName(),
                     Pattern.compile(".+"),
-                    new TkRedirect("/home")
+                    new TkPrevious(new TkRedirect("/home"))
                 ),
                 new FkFixed(take)
             ),
