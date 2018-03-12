@@ -36,6 +36,9 @@ import org.junit.Test;
  * @version $Id$
  * @since 0.1
  * @checkstyle JavadocMethodCheck (500 lines)
+ * @todo #552:30min Add tests for details(), links(), wallet() and rate()
+ *  in People.java because these methods are not fully covered. Then
+ *  remove People.java from jacoco excludes in pom.xml
  */
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 public final class PeopleTest {

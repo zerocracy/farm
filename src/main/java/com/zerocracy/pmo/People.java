@@ -613,14 +613,12 @@ public final class People {
         throws IOException {
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
-                new Directives()
-                    .xpath(
-                        String.format(
-                            "/people/person[@id='%s']",
-                            uid
-                        )
-                    ).addIf("reputation")
-                    .set(rep)
+                new Directives().xpath(
+                    String.format(
+                        "/people/person[@id='%s']",
+                        uid
+                    )
+                ).addIf("reputation").set(rep)
             );
         }
     }
