@@ -36,46 +36,46 @@ import org.junit.Test;
 public final class VsSpeedTest {
     @Test
     public void giveHigherVoteForFastSpeed() throws Exception {
-        final String one = "user2";
-        final String two = "user3";
+        final String slow = "user2";
+        final String fast = "user3";
         final FkFarm farm = new FkFarm();
-        new Speed(farm, one).bootstrap().add(
+        new Speed(farm, slow).bootstrap().add(
             "TST000002",
             "gh:test/test#2",
             TimeUnit.DAYS.toMinutes(9L)
         );
-        new Speed(farm, two).bootstrap().add(
+        new Speed(farm, fast).bootstrap().add(
             "TST000001",
             "gh:test/test#22",
             TimeUnit.DAYS.toMinutes(8L)
         );
         final VsSpeed votes = new VsSpeed(
             new Pmo(farm),
-            new ListOf<>(one, two)
+            new ListOf<>(slow, fast)
         );
         MatcherAssert.assertThat(
-            votes.take(two, new StringBuilder(0)),
-            Matchers.greaterThan(votes.take(one, new StringBuilder(0)))
+            votes.take(fast, new StringBuilder(0)),
+            Matchers.greaterThan(votes.take(slow, new StringBuilder(0)))
         );
     }
 
     @Test
-    public void giveZeroSpeedLowestVote() throws Exception {
-        final String one = "user_one";
-        final String two = "user_two";
+    public void giveLowestVoteForUnknownSpeed() throws Exception {
+        final String unknown = "user_one";
+        final String known = "user_two";
         final FkFarm farm = new FkFarm();
-        new Speed(farm, two).bootstrap().add(
+        new Speed(farm, known).bootstrap().add(
             "TST000003",
             "gh:test/test#3",
             TimeUnit.DAYS.toMinutes(1L)
         );
         final VsSpeed votes = new VsSpeed(
             new Pmo(farm),
-            new ListOf<>(one, two)
+            new ListOf<>(unknown, known)
         );
         MatcherAssert.assertThat(
-            votes.take(one, new StringBuilder(0)),
-            Matchers.lessThan(votes.take(two, new StringBuilder(0)))
+            votes.take(unknown, new StringBuilder(0)),
+            Matchers.lessThan(votes.take(known, new StringBuilder(0)))
         );
     }
 }
