@@ -99,9 +99,11 @@ SOFTWARE.
         </a>
         <xsl:if test="identity">
           <xsl:text> &#xB7; </xsl:text>
-          <a href="{links/link[@rel='takes:logout']/@href}" title="Log out">
-            <xsl:text>Exit</xsl:text>
-          </a>
+          <form action="{links/link[@rel='takes:logout']/@href}" method="post" style="display:list-item;margin:0;padding:0">
+            <button type="submit" class="link">
+              <xsl:text>Exit</xsl:text>
+            </button>
+          </form>
         </xsl:if>
       </p>
     </div>
