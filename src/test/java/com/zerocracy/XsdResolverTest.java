@@ -54,7 +54,7 @@ public final class XsdResolverTest {
                 ),
                 new XsdResolver()
             ).toString(),
-            Matchers.endsWith("/>")
+            Matchers.endsWith("/>\n")
         );
     }
 
@@ -76,7 +76,7 @@ public final class XsdResolverTest {
                 ).with("version", "123").transform(before),
                 new XsdResolver()
             ).toString(),
-            Matchers.endsWith("/>")
+            Matchers.endsWith("/>\n")
         );
     }
 

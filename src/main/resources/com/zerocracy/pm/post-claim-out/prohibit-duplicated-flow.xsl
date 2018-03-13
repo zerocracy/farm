@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 Copyright (c) 2016-2018 Zerocracy
 
@@ -16,17 +16,25 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" version="2.0">
-  <xsl:output method="html" doctype-system="about:legacy-compat" encoding="UTF-8" indent="yes"/>
+  <xsl:output method="xml" indent="no"/>
   <xsl:strip-space elements="*"/>
-  <xsl:include href="/xsl/inner-layout.xsl"/>
-  <xsl:template match="page" mode="head">
-    <title>
-      <xsl:text>@</xsl:text>
-      <xsl:value-of select="identity/login"/>
-      <xsl:text>/awards</xsl:text>
-    </title>
+  <xsl:template match="claim">
+    <xsl:copy>
+      <xsl:variable name="type" select="type"/>
+      <xsl:variable name="flow" select="params/param[@name='flow']"/>
+      <xsl:if test="contains($flow, concat($type, '; ', $type, '; ', $type))">
+        <xsl:message terminate="yes">
+          <xsl:text>Duplicated flow detected, something is wrong: "</xsl:text>
+          <xsl:value-of select="$flow"/>
+          <xsl:text>", seems to be an endless recursion in claims</xsl:text>
+        </xsl:message>
+      </xsl:if>
+      <xsl:apply-templates select="node()|@*"/>
+    </xsl:copy>
   </xsl:template>
-  <xsl:template match="page" mode="inner">
-    <xsl:value-of select="xml" disable-output-escaping="yes"/>
+  <xsl:template match="node()|@*">
+    <xsl:copy>
+      <xsl:apply-templates select="node()|@*"/>
+    </xsl:copy>
   </xsl:template>
 </xsl:stylesheet>

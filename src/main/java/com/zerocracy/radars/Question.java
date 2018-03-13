@@ -46,7 +46,7 @@ public final class Question {
      * Schema.
      */
     private static final XSD SCHEMA = XSDDocument.make(
-        Question.class.getResourceAsStream("question.xsd")
+        Question.class.getResource("question.xsd")
     );
 
     /**

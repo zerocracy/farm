@@ -77,8 +77,8 @@ public final class RbPingArchitect implements Rebound {
                 new Par(
                     "@%s I'm not managing this repo, remove the",
                     "[webhook](https://github.com/%s/settings/hooks)",
-                    "or contact me in Slack, as explained in §11",
-                    "//cc @yegor256"
+                    "or contact me in Slack, as explained in §11;",
+                    "/cc @yegor256"
                 ).say(author, issue.repo().coordinates())
             );
             answer = "This repo is not managed";

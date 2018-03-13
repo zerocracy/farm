@@ -82,15 +82,14 @@ public final class Catalog {
     }
 
     /**
-     * Is it a sandbox project.
-     * @param pid Project ID
-     * @return TRUE if sandbox
+     * Return all sandbox projects.
+     * @return List of sandbox projects
      * @checkstyle NonStaticMethodCheck (3 lines)
      */
-    public boolean sandbox(final String pid) {
+    public Collection<String> sandbox() {
         return new CollectionOf<>(
             "C3T46CUJJ", "C63314D6Z", "C7JGJ00DP"
-        ).contains(pid);
+        );
     }
 
     /**

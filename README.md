@@ -217,6 +217,10 @@ the list of claims to be dispatched. There are also a few supplementary files:
 
 More details you can find in the Javadoc section of `BundlesTest`.
 
+You can skip BundlesTest's execution by specifying ``-DskipBundlesTest``:
+
+``$mvn clean install -Pqulice -DskipBundlesTest``
+
 ## Radars
 
 There are a number of entry points, where users can communicate with our

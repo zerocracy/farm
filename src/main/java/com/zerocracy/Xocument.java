@@ -68,7 +68,7 @@ public final class Xocument {
     /**
      * Current DATUM version.
      */
-    public static final String VERSION = "0.59";
+    public static final String VERSION = "0.59.1";
 
     /**
      * Cache of documents.
@@ -241,9 +241,8 @@ public final class Xocument {
     /**
      * Modify it.
      * @param dirs Directives
-     * @throws IOException If fails
      */
-    public void modify(final Iterable<Directive> dirs) throws IOException {
+    public void modify(final Iterable<Directive> dirs) {
         final XML before = new XMLDocument(this.toString());
         final Node node = before.node();
         new Xembler(dirs).applyQuietly(node);

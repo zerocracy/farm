@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pmo.people
+package com.zerocracy.stk.pmo.sandbox
 
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
@@ -47,7 +47,7 @@ def exec(Project pmo, XML xml) {
     }
     Projects projects = new Projects(pmo, uid).bootstrap()
     projects.iterate().each { pid ->
-      if (!catalog.sandbox(pid)) {
+      if (!catalog.sandbox().contains(pid)) {
         return
       }
       Project pkt = farm.find("@id='${pid}'")[0]
