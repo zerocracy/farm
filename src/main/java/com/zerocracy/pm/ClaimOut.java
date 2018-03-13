@@ -40,6 +40,8 @@ import org.xembly.Xembler;
 /**
  * Claim.
  *
+ * <p>Objects of this class are immutable.</p>
+ *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.9
@@ -90,7 +92,7 @@ public final class ClaimOut implements Iterable<Directive> {
             new XSLChain(
                 new Mapped<>(
                     s -> XSLDocument.make(
-                        ClaimOut.class.getResourceAsStream(
+                        ClaimOut.class.getResource(
                             String.format("post-claim-out/%s.xsl", s)
                         )
                     ),
@@ -99,8 +101,10 @@ public final class ClaimOut implements Iterable<Directive> {
                     "normalize-minutes",
                     "validate-login",
                     "validate-job",
+                    "validate-role",
                     "validate-cause",
-                    "prohibit-param-names"
+                    "prohibit-param-names",
+                    "prohibit-duplicated-flow"
                 )
             )
                 .with(new ClasspathSources())
@@ -124,13 +128,14 @@ public final class ClaimOut implements Iterable<Directive> {
      * @return This
      */
     public ClaimOut type(final String type) {
-        this.dirs
-            .push()
-            .xpath("type")
-            .remove()
-            .pop()
-            .add("type").set(type).up();
-        return this;
+        return new ClaimOut(
+            this.dirs
+                .push()
+                .xpath("type")
+                .remove()
+                .pop()
+                .add("type").set(type).up()
+        );
     }
 
     /**
@@ -139,13 +144,14 @@ public final class ClaimOut implements Iterable<Directive> {
      * @return This
      */
     public ClaimOut token(final Object token) {
-        this.dirs
-            .push()
-            .xpath("token")
-            .remove()
-            .pop()
-            .add("token").set(token).up();
-        return this;
+        return new ClaimOut(
+            this.dirs
+                .push()
+                .xpath("token")
+                .remove()
+                .pop()
+                .add("token").set(token).up()
+        );
     }
 
     /**
@@ -154,12 +160,13 @@ public final class ClaimOut implements Iterable<Directive> {
      * @return This
      */
     public ClaimOut cid(final long cid) {
-        this.dirs
-            .push()
-            .xpath(".")
-            .attr("id", cid)
-            .pop();
-        return this;
+        return new ClaimOut(
+            this.dirs
+                .push()
+                .xpath(".")
+                .attr("id", cid)
+                .pop()
+        );
     }
 
     /**
@@ -174,13 +181,14 @@ public final class ClaimOut implements Iterable<Directive> {
                 "0crat can't be the author of a claim"
             );
         }
-        this.dirs
-            .push()
-            .xpath("author")
-            .remove()
-            .pop()
-            .add("author").set(author).up();
-        return this;
+        return new ClaimOut(
+            this.dirs
+                .push()
+                .xpath("author")
+                .remove()
+                .pop()
+                .add("author").set(author).up()
+        );
     }
 
     /**
@@ -189,19 +197,20 @@ public final class ClaimOut implements Iterable<Directive> {
      * @return This
      */
     public ClaimOut until(final long seconds) {
-        this.dirs
-            .push()
-            .xpath("until")
-            .remove()
-            .pop()
-            .add("until")
-            .set(
-                new ZonedDateTimeAsText(
-                    ZonedDateTime.now().plusSeconds(seconds)
-                ).asString()
-            )
-            .up();
-        return this;
+        return new ClaimOut(
+            this.dirs
+                .push()
+                .xpath("until")
+                .remove()
+                .pop()
+                .add("until")
+                .set(
+                    new ZonedDateTimeAsText(
+                        ZonedDateTime.now().plusSeconds(seconds)
+                    ).asString()
+                )
+                .up()
+        );
     }
 
     /**
@@ -216,15 +225,16 @@ public final class ClaimOut implements Iterable<Directive> {
                 String.format("Value can't be NULL for \"%s\"", name)
             );
         }
-        this.dirs
-            .addIf("params")
-            .push()
-            .xpath(String.format("param[@name='%s']", name))
-            .remove()
-            .pop()
-            .add("param").attr("name", name).set(value).up()
-            .up();
-        return this;
+        return new ClaimOut(
+            this.dirs
+                .addIf("params")
+                .push()
+                .xpath(String.format("param[@name='%s']", name))
+                .remove()
+                .pop()
+                .add("param").attr("name", name).set(value).up()
+                .up()
+        );
     }
 
     /**

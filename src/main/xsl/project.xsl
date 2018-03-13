@@ -15,7 +15,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" version="1.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" version="2.0">
   <xsl:output method="html" doctype-system="about:legacy-compat" encoding="UTF-8" indent="yes"/>
   <xsl:strip-space elements="*"/>
   <xsl:include href="/xsl/inner-layout.xsl"/>
@@ -213,7 +213,21 @@ SOFTWARE.
         <span style="color:darkred">
           <xsl:text>ATTENTION</xsl:text>
         </span>
-        <xsl:text>: The project is not funded, we can't assign any new tasks to anyone.</xsl:text>
+        <xsl:text>: The project is not </xsl:text>
+        <a href="http://www.zerocracy.com/policy.html#21">
+          <xsl:text>funded</xsl:text>
+        </a>
+        <xsl:text>, we can't assign any new tasks to anyone.</xsl:text>
+      </xsl:if>
+      <xsl:if test="recharge = 'true'">
+        <xsl:text> </xsl:text>
+        <span style="color:darkred">
+          <xsl:text>We automatically </xsl:text>
+          <a href="http://www.zerocracy.com/policy.html#22">
+            <xsl:text>recharge</xsl:text>
+          </a>
+          <xsl:text> your card.</xsl:text>
+        </span>
       </xsl:if>
     </p>
     <form id="form" style="display:none" action="/pay/{project}" method="post">

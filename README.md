@@ -217,6 +217,10 @@ the list of claims to be dispatched. There are also a few supplementary files:
 
 More details you can find in the Javadoc section of `BundlesTest`.
 
+You can skip BundlesTest's execution by specifying ``-DskipBundlesTest``:
+
+``$mvn clean install -Pqulice -DskipBundlesTest``
+
 ## Radars
 
 There are a number of entry points, where users can communicate with our
@@ -229,6 +233,25 @@ We try to keep radars lightweight and logic-free. It's not their job
 to make decisions about jobs, orders, roles, rates, etc. Their job is to
 translate the incoming information into claims. The rest will be done
 by stakeholders.
+
+## Policy
+
+There are a number of constants in the application, which affect the business
+logic. For example, the amount of reputation points a programmer pays when
+a job is delayed, or the amount of money a client pays in order to publish
+an RfP, an so on. All of them are defined in our
+[Policy](http://www.zerocracy.com/policy.html)
+as HTML `<span>` elements with certain `id` attributes
+(see the source code of the page). Then, we have a class `com.zerocracy.Policy`,
+which helps us fetch the values from the policy:
+
+```java
+int days = new Policy().get("18.days", 90);
+```
+
+Here, `"18.days"` is the HTML `id` attribute and `90` is the default value to
+be used during unit testing. You must always use class `Policy` in your code
+and never hard-code any business constants.
 
 ## How to contribute
 

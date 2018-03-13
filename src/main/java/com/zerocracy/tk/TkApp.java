@@ -73,6 +73,7 @@ import org.takes.tk.TkClasspath;
 import org.takes.tk.TkGzip;
 import org.takes.tk.TkMeasured;
 import org.takes.tk.TkRedirect;
+import org.takes.tk.TkSslOnly;
 import org.takes.tk.TkText;
 import org.takes.tk.TkVersioned;
 import org.takes.tk.TkWithHeaders;

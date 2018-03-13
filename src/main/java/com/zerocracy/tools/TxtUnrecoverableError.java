@@ -62,10 +62,9 @@ public final class TxtUnrecoverableError implements Text {
             String.join("\n", TxtUnrecoverableError.messages(this.err)),
             "\n```\n\n",
             String.format(
-                "[%s](https://github.com/zerocracy/farm/tree/%1$s)",
+                "[%s](https://github.com/zerocracy/farm)",
                 this.props.get("//build/version", "")
-            ),
-            " /cc @yegor256"
+            )
         ).asString();
     }
 

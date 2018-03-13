@@ -182,7 +182,7 @@ public final class TkFootprint implements TkRegex {
             response = new RsWithType(
                 new RsWithBody(
                     XSLDocument.make(
-                        TkFootprint.class.getResourceAsStream(
+                        TkFootprint.class.getResource(
                             String.format("footprint-%s.xsl", format)
                         )
                     ).applyTo(xml)

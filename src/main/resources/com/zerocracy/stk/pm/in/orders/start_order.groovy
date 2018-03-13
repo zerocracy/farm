@@ -19,12 +19,16 @@ package com.zerocracy.stk.pm.in.orders
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Par
+import com.zerocracy.Policy
 import com.zerocracy.Project
+import com.zerocracy.SoftException
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.in.Orders
+import com.zerocracy.pm.qa.Reviews
 import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pm.staff.Roles
+import com.zerocracy.pmo.Agenda
 import com.zerocracy.pmo.People
 
 def exec(Project project, XML xml) {
@@ -32,7 +36,27 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Start order')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
+  Reviews reviews = new Reviews(project).bootstrap()
+  if (reviews.exists(job)) {
+    throw new SoftException(
+      new Par(
+        'Job %s is pending quality review,',
+        'can\'t start a new order'
+      ).say(job)
+    )
+  }
   String login = claim.param('login')
+  Farm farm = binding.variables.farm
+  int agenda = new Agenda(farm, login).bootstrap().jobs().size()
+  if (agenda > new Policy().get('3.absolute-max', 32)) {
+    throw new SoftException(
+      new Par(
+        'User @%s already has %d jobs in the agenda already;',
+        'this is way too many;',
+        'I won\'t assign any more, sorry, see §3'
+      ).say(login)
+    )
+  }
   String reason = claim.param('reason')
   Orders orders = new Orders(project).bootstrap()
   orders.assign(job, login, reason)
@@ -67,7 +91,6 @@ def exec(Project project, XML xml) {
       'but they can request to join, as §1 explains'
     ).say(login)
   }
-  Farm farm = binding.variables.farm
   if (new People(farm).bootstrap().vacation(login)) {
     msg += new Par(
       'We should be aware that %s is on vacation!',

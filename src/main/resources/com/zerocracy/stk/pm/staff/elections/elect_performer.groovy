@@ -16,26 +16,32 @@
  */
 package com.zerocracy.stk.pm.staff.elections
 
+import com.jcabi.github.Github
 import com.jcabi.log.Logger
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
+import com.zerocracy.Policy
 import com.zerocracy.Project
+import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.Claims
 import com.zerocracy.pm.cost.Boosts
 import com.zerocracy.pm.cost.Ledger
 import com.zerocracy.pm.in.Orders
+import com.zerocracy.pm.qa.Reviews
 import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pm.staff.Elections
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pm.staff.ranks.RnkBoost
+import com.zerocracy.pm.staff.ranks.RnkGithubBug
 import com.zerocracy.pm.staff.ranks.RnkRev
 import com.zerocracy.pm.staff.votes.VsBanned
 import com.zerocracy.pm.staff.votes.VsHardCap
 import com.zerocracy.pm.staff.votes.VsNoRoom
 import com.zerocracy.pm.staff.votes.VsRandom
 import com.zerocracy.pm.staff.votes.VsRate
+import com.zerocracy.pm.staff.votes.VsReputation
 import com.zerocracy.pm.staff.votes.VsSafe
 import com.zerocracy.pm.staff.votes.VsSpeed
 import com.zerocracy.pm.staff.votes.VsVacation
@@ -58,15 +64,21 @@ def exec(Project project, XML xml) {
   Roles roles = new Roles(project).bootstrap()
   Orders orders = new Orders(project).bootstrap()
   Elections elections = new Elections(project).bootstrap()
+  Reviews reviews = new Reviews(project).bootstrap()
   Farm farm = binding.variables.farm
   Project pmo = new Pmo(farm)
+  Github github = new ExtGithub(farm).value()
   List<String> jobs = wbs.iterate().toList()
   [
+    new RnkGithubBug(github),
     new RnkBoost(new Boosts(project).bootstrap()),
     new RnkRev(new Wbs(project).bootstrap())
   ].each { jobs.sort(it) }
   for (String job : jobs) {
     if (orders.assigned(job)) {
+      continue
+    }
+    if (reviews.exists(job)) {
       continue
     }
     if (elections.exists(job)) {
@@ -80,14 +92,15 @@ def exec(Project project, XML xml) {
     boolean done = elections.elect(
       job, logins,
       [
-        (new VsSafe(new VsHardCap(pmo, 24)))     : -100,
-        (new VsSafe(new VsRate(project, logins))): 2,
-        (new VsSafe(new VsNoRoom(pmo)))          : role == 'REV' ? 0 : -100,
-        (new VsSafe(new VsBanned(project, job))) : -100,
-        (new VsSafe(new VsVacation(pmo)))        : -100,
-        (new VsSafe(new VsWorkload(pmo, logins))): 1,
-        (new VsSafe(new VsSpeed(pmo, logins)))   : 3,
-        (new VsSafe(new VsRandom()))             : 1
+        (new VsSafe(new VsHardCap(pmo, new Policy().get('3.absolute-max', 32)))): -100,
+        (new VsSafe(new VsReputation(pmo, logins)))                           : 5,
+        (new VsSafe(new VsRate(project, logins)))                             : 2,
+        (new VsSafe(new VsNoRoom(pmo)))                                       : role == 'REV' ? 0 : -100,
+        (new VsSafe(new VsBanned(project, job)))                              : -100,
+        (new VsSafe(new VsVacation(pmo)))                                     : -100,
+        (new VsSafe(new VsWorkload(pmo, logins)))                             : 1,
+        (new VsSafe(new VsSpeed(pmo, logins)))                                : 3,
+        (new VsSafe(new VsRandom()))                                          : 1
       ]
     )
     if (done && elections.elected(job)) {

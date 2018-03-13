@@ -31,6 +31,8 @@ import org.takes.Request;
 import org.takes.facets.auth.Identity;
 import org.takes.facets.auth.RqAuth;
 import org.takes.facets.forward.RsForward;
+import org.takes.facets.previous.RsPrevious;
+import org.takes.rq.RqRequestLine;
 
 /**
  * User login from OAuth.
@@ -87,9 +89,12 @@ public final class RqUser implements Scalar<String> {
                 final Identity identity = new RqAuth(req).identity();
                 if (identity.equals(Identity.ANONYMOUS)) {
                     throw new RsForward(
-                        new RsParFlash(
-                            "You must be logged in",
-                            Level.WARNING
+                        new RsPrevious(
+                            new RsParFlash(
+                                "You must be logged in",
+                                Level.WARNING
+                            ),
+                            new RqRequestLine.Base(req).uri()
                         )
                     );
                 }

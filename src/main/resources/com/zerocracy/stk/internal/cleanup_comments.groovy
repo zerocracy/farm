@@ -40,8 +40,8 @@ def exec(Project project, XML xml) {
     new DyErrors(new ExtDynamo(farm).value()),
     github
   )
-  errors.iterate(10, 72L).each {
-    errors.remove(it)
-    it.remove()
+  errors.iterate(10, 72L).each { error ->
+    errors.remove(error)
+    error.remove()
   }
 }

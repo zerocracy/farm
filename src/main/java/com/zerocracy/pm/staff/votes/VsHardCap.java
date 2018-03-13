@@ -21,7 +21,6 @@ import com.zerocracy.Project;
 import com.zerocracy.pm.staff.Votes;
 import com.zerocracy.pmo.Agenda;
 import java.io.IOException;
-import org.cactoos.iterable.LengthOf;
 
 /**
  * Make it impossible to go over a hard cap for the amount of jobs
@@ -57,23 +56,21 @@ public final class VsHardCap implements Votes {
     @Override
     public double take(final String login, final StringBuilder log)
         throws IOException {
-        final int mine = new LengthOf(
-            new Agenda(this.pmo, login).bootstrap().jobs()
-        ).intValue();
+        final int mine = new Agenda(this.pmo, login).bootstrap().jobs().size();
         final double vote;
         if (mine > this.cap) {
             log.append(
                 Logger.format(
-                    "%d jobs in the agenda already, too many",
-                    mine
+                    "%d jobs in the agenda already, too many (max is %d)",
+                    mine, this.cap
                 )
             );
             vote = 1.0d;
         } else {
             log.append(
                 Logger.format(
-                    "%d jobs in the agenda, still enough room",
-                    mine
+                    "%d jobs in the agenda, still enough room (max is %d)",
+                    mine, this.cap
                 )
             );
             vote = 0.0d;
