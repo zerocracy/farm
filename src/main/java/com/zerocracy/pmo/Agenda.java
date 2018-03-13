@@ -34,6 +34,11 @@ import org.xembly.Directives;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.12
+ * @todo #422:30min Modify agenda.xsd zerocracy/datum and make the element
+ *  order accept title as an attribute (same as job). Then, in method add(...)
+ *  from this class, make sure to specify the title as .attr("title", title).
+ *  Afterwards, the title has be displayed on the Agenda page (agenda.xsl
+ *  has to be modified).
  */
 public final class Agenda {
 
@@ -108,10 +113,13 @@ public final class Agenda {
     /**
      * Add an order to the agenda.
      * @param job Job ID
+     * @param title Job title
      * @param role The role
      * @throws IOException If fails
      */
-    public void add(final String job, final String role) throws IOException {
+    public void add(
+        final String job, final String title, final String role
+    ) throws IOException {
         if (this.exists(job)) {
             throw new SoftException(
                 new Par(
