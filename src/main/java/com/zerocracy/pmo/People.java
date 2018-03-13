@@ -611,6 +611,11 @@ public final class People {
      */
     public void reputation(final String uid, final int rep)
         throws IOException {
+        if (!this.exists(uid)) {
+            throw new IllegalArgumentException(
+                new Par("Person %s doesn't exist").say(uid)
+            );
+        }
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives().xpath(
@@ -630,6 +635,11 @@ public final class People {
      * @throws IOException If fails
      */
     public int reputation(final String uid) throws IOException {
+        if (!this.exists(uid)) {
+            throw new IllegalArgumentException(
+                new Par("Person %s doesn't exist").say(uid)
+            );
+        }
         try (final Item item = this.item()) {
             return new NumberOf(
                 new Xocument(item.path()).xpath(
@@ -640,6 +650,20 @@ public final class People {
                     "0"
                 )
             ).intValue();
+        }
+    }
+
+    /**
+     * Person exists?
+     * @param pid Person ID
+     * @return TRUE if it exists
+     * @throws IOException If fails
+     */
+    public boolean exists(final String pid) throws IOException {
+        try (final Item item = this.item()) {
+            return !new Xocument(item).nodes(
+                String.format("//people/person[@id  ='%s']", pid)
+            ).isEmpty();
         }
     }
 

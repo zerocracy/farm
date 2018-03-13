@@ -32,4 +32,5 @@ def exec(Project project, XML xml) {
   Awards awards = new Awards(farm, login).bootstrap()
   People people = new People(farm).bootstrap()
   people.reputation(login, awards.total())
+  claim.reply('Reputation was updated').postTo(project)
 }
