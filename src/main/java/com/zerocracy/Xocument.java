@@ -22,6 +22,7 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSL;
 import com.jcabi.xml.XSLDocument;
+import com.zerocracy.stk.version;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -68,7 +69,7 @@ public final class Xocument {
     /**
      * Current DATUM version.
      */
-    public static final String VERSION = "0.59.1";
+    public static final String VERSION = <replace-with-new-datum-version>
 
     /**
      * Cache of documents.
