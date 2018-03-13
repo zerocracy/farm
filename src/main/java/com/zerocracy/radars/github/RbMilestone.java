@@ -28,10 +28,6 @@ import javax.json.JsonObject;
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.21
- * @todo #186:30min Let's implement this `Rebound`. It should
- *  post a claim with type 'Add milestone' and params
- *  'milestone' and 'date' on github web-hook with new milestone.
- *  Milestone param is a label of milestone, date is a milestone date.
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class RbMilestone implements Rebound {

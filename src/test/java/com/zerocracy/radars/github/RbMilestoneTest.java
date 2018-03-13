@@ -48,7 +48,7 @@ public final class RbMilestoneTest {
                             .build()
                     ).build()
             ),
-            Matchers.startsWith("Milestone submitted")
+            Matchers.startsWith("Milestone submitted: 1")
         );
     }
 }
