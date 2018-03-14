@@ -391,7 +391,7 @@ SOFTWARE.
         <xsl:text> </xsl:text>
         <xsl:value-of select="ago"/>
         <xsl:text> ago: </xsl:text>
-        <xsl:value-of select="details"/>
+        <xsl:value-of select="details_html" disable-output-escaping="yes"/>
       </xsl:for-each>
       <xsl:text>.</xsl:text>
     </p>
