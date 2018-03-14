@@ -29,6 +29,7 @@ import org.junit.Test;
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle AvoidDuplicateLiterals (600 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class AgendaTest {
 
     @Test
@@ -52,9 +53,10 @@ public final class AgendaTest {
         agenda.add("gh:test2/test#1", "REV");
         agenda.add("gh:test2/test#2", "QA");
         agenda.add("gh:test2/test#3", "DEV");
-        MatcherAssert.assertThat(agenda.jobs(), Matchers.not(0));
+        // @checkstyle MagicNumber (1 line)
+        MatcherAssert.assertThat(agenda.jobs(), Matchers.not(3));
         agenda.removeAll();
-        MatcherAssert.assertThat(agenda.jobs(), Matchers.hasSize(0));
+        MatcherAssert.assertThat(agenda.jobs(), Matchers.emptyIterable());
     }
 
     /**
@@ -67,7 +69,7 @@ public final class AgendaTest {
         agenda.add("gh:test3/test#1", "ARC");
         MatcherAssert.assertThat(agenda.jobs(), Matchers.hasSize(1));
         agenda.removeAll();
-        MatcherAssert.assertThat(agenda.jobs(), Matchers.hasSize(0));
+        MatcherAssert.assertThat(agenda.jobs(), Matchers.emptyIterable());
     }
 
     /**
@@ -77,8 +79,8 @@ public final class AgendaTest {
     @Test
     public void removesOrdersFromEmptyAgenda() throws Exception {
         final Agenda agenda = new Agenda(new FkProject(), "jane").bootstrap();
-        MatcherAssert.assertThat(agenda.jobs(), Matchers.hasSize(0));
+        MatcherAssert.assertThat(agenda.jobs(), Matchers.emptyIterable());
         agenda.removeAll();
-        MatcherAssert.assertThat(agenda.jobs(), Matchers.hasSize(0));
+        MatcherAssert.assertThat(agenda.jobs(), Matchers.emptyIterable());
     }
 }
