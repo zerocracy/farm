@@ -107,7 +107,7 @@ public final class Equity {
         if (share > 0.0d) {
             final Cash value = this.par().mul((long) share);
             text = String.format(
-                "%.2f shares = %s/%.2f%% of %s",
+                "%,.2f shares = %s/%.6f%% of %s",
                 // @checkstyle MagicNumber (1 line)
                 share, value, share * 100.0d / this.shares(), this.cap()
             );
