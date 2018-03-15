@@ -83,14 +83,13 @@ public final class Equity {
             String latex = new TextOf(
                 new ResourceOf("com/zerocracy/pm/cost/equity.tex")
             ).asString();
-            final String fmt = "%,.2f";
             latex = latex
                 .replace("[OWNER]", login)
                 .replace("[ENTITY]", doc.xpath("//entity/text()", "PROJECT"))
                 .replace("[ADDRESS]", doc.xpath("//address/text()", "USA"))
                 .replace("[CEO]", doc.xpath("//ceo/text()", "CEO"))
-                .replace("[SHARE]", String.format(fmt, share))
-                .replace("[SHARES]", String.format(fmt, this.shares()))
+                .replace("[SHARE]", String.format("%,.6f", share))
+                .replace("[SHARES]", String.format("%,.2f", this.shares()))
                 .replace("[PAR]", this.par().toString());
             return new Latex(latex).pdf();
         }
@@ -108,7 +107,7 @@ public final class Equity {
         if (share > 0.0d) {
             final Cash value = this.par().mul((long) share);
             text = String.format(
-                "%.2f shares = %s/%.2f%% of %s",
+                "%,.2f shares = %s/%.6f%% of %s",
                 // @checkstyle MagicNumber (1 line)
                 share, value, share * 100.0d / this.shares(), this.cap()
             );

@@ -61,6 +61,7 @@ public final class ClaimOutTest {
             .type("Notify")
             .token("test;token")
             .param("login", "@yegor256")
+            .param("job", "gh:zerocracy/zerocracy.github.io#3")
             .param("minutes", "45min")
             .param("cause_type", "Ping")
             .param("message", "hello, world")

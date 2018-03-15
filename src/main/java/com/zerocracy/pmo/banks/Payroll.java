@@ -81,8 +81,7 @@ public final class Payroll {
         if (amount.compareTo(min) < 0) {
             throw new SoftException(
                 new Par(
-                    "The amount %s is too small,",
-                    "we won't send now to avoid big payment commission"
+                    "The amount %s is too small"
                 ).say(amount)
             );
         }

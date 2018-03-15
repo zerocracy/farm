@@ -99,33 +99,36 @@ public final class Debts {
                 dirs.add("debt").attr("total", this.amount(uid)).append(
                     new Joined<Directive>(
                         new Mapped<XML, Iterable<Directive>>(
-                            xml -> new Directives().add("item")
-                                .add("ago")
-                                .set(
-                                    Logger.format(
-                                        "%[ms]s",
-                                        System.currentTimeMillis()
-                                        - new DateOf(
-                                            xml.xpath("created/text()").get(0)
-                                        ).value().getTime()
-                                    )
-                                )
-                                .up()
-                                .add("amount")
-                                .set(xml.xpath("amount/text()").get(0))
-                                .up()
-                                .add("details")
-                                .set(
-                                    new Par.ToText(
-                                        String.format(
-                                            "%s (%s)",
-                                            xml.xpath("details/text()").get(0),
-                                            xml.xpath("reason/text()").get(0)
+                            xml -> {
+                                final String details = String.format(
+                                    "%s (%s)",
+                                    xml.xpath("details/text()").get(0),
+                                    xml.xpath("reason/text()").get(0)
+                                );
+                                final Date created = new DateOf(
+                                    xml.xpath("created/text()").get(0)
+                                ).value();
+                                return new Directives().add("item")
+                                    .add("ago")
+                                    .set(
+                                        Logger.format(
+                                            "%[ms]s",
+                                            System.currentTimeMillis()
+                                                - created.getTime()
                                         )
-                                    ).toString()
-                                )
-                                .up()
-                                .up(),
+                                    )
+                                    .up()
+                                    .add("amount")
+                                    .set(xml.xpath("amount/text()").get(0))
+                                    .up()
+                                    .add("details")
+                                    .set(new Par.ToText(details).toString())
+                                    .up()
+                                    .add("details_html")
+                                    .set(new Par.ToHtml(details).toString())
+                                    .up()
+                                    .up();
+                            },
                             debt.nodes("items/item")
                         )
                     )

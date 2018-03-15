@@ -18,6 +18,7 @@ package com.zerocracy.radars.github;
 
 import com.jcabi.github.Github;
 import com.zerocracy.Farm;
+import com.zerocracy.pm.ClaimOut;
 import java.io.IOException;
 import javax.json.JsonObject;
 
@@ -27,18 +28,36 @@ import javax.json.JsonObject;
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.21
- * @todo #186:30min Let's implement this `Rebound`. It should
- *  post a claim with type 'Add milestone' and params
- *  'milestone' and 'date' on github web-hook with new milestone.
- *  Milestone param is a label of milestone, date is a milestone date.
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class RbMilestone implements Rebound {
+    /**
+     * Milestone json key.
+     */
+    private static final String JSON_KEY = "milestone";
+
     @Override
     public String react(
         final Farm farm,
         final Github github,
         final JsonObject event
     ) throws IOException {
-        throw new UnsupportedOperationException("#react()");
+        final String answer;
+        if (event.containsKey(RbMilestone.JSON_KEY)) {
+            final JsonObject milestone = event.getJsonObject(
+                RbMilestone.JSON_KEY
+            );
+            new ClaimOut()
+                .type("Add milestone")
+                .param("milestone", milestone.getString("title"))
+                .param("date", milestone.getString("due_on"));
+            answer = String.format(
+                "Milestone submitted: %d",
+                milestone.getInt("number")
+            );
+        } else {
+            answer = "Not a milestone event";
+        }
+        return answer;
     }
 }

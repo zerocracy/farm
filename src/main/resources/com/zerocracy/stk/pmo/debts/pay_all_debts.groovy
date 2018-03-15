@@ -46,16 +46,22 @@ def exec(Project pmo, XML xml) {
       return
     }
     try {
+      String details = new XMLDocument(new Xembler(debts.toXembly(uid)).xmlQuietly()).xpath(
+        '//item/amount/text()'
+      ).join(', ')
       String pid = new Payroll(farm).pay(
         new Ledger(new FkProject()).bootstrap(),
         uid, debt,
-        new Par('Debt repayment, per §46: %s').say(
-          new XMLDocument(new Xembler(debts.toXembly(uid)).xmlQuietly()).xpath(
-            '//item/amount/text()'
-          ).join(', ')
-        )
+        new Par('Debt repayment, per §46: %s').say(details)
       )
       debts.remove(uid)
+      claim.copy()
+        .type('Debt was paid')
+        .param('login', uid)
+        .param('payment_id', pid)
+        .param('details', details)
+        .param('amount', debt)
+        .postTo(pmo)
       claim.copy()
         .type('Notify user')
         .token("user;${uid}")
@@ -68,6 +74,12 @@ def exec(Project pmo, XML xml) {
         .postTo(pmo)
     } catch (IOException ex) {
       debts.failure(uid, ex.message)
+      claim.copy()
+        .type('Debt payment failed')
+        .param('login', uid)
+        .param('amount', debt)
+        .param('failure', ex.message)
+        .postTo(pmo)
       claim.copy()
         .type('Notify user')
         .token("user;${uid}")

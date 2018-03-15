@@ -17,9 +17,10 @@
 package com.zerocracy.stk.pmo.profile
 
 import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
+import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.SoftException
+import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.People
 
@@ -28,16 +29,34 @@ def exec(Project pmo, XML xml) {
   new Assume(pmo, xml).type('Change vacation mode')
   ClaimIn claim = new ClaimIn(xml)
   String mode = claim.param('mode')
+  String author = claim.author()
   People people = new People(pmo).bootstrap()
   if ('on' == mode) {
-    people.vacation(claim.author(), true)
+    if (people.vacation(author)) {
+      throw new SoftException(
+        new Par(
+          'You are already on vacation'
+        ).say()
+      )
+    }
+    people.vacation(author, true)
     claim.reply('You are on vacation now').postTo(pmo)
   } else if ('off' == mode) {
-    people.vacation(claim.author(), false)
+    if (!people.vacation(author)) {
+      throw new SoftException(
+        new Par(
+          'You are not on vacation now'
+        ).say()
+      )
+    }
+    people.vacation(author, false)
     claim.reply('Your vacation has been ended').postTo(pmo)
   } else {
     throw new SoftException(
-      "Incorrect vacation mode. Possible modes are 'on' or 'off'"
+      new Par(
+        'Incorrect vacation mode;',
+        'Possible modes are "on" or "off"'
+      ).say()
     )
   }
 }
