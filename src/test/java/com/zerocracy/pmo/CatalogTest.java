@@ -57,7 +57,8 @@ public final class CatalogTest {
                     .add("prefix").set("2017/01/AAAABBBBC/").up()
                     .add("fee").set("0").up()
                     .add("alive").set("true").up()
-                    .add("publish").set("false")
+                    .add("publish").set("false").up()
+                    .add("adviser").set("0crat").up()
             );
         }
         final Catalog catalog = new Catalog(project);

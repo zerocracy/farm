@@ -136,7 +136,8 @@ public final class Catalog {
                     .add("prefix").set(prefix).up()
                     .add("alive").set(true).up()
                     .add("fee").set(Cash.ZERO).up()
-                    .add("publish").set(Boolean.toString(false))
+                    .add("publish").set(Boolean.toString(false)).up()
+                    .add("adviser").set("0crat").up()
             );
         }
     }
