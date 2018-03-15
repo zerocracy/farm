@@ -16,29 +16,29 @@
  */
 package com.zerocracy.tk;
 
-import com.jcabi.log.Logger;
+import com.mongodb.client.model.Filters;
 import com.zerocracy.Farm;
+import com.zerocracy.pm.Footprint;
+import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
+import javax.json.Json;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
-import org.takes.rs.xe.XeAppend;
-import org.takes.rs.xe.XeChain;
+import org.takes.rs.RsJson;
 
 /**
- * Index page.
+ * Pulse.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.1
+ * @since 0.22
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-final class TkIndex implements Take {
-
-    /**
-     * When we started.
-     */
-    private static final long STARTED = System.currentTimeMillis();
+final class TkPulse implements Take {
 
     /**
      * Farm.
@@ -49,26 +49,30 @@ final class TkIndex implements Take {
      * Ctor.
      * @param frm Farm
      */
-    TkIndex(final Farm frm) {
+    TkPulse(final Farm frm) {
         this.farm = frm;
     }
 
     @Override
     public Response act(final Request req) throws IOException {
-        return new RsPage(
-            this.farm,
-            "/xsl/index.xsl",
-            req,
-            () -> new XeChain(
-                new XeAppend(
-                    "alive",
-                    Logger.format(
-                        "%[ms]s",
-                        System.currentTimeMillis() - TkIndex.STARTED
+        try (final Footprint footprint =
+            new Footprint(this.farm, new Pmo(this.farm))) {
+            final long total = footprint.collection().count(
+                Filters.gt(
+                    "created",
+                    Date.from(
+                        ZonedDateTime.now()
+                            .minus(1L, ChronoUnit.WEEKS)
+                            .toInstant()
                     )
                 )
-            )
-        );
+            );
+            return new RsJson(
+                Json.createObjectBuilder()
+                    .add("total", total)
+                    .build()
+            );
+        }
     }
 
 }

@@ -41,6 +41,7 @@ public final class RnkGithubBug implements Comparator<String> {
      * Bug jobs cache.
      */
     private final Map<String, Boolean> cache;
+
     /**
      * Ctor.
      * @param github Github
