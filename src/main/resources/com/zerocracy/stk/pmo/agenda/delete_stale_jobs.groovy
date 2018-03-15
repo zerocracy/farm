@@ -3,14 +3,38 @@ package com.zerocracy.stk.pmo.agenda
 import com.jcabi.xml.XML
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
+import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pm.in.Orders
+import com.zerocracy.pmo.Agenda
+import com.zerocracy.pmo.People
+import com.zerocracy.pmo.Projects
 
-/**
- * @todo #496:30min Let's implement this stakeholder. It has to
- *  fetch all users from people.xml, pick random 5, go through their agendas
- *  and check that each job they have there really exist in the correspondent projects.
- *  If they don't exist, it should remove them from the agenda.
- *  Also uncomment 'delete_stale_jobs' test assertion.
- */
-def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Ping hourly')
+def exec(Project pmo, XML xml) {
+  new Assume(pmo, xml).isPmo()
+  new Assume(pmo, xml).type('Ping hourly')
+  ClaimIn claim = new ClaimIn(xml)
+  People people = new People(pmo).bootstrap()
+  List<String> logins = new ArrayList<>(people.iterate().asList())
+  Collections.shuffle(logins)
+  logins.subList(0, Math.min(logins.size(), 5)).each { login ->
+    Agenda agenda = new Agenda(pmo, login).bootstrap()
+    Projects projects = new Projects(pmo, login).bootstrap()
+    Set<String> orders = []
+    projects.iterate().each { project ->
+      orders.addAll(new Orders(project).bootstrap().jobs(login))
+    }
+    boolean updated = false
+    agenda.jobs().each { job ->
+      if (!orders.contains(job)) {
+        agenda.remove(job)
+        updated = true
+      }
+    }
+    if (updated) {
+      claim.copy()
+        .type('Agenda was updated')
+        .param('login', login)
+        .postTo(pmo)
+    }
+  }
 }
