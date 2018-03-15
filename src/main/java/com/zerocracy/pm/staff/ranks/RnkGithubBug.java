@@ -31,10 +31,12 @@ import java.util.Map;
  * @since 0.21.1
  */
 public final class RnkGithubBug implements Comparator<String> {
+
     /**
      * Function to check github bug label.
      */
     private final Github ghb;
+
     /**
      * Bug jobs cache.
      */
