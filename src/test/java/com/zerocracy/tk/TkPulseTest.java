@@ -61,6 +61,10 @@ public final class TkPulseTest {
             json.getInt("total"),
             Matchers.greaterThanOrEqualTo(2)
         );
+        MatcherAssert.assertThat(
+            json.getInt("errors"),
+            Matchers.greaterThanOrEqualTo(0)
+        );
     }
 
 }

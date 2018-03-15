@@ -25,6 +25,7 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import javax.json.Json;
+import org.bson.conversions.Bson;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
@@ -55,21 +56,28 @@ final class TkPulse implements Take {
 
     @Override
     public Response act(final Request req) throws IOException {
+        final Bson since = Filters.gt(
+            "created",
+            Date.from(
+                ZonedDateTime.now()
+                    .minus(1L, ChronoUnit.DAYS)
+                    .toInstant()
+            )
+        );
         try (final Footprint footprint =
             new Footprint(this.farm, new Pmo(this.farm))) {
-            final long total = footprint.collection().count(
-                Filters.gt(
-                    "created",
-                    Date.from(
-                        ZonedDateTime.now()
-                            .minus(1L, ChronoUnit.WEEKS)
-                            .toInstant()
-                    )
-                )
-            );
             return new RsJson(
                 Json.createObjectBuilder()
-                    .add("total", total)
+                    .add(
+                        "total",
+                        footprint.collection().count(since)
+                    )
+                    .add(
+                        "errors",
+                        footprint.collection().count(
+                            Filters.and(since, Filters.eq("type", "Error"))
+                        )
+                    )
                     .build()
             );
         }
