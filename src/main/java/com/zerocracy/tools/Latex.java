@@ -21,14 +21,10 @@ import com.jcabi.http.response.RestResponse;
 import com.zerocracy.farm.props.Props;
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.util.concurrent.TimeUnit;
 import javax.json.Json;
 import javax.json.JsonObject;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
-import org.cactoos.io.LengthOf;
-import org.cactoos.io.OutputTo;
-import org.cactoos.io.TeeInput;
 import org.cactoos.text.TextOf;
 
 /**
@@ -71,9 +67,8 @@ public final class Latex {
         final String latex = this.source.replace(
             "\\begin{document}",
             String.format(
-                "\\def\\pgp{%s: %s}\n%s",
-                this.data,
-                this.pgp(),
+                "\n\\def\\pgp{%s}\n%s\n",
+                new Signature(this.data).asString(),
                 new TextOf(
                     Latex.class.getResource("layout.tex")
                 ).asString()
@@ -109,71 +104,6 @@ public final class Latex {
                 .assertStatus(HttpURLConnection.HTTP_OK)
                 .binary()
         );
-    }
-
-    /**
-     * PGP signature text.
-     * @return PGP signature
-     * @throws IOException If fails
-     */
-    private String pgp() throws IOException {
-        final Process receive = new ProcessBuilder(
-            "gpg",
-            "--keyserver",
-            "hkp://ipv4.pool.sks-keyservers.net",
-            "--verbose",
-            "--recv-keys",
-            "0AAF4B5A"
-        ).start();
-        try {
-            receive.waitFor(1L, TimeUnit.MINUTES);
-        } catch (final InterruptedException ex) {
-            Thread.currentThread().interrupt();
-            throw new IllegalStateException(ex);
-        }
-        if (receive.exitValue() != 0) {
-            throw new IllegalStateException(
-                String.format(
-                    "Failed to receive PGP key: %s",
-                    new TextOf(receive.getErrorStream()).asString()
-                )
-            );
-        }
-        final Process sign = new ProcessBuilder(
-            "gpg",
-            "--batch",
-            "--armor",
-            "--local-user",
-            "0AAF4B5A",
-            "--recipient",
-            "0AAF4B5A",
-            "--detach-sig",
-            "--sign"
-        ).start();
-        new LengthOf(
-            new TeeInput(
-                new InputOf(this.data),
-                new OutputTo(sign.getOutputStream())
-            )
-        ).intValue();
-        try {
-            receive.waitFor(1L, TimeUnit.MINUTES);
-        } catch (final InterruptedException ex) {
-            Thread.currentThread().interrupt();
-            throw new IllegalStateException(ex);
-        }
-        if (receive.exitValue() != 0) {
-            throw new IllegalStateException(
-                String.format(
-                    "Failed to sign with PGP key: %s",
-                    new TextOf(sign.getErrorStream()).asString()
-                )
-            );
-        }
-        return new TextOf(sign.getInputStream()).asString()
-            .replace("-----BEGIN PGP SIGNATURE-----", "")
-            .replace("-----END PGP SIGNATURE-----", "")
-            .replaceAll("\n", "");
     }
 
 }

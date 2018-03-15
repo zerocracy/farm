@@ -16,39 +16,25 @@
  */
 package com.zerocracy.tools;
 
-import java.io.File;
-import org.cactoos.Input;
-import org.cactoos.io.LengthOf;
-import org.cactoos.io.TeeInput;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * Test case for {@link Latex}.
+ * Test case for {@link Signature}.
  * @author Yegor Bugayenko (yegor@woquo.com)
  * @version $Id$
- * @since 0.20
+ * @since 0.22
+ * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-public final class LatexITCase {
+public final class SignatureTest {
 
-    /**
-     * Latex can render PDF.
-     * @throws Exception If some problem inside
-     */
     @Test
-    @Ignore
-    public void renders() throws Exception {
-        final Input pdf = new Latex(
-            "\\documentclass{article}\\begin{document}test\\end{document}",
-            "this is our secret data"
-        ).pdf();
-        final File temp = new File("/tmp/bill.pdf");
-        new LengthOf(new TeeInput(pdf, temp)).intValue();
+    public void rendersSignature() throws Exception {
         MatcherAssert.assertThat(
-            new LengthOf(pdf).intValue(),
-            Matchers.greaterThan(0)
+            new Signature("how are you, друг?").asString(),
+            Matchers.containsString(" ")
         );
     }
 
