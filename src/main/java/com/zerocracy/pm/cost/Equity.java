@@ -83,15 +83,25 @@ public final class Equity {
             String latex = new TextOf(
                 new ResourceOf("com/zerocracy/pm/cost/equity.tex")
             ).asString();
+            final String entity = doc.xpath("//entity/text()", "PROJECT");
+            final String ceo = doc.xpath("//ceo/text()", "CEO");
             latex = latex
                 .replace("[OWNER]", login)
-                .replace("[ENTITY]", doc.xpath("//entity/text()", "PROJECT"))
+                .replace("[ENTITY]", entity)
                 .replace("[ADDRESS]", doc.xpath("//address/text()", "USA"))
-                .replace("[CEO]", doc.xpath("//ceo/text()", "CEO"))
+                .replace("[CEO]", ceo)
                 .replace("[SHARE]", String.format("%,.6f", share))
                 .replace("[SHARES]", String.format("%,.2f", this.shares()))
                 .replace("[PAR]", this.par().toString());
-            return new Latex(latex).pdf();
+            return new Latex(
+                latex,
+                String.format(
+                    "%s; @%s; %s; %s; %s",
+                    this.project.pid(), login,
+                    entity, ceo,
+                    this.ownership(login)
+                )
+            ).pdf();
         }
     }
 

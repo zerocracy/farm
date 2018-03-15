@@ -41,7 +41,8 @@ public final class LatexITCase {
     @Ignore
     public void renders() throws Exception {
         final Input pdf = new Latex(
-            "\\documentclass{article}\\begin{document}test\\end{document}"
+            "\\documentclass{article}\\begin{document}test\\end{document}",
+            "this is our secret data"
         ).pdf();
         final File temp = new File("/tmp/bill.pdf");
         new LengthOf(new TeeInput(pdf, temp)).intValue();
