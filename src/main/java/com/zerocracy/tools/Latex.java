@@ -79,6 +79,7 @@ public final class Latex {
             .add("inputformat", "tex")
             .add("outputformat", "pdf")
             .add("wait", true)
+            .add("email", "latex@zerocracy.com")
             .add("input", "raw")
             .add("download", "inline")
             .add("filename", "article.tex")
