@@ -40,41 +40,6 @@ SOFTWARE.
       </p>
       <p>
         <xsl:choose>
-          <xsl:when test="contains(version/name,'SNAPSHOT')">
-            <span title="The bot was deployed manually, without any specific version">
-              <xsl:text>&#x26A1;</xsl:text>
-            </span>
-          </xsl:when>
-          <xsl:otherwise>
-            <span title="Current version of the bot">
-              <xsl:text>v</xsl:text>
-              <xsl:value-of select="version/name"/>
-            </span>
-          </xsl:otherwise>
-        </xsl:choose>
-        <xsl:text> &#xB7; </xsl:text>
-        <span title="Claims processed over the last week">
-          <xsl:value-of select="claims"/>
-        </span>
-        <xsl:text> &#xB7; </xsl:text>
-        <span title="The time since the last restart">
-          <xsl:value-of select="alive"/>
-        </span>
-        <xsl:text> &#xB7; </xsl:text>
-        <xsl:call-template name="takes_millis">
-          <xsl:with-param name="millis" select="millis"/>
-        </xsl:call-template>
-        <xsl:text> &#xB7; </xsl:text>
-        <xsl:call-template name="takes_sla">
-          <xsl:with-param name="sla" select="@sla"/>
-        </xsl:call-template>
-        <xsl:text> &#xB7; </xsl:text>
-        <xsl:call-template name="takes_memory">
-          <xsl:with-param name="memory" select="memory"/>
-        </xsl:call-template>
-      </p>
-      <p>
-        <xsl:choose>
           <xsl:when test="identity">
             <a href="/u/{identity/login}">
               <span title="GitHub user currently logged in">
@@ -106,6 +71,45 @@ SOFTWARE.
           </form>
         </xsl:if>
       </p>
+      <footer>
+        <nav>
+          <ul>
+            <li>
+              <xsl:choose>
+                <xsl:when test="contains(version/name,'SNAPSHOT')">
+                  <span title="The bot was deployed manually, without any specific version">
+                    <xsl:text>&#x26A1;</xsl:text>
+                  </span>
+                </xsl:when>
+                <xsl:otherwise>
+                  <span title="Current version of the bot">
+                    <xsl:text>v</xsl:text>
+                    <xsl:value-of select="version/name"/>
+                  </span>
+                </xsl:otherwise>
+              </xsl:choose>
+            </li>
+            <li title="The time since the last restart">
+              <xsl:value-of select="alive"/>
+            </li>
+            <li>
+              <xsl:call-template name="takes_millis">
+                <xsl:with-param name="millis" select="millis"/>
+              </xsl:call-template>
+            </li>
+            <li>
+              <xsl:call-template name="takes_sla">
+                <xsl:with-param name="sla" select="@sla"/>
+              </xsl:call-template>
+            </li>
+            <li>
+              <xsl:call-template name="takes_memory">
+                <xsl:with-param name="memory" select="memory"/>
+              </xsl:call-template>
+            </li>
+          </ul>
+        </nav>
+      </footer>
     </div>
   </xsl:template>
 </xsl:stylesheet>

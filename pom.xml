@@ -277,7 +277,7 @@ SOFTWARE.
     <dependency>
       <groupId>com.jcabi</groupId>
       <artifactId>jcabi-github</artifactId>
-      <version>0.36</version>
+      <version>0.36.1</version>
     </dependency>
     <dependency>
       <groupId>com.jcabi</groupId>
