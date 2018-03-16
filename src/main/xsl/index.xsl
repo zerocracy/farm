@@ -38,39 +38,47 @@ SOFTWARE.
         <xsl:text>Zerocrat is a project manager</xsl:text>
         <xsl:text> that never sleeps.</xsl:text>
       </p>
-      <p>
-        <xsl:choose>
-          <xsl:when test="identity">
-            <a href="/u/{identity/login}">
-              <span title="GitHub user currently logged in">
-                <xsl:text>@</xsl:text>
-                <xsl:value-of select="identity/login"/>
-              </span>
+      <nav>
+        <ul>
+          <li>
+            <xsl:choose>
+              <xsl:when test="identity">
+                <a href="/u/{identity/login}">
+                  <span title="GitHub user currently logged in">
+                    <xsl:text>@</xsl:text>
+                    <xsl:value-of select="identity/login"/>
+                  </span>
+                </a>
+              </xsl:when>
+              <xsl:otherwise>
+                <a href="{links/link[@rel='takes:github']/@href}" title="Log in using your GitHub account">
+                  <xsl:text>Login</xsl:text>
+                </a>
+              </xsl:otherwise>
+            </xsl:choose>
+          </li>
+          <li>
+            <a href="http://www.zerocracy.com/policy.html">
+              <xsl:text>Policy</xsl:text>
             </a>
-          </xsl:when>
-          <xsl:otherwise>
-            <a href="{links/link[@rel='takes:github']/@href}" title="Log in using your GitHub account">
-              <xsl:text>Login</xsl:text>
+          </li>
+          <li>
+            <a href="http://www.zerocracy.com/terms.html">
+              <xsl:text>Terms</xsl:text>
             </a>
-          </xsl:otherwise>
-        </xsl:choose>
-        <xsl:text> &#xB7; </xsl:text>
-        <a href="http://www.zerocracy.com/policy.html">
-          <xsl:text>Policy</xsl:text>
-        </a>
-        <xsl:text> &#xB7; </xsl:text>
-        <a href="http://www.zerocracy.com/terms.html">
-          <xsl:text>Terms</xsl:text>
-        </a>
-        <xsl:if test="identity">
-          <xsl:text> &#xB7; </xsl:text>
-          <form action="{links/link[@rel='takes:logout']/@href}" method="post" style="display:list-item;margin:0;padding:0">
-            <button type="submit" class="link">
-              <xsl:text>Exit</xsl:text>
-            </button>
-          </form>
-        </xsl:if>
-      </p>
+          </li>
+          <li>
+            <xsl:if test="identity">
+              <xsl:text> &#xB7; </xsl:text>
+              <form action="{links/link[@rel='takes:logout']/@href}" method="post" style="display:list-item;margin:0;padding:0">
+                <button type="submit" class="link">
+                  <xsl:text>Exit</xsl:text>
+                </button>
+              </form>
+            </xsl:if>
+          </li>
+        </ul>
+      </nav>
       <footer>
         <nav>
           <ul>
