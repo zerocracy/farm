@@ -55,13 +55,16 @@ public final class Signature {
      */
     public String asString() throws IOException {
         final String key = "0AAF4B5A";
-        final Process receive = new ProcessBuilder(
-            "gpg",
-            "--keyserver",
-            "hkp://ipv4.pool.sks-keyservers.net",
-            "--verbose",
-            "--recv-keys",
-            key
+        final Process receive = Signature.env(
+            new ProcessBuilder(
+                "gpg",
+                "--no-options",
+                "--keyserver",
+                "hkp://ipv4.pool.sks-keyservers.net",
+                "--verbose",
+                "--recv-keys",
+                key
+            )
         ).start();
         try {
             receive.waitFor(1L, TimeUnit.MINUTES);
@@ -77,16 +80,19 @@ public final class Signature {
                 )
             );
         }
-        final Process sign = new ProcessBuilder(
-            "gpg",
-            "--batch",
-            "--armor",
-            "--local-user",
-            key,
-            "--recipient",
-            key,
-            "--detach-sig",
-            "--sign"
+        final Process sign = Signature.env(
+            new ProcessBuilder(
+                "gpg",
+                "--batch",
+                "--no-options",
+                "--armor",
+                "--local-user",
+                key,
+                "--recipient",
+                key,
+                "--detach-sig",
+                "--sign"
+            )
         ).start();
         new LengthOf(
             new TeeInput(
@@ -118,6 +124,18 @@ public final class Signature {
                 .replaceAll("\n", "")
                 .replaceAll("(?<=\\G.{8})", " ")
         );
+    }
+
+    /**
+     * With environment.
+     * @param builder Process builder
+     * @return The same builder
+     */
+    private static ProcessBuilder env(final ProcessBuilder builder) {
+        builder.environment().putIfAbsent(
+            "GNUPGHOME", System.getProperty("java.io.tmpdir")
+        );
+        return builder;
     }
 
 }
