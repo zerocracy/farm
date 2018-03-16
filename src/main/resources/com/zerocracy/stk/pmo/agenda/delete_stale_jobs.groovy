@@ -16,7 +16,7 @@ def exec(Project pmo, XML xml) {
   People people = new People(pmo).bootstrap()
   List<String> logins = new ArrayList<>(people.iterate().asList())
   Collections.shuffle(logins)
-  logins.subList(0, Math.min(logins.size(), 5)).each { login ->
+  logins.take(5).each { login ->
     Agenda agenda = new Agenda(pmo, login).bootstrap()
     Projects projects = new Projects(pmo, login).bootstrap()
     Set<String> orders = []
