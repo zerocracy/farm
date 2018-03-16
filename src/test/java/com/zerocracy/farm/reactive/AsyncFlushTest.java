@@ -72,8 +72,11 @@ public final class AsyncFlushTest {
                     () -> {
                         latch.await();
                         for (int idx = 0; idx < max; ++idx) {
-                            new ClaimOut().token("test;t")
-                                .type("next").postTo(project);
+                            new ClaimOut()
+                                .token("test;t")
+                                .type("next")
+                                .param("something", idx)
+                                .postTo(project);
                         }
                         return null;
                     }

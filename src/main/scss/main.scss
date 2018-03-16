@@ -112,3 +112,13 @@ header {
     margin:0;
     padding:0;
 }
+
+.form-as-link {
+  display: list-item;
+  margin: 0;
+  padding: 0;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
