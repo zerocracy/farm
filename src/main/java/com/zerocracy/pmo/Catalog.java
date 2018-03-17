@@ -137,7 +137,7 @@ public final class Catalog {
                     .add("alive").set(true).up()
                     .add("fee").set(Cash.ZERO).up()
                     .add("publish").set(Boolean.toString(false)).up()
-                    .add("adviser").set("0crat").up()
+                    .add("adviser").set("0crat")
             );
         }
     }
@@ -578,7 +578,7 @@ public final class Catalog {
         if (!this.exists(pid)) {
             throw new IllegalArgumentException(
                 new Par(
-                    "Project %s doesn't exist, can't get title"
+                    "Project %s doesn't exist, can't get adviser"
                 ).say(pid)
             );
         }
@@ -603,7 +603,7 @@ public final class Catalog {
         if (!this.exists(pid)) {
             throw new IllegalArgumentException(
                 new Par(
-                    "Project %s doesn't exist, can't get title"
+                    "Project %s doesn't exist, can't get adviser"
                 ).say(pid)
             );
         }
