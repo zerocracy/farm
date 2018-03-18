@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
 import org.cactoos.collection.Filtered;
-import org.cactoos.iterable.LengthOf;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.map.MapEntry;
 import org.cactoos.map.SolidMap;
@@ -58,9 +57,7 @@ public final class VsWorkload implements Votes {
                     new Mapped<>(
                         login -> new MapEntry<>(
                             login,
-                            new LengthOf(
-                                new Agenda(pmo, login).bootstrap().jobs()
-                            ).intValue()
+                            new Agenda(pmo, login).bootstrap().jobs().size()
                         ),
                         others
                     )

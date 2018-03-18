@@ -54,7 +54,8 @@ def exec(Project pmo, XML xml) {
       ).say(std, rate, pid)
     )
   }
-  if (rate > new Policy().get('33.max-sandbox-rate', Cash.ZERO) && catalog.sandbox(pid)) {
+  if (rate > new Policy().get('33.max-sandbox-rate', Cash.ZERO)
+    && catalog.sandbox().contains(pid)) {
     throw new SoftException(
       new Par(
         'The rate %s is too high for a sandbox project %s, sorry, see §33'
@@ -73,7 +74,8 @@ def exec(Project pmo, XML xml) {
   Roles roles = new Roles(farm.find("@id='${pid}'")[0]).bootstrap()
   if (!roles.hasAnyRole(author)) {
     int reputation = new Awards(pmo, author).bootstrap().total()
-    if (reputation < new Policy().get('33.min-live', 256) && !catalog.sandbox(pid)) {
+    if (reputation < new Policy().get('33.min-live', 256)
+      && !catalog.sandbox().contains(pid)) {
       throw new SoftException(
         new Par(
           'Your reputation is %d, which is not big enough to apply to %s;',
@@ -81,7 +83,8 @@ def exec(Project pmo, XML xml) {
         ).say(reputation, pid)
       )
     }
-    if (reputation > new Policy().get('33.max-sandbox-rep', 256) && catalog.sandbox(pid)) {
+    if (reputation > new Policy().get('33.max-sandbox-rep', 256)
+      && catalog.sandbox().contains(pid)) {
       throw new SoftException(
         new Par(
           'Your reputation is %d,',

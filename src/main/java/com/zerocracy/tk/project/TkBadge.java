@@ -71,7 +71,7 @@ public final class TkBadge implements TkRegex {
         return new RsWithHeaders(
             new RsWithType(
                 new RsWithBody(
-                    this.getClass().getResourceAsStream("badge.svg")
+                    this.getClass().getResource("badge.svg")
                 ),
                 "image/svg+xml"
             ),

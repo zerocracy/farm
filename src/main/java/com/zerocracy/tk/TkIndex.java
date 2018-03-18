@@ -17,14 +17,8 @@
 package com.zerocracy.tk;
 
 import com.jcabi.log.Logger;
-import com.mongodb.client.model.Filters;
 import com.zerocracy.Farm;
-import com.zerocracy.pm.Footprint;
-import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
-import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.Date;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
@@ -65,32 +59,15 @@ final class TkIndex implements Take {
             this.farm,
             "/xsl/index.xsl",
             req,
-            () -> {
-                final long total;
-                try (final Footprint footprint =
-                    new Footprint(this.farm, new Pmo(this.farm))) {
-                    total = footprint.collection().count(
-                        Filters.gt(
-                            "created",
-                            Date.from(
-                                ZonedDateTime.now()
-                                    .minus(1L, ChronoUnit.WEEKS)
-                                    .toInstant()
-                            )
-                        )
-                    );
-                }
-                return new XeChain(
-                    new XeAppend("claims", Long.toString(total)),
-                    new XeAppend(
-                        "alive",
-                        Logger.format(
-                            "%[ms]s",
-                            System.currentTimeMillis() - TkIndex.STARTED
-                        )
+            () -> new XeChain(
+                new XeAppend(
+                    "alive",
+                    Logger.format(
+                        "%[ms]s",
+                        System.currentTimeMillis() - TkIndex.STARTED
                     )
-                );
-            }
+                )
+            )
         );
     }
 

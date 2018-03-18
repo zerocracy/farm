@@ -21,6 +21,7 @@ import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.in.Orders
+import com.zerocracy.pm.qa.Reviews
 import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pm.staff.Elections
 
@@ -30,20 +31,28 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   Wbs wbs = new Wbs(project).bootstrap()
   Orders orders = new Orders(project).bootstrap()
+  Reviews reviews = new Reviews(project).bootstrap()
   Elections elections = new Elections(project).bootstrap()
   for (String job : wbs.iterate()) {
-    if (!orders.assigned(job) && elections.elected(job)) {
-      String winner = elections.winner(job)
-      String reason = elections.reason(job)
-      claim.copy()
-        .type('Start order')
-        .token("job;${job}")
-        .param('job', job)
-        .param('login', winner)
-        .param('reason', reason)
-        .param('public', true)
-        .postTo(project)
+    if (orders.assigned(job)) {
+      continue
     }
+    if (!elections.elected(job)) {
+      continue
+    }
+    if (reviews.exists(job)) {
+      continue
+    }
+    String winner = elections.winner(job)
+    String reason = elections.reason(job)
+    claim.copy()
+      .type('Start order')
+      .token("job;${job}")
+      .param('job', job)
+      .param('login', winner)
+      .param('reason', reason)
+      .param('public', true)
+      .postTo(project)
   }
 }
 

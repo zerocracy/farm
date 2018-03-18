@@ -15,7 +15,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" version="1.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" version="2.0">
   <xsl:output method="html" doctype-system="about:legacy-compat" encoding="UTF-8" indent="yes"/>
   <xsl:strip-space elements="*"/>
   <xsl:include href="/xsl/inner-layout.xsl"/>
@@ -391,7 +391,7 @@ SOFTWARE.
         <xsl:text> </xsl:text>
         <xsl:value-of select="ago"/>
         <xsl:text> ago: </xsl:text>
-        <xsl:value-of select="details"/>
+        <xsl:value-of select="details_html" disable-output-escaping="yes"/>
       </xsl:for-each>
       <xsl:text>.</xsl:text>
     </p>

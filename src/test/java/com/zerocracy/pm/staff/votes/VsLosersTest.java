@@ -14,47 +14,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.tk;
+package com.zerocracy.pm.staff.votes;
 
-import java.util.Arrays;
+import com.zerocracy.farm.fake.FkProject;
+import java.io.IOException;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
-import org.takes.Request;
-import org.takes.rq.RqFake;
-import org.takes.rq.RqPrint;
-import org.takes.rs.RsPrint;
-import org.takes.rs.RsText;
 
 /**
- * Test case for {@link TkSslOnly}.
+ * Test case for {@link VsLosers}.
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.20
+ * @since 0.22
  * @checkstyle JavadocMethodCheck (500 lines)
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-public final class TkSslOnlyTest {
+public final class VsLosersTest {
 
     @Test
-    public void redirects() throws Exception {
-        final Request req = new RqFake(
-            Arrays.asList(
-                "GET /one/two?a=1",
-                "Host: www.0crat.com",
-                "X-Forwarded-Proto: http"
-            ),
-            ""
-        );
+    public void highRankForLoser() throws IOException {
+        final FkProject pmo = new FkProject();
+        final String login = "yegor256";
         MatcherAssert.assertThat(
-            new RsPrint(
-                new TkSslOnly(
-                    request -> new RsText(
-                        new RqPrint(request).print()
-                    )
-                ).act(req)
-            ).print(),
-            Matchers.containsString("https://www.0crat.com/one/two?a=1")
+            "Banned voter didn't give high rank for banned user",
+            new VsLosers(pmo, 0).take(login, new StringBuilder()),
+            Matchers.equalTo(0.0)
         );
     }
 

@@ -121,6 +121,8 @@ public final class ExtMongo implements Scalar<MongoClient> {
                 "localhost", ExtMongo.FAKE.value()
             );
         } else {
+            // @checkstyle MagicNumber (5 lines)
+            final int timeout = (int) TimeUnit.SECONDS.toMillis(15L);
             client = new MongoClient(
                 new ServerAddress(
                     props.get("//mongo/host"),
@@ -134,11 +136,10 @@ public final class ExtMongo implements Scalar<MongoClient> {
                     )
                 ),
                 MongoClientOptions.builder()
-                    // @checkstyle MagicNumber (5 lines)
-                    .maxWaitTime((int) TimeUnit.SECONDS.toMillis(5L))
-                    .socketTimeout((int) TimeUnit.SECONDS.toMillis(5L))
-                    .connectTimeout((int) TimeUnit.SECONDS.toMillis(5L))
-                    .serverSelectionTimeout((int) TimeUnit.SECONDS.toMillis(5L))
+                    .maxWaitTime(timeout)
+                    .socketTimeout(timeout)
+                    .connectTimeout(timeout)
+                    .serverSelectionTimeout(timeout)
                     .build()
             );
         }

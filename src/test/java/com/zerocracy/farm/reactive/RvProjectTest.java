@@ -84,10 +84,13 @@ public final class RvProjectTest {
                 final Project project = new RvProject(raw, flush);
                 MatcherAssert.assertThat(
                     input -> {
-                        new ClaimOut().type("hello you").postTo(project);
+                        new ClaimOut()
+                            .type("hello you")
+                            .param("something", input.incrementAndGet())
+                            .postTo(project);
                         return true;
                     },
-                    new RunsInThreads<>(true, total.get())
+                    new RunsInThreads<>(new AtomicInteger(), total.get())
                 );
                 final Claims claims = new Claims(project).bootstrap();
                 while (true) {

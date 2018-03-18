@@ -22,6 +22,7 @@ import com.zerocracy.Project;
 import com.zerocracy.pmo.People;
 import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
+import java.net.URI;
 import java.util.Locale;
 import java.util.logging.Level;
 import org.cactoos.Scalar;
@@ -31,6 +32,8 @@ import org.takes.Request;
 import org.takes.facets.auth.Identity;
 import org.takes.facets.auth.RqAuth;
 import org.takes.facets.forward.RsForward;
+import org.takes.facets.previous.RsPrevious;
+import org.takes.rq.RqRequestLine;
 
 /**
  * User login from OAuth.
@@ -87,9 +90,17 @@ public final class RqUser implements Scalar<String> {
                 final Identity identity = new RqAuth(req).identity();
                 if (identity.equals(Identity.ANONYMOUS)) {
                     throw new RsForward(
-                        new RsParFlash(
-                            "You must be logged in",
-                            Level.WARNING
+                        new RsPrevious(
+                            new RsParFlash(
+                                String.format(
+                                    "You must be logged in to see %s",
+                                    new URI(
+                                        new RqRequestLine.Base(req).uri()
+                                    ).getPath()
+                                ),
+                                Level.WARNING
+                            ),
+                            new RqRequestLine.Base(req).uri()
                         )
                     );
                 }

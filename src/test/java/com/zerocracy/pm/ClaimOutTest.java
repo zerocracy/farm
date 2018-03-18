@@ -61,6 +61,7 @@ public final class ClaimOutTest {
             .type("Notify")
             .token("test;token")
             .param("login", "@yegor256")
+            .param("job", "gh:zerocracy/zerocracy.github.io#3")
             .param("minutes", "45min")
             .param("cause_type", "Ping")
             .param("message", "hello, world")
@@ -74,6 +75,43 @@ public final class ClaimOutTest {
                 "/claim/params/param[@name='minutes' and .='45']"
             )
         );
+    }
+
+    @Test
+    public void complainsAboutInvalidClaim() throws Exception {
+        final ClaimOut[] claims = {
+            new ClaimOut()
+                .type("Hello dude")
+                .param("author", "yegor256"),
+            new ClaimOut()
+                .type("Hey")
+                .param("flow", "Hey; Hey; Hey"),
+            new ClaimOut()
+                .type("Validate cause")
+                .param("cause", "some text while a number expected"),
+            new ClaimOut()
+                .type("Validate login")
+                .param("login", "this is not a GitHub login"),
+            new ClaimOut()
+                .type("Validate job")
+                .param("job", "this is not a job"),
+            new ClaimOut()
+                .type("Validate role")
+                .param("role", "this is not a role"),
+        };
+        final Project project = new FkProject();
+        for (final ClaimOut claim : claims) {
+            try {
+                claim.postTo(project);
+            } catch (final IllegalArgumentException ex) {
+                MatcherAssert.assertThat(
+                    ex.getLocalizedMessage(),
+                    Matchers.containsString(
+                        "Failed to transform by "
+                    )
+                );
+            }
+        }
     }
 
 }

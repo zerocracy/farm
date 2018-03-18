@@ -81,7 +81,7 @@ public final class TkAlias implements Take {
                 new Par(
                     "Thanks, @%s now has an alias, @rel='%s', @href='%s'"
                 ).say(login, rel, href),
-                Level.WARNING
+                Level.INFO
             )
         );
     }

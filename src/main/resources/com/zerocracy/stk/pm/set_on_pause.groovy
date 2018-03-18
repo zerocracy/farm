@@ -42,6 +42,15 @@ def exec(Project project, XML xml) {
   }
   boolean flag = claim.param('flag') == 'on'
   catalog.pause(pid, flag)
+  if (flag) {
+    claim.copy()
+      .type('Project was paused')
+      .postTo(project)
+  } else {
+    claim.copy()
+      .type('Project was activated')
+      .postTo(project)
+  }
   claim.reply(
     new Par(
       'Done, the project is currently %s'

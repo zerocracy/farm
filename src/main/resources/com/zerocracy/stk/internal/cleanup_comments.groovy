@@ -26,6 +26,7 @@ import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.farm.DyErrors
 import com.zerocracy.farm.props.Props
+import com.zerocracy.radars.github.Quota
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).isPmo()
@@ -36,12 +37,15 @@ def exec(Project project, XML xml) {
     return
   }
   Github github = new ExtGithub(farm).value()
+  if (!new Quota(github).quiet()) {
+    return
+  }
   DyErrors.Github errors = new DyErrors.Github(
     new DyErrors(new ExtDynamo(farm).value()),
     github
   )
-  errors.iterate(10, 72L).each {
-    errors.remove(it)
-    it.remove()
+  errors.iterate(10, 72L).each { error ->
+    errors.remove(error)
+    error.remove()
   }
 }

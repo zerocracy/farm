@@ -108,7 +108,8 @@ public final class SlackRadar implements AutoCloseable {
                         );
                     } catch (final IOException ex) {
                         Logger.warn(
-                            this, "Can't connect to %s: %s",
+                            this, "Can't connect to %s/%s: %s",
+                            bots.name(bot.getKey()),
                             bot.getKey(), ex.getLocalizedMessage()
                         );
                         continue;

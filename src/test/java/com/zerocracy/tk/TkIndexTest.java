@@ -55,7 +55,7 @@ public final class TkIndexTest {
                     )
                 ).printBody()
             ),
-            XhtmlMatchers.hasXPaths("/page/claims")
+            XhtmlMatchers.hasXPaths("/page/alive")
         );
     }
 

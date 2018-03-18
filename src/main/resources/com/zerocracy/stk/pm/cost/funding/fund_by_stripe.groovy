@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.cost
+package com.zerocracy.stk.pm.cost.funding
 
 import com.jcabi.xml.XML
 import com.zerocracy.Par
@@ -30,13 +30,12 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   Cash amount = new Cash.S(claim.param('amount'))
   String customer = claim.param('stripe_customer')
-  String email = claim.param('email')
   new Ledger(project).bootstrap().add(
     new Ledger.Transaction(
       amount,
       'assets', 'cash',
-      'income', email.toLowerCase(Locale.ENGLISH),
-      "Funded by Stripe customer \"${customer}\""
+      'income', customer,
+      'Funded by Stripe'
     )
   )
   claim.copy()

@@ -29,7 +29,7 @@ import org.junit.Test;
  * Test case for {@link Latex}.
  * @author Yegor Bugayenko (yegor@woquo.com)
  * @version $Id$
- * @since 0.111
+ * @since 0.20
  */
 public final class LatexITCase {
 
@@ -41,7 +41,8 @@ public final class LatexITCase {
     @Ignore
     public void renders() throws Exception {
         final Input pdf = new Latex(
-            "\\documentclass{article}\\begin{document}test\\end{document}"
+            "\\documentclass{article}\\begin{document}test\\end{document}",
+            "this is our secret data"
         ).pdf();
         final File temp = new File("/tmp/bill.pdf");
         new LengthOf(new TeeInput(pdf, temp)).intValue();

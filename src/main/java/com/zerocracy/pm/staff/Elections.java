@@ -49,7 +49,7 @@ public final class Elections {
      * XSLT.
      */
     private static final XSL STYLESHEET = XSLDocument.make(
-        Elections.class.getResourceAsStream("to-winner.xsl")
+        Elections.class.getResource("to-winner.xsl")
     );
 
     /**

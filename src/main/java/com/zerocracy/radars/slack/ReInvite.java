@@ -19,6 +19,7 @@ package com.zerocracy.radars.slack;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackChannelJoined;
 import com.zerocracy.Farm;
+import com.zerocracy.Par;
 import java.io.IOException;
 
 /**
@@ -33,11 +34,12 @@ final class ReInvite implements Reaction<SlackChannelJoined> {
     @Override
     public boolean react(final Farm farm, final SlackChannelJoined event,
         final SlackSession session) throws IOException {
-        session.disconnect();
-        session.connect();
         session.sendMessage(
             event.getSlackChannel(),
-            "Thanks for inviting me here."
+            new Par(
+                "Thanks for inviting me here;",
+                "now you have to bootstrap the project, as explained in §12"
+            ).say()
         );
         return true;
     }

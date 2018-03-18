@@ -19,6 +19,7 @@ package com.zerocracy.pm.qa;
 import com.jcabi.xml.XML;
 import com.zerocracy.Item;
 import com.zerocracy.Par;
+import com.zerocracy.Policy;
 import com.zerocracy.Project;
 import com.zerocracy.SoftException;
 import com.zerocracy.Xocument;
@@ -124,15 +125,19 @@ public final class Reviews {
                 ).strict(1).remove()
             );
         }
+        int minutes = Integer.parseInt(review.xpath("minutes/text()").get(0));
         final Cash bonus = new Cash.S(review.xpath("bonus/text()").get(0));
         Cash cash = new Cash.S(review.xpath("cash/text()").get(0));
         if (good) {
             cash = cash.add(bonus);
+            // @checkstyle MagicNumber (2 lines)
+            // @checkstyle StringLiteralsConcatenationCheck (1 line)
+            minutes += new Policy().get("31.bonus", 5);
         }
         return claim
             .param("login", review.xpath("performer/text()").get(0))
             .param("cash", cash)
-            .param("minutes", review.xpath("minutes/text()").get(0));
+            .param("minutes", minutes);
     }
 
     /**

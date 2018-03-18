@@ -21,6 +21,8 @@ import com.zerocracy.Item;
 import com.zerocracy.Project;
 import com.zerocracy.Xocument;
 import java.io.IOException;
+import java.util.Date;
+import org.cactoos.text.JoinedText;
 import org.cactoos.time.DateAsText;
 import org.xembly.Directives;
 
@@ -75,6 +77,28 @@ public final class Awards {
     }
 
     /**
+     * Remove all awards older than specified date.
+     * @param date Date
+     * @throws IOException If failed
+     */
+    public void removeOlderThan(final Date date) throws IOException {
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                new Directives()
+                    .xpath(
+                        new JoinedText(
+                            "",
+                            "/awards/award[xs:dateTime(added) < ",
+                            "xs:dateTime('",
+                            new DateAsText(date).asString(),
+                            "')]"
+                        ).asString()
+                    ).remove()
+            );
+        }
+    }
+
+    /**
      * Add points to the list.
      * @param points How many points
      * @param job Job ID
@@ -82,6 +106,21 @@ public final class Awards {
      * @throws IOException If fails
      */
     public void add(final int points, final String job, final String reason)
+        throws IOException {
+        this.add(points, job, reason, new Date());
+    }
+
+    /**
+     * Add points to the list.
+     * @param points How many points
+     * @param job Job ID
+     * @param reason The reason
+     * @param date Award created date
+     * @throws IOException If fails
+     * @checkstyle ParameterNumberCheck (5 lines)
+     */
+    public void add(final int points, final String job, final String reason,
+        final Date date)
         throws IOException {
         if (points == 0) {
             throw new IllegalArgumentException(
@@ -99,7 +138,7 @@ public final class Awards {
                     .add("points")
                     .set(points)
                     .up()
-                    .add("added").set(new DateAsText().asString()).up()
+                    .add("added").set(new DateAsText(date).asString()).up()
                     .add("project")
                     .set(this.pmo.pid())
                     .up()

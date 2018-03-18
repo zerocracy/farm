@@ -16,14 +16,19 @@
  */
 package com.zerocracy.stk.pmo.profile
 
+import com.jcabi.github.User
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
+import com.zerocracy.SoftException
+import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Awards
 import com.zerocracy.pmo.People
+import javax.json.JsonObject
+import org.cactoos.text.AbbreviatedText
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).isPmo()
@@ -41,12 +46,33 @@ def exec(Project project, XML xml) {
     return
   }
   String login = claim.param('login')
+  User.Smart user = new User.Smart(
+    new ExtGithub(farm).value().users().get(login)
+  )
+  JsonObject json
+  try {
+    json = user.json()
+  } catch (AssertionError ex) {
+    throw new SoftException(
+      new Par(
+        'We can\'t find @%s in Github: https://github.com/%1$s: %s'
+      ).say(login, new AbbreviatedText(ex.message, 100).asString())
+    )
+  }
+  if (json.getString('type') != 'User') {
+    throw new SoftException(
+      new Par(
+        'The GitHub user @%s is not a regular user, but "%s"'
+      ).say(login, json.getString('type'))
+    )
+  }
   People people = new People(farm).bootstrap()
   people.invite(login, author)
   claim.reply(
     new Par(
-      'Thanks, @%s can now work with us, and you are the mentor, see §1',
-    ).say(login)
+      'Thanks, @%s (%s) can now work with us,',
+      'and you are the mentor, see §1',
+    ).say(login, json.getString('name'))
   ).postTo(project)
   claim.copy()
     .type('Notify user')

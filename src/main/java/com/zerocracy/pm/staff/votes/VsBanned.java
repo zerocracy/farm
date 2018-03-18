@@ -61,7 +61,7 @@ public final class VsBanned implements Votes {
         if (new LengthOf(reasons).intValue() > 0) {
             log.append(
                 String.format(
-                    "Banned from %s because: %s",
+                    "Banned from %s: %s",
                     this.job,
                     new JoinedText(", ", reasons).asString()
                 )
