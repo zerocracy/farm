@@ -16,7 +16,6 @@
  */
 package com.zerocracy.stk.pmo.people
 
-import com.jcabi.github.Github
 import com.jcabi.github.User
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
@@ -32,10 +31,12 @@ import java.util.concurrent.TimeUnit
 def exec(Project pmo, XML xml) {
   new Assume(pmo, xml).isPmo()
   new Assume(pmo, xml).type('Ping daily')
+  Farm farm = binding.variables.farm
   People people = new People(pmo).bootstrap()
   ClaimIn claim = new ClaimIn(xml)
   people.iterate().each { uid ->
-    if (!exists(uid)) {
+    User.Smart user = new User.Smart(new ExtGithub(farm).value().users().get(uid))
+    if (!user.exists()) {
       claim.copy()
         .type('Notify user')
         .token("user;$uid")
@@ -55,20 +56,5 @@ def exec(Project pmo, XML xml) {
         .param('login', uid)
         .postTo(pmo)
     }
-  }
-}
-
-@SuppressWarnings('CatchException')
-boolean exists(String username) {
-  Farm farm = binding.variables.farm
-  Github github = new ExtGithub(farm).value()
-  // @todo #555:30min It's not possible to check user existence because of
-  //  jcabi-github bug: https://github.com/jcabi/jcabi-github/issues/1359
-  //  let's replace this ugly construction with something else after bug fix.
-  try {
-    new User.Smart(github.users().get(username)).id()
-    return true
-  } catch (Exception ignore) {
-    return false
   }
 }
