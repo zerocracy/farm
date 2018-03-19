@@ -162,6 +162,50 @@ public final class Reviews {
     }
 
     /**
+     * The performer of the job.
+     * @param job The job to check
+     * @return Name of inspector
+     * @throws IOException If fails
+     */
+    public String performer(final String job) throws IOException {
+        if (!this.exists(job)) {
+            throw new SoftException(
+                new Par(
+                    "There is no quality review for %s, no performer"
+                ).say(job)
+            );
+        }
+        try (final Item reviews = this.item()) {
+            return new Xocument(reviews.path()).xpath(
+                String.format("//review[@job='%s']/performer/text()", job)
+            ).get(0);
+        }
+    }
+
+    /**
+     * The minutes of the job.
+     * @param job The job to check
+     * @return Name of inspector
+     * @throws IOException If fails
+     */
+    public int minutes(final String job) throws IOException {
+        if (!this.exists(job)) {
+            throw new SoftException(
+                new Par(
+                    "There is no quality review for %s, no minutes"
+                ).say(job)
+            );
+        }
+        try (final Item reviews = this.item()) {
+            return Integer.parseInt(
+                new Xocument(reviews.path()).xpath(
+                    String.format("//review[@job='%s']/minutes/text()", job)
+                ).get(0)
+            );
+        }
+    }
+
+    /**
      * This job exists in reviews?
      * @param job The job to check
      * @return TRUE if it exists
