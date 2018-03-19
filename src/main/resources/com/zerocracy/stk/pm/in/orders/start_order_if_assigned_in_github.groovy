@@ -14,63 +14,45 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.scope.wbs
+package com.zerocracy.stk.pm.in.orders
 
 import com.jcabi.github.Github
 import com.jcabi.github.Issue
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
-import com.zerocracy.Par
 import com.zerocracy.Project
-import com.zerocracy.SoftException
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.scope.Wbs
+import com.zerocracy.pmo.People
 import com.zerocracy.radars.github.Job
-import javax.json.JsonObject
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Add job to WBS')
-  new Assume(project, xml).roles('ARC', 'PO')
+  new Assume(project, xml).type('Job was added to WBS')
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
   ClaimIn claim = new ClaimIn(xml)
-  Wbs wbs = new Wbs(project).bootstrap()
   String job = claim.param('job')
-  if (claim.hasParam('quiet') && wbs.exists(job)) {
+  if (!job.startsWith('gh:')) {
     return
   }
-  String role = 'DEV'
-  if (claim.hasParam('role')) {
-    role = claim.param('role')
+  Issue issue = new Issue.Smart(new Job.Issue(github, job))
+  if (!issue.hasAssignee()) {
+    return
   }
-  if (job.startsWith('gh:')) {
-    Issue issue = new Issue.Smart(new Job.Issue(github, job))
-    if (issue.pull) {
-      role = 'REV'
-    }
-    if (role == 'REV' && issue.pull) {
-      JsonObject pull = issue.pull().json()
-      int lines = pull.getInt('additions') + pull.getInt('deletions')
-      if (lines < 10) {
-        throw new SoftException(
-          new Par(
-            'This pull request is too small,',
-            'just %d lines changed, there will be no code review'
-          ).say(lines)
-        )
-      }
-    }
+  People people = new People(farm).bootstrap()
+  Iterator<String> find = people.find('github', issue.assignee().login()).iterator()
+  if (!find.hasNext()) {
+    return
   }
-  wbs.add(job)
-  wbs.role(job, role)
-  claim.reply(
-    new Par('Job %s is now in scope, role is %s').say(job, role)
-  ).postTo(project)
+  String login = find.next()
+  if (!people.hasMentor(login)) {
+    return
+  }
   claim.copy()
-    .type('Job was added to WBS')
-    .param('role', role)
+    .type('Start order')
+    .param('login', login)
+    .param('reason', claim.cid())
     .postTo(project)
 }

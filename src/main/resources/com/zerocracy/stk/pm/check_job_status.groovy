@@ -142,7 +142,7 @@ def exec(Project project, XML xml) {
     )
     items.add(
       new Par(
-        '@%s will be paid %d minutes after quality review'
+        '@%s will receive %d minutes after quality review'
       ).say(reviews.performer(job), reviews.minutes(job))
     )
   }
