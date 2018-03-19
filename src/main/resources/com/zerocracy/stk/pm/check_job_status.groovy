@@ -141,7 +141,7 @@ def exec(Project project, XML xml) {
   items.add(
     new Par('Job [footprint](/footprint/%s?q=%s) (restricted area)').say(
       project.pid(),
-      URLEncoder.encode("{job:'${job}'}", 'UTF-8')
+      URLEncoder.encode("{job:'${job}',type:{\$not:/^Notify/}}", 'UTF-8')
     )
   )
   claim.reply(
