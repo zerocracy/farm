@@ -34,6 +34,12 @@ import org.xembly.Directives;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.12
+ * @todo #422:30min Title element, of an order in agenda, has been declared in
+ *  agenda.xsd. Let's add method title(...), which will set the title of
+ *  on order and add a new stakeholder, set_agenda_title_from_github.groovy,
+ *  which will get title of a job from GitHub and set it to Agenda. THe reason
+ *  for the new stakeholder is that not all orders will come from Github, some
+ *  may also come from Jira, Trello etc, in the future.
  */
 public final class Agenda {
 
