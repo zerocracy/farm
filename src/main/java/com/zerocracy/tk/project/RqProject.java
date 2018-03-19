@@ -81,7 +81,9 @@ final class RqProject implements Project {
                 ).iterator().next();
                 final String user = new RqUser(farm, req).value();
                 final Roles roles = new Roles(project).bootstrap();
-                if (required.length > 0 && !roles.hasRole(user, required)) {
+                final Roles admins = new Roles(pmo).bootstrap();
+                if (required.length > 0 && !roles.hasRole(user, required)
+                    && !admins.hasAnyRole(user)) {
                     throw new RsForward(
                         new RsParFlash(
                             new Par(
@@ -92,7 +94,8 @@ final class RqProject implements Project {
                         )
                     );
                 }
-                if (required.length == 0 && !roles.hasAnyRole(user)) {
+                if (required.length == 0 && !roles.hasAnyRole(user)
+                    && !admins.hasAnyRole(user)) {
                     throw new RsForward(
                         new RsParFlash(
                             new Par(

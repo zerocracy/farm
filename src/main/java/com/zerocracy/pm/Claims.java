@@ -24,13 +24,16 @@ import com.zerocracy.Xocument;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import org.cactoos.collection.Limited;
+import org.cactoos.collection.Mapped;
 import org.cactoos.collection.Sorted;
 import org.cactoos.iterable.LengthOf;
 import org.cactoos.time.DateAsText;
 import org.xembly.Directive;
 import org.xembly.Directives;
+import org.xembly.Xembler;
 
 /**
  * Claims.
@@ -86,6 +89,27 @@ public final class Claims {
             new Xocument(item).modify(
                 new Directives().xpath("/claims").append(claim)
             );
+            final Collection<String> signatures = new Sorted<>(
+                new Mapped<>(
+                    input -> {
+                        final ClaimIn cin = new ClaimIn(input);
+                        return String.format(
+                            "%s;%s",
+                            cin.type(),
+                            cin.params()
+                        );
+                    },
+                    new Xocument(item).nodes("/claims/claim")
+                )
+            );
+            if (signatures.size() != new HashSet<>(signatures).size()) {
+                throw new IllegalStateException(
+                    String.format(
+                        "Duplicate claims are not allowed, can't add this: %s",
+                        new Xembler(claim).xmlQuietly()
+                    )
+                );
+            }
         }
         final int size = new LengthOf(this.iterate()).intValue();
         if (size > Tv.HUNDRED) {

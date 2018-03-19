@@ -63,8 +63,11 @@ public final class FtFarmTest {
             MatcherAssert.assertThat(
                 inc -> {
                     final long num = cid.getAndIncrement();
-                    new ClaimOut().cid(num).type("Hello")
-                        .author("0pdd").postTo(project);
+                    new ClaimOut().cid(num)
+                        .type("Hello")
+                        .param("something", num)
+                        .author("0pdd")
+                        .postTo(project);
                     return true;
                 },
                 new RunsInThreads<>(new AtomicInteger(), threads)

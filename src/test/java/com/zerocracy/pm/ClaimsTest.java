@@ -29,6 +29,7 @@ import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.sync.SyncFarm;
 import java.nio.file.Files;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.io.LengthOf;
 import org.cactoos.io.TeeInput;
 import org.hamcrest.MatcherAssert;
@@ -59,10 +60,13 @@ public final class ClaimsTest {
                 .iterator().next();
             MatcherAssert.assertThat(
                 input -> {
-                    new ClaimOut().type("how are you").postTo(project);
+                    new ClaimOut()
+                        .type("how are you")
+                        .param("something", input.incrementAndGet())
+                        .postTo(project);
                     return true;
                 },
-                new RunsInThreads<>(true)
+                new RunsInThreads<>(new AtomicInteger())
             );
         }
     }
@@ -115,6 +119,14 @@ public final class ClaimsTest {
             claims.iterate().iterator().hasNext(),
             Matchers.equalTo(false)
         );
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void prohibitsDuplicateClaims() throws Exception {
+        final Claims claims = new Claims(new FkProject()).bootstrap();
+        final String type = "hello future";
+        claims.add(new ClaimOut().type(type));
+        claims.add(new ClaimOut().type(type));
     }
 
     @Test
