@@ -37,7 +37,7 @@ import org.junit.Test;
  * @since 0.1
  * @checkstyle JavadocMethodCheck (500 lines)
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 public final class PeopleTest {
 
     @Test
@@ -224,4 +224,29 @@ public final class PeopleTest {
         );
     }
 
+    @Test
+    public void remove() throws Exception {
+        final People people = new People(new FkProject()).bootstrap();
+        final String uid = "remove";
+        people.invite(uid, "mentor11");
+        people.remove(uid);
+        MatcherAssert.assertThat(
+            people.iterate(),
+            Matchers.emptyIterable()
+        );
+    }
+
+    @Test
+    public void getSingleLink() throws Exception {
+        final People people = new People(new FkProject()).bootstrap();
+        final String uid = "linker";
+        people.invite(uid, uid);
+        final String rel = "some-rel11";
+        final String href = "some-href22";
+        people.link(uid, rel, href);
+        MatcherAssert.assertThat(
+            people.link(uid, rel),
+            Matchers.equalTo(href)
+        );
+    }
 }
