@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import org.cactoos.iterable.ItemAt;
 import org.cactoos.iterable.Mapped;
+import org.cactoos.scalar.NumberOf;
 import org.cactoos.scalar.UncheckedScalar;
 import org.cactoos.time.DateAsText;
 import org.xembly.Directives;
@@ -40,11 +41,10 @@ import org.xembly.Directives;
  * @version $Id$
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @since 0.1
- * @todo #366:30min Let's keep person reputation, agenda and project count
- *  inside `people.xml` and update them when reputation, agenda or projects
- *  changed as described in
+ * @todo #552:30min Let's keep agenda inside `people.xml` and update it
+ *  when agenda changed as described in
  *  https://github.com/zerocracy/farm/issues/366#issuecomment-359568311
- *  It should be done after #386 bug to avoid conflicts.
+ *  Also put it as 'agenda' element in TkGang xml.
  */
 @SuppressWarnings
     (
@@ -640,6 +640,70 @@ public final class People {
                     uid
                 )
             );
+        }
+    }
+
+    /**
+     * Update person reputation.
+     * @param uid User id
+     * @param rep Reputation
+     * @throws IOException If fails
+     */
+    public void reputation(final String uid, final int rep)
+        throws IOException {
+        if (!this.exists(uid)) {
+            throw new IllegalArgumentException(
+                new Par("Person %s doesn't exist").say(uid)
+            );
+        }
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                new Directives().xpath(
+                    String.format(
+                        "/people/person[@id='%s']",
+                        uid
+                    )
+                ).addIf("reputation").set(rep)
+            );
+        }
+    }
+
+    /**
+     * Get person reputation.
+     * @param uid User id
+     * @return Reputation
+     * @throws IOException If fails
+     */
+    public int reputation(final String uid) throws IOException {
+        if (!this.exists(uid)) {
+            throw new IllegalArgumentException(
+                new Par("Person %s doesn't exist").say(uid)
+            );
+        }
+        try (final Item item = this.item()) {
+            return new NumberOf(
+                new Xocument(item.path()).xpath(
+                    String.format(
+                        "/people/person[@id='%s']/reputation/text()",
+                        uid
+                    ),
+                    "0"
+                )
+            ).intValue();
+        }
+    }
+
+    /**
+     * Person exists?
+     * @param pid Person ID
+     * @return TRUE if it exists
+     * @throws IOException If fails
+     */
+    public boolean exists(final String pid) throws IOException {
+        try (final Item item = this.item()) {
+            return !new Xocument(item).nodes(
+                String.format("//people/person[@id  ='%s']", pid)
+            ).isEmpty();
         }
     }
 

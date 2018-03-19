@@ -21,7 +21,6 @@ import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Xocument;
 import com.zerocracy.pmo.Agenda;
-import com.zerocracy.pmo.Awards;
 import com.zerocracy.pmo.Pmo;
 import com.zerocracy.pmo.Projects;
 import com.zerocracy.pmo.Speed;
@@ -99,12 +98,7 @@ public final class TkGang implements Take {
             new XeChain(
                 new XeAppend("login", node.xpath("@id").get(0)),
                 new XeAppend("mentor", node.xpath("mentor/text()").get(0)),
-                new XeAppend(
-                    "awards",
-                    Integer.toString(
-                        new Awards(this.farm, login).bootstrap().total()
-                    )
-                ),
+                new XeAppend("awards", node.xpath("reputation/text()").get(0)),
                 new XeAppend(
                     "speed",
                     Double.toString(
