@@ -35,6 +35,7 @@ SOFTWARE.
     <token>test;C123;user42</token>
     <params>
       <param name="channel">Test</param>
+      <param name="adviser">yegor256</param>
     </params>
   </claim>
 </claims>

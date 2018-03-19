@@ -160,6 +160,11 @@ SOFTWARE.
     <regex>bootstrap</regex>
     <label>bootstrap</label>
     <help>Bootstrap it right after adding Zerocrat to a Slack channel</help>
+    <opts>
+      <name>adviser</name>
+      <regex>@?[a-zA-Z0-9\-]+</regex>
+      <help>GitHub login of the user</help>
+    </opts>
   </cmd>
   <cmd>
     <code>Destroy</code>
