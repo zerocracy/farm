@@ -135,7 +135,10 @@ def exec(Project project, XML xml) {
     items.add(
       new Par(
         'The job is waiting quality review verdict by @%s for %[ms]s'
-      ).say(reviews.inspector(job))
+      ).say(
+        reviews.inspector(job),
+        System.currentTimeMillis() - reviews.requested(job).time
+      )
     )
     items.add(
       new Par(

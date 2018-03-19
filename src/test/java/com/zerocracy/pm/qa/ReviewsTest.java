@@ -66,4 +66,23 @@ public final class ReviewsTest {
         );
     }
 
+    @Test
+    public void fetchesPerformer() throws Exception {
+        final Reviews reviews = new Reviews(new FkProject()).bootstrap();
+        final String job = "gh:yegor256/0pdd#199";
+        final String performer = "yegor2";
+        reviews.add(
+            job, "dmarkov2", performer,
+            new Cash.S("$110"), 1, new Cash.S("$194")
+        );
+        MatcherAssert.assertThat(
+            reviews.performer(job),
+            Matchers.equalTo(performer)
+        );
+        MatcherAssert.assertThat(
+            reviews.requested(job),
+            Matchers.not(Matchers.nullValue())
+        );
+    }
+
 }
