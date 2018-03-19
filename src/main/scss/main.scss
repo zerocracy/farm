@@ -103,3 +103,22 @@ header {
 
   &.millis-fast { color: green; }
 }
+
+.link {
+    color: #275a90!important;
+    text-decoration: none;
+    background:none!important;
+    font-family: 'Nunito', sans-serif;
+    margin:0;
+    padding:0;
+}
+
+.form-as-link {
+  display: list-item;
+  margin: 0;
+  padding: 0;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

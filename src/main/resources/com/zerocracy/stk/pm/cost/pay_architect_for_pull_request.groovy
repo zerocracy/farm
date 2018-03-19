@@ -34,6 +34,7 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Order was finished')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
+  String performer = claim.param('login')
   if (!job.startsWith('gh:')) {
     return
   }
@@ -64,6 +65,10 @@ def exec(Project project, XML xml) {
       .postTo(project)
     return
   }
+  String arc = logins[0]
+  if (arc == performer) {
+    return
+  }
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
   Issue.Smart issue = new Issue.Smart(new Job.Issue(github, job))
@@ -71,7 +76,7 @@ def exec(Project project, XML xml) {
     claim.copy()
       .type('Make payment')
       .param('job', job)
-      .param('login', logins[0])
+      .param('login', arc)
       .param(
         'reason',
         new Par(

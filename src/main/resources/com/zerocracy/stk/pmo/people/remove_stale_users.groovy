@@ -14,49 +14,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pmo.profile
+package com.zerocracy.stk.pmo.people
 
+import com.jcabi.github.User
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
-import com.zerocracy.SoftException
+import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.People
 
+import java.util.concurrent.TimeUnit
+
 def exec(Project pmo, XML xml) {
   new Assume(pmo, xml).isPmo()
-  new Assume(pmo, xml).type('Change vacation mode')
-  ClaimIn claim = new ClaimIn(xml)
-  String mode = claim.param('mode')
-  String author = claim.author()
+  new Assume(pmo, xml).type('Ping daily')
+  Farm farm = binding.variables.farm
   People people = new People(pmo).bootstrap()
-  if ('on' == mode) {
-    if (people.vacation(author)) {
-      throw new SoftException(
-        new Par(
-          'You are already on vacation'
-        ).say()
-      )
+  ClaimIn claim = new ClaimIn(xml)
+  people.iterate().each { uid ->
+    User.Smart user = new User.Smart(new ExtGithub(farm).value().users().get(uid))
+    if (!user.exists()) {
+      claim.copy()
+        .type('Notify user')
+        .token("user;$uid")
+        .param(
+          'message',
+          new Par(
+            'We can\'t find your Github account: %s, ',
+            'your profile will be deleted in %d hours.'
+          ).say(uid, 12)
+      ).postTo(pmo)
+      // @todo #555:30min Let's implement 'Delete user' stakeholder
+      //  which should find user by id from 'login' param and delete it.
+      //  Also 'remove_stale_users._after' test should be fixed.
+      claim.copy()
+        .type('Delete user')
+        .until(TimeUnit.HOURS.toSeconds(12))
+        .param('login', uid)
+        .postTo(pmo)
     }
-    people.vacation(author, true)
-    claim.reply('You are on vacation now').postTo(pmo)
-  } else if ('off' == mode) {
-    if (!people.vacation(author)) {
-      throw new SoftException(
-        new Par(
-          'You are not on vacation now'
-        ).say()
-      )
-    }
-    people.vacation(author, false)
-    claim.reply('Your vacation has been ended').postTo(pmo)
-  } else {
-    throw new SoftException(
-      new Par(
-        'Incorrect vacation mode;',
-        'Possible modes are "on" or "off"'
-      ).say()
-    )
   }
 }

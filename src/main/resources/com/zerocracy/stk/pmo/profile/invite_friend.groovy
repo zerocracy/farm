@@ -27,6 +27,7 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Awards
 import com.zerocracy.pmo.People
+import javax.json.JsonObject
 import org.cactoos.text.AbbreviatedText
 
 def exec(Project project, XML xml) {
@@ -48,8 +49,9 @@ def exec(Project project, XML xml) {
   User.Smart user = new User.Smart(
     new ExtGithub(farm).value().users().get(login)
   )
+  JsonObject json
   try {
-    user.json()
+    json = user.json()
   } catch (AssertionError ex) {
     throw new SoftException(
       new Par(
@@ -57,12 +59,20 @@ def exec(Project project, XML xml) {
       ).say(login, new AbbreviatedText(ex.message, 100).asString())
     )
   }
+  if (json.getString('type') != 'User') {
+    throw new SoftException(
+      new Par(
+        'The GitHub user @%s is not a regular user, but "%s"'
+      ).say(login, json.getString('type'))
+    )
+  }
   People people = new People(farm).bootstrap()
   people.invite(login, author)
   claim.reply(
     new Par(
-      'Thanks, @%s can now work with us, and you are the mentor, see §1',
-    ).say(login)
+      'Thanks, @%s (%s) can now work with us,',
+      'and you are the mentor, see §1',
+    ).say(login, json.getString('name'))
   ).postTo(project)
   claim.copy()
     .type('Notify user')

@@ -38,72 +38,85 @@ SOFTWARE.
         <xsl:text>Zerocrat is a project manager</xsl:text>
         <xsl:text> that never sleeps.</xsl:text>
       </p>
-      <p>
-        <xsl:choose>
-          <xsl:when test="contains(version/name,'SNAPSHOT')">
-            <span title="The bot was deployed manually, without any specific version">
-              <xsl:text>&#x26A1;</xsl:text>
-            </span>
-          </xsl:when>
-          <xsl:otherwise>
-            <span title="Current version of the bot">
-              <xsl:text>v</xsl:text>
-              <xsl:value-of select="version/name"/>
-            </span>
-          </xsl:otherwise>
-        </xsl:choose>
-        <xsl:text> &#xB7; </xsl:text>
-        <span title="Claims processed over the last week">
-          <xsl:value-of select="claims"/>
-        </span>
-        <xsl:text> &#xB7; </xsl:text>
-        <span title="The time since the last restart">
-          <xsl:value-of select="alive"/>
-        </span>
-        <xsl:text> &#xB7; </xsl:text>
-        <xsl:call-template name="takes_millis">
-          <xsl:with-param name="millis" select="millis"/>
-        </xsl:call-template>
-        <xsl:text> &#xB7; </xsl:text>
-        <xsl:call-template name="takes_sla">
-          <xsl:with-param name="sla" select="@sla"/>
-        </xsl:call-template>
-        <xsl:text> &#xB7; </xsl:text>
-        <xsl:call-template name="takes_memory">
-          <xsl:with-param name="memory" select="memory"/>
-        </xsl:call-template>
-      </p>
-      <p>
-        <xsl:choose>
-          <xsl:when test="identity">
-            <a href="/u/{identity/login}">
-              <span title="GitHub user currently logged in">
-                <xsl:text>@</xsl:text>
-                <xsl:value-of select="identity/login"/>
-              </span>
+      <nav>
+        <ul>
+          <li>
+            <xsl:choose>
+              <xsl:when test="identity">
+                <a href="/u/{identity/login}">
+                  <span title="GitHub user currently logged in">
+                    <xsl:text>@</xsl:text>
+                    <xsl:value-of select="identity/login"/>
+                  </span>
+                </a>
+              </xsl:when>
+              <xsl:otherwise>
+                <a href="{links/link[@rel='takes:github']/@href}" title="Log in using your GitHub account">
+                  <xsl:text>Login</xsl:text>
+                </a>
+              </xsl:otherwise>
+            </xsl:choose>
+          </li>
+          <li>
+            <a href="http://www.zerocracy.com/policy.html">
+              <xsl:text>Policy</xsl:text>
             </a>
-          </xsl:when>
-          <xsl:otherwise>
-            <a href="{links/link[@rel='takes:github']/@href}" title="Log in using your GitHub account">
-              <xsl:text>Login</xsl:text>
+          </li>
+          <li>
+            <a href="http://www.zerocracy.com/terms.html">
+              <xsl:text>Terms</xsl:text>
             </a>
-          </xsl:otherwise>
-        </xsl:choose>
-        <xsl:text> &#xB7; </xsl:text>
-        <a href="http://www.zerocracy.com/policy.html">
-          <xsl:text>Policy</xsl:text>
-        </a>
-        <xsl:text> &#xB7; </xsl:text>
-        <a href="http://www.zerocracy.com/terms.html">
-          <xsl:text>Terms</xsl:text>
-        </a>
-        <xsl:if test="identity">
-          <xsl:text> &#xB7; </xsl:text>
-          <a href="{links/link[@rel='takes:logout']/@href}" title="Log out">
-            <xsl:text>Exit</xsl:text>
-          </a>
-        </xsl:if>
-      </p>
+          </li>
+          <xsl:if test="identity">
+            <li>
+              <form action="{links/link[@rel='takes:logout']/@href}" method="post" class="form-as-link">
+                <button type="submit" class="link">
+                  <xsl:text>Exit</xsl:text>
+                </button>
+              </form>
+            </li>
+          </xsl:if>
+        </ul>
+      </nav>
+      <footer>
+        <nav>
+          <ul>
+            <li>
+              <xsl:choose>
+                <xsl:when test="contains(version/name,'SNAPSHOT')">
+                  <span title="The bot was deployed manually, without any specific version">
+                    <xsl:text>&#x26A1;</xsl:text>
+                  </span>
+                </xsl:when>
+                <xsl:otherwise>
+                  <span title="Current version of the bot">
+                    <xsl:text>v</xsl:text>
+                    <xsl:value-of select="version/name"/>
+                  </span>
+                </xsl:otherwise>
+              </xsl:choose>
+            </li>
+            <li title="The time since the last restart">
+              <xsl:value-of select="alive"/>
+            </li>
+            <li>
+              <xsl:call-template name="takes_millis">
+                <xsl:with-param name="millis" select="millis"/>
+              </xsl:call-template>
+            </li>
+            <li>
+              <xsl:call-template name="takes_sla">
+                <xsl:with-param name="sla" select="@sla"/>
+              </xsl:call-template>
+            </li>
+            <li>
+              <xsl:call-template name="takes_memory">
+                <xsl:with-param name="memory" select="memory"/>
+              </xsl:call-template>
+            </li>
+          </ul>
+        </nav>
+      </footer>
     </div>
   </xsl:template>
 </xsl:stylesheet>

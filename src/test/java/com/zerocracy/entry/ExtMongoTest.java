@@ -110,7 +110,10 @@ public final class ExtMongoTest {
                     final MongoClient mongo = new ExtMongo(farm).value();
                     try (final Footprint footprint =
                         new Footprint(mongo, pid)) {
-                        new ClaimOut().type("Version").postTo(project);
+                        new ClaimOut()
+                            .type("Version")
+                            .param("something", inc.incrementAndGet())
+                            .postTo(project);
                         final XML xml = new Claims(project)
                             .iterate().iterator().next();
                         footprint.open(xml);

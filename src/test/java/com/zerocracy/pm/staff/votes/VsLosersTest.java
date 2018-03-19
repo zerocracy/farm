@@ -14,48 +14,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.tk;
+package com.zerocracy.pm.staff.votes;
 
-import com.jcabi.matchers.XhtmlMatchers;
-import com.zerocracy.Farm;
-import com.zerocracy.farm.fake.FkFarm;
-import com.zerocracy.farm.footprint.FtFarm;
-import com.zerocracy.farm.props.PropsFarm;
+import com.zerocracy.farm.fake.FkProject;
+import java.io.IOException;
 import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Test;
-import org.takes.Take;
-import org.takes.rq.RqFake;
-import org.takes.rq.RqWithHeaders;
-import org.takes.rs.RsPrint;
 
 /**
- * Test case for {@link TkIndex}.
+ * Test case for {@link VsLosers}.
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.18
+ * @since 0.22
  * @checkstyle JavadocMethodCheck (500 lines)
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-public final class TkIndexTest {
+public final class VsLosersTest {
 
     @Test
-    public void rendersIndexPage() throws Exception {
-        final Farm farm = new FtFarm(new PropsFarm(new FkFarm()));
-        final Take take = new TkApp(farm);
+    public void highRankForLoser() throws IOException {
+        final FkProject pmo = new FkProject();
+        final String login = "yegor256";
         MatcherAssert.assertThat(
-            XhtmlMatchers.xhtml(
-                new RsPrint(
-                    take.act(
-                        new RqWithHeaders(
-                            new RqFake(
-                                "GET", "/"
-                            ),
-                            "Accept: application/xml"
-                        )
-                    )
-                ).printBody()
-            ),
-            XhtmlMatchers.hasXPaths("/page/alive")
+            "Banned voter didn't give high rank for banned user",
+            new VsLosers(pmo, 0).take(login, new StringBuilder()),
+            Matchers.equalTo(0.0)
         );
     }
 

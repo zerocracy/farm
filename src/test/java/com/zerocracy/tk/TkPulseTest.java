@@ -16,46 +16,54 @@
  */
 package com.zerocracy.tk;
 
-import com.jcabi.matchers.XhtmlMatchers;
+import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
+import com.zerocracy.Project;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.footprint.FtFarm;
 import com.zerocracy.farm.props.PropsFarm;
+import com.zerocracy.pm.ClaimOut;
+import com.zerocracy.pm.Claims;
+import com.zerocracy.pm.Footprint;
+import javax.json.Json;
+import javax.json.JsonObject;
 import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.takes.Take;
 import org.takes.rq.RqFake;
-import org.takes.rq.RqWithHeaders;
-import org.takes.rs.RsPrint;
 
 /**
- * Test case for {@link TkIndex}.
+ * Test case for {@link TkPulse}.
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.18
+ * @since 0.22
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-public final class TkIndexTest {
+public final class TkPulseTest {
 
     @Test
-    public void rendersIndexPage() throws Exception {
+    public void rendersPulseJson() throws Exception {
         final Farm farm = new FtFarm(new PropsFarm(new FkFarm()));
-        final Take take = new TkApp(farm);
+        final Take take = new TkPulse(farm);
+        final Project project = farm.find("@id='PULSETEST'").iterator().next();
+        new ClaimOut().type("Hello").postTo(project);
+        final XML xml = new Claims(project).iterate().iterator().next();
+        try (final Footprint footprint = new Footprint(farm, project)) {
+            footprint.open(xml);
+            footprint.close(xml);
+        }
+        final JsonObject json = Json.createReader(
+            take.act(new RqFake()).body()
+        ).readObject();
         MatcherAssert.assertThat(
-            XhtmlMatchers.xhtml(
-                new RsPrint(
-                    take.act(
-                        new RqWithHeaders(
-                            new RqFake(
-                                "GET", "/"
-                            ),
-                            "Accept: application/xml"
-                        )
-                    )
-                ).printBody()
-            ),
-            XhtmlMatchers.hasXPaths("/page/alive")
+            json.getInt("total"),
+            Matchers.greaterThanOrEqualTo(2)
+        );
+        MatcherAssert.assertThat(
+            json.getInt("errors"),
+            Matchers.greaterThanOrEqualTo(0)
         );
     }
 

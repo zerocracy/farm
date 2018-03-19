@@ -81,8 +81,7 @@ public final class Payroll {
         if (amount.compareTo(min) < 0) {
             throw new SoftException(
                 new Par(
-                    "The amount %s is too small,",
-                    "we won't send now to avoid big payment commission"
+                    "The amount %s is too small"
                 ).say(amount)
             );
         }
@@ -107,7 +106,12 @@ public final class Payroll {
         final Bank bank = this.banks.get(method);
         final Cash commission = bank.fee(amount);
         final String pid = bank.pay(
-            wallet, amount, new Par.ToText(reason).toString()
+            wallet, amount,
+            String.format(
+                "@%s: %s",
+                login,
+                new Par.ToText(reason).toString()
+            )
         );
         ledger.add(
             new Ledger.Transaction(

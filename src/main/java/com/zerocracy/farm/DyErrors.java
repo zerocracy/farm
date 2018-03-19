@@ -26,6 +26,7 @@ import com.jcabi.dynamo.QueryValve;
 import com.jcabi.dynamo.Region;
 import com.jcabi.github.Comment;
 import com.jcabi.github.Coordinates;
+import com.jcabi.github.safe.SfComment;
 import java.io.IOException;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -217,13 +218,15 @@ public final class DyErrors {
          */
         private Comment comment(final String location) {
             final String[] parts = location.split("#");
-            return this.client
-                .repos()
-                .get(new Coordinates.Simple(parts[0]))
-                .issues()
-                .get(Integer.valueOf(parts[1]))
-                .comments()
-                .get(Integer.valueOf(parts[2]));
+            return new SfComment(
+                this.client
+                    .repos()
+                    .get(new Coordinates.Simple(parts[0]))
+                    .issues()
+                    .get(Integer.valueOf(parts[1]))
+                    .comments()
+                    .get(Integer.valueOf(parts[2]))
+            );
         }
 
         /**

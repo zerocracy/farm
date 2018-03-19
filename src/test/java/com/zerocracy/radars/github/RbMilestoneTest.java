@@ -14,49 +14,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.tk;
+package com.zerocracy.radars.github;
 
-import com.jcabi.matchers.XhtmlMatchers;
-import com.zerocracy.Farm;
+import com.jcabi.github.mock.MkGithub;
 import com.zerocracy.farm.fake.FkFarm;
-import com.zerocracy.farm.footprint.FtFarm;
-import com.zerocracy.farm.props.PropsFarm;
+import javax.json.Json;
 import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Test;
-import org.takes.Take;
-import org.takes.rq.RqFake;
-import org.takes.rq.RqWithHeaders;
-import org.takes.rs.RsPrint;
 
 /**
- * Test case for {@link TkIndex}.
- * @author Yegor Bugayenko (yegor256@gmail.com)
+ * Test case for {@link RbMilestone}.
+ * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
- * @since 0.18
+ * @since 0.21
  * @checkstyle JavadocMethodCheck (500 lines)
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-public final class TkIndexTest {
-
+public final class RbMilestoneTest {
     @Test
-    public void rendersIndexPage() throws Exception {
-        final Farm farm = new FtFarm(new PropsFarm(new FkFarm()));
-        final Take take = new TkApp(farm);
+    public void acceptMilestones() throws Exception {
         MatcherAssert.assertThat(
-            XhtmlMatchers.xhtml(
-                new RsPrint(
-                    take.act(
-                        new RqWithHeaders(
-                            new RqFake(
-                                "GET", "/"
-                            ),
-                            "Accept: application/xml"
-                        )
-                    )
-                ).printBody()
+            new RbMilestone().react(
+                new FkFarm(),
+                new MkGithub(),
+                Json.createObjectBuilder()
+                    .add(
+                        "milestone",
+                        Json.createObjectBuilder()
+                            .add("title", "milestone-title")
+                            .add("number", 1)
+                            .add("description", "some descripton")
+                            .add("due_on", "2018-04-06T07:00:00Z")
+                            .build()
+                    ).build()
             ),
-            XhtmlMatchers.hasXPaths("/page/alive")
+            Matchers.startsWith("Milestone submitted: 1")
         );
     }
-
 }

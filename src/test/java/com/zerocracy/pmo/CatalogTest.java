@@ -57,7 +57,8 @@ public final class CatalogTest {
                     .add("prefix").set("2017/01/AAAABBBBC/").up()
                     .add("fee").set("0").up()
                     .add("alive").set("true").up()
-                    .add("publish").set("false")
+                    .add("publish").set("false").up()
+                    .add("adviser").set("0crat").up()
             );
         }
         final Catalog catalog = new Catalog(project);
@@ -147,6 +148,20 @@ public final class CatalogTest {
             "tite wasn't changed",
             catalog.title(pid),
             Matchers.equalTo(title)
+        );
+    }
+
+    @Test
+    public void changeAdviser() throws Exception {
+        final String pid = "000000100";
+        final Pmo pmo = new Pmo(new FkFarm());
+        final Catalog catalog = new Catalog(pmo).bootstrap();
+        catalog.add(pid, "2017/10/000000100/");
+        final String adviser = "user23561";
+        catalog.adviser(pid, adviser);
+        MatcherAssert.assertThat(
+            catalog.adviser(pid),
+            Matchers.equalTo(adviser)
         );
     }
 

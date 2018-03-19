@@ -102,6 +102,21 @@ public final class People {
     }
 
     /**
+     * Remove person.
+     * @param id Person id
+     * @throws IOException If fails
+     */
+    public void remove(final String id) throws IOException {
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                new Directives().xpath(
+                    String.format("/people/person[@id='%s']", id)
+                ).remove()
+            );
+        }
+    }
+
+    /**
      * Touch this dude.
      * @param uid User ID
      * @throws IOException If fails
@@ -542,6 +557,31 @@ public final class People {
                 )
             );
         }
+    }
+
+    /**
+     * Get single link by REL.
+     * @param uid User id
+     * @param rel Link rel
+     * @return Single link href
+     * @throws IOException If there is no links or too many
+     */
+    @SuppressWarnings("PMD.PrematureDeclaration")
+    public String link(final String uid, final String rel)
+        throws IOException {
+        final Iterator<String> links = this.links(uid, rel).iterator();
+        if (!links.hasNext()) {
+            throw new IOException(
+                String.format("No such link '%s' for '%s'", rel, uid)
+            );
+        }
+        final String link = links.next();
+        if (links.hasNext()) {
+            throw new IOException(
+                String.format("Too many links '%s' for '%s'", rel, uid)
+            );
+        }
+        return link;
     }
 
     /**

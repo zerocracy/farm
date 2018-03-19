@@ -22,6 +22,7 @@ import com.zerocracy.Project;
 import com.zerocracy.pmo.People;
 import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
+import java.net.URI;
 import java.util.Locale;
 import java.util.logging.Level;
 import org.cactoos.Scalar;
@@ -91,7 +92,12 @@ public final class RqUser implements Scalar<String> {
                     throw new RsForward(
                         new RsPrevious(
                             new RsParFlash(
-                                "You must be logged in",
+                                String.format(
+                                    "You must be logged in to see %s",
+                                    new URI(
+                                        new RqRequestLine.Base(req).uri()
+                                    ).getPath()
+                                ),
                                 Level.WARNING
                             ),
                             new RqRequestLine.Base(req).uri()

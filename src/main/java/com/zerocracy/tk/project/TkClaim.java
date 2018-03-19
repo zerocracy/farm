@@ -21,6 +21,7 @@ import com.zerocracy.Farm;
 import com.zerocracy.Par;
 import com.zerocracy.pm.Footprint;
 import com.zerocracy.pm.staff.Roles;
+import com.zerocracy.pmo.Pmo;
 import com.zerocracy.tk.RqUser;
 import com.zerocracy.tk.RsPage;
 import com.zerocracy.tk.RsParFlash;
@@ -113,7 +114,9 @@ public final class TkClaim implements TkRegex {
                                     doc.keySet().contains("public")
                                     || "PMO".equals(pkt.pid())
                                     || new Roles(pkt).bootstrap()
-                                        .hasRole(user, "PO");
+                                        .hasRole(user, "PO")
+                                    || new Roles(new Pmo(this.farm))
+                                        .bootstrap().hasAnyRole(user);
                                 if (!allowed) {
                                     throw new RsForward(
                                         new RsParFlash(

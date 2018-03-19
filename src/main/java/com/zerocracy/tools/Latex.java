@@ -25,6 +25,7 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
+import org.cactoos.text.TextOf;
 
 /**
  * LaTeX document.
@@ -34,6 +35,7 @@ import org.cactoos.io.InputOf;
  * @since 0.20
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class Latex {
 
     /**
@@ -42,11 +44,18 @@ public final class Latex {
     private final String source;
 
     /**
+     * The data to protect/sign.
+     */
+    private final String data;
+
+    /**
      * Ctor.
      * @param src LaTeX source
+     * @param dta The data to sign
      */
-    public Latex(final String src) {
+    public Latex(final String src, final String dta) {
         this.source = src;
+        this.data = dta;
     }
 
     /**
@@ -55,15 +64,26 @@ public final class Latex {
      * @throws IOException If fails
      */
     public Input pdf() throws IOException {
+        final String latex = this.source.replace(
+            "\\begin{document}",
+            String.format(
+                "\n\\def\\pgp{%s}\n%s\n",
+                new Signature(this.data).asString(),
+                new TextOf(
+                    Latex.class.getResource("layout.tex")
+                ).asString()
+            )
+        );
         final JsonObject req = Json.createObjectBuilder()
             .add("apikey", new Props().get("//cloudconvert/key", ""))
             .add("inputformat", "tex")
             .add("outputformat", "pdf")
             .add("wait", true)
+            .add("email", "latex@zerocracy.com")
             .add("input", "raw")
             .add("download", "inline")
             .add("filename", "article.tex")
-            .add("file", this.source)
+            .add("file", latex)
             .build();
         final String body = req.toString();
         final String uri = "https://api.cloudconvert.com/convert";

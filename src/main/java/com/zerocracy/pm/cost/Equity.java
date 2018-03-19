@@ -83,16 +83,25 @@ public final class Equity {
             String latex = new TextOf(
                 new ResourceOf("com/zerocracy/pm/cost/equity.tex")
             ).asString();
-            final String fmt = "%,.2f";
+            final String entity = doc.xpath("//entity/text()", "PROJECT");
+            final String ceo = doc.xpath("//ceo/text()", "CEO");
             latex = latex
                 .replace("[OWNER]", login)
-                .replace("[ENTITY]", doc.xpath("//entity/text()", "PROJECT"))
+                .replace("[ENTITY]", entity)
                 .replace("[ADDRESS]", doc.xpath("//address/text()", "USA"))
-                .replace("[CEO]", doc.xpath("//ceo/text()", "CEO"))
-                .replace("[SHARE]", String.format(fmt, share))
-                .replace("[SHARES]", String.format(fmt, this.shares()))
+                .replace("[CEO]", ceo)
+                .replace("[SHARE]", String.format("%,.6f", share))
+                .replace("[SHARES]", String.format("%,.2f", this.shares()))
                 .replace("[PAR]", this.par().toString());
-            return new Latex(latex).pdf();
+            return new Latex(
+                latex,
+                String.format(
+                    "%s; @%s; %s; %s; %s",
+                    this.project.pid(), login,
+                    entity, ceo,
+                    this.ownership(login)
+                )
+            ).pdf();
         }
     }
 
@@ -108,7 +117,7 @@ public final class Equity {
         if (share > 0.0d) {
             final Cash value = this.par().mul((long) share);
             text = String.format(
-                "%.2f shares = %s/%.2f%% of %s",
+                "%,.2f shares = %s/%.6f%% of %s",
                 // @checkstyle MagicNumber (1 line)
                 share, value, share * 100.0d / this.shares(), this.cap()
             );

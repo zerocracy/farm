@@ -40,7 +40,7 @@ import org.xembly.Directives;
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@SuppressWarnings({ "PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals" })
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals"})
 public final class Catalog {
 
     /**
@@ -136,7 +136,8 @@ public final class Catalog {
                     .add("prefix").set(prefix).up()
                     .add("alive").set(true).up()
                     .add("fee").set(Cash.ZERO).up()
-                    .add("publish").set(Boolean.toString(false))
+                    .add("publish").set(Boolean.toString(false)).up()
+                    .add("adviser").set("0crat")
             );
         }
     }
@@ -564,6 +565,57 @@ public final class Catalog {
                 title = items.next();
             }
             return title;
+        }
+    }
+
+    /**
+     * Project adviser.
+     * @param pid Project id
+     * @return Adviser id
+     * @throws IOException If fails
+     */
+    public String adviser(final String pid) throws IOException {
+        if (!this.exists(pid)) {
+            throw new IllegalArgumentException(
+                new Par(
+                    "Project %s doesn't exist, can't get adviser"
+                ).say(pid)
+            );
+        }
+        try (final Item item = this.item()) {
+            return new Xocument(item.path()).xpath(
+                String.format(
+                    "/catalog/project[@id = '%s']/adviser/text()",
+                    pid
+                )
+            ).get(0);
+        }
+    }
+
+    /**
+     * Change project's adviser.
+     * @param pid Project id
+     * @param adviser Adviser id
+     * @throws IOException If fails
+     */
+    public void adviser(final String pid, final String adviser)
+        throws IOException {
+        if (!this.exists(pid)) {
+            throw new IllegalArgumentException(
+                new Par(
+                    "Project %s doesn't exist, can't get adviser"
+                ).say(pid)
+            );
+        }
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                new Directives().xpath(
+                    String.format(
+                        "/catalog/project[@id = '%s']",
+                        pid
+                    )
+                ).addIf("adviser").set(adviser)
+            );
         }
     }
 
