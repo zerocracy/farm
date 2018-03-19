@@ -31,5 +31,9 @@ def exec(Project pmo, XML xml) {
   Rfps rfps = new Rfps(pmo).bootstrap()
   rfps.olderThan(expiration).each { rfp ->
     rfps.remove(rfp)
+    claim.copy()
+      .type('RFP was removed')
+      .param('rfp', rfp)
+      .postTo(pmo)
   }
 }
