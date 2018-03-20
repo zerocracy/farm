@@ -102,7 +102,6 @@ def exec(Project project, XML xml) {
   claim.reply(msg).postTo(project)
   claim.copy()
     .type('Order was given')
-    .param('job', job)
     .param('role', role)
     .param('login', login)
     .param('reason', claim.cid())

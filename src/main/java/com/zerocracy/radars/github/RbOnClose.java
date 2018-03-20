@@ -21,6 +21,7 @@ import com.jcabi.github.Github;
 import com.jcabi.github.Issue;
 import com.jcabi.github.Label;
 import com.zerocracy.Farm;
+import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.pm.ClaimOut;
 import java.io.IOException;
@@ -59,7 +60,18 @@ public final class RbOnClose implements Rebound {
                 .token(new TokenOfIssue(issue))
                 .author(author)
                 .param("job", job)
-                .param("reason", "GitHub issue was closed as INVALID")
+                .param(
+                    "reason",
+                    new Par(
+                        "GitHub issue was closed as 'invalid' by @%s"
+                    ).say(author)
+                )
+                .postTo(project);
+            new ClaimOut()
+                .type("Remove job from WBS")
+                .token(new TokenOfIssue(issue))
+                .author(author)
+                .param("job", job)
                 .postTo(project);
             answer = "It's invalid";
         } else {

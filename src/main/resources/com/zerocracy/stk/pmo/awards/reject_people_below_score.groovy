@@ -51,7 +51,6 @@ def exec(Project project, XML xml) {
     awards.add(points, job, new Par.ToText(reason).toString())
     claim.copy()
       .type('Award points were added')
-      .param('job', job)
       .param('login', login)
       .param('points', points)
       .param('reason', reason)

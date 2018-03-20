@@ -37,7 +37,6 @@ def exec(Project project, XML xml) {
     wbs.add(job)
     claim.copy()
       .type('Job was added to WBS')
-      .param('job', job)
       .postTo(project)
   }
   Orders orders = new Orders(project).bootstrap()
@@ -53,7 +52,6 @@ def exec(Project project, XML xml) {
     orders.resign(job)
     claim.copy()
       .type('Order was canceled')
-      .param('job', job)
       .param('login', performer)
       .postTo(project)
   }
