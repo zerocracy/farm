@@ -8,15 +8,14 @@ import com.zerocracy.pm.in.Orders
 import com.zerocracy.pmo.Agenda
 import com.zerocracy.pmo.People
 import com.zerocracy.pmo.Projects
+import org.cactoos.iterator.Shuffled
 
 def exec(Project pmo, XML xml) {
   new Assume(pmo, xml).isPmo()
   new Assume(pmo, xml).type('Ping hourly')
   ClaimIn claim = new ClaimIn(xml)
   People people = new People(pmo).bootstrap()
-  List<String> logins = new ArrayList<>(people.iterate().asList())
-  Collections.shuffle(logins)
-  logins.take(5).each { login ->
+  new Shuffled<>(people.iterate().iterator()).take(5).each { login ->
     Agenda agenda = new Agenda(pmo, login).bootstrap()
     Projects projects = new Projects(pmo, login).bootstrap()
     Set<String> orders = []
