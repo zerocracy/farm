@@ -19,6 +19,7 @@ package com.zerocracy.bundles.invite_a_friend
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.pmo.Awards
 import com.zerocracy.pmo.People
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
@@ -41,9 +42,9 @@ def exec(Project project, XML xml) {
         people.hasMentor('tmp'),
         Matchers.is(false)
     )
-//    MatcherAssert.assertThat(
-//        '256 points has not been deducted after breakup',
-//        new Awards(project, 'high').total(),
-//        Matchers.lessThanOrEqualTo(1000)
-//    )
+    MatcherAssert.assertThat(
+      '256 points has not been deducted after breakup',
+      new Awards(project, 'high').total(),
+      Matchers.lessThanOrEqualTo(1000)
+    )
 }
