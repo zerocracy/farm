@@ -22,6 +22,7 @@ import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pm.in.Orders;
 import com.zerocracy.pm.scope.Wbs;
 import com.zerocracy.pmo.Awards;
+import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import org.hamcrest.MatcherAssert;
@@ -35,10 +36,11 @@ import org.junit.Test;
  * @since 0.22
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle MagicNumberCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class JobScheduleTest {
     @Test
-    public void resignDateIncludingExtra() throws IOException {
+    public void sayWhenJobIsExpired() throws IOException {
         final Farm farm = new PropsFarm(new FkFarm());
         final Project pkt = new FkProject();
         final Orders orders = new Orders(pkt).bootstrap();
@@ -49,10 +51,35 @@ public final class JobScheduleTest {
         new Awards(farm, performer).bootstrap()
             .add(1300, "gh:none/none#1", "tst");
         MatcherAssert.assertThat(
-            new JobSchedule(farm, orders).resign(job).isBefore(
+            new JobSchedule(
+                new Pmo(farm),
+                orders,
+                new Policy(),
                 LocalDateTime.now().plusDays(13L)
-            ),
+            ).expired(job),
             Matchers.is(true)
+        );
+    }
+
+    @Test
+    public void sayWhenJobIsNotExpired() throws IOException {
+        final Farm farm = new PropsFarm(new FkFarm());
+        final Project pkt = new FkProject();
+        final Orders orders = new Orders(pkt).bootstrap();
+        final String job = "gh:test/test#2";
+        new Wbs(pkt).bootstrap().add(job);
+        final String performer = "user22234";
+        orders.assign(job, performer, "test2");
+        new Awards(farm, performer).bootstrap()
+            .add(2500, "gh:none/none#2", "tst2");
+        MatcherAssert.assertThat(
+            new JobSchedule(
+                new Pmo(farm),
+                orders,
+                new Policy(),
+                LocalDateTime.now().plusDays(13L)
+            ).expired(job),
+            Matchers.is(false)
         );
     }
 }

@@ -13,8 +13,6 @@ import com.zerocracy.pm.time.Reminders
 import com.zerocracy.pmo.Pmo
 import org.cactoos.iterable.Filtered
 import org.cactoos.iterable.Limited
-
-import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 
@@ -38,13 +36,13 @@ def exec(Project project, XML xml) {
   Roles pmos = new Roles(new Pmo(farm)).bootstrap()
   Reminders reminders = new Reminders(project).bootstrap()
   List<String> waiting = impediments.jobs().toList()
-  JobSchedule schedule = new JobSchedule(farm, orders)
-  int days = new Policy().get('8.days', 10)
-  LocalDateTime now = LocalDateTime.now()
+  Policy policy = new Policy()
+  JobSchedule schedule = new JobSchedule(new Pmo(farm), orders, policy, time.toLocalDateTime())
+  int days = policy.get('8.days', 10)
   new Limited<>(
     5,
     new Filtered<String>(
-      { job -> !waiting.contains(job) && schedule.resign(job).isBefore(now) },
+      { job -> !waiting.contains(job) && schedule.expired(job) },
       orders.olderThan(time.minusDays(days))
     )
   ).forEach { String job ->
@@ -80,11 +78,11 @@ def exec(Project project, XML xml) {
     claim.copy()
       .type('Notify project')
       .param(
-        'message',
-        new Par(
-          'The order at %s cancelled for @%s, it is over %d day(s), see §8'
-        ).say(job, worker, days)
-      )
+      'message',
+      new Par(
+        'The order at %s cancelled for @%s, it is over %d day(s), see §8'
+      ).say(job, worker, days)
+    )
       .postTo(project)
   }
 }

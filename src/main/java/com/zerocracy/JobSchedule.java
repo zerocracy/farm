@@ -41,6 +41,10 @@ public final class JobSchedule {
      * Policy.
      */
     private final Policy policy;
+    /**
+     * Now local time.
+     */
+    private final LocalDateTime now;
 
     /**
      * Ctor.
@@ -48,7 +52,7 @@ public final class JobSchedule {
      * @param orders Orders
      */
     public JobSchedule(final Farm farm, final Orders orders) {
-        this(new Pmo(farm), orders, new Policy(farm));
+        this(new Pmo(farm), orders, new Policy(farm), LocalDateTime.now());
     }
 
     /**
@@ -56,21 +60,24 @@ public final class JobSchedule {
      * @param pmo PMO
      * @param orders Orders
      * @param policy Policy
+     * @param now Local date
+     * @checkstyle ParameterNumberCheck (2 lines)
      */
     public JobSchedule(final Pmo pmo, final Orders orders,
-        final Policy policy) {
+        final Policy policy, final LocalDateTime now) {
         this.orders = orders;
         this.pmo = pmo;
         this.policy = policy;
+        this.now = now;
     }
 
     /**
-     * Resign date for job.
+     * Does this job expired.
      * @param job Job id
-     * @return Local date of resign
+     * @return True if expired
      * @throws IOException If fails
      */
-    public LocalDateTime resign(final String job) throws IOException {
+    public boolean expired(final String job) throws IOException {
         return this.orders.created(job)
             // @checkstyle MagicNumberCheck (1 line)
             .plusDays((long) this.policy.get("8.days", 10))
@@ -78,7 +85,7 @@ public final class JobSchedule {
                 JobSchedule.extra(
                     new Awards(this.pmo, this.orders.performer(job)).total()
                 )
-            );
+            ).isBefore(this.now);
     }
 
     /**
@@ -88,15 +95,15 @@ public final class JobSchedule {
      * @checkstyle MagicNumberCheck (12 lines)
      */
     private static long extra(final int rep) {
-        final int days;
-        if (rep < 251) {
-            days = 0;
+        final long days;
+        if (rep < 512) {
+            days = 0L;
         } else if (rep < 2048) {
-            days = 2;
+            days = 2L;
         } else if (rep < 4096) {
-            days = 4;
+            days = 4L;
         } else {
-            days = 8;
+            days = 8L;
         }
         return days;
     }
