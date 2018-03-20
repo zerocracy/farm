@@ -78,13 +78,13 @@ public final class JobSchedule {
      * @throws IOException If fails
      */
     public boolean expired(final String job) throws IOException {
+        final Awards awards = new Awards(this.pmo, this.orders.performer(job))
+            .bootstrap();
         return this.orders.created(job)
             // @checkstyle MagicNumberCheck (1 line)
             .plusDays((long) this.policy.get("8.days", 10))
             .plusDays(
-                JobSchedule.extra(
-                    new Awards(this.pmo, this.orders.performer(job)).total()
-                )
+                JobSchedule.extra(awards.total())
             ).isBefore(this.now);
     }
 
