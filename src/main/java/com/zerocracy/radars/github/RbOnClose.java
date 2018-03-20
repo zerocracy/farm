@@ -48,19 +48,25 @@ public final class RbOnClose implements Rebound {
             new IssueOfEvent(github, event)
         );
         final String answer;
+        final String job = new Job(issue).toString();
+        final Project project = new GhProject(farm, issue.repo());
+        final String author = event.getJsonObject("sender")
+            .getString("login")
+            .toLowerCase(Locale.ENGLISH);
         if (RbOnClose.tagged(issue)) {
+            new ClaimOut()
+                .type("Cancel order")
+                .token(new TokenOfIssue(issue))
+                .author(author)
+                .param("job", job)
+                .param("reason", "GitHub issue was closed as INVALID")
+                .postTo(project);
             answer = "It's invalid";
         } else {
-            final Project project = new GhProject(farm, issue.repo());
-            final String job = new Job(issue).toString();
             new ClaimOut()
                 .type("Close job")
                 .token(new TokenOfIssue(issue))
-                .author(
-                    event.getJsonObject("sender")
-                        .getString("login")
-                        .toLowerCase(Locale.ENGLISH)
-                )
+                .author(author)
                 .param("job", job)
                 .until(TimeUnit.MINUTES.toSeconds((long) Tv.FIFTEEN))
                 .param("reason", "GitHub issue was closed")
