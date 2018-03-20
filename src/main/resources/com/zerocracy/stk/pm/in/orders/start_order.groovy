@@ -66,23 +66,25 @@ def exec(Project project, XML xml) {
     String arc = new Roles(project).bootstrap().findByRole('ARC')[0]
     msg = new Par(
       'This pull request %s is assigned to @%s, here is',
-      '[why](/footprint/%s/%s).',
-      'The budget is 15 minutes, see §4.',
-      'Please, read §27 and',
+      '[why](/footprint/%s/%s);',
+      'the budget is 15 minutes, see §4;',
+      'please, read §27 and',
       'when you decide to accept the changes,',
-      'inform @%s (the architect) right in this ticket.',
-      'If you decide that this PR should not be accepted ever,',
-      'also inform the architect.'
+      'inform @%s (the architect) right in this ticket;',
+      'if you decide that this PR should not be accepted ever,',
+      'also inform the architect;',
+      'this [blog post](http://www.yegor256.com/2015/02/09/serious-code-reviewer.html)',
+      'will help you understand what is expected from a code reviewer'
     ).say(job, login, project.pid(), claim.cid(), arc)
   } else {
     msg = new Par(
       'The job %s assigned to @%s, here is',
-      '[why](/footprint/%s/%s).',
-      'The budget is 30 minutes, see §4.',
-      'Please, read §8 and §9.',
-      'If the task is not clear,',
+      '[why](/footprint/%s/%s);',
+      'the budget is 30 minutes, see §4;',
+      'please, read §8 and §9;',
+      'if the task is not clear,',
       'read [this](/2015/02/16/it-is-not-a-school.html)',
-      'and [this](/2015/01/15/how-to-cut-corners.html).'
+      'and [this](/2015/01/15/how-to-cut-corners.html)'
     ).say(job, login, project.pid(), claim.cid())
   }
   if (!new Roles(project).bootstrap().hasAnyRole(login)) {
@@ -93,8 +95,8 @@ def exec(Project project, XML xml) {
   }
   if (new People(farm).bootstrap().vacation(login)) {
     msg += new Par(
-      'We should be aware that %s is on vacation!',
-      'This ticket may be delayed.'
+      'We should be aware that %s is on vacation;',
+      'this ticket may be delayed'
     ).say(login)
   }
   claim.reply(msg).postTo(project)
