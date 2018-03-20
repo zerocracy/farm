@@ -36,8 +36,7 @@ def exec(Project pmo, XML xml) {
   String reason = new Par(
     'Penalize for breakup with %s'
   ).say(student)
-  Awards awards = new Awards(pmo, author).bootstrap()
-  awards.add(points, job, 'Penalize for breakup')
+  new Awards(pmo, author).bootstrap().add(points, job, 'Penalize for breakup')
   claim.copy()
     .type('Award points were added')
     .param('job', job)
@@ -47,8 +46,8 @@ def exec(Project pmo, XML xml) {
     .postTo(pmo)
   claim.reply(
     new Par(
-      'You have terminated you relationships with student %s',
-      'we deducted %d points from your reputation, according to §47'
+      'Since you broke up with student %s,',
+      'we deducted %d points from you in accordance with §47.'
     ).say(student, -points)
   ).postTo(pmo)
 }

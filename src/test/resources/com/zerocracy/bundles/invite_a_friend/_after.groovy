@@ -45,6 +45,6 @@ def exec(Project project, XML xml) {
     MatcherAssert.assertThat(
       '256 points has not been deducted after breakup',
       new Awards(project, 'high').total(),
-      Matchers.lessThanOrEqualTo(1000)
+      Matchers.equalTo(1000)
     )
 }
