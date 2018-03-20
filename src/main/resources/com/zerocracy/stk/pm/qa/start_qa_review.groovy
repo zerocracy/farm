@@ -52,7 +52,7 @@ def exec(Project project, XML xml) {
   agenda.add(job, 'QA')
   claim.copy()
     .type('Agenda was updated')
-    .param('login', performer)
+    .param('login', inspector)
     .postTo(project)
   claim.copy().type('Notify job').token("job;${job}").param(
     'message',
