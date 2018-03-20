@@ -134,14 +134,22 @@ def exec(Project project, XML xml) {
   if (reviews.exists(job)) {
     items.add(
       new Par(
-        'The job is waiting quality review verdict by @%s'
-      ).say(reviews.inspector(job))
+        'The job is waiting quality review verdict by @%s for %[ms]s'
+      ).say(
+        reviews.inspector(job),
+        System.currentTimeMillis() - reviews.requested(job).time
+      )
+    )
+    items.add(
+      new Par(
+        '@%s will receive %d minutes after quality review'
+      ).say(reviews.performer(job), reviews.minutes(job))
     )
   }
   items.add(
     new Par('Job [footprint](/footprint/%s?q=%s) (restricted area)').say(
       project.pid(),
-      URLEncoder.encode("{job:'${job}'}", 'UTF-8')
+      URLEncoder.encode("{job:'${job}',type:{\$not:/^Notify/}}", 'UTF-8')
     )
   )
   claim.reply(

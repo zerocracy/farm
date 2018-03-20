@@ -56,6 +56,13 @@ def exec(Project pmo, XML xml) {
     'RFP #%d has been purchased: %s'
   ).say(rid, email)
   awards.add(points, job, new Par.ToText(reason).toString())
+  claim.copy()
+    .type('Award points were added')
+    .param('job', job)
+    .param('login', author)
+    .param('points', points)
+    .param('reason', reason)
+    .postTo(pmo)
   claim.reply(
     new Par(
       'Thanks for purchasing RFP #%d;',

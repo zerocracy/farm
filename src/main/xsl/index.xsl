@@ -67,15 +67,15 @@ SOFTWARE.
               <xsl:text>Terms</xsl:text>
             </a>
           </li>
-          <li>
-            <xsl:if test="identity">
+          <xsl:if test="identity">
+            <li>
               <form action="{links/link[@rel='takes:logout']/@href}" method="post" class="form-as-link">
                 <button type="submit" class="link">
                   <xsl:text>Exit</xsl:text>
                 </button>
               </form>
-            </xsl:if>
-          </li>
+            </li>
+          </xsl:if>
         </ul>
       </nav>
       <footer>

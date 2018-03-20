@@ -14,21 +14,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.awards_points
+package com.zerocracy.bundles.remove_stale_users
 
-import com.jcabi.github.Github
-import com.jcabi.github.Repo
-import com.jcabi.github.Repos
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
-import com.zerocracy.entry.ExtGithub
 import com.zerocracy.pmo.People
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
-  Github github = new ExtGithub(farm).value()
-  new People(farm).bootstrap().invite('yegor-a', '0crat')
-  Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
-  repo.issues().create('hello, world', '')
+  new People(farm).bootstrap().invite('stale', '0crat')
 }

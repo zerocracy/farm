@@ -22,13 +22,12 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
+import com.zerocracy.SoftException
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.scope.Wbs
-import com.zerocracy.pmo.People
 import com.zerocracy.radars.github.Job
-
 import javax.json.JsonObject
 
 def exec(Project project, XML xml) {
@@ -47,16 +46,22 @@ def exec(Project project, XML xml) {
   if (claim.hasParam('role')) {
     role = claim.param('role')
   }
-  Issue issue = new Issue.Smart(new Job.Issue(github, job))
-  if (role == 'REV' && issue.pull) {
-    JsonObject pull = issue.pull().json()
-    int lines = pull.getInt('additions') + pull.getInt('deletions')
-    if (lines < 10) {
-      claim.reply(
-        new Par('This pull request is too small: skipping review')
-          .say()
-      )
-      return
+  if (job.startsWith('gh:')) {
+    Issue issue = new Issue.Smart(new Job.Issue(github, job))
+    if (issue.pull) {
+      role = 'REV'
+    }
+    if (role == 'REV' && issue.pull) {
+      JsonObject pull = issue.pull().json()
+      int lines = pull.getInt('additions') + pull.getInt('deletions')
+      if (lines < 10) {
+        throw new SoftException(
+          new Par(
+            'This pull request is too small,',
+            'just %d lines changed, there will be no code review'
+          ).say(lines)
+        )
+      }
     }
   }
   wbs.add(job)
@@ -64,23 +69,8 @@ def exec(Project project, XML xml) {
   claim.reply(
     new Par('Job %s is now in scope, role is %s').say(job, role)
   ).postTo(project)
-  if (issue.hasAssignee()) {
-    People people = new People(farm).bootstrap()
-    Iterator<String> find = people.find('github', issue.assignee().login()).iterator()
-    if (find.hasNext()) {
-      String login = find.next()
-      if (people.hasMentor(login)) {
-        claim.copy()
-          .type('Start order')
-          .param('login', login)
-          .param('reason', claim.cid())
-          .postTo(project)
-      }
-    }
-  }
   claim.copy()
     .type('Job was added to WBS')
-    .param('job', job)
     .param('role', role)
     .postTo(project)
 }

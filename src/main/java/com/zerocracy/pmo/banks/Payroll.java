@@ -106,7 +106,12 @@ public final class Payroll {
         final Bank bank = this.banks.get(method);
         final Cash commission = bank.fee(amount);
         final String pid = bank.pay(
-            wallet, amount, new Par.ToText(reason).toString()
+            wallet, amount,
+            String.format(
+                "@%s: %s",
+                login,
+                new Par.ToText(reason).toString()
+            )
         );
         ledger.add(
             new Ledger.Transaction(

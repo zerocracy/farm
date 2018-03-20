@@ -621,6 +621,9 @@ SOFTWARE.
                       </limits>
                     </rule>
                   </rules>
+                  <excludes combine.children="append">
+                    <exclude>com/zerocracy/pmo/People.java</exclude>
+                  </excludes>
                 </configuration>
               </execution>
               <execution>

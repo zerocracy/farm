@@ -16,7 +16,8 @@
  */
 package com.zerocracy.pm.staff.votes;
 
-import com.zerocracy.farm.fake.FkProject;
+import com.zerocracy.farm.fake.FkFarm;
+import com.zerocracy.pmo.Pmo;
 import com.zerocracy.pmo.Speed;
 import java.util.concurrent.TimeUnit;
 import org.cactoos.list.ListOf;
@@ -33,40 +34,48 @@ import org.junit.Test;
  * @checkstyle MagicNumber (500 line)
  */
 public final class VsSpeedTest {
-
     @Test
-    public void fastTest() throws Exception {
-        final FkProject pkt = new FkProject();
-        final String login = "user1";
-        final Speed speed = new Speed(pkt, login).bootstrap();
-        speed.add(
-            "TST000001",
-            "gh:test/test#1",
-            TimeUnit.HOURS.toMinutes(1L)
-        );
-        MatcherAssert.assertThat(
-            new VsSpeed(pkt, new ListOf<>("jeff", login)).take(
-                login, new StringBuilder(0)
-            ),
-            Matchers.equalTo(0.5d)
-        );
-    }
-
-    @Test
-    public void slowTest() throws Exception {
-        final FkProject pkt = new FkProject();
-        final String login = "user2";
-        final Speed speed = new Speed(pkt, login).bootstrap();
-        speed.add(
+    public void giveHigherVoteForFastSpeed() throws Exception {
+        final String slow = "user2";
+        final String fast = "user3";
+        final FkFarm farm = new FkFarm();
+        new Speed(farm, slow).bootstrap().add(
             "TST000002",
             "gh:test/test#2",
             TimeUnit.DAYS.toMinutes(9L)
         );
+        new Speed(farm, fast).bootstrap().add(
+            "TST000001",
+            "gh:test/test#22",
+            TimeUnit.DAYS.toMinutes(8L)
+        );
+        final VsSpeed votes = new VsSpeed(
+            new Pmo(farm),
+            new ListOf<>(slow, fast)
+        );
         MatcherAssert.assertThat(
-            new VsSpeed(pkt, new ListOf<>(login)).take(
-                login, new StringBuilder(0)
-            ),
-            Matchers.equalTo(1.0)
+            votes.take(fast, new StringBuilder(0)),
+            Matchers.greaterThan(votes.take(slow, new StringBuilder(0)))
+        );
+    }
+
+    @Test
+    public void giveLowestVoteForUnknownSpeed() throws Exception {
+        final String unknown = "user_one";
+        final String known = "user_two";
+        final FkFarm farm = new FkFarm();
+        new Speed(farm, known).bootstrap().add(
+            "TST000003",
+            "gh:test/test#3",
+            TimeUnit.DAYS.toMinutes(1L)
+        );
+        final VsSpeed votes = new VsSpeed(
+            new Pmo(farm),
+            new ListOf<>(unknown, known)
+        );
+        MatcherAssert.assertThat(
+            votes.take(unknown, new StringBuilder(0)),
+            Matchers.lessThan(votes.take(known, new StringBuilder(0)))
         );
     }
 }
