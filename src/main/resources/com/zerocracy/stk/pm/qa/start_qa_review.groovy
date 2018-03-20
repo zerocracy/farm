@@ -48,7 +48,7 @@ def exec(Project project, XML xml) {
   Reviews reviews = new Reviews(project).bootstrap()
   reviews.add(job, inspector, performer, cash, minutes, bonus)
   Farm farm = binding.variables.farm
-  Agenda agenda = new Agenda(farm, performer).bootstrap()
+  Agenda agenda = new Agenda(farm, inspector).bootstrap()
   agenda.add(job, 'QA')
   claim.copy()
     .type('Agenda was updated')
