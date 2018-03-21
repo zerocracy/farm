@@ -27,7 +27,9 @@ import org.junit.Test;
  * @version $Id$
  * @since 0.12
  * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle AvoidDuplicateLiterals (600 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class AgendaTest {
 
     @Test
@@ -41,4 +43,44 @@ public final class AgendaTest {
         MatcherAssert.assertThat(agenda.jobs(), Matchers.hasItem(second));
     }
 
+    /**
+     * Agenda can remove all the orders.
+     * @throws Exception If something goes wrong.
+     */
+    @Test
+    public void removesAllOrders() throws Exception {
+        final Agenda agenda = new Agenda(new FkProject(), "mihai").bootstrap();
+        agenda.add("gh:test2/test#1", "REV");
+        agenda.add("gh:test2/test#2", "QA");
+        agenda.add("gh:test2/test#3", "DEV");
+        // @checkstyle MagicNumber (1 line)
+        MatcherAssert.assertThat(agenda.jobs(), Matchers.not(3));
+        agenda.removeAll();
+        MatcherAssert.assertThat(agenda.jobs(), Matchers.emptyIterable());
+    }
+
+    /**
+     * Agenda can remove the only order.
+     * @throws Exception If something goes wrong.
+     */
+    @Test
+    public void removesSoleOrder() throws Exception {
+        final Agenda agenda = new Agenda(new FkProject(), "john").bootstrap();
+        agenda.add("gh:test3/test#1", "ARC");
+        MatcherAssert.assertThat(agenda.jobs(), Matchers.hasSize(1));
+        agenda.removeAll();
+        MatcherAssert.assertThat(agenda.jobs(), Matchers.emptyIterable());
+    }
+
+    /**
+     * Agenda can "remove" orders if it's empty.
+     * @throws Exception If something goes wrong.
+     */
+    @Test
+    public void removesOrdersFromEmptyAgenda() throws Exception {
+        final Agenda agenda = new Agenda(new FkProject(), "jane").bootstrap();
+        MatcherAssert.assertThat(agenda.jobs(), Matchers.emptyIterable());
+        agenda.removeAll();
+        MatcherAssert.assertThat(agenda.jobs(), Matchers.emptyIterable());
+    }
 }

@@ -25,6 +25,7 @@ import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.staff.Roles
+import com.zerocracy.pmo.Agenda
 import com.zerocracy.pmo.Catalog
 import com.zerocracy.pmo.Projects
 
@@ -35,6 +36,7 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   for (String login : new Roles(project).everybody()) {
     new Projects(farm, login).remove(project.pid())
+    new Agenda(project, login).removeAll()
   }
   Catalog catalog = new Catalog(farm).bootstrap()
   String prefix = catalog.findByXPath("@id='${project.pid()}'").iterator().next()
