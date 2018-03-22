@@ -44,11 +44,12 @@ public final class TkJoinTest {
 
     @Test
     public void renderJoinPage() throws Exception {
+        final Farm farm = new PropsFarm(new FkFarm());
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
                 new RsPrint(
-                    new TkApp(new PropsFarm(new FkFarm())).act(
-                        new RqFake("GET", "/join")
+                    new TkApp(farm).act(
+                        new RqWithUser(farm, new RqFake("GET", "/join"))
                     )
                 ).printBody()
             ),
