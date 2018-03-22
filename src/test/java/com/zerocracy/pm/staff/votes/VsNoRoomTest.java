@@ -39,7 +39,7 @@ public final class VsNoRoomTest {
         final String user = "g4s8";
         final Awards awards = new Awards(project, user).bootstrap();
         final int points = 2935;
-        awards.add(points, "gh:test/test#1", "initial");
+        awards.add(project, points, "gh:test/test#1", "initial");
         final Agenda agenda = new Agenda(project, user).bootstrap();
         final int total = 10;
         for (int num = 1; num < total; ++num) {

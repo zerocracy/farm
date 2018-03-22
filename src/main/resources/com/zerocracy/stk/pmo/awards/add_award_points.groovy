@@ -37,7 +37,7 @@ def exec(Project project, XML xml) {
   String reason = claim.param('reason')
   Farm farm = binding.variables.farm
   Awards awards = new Awards(farm, login).bootstrap()
-  awards.add(minutes, job, new Par.ToText(reason).toString())
+  awards.add(project, minutes, job, new Par.ToText(reason).toString())
   claim.copy()
     .type('Award points were added')
     .param('job', job)

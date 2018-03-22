@@ -100,18 +100,22 @@ public final class Awards {
 
     /**
      * Add points to the list.
+     * @param project The project
      * @param points How many points
      * @param job Job ID
      * @param reason The reason
      * @throws IOException If fails
+     * @checkstyle ParameterNumberCheck (5 lines)
      */
-    public void add(final int points, final String job, final String reason)
+    public void add(final Project project, final int points,
+        final String job, final String reason)
         throws IOException {
-        this.add(points, job, reason, new Date());
+        this.add(project, points, job, reason, new Date());
     }
 
     /**
      * Add points to the list.
+     * @param project The project
      * @param points How many points
      * @param job Job ID
      * @param reason The reason
@@ -119,8 +123,8 @@ public final class Awards {
      * @throws IOException If fails
      * @checkstyle ParameterNumberCheck (5 lines)
      */
-    public void add(final int points, final String job, final String reason,
-        final Date date)
+    public void add(final Project project, final int points,
+        final String job, final String reason, final Date date)
         throws IOException {
         if (points == 0) {
             throw new IllegalArgumentException(
@@ -140,7 +144,7 @@ public final class Awards {
                     .up()
                     .add("added").set(new DateAsText(date).asString()).up()
                     .add("project")
-                    .set(this.pmo.pid())
+                    .set(project.pid())
                     .up()
                     .add("reason")
                     .set(reason)

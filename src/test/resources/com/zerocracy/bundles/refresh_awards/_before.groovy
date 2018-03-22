@@ -24,7 +24,7 @@ import com.zerocracy.pmo.Awards
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Awards awards = new Awards(farm, 'g4s8').bootstrap()
-  awards.add(15, 'gh:test/test#1', 'test', new Date(1517432400000L))
-  awards.add(100, 'gh:test/test#1', 'test', new Date(1525122000000L))
-  awards.add(10, 'gh:test/test#1', 'test', new Date(1517432400001L))
+  awards.add(project, 15, 'gh:test/test#1', 'test', new Date(1517432400000L))
+  awards.add(project, 100, 'gh:test/test#1', 'test', new Date(1525122000000L))
+  awards.add(project, 10, 'gh:test/test#1', 'test', new Date(1517432400001L))
 }

@@ -44,7 +44,9 @@ public final class TkProfileTest {
     public void rendersHomePage() throws Exception {
         final Farm farm = new PropsFarm(new FkFarm());
         final String uid = "yegor256";
-        new Awards(farm, uid).bootstrap().add(1, "gh:test/test#1", "reason");
+        new Awards(farm, uid).bootstrap().add(
+            new FkProject(), 1, "gh:test/test#1", "reason"
+        );
         new Agenda(farm, uid).bootstrap().add(
             new FkProject(), "gh:test/test#2", "QA"
         );
