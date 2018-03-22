@@ -45,7 +45,7 @@ def exec(Project project, XML xml) {
   catalog.title(pid, title)
   claim.reply(
     new Par(
-      'Done, title changed to "%s"'
+      'The title changed to "%s"'
     ).say(title)
   ).postTo(project)
 }

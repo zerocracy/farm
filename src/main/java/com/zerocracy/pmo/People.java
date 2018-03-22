@@ -653,7 +653,7 @@ public final class People {
         throws IOException {
         if (!this.exists(uid)) {
             throw new IllegalArgumentException(
-                new Par("Person %s doesn't exist").say(uid)
+                new Par("Person @%s doesn't exist").say(uid)
             );
         }
         try (final Item item = this.item()) {
@@ -677,7 +677,7 @@ public final class People {
     public int reputation(final String uid) throws IOException {
         if (!this.exists(uid)) {
             throw new IllegalArgumentException(
-                new Par("Person %s doesn't exist").say(uid)
+                new Par("Person @%s doesn't exist").say(uid)
             );
         }
         try (final Item item = this.item()) {

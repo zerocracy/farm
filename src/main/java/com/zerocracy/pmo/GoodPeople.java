@@ -68,8 +68,8 @@ public final class GoodPeople {
         if (!this.people.hasMentor(uid)) {
             throw new SoftException(
                 new Par(
-                    "You need to ask somebody to invite you: %s"
-                ).say("https://github.com/zerocracy/datum#invite-only")
+                    "@%s you need to ask somebody to invite you, see §1"
+                ).say(uid)
             );
         }
         return uid;

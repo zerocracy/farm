@@ -353,6 +353,13 @@ public final class Catalog {
                 ).say(pid, rel, href)
             );
         }
+        if (this.linkExists(rel, href)) {
+            throw new SoftException(
+                new Par(
+                    "Some other project already has `%s/%s` link"
+                ).say(rel, href)
+            );
+        }
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()
@@ -481,6 +488,25 @@ public final class Catalog {
                     // @checkstyle LineLength (1 line)
                     "/catalog/project[@id='%s' and links/link[@rel='%s' and @href='%s']]",
                     pid, rel, href
+                )
+            ).isEmpty();
+        }
+    }
+
+    /**
+     * This link exists in any project?
+     * @param rel REL
+     * @param href HREF
+     * @return TRUE if it exists already
+     * @throws IOException If fails
+     */
+    public boolean linkExists(final String rel, final String href)
+        throws IOException {
+        try (final Item item = this.item()) {
+            return !new Xocument(item.path()).nodes(
+                String.format(
+                    "/catalog/project/links/link[@rel='%s' and @href='%s']",
+                    rel, href
                 )
             ).isEmpty();
         }

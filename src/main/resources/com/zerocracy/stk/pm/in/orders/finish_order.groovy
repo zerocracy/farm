@@ -88,7 +88,6 @@ def exec(Project project, XML xml) {
   orders.resign(job)
   claim.copy()
     .type('Order was finished')
-    .param('job', job)
     .param('login', performer)
     .param('age', age)
     .postTo(project)

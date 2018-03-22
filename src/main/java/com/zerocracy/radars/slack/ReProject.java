@@ -50,7 +50,7 @@ public final class ReProject implements Reaction<SlackMessagePosted> {
         final Project project = new SkProject(farm, event);
         final String tail = new Par(
             farm,
-            "Remember, this chat is for managing project %s;",
+            "Remember, this chat is for managing %s project;",
             "to manage your personal profile,",
             "please open a private chat with the bot."
         ).say(project.pid());

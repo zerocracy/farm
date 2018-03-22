@@ -38,7 +38,7 @@ def exec(Project project, XML xml) {
   People people = new People(farm).bootstrap()
   if (!people.hasMentor(login)) {
     throw new SoftException(
-      new Par('Assignee @%s must be a registered person.').say(login)
+      new Par('Assignee @%s must be a registered person').say(login)
     )
   }
   String role = claim.param('role')
@@ -47,13 +47,13 @@ def exec(Project project, XML xml) {
   String msg
   if (roles.hasRole(login, role)) {
     msg = new Par(
-      'Role %s was already assigned to @%s'
+      'Role %s was already assigned to @%s; '
     ).say(role, login)
   } else {
     roles.assign(login, role)
     msg = new Par(
       'Role %s was successfully assigned to @%s,',
-      'see [full list](/a/%s?a=pm/staff/roles) of roles. '
+      'see [full list](/a/%s?a=pm/staff/roles) of roles; '
     ).say(role, login, project.pid())
     claim.copy()
       .type('Role was assigned')
@@ -69,16 +69,16 @@ def exec(Project project, XML xml) {
   } else {
     if (rates.exists(login)) {
       msg += new Par(
-        'Hourly rate of @%s is %s.',
-        'To change the rate, say `assign XXX %1$s \$25`, for example,',
-        'where XXX must be %s or any other role, as in §13.'
+        'hourly rate of @%s is %s;',
+        'to change the rate, say `assign XXX %1$s \$25`, for example,',
+        'where XXX must be %s or any other role, as in §13'
       ).say(login, rates.rate(login), role)
     } else {
       msg += new Par(
-        'Hourly rate of @%s is not set,',
-        'the user will receive no money for task completion.',
-        'If you want to assign an hourly rate, say `assign %s %1$s \$25`,',
-        'for example.'
+        'hourly rate of @%s is not set,',
+        'the user will receive no money for task completion;',
+        'if you want to assign an hourly rate, say `assign %s %1$s \$25`,',
+        'for example'
       ).say(login, role)
     }
   }
