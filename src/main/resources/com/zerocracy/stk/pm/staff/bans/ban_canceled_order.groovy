@@ -34,7 +34,6 @@ def exec(Project project, XML xml) {
     claim.copy()
       .type('User was banned')
       .param('login', performer)
-      .param('job', job)
       .postTo(project)
   }
 }

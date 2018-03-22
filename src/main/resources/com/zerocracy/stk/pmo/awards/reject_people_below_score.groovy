@@ -48,10 +48,9 @@ def exec(Project project, XML xml) {
       'The score of @%s %d is too low and will be reset'
     ).say(login, current)
     Integer points = -current
-    awards.add(points, job, new Par.ToText(reason).toString())
+    awards.add(project, points, job, new Par.ToText(reason).toString())
     claim.copy()
       .type('Award points were added')
-      .param('job', job)
       .param('login', login)
       .param('points', points)
       .param('reason', reason)

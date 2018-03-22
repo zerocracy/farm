@@ -59,7 +59,6 @@ def exec(Project project, XML xml) {
     claim.copy()
       .type('Equity transferred')
       .param('login', login)
-      .param('job', job)
       .param('reward', reward)
       .param('vesting_rate', vesting.rate(login))
       .param('minutes', minutes)

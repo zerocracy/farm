@@ -50,12 +50,11 @@ def exec(Project pmo, XML xml) {
   }
   String job = 'gh:zerocracy/datum#1'
   int points = new Policy().get('40.price', -256)
-  String owner = rfps.owner(rid)
   String email = rfps.buy(rid, author)
   String reason = new Par(
     'RFP #%d has been purchased: %s'
   ).say(rid, email)
-  awards.add(points, job, new Par.ToText(reason).toString())
+  awards.add(pmo, points, job, new Par.ToText(reason).toString())
   claim.copy()
     .type('Award points were added')
     .param('job', job)

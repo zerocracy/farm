@@ -27,6 +27,7 @@ import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.scope.Wbs
+import com.zerocracy.pm.staff.Roles
 import com.zerocracy.radars.github.Job
 import javax.json.JsonObject
 
@@ -54,12 +55,16 @@ def exec(Project project, XML xml) {
     if (role == 'REV' && issue.pull) {
       JsonObject pull = issue.pull().json()
       int lines = pull.getInt('additions') + pull.getInt('deletions')
-      if (lines < 10) {
+      int min = 10
+      if (lines < min) {
         throw new SoftException(
           new Par(
-            'This pull request is too small,',
-            'just %d lines changed, there will be no code review'
-          ).say(lines)
+            '@%s this pull request is too small,',
+            'just %d lines changed (less than %d),',
+            'there will be no formal code review;',
+            'in the future, try to make sure your pull requests are not too small;',
+            '@%s please review this and merge or reject'
+          ).say(issue.author().login(), lines, min, new Roles(project).bootstrap().findByRole('ARC')[0])
         )
       }
     }

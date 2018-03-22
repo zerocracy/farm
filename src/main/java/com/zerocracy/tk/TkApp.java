@@ -155,9 +155,10 @@ public final class TkApp extends TkWrap {
                                                                 new FkRegex("/shutdown", new TkShutdown(props)),
                                                                 new FkRegex(
                                                                     "/join",
-                                                                    (Take) req -> new RsPage(
-                                                                        farm, "/xsl/join.xsl", req
-                                                                    )
+                                                                    (Take) req -> {
+                                                                        new RqUser(farm, req, false).value();
+                                                                        return new RsPage(farm, "/xsl/join.xsl", req);
+                                                                    }
                                                                 ),
                                                                 new FkRegex("/join-post", new TkJoin(farm)),
                                                                 new FkRegex(

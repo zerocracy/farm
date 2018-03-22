@@ -28,7 +28,7 @@ import com.zerocracy.entry.ExtGithub
 def exec(Project project, XML xml) {
     Farm farm = binding.variables.farm
     Github github = new ExtGithub(farm).value()
-    new Awards(farm, 'yegor256').bootstrap().add(100, 'gh:test/test#100', 'initial')
+    new Awards(farm, 'yegor256').bootstrap().add(project, 100, 'gh:test/test#100', 'initial')
     Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
     repo.issues().create('Waiting', '')
     repo.issues().create('Waiting2', '')

@@ -42,7 +42,6 @@ def exec(Project project, XML xml) {
     ).postTo(project)
     claim.copy()
       .type('Order was canceled')
-      .param('job', job)
       .param('voluntarily', false)
       .param('login', performer)
       .postTo(project)
@@ -51,8 +50,5 @@ def exec(Project project, XML xml) {
   claim.reply(
     new Par('The job %s is now out of scope').say(job)
   ).postTo(project)
-  claim.copy()
-    .type('Job removed from WBS')
-    .param('job', job)
-    .postTo(project)
+  claim.copy().type('Job removed from WBS').postTo(project)
 }

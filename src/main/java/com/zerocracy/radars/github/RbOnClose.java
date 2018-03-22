@@ -21,6 +21,7 @@ import com.jcabi.github.Github;
 import com.jcabi.github.Issue;
 import com.jcabi.github.Label;
 import com.zerocracy.Farm;
+import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.pm.ClaimOut;
 import java.io.IOException;
@@ -48,19 +49,36 @@ public final class RbOnClose implements Rebound {
             new IssueOfEvent(github, event)
         );
         final String answer;
+        final String job = new Job(issue).toString();
+        final Project project = new GhProject(farm, issue.repo());
+        final String author = event.getJsonObject("sender")
+            .getString("login")
+            .toLowerCase(Locale.ENGLISH);
         if (RbOnClose.tagged(issue)) {
+            new ClaimOut()
+                .type("Cancel order")
+                .token(new TokenOfIssue(issue))
+                .author(author)
+                .param("job", job)
+                .param(
+                    "reason",
+                    new Par(
+                        "GitHub issue was closed as 'invalid' by @%s"
+                    ).say(author)
+                )
+                .postTo(project);
+            new ClaimOut()
+                .type("Remove job from WBS")
+                .token(new TokenOfIssue(issue))
+                .author(author)
+                .param("job", job)
+                .postTo(project);
             answer = "It's invalid";
         } else {
-            final Project project = new GhProject(farm, issue.repo());
-            final String job = new Job(issue).toString();
             new ClaimOut()
                 .type("Close job")
                 .token(new TokenOfIssue(issue))
-                .author(
-                    event.getJsonObject("sender")
-                        .getString("login")
-                        .toLowerCase(Locale.ENGLISH)
-                )
+                .author(author)
                 .param("job", job)
                 .until(TimeUnit.MINUTES.toSeconds((long) Tv.FIFTEEN))
                 .param("reason", "GitHub issue was closed")

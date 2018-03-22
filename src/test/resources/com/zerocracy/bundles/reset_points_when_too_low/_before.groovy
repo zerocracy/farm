@@ -32,5 +32,5 @@ def exec(Project project, XML xml) {
   People people = new People(farm).bootstrap()
   people.invite('yegor256', '0crat')
   Awards awards = new Awards(farm, 'yegor256').bootstrap()
-  awards.add(-500, 'gh:test/test#1', 'Test')
+  awards.add(project, -500, 'gh:test/test#1', 'Test')
 }
