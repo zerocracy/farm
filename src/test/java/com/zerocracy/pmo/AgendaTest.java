@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pmo;
 
+import com.zerocracy.Project;
 import com.zerocracy.farm.fake.FkProject;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -34,11 +35,12 @@ public final class AgendaTest {
 
     @Test
     public void addsAndRemovesAgenda() throws Exception {
-        final Agenda agenda = new Agenda(new FkProject(), "yegor").bootstrap();
+        final Project project = new FkProject();
+        final Agenda agenda = new Agenda(project, "yegor").bootstrap();
         final String first = "gh:test/test#1";
-        agenda.add(first, "REV");
+        agenda.add(project, first, "REV");
         final String second = "gh:test/test#2";
-        agenda.add(second, "QA");
+        agenda.add(project, second, "QA");
         agenda.remove(first);
         MatcherAssert.assertThat(agenda.jobs(), Matchers.hasItem(second));
     }
@@ -49,10 +51,11 @@ public final class AgendaTest {
      */
     @Test
     public void removesAllOrders() throws Exception {
-        final Agenda agenda = new Agenda(new FkProject(), "mihai").bootstrap();
-        agenda.add("gh:test2/test#1", "REV");
-        agenda.add("gh:test2/test#2", "QA");
-        agenda.add("gh:test2/test#3", "DEV");
+        final Project project = new FkProject();
+        final Agenda agenda = new Agenda(project, "mihai").bootstrap();
+        agenda.add(project, "gh:test2/test#1", "REV");
+        agenda.add(project, "gh:test2/test#2", "QA");
+        agenda.add(project, "gh:test2/test#3", "DEV");
         // @checkstyle MagicNumber (1 line)
         MatcherAssert.assertThat(agenda.jobs(), Matchers.not(3));
         agenda.removeAll();
@@ -65,8 +68,9 @@ public final class AgendaTest {
      */
     @Test
     public void removesSoleOrder() throws Exception {
-        final Agenda agenda = new Agenda(new FkProject(), "john").bootstrap();
-        agenda.add("gh:test3/test#1", "ARC");
+        final Project project = new FkProject();
+        final Agenda agenda = new Agenda(project, "john").bootstrap();
+        agenda.add(project, "gh:test3/test#1", "ARC");
         MatcherAssert.assertThat(agenda.jobs(), Matchers.hasSize(1));
         agenda.removeAll();
         MatcherAssert.assertThat(agenda.jobs(), Matchers.emptyIterable());

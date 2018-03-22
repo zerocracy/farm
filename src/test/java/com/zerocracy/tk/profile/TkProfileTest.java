@@ -19,6 +19,7 @@ package com.zerocracy.tk.profile;
 import com.jcabi.matchers.XhtmlMatchers;
 import com.zerocracy.Farm;
 import com.zerocracy.farm.fake.FkFarm;
+import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pmo.Agenda;
 import com.zerocracy.pmo.Awards;
@@ -44,7 +45,9 @@ public final class TkProfileTest {
         final Farm farm = new PropsFarm(new FkFarm());
         final String uid = "yegor256";
         new Awards(farm, uid).bootstrap().add(1, "gh:test/test#1", "reason");
-        new Agenda(farm, uid).bootstrap().add("gh:test/test#2", "QA");
+        new Agenda(farm, uid).bootstrap().add(
+            new FkProject(), "gh:test/test#2", "QA"
+        );
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
                 new RsPrint(

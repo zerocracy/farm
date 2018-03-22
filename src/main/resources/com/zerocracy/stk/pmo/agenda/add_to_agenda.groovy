@@ -39,7 +39,7 @@ def exec(Project project, XML xml) {
   String role = new Wbs(project).bootstrap().role(job)
   Farm farm = binding.variables.farm
   Agenda agenda = new Agenda(farm, owner).bootstrap()
-  agenda.add(job, role)
+  agenda.add(project, job, role)
   Estimates estimates = new Estimates(project).bootstrap()
   if (estimates.exists(job)) {
     agenda.estimate(job, estimates.get(job))

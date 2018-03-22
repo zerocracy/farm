@@ -43,7 +43,7 @@ public final class VsNoRoomTest {
         final Agenda agenda = new Agenda(project, user).bootstrap();
         final int total = 10;
         for (int num = 1; num < total; ++num) {
-            agenda.add(String.format("gh:test/test#%d", num), "QA");
+            agenda.add(project, String.format("gh:test/test#%d", num), "QA");
         }
         MatcherAssert.assertThat(
             new VsNoRoom(project).take(user, new StringBuilder(0)),
