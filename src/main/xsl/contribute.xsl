@@ -66,7 +66,7 @@ SOFTWARE.
       </a>
       <xsl:text>.</xsl:text>
     </p>
-    <form id="form" style="display:none" action="/pay/{project}" method="post">
+    <form id="form" style="display:none" action="/contribute-pay/{project}" method="post">
       <input name="cents" id="cents" type="hidden"/>
       <input name="token" id="token" type="hidden"/>
       <input name="email" id="email" type="hidden"/>
