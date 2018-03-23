@@ -51,6 +51,7 @@ SOFTWARE.
                 </a>
               </xsl:when>
               <xsl:otherwise>
+                <img src="/svg/github.svg" style="height:1em;"/>
                 <a href="{links/link[@rel='takes:github']/@href}" title="Log in using your GitHub account">
                   <xsl:text>Login</xsl:text>
                 </a>

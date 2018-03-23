@@ -29,6 +29,7 @@ import com.zerocracy.tk.project.TkArchive;
 import com.zerocracy.tk.project.TkArtifact;
 import com.zerocracy.tk.project.TkBadge;
 import com.zerocracy.tk.project.TkClaim;
+import com.zerocracy.tk.project.TkContributePay;
 import com.zerocracy.tk.project.TkDonate;
 import com.zerocracy.tk.project.TkEquity;
 import com.zerocracy.tk.project.TkFiles;
@@ -145,6 +146,8 @@ public final class TkApp extends TkWrap {
                                                                 new FkRegex("/yoti", new TkYoti(farm)),
                                                                 new FkRegex("/heapdump", new TkDump(farm)),
                                                                 new FkRegex("/guts", new TkGuts(farm)),
+                                                                new FkRegex("/contribute", new TkContributePay(farm)),
+                                                                new FkRegex("/contribute-pay", new TkContributePay(farm)),
                                                                 new FkRegex(
                                                                     "/spam",
                                                                     (Take) req -> new RsPage(
