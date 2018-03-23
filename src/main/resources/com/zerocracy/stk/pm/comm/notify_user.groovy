@@ -23,6 +23,8 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Catalog
 import com.zerocracy.pmo.People
+import com.zerocracy.pmo.Projects
+
 // The token must look like: yegor256
 
 def exec(Project project, XML xml) {
@@ -43,14 +45,16 @@ def exec(Project project, XML xml) {
       "Project ${project.pid()} doesn't exist in the catalog, can't notify user"
     )
   }
-  catalog.links(project.pid(), 'slack').each { channel ->
-    people.links(login, 'slack').each { uid ->
-      claim.copy()
-        .type('Notify in Slack')
-        .token("slack;${channel};${login};${uid}")
-        .param('login', uid)
-        .param('slack_login', login)
-        .postTo(project)
+  new Projects(farm, login).bootstrap().iterate().each { pid ->
+    catalog.links(pid, 'slack').each { channel ->
+      people.links(login, 'slack').each { sid ->
+        claim.copy()
+          .type('Notify in Slack')
+          .token("slack;${channel};${login};${sid}")
+          .param('login', login)
+          .param('slack_login', sid)
+          .postTo(project)
+      }
     }
   }
   people.links(login, 'telegram').each { uid ->
