@@ -42,12 +42,14 @@ SOFTWARE.
       <xsl:text>.</xsl:text>
       <xsl:text> If you want these programmers to work with your project,</xsl:text>
       <xsl:text> you have to publish it on the </xsl:text>
-      <xsl:text>Board</xsl:text>
+      <a href="/board">
+        <xsl:text>Board</xsl:text>
+      </a>
       <xsl:text>, as explained in </xsl:text>
       <a href="http://www.zerocracy.com/policy.html#26">
         <xsl:text>&#xA7;26</xsl:text>
       </a>
-      <xsl:text>, we will automatically notify the best</xsl:text>
+      <xsl:text>; we will automatically notify the best</xsl:text>
       <xsl:text> and the most relevant candidates; they will apply, if interested.</xsl:text>
     </p>
     <p>
@@ -67,26 +69,7 @@ SOFTWARE.
         <xsl:text>+</xsl:text>
         <xsl:value-of select="format-number(sum(user/awards) div count(user) div 90,'0')"/>
       </strong>
-      <xsl:text> per user daily). </xsl:text>
-      <a href="http://www.zerocracy.com/policy.html#18">
-        <xsl:text>Reputation</xsl:text>
-      </a>
-      <xsl:text> legend: </xsl:text>
-      <span style="color:darkgreen">
-        <xsl:text>trusted (more than 256)</xsl:text>
-      </span>
-      <xsl:text>, </xsl:text>
-      <span style="color:orange">
-        <xsl:text>sandbox (less than 256)</xsl:text>
-      </span>
-      <xsl:text>, </xsl:text>
-      <span>
-        <xsl:text>unknown (no reputation yet)</xsl:text>
-      </span>
-      <xsl:text>, </xsl:text>
-      <span style="color:darkred">
-        <xsl:text>negative reputation</xsl:text>
-      </span>
+      <xsl:text> per user daily).</xsl:text>
     </p>
     <table data-sortable="true">
       <thead>
@@ -144,6 +127,26 @@ SOFTWARE.
         </xsl:apply-templates>
       </tbody>
     </table>
+    <p>
+      <a href="http://www.zerocracy.com/policy.html#18">
+        <xsl:text>Reputation</xsl:text>
+      </a>
+      <xsl:text> legend: </xsl:text>
+      <span style="color:darkgreen">
+        <xsl:text>trusted</xsl:text>
+      </span>
+      <xsl:text> (more than 256), </xsl:text>
+      <span style="color:orange">
+        <xsl:text>sandbox</xsl:text>
+      </span>
+      <xsl:text> (less than 256), </xsl:text>
+      <span style="color:darkred">
+        <xsl:text>negative</xsl:text>
+      </span>
+      <span>
+        <xsl:text> reputation.</xsl:text>
+      </span>
+    </p>
   </xsl:template>
   <xsl:template match="user">
     <tr>

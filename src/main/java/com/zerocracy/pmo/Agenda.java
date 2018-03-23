@@ -114,11 +114,13 @@ public final class Agenda {
 
     /**
      * Add an order to the agenda.
+     * @param project The project
      * @param job Job ID
      * @param role The role
      * @throws IOException If fails
      */
-    public void add(final String job, final String role) throws IOException {
+    public void add(final Project project, final String job,
+        final String role) throws IOException {
         if (this.exists(job)) {
             throw new SoftException(
                 new Par(
@@ -135,7 +137,7 @@ public final class Agenda {
                     .add("role").set(role).up()
                     .add("added").set(new DateAsText().asString()).up()
                     .add("project")
-                    .set(this.pmo.pid())
+                    .set(project.pid())
             );
         }
     }

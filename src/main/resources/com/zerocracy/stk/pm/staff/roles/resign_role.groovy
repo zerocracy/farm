@@ -40,7 +40,7 @@ def exec(Project project, XML xml) {
       'Role %s resigned from @%s in %s;',
       'roles left for this user: [%s]',
       'see [full list](/a/%3$s?a=pm/staff/roles) of roles'
-    ).say(role, login, roles.allRoles(login).join(', '), project.pid())
+    ).say(role, login, project.pid(), roles.allRoles(login).join(', '), )
   ).postTo(project)
   claim.copy()
     .type('Role was resigned')

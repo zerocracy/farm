@@ -27,9 +27,9 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   new ExtGithub(farm).value().repos().create(new Repos.RepoCreate('test', false))
   new Awards(farm, 'high').bootstrap().add(
-    1256, 'gh:test/test#1', 'test'
+    project, 1256, 'gh:test/test#1', 'test'
   )
   new Awards(farm, 'low').bootstrap().add(
-    1, 'gh:test/test#1', 'test'
+    project, 1, 'gh:test/test#1', 'test'
   )
 }
