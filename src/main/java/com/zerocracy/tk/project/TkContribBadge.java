@@ -80,7 +80,7 @@ public final class TkContribBadge implements TkRegex {
         if (left.equals(Cash.ZERO)) {
             amount = "no money";
         } else {
-            amount = String.format("$%s", left.decimal().intValue());
+            amount = String.format("$%s left", left.decimal().intValue());
         }
         return new RsWithHeaders(
             new RsWithType(

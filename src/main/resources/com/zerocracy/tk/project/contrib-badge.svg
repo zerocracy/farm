@@ -8,11 +8,11 @@
         <path d="M7.09636263,17.3330355 L21.2367682,9.09127721 C21.6298604,8.86216279 21.762895,8.35758561 21.5339093,7.96427253 C21.3049235,7.57095945 20.8006297,7.43785013 20.4075375,7.66696455 L6.26713191,15.9087228 C5.87403972,16.1378372 5.74100516,16.6424144 5.9699909,17.0357275 C6.19897664,17.4290405 6.70327044,17.5621499 7.09636263,17.3330355 Z" id="Line" fill="#FFFFFF" fill-rule="nonzero"></path>
         <path d="M4.34789392,9.2032967 L20.8221529,9.2032967 C21.277077,9.2032967 21.6458658,8.83430062 21.6458658,8.37912088 C21.6458658,7.92394114 21.277077,7.55494505 20.8221529,7.55494505 L4.34789392,7.55494505 C3.89296982,7.55494505 3.52418097,7.92394114 3.52418097,8.37912088 C3.52418097,8.83430062 3.89296982,9.2032967 4.34789392,9.2032967 Z" id="Line" fill="#FFFFFF" fill-rule="nonzero"></path>
         <text id="We’ve-just-$50-left" font-family="Verdana-Bold, Verdana" font-size="9" font-weight="bold" fill="#000000">
-            <tspan x="30.1000061" y="10.0999985">We’ve got AMOUNT left</tspan>
+            <tspan x="30.1000061" y="10.0999985">We’ve got AMOUNT</tspan>
             <tspan x="30.1000061" y="21.0999985">Please, help/donate!</tspan>
         </text>
         <text id="We’ve-just-$50-left" font-family="Verdana-Bold, Verdana" font-size="9" font-weight="bold" fill="#FFFFFF">
-            <tspan x="30" y="10">We’ve got AMOUNT left</tspan>
+            <tspan x="30" y="10">We’ve got AMOUNT</tspan>
             <tspan x="30" y="21">Please, help/donate!</tspan>
         </text>
     </g>
