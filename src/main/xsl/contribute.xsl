@@ -30,6 +30,13 @@ SOFTWARE.
       <img src="/badge/{project}.svg"/>
     </p>
     <p>
+      <xsl:text>Project ID is </xsl:text>
+      <code>
+        <xsl:value-of select="project"/>
+      </code>
+      <xsl:text>.</xsl:text>
+    </p>
+    <p>
       <xsl:text>The current balance of "</xsl:text>
       <xsl:value-of select="title"/>
       <xsl:text>" (</xsl:text>
@@ -65,6 +72,9 @@ SOFTWARE.
         <xsl:text>$512</xsl:text>
       </a>
       <xsl:text>.</xsl:text>
+    </p>
+    <p>
+      <xsl:text>This donation is non-refundable.</xsl:text>
     </p>
     <form id="form" style="display:none" action="/contribute-pay/{project}" method="post">
       <input name="cents" id="cents" type="hidden"/>

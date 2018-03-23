@@ -91,7 +91,6 @@ public final class TkContributePay implements TkRegex {
             .type("Contributed by Stripe")
             .param("amount", amount)
             .param("payment_id", pid)
-            .param("email", email)
             .author(user)
             .postTo(project);
         new ClaimOut().type("Notify PMO").param(

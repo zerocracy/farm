@@ -29,12 +29,11 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Contributed by Stripe')
   ClaimIn claim = new ClaimIn(xml)
   Cash amount = new Cash.S(claim.param('amount'))
-  String email = claim.param('email')
   new Ledger(project).bootstrap().add(
     new Ledger.Transaction(
       amount,
       'assets', 'cash',
-      'income', email,
+      'income', "@${claim.author()}",
       'Contributed by Stripe'
     )
   )
@@ -43,13 +42,14 @@ def exec(Project project, XML xml) {
     .param(
       'message',
       new Par(
-        'The project %s has been funded via Stripe for %s (free contribution)'
-      ).say(project.pid(), amount)
+        'The project %s has been funded via Stripe for %s;',
+        'it was a free contribution of @%s, as in §50'
+      ).say(project.pid(), amount, claim.author())
     )
     .postTo(project)
   claim.copy().type('Notify PMO').param(
     'message', new Par(
-      'We just funded %s for %s via Stripe'
-    ).say(project.pid(), amount)
+      'We just funded %s for %s via Stripe by @%s'
+    ).say(project.pid(), amount, claim.author())
   ).postTo(project)
 }
