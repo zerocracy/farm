@@ -20,8 +20,11 @@ import com.jcabi.github.Github;
 import com.jcabi.github.Issue;
 import com.zerocracy.Farm;
 import com.zerocracy.Par;
+import com.zerocracy.Project;
 import com.zerocracy.SoftException;
+import com.zerocracy.cash.Cash;
 import com.zerocracy.pm.staff.Roles;
+import com.zerocracy.pmo.Catalog;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Locale;
@@ -42,7 +45,8 @@ public final class RbPingArchitect implements Rebound {
         final Issue.Smart issue = new Issue.Smart(
             new IssueOfEvent(github, event)
         );
-        final Roles roles = new Roles(new GhProject(farm, issue.repo()));
+        final Project project = new GhProject(farm, issue.repo());
+        final Roles roles = new Roles(project);
         final String author = new Issue.Smart(issue).author()
             .login().toLowerCase(Locale.ENGLISH);
         String answer;
@@ -56,21 +60,9 @@ public final class RbPingArchitect implements Rebound {
             } else if (issue.isPull() && !roles.findByRole("REV").isEmpty()) {
                 answer = "Some REV will pick it up";
             } else {
-                final String intro = String.join(", @", arcs);
-                if (issue.isPull()) {
-                    new ThrottledComments(issue.comments()).post(
-                        new Par(
-                            "@%s please, pay attention to this pull request"
-                        ).say(intro)
-                    );
-                } else {
-                    new ThrottledComments(issue.comments()).post(
-                        new Par(
-                            "@%s please, pay attention to this issue"
-                        ).say(intro)
-                    );
-                }
-                answer = String.format("Architects notified: %s", arcs);
+                answer = RbPingArchitect.react(
+                    arcs, issue, author, project, farm
+                );
             }
         } catch (final SoftException ex) {
             new ThrottledComments(issue.comments()).post(
@@ -78,11 +70,58 @@ public final class RbPingArchitect implements Rebound {
                     "@%s I'm not managing this repo, remove the",
                     "[webhook](https://github.com/%s/settings/hooks)",
                     "or contact me in Slack, as explained in §11;",
+                    ex.getLocalizedMessage(),
                     "/cc @yegor256"
                 ).say(author, issue.repo().coordinates())
             );
             answer = "This repo is not managed";
         }
         return answer;
+    }
+
+    /**
+     * React when there are some ARCs.
+     * @param arcs List of them
+     * @param issue The issue
+     * @param author The author
+     * @param project The project
+     * @param farm The farm
+     * @return The answer
+     * @throws IOException If fails
+     * @checkstyle ParameterNumberCheck (10 lines)
+     */
+    private static String react(final Collection<String> arcs,
+        final Issue.Smart issue, final String author,
+        final Project project, final Farm farm)
+        throws IOException {
+        final String intro = String.join(", @", arcs);
+        if (issue.isPull()) {
+            new ThrottledComments(issue.comments()).post(
+                new Par(
+                    "@%s please, pay attention to this pull request"
+                ).say(intro)
+            );
+        } else {
+            new ThrottledComments(issue.comments()).post(
+                new Par(
+                    "@%s please, pay attention to this issue"
+                ).say(intro)
+            );
+            if (!new Roles(project).bootstrap().hasAnyRole(author)
+                && new Catalog(farm).bootstrap()
+                .fee(project.pid()).equals(Cash.ZERO)) {
+                new ThrottledComments(issue.comments()).post(
+                    new Par(
+                        "@%s this project will fix the problem faster",
+                        "if you donate a few dollars to it;",
+                        "just [click here](/contrib/%s)",
+                        "and pay via Stripe,",
+                        "it's very fast, convenient and appreciated;",
+                        "thanks a lot!"
+                    ).say(author, project.pid())
+                );
+            }
+        }
+        return String.format("Architects notified: %s", arcs);
     }
 }
