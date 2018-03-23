@@ -49,7 +49,7 @@ def exec(Project project, XML xml) {
   reviews.add(job, inspector, performer, cash, minutes, bonus)
   Farm farm = binding.variables.farm
   Agenda agenda = new Agenda(farm, inspector).bootstrap()
-  agenda.add(job, 'QA')
+  agenda.add(project, job, 'QA')
   claim.copy()
     .type('Agenda was updated')
     .param('login', inspector)

@@ -34,6 +34,6 @@ def exec(Project project, XML xml) {
     'gh:test/test#1', 'test', 'test', new Cash.S('$1'), 15, new Cash.S('$1')
   )
   new Agenda(farm, 'test').bootstrap().add(
-    'gh:test/test#1', 'QA'
+    project, 'gh:test/test#1', 'QA'
   )
 }
