@@ -19,7 +19,7 @@ SOFTWARE.
   <xsl:output method="html" doctype-system="about:legacy-compat" encoding="UTF-8" indent="yes"/>
   <xsl:strip-space elements="*"/>
   <xsl:include href="/xsl/inner-layout.xsl"/>
-  <xsl:variable name="mine" select="exists(/page/details)"/>
+  <xsl:variable name="mine" select="/page/details"/>
   <xsl:template match="page" mode="head">
     <title>
       <xsl:text>@</xsl:text>
