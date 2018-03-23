@@ -43,17 +43,17 @@ def exec(Project project, XML xml) {
       "Project ${project.pid()} doesn't exist in the catalog, can't notify user"
     )
   }
-  catalog.links(project.pid(), 'slack').each {
-    for (String uid : people.links(login, 'slack')) {
+  catalog.links(project.pid(), 'slack').each { channel ->
+    people.links(login, 'slack').each { uid ->
       claim.copy()
         .type('Notify in Slack')
-        .token("slack;${it};${login};${uid}")
+        .token("slack;${channel};${login};${uid}")
         .param('login', uid)
         .param('slack_login', login)
         .postTo(project)
     }
   }
-  for (String uid : people.links(login, 'telegram')) {
+  people.links(login, 'telegram').each { uid ->
     claim.copy()
       .type('Notify in Telegram')
       .token("telegram;${uid}")

@@ -50,7 +50,8 @@ public final class ReNotMine implements Reaction<SlackMessagePosted> {
         final String self = session.sessionPersona().getUserName();
         final SlackUser sender = event.getSender();
         boolean done = false;
-        if (!self.equalsIgnoreCase(sender.getUserName())) {
+        if (!"USLACKBOT".equals(self)
+            && !self.equalsIgnoreCase(sender.getUserName())) {
             done = this.origin.react(farm, event, session);
         }
         return done;

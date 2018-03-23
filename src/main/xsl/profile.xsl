@@ -150,7 +150,7 @@ SOFTWARE.
         </xsl:otherwise>
       </xsl:choose>
       <xsl:text> currently open job</xsl:text>
-      <xsl:if test="agenda &gt; 1">
+      <xsl:if test=". &gt; 1">
         <xsl:text>s</xsl:text>
       </xsl:if>
       <xsl:text>: </xsl:text>
@@ -369,7 +369,11 @@ SOFTWARE.
           <xsl:text> goes there).</xsl:text>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:text>The mentor is </xsl:text>
+          <xsl:text>The </xsl:text>
+          <a href="http://www.zerocracy.com/policy.html#45">
+            <xsl:text>mentor</xsl:text>
+          </a>
+          <xsl:text> is </xsl:text>
           <a href="/u/{.}">
             <xsl:text>@</xsl:text>
             <xsl:value-of select="text()"/>
