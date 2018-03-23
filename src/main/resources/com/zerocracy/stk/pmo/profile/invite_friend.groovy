@@ -20,6 +20,7 @@ import com.jcabi.github.User
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Par
+import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.SoftException
 import com.zerocracy.entry.ExtGithub
@@ -30,9 +31,9 @@ import com.zerocracy.pmo.People
 import javax.json.JsonObject
 import org.cactoos.text.AbbreviatedText
 
-def exec(Project project, XML xml) {
-  new Assume(project, xml).isPmo()
-  new Assume(project, xml).type('Invite a friend')
+def exec(Project pmo, XML xml) {
+  new Assume(pmo, xml).isPmo()
+  new Assume(pmo, xml).type('Invite a friend')
   ClaimIn claim = new ClaimIn(xml)
   String author = claim.author()
   Farm farm = binding.variables.farm
@@ -42,7 +43,7 @@ def exec(Project project, XML xml) {
         '@%s you must have at least 1024 reputation to invite someone,',
         'as in §1'
       ).say(author)
-    ).postTo(project)
+    ).postTo(pmo)
     return
   }
   String login = claim.param('login')
@@ -73,7 +74,7 @@ def exec(Project project, XML xml) {
       'Thanks, @%s (%s) can now work with us,',
       'and you are the mentor, see §1',
     ).say(login, json.getString('name'))
-  ).postTo(project)
+  ).postTo(pmo)
   claim.copy()
     .type('Notify user')
     .token("user;${login}")
@@ -84,10 +85,17 @@ def exec(Project project, XML xml) {
         'You can now apply to the projects, see §2.'
       ).say(author)
     )
-    .postTo(project)
+    .postTo(pmo)
+  claim.copy()
+    .type('Make payment')
+    .param('login', author)
+    .param('job', 'none')
+    .param('minutes', new Policy().get('1.price', -64))
+    .param('reason', new Par('Invited @%s').say(login))
+    .postTo(pmo)
   claim.copy().type('Notify PMO').param(
     'message', new Par(
       'New user @%s was invited by @%s'
     ).say(login, author)
-  ).postTo(project)
+  ).postTo(pmo)
 }
