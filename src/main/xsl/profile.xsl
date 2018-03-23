@@ -19,6 +19,7 @@ SOFTWARE.
   <xsl:output method="html" doctype-system="about:legacy-compat" encoding="UTF-8" indent="yes"/>
   <xsl:strip-space elements="*"/>
   <xsl:include href="/xsl/inner-layout.xsl"/>
+  <xsl:variable name="mine" select="exists(/page/details)"/>
   <xsl:template match="page" mode="head">
     <title>
       <xsl:text>@</xsl:text>
@@ -31,7 +32,7 @@ SOFTWARE.
         <img src="https://socatar.com/github/{owner}/192-192" style="width:64px;height:64px;border-radius:5px;"/>
       </a>
     </p>
-    <xsl:if test="not(details)">
+    <xsl:if test="not($mine)">
       <p>
         <xsl:text>This is the profile of </xsl:text>
         <a href="https://github.com/{owner}">
@@ -69,7 +70,15 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="rate">
     <p>
-      <xsl:text>Hourly </xsl:text>
+      <xsl:choose>
+        <xsl:when test="$mine">
+          <xsl:text>Your</xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:text>The</xsl:text>
+        </xsl:otherwise>
+      </xsl:choose>
+      <xsl:text> hourly </xsl:text>
       <a href="http://www.zerocracy.com/policy.html#16">
         <xsl:text>rate</xsl:text>
       </a>
@@ -89,7 +98,15 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="awards">
     <p>
-      <xsl:text>Total </xsl:text>
+      <xsl:choose>
+        <xsl:when test="$mine">
+          <xsl:text>Your</xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:text>The</xsl:text>
+        </xsl:otherwise>
+      </xsl:choose>
+      <xsl:text> total </xsl:text>
       <a href="http://www.zerocracy.com/policy.html#18">
         <xsl:text>points</xsl:text>
       </a>
@@ -108,7 +125,7 @@ SOFTWARE.
             <xsl:value-of select="."/>
           </xsl:variable>
           <xsl:choose>
-            <xsl:when test="/page/owner=/page/identity/login">
+            <xsl:when test="$mine">
               <a href="/u/{/page/owner}/awards">
                 <xsl:value-of select="$total"/>
               </a>
@@ -124,7 +141,19 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="agenda">
     <p>
-      <xsl:text>Currently open jobs: </xsl:text>
+      <xsl:choose>
+        <xsl:when test="$mine">
+          <xsl:text>Your</xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:text>User's</xsl:text>
+        </xsl:otherwise>
+      </xsl:choose>
+      <xsl:text> currently open job</xsl:text>
+      <xsl:if test="agenda &gt; 1">
+        <xsl:text>s</xsl:text>
+      </xsl:if>
+      <xsl:text>: </xsl:text>
       <xsl:choose>
         <xsl:when test=".=0">
           <span style="color:darkred">
@@ -133,7 +162,7 @@ SOFTWARE.
         </xsl:when>
         <xsl:otherwise>
           <xsl:choose>
-            <xsl:when test="/page/owner=/page/identity/login">
+            <xsl:when test="$mine">
               <a href="/u/{/page/owner}/agenda">
                 <xsl:value-of select="."/>
               </a>
@@ -306,39 +335,76 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="mentor[.='0crat']">
     <p>
-      <xsl:text>You've been graduated, you don't pay the </xsl:text>
-      <a href="http://www.zerocracy.com/policy.html#45">
-        <xsl:text>tuition fee</xsl:text>
-      </a>
-      <xsl:text> anymore.</xsl:text>
+      <xsl:choose>
+        <xsl:when test="$mine">
+          <xsl:text>You've been graduated, you don't pay the </xsl:text>
+          <a href="http://www.zerocracy.com/policy.html#45">
+            <xsl:text>tuition fee</xsl:text>
+          </a>
+          <xsl:text> anymore.</xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:text>The user has </xsl:text>
+          <a href="http://www.zerocracy.com/policy.html#45">
+            <xsl:text>graduated</xsl:text>
+          </a>
+          <xsl:text> already.</xsl:text>
+        </xsl:otherwise>
+      </xsl:choose>
     </p>
   </xsl:template>
   <xsl:template match="mentor[.!='0crat']">
     <p>
-      <xsl:text>Your mentor is </xsl:text>
-      <a href="/u/{.}">
-        <xsl:text>@</xsl:text>
-        <xsl:value-of select="text()"/>
-      </a>
-      <xsl:text> (</xsl:text>
-      <a href="http://www.zerocracy.com/policy.html#45">
-        <xsl:text>tuition fee</xsl:text>
-      </a>
-      <xsl:text> goes there).</xsl:text>
+      <xsl:choose>
+        <xsl:when test="$mine">
+          <xsl:text>Your mentor is </xsl:text>
+          <a href="/u/{.}">
+            <xsl:text>@</xsl:text>
+            <xsl:value-of select="text()"/>
+          </a>
+          <xsl:text> (</xsl:text>
+          <a href="http://www.zerocracy.com/policy.html#45">
+            <xsl:text>tuition fee</xsl:text>
+          </a>
+          <xsl:text> goes there).</xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:text>The mentor is </xsl:text>
+          <a href="/u/{.}">
+            <xsl:text>@</xsl:text>
+            <xsl:value-of select="text()"/>
+          </a>
+          <xsl:text>.</xsl:text>
+        </xsl:otherwise>
+      </xsl:choose>
     </p>
   </xsl:template>
   <xsl:template match="students[not(student)]">
     <p>
-      <xsl:text>You don't have any </xsl:text>
-      <a href="http://www.zerocracy.com/policy.html#1">
-        <xsl:text>students</xsl:text>
-      </a>
-      <xsl:text> yet.</xsl:text>
+      <xsl:choose>
+        <xsl:when test="$mine">
+          <xsl:text>You don't have any </xsl:text>
+          <a href="http://www.zerocracy.com/policy.html#1">
+            <xsl:text>students</xsl:text>
+          </a>
+          <xsl:text> yet.</xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:text>The user has no students.</xsl:text>
+        </xsl:otherwise>
+      </xsl:choose>
     </p>
   </xsl:template>
   <xsl:template match="students[student]">
     <p>
-      <xsl:text>Your </xsl:text>
+      <xsl:choose>
+        <xsl:when test="$mine">
+          <xsl:text>Your </xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:text>The user has </xsl:text>
+        </xsl:otherwise>
+      </xsl:choose>
       <xsl:value-of select="count(student)"/>
       <xsl:text> </xsl:text>
       <a href="http://www.zerocracy.com/policy.html#1">
