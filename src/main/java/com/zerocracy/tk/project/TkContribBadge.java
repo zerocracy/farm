@@ -17,15 +17,20 @@
 package com.zerocracy.tk.project;
 
 import com.zerocracy.Farm;
+import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.pm.cost.Estimates;
 import com.zerocracy.pm.cost.Ledger;
+import com.zerocracy.pmo.Catalog;
+import com.zerocracy.tk.RsParFlash;
 import java.io.IOException;
+import java.util.logging.Level;
 import org.cactoos.text.TextOf;
 import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
+import org.takes.facets.forward.RsForward;
 import org.takes.rs.RsWithBody;
 import org.takes.rs.RsWithHeaders;
 import org.takes.rs.RsWithType;
@@ -55,7 +60,19 @@ public final class TkContribBadge implements TkRegex {
 
     @Override
     public Response act(final RqRegex req) throws IOException {
-        final Project project = new RqProject(this.farm, req);
+        final String pid = req.matcher().group(1);
+        final Catalog catalog = new Catalog(this.farm).bootstrap();
+        if (!catalog.exists(pid)) {
+            throw new RsForward(
+                new RsParFlash(
+                    new Par("Project %s not found").say(pid),
+                    Level.WARNING
+                )
+            );
+        }
+        final Project project = this.farm.find(
+            String.format("@id='%s'", pid)
+        ).iterator().next();
         final Cash left = new Ledger(project).bootstrap().cash().add(
             new Estimates(project).bootstrap().total().mul(-1L)
         );
