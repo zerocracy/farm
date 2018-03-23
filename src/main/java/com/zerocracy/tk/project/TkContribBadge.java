@@ -59,12 +59,18 @@ public final class TkContribBadge implements TkRegex {
         final Cash left = new Ledger(project).bootstrap().cash().add(
             new Estimates(project).bootstrap().total().mul(-1L)
         );
+        final String amount;
+        if (left.equals(Cash.ZERO)) {
+            amount = "no money";
+        } else {
+            amount = String.format("$%s", left.decimal().intValue());
+        }
         return new RsWithHeaders(
             new RsWithType(
                 new RsWithBody(
                     new TextOf(
                         this.getClass().getResource("contrib-badge.svg")
-                    ).asString().replace("AMOUNT", left.toString())
+                    ).asString().replace("AMOUNT", amount)
                 ),
                 "image/svg+xml"
             ),
