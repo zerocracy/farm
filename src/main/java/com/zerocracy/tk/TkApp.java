@@ -29,8 +29,9 @@ import com.zerocracy.tk.project.TkArchive;
 import com.zerocracy.tk.project.TkArtifact;
 import com.zerocracy.tk.project.TkBadge;
 import com.zerocracy.tk.project.TkClaim;
-import com.zerocracy.tk.project.TkContribute;
-import com.zerocracy.tk.project.TkContributePay;
+import com.zerocracy.tk.project.TkContrib;
+import com.zerocracy.tk.project.TkContribBadge;
+import com.zerocracy.tk.project.TkContribPay;
 import com.zerocracy.tk.project.TkDonate;
 import com.zerocracy.tk.project.TkEquity;
 import com.zerocracy.tk.project.TkFiles;
@@ -227,12 +228,16 @@ public final class TkApp extends TkWrap {
                                                                     new TkProject(farm)
                                                                 ),
                                                                 new FkRegex(
-                                                                    "/contribute/([A-Z0-9]{9})",
-                                                                    new TkContribute(farm)
+                                                                    "/contrib/([A-Z0-9]{9})",
+                                                                    new TkContrib(farm)
                                                                 ),
                                                                 new FkRegex(
-                                                                    "/contribute-pay/([A-Z0-9]{9})",
-                                                                    new TkContributePay(farm)
+                                                                    "/contrib-pay/([A-Z0-9]{9})",
+                                                                    new TkContribPay(farm)
+                                                                ),
+                                                                new FkRegex(
+                                                                    "/contrib-badge/([A-Z0-9]{9})\\.svg",
+                                                                    new TkContribBadge(farm)
                                                                 ),
                                                                 new FkRegex(
                                                                     "/footprint/(PMO|[A-Z0-9]{9})",

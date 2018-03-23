@@ -42,7 +42,7 @@ import org.takes.rq.form.RqFormSmart;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public final class TkContributePay implements TkRegex {
+public final class TkContribPay implements TkRegex {
 
     /**
      * Farm.
@@ -53,7 +53,7 @@ public final class TkContributePay implements TkRegex {
      * Ctor.
      * @param frm Farm
      */
-    public TkContributePay(final Farm frm) {
+    public TkContribPay(final Farm frm) {
         this.farm = frm;
     }
 

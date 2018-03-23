@@ -39,7 +39,7 @@ import org.takes.rs.xe.XeChain;
  * @since 0.22
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-public final class TkContribute implements TkRegex {
+public final class TkContrib implements TkRegex {
 
     /**
      * Farm.
@@ -50,7 +50,7 @@ public final class TkContribute implements TkRegex {
      * Ctor.
      * @param frm Farm
      */
-    public TkContribute(final Farm frm) {
+    public TkContrib(final Farm frm) {
         this.farm = frm;
     }
 

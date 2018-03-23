@@ -18,7 +18,11 @@ package com.zerocracy.tk.project;
 
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
+import com.zerocracy.cash.Cash;
+import com.zerocracy.pm.cost.Estimates;
+import com.zerocracy.pm.cost.Ledger;
 import java.io.IOException;
+import org.cactoos.text.TextOf;
 import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
@@ -27,14 +31,14 @@ import org.takes.rs.RsWithHeaders;
 import org.takes.rs.RsWithType;
 
 /**
- * Project badge.
+ * Project contrib badge.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.18
+ * @since 0.22
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-public final class TkBadge implements TkRegex {
+public final class TkContribBadge implements TkRegex {
 
     /**
      * Farm.
@@ -45,17 +49,22 @@ public final class TkBadge implements TkRegex {
      * Ctor.
      * @param frm Farm
      */
-    public TkBadge(final Farm frm) {
+    public TkContribBadge(final Farm frm) {
         this.farm = frm;
     }
 
     @Override
     public Response act(final RqRegex req) throws IOException {
         final Project project = new RqProject(this.farm, req);
+        final Cash left = new Ledger(project).bootstrap().cash().add(
+            new Estimates(project).bootstrap().total().mul(-1L)
+        );
         return new RsWithHeaders(
             new RsWithType(
                 new RsWithBody(
-                    this.getClass().getResource("badge.svg")
+                    new TextOf(
+                        this.getClass().getResource("contrib-badge.svg")
+                    ).asString().replace("AMOUNT", left.toString())
                 ),
                 "image/svg+xml"
             ),
