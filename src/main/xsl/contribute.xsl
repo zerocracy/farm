@@ -78,7 +78,7 @@ SOFTWARE.
       <xsl:text> It's a one-time payment, we will not re-charge your card.</xsl:text>
       <xsl:text> If later you decide to contribute again, you will have to get back to this page again.</xsl:text>
     </p>
-    <form id="form" style="display:none" action="/contribute-pay/{project}" method="post">
+    <form id="form" style="display:none" action="/contrib-pay/{project}" method="post">
       <input name="cents" id="cents" type="hidden"/>
       <input name="token" id="token" type="hidden"/>
       <input name="email" id="email" type="hidden"/>

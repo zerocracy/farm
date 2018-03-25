@@ -83,7 +83,7 @@ public final class TkContribPay implements TkRegex {
         } catch (final Stripe.PaymentException ex) {
             throw new RsForward(
                 new RsParFlash(ex),
-                String.format("/p/%s", project.pid())
+                String.format("/contrib/%s", project.pid())
             );
         }
         final String user = new RqUser(this.farm, req).value();
@@ -108,7 +108,7 @@ public final class TkContribPay implements TkRegex {
                 ).say(project.pid(), amount, pid),
                 Level.INFO
             ),
-            String.format("/contribute/%s", project.pid())
+            String.format("/contrib/%s", project.pid())
         );
     }
 
