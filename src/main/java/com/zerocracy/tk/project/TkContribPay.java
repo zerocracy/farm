@@ -86,7 +86,7 @@ public final class TkContribPay implements TkRegex {
                 String.format("/contrib/%s", project.pid())
             );
         }
-        final String user = new RqUser(this.farm, req).value();
+        final String user = new RqUser(this.farm, req, false).value();
         new ClaimOut()
             .type("Contributed by Stripe")
             .param("amount", amount)

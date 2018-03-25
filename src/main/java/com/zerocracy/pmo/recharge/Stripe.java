@@ -123,7 +123,10 @@ public final class Stripe {
                     new MapEntry<>("customer", customer),
                     new MapEntry<>("amount", cents),
                     new MapEntry<>("currency", "usd"),
-                    new MapEntry<>("description", details)
+                    new MapEntry<>(
+                        "description",
+                        new Par.ToText(details).toString()
+                    )
                 ),
                 this.options()
             ).getId();
