@@ -57,7 +57,7 @@ public final class TkContrib implements TkRegex {
     @Override
     @SuppressWarnings("PMD.ExcessiveMethodLength")
     public Response act(final RqRegex req) throws IOException {
-        new RqUser(this.farm, req).value();
+        new RqUser(this.farm, req, false).value();
         return new RsPage(
             this.farm,
             "/xsl/contribute.xsl",
