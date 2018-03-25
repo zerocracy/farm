@@ -20,9 +20,8 @@ import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Par;
 import com.zerocracy.Project;
-import com.zerocracy.pm.staff.Roles;
+import com.zerocracy.pmo.Catalog;
 import com.zerocracy.pmo.Pmo;
-import com.zerocracy.tk.RqUser;
 import com.zerocracy.tk.RsParFlash;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -37,10 +36,9 @@ import org.takes.facets.forward.RsForward;
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.12
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @since 0.22
  */
-final class RqProject implements Project {
+final class RqAnonProject implements Project {
 
     /**
      * Project.
@@ -51,40 +49,24 @@ final class RqProject implements Project {
      * Ctor.
      * @param farm Farm
      * @param req Request
-     * @param required Roles required to get access
      */
-    RqProject(final Farm farm, final RqRegex req, final String... required) {
+    RqAnonProject(final Farm farm, final RqRegex req) {
         this.pkt = new SolidScalar<>(
             () -> {
+                final String pid = req.matcher().group(1);
                 final Project pmo = new Pmo(farm);
-                final Project project = new RqAnonProject(farm, req);
-                final String user = new RqUser(farm, req).value();
-                final Roles roles = new Roles(project).bootstrap();
-                final Roles admins = new Roles(pmo).bootstrap();
-                if (required.length > 0 && !roles.hasRole(user, required)
-                    && !admins.hasAnyRole(user)) {
+                final Catalog catalog = new Catalog(pmo).bootstrap();
+                if (!"PMO".equals(pid) && !catalog.exists(pid)) {
                     throw new RsForward(
                         new RsParFlash(
-                            new Par(
-                                "You don't have any of these roles",
-                                "in %s to view the page: %s"
-                            ).say(project.pid(), String.join(", ", required)),
+                            new Par("Project %s not found").say(pid),
                             Level.WARNING
                         )
                     );
                 }
-                if (required.length == 0 && !roles.hasAnyRole(user)
-                    && !admins.hasAnyRole(user)) {
-                    throw new RsForward(
-                        new RsParFlash(
-                            new Par(
-                                "You are not a member of %s"
-                            ).say(project.pid()),
-                            Level.WARNING
-                        )
-                    );
-                }
-                return project;
+                return farm.find(
+                    String.format("@id='%s'", pid)
+                ).iterator().next();
             }
         );
     }

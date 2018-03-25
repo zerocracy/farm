@@ -59,7 +59,7 @@ public final class TkContribPay implements TkRegex {
 
     @Override
     public Response act(final RqRegex req) throws IOException {
-        final Project project = new RqProject(this.farm, req);
+        final Project project = new RqAnonProject(this.farm, req);
         final RqFormSmart form = new RqFormSmart(new RqGreedy(req));
         final String email = form.single("email");
         final Cash amount = new Cash.S(

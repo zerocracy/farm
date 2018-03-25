@@ -63,7 +63,7 @@ public final class TkContrib implements TkRegex {
             "/xsl/contribute.xsl",
             req,
             () -> {
-                final Project project = new RqProject(this.farm, req);
+                final Project project = new RqAnonProject(this.farm, req);
                 final String pid = project.pid();
                 return new XeChain(
                     new XeAppend("project", pid),
