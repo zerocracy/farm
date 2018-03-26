@@ -20,6 +20,7 @@ import com.jcabi.log.Logger;
 import com.zerocracy.Farm;
 import com.zerocracy.farm.guts.TkGuts;
 import com.zerocracy.farm.props.Props;
+import com.zerocracy.pmo.Exam;
 import com.zerocracy.tk.profile.TkAgenda;
 import com.zerocracy.tk.profile.TkAwards;
 import com.zerocracy.tk.profile.TkIdentify;
@@ -37,6 +38,7 @@ import com.zerocracy.tk.project.TkDonate;
 import com.zerocracy.tk.project.TkEquity;
 import com.zerocracy.tk.project.TkFiles;
 import com.zerocracy.tk.project.TkFootprint;
+import com.zerocracy.tk.project.TkHiring;
 import com.zerocracy.tk.project.TkPay;
 import com.zerocracy.tk.project.TkProject;
 import com.zerocracy.tk.project.TkReport;
@@ -93,6 +95,7 @@ import org.takes.tk.TkWrap;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @checkstyle LineLength (500 lines)
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
+ * @checkstyle MagicNumberCheck (500 lines)
  */
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.ExcessiveImports"})
 public final class TkApp extends TkWrap {
@@ -227,6 +230,17 @@ public final class TkApp extends TkWrap {
                                                                 new FkRegex(
                                                                     "/p/(PMO|[A-Z0-9]{9})",
                                                                     new TkProject(farm)
+                                                                ),
+                                                                new FkRegex(
+                                                                    "/hiring/([A-Z0-9]{9})",
+                                                                    (Take) req -> {
+                                                                        new Exam(farm, new RqUser(farm, req).value()).min("51.min", 1024);
+                                                                        return new RsPage(farm, "/xsl/hiring.xsl", req);
+                                                                    }
+                                                                ),
+                                                                new FkRegex(
+                                                                    "/hiring-send/([A-Z0-9]{9})",
+                                                                    new TkHiring(farm)
                                                                 ),
                                                                 new FkRegex(
                                                                     "/contrib/([A-Z0-9]{9})",
