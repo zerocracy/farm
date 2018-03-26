@@ -17,13 +17,14 @@
 package com.zerocracy.stk.pmo.profile
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.SoftException
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pmo.Awards
+import com.zerocracy.pmo.Exam
 import com.zerocracy.pmo.Rfps
 
 def exec(Project pmo, XML xml) {
@@ -38,16 +39,8 @@ def exec(Project pmo, XML xml) {
     )
   }
   String author = claim.author()
-  Awards awards = new Awards(pmo, author).bootstrap()
-  int reputation = awards.total()
-  if (reputation < new Policy().get('40.min', 512)) {
-    throw new SoftException(
-      new Par(
-        'Your reputation is %d, it is too low;',
-        'must be at least +512, see §40'
-      ).say(reputation)
-    )
-  }
+  Farm farm = binding.variables.farm
+  new Exam(farm, author).min('40.min', 512)
   String job = 'gh:zerocracy/datum#1'
   int points = new Policy().get('40.price', -256)
   String email = rfps.buy(rid, author)

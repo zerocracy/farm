@@ -26,7 +26,7 @@ import com.zerocracy.SoftException
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pmo.Awards
+import com.zerocracy.pmo.Exam
 import com.zerocracy.pmo.People
 import javax.json.JsonObject
 import org.cactoos.text.AbbreviatedText
@@ -37,15 +37,7 @@ def exec(Project pmo, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   String author = claim.author()
   Farm farm = binding.variables.farm
-  if (new Awards(farm, author).bootstrap().total() < 1024) {
-    claim.reply(
-      new Par(
-        '@%s you must have at least 1024 reputation to invite someone,',
-        'as in §1'
-      ).say(author)
-    ).postTo(pmo)
-    return
-  }
+  new Exam(farm, author).min('1.min-rep', 1024)
   String login = claim.param('login')
   User.Smart user = new User.Smart(
     new ExtGithub(farm).value().users().get(login)
