@@ -14,12 +14,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.tk;
+package com.zerocracy.farm.guts;
 
 import com.zerocracy.Farm;
-import com.zerocracy.farm.guts.Guts;
 import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.pmo.Pmo;
+import com.zerocracy.tk.RqUser;
+import com.zerocracy.tk.RsParFlash;
 import java.io.IOException;
 import java.util.logging.Level;
 import org.cactoos.scalar.IoCheckedScalar;

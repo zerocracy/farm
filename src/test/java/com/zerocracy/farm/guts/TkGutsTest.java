@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.tk;
+package com.zerocracy.farm.guts;
 
 import com.jcabi.matchers.XhtmlMatchers;
 import com.zerocracy.Farm;
@@ -22,6 +22,8 @@ import com.zerocracy.farm.SmartFarm;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.pmo.Pmo;
+import com.zerocracy.tk.RqWithUser;
+import com.zerocracy.tk.TkApp;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 import org.takes.Take;
