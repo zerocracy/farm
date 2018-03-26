@@ -34,12 +34,16 @@ SOFTWARE.
       <a href="http://www.zerocracy.com/policy.html#2">
         <xsl:text>apply</xsl:text>
       </a>
-      <xsl:text> to your project. Some of them</xsl:text>
+      <xsl:text> to your project </xsl:text>
+      <code>
+        <xsl:value-of select="project"/>
+      </code>
+      <xsl:text>. Some of them</xsl:text>
       <xsl:text> may be interested and will apply.</xsl:text>
       <xsl:text> Of course, there is no guarantee.</xsl:text>
       <xsl:text> Please, make sure your text is short and straight to the point.</xsl:text>
     </p>
-    <form action="/hiring-send" method="post">
+    <form action="/hiring-send/{project}" method="post">
       <fieldset>
         <label>
           <xsl:text>The text for our users:</xsl:text>

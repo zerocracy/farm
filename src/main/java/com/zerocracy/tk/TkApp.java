@@ -27,6 +27,7 @@ import com.zerocracy.tk.profile.TkIdentify;
 import com.zerocracy.tk.profile.TkKyc;
 import com.zerocracy.tk.profile.TkProfile;
 import com.zerocracy.tk.profile.TkYoti;
+import com.zerocracy.tk.project.RqProject;
 import com.zerocracy.tk.project.TkArchive;
 import com.zerocracy.tk.project.TkArtifact;
 import com.zerocracy.tk.project.TkBadge;
@@ -75,6 +76,7 @@ import org.takes.rs.RsText;
 import org.takes.rs.RsVelocity;
 import org.takes.rs.RsWithStatus;
 import org.takes.rs.RsWithType;
+import org.takes.rs.xe.XeAppend;
 import org.takes.tk.TkClasspath;
 import org.takes.tk.TkGzip;
 import org.takes.tk.TkMeasured;
@@ -233,9 +235,15 @@ public final class TkApp extends TkWrap {
                                                                 ),
                                                                 new FkRegex(
                                                                     "/hiring/([A-Z0-9]{9})",
-                                                                    (Take) req -> {
+                                                                    (TkRegex) req -> {
                                                                         new Exam(farm, new RqUser(farm, req).value()).min("51.min", 1024);
-                                                                        return new RsPage(farm, "/xsl/hiring.xsl", req);
+                                                                        return new RsPage(
+                                                                            farm, "/xsl/hiring.xsl", req,
+                                                                            () -> new XeAppend(
+                                                                                "project",
+                                                                                new RqProject(farm, req, "PO", "ARC").pid()
+                                                                            )
+                                                                        );
                                                                     }
                                                                 ),
                                                                 new FkRegex(

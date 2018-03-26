@@ -40,7 +40,7 @@ import org.takes.facets.forward.RsForward;
  * @since 0.12
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-final class RqProject implements Project {
+public final class RqProject implements Project {
 
     /**
      * Project.
@@ -53,7 +53,8 @@ final class RqProject implements Project {
      * @param req Request
      * @param required Roles required to get access
      */
-    RqProject(final Farm farm, final RqRegex req, final String... required) {
+    public RqProject(final Farm farm, final RqRegex req,
+        final String... required) {
         this.pkt = new SolidScalar<>(
             () -> {
                 final Project pmo = new Pmo(farm);
