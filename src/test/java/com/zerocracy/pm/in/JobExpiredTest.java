@@ -51,7 +51,7 @@ public final class JobExpiredTest {
         final String performer = "user2241234";
         orders.assign(job, performer, "test");
         new Awards(farm, performer).bootstrap()
-            .add(1300, "gh:none/none#1", "tst");
+            .add(pkt, 1300, "gh:none/none#1", "tst");
         MatcherAssert.assertThat(
             new JobExpired(
                 new Pmo(farm),
@@ -74,7 +74,7 @@ public final class JobExpiredTest {
         final String performer = "user22234";
         orders.assign(job, performer, "test2");
         new Awards(farm, performer).bootstrap()
-            .add(2500, "gh:none/none#2", "tst2");
+            .add(pkt, 2500, "gh:none/none#2", "tst2");
         MatcherAssert.assertThat(
             new JobExpired(
                 new Pmo(farm),
