@@ -45,23 +45,30 @@ def exec(Project project, XML xml) {
       "Project ${project.pid()} doesn't exist in the catalog, can't notify user"
     )
   }
-  new Projects(farm, login).bootstrap().iterate().each { pid ->
-    catalog.links(pid, 'slack').each { channel ->
-      people.links(login, 'slack').each { sid ->
+  Boolean done = false
+  people.links(login, 'telegram').any { uid ->
+    claim.copy()
+      .type('Notify in Telegram')
+      .token("telegram;${uid}")
+      .param('login', uid)
+      .postTo(project)
+    done = true
+    done
+  }
+  new Projects(farm, login).bootstrap().iterate().any { pid ->
+    catalog.links(pid, 'slack').any { channel ->
+      people.links(login, 'slack').any { sid ->
         claim.copy()
           .type('Notify in Slack')
           .token("slack;${channel};${login};${sid}")
           .param('login', login)
           .param('slack_login', sid)
           .postTo(project)
+        done = true
+        done
       }
+      done
     }
-  }
-  people.links(login, 'telegram').each { uid ->
-    claim.copy()
-      .type('Notify in Telegram')
-      .token("telegram;${uid}")
-      .param('login', uid)
-      .postTo(project)
+    done
   }
 }
