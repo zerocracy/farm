@@ -7,6 +7,7 @@ import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.cost.Boosts
 import com.zerocracy.pm.cost.Ledger
 import com.zerocracy.pm.in.Impediments
+import com.zerocracy.pm.in.JobExpired
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pm.time.Reminders
@@ -37,12 +38,14 @@ def exec(Project project, XML xml) {
   Reminders reminders = new Reminders(project).bootstrap()
   List<String> waiting = impediments.jobs().toList()
   Policy policy = new Policy()
-  JobSchedule schedule = new JobSchedule(new Pmo(farm), orders, policy, time.toLocalDateTime())
   int days = policy.get('8.days', 10)
   new Limited<>(
     5,
     new Filtered<String>(
-      { job -> !waiting.contains(job) && schedule.expired(job) },
+      { job ->
+        !waiting.contains(job) &&
+          new JobExpired(new Pmo(farm), orders, policy, time.toLocalDateTime(), job).value()
+      },
       orders.olderThan(time.minusDays(days))
     )
   ).forEach { String job ->

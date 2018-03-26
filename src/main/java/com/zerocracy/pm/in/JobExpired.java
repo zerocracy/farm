@@ -14,21 +14,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy;
+package com.zerocracy.pm.in;
 
-import com.zerocracy.pm.in.Orders;
+import com.zerocracy.Farm;
+import com.zerocracy.Policy;
 import com.zerocracy.pmo.Awards;
 import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import org.cactoos.Scalar;
 
 /**
- * Job schedule.
+ * Job expired.
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.22
  */
-public final class JobSchedule {
+public final class JobExpired implements Scalar<Boolean> {
     /**
      * Orders.
      */
@@ -45,14 +47,25 @@ public final class JobSchedule {
      * Now local time.
      */
     private final LocalDateTime now;
+    /**
+     * Job id.
+     */
+    private final String job;
 
     /**
      * Ctor.
      * @param farm Farm
      * @param orders Orders
+     * @param job Job id
      */
-    public JobSchedule(final Farm farm, final Orders orders) {
-        this(new Pmo(farm), orders, new Policy(farm), LocalDateTime.now());
+    public JobExpired(final Farm farm, final Orders orders, final String job) {
+        this(
+            new Pmo(farm),
+            orders,
+            new Policy(farm),
+            LocalDateTime.now(),
+            job
+        );
     }
 
     /**
@@ -61,30 +74,29 @@ public final class JobSchedule {
      * @param orders Orders
      * @param policy Policy
      * @param now Local date
+     * @param job Job id
      * @checkstyle ParameterNumberCheck (2 lines)
      */
-    public JobSchedule(final Pmo pmo, final Orders orders,
-        final Policy policy, final LocalDateTime now) {
+    public JobExpired(final Pmo pmo, final Orders orders,
+        final Policy policy, final LocalDateTime now, final String job) {
         this.orders = orders;
         this.pmo = pmo;
         this.policy = policy;
         this.now = now;
+        this.job = job;
     }
 
-    /**
-     * Does this job expired.
-     * @param job Job id
-     * @return True if expired
-     * @throws IOException If fails
-     */
-    public boolean expired(final String job) throws IOException {
-        final Awards awards = new Awards(this.pmo, this.orders.performer(job))
-            .bootstrap();
-        return this.orders.created(job)
+    @Override
+    public Boolean value() throws IOException {
+        final Awards awards = new Awards(
+            this.pmo,
+            this.orders.performer(this.job)
+        ).bootstrap();
+        return this.orders.created(this.job)
             // @checkstyle MagicNumberCheck (1 line)
             .plusDays((long) this.policy.get("8.days", 10))
             .plusDays(
-                JobSchedule.extra(awards.total())
+                JobExpired.extra(awards.total())
             ).isBefore(this.now);
     }
 
