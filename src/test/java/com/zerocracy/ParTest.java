@@ -86,4 +86,12 @@ public final class ParTest {
         );
     }
 
+    @Test
+    public void ignoreCodeParts() throws Exception {
+        final String text = "Hey, `my DEV friend`!";
+        MatcherAssert.assertThat(
+            new Par(text).say(),
+            Matchers.equalTo(text)
+        );
+    }
 }
