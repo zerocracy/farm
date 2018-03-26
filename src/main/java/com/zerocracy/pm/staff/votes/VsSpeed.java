@@ -59,10 +59,17 @@ public final class VsSpeed implements Votes {
             new SolidScalar<>(
                 () -> new SolidMap<>(
                     new Mapped<>(
-                        login -> new MapEntry<>(
-                            login,
-                            new Speed(pmo, login).bootstrap().avg()
-                        ),
+                        login -> {
+                            final Speed speed = new Speed(pmo, login)
+                                .bootstrap();
+                            final double avg;
+                            if (speed.isEmpty()) {
+                                avg = Double.MAX_VALUE;
+                            } else {
+                                avg = speed.avg();
+                            }
+                            return new MapEntry<>(login, avg);
+                        },
                         others
                     )
                 )

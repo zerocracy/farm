@@ -38,8 +38,9 @@ final class ReInvite implements Reaction<SlackChannelJoined> {
             event.getSlackChannel(),
             new Par(
                 "Thanks for inviting me here;",
-                "now you have to bootstrap the project, as explained in §12"
-            ).say()
+                "now you have to bootstrap the project, as explained in §12;",
+                "project ID is %s"
+            ).say(event.getSlackChannel().getId())
         );
         return true;
     }

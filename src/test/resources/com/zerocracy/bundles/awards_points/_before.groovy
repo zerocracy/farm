@@ -23,10 +23,12 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.entry.ExtGithub
+import com.zerocracy.pmo.People
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
+  new People(farm).bootstrap().invite('yegor-a', '0crat')
   Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
   repo.issues().create('hello, world', '')
 }

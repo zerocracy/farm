@@ -17,7 +17,9 @@
 package com.zerocracy.stk.pm.staff.boost
 
 import com.jcabi.xml.XML
+import com.zerocracy.Par
 import com.zerocracy.Project
+import com.zerocracy.SoftException
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.cost.Boosts
@@ -27,6 +29,17 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Set boost')
   ClaimIn claim = new ClaimIn(xml)
   int factor = Integer.valueOf(claim.param('factor').replaceAll('x$', ''))
-  new Boosts(project).bootstrap().boost(claim.param('job'), factor)
-  claim.reply("Boost ${factor}x was set").postTo(project)
+  String job = claim.param('job')
+  Boosts boosts = new Boosts(project).bootstrap()
+  if (boosts.factor(job) == factor) {
+    throw new SoftException(
+      new Par(
+        'Current boost factor of %s is %dx, nothing changed'
+      ).say(job, factor)
+    )
+  }
+  boosts.boost(job, factor)
+  claim.reply(
+    new Par('Boost %dx was set for %s').say(factor, job)
+  ).postTo(project)
 }

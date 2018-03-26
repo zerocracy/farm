@@ -52,7 +52,10 @@ SOFTWARE.
               </xsl:when>
               <xsl:otherwise>
                 <a href="{links/link[@rel='takes:github']/@href}" title="Log in using your GitHub account">
-                  <xsl:text>Login</xsl:text>
+                  <img src="/svg/github.svg" style="height:1em;vertical-align:middle"/>
+                  <span style="vertical-align:middle;margin-left:.4em;">
+                    <xsl:text>Login</xsl:text>
+                  </span>
                 </a>
               </xsl:otherwise>
             </xsl:choose>
@@ -67,15 +70,15 @@ SOFTWARE.
               <xsl:text>Terms</xsl:text>
             </a>
           </li>
-          <li>
-            <xsl:if test="identity">
+          <xsl:if test="identity">
+            <li>
               <form action="{links/link[@rel='takes:logout']/@href}" method="post" class="form-as-link">
                 <button type="submit" class="link">
                   <xsl:text>Exit</xsl:text>
                 </button>
               </form>
-            </xsl:if>
-          </li>
+            </li>
+          </xsl:if>
         </ul>
       </nav>
       <footer>

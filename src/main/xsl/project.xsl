@@ -117,11 +117,14 @@ SOFTWARE.
             <xsl:value-of select="rate"/>
           </span>
         </xsl:when>
-        <xsl:otherwise>
+        <xsl:when test="roles/role">
           <xsl:text>You are working in this project </xsl:text>
           <a href="http://www.zerocracy.com/policy.html#16">
             <xsl:text>for free</xsl:text>
           </a>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:text>You are not working in this project</xsl:text>
         </xsl:otherwise>
       </xsl:choose>
       <xsl:if test="vesting">

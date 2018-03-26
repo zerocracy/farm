@@ -46,7 +46,7 @@ def exec(Project pmo, XML xml) {
     claim.reply(
       new Par(
         'Since your reputation is over %d,',
-          'you don\'t need a mentor anymore, as explained in §43;',
+        'you don\'t need a mentor anymore, as explained in §43;',
         'you successfully graduated and won\'t pay the tuition fee;',
         'congratulations!'
       ).say(threshold)

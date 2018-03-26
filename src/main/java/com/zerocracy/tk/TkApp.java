@@ -29,6 +29,9 @@ import com.zerocracy.tk.project.TkArchive;
 import com.zerocracy.tk.project.TkArtifact;
 import com.zerocracy.tk.project.TkBadge;
 import com.zerocracy.tk.project.TkClaim;
+import com.zerocracy.tk.project.TkContrib;
+import com.zerocracy.tk.project.TkContribBadge;
+import com.zerocracy.tk.project.TkContribPay;
 import com.zerocracy.tk.project.TkDonate;
 import com.zerocracy.tk.project.TkEquity;
 import com.zerocracy.tk.project.TkFiles;
@@ -155,9 +158,10 @@ public final class TkApp extends TkWrap {
                                                                 new FkRegex("/shutdown", new TkShutdown(props)),
                                                                 new FkRegex(
                                                                     "/join",
-                                                                    (Take) req -> new RsPage(
-                                                                        farm, "/xsl/join.xsl", req
-                                                                    )
+                                                                    (Take) req -> {
+                                                                        new RqUser(farm, req, false).value();
+                                                                        return new RsPage(farm, "/xsl/join.xsl", req);
+                                                                    }
                                                                 ),
                                                                 new FkRegex("/join-post", new TkJoin(farm)),
                                                                 new FkRegex(
@@ -222,6 +226,18 @@ public final class TkApp extends TkWrap {
                                                                 new FkRegex(
                                                                     "/p/(PMO|[A-Z0-9]{9})",
                                                                     new TkProject(farm)
+                                                                ),
+                                                                new FkRegex(
+                                                                    "/contrib/([A-Z0-9]{9})",
+                                                                    new TkContrib(farm)
+                                                                ),
+                                                                new FkRegex(
+                                                                    "/contrib-pay/([A-Z0-9]{9})",
+                                                                    new TkContribPay(farm)
+                                                                ),
+                                                                new FkRegex(
+                                                                    "/contrib-badge/([A-Z0-9]{9})\\.svg",
+                                                                    new TkContribBadge(farm)
                                                                 ),
                                                                 new FkRegex(
                                                                     "/footprint/(PMO|[A-Z0-9]{9})",

@@ -122,6 +122,17 @@ public final class Speed {
     }
 
     /**
+     * Empty document.
+     * @return True if person does not have any speed record
+     * @throws IOException If fails
+     */
+    public boolean isEmpty() throws IOException {
+        try (final Item item = this.item()) {
+            return new Xocument(item.path()).nodes("/speed/order").isEmpty();
+        }
+    }
+
+    /**
      * Return full list of jobs.
      * @return List of job IDs
      * @throws IOException If fails

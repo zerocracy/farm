@@ -37,6 +37,21 @@ import org.xembly.Directives;
 /**
  * Elections.
  *
+ * <p>A project has a collection of elections, one per job. Each election
+ * is an event that may happen at any moment of time (usually
+ * triggered by {@code elect_performer.groovy}). An election has a
+ * collection of user logins as an input and a collection of voters.
+ * The point of the election is to send all users through all voters
+ * and collect their opinions as floating point numbers in 0..1
+ * intervals. Each voter has a weight, which are multiplied by their
+ * opinions. The sum of all weighted votes becomes a total rank
+ * for a particular user. The user with the largest rank wins.</p>
+ *
+ * <p>Elections may happen frequently. It's possible to call method elect()
+ * multiple times. It will return TRUE only if the result of election
+ * is different from the previous call, meaning that someone else
+ * was elected.</p>
+ *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.12

@@ -29,11 +29,18 @@ import org.cactoos.time.DateAsText;
 import org.xembly.Directives;
 
 /**
- * Agenda of one person.
+ * Agenda of one person in one Project, tasks that
+ * are assigned to them in that Project.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.12
+ * @todo #422:30min Title element, of an order in agenda, has been declared in
+ *  agenda.xsd. Let's add method title(...), which will set the title of
+ *  on order and add a new stakeholder, set_agenda_title_from_github.groovy,
+ *  which will get title of a job from GitHub and set it to Agenda. THe reason
+ *  for the new stakeholder is that not all orders will come from Github, some
+ *  may also come from Jira, Trello etc, in the future.
  */
 public final class Agenda {
 
@@ -107,11 +114,13 @@ public final class Agenda {
 
     /**
      * Add an order to the agenda.
+     * @param project The project
      * @param job Job ID
      * @param role The role
      * @throws IOException If fails
      */
-    public void add(final String job, final String role) throws IOException {
+    public void add(final Project project, final String job,
+        final String role) throws IOException {
         if (this.exists(job)) {
             throw new SoftException(
                 new Par(
@@ -128,7 +137,7 @@ public final class Agenda {
                     .add("role").set(role).up()
                     .add("added").set(new DateAsText().asString()).up()
                     .add("project")
-                    .set(this.pmo.pid())
+                    .set(project.pid())
             );
         }
     }
@@ -151,6 +160,20 @@ public final class Agenda {
                 new Directives()
                     .xpath(String.format("/agenda/order[@job='%s']", job))
                     .strict(1)
+                    .remove()
+            );
+        }
+    }
+
+    /**
+     * Remove all orders.
+     * @throws IOException If fails.
+     */
+    public void removeAll() throws IOException {
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                new Directives()
+                    .xpath("/agenda/order")
                     .remove()
             );
         }

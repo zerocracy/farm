@@ -26,7 +26,9 @@ import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.pm.ClaimOut;
 import java.io.IOException;
+import java.util.Date;
 import org.cactoos.time.DateAsText;
+import org.cactoos.time.DateOf;
 import org.xembly.Directives;
 
 /**
@@ -35,6 +37,7 @@ import org.xembly.Directives;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class Reviews {
@@ -158,6 +161,73 @@ public final class Reviews {
             return new Xocument(reviews.path()).xpath(
                 String.format("//review[@job='%s']/inspector/text()", job)
             ).get(0);
+        }
+    }
+
+    /**
+     * When this review was requested.
+     * @param job The job to check
+     * @return Name of inspector
+     * @throws IOException If fails
+     */
+    public Date requested(final String job) throws IOException {
+        if (!this.exists(job)) {
+            throw new SoftException(
+                new Par(
+                    "There is no quality review for %s, no inspector"
+                ).say(job)
+            );
+        }
+        try (final Item reviews = this.item()) {
+            return new DateOf(
+                new Xocument(reviews.path()).xpath(
+                    String.format("//review[@job='%s']/requested/text()", job)
+                ).get(0)
+            ).value();
+        }
+    }
+
+    /**
+     * The performer of the job.
+     * @param job The job to check
+     * @return Name of inspector
+     * @throws IOException If fails
+     */
+    public String performer(final String job) throws IOException {
+        if (!this.exists(job)) {
+            throw new SoftException(
+                new Par(
+                    "There is no quality review for %s, no performer"
+                ).say(job)
+            );
+        }
+        try (final Item reviews = this.item()) {
+            return new Xocument(reviews.path()).xpath(
+                String.format("//review[@job='%s']/performer/text()", job)
+            ).get(0);
+        }
+    }
+
+    /**
+     * The minutes of the job.
+     * @param job The job to check
+     * @return Name of inspector
+     * @throws IOException If fails
+     */
+    public int minutes(final String job) throws IOException {
+        if (!this.exists(job)) {
+            throw new SoftException(
+                new Par(
+                    "There is no quality review for %s, no minutes"
+                ).say(job)
+            );
+        }
+        try (final Item reviews = this.item()) {
+            return Integer.parseInt(
+                new Xocument(reviews.path()).xpath(
+                    String.format("//review[@job='%s']/minutes/text()", job)
+                ).get(0)
+            );
         }
     }
 

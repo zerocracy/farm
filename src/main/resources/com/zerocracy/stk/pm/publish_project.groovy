@@ -25,6 +25,7 @@ import com.zerocracy.SoftException
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Catalog
+import com.zerocracy.pmo.Exam
 import com.zerocracy.pmo.Pmo
 
 def exec(Project project, XML xml) {
@@ -44,6 +45,7 @@ def exec(Project project, XML xml) {
         ).say(pid)
       )
     }
+    new Exam(farm, claim.author()).min('26.min-rep', 1024)
     catalog.publish(pid, true)
     claim.reply(
       new Par(
@@ -54,6 +56,13 @@ def exec(Project project, XML xml) {
       .type('Project was published')
       .param('pid', pid)
       .postTo(new Pmo(farm))
+    claim.copy()
+      .type('Make payment')
+      .param('login', claim.author())
+      .param('job', 'none')
+      .param('minutes', new Policy().get('26.price', -256))
+      .param('reason', new Par('Project %s was published on the board').say(project.pid()))
+      .postTo(project)
     claim.copy().type('Notify all').param(
       'message',
       new Par(
