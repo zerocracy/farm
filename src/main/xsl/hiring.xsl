@@ -23,7 +23,6 @@ SOFTWARE.
     <title>
       <xsl:text>Hiring</xsl:text>
     </title>
-    <xsl:apply-templates select="." mode="js"/>
   </xsl:template>
   <xsl:template match="page" mode="inner">
     <h1>
