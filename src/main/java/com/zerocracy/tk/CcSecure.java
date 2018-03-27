@@ -24,7 +24,6 @@ import org.takes.facets.auth.codecs.CcAes;
 import org.takes.facets.auth.codecs.CcCompact;
 import org.takes.facets.auth.codecs.CcHex;
 import org.takes.facets.auth.codecs.CcSafe;
-import org.takes.facets.auth.codecs.CcSalted;
 import org.takes.facets.auth.codecs.Codec;
 
 /**
@@ -50,7 +49,7 @@ final class CcSecure implements Codec {
         this.origin = new CcSafe(
             new CcHex(
                 new CcAes(
-                    new CcSalted(new CcCompact()),
+                    new CcCompact(),
                     new Props(farm).get(
                         "//security/aes.key",
                         "0123456701234567"
