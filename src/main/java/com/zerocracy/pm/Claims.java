@@ -19,6 +19,7 @@ package com.zerocracy.pm;
 import com.jcabi.aspects.Tv;
 import com.jcabi.xml.XML;
 import com.zerocracy.Item;
+import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.Xocument;
 import java.io.IOException;
@@ -104,10 +105,10 @@ public final class Claims {
             );
             if (signatures.size() != new HashSet<>(signatures).size()) {
                 throw new IllegalStateException(
-                    String.format(
-                        "Duplicate claims are not allowed, can't add this: %s",
-                        new Xembler(claim).xmlQuietly()
-                    )
+                    new Par(
+                        "Duplicate claims are not allowed in %s,",
+                        "can't add this XML:\n%s"
+                    ).say(this.project.pid(), new Xembler(claim).xmlQuietly())
                 );
             }
         }

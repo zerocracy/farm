@@ -49,6 +49,7 @@ def exec(Project pmo, XML xml) {
   if (rate > std) {
     throw new SoftException(
       new Par(
+        farm,
         'Your profile rate is %s,',
         'you can\'t suggest higher rate of %s for the project %s'
       ).say(std, rate, pid)
@@ -58,6 +59,7 @@ def exec(Project pmo, XML xml) {
     && catalog.sandbox().contains(pid)) {
     throw new SoftException(
       new Par(
+        farm,
         'The rate %s is too high for a sandbox project %s, sorry, see §33'
       ).say(rate, pid)
     )
@@ -78,6 +80,7 @@ def exec(Project pmo, XML xml) {
       && !catalog.sandbox().contains(pid)) {
       throw new SoftException(
         new Par(
+          farm,
           'Your reputation is %d, which is not big enough to apply to %s;',
           'you can only apply to one of our sandbox projects, see §33'
         ).say(reputation, pid)
@@ -87,6 +90,7 @@ def exec(Project pmo, XML xml) {
       && catalog.sandbox().contains(pid)) {
       throw new SoftException(
         new Par(
+          farm,
           'Your reputation is %d,',
           'which is too high for a sandbox project %s, see §33'
         ).say(reputation, pid)
@@ -98,6 +102,7 @@ def exec(Project pmo, XML xml) {
     .param(
       'message',
       new Par(
+        farm,
         '@%s wants to join you guys.',
         'If you want to add them to the project %s,',
         'just assign `DEV` role and that\'s it.',
@@ -108,6 +113,7 @@ def exec(Project pmo, XML xml) {
     .postTo(farm.find("@id='${pid}'")[0])
   claim.reply(
     new Par(
+      farm,
       'The project %s was notified about your desire to join them'
     ).say(pid)
   ).postTo(pmo)

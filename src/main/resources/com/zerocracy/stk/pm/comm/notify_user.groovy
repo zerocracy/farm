@@ -23,6 +23,8 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Catalog
 import com.zerocracy.pmo.People
+import com.zerocracy.pmo.Projects
+
 // The token must look like: yegor256
 
 def exec(Project project, XML xml) {
@@ -43,21 +45,30 @@ def exec(Project project, XML xml) {
       "Project ${project.pid()} doesn't exist in the catalog, can't notify user"
     )
   }
-  catalog.links(project.pid(), 'slack').each {
-    for (String uid : people.links(login, 'slack')) {
-      claim.copy()
-        .type('Notify in Slack')
-        .token("slack;${it};${login};${uid}")
-        .param('login', uid)
-        .param('slack_login', login)
-        .postTo(project)
-    }
-  }
-  for (String uid : people.links(login, 'telegram')) {
+  Boolean done = false
+  people.links(login, 'telegram').any { uid ->
     claim.copy()
       .type('Notify in Telegram')
       .token("telegram;${uid}")
       .param('login', uid)
       .postTo(project)
+    done = true
+    done
+  }
+  new Projects(farm, login).bootstrap().iterate().any { pid ->
+    catalog.links(pid, 'slack').any { channel ->
+      people.links(login, 'slack').any { sid ->
+        claim.copy()
+          .type('Notify in Slack')
+          .token("slack;${channel};${login};${sid}")
+          .param('login', login)
+          .param('slack_login', sid)
+          .postTo(project)
+        done = true
+        done
+      }
+      done
+    }
+    done
   }
 }

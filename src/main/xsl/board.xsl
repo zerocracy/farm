@@ -112,6 +112,20 @@ SOFTWARE.
             <xsl:value-of select="id"/>
           </code>
         </a>
+        <span style="display:block;font-size:0.8em;line-height:1em;">
+          <xsl:choose>
+            <xsl:when test="cash = 0">
+              <span style="color:darkred;" title="The project has no funds, you will work for free">
+                <xsl:text>no funds</xsl:text>
+              </span>
+            </xsl:when>
+            <xsl:otherwise>
+              <span style="color:darkgreen;" title="The project is funded">
+                <xsl:value-of select="cash"/>
+              </span>
+            </xsl:otherwise>
+          </xsl:choose>
+        </span>
       </td>
       <td>
         <xsl:value-of select="title"/>

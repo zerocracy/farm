@@ -21,7 +21,6 @@ import com.zerocracy.Item;
 import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.pm.staff.Roles;
-import com.zerocracy.pmo.Catalog;
 import com.zerocracy.pmo.Pmo;
 import com.zerocracy.tk.RqUser;
 import com.zerocracy.tk.RsParFlash;
@@ -40,16 +39,8 @@ import org.takes.facets.forward.RsForward;
  * @version $Id$
  * @since 0.12
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
- * @checkstyle CyclomaticComplexityCheck (500 lines)
  */
-@SuppressWarnings
-    (
-        {
-            "PMD.AvoidDuplicateLiterals",
-            "PMD.CyclomaticComplexity"
-        }
-    )
-final class RqProject implements Project {
+public final class RqProject implements Project {
 
     /**
      * Project.
@@ -62,23 +53,12 @@ final class RqProject implements Project {
      * @param req Request
      * @param required Roles required to get access
      */
-    RqProject(final Farm farm, final RqRegex req, final String... required) {
+    public RqProject(final Farm farm, final RqRegex req,
+        final String... required) {
         this.pkt = new SolidScalar<>(
             () -> {
-                final String pid = req.matcher().group(1);
                 final Project pmo = new Pmo(farm);
-                final Catalog catalog = new Catalog(pmo).bootstrap();
-                if (!"PMO".equals(pid) && !catalog.exists(pid)) {
-                    throw new RsForward(
-                        new RsParFlash(
-                            new Par("Project %s not found").say(pid),
-                            Level.WARNING
-                        )
-                    );
-                }
-                final Project project = farm.find(
-                    String.format("@id='%s'", pid)
-                ).iterator().next();
+                final Project project = new RqAnonProject(farm, req);
                 final String user = new RqUser(farm, req).value();
                 final Roles roles = new Roles(project).bootstrap();
                 final Roles admins = new Roles(pmo).bootstrap();
@@ -89,7 +69,7 @@ final class RqProject implements Project {
                             new Par(
                                 "You don't have any of these roles",
                                 "in %s to view the page: %s"
-                            ).say(pid, String.join(", ", required)),
+                            ).say(project.pid(), String.join(", ", required)),
                             Level.WARNING
                         )
                     );
@@ -100,7 +80,7 @@ final class RqProject implements Project {
                         new RsParFlash(
                             new Par(
                                 "You are not a member of %s"
-                            ).say(pid),
+                            ).say(project.pid()),
                             Level.WARNING
                         )
                     );

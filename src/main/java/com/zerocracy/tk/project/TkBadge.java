@@ -17,17 +17,11 @@
 package com.zerocracy.tk.project;
 
 import com.zerocracy.Farm;
-import com.zerocracy.Par;
 import com.zerocracy.Project;
-import com.zerocracy.pmo.Catalog;
-import com.zerocracy.pmo.Pmo;
-import com.zerocracy.tk.RsParFlash;
 import java.io.IOException;
-import java.util.logging.Level;
 import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
-import org.takes.facets.forward.RsForward;
 import org.takes.rs.RsWithBody;
 import org.takes.rs.RsWithHeaders;
 import org.takes.rs.RsWithType;
@@ -57,17 +51,7 @@ public final class TkBadge implements TkRegex {
 
     @Override
     public Response act(final RqRegex req) throws IOException {
-        final String pid = req.matcher().group(1);
-        final Project pmo = new Pmo(this.farm);
-        final Catalog catalog = new Catalog(pmo).bootstrap();
-        if (!catalog.exists(pid)) {
-            throw new RsForward(
-                new RsParFlash(
-                    new Par("Project %s not found").say(pid),
-                    Level.WARNING
-                )
-            );
-        }
+        final Project project = new RqAnonProject(this.farm, req);
         return new RsWithHeaders(
             new RsWithType(
                 new RsWithBody(
@@ -76,7 +60,7 @@ public final class TkBadge implements TkRegex {
                 "image/svg+xml"
             ),
             "Cache-Control: no-cache",
-            String.format("X-Zerocracy-Project-ID: %s", pid)
+            String.format("X-Zerocracy-Project-ID: %s", project.pid())
         );
     }
 

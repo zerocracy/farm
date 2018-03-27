@@ -21,6 +21,7 @@ import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Project;
 import com.zerocracy.Xocument;
+import com.zerocracy.pm.cost.Estimates;
 import com.zerocracy.pm.cost.Ledger;
 import com.zerocracy.pm.in.Orders;
 import com.zerocracy.pm.scope.Wbs;
@@ -102,6 +103,7 @@ public final class TkBoard implements Take {
         ).iterator().next();
         final Catalog catalog = new Catalog(this.farm).bootstrap();
         final Roles roles = new Roles(project).bootstrap();
+        final Ledger ledger = new Ledger(project).bootstrap();
         return new XeAppend(
             "project",
             new XeAppend(
@@ -137,7 +139,13 @@ public final class TkBoard implements Take {
             ),
             new XeAppend(
                 "deficit",
-                Boolean.toString(new Ledger(project).bootstrap().deficit())
+                Boolean.toString(ledger.deficit())
+            ),
+            new XeAppend(
+                "cash",
+                ledger.cash().add(
+                    new Estimates(project).bootstrap().total().mul(-1L)
+                ).toString()
             ),
             new XeAppend(
                 "members",
