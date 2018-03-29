@@ -14,10 +14,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.time.reminders
+package com.zerocracy.stk.pm.time
 
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
+import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
@@ -25,15 +26,14 @@ import com.zerocracy.pm.cost.Ledger
 import com.zerocracy.pm.in.Impediments
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.staff.Roles
-import com.zerocracy.pm.time.Reminders
+import com.zerocracy.pmo.Hint
 import com.zerocracy.pmo.Pmo
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 
-@SuppressWarnings('ExplicitCallToPlusMethod')
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Ping')
+  new Assume(project, xml).type('Ping hourly')
   if (new Ledger(project).bootstrap().deficit()) {
     // We must not remind anyone if the project is not funded now. Simply
     // because we can't force any actions at the moment. We will remind,
@@ -42,39 +42,39 @@ def exec(Project project, XML xml) {
     return
   }
   ClaimIn claim = new ClaimIn(xml)
-  Reminders reminders = new Reminders(project).bootstrap()
-  ZonedDateTime claimTime = ZonedDateTime.ofInstant(
+  ZonedDateTime now = ZonedDateTime.ofInstant(
     claim.created().toInstant(), ZoneOffset.UTC
   )
   Orders orders = new Orders(project).bootstrap()
-  orders.metaClass.reminders = { int days ->
-    delegate.olderThan(claimTime.minusDays(days))
-      .toList()
-      .collectEntries { String job -> [job, "$days days"] }
-  }
-  Map<String, String> expired = orders.reminders(5).plus(orders.reminders(8))
   Impediments impediments = new Impediments(project).bootstrap()
   Farm farm = binding.variables.farm
   Roles pmos = new Roles(new Pmo(farm)).bootstrap()
-  for (Map.Entry<String, String> entry : expired.entrySet()) {
-    String job = entry.key
+  orders.olderThan(now.minusDays(5)).each { job ->
     if (impediments.exists(job)) {
-      continue
+      return
     }
-    String label = entry.value
     String login = orders.performer(job)
     if (pmos.hasAnyRole(login)) {
       // Members of PMO have special status, we should not bother them
       // with any reminders, ever.
       return
     }
-    if (reminders.add(job, login, label)) {
+    new Hint(
+      farm,
+      Integer.MAX_VALUE,
       claim.copy()
-        .type('New reminder posted')
-        .param('job', job)
-        .param('label', label)
-        .param('login', login)
-        .postTo(project)
-    }
+        .type('Notify job')
+        .token("job;${claim.param('job')}")
+        .param('mnemo', "${orders.performer(job)}")
+        .param(
+          'message',
+          new Par(
+            '@%s this job was assigned to you %[ms]s ago.',
+            'It will be taken away from you soon, unless you close it, see §8.',
+            'Read [this](/2014/04/13/no-obligations-principle.html)',
+            'and [this](/2014/11/24/principles-of-bug-tracking.html), please.'
+          ).say(orders.performer(job), System.currentTimeMillis() - orders.startTime(job).time)
+        )
+    )
   }
 }

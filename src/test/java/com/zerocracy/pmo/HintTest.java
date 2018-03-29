@@ -49,7 +49,7 @@ public final class HintTest {
                         "ttl", "when"
                     )
             ),
-            100, 0L,
+            100, 0,
             new ClaimOut()
                 .type("Notify user")
                 .token("user;yegor256")

@@ -54,7 +54,7 @@ public final class Hint {
     /**
      * Age in seconds.
      */
-    private final long age;
+    private final int age;
 
     /**
      * Claim to post.
@@ -70,8 +70,21 @@ public final class Hint {
      * @checkstyle ParameterNumberCheck (5 lines)
      */
     public Hint(final Farm farm, final int rnk,
-        final long seconds, final ClaimOut clm) {
+        final int seconds, final ClaimOut clm) {
         this(new ExtDynamo(farm).value(), rnk, seconds, clm);
+    }
+
+    /**
+     * Ctor.
+     * @param farm The farm
+     * @param seconds How long it should stay alive before the next hint
+     * @param clm The claim
+     * @checkstyle ParameterNumberCheck (5 lines)
+     */
+    public Hint(final Farm farm,
+        final int seconds, final ClaimOut clm) {
+        // @checkstyle MagicNumber (1 line)
+        this(new ExtDynamo(farm).value(), 80, seconds, clm);
     }
 
     /**
@@ -80,8 +93,7 @@ public final class Hint {
      * @param clm The claim
      */
     public Hint(final Farm farm, final ClaimOut clm) {
-        // @checkstyle MagicNumber (1 line)
-        this(farm, 80, TimeUnit.DAYS.toSeconds(1L), clm);
+        this(farm, (int) TimeUnit.DAYS.toSeconds(1L), clm);
     }
 
     /**
@@ -93,7 +105,7 @@ public final class Hint {
      * @checkstyle ParameterNumberCheck (5 lines)
      */
     public Hint(final Region rgn, final int rnk,
-        final long seconds, final ClaimOut clm) {
+        final int seconds, final ClaimOut clm) {
         this.region = rgn;
         this.rank = rnk;
         this.age = seconds;
@@ -124,7 +136,7 @@ public final class Hint {
                     .with(
                         "ttl",
                         (System.currentTimeMillis()
-                            + TimeUnit.SECONDS.toMillis(this.age))
+                            + TimeUnit.SECONDS.toMillis((long) this.age))
                             / TimeUnit.SECONDS.toMillis(1L)
                     )
                     .with("when", System.currentTimeMillis())
@@ -147,9 +159,12 @@ public final class Hint {
                 new Xembler(this.claim).xmlQuietly()
             ).nodes("/claim").get(0)
         );
-        return String.format(
-            "%s %s", project.pid(), cin.token()
-        );
+        final StringBuilder mnemo = new StringBuilder(project.pid())
+            .append(' ').append(cin.token());
+        if (cin.params().containsKey("mnemo")) {
+            mnemo.append(' ').append(cin.param("mnemo"));
+        }
+        return mnemo.toString();
     }
 
 }
