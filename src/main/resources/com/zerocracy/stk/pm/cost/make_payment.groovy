@@ -78,10 +78,11 @@ def exec(Project project, XML xml) {
         'and sent to @%s (your mentor), according to §45'
       ).say(fee, mentor)
     }
+    Ledger ledger = new Ledger(project).bootstrap()
     String msg
     try {
       msg = new Payroll(farm).pay(
-        new Ledger(project).bootstrap(),
+        ledger,
         login, price, "Payment for ${job} (${minutes} minutes): ${reason}"
       )
       claim.copy()
@@ -100,6 +101,31 @@ def exec(Project project, XML xml) {
         )
         .postTo(project)
     } catch (IOException ex) {
+      Cash commission = price.mul(3) / 100
+      ledger.add(
+        new Ledger.Transaction(
+          price.add(commission),
+          'liabilities', 'debt',
+          'assets', 'cash',
+          String.format(
+            '%s (amount:%s, commission:%s)',
+            new Par.ToText(reason).toString(),
+            price, commission
+          )
+        ),
+        new Ledger.Transaction(
+          commission,
+          'expenses', 'jobs',
+          'liabilities', 'debt',
+          "${commission} (commission)"
+        ),
+        new Ledger.Transaction(
+          price,
+          'expenses', 'jobs',
+          'liabilities', "@${login}",
+          new Par.ToText(reason).toString()
+        )
+      )
       Debts debts = new Debts(farm).bootstrap()
       debts.add(login, price, "${reason} at ${job}", ex.message)
       claim.copy()

@@ -31,6 +31,9 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
   Wbs wbs = new Wbs(project).bootstrap()
+  if (!wbs.exists(job)) {
+    return
+  }
   Orders orders = new Orders(project).bootstrap()
   if (orders.assigned(job)) {
     String performer = orders.performer(job)
