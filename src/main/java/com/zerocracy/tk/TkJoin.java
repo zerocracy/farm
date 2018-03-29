@@ -46,6 +46,8 @@ import org.takes.rq.form.RqFormSmart;
  *  If the resume is there, he/she should see the resume, not the form.
  *  If he/she already has a mentor, there should be a redirect,
  *  saying that "User @yegor256 is already your mentor, no need to join again".
+ *  See https://github.com/zerocracy/farm/issues/800#issuecomment-375551970
+ *  comment for details.
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class TkJoin implements TkRegex {
