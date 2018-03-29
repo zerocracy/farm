@@ -103,14 +103,14 @@ public final class People {
 
     /**
      * Remove person.
-     * @param id Person id
+     * @param uid Person id
      * @throws IOException If fails
      */
-    public void remove(final String id) throws IOException {
+    public void remove(final String uid) throws IOException {
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives().xpath(
-                    String.format("/people/person[@id='%s']", id)
+                    String.format("/people/person[@id='%s']", uid)
                 ).remove()
             );
         }

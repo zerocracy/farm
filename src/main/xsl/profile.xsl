@@ -106,11 +106,11 @@ SOFTWARE.
           <xsl:text>The</xsl:text>
         </xsl:otherwise>
       </xsl:choose>
-      <xsl:text> total </xsl:text>
+      <xsl:text> current </xsl:text>
       <a href="http://www.zerocracy.com/policy.html#18">
-        <xsl:text>points</xsl:text>
+        <xsl:text>reputation</xsl:text>
       </a>
-      <xsl:text> earned: </xsl:text>
+      <xsl:text>: </xsl:text>
       <xsl:choose>
         <xsl:when test=".=0">
           <span style="color:darkred">

@@ -40,7 +40,7 @@ import org.cactoos.collection.Mapped;
  * @since 0.20
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-public final class DyErrors {
+public final class Errors {
     /**
      * DynamoDB table.
      */
@@ -65,10 +65,10 @@ public final class DyErrors {
 
     /**
      * Ctor.
-     * @param region DynamoDB region
+     * @param rgn DynamoDB region
      */
-    public DyErrors(final Region region) {
-        this.region = region;
+    public Errors(final Region rgn) {
+        this.region = rgn;
     }
 
     /**
@@ -81,12 +81,12 @@ public final class DyErrors {
     public void add(final String system, final String location,
         final long timestamp) throws IOException {
         this.region
-            .table(DyErrors.TABLE)
+            .table(Errors.TABLE)
             .put(
                 new Attributes()
-                    .with(DyErrors.ATTR_SYSTEM, system)
-                    .with(DyErrors.ATTR_LOCATION, location)
-                    .with(DyErrors.ATTR_CREATED, timestamp)
+                    .with(Errors.ATTR_SYSTEM, system)
+                    .with(Errors.ATTR_LOCATION, location)
+                    .with(Errors.ATTR_CREATED, timestamp)
             );
     }
 
@@ -101,17 +101,17 @@ public final class DyErrors {
         final int limit,
         final long hours) {
         return new Mapped<>(
-            (Item item) -> item.get(DyErrors.ATTR_LOCATION).getS(),
+            (Item item) -> item.get(Errors.ATTR_LOCATION).getS(),
             this.region
-                .table(DyErrors.TABLE)
+                .table(Errors.TABLE)
                 .frame()
                 .through(
                     new QueryValve().withLimit(limit)
-                        .withAttributeToGet(DyErrors.ATTR_LOCATION)
+                        .withAttributeToGet(Errors.ATTR_LOCATION)
                 )
-                .where(DyErrors.ATTR_SYSTEM, Conditions.equalTo(system))
+                .where(Errors.ATTR_SYSTEM, Conditions.equalTo(system))
                 .where(
-                    DyErrors.ATTR_CREATED,
+                    Errors.ATTR_CREATED,
                     new Condition()
                         .withComparisonOperator(ComparisonOperator.LT)
                         .withAttributeValueList(
@@ -136,11 +136,11 @@ public final class DyErrors {
     public void remove(final String system, final long timestamp)
         throws IOException {
         this.region
-            .table(DyErrors.TABLE)
+            .table(Errors.TABLE)
             .delete(
                 new Attributes()
-                    .with(DyErrors.ATTR_SYSTEM, system)
-                    .with(DyErrors.ATTR_CREATED, timestamp)
+                    .with(Errors.ATTR_SYSTEM, system)
+                    .with(Errors.ATTR_CREATED, timestamp)
             );
     }
 
@@ -156,7 +156,7 @@ public final class DyErrors {
         /**
          * Errors table.
          */
-        private final DyErrors errors;
+        private final Errors errors;
         /**
          * Github client.
          */
@@ -167,7 +167,7 @@ public final class DyErrors {
          * @param errors Errors table
          * @param github Github client
          */
-        public Github(final DyErrors errors,
+        public Github(final Errors errors,
             final com.jcabi.github.Github github) {
             this.errors = errors;
             this.client = github;
@@ -182,7 +182,7 @@ public final class DyErrors {
         public Iterable<Comment> iterate(final int limit, final long hours) {
             return new Mapped<>(
                 this::comment,
-                this.errors.iterate(DyErrors.Github.SYSTEM, limit, hours)
+                this.errors.iterate(Errors.Github.SYSTEM, limit, hours)
             );
         }
 
@@ -193,8 +193,8 @@ public final class DyErrors {
          */
         public void add(final Comment comment) throws IOException {
             this.errors.add(
-                DyErrors.Github.SYSTEM,
-                DyErrors.Github.location(comment),
+                Errors.Github.SYSTEM,
+                Errors.Github.location(comment),
                 new Comment.Smart(comment).createdAt().getTime()
             );
         }
@@ -206,7 +206,7 @@ public final class DyErrors {
          */
         public void remove(final Comment comment) throws IOException {
             this.errors.remove(
-                DyErrors.Github.SYSTEM,
+                Errors.Github.SYSTEM,
                 new Comment.Smart(comment).createdAt().getTime()
             );
         }
