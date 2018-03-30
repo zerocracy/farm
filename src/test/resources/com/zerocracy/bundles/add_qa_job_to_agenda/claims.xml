@@ -29,4 +29,10 @@ SOFTWARE.
       <param name="minutes">15</param>
     </params>
   </claim>
+  <claim id="4">
+    <created>2017-03-27T11:18:09.228Z</created>
+    <type>Ping hourly</type>
+    <author>0crat</author>
+    <token>test;C123;user42</token>
+  </claim>
 </claims>

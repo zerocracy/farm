@@ -64,7 +64,7 @@ def exec(Project project, XML xml) {
       Integer.MAX_VALUE,
       claim.copy()
         .type('Notify job')
-        .token("job;${claim.param('job')}")
+        .token("job;${job}")
         .param('mnemo', "${orders.performer(job)}")
         .param(
           'message',
