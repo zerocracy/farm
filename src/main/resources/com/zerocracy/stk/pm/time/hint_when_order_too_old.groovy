@@ -75,6 +75,6 @@ def exec(Project project, XML xml) {
             'and [this](/2014/11/24/principles-of-bug-tracking.html), please.'
           ).say(orders.performer(job), System.currentTimeMillis() - orders.startTime(job).time)
         )
-    )
+    ).postTo(project)
   }
 }

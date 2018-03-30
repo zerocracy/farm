@@ -67,5 +67,5 @@ def exec(Project project, XML xml) {
           'consider announcing your project as explained in §51'
         ).say(pending.size(), pending)
       )
-  )
+  ).postTo(project)
 }

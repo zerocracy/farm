@@ -62,6 +62,6 @@ def exec(Project project, XML xml) {
             'to the project, as explained in §51'
           ).say(arc, role)
         )
-    )
+    ).postTo(project)
   }
 }
