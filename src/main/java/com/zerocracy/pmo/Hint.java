@@ -159,12 +159,10 @@ public final class Hint {
                 new Xembler(this.claim).xmlQuietly()
             ).nodes("/claim").get(0)
         );
-        final StringBuilder mnemo = new StringBuilder(project.pid())
-            .append(' ').append(cin.token());
-        if (cin.params().containsKey("mnemo")) {
-            mnemo.append(' ').append(cin.param("mnemo"));
-        }
-        return mnemo.toString();
+        return new StringBuilder(project.pid())
+            .append(';').append(cin.token())
+            .append(';').append(cin.param("mnemo"))
+            .toString();
     }
 
 }

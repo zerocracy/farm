@@ -17,7 +17,7 @@ def exec(Project pmo, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   People people = new People(pmo).bootstrap()
   Farm farm = binding.variables.farm
-  new Shuffled<String>(people.iterate()).take(5).each { login ->
+  new Shuffled<String>(people.iterate()).take(10).each { login ->
     Agenda agenda = new Agenda(farm, login).bootstrap()
     Projects projects = new Projects(farm, login).bootstrap()
     Set<String> orders = []

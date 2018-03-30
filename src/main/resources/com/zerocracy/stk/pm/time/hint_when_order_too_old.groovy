@@ -65,7 +65,7 @@ def exec(Project project, XML xml) {
       claim.copy()
         .type('Notify job')
         .token("job;${job}")
-        .param('mnemo', "${orders.performer(job)}")
+        .param('mnemo', "Order of @${orders.performer(job)} is too old")
         .param(
           'message',
           new Par(

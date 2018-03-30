@@ -59,6 +59,7 @@ def exec(Project project, XML xml) {
     claim.copy()
       .type('Notify project')
       .token("project;${project.pid()}")
+      .param('mnemo', 'Deficit of people')
       .param(
         'message',
         new Par(

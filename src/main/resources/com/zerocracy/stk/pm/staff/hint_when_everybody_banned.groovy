@@ -53,6 +53,7 @@ def exec(Project project, XML xml) {
       claim.copy()
         .type('Notify job')
         .token("job;${job}")
+        .param('mnemo', 'Everybody is banned')
         .param(
           'message',
           new Par(

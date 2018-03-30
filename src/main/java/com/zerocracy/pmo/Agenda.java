@@ -135,6 +135,7 @@ public final class Agenda {
                     .add("order")
                     .attr("job", job)
                     .add("role").set(role).up()
+                    .add("title").set("-").up()
                     .add("added").set(new DateAsText().asString()).up()
                     .add("project")
                     .set(project.pid())

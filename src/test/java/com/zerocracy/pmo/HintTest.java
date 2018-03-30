@@ -53,6 +53,7 @@ public final class HintTest {
             new ClaimOut()
                 .type("Notify user")
                 .token("user;yegor256")
+                .param("mnemo", "Just saying hi")
                 .param("message", "You are fired, my friend!")
         );
         hint.postTo(project);
