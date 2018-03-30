@@ -39,6 +39,10 @@ import org.xembly.Directives;
  * @version $Id$
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @todo #476:30min Let's introduce freeze() method which will be called
+ *  during shutdown, it should block all SyncProjects so they stops to
+ *  return SyncItems and wait for all current opened SyncItems to close.
+ *  After all SyncItem closed TkShutdown should return 200 status.
  */
 @EqualsAndHashCode(of = "origin")
 public final class SyncFarm implements Farm {

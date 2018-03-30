@@ -32,10 +32,6 @@ import org.takes.rs.RsEmpty;
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.20
- * @todo #297:30min App shutdown is not implemented.
- *  This take will be called by Rultor during deploy.
- *  We should stop all background threads, services, wait until they stopped
- *  and return 200-OK status to Rultor.
  */
 public final class TkShutdown implements Take {
     /**
