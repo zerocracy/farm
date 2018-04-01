@@ -36,6 +36,10 @@ import org.takes.rq.form.RqFormSmart;
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.20
+ * @todo #653:30min We should allow user to send `/join` requests only once
+ *  a week, it can be checked and updated via People.applied methods.
+ *  The 7 days value can be accessed via Par after
+ *  https://github.com/zerocracy/zerocracy.github.io/issues/9 fix.
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class TkJoin implements TkRegex {
