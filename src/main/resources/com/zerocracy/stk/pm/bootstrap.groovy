@@ -64,7 +64,7 @@ def exec(Project project, XML xml) {
   roles.assign(author, 'ARC')
   Catalog catalog = new Catalog(farm).bootstrap()
   catalog.link(project.pid(), 'slack', project.pid())
-  catalog.adviser(project.pid(), claim.param('adviser'))
+  catalog.adviser(project.pid(), claim.author())
   claim.copy()
     .type('Adviser was updated')
     .postTo(project)
