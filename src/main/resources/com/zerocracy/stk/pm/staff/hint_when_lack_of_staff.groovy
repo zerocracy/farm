@@ -66,7 +66,7 @@ def exec(Project project, XML xml) {
           'There are %d jobs, which are not assigned to anyone: %s;',
           'most likely there is a deficit of people in the project;',
           'consider announcing your project as explained in §51'
-        ).say(pending.size(), pending)
+        ).say(pending.size(), pending.join(', '))
       )
   ).postTo(project)
 }

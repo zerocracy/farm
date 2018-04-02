@@ -69,7 +69,7 @@ public final class TkHiring implements TkRegex {
             .author(user)
             .param("login", user)
             .param("job", "none")
-            .param("minutes", new Policy().get("51.price", 0))
+            .param("minutes", -new Policy().get("51.price", 0))
             .param("reason", "Job announced to all users")
             .postTo(project);
         new ClaimOut()

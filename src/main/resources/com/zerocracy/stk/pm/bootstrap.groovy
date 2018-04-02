@@ -78,7 +78,7 @@ def exec(Project project, XML xml) {
     .type('Make payment')
     .param('login', author)
     .param('job', 'none')
-    .param('minutes', new Policy().get('12.price', -256))
+    .param('minutes', -new Policy().get('12.price', 256))
     .param('reason', new Par('Project %s was bootstrapped').say(project.pid()))
     .postTo(project)
   if (claim.hasParam('channel')) {

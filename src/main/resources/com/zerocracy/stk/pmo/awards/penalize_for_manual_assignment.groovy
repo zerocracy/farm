@@ -40,7 +40,7 @@ def exec(Project project, XML xml) {
         'reason',
         new Par('Manual assignment of issues is discouraged, see §19').say()
       )
-      .param('minutes', new Policy().get('19.penalty', -5))
+      .param('minutes', -new Policy().get('19.penalty', 5))
       .postTo(project)
   }
 }
