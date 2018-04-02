@@ -75,7 +75,8 @@ public final class TkRfp implements Take {
                         "price_cents",
                         Integer.toString(
                             new Policy().get("41.price", Cash.ZERO)
-                                .decimal().intValue()
+                                // @checkstyle MagicNumber (1 line)
+                                .decimal().intValue() * 100
                         )
                     ),
                     new XeWhen(

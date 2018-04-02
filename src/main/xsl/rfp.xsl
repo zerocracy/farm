@@ -82,12 +82,9 @@ SOFTWARE.
     <form action="/rfp-post" method="post">
       <fieldset>
         <label>
-          <xsl:text>Statement of work (</xsl:text>
-          <xsl:text>please, keep it as short as this input area;</xsl:text>
-          <xsl:text> don't use any formatting or HTML, just plain text in one paragraph</xsl:text>
-          <xsl:text>):</xsl:text>
+          <xsl:text>Statement of work:</xsl:text>
         </label>
-        <textarea name="sow" style="width:100%;height:10em;">
+        <textarea name="sow" style="width:500px;height:10em;">
           <xsl:choose>
             <xsl:when test="rfp">
               <xsl:value-of select="rfp/sow"/>
@@ -118,10 +115,15 @@ SOFTWARE.
       </fieldset>
     </form>
     <p>
-      <xsl:text>Make sure the Statement of Work is short, </xsl:text>
-      <xsl:text> easy to understand, and doesn't contain your contact information.</xsl:text>
+      <xsl:text>Please, keep it as short as this input area,</xsl:text>
+      <xsl:text> don't use any formatting or HTML, just plain text in one paragraph.</xsl:text>
+      <xsl:text> Make sure it doesn't contain your contact information.</xsl:text>
       <xsl:text> This is for your own good, since in order to get</xsl:text>
-      <xsl:text> in touch with you each programmer will have to sacrifice</xsl:text>
+      <xsl:text> in touch with you each programmer will </xsl:text>
+      <a href="http://www.zerocracy.com/policy.html#40">
+        <xsl:text>have to</xsl:text>
+      </a>
+      <xsl:text> sacrifice</xsl:text>
       <xsl:text> a decent amount of reputation points. This is how we</xsl:text>
       <xsl:text> filter out those who are not serious.</xsl:text>
     </p>
