@@ -16,10 +16,12 @@
  */
 package com.zerocracy.pmo;
 
+import com.jcabi.aspects.Tv;
 import com.jcabi.matchers.XhtmlMatchers;
 import com.zerocracy.Par;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.farm.fake.FkProject;
+import java.util.Date;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -82,4 +84,31 @@ public final class DebtsTest {
         );
     }
 
+    @Test
+    public void oldest() throws Exception {
+        final Debts debts = new Debts(new FkProject()).bootstrap();
+        final String uid = "0crat";
+        debts.add(
+            uid, new Cash.S("$2"),
+            new Par("details-2 as in §1").say(),
+            "reason-2",
+            new Date(2L)
+        );
+        debts.add(
+            uid, new Cash.S("$1"),
+            new Par("details-1 as in §1").say(),
+            "reason-1",
+            new Date(1L)
+        );
+        debts.add(
+            uid, new Cash.S("$3"),
+            new Par("details-3 as in §1").say(),
+            "reason-3",
+            new Date((long) Tv.THREE)
+        );
+        MatcherAssert.assertThat(
+            debts.oldest(uid),
+            Matchers.equalTo(new Date(1L))
+        );
+    }
 }

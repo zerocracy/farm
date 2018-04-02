@@ -31,7 +31,14 @@ import com.zerocracy.pmo.Debts
 import com.zerocracy.pmo.banks.Payroll
 import org.xembly.Xembler
 
+import java.util.concurrent.TimeUnit
+
 def exec(Project pmo, XML xml) {
+  /*
+   * @todo #696:30min Add test for pay_all_depts stakeholder script.
+   *  It is not possible because payments are not testable. It should be
+   *  fixed in #565 ticket.
+   */
   new Assume(pmo, xml).isPmo()
   new Assume(pmo, xml).type('Ping hourly')
   Debts debts = new Debts(pmo).bootstrap()
@@ -42,7 +49,10 @@ def exec(Project pmo, XML xml) {
       return
     }
     Cash debt = debts.amount(uid)
-    if (debt < new Policy().get('46.threshold', new Cash.S('$50'))) {
+    Policy policy = new Policy()
+    int
+    if (debt < policy.get('46.threshold', new Cash.S('$50')) &&
+      new Date().time - debts.oldest(uid).time < TimeUnit.DAYS.toMillis(policy.get('46.days', 20))) {
       return
     }
     try {
