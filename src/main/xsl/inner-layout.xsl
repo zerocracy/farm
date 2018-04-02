@@ -27,7 +27,7 @@ SOFTWARE.
       <nav>
         <ul>
           <li>
-            <a href="/">
+            <a href="{links/link[@rel='home']/@href}">
               <img src="/svg/logo.svg" class="logo"/>
             </a>
           </li>

@@ -124,7 +124,7 @@ SOFTWARE.
         <strong>
           <xsl:if test="type='Error'">
             <xsl:attribute name="style">
-              <xsl:text>color:darkred</xsl:text>
+              <xsl:text>background-color:darkred;color:white;</xsl:text>
             </xsl:attribute>
           </xsl:if>
           <xsl:value-of select="type"/>

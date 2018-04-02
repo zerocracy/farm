@@ -27,7 +27,7 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="page" mode="inner">
     <h1>
-      <xsl:text>RFP</xsl:text>
+      <xsl:text>Request For Proposal (RFP)</xsl:text>
     </h1>
     <xsl:if test="not(rfp)">
       <form id="form" style="display:none" action="/rfp-pay" method="post">
@@ -40,7 +40,11 @@ SOFTWARE.
         <xsl:text>If you are ready to outsource your software project</xsl:text>
         <xsl:text> to a team managed by Zerocracy, this is the best place</xsl:text>
         <xsl:text> to start. First of all, you will need a software architect,</xsl:text>
-        <xsl:text> who knows how to work with Zerocrat, who understands</xsl:text>
+        <xsl:text> who knows how to work with </xsl:text>
+        <a href="http://www.yegor256.com/2018/03/21/zerocracy-announcement.html">
+          <xsl:text>Zerocrat</xsl:text>
+        </a>
+        <xsl:text>, who understands</xsl:text>
         <xsl:text> our management principles and has enough experience</xsl:text>
         <xsl:text> and reputation. The full list of programmers is </xsl:text>
         <a href="/team">
@@ -50,23 +54,28 @@ SOFTWARE.
         <xsl:text> Once you hire that guy, he/she will help you recruit</xsl:text>
         <xsl:text> the entire team and will technically manage it, with</xsl:text>
         <xsl:text> the help of Zerocrat.</xsl:text>
-        <xsl:text> You need one of the best, with the highest reputation.</xsl:text>
-        <xsl:text> Once you pay us the entrance fee below, we let you</xsl:text>
+        <xsl:text> You need one of the best, with the highest </xsl:text>
+        <a href="http://www.zerocracy.com/policy.html#18">
+          <xsl:text>reputation</xsl:text>
+        </a>
+        <xsl:text>. Once you pay us the entrance fee below, we let you</xsl:text>
         <xsl:text> fill out and submit the form.</xsl:text>
         <xsl:text> Then, we will send your RFP to the best developers in the list.</xsl:text>
         <xsl:text> One of them will</xsl:text>
         <xsl:text> get back to you by email and you will discuss the next steps.</xsl:text>
       </p>
       <p>
-        <xsl:text>Pay </xsl:text>
-        <span style="text-decoration: line-through">
-          <xsl:text>$64.00</xsl:text>
-        </span>
+        <xsl:text>Click here to pay </xsl:text>
         <xsl:text> </xsl:text>
-        <a href="#" class="pay" data-cents="1600">
-          <xsl:text>$16.00</xsl:text>
+        <a href="#" class="pay" data-cents="{price_cents}">
+          <xsl:text>$</xsl:text>
+          <xsl:value-of select="format-number(price_cents div 100, '#.00')"/>
         </a>
-        <xsl:text> to continue. The payment is not refundable!</xsl:text>
+        <xsl:text> to continue. The payment is not refundable, according to </xsl:text>
+        <a href="http://www.zerocracy.com/policy.html#18">
+          <xsl:text>&#xA7;41</xsl:text>
+        </a>
+        <xsl:text>.</xsl:text>
       </p>
     </xsl:if>
     <xsl:apply-templates select="rfp"/>
