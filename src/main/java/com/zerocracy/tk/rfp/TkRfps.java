@@ -17,19 +17,14 @@
 package com.zerocracy.tk.rfp;
 
 import com.zerocracy.Farm;
-import com.zerocracy.Par;
-import com.zerocracy.Policy;
-import com.zerocracy.pmo.Awards;
+import com.zerocracy.pmo.Exam;
 import com.zerocracy.pmo.Rfps;
 import com.zerocracy.tk.RqUser;
 import com.zerocracy.tk.RsPage;
-import com.zerocracy.tk.RsParFlash;
 import java.io.IOException;
-import java.util.logging.Level;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
-import org.takes.facets.forward.RsForward;
 import org.takes.rs.xe.XeDirectives;
 
 /**
@@ -63,19 +58,7 @@ public final class TkRfps implements Take {
             req,
             () -> {
                 final String user = new RqUser(this.farm, req).value();
-                final Awards awards = new Awards(this.farm, user).bootstrap();
-                final int reputation = awards.total();
-                if (awards.total() < new Policy().get("40.min", 0)) {
-                    throw new RsForward(
-                        new RsParFlash(
-                            new Par(
-                                "Your reputation (%s) is not big enough",
-                                "to see this page, see §40"
-                            ).say(reputation),
-                            Level.WARNING
-                        )
-                    );
-                }
+                new Exam(this.farm, user).min("40.min", 0);
                 return new XeDirectives(
                     new Rfps(this.farm).bootstrap().toXembly()
                 );

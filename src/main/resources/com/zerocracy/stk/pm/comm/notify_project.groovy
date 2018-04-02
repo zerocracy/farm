@@ -27,10 +27,14 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Notify project')
   Farm farm = binding.variables.farm
   ClaimIn claim = new ClaimIn(xml)
-  new Catalog(farm).bootstrap().links(project.pid(), 'slack').each {
-    claim.copy()
-      .type('Notify in Slack')
-      .token("slack;${it}")
-      .postTo(project)
+  if (project.pid() == 'PMO') {
+    claim.copy().type('Notify PMO').postTo(project)
+  } else {
+    new Catalog(farm).bootstrap().links(project.pid(), 'slack').each { channel ->
+      claim.copy()
+        .type('Notify in Slack')
+        .token("slack;${channel}")
+        .postTo(project)
+    }
   }
 }

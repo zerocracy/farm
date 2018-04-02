@@ -25,8 +25,8 @@ import com.zerocracy.SoftException
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.staff.Roles
-import com.zerocracy.pmo.Awards
 import com.zerocracy.pmo.Catalog
+import com.zerocracy.pmo.Exam
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
@@ -35,15 +35,7 @@ def exec(Project project, XML xml) {
   Roles roles = new Roles(project).bootstrap()
   ClaimIn claim = new ClaimIn(xml)
   String author = claim.author()
-  int reputation = new Awards(farm, author).bootstrap().total()
-  int min = new Policy().get('12.min', 1024)
-  if (reputation < min) {
-    throw new SoftException(
-      new Par(
-        'Your reputation %+d is lower than the required minimum of %+d, see §12'
-      ).say(reputation, min)
-    )
-  }
+  new Exam(farm, author).min('12.min', 1024)
   if (roles.hasRole(author, 'PO')) {
     throw new SoftException(
       new Par(
@@ -86,7 +78,7 @@ def exec(Project project, XML xml) {
     .type('Make payment')
     .param('login', author)
     .param('job', 'none')
-    .param('minutes', new Policy().get('12.price', -256))
+    .param('minutes', -new Policy().get('12.price', 256))
     .param('reason', new Par('Project %s was bootstrapped').say(project.pid()))
     .postTo(project)
   if (claim.hasParam('channel')) {

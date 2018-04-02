@@ -58,7 +58,7 @@ def exec(Project project, XML xml) {
           'to assign jobs to their creators, see §19'
         ).say()
       )
-      .param('minutes', new Policy().get('19.self-penalty', -15))
+      .param('minutes', -new Policy().get('19.self-penalty', 15))
       .postTo(project)
   }
 }

@@ -35,4 +35,10 @@ SOFTWARE.
       <param name="job">gh:test/test#1</param>
     </params>
   </claim>
+  <claim id="5">
+    <created>2017-03-27T11:18:09.228Z</created>
+    <type>Ping hourly</type>
+    <token>job;gh:test/test#1</token>
+    <author>yegor256</author>
+  </claim>
 </claims>

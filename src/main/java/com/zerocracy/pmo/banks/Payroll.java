@@ -113,6 +113,7 @@ public final class Payroll {
                 new Par.ToText(reason).toString()
             )
         );
+        final String text = new Par.ToText(reason).toString();
         ledger.add(
             new Ledger.Transaction(
                 amount.add(commission),
@@ -120,24 +121,20 @@ public final class Payroll {
                 "assets", "cash",
                 String.format(
                     "%s (amount:%s, commission:%s, PID:%s)",
-                    new Par.ToText(reason).toString(),
-                    amount, commission, pid
+                    text, amount, commission, pid
                 )
             ),
             new Ledger.Transaction(
                 commission,
                 "expenses", "jobs",
                 "liabilities", method,
-                String.format(
-                    "%s (commission)",
-                    new Par.ToText(reason).toString()
-                )
+                String.format("%s (commission)", text)
             ),
             new Ledger.Transaction(
                 amount,
                 "expenses", "jobs",
                 "liabilities", String.format("@%s", login),
-                reason
+                text
             )
         );
         return pid;

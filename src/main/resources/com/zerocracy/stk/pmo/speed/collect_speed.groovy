@@ -34,9 +34,5 @@ def exec(Project project, XML xml) {
   new Speed(farm, login)
     .bootstrap()
     .add(project.pid(), job, age)
-  claim.copy()
-    .type('Speed was updated')
-    .param('login', login)
-    .param('job', job)
-    .postTo(project)
+  claim.copy().type('Speed was updated').postTo(project)
 }

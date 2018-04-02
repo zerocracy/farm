@@ -48,7 +48,7 @@ public final class S3ProjectTest {
         final String person = "yegor256";
         new Agenda(project, person).bootstrap();
         final String job = "gh:test/test#1";
-        new Agenda(project, person).add(job, "QA");
+        new Agenda(project, person).add(project, job, "QA");
         MatcherAssert.assertThat(
             new Agenda(project, person).jobs(),
             Matchers.hasItem(job)

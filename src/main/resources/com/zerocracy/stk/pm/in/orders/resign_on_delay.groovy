@@ -12,7 +12,6 @@ import com.zerocracy.pm.cost.Ledger
 import com.zerocracy.pm.in.Impediments
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.staff.Roles
-import com.zerocracy.pm.time.Reminders
 import com.zerocracy.pmo.Pmo
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
@@ -37,7 +36,6 @@ def exec(Project project, XML xml) {
   Impediments impediments = new Impediments(project).bootstrap()
   Farm farm = binding.variables.farm
   Roles pmos = new Roles(new Pmo(farm)).bootstrap()
-  Reminders reminders = new Reminders(project).bootstrap()
   List<String> waiting = impediments.jobs().toList()
   int days = new Policy().get('8.days', 10)
   new Limited<>(
@@ -56,11 +54,6 @@ def exec(Project project, XML xml) {
     if (impediments.exists(job)) {
       // We must not resign if the job has an impediment, this is what
       // impediments are about: they prevent automatic resignation
-      return
-    }
-    if (reminders.labels(job).empty) {
-      // We must not resign if we haven't notified the performer
-      // at least once
       return
     }
     claim.copy()

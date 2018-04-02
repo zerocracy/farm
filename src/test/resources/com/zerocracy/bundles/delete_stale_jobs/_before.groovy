@@ -28,5 +28,5 @@ def exec(Project project, XML xml) {
   new ExtGithub(farm).value().repos()
     .create(new Repos.RepoCreate('test', false))
     .issues().create('hello', 'world')
-  new Agenda(farm, 'g4s8').bootstrap().add('gh:test/test#1', 'DEV')
+  new Agenda(farm, 'g4s8').bootstrap().add(project, 'gh:test/test#1', 'DEV')
 }

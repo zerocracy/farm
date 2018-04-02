@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pmo;
 
+import com.zerocracy.Project;
 import com.zerocracy.farm.fake.FkProject;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -27,18 +28,63 @@ import org.junit.Test;
  * @version $Id$
  * @since 0.12
  * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle AvoidDuplicateLiterals (600 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class AgendaTest {
 
     @Test
     public void addsAndRemovesAgenda() throws Exception {
-        final Agenda agenda = new Agenda(new FkProject(), "yegor").bootstrap();
+        final Project project = new FkProject();
+        final Agenda agenda = new Agenda(project, "yegor").bootstrap();
         final String first = "gh:test/test#1";
-        agenda.add(first, "REV");
+        agenda.add(project, first, "REV");
         final String second = "gh:test/test#2";
-        agenda.add(second, "QA");
+        agenda.add(project, second, "QA");
         agenda.remove(first);
         MatcherAssert.assertThat(agenda.jobs(), Matchers.hasItem(second));
     }
 
+    /**
+     * Agenda can remove all the orders.
+     * @throws Exception If something goes wrong.
+     */
+    @Test
+    public void removesAllOrders() throws Exception {
+        final Project project = new FkProject();
+        final Agenda agenda = new Agenda(project, "mihai").bootstrap();
+        agenda.add(project, "gh:test2/test#1", "REV");
+        agenda.add(project, "gh:test2/test#2", "QA");
+        agenda.add(project, "gh:test2/test#3", "DEV");
+        // @checkstyle MagicNumber (1 line)
+        MatcherAssert.assertThat(agenda.jobs(), Matchers.not(3));
+        agenda.removeAll();
+        MatcherAssert.assertThat(agenda.jobs(), Matchers.emptyIterable());
+    }
+
+    /**
+     * Agenda can remove the only order.
+     * @throws Exception If something goes wrong.
+     */
+    @Test
+    public void removesSoleOrder() throws Exception {
+        final Project project = new FkProject();
+        final Agenda agenda = new Agenda(project, "john").bootstrap();
+        agenda.add(project, "gh:test3/test#1", "ARC");
+        MatcherAssert.assertThat(agenda.jobs(), Matchers.hasSize(1));
+        agenda.removeAll();
+        MatcherAssert.assertThat(agenda.jobs(), Matchers.emptyIterable());
+    }
+
+    /**
+     * Agenda can "remove" orders if it's empty.
+     * @throws Exception If something goes wrong.
+     */
+    @Test
+    public void removesOrdersFromEmptyAgenda() throws Exception {
+        final Agenda agenda = new Agenda(new FkProject(), "jane").bootstrap();
+        MatcherAssert.assertThat(agenda.jobs(), Matchers.emptyIterable());
+        agenda.removeAll();
+        MatcherAssert.assertThat(agenda.jobs(), Matchers.emptyIterable());
+    }
 }

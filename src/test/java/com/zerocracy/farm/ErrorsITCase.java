@@ -16,41 +16,31 @@
  */
 package com.zerocracy.farm;
 
-import com.jcabi.dynamo.Credentials;
-import com.jcabi.dynamo.Region;
 import com.jcabi.github.Comment;
 import com.jcabi.github.Issue;
 import com.jcabi.github.Repo;
 import com.jcabi.github.Repos;
 import com.jcabi.github.mock.MkGithub;
+import com.zerocracy.entry.ExtDynamo;
 import java.util.concurrent.TimeUnit;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
- * Test case for {@link DyErrors}.
+ * Test case for {@link Errors}.
  *
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.20
  * @checkstyle JavadocMethodCheck (500 lines)
  */
-public final class DyErrorsITCase {
+public final class ErrorsITCase {
     @Test
     public void fetchItems() throws Exception {
         final MkGithub github = new MkGithub();
-        final DyErrors.Github errors = new DyErrors.Github(
-            new DyErrors(
-                new Region.Simple(
-                    new Credentials.Direct(
-                        Credentials.TEST,
-                        Integer.valueOf(
-                            System.getProperty("dynamo.port")
-                        )
-                    )
-                )
-            ),
+        final Errors.Github errors = new Errors.Github(
+            new Errors(new ExtDynamo().value()),
             github
         );
         final Repo repo = github.repos()

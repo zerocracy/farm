@@ -117,11 +117,14 @@ SOFTWARE.
             <xsl:value-of select="rate"/>
           </span>
         </xsl:when>
-        <xsl:otherwise>
+        <xsl:when test="roles/role">
           <xsl:text>You are working in this project </xsl:text>
           <a href="http://www.zerocracy.com/policy.html#16">
             <xsl:text>for free</xsl:text>
           </a>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:text>You are not working in this project</xsl:text>
         </xsl:otherwise>
       </xsl:choose>
       <xsl:if test="vesting">
@@ -252,9 +255,6 @@ SOFTWARE.
         <xsl:text>Schedule</xsl:text>
       </a>
       -->
-      <a href="/a/{project}?a=pm/time/reminders">
-        <xsl:text>Reminders</xsl:text>
-      </a>
       <xsl:text>.</xsl:text>
     </p>
     <p>
@@ -333,7 +333,11 @@ SOFTWARE.
       <a href="/a/{project}?a=pm/staff/roles">
         <xsl:text>Roles</xsl:text>
       </a>
-      <xsl:text>, </xsl:text>
+      <xsl:text> (are you </xsl:text>
+      <a href="/hiring/{project}">
+        <xsl:text>hiring</xsl:text>
+      </a>
+      <xsl:text>?), </xsl:text>
       <a href="/a/{project}?a=pm/staff/elections">
         <xsl:text>Elections</xsl:text>
       </a>

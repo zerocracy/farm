@@ -78,7 +78,7 @@ def exec(Project project, XML xml) {
   claim.copy()
     .type('Make payment')
     .param('login', author)
-    .param('minutes', new Policy().get('49.penalty', -60))
+    .param('minutes', -new Policy().get('49.penalty', 60))
     .param(
       'reason',
       new Par(

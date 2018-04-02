@@ -14,9 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.jobs_to_remind
+package com.zerocracy.bundles.assign_qa_user
 
 import com.jcabi.github.Github
+import com.jcabi.github.Issue
 import com.jcabi.github.Repo
 import com.jcabi.github.Repos
 import com.jcabi.xml.XML
@@ -28,8 +29,5 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
   Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
-  repo.issues().create('First', '')
-  repo.issues().create('Second', '')
-  repo.issues().create('Third', '')
-  repo.issues().create('Fourth', '')
+  new Issue.Smart(repo.issues().create('Hello, world', ''))
 }

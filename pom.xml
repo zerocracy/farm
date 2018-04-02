@@ -178,7 +178,7 @@ SOFTWARE.
     <dependency>
       <groupId>org.takes</groupId>
       <artifactId>takes</artifactId>
-      <version>1.11.1</version>
+      <version>1.11.2</version>
     </dependency>
     <dependency>
       <groupId>org.reflections</groupId>
@@ -384,6 +384,17 @@ SOFTWARE.
       </exclusions>
     </dependency>
     <dependency>
+      <groupId>com.jcabi</groupId>
+      <artifactId>jcabi-jdbc</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <version>1.4.193</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.telegram</groupId>
       <artifactId>telegrambots-meta</artifactId>
       <version>3.3</version>
@@ -461,6 +472,7 @@ SOFTWARE.
               <excludes combine.children="append">
                 <exclude>checkstyle:/src/main/resources/png/.*</exclude>
                 <exclude>checkstyle:/src/main/resources/com/zerocracy/tk/project/badge.sketch</exclude>
+                <exclude>checkstyle:/src/main/resources/com/zerocracy/tk/project/contrib-badge.sketch</exclude>
                 <exclude>findbugs:.*</exclude>
                 <exclude>codenarc:**/*</exclude>
                 <exclude>duplicatefinder:.*</exclude>

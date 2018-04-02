@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pm.comm
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.farm.Assume
 import com.zerocracy.Project
 import com.zerocracy.pm.ClaimIn
@@ -45,6 +46,20 @@ def exec(Project project, XML xml) {
     claim.copy()
       .type('Notify test')
       .postTo(project)
+  } else if (parts[0] == 'project') {
+    String pid = parts[1]
+    if (project.pid() != 'PMO' && pid != project.pid()) {
+      throw new IllegalStateException(
+        String.format(
+          'You can\'t notify another project %s from %s',
+          pid, project.pid()
+        )
+      )
+    }
+    Farm farm = binding.variables.farm
+    claim.copy()
+      .type('Notify project')
+      .postTo(farm.find("@id='${pid}'")[0])
   } else {
     throw new IllegalStateException(
       String.format(

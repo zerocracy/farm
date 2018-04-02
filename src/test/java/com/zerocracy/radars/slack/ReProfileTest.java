@@ -37,6 +37,7 @@ import org.mockito.Mockito;
  * @since 0.22
  * @checkstyle JavadocMethodCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class ReProfileTest {
 
     @Test
@@ -65,6 +66,31 @@ public final class ReProfileTest {
         MatcherAssert.assertThat(
             claim.param("mode"),
             Matchers.equalTo("off")
+        );
+    }
+
+    @Test
+    public void parsesOneWordCommand() throws Exception {
+        final SlackMessagePosted event = Mockito.mock(SlackMessagePosted.class);
+        Mockito.doReturn("hello").when(event).getMessageContent();
+        Mockito.doReturn(Mockito.mock(SlackChannel.class))
+            .when(event).getChannel();
+        final SlackUser sender = Mockito.mock(SlackUser.class);
+        final String sid = "U12345679";
+        Mockito.doReturn(sid).when(sender).getId();
+        Mockito.doReturn(sender).when(event).getSender();
+        final Farm farm = new FkFarm();
+        final People people = new People(farm).bootstrap();
+        final String uid = "dmarkov";
+        people.invite(uid, "mentor1");
+        people.link(uid, "slack", sid);
+        new ReProfile().react(farm, event, null);
+        final ClaimIn claim = new ClaimIn(
+            new Claims(new Pmo(farm)).iterate().iterator().next()
+        );
+        MatcherAssert.assertThat(
+            claim.type(),
+            Matchers.equalTo("Hello profile")
         );
     }
 

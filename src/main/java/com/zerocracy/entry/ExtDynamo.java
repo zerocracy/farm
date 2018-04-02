@@ -21,6 +21,7 @@ import com.jcabi.dynamo.Region;
 import com.jcabi.dynamo.retry.ReRegion;
 import com.zerocracy.Farm;
 import com.zerocracy.farm.props.Props;
+import com.zerocracy.farm.props.PropsFarm;
 import org.cactoos.Scalar;
 import org.cactoos.func.SolidFunc;
 import org.cactoos.func.UncheckedFunc;
@@ -31,6 +32,7 @@ import org.cactoos.func.UncheckedFunc;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.7
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class ExtDynamo implements Scalar<Region> {
 
@@ -42,14 +44,27 @@ public final class ExtDynamo implements Scalar<Region> {
             new SolidFunc<>(
                 frm -> {
                     final Props props = new Props(frm);
-                    return new ReRegion(
-                        new Region.Simple(
-                            new Credentials.Simple(
-                                props.get("//dynamo/key"),
-                                props.get("//dynamo/secret")
+                    final Region region;
+                    if (props.has("//testing")) {
+                        region = new Region.Simple(
+                            new Credentials.Direct(
+                                Credentials.TEST,
+                                Integer.valueOf(
+                                    System.getProperty("dynamo.port")
+                                )
                             )
-                        )
-                    );
+                        );
+                    } else {
+                        region = new ReRegion(
+                            new Region.Simple(
+                                new Credentials.Simple(
+                                    props.get("//dynamo/key"),
+                                    props.get("//dynamo/secret")
+                                )
+                            )
+                        );
+                    }
+                    return region;
                 }
             )
         );
@@ -58,6 +73,13 @@ public final class ExtDynamo implements Scalar<Region> {
      * The farm.
      */
     private final Farm farm;
+
+    /**
+     * Ctor.
+     */
+    public ExtDynamo() {
+        this(new PropsFarm());
+    }
 
     /**
      * Ctor.

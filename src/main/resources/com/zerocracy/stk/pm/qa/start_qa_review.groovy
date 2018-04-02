@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pm.qa
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
@@ -24,6 +25,8 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.qa.Reviews
 import com.zerocracy.pm.staff.Roles
+import com.zerocracy.pmo.Agenda
+
 import java.security.SecureRandom
 
 def exec(Project project, XML xml) {
@@ -44,6 +47,13 @@ def exec(Project project, XML xml) {
   }
   Reviews reviews = new Reviews(project).bootstrap()
   reviews.add(job, inspector, performer, cash, minutes, bonus)
+  Farm farm = binding.variables.farm
+  Agenda agenda = new Agenda(farm, inspector).bootstrap()
+  agenda.add(project, job, 'QA')
+  claim.copy()
+    .type('Agenda was updated')
+    .param('login', inspector)
+    .postTo(project)
   claim.copy().type('Notify job').token("job;${job}").param(
     'message',
     new Par(

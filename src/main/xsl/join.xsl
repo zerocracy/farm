@@ -89,7 +89,11 @@ SOFTWARE.
     </form>
     <p>
       <xsl:text>Right after you submit this form,</xsl:text>
-      <xsl:text> we will send your information to all users with 1024+ reputation.</xsl:text>
+      <xsl:text> we will send your information to all users with </xsl:text>
+      <a href="http://www.zerocracy.com/policy.html#1">
+        <xsl:text>high</xsl:text>
+      </a>
+      <xsl:text> reputation.</xsl:text>
       <xsl:text> Some of them may become interested and will contact you in Telegram,</xsl:text>
       <xsl:text> but there is no guarantee.</xsl:text>
       <xsl:text> If you get no response in the next few days,</xsl:text>

@@ -24,7 +24,10 @@ import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.Xocument;
 import java.io.IOException;
+import java.util.Date;
 import java.util.Iterator;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.text.JoinedText;
 import org.cactoos.time.DateAsText;
 import org.cactoos.time.DateOf;
 import org.xembly.Directive;
@@ -284,6 +287,44 @@ public final class Rfps {
             return !new Xocument(item).nodes(
                 String.format("//rfp[login='%s' and sow!='']", uid)
             ).isEmpty();
+        }
+    }
+
+    /**
+     * Find all rfps where created date earlier than data param.
+     * @param date Date
+     * @return Rfp ids
+     * @throws IOException If fails
+     */
+    public Iterable<Integer> olderThan(final Date date) throws IOException {
+        try (final Item item = this.item()) {
+            return new Mapped<>(
+                Integer::parseInt,
+                new Xocument(item.path()).xpath(
+                    new JoinedText(
+                        "",
+                        "/rfps/rfp[xs:dateTime(created) < ",
+                        "xs:dateTime('",
+                        new DateAsText(date).asString(),
+                        "')]/@id"
+                    ).asString()
+                )
+            );
+        }
+    }
+
+    /**
+     * Remove RFP by id.
+     * @param rfp Rfp id
+     * @throws IOException If fails
+     */
+    public void remove(final Long rfp) throws IOException {
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                new Directives().xpath(
+                    String.format("/rfps/rfp[@id = '%d']", rfp)
+                ).remove()
+            );
         }
     }
 

@@ -44,7 +44,7 @@ public final class ReProfile implements Reaction<SlackMessagePosted> {
             )
         );
         String msg = event.getMessageContent().trim();
-        if (!msg.matches("[a-z]+\\s.+")) {
+        if (!msg.matches("[a-z]+.*")) {
             msg = msg.split("\\s+", 2)[1];
         }
         final Question question = new Question(profile, msg.trim());

@@ -48,7 +48,6 @@ def exec(Project project, XML xml) {
   if (people.find('github', author).iterator().hasNext()) {
     claim.copy()
       .type('Make payment')
-      .param('job', job)
       .param('login', author)
       .param('reason', new Par('Bug was reported, see §29').say())
       .param('minutes', new Policy().get('29.price', 15))
