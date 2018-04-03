@@ -268,7 +268,7 @@ public final class PeopleTest {
     }
 
     @Test
-    public void applyTest() throws Exception {
+    public void canApply() throws Exception {
         final People people = new People(new FkProject()).bootstrap();
         final String uid = "user3236";
         final Date when = new Date(0L);
@@ -284,5 +284,19 @@ public final class PeopleTest {
             people.appliedTime(uid),
             Matchers.equalTo(when)
         );
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void throwIfApplyButDoesntExist() throws Exception {
+        new People(new FkProject()).bootstrap()
+            .apply("user124", new Date(0L));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void throwIfgetAppliedDateIfNotApplied() throws Exception {
+        final People people = new People(new FkProject()).bootstrap();
+        final String uid = "user3236";
+        people.invite(uid, uid);
+        people.appliedTime(uid);
     }
 }

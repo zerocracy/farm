@@ -761,6 +761,11 @@ public final class People {
                 new Par("Person @%s doesn't exist").say(uid)
             );
         }
+        if (!this.applied(uid)) {
+            throw new IllegalArgumentException(
+                new Par("Person @%s doesn't have apply-time").say(uid)
+            );
+        }
         try (final Item item = this.item()) {
             return new DateOf(
                 new Xocument(item).xpath(
