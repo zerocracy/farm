@@ -190,9 +190,9 @@ public final class Debts {
                     .strict(1)
                     .addIf("items")
                     .add("item")
-                    .add("created").set(
-                        new DateAsText(created).asString()
-                ).up()
+                    .add("created")
+                    .set(new DateAsText(created).asString())
+                    .up()
                     .add("amount").set(amount).up()
                     .add("details").set(details).up()
                     .add("reason").set(reason).up()
@@ -340,12 +340,14 @@ public final class Debts {
     }
 
     /**
-     * Oldest debt time.
+     * Check if debt is older than date.
      * @param uid User id
-     * @return Date
+     * @param date Date to compare
+     * @return True if older
      * @throws IOException If fails
      */
-    public Date oldest(final String uid) throws IOException {
+    public boolean olderThan(final String uid, final Date date)
+        throws IOException {
         if (!this.exists(uid)) {
             throw new IllegalArgumentException(
                 new Par("@%s doesn't have a debt, can't check it").say(uid)
@@ -364,7 +366,7 @@ public final class Debts {
                         )
                     )
                 )
-            ).value();
+            ).value().getTime() < date.getTime();
         }
     }
 

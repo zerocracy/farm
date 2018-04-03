@@ -50,9 +50,8 @@ def exec(Project pmo, XML xml) {
     }
     Cash debt = debts.amount(uid)
     Policy policy = new Policy()
-    int
     if (debt < policy.get('46.threshold', new Cash.S('$50')) &&
-      new Date().time - debts.oldest(uid).time < TimeUnit.DAYS.toMillis(policy.get('46.days', 20))) {
+      debts.olderThan(uid, new Date(new Date().time - TimeUnit.DAYS.toMillis(policy.get('46.days', 20))))) {
       return
     }
     try {

@@ -16,7 +16,6 @@
  */
 package com.zerocracy.pmo;
 
-import com.jcabi.aspects.Tv;
 import com.jcabi.matchers.XhtmlMatchers;
 import com.zerocracy.Par;
 import com.zerocracy.cash.Cash;
@@ -104,11 +103,11 @@ public final class DebtsTest {
             uid, new Cash.S("$3"),
             new Par("details-3 as in §1").say(),
             "reason-3",
-            new Date((long) Tv.THREE)
+            new Date(0L)
         );
         MatcherAssert.assertThat(
-            debts.oldest(uid),
-            Matchers.equalTo(new Date(1L))
+            debts.olderThan(uid, new Date(1L)),
+            Matchers.is(true)
         );
     }
 }
