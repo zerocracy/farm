@@ -19,30 +19,29 @@ package com.zerocracy.tk.project;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.cash.Cash;
-import com.zerocracy.pm.cost.Estimates;
-import com.zerocracy.pm.cost.Ledger;
 import com.zerocracy.pmo.Catalog;
+import com.zerocracy.tk.RqUser;
+import com.zerocracy.tk.RsPage;
 import com.zerocracy.tk.RsParFlash;
+import com.zerocracy.tk.XeXsl;
 import java.io.IOException;
 import java.util.logging.Level;
-import org.cactoos.text.TextOf;
 import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
 import org.takes.facets.forward.RsForward;
-import org.takes.rs.RsWithBody;
-import org.takes.rs.RsWithHeaders;
-import org.takes.rs.RsWithType;
+import org.takes.rs.xe.XeAppend;
+import org.takes.rs.xe.XeChain;
 
 /**
- * Project contrib badge.
+ * Contribution page ledger.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.22
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-public final class TkContribBadge implements TkRegex {
+public final class TkContribLedger implements TkRegex {
 
     /**
      * Farm.
@@ -53,12 +52,14 @@ public final class TkContribBadge implements TkRegex {
      * Ctor.
      * @param frm Farm
      */
-    public TkContribBadge(final Farm frm) {
+    public TkContribLedger(final Farm frm) {
         this.farm = frm;
     }
 
     @Override
+    @SuppressWarnings("PMD.ExcessiveMethodLength")
     public Response act(final RqRegex req) throws IOException {
+        new RqUser(this.farm, req, false).value();
         final Project project = new RqAnonProject(this.farm, req);
         final Catalog catalog = new Catalog(this.farm).bootstrap();
         if (!catalog.fee(project.pid()).equals(Cash.ZERO)) {
@@ -70,26 +71,20 @@ public final class TkContribBadge implements TkRegex {
                 String.format("/p/%s", project.pid())
             );
         }
-        final Cash left = new Ledger(project).bootstrap().cash().add(
-            new Estimates(project).bootstrap().total().mul(-1L)
-        );
-        final String amount;
-        if (left.equals(Cash.ZERO)) {
-            amount = "no money";
-        } else {
-            amount = String.format("$%s left", left.decimal().intValue());
-        }
-        return new RsWithHeaders(
-            new RsWithType(
-                new RsWithBody(
-                    new TextOf(
-                        this.getClass().getResource("contrib-badge.svg")
-                    ).asString().replace("AMOUNT", amount)
-                ),
-                "image/svg+xml"
-            ),
-            "Cache-Control: no-cache",
-            String.format("X-Zerocracy-Project-ID: %s", project.pid())
+        return new RsPage(
+            this.farm,
+            "/xsl/artifact.xsl",
+            req,
+            () -> {
+                final String file = "ledger.xml";
+                return new XeChain(
+                    new XeAppend("project", project.pid()),
+                    new XeAppend("title", catalog.title(project.pid())),
+                    new XeAppend("artifact", "pm/cost/ledger"),
+                    new XeAppend("file", file),
+                    new XeXsl(project, file, "pm/cost/ledger.xsl")
+                );
+            }
         );
     }
 

@@ -44,7 +44,9 @@ SOFTWARE.
         <xsl:value-of select="project"/>
       </code>
       <xsl:text>) is </xsl:text>
-      <xsl:value-of select="balance"/>
+      <a href="/contrib-ledger/{project}">
+        <xsl:value-of select="balance"/>
+      </a>
       <xsl:text>.</xsl:text>
     </p>
     <p>
