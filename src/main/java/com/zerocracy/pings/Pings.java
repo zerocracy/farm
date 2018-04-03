@@ -70,24 +70,18 @@ public final class Pings {
         this.start(
             "minute",
             "Ping",
-            SimpleScheduleBuilder.simpleSchedule()
-                .withIntervalInMinutes(1)
-                .repeatForever()
+            SimpleScheduleBuilder.repeatMinutelyForever(1)
         );
         this.start(
             "hour",
             "Ping hourly",
-            SimpleScheduleBuilder.simpleSchedule()
-                .withIntervalInHours(1)
-                .repeatForever()
+            SimpleScheduleBuilder.repeatHourlyForever(1)
         );
         this.start(
             "day",
             "Ping daily",
-            SimpleScheduleBuilder.simpleSchedule()
-                // @checkstyle MagicNumberCheck (1 line)
-                .withIntervalInHours(24)
-                .repeatForever()
+            // @checkstyle MagicNumberCheck (1 line)
+            SimpleScheduleBuilder.repeatHourlyForever(24)
         );
     }
 
