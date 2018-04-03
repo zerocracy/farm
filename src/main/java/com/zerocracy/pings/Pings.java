@@ -70,12 +70,12 @@ public final class Pings {
         this.start(
             "minute",
             "Ping",
-            SimpleScheduleBuilder.repeatMinutelyForever(1)
+            SimpleScheduleBuilder.repeatMinutelyForever()
         );
         this.start(
             "hour",
             "Ping hourly",
-            SimpleScheduleBuilder.repeatHourlyForever(1)
+            SimpleScheduleBuilder.repeatHourlyForever()
         );
         this.start(
             "day",
