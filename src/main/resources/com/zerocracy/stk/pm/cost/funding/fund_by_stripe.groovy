@@ -29,13 +29,12 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Funded by Stripe')
   ClaimIn claim = new ClaimIn(xml)
   Cash amount = new Cash.S(claim.param('amount'))
-  String customer = claim.param('stripe_customer')
   new Ledger(project).bootstrap().add(
     new Ledger.Transaction(
       amount,
       'assets', 'cash',
-      'income', customer,
-      'Funded by Stripe'
+      'income', claim.param('stripe_customer'),
+      new Par('Funded via Stripe by @%s').say(claim.author())
     )
   )
   claim.copy()

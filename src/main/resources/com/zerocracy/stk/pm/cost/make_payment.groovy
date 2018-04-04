@@ -107,11 +107,7 @@ def exec(Project project, XML xml) {
           price.add(commission),
           'liabilities', 'debt',
           'assets', 'cash',
-          String.format(
-            '%s (amount:%s, commission:%s)',
-            new Par.ToText(reason).toString(),
-            price, commission
-          )
+          reason + new Par(' (amount:%s, commission:%s)').say(price, commission)
         ),
         new Ledger.Transaction(
           commission,
@@ -123,7 +119,7 @@ def exec(Project project, XML xml) {
           price,
           'expenses', 'jobs',
           'liabilities', "@${login}",
-          new Par.ToText(reason).toString()
+          reason
         )
       )
       Debts debts = new Debts(farm).bootstrap()
