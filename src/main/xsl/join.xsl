@@ -54,6 +54,13 @@ SOFTWARE.
       </a>
       <xsl:text>.</xsl:text>
     </p>
+    <p>
+      <xsl:text>Join this </xsl:text>
+      <a href="https://t.me/joinchat/CLxAaQ0xp-g_3WWI3MBr2g">
+        <xsl:text>Telegram group</xsl:text>
+      </a>
+      <xsl:text> to learn more about Zerocracy.</xsl:text>
+    </p>
     <form method="post" action="/join-post">
       <fieldset>
         <label for="inp-personality">
@@ -67,7 +74,7 @@ SOFTWARE.
         <label for="inp-about">
           <xsl:text>Say a few good words about yourself (keep it short):</xsl:text>
         </label>
-        <textarea id="inp-about" required="required" name="about" style="width:100%;height:6em;"/>
+        <textarea id="inp-about" required="required" name="about" style="width:600px;height:7em;"/>
         <label for="inp-stackoverflow">
           <xsl:text>Your </xsl:text>
           <a href="https://stackoverflow.com">
@@ -83,7 +90,7 @@ SOFTWARE.
           </a>
           <xsl:text> ID:</xsl:text>
         </label>
-        <input id="inp-telegram" type="text" placeholder="username" name="telegram" size="14" required="required"/>
+        <input id="inp-telegram" type="text" placeholder="username" name="telegram" size="16" required="required"/>
         <input type="submit"/>
       </fieldset>
     </form>
