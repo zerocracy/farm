@@ -36,7 +36,7 @@ def exec(Project pmo, XML xml) {
   String reason = new Par(
     'Penalize for breakup with %s'
   ).say(student)
-  new Awards(pmo, author).bootstrap().add(points, job, 'Penalize for breakup')
+  new Awards(pmo, author).bootstrap().add(pmo, points, job, 'Penalize for breakup')
   claim.copy()
     .type('Award points were added')
     .param('job', job)
