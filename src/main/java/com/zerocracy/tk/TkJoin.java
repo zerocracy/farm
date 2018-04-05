@@ -18,6 +18,7 @@ package com.zerocracy.tk;
 
 import com.zerocracy.Farm;
 import com.zerocracy.Par;
+import com.zerocracy.Policy;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pmo.People;
 import java.io.IOException;
@@ -84,8 +85,7 @@ public final class TkJoin implements TkRegex {
                 "profiles of the user;",
                 "this is the message the user left for us:\n\n%s"
             ).say(author, personality, telegram, stko, about)
-        // @checkstyle MagicNumber (1 line)
-        ).param("min", 1024).postTo(this.farm);
+        ).param("min", new Policy().get("1.min-rep", 0)).postTo(this.farm);
         return new RsForward(
             new RsParFlash(
                 new Par(

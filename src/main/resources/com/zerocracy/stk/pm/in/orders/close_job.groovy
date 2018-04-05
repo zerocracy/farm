@@ -59,7 +59,7 @@ def exec(Project project, XML xml) {
         new Par('GitHub issue is still open, won\'t close').say()
       )
     }
-    if (issue.author().login() != claim.author()
+    if (issue.author().login().toLowerCase(Locale.ENGLISH) != claim.author()
       && !issue.pull
       && !new Roles(project).bootstrap().hasRole(claim.author(), 'PO', 'ARC')) {
       claim.copy()

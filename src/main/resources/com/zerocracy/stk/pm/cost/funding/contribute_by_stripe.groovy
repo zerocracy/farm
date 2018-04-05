@@ -34,7 +34,7 @@ def exec(Project project, XML xml) {
       amount,
       'assets', 'cash',
       'income', "@${claim.author()}",
-      'Contributed by Stripe'
+      new Par('Contributed via Stripe by %s').say(claim.author())
     )
   )
   claim.copy()

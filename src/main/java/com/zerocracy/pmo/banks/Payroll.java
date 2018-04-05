@@ -119,8 +119,7 @@ public final class Payroll {
                 amount.add(commission),
                 "liabilities", method,
                 "assets", "cash",
-                String.format(
-                    "%s (amount:%s, commission:%s, PID:%s)",
+                new Par("%s (amount:%s, commission:%s, PID:%s)").say(
                     text, amount, commission, pid
                 )
             ),
@@ -128,7 +127,7 @@ public final class Payroll {
                 commission,
                 "expenses", "jobs",
                 "liabilities", method,
-                String.format("%s (commission)", text)
+                new Par("%s (commission)").say(text)
             ),
             new Ledger.Transaction(
                 amount,

@@ -54,16 +54,12 @@ def exec(Project project, XML xml) {
   }
   roles.assign(author, 'PO')
   roles.assign(author, 'ARC')
-  /*
-   * @todo #546:30min Let's add project adviser in bootstrap,
-   *  it should be passed as a bootstrap command parameter (change in q-project.xml)
-   *  then bootstrap.groovy script should update catalog.xml with this parameter.
-   */
-  new Catalog(farm).bootstrap().link(
-    project.pid(),
-    'slack',
-    project.pid()
-  )
+  Catalog catalog = new Catalog(farm).bootstrap()
+  catalog.link(project.pid(), 'slack', project.pid())
+  catalog.adviser(project.pid(), claim.author())
+  claim.copy()
+    .type('Adviser was updated')
+    .postTo(project)
   claim.copy()
     .type('Role was assigned')
     .param('login', author)

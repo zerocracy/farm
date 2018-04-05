@@ -1,22 +1,20 @@
 package com.zerocracy.stk.pm.in.orders
 
 import com.jcabi.xml.XML
-import com.zerocracy.Farm
-import com.zerocracy.Par
-import com.zerocracy.Policy
-import com.zerocracy.Project
+import com.zerocracy.*
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.cost.Boosts
 import com.zerocracy.pm.cost.Ledger
 import com.zerocracy.pm.in.Impediments
+import com.zerocracy.pm.in.JobExpired
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.Pmo
-import java.time.ZoneOffset
-import java.time.ZonedDateTime
 import org.cactoos.iterable.Filtered
 import org.cactoos.iterable.Limited
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
@@ -37,11 +35,15 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Roles pmos = new Roles(new Pmo(farm)).bootstrap()
   List<String> waiting = impediments.jobs().toList()
-  int days = new Policy().get('8.days', 10)
+  Policy policy = new Policy()
+  int days = policy.get('8.days', 10)
   new Limited<>(
     5,
-    new Filtered(
-      { job -> !waiting.contains(job) },
+    new Filtered<String>(
+      { job ->
+        !waiting.contains(job) &&
+          new JobExpired(new Pmo(farm), orders, policy, time.toLocalDateTime(), job).value()
+      },
       orders.olderThan(time.minusDays(days))
     )
   ).forEach { String job ->
@@ -72,11 +74,11 @@ def exec(Project project, XML xml) {
     claim.copy()
       .type('Notify project')
       .param(
-        'message',
-        new Par(
-          'The order at %s cancelled for @%s, it is over %d day(s), see §8'
-        ).say(job, worker, days)
-      )
+      'message',
+      new Par(
+        'The order at %s cancelled for @%s, it is over %d day(s), see §8'
+      ).say(job, worker, days)
+    )
       .postTo(project)
   }
 }

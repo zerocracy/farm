@@ -53,13 +53,13 @@ def exec(Project project, XML xml) {
           fee,
           'expenses', 'fee',
           'liabilities', 'zerocracy',
-          "Zerocracy fee for ${job} completed by @${login}"
+          new Par('Zerocracy fee for %s completed by @%s').say(job, login)
         ),
         new Ledger.Transaction(
           fee,
           'liabilities', 'zerocracy',
           'assets', 'cash',
-          "Zerocracy fee paid in cash for ${job}"
+          new Par('Zerocracy fee paid in cash for %s').say(job)
         )
       )
       claim.copy()

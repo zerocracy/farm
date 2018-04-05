@@ -18,16 +18,20 @@ package com.zerocracy.tk.project;
 
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
+import com.zerocracy.cash.Cash;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.pm.cost.Estimates;
 import com.zerocracy.pm.cost.Ledger;
 import com.zerocracy.pmo.Catalog;
 import com.zerocracy.tk.RqUser;
 import com.zerocracy.tk.RsPage;
+import com.zerocracy.tk.RsParFlash;
 import java.io.IOException;
+import java.util.logging.Level;
 import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
+import org.takes.facets.forward.RsForward;
 import org.takes.rs.xe.XeAppend;
 import org.takes.rs.xe.XeChain;
 
@@ -58,12 +62,22 @@ public final class TkContrib implements TkRegex {
     @SuppressWarnings("PMD.ExcessiveMethodLength")
     public Response act(final RqRegex req) throws IOException {
         new RqUser(this.farm, req, false).value();
+        final Project project = new RqAnonProject(this.farm, req);
+        final Catalog catalog = new Catalog(this.farm).bootstrap();
+        if (!catalog.fee(project.pid()).equals(Cash.ZERO)) {
+            throw new RsForward(
+                new RsParFlash(
+                    "The project is not free, see §50",
+                    Level.WARNING
+                ),
+                String.format("/p/%s", project.pid())
+            );
+        }
         return new RsPage(
             this.farm,
-            "/xsl/contribute.xsl",
+            "/xsl/contrib.xsl",
             req,
             () -> {
-                final Project project = new RqAnonProject(this.farm, req);
                 final String pid = project.pid();
                 return new XeChain(
                     new XeAppend("project", pid),

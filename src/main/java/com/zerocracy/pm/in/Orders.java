@@ -25,11 +25,16 @@ import com.zerocracy.pm.cost.Boosts;
 import com.zerocracy.pm.scope.Wbs;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.chrono.ChronoZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Date;
+import org.cactoos.iterable.ItemAt;
+import org.cactoos.iterable.Mapped;
 import org.cactoos.list.SolidList;
+import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.text.JoinedText;
 import org.cactoos.time.DateAsText;
 import org.cactoos.time.DateOf;
@@ -245,6 +250,35 @@ public final class Orders {
                     ).asString()
                 )
             );
+        }
+    }
+
+    /**
+     * Order create-time.
+     * @param job Job id
+     * @return Local date
+     * @throws IOException If fails
+     */
+    public LocalDateTime created(final String job) throws IOException {
+        try (final Item item = this.item()) {
+            return new IoCheckedScalar<>(
+                new ItemAt<>(
+                    new Mapped<>(
+                        (String txt) -> LocalDateTime.parse(
+                            txt,
+                            DateTimeFormatter.ISO_INSTANT.withZone(
+                                ZoneOffset.UTC
+                            )
+                        ),
+                        new Xocument(item.path()).xpath(
+                            String.format(
+                                "/orders/order[@job = '%s']/created/text()",
+                                job
+                            )
+                        )
+                    )
+                )
+            ).value();
         }
     }
 

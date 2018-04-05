@@ -34,6 +34,7 @@ import com.zerocracy.tk.project.TkBadge;
 import com.zerocracy.tk.project.TkClaim;
 import com.zerocracy.tk.project.TkContrib;
 import com.zerocracy.tk.project.TkContribBadge;
+import com.zerocracy.tk.project.TkContribLedger;
 import com.zerocracy.tk.project.TkContribPay;
 import com.zerocracy.tk.project.TkDonate;
 import com.zerocracy.tk.project.TkEquity;
@@ -217,7 +218,7 @@ public final class TkApp extends TkWrap {
                                                                 new FkRegex("/rfp-charge", new TkPrepay(farm)),
                                                                 new FkRegex("/rfp-post", new TkSubmit(farm)),
                                                                 new FkRegex("/board", new TkBoard(farm)),
-                                                                new FkRegex("/team", new TkGang(farm)),
+                                                                new FkRegex("/team", new TkTeam(farm)),
                                                                 new FkRegex("/gang", new TkRedirect("/team")),
                                                                 new FkRegex(
                                                                     "/me",
@@ -261,6 +262,10 @@ public final class TkApp extends TkWrap {
                                                                 new FkRegex(
                                                                     "/contrib-badge/([A-Z0-9]{9})\\.svg",
                                                                     new TkContribBadge(farm)
+                                                                ),
+                                                                new FkRegex(
+                                                                    "/contrib-ledger/([A-Z0-9]{9})",
+                                                                    new TkContribLedger(farm)
                                                                 ),
                                                                 new FkRegex(
                                                                     "/footprint/(PMO|[A-Z0-9]{9})",

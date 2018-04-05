@@ -39,7 +39,7 @@ import org.takes.rs.xe.XeSource;
 import org.takes.rs.xe.XeWhen;
 
 /**
- * Gang of all people.
+ * List of all people.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
@@ -47,7 +47,7 @@ import org.takes.rs.xe.XeWhen;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public final class TkGang implements Take {
+public final class TkTeam implements Take {
 
     /**
      * Farm.
@@ -58,7 +58,7 @@ public final class TkGang implements Take {
      * Ctor.
      * @param frm Farm
      */
-    public TkGang(final Farm frm) {
+    public TkTeam(final Farm frm) {
         this.farm = frm;
     }
 
@@ -124,7 +124,7 @@ public final class TkGang implements Take {
                 ),
                 new XeWhen(
                     !node.nodes("vacation").isEmpty()
-                        && "true".equals(node.xpath("vacation/text()")),
+                        && "true".equals(node.xpath("vacation/text()").get(0)),
                     new XeAppend("vacation", "true")
                 ),
                 new XeWhen(
