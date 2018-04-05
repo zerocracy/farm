@@ -34,9 +34,9 @@ import org.xembly.Xembler
 def exec(Project pmo, XML xml) {
   new Assume(pmo, xml).isPmo()
   new Assume(pmo, xml).type('Ping hourly')
-  Debts debts = new Debts(pmo).bootstrap()
-  ClaimIn claim = new ClaimIn(xml)
   Farm farm = binding.variables.farm
+  Debts debts = new Debts(farm).bootstrap()
+  ClaimIn claim = new ClaimIn(xml)
   debts.iterate().each { uid ->
     if (!debts.expired(uid)) {
       return

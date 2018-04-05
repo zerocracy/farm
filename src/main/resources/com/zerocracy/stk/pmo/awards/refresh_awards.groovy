@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pmo.awards
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
@@ -29,7 +30,8 @@ def exec(Project pmo, XML xml) {
   new Assume(pmo, xml).type('Ping daily')
   ClaimIn claim = new ClaimIn(xml)
   Date outdated = claim.created() - new Policy().get('18.days', 90)
-  new People(pmo).bootstrap().iterate().each {
-    new Awards(pmo, it).bootstrap().removeOlderThan(outdated)
+  Farm farm = binding.variables.farm
+  new People(farm).bootstrap().iterate().each {
+    new Awards(farm, it).bootstrap().removeOlderThan(outdated)
   }
 }

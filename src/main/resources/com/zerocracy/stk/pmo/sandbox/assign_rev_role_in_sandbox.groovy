@@ -41,7 +41,7 @@ def exec(Project pmo, XML xml) {
       if (roles.hasRole(uid, 'REV')) {
         return
       }
-      int reputation = new Awards(pmo, uid).bootstrap().total()
+      int reputation = new Awards(farm, uid).bootstrap().total()
       if (reputation < threshold) {
         return
       }

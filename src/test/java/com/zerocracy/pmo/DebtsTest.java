@@ -19,7 +19,7 @@ package com.zerocracy.pmo;
 import com.jcabi.matchers.XhtmlMatchers;
 import com.zerocracy.Par;
 import com.zerocracy.cash.Cash;
-import com.zerocracy.farm.fake.FkProject;
+import com.zerocracy.farm.fake.FkFarm;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -38,7 +38,7 @@ public final class DebtsTest {
 
     @Test
     public void addsAndRemoves() throws Exception {
-        final Debts debts = new Debts(new FkProject()).bootstrap();
+        final Debts debts = new Debts(new FkFarm()).bootstrap();
         final String uid = "yegor256";
         debts.add(uid, new Cash.S("$5"), "details 1", "reason 1");
         debts.add(uid, new Cash.S("$6"), "details 2", "reason 2");
@@ -50,7 +50,7 @@ public final class DebtsTest {
 
     @Test
     public void addsFailure() throws Exception {
-        final Debts debts = new Debts(new FkProject()).bootstrap();
+        final Debts debts = new Debts(new FkFarm()).bootstrap();
         final String uid = "yegor256";
         debts.add(uid, new Cash.S("$99"), "details-11", "reason-22");
         MatcherAssert.assertThat(debts.expired(uid), Matchers.equalTo(true));
@@ -60,7 +60,7 @@ public final class DebtsTest {
 
     @Test
     public void printsSingleToXembly() throws Exception {
-        final Debts debts = new Debts(new FkProject()).bootstrap();
+        final Debts debts = new Debts(new FkFarm()).bootstrap();
         final String uid = "0crat";
         debts.add(
             uid, new Cash.S("$99"),

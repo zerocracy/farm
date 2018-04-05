@@ -17,10 +17,10 @@
 package com.zerocracy.pm.staff.votes;
 
 import com.zerocracy.Par;
-import com.zerocracy.Project;
 import com.zerocracy.pm.staff.Votes;
 import com.zerocracy.pmo.Agenda;
 import com.zerocracy.pmo.Awards;
+import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
 
 /**
@@ -35,13 +35,13 @@ public final class VsNoRoom implements Votes {
     /**
      * The PMO.
      */
-    private final Project pmo;
+    private final Pmo pmo;
 
     /**
      * Ctor.
      * @param pkt Current project
      */
-    public VsNoRoom(final Project pkt) {
+    public VsNoRoom(final Pmo pkt) {
         this.pmo = pkt;
     }
 

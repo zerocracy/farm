@@ -17,7 +17,6 @@
 package com.zerocracy.tk.profile;
 
 import com.zerocracy.Farm;
-import com.zerocracy.Project;
 import com.zerocracy.pmo.Agenda;
 import com.zerocracy.pmo.Awards;
 import com.zerocracy.pmo.Catalog;
@@ -64,7 +63,7 @@ public final class TkProfile implements TkRegex {
 
     @Override
     public Response act(final RqRegex req) throws IOException {
-        final Project pmo = new Pmo(this.farm);
+        final Pmo pmo = new Pmo(this.farm);
         return new RsPage(
             this.farm,
             "/xsl/profile.xsl",

@@ -75,7 +75,7 @@ def exec(Project pmo, XML xml) {
   }
   Roles roles = new Roles(farm.find("@id='${pid}'")[0]).bootstrap()
   if (!roles.hasAnyRole(author)) {
-    int reputation = new Awards(pmo, author).bootstrap().total()
+    int reputation = new Awards(farm, author).bootstrap().total()
     if (reputation < new Policy().get('33.min-live', 256)
       && !catalog.sandbox().contains(pid)) {
       throw new SoftException(

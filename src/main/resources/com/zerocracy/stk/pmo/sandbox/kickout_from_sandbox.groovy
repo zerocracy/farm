@@ -40,7 +40,7 @@ def exec(Project pmo, XML xml) {
     if (!people.hasMentor(uid)) {
       return
     }
-    int reputation = new Awards(pmo, uid).bootstrap().total()
+    int reputation = new Awards(farm, uid).bootstrap().total()
     int threshold = new Policy().get('33.sandbox-rep-threshold', 1024)
     if (reputation < threshold) {
       return

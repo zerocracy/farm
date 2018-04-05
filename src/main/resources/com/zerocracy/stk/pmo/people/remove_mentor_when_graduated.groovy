@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pmo.people
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
@@ -30,6 +31,7 @@ def exec(Project pmo, XML xml) {
   new Assume(pmo, xml).type('Ping hourly')
   People people = new People(pmo).bootstrap()
   ClaimIn claim = new ClaimIn(xml)
+  Farm farm = binding.variables.farm
   people.iterate().each { uid ->
     if (!people.hasMentor(uid)) {
       return
@@ -37,7 +39,7 @@ def exec(Project pmo, XML xml) {
     if (people.mentor(uid) == '0crat') {
       return
     }
-    int reputation = new Awards(pmo, uid).bootstrap().total()
+    int reputation = new Awards(farm, uid).bootstrap().total()
     int threshold = new Policy().get('43.threshold', 2048)
     if (reputation < threshold) {
       return
