@@ -65,14 +65,12 @@ def exec(Project project, XML xml) {
       }
     } else {
       SlackChannel channel = session.findChannelById(parts[1])
-      SlackUser user = session.findUserByUserName(parts[2])
+      SlackUser user = session.findUserById(parts[2])
       String salute = ''
       if (user != null) {
-        salue = "@${user.realName} "
+        salue = "@${user.userName} "
       }
-      session.sendMessage(
-        channel, "${salute}${message}"
-      )
+      session.sendMessage(channel, "${salute}${message}")
       Logger.info(
         this, '@%s posted %d chars to @%s at %s/%s',
         session.sessionPersona().userName,
