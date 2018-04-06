@@ -69,7 +69,7 @@ def exec(Project project, XML xml) {
           "Can't find ${parts[2]} in Slack session for ${parts[1]}"
         )
       }
-      session.sendMessage(channel, "@${user.userName} ${message}")
+      session.sendMessage(channel, "<@${user.id}> ${message}")
     }
   } else {
     SlackChannel channel = session.findChannelById(parts[1])
