@@ -51,43 +51,29 @@ def exec(Project project, XML xml) {
   SlackSession session = session(parts[1])
   if (parts.length > 2) {
     if (parts.length > 3) {
-      SlackUser user = session.findUserByUserName(parts[2])
+      SlackUser user = session.findUserById(parts[2])
       if (user == null) {
-        Logger.warn(
-          this, 'Failed to notify %s, since there is no direct chat',
-          parts[2]
-        )
-      } else {
-        session.sendMessage(
-          session.openDirectMessageChannel(user).reply.slackChannel,
-          message
+        throw new IllegalArgumentException(
+          "Can't find ${parts[2]} in Slack session for ${parts[1]}"
         )
       }
+      session.sendMessage(
+        session.openDirectMessageChannel(user).reply.slackChannel,
+        message
+      )
     } else {
       SlackChannel channel = session.findChannelById(parts[1])
       SlackUser user = session.findUserById(parts[2])
-      String salute = ''
-      if (user != null) {
-        salue = "@${user.userName} "
+      if (user == null) {
+        throw new IllegalArgumentException(
+          "Can't find ${parts[2]} in Slack session for ${parts[1]}"
+        )
       }
-      session.sendMessage(channel, "${salute}${message}")
-      Logger.info(
-        this, '@%s posted %d chars to @%s at %s/%s',
-        session.sessionPersona().userName,
-        message.length(),
-        parts[2],
-        channel.name, channel.id
-      )
+      session.sendMessage(channel, "@${user.userName} ${message}")
     }
   } else {
     SlackChannel channel = session.findChannelById(parts[1])
     session.sendMessage(channel, message)
-    Logger.info(
-      this, '@%s posted %d chars at %s/%s',
-      session.sessionPersona().userName,
-      message.length(),
-      channel.name, channel.id
-    )
   }
 }
 
