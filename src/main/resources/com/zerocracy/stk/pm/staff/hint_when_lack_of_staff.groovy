@@ -67,9 +67,9 @@ def exec(Project project, XML xml) {
         new Par(
           'There are %d jobs, which are not assigned to anyone: %s;',
           'most likely there is a deficit of people in the project;',
-          'there are %d people are there now;',
+          'there are [%d people](/a/%s?a=pm/staff/roles) in the project now;',
           'consider announcing your project as explained in §51'
-        ).say(pending.size(), pending.join(', '), roles.everybody().size())
+        ).say(pending.size(), pending.join(', '), roles.everybody().size(), project.pid())
       )
   ).postTo(project)
 }
