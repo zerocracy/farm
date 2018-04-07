@@ -21,6 +21,7 @@ import com.jcabi.xml.XML
 import com.ullink.slack.simpleslackapi.SlackChannel
 import com.ullink.slack.simpleslackapi.SlackSession
 import com.ullink.slack.simpleslackapi.SlackUser
+import com.zerocracy.Par
 import com.zerocracy.entry.ExtSlack
 import com.zerocracy.farm.Assume
 import com.zerocracy.farm.props.Props
@@ -39,7 +40,7 @@ def exec(Project project, XML xml) {
       "Something is wrong with this token: ${claim.token()}"
     )
   }
-  String message = claim.param('message').replaceAll(
+  String message = new Par.ToText(claim.param('message')).toString().replaceAll(
     '\\[([^]]+)]\\(([^)]+)\\)', '<$2|$1>'
   )
   Farm farm = binding.variables.farm
