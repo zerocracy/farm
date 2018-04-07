@@ -27,7 +27,7 @@ import com.zerocracy.pmo.Catalog
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Add link')
-  new Assume(project, xml).roles('PO')
+  new Assume(project, xml).roles('PO', 'ARC')
   ClaimIn claim = new ClaimIn(xml)
   String pid = project.pid()
   String rel = claim.param('rel')

@@ -55,7 +55,7 @@ def exec(Project project, XML xml) {
         'message',
         new Par(
           'You don\'t have any private GitHub repositories any more,',
-          'the management fee is waived, see §23.'
+          'the management fee is waived, see §23'
         ).say()
       )
       .postTo(project)
@@ -69,7 +69,7 @@ def exec(Project project, XML xml) {
         'message',
         new Par(
           'Since now you have a private GitHub repository,',
-          'the management fee %s is applied, see §23.'
+          'the management fee %s is applied, see §23'
         ).say(fee)
       )
       .postTo(project)
