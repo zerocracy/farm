@@ -192,14 +192,14 @@ public final class TkApp extends TkWrap {
                                                                         )
                                                                     ),
                                                                     new FkRegex(
-                                                                        "/png/[a-z]+\\.png",
+                                                                        "/png/[a-z\\-]+\\.png",
                                                                         new TkWithType(
                                                                             new TkClasspath(),
                                                                             "image/png"
                                                                         )
                                                                     ),
                                                                     new FkRegex(
-                                                                        "/svg/[a-z]+\\.svg",
+                                                                        "/svg/[a-z\\-]+\\.svg",
                                                                         new TkWithType(
                                                                             new TkClasspath(),
                                                                             "image/svg+xml"

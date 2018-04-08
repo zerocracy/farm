@@ -42,6 +42,7 @@ def exec(Project project, XML xml) {
     .param(
       'message',
       new Par(
+        farm,
         'The project %s has been funded via Stripe for %s'
       ).say(project.pid(), amount)
     )
