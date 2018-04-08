@@ -86,7 +86,7 @@ public final class TkPay implements TkRegex {
                 String.format("/p/%s", project.pid())
             );
         }
-        final String user = new RqUser(this.farm, req).value();
+        final String user = new RqUser(this.farm, req, false).value();
         new ClaimOut()
             .type("Funded by Stripe")
             .param("amount", amount)

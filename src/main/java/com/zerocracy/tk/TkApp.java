@@ -148,7 +148,7 @@ public final class TkApp extends TkWrap {
                                                                     new FkRegex(
                                                                         "/home",
                                                                         (TkRegex) req -> new RsRedirect(
-                                                                            String.format("/u/%s", new RqUser(farm, req).value())
+                                                                            String.format("/u/%s", new RqUser(farm, req, false).value())
                                                                         )
                                                                     ),
                                                                     new FkRegex("/identify", new TkIdentify(farm)),
@@ -221,12 +221,7 @@ public final class TkApp extends TkWrap {
                                                                     new FkRegex("/board", new TkBoard(farm)),
                                                                     new FkRegex("/team", new TkTeam(farm)),
                                                                     new FkRegex("/gang", new TkRedirect("/team")),
-                                                                    new FkRegex(
-                                                                        "/me",
-                                                                        (Take) req -> new RsRedirect(
-                                                                            String.format("/u/%s", new RqUser(farm, req).value())
-                                                                        )
-                                                                    ),
+                                                                    new FkRegex("/me", new TkRedirect("/home")),
                                                                     new FkRegex(
                                                                         "/badge/([A-Z0-9]{9})\\.svg",
                                                                         new TkBadge(farm)
@@ -238,7 +233,7 @@ public final class TkApp extends TkWrap {
                                                                     new FkRegex(
                                                                         "/hiring/([A-Z0-9]{9})",
                                                                         (TkRegex) req -> {
-                                                                            new Exam(farm, new RqUser(farm, req).value()).min("51.min", 1024);
+                                                                            new Exam(farm, new RqUser(farm, req, false).value()).min("51.min", 1024);
                                                                             return new RsPage(
                                                                                 farm, "/xsl/hiring.xsl", req,
                                                                                 () -> new XeAppend(
