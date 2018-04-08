@@ -42,7 +42,7 @@ import org.takes.rq.form.RqFormSmart;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public final class TkPay implements TkRegex {
+public final class TkStripePay implements TkRegex {
 
     /**
      * Farm.
@@ -53,7 +53,7 @@ public final class TkPay implements TkRegex {
      * Ctor.
      * @param frm Farm
      */
-    public TkPay(final Farm frm) {
+    public TkStripePay(final Farm frm) {
         this.farm = frm;
     }
 
@@ -97,13 +97,15 @@ public final class TkPay implements TkRegex {
             .postTo(project);
         new ClaimOut().type("Notify PMO").param(
             "message", new Par(
+                this.farm,
                 "Project %s was funded for %s by @%s;",
-                "customer `%s`, payment `%s`"
+                "customer ID is `%s`, payment ID is `%s`"
             ).say(project.pid(), amount, user, customer, pid)
         ).postTo(this.farm);
         return new RsForward(
             new RsParFlash(
                 new Par(
+                    this.farm,
                     "The project %s was successfully funded for %s;",
                     "the ledger will be updated in a few minutes;",
                     "payment ID is `%s`"

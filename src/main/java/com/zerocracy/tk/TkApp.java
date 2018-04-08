@@ -41,9 +41,9 @@ import com.zerocracy.tk.project.TkEquity;
 import com.zerocracy.tk.project.TkFiles;
 import com.zerocracy.tk.project.TkFootprint;
 import com.zerocracy.tk.project.TkHiring;
-import com.zerocracy.tk.project.TkPay;
 import com.zerocracy.tk.project.TkProject;
 import com.zerocracy.tk.project.TkReport;
+import com.zerocracy.tk.project.TkStripePay;
 import com.zerocracy.tk.project.TkUpload;
 import com.zerocracy.tk.project.TkXml;
 import com.zerocracy.tk.rfp.TkPrepay;
@@ -293,7 +293,7 @@ public final class TkApp extends TkWrap {
                                                                     ),
                                                                     new FkRegex(
                                                                         "/pay/(PMO|[A-Z0-9]{9})",
-                                                                        new TkPay(farm)
+                                                                        new TkStripePay(farm)
                                                                     ),
                                                                     new FkRegex(
                                                                         "/donate/(PMO|[A-Z0-9]{9})",

@@ -18,10 +18,15 @@ package com.zerocracy.tk;
 
 import com.zerocracy.Par;
 import com.zerocracy.SoftException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.logging.Level;
+import org.takes.Response;
 import org.takes.Take;
 import org.takes.facets.flash.RsFlash;
 import org.takes.facets.forward.RsForward;
+import org.takes.rs.RsWrap;
 import org.takes.tk.TkWrap;
 
 /**
@@ -42,16 +47,59 @@ final class TkSoftForward extends TkWrap {
     TkSoftForward(final Take take) {
         super(request -> {
             try {
-                return take.act(request);
+                return new TkSoftForward.RsSoft(take.act(request));
             } catch (final SoftException ex) {
-                throw new RsForward(
-                    new RsFlash(
-                        new Par.ToText(ex.getLocalizedMessage()).toString(),
-                        Level.SEVERE
-                    )
-                );
+                throw TkSoftForward.error(ex);
             }
         });
+    }
+
+    /**
+     * The exception to throw.
+     * @param error Original error
+     * @return New exception
+     * @throws UnsupportedEncodingException If fails
+     */
+    private static IOException error(final SoftException error)
+        throws UnsupportedEncodingException {
+        return new RsForward(
+            new RsFlash(
+                new Par.ToText(error.getLocalizedMessage()).toString(),
+                Level.SEVERE
+            )
+        );
+    }
+
+    /**
+     * Safe response.
+     */
+    private static final class RsSoft extends RsWrap {
+        /**
+         * Ctor.
+         * @param res Response original
+         */
+        RsSoft(final Response res) {
+            super(
+                new Response() {
+                    @Override
+                    public Iterable<String> head() throws IOException {
+                        try {
+                            return res.head();
+                        } catch (final SoftException ex) {
+                            throw TkSoftForward.error(ex);
+                        }
+                    }
+                    @Override
+                    public InputStream body() throws IOException {
+                        try {
+                            return res.body();
+                        } catch (final SoftException ex) {
+                            throw TkSoftForward.error(ex);
+                        }
+                    }
+                }
+            );
+        }
     }
 
 }
