@@ -292,7 +292,7 @@ public final class TkApp extends TkWrap {
                                                                         new TkEquity(farm)
                                                                     ),
                                                                     new FkRegex(
-                                                                        "/charge/(PMO|[A-Z0-9]{9})",
+                                                                        "/pay/(PMO|[A-Z0-9]{9})",
                                                                         new TkPay(farm)
                                                                     ),
                                                                     new FkRegex(

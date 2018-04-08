@@ -191,6 +191,8 @@ SOFTWARE.
       <a href="#" class="pay" data-cents="102400">
         <xsl:text>$1024</xsl:text>
       </a>
+      <xsl:text> via </xsl:text>
+      <img src="/svg/stripe-logo.svg" style="height:1em;vertical-align:middle;"/>
       <xsl:text>), locked: </xsl:text>
       <a href="/a/{project}?a=pm/cost/estimates">
         <xsl:value-of select="estimates"/>
