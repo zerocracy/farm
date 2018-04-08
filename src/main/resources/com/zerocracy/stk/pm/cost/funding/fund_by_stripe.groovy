@@ -46,8 +46,11 @@ def exec(Project project, XML xml) {
       new Par(
         farm,
         'The project %s has been funded via Stripe for %s;',
-        'payment ID: `%s`'
-      ).say(project.pid(), amount, claim.param('payment_id'),)
+        'payment ID: `%s`;',
+        'we will re-charge the card automatically',
+        'when the project runs out of funds;',
+        'to stop that just put the project on pause, see §21'
+      ).say(project.pid(), amount, claim.param('payment_id'))
     )
     .postTo(project)
   claim.copy().type('Notify PMO').param(
