@@ -34,7 +34,7 @@ SOFTWARE.
       <xsl:text>.</xsl:text>
     </p>
     <form action="" method="get">
-      <input name="q" type="text" style="width:100%">
+      <input tabindex="1" name="q" type="text" style="width:100%">
         <xsl:attribute name="placeholder">
           <xsl:text>{login:'yegor256', type:'User was banned'}</xsl:text>
         </xsl:attribute>

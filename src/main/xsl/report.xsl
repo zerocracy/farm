@@ -37,7 +37,7 @@ SOFTWARE.
         <label>
           <xsl:text>Report:&#xA0;</xsl:text>
         </label>
-        <select name="report">
+        <select tabindex="1" name="report">
           <xsl:for-each select="reports/report">
             <option value="{.}">
               <xsl:if test=".=/page/report">
@@ -62,7 +62,9 @@ SOFTWARE.
         <label>
           <xsl:text>&#xA0;</xsl:text>
         </label>
-        <button type="submit">Go</button>
+        <button tabindex="2" type="submit">
+          <xsl:text>Go</xsl:text>
+        </button>
       </fieldset>
     </form>
     <xsl:apply-templates select="rows"/>

@@ -38,9 +38,9 @@ SOFTWARE.
       <label>
         <xsl:text>Upload file: </xsl:text>
       </label>
-      <input type="text" name="artifact" size="20" maxlength="60" placeholder="e.g. vesting.xml"/>
-      <input type="file" name="file"/>
-      <button type="submit">
+      <input tabindex="1" type="text" name="artifact" size="20" maxlength="60" placeholder="e.g. vesting.xml"/>
+      <input tabindex="2" type="file" name="file"/>
+      <button tabindex="3" type="submit">
         <xsl:text>Upload</xsl:text>
       </button>
     </form>

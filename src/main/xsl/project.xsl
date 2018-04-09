@@ -167,8 +167,8 @@ SOFTWARE.
         <label>
           <xsl:text>Donate: </xsl:text>
         </label>
-        <input type="text" name="amount" size="15" maxlength="15" placeholder="e.g. $100"/>
-        <button type="submit">
+        <input tabindex="1" type="text" name="amount" size="15" maxlength="15" placeholder="e.g. $100"/>
+        <button tabindex="2" type="submit">
           <xsl:text>Donate</xsl:text>
         </button>
       </form>
