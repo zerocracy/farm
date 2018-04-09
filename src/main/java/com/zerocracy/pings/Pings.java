@@ -101,7 +101,7 @@ public final class Pings {
                     .withIdentity(name, Pings.GROUP)
                     .build(),
                 TriggerBuilder.newTrigger()
-                    .forJob(name)
+                    .forJob(name, Pings.GROUP)
                     .withSchedule(schedule)
                     .startNow()
                     .build()
