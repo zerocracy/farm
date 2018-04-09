@@ -4,7 +4,6 @@ cache:
   directories:
     - $HOME/.m2
 script:
-  - set -e
   - mvn clean install -Pqulice --errors --batch-mode --quiet
   - mvn clean --quiet
 install:
