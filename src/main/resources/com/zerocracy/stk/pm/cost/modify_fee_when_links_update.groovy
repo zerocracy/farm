@@ -41,7 +41,10 @@ def exec(Project project, XML xml) {
   for (String pair : catalog.links(project.pid())) {
     String[] parts = pair.split(':', 2)
     if (parts[0] == 'github') {
-      free = !new Repo.Smart(github.repos().get(new Coordinates.Simple(parts[1]))).private
+      Repo.Smart repo = new Repo.Smart(
+        github.repos().get(new Coordinates.Simple(parts[1]))
+      )
+      free = repo.exists() && !repo.private
       if (!free) {
         break
       }
