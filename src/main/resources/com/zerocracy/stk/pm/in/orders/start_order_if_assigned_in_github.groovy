@@ -24,6 +24,7 @@ import com.zerocracy.Project
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pm.in.Orders
 import com.zerocracy.pmo.People
 import com.zerocracy.radars.github.Job
 
@@ -48,6 +49,10 @@ def exec(Project project, XML xml) {
   }
   String login = find.next()
   if (!people.hasMentor(login)) {
+    return
+  }
+  Orders orders = new Orders(project).bootstrap()
+  if (orders.assigned(job)) {
     return
   }
   claim.copy()
