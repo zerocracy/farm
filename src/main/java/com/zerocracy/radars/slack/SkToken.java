@@ -47,7 +47,7 @@ public final class SkToken {
             .append("slack;")
             .append(this.event.getChannel().getId())
             .append(';')
-            .append(this.event.getSender().getUserName())
+            .append(this.event.getSender().getId())
             .toString();
     }
 }

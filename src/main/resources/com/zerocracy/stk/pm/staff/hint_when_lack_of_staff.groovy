@@ -25,6 +25,7 @@ import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pm.staff.Elections
+import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.Hint
 import java.util.concurrent.TimeUnit
 
@@ -52,6 +53,7 @@ def exec(Project project, XML xml) {
   if (pending.empty) {
     return
   }
+  Roles roles = new Roles(project).bootstrap()
   Farm farm = binding.variables.farm
   new Hint(
     farm,
@@ -65,8 +67,9 @@ def exec(Project project, XML xml) {
         new Par(
           'There are %d jobs, which are not assigned to anyone: %s;',
           'most likely there is a deficit of people in the project;',
+          'there are [%d people](/a/%s?a=pm/staff/roles) in the project now;',
           'consider announcing your project as explained in §51'
-        ).say(pending.size(), pending)
+        ).say(pending.size(), pending.join(', '), roles.everybody().size(), project.pid())
       )
   ).postTo(project)
 }

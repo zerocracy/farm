@@ -34,7 +34,7 @@ SOFTWARE.
       <xsl:text>.</xsl:text>
     </p>
     <form action="" method="get">
-      <input name="q" type="text" style="width:100%">
+      <input tabindex="1" name="q" type="text" style="width:100%">
         <xsl:attribute name="placeholder">
           <xsl:text>{login:'yegor256', type:'User was banned'}</xsl:text>
         </xsl:attribute>
@@ -124,7 +124,7 @@ SOFTWARE.
         <strong>
           <xsl:if test="type='Error'">
             <xsl:attribute name="style">
-              <xsl:text>color:darkred</xsl:text>
+              <xsl:text>background-color:darkred;color:white;</xsl:text>
             </xsl:attribute>
           </xsl:if>
           <xsl:value-of select="type"/>

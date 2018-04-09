@@ -16,10 +16,14 @@
  */
 package com.zerocracy.stk.pm.in.links
 
+import com.jcabi.github.Coordinates
+import com.jcabi.github.Repo
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
+import com.zerocracy.SoftException
+import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Catalog
@@ -27,12 +31,25 @@ import com.zerocracy.pmo.Catalog
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Add link')
-  new Assume(project, xml).roles('PO')
+  new Assume(project, xml).roles('PO', 'ARC')
   ClaimIn claim = new ClaimIn(xml)
   String pid = project.pid()
   String rel = claim.param('rel')
   String href = claim.param('href')
   Farm farm = binding.variables.farm
+  if (rel == 'github') {
+    Repo.Smart repo = new Repo.Smart(
+      new ExtGithub(farm).value().repos().get(new Coordinates.Simple(href))
+    )
+    if (!repo.exists()) {
+      throw new SoftException(
+        new Par(
+          'I cannot find the repository is either absent or',
+          'Zerocrat doesn\'t have proper access: https://github.com/%s'
+        ).say(href)
+      )
+    }
+  }
   Catalog catalog = new Catalog(farm).bootstrap()
   catalog.link(pid, rel, href)
   claim.reply(

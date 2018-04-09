@@ -17,30 +17,31 @@
 package com.zerocracy.tk.project;
 
 import com.zerocracy.Farm;
-import com.zerocracy.Par;
 import com.zerocracy.Project;
-import com.zerocracy.pm.cost.Equity;
+import com.zerocracy.cash.Cash;
+import com.zerocracy.pmo.Catalog;
 import com.zerocracy.tk.RqUser;
+import com.zerocracy.tk.RsPage;
 import com.zerocracy.tk.RsParFlash;
+import com.zerocracy.tk.XeXsl;
 import java.io.IOException;
 import java.util.logging.Level;
-import org.cactoos.io.BytesOf;
 import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
 import org.takes.facets.forward.RsForward;
-import org.takes.rs.RsWithBody;
-import org.takes.rs.RsWithHeaders;
+import org.takes.rs.xe.XeAppend;
+import org.takes.rs.xe.XeChain;
 
 /**
- * Download equity PDF.
+ * Contribution page ledger.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.20
+ * @since 0.22
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-public final class TkEquity implements TkRegex {
+public final class TkContribLedger implements TkRegex {
 
     /**
      * Farm.
@@ -51,33 +52,39 @@ public final class TkEquity implements TkRegex {
      * Ctor.
      * @param frm Farm
      */
-    public TkEquity(final Farm frm) {
+    public TkContribLedger(final Farm frm) {
         this.farm = frm;
     }
 
     @Override
+    @SuppressWarnings("PMD.ExcessiveMethodLength")
     public Response act(final RqRegex req) throws IOException {
-        final Project project = new RqProject(this.farm, req);
-        final String user = new RqUser(this.farm, req, false).value();
-        final Equity equity = new Equity(project).bootstrap();
-        if (equity.ownership(user).isEmpty()) {
+        new RqUser(this.farm, req, false).value();
+        final Project project = new RqAnonProject(this.farm, req);
+        final Catalog catalog = new Catalog(this.farm).bootstrap();
+        if (!catalog.fee(project.pid()).equals(Cash.ZERO)) {
             throw new RsForward(
                 new RsParFlash(
-                    new Par(
-                        "You don't own anything in %s"
-                    ).say(project.pid()),
-                    Level.SEVERE
+                    "The project is not free, see §50",
+                    Level.WARNING
                 ),
                 String.format("/p/%s", project.pid())
             );
         }
-        return new RsWithHeaders(
-            new RsWithBody(new BytesOf(equity.pdf(user)).asBytes()),
-            "Content-Type: application/pdf",
-            String.format(
-                "Content-Disposition: attachment; filename=equity-%s.pdf",
-                project.pid()
-            )
+        return new RsPage(
+            this.farm,
+            "/xsl/artifact.xsl",
+            req,
+            () -> {
+                final String file = "ledger.xml";
+                return new XeChain(
+                    new XeAppend("project", project.pid()),
+                    new XeAppend("title", catalog.title(project.pid())),
+                    new XeAppend("artifact", "pm/cost/ledger"),
+                    new XeAppend("file", file),
+                    new XeXsl(project, file, "pm/cost/ledger.xsl")
+                );
+            }
         );
     }
 

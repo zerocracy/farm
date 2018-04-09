@@ -36,12 +36,12 @@ def exec(Project project, XML xml) {
   String login = claim.param('login')
   Farm farm = binding.variables.farm
   People people = new People(farm).bootstrap()
-  if (!people.hasMentor(login)) {
+  String role = claim.param('role')
+  if (!people.hasMentor(login) && role != 'PO') {
     throw new SoftException(
-      new Par('Assignee @%s must be a registered person').say(login)
+      new Par('Assignee @%s must be invited').say(login)
     )
   }
-  String role = claim.param('role')
   Roles roles = new Roles(project).bootstrap()
   Rates rates = new Rates(project).bootstrap()
   String msg

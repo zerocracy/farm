@@ -78,11 +78,11 @@ public final class Payroll {
         final String login, final Cash amount,
         final String reason) throws IOException {
         final Cash min = new Policy().get("46.min", new Cash.S("$10"));
-        if (amount.compareTo(min) < 0) {
+        if (amount.compareTo(min) < 0 && !reason.startsWith("Debt repayment")) {
             throw new SoftException(
                 new Par(
-                    "The amount %s is too small"
-                ).say(amount)
+                    "The amount %s is too small at: %s"
+                ).say(amount, reason)
             );
         }
         final People people = new People(this.farm).bootstrap();
@@ -119,8 +119,7 @@ public final class Payroll {
                 amount.add(commission),
                 "liabilities", method,
                 "assets", "cash",
-                String.format(
-                    "%s (amount:%s, commission:%s, PID:%s)",
+                new Par("%s (amount:%s, commission:%s, PID:%s)").say(
                     text, amount, commission, pid
                 )
             ),
@@ -128,7 +127,7 @@ public final class Payroll {
                 commission,
                 "expenses", "jobs",
                 "liabilities", method,
-                String.format("%s (commission)", text)
+                new Par("%s (commission)").say(text)
             ),
             new Ledger.Transaction(
                 amount,

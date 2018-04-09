@@ -60,7 +60,7 @@ def exec(Project project, XML xml) {
       .type('Make payment')
       .param('login', claim.author())
       .param('job', 'none')
-      .param('minutes', new Policy().get('26.price', -256))
+      .param('minutes', -new Policy().get('26.price', 256))
       .param('reason', new Par('Project %s was published on the board').say(project.pid()))
       .postTo(project)
     claim.copy().type('Notify all').param(

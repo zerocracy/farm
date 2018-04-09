@@ -83,7 +83,7 @@ SOFTWARE.
               <xsl:text>
 </xsl:text>
               <xsl:text>  </xsl:text>
-              <xsl:if test="@score &gt; 0">
+              <xsl:if test="@score &gt;= 0">
                 <xsl:text>+</xsl:text>
               </xsl:if>
               <xsl:value-of select="format-number(@score, '0.00')"/>

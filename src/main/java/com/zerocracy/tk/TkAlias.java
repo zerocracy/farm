@@ -69,7 +69,7 @@ public final class TkAlias implements Take {
                 )
             );
         }
-        final String login = new RqUser(this.farm, req).value();
+        final String login = new RqUser(this.farm, req, false).value();
         people.link(login, rel, href);
         new ClaimOut().type("Notify PMO").param(
             "message", new Par(

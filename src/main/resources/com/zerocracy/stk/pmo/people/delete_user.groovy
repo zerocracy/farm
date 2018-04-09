@@ -14,36 +14,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.cost
+package com.zerocracy.stk.pmo.people
 
 import com.jcabi.xml.XML
-import com.zerocracy.Par
 import com.zerocracy.Project
-import com.zerocracy.cash.Cash
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.cost.Ledger
+import com.zerocracy.pmo.People
 
-def exec(Project project, XML xml) {
-  new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Donate')
+def exec(Project pmo, XML xml) {
+  new Assume(pmo, xml).isPmo()
+  new Assume(pmo, xml).type('Delete user')
   ClaimIn claim = new ClaimIn(xml)
-  Cash amount = new Cash.S(claim.param('amount'))
-  new Ledger(project).bootstrap().add(
-    new Ledger.Transaction(
-      amount,
-      'assets', 'cash',
-      'income', 'zerocracy',
-      new Par('Donated by @%s').say(claim.author())
-    )
-  )
+  String user = claim.param('login')
+  new People(pmo).bootstrap().remove(user)
   claim.copy()
-    .type('Notify project')
-    .param(
-      'message',
-      new Par(
-        'The project %s got a donation of %s'
-      ).say(project.pid(), amount)
-    )
-    .postTo(project)
+    .type('User was deleted')
+    .postTo(pmo)
 }

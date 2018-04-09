@@ -17,6 +17,8 @@
 package com.zerocracy.tk.rfp;
 
 import com.zerocracy.Farm;
+import com.zerocracy.Policy;
+import com.zerocracy.cash.Cash;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.pmo.Rfps;
 import com.zerocracy.tk.RqUser;
@@ -67,6 +69,14 @@ public final class TkRfp implements Take {
                         "stripe_key",
                         new Props(this.farm).get(
                             "//stripe/key", ""
+                        )
+                    ),
+                    new XeAppend(
+                        "price_cents",
+                        Integer.toString(
+                            new Policy().get("41.price", Cash.ZERO)
+                                // @checkstyle MagicNumber (1 line)
+                                .decimal().intValue() * 100
                         )
                     ),
                     new XeWhen(

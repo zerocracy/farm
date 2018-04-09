@@ -21,6 +21,7 @@ import com.jcabi.xml.XML
 import com.ullink.slack.simpleslackapi.SlackChannel
 import com.ullink.slack.simpleslackapi.SlackSession
 import com.ullink.slack.simpleslackapi.SlackUser
+import com.zerocracy.Par
 import com.zerocracy.entry.ExtSlack
 import com.zerocracy.farm.Assume
 import com.zerocracy.farm.props.Props
@@ -39,7 +40,7 @@ def exec(Project project, XML xml) {
       "Something is wrong with this token: ${claim.token()}"
     )
   }
-  String message = claim.param('message').replaceAll(
+  String message = new Par.ToText(claim.param('message')).toString().replaceAll(
     '\\[([^]]+)]\\(([^)]+)\\)', '<$2|$1>'
   )
   Farm farm = binding.variables.farm
@@ -51,40 +52,29 @@ def exec(Project project, XML xml) {
   SlackSession session = session(parts[1])
   if (parts.length > 2) {
     if (parts.length > 3) {
-      SlackUser user = session.findUserByUserName(parts[2])
+      SlackUser user = session.findUserById(parts[2])
       if (user == null) {
-        Logger.warn(
-          this, 'Failed to notify %s, since there is no direct chat',
-          parts[2]
-        )
-      } else {
-        session.sendMessage(
-          session.openDirectMessageChannel(user).reply.slackChannel,
-          message
+        throw new IllegalArgumentException(
+          "Can't find ${parts[2]} in Slack session for ${parts[1]}"
         )
       }
+      session.sendMessage(
+        session.openDirectMessageChannel(user).reply.slackChannel,
+        message
+      )
     } else {
       SlackChannel channel = session.findChannelById(parts[1])
-      session.sendMessage(
-        channel, String.format('@%s %s', parts[2], message)
-      )
-      Logger.info(
-        this, '@%s posted %d chars to @%s at %s/%s',
-        session.sessionPersona().userName,
-        message.length(),
-        parts[2],
-        channel.name, channel.id
-      )
+      SlackUser user = session.findUserById(parts[2])
+      if (user == null) {
+        throw new IllegalArgumentException(
+          "Can't find ${parts[2]} in Slack session for ${parts[1]}"
+        )
+      }
+      session.sendMessage(channel, "<@${user.id}> ${message}")
     }
   } else {
     SlackChannel channel = session.findChannelById(parts[1])
     session.sendMessage(channel, message)
-    Logger.info(
-      this, '@%s posted %d chars at %s/%s',
-      session.sessionPersona().userName,
-      message.length(),
-      channel.name, channel.id
-    )
   }
 }
 

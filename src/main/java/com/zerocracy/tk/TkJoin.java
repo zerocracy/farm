@@ -18,6 +18,7 @@ package com.zerocracy.tk;
 
 import com.zerocracy.Farm;
 import com.zerocracy.Par;
+import com.zerocracy.Policy;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pmo.People;
 import java.io.IOException;
@@ -40,6 +41,18 @@ import org.takes.rq.form.RqFormSmart;
  *  a week, it can be checked and updated via People.applied methods.
  *  The 7 days value can be accessed via Par after
  *  https://github.com/zerocracy/zerocracy.github.io/issues/9 fix.
+ * @todo #800:30min Requests to /join should add an entry to 'resumes.xml'
+ *  then an 'examiner' should be assigned. When the examiner "invites" a user,
+ *  we check whether there was a resume for that user.
+ *  If yes, we pay examiner +32 points. Examiner can reject a resume
+ *  by saying 'deny {username}' (where username is a login in 'resumes.xml')
+ *  to Zerocrat. In that case we also pay +32 to the examiner.
+ *  Each user should see the status of his/her resume at /join.
+ *  If the resume is there, he/she should see the resume, not the form.
+ *  If he/she already has a mentor, there should be a redirect,
+ *  saying that "User @yegor256 is already your mentor, no need to join again".
+ *  See https://github.com/zerocracy/farm/issues/800#issuecomment-375551970
+ *  comment for details.
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class TkJoin implements TkRegex {
@@ -88,8 +101,7 @@ public final class TkJoin implements TkRegex {
                 "profiles of the user;",
                 "this is the message the user left for us:\n\n%s"
             ).say(author, personality, telegram, stko, about)
-        // @checkstyle MagicNumber (1 line)
-        ).param("min", 1024).postTo(this.farm);
+        ).param("min", new Policy().get("1.min-rep", 0)).postTo(this.farm);
         return new RsForward(
             new RsParFlash(
                 new Par(

@@ -64,15 +64,7 @@ public final class GoodPeople {
                 )
             );
         }
-        final String uid = list.next();
-        if (!this.people.hasMentor(uid)) {
-            throw new SoftException(
-                new Par(
-                    "@%s you need to ask somebody to invite you, see §1"
-                ).say(uid)
-            );
-        }
-        return uid;
+        return list.next();
     }
 
 }

@@ -87,7 +87,7 @@ public final class Bots {
             );
         }
         final String bid = bot.getString("bot_user_id");
-        final String team = json.getString("team_name");
+        final String team = json.getString("team_id");
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()
@@ -109,9 +109,9 @@ public final class Bots {
                     .addIf("access_token")
                     .set(json.getString("access_token")).up()
                     .addIf("team_name")
-                    .set(team).up()
+                    .set(json.getString("team_name")).up()
                     .addIf("team_id")
-                    .set(json.getString("team_id")).up()
+                    .set(team).up()
                     .addIf("bot_access_token")
                     .set(bot.getString("bot_access_token")).up()
                     .addIf("created")
