@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pm;
 
+import com.jcabi.aspects.Tv;
 import com.jcabi.xml.XML;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
@@ -27,7 +28,9 @@ import com.zerocracy.entry.ExtMongo;
 import com.zerocracy.farm.props.Props;
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.Date;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import org.bson.Document;
 
 /**
@@ -39,7 +42,14 @@ import org.bson.Document;
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class Footprint implements Closeable {
-
+    /**
+     * Database name.
+     */
+    private static final String DBNAME = "footprint";
+    /**
+     * Collection.
+     */
+    private static final String CLAIMS = "claims";
     /**
      * Project ID.
      */
@@ -98,8 +108,8 @@ public final class Footprint implements Closeable {
             }
             doc = doc.append(ent.getKey(), val);
         }
-        this.mongo.getDatabase("footprint")
-            .getCollection("claims")
+        this.mongo.getDatabase(Footprint.DBNAME)
+            .getCollection(Footprint.CLAIMS)
             .insertOne(doc);
     }
 
@@ -109,15 +119,40 @@ public final class Footprint implements Closeable {
      */
     public void close(final XML xml) {
         final ClaimIn claim = new ClaimIn(xml);
-        this.mongo.getDatabase("footprint").getCollection("claims").updateOne(
-            Filters.and(
-                Filters.eq("cid", claim.cid()),
-                Filters.eq("project", this.pid),
-                Filters.eq("type", claim.type()),
-                Filters.eq("created", claim.created())
-            ),
-            Updates.currentDate("closed")
-        );
+        this.mongo.getDatabase(Footprint.DBNAME)
+            .getCollection(Footprint.CLAIMS)
+            .updateOne(
+                Filters.and(
+                    Filters.eq("cid", claim.cid()),
+                    Filters.eq("project", this.pid),
+                    Filters.eq("type", claim.type()),
+                    Filters.eq("created", claim.created())
+                ),
+                Updates.currentDate("closed")
+            );
+    }
+
+    /**
+     * Remove some claims which are older than 30 days.
+     * @param now Time now
+     * @return Deleted claims
+     */
+    public long cleanup(final Date now) {
+        return this.mongo.getDatabase(Footprint.DBNAME)
+            .getCollection(Footprint.CLAIMS)
+            .deleteMany(
+                Filters.and(
+                    Filters.regex("type", "Notify.*"),
+                    Filters.lt(
+                        "created",
+                        new Date(
+                            now.getTime() - TimeUnit.DAYS.toMillis(
+                                (long) Tv.THIRTY
+                            )
+                        )
+                    )
+                )
+            ).getDeletedCount();
     }
 
     /**
@@ -125,7 +160,8 @@ public final class Footprint implements Closeable {
      * @return Collection
      */
     public MongoCollection<Document> collection() {
-        return this.mongo.getDatabase("footprint").getCollection("claims");
+        return this.mongo.getDatabase(Footprint.DBNAME)
+            .getCollection(Footprint.CLAIMS);
     }
 
     @Override

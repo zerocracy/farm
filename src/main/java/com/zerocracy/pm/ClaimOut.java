@@ -64,11 +64,19 @@ public final class ClaimOut implements Iterable<Directive> {
      * Ctor.
      */
     public ClaimOut() {
+        this(new Date());
+    }
+
+    /**
+     * Ctor.
+     * @param created Date
+     */
+    public ClaimOut(final Date created) {
         this(
             new Directives()
                 .add("claim")
                 .attr("id", ClaimOut.cid())
-                .add("created").set(new DateAsText().asString())
+                .add("created").set(new DateAsText(created).asString())
                 .up()
         );
     }
