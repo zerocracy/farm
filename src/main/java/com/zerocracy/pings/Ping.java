@@ -14,86 +14,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.entry;
+package com.zerocracy.pings;
 
-import com.jcabi.log.VerboseRunnable;
-import com.jcabi.log.VerboseThreads;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
 import com.zerocracy.pmo.Catalog;
 import java.io.IOException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import org.cactoos.Proc;
-import org.cactoos.func.RunnableOf;
 import org.cactoos.iterable.Shuffled;
+import org.quartz.Job;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
 
 /**
- * Pings.
- *
- * @author Yegor Bugayenko (yegor256@gmail.com)
+ * Ping as quartz job.
+ * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
- * @since 0.21
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @since 0.21.1
  */
-final class Pings {
-
-    /**
-     * Executor service.
-     */
-    private final ScheduledExecutorService executor;
-
+public final class Ping implements Job {
     /**
      * Farm.
      */
     private final Farm farm;
-
     /**
      * Ctor.
-     * @param frm Farm
+     * @param farm Farm
      */
-    Pings(final Farm frm) {
-        this.farm = frm;
-        this.executor = Executors.newScheduledThreadPool(
-            Runtime.getRuntime().availableProcessors(),
-            new VerboseThreads(Pings.class)
-        );
+    public Ping(final Farm farm) {
+        this.farm = farm;
     }
 
-    /**
-     * Start it.
-     */
-    public void start() {
-        this.executor.scheduleWithFixedDelay(
-            new VerboseRunnable(
-                new RunnableOf<>(
-                    (Proc<Void>) input -> this.post("Ping")
-                ),
-                true, true
-            ),
-            1L, 1L, TimeUnit.MINUTES
-        );
-        this.executor.scheduleWithFixedDelay(
-            new VerboseRunnable(
-                new RunnableOf<>(
-                    (Proc<Void>) input -> this.post("Ping hourly")
-                ),
-                true, true
-            ),
-            1L, 1L, TimeUnit.HOURS
-        );
-        this.executor.scheduleWithFixedDelay(
-            new VerboseRunnable(
-                new RunnableOf<>(
-                    (Proc<Void>) input -> this.post("Ping daily")
-                ),
-                true, true
-            ),
-            1L, 1L, TimeUnit.DAYS
-        );
+    @Override
+    public void execute(final JobExecutionContext ctx)
+        throws JobExecutionException {
+        try {
+            this.post(ctx.getMergedJobDataMap().getString("claim"));
+        } catch (final IOException err) {
+            throw new JobExecutionException(err);
+        }
     }
 
     /**
@@ -123,5 +83,4 @@ final class Pings {
             }
         }
     }
-
 }
