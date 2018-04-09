@@ -48,13 +48,13 @@ SOFTWARE.
         <label>
           <xsl:text>The text for our users:</xsl:text>
         </label>
-        <textarea name="text" style="width:100%;height:5em;">
+        <textarea tabindex="1" name="text" style="width:100%;height:5em;">
           <xsl:text>Don't forget to mention:</xsl:text>
           <xsl:text> 1) How much you pay per hour?</xsl:text>
           <xsl:text> 2) How big is your total budget?</xsl:text>
           <xsl:text> 3) What is your tech stack?</xsl:text>
         </textarea>
-        <button>
+        <button tabindex="2" type="submit">
           <xsl:text>Submit</xsl:text>
         </button>
       </fieldset>

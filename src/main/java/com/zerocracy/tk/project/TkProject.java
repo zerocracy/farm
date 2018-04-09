@@ -72,7 +72,7 @@ public final class TkProject implements TkRegex {
             () -> {
                 final Project project = new RqProject(this.farm, req);
                 final Catalog catalog = new Catalog(this.farm).bootstrap();
-                final String user = new RqUser(this.farm, req).value();
+                final String user = new RqUser(this.farm, req, false).value();
                 final String pid = project.pid();
                 return new XeChain(
                     new XeAppend("project", pid),

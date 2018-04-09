@@ -78,7 +78,7 @@ public final class Payroll {
         final String login, final Cash amount,
         final String reason) throws IOException {
         final Cash min = new Policy().get("46.min", new Cash.S("$10"));
-        if (amount.compareTo(min) < 0) {
+        if (amount.compareTo(min) < 0 && !reason.startsWith("Debt repayment")) {
             throw new SoftException(
                 new Par(
                     "The amount %s is too small"

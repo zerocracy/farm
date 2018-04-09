@@ -135,7 +135,7 @@ public final class Signature {
         builder.environment().putIfAbsent(
             "GNUPGHOME", System.getProperty("java.io.tmpdir")
         );
-        return builder;
+        return builder.redirectInput(ProcessBuilder.Redirect.PIPE);
     }
 
 }

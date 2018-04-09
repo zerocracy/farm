@@ -61,8 +61,8 @@ SOFTWARE.
     <xsl:apply-templates select="students"/>
     <xsl:if test="identity/login = 'yegor256'">
       <form action="/kyc/{owner}" method="post" autocomplete="off">
-        <input type="text" name="details" size="50" placeholder="e.g. JEFF LEBOWSKY 23-12-1976 @EMAIL"/>
-        <button type="submit">
+        <input tabindex="1" type="text" name="details" size="50" placeholder="e.g. JEFF LEBOWSKY 23-12-1976 @EMAIL"/>
+        <button tabindex="2" type="submit">
           <xsl:text>Identify</xsl:text>
         </button>
       </form>

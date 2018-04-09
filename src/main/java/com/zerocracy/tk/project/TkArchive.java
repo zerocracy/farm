@@ -84,7 +84,7 @@ public final class TkArchive implements TkRegex {
         new ClaimOut().type("Notify PMO").param(
             "message", new Par(
                 "Project %s was archived by @%s"
-            ).say(project.pid(), new RqUser(this.farm, req).value())
+            ).say(project.pid(), new RqUser(this.farm, req, false).value())
         ).postTo(this.farm);
         return new RsWithType(
             new RsWithBody(new BytesOf(zip).asBytes()),

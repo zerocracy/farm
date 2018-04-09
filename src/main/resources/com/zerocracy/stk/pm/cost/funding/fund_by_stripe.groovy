@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pm.cost.funding
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
@@ -37,17 +38,24 @@ def exec(Project project, XML xml) {
       new Par('Funded via Stripe by @%s').say(claim.author())
     )
   )
+  Farm farm = binding.variables.farm
   claim.copy()
     .type('Notify project')
     .param(
       'message',
       new Par(
-        'The project %s has been funded via Stripe for %s'
-      ).say(project.pid(), amount)
+        farm,
+        'The project %s has been funded via Stripe for %s;',
+        'payment ID: `%s`;',
+        'we will re-charge the card automatically',
+        'when the project runs out of funds;',
+        'to stop that just put the project on pause, see §21'
+      ).say(project.pid(), amount, claim.param('payment_id'))
     )
     .postTo(project)
   claim.copy().type('Notify PMO').param(
     'message', new Par(
+      farm,
       'We just funded %s for %s via Stripe'
     ).say(project.pid(), amount)
   ).postTo(project)

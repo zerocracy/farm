@@ -60,9 +60,8 @@ def exec(Project project, XML xml) {
       people.links(login, 'slack').any { sid ->
         claim.copy()
           .type('Notify in Slack')
-          .token("slack;${channel};${login};${sid}")
+          .token("slack;${channel};${sid};direct")
           .param('login', login)
-          .param('slack_login', sid)
           .postTo(project)
         done = true
         done

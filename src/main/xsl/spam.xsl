@@ -40,10 +40,10 @@ SOFTWARE.
     <form action="/spam-send" method="post">
       <fieldset>
         <label>Text:</label>
-        <textarea name="body" style="width:100%;height:4em;">
+        <textarea tabindex="1" name="body" style="width:100%;height:4em;">
           <xsl:text>Text goes here...</xsl:text>
         </textarea>
-        <button type="submit">
+        <button type="submit" tabindex="2">
           <xsl:text>Send</xsl:text>
         </button>
       </fieldset>

@@ -41,7 +41,10 @@ def exec(Project project, XML xml) {
   for (String pair : catalog.links(project.pid())) {
     String[] parts = pair.split(':', 2)
     if (parts[0] == 'github') {
-      free = !new Repo.Smart(github.repos().get(new Coordinates.Simple(parts[1]))).private
+      Repo.Smart repo = new Repo.Smart(
+        github.repos().get(new Coordinates.Simple(parts[1]))
+      )
+      free = repo.exists() && !repo.private
       if (!free) {
         break
       }
@@ -55,7 +58,7 @@ def exec(Project project, XML xml) {
         'message',
         new Par(
           'You don\'t have any private GitHub repositories any more,',
-          'the management fee is waived, see §23.'
+          'the management fee is waived, see §23'
         ).say()
       )
       .postTo(project)
@@ -69,7 +72,7 @@ def exec(Project project, XML xml) {
         'message',
         new Par(
           'Since now you have a private GitHub repository,',
-          'the management fee %s is applied, see §23.'
+          'the management fee %s is applied, see §23'
         ).say(fee)
       )
       .postTo(project)

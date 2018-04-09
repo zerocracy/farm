@@ -58,6 +58,14 @@ SOFTWARE.
     </p>
     <p>
       <xsl:text>Pick one of those: </xsl:text>
+      <a href="#" class="pay" data-cents="1600">
+        <xsl:text>$16</xsl:text>
+      </a>
+      <xsl:text>, </xsl:text>
+      <a href="#" class="pay" data-cents="3200">
+        <xsl:text>$32</xsl:text>
+      </a>
+      <xsl:text>, </xsl:text>
       <a href="#" class="pay" data-cents="6400">
         <xsl:text>$64</xsl:text>
       </a>
