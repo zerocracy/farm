@@ -16,17 +16,87 @@
  */
 package com.zerocracy.pmo;
 
+import com.zerocracy.Farm;
+import com.zerocracy.Item;
+import com.zerocracy.farm.fake.FkFarm;
+import org.cactoos.io.LengthOf;
+import org.cactoos.io.ResourceOf;
+import org.cactoos.io.TeeInput;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
+
 /**
  * Test case for {@link Options}.
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.21
- * @todo #258:30min Options are not implemented. We should be able to
- *  access `options/{username}.xml` file (where {username} is a person
- *  name from `people.xml`) to read and modify user options.
- *  Also some mechanism should be invented to allow user to change this
- *  options.
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class OptionsTest {
+    /**
+     * User login.
+     */
+    private static final String LOGIN = "user1324234";
+    /**
+     * Farm with options.
+     */
+    private Farm farm;
+
+    @Before
+    public void setUp() throws Exception {
+        this.farm = new FkFarm();
+        try (
+            final Item item = new Pmo(this.farm)
+                .acq(String.format("options/%s.xml", OptionsTest.LOGIN))
+        ) {
+            new LengthOf(
+                new TeeInput(
+                    new ResourceOf("com/zerocracy/pmo/options.xml"),
+                    item.path()
+                )
+            ).intValue();
+        }
+    }
+
+    @Test
+    public void readMaxJobs() throws Exception {
+        MatcherAssert.assertThat(
+            new Options(new Pmo(this.farm), OptionsTest.LOGIN)
+                .bootstrap()
+                .maxJobsInAgenda(0),
+            Matchers.equalTo(2)
+        );
+    }
+
+    @Test
+    public void readNotifyStudents() throws Exception {
+        MatcherAssert.assertThat(
+            new Options(new Pmo(this.farm), OptionsTest.LOGIN)
+                .bootstrap()
+                .notifyStudents(false),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    public void readNotifyRfps() throws Exception {
+        MatcherAssert.assertThat(
+            new Options(new Pmo(this.farm), OptionsTest.LOGIN)
+                .bootstrap()
+                .notifyRfps(false),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    public void notifyPublish() throws Exception {
+        MatcherAssert.assertThat(
+            new Options(new Pmo(this.farm), OptionsTest.LOGIN)
+                .bootstrap()
+                .notifyPublish(false),
+            Matchers.is(true)
+        );
+    }
 }
