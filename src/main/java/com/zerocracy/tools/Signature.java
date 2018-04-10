@@ -17,10 +17,11 @@
 package com.zerocracy.tools;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.LengthOf;
-import org.cactoos.io.OutputTo;
 import org.cactoos.io.TeeInput;
 import org.cactoos.text.TextOf;
 
@@ -80,50 +81,55 @@ public final class Signature {
                 )
             );
         }
-        final Process sign = Signature.env(
-            new ProcessBuilder(
-                "gpg",
-                "--batch",
-                "--no-options",
-                "--armor",
-                "--local-user",
-                key,
-                "--recipient",
-                key,
-                "--detach-sig",
-                "--sign"
-            )
-        ).start();
-        new LengthOf(
-            new TeeInput(
-                new InputOf(this.data),
-                new OutputTo(sign.getOutputStream())
-            )
-        ).intValue();
+        final Path temp = Files.createTempFile("signature", ".temp");
         try {
-            receive.waitFor(1L, TimeUnit.MINUTES);
-        } catch (final InterruptedException ex) {
-            Thread.currentThread().interrupt();
-            throw new IllegalStateException(ex);
-        }
-        if (receive.exitValue() != 0) {
-            throw new IllegalStateException(
-                String.format(
-                    "Failed to sign with PGP key: %s",
-                    new TextOf(sign.getErrorStream()).asString()
+            new LengthOf(
+                new TeeInput(
+                    new InputOf(this.data),
+                    temp
                 )
+            ).intValue();
+            final Process sign = Signature.env(
+                new ProcessBuilder(
+                    "gpg",
+                    "--batch",
+                    "--no-options",
+                    "--armor",
+                    "--local-user",
+                    key,
+                    "--recipient",
+                    key,
+                    "--detach-sig",
+                    "--sign"
+                )
+            ).redirectInput(temp.toFile()).start();
+            try {
+                receive.waitFor(1L, TimeUnit.MINUTES);
+            } catch (final InterruptedException ex) {
+                Thread.currentThread().interrupt();
+                throw new IllegalStateException(ex);
+            }
+            if (receive.exitValue() != 0) {
+                throw new IllegalStateException(
+                    String.format(
+                        "Failed to sign with PGP key: %s",
+                        new TextOf(sign.getErrorStream()).asString()
+                    )
+                );
+            }
+            return String.format(
+                "\"%s\" encrypted by %s: %s",
+                this.data,
+                key,
+                new TextOf(sign.getInputStream()).asString()
+                    .replace("-----BEGIN PGP SIGNATURE-----", "")
+                    .replace("-----END PGP SIGNATURE-----", "")
+                    .replaceAll("\n", "")
+                    .replaceAll("(?<=\\G.{8})", " ")
             );
+        } finally {
+            Files.delete(temp);
         }
-        return String.format(
-            "\"%s\" encrypted by %s: %s",
-            this.data,
-            key,
-            new TextOf(sign.getInputStream()).asString()
-                .replace("-----BEGIN PGP SIGNATURE-----", "")
-                .replace("-----END PGP SIGNATURE-----", "")
-                .replaceAll("\n", "")
-                .replaceAll("(?<=\\G.{8})", " ")
-        );
     }
 
     /**
@@ -135,7 +141,7 @@ public final class Signature {
         builder.environment().putIfAbsent(
             "GNUPGHOME", System.getProperty("java.io.tmpdir")
         );
-        return builder.redirectInput(ProcessBuilder.Redirect.PIPE);
+        return builder;
     }
 
 }
