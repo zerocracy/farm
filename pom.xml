@@ -409,6 +409,12 @@ SOFTWARE.
       <artifactId>guava</artifactId>
       <version>23.1-jre</version>
     </dependency>
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>42.2.2</version>
+      <scope>runtime</scope>
+    </dependency>
   </dependencies>
   <build>
     <pluginManagement>

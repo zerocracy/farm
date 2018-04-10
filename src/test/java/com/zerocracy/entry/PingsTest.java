@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pings;
+package com.zerocracy.entry;
 
 import com.zerocracy.farm.fake.FkFarm;
 import org.junit.Test;
