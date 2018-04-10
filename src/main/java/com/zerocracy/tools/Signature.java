@@ -54,6 +54,7 @@ public final class Signature {
      * @return PGP signature
      * @throws IOException If fails
      */
+    @SuppressWarnings("PMD.PrematureDeclaration")
     public String asString() throws IOException {
         final String key = "0AAF4B5A";
         final Process receive = Signature.env(
