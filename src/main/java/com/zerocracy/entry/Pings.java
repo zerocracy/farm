@@ -23,6 +23,7 @@ import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.scalar.SolidScalar;
 import org.quartz.Job;
 import org.quartz.JobBuilder;
+import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.SimpleScheduleBuilder;
@@ -95,17 +96,21 @@ public final class Pings {
     private void start(final String name, final String claim,
         final SimpleScheduleBuilder schedule) throws IOException {
         try {
-            this.quartz.value().scheduleJob(
-                JobBuilder.newJob(Ping.class)
-                    .usingJobData(Pings.CLAIM, claim)
-                    .withIdentity(name, Pings.GROUP)
-                    .build(),
-                TriggerBuilder.newTrigger()
-                    .forJob(name, Pings.GROUP)
-                    .withSchedule(schedule)
-                    .startNow()
-                    .build()
-            );
+            final Scheduler scheduler = this.quartz.value();
+            final JobKey key = new JobKey(name, Pings.GROUP);
+            if (!scheduler.checkExists(key)) {
+                scheduler.scheduleJob(
+                    JobBuilder.newJob(Ping.class)
+                        .usingJobData(Pings.CLAIM, claim)
+                        .withIdentity(key)
+                        .build(),
+                    TriggerBuilder.newTrigger()
+                        .forJob(key)
+                        .withSchedule(schedule)
+                        .startNow()
+                        .build()
+                );
+            }
         } catch (final SchedulerException err) {
             throw new IOException(err);
         }
