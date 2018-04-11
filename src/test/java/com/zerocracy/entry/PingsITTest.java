@@ -53,11 +53,11 @@ public final class PingsITTest {
     /**
      * Database username.
      */
-    private static final String PG_USER = "test";
+    private static final String PG_USER = "username";
     /**
      * Database password.
      */
-    private static final String PG_PASS = "test";
+    private static final String PG_PASS = "password";
 
     @Test
     @Ignore
