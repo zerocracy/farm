@@ -228,15 +228,17 @@ SOFTWARE.
     </xsl:if>
     <xsl:if test="recharge">
       <p>
-        <span style="color:darkred">
-          <xsl:text>We automatically </xsl:text>
-          <a href="http://www.zerocracy.com/policy.html#22">
-            <xsl:text>recharge</xsl:text>
-          </a>
-          <xsl:text> your card for </xsl:text>
-          <xsl:value-of select="."/>
-          <xsl:text> when the balance drops below zero.</xsl:text>
+        <xsl:text>We </xsl:text>
+        <span style="color:darkgreen">
+          <xsl:text>automatically</xsl:text>
         </span>
+        <xsl:text> </xsl:text>
+        <a href="http://www.zerocracy.com/policy.html#22">
+          <xsl:text>recharge</xsl:text>
+        </a>
+        <xsl:text> your card for </xsl:text>
+        <xsl:value-of select="recharge"/>
+        <xsl:text> when the balance drops below zero.</xsl:text>
       </p>
     </xsl:if>
     <form id="form" style="display:none" action="/pay/{project}" method="post">
