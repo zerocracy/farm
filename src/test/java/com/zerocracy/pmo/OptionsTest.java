@@ -18,14 +18,15 @@ package com.zerocracy.pmo;
 
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
+import com.zerocracy.Xocument;
 import com.zerocracy.farm.fake.FkFarm;
-import org.cactoos.io.LengthOf;
-import org.cactoos.io.ResourceOf;
-import org.cactoos.io.TeeInput;
+import java.io.IOException;
+import java.util.Iterator;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Before;
 import org.junit.Test;
+import org.xembly.Directive;
+import org.xembly.Directives;
 
 /**
  * Test case for {@link Options}.
@@ -34,38 +35,17 @@ import org.junit.Test;
  * @since 0.21
  * @checkstyle JavadocMethodCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class OptionsTest {
-    /**
-     * User login.
-     */
-    private static final String LOGIN = "user1324234";
-    /**
-     * Farm with options.
-     */
-    private Farm farm;
-
-    @Before
-    public void setUp() throws Exception {
-        this.farm = new FkFarm();
-        try (
-            final Item item = new Pmo(this.farm)
-                .acq(String.format("options/%s.xml", OptionsTest.LOGIN))
-        ) {
-            new LengthOf(
-                new TeeInput(
-                    new ResourceOf("com/zerocracy/pmo/options.xml"),
-                    item.path()
-                )
-            ).intValue();
-        }
-    }
-
     @Test
     public void readMaxJobs() throws Exception {
         MatcherAssert.assertThat(
-            new Options(new Pmo(this.farm), OptionsTest.LOGIN)
-                .bootstrap()
-                .maxJobsInAgenda(0),
+            OptionsTest.options(
+                new Directives()
+                    .addIf("options")
+                    .addIf("maxJobsInAgenda")
+                    .set("2")
+            ).maxJobsInAgenda(0),
             Matchers.equalTo(2)
         );
     }
@@ -73,9 +53,11 @@ public final class OptionsTest {
     @Test
     public void readNotifyStudents() throws Exception {
         MatcherAssert.assertThat(
-            new Options(new Pmo(this.farm), OptionsTest.LOGIN)
-                .bootstrap()
-                .notifyStudents(false),
+            OptionsTest.options(
+                new Directives().append(
+                    new OptionsTest.XeNotify("students", true)
+                )
+            ).notifyStudents(false),
             Matchers.is(true)
         );
     }
@@ -83,9 +65,11 @@ public final class OptionsTest {
     @Test
     public void readNotifyRfps() throws Exception {
         MatcherAssert.assertThat(
-            new Options(new Pmo(this.farm), OptionsTest.LOGIN)
-                .bootstrap()
-                .notifyRfps(false),
+            OptionsTest.options(
+                new Directives().append(
+                    new OptionsTest.XeNotify("rfps", true)
+                )
+            ).notifyRfps(false),
             Matchers.is(true)
         );
     }
@@ -93,10 +77,93 @@ public final class OptionsTest {
     @Test
     public void notifyPublish() throws Exception {
         MatcherAssert.assertThat(
-            new Options(new Pmo(this.farm), OptionsTest.LOGIN)
-                .bootstrap()
-                .notifyPublish(false),
+            OptionsTest.options(
+                new Directives().append(
+                    new OptionsTest.XeNotify("publish", true)
+                )
+            ).notifyPublish(false),
             Matchers.is(true)
         );
+    }
+
+    @Test
+    public void readMaxJobsDefault() throws Exception {
+        MatcherAssert.assertThat(
+            OptionsTest.options(new Directives()).maxJobsInAgenda(1),
+            Matchers.equalTo(1)
+        );
+    }
+
+    @Test
+    public void readNotifyStudentsDefault() throws Exception {
+        MatcherAssert.assertThat(
+            OptionsTest.options(new Directives()).notifyStudents(true),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    public void readNotifyRfpsDefault() throws Exception {
+        MatcherAssert.assertThat(
+            OptionsTest.options(new Directives()).notifyRfps(true),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    public void notifyPublishDefault() throws Exception {
+        MatcherAssert.assertThat(
+            OptionsTest.options(new Directives()).notifyPublish(true),
+            Matchers.is(true)
+        );
+    }
+
+    /**
+     * Make XML options.
+     * @param dirs Directives
+     * @return Options
+     * @throws IOException If fails
+     */
+    private static Options options(final Iterable<Directive> dirs)
+        throws IOException {
+        final Farm farm = new FkFarm();
+        try (
+            final Item item = new Pmo(farm).acq("options/test.xml")
+        ) {
+            new Xocument(item).bootstrap("pmo/options").modify(dirs);
+        }
+        return new Options(new Pmo(farm), "test").bootstrap();
+    }
+
+    /**
+     * Notify directives.
+     */
+    private static final class XeNotify implements Iterable<Directive> {
+        /**
+         * Options name.
+         */
+        private final String name;
+        /**
+         * Option value.
+         */
+        private final boolean val;
+        /**
+         * Ctor.
+         * @param option Option name
+         * @param value Option value
+         */
+        XeNotify(final String option, final boolean value) {
+            this.name = option;
+            this.val = value;
+        }
+        @Override
+        public Iterator<Directive> iterator() {
+            return new Directives()
+                .addIf("options")
+                .addIf("notify")
+                .addIf(this.name)
+                .set(this.val)
+                .iterator();
+        }
     }
 }
