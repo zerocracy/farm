@@ -16,6 +16,7 @@
  */
 package com.zerocracy.entry;
 
+import com.jcabi.log.Logger;
 import com.zerocracy.Farm;
 import java.io.IOException;
 import org.cactoos.Scalar;
@@ -84,6 +85,7 @@ public final class Pings {
             // @checkstyle MagicNumberCheck (1 line)
             SimpleScheduleBuilder.repeatHourlyForever(24)
         );
+        Logger.info(this, "Pings started");
     }
 
     /**
