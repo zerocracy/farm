@@ -141,6 +141,31 @@ public final class Recharge {
     }
 
     /**
+     * How much will be recharged.
+     * @return Amount to recharge
+     * @throws IOException If fails
+     */
+    public Cash amount() throws IOException {
+        if (!this.exists()) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "Recharge %s doesn't exist, can't read amount", this.pid
+                )
+            );
+        }
+        try (final Item item = this.item()) {
+            return new Cash.S(
+                new Xocument(item.path()).xpath(
+                    String.format(
+                        "/catalog/project[@id='%s']/recharge/amount/text()",
+                        this.pid
+                    )
+                ).get(0)
+            );
+        }
+    }
+
+    /**
      * Create a funding.
      * @param system The system
      * @param amount The amount

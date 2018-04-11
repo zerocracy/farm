@@ -48,8 +48,10 @@ public final class RechargeTest {
         final Recharge recharge = new Recharge(
             farm, project.pid()
         );
-        recharge.set("stripe", new Cash.S("$100"), "the code");
+        final Cash amount = new Cash.S("$100");
+        recharge.set("stripe", amount, "the code");
         MatcherAssert.assertThat(recharge.exists(), Matchers.is(true));
+        MatcherAssert.assertThat(recharge.amount(), Matchers.is(amount));
         recharge.delete();
         MatcherAssert.assertThat(recharge.exists(), Matchers.is(false));
     }
