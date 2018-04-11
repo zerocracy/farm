@@ -68,7 +68,7 @@ public final class Recharge {
         try (final Item item = this.item()) {
             return !new Xocument(item.path()).nodes(
                 String.format(
-                    "/catalog/project[@id='%s']/funding", this.pid
+                    "/catalog/project[@id='%s']/recharge", this.pid
                 )
             ).isEmpty();
         }
@@ -92,7 +92,7 @@ public final class Recharge {
         try (final Item item = this.item()) {
             xml = new Xocument(item.path()).nodes(
                 String.format(
-                    "/catalog/project[@id='%s']/funding", this.pid
+                    "/catalog/project[@id='%s']/recharge", this.pid
                 )
             ).get(0);
         }
@@ -100,7 +100,7 @@ public final class Recharge {
         if (!"stripe".equals(system)) {
             throw new IllegalStateException(
                 String.format(
-                    "Unknown system \"%s\", can't funding", system
+                    "Unknown system \"%s\", can't recharge", system
                 )
             );
         }
@@ -108,7 +108,7 @@ public final class Recharge {
         final String customer = xml.xpath("code/text()").get(0);
         final String tid = new Stripe(this.farm).charge(
             customer, amount,
-            new Par("Project %s funding re-charge").say(this.pid)
+            new Par("Project %s was recharged").say(this.pid)
         );
         return claim
             .type("Funded by Stripe")
@@ -133,7 +133,7 @@ public final class Recharge {
             new Xocument(item.path()).modify(
                 new Directives().xpath(
                     String.format(
-                        "/catalog/project[@id='%s']/funding", this.pid
+                        "/catalog/project[@id='%s']/recharge", this.pid
                     )
                 ).strict(1).remove()
             );
@@ -152,11 +152,13 @@ public final class Recharge {
         if (!new Catalog(this.farm).bootstrap().exists(this.pid)) {
             throw new IllegalArgumentException(
                 String.format(
-                    "Project %s doesn't exist, can't set", this.pid
+                    "Project %s doesn't exist in catalog, can't set", this.pid
                 )
             );
         }
-        this.delete();
+        if (this.exists()) {
+            this.delete();
+        }
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()
@@ -165,7 +167,7 @@ public final class Recharge {
                             "/catalog/project[@id='%s']", this.pid
                         )
                     )
-                    .add("funding")
+                    .add("recharge")
                     .add("system").set(system).up()
                     .add("amount").set(amount).up()
                     .add("code").set(code).up()
