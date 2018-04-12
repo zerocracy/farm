@@ -51,6 +51,7 @@ import org.takes.rq.form.RqFormSmart;
  *  comment for details.
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class TkJoin implements TkRegex {
     /**
      * Farm.
@@ -85,6 +86,13 @@ public final class TkJoin implements TkRegex {
         final String personality = form.single("personality");
         final String about = form.single("about");
         final int stko = Integer.parseInt(form.single("stackoverflow"));
+        new ClaimOut().type("Join form submitted")
+            .author(author)
+            .param("telegram", telegram)
+            .param("stackoverflow", stko)
+            .param("about", about)
+            .param("personality", personality)
+            .postTo(this.farm);
         new ClaimOut().type("Notify all").param(
             "message", new Par(
                 "A new user @%s (%s) would like to join us and needs a mentor;",

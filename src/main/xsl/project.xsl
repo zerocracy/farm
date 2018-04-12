@@ -213,8 +213,9 @@ SOFTWARE.
         </xsl:otherwise>
       </xsl:choose>
       <xsl:text>.</xsl:text>
-      <xsl:if test="deficit = 'true'">
-        <xsl:text> </xsl:text>
+    </p>
+    <xsl:if test="deficit = 'true'">
+      <p>
         <span style="color:darkred">
           <xsl:text>ATTENTION</xsl:text>
         </span>
@@ -223,18 +224,23 @@ SOFTWARE.
           <xsl:text>funded</xsl:text>
         </a>
         <xsl:text>, we can't assign any new tasks to anyone.</xsl:text>
-      </xsl:if>
-      <xsl:if test="recharge = 'true'">
-        <xsl:text> </xsl:text>
-        <span style="color:darkred">
-          <xsl:text>We automatically </xsl:text>
-          <a href="http://www.zerocracy.com/policy.html#22">
-            <xsl:text>recharge</xsl:text>
-          </a>
-          <xsl:text> your card.</xsl:text>
+      </p>
+    </xsl:if>
+    <xsl:if test="recharge">
+      <p>
+        <xsl:text>We </xsl:text>
+        <span style="color:darkgreen">
+          <xsl:text>automatically</xsl:text>
         </span>
-      </xsl:if>
-    </p>
+        <xsl:text> </xsl:text>
+        <a href="http://www.zerocracy.com/policy.html#22">
+          <xsl:text>recharge</xsl:text>
+        </a>
+        <xsl:text> your card for </xsl:text>
+        <xsl:value-of select="recharge"/>
+        <xsl:text> when the balance drops below zero.</xsl:text>
+      </p>
+    </xsl:if>
     <form id="form" style="display:none" action="/pay/{project}" method="post">
       <input name="cents" id="cents" type="hidden"/>
       <input name="token" id="token" type="hidden"/>

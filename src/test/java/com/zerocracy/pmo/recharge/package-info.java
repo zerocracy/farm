@@ -14,24 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pings;
-
-import com.zerocracy.farm.fake.FkFarm;
-import org.junit.Test;
 
 /**
- * Test case for {@link Pings}.
+ * Recharge, tests.
+ *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.22
- * @checkstyle JavadocMethodCheck (500 lines)
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-public final class PingsTest {
-
-    @Test
-    public void startsAndRuns() throws Exception {
-        new Pings(new FkFarm()).start();
-    }
-
-}
+package com.zerocracy.pmo.recharge;
