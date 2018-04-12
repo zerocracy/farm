@@ -174,7 +174,7 @@ SOFTWARE.
       </form>
     </xsl:if>
     <p>
-      <xsl:text>Cash: </xsl:text>
+      <xsl:text>Cash balance: </xsl:text>
       <a href="/a/{project}?a=pm/cost/ledger">
         <xsl:value-of select="cash"/>
       </a>
@@ -239,6 +239,12 @@ SOFTWARE.
         <xsl:text> your card for </xsl:text>
         <xsl:value-of select="recharge"/>
         <xsl:text> when the balance drops below zero.</xsl:text>
+        <xsl:text> You can always request a full refund of the residual</xsl:text>
+        <xsl:text> project balance, just </xsl:text>
+        <a href="mailto:refund@zerocracy.com">
+          <xsl:text>email us</xsl:text>
+        </a>
+        <xsl:text>.</xsl:text>
       </p>
     </xsl:if>
     <form id="form" style="display:none" action="/pay/{project}" method="post">
