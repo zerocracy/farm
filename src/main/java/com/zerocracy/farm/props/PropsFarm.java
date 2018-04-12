@@ -27,7 +27,8 @@ import org.xembly.Directive;
 import org.xembly.Directives;
 
 /**
- * Props farm.
+ * Props farm. This Farm decorator will make sure all the Projects have their
+ * _props.xml file loaded and accessible, by using the Props class.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$

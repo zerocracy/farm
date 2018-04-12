@@ -31,7 +31,7 @@ import org.xembly.Directives;
 import org.xembly.Xembler;
 
 /**
- * Props item.
+ * Props item. This Item represents the _props.xml file in a PMO project.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
