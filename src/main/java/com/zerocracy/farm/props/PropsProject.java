@@ -25,8 +25,8 @@ import org.xembly.Directive;
 import org.xembly.Directives;
 
 /**
- * Props project. A project which can acquire its _props.xml file and also
- * add some post processing directives to it.
+ * Props project. A project which acquires its _props.xml file and also
+ * adds some post processing directives to it.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
