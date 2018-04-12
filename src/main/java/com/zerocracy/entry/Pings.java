@@ -154,7 +154,6 @@ public final class Pings {
             this.schd = scheduler;
             this.frm = farm;
         }
-
         @Override
         public Scheduler value() throws Exception {
             final Scheduler scheduler = this.schd.value();
@@ -186,7 +185,6 @@ public final class Pings {
             this.farm = farm;
             this.fallback = fallback;
         }
-
         @Override
         public Job newJob(final TriggerFiredBundle bundle,
             final Scheduler scheduler) throws SchedulerException {

@@ -71,7 +71,7 @@ public final class TkClaimTest {
             ),
             XhtmlMatchers.hasXPaths(
                 String.format("/page/claim/cid[text() = %d]", cid),
-                String.format("/page/children")
+                "/page/children"
             )
         );
     }
