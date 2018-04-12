@@ -166,7 +166,7 @@ public final class Recharge {
     }
 
     /**
-     * Create a funding.
+     * Create a recharge.
      * @param system The system
      * @param amount The amount
      * @param code The code
