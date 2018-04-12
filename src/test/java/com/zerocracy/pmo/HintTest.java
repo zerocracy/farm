@@ -16,10 +16,9 @@
  */
 package com.zerocracy.pmo;
 
-import com.jcabi.dynamo.mock.H2Data;
-import com.jcabi.dynamo.mock.MkRegion;
 import com.zerocracy.Project;
 import com.zerocracy.farm.fake.FkProject;
+import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
 import org.hamcrest.MatcherAssert;
@@ -41,14 +40,7 @@ public final class HintTest {
     public void postsSimpleClaim() throws Exception {
         final Project project = new FkProject();
         final Hint hint = new Hint(
-            new MkRegion(
-                new H2Data()
-                    .with(
-                        "0crat-hints",
-                        new String[] {"mnemo"},
-                        "ttl", "when"
-                    )
-            ),
+            new PropsFarm(),
             100, 0,
             new ClaimOut()
                 .type("Notify user")

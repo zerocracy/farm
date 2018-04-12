@@ -4,7 +4,6 @@ assets:
   settings.xml: zerocracy/home#assets/zerocracy/settings.xml
   id_rsa: zerocracy/home#assets/heroku-key
   id_rsa.pub: zerocracy/home#assets/heroku-key.pub
-  s3cfg: zerocracy/home#assets/s3cfg
 env:
   MAVEN_OPTS: -XX:MaxPermSize=256m -Xmx1g
 install: |-
@@ -18,10 +17,9 @@ install: |-
   java -version
 deploy:
   script: |
+    pdd --source=$(pwd) --verbose --file=/dev/null
     mvn clean install -Prultor --settings ../settings.xml --quiet
     mvn clean --quiet
-    pdd --source=$(pwd) --verbose --file=zc-farm.xml
-    s3cmd --no-progress put zc-farm.xml --config=../s3cfg s3://pdd.teamed.io/zc-farm.xml
 release:
   script: |
     [[ "${tag}" =~ ^[0-9]+(\.[0-9]+)*$ ]] || exit -1
@@ -44,11 +42,9 @@ release:
   - yegor256
 merge:
   script: |-
+    pdd --source=$(pwd) --verbose --file=/dev/null
     mvn help:system clean install -Pqulice --settings ../settings.xml
     mvn clean site -Psite --settings ../settings.xml --quiet
-    mvn clean --quiet
-    pdd --source=$(pwd) --verbose --file=/dev/null
   commanders: []
 architect:
 - yegor256
-- karato

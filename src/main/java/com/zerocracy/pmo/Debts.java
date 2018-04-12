@@ -357,7 +357,7 @@ public final class Debts {
             final String xpath = String.format(
                 "/debts/debt[@login='%s']/items/item/created/text()", uid
             );
-            return new IoCheckedScalar<>(
+            return new IoCheckedScalar<Date>(
                 new ItemAt<>(
                     new Sorted<>(
                         new Mapped<>(
