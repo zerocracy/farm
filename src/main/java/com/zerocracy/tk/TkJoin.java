@@ -109,7 +109,7 @@ public final class TkJoin implements TkRegex {
         return new RsForward(
             new RsParFlash(
                 new Par(
-                    "The request has been sent to all high-ranked users"
+                    "The request will be sent to all high-ranked users"
                 ).say(),
                 Level.INFO
             )
