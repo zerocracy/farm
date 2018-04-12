@@ -59,8 +59,17 @@ public final class Pings {
      * @param farm Farm
      */
     public Pings(final Farm farm) {
+        this(StdSchedulerFactory::getDefaultScheduler, farm);
+    }
+
+    /**
+     * Ctor with custom scheduler.
+     * @param scheduler Quartz scheduler
+     * @param farm Farm
+     */
+    Pings(final Scalar<Scheduler> scheduler, final Farm farm) {
         this.quartz = new IoCheckedScalar<>(
-            new SolidScalar<>(new Pings.Quartz(farm))
+            new SolidScalar<>(new Pings.Quartz(scheduler, farm))
         );
     }
 
@@ -69,6 +78,11 @@ public final class Pings {
      * @throws IOException If fails
      */
     public void start() throws IOException {
+        try {
+            this.quartz.value().start();
+        } catch (final SchedulerException err) {
+            throw new IOException("Failed to start", err);
+        }
         this.start(
             "minute",
             "Ping",
@@ -105,6 +119,7 @@ public final class Pings {
                     JobBuilder.newJob(Ping.class)
                         .usingJobData(Pings.CLAIM, claim)
                         .withIdentity(key)
+                        .requestRecovery()
                         .build(),
                     TriggerBuilder.newTrigger()
                         .forJob(key)
@@ -125,21 +140,25 @@ public final class Pings {
         /**
          * Farm.
          */
-        private final Farm farm;
+        private final Farm frm;
+        /**
+         * Quartz scheduler.
+         */
+        private final Scalar<Scheduler> schd;
         /**
          * Ctor.
+         * @param scheduler Quartz scheduler
          * @param farm Farm
          */
-        private Quartz(final Farm farm) {
-            this.farm = farm;
+        private Quartz(final Scalar<Scheduler> scheduler, final Farm farm) {
+            this.schd = scheduler;
+            this.frm = farm;
         }
-
         @Override
         public Scheduler value() throws Exception {
-            final Scheduler scheduler =
-                StdSchedulerFactory.getDefaultScheduler();
+            final Scheduler scheduler = this.schd.value();
             scheduler.setJobFactory(
-                new Pings.Factory(this.farm, new SimpleJobFactory())
+                new Pings.Factory(this.frm, new SimpleJobFactory())
             );
             return scheduler;
         }
@@ -166,7 +185,6 @@ public final class Pings {
             this.farm = farm;
             this.fallback = fallback;
         }
-
         @Override
         public Job newJob(final TriggerFiredBundle bundle,
             final Scheduler scheduler) throws SchedulerException {

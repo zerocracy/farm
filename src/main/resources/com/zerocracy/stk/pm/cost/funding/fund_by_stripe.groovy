@@ -30,12 +30,18 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Funded by Stripe')
   ClaimIn claim = new ClaimIn(xml)
   Cash amount = new Cash.S(claim.param('amount'))
+  String details
+  if (claim.hasAuthor()) {
+    details = new Par('Funded via Stripe by @%s').say(claim.author())
+  } else {
+    details = new Par('Funded via Stripe by recharge').say()
+  }
   new Ledger(project).bootstrap().add(
     new Ledger.Transaction(
       amount,
       'assets', 'cash',
       'income', claim.param('stripe_customer'),
-      new Par('Funded via Stripe by @%s').say(claim.author())
+      details
     )
   )
   Farm farm = binding.variables.farm

@@ -40,7 +40,7 @@ def exec(Project project, XML xml) {
       'every time the balance goes below zero,',
       'we will charge your card for %s, see §22;',
       'to stop that, set your project on pause and then activate again,',
-      'as explained in §24'
-    ).say(amount)
+      'as explained in §24; Stripe customer ID is `%s`'
+    ).say(amount, customer)
   ).postTo(project)
 }
