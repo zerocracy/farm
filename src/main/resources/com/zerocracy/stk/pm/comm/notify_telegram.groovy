@@ -22,6 +22,8 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.pm.ClaimIn
+import org.cactoos.Proc
+import org.cactoos.func.RetryFunc
 import org.telegram.telegrambots.api.methods.send.SendMessage
 
 def exec(Project project, XML xml) {
@@ -35,10 +37,17 @@ def exec(Project project, XML xml) {
   }
   long chat = Long.parseLong(parts[1])
   Farm farm = binding.variables.farm
-  new ExtTelegram(farm).value().post(
-    new SendMessage()
-      .enableMarkdown(true)
-      .setChatId(chat)
-      .setText(claim.param('message'))
+  new RetryFunc<>(
+    new Proc() {
+      @Override
+      void exec(final Object input) throws Exception {
+        new ExtTelegram(farm).value().post(
+          new SendMessage()
+            .enableMarkdown(true)
+            .setChatId(chat)
+            .setText(claim.param('message'))
+        )
+      }
+    }
   )
 }
