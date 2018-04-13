@@ -18,6 +18,7 @@ package com.zerocracy.tools;
 
 import com.zerocracy.farm.props.Props;
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
 import java.util.Collection;
 import java.util.LinkedList;
 import org.cactoos.Text;
@@ -59,6 +60,11 @@ public final class TxtUnrecoverableError implements Text {
             " Please, submit it",
             " [here](https://github.com/zerocracy/farm/issues):",
             "\n\n```\n",
+            "PID: ",
+            ManagementFactory.getRuntimeMXBean().getName(),
+            ", thread: ",
+            Thread.currentThread().getName(),
+            "\n",
             String.join("\n", TxtUnrecoverableError.messages(this.err)),
             "\n```\n\n",
             String.format(
