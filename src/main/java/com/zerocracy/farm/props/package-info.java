@@ -16,14 +16,15 @@
  */
 
 /**
- * Props farm. Classes in this package are used to make sure that the Farm
- * reflects the _props.xml file containing properties such as sensitive
- * credentials used in PMO project.
+ * Props farm. Classes in this package are used to make sure that the
+ * {@link Farm} reflects the _props.xml file containing properties such as
+ * sensitive credentials used in PMO project.
  *
- * It is used in the decoration chain, in the ctor SmartFarm(farm), which is the
- * Farm entry point used in Main.exec.
+ * It is used in the decoration chain, in the constructor
+ * {@link #SmartFarm(Farm) SmartFarm(Farm)}, which is the Farm entry point
+ * used in Main.exec.
  *
- * Also, PropsFarm may be used directly in tests where PMO is needed,
+ * Also, {@link PropsFarm} may be used directly in tests where PMO is needed,
  * in order to have access to the properties.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
