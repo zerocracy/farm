@@ -376,7 +376,7 @@ SOFTWARE.
     <dependency>
       <groupId>org.telegram</groupId>
       <artifactId>telegrambots</artifactId>
-      <version>3.3</version>
+      <version>3.6</version>
       <exclusions>
         <exclusion>
           <groupId>org.glassfish.hk2.external</groupId>
