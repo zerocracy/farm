@@ -76,6 +76,7 @@ SOFTWARE.
   </distributionManagement>
   <properties>
     <mongo.version>3.5.0</mongo.version>
+    <telegram.version>3.6</telegram.version>
   </properties>
   <dependencies>
     <dependency>
@@ -376,7 +377,7 @@ SOFTWARE.
     <dependency>
       <groupId>org.telegram</groupId>
       <artifactId>telegrambots</artifactId>
-      <version>3.6</version>
+      <version>${telegram.version}</version>
       <exclusions>
         <exclusion>
           <groupId>org.glassfish.hk2.external</groupId>
@@ -402,7 +403,7 @@ SOFTWARE.
     <dependency>
       <groupId>org.telegram</groupId>
       <artifactId>telegrambots-meta</artifactId>
-      <version>3.3</version>
+      <version>${telegram.version}</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
