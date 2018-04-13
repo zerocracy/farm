@@ -16,6 +16,7 @@
  */
 package com.zerocracy.radars.telegram;
 
+import com.jcabi.log.Logger;
 import com.zerocracy.Farm;
 import com.zerocracy.farm.props.Props;
 import java.io.IOException;
@@ -74,6 +75,12 @@ public final class TmZerocrat extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(final Update update) {
+        Logger.info(
+            this, "%d from @%s: %s",
+            update.getMessage().getChatId(),
+            update.getMessage().getFrom().getUserName(),
+            update.getMessage().getText()
+        );
         try {
             this.reaction.react(this, this.farm, update);
         } catch (final IOException ex) {

@@ -44,7 +44,11 @@ public final class ExtTelegram implements Scalar<TmZerocrat> {
                     ApiContextInitializer.init();
                     final TmZerocrat bot = new TmZerocrat(frm);
                     new TelegramBotsApi().registerBot(bot);
-                    Logger.info(ExtTelegram.class, "Telegram bot registered");
+                    Logger.info(
+                        ExtTelegram.class,
+                        "Telegram bot registered as @%s",
+                        bot.getBotUsername()
+                    );
                     return bot;
                 }
             )
