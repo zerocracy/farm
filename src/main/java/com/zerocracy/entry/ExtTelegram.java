@@ -37,12 +37,12 @@ public final class ExtTelegram implements Scalar<TmZerocrat> {
     /**
      * The singleton.
      */
-    private static final UncheckedFunc<Farm, TmZerocrat> SINGLETON =
+    private static final UncheckedFunc<ExtTelegram, TmZerocrat> SINGLETON =
         new UncheckedFunc<>(
-            new SolidFunc<Farm, TmZerocrat>(
-                frm -> {
+            new SolidFunc<ExtTelegram, TmZerocrat>(
+                ext -> {
                     ApiContextInitializer.init();
-                    final TmZerocrat bot = new TmZerocrat(frm);
+                    final TmZerocrat bot = new TmZerocrat(ext.farm, ext.test);
                     new TelegramBotsApi().registerBot(bot);
                     Logger.info(
                         ExtTelegram.class,
@@ -58,18 +58,31 @@ public final class ExtTelegram implements Scalar<TmZerocrat> {
      * The farm.
      */
     private final Farm farm;
+    /**
+     * Test credentials.
+     */
+    private final String test;
 
     /**
      * Ctor.
      * @param frm The farm
      */
     public ExtTelegram(final Farm frm) {
+        this(frm, "none@none");
+    }
+    /**
+     * Ctor.
+     * @param frm The farm
+     * @param cred Test credentials
+     */
+    public ExtTelegram(final Farm frm, final String cred) {
         this.farm = frm;
+        this.test = cred;
     }
 
     @Override
     public TmZerocrat value() {
-        return ExtTelegram.SINGLETON.apply(this.farm);
+        return ExtTelegram.SINGLETON.apply(this);
     }
 
 }
