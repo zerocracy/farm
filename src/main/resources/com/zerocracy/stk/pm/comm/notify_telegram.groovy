@@ -49,5 +49,5 @@ def exec(Project project, XML xml) {
         )
       }
     }
-  )
+  ).apply(null)
 }
