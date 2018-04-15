@@ -19,6 +19,7 @@ package com.zerocracy.entry;
 import com.jcabi.log.Logger;
 import com.zerocracy.Farm;
 import com.zerocracy.radars.telegram.TmZerocrat;
+import lombok.EqualsAndHashCode;
 import org.cactoos.Scalar;
 import org.cactoos.func.SolidFunc;
 import org.cactoos.func.UncheckedFunc;
@@ -32,6 +33,7 @@ import org.telegram.telegrambots.TelegramBotsApi;
  * @version $Id$
  * @since 0.11
  */
+@EqualsAndHashCode(of = "farm")
 public final class ExtTelegram implements Scalar<TmZerocrat> {
 
     /**
@@ -75,7 +77,7 @@ public final class ExtTelegram implements Scalar<TmZerocrat> {
      * @param frm The farm
      * @param cred Test credentials
      */
-    public ExtTelegram(final Farm frm, final String cred) {
+    ExtTelegram(final Farm frm, final String cred) {
         this.farm = frm;
         this.test = cred;
     }
