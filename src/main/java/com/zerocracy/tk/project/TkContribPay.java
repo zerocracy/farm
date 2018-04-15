@@ -21,6 +21,7 @@ import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.pm.ClaimOut;
+import com.zerocracy.pmo.Catalog;
 import com.zerocracy.pmo.recharge.Stripe;
 import com.zerocracy.tk.RqUser;
 import com.zerocracy.tk.RsParFlash;
@@ -60,6 +61,16 @@ public final class TkContribPay implements TkRegex {
     @Override
     public Response act(final RqRegex req) throws IOException {
         final Project project = new RqAnonProject(this.farm, req);
+        final Catalog catalog = new Catalog(this.farm).bootstrap();
+        if (!catalog.fee(project.pid()).equals(Cash.ZERO)) {
+            throw new RsForward(
+                new RsParFlash(
+                    "The project is not free, see §50",
+                    Level.WARNING
+                ),
+                String.format("/p/%s", project.pid())
+            );
+        }
         final RqFormSmart form = new RqFormSmart(new RqGreedy(req));
         final String email = form.single("email");
         final Cash amount = new Cash.S(

@@ -82,7 +82,7 @@ def exec(Project pmo, XML xml) {
     .type('Make payment')
     .param('login', author)
     .param('job', 'none')
-    .param('minutes', new Policy().get('1.price', -64))
+    .param('minutes', -new Policy().get('1.price', 64))
     .param('reason', new Par('Invited @%s').say(login))
     .postTo(pmo)
   claim.copy().type('Notify PMO').param(

@@ -37,7 +37,7 @@ def exec(Project project, XML xml) {
         'reason',
         new Par('Tasks refusal is discouraged, see §6').say()
       )
-      .param('minutes', new Policy().get('6.penalty', -15))
+      .param('minutes', -new Policy().get('6.penalty', 15))
       .postTo(project)
   }
 }

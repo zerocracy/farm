@@ -17,6 +17,7 @@
 package com.zerocracy.pm.cost;
 
 import com.zerocracy.Item;
+import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
@@ -237,7 +238,9 @@ public final class Ledger {
                 .add("dtx").set(this.debitx).up()
                 .add("ct").set(this.credit).up()
                 .add("ctx").set(this.creditx).up()
-                .add("details").set(this.details).up();
+                .add("details")
+                .set(new Par.ToText(this.details).toString())
+                .up();
         }
 
         /**

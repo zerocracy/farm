@@ -150,11 +150,14 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="user">
     <tr>
-      <xsl:if test="login = /page/identity/login">
-        <xsl:attribute name="style">
-          <xsl:text>background-color:darkseagreen</xsl:text>
-        </xsl:attribute>
-      </xsl:if>
+      <xsl:attribute name="style">
+        <xsl:if test="login = /page/identity/login">
+          <xsl:text>background-color:darkseagreen;</xsl:text>
+        </xsl:if>
+        <xsl:if test="vacation">
+          <xsl:text>opacity:0.5;</xsl:text>
+        </xsl:if>
+      </xsl:attribute>
       <td>
         <img src="https://socatar.com/github/{login}/90-90" style="width:30px;height:30px;border-radius:3px;vertical-align:middle;"/>
         <xsl:text> </xsl:text>
@@ -168,9 +171,6 @@ SOFTWARE.
             <xsl:text>z</xsl:text>
           </a>
         </sub>
-        <xsl:if test="vacation">
-          <xsl:text>(on vacation)</xsl:text>
-        </xsl:if>
       </td>
       <td>
         <xsl:choose>

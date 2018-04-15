@@ -30,13 +30,16 @@ SOFTWARE.
   <xsl:template match="page" mode="body">
     <div class="center">
       <p>
-        <a href="/">
+        <a href="{links/link[@rel='home']/@href}">
           <img src="/svg/zerocrat.svg" style="height:128px;"/>
         </a>
       </p>
       <p>
-        <xsl:text>Zerocrat is a project manager</xsl:text>
-        <xsl:text> that never sleeps.</xsl:text>
+        <xsl:text>Zerocrat is a project manager that </xsl:text>
+        <a href="http://www.yegor256.com/2018/03/21/zerocracy-announcement.html">
+          <xsl:text>never sleeps</xsl:text>
+        </a>
+        <xsl:text>.</xsl:text>
       </p>
       <nav>
         <ul>

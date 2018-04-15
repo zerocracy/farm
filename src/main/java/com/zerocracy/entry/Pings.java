@@ -16,112 +16,185 @@
  */
 package com.zerocracy.entry;
 
-import com.jcabi.log.VerboseRunnable;
-import com.jcabi.log.VerboseThreads;
+import com.jcabi.log.Logger;
 import com.zerocracy.Farm;
-import com.zerocracy.Project;
-import com.zerocracy.pm.ClaimOut;
-import com.zerocracy.pm.Claims;
-import com.zerocracy.pmo.Catalog;
 import java.io.IOException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import org.cactoos.Proc;
-import org.cactoos.func.RunnableOf;
-import org.cactoos.iterable.Shuffled;
+import org.cactoos.Scalar;
+import org.cactoos.scalar.IoCheckedScalar;
+import org.cactoos.scalar.SolidScalar;
+import org.quartz.Job;
+import org.quartz.JobBuilder;
+import org.quartz.JobKey;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.SimpleScheduleBuilder;
+import org.quartz.TriggerBuilder;
+import org.quartz.impl.StdSchedulerFactory;
+import org.quartz.simpl.SimpleJobFactory;
+import org.quartz.spi.JobFactory;
+import org.quartz.spi.TriggerFiredBundle;
 
 /**
  * Pings.
- *
  * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.21
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-final class Pings {
-
+public final class Pings {
     /**
-     * Executor service.
+     * Claim job param.
      */
-    private final ScheduledExecutorService executor;
-
+    private static final String CLAIM = "claim";
+    /**
+     * Quartz group.
+     */
+    private static final String GROUP = "pings";
     /**
      * Farm.
      */
-    private final Farm farm;
-
+    private final IoCheckedScalar<Scheduler> quartz;
     /**
      * Ctor.
-     * @param frm Farm
+     * @param farm Farm
      */
-    Pings(final Farm frm) {
-        this.farm = frm;
-        this.executor = Executors.newScheduledThreadPool(
-            Runtime.getRuntime().availableProcessors(),
-            new VerboseThreads(Pings.class)
+    public Pings(final Farm farm) {
+        this(StdSchedulerFactory::getDefaultScheduler, farm);
+    }
+
+    /**
+     * Ctor with custom scheduler.
+     * @param scheduler Quartz scheduler
+     * @param farm Farm
+     */
+    Pings(final Scalar<Scheduler> scheduler, final Farm farm) {
+        this.quartz = new IoCheckedScalar<>(
+            new SolidScalar<>(new Pings.Quartz(scheduler, farm))
         );
     }
 
     /**
      * Start it.
-     */
-    public void start() {
-        this.executor.scheduleWithFixedDelay(
-            new VerboseRunnable(
-                new RunnableOf<>(
-                    (Proc<Void>) input -> this.post("Ping")
-                ),
-                true, true
-            ),
-            1L, 1L, TimeUnit.MINUTES
-        );
-        this.executor.scheduleWithFixedDelay(
-            new VerboseRunnable(
-                new RunnableOf<>(
-                    (Proc<Void>) input -> this.post("Ping hourly")
-                ),
-                true, true
-            ),
-            1L, 1L, TimeUnit.HOURS
-        );
-        this.executor.scheduleWithFixedDelay(
-            new VerboseRunnable(
-                new RunnableOf<>(
-                    (Proc<Void>) input -> this.post("Ping daily")
-                ),
-                true, true
-            ),
-            1L, 1L, TimeUnit.DAYS
-        );
-    }
-
-    /**
-     * Post a ping.
-     * @param type The type of claim to post
      * @throws IOException If fails
      */
-    private void post(final String type) throws IOException {
-        for (final Project project : new Shuffled<>(this.farm.find(""))) {
-            this.post(project, type);
+    public void start() throws IOException {
+        try {
+            this.quartz.value().start();
+        } catch (final SchedulerException err) {
+            throw new IOException("Failed to start", err);
         }
+        this.start(
+            "minute",
+            "Ping",
+            SimpleScheduleBuilder.repeatMinutelyForever()
+        );
+        this.start(
+            "hour",
+            "Ping hourly",
+            SimpleScheduleBuilder.repeatHourlyForever()
+        );
+        this.start(
+            "day",
+            "Ping daily",
+            // @checkstyle MagicNumberCheck (1 line)
+            SimpleScheduleBuilder.repeatHourlyForever(24)
+        );
+        Logger.info(this, "Pings started");
     }
 
     /**
-     * Post a ping.
-     * @param project The project
-     * @param type The type of claim to post
+     * Start ping with name, type and schedule.
+     * @param name Job name
+     * @param claim Claim type
+     * @param schedule Job schedule
      * @throws IOException If fails
      */
-    private void post(final Project project, final String type)
-        throws IOException {
-        final Catalog catalog = new Catalog(this.farm).bootstrap();
-        if (catalog.exists(project.pid()) && !catalog.pause(project.pid())) {
-            final Claims claims = new Claims(project).bootstrap();
-            if (claims.iterate().isEmpty()) {
-                new ClaimOut().type(type).postTo(project);
+    private void start(final String name, final String claim,
+        final SimpleScheduleBuilder schedule) throws IOException {
+        try {
+            final Scheduler scheduler = this.quartz.value();
+            final JobKey key = new JobKey(name, Pings.GROUP);
+            if (!scheduler.checkExists(key)) {
+                scheduler.scheduleJob(
+                    JobBuilder.newJob(Ping.class)
+                        .usingJobData(Pings.CLAIM, claim)
+                        .withIdentity(key)
+                        .requestRecovery()
+                        .build(),
+                    TriggerBuilder.newTrigger()
+                        .forJob(key)
+                        .withSchedule(schedule)
+                        .startNow()
+                        .build()
+                );
             }
+        } catch (final SchedulerException err) {
+            throw new IOException(err);
         }
     }
 
+    /**
+     * Quartz scalar.
+     */
+    private static final class Quartz implements Scalar<Scheduler> {
+        /**
+         * Farm.
+         */
+        private final Farm frm;
+        /**
+         * Quartz scheduler.
+         */
+        private final Scalar<Scheduler> schd;
+        /**
+         * Ctor.
+         * @param scheduler Quartz scheduler
+         * @param farm Farm
+         */
+        private Quartz(final Scalar<Scheduler> scheduler, final Farm farm) {
+            this.schd = scheduler;
+            this.frm = farm;
+        }
+        @Override
+        public Scheduler value() throws Exception {
+            final Scheduler scheduler = this.schd.value();
+            scheduler.setJobFactory(
+                new Pings.Factory(this.frm, new SimpleJobFactory())
+            );
+            return scheduler;
+        }
+    }
+
+    /**
+     * Job quartz factory.
+     */
+    private static final class Factory implements JobFactory {
+        /**
+         * Farm.
+         */
+        private final Farm farm;
+        /**
+         * Fallback factory.
+         */
+        private final JobFactory fallback;
+        /**
+         * Ctor.
+         * @param farm Farm
+         * @param fallback Fallback factory
+         */
+        Factory(final Farm farm, final JobFactory fallback) {
+            this.farm = farm;
+            this.fallback = fallback;
+        }
+        @Override
+        public Job newJob(final TriggerFiredBundle bundle,
+            final Scheduler scheduler) throws SchedulerException {
+            final Job job;
+            if (Ping.class.equals(bundle.getJobDetail().getJobClass())) {
+                job = new Ping(this.farm);
+            } else {
+                job = this.fallback.newJob(bundle, scheduler);
+            }
+            return job;
+        }
+    }
 }

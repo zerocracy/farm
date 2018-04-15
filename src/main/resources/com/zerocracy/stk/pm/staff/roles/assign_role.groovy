@@ -36,12 +36,21 @@ def exec(Project project, XML xml) {
   String login = claim.param('login')
   Farm farm = binding.variables.farm
   People people = new People(farm).bootstrap()
-  if (!people.hasMentor(login)) {
+  String role = claim.param('role')
+  if (!people.hasMentor(login) && role != 'PO') {
     throw new SoftException(
-      new Par('Assignee @%s must be a registered person').say(login)
+      new Par('Assignee @%s must be invited').say(login)
     )
   }
-  String role = claim.param('role')
+  if (people.wallet(login).empty && claim.hasParam('rate')) {
+    throw new SoftException(
+      new Par(
+        '@%s doesn\'t have a payment method configured yet,',
+        'we won\'t be able to pay them;',
+        'the rate can\'t be set.'
+      ).say(login)
+    )
+  }
   Roles roles = new Roles(project).bootstrap()
   Rates rates = new Rates(project).bootstrap()
   String msg

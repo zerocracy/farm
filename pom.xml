@@ -76,6 +76,7 @@ SOFTWARE.
   </distributionManagement>
   <properties>
     <mongo.version>3.5.0</mongo.version>
+    <telegram.version>3.6</telegram.version>
   </properties>
   <dependencies>
     <dependency>
@@ -135,6 +136,11 @@ SOFTWARE.
       <groupId>com.paypal.sdk</groupId>
       <artifactId>paypal-core</artifactId>
       <version>1.7.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.quartz-scheduler</groupId>
+      <artifactId>quartz</artifactId>
+      <version>2.2.1</version>
     </dependency>
     <dependency>
       <groupId>org.mongodb</groupId>
@@ -277,7 +283,7 @@ SOFTWARE.
     <dependency>
       <groupId>com.jcabi</groupId>
       <artifactId>jcabi-github</artifactId>
-      <version>0.36.1</version>
+      <version>0.38</version>
     </dependency>
     <dependency>
       <groupId>com.jcabi</groupId>
@@ -371,7 +377,7 @@ SOFTWARE.
     <dependency>
       <groupId>org.telegram</groupId>
       <artifactId>telegrambots</artifactId>
-      <version>3.3</version>
+      <version>${telegram.version}</version>
       <exclusions>
         <exclusion>
           <groupId>org.glassfish.hk2.external</groupId>
@@ -397,12 +403,18 @@ SOFTWARE.
     <dependency>
       <groupId>org.telegram</groupId>
       <artifactId>telegrambots-meta</artifactId>
-      <version>3.3</version>
+      <version>${telegram.version}</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <version>23.1-jre</version>
+    </dependency>
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>42.2.2</version>
+      <scope>runtime</scope>
     </dependency>
   </dependencies>
   <build>
@@ -635,6 +647,7 @@ SOFTWARE.
                   </rules>
                   <excludes combine.children="append">
                     <exclude>com/zerocracy/pmo/People.java</exclude>
+                    <exclude>com/zerocracy/pings/*.*</exclude>
                   </excludes>
                 </configuration>
               </execution>

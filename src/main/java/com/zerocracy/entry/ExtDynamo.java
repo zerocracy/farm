@@ -18,6 +18,8 @@ package com.zerocracy.entry;
 
 import com.jcabi.dynamo.Credentials;
 import com.jcabi.dynamo.Region;
+import com.jcabi.dynamo.mock.H2Data;
+import com.jcabi.dynamo.mock.MkRegion;
 import com.jcabi.dynamo.retry.ReRegion;
 import com.zerocracy.Farm;
 import com.zerocracy.farm.props.Props;
@@ -46,14 +48,25 @@ public final class ExtDynamo implements Scalar<Region> {
                     final Props props = new Props(frm);
                     final Region region;
                     if (props.has("//testing")) {
-                        region = new Region.Simple(
-                            new Credentials.Direct(
-                                Credentials.TEST,
-                                Integer.valueOf(
-                                    System.getProperty("dynamo.port")
-                                )
-                            )
+                        final String port = System.getProperty(
+                            "dynamo.port", ""
                         );
+                        if (port.isEmpty()) {
+                            region = new MkRegion(
+                                new H2Data()
+                                    .with(
+                                        "0crat-hints",
+                                        new String[] {"mnemo"},
+                                        "when", "ttl"
+                                    )
+                            );
+                        } else {
+                            region = new Region.Simple(
+                                new Credentials.Direct(
+                                    Credentials.TEST, Integer.parseInt(port)
+                                )
+                            );
+                        }
                     } else {
                         region = new ReRegion(
                             new Region.Simple(

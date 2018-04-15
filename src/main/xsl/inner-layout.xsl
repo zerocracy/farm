@@ -27,7 +27,7 @@ SOFTWARE.
       <nav>
         <ul>
           <li>
-            <a href="/">
+            <a href="{links/link[@rel='home']/@href}">
               <img src="/svg/logo.svg" class="logo"/>
             </a>
           </li>
@@ -113,7 +113,7 @@ SOFTWARE.
             <a href="https://github.com/zerocracy">GitHub</a>
           </li>
           <li>
-            <a href="https://t.me/joinchat/AAAAAEJFMRzsRTRxM3ec6A">Telegram</a>
+            <a href="https://t.me/joinchat/CLxAaQ0xp-g_3WWI3MBr2g">Telegram</a>
           </li>
           <li>
             <a href="https://twitter.com/0crat">Twitter</a>

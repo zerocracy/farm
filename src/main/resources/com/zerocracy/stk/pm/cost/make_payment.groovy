@@ -55,105 +55,102 @@ def exec(Project project, XML xml) {
     }
     price = rate.mul(minutes) / 60
   }
-  if (price != Cash.ZERO) {
-    String tail = ''
-    Farm farm = binding.variables.farm
-    People people = new People(farm).bootstrap()
-    if (!claim.hasParam('no-tuition-fee') && people.hasMentor(login) && people.mentor(login) != '0crat') {
-      int share = new Policy().get('45.share', 8)
-      Cash fee = price.mul(share) / 100
-      price = price.mul(100 - share) / 100
-      String mentor = people.mentor(login)
-      claim.copy()
-        .type('Make payment')
-        .param('login', mentor)
-        .param('minutes', 0)
-        .param('cash', fee)
-        .param('student', login)
-        .param('no-tuition-fee', true)
-        .param('reason', new Par('Tuition fee from @%s').say(login))
-        .postTo(project)
-      tail = new Par(
-        'the tuition fee %s was deducted',
-        'and sent to @%s (your mentor), according to §45'
-      ).say(fee, mentor)
-    }
-    Ledger ledger = new Ledger(project).bootstrap()
-    String msg
-    try {
-      msg = new Payroll(farm).pay(
-        ledger,
-        login, price, "Payment for ${job} (${minutes} minutes): ${reason}"
-      )
-      claim.copy()
-        .type('Payment was made')
-        .param('amount', price)
-        .param('payment_id', msg)
-        .postTo(project)
-      claim.copy()
-        .type('Notify user')
-        .token("user;${login}")
-        .param(
-          'message',
-          new Par(
-            'We just paid you %s (`%s`) for %s: %s'
-          ).say(price, msg, job, reason) + tail
-        )
-        .postTo(project)
-    } catch (IOException ex) {
-      Cash commission = price.mul(3) / 100
-      ledger.add(
-        new Ledger.Transaction(
-          price.add(commission),
-          'liabilities', 'debt',
-          'assets', 'cash',
-          String.format(
-            '%s (amount:%s, commission:%s)',
-            new Par.ToText(reason).toString(),
-            price, commission
-          )
-        ),
-        new Ledger.Transaction(
-          commission,
-          'expenses', 'jobs',
-          'liabilities', 'debt',
-          "${commission} (commission)"
-        ),
-        new Ledger.Transaction(
-          price,
-          'expenses', 'jobs',
-          'liabilities', "@${login}",
-          new Par.ToText(reason).toString()
-        )
-      )
-      Debts debts = new Debts(farm).bootstrap()
-      debts.add(login, price, "${reason} at ${job}", ex.message)
-      claim.copy()
-        .type('Payment was added to debts')
-        .param('amount', price)
-        .postTo(project)
-      claim.copy()
-        .type('Notify user')
-        .token("user;${login}")
-        .param(
-          'message',
-          new Par(
-            'We are very sorry, but we failed to pay you %s for %s: "%s";',
-            'this amount was added to the list of payments we owe you;',
-            'we will try to send them all together very soon;',
-            'we will keep you informed, see §20'
-          ).say(price, job, ex.message) + tail
-        )
-        .postTo(project)
-    }
+  if (price == Cash.ZERO) {
+    return
+  }
+  String tail = ''
+  Farm farm = binding.variables.farm
+  People people = new People(farm).bootstrap()
+  if (!claim.hasParam('no-tuition-fee') && people.hasMentor(login) && people.mentor(login) != '0crat') {
+    int share = new Policy().get('45.share', 8)
+    Cash fee = price.mul(share) / 100
+    price = price.mul(100 - share) / 100
+    String mentor = people.mentor(login)
     claim.copy()
-      .type('Notify project')
+      .type('Make payment')
+      .param('login', mentor)
+      .param('minutes', 0)
+      .param('cash', fee)
+      .param('student', login)
+      .param('no-tuition-fee', true)
+      .param('reason', new Par('Tuition fee from @%s').say(login))
+      .postTo(project)
+    tail = new Par(
+      'the tuition fee %s was deducted',
+      'and sent to @%s (your mentor), according to §45'
+    ).say(fee, mentor)
+  }
+  Ledger ledger = new Ledger(project).bootstrap()
+  String msg
+  try {
+    msg = new Payroll(farm).pay(
+      ledger,
+      login, price, "Payment for ${job} (${minutes} minutes): ${reason}"
+    )
+    claim.copy()
+      .type('Payment was made')
+      .param('amount', price)
+      .param('payment_id', msg)
+      .postTo(project)
+    claim.copy()
+      .type('Notify user')
+      .token("user;${login}")
       .param(
         'message',
         new Par(
-          'We just paid %s to @%s for %s: %s'
-        ).say(price, login, job, reason)
+          'We just paid you %s (`%s`) for %s: %s'
+        ).say(price, msg, job, reason) + tail
+      )
+      .postTo(project)
+  } catch (IOException ex) {
+    Cash commission = price.mul(3) / 100
+    ledger.add(
+      new Ledger.Transaction(
+        price.add(commission),
+        'liabilities', 'debt',
+        'assets', 'cash',
+        reason + new Par(' (amount:%s, commission:%s)').say(price, commission)
+      ),
+      new Ledger.Transaction(
+        commission,
+        'expenses', 'jobs',
+        'liabilities', 'debt',
+        "${commission} (commission)"
+      ),
+      new Ledger.Transaction(
+        price,
+        'expenses', 'jobs',
+        'liabilities', "@${login}",
+        reason
+      )
+    )
+    Debts debts = new Debts(farm).bootstrap()
+    debts.add(login, price, "${reason} at ${job}", ex.message)
+    claim.copy()
+      .type('Payment was added to debts')
+      .param('amount', price)
+      .postTo(project)
+    claim.copy()
+      .type('Notify user')
+      .token("user;${login}")
+      .param(
+        'message',
+        new Par(
+          'We are very sorry, but we failed to pay you %s for %s: "%s";',
+          'this amount was added to the list of payments we owe you;',
+          'we will try to send them all together very soon;',
+          'we will keep you informed, see §20'
+        ).say(price, job, ex.message) + tail
       )
       .postTo(project)
   }
+  claim.copy()
+    .type('Notify project')
+    .param(
+      'message',
+      new Par(
+        'We just paid %s to @%s for %s: %s'
+      ).say(price, login, job, reason)
+    )
+    .postTo(project)
 }

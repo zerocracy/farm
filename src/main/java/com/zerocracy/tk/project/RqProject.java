@@ -21,6 +21,7 @@ import com.zerocracy.Item;
 import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.pm.staff.Roles;
+import com.zerocracy.pmo.People;
 import com.zerocracy.pmo.Pmo;
 import com.zerocracy.tk.RqUser;
 import com.zerocracy.tk.RsParFlash;
@@ -59,7 +60,7 @@ public final class RqProject implements Project {
             () -> {
                 final Project pmo = new Pmo(farm);
                 final Project project = new RqAnonProject(farm, req);
-                final String user = new RqUser(farm, req).value();
+                final String user = new RqUser(farm, req, false).value();
                 final Roles roles = new Roles(project).bootstrap();
                 final Roles admins = new Roles(pmo).bootstrap();
                 if (required.length > 0 && !roles.hasRole(user, required)
@@ -80,6 +81,18 @@ public final class RqProject implements Project {
                         new RsParFlash(
                             new Par(
                                 "You are not a member of %s"
+                            ).say(project.pid()),
+                            Level.WARNING
+                        )
+                    );
+                }
+                final People people = new People(farm).bootstrap();
+                if (!roles.hasRole(user, "PO") && !people.hasMentor(user)) {
+                    throw new RsForward(
+                        new RsParFlash(
+                            new Par(
+                                "You are not a PO of %s",
+                                "and you don't have a mentor yet, see §1"
                             ).say(project.pid()),
                             Level.WARNING
                         )

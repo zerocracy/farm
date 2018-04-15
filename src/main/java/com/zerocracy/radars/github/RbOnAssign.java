@@ -73,7 +73,10 @@ public final class RbOnAssign implements Rebound {
                 .author(sender)
                 .param("login", login)
                 .param("job", new Job(issue))
-                .param("reason", "GitHub issue was assigned")
+                .param(
+                    "reason",
+                    String.format("GitHub issue was assigned by @%s", sender)
+                )
                 .postTo(new GhProject(farm, issue.repo()));
             reply = new FormattedText(
                 "Issue #%d assigned to %s via Github",

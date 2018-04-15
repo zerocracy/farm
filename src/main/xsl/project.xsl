@@ -167,14 +167,14 @@ SOFTWARE.
         <label>
           <xsl:text>Donate: </xsl:text>
         </label>
-        <input type="text" name="amount" size="15" maxlength="15" placeholder="e.g. $100"/>
-        <button type="submit">
+        <input tabindex="1" type="text" name="amount" size="15" maxlength="15" placeholder="e.g. $100"/>
+        <button tabindex="2" type="submit">
           <xsl:text>Donate</xsl:text>
         </button>
       </form>
     </xsl:if>
     <p>
-      <xsl:text>Cash: </xsl:text>
+      <xsl:text>Cash balance: </xsl:text>
       <a href="/a/{project}?a=pm/cost/ledger">
         <xsl:value-of select="cash"/>
       </a>
@@ -191,6 +191,8 @@ SOFTWARE.
       <a href="#" class="pay" data-cents="102400">
         <xsl:text>$1024</xsl:text>
       </a>
+      <xsl:text> via </xsl:text>
+      <img src="/svg/stripe-logo.svg" style="height:1em;vertical-align:middle;"/>
       <xsl:text>), locked: </xsl:text>
       <a href="/a/{project}?a=pm/cost/estimates">
         <xsl:value-of select="estimates"/>
@@ -211,8 +213,9 @@ SOFTWARE.
         </xsl:otherwise>
       </xsl:choose>
       <xsl:text>.</xsl:text>
-      <xsl:if test="deficit = 'true'">
-        <xsl:text> </xsl:text>
+    </p>
+    <xsl:if test="deficit = 'true'">
+      <p>
         <span style="color:darkred">
           <xsl:text>ATTENTION</xsl:text>
         </span>
@@ -221,18 +224,29 @@ SOFTWARE.
           <xsl:text>funded</xsl:text>
         </a>
         <xsl:text>, we can't assign any new tasks to anyone.</xsl:text>
-      </xsl:if>
-      <xsl:if test="recharge = 'true'">
-        <xsl:text> </xsl:text>
-        <span style="color:darkred">
-          <xsl:text>We automatically </xsl:text>
-          <a href="http://www.zerocracy.com/policy.html#22">
-            <xsl:text>recharge</xsl:text>
-          </a>
-          <xsl:text> your card.</xsl:text>
+      </p>
+    </xsl:if>
+    <xsl:if test="recharge">
+      <p>
+        <xsl:text>We </xsl:text>
+        <span style="color:darkgreen">
+          <xsl:text>automatically</xsl:text>
         </span>
-      </xsl:if>
-    </p>
+        <xsl:text> </xsl:text>
+        <a href="http://www.zerocracy.com/policy.html#22">
+          <xsl:text>recharge</xsl:text>
+        </a>
+        <xsl:text> your card for </xsl:text>
+        <xsl:value-of select="recharge"/>
+        <xsl:text> when the balance drops below zero.</xsl:text>
+        <xsl:text> You can always request a full refund of the residual</xsl:text>
+        <xsl:text> project balance, just </xsl:text>
+        <a href="mailto:refund@zerocracy.com">
+          <xsl:text>email us</xsl:text>
+        </a>
+        <xsl:text>.</xsl:text>
+      </p>
+    </xsl:if>
     <form id="form" style="display:none" action="/pay/{project}" method="post">
       <input name="cents" id="cents" type="hidden"/>
       <input name="token" id="token" type="hidden"/>

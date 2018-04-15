@@ -25,6 +25,7 @@ import com.zerocracy.farm.props.Props;
 import com.zerocracy.pmo.Bots;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.URLEncoder;
 import javax.json.JsonObject;
 import org.cactoos.func.AsyncFunc;
 import org.takes.Request;
@@ -116,7 +117,7 @@ public final class TkSlack implements Take {
                 "Location",
                 String.format(
                     "https://%s.slack.com/messages/@0crat/details/",
-                    team
+                    URLEncoder.encode(team, "UTF-8")
                 )
             ),
             HttpURLConnection.HTTP_SEE_OTHER

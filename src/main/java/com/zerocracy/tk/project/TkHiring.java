@@ -60,7 +60,7 @@ public final class TkHiring implements TkRegex {
     @Override
     public Response act(final RqRegex req) throws IOException {
         final Project project = new RqProject(this.farm, req, "PO", "ARC");
-        final String user = new RqUser(this.farm, req).value();
+        final String user = new RqUser(this.farm, req, false).value();
         new Exam(this.farm, user).min("51.min", 0);
         final RqFormSmart form = new RqFormSmart(new RqGreedy(req));
         final String text = form.single("text");
@@ -69,7 +69,7 @@ public final class TkHiring implements TkRegex {
             .author(user)
             .param("login", user)
             .param("job", "none")
-            .param("minutes", new Policy().get("51.price", 0))
+            .param("minutes", -new Policy().get("51.price", 0))
             .param("reason", "Job announced to all users")
             .postTo(project);
         new ClaimOut()
@@ -79,7 +79,7 @@ public final class TkHiring implements TkRegex {
                 "message",
                 new Par(
                     this.farm,
-                    "Project %s is hiring;",
+                    "Project %s is hiring, see [details](/p/%1$s);",
                     "@%s is inviting you to join them;",
                     "please, consider this project as an opportunity and",
                     "apply, as explained in §2;",

@@ -50,7 +50,7 @@ def exec(Project project, XML xml) {
     claim.copy()
       .type('Notify in Telegram')
       .token("telegram;${uid}")
-      .param('login', uid)
+      .param('login', login)
       .postTo(project)
     done = true
     done
@@ -60,9 +60,8 @@ def exec(Project project, XML xml) {
       people.links(login, 'slack').any { sid ->
         claim.copy()
           .type('Notify in Slack')
-          .token("slack;${channel};${login};${sid}")
+          .token("slack;${channel};${sid};direct")
           .param('login', login)
-          .param('slack_login', sid)
           .postTo(project)
         done = true
         done

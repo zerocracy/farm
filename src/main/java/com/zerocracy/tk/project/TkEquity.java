@@ -58,7 +58,7 @@ public final class TkEquity implements TkRegex {
     @Override
     public Response act(final RqRegex req) throws IOException {
         final Project project = new RqProject(this.farm, req);
-        final String user = new RqUser(this.farm, req).value();
+        final String user = new RqUser(this.farm, req, false).value();
         final Equity equity = new Equity(project).bootstrap();
         if (equity.ownership(user).isEmpty()) {
             throw new RsForward(

@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pm.cost.funding
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
@@ -29,26 +30,43 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Funded by Stripe')
   ClaimIn claim = new ClaimIn(xml)
   Cash amount = new Cash.S(claim.param('amount'))
-  String customer = claim.param('stripe_customer')
+  String pid = claim.param('payment_id')
+  String details
+  if (claim.hasAuthor()) {
+    details = new Par(
+      'Funded via Stripe by @%s, payment ID is `%s`'
+    ).say(claim.author(), pid)
+  } else {
+    details = new Par(
+      'Funded via Stripe by recharge, payment ID is `%s`'
+    ).say(pid)
+  }
   new Ledger(project).bootstrap().add(
     new Ledger.Transaction(
       amount,
       'assets', 'cash',
-      'income', customer,
-      'Funded by Stripe'
+      'income', claim.param('stripe_customer'),
+      details
     )
   )
+  Farm farm = binding.variables.farm
   claim.copy()
     .type('Notify project')
     .param(
       'message',
       new Par(
-        'The project %s has been funded via Stripe for %s'
-      ).say(project.pid(), amount)
+        farm,
+        'The project %s has been funded via Stripe for %s;',
+        'payment ID is `%s`;',
+        'we will re-charge the card automatically for the same amount',
+        'when the project runs out of funds;',
+        'to stop that just put the project on pause, see §21'
+      ).say(project.pid(), amount, pid)
     )
     .postTo(project)
   claim.copy().type('Notify PMO').param(
     'message', new Par(
+      farm,
       'We just funded %s for %s via Stripe'
     ).say(project.pid(), amount)
   ).postTo(project)
