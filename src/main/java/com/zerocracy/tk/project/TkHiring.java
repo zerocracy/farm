@@ -79,7 +79,7 @@ public final class TkHiring implements TkRegex {
                 "message",
                 new Par(
                     this.farm,
-                    "Project %s is hiring;",
+                    "Project %s is hiring, see [details](/p/%1$s);",
                     "@%s is inviting you to join them;",
                     "please, consider this project as an opportunity and",
                     "apply, as explained in §2;",

@@ -18,7 +18,6 @@ package com.zerocracy.stk.pm.cost.funding
 
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
-import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
 import com.zerocracy.farm.Assume
@@ -33,14 +32,4 @@ def exec(Project project, XML xml) {
   String customer = claim.param('stripe_customer')
   Farm farm = binding.variables.farm
   new Recharge(farm, project.pid()).set('stripe', amount, customer)
-  claim.copy().type('Notify project').param(
-    'message',
-    new Par(
-      'Recharge activated for the project;',
-      'every time the balance goes below zero,',
-      'we will charge your card for %s, see §22;',
-      'to stop that, set your project on pause and then activate again,',
-      'as explained in §24'
-    ).say(amount)
-  ).postTo(project)
 }

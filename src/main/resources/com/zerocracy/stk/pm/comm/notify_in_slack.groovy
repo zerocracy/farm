@@ -21,14 +21,12 @@ import com.jcabi.xml.XML
 import com.ullink.slack.simpleslackapi.SlackChannel
 import com.ullink.slack.simpleslackapi.SlackSession
 import com.ullink.slack.simpleslackapi.SlackUser
-import com.zerocracy.Par
+import com.zerocracy.Farm
+import com.zerocracy.Project
 import com.zerocracy.entry.ExtSlack
 import com.zerocracy.farm.Assume
 import com.zerocracy.farm.props.Props
-import com.zerocracy.Farm
-import com.zerocracy.Project
 import com.zerocracy.pm.ClaimIn
-
 // Token must look like: slack;C43789437;yegor256;direct
 
 def exec(Project project, XML xml) {
@@ -40,7 +38,7 @@ def exec(Project project, XML xml) {
       "Something is wrong with this token: ${claim.token()}"
     )
   }
-  String message = new Par.ToText(claim.param('message')).toString().replaceAll(
+  String message = claim.param('message').replaceAll(
     '\\[([^]]+)]\\(([^)]+)\\)', '<$2|$1>'
   )
   Farm farm = binding.variables.farm
@@ -54,9 +52,11 @@ def exec(Project project, XML xml) {
     if (parts.length > 3) {
       SlackUser user = session.findUserById(parts[2])
       if (user == null) {
-        throw new IllegalArgumentException(
-          "Can't find ${parts[2]} in Slack session for ${parts[1]}"
-        )
+        claim.copy()
+          .type('Error')
+          .param('message', "Can't find ${parts[2]} in Slack session for ${parts[1]}")
+          .postTo(project)
+        return
       }
       session.sendMessage(
         session.openDirectMessageChannel(user).reply.slackChannel,
@@ -66,9 +66,11 @@ def exec(Project project, XML xml) {
       SlackChannel channel = session.findChannelById(parts[1])
       SlackUser user = session.findUserById(parts[2])
       if (user == null) {
-        throw new IllegalArgumentException(
-          "Can't find ${parts[2]} in Slack session for ${parts[1]}"
-        )
+        claim.copy()
+          .type('Error')
+          .param('message', "Can't find ${parts[2]} in Slack session for ${parts[1]}")
+          .postTo(project)
+        return
       }
       session.sendMessage(channel, "<@${user.id}> ${message}")
     }

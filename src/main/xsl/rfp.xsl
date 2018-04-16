@@ -84,7 +84,7 @@ SOFTWARE.
         <label>
           <xsl:text>Statement of work:</xsl:text>
         </label>
-        <textarea name="sow" style="width:500px;height:10em;">
+        <textarea tabindex="1" name="sow" style="width:500px;height:10em;">
           <xsl:choose>
             <xsl:when test="rfp">
               <xsl:value-of select="rfp/sow"/>
@@ -97,7 +97,7 @@ SOFTWARE.
             </xsl:otherwise>
           </xsl:choose>
         </textarea>
-        <button>
+        <button tabindex="2">
           <xsl:choose>
             <xsl:when test="rfp">
               <xsl:attribute name="type">

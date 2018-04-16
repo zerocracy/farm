@@ -106,6 +106,11 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="project">
     <tr>
+      <xsl:if test="cash = '0'">
+        <xsl:attribute name="style">
+          <xsl:text>opacity:0.5;</xsl:text>
+        </xsl:attribute>
+      </xsl:if>
       <td>
         <a href="/p/{id}">
           <code>

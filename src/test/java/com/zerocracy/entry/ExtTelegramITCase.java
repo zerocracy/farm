@@ -14,46 +14,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pmo;
+package com.zerocracy.entry;
 
-import com.zerocracy.Project;
-import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.PropsFarm;
-import com.zerocracy.pm.ClaimOut;
-import com.zerocracy.pm.Claims;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
+import java.util.concurrent.TimeUnit;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * Test case for {@link Hint}.
- * @author Yegor Bugayenko (yegor256@gmail.com)
+ * Test case for {@link ExtGithub}.
+ * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.22
  * @checkstyle JavadocMethodCheck (500 lines)
- * @checkstyle AvoidDuplicateLiterals (600 lines)
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public final class HintTest {
+public final class ExtTelegramITCase {
+    /**
+     * Telegram bot token.
+     */
+    private static final String TOKEN = "<token>";
+
+    /**
+     * Telegram bot name.
+     */
+    private static final String NAME = "<bot-name>";
 
     @Test
-    public void postsSimpleClaim() throws Exception {
-        final Project project = new FkProject();
-        final Hint hint = new Hint(
+    @Ignore
+    public void runTelegramBot() throws Exception {
+        new ExtTelegram(
             new PropsFarm(),
-            100, 0,
-            new ClaimOut()
-                .type("Notify user")
-                .token("user;yegor256")
-                .param("mnemo", "Just saying hi")
-                .param("message", "You are fired, my friend!")
-        );
-        hint.postTo(project);
-        hint.postTo(project);
-        MatcherAssert.assertThat(
-            new Claims(project).bootstrap().iterate(),
-            Matchers.iterableWithSize(1)
-        );
+            String.format(
+                "%s@%s",
+                ExtTelegramITCase.NAME,
+                ExtTelegramITCase.TOKEN
+            )
+        ).value();
+        Thread.sleep(TimeUnit.MINUTES.toMillis(1L));
     }
-
 }

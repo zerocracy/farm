@@ -70,11 +70,11 @@ SOFTWARE.
           </a>
           <xsl:text>:</xsl:text>
         </label>
-        <input id="inp-personality" type="text" required="required" name="personality" placeholder="INTJ-A" size="8" maxlength="6" pattern="[IE][NS][TF][PJ]-[AT]"/>
+        <input id="inp-personality" tabindex="1" type="text" required="required" name="personality" placeholder="INTJ-A" size="8" maxlength="6" pattern="[IE][NS][TF][PJ]-[AT]"/>
         <label for="inp-about">
           <xsl:text>Say a few good words about yourself (keep it short):</xsl:text>
         </label>
-        <textarea id="inp-about" required="required" name="about" style="width:600px;height:7em;"/>
+        <textarea id="inp-about" tabindex="2" required="required" name="about" style="width:600px;height:7em;"/>
         <label for="inp-stackoverflow">
           <xsl:text>Your </xsl:text>
           <a href="https://stackoverflow.com">
@@ -82,7 +82,7 @@ SOFTWARE.
           </a>
           <xsl:text> user ID:</xsl:text>
         </label>
-        <input id="inp-stackoverflow" type="number" placeholder="187141" size="6" name="stackoverflow"/>
+        <input id="inp-stackoverflow" tabindex="3" type="number" required="required" placeholder="187141" size="6" name="stackoverflow"/>
         <label for="inp-telegram">
           <xsl:text>Your </xsl:text>
           <a href="https://telegram.org/">
@@ -90,8 +90,10 @@ SOFTWARE.
           </a>
           <xsl:text> ID:</xsl:text>
         </label>
-        <input id="inp-telegram" type="text" placeholder="username" name="telegram" size="16" required="required"/>
-        <input type="submit"/>
+        <input id="inp-telegram" tabindex="4" type="text" placeholder="username" name="telegram" size="16" required="required"/>
+        <button type="submit" tabindex="5">
+          <xsl:text>Submit</xsl:text>
+        </button>
       </fieldset>
     </form>
     <p>

@@ -30,6 +30,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
 import org.cactoos.collection.Joined;
+import org.cactoos.collection.Sorted;
+import org.cactoos.iterable.ItemAt;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.scalar.Reduced;
@@ -46,7 +48,7 @@ import org.xembly.Directives;
  * @since 0.21
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 public final class Debts {
 
     /**
@@ -163,6 +165,22 @@ public final class Debts {
      */
     public void add(final String uid, final Cash amount,
         final String details, final String reason) throws IOException {
+        this.add(uid, amount, details, reason, new Date());
+    }
+
+    /**
+     * Add it.
+     * @param uid User ID
+     * @param amount The amount
+     * @param details The details
+     * @param reason The reason
+     * @param created Created time
+     * @throws IOException If fails
+     * @checkstyle ParameterNumberCheck (5 lines)
+     */
+    public void add(final String uid, final Cash amount,
+        final String details, final String reason, final Date created)
+        throws IOException {
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()
@@ -172,7 +190,9 @@ public final class Debts {
                     .strict(1)
                     .addIf("items")
                     .add("item")
-                    .add("created").set(new DateAsText().asString()).up()
+                    .add("created")
+                    .set(new DateAsText(created).asString())
+                    .up()
                     .add("amount").set(amount).up()
                     .add("details").set(details).up()
                     .add("reason").set(reason).up()
@@ -316,6 +336,37 @@ public final class Debts {
             return !new Xocument(item).nodes(
                 String.format("//debt[@login='%s']", uid)
             ).isEmpty();
+        }
+    }
+
+    /**
+     * Check if debt is older than date.
+     * @param uid User id
+     * @param date Date to compare
+     * @return True if older
+     * @throws IOException If fails
+     */
+    public boolean olderThan(final String uid, final Date date)
+        throws IOException {
+        if (!this.exists(uid)) {
+            throw new IllegalArgumentException(
+                new Par("@%s doesn't have a debt, can't check it").say(uid)
+            );
+        }
+        try (final Item item = this.item()) {
+            final String xpath = String.format(
+                "/debts/debt[@login='%s']/items/item/created/text()", uid
+            );
+            return new IoCheckedScalar<Date>(
+                new ItemAt<>(
+                    new Sorted<>(
+                        new Mapped<>(
+                            (String val) -> new DateOf(val).value(),
+                            new Xocument(item.path()).xpath(xpath)
+                        )
+                    )
+                )
+            ).value().getTime() < date.getTime();
         }
     }
 

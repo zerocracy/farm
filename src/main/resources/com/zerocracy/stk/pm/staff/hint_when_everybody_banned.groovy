@@ -39,7 +39,10 @@ def exec(Project project, XML xml) {
   Bans bans = new Bans(project).bootstrap()
   Farm farm = binding.variables.farm
   String arc = roles.findByRole('ARC')[0]
-  orders.iterate().each { job ->
+  wbs.iterate().each { job ->
+    if (orders.assigned(job)) {
+      return
+    }
     String role = wbs.role(job)
     boolean available = roles.findByRole(role).any { uid ->
       !bans.exists(job, uid)

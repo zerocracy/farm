@@ -28,7 +28,7 @@ import com.zerocracy.pmo.recharge.Recharge
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Make payment')
+  new Assume(project, xml).type('Make payment', 'Ping hourly')
   ClaimIn claim = new ClaimIn(xml)
   Farm farm = binding.variables.farm
   Recharge recharge = new Recharge(farm, project.pid())

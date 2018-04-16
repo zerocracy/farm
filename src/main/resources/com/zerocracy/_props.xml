@@ -91,4 +91,11 @@ SOFTWARE.
   <shutdown>
     <header>${shutdown.key}</header>
   </shutdown>
+  <pgsql>
+    <host>${pgsql.host}</host>
+    <database>${pgsql.database}</database>
+    <user>${pgsql.user}</user>
+    <port>${pgsql.port}</port>
+    <password>${pgsql.password}</password>
+  </pgsql>
 </props>

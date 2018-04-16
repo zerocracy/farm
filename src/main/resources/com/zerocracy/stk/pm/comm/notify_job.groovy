@@ -44,6 +44,10 @@ def exec(Project project, XML xml) {
       .type('Notify in GitHub')
       .token("github;${coords[0]};${coords[1]}")
       .postTo(project)
+  } else if (parts[1] == 'none') {
+    claim.copy()
+      .type('Notify project')
+      .postTo(project)
   } else {
     throw new IllegalStateException(
       String.format(

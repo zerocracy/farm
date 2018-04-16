@@ -18,10 +18,12 @@ package com.zerocracy.stk.pm.in.links
 
 import com.jcabi.github.Coordinates
 import com.jcabi.github.Github
+import com.jcabi.github.Repo
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
+import com.zerocracy.SoftException
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
@@ -32,23 +34,20 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   String rel = claim.param('rel')
   String href = claim.param('href')
-  if ('github' == rel) {
-    Farm farm = binding.variables.farm
-    Github github = new ExtGithub(farm).value()
-    try {
-      github.repos().get(new Coordinates.Simple(href)).stars().star()
-    } catch (AssertionError ex) {
-      claim.copy()
-        .type('Notify project')
-        .param(
-          'message',
-          new Par(
-            'I failed to add GitHub star to %s,',
-            'most likely the repository is either absent or',
-            'Zerocrat doesn\'t have proper access: %s'
-          ).say(href, ex.message)
-        )
-        .postTo(project)
-    }
+  if ('github' != rel) {
+    return
   }
+  Farm farm = binding.variables.farm
+  Github github = new ExtGithub(farm).value()
+  Repo.Smart repo = new Repo.Smart(github.repos().get(new Coordinates.Simple(href)))
+  if (!repo.exists()) {
+    throw new SoftException(
+      new Par(
+        'I cannot add GitHub star to %s,',
+        'most likely the repository is either absent or',
+        'Zerocrat doesn\'t have proper access'
+      ).say(href)
+    )
+  }
+  repo.stars().star()
 }

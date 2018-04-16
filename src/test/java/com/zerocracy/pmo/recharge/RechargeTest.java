@@ -14,46 +14,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pmo;
+package com.zerocracy.pmo.recharge;
 
+import com.zerocracy.Farm;
 import com.zerocracy.Project;
+import com.zerocracy.cash.Cash;
+import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
-import com.zerocracy.farm.props.PropsFarm;
-import com.zerocracy.pm.ClaimOut;
-import com.zerocracy.pm.Claims;
+import com.zerocracy.pmo.Catalog;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
- * Test case for {@link Hint}.
+ * Test case for {@link Recharge}.
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.22
+ * @since 0.12
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle AvoidDuplicateLiterals (600 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public final class HintTest {
+public final class RechargeTest {
 
     @Test
-    public void postsSimpleClaim() throws Exception {
+    public void addsAndRemovesInfo() throws Exception {
+        final Farm farm = new FkFarm();
         final Project project = new FkProject();
-        final Hint hint = new Hint(
-            new PropsFarm(),
-            100, 0,
-            new ClaimOut()
-                .type("Notify user")
-                .token("user;yegor256")
-                .param("mnemo", "Just saying hi")
-                .param("message", "You are fired, my friend!")
+        new Catalog(farm).bootstrap().add(
+            project.pid(),
+            String.format("2018/01/%s/", project.pid())
         );
-        hint.postTo(project);
-        hint.postTo(project);
-        MatcherAssert.assertThat(
-            new Claims(project).bootstrap().iterate(),
-            Matchers.iterableWithSize(1)
+        final Recharge recharge = new Recharge(
+            farm, project.pid()
         );
+        final Cash amount = new Cash.S("$100");
+        recharge.set("stripe", amount, "the code");
+        MatcherAssert.assertThat(recharge.exists(), Matchers.is(true));
+        MatcherAssert.assertThat(recharge.amount(), Matchers.is(amount));
+        recharge.delete();
+        MatcherAssert.assertThat(recharge.exists(), Matchers.is(false));
     }
 
 }
