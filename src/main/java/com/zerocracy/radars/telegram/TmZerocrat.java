@@ -16,6 +16,7 @@
  */
 package com.zerocracy.radars.telegram;
 
+import com.jcabi.log.Logger;
 import com.zerocracy.Farm;
 import com.zerocracy.farm.props.Props;
 import java.io.IOException;
@@ -43,23 +44,30 @@ public final class TmZerocrat extends TelegramLongPollingBot {
      * Bot reaction.
      */
     private final Reaction reaction;
+    /**
+     * Test credentials.
+     */
+    private final String test;
 
     /**
      * Ctor.
      * @param frm The farm
+     * @param cred Test credentials
      */
-    public TmZerocrat(final Farm frm) {
-        this(frm, new ReSafe(new ReProfile()));
+    public TmZerocrat(final Farm frm, final String cred) {
+        this(frm, cred, new ReSafe(new ReProfile()));
     }
 
     /**
      * Ctor.
      * @param frm The farm
+     * @param cred Test credentials
      * @param rtn Bot reaction.
      */
-    TmZerocrat(final Farm frm, final Reaction rtn) {
+    TmZerocrat(final Farm frm, final String cred, final Reaction rtn) {
         super();
         this.farm = frm;
+        this.test = cred;
         this.reaction = rtn;
     }
 
@@ -74,6 +82,12 @@ public final class TmZerocrat extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(final Update update) {
+        Logger.info(
+            this, "%d from @%s: %s",
+            update.getMessage().getChatId(),
+            update.getMessage().getFrom().getUserName(),
+            update.getMessage().getText()
+        );
         try {
             this.reaction.react(this, this.farm, update);
         } catch (final IOException ex) {
@@ -84,7 +98,8 @@ public final class TmZerocrat extends TelegramLongPollingBot {
     @Override
     public String getBotUsername() {
         try {
-            return new Props(this.farm).get("//telegram/username");
+            return new Props(this.farm)
+                .get("//telegram/username", this.test.split("@")[0]);
         } catch (final IOException ex) {
             throw new IllegalStateException(ex);
         }
@@ -93,7 +108,8 @@ public final class TmZerocrat extends TelegramLongPollingBot {
     @Override
     public String getBotToken() {
         try {
-            return new Props(this.farm).get("//telegram/token");
+            return new Props(this.farm)
+                .get("//telegram/token", this.test.split("@")[1]);
         } catch (final IOException ex) {
             throw new IllegalStateException(ex);
         }

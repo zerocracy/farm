@@ -17,8 +17,13 @@
 package com.zerocracy;
 
 import com.jcabi.log.Logger;
+import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
+import org.apache.log4j.SimpleLayout;
+import org.apache.log4j.WriterAppender;
 import org.cactoos.collection.Filtered;
+import org.junit.runner.Description;
 import org.junit.runner.Result;
 import org.junit.runner.notification.RunListener;
 
@@ -30,6 +35,19 @@ import org.junit.runner.notification.RunListener;
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class TestListener extends RunListener {
+
+    /**
+     * Full log.
+     */
+    private final ByteArrayOutputStream log = new ByteArrayOutputStream();
+
+    @Override
+    public void testRunStarted(final Description description) throws Exception {
+        super.testRunStarted(description);
+        org.apache.log4j.Logger.getRootLogger().addAppender(
+            new WriterAppender(new SimpleLayout(), this.log)
+        );
+    }
 
     @Override
     public void testRunFinished(final Result result) throws Exception {
@@ -52,6 +70,14 @@ public final class TestListener extends RunListener {
                     "%d threads are still alive, it's a bug, see above",
                     alive.size()
                 )
+            );
+        }
+        final String stdout = new String(
+            this.log.toByteArray(), StandardCharsets.UTF_8
+        );
+        if (stdout.contains("Caused by: ")) {
+            throw new IllegalStateException(
+                "There were some exceptions in the log above"
             );
         }
     }

@@ -697,14 +697,14 @@ public final class People {
 
     /**
      * Person exists?
-     * @param pid Person ID
+     * @param uid User ID
      * @return TRUE if it exists
      * @throws IOException If fails
      */
-    public boolean exists(final String pid) throws IOException {
+    public boolean exists(final String uid) throws IOException {
         try (final Item item = this.item()) {
             return !new Xocument(item).nodes(
-                String.format("//people/person[@id  ='%s']", pid)
+                String.format("//people/person[@id  ='%s']", uid)
             ).isEmpty();
         }
     }

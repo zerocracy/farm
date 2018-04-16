@@ -27,13 +27,12 @@ import com.zerocracy.tk.RsPage;
 import com.zerocracy.tk.RsParFlash;
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.util.List;
+import java.util.Collection;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 import org.bson.Document;
 import org.cactoos.iterable.ItemAt;
 import org.cactoos.iterable.Mapped;
+import org.cactoos.list.SolidList;
 import org.cactoos.scalar.IoCheckedScalar;
 import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
@@ -71,10 +70,10 @@ public final class TkClaim implements TkRegex {
 
     /**
      * Ctor.
-     * @param farm A farm
+     * @param frm A farm
      */
-    public TkClaim(final Farm farm) {
-        this.farm = farm;
+    public TkClaim(final Farm frm) {
+        this.farm = frm;
     }
 
     @Override
@@ -83,23 +82,27 @@ public final class TkClaim implements TkRegex {
         final String user = new RqUser(this.farm, request, false).value();
         final long cid = Long.valueOf(request.matcher().group(2));
         try (final Footprint ftp = new Footprint(this.farm, pkt)) {
-            final List<XeSource> children = StreamSupport.stream(
-                ftp.collection().find(Filters.eq("cause", cid))
-                    .spliterator(), false
-            ).map(
-                document -> new XeChain(
-                    new XeAppend(
-                        "child",
-                        new XeTransform<>(
-                            document.entrySet(),
-                            ent -> new XeAppend(
-                                ent.getKey(),
-                                ent.getValue().toString()
+            final Collection<XeSource> children = new SolidList<>(
+                new Mapped<>(
+                    document -> new XeChain(
+                        new XeAppend(
+                            "child",
+                            new XeTransform<>(
+                                document.entrySet(),
+                                ent -> new XeAppend(
+                                    ent.getKey(),
+                                    ent.getValue()
+                                        .toString()
+                                )
                             )
                         )
+                    ),
+                    ftp.collection().find(
+                        Filters.eq("cause", cid)
                     )
                 )
-            ).collect(Collectors.toList());
+            );
+            children.size();
             return new IoCheckedScalar<>(
                 new ItemAt<>(
                     0,
@@ -139,7 +142,7 @@ public final class TkClaim implements TkRegex {
                                     ),
                                     new XeAppend(
                                         "children",
-                                        new XeChain(() -> children)
+                                        new XeChain(children)
                                     )
                                 );
                             }

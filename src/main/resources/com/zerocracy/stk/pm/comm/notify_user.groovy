@@ -50,7 +50,7 @@ def exec(Project project, XML xml) {
     claim.copy()
       .type('Notify in Telegram')
       .token("telegram;${uid}")
-      .param('login', uid)
+      .param('login', login)
       .postTo(project)
     done = true
     done

@@ -45,7 +45,7 @@ public final class FkItem implements Item {
     private final Scalar<Path> file;
 
     /**
-     * Delete on close?
+     * Delete on close? If false, deletes on JVM exit.
      */
     private final boolean delete;
 
@@ -124,6 +124,8 @@ public final class FkItem implements Item {
     public void close() throws IOException {
         if (this.delete) {
             Files.delete(new IoCheckedScalar<>(this.file).value());
+        } else {
+            new IoCheckedScalar<>(this.file).value().toFile().deleteOnExit();
         }
     }
 

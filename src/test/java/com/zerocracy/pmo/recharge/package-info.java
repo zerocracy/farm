@@ -14,17 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.bootstraps_a_project
 
-import com.jcabi.github.Github
-import com.jcabi.github.Repos
-import com.jcabi.xml.XML
-import com.zerocracy.Farm
-import com.zerocracy.Project
-import com.zerocracy.entry.ExtGithub
-
-def exec(Project project, XML xml) {
-  Farm farm = binding.variables.farm
-  Github github = new ExtGithub(farm).value()
-  github.repos().create(new Repos.RepoCreate('test', false))
-}
+/**
+ * Recharge, tests.
+ *
+ * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @version $Id$
+ * @since 0.22
+ */
+package com.zerocracy.pmo.recharge;

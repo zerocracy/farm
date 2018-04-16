@@ -67,6 +67,13 @@ def exec(Project project, XML xml) {
       ).say(login)
     )
   }
+  if (new Ledger(project).bootstrap().deficit()) {
+    throw new SoftException(
+      new Par(
+        'The project is underfunded, see §21'
+      ).say()
+    )
+  }
   String author = claim.author()
   claim.copy()
     .type('Make payment')

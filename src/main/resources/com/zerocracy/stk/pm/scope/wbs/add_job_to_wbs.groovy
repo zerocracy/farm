@@ -54,7 +54,7 @@ def exec(Project project, XML xml) {
     }
     if (role == 'REV' && issue.pull) {
       JsonObject pull = issue.pull().json()
-      int lines = pull.getInt('additions') + pull.getInt('deletions')
+      int lines = pull.getInt('additions', 0) + pull.getInt('deletions', 0)
       int min = 10
       if (lines < min) {
         throw new SoftException(

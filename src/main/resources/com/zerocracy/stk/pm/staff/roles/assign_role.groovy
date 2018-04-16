@@ -42,6 +42,15 @@ def exec(Project project, XML xml) {
       new Par('Assignee @%s must be invited').say(login)
     )
   }
+  if (people.wallet(login).empty && claim.hasParam('rate')) {
+    throw new SoftException(
+      new Par(
+        '@%s doesn\'t have a payment method configured yet,',
+        'we won\'t be able to pay them;',
+        'the rate can\'t be set.'
+      ).say(login)
+    )
+  }
   Roles roles = new Roles(project).bootstrap()
   Rates rates = new Rates(project).bootstrap()
   String msg

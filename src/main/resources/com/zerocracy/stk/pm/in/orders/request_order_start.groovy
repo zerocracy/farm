@@ -37,6 +37,7 @@ def exec(Project project, XML xml) {
     wbs.add(job)
     claim.copy()
       .type('Job was added to WBS')
+      .param('reason', 'Order start requested, but WBS is empty')
       .postTo(project)
   }
   Orders orders = new Orders(project).bootstrap()
