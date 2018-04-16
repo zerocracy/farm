@@ -28,7 +28,7 @@ SOFTWARE.
         <ul>
           <li>
             <a href="{links/link[@rel='home']/@href}">
-              <img src="/svg/logo.svg" class="logo"/>
+              <img src="/svg/zerocrat.svg" class="logo"/>
             </a>
           </li>
         </ul>

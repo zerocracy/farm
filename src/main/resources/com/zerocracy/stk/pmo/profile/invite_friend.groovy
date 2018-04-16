@@ -73,8 +73,8 @@ def exec(Project pmo, XML xml) {
     .param(
       'message',
       new Par(
-        'You have been invited to Zerocracy by @%s, as required in §1.',
-        'You can now apply to the projects, see §2.'
+        'You have been invited to Zerocracy by @%s, as required in §1;',
+        'you can now apply to the projects, see §2'
       ).say(author)
     )
     .postTo(pmo)
