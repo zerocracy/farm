@@ -145,6 +145,7 @@ final class S3Item implements Item {
                 new TeeInput(new InputOf(this.temp), new OutputTo(baos))
             ).longValue();
             if (thread.isInterrupted()) {
+                thread.interrupt();
                 throw new InterruptedIOException(
                     "S3Item.close() was interrupted"
                 );
