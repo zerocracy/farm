@@ -108,8 +108,12 @@ public final class Claims {
                 throw new IllegalStateException(
                     new Par(
                         "Duplicate claims are not allowed in %s,",
-                        "can't add this XML:\n%s"
-                    ).say(this.project.pid(), new Xembler(claim).xmlQuietly())
+                        "can't add this XML to %d existing ones:\n%s"
+                    ).say(
+                        this.project.pid(),
+                        signatures.size(),
+                        new Xembler(claim).xmlQuietly()
+                    )
                 );
             }
         }
