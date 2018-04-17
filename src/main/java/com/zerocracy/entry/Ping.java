@@ -40,10 +40,10 @@ public final class Ping implements Job {
     private final Farm farm;
     /**
      * Ctor.
-     * @param farm Farm
+     * @param frm Farm
      */
-    public Ping(final Farm farm) {
-        this.farm = farm;
+    public Ping(final Farm frm) {
+        this.farm = frm;
     }
 
     @Override

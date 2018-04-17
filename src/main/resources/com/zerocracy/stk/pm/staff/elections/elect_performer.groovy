@@ -51,7 +51,7 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Ping')
   ClaimIn claim = new ClaimIn(xml)
   Claims claims = new Claims(project)
-  if (!claims.iterate().empty && !new ClaimIn(xml).hasParam('force')) {
+  if (claims.iterate().size() > 1 && !new ClaimIn(xml).hasParam('force')) {
     Logger.info(this, 'Still %d claims, can\'t elect', claims.iterate().size())
     return
   }

@@ -90,7 +90,7 @@ public final class Footprint implements Closeable {
         if (found.hasNext()) {
             throw new IllegalArgumentException(
                 String.format(
-                    "Claim #%d (%s) already exists for %s in footprint",
+                    "Claim #%d (%s) already exists for %s in the footprint",
                     cid, claim.type(), this.pid
                 )
             );

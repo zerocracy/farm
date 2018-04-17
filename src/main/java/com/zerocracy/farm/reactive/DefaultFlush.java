@@ -22,8 +22,8 @@ import com.zerocracy.Project;
 import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.Claims;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.BiFunc;
 import org.cactoos.func.IoCheckedBiFunc;
 import org.cactoos.iterable.LengthOf;
@@ -60,15 +60,16 @@ final class DefaultFlush implements Flush {
     @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     public void exec(final Project project) throws IOException {
         final Claims claims = new Claims(project).bootstrap();
-        int total = 0;
+        final AtomicInteger total = new AtomicInteger();
         final int left = new LengthOf(claims.iterate()).intValue();
         for (int idx = 0; idx < left; ++idx) {
-            final Iterator<XML> found = claims.take();
-            if (!found.hasNext()) {
+            final boolean taken = claims.take(
+                xml -> this.process(project, xml, total)
+            );
+            if (!taken) {
                 break;
             }
-            this.process(project, found.next(), total);
-            ++total;
+            total.incrementAndGet();
         }
     }
 
@@ -91,7 +92,7 @@ final class DefaultFlush implements Flush {
      */
     @SuppressWarnings("PMD.PrematureDeclaration")
     private void process(final Project project, final XML xml,
-        final int idx) throws IOException {
+        final AtomicInteger idx) throws IOException {
         final long start = System.currentTimeMillis();
         final ClaimIn claim = new ClaimIn(xml);
         final int total = this.brigade.apply(project, xml);
@@ -107,7 +108,7 @@ final class DefaultFlush implements Flush {
         Logger.info(
             this,
             "Seen #%d:\"%s/%d/%d\" at \"%s\" by %d stk, %[ms]s [%s]%s",
-            idx, claim.type(), claim.cid(), left,
+            idx.get(), claim.type(), claim.cid(), left,
             project.pid(),
             total,
             System.currentTimeMillis() - start,
