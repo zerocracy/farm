@@ -19,27 +19,28 @@ SOFTWARE.
   <xs:include schemaLocation="http://datum.zerocracy.com/0.21/xsd/pm/claims.xsd"/>
   <xs:complexType name="cmd">
     <xs:all>
-      <xs:element name="code" minOccurs="1" maxOccurs="1" type="xs:string"/>
-      <xs:element name="regex" minOccurs="1" maxOccurs="1" type="xs:string"/>
-      <xs:element name="label" minOccurs="0" maxOccurs="1" type="xs:string"/>
-      <xs:element name="help" minOccurs="0" maxOccurs="1" type="xs:string"/>
-      <xs:element name="cmds" minOccurs="0" maxOccurs="1">
+      <xs:element name="code" type="xs:string"/>
+      <xs:element name="regex" type="xs:string"/>
+      <xs:element name="label" minOccurs="0" type="xs:string"/>
+      <xs:element name="help" minOccurs="0" type="xs:string"/>
+      <xs:element name="invited" minOccurs="0" type="xs:boolean"/>
+      <xs:element name="cmds" minOccurs="0">
         <xs:complexType>
           <xs:sequence>
             <xs:element name="cmd" type="cmd" minOccurs="0" maxOccurs="unbounded"/>
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="opts" minOccurs="0" maxOccurs="1">
+      <xs:element name="opts" minOccurs="0">
         <xs:complexType>
           <xs:sequence>
             <xs:element name="opt" minOccurs="0" maxOccurs="unbounded">
               <xs:complexType>
                 <xs:all>
-                  <xs:element name="name" minOccurs="1" maxOccurs="1" type="xs:string"/>
-                  <xs:element name="regex" minOccurs="1" maxOccurs="1" type="xs:string"/>
-                  <xs:element name="help" minOccurs="1" maxOccurs="1" type="xs:string"/>
-                  <xs:element name="optional" minOccurs="0" maxOccurs="1" type="xs:boolean"/>
+                  <xs:element name="name" type="xs:string"/>
+                  <xs:element name="regex" type="xs:string"/>
+                  <xs:element name="help" type="xs:string"/>
+                  <xs:element name="optional" minOccurs="0" type="xs:boolean"/>
                 </xs:all>
               </xs:complexType>
             </xs:element>

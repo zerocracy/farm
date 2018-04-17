@@ -55,7 +55,7 @@ public final class ReQuestion implements Response {
         new ClaimOnQuestion(question)
             .claim()
             .token(new TokenOfComment(comment))
-            .author(new Author(farm, comment.author()).login())
+            .author(new GhUser(farm, comment.author()).uid(question.invited()))
             .param("job", new Job(comment.issue()))
             .param("repo", comment.issue().repo().coordinates())
             .param("issue", comment.issue().number())

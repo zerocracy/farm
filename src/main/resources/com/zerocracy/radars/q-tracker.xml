@@ -33,6 +33,7 @@ SOFTWARE.
     <regex>in</regex>
     <label>in</label>
     <help>Register this issue in scope (WBS)</help>
+    <invited>true</invited>
     <opts>
       <opt>
         <name>role</name>
@@ -47,12 +48,14 @@ SOFTWARE.
     <regex>out</regex>
     <label>out</label>
     <help>Close the order and remove this job from scope</help>
+    <invited>true</invited>
   </cmd>
   <cmd>
     <code>Request order start</code>
     <regex>assign</regex>
     <label>assign</label>
     <help>Assign a performer to this issue</help>
+    <invited>true</invited>
     <opts>
       <opt>
         <name>login</name>
@@ -84,6 +87,7 @@ SOFTWARE.
     <regex>quality</regex>
     <label>quality</label>
     <help>Review a task</help>
+    <invited>true</invited>
     <opts>
       <opt>
         <name>quality</name>
@@ -97,6 +101,7 @@ SOFTWARE.
     <regex>boost</regex>
     <label>boost</label>
     <help>Set a boost for the job</help>
+    <invited>true</invited>
     <opts>
       <opt>
         <name>factor</name>
@@ -110,6 +115,7 @@ SOFTWARE.
     <regex>pay|extra</regex>
     <label>pay</label>
     <help>Pay a user some extra cash</help>
+    <invited>true</invited>
     <opts>
       <opt>
         <name>minutes</name>

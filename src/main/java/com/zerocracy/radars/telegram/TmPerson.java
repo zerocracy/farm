@@ -54,12 +54,15 @@ final class TmPerson {
 
     /**
      * User ID.
+     * @param invited The user must be invited
      * @return User ID
      * @throws IOException If fails
      */
-    public String uid() throws IOException {
+    public String uid(final boolean invited) throws IOException {
         return new GoodPeople(new People(this.farm)).get(
-            "telegram", Long.toString(this.update.getMessage().getChatId())
+            "telegram",
+            Long.toString(this.update.getMessage().getChatId()),
+            invited
         );
     }
 }

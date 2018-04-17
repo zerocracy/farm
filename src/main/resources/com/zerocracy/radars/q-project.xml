@@ -160,6 +160,7 @@ SOFTWARE.
     <regex>bootstrap</regex>
     <label>bootstrap</label>
     <help>Bootstrap it right after adding Zerocrat to a Slack channel</help>
+    <invited>true</invited>
   </cmd>
   <cmd>
     <code>Destroy</code>
