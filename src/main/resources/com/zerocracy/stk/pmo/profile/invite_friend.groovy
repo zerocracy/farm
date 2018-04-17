@@ -90,4 +90,10 @@ def exec(Project pmo, XML xml) {
       'New user @%s was invited by @%s'
     ).say(login, author)
   ).postTo(pmo)
+  claim.copy().type('Tweet').param(
+    'par', new Par(
+      'A new user just joined us;',
+      'please, welcome @%s: https://github.com/%1$s',
+    ).say(login)
+  ).postTo(pmo)
 }

@@ -63,7 +63,8 @@ def exec(Project project, XML xml) {
         'par', new Par(
           farm,
           'The project %s is looking for developers,',
-          'there are more than %d tasks waiting for your contribution'
+          'there are more than %d tasks waiting for your contribution:',
+          'https://www.0crat.com/p/%1$s'
         ).say(project.pid(), pending)
       )
   ).postTo(project)
