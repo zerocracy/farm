@@ -27,6 +27,7 @@ import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pm.staff.Elections
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.Hint
+import com.zerocracy.pmo.People
 import java.util.concurrent.TimeUnit
 
 def exec(Project project, XML xml) {
@@ -55,6 +56,8 @@ def exec(Project project, XML xml) {
   }
   Roles roles = new Roles(project).bootstrap()
   Farm farm = binding.variables.farm
+  People people = new People(farm).bootstrap()
+  int vacation = roles.everybody().collect { uid -> people.vacation(uid) }.size()
   new Hint(
     farm,
     (int) TimeUnit.DAYS.toSeconds(5L),
@@ -67,9 +70,10 @@ def exec(Project project, XML xml) {
         new Par(
           'There are %d jobs, which are not assigned to anyone: %s;',
           'most likely there is a deficit of people in the project;',
-          'there are [%d people](/a/%s?a=pm/staff/roles) in the project now;',
+          'there are [%d people](/a/%s?a=pm/staff/roles) in the project now',
+          '(%d are on vacation);',
           'consider announcing your project as explained in §51'
-        ).say(pending.size(), pending.join(', '), roles.everybody().size(), project.pid())
+        ).say(pending.size(), pending.join(', '), roles.everybody().size(), project.pid(), vacation)
       )
   ).postTo(project)
 }
