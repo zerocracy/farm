@@ -21,12 +21,14 @@ SOFTWARE.
     <regex>hi|hello|hey|morning|good morning</regex>
     <label>hello</label>
     <help>Just say hello</help>
+    <invited>false</invited>
   </cmd>
   <cmd>
     <code>Version</code>
     <regex>version|ver</regex>
     <label>version</label>
     <help>Print current version of the bot</help>
+    <invited>false</invited>
   </cmd>
   <cmd>
     <code>Invite a friend</code>
@@ -61,6 +63,7 @@ SOFTWARE.
     <regex>vacation</regex>
     <label>vacation</label>
     <help>Change vacation mode</help>
+    <invited>false</invited>
     <opts>
       <opt>
         <name>mode</name>
@@ -107,6 +110,7 @@ SOFTWARE.
     <regex>quit</regex>
     <label>quit</label>
     <help>Immediately exit the project</help>
+    <invited>false</invited>
     <opts>
       <opt>
         <name>pid</name>

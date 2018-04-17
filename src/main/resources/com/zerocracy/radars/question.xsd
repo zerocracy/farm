@@ -23,7 +23,7 @@ SOFTWARE.
       <xs:element name="regex" type="xs:string"/>
       <xs:element name="label" minOccurs="0" type="xs:string"/>
       <xs:element name="help" minOccurs="0" type="xs:string"/>
-      <xs:element name="invited" minOccurs="0" type="xs:boolean"/>
+      <xs:element name="invited" type="xs:boolean"/>
       <xs:element name="cmds" minOccurs="0">
         <xs:complexType>
           <xs:sequence>

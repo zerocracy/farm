@@ -227,6 +227,11 @@ public final class Question {
         );
         if (pattern.matcher(part).matches()) {
             this.rcode.set(cmd.xpath("code/text()").get(0));
+            this.rinvited.set(
+                Boolean.parseBoolean(
+                    cmd.xpath("invited/text()").get(0)
+                )
+            );
             final Collection<XML> subs = cmd.nodes("cmds/cmd");
             if (subs.isEmpty()) {
                 this.parseOpts(cmd, part, parts);

@@ -21,12 +21,14 @@ SOFTWARE.
     <regex>hi|hello|hey|morning|good morning</regex>
     <label>hello</label>
     <help>Just say hello</help>
+    <invited>false</invited>
   </cmd>
   <cmd>
     <code>Version</code>
     <regex>version|ver</regex>
     <label>version</label>
     <help>Print current version of the bot</help>
+    <invited>false</invited>
   </cmd>
   <cmd>
     <code>Add job to WBS</code>
@@ -69,18 +71,21 @@ SOFTWARE.
     <regex>resign|reject|refuse</regex>
     <label>resign</label>
     <help>Resign from this issue</help>
+    <invited>false</invited>
   </cmd>
   <cmd>
     <code>Register impediment</code>
     <regex>waiting|hold|wait</regex>
     <label>wait</label>
     <help>Register an impediment for a job</help>
+    <invited>false</invited>
   </cmd>
   <cmd>
     <code>Check job status</code>
     <regex>status|check</regex>
     <label>status</label>
     <help>Check the status of the job</help>
+    <invited>false</invited>
   </cmd>
   <cmd>
     <code>Complete QA review</code>
