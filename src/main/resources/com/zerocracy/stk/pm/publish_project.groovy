@@ -26,7 +26,6 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Catalog
 import com.zerocracy.pmo.Exam
-import com.zerocracy.pmo.Pmo
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
@@ -55,7 +54,14 @@ def exec(Project project, XML xml) {
     claim.copy()
       .type('Project was published')
       .param('pid', pid)
-      .postTo(new Pmo(farm))
+      .postTo(project)
+    claim.copy().type('Tweet').param(
+      'par', new Par(
+        farm,
+        'A new project %s is looking for developers,',
+        'feel free to apply and join: https://www.0crat.com/board'
+      ).say(project.pid())
+    ).postTo(project)
     claim.copy()
       .type('Make payment')
       .param('login', claim.author())

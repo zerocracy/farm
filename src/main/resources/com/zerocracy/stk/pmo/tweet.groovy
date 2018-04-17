@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm
+package com.zerocracy.stk.pmo
 
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
@@ -22,17 +22,14 @@ import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.entry.ExtTwitter
 import com.zerocracy.farm.Assume
+import com.zerocracy.pm.ClaimIn
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Project was published')
+  new Assume(project, xml).type('Tweet')
+  ClaimIn claim = new ClaimIn(xml)
+  String par = claim.param('par')
   Farm farm = binding.variables.farm
   ExtTwitter.Tweets tweets = new ExtTwitter(farm).value()
-  tweets.publish(
-    new Par(
-      farm,
-      'A new project %s is looking for developers,',
-      'feel free to apply and join: https://www.0crat.com/board'
-    ).say()
-  )
+  tweets.publish(new Par.ToText(par).toString())
+  claim.copy().type('Tweeted').postTo(project)
 }

@@ -21,7 +21,6 @@ import com.zerocracy.Farm;
 import com.zerocracy.Par;
 import com.zerocracy.entry.ExtDynamo;
 import com.zerocracy.entry.ExtGithub;
-import com.zerocracy.entry.ExtTwitter;
 import com.zerocracy.tk.RsParFlash;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -123,11 +122,7 @@ public final class TkGithub implements Take, Runnable {
                                 "labeled"
                             ),
                             new RbByActions(new RbOnAssign(), "assigned"),
-                            new RbByActions(new RbOnUnassign(), "unassigned"),
-                            new RbTweet(
-                                new ExtDynamo(frm).value().table("0crat-tweets"),
-                                new ExtTwitter(frm).value()
-                            )
+                            new RbByActions(new RbOnUnassign(), "unassigned")
                         )
                     )
                 )
