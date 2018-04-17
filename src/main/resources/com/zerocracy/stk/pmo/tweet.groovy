@@ -30,6 +30,12 @@ def exec(Project project, XML xml) {
   String par = claim.param('par')
   Farm farm = binding.variables.farm
   ExtTwitter.Tweets tweets = new ExtTwitter(farm).value()
-  tweets.publish(new Par.ToText(par).toString())
+  String body = new Par.ToText(par).toString()
+  long tid = tweets.publish(body)
   claim.copy().type('Tweeted').postTo(project)
+  claim.copy().type('Notify PMO').param(
+    'message', new Par(
+      'We just [tweeted](https://twitter.com/0crat/status/%d) this text: %s'
+    ).say(tid, body)
+  ).postTo(project)
 }
