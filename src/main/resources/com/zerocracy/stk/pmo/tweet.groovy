@@ -36,7 +36,7 @@ def exec(Project project, XML xml) {
   claim.copy().type('Notify PMO').param(
     'message', new Par(
       'We just [tweeted](https://twitter.com/0crat/status/%d) this text:',
-      '"%s"'
+      '`%s`'
     ).say(tid, body)
   ).postTo(project)
 }

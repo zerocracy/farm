@@ -58,7 +58,7 @@ def exec(Project project, XML xml) {
     claim.copy().type('Tweet').param(
       'par', new Par(
         farm,
-        'A new project %s is looking for developers,',
+        'A new project "%s" is looking for developers,',
         'feel free to apply and join: https://www.0crat.com/board'
       ).say(project.pid())
     ).postTo(project)
