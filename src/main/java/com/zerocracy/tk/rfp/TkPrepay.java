@@ -90,7 +90,8 @@ public final class TkPrepay implements Take {
         );
         new ClaimOut().type("Notify PMO").param(
             "message", new Par(
-                "RFP #%d has been paid by @%s: %s"
+                "RFP #%d has been paid by @%s: %s;",
+                "we will notify you when they submit the statement of work"
             ).say(rid, user, email)
         ).postTo(this.farm);
         return new RsForward(

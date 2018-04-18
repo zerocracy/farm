@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 import org.cactoos.iterable.Mapped;
@@ -75,6 +76,11 @@ public final class Question {
     private final Map<String, String> rparams;
 
     /**
+     * Must be invited?
+     */
+    private final AtomicBoolean rinvited;
+
+    /**
      * Ctor.
      * @param xml XML config
      * @param txt Text
@@ -85,6 +91,7 @@ public final class Question {
         this.rcode = new AtomicReference<>();
         this.rhelp = new AtomicReference<>();
         this.rparams = new HashMap<>(0);
+        this.rinvited = new AtomicBoolean();
     }
 
     @Override
@@ -125,6 +132,19 @@ public final class Question {
             );
         }
         return this.rcode.get();
+    }
+
+    /**
+     * Must be invited?
+     * @return TRUE if the user must be invited
+     */
+    public boolean invited() {
+        if (!this.matches()) {
+            throw new IllegalStateException(
+                "The question doesn't match, you can call invited()"
+            );
+        }
+        return this.rinvited.get();
     }
 
     /**
@@ -207,6 +227,11 @@ public final class Question {
         );
         if (pattern.matcher(part).matches()) {
             this.rcode.set(cmd.xpath("code/text()").get(0));
+            this.rinvited.set(
+                Boolean.parseBoolean(
+                    cmd.xpath("invited/text()").get(0)
+                )
+            );
             final Collection<XML> subs = cmd.nodes("cmds/cmd");
             if (subs.isEmpty()) {
                 this.parseOpts(cmd, part, parts);

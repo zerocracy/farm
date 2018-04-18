@@ -14,51 +14,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.cost.funding
+package com.zerocracy.stk.pmo
 
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
-import com.zerocracy.cash.Cash
+import com.zerocracy.entry.ExtTwitter
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.cost.Ledger
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Contributed by Stripe')
+  new Assume(project, xml).type('Tweet')
   ClaimIn claim = new ClaimIn(xml)
-  Cash amount = new Cash.S(claim.param('amount'))
-  new Ledger(project).bootstrap().add(
-    new Ledger.Transaction(
-      amount,
-      'assets', 'cash',
-      'income', "@${claim.author()}",
-      new Par('Contributed via Stripe by %s').say(claim.author())
-    )
-  )
-  claim.copy()
-    .type('Notify project')
-    .param(
-      'message',
-      new Par(
-        'The project %s has been funded via Stripe for %s;',
-        'it was a free contribution of @%s, as in §50'
-      ).say(project.pid(), amount, claim.author())
-    )
-    .postTo(project)
+  String par = claim.param('par')
+  Farm farm = binding.variables.farm
+  ExtTwitter.Tweets tweets = new ExtTwitter(farm).value()
+  String body = new Par.ToText(par).toString()
+  long tid = tweets.publish(body)
+  claim.copy().type('Tweeted').postTo(project)
   claim.copy().type('Notify PMO').param(
     'message', new Par(
-      'We just funded %s for %s via Stripe by @%s'
-    ).say(project.pid(), amount, claim.author())
-  ).postTo(project)
-  Farm farm = binding.variables.farm
-  claim.copy().type('Tweet').param(
-    'par', new Par(
-      farm,
-      'The project %s received a monetary contribution of %s from @%s;',
-      'many thanks for your support!'
-    ).say(project.pid(), amount, claim.author())
+      'We just [tweeted](https://twitter.com/0crat/status/%d) this text:',
+      '`%s`'
+    ).say(tid, body)
   ).postTo(project)
 }

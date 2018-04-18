@@ -88,6 +88,10 @@ public final class QuestionTest {
             question.matches(),
             Matchers.equalTo(true)
         );
+        MatcherAssert.assertThat(
+            question.invited(),
+            Matchers.equalTo(true)
+        );
     }
 
     @Test

@@ -57,7 +57,7 @@ public final class ReProject implements Reaction<SlackMessagePosted> {
         new ClaimOnQuestion(question, tail)
             .claim()
             .token(new SkToken(event))
-            .author(new SkPerson(farm, event).uid())
+            .author(new SkPerson(farm, event).uid(question.invited()))
             .param("pid", project.pid())
             .param("channel", event.getChannel().getName())
             .postTo(project);

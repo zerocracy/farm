@@ -23,6 +23,7 @@ SOFTWARE.
     <token>github;test/test;1</token>
     <params>
       <param name="job">gh:test/test#1</param>
+      <param name="reason">Need it</param>
     </params>
   </claim>
   <claim id="2">
@@ -43,6 +44,7 @@ SOFTWARE.
     <author>yegor256</author>
     <params>
       <param name="job">gh:test/test#1</param>
+      <param name="reason">Need it again</param>
     </params>
   </claim>
 </claims>

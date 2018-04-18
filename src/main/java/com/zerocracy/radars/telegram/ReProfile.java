@@ -50,7 +50,7 @@ public final class ReProfile implements Reaction {
         new ClaimOnQuestion(question, "Remember, this chat is for managing your personal profile; to manage a project, please open or create a new Slack channel and invite the bot there.")
             .claim()
             .token(new TmToken(update))
-            .author(new TmPerson(farm, update).uid())
+            .author(new TmPerson(farm, update).uid(question.invited()))
             .param("update_id", update.getUpdateId())
             .param("chat_id", update.getMessage().getChatId())
             .param("message_id", update.getMessage().getMessageId())

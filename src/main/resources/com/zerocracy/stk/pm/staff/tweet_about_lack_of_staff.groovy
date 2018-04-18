@@ -24,21 +24,22 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.scope.Wbs
-import com.zerocracy.pm.staff.Elections
-import com.zerocracy.pm.staff.Roles
+import com.zerocracy.pmo.Catalog
 import com.zerocracy.pmo.Hint
-import com.zerocracy.pmo.People
 import java.util.concurrent.TimeUnit
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Ping hourly')
+  Farm farm = binding.variables.farm
+  if (!new Catalog(farm).published(project.pid())) {
+    return
+  }
   ClaimIn claim = new ClaimIn(xml)
   Wbs wbs = new Wbs(project).bootstrap()
   Orders orders = new Orders(project).bootstrap()
-  Elections elections = new Elections(project).bootstrap()
-  List<String> pending = []
-  elections.jobs().each { job ->
+  int pending = 0
+  wbs.iterate().each { job ->
     Date created = wbs.created(job)
     if (created.time > System.currentTimeMillis() - TimeUnit.DAYS.toMillis(2L)) {
       return
@@ -46,34 +47,25 @@ def exec(Project project, XML xml) {
     if (orders.assigned(job)) {
       return
     }
-    if (elections.elected(job)) {
-      return
-    }
-    pending.add(job)
+    pending++
   }
-  if (pending.empty) {
+  if (pending < 5) {
     return
   }
-  Roles roles = new Roles(project).bootstrap()
-  Farm farm = binding.variables.farm
-  People people = new People(farm).bootstrap()
-  int vacation = roles.everybody().collect { uid -> people.vacation(uid) }.size()
   new Hint(
     farm,
     (int) TimeUnit.DAYS.toSeconds(5L),
     claim.copy()
-      .type('Notify project')
+      .type('Tweet')
       .token("project;${project.pid()}")
-      .param('mnemo', 'Deficit of people')
+      .param('mnemo', 'Looking for developers on Twitter')
       .param(
-        'message',
-        new Par(
-          'There are %d jobs, which are not assigned to anyone: %s;',
-          'most likely there is a deficit of people in the project;',
-          'there are [%d people](/a/%s?a=pm/staff/roles) in the project now',
-          '(%d are on vacation);',
-          'consider announcing your project as explained in §51'
-        ).say(pending.size(), pending.join(', '), roles.everybody().size(), project.pid(), vacation)
+        'par', new Par(
+          farm,
+          'The project "%s" is looking for developers,',
+          'there are more than %d tasks waiting for your contribution:',
+          'https://www.0crat.com/p/%1$s'
+        ).say(project.pid(), pending)
       )
   ).postTo(project)
 }

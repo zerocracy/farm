@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pmo.sandbox
+package com.zerocracy.stk.pm.staff.roles
 
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
@@ -27,44 +27,44 @@ import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.Awards
 import com.zerocracy.pmo.Catalog
 
-def exec(Project pmo, XML xml) {
-  new Assume(pmo, xml).isPmo()
-  new Assume(pmo, xml).type('Ping hourly')
-  Catalog catalog = new Catalog(pmo).bootstrap()
+def exec(Project project, XML xml) {
+  new Assume(project, xml).notPmo()
+  new Assume(project, xml).type('Ping hourly')
   Farm farm = binding.variables.farm
+  Catalog catalog = new Catalog(farm).bootstrap()
+  if (!catalog.sandbox().contains(project.pid())) {
+    return
+  }
   ClaimIn claim = new ClaimIn(xml)
   int threshold = new Policy().get('33.rev-rep', 256)
-  catalog.sandbox().each { pid ->
-    Project project = farm.find("@id='${pid}'")[0]
-    Roles roles = new Roles(project).bootstrap()
-    roles.findByRole('DEV').each { uid ->
-      if (roles.hasRole(uid, 'REV')) {
-        return
-      }
-      int reputation = new Awards(pmo, uid).bootstrap().total()
-      if (reputation < threshold) {
-        return
-      }
-      claim.copy()
-        .type('Assign role')
-        .param('login', uid)
-        .param('role', 'REV')
-        .postTo(project)
-      claim.copy().type('Notify user').token("user;${uid}").param(
-        'message',
-        new Par(
-          farm,
-          'Your reputation is %+d (over %+d);',
-          'according to §33 you are now a code reviewer in %s'
-        ).say(reputation, threshold, pid)
-      ).postTo(pmo)
-      claim.copy().type('Notify PMO').param(
-        'message', new Par(
-          farm,
-          'The user @%s was promoted to REV in %s',
-          'because of high enough reputation %+d (over %+d)'
-        ).say(uid, pid, reputation, threshold)
-      ).postTo(pmo)
+  Roles roles = new Roles(project).bootstrap()
+  roles.findByRole('DEV').each { uid ->
+    if (roles.hasRole(uid, 'REV')) {
+      return
     }
+    int reputation = new Awards(farm, uid).bootstrap().total()
+    if (reputation < threshold) {
+      return
+    }
+    claim.copy()
+      .type('Assign role')
+      .param('login', uid)
+      .param('role', 'REV')
+      .postTo(project)
+    claim.copy().type('Notify user').token("user;${uid}").param(
+      'message',
+      new Par(
+        farm,
+        'Your reputation is %+d (over %+d);',
+        'according to §33 you are now a code reviewer in %s'
+      ).say(reputation, threshold, project.pid())
+    ).postTo(project)
+    claim.copy().type('Notify PMO').param(
+      'message', new Par(
+        farm,
+        'The user @%s was promoted to REV in %s',
+        'because of high enough reputation %+d (over %+d)'
+      ).say(uid, project.pid(), reputation, threshold)
+    ).postTo(project)
   }
 }

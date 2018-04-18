@@ -14,25 +14,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm
+package com.zerocracy.stk.pm.cost.funding
 
 import com.jcabi.xml.XML
-import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
-import com.zerocracy.entry.ExtTwitter
+import com.zerocracy.cash.Cash
 import com.zerocracy.farm.Assume
+import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pm.cost.Ledger
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Project was published')
-  Farm farm = binding.variables.farm
-  ExtTwitter.Tweets tweets = new ExtTwitter(farm).value()
-  tweets.publish(
-    new Par(
-      farm,
-      'A new project %s is looking for developers,',
-      'feel free to apply and join: https://www.0crat.com/board'
-    ).say()
+  new Assume(project, xml).type('Donate')
+  ClaimIn claim = new ClaimIn(xml)
+  Cash amount = new Cash.S(claim.param('amount'))
+  new Ledger(project).bootstrap().add(
+    new Ledger.Transaction(
+      amount,
+      'assets', 'cash',
+      'income', 'zerocracy',
+      new Par('Donated by @%s').say(claim.author())
+    )
   )
+  claim.copy()
+    .type('Notify project')
+    .param(
+      'message',
+      new Par(
+        'The project %s got a donation of %s'
+      ).say(project.pid(), amount)
+    )
+    .postTo(project)
 }

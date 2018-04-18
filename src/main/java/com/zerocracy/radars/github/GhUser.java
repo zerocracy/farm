@@ -30,7 +30,7 @@ import java.util.Locale;
  * @version $Id$
  * @since 0.1
  */
-final class Author {
+final class GhUser {
 
     /**
      * Farm.
@@ -47,20 +47,23 @@ final class Author {
      * @param frm The farm
      * @param usr User
      */
-    Author(final Farm frm, final User usr) {
+    GhUser(final Farm frm, final User usr) {
         this.farm = frm;
         this.user = usr;
     }
 
     /**
      * Get his GitHub login.
+     * @param invited The user must be invited
      * @return Login
      * @throws IOException If fails
      */
-    public String login() throws IOException {
+    public String uid(final boolean invited) throws IOException {
         final People people = new People(this.farm).bootstrap();
         final String uid = this.user.login().toLowerCase(Locale.ENGLISH);
         people.touch(uid);
-        return new GoodPeople(new People(this.farm)).get("github", uid);
+        return new GoodPeople(new People(this.farm)).get(
+            "github", uid, invited
+        );
     }
 }

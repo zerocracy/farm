@@ -137,7 +137,7 @@ public final class Stripe {
         }
         new ClaimOut().type("Notify PMO").param(
             "message", new Par(
-                "Stripe customer `%s` charged %s for \"%s\": %s"
+                "Stripe customer `%s` charged %s for \"%s\": `%s`"
             ).say(customer, amount, details, pid)
         ).postTo(this.farm);
         return pid;

@@ -83,7 +83,7 @@ public final class TkHiring implements TkRegex {
                     "@%s is inviting you to join them;",
                     "please, consider this project as an opportunity and",
                     "apply, as explained in §2;",
-                    "this is what they say in their announcement: %s"
+                    "this is what they say in their announcement:\n\n%s"
                 ).say(project.pid(), user, text)
             )
             .param("min", new Policy().get("33.min-live", 0))
