@@ -139,12 +139,7 @@ public final class Question {
      * @return TRUE if the user must be invited
      */
     public boolean invited() {
-        if (!this.matches()) {
-            throw new IllegalStateException(
-                "The question doesn't match, you can call invited()"
-            );
-        }
-        return this.rinvited.get();
+        return this.matches() && this.rinvited.get();
     }
 
     /**
