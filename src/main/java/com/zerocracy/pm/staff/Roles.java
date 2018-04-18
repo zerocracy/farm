@@ -101,6 +101,7 @@ public final class Roles {
      * @param person The person
      * @param role The role to assign
      * @throws IOException If fails
+     * @checkstyle CyclomaticComplexityCheck (100 lines)
      */
     public void assign(final String person, final String role)
         throws IOException {
@@ -110,6 +111,14 @@ public final class Roles {
                     "The role %s is not one of those we recognize.",
                     "Try to use DEV, REV, ARC, QA, PO, or TST."
                 ).say(role)
+            );
+        }
+        if ("QA".equals(role) && this.hasRole(person, "DEV", "REV", "ARC")) {
+            throw new SoftException(
+                new Par(
+                    "The user @%s already has a technical role in the project",
+                    "can't be a QA at the same time, see §34"
+                ).say(person)
             );
         }
         if ("REV".equals(role) && this.hasRole(person, "ARC")) {
