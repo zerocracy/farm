@@ -26,9 +26,11 @@ import java.util.List;
 import org.cactoos.text.TextOf;
 
 /**
- * Properties of PMO project. PMO should have a _props.xml file
+ * Properties of PMO project.
+ *
+ * <p>PMO should have a {@code _props.xml} file
  * which specifies properties such as S3 credentials, Paypal or Stripe secrets
- * etc.
+ * etc.</p>
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
