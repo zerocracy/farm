@@ -49,10 +49,12 @@ public final class GoodPeople {
      * Get user ID by alias.
      * @param rel REL
      * @param alias Alias
+     * @param invited The user must be invited
      * @return User ID
      * @throws IOException If fails
      */
-    public String get(final String rel, final String alias) throws IOException {
+    public String get(final String rel, final String alias,
+        final boolean invited) throws IOException {
         this.people.bootstrap();
         final Iterator<String> list = this.people.find(rel, alias).iterator();
         if (!list.hasNext()) {
@@ -64,7 +66,13 @@ public final class GoodPeople {
                 )
             );
         }
-        return list.next();
+        final String uid = list.next();
+        if (invited && !this.people.hasMentor(uid)) {
+            throw new SoftException(
+                new Par("You must be invited in order to do that, see §1").say()
+            );
+        }
+        return uid;
     }
 
 }

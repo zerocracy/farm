@@ -37,8 +37,21 @@ import org.takes.rq.form.RqFormSmart;
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.20
+ * @todo #800:30min Requests to /join should add an entry to 'resumes.xml'
+ *  then an 'examiner' should be assigned. When the examiner "invites" a user,
+ *  we check whether there was a resume for that user.
+ *  If yes, we pay examiner +32 points. Examiner can reject a resume
+ *  by saying 'deny {username}' (where username is a login in 'resumes.xml')
+ *  to Zerocrat. In that case we also pay +32 to the examiner.
+ *  Each user should see the status of his/her resume at /join.
+ *  If the resume is there, he/she should see the resume, not the form.
+ *  If he/she already has a mentor, there should be a redirect,
+ *  saying that "User @yegor256 is already your mentor, no need to join again".
+ *  See https://github.com/zerocracy/farm/issues/800#issuecomment-375551970
+ *  comment for details.
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class TkJoin implements TkRegex {
     /**
      * Farm.
@@ -73,6 +86,13 @@ public final class TkJoin implements TkRegex {
         final String personality = form.single("personality");
         final String about = form.single("about");
         final int stko = Integer.parseInt(form.single("stackoverflow"));
+        new ClaimOut().type("Join form submitted")
+            .author(author)
+            .param("telegram", telegram)
+            .param("stackoverflow", stko)
+            .param("about", about)
+            .param("personality", personality)
+            .postTo(this.farm);
         new ClaimOut().type("Notify all").param(
             "message", new Par(
                 "A new user @%s (%s) would like to join us and needs a mentor;",
@@ -89,7 +109,7 @@ public final class TkJoin implements TkRegex {
         return new RsForward(
             new RsParFlash(
                 new Par(
-                    "The request has been sent to all high-ranked users"
+                    "The request will be sent to all high-ranked users"
                 ).say(),
                 Level.INFO
             )

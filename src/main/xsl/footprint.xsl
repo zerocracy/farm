@@ -120,16 +120,16 @@ SOFTWARE.
           <xsl:value-of select="ago"/>
           <xsl:text> ago</xsl:text>
         </span>
-        <xsl:text>: "</xsl:text>
+        <xsl:text>: </xsl:text>
         <strong>
           <xsl:if test="type='Error'">
             <xsl:attribute name="style">
-              <xsl:text>background-color:darkred;color:white;</xsl:text>
+              <xsl:text>background-color:darkred;color:white;padding:0 .3em;</xsl:text>
             </xsl:attribute>
           </xsl:if>
           <xsl:value-of select="type"/>
         </strong>
-        <xsl:text>"/</xsl:text>
+        <xsl:text>/</xsl:text>
         <xsl:choose>
           <xsl:when test="contains(version,'SNAPSHOT')">
             <span title="The bot was deployed manually, without any specific version">
@@ -151,7 +151,7 @@ SOFTWARE.
         <xsl:text>:</xsl:text>
         <code>
           <xsl:choose>
-            <xsl:when test="string-length(.) &gt; 32">
+            <xsl:when test="string-length(.) &gt; 64">
               <xsl:text>...</xsl:text>
             </xsl:when>
             <xsl:otherwise>

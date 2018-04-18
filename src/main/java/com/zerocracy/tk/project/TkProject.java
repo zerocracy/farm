@@ -72,8 +72,9 @@ public final class TkProject implements TkRegex {
             () -> {
                 final Project project = new RqProject(this.farm, req);
                 final Catalog catalog = new Catalog(this.farm).bootstrap();
-                final String user = new RqUser(this.farm, req, false).value();
                 final String pid = project.pid();
+                final Recharge recharge = new Recharge(this.farm, pid);
+                final String user = new RqUser(this.farm, req, false).value();
                 return new XeChain(
                     new XeAppend("project", pid),
                     new XeAppend("title", catalog.title(pid)),
@@ -127,8 +128,11 @@ public final class TkProject implements TkRegex {
                                         .ownership(user)
                                 ),
                                 new XeWhen(
-                                    new Recharge(this.farm, pid).exists(),
-                                    new XeAppend("recharge", "true")
+                                    recharge.exists(),
+                                    () -> new XeAppend(
+                                        "recharge",
+                                        recharge.amount().toString()
+                                    )
                                 ),
                                 new XeAppend(
                                     "roles",

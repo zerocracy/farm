@@ -27,6 +27,7 @@ import com.zerocracy.entry.ExtMongo;
 import com.zerocracy.farm.props.Props;
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.Map;
 import org.bson.Document;
 
@@ -77,8 +78,25 @@ public final class Footprint implements Closeable {
      */
     public void open(final XML xml) throws IOException {
         final ClaimIn claim = new ClaimIn(xml);
+        final long cid = claim.cid();
+        final MongoCollection<Document> col =
+            this.mongo.getDatabase("footprint").getCollection("claims");
+        final Iterator<Document> found = col.find(
+            Filters.and(
+                Filters.eq("cid", cid),
+                Filters.eq("project", this.pid)
+            )
+        ).iterator();
+        if (found.hasNext()) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "Claim #%d (%s) already exists for %s in the footprint",
+                    cid, claim.type(), this.pid
+                )
+            );
+        }
         Document doc = new Document()
-            .append("cid", claim.cid())
+            .append("cid", cid)
             .append("version", new Props().get("//build/version", ""))
             .append("project", this.pid)
             .append("type", claim.type())
@@ -98,9 +116,7 @@ public final class Footprint implements Closeable {
             }
             doc = doc.append(ent.getKey(), val);
         }
-        this.mongo.getDatabase("footprint")
-            .getCollection("claims")
-            .insertOne(doc);
+        col.insertOne(doc);
     }
 
     /**

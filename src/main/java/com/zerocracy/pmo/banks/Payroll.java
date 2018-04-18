@@ -81,8 +81,8 @@ public final class Payroll {
         if (amount.compareTo(min) < 0 && !reason.startsWith("Debt repayment")) {
             throw new SoftException(
                 new Par(
-                    "The amount %s is too small"
-                ).say(amount)
+                    "The amount %s is too small at: %s"
+                ).say(amount, reason)
             );
         }
         final People people = new People(this.farm).bootstrap();

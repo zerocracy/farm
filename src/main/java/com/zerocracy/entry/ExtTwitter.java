@@ -61,10 +61,10 @@ public final class ExtTwitter implements Scalar<ExtTwitter.Tweets> {
     private final Farm farm;
     /**
      * Ctor.
-     * @param farm Farm
+     * @param frm Farm
      */
-    public ExtTwitter(final Farm farm) {
-        this.farm = farm;
+    public ExtTwitter(final Farm frm) {
+        this.farm = frm;
     }
 
     @Override
@@ -104,7 +104,7 @@ public final class ExtTwitter implements Scalar<ExtTwitter.Tweets> {
          * @return Tweet id
          * @throws IOException If fails
          */
-        long publish(final String text) throws IOException;
+        long publish(String text) throws IOException;
     }
 
     /**

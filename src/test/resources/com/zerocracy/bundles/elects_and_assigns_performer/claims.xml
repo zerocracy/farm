@@ -21,6 +21,7 @@ SOFTWARE.
     <type>ping</type>
     <params>
       <param name="force">yes</param>
+      <param name="reason">Need it</param>
     </params>
   </claim>
   <claim id="2">
@@ -28,6 +29,7 @@ SOFTWARE.
     <type>ping</type>
     <params>
       <param name="force">yes</param>
+      <param name="reason">Need it again</param>
     </params>
   </claim>
 </claims>

@@ -22,6 +22,9 @@ def exec(Project pmo, XML xml) {
     Projects projects = new Projects(farm, login).bootstrap()
     Set<String> orders = []
     projects.iterate().each { pid ->
+      if (pid == 'PMO') {
+        return
+      }
       orders.addAll(
         new Orders(farm.find("@id='${pid}'")[0]).bootstrap().jobs(login)
       )

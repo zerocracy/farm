@@ -17,6 +17,7 @@
 package com.zerocracy.entry;
 
 import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
 import com.mongodb.MongoClient;
 import com.mongodb.client.model.Filters;
 import com.zerocracy.Farm;
@@ -103,19 +104,23 @@ public final class ExtMongoTest {
     @Test
     public void worksInMultipleThreads() throws Exception {
         try (final Farm farm = new SyncFarm(new PropsFarm(new FkFarm()))) {
-            final Project project = new Pmo(farm);
             final String pid = "123456799";
             MatcherAssert.assertThat(
                 inc -> {
                     final MongoClient mongo = new ExtMongo(farm).value();
                     try (final Footprint footprint =
                         new Footprint(mongo, pid)) {
-                        new ClaimOut()
-                            .type("Version")
-                            .param("something", inc.incrementAndGet())
-                            .postTo(project);
-                        final XML xml = new Claims(project)
-                            .iterate().iterator().next();
+                        final XML xml = new XMLDocument(
+                            String.join(
+                                "",
+                                String.format(
+                                    "<claim id='%d'>",
+                                    inc.getAndIncrement()
+                                ),
+                                "<created>2018-01-01T01:01:01Z</created>",
+                                "<type>Hi there</type></claim>"
+                            )
+                        ).nodes("/claim").get(0);
                         footprint.open(xml);
                         footprint.close(xml);
                         return footprint.collection()

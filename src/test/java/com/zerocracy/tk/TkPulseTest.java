@@ -16,15 +16,12 @@
  */
 package com.zerocracy.tk;
 
-import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.footprint.FtFarm;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pm.ClaimOut;
-import com.zerocracy.pm.Claims;
-import com.zerocracy.pm.Footprint;
 import javax.json.Json;
 import javax.json.JsonObject;
 import org.hamcrest.MatcherAssert;
@@ -49,17 +46,12 @@ public final class TkPulseTest {
         final Take take = new TkPulse(farm);
         final Project project = farm.find("@id='PULSETEST'").iterator().next();
         new ClaimOut().type("Hello").postTo(project);
-        final XML xml = new Claims(project).iterate().iterator().next();
-        try (final Footprint footprint = new Footprint(farm, project)) {
-            footprint.open(xml);
-            footprint.close(xml);
-        }
         final JsonObject json = Json.createReader(
             take.act(new RqFake()).body()
         ).readObject();
         MatcherAssert.assertThat(
             json.getInt("total"),
-            Matchers.greaterThanOrEqualTo(2)
+            Matchers.greaterThanOrEqualTo(1)
         );
         MatcherAssert.assertThat(
             json.getInt("errors"),

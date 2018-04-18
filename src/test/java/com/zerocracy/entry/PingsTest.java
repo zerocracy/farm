@@ -14,25 +14,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm
+package com.zerocracy.entry;
 
-import com.jcabi.xml.XML
-import com.zerocracy.Farm
-import com.zerocracy.Par
-import com.zerocracy.Project
-import com.zerocracy.entry.ExtTwitter
-import com.zerocracy.farm.Assume
+import com.zerocracy.farm.fake.FkFarm;
+import org.junit.Test;
 
-def exec(Project project, XML xml) {
-  new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Project was published')
-  Farm farm = binding.variables.farm
-  ExtTwitter.Tweets tweets = new ExtTwitter(farm).value()
-  tweets.publish(
-    new Par(
-      farm,
-      'A new project %s is looking for developers,',
-      'feel free to apply and join: https://www.0crat.com/board'
-    ).say()
-  )
+/**
+ * Test case for {@link Pings}.
+ * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @version $Id$
+ * @since 0.22
+ * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ */
+public final class PingsTest {
+
+    @Test
+    public void startsAndRuns() throws Exception {
+        new Pings(new FkFarm()).start();
+    }
+
 }

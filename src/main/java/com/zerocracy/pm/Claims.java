@@ -26,10 +26,11 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.Iterator;
+import org.cactoos.Proc;
 import org.cactoos.collection.Limited;
 import org.cactoos.collection.Mapped;
 import org.cactoos.collection.Sorted;
+import org.cactoos.func.IoCheckedProc;
 import org.cactoos.iterable.LengthOf;
 import org.cactoos.time.DateAsText;
 import org.xembly.Directive;
@@ -107,8 +108,12 @@ public final class Claims {
                 throw new IllegalStateException(
                     new Par(
                         "Duplicate claims are not allowed in %s,",
-                        "can't add this XML:\n%s"
-                    ).say(this.project.pid(), new Xembler(claim).xmlQuietly())
+                        "can't add this XML to %d existing ones:\n%s"
+                    ).say(
+                        this.project.pid(),
+                        signatures.size(),
+                        new Xembler(claim).xmlQuietly()
+                    )
                 );
             }
         }
@@ -125,26 +130,23 @@ public final class Claims {
 
     /**
      * Take one claim and remove it.
-     * @return Found (or empty)
+     * @param proc The proc to run if taken
+     * @return TRUE if something was taken
      * @throws IOException If fails
      */
-    public Iterator<XML> take() throws IOException {
-        try (final Item item = this.item()) {
-            final Iterable<XML> found = new Limited<>(1, this.iterate());
-            if (found.iterator().hasNext()) {
-                final XML next = found.iterator().next();
-                new Xocument(item).modify(
-                    new Directives().xpath(
-                        String.format(
-                            "/claims/claim[@id='%d' and type='%s']",
-                            Long.parseLong(next.xpath("@id").get(0)),
-                            next.xpath("type/text()").get(0)
-                        )
-                    ).strict(1).remove()
-                );
+    public boolean take(final Proc<XML> proc) throws IOException {
+        boolean taken = false;
+        final Iterable<XML> found = new Limited<>(1, this.iterate());
+        if (found.iterator().hasNext()) {
+            final XML next = found.iterator().next();
+            try {
+                new IoCheckedProc<>(proc).exec(next);
+            } finally {
+                this.delete(next);
             }
-            return found.iterator();
+            taken = true;
         }
+        return taken;
     }
 
     /**
@@ -170,6 +172,25 @@ public final class Claims {
                         "/claims/claim[not(until) or until < '%s']", now
                     )
                 )
+            );
+        }
+    }
+
+    /**
+     * Delete one claim.
+     * @param claim The XML
+     * @throws IOException If fails
+     */
+    private void delete(final XML claim) throws IOException {
+        try (final Item item = this.item()) {
+            new Xocument(item).modify(
+                new Directives().xpath(
+                    String.format(
+                        "/claims/claim[@id='%d' and type='%s']",
+                        Long.parseLong(claim.xpath("@id").get(0)),
+                        claim.xpath("type/text()").get(0)
+                    )
+                ).strict(1).remove()
             );
         }
     }

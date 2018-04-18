@@ -31,6 +31,8 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Awards awards = new Awards(farm, login).bootstrap()
   People people = new People(farm).bootstrap()
-  people.reputation(login, awards.total())
-  claim.copy().type('Reputation was updated').postTo(project)
+  if (people.exists(login)) {
+    people.reputation(login, awards.total())
+    claim.copy().type('Reputation was updated').postTo(project)
+  }
 }

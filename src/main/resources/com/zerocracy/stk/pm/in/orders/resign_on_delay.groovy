@@ -75,10 +75,10 @@ def exec(Project project, XML xml) {
       .type('Notify project')
       .param(
       'message',
-      new Par(
-        'The order at %s cancelled for @%s, it is over %d day(s), see §8'
-      ).say(job, worker, days)
-    )
+        new Par(
+          'The order at %s cancelled for @%s, it is over %d day(s), see §8'
+        ).say(job, worker, days)
+      )
       .postTo(project)
   }
 }

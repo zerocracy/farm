@@ -21,18 +21,21 @@ SOFTWARE.
     <regex>hi|hello|hey|morning|good morning</regex>
     <label>hello</label>
     <help>Just say hello</help>
+    <invited>false</invited>
   </cmd>
   <cmd>
     <code>Version</code>
     <regex>version|ver</regex>
     <label>version</label>
     <help>Print current version of the bot</help>
+    <invited>false</invited>
   </cmd>
   <cmd>
     <code>Invite a friend</code>
     <regex>invite</regex>
     <label>invite</label>
     <help>Invite a friend</help>
+    <invited>true</invited>
     <opts>
       <opt>
         <name>login</name>
@@ -46,6 +49,7 @@ SOFTWARE.
     <regex>breakup</regex>
     <label>breakup</label>
     <help>An opposite command to invite</help>
+    <invited>true</invited>
     <opts>
       <opt>
         <name>login</name>
@@ -59,6 +63,7 @@ SOFTWARE.
     <regex>vacation</regex>
     <label>vacation</label>
     <help>Change vacation mode</help>
+    <invited>false</invited>
     <opts>
       <opt>
         <name>mode</name>
@@ -72,6 +77,7 @@ SOFTWARE.
     <regex>apply</regex>
     <label>apply</label>
     <help>Send your profile to the project, intending to join them</help>
+    <invited>true</invited>
     <opts>
       <opt>
         <name>pid</name>
@@ -90,6 +96,7 @@ SOFTWARE.
     <regex>rfp</regex>
     <label>rfp</label>
     <help>Purchase a single RFP, 256 points will be charged</help>
+    <invited>true</invited>
     <opts>
       <opt>
         <name>id</name>
@@ -103,6 +110,7 @@ SOFTWARE.
     <regex>quit</regex>
     <label>quit</label>
     <help>Immediately exit the project</help>
+    <invited>false</invited>
     <opts>
       <opt>
         <name>pid</name>
@@ -116,6 +124,7 @@ SOFTWARE.
     <regex>rate</regex>
     <label>rate</label>
     <help>Change your current hourly rate</help>
+    <invited>true</invited>
     <opts>
       <opt>
         <optional>true</optional>
@@ -130,6 +139,7 @@ SOFTWARE.
     <regex>wallet</regex>
     <label>wallet</label>
     <help>Change your payment information</help>
+    <invited>true</invited>
     <opts>
       <opt>
         <optional>true</optional>

@@ -49,6 +49,11 @@ def exec(Project project, XML xml) {
         ).say(href)
       )
     }
+    claim.copy().type('Tweet').param(
+      'par', new Par(
+        'We started to work with https://github.com/%s',
+      ).say(href)
+    ).postTo(project)
   }
   Catalog catalog = new Catalog(farm).bootstrap()
   catalog.link(pid, rel, href)
