@@ -115,11 +115,11 @@ SOFTWARE.
           </xsl:choose>
           <xsl:text>Update</xsl:text>
         </button>
-        <xsl:when test="not(rfp)">
+        <xsl:if test="not(rfp)">
           <span>
             <xsl:text>You will be able to submit once you pay.</xsl:text>
           </span>
-        </xsl:when>
+        </xsl:if>
       </fieldset>
     </form>
     <p>
