@@ -71,7 +71,10 @@ SOFTWARE.
           <xsl:text>$</xsl:text>
           <xsl:value-of select="format-number(price_cents div 100, '#.00')"/>
         </a>
-        <xsl:text> to continue. The payment is not refundable, according to </xsl:text>
+        <xsl:text> via </xsl:text>
+        <img src="/svg/stripe-logo.svg" style="height:1em;vertical-align:middle;"/>
+        <xsl:text> to continue.</xsl:text>
+        <xsl:text> The payment is not refundable, according to </xsl:text>
         <a href="http://www.zerocracy.com/policy.html#18">
           <xsl:text>&#xA7;41</xsl:text>
         </a>
@@ -112,6 +115,11 @@ SOFTWARE.
           </xsl:choose>
           <xsl:text>Update</xsl:text>
         </button>
+        <xsl:when test="not(rfp)">
+          <span>
+            <xsl:text>You will be able to submit once you pay.</xsl:text>
+          </span>
+        </xsl:when>
       </fieldset>
     </form>
     <p>
@@ -126,7 +134,16 @@ SOFTWARE.
       <xsl:text> sacrifice</xsl:text>
       <xsl:text> a decent amount of reputation points. This is how we</xsl:text>
       <xsl:text> filter out those who are not serious.</xsl:text>
+      <xsl:text> Here is a good example:</xsl:text>
     </p>
+    <blockquote>
+      <xsl:text>We need to create a Java8 web app.</xsl:text>
+      <xsl:text> Estimated duration 4 months.</xsl:text>
+      <xsl:text> Estimated budget $25,000.</xsl:text>
+      <xsl:text> Most possible tech stack: MongoDB, Spring Framework, XML/JSON, RESTful API, Maven.</xsl:text>
+      <xsl:text> We need an architect and a team.</xsl:text>
+      <xsl:text> On our side we are technically competent to supervise the project.</xsl:text>
+    </blockquote>
   </xsl:template>
   <xsl:template match="rfp">
     <p>
