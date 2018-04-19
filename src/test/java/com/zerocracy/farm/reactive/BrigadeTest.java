@@ -32,7 +32,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.BiFunc;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.LengthOf;
-import org.cactoos.io.ResourceOf;
 import org.cactoos.io.TeeInput;
 import org.cactoos.iterable.IterableOf;
 import org.cactoos.iterable.Joined;
@@ -88,15 +87,14 @@ public final class BrigadeTest {
     }
 
     @Test
-    public void parsesGroovyScript() throws Exception {
+    public void runGroovyScript() throws Exception {
         final Project project = new FkProject();
         new ClaimOut().type("Hello").token("test;notoken").postTo(project);
         final Claims claims = new Claims(project).bootstrap();
         final XML xml = claims.iterate().iterator().next();
         final Brigade brigade = new Brigade(
-            new StkGroovy(
-                new ResourceOf("com/zerocracy/stk/hello.groovy"),
-                "brigadetest-parsesgroovyscript",
+            new StkRuntime(
+                com.zerocracy.stk.hello.class,
                 new FkFarm()
             )
         );
