@@ -144,6 +144,19 @@ SOFTWARE.
       <xsl:text> We need an architect and a team.</xsl:text>
       <xsl:text> On our side we are technically competent to supervise the project.</xsl:text>
     </blockquote>
+    <p>
+      <xsl:text>This </xsl:text>
+      <a href="http://www.yegor256.com/2014/10/20/how-we-write-product-vision.html">
+        <xsl:text>blog post</xsl:text>
+      </a>
+      <xsl:text> may help you prepare the Vision document,</xsl:text>
+      <xsl:text> which will help the architect to bootstrap the project.</xsl:text>
+      <xsl:text> This </xsl:text>
+      <a href="http://www.yegor256.com/2014/10/06/software-project-lifecycle.html">
+        <xsl:text>article</xsl:text>
+      </a>
+      <xsl:text> explains our software development lifecycle.</xsl:text>
+    </p>
   </xsl:template>
   <xsl:template match="rfp">
     <p>
