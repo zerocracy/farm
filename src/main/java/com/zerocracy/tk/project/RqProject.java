@@ -21,6 +21,7 @@ import com.zerocracy.Item;
 import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.pm.staff.Roles;
+import com.zerocracy.pmo.Catalog;
 import com.zerocracy.pmo.People;
 import com.zerocracy.pmo.Pmo;
 import com.zerocracy.tk.RqUser;
@@ -41,6 +42,7 @@ import org.takes.facets.forward.RsForward;
  * @since 0.12
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.CyclomaticComplexity")
 public final class RqProject implements Project {
 
     /**
@@ -75,12 +77,15 @@ public final class RqProject implements Project {
                         )
                     );
                 }
-                if (required.length == 0 && !roles.hasAnyRole(user)
-                    && !admins.hasAnyRole(user)) {
+                if (required.length == 0
+                    && !roles.hasAnyRole(user)
+                    && !admins.hasAnyRole(user)
+                    && !new Catalog(farm).published(project.pid())) {
                     throw new RsForward(
                         new RsParFlash(
                             new Par(
-                                "You are not a member of %s"
+                                "You are not a member of %s",
+                                "and the project is not public"
                             ).say(project.pid()),
                             Level.WARNING
                         )
