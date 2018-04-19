@@ -124,7 +124,12 @@ SOFTWARE.
           </a>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:text>You are not working in this project</xsl:text>
+          <xsl:text>You are not working in this project,</xsl:text>
+          <xsl:text> but you can </xsl:text>
+          <a href="http://www.zerocracy.com/policy.html#2">
+            <xsl:text>apply</xsl:text>
+          </a>
+          <xsl:text>.</xsl:text>
         </xsl:otherwise>
       </xsl:choose>
       <xsl:if test="vesting">
