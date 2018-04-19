@@ -31,10 +31,7 @@ def exec(Project project, XML xml) {
     Logger.info(this, 'skip in testing mode')
     return
   }
-  Footprint footprint = new Footprint(farm, project)
-  try {
+  new Footprint(farm, project).withCloseable { Footprint footprint ->
     footprint.cleanup(new Date())
-  } finally {
-    footprint.close()
   }
 }
