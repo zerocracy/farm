@@ -55,12 +55,16 @@ public final class RolesTest {
     public void findsUsersByRole() throws Exception {
         final Roles roles = new Roles(new FkProject()).bootstrap();
         final String uid = "yegor256";
+        roles.assign(uid, "TST");
+        roles.assign("someone-else", "ARC");
         final String role = "QA";
         roles.assign(uid, role);
-        roles.assign(uid, "TST");
         MatcherAssert.assertThat(
             roles.findByRole(role),
-            Matchers.hasItem(uid)
+            Matchers.allOf(
+                Matchers.iterableWithSize(1),
+                Matchers.hasItem(uid)
+            )
         );
     }
 

@@ -49,6 +49,13 @@ def exec(Project project, XML xml) {
       .param('role', 'REV')
       .param('reason', 'Reputation is too low')
       .postTo(project)
+    claim.copy().type('Notify project').param(
+      'message', new Par(
+        'I decided to resign REV role from @%s,',
+        'because the reputation of the user is %+d, which is below %+d;',
+        'according to §33 he/she can\'t be a reviewer in a sandbox project'
+      ).say(uid, reputation, threshold)
+    ).postTo(project)
     claim.copy().type('Notify user').token("user;${uid}").param(
       'message', new Par(
         farm,
