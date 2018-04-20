@@ -22,7 +22,6 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 
 def exec(Project project, XML xml) {
-  new Assume(pmo, xml).notPmo()
   new Assume(pmo, xml).type('Award points were added')
   ClaimIn claim = new ClaimIn(xml)
   Integer points = Integer.parseInt(claim.param('points'))
