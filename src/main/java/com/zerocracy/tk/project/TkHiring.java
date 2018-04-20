@@ -22,6 +22,7 @@ import com.zerocracy.Policy;
 import com.zerocracy.Project;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pmo.Exam;
+import com.zerocracy.pmo.Vacancies;
 import com.zerocracy.tk.RqUser;
 import com.zerocracy.tk.RsParFlash;
 import java.io.IOException;
@@ -72,6 +73,7 @@ public final class TkHiring implements TkRegex {
             .param("minutes", -new Policy().get("51.price", 0))
             .param("reason", "Job announced to all users")
             .postTo(project);
+        new Vacancies(this.farm).bootstrap().add(project, user, text);
         new ClaimOut()
             .type("Notify all")
             .author(user)
