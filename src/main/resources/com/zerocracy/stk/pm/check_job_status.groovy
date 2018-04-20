@@ -112,12 +112,20 @@ def exec(Project project, XML xml) {
       items.add(new Par('The job is not assigned to anyone').say())
     }
     Boosts boosts = new Boosts(project).bootstrap()
-    items.add(
-      new Par(
-        'The [budget](http://www.zerocracy.com/policy.html#4) is ' +
-          boosts.factor(job) * 15 + ' minutes/points'
-      ).say()
-    )
+    if (orders.assigned(job)) {
+      items.add(
+        new Par(
+          'The [budget](http://www.zerocracy.com/policy.html#4) is ' +
+            boosts.factor(job) * 15 + ' minutes/points'
+        ).say()
+      )
+    } else {
+      items.add(
+        new Par(
+          'The [budget](http://www.zerocracy.com/policy.html#4) is not set yet'
+        ).say()
+      )
+    }
   } else {
     items.add(new Par('The job %s is not in scope').say(job))
   }
