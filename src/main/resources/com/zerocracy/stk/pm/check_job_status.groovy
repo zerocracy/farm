@@ -18,6 +18,7 @@ package com.zerocracy.stk.pm
 
 import com.jcabi.log.Logger
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
@@ -31,11 +32,14 @@ import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.qa.Reviews
 import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pm.staff.Bans
+import com.zerocracy.pmo.People
 import org.cactoos.list.ListOf
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Check job status')
+  Farm farm = binding.variables.farm
+  People people = new People(farm).bootstrap()
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
   Collection<String> items = []
@@ -64,6 +68,9 @@ def exec(Project project, XML xml) {
             '](http://www.zerocracy.com/policy.html#8)'
         ).say(performer)
       )
+      if (people.vacation(performer)) {
+        items.add(new Par('@%s is on vacation!').say(performer))
+      }
       Vesting vesting = new Vesting(project).bootstrap()
       Estimates estimates = new Estimates(project).bootstrap()
       if (estimates.exists(job)) {
@@ -140,19 +147,20 @@ def exec(Project project, XML xml) {
   }
   Reviews reviews = new Reviews(project).bootstrap()
   if (reviews.exists(job)) {
+    String inspector = reviews.inspector(job)
     items.add(
       new Par(
         'The job is waiting quality review verdict by @%s for %[ms]s'
-      ).say(
-        reviews.inspector(job),
-        System.currentTimeMillis() - reviews.requested(job).time
-      )
+      ).say(inspector, System.currentTimeMillis() - reviews.requested(job).time)
     )
     items.add(
       new Par(
         '@%s will receive %d minutes after quality review'
       ).say(reviews.performer(job), reviews.minutes(job))
     )
+    if (people.vacation(inspector)) {
+      items.add(new Par('@%s is on vacation!').say(inspector))
+    }
   }
   items.add(
     new Par('Job [footprint](/footprint/%s?q=%s) (restricted area)').say(
