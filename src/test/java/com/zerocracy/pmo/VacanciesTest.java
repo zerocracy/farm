@@ -32,21 +32,18 @@ import org.junit.Test;
  */
 public final class VacanciesTest {
     @Test
-    public void addNewVacancy() throws Exception {
+    public void addsVacancy() throws Exception {
         final Vacancies vacancies = new Vacancies(new FkFarm()).bootstrap();
         final Project project = new FkProject();
         vacancies.add(project, "test", "unit test is hiring");
         MatcherAssert.assertThat(
             vacancies.iterate(),
-            Matchers.allOf(
-                Matchers.iterableWithSize(1),
-                Matchers.hasItem(Matchers.equalTo(project.pid()))
-            )
+            Matchers.contains(Matchers.equalTo(project.pid()))
         );
     }
 
     @Test
-    public void removeVacancy() throws Exception {
+    public void removesVacancy() throws Exception {
         final Vacancies vacancies = new Vacancies(new FkFarm()).bootstrap();
         final Project project = new FkProject();
         vacancies.add(project, "del", "to remove");

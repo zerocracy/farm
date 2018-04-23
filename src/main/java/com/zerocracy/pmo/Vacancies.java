@@ -31,9 +31,11 @@ import org.xembly.Directives;
  * @version $Id $
  * @since 0.22
  * @todo #925:30min Vacancies are not rendered on `/vacancies` page.
- *  This page should list all current vacancies in all projects. Also
- *  when vacancy is too old (over 32 days) it should be automatically
- *  removed from `vacancies.xml`.
+ *  This page should list all current vacancies in all projects.
+ *  Let's display vacancy author, date and text.
+ * @todo #925:30min Old vacancies are not removed automatically.
+ *  Let's add new stakeholder which will remove vacancies from `vacancies.xml`
+ *  which are  older than 32 days.
  */
 public final class Vacancies {
 
