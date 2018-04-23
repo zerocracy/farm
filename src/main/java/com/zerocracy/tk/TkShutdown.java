@@ -16,6 +16,7 @@
  */
 package com.zerocracy.tk;
 
+import com.zerocracy.Farm;
 import com.zerocracy.farm.props.Props;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -38,13 +39,18 @@ public final class TkShutdown implements Take {
      * Properties.
      */
     private final Props props;
-
+    /**
+     * Farm.
+     */
+    private final Farm frm;
     /**
      * Ctor.
      * @param properties Properties.
+     * @param farm Farm
      */
-    public TkShutdown(final Props properties) {
+    public TkShutdown(final Props properties, final Farm farm) {
         this.props = properties;
+        this.frm = farm;
     }
 
     @Override
@@ -59,6 +65,7 @@ public final class TkShutdown implements Take {
                 )
             );
         }
+        this.frm.close();
         return new RsEmpty();
     }
 }
