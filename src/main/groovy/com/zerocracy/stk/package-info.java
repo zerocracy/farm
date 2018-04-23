@@ -16,10 +16,10 @@
  */
 
 /**
- * Groovy scripts.
+ * Groovy stakeholder scripts.
  *
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.22
  */
-package com.zerocracy;
+package com.zerocracy.stk;

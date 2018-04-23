@@ -87,7 +87,7 @@ public final class BrigadeTest {
     }
 
     @Test
-    public void runGroovyScript() throws Exception {
+    public void runsGroovyScript() throws Exception {
         final Project project = new FkProject();
         new ClaimOut().type("Hello").token("test;notoken").postTo(project);
         final Claims claims = new Claims(project).bootstrap();
