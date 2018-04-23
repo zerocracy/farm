@@ -71,7 +71,10 @@ SOFTWARE.
           <xsl:text>$</xsl:text>
           <xsl:value-of select="format-number(price_cents div 100, '#.00')"/>
         </a>
-        <xsl:text> to continue. The payment is not refundable, according to </xsl:text>
+        <xsl:text> via </xsl:text>
+        <img src="/svg/stripe-logo.svg" style="height:1em;vertical-align:middle;"/>
+        <xsl:text> to continue.</xsl:text>
+        <xsl:text> The payment is not refundable, according to </xsl:text>
         <a href="http://www.zerocracy.com/policy.html#18">
           <xsl:text>&#xA7;41</xsl:text>
         </a>
@@ -112,6 +115,11 @@ SOFTWARE.
           </xsl:choose>
           <xsl:text>Update</xsl:text>
         </button>
+        <xsl:if test="not(rfp)">
+          <span>
+            <xsl:text>You will be able to submit once you pay.</xsl:text>
+          </span>
+        </xsl:if>
       </fieldset>
     </form>
     <p>
@@ -126,6 +134,28 @@ SOFTWARE.
       <xsl:text> sacrifice</xsl:text>
       <xsl:text> a decent amount of reputation points. This is how we</xsl:text>
       <xsl:text> filter out those who are not serious.</xsl:text>
+      <xsl:text> Here is a good example:</xsl:text>
+    </p>
+    <blockquote>
+      <xsl:text>We need to create a Java8 web app.</xsl:text>
+      <xsl:text> Estimated duration 4 months.</xsl:text>
+      <xsl:text> Estimated budget $25,000.</xsl:text>
+      <xsl:text> Most possible tech stack: MongoDB, Spring Framework, XML/JSON, RESTful API, Maven.</xsl:text>
+      <xsl:text> We need an architect and a team.</xsl:text>
+      <xsl:text> On our side we are technically competent to supervise the project.</xsl:text>
+    </blockquote>
+    <p>
+      <xsl:text>This </xsl:text>
+      <a href="http://www.yegor256.com/2014/10/20/how-we-write-product-vision.html">
+        <xsl:text>blog post</xsl:text>
+      </a>
+      <xsl:text> may help you prepare the Vision document,</xsl:text>
+      <xsl:text> which will help the architect to bootstrap the project.</xsl:text>
+      <xsl:text> This </xsl:text>
+      <a href="http://www.yegor256.com/2014/10/06/software-project-lifecycle.html">
+        <xsl:text>article</xsl:text>
+      </a>
+      <xsl:text> explains our software development lifecycle.</xsl:text>
     </p>
   </xsl:template>
   <xsl:template match="rfp">

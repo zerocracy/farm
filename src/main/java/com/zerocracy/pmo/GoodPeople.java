@@ -69,7 +69,9 @@ public final class GoodPeople {
         final String uid = list.next();
         if (invited && !this.people.hasMentor(uid)) {
             throw new SoftException(
-                new Par("You must be invited in order to do that, see §1").say()
+                new Par(
+                    "You must be invited in order to do that, see §1"
+                ).say()
             );
         }
         return uid;

@@ -27,12 +27,14 @@ import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.cash.CashParsingException;
 import java.io.IOException;
+import java.util.Date;
 import java.util.Iterator;
 import org.cactoos.iterable.ItemAt;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.scalar.NumberOf;
 import org.cactoos.scalar.UncheckedScalar;
 import org.cactoos.time.DateAsText;
+import org.cactoos.time.DateOf;
 import org.xembly.Directives;
 
 /**
@@ -704,6 +706,75 @@ public final class People {
             return !new Xocument(item).nodes(
                 String.format("//people/person[@id  ='%s']", uid)
             ).isEmpty();
+        }
+    }
+
+    /**
+     * Apply.
+     * @param uid User id
+     * @param when When applied (UTC)
+     * @throws IOException If fails
+     */
+    public void apply(final String uid, final Date when) throws IOException {
+        if (!this.exists(uid)) {
+            throw new IllegalArgumentException(
+                new Par("Person @%s doesn't exist").say(uid)
+            );
+        }
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                new Directives().xpath(
+                    String.format("//people/person[@id  ='%s']", uid)
+                ).addIf("applied").set(new DateAsText(when).asString())
+            );
+        }
+    }
+
+    /**
+     * Does user apply.
+     * @param uid User id
+     * @return True if applied
+     * @throws IOException If fails
+     */
+    public boolean applied(final String uid) throws IOException {
+        if (!this.exists(uid)) {
+            throw new IllegalArgumentException(
+                new Par("Person @%s doesn't exist").say(uid)
+            );
+        }
+        try (final Item item = this.item()) {
+            return !new Xocument(item).nodes(
+                String.format("//people/person[@id  ='%s']/applied", uid)
+            ).isEmpty();
+        }
+    }
+
+    /**
+     * When user applied.
+     * @param uid User id
+     * @return Applied time (UTC)
+     * @throws IOException If fails
+     */
+    public Date appliedTime(final String uid) throws IOException {
+        if (!this.exists(uid)) {
+            throw new IllegalArgumentException(
+                new Par("Person @%s doesn't exist").say(uid)
+            );
+        }
+        if (!this.applied(uid)) {
+            throw new IllegalArgumentException(
+                new Par("Person @%s doesn't have apply-time").say(uid)
+            );
+        }
+        try (final Item item = this.item()) {
+            return new DateOf(
+                new Xocument(item).xpath(
+                    String.format(
+                        "//people/person[@id  ='%s']/applied/text()",
+                        uid
+                    )
+                ).get(0)
+            ).value();
         }
     }
 

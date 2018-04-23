@@ -143,9 +143,13 @@ SOFTWARE.
       <span style="color:darkred">
         <xsl:text>negative</xsl:text>
       </span>
-      <span>
-        <xsl:text> reputation.</xsl:text>
-      </span>
+      <xsl:text> reputation.</xsl:text>
+      <xsl:text> Grayed out people are </xsl:text>
+      <a href="http://www.zerocracy.com/policy.html#38">
+        <xsl:text>on vacation</xsl:text>
+      </a>
+      <xsl:text> and most likely</xsl:text>
+      <xsl:text> won't be interested in working in any projects at the moment.</xsl:text>
     </p>
   </xsl:template>
   <xsl:template match="user">
@@ -158,6 +162,13 @@ SOFTWARE.
           <xsl:text>opacity:0.5;</xsl:text>
         </xsl:if>
       </xsl:attribute>
+      <xsl:if test="vacation">
+        <xsl:attribute name="title">
+          <xsl:text>@</xsl:text>
+          <xsl:value-of select="login"/>
+          <xsl:text> is on vacation, see &#xA7;38</xsl:text>
+        </xsl:attribute>
+      </xsl:if>
       <td>
         <img src="https://socatar.com/github/{login}/90-90" style="width:30px;height:30px;border-radius:3px;vertical-align:middle;"/>
         <xsl:text> </xsl:text>

@@ -86,13 +86,17 @@ def exec(Project project, XML xml) {
   claim.reply(
     new Par(
       farm,
-      'I\'m ready to manage the %s project.',
-      'When you\'re ready, you can start giving me commands,',
-      'always prefixing your messages with my name.',
-      'All project artifacts are [here](/p/%1$s).',
-      'Start with linking your project with GitHub repositories,',
-      'as explained in §17. I just assigned you to both ARC and PO',
-      'roles.'
+      'I\'m ready to manage the %s project;',
+      'when you\'re ready, you can start giving me commands,',
+      'always prefixing your messages with my name;',
+      'all project artifacts are [here](/p/%1$s);',
+      'start with linking your project with GitHub repositories, as explained in §17;',
+      'I just assigned you to both ARC and PO roles',
+      'read these two articles before you start:',
+      '[Project Lifecycle in Zerocracy](http://www.yegor256.com/2014/10/06/software-project-lifecycle.html)',
+      ' and ',
+      '[Nine Steps to Start',
+      'a Software Project](http://www.yegor256.com/2015/08/04/nine-steps-start-software-project.html)'
     ).say(project.pid())
   ).postTo(project)
   claim.copy().type('Notify PMO').param(
