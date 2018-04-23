@@ -649,9 +649,9 @@ SOFTWARE.
                     <exclude>com/zerocracy/pmo/People.java</exclude>
                     <exclude>com/zerocracy/pings/*.*</exclude>
                     <!--
-                      @todo #747:30min Groovy scripts are included in instruction coverage
-                       metric, lets add more tests for them and change minimum value
-                       back to 0.60
+                      @todo #747:30min Groovy scripts are excluded from coverage report
+                       because they are not fully tested. Let's add tests for them and remove this
+                       `<exclude>` line.
                     -->
                     <exclude>com/zerocracy/stk/**/*</exclude>
                   </excludes>
