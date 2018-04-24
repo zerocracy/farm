@@ -22,6 +22,7 @@ import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pm.cost.Rates
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.Hint
 import java.util.concurrent.TimeUnit
@@ -33,6 +34,10 @@ def exec(Project project, XML xml) {
   Roles roles = new Roles(project).bootstrap()
   int total = roles.findByRole('QA').size()
   if (total > 0) {
+    return
+  }
+  Rates rates = new Rates(project).bootstrap()
+  if (!roles.everybody().any { uid -> rates.exists(uid) }) {
     return
   }
   Farm farm = binding.variables.farm
@@ -47,7 +52,8 @@ def exec(Project project, XML xml) {
         'message',
         new Par(
           'There are no QA people in the project;',
-          'this is a serious threat to the discipline in the project;',
+          'this is a serious threat to the discipline in the project,',
+          'which may lead to financial losses;',
           'we would recommend to add someone to this role, see §42'
         ).say()
       )
