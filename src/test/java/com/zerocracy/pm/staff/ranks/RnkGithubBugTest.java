@@ -16,6 +16,8 @@
  */
 package com.zerocracy.pm.staff.ranks;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.jcabi.github.Github;
 import com.jcabi.github.Issue;
 import com.jcabi.github.IssueLabels;
@@ -58,6 +60,22 @@ public final class RnkGithubBugTest {
                 "gh:test/bugs#1",
                 "gh:test/bugs#3"
             )
+        );
+    }
+
+    @Test
+    public void cachesBugs() throws Exception {
+        final Github github = new MkGithub().relogin("test2");
+        final Repo repo = github.repos().create(
+            new Repos.RepoCreate("cached", false)
+        );
+        repo.issues().create("Test cache 1", "");
+        repo.issues().create("Test cache 2", "");
+        final Cache<String, Boolean> cache = CacheBuilder.newBuilder().build();
+        new RnkGithubBug(github, cache)
+            .compare("gh:test2/cached#1", "gh:test2/cached#2");
+        MatcherAssert.assertThat(
+            cache.size(), Matchers.is(2L)
         );
     }
 }

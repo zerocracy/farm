@@ -16,12 +16,15 @@
  */
 package com.zerocracy.pm.staff.ranks;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.jcabi.aspects.Tv;
 import com.jcabi.github.Github;
 import com.jcabi.github.IssueLabels;
 import com.zerocracy.radars.github.Job;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Give higher rank for github tickets with 'bug' label.
@@ -31,6 +34,14 @@ import java.util.Map;
  * @since 0.21.1
  */
 public final class RnkGithubBug implements Comparator<String> {
+    /**
+     * Global bug jobs cache.
+     */
+    private static final Cache<String, Boolean> CACHED = CacheBuilder
+        .newBuilder()
+        .expireAfterAccess(1, TimeUnit.DAYS)
+        .maximumSize(Tv.TEN * Tv.THOUSAND)
+        .build();
 
     /**
      * Function to check github bug label.
@@ -38,17 +49,26 @@ public final class RnkGithubBug implements Comparator<String> {
     private final Github ghb;
 
     /**
-     * Bug jobs cache.
+     * Locally referenced cache.
      */
-    private final Map<String, Boolean> cache;
+    private final Cache<String, Boolean> cache;
 
     /**
      * Ctor.
      * @param github Github
      */
     public RnkGithubBug(final Github github) {
+        this(github, RnkGithubBug.CACHED);
+    }
+
+    /**
+     * Ctor.
+     * @param github Github
+     * @param cache Cache
+     */
+    RnkGithubBug(final Github github, final Cache<String, Boolean> cache) {
         this.ghb = github;
-        this.cache = new HashMap<>(1);
+        this.cache = cache;
     }
 
     @Override
@@ -62,15 +82,15 @@ public final class RnkGithubBug implements Comparator<String> {
      * @return True if has
      */
     private boolean isBug(final String job) {
-        final boolean bug;
-        if (this.cache.containsKey(job)) {
-            bug = this.cache.get(job);
-        } else {
-            bug = job.startsWith("gh:") && new IssueLabels.Smart(
-                new Job.Issue(this.ghb, job).labels()
-            ).contains("bug");
-            this.cache.put(job, bug);
+        try {
+            return this.cache.get(
+                job,
+                () -> job.startsWith("gh:") && new IssueLabels.Smart(
+                    new Job.Issue(this.ghb, job).labels()
+                ).contains("bug")
+            );
+        } catch (final ExecutionException ex) {
+            throw new IllegalStateException(ex);
         }
-        return bug;
     }
 }
