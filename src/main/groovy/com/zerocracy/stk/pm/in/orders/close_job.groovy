@@ -50,7 +50,8 @@ def exec(Project project, XML xml) {
       new Par('The job is not in WBS, won\'t close the order').say()
     )
   }
-  if (job.startsWith('gh:')) {
+  Orders orders = new Orders(project).bootstrap()
+  if (job.startsWith('gh:') && orders.assigned(job)) {
     Farm farm = binding.variables.farm
     Github github = new ExtGithub(farm).value()
     Issue.Smart issue = new Issue.Smart(new Job.Issue(github, job))
@@ -77,7 +78,6 @@ def exec(Project project, XML xml) {
       return
     }
   }
-  Orders orders = new Orders(project).bootstrap()
   if (orders.assigned(job)) {
     claim.copy()
       .type('Finish order')
