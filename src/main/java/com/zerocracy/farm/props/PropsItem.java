@@ -33,6 +33,8 @@ import org.xembly.Xembler;
 /**
  * Props item.
  *
+ * <p>This Item represents the {@code _props.xml} file in a PMO project.</p>
+ *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.18
