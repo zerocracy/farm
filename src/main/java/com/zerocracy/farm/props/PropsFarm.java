@@ -29,6 +29,10 @@ import org.xembly.Directives;
 /**
  * Props farm.
  *
+ * <p>This {@link com.zerocracy.Farm} decorator will make sure all the Projects
+ * have their {@code _props.xml} file loaded and accessible, by using the Props
+ * class.</p>
+ *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.18

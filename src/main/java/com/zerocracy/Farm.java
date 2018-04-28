@@ -54,5 +54,4 @@ public interface Farm extends Closeable {
             "close() is not implemented, can't close this farm."
         );
     }
-
 }
