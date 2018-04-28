@@ -29,6 +29,7 @@ import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pm.staff.Roles
+import com.zerocracy.pmo.Blanks
 import com.zerocracy.radars.github.Job
 
 // @todo #535:30min Every time we close a job completed by a developer,
@@ -39,41 +40,41 @@ import com.zerocracy.radars.github.Job
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Close job')
+  Farm farm = binding.variables.farm
+  Github github = new ExtGithub(farm).value()
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
   Wbs wbs = new Wbs(project).bootstrap()
+  Issue.Smart issue = new Issue.Smart(new Job.Issue(github, job))
+  String author = issue.author().login().toLowerCase(Locale.ENGLISH)
   if (!wbs.exists(job)) {
-    // @todo #536:30min Every time we close a ticket in GitHub, which was not a job,
-    //  or when we close a pull request, which was not merged, we should
-    //  add it to blanks.xml
+    String kind = issue.pull ? 'pull-request' : 'issue'
+    new Blanks(farm, author).bootstrap().add(project, job, kind)
     throw new SoftException(
       new Par('The job is not in WBS, won\'t close the order').say()
     )
   }
   Orders orders = new Orders(project).bootstrap()
   if (job.startsWith('gh:') && orders.assigned(job)) {
-    Farm farm = binding.variables.farm
-    Github github = new ExtGithub(farm).value()
-    Issue.Smart issue = new Issue.Smart(new Job.Issue(github, job))
     if (issue.open) {
       throw new SoftException(
         new Par('GitHub issue is still open, won\'t close').say()
       )
     }
-    if (issue.author().login().toLowerCase(Locale.ENGLISH) != claim.author()
+    if (author != claim.author()
       && !issue.pull
       && !new Roles(project).bootstrap().hasRole(claim.author(), 'PO', 'ARC')) {
       claim.copy()
         .type('Notify job')
         .token("job;${job}")
         .param(
-          'message',
-          new Par(
-            '@%s the issue is closed not by @%s (its creator);',
-            'I won\'t close the order;',
-            'please, re-open it and ask @%2$s to close it'
-          ).say(claim.author(), issue.author().login())
-        )
+        'message',
+        new Par(
+          '@%s the issue is closed not by @%s (its creator);',
+          'I won\'t close the order;',
+          'please, re-open it and ask @%2$s to close it'
+        ).say(claim.author(), issue.author().login())
+      )
         .postTo(project)
       return
     }
