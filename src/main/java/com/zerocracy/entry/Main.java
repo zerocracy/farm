@@ -113,7 +113,11 @@ public final class Main {
             final SlackRadar radar = new SlackRadar(farm)
         ) {
             new ExtMongobee(farm).apply();
-            new ExtTelegram(farm).value();
+            new AsyncFunc<>(
+                input -> {
+                    new ExtTelegram(farm).value();
+                }
+            ).exec(null);
             new AsyncFunc<>(
                 input -> {
                     radar.refresh();
