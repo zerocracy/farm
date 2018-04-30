@@ -27,7 +27,7 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Catalog catalog = new Catalog(farm).bootstrap()
   MatcherAssert.assertThat(
-    'Project title should be set from channel prop',
+    'Project title should be set to project ID if channel property is of length <= 2',
     catalog.title(project.pid()),
     Matchers.equalTo(project.pid())
   )
