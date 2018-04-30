@@ -48,8 +48,7 @@ def exec(Project project, XML xml) {
   Issue.Smart issue = new Issue.Smart(new Job.Issue(github, job))
   String author = issue.author().login().toLowerCase(Locale.ENGLISH)
   if (!wbs.exists(job)) {
-    String kind = issue.pull ? 'pull-request' : 'issue'
-    new Blanks(farm, author).bootstrap().add(project, job, kind)
+    new Blanks(farm, author).bootstrap().add(project, job, issue.pull ? 'pull-request' : 'issue')
     throw new SoftException(
       new Par('The job is not in WBS, won\'t close the order').say()
     )
@@ -68,13 +67,13 @@ def exec(Project project, XML xml) {
         .type('Notify job')
         .token("job;${job}")
         .param(
-        'message',
-        new Par(
-          '@%s the issue is closed not by @%s (its creator);',
-          'I won\'t close the order;',
-          'please, re-open it and ask @%2$s to close it'
-        ).say(claim.author(), issue.author().login())
-      )
+          'message',
+          new Par(
+            '@%s the issue is closed not by @%s (its creator);',
+            'I won\'t close the order;',
+            'please, re-open it and ask @%2$s to close it'
+          ).say(claim.author(), issue.author().login())
+        )
         .postTo(project)
       return
     }
