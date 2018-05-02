@@ -84,6 +84,7 @@ public final class TkDonate implements TkRegex {
         new ClaimOut()
             .type("Donate")
             .param("amount", amount)
+            .author(user)
             .postTo(project);
         return new RsForward(
             new RsParFlash(
