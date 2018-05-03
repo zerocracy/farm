@@ -40,6 +40,7 @@ def exec(Project project, XML xml) {
   People people = new People(farm).bootstrap()
   people.breakup(login)
   claim.copy()
+    .type('Notify user')
     .token("user;${login}")
     .param(
       'message',
