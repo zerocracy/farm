@@ -23,8 +23,10 @@ import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.Awards
 import com.zerocracy.pmo.People
+import com.zerocracy.pmo.Pmo
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
@@ -38,6 +40,20 @@ def exec(Project project, XML xml) {
     return
   }
   People people = new People(farm).bootstrap()
+  if (new Roles(new Pmo(farm)).hasAnyRole(login)
+    || people.mentor(login) == '0crat') {
+    claim.copy()
+      .type('Notify user')
+      .token("user;${login}")
+      .param(
+        'message',
+        new Par(
+          'You are a very respected person, but your reputation is very low: %d;',
+          'please, do something or I will take some disciplinary actions, see §44'
+        ).say()
+      ).postTo(project)
+    return
+  }
   people.breakup(login)
   claim.copy()
     .type('Notify user')
