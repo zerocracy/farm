@@ -19,6 +19,7 @@ package com.zerocracy.stk.pm.cost.vesting
 import com.jcabi.xml.XML
 import com.zerocracy.Par
 import com.zerocracy.Project
+import com.zerocracy.SoftException
 import com.zerocracy.cash.Cash
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
@@ -32,10 +33,24 @@ def exec(Project project, XML xml) {
   String login = claim.param('login')
   Cash rate = new Cash.S(claim.param('rate'))
   Vesting vesting = new Vesting(project).bootstrap()
-  vesting.rate(login, rate)
-  claim.reply(
-    new Par(
+  String msg
+  if (vesting.exists(login)) {
+    if (vesting.rate(login) == rate) {
+      throw new SoftException(
+        new Par(
+          'Vesting rate for @%s is %s, no need to change'
+        ).say(login, rate)
+      )
+    }
+    msg = new Par(
+      'Vesting rate for @%s was changed from %s to %s, according to §37'
+    ).say(login, vesting.rate(login), rate)
+  } else {
+    msg = new Par(
       'Vesting rate for @%s was set to %s, according to §37'
     ).say(login, rate)
-  ).postTo(project)
+  }
+  vesting.rate(login, rate)
+  claim.reply(msg).postTo(project)
+  claim.copy().type('User vesting rate was changed').postTo(project)
 }
