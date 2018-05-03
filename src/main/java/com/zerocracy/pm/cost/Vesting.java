@@ -24,6 +24,8 @@ import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.cash.CashParsingException;
 import java.io.IOException;
+import org.cactoos.time.DateAsText;
+import org.xembly.Directives;
 
 /**
  * Vesting rates.
@@ -81,6 +83,39 @@ public final class Vesting {
                         login
                     )
                 ).get(0)
+            );
+        } catch (final CashParsingException ex) {
+            throw new IllegalStateException(ex);
+        }
+    }
+
+    /**
+     * Set his rate.
+     * @param login The GitHub login
+     * @param rate The rate to set
+     * @throws IOException If fails
+     */
+    public void rate(final String login, final Cash rate) throws IOException {
+        try (final Item item = this.item()) {
+            new Xocument(item).modify(
+                new Directives()
+                    .xpath(
+                        String.format(
+                            "/vesting[not(person[@id='%s'])]",
+                            login
+                        )
+                    )
+                    .add("person")
+                    .attr("id", login)
+                    .add("created").set(new DateAsText().asString())
+                    .xpath(
+                        String.format(
+                            "/vesting/person[@id='%s']",
+                            login
+                        )
+                    )
+                    .addIf("rate")
+                    .set(rate)
             );
         } catch (final CashParsingException ex) {
             throw new IllegalStateException(ex);
