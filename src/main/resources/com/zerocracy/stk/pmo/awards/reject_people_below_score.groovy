@@ -34,26 +34,29 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Awards awards = new Awards(farm, login).bootstrap()
   Integer current = awards.total()
-  if (current <= new Policy().get('44.threshold', -256)) {
-    People people = new People(farm).bootstrap()
-    people.breakup(login)
-    claim.copy()
-      .token("user;${login}")
-      .param(
-        'message',
-        new Par('Your reputation becomes too low, so you have been disconnected from your mentor as in §44').say()
-      ).postTo(project)
-    String job = claim.param('job')
-    String reason = new Par(
-      'The score of @%s %d is too low and will be reset'
-    ).say(login, current)
-    Integer points = -current
-    awards.add(project, points, job, new Par.ToText(reason).toString())
-    claim.copy()
-      .type('Award points were added')
-      .param('login', login)
-      .param('points', points)
-      .param('reason', reason)
-      .postTo(project)
+  if (current > new Policy().get('44.threshold', -256)) {
+    return
   }
+  People people = new People(farm).bootstrap()
+  people.breakup(login)
+  claim.copy()
+    .token("user;${login}")
+    .param(
+      'message',
+      new Par(
+        'Your reputation became too low,',
+        'you have been disconnected from your mentor as in §44'
+      ).say()
+    ).postTo(project)
+  String job = claim.param('job')
+  String reason = new Par(
+    'The score of @%s %d is too low and will be reset'
+  ).say(login, current)
+  Integer points = -current
+  awards.add(project, points, job, new Par.ToText(reason).toString())
+  claim.copy()
+    .type('Award points were added')
+    .param('points', points)
+    .param('reason', reason)
+    .postTo(project)
 }

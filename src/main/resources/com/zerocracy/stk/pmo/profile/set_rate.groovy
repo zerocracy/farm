@@ -35,15 +35,20 @@ def exec(Project pmo, XML xml) {
   if (!claim.hasParam('rate')) {
     throw new SoftException(
       new Par(
-        'Your rate is %s. To change it just say `rate $25`, for example.'
+        'Your rate is %s; to change it just say `rate $25`, for example;',
+        'you can format the rate differently, see §16'
       ).say(people.rate(author))
     )
   }
   Cash rate
   try {
-    rate = new Cash.S(claim.param('rate'))
+    rate = new Cash.S(claim.param('rate').replaceAll('([A-Z]{3})$', ' \1'))
   } catch (CashParsingException ex) {
-    throw new SoftException(ex.message)
+    throw new SoftException(
+      new Par(
+        '%s; use `$25` or `18.50RUR` or `25EUR` or `18GBP`',
+      ).say(ex.message)
+    )
   }
   if (rate > Cash.ZERO && people.details(author).empty) {
     throw new SoftException(
@@ -57,7 +62,7 @@ def exec(Project pmo, XML xml) {
   people.rate(author, rate)
   claim.reply(
     new Par(
-      'Rate of @%s set to %s'
+      'Rate of @%s set to %s, according to §16'
     ).say(author, rate)
   ).postTo(pmo)
 }
