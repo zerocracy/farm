@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.cost.funding
+package com.zerocracy.stk.pm.cost.rates
 
 import com.jcabi.xml.XML
 import com.zerocracy.Par
@@ -22,29 +22,22 @@ import com.zerocracy.Project
 import com.zerocracy.cash.Cash
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.cost.Ledger
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Donate')
+  new Assume(project, xml).type('User rate was changed')
   ClaimIn claim = new ClaimIn(xml)
-  String author = claim.author()
-  Cash amount = new Cash.S(claim.param('amount'))
-  new Ledger(project).bootstrap().add(
-    new Ledger.Transaction(
-      amount,
-      'assets', 'cash',
-      'income', 'zerocracy',
-      new Par('Donated by @%s').say(author)
-    )
-  )
+  String login = claim.param('login')
+  Cash rate = new Cash.S(claim.param('rate'))
   claim.copy()
-    .type('Notify project')
+    .type('Notify user')
+    .token("user;${login}")
     .param(
       'message',
       new Par(
-        'The project %s got a donation of %s from @%s'
-      ).say(project.pid(), amount, author)
+        'Your new rate in %s is %s;',
+        'only new tasks will be affected, by §16'
+      ).say(project.pid(), rate)
     )
     .postTo(project)
 }

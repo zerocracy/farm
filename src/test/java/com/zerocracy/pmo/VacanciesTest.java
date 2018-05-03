@@ -14,41 +14,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pm.cost;
+package com.zerocracy.pmo;
 
-import com.zerocracy.cash.Cash;
+import com.zerocracy.Project;
+import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
- * Test case for {@link Vesting}.
- * @author Yegor Bugayenko (yegor256@gmail.com)
+ * Test case for {@link Vacancies}.
+ * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
- * @since 0.20
+ * @since 0.22
  * @checkstyle JavadocMethodCheck (500 lines)
  */
-public final class VestingTest {
-
+public final class VacanciesTest {
     @Test
-    public void checksRatePresence() throws Exception {
-        final Vesting rates = new Vesting(new FkProject()).bootstrap();
-        final String login = "yegor256";
+    public void addsVacancy() throws Exception {
+        final Vacancies vacancies = new Vacancies(new FkFarm()).bootstrap();
+        final Project project = new FkProject();
+        vacancies.add(project, "test", "unit test is hiring");
         MatcherAssert.assertThat(
-            rates.exists(login), Matchers.equalTo(false)
+            vacancies.iterate(),
+            Matchers.contains(Matchers.equalTo(project.pid()))
         );
     }
 
     @Test
-    public void setsAndReadsRate() throws Exception {
-        final Vesting rates = new Vesting(new FkProject()).bootstrap();
-        final String login = "test";
-        final Cash rate = new Cash.S("$50");
-        rates.rate(login, rate);
+    public void removesVacancy() throws Exception {
+        final Vacancies vacancies = new Vacancies(new FkFarm()).bootstrap();
+        final Project project = new FkProject();
+        vacancies.add(project, "del", "to remove");
+        vacancies.remove(project);
         MatcherAssert.assertThat(
-            rates.rate(login), Matchers.equalTo(rate)
+            vacancies.iterate(),
+            Matchers.emptyIterable()
         );
     }
-
 }

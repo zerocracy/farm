@@ -18,6 +18,18 @@
 /**
  * Props farm.
  *
+ * <p>Classes in this package are used to make sure that the
+ * {@link Farm} reflects the _props.xml file containing properties such as
+ * sensitive credentials used in PMO project.</p>
+ *
+ * <p>It is used in the decoration chain, in the constructor
+ * {@link com.zerocracy.farm.SmartFarm#SmartFarm SmartFarm(Farm)}, which is the
+ * Farm entry point used in {@link com.zerocracy.entry.Main#exec Main.exec()}.
+ * </p>
+ *
+ * <p>Also, {@link com.zerocracy.farm.props.PropsFarm} may be used directly
+ * in tests where PMO is needed, in order to have access to the properties.</p>
+ *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.18

@@ -14,37 +14,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.cost.funding
+package com.zerocracy.stk.pm.cost.vesting
 
 import com.jcabi.xml.XML
 import com.zerocracy.Par
 import com.zerocracy.Project
+import com.zerocracy.SoftException
 import com.zerocracy.cash.Cash
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.cost.Ledger
+import com.zerocracy.pm.cost.Vesting
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Donate')
+  new Assume(project, xml).type('Change user vesting rate')
+  new Assume(project, xml).roles('ARC', 'PO')
   ClaimIn claim = new ClaimIn(xml)
-  String author = claim.author()
-  Cash amount = new Cash.S(claim.param('amount'))
-  new Ledger(project).bootstrap().add(
-    new Ledger.Transaction(
-      amount,
-      'assets', 'cash',
-      'income', 'zerocracy',
-      new Par('Donated by @%s').say(author)
-    )
-  )
-  claim.copy()
-    .type('Notify project')
-    .param(
-      'message',
-      new Par(
-        'The project %s got a donation of %s from @%s'
-      ).say(project.pid(), amount, author)
-    )
-    .postTo(project)
+  String login = claim.param('login')
+  Cash rate = new Cash.S(claim.param('rate'))
+  Vesting vesting = new Vesting(project).bootstrap()
+  String msg
+  if (vesting.exists(login)) {
+    if (vesting.rate(login) == rate) {
+      throw new SoftException(
+        new Par(
+          'Vesting rate for @%s is %s, no need to change'
+        ).say(login, rate)
+      )
+    }
+    msg = new Par(
+      'Vesting rate for @%s was changed from %s to %s, according to §37'
+    ).say(login, vesting.rate(login), rate)
+  } else {
+    msg = new Par(
+      'Vesting rate for @%s was set to %s, according to §37'
+    ).say(login, rate)
+  }
+  vesting.rate(login, rate)
+  claim.reply(msg).postTo(project)
+  claim.copy().type('User vesting rate was changed').postTo(project)
 }

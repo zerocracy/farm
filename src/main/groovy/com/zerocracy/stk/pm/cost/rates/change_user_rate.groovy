@@ -50,24 +50,26 @@ def exec(Project project, XML xml) {
   if (rates.exists(login)) {
     Cash before = rates.rate(login)
     if (before == rate) {
-      msg = new Par(
-        'Hourly rate of @%s remains %s, no need to change'
-      ).say(login, rate)
-    } else {
-      msg = new Par(
-        'Hourly rate of @%s changed from %s to %s'
-      ).say(login, before, rate)
+      throw new SoftException(
+        new Par(
+          'Hourly rate of @%s remains %s, no need to change'
+        ).say(login, rate)
+      )
     }
+    msg = new Par(
+      'Hourly rate of @%s changed from %s to %s'
+    ).say(login, before, rate)
   } else {
     if (rate == Cash.ZERO) {
-      msg = new Par(
-        'Hourly rate of @%s remains zero'
-      ).say(login)
-    } else {
-      msg = new Par(
-        'Hourly rate of @%s was changed from zero to %s'
-      ).say(login, rate)
+      throw new SoftException(
+        new Par(
+          'Hourly rate of @%s remains zero'
+        ).say(login)
+      )
     }
+    msg = new Par(
+      'Hourly rate of @%s was changed from zero to %s'
+    ).say(login, rate)
   }
   rates.set(login, rate)
   claim.copy()
