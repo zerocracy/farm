@@ -14,48 +14,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.staff
+package com.zerocracy.stk.pm.staff.roles
 
 import com.jcabi.xml.XML
-import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.cost.Rates
+import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.staff.Roles
-import com.zerocracy.pmo.Hint
-import java.util.concurrent.TimeUnit
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Ping hourly')
+  new Assume(project, xml).type('Role was resigned')
   ClaimIn claim = new ClaimIn(xml)
+  String role = claim.param('role')
+  if (role != 'ARC') {
+    return
+  }
+  String login = claim.param('login')
   Roles roles = new Roles(project).bootstrap()
-  int total = roles.findByRole('QA').size()
-  if (total > 0) {
-    return
-  }
-  Rates rates = new Rates(project).bootstrap()
-  if (!roles.everybody().any { uid -> rates.exists(uid) }) {
-    return
-  }
-  Farm farm = binding.variables.farm
-  new Hint(
-    farm,
-    (int) TimeUnit.DAYS.toSeconds(5L),
+  String arc = roles.findByRole('ARC')[0]
+  Orders orders = new Orders(project).bootstrap()
+  orders.iterate().each { job ->
     claim.copy()
-      .type('Notify project')
-      .token("project;${project.pid()}")
-      .param('mnemo', 'Deficit of QAs')
+      .type('Notify job')
+      .token("job;${job}")
       .param(
-        'message',
-        new Par(
-          'There are no QA people in the project;',
-          'this is a serious threat to the discipline in the project,',
-          'which may lead to financial losses;',
-          'we would recommend to add someone to this role, see §42'
-        ).say()
+        'message', new Par(
+          'The architect of the project has changed;',
+          '@%s is not at this role anymore;',
+          '@%s is the architect now'
+        ).say(login, arc)
       )
-  ).postTo(project)
+      .postTo(project)
+  }
 }

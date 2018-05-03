@@ -28,13 +28,14 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Donate')
   ClaimIn claim = new ClaimIn(xml)
+  String author = claim.author()
   Cash amount = new Cash.S(claim.param('amount'))
   new Ledger(project).bootstrap().add(
     new Ledger.Transaction(
       amount,
       'assets', 'cash',
       'income', 'zerocracy',
-      new Par('Donated by @%s').say(claim.author())
+      new Par('Donated by @%s').say(author)
     )
   )
   claim.copy()
@@ -42,8 +43,8 @@ def exec(Project project, XML xml) {
     .param(
       'message',
       new Par(
-        'The project %s got a donation of %s'
-      ).say(project.pid(), amount)
+        'The project %s got a donation of %s from @%s'
+      ).say(project.pid(), amount, author)
     )
     .postTo(project)
 }

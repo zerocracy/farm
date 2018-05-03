@@ -40,7 +40,7 @@ SOFTWARE.
     </p>
     <xsl:if test="pause = 'true'">
       <p>
-        <strong style="color:darkred;">
+        <strong style="background-color:darkred;color:white;">
           <xsl:text>Attention</xsl:text>
         </strong>
         <xsl:text>: the project is on pause, see </xsl:text>
@@ -221,7 +221,7 @@ SOFTWARE.
     </p>
     <xsl:if test="deficit = 'true'">
       <p>
-        <span style="color:darkred">
+        <span style="background-color:darkred;color:white;">
           <xsl:text>ATTENTION</xsl:text>
         </span>
         <xsl:text>: The project is not </xsl:text>

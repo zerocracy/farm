@@ -21,6 +21,7 @@ import com.zerocracy.SoftException;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.farm.fake.FkProject;
 import java.nio.file.Files;
+import java.util.Date;
 import java.util.List;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.iterable.RangeOf;
@@ -36,6 +37,7 @@ import org.junit.Test;
  * @version $Id$
  * @since 0.1
  * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @todo #552:30min Add tests for details(), links(), wallet() and rate()
  *  in People.java because these methods are not fully covered. Then
  *  remove People.java from jacoco excludes in pom.xml
@@ -263,5 +265,38 @@ public final class PeopleTest {
             people.link(uid, rel),
             Matchers.equalTo(href)
         );
+    }
+
+    @Test
+    public void canApply() throws Exception {
+        final People people = new People(new FkProject()).bootstrap();
+        final String uid = "user3236";
+        final Date when = new Date(0L);
+        people.invite(uid, uid);
+        people.apply(uid, when);
+        MatcherAssert.assertThat(
+            "applied",
+            people.applied(uid),
+            Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            "applied time",
+            people.appliedTime(uid),
+            Matchers.equalTo(when)
+        );
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void throwIfApplyButDoesntExist() throws Exception {
+        new People(new FkProject()).bootstrap()
+            .apply("user124", new Date(0L));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void throwIfgetAppliedDateIfNotApplied() throws Exception {
+        final People people = new People(new FkProject()).bootstrap();
+        final String uid = "user3236";
+        people.invite(uid, uid);
+        people.appliedTime(uid);
     }
 }

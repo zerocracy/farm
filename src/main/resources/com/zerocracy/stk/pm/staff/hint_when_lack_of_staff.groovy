@@ -57,7 +57,7 @@ def exec(Project project, XML xml) {
   Roles roles = new Roles(project).bootstrap()
   Farm farm = binding.variables.farm
   People people = new People(farm).bootstrap()
-  int vacation = roles.everybody().collect { uid -> people.vacation(uid) }.size()
+  int vacation = roles.everybody().count { uid -> people.vacation(uid) }
   new Hint(
     farm,
     (int) TimeUnit.DAYS.toSeconds(5L),

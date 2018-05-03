@@ -41,6 +41,23 @@ def exec(Project project, XML xml) {
   } else {
     msg += 'you work for free'
   }
+  if (role == 'ARC') {
+    msg += new Par(
+      '; since your new role is the architect, I would recommend you to read',
+      'these two blog posts:',
+      '[Three Things I Expect From',
+      'a Software Architect](http://www.yegor256.com/2015/05/11/software-architect-responsibilities.html)',
+      ' and ',
+      '[Two Instruments of',
+      'a Software Architect](http://www.yegor256.com/2015/05/13/two-instruments-of-software-architect.html);',
+      'if the project just starts, these two article will also be helpful:',
+      '[Project Lifecycle in',
+      'Zerocracy](http://www.yegor256.com/2014/10/06/software-project-lifecycle.html)',
+      ' and ',
+      '[Nine Steps to Start',
+      'a Software Project](http://www.yegor256.com/2015/08/04/nine-steps-start-software-project.html)'
+    ).say()
+  }
   claim.copy()
     .type('Notify user')
     .token("user;${login}")
