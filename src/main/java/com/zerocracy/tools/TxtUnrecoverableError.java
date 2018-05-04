@@ -43,13 +43,21 @@ public final class TxtUnrecoverableError implements Text {
     private final Props props;
 
     /**
+     * Tail.
+     */
+    private final String tail;
+
+    /**
      * Ctor.
      * @param error Error
      * @param pps Props
+     * @param suffix The tail
      */
-    public TxtUnrecoverableError(final Throwable error, final Props pps) {
+    public TxtUnrecoverableError(final Throwable error, final Props pps,
+        final String suffix) {
         this.err = error;
         this.props = pps;
+        this.tail = suffix;
     }
 
     @Override
@@ -70,7 +78,8 @@ public final class TxtUnrecoverableError implements Text {
             String.format(
                 "[%s](https://github.com/zerocracy/farm)",
                 this.props.get("//build/version", "")
-            )
+            ),
+            ": ", this.tail
         ).asString();
     }
 

@@ -184,12 +184,16 @@ correctly for all possible output devices and messengers.
 
 "Data-representing" objects stay in `com.zerocracy.pm` and `com.zerocracy.pmo`
 packages. They mostly represent XML documents from the storage, one class
-per document, e.g. `Boosts` for `boosts.xml` or `Roles` for `roles.xml`.
+per document, e.g.
+[`Boosts`](https://github.com/zerocracy/farm/blob/master/src/main/java/com/zerocracy/pm/cost/Boosts.java)
+for [`boosts.xml`](https://github.com/zerocracy/datum/blob/master/xsd/pm/cost/boosts.xsd) or
+[`Roles`](https://github.com/zerocracy/farm/blob/master/src/main/java/com/zerocracy/pm/staff/Roles.java)
+for [`roles.xml`](https://github.com/zerocracy/datum/blob/master/xsd/pm/staff/roles.xsd).
 They all are pretty straight-forward XML manipulators, where
 [jcabi-xml](https://github.com/jcabi/jcabi-xml) is used for XML reading
 and [Xembly](https://github.com/yegor256/xembly) for XML modifications.
 
-Validations are also supposed to happen in these objects. The majority
+Validations are also supposed to happen inside these objects. The majority
 of data problems will be filtered out by XSD Schemas, but not all of them.
 Sometimes we need Java to do the work of data validating. If it's needed,
 we try to validate the data in data-representing objects.
