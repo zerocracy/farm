@@ -93,7 +93,10 @@ def exec(Project pmo, XML xml) {
   claim.copy().type('Tweet').param(
     'par', new Par(
       'A new user just joined us;',
-      'please, welcome @%s: https://github.com/%1$s',
+      'please, welcome "%s": https://github.com/%1$s;',
+      'you can join to, just fill out this form:',
+      'https://www.0crat.com/join',
+      '#zerocracy #freelance #remotework'
     ).say(login)
   ).postTo(pmo)
 }
