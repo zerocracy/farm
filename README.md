@@ -10,11 +10,13 @@
 [![Build Status](https://travis-ci.org/zerocracy/farm.svg?branch=master)](https://travis-ci.org/zerocracy/farm)
 [![PDD status](http://www.0pdd.com/svg?name=zerocracy/farm)](http://www.0pdd.com/p?name=zerocracy/farm)
 
-Stakeholders' Farm
+[What is it?](http://www.zerocracy.com/toc.html)
 
-It's a core repository of Zerocrat. It contains our persistence layer (`com.zerocracy.farm`),
-a collection of Java stakeholders (`com.zerocracy.stk`) and interface layer for the
-integration with Slack, GitHub, Telegram, and so on (`com.stakeholder.radars`).
+It's a core repository of [Zerocrat](https://www.0crat.com).
+It contains our persistence layer (`com.zerocracy.farm`),
+a collection of Java stakeholders (`com.zerocracy.stk`),
+and interface layer for the integration with Slack, GitHub, Telegram,
+and so on (`com.stakeholder.radars`).
 
 The data model (XML, XSD, XSL documents) is in
 [zerocracy/datum](https://github.com/zerocracy/datum) repository. They
