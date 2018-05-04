@@ -263,7 +263,7 @@ public final class Orders {
         try (final Item item = this.item()) {
             return new IoCheckedScalar<>(
                 new ItemAt<>(
-                    new Mapped<>(
+                    new Mapped<String, LocalDateTime>(
                         (String txt) -> LocalDateTime.parse(
                             txt,
                             DateTimeFormatter.ISO_INSTANT.withZone(

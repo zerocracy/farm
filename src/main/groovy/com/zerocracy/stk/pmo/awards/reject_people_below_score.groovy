@@ -23,8 +23,10 @@ import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.Awards
 import com.zerocracy.pmo.People
+import com.zerocracy.pmo.Pmo
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
@@ -34,26 +36,44 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Awards awards = new Awards(farm, login).bootstrap()
   Integer current = awards.total()
-  if (current <= new Policy().get('44.threshold', -256)) {
-    People people = new People(farm).bootstrap()
-    people.breakup(login)
+  if (current > new Policy().get('44.threshold', -256)) {
+    return
+  }
+  People people = new People(farm).bootstrap()
+  if (new Roles(new Pmo(farm)).hasAnyRole(login)
+    || people.mentor(login) == '0crat') {
     claim.copy()
+      .type('Notify user')
       .token("user;${login}")
       .param(
         'message',
-        new Par('Your reputation becomes too low, so you have been disconnected from your mentor as in §44').say()
+        new Par(
+          'You are a very respected person, but your reputation is very low: %d;',
+          'please, do something or I will take some disciplinary actions, see §44'
+        ).say()
       ).postTo(project)
-    String job = claim.param('job')
-    String reason = new Par(
-      'The score of @%s %d is too low and will be reset'
-    ).say(login, current)
-    Integer points = -current
-    awards.add(project, points, job, new Par.ToText(reason).toString())
-    claim.copy()
-      .type('Award points were added')
-      .param('login', login)
-      .param('points', points)
-      .param('reason', reason)
-      .postTo(project)
+    return
   }
+  people.breakup(login)
+  claim.copy()
+    .type('Notify user')
+    .token("user;${login}")
+    .param(
+      'message',
+      new Par(
+        'Your reputation became too low,',
+        'you have been disconnected from your mentor as in §44'
+      ).say()
+    ).postTo(project)
+  String job = claim.param('job')
+  String reason = new Par(
+    'The score of @%s %d is too low and will be reset'
+  ).say(login, current)
+  Integer points = -current
+  awards.add(project, points, job, new Par.ToText(reason).toString())
+  claim.copy()
+    .type('Award points were added')
+    .param('points', points)
+    .param('reason', reason)
+    .postTo(project)
 }

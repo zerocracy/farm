@@ -39,6 +39,7 @@ SOFTWARE.
       </a>
     </p>
     <xsl:apply-templates select="claim"/>
+    <xsl:apply-templates select="children"/>
   </xsl:template>
   <xsl:template match="claim">
     <h1>
@@ -99,5 +100,17 @@ SOFTWARE.
         <xsl:value-of select="."/>
       </pre>
     </xsl:for-each>
+  </xsl:template>
+  <xsl:template match="children">
+    <xsl:apply-templates select="child"/>
+  </xsl:template>
+  <xsl:template match="child">
+    <p>
+      <a href="/footprint/{/page/project}/{cid}">
+        <xsl:value-of select="cid"/>
+      </a>
+      <xsl:text>: </xsl:text>
+      <xsl:value-of select="type"/>
+    </p>
   </xsl:template>
 </xsl:stylesheet>
