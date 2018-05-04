@@ -14,68 +14,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.cost.rates
+package com.zerocracy.stk.pm.cost.vesting
 
 import com.jcabi.xml.XML
-import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.SoftException
 import com.zerocracy.cash.Cash
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.cost.Rates
-import com.zerocracy.pmo.People
+import com.zerocracy.pm.cost.Vesting
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Change user rate')
+  new Assume(project, xml).type('Change user vesting rate')
   new Assume(project, xml).roles('ARC', 'PO')
   ClaimIn claim = new ClaimIn(xml)
   String login = claim.param('login')
-  Farm farm = binding.variables.farm
-  People people = new People(farm)
   Cash rate = new Cash.S(claim.param('rate'))
-  if (people.wallet(login).empty && rate != Cash.ZERO) {
-    throw new SoftException(
-      new Par(
-        '@%s doesn\'t have a payment method configured yet,',
-        'we won\'t be able to pay them.',
-        'That\'s why the rate %s can\'t be set.'
-      ).say(login, rate)
-    )
-  }
-  Rates rates = new Rates(project).bootstrap()
+  Vesting vesting = new Vesting(project).bootstrap()
   String msg
-  if (rates.exists(login)) {
-    Cash before = rates.rate(login)
-    if (before == rate) {
+  if (vesting.exists(login)) {
+    if (vesting.rate(login) == rate) {
       throw new SoftException(
         new Par(
-          'Hourly rate of @%s remains %s, no need to change'
+          'Vesting rate for @%s is %s, no need to change'
         ).say(login, rate)
       )
     }
     msg = new Par(
-      'Hourly rate of @%s changed from %s to %s'
-    ).say(login, before, rate)
+      'Vesting rate for @%s was changed from %s to %s, according to §37'
+    ).say(login, vesting.rate(login), rate)
   } else {
-    if (rate == Cash.ZERO) {
-      throw new SoftException(
-        new Par(
-          'Hourly rate of @%s remains zero'
-        ).say(login)
-      )
-    }
     msg = new Par(
-      'Hourly rate of @%s was changed from zero to %s'
+      'Vesting rate for @%s was set to %s, according to §37'
     ).say(login, rate)
   }
-  rates.set(login, rate)
-  claim.copy()
-    .type('User rate was changed')
-    .param('login', login)
-    .param('rate', rate)
-    .postTo(project)
+  vesting.rate(login, rate)
   claim.reply(msg).postTo(project)
+  claim.copy().type('User vesting rate was changed').postTo(project)
 }

@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pm.cost;
 
+import com.zerocracy.cash.Cash;
 import com.zerocracy.farm.fake.FkProject;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -31,11 +32,22 @@ import org.junit.Test;
 public final class VestingTest {
 
     @Test
-    public void readRate() throws Exception {
+    public void checksRatePresence() throws Exception {
         final Vesting rates = new Vesting(new FkProject()).bootstrap();
         final String login = "yegor256";
         MatcherAssert.assertThat(
             rates.exists(login), Matchers.equalTo(false)
+        );
+    }
+
+    @Test
+    public void setsAndReadsRate() throws Exception {
+        final Vesting rates = new Vesting(new FkProject()).bootstrap();
+        final String login = "test";
+        final Cash rate = new Cash.S("$50");
+        rates.rate(login, rate);
+        MatcherAssert.assertThat(
+            rates.rate(login), Matchers.equalTo(rate)
         );
     }
 

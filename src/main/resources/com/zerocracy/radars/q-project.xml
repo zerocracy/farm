@@ -100,6 +100,12 @@ SOFTWARE.
         <regex>.+</regex>
         <help>Hourly rate for this user (instead of the one from profile)</help>
       </opt>
+      <opt>
+        <optional>true</optional>
+        <name>vesting</name>
+        <regex>.+</regex>
+        <help>Equity vesting rate, for micro-vesting</help>
+      </opt>
     </opts>
   </cmd>
   <cmd>
