@@ -71,7 +71,13 @@ public final class ReSafe implements Reaction<SlackMessagePosted> {
                         session.sendMessage(
                             event.getChannel(),
                             new TxtUnrecoverableError(
-                                throwable, new Props(farm)
+                                throwable, new Props(farm),
+                                String.format(
+                                    "Channel: %s, Sender: %s, EventType: %s",
+                                    event.getChannel().getId(),
+                                    event.getSender().getId(),
+                                    event.getEventType().name()
+                                )
                             ).asString()
                         );
                         Sentry.capture(throwable);

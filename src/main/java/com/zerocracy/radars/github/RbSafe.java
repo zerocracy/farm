@@ -75,15 +75,20 @@ public final class RbSafe implements Rebound {
                 },
                 new FuncOf<>(
                     throwable -> {
+                        final Issue issue = RbSafe.issue(github, event);
                         new Errors.Github(
                             new Errors(new ExtDynamo(farm).value()),
                             github
                         ).add(
-                            new ThrottledComments(
-                                RbSafe.issue(github, event).comments()
-                            ).post(
+                            new ThrottledComments(issue.comments()).post(
                                 new TxtUnrecoverableError(
-                                    throwable, new Props(farm)
+                                    throwable, new Props(farm),
+                                    String.format(
+                                        "Issue: %s#%d, Action: %s",
+                                        issue.repo().coordinates(),
+                                        issue.number(),
+                                        event.getString("action")
+                                    )
                                 ).asString()
                             )
                         );

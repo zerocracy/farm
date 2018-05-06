@@ -78,10 +78,13 @@ def exec(Project project, XML xml) {
     .param('reason', new Par('Project %s was bootstrapped').say(project.pid()))
     .postTo(project)
   if (claim.hasParam('channel')) {
-    claim.copy()
-      .type('Set title')
-      .param('title', claim.param('channel'))
-      .postTo(project)
+    String chnl = claim.param('channel')
+    if (chnl.length() > 2) {
+      claim.copy()
+        .type('Set title')
+        .param('title', chnl)
+        .postTo(project)
+    }
   }
   claim.reply(
     new Par(
