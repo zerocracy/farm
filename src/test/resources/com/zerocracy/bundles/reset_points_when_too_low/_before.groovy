@@ -30,7 +30,7 @@ def exec(Project project, XML xml) {
   Github github = new ExtGithub(farm).value()
   github.repos().create(new Repos.RepoCreate('test', false))
   People people = new People(farm).bootstrap()
-  people.invite('yegor256', '0crat')
-  Awards awards = new Awards(farm, 'yegor256').bootstrap()
+  people.invite('anna', 'jack')
+  Awards awards = new Awards(farm, 'anna').bootstrap()
   awards.add(project, -500, 'gh:test/test#1', 'Test')
 }

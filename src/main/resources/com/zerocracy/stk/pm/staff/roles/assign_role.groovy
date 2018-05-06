@@ -91,5 +91,12 @@ def exec(Project project, XML xml) {
       ).say(login, role)
     }
   }
+  if (claim.hasParam('vesting')) {
+    Cash rate = new Cash.S(claim.param('vesting'))
+    claim.copy()
+      .type('Change user vesting rate')
+      .param('rate', rate)
+      .postTo(project)
+  }
   claim.reply(msg).postTo(project)
 }

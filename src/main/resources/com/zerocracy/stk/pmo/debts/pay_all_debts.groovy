@@ -106,6 +106,7 @@ def exec(Project pmo, XML xml) {
           'We failed to pay the debt of %s to @%s: %s'
         ).say(debt, uid, ex.message)
       ).postTo(pmo)
+      throw ex
     }
   }
 }

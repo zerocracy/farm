@@ -14,48 +14,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.staff
+package com.zerocracy.stk.pm.cost.vesting
 
 import com.jcabi.xml.XML
-import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
+import com.zerocracy.SoftException
+import com.zerocracy.cash.Cash
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.cost.Rates
-import com.zerocracy.pm.staff.Roles
-import com.zerocracy.pmo.Hint
-import java.util.concurrent.TimeUnit
+import com.zerocracy.pm.cost.Vesting
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Ping hourly')
+  new Assume(project, xml).type('Change user vesting rate')
+  new Assume(project, xml).roles('ARC', 'PO')
   ClaimIn claim = new ClaimIn(xml)
-  Roles roles = new Roles(project).bootstrap()
-  int total = roles.findByRole('QA').size()
-  if (total > 0) {
-    return
-  }
-  Rates rates = new Rates(project).bootstrap()
-  if (!roles.everybody().any { uid -> rates.exists(uid) }) {
-    return
-  }
-  Farm farm = binding.variables.farm
-  new Hint(
-    farm,
-    (int) TimeUnit.DAYS.toSeconds(5L),
-    claim.copy()
-      .type('Notify project')
-      .token("project;${project.pid()}")
-      .param('mnemo', 'Deficit of QAs')
-      .param(
-        'message',
+  String login = claim.param('login')
+  Cash rate = new Cash.S(claim.param('rate'))
+  Vesting vesting = new Vesting(project).bootstrap()
+  String msg
+  if (vesting.exists(login)) {
+    if (vesting.rate(login) == rate) {
+      throw new SoftException(
         new Par(
-          'There are no QA people in the project;',
-          'this is a serious threat to the discipline in the project,',
-          'which may lead to financial losses;',
-          'we would recommend to add someone to this role, see §42'
-        ).say()
+          'Vesting rate for @%s is %s, no need to change'
+        ).say(login, rate)
       )
-  ).postTo(project)
+    }
+    msg = new Par(
+      'Vesting rate for @%s was changed from %s to %s, according to §37'
+    ).say(login, vesting.rate(login), rate)
+  } else {
+    msg = new Par(
+      'Vesting rate for @%s was set to %s, according to §37'
+    ).say(login, rate)
+  }
+  vesting.rate(login, rate)
+  claim.reply(msg).postTo(project)
+  claim.copy().type('User vesting rate was changed').postTo(project)
 }

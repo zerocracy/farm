@@ -14,48 +14,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.staff
+package com.zerocracy.stk.pm.cost.rates
 
 import com.jcabi.xml.XML
-import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
+import com.zerocracy.cash.Cash
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.cost.Rates
-import com.zerocracy.pm.staff.Roles
-import com.zerocracy.pmo.Hint
-import java.util.concurrent.TimeUnit
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Ping hourly')
+  new Assume(project, xml).type('User rate was changed')
   ClaimIn claim = new ClaimIn(xml)
-  Roles roles = new Roles(project).bootstrap()
-  int total = roles.findByRole('QA').size()
-  if (total > 0) {
-    return
-  }
-  Rates rates = new Rates(project).bootstrap()
-  if (!roles.everybody().any { uid -> rates.exists(uid) }) {
-    return
-  }
-  Farm farm = binding.variables.farm
-  new Hint(
-    farm,
-    (int) TimeUnit.DAYS.toSeconds(5L),
-    claim.copy()
-      .type('Notify project')
-      .token("project;${project.pid()}")
-      .param('mnemo', 'Deficit of QAs')
-      .param(
-        'message',
-        new Par(
-          'There are no QA people in the project;',
-          'this is a serious threat to the discipline in the project,',
-          'which may lead to financial losses;',
-          'we would recommend to add someone to this role, see §42'
-        ).say()
-      )
-  ).postTo(project)
+  String login = claim.param('login')
+  Cash rate = new Cash.S(claim.param('rate'))
+  claim.copy()
+    .type('Notify user')
+    .token("user;${login}")
+    .param(
+      'message',
+      new Par(
+        'Your new rate in %s is %s;',
+        'only new tasks will be affected, by §16'
+      ).say(project.pid(), rate)
+    )
+    .postTo(project)
 }

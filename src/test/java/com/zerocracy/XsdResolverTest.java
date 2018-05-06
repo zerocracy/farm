@@ -85,11 +85,10 @@ public final class XsdResolverTest {
         MatcherAssert.assertThat(
             new XsdResolver().resolveResource(
                 "-", "-", "-",
-                // @checkstyle LineLengthCheck (1 line)
-                "http://www.yegor256.com/2017/07/11/how-to-redesign-equals.html",
+                "http://www.w3.org/2001/XMLSchema-instance#1",
                 "-"
             ).getStringData(),
-            Matchers.endsWith("</html>\n")
+            Matchers.endsWith("</xs:schema>\n")
         );
     }
 
@@ -129,7 +128,7 @@ public final class XsdResolverTest {
 
     @Test
     public void resolvesOnlyOnce() throws Exception {
-        final String url = "http://www.yegor256.com/2016/11/29/eolang.html";
+        final String url = "http://www.w3.org/2001/XMLSchema-instance";
         final LSResourceResolver resolver = new XsdResolver();
         MatcherAssert.assertThat(
             resolver.resolveResource("-", "-", "-", url, "-"),

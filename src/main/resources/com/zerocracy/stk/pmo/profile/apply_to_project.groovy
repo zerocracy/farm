@@ -103,11 +103,11 @@ def exec(Project pmo, XML xml) {
       'message',
       new Par(
         farm,
-        '@%s wants to join you guys.',
-        'If you want to add them to the project %s,',
-        'just assign `DEV` role and that\'s it.',
-        'The hourly rate suggested is %s (profile rate is %s).',
-        'You can use that rate or define another one, see §13.'
+        '@%s wants to join you guys;',
+        'if you want to add them to the project %s,',
+        'just assign `DEV` role and that\'s it;',
+        'the hourly rate suggested is %s (profile rate is %s);',
+        'you can use that rate or define another one, see §13'
       ).say(claim.author(), pid, rate, std)
     )
     .postTo(farm.find("@id='${pid}'")[0])
