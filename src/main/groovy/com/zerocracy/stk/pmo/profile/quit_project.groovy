@@ -50,6 +50,7 @@ def exec(Project pmo, XML xml) {
   claim.copy()
     .type('Resign all roles')
     .param('login', author)
+    .param('reason', 'The user asked to leave')
     .postTo(target)
   claim.reply(
     new Par(

@@ -47,8 +47,8 @@ def exec(Project project, XML xml) {
     .param(
       'message',
       new Par(
-        'Project member @%s was resigned from all project roles',
-      ).say(login)
+        'Project member @%s was resigned from all project roles: %s',
+      ).say(login, claim.param('reason'))
     )
     .postTo(project)
 }
