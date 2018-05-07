@@ -16,8 +16,6 @@
  */
 package com.zerocracy.pm.staff.ranks;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import com.jcabi.github.Github;
 import com.jcabi.github.Issue;
 import com.jcabi.github.IssueLabels;
@@ -27,6 +25,7 @@ import com.jcabi.github.mock.MkGithub;
 import com.zerocracy.radars.github.Job;
 import java.util.ArrayList;
 import java.util.List;
+import org.cactoos.func.StickyBiFunc;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -64,18 +63,20 @@ public final class RnkGithubBugTest {
     }
 
     @Test
-    public void cachesBugs() throws Exception {
-        final Github github = new MkGithub().relogin("test2");
-        final Repo repo = github.repos().create(
-            new Repos.RepoCreate("cached", false)
+    public void evaluatesFromCache() throws Exception {
+        final String issue = "gh:test/cached#4";
+        final String bug = "gh:test/cached#5";
+        final StickyBiFunc<Github, String, Boolean> cache = new StickyBiFunc<>(
+            (ghb, job) -> job.equals(bug)
         );
-        repo.issues().create("Test cache 1", "");
-        repo.issues().create("Test cache 2", "");
-        final Cache<String, Boolean> cache = CacheBuilder.newBuilder().build();
-        new RnkGithubBug(github, cache)
-            .compare("gh:test2/cached#1", "gh:test2/cached#2");
+        final RnkGithubBug rnk = new RnkGithubBug(new MkGithub(), cache);
         MatcherAssert.assertThat(
-            cache.size(), Matchers.is(2L)
+            rnk.compare(issue, bug),
+            Matchers.greaterThan(0)
+        );
+        MatcherAssert.assertThat(
+            rnk.compare(bug, issue),
+            Matchers.lessThan(0)
         );
     }
 }

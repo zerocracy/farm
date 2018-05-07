@@ -16,15 +16,15 @@
  */
 package com.zerocracy.pm.staff.ranks;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import com.jcabi.aspects.Tv;
 import com.jcabi.github.Github;
 import com.jcabi.github.IssueLabels;
 import com.zerocracy.radars.github.Job;
+import com.zerocracy.radars.github.Quota;
 import java.util.Comparator;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
+import org.cactoos.BiFunc;
+import org.cactoos.func.StickyBiFunc;
+import org.cactoos.func.SyncBiFunc;
+import org.cactoos.func.UncheckedBiFunc;
 
 /**
  * Give higher rank for github tickets with 'bug' label.
@@ -37,11 +37,17 @@ public final class RnkGithubBug implements Comparator<String> {
     /**
      * Global bug jobs cache.
      */
-    private static final Cache<String, Boolean> CACHED = CacheBuilder
-        .newBuilder()
-        .expireAfterAccess(1, TimeUnit.DAYS)
-        .maximumSize(Tv.TEN * Tv.THOUSAND)
-        .build();
+    private static final BiFunc<Github, String, Boolean> CACHED =
+        new UncheckedBiFunc<>(
+            new SyncBiFunc<>(
+                new StickyBiFunc<>(
+                    (github, job) -> new Quota(github).quiet()
+                        && job.startsWith("gh:") && new IssueLabels.Smart(
+                            new Job.Issue(github, job).labels()
+                        ).contains("bug")
+                )
+            )
+        );
 
     /**
      * Function to check github bug label.
@@ -51,7 +57,7 @@ public final class RnkGithubBug implements Comparator<String> {
     /**
      * Locally referenced cache.
      */
-    private final Cache<String, Boolean> cache;
+    private final UncheckedBiFunc<Github, String, Boolean> cache;
 
     /**
      * Ctor.
@@ -64,33 +70,20 @@ public final class RnkGithubBug implements Comparator<String> {
     /**
      * Ctor.
      * @param github Github
-     * @param cache Cache
+     * @param cache Cache function
      */
-    RnkGithubBug(final Github github, final Cache<String, Boolean> cache) {
+    RnkGithubBug(
+        final Github github, final BiFunc<Github, String, Boolean> cache
+    ) {
         this.ghb = github;
-        this.cache = cache;
+        this.cache = new UncheckedBiFunc<>(cache);
     }
 
     @Override
     public int compare(final String left, final String right) {
-        return Boolean.compare(this.isBug(right), this.isBug(left));
+        return Boolean.compare(
+            this.cache.apply(this.ghb, right), this.cache.apply(this.ghb, left)
+        );
     }
 
-    /**
-     * Does this job have 'bug' label.
-     * @param job Job id
-     * @return True if has
-     */
-    private boolean isBug(final String job) {
-        try {
-            return this.cache.get(
-                job,
-                () -> job.startsWith("gh:") && new IssueLabels.Smart(
-                    new Job.Issue(this.ghb, job).labels()
-                ).contains("bug")
-            );
-        } catch (final ExecutionException ex) {
-            throw new IllegalStateException(ex);
-        }
-    }
 }
