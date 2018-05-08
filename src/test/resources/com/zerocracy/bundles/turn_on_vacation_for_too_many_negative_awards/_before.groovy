@@ -16,13 +16,19 @@
  */
 package com.zerocracy.bundles.refresh_awards
 
+import com.jcabi.github.Repos
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.entry.ExtGithub
 import com.zerocracy.pmo.Awards
 
 @SuppressWarnings('UnnecessaryObjectReferences')
 def exec(Project project, XML xml) {
-  Awards awards = new Awards(binding.variables.farm, 'carlosmiranda').bootstrap()
+  Farm farm = binding.variables.farm
+  Awards awards = new Awards(farm, 'carlosmiranda').bootstrap()
+  new ExtGithub(farm).value().repos()
+    .create(new Repos.RepoCreate('test', false))
   awards.add(project, -1, 'gh:test/test#1', 'test', new Date(1517432400000L))
   awards.add(project, -2, 'gh:test/test#1', 'test', new Date(1517432400001L))
   awards.add(project, -3, 'gh:test/test#1', 'test', new Date(1517432400002L))
