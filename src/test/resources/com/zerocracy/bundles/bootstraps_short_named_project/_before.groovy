@@ -14,41 +14,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.staff.roles
+package com.zerocracy.bundles.bootstraps_short_named_project
 
+import com.jcabi.github.Github
+import com.jcabi.github.Repos
 import com.jcabi.xml.XML
-import com.zerocracy.Par
+import com.zerocracy.Farm
 import com.zerocracy.Project
-import com.zerocracy.farm.Assume
-import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.staff.Roles
+import com.zerocracy.entry.ExtGithub
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Resign all roles')
-  ClaimIn claim = new ClaimIn(xml)
-  String login = claim.param('login')
-  Roles roles = new Roles(project).bootstrap()
-  claim.reply(
-    new Par('All roles were resigned from @%s in %s').say(
-      login, project.pid()
-    )
-  ).postTo(project)
-  roles.allRoles(login).each { role ->
-    roles.resign(login, role)
-    claim.copy()
-      .type('Role was resigned')
-      .param('login', login)
-      .param('role', role)
-      .postTo(project)
-  }
-  claim.copy()
-    .type('Notify project')
-    .param(
-      'message',
-      new Par(
-        'Project member @%s was resigned from all project roles: %s',
-      ).say(login, claim.param('reason'))
-    )
-    .postTo(project)
+  Farm farm = binding.variables.farm
+  Github github = new ExtGithub(farm).value()
+  github.repos().create(new Repos.RepoCreate('test', false))
 }

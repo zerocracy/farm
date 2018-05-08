@@ -46,6 +46,9 @@ def exec(Project project, XML xml) {
     if (roles.hasRole(uid, 'PO', 'ARC')) {
       return
     }
+    if (roles.hasRole(uid, 'QA')) {
+      return
+    }
     int reputation = new Awards(farm, uid).bootstrap().total()
     int threshold = new Policy().get('33.sandbox-rep-threshold', 1024)
     if (reputation < threshold) {

@@ -35,7 +35,8 @@ def exec(Project pmo, XML xml) {
   if (!claim.hasParam('rate')) {
     throw new SoftException(
       new Par(
-        'Your rate is %s; to change it just say `rate $25`, for example;',
+        'Your rate is %s;',
+        'to change it just say `rate $25` or `rate 18EUR`, for example;',
         'you can format the rate differently, see §16'
       ).say(people.rate(author))
     )

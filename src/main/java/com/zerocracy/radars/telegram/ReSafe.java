@@ -80,7 +80,14 @@ public final class ReSafe implements Reaction {
                                 .setChatId(update.getMessage().getChatId())
                                 .setText(
                                     new TxtUnrecoverableError(
-                                        throwable, new Props(farm)
+                                        throwable, new Props(farm),
+                                        String.format(
+                                            "ID: %d, From: %s, ChatId: %d",
+                                            update.getUpdateId(),
+                                            update.getMessage()
+                                                .getFrom().getUserName(),
+                                            update.getMessage().getChatId()
+                                        )
                                     ).asString()
                                 )
                         );

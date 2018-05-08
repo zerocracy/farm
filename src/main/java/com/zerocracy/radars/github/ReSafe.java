@@ -69,7 +69,13 @@ public final class ReSafe implements Response {
                     throwable -> {
                         new ThrottledComments(comment.issue().comments()).post(
                             new TxtUnrecoverableError(
-                                throwable, new Props(farm)
+                                throwable, new Props(farm),
+                                String.format(
+                                    "Issue: %s#%d, Comment: %d",
+                                    comment.issue().repo().coordinates(),
+                                    comment.issue().number(),
+                                    comment.number()
+                                )
                             ).asString()
                         );
                         Sentry.capture(throwable);
