@@ -115,17 +115,17 @@ public final class TkClaimTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     public void renderClaimWithManyChildren() throws Exception {
         final FtFarm farm = new FtFarm(new PropsFarm(new FkFarm()));
         final long parent = 164L;
         final int children = Tv.FIFTY;
-        final Project proj = farm.find("@id='C00000000'").iterator()
-            .next();
+        final Project proj = farm.find("@id='C00000000'").iterator().next();
         new ClaimOut().type("test").cid(parent).postTo(proj);
-        final XML xml = new Claims(proj).iterate().iterator().next();
+        final ClaimIn claim = new ClaimIn(
+            new Claims(proj).iterate().iterator().next()
+        );
         for (int number = 0; number < children; ++number) {
-            new ClaimIn(xml).copy().cid((long) (Tv.THOUSAND + number))
+            claim.copy().cid((long) (Tv.THOUSAND + number))
                 .param("number", number).postTo(proj);
         }
         MatcherAssert.assertThat(
