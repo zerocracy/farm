@@ -51,7 +51,9 @@ def exec(Project pmo, XML xml) {
       new Par(
         farm,
         'Your profile rate is %s,',
-        'you can\'t suggest higher rate of %s for the project %s'
+        'you can\'t suggest higher rate of %s for the project %s;',
+        'the rate you want the project to pay you must be lower or equal',
+        'to your profile rate'
       ).say(std, rate, pid)
     )
   }
