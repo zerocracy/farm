@@ -23,6 +23,7 @@ import com.zerocracy.SoftException;
 import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.cash.CashParsingException;
+import com.zerocracy.pm.in.Orders;
 import com.zerocracy.pm.scope.Wbs;
 import com.zerocracy.pm.staff.Roles;
 import java.io.IOException;
@@ -97,6 +98,14 @@ public final class Estimates {
      */
     public void update(final String job, final Cash cash)
         throws IOException {
+        final Orders orders = new Orders(this.project).bootstrap();
+        if (!orders.assigned(job)) {
+            throw new SoftException(
+                new Par(
+                    "Job %s is not assigned, can't update estimate"
+                ).say(job)
+            );
+        }
         if (this.total()
             .compareTo(new Ledger(this.project).bootstrap().cash()) > 0) {
             final Roles roles = new Roles(this.project).bootstrap();
@@ -108,8 +117,11 @@ public final class Estimates {
             throw new SoftException(
                 new Par(
                     "@%s not enough funds available in the project,",
-                    "can't set budget of job %s, see §21"
-                ).say(owners.iterator().next(), job)
+                    "can't set budget of job %s, see §21;",
+                    "@%s will get no money on completion;",
+                    "in order to fix that, add funds to the project",
+                    "and assign the job again"
+                ).say(owners.iterator().next(), job, orders.performer(job))
             );
         }
         final String role = new Wbs(this.project).bootstrap().role(job);
