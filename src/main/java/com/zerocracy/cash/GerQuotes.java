@@ -19,6 +19,7 @@ package com.zerocracy.cash;
 import com.jcabi.http.request.JdkRequest;
 import com.jcabi.http.response.JsonResponse;
 import com.jcabi.http.response.RestResponse;
+import com.zerocracy.farm.props.Props;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import javax.json.JsonObject;
@@ -50,7 +51,7 @@ public final class GerQuotes implements Quotes {
                     .uri()
                     .queryParam(
                         "access_key",
-                        "b747f2bc60d143d14de9d418fd009d9a"
+                        new Props().get("//apilayer_key", "")
                     )
                     .back()
                     .header("Accept", "application/json")

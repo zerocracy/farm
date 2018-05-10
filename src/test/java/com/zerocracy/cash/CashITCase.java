@@ -22,6 +22,7 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Assume;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -48,6 +49,7 @@ public final class CashITCase {
      * Cash can compare two monetary values using Google.
      * @throws Exception If some problem inside
      */
+    @Ignore
     @Test
     public void comparesMonetaryValuesUsingGoogleQuotes() throws Exception {
         MatcherAssert.assertThat(

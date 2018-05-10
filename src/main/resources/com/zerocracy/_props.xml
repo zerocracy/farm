@@ -24,6 +24,7 @@ SOFTWARE.
   <security>
     <aes.key><![CDATA[${aes.key}]]></aes.key>
   </security>
+  <apilayer_key>${apilayer.key}</apilayer_key>
   <yoti>
     <pem>${yoti.pem}</pem>
     <sdk_id>${yoti.sdk_id}</sdk_id>

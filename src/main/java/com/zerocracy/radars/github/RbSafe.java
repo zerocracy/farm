@@ -84,7 +84,7 @@ public final class RbSafe implements Rebound {
                                 new TxtUnrecoverableError(
                                     throwable, new Props(farm),
                                     String.format(
-                                        "Issue: %s#%d, Action: %s",
+                                        "Issue: %s#%d, Action: `%s`",
                                         issue.repo().coordinates(),
                                         issue.number(),
                                         event.getString("action")
@@ -92,7 +92,12 @@ public final class RbSafe implements Rebound {
                                 ).asString()
                             )
                         );
-                        Sentry.capture(throwable);
+                        Sentry.capture(
+                            new IllegalArgumentException(
+                                event.toString(),
+                                throwable
+                            )
+                        );
                         throw new IOException(throwable);
                     }
                 )
