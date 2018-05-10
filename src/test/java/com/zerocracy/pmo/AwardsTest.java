@@ -16,8 +16,7 @@
  */
 package com.zerocracy.pmo;
 
-import com.zerocracy.Project;
-import com.zerocracy.farm.fake.FkProject;
+import com.zerocracy.farm.fake.FkFarm;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -33,11 +32,11 @@ public final class AwardsTest {
 
     @Test
     public void addsAndRemovesPoints() throws Exception {
-        final Project project = new FkProject();
-        final Awards awards = new Awards(project, "yegor").bootstrap();
-        awards.add(project, 1, "gh:test/test#1", "just for fun");
-        awards.add(project, -1, "gh:test/test#2", "just for fun 2");
-        awards.add(project, 1, "gh:test/test#3", "just for fun 3");
+        final Pmo pmo = new Pmo(new FkFarm());
+        final Awards awards = new Awards(pmo, "yegor").bootstrap();
+        awards.add(pmo, 1, "gh:test/test#1", "just for fun");
+        awards.add(pmo, -1, "gh:test/test#2", "just for fun 2");
+        awards.add(pmo, 1, "gh:test/test#3", "just for fun 3");
         MatcherAssert.assertThat(awards.total(), Matchers.equalTo(1));
     }
 

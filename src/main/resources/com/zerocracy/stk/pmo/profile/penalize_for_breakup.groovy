@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pmo.profile
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
@@ -36,7 +37,8 @@ def exec(Project pmo, XML xml) {
   String reason = new Par(
     'Penalize for breakup with %s'
   ).say(student)
-  new Awards(pmo, author).bootstrap().add(pmo, points, job, 'Penalize for breakup')
+  Farm farm = binding.variables.farm
+  new Awards(farm, author).bootstrap().add(pmo, points, job, 'Penalize for breakup')
   claim.copy()
     .type('Award points were added')
     .param('job', job)

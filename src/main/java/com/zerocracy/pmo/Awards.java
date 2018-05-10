@@ -38,7 +38,7 @@ public final class Awards {
     /**
      * Project.
      */
-    private final Project pmo;
+    private final Pmo pmo;
 
     /**
      * Login of the person.
@@ -59,7 +59,7 @@ public final class Awards {
      * @param pkt Project
      * @param user The user
      */
-    public Awards(final Project pkt, final String user) {
+    public Awards(final Pmo pkt, final String user) {
         this.pmo = pkt;
         this.login = user;
     }

@@ -64,7 +64,7 @@ def exec(Project project, XML xml) {
   Elections elections = new Elections(project).bootstrap()
   Reviews reviews = new Reviews(project).bootstrap()
   Farm farm = binding.variables.farm
-  Project pmo = new Pmo(farm)
+  Pmo pmo = new Pmo(farm)
   List<String> jobs = wbs.iterate().toList()
   [
     // new RnkGithubBug(github),

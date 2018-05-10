@@ -16,7 +16,8 @@
  */
 package com.zerocracy.pm.staff.votes;
 
-import com.zerocracy.farm.fake.FkProject;
+import com.zerocracy.farm.fake.FkFarm;
+import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -33,11 +34,11 @@ public final class VsLosersTest {
 
     @Test
     public void highRankForLoser() throws IOException {
-        final FkProject pmo = new FkProject();
         final String login = "yegor256";
         MatcherAssert.assertThat(
             "Banned voter didn't give high rank for banned user",
-            new VsLosers(pmo, 0).take(login, new StringBuilder()),
+            new VsLosers(new Pmo(new FkFarm()), 0)
+                .take(login, new StringBuilder()),
             Matchers.equalTo(0.0)
         );
     }

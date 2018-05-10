@@ -16,7 +16,7 @@
  */
 package com.zerocracy.pmo;
 
-import com.zerocracy.farm.fake.FkProject;
+import com.zerocracy.farm.fake.FkFarm;
 import javax.json.Json;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -33,7 +33,7 @@ public final class BotsTest {
 
     @Test
     public void registersBot() throws Exception {
-        final Bots bots = new Bots(new FkProject()).bootstrap();
+        final Bots bots = new Bots(new Pmo(new FkFarm())).bootstrap();
         bots.register(
             Json.createReader(
                 this.getClass().getResourceAsStream("slack-bot.json")

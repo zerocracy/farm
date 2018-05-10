@@ -17,12 +17,14 @@
 package com.zerocracy.bundles.apply_to_a_project
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.pmo.Awards
 import com.zerocracy.pmo.Catalog
 
 def exec(Project pmo, XML xml) {
   String pid = 'XXXXXX000'
+  Farm farm = binding.variables.farm
   new Catalog(pmo).bootstrap().add(pid, "2018/01/$pid/")
-  new Awards(pmo, 'g4s8').bootstrap().add(pmo, 1000, 'gh:test/test#1', 'initial')
+  new Awards(farm, 'g4s8').bootstrap().add(pmo, 1000, 'gh:test/test#1', 'initial')
 }

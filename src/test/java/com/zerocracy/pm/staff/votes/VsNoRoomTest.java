@@ -16,9 +16,12 @@
  */
 package com.zerocracy.pm.staff.votes;
 
+import com.zerocracy.Project;
+import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.pmo.Agenda;
 import com.zerocracy.pmo.Awards;
+import com.zerocracy.pmo.Pmo;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -35,18 +38,19 @@ public final class VsNoRoomTest {
 
     @Test
     public void valueDependsOnAwards() throws Exception {
-        final FkProject project = new FkProject();
+        final Project project = new FkProject();
+        final FkFarm farm = new FkFarm();
         final String user = "g4s8";
-        final Awards awards = new Awards(project, user).bootstrap();
+        final Awards awards = new Awards(farm, user).bootstrap();
         final int points = 2935;
         awards.add(project, points, "gh:test/test#1", "initial");
-        final Agenda agenda = new Agenda(project, user).bootstrap();
+        final Agenda agenda = new Agenda(farm, user).bootstrap();
         final int total = 10;
         for (int num = 1; num < total; ++num) {
             agenda.add(project, String.format("gh:test/test#%d", num), "QA");
         }
         MatcherAssert.assertThat(
-            new VsNoRoom(project).take(user, new StringBuilder(0)),
+            new VsNoRoom(new Pmo(farm)).take(user, new StringBuilder(0)),
             Matchers.equalTo(0.0)
         );
     }
