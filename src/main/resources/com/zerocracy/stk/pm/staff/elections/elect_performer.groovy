@@ -21,6 +21,7 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Policy
 import com.zerocracy.Project
+import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.Claims
@@ -32,6 +33,7 @@ import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pm.staff.Elections
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pm.staff.ranks.RnkBoost
+import com.zerocracy.pm.staff.ranks.RnkGithubBug
 import com.zerocracy.pm.staff.ranks.RnkRev
 import com.zerocracy.pm.staff.votes.VsBanned
 import com.zerocracy.pm.staff.votes.VsHardCap
@@ -67,9 +69,9 @@ def exec(Project project, XML xml) {
   Pmo pmo = new Pmo(farm)
   List<String> jobs = wbs.iterate().toList()
   [
-    // new RnkGithubBug(github),
-    new RnkBoost(new Boosts(project).bootstrap()),
-    new RnkRev(new Wbs(project).bootstrap())
+      new RnkGithubBug(new ExtGithub(farm).value()),
+      new RnkBoost(new Boosts(project).bootstrap()),
+      new RnkRev(new Wbs(project).bootstrap())
   ].each { jobs.sort(it) }
   for (String job : jobs) {
     if (orders.assigned(job)) {
