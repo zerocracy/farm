@@ -16,12 +16,15 @@
  */
 package com.zerocracy.cash;
 
+import com.jcabi.http.Request;
 import com.jcabi.http.request.JdkRequest;
 import com.jcabi.http.response.JsonResponse;
 import com.jcabi.http.response.RestResponse;
 import com.zerocracy.farm.props.Props;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URISyntaxException;
 import javax.json.JsonObject;
 
 /**
@@ -31,7 +34,45 @@ import javax.json.JsonObject;
  * @version $Id$
  * @since 0.6
  */
-public final class GerQuotes implements Quotes {
+public final class ApiLayerQuotes implements Quotes {
+
+    /**
+     * Request.
+     */
+    private final Request request;
+
+    /**
+     * Ctor.
+     * @throws URISyntaxException If fails
+     */
+    public ApiLayerQuotes() throws URISyntaxException {
+        this("http://apilayer.net/api/live");
+    }
+
+    /**
+     * Ctor.
+     * @param uri The URI
+     * @throws URISyntaxException If fails
+     */
+    public ApiLayerQuotes(final String uri) throws URISyntaxException {
+        this(new URI(uri));
+    }
+
+    /**
+     * Ctor.
+     * @param uri The URI
+     */
+    public ApiLayerQuotes(final URI uri) {
+        this(new JdkRequest(uri));
+    }
+
+    /**
+     * Ctor.
+     * @param req The request
+     */
+    ApiLayerQuotes(final Request req) {
+        this.request = req;
+    }
 
     @Override
     public double quote(final Currency src, final Currency dest) {
@@ -47,7 +88,7 @@ public final class GerQuotes implements Quotes {
         if (src.equals(Currency.USD)) {
             final JsonObject json;
             try {
-                json = new JdkRequest("http://apilayer.net/api/live")
+                json = this.request
                     .uri()
                     .queryParam(
                         "access_key",

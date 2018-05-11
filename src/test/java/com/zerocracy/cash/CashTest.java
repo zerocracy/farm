@@ -22,6 +22,9 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.takes.Take;
+import org.takes.http.FtRemote;
+import org.takes.tk.TkText;
 
 /**
  * Test case for {@link Cash}.
@@ -32,6 +35,28 @@ import org.mockito.Mockito;
  */
 @SuppressWarnings("PMD.TooManyMethods")
 public final class CashTest {
+
+    /**
+     * Cash can compare two monetary values using Google.
+     * @throws Exception If some problem inside
+     */
+    @Test
+    public void comparesMonetaryValuesUsingApi() throws Exception {
+        final Take take = new TkText(
+            "{\"quotes\": {\"USDEUR\": 1.25}}"
+        );
+        new FtRemote(take).exec(
+            home -> MatcherAssert.assertThat(
+                new Cash.S("USD 7")
+                    .add(new Cash.S("EUR 11.3"))
+                    .quotes(new LoggingQuotes(new ApiLayerQuotes(home)))
+                    .compareTo(
+                        new Cash.S("JPY 15").add(new Cash.S("GBP 1.5"))
+                    ),
+                Matchers.greaterThan(0)
+            )
+        );
+    }
 
     /**
      * Cash can be converted to string and back.

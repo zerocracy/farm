@@ -16,50 +16,46 @@
  */
 package com.zerocracy.cash;
 
-import java.io.IOException;
-import java.net.URL;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Assume;
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.takes.Take;
+import org.takes.http.FtRemote;
+import org.takes.tk.TkText;
 
 /**
- * Integration case for {@link Cash}.
+ * Integration case for {@link ApiLayerQuotes}.
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.6
  */
-public final class CashITCase {
+public final class ApiLayerQuotesTest {
 
     /**
-     * Assume we're online.
+     * If there are no USD the quote() throws an exception.
+     * @throws Exception If some problem inside
      */
-    @Before
-    public void weAreOnline() {
-        try {
-            new URL("http://www.google.com").getContent();
-        } catch (final IOException ex) {
-            Assume.assumeTrue(false);
-        }
+    @Test(expected = IllegalArgumentException.class)
+    public void noUsdIsNotAccepted() throws Exception {
+        new ApiLayerQuotes().quote(Currency.EUR, Currency.GBP);
     }
 
     /**
-     * Cash can compare two monetary values using Google.
+     * Works with JSON.
      * @throws Exception If some problem inside
      */
-    @Ignore
     @Test
-    public void comparesMonetaryValuesUsingGoogleQuotes() throws Exception {
-        MatcherAssert.assertThat(
-            new Cash.S("USD 7")
-                .add(new Cash.S("EUR 11"))
-                .quotes(new GerQuotes())
-                .compareTo(
-                    new Cash.S("JPY 15").add(new Cash.S("GBP 1.5"))
-                ),
-            Matchers.greaterThan(0)
+    public void returnsQuote() throws Exception {
+        final Take take = new TkText(
+            "{\"quotes\": {\"USDEUR\": 1.25}}"
+        );
+        new FtRemote(take).exec(
+            home -> MatcherAssert.assertThat(
+                new LoggingQuotes(new ApiLayerQuotes(home))
+                    .quote(Currency.EUR, Currency.USD),
+                // @checkstyle MagicNumber (1 lines)
+                Matchers.equalTo(0.8d)
+            )
         );
     }
 

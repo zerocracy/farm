@@ -16,46 +16,37 @@
  */
 package com.zerocracy.cash;
 
+import com.jcabi.log.Logger;
 import java.io.IOException;
-import java.net.URL;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.Assume;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
 
 /**
- * Integration case for {@link GerQuotes}.
+ * The quotes that logs every single operation.
+ *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.6
+ * @since 0.22
  */
-public final class GerQuotesITCase {
+final class LoggingQuotes implements Quotes {
 
     /**
-     * Assume we're online.
+     * Origin.
      */
-    @Before
-    public void weAreOnline() {
-        try {
-            new URL("http://www.getexchangerates.com").getContent();
-        } catch (final IOException ex) {
-            Assume.assumeTrue(false);
-        }
+    private final Quotes origin;
+
+    /**
+     * Ctor.
+     * @param quotes The quotes
+     */
+    LoggingQuotes(final Quotes quotes) {
+        this.origin = quotes;
     }
 
-    /**
-     * GetexchangeratesQuotes can return a quote.
-     * @throws Exception If some problem inside
-     */
-    @Ignore
-    @Test
-    public void returnsQuote() throws Exception {
-        MatcherAssert.assertThat(
-            new GerQuotes().quote(Currency.EUR, Currency.USD),
-            Matchers.greaterThan(1.0d)
-        );
+    @Override
+    public double quote(final Currency src, final Currency dest)
+        throws IOException {
+        final double rate = this.origin.quote(src, dest);
+        Logger.info(this, "From %s to %s: %f", src, dest, rate);
+        return rate;
     }
 
 }
