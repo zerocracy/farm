@@ -55,9 +55,14 @@ def exec(Project pmo, XML xml) {
       return
     }
     try {
-      String details = new XMLDocument(new Xembler(debts.toXembly(uid)).xmlQuietly()).xpath(
-        '//item/amount/text()'
-      ).join(', ')
+      Collection<String> amounts = new XMLDocument(
+        new Xembler(debts.toXembly(uid)).xmlQuietly()
+      ).xpath('//item/amount/text()')
+      if (amounts.size() > 10) {
+        amounts = amounts.subList(0, 9)
+        amounts.add('...')
+      }
+      String details = amounts.join(', ')
       String pid = new Payroll(farm).pay(
         new Ledger(new FkProject()).bootstrap(),
         uid, debt,

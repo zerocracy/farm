@@ -78,11 +78,14 @@ public final class ReProfile implements Reaction {
 
         @Override
         public String toString() {
-            final String txt;
+            String txt;
             if (this.msg.isCommand()) {
                 txt = this.msg.getText().substring(1);
             } else {
                 txt = this.msg.getText();
+            }
+            if (txt == null) {
+                txt = "";
             }
             return txt.trim();
         }
