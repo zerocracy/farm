@@ -17,9 +17,12 @@
 package com.zerocracy.radars.viber;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
+import org.takes.rs.RsWithBody;
+import org.takes.rs.RsWithStatus;
 
 /**
  * Viber webhook entry point.
@@ -38,6 +41,9 @@ public final class TkViber implements Take {
 
     @Override
     public Response act(final Request request) throws IOException {
-        throw new UnsupportedOperationException("Not yet implemented.");
+        return new RsWithStatus(
+            new RsWithBody("Not yet implemented."),
+            HttpURLConnection.HTTP_NOT_IMPLEMENTED
+        );
     }
 }

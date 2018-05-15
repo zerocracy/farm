@@ -23,10 +23,10 @@ package com.zerocracy.radars.viber;
  * @version $Id$
  * @since 0.22
  * @todo #939:30min Implement Viber bot. We should be able to send messages via
- * the Viber REST API. There are other operations but I think that is the only
- * operation we need (I might be wrong). See:
- * https://developers.viber.com/docs/api/rest-bot-api/#authentication-token
- * https://developers.viber.com/docs/api/rest-bot-api/#send-message
+ *  the Viber REST API. There are other operations but I think that is the only
+ *  operation we need (I might be wrong). See:
+ *  https://developers.viber.com/docs/api/rest-bot-api/#authentication-token
+ *  https://developers.viber.com/docs/api/rest-bot-api/#send-message
  */
 final class VbBot {
 

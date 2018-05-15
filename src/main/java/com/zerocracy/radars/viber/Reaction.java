@@ -26,7 +26,7 @@ import java.io.IOException;
  * @version $Id$
  * @since 0.22
  */
-public interface Reaction {
+interface Reaction {
 
     /**
      * React for new request.
