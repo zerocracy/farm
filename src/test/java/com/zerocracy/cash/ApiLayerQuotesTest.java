@@ -14,38 +14,48 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pmo;
+package com.zerocracy.cash;
 
-import com.zerocracy.farm.fake.FkFarm;
-import javax.json.Json;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.takes.Take;
+import org.takes.http.FtRemote;
+import org.takes.tk.TkText;
 
 /**
- * Test case for {@link Bots}.
+ * Integration case for {@link ApiLayerQuotes}.
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.1
- * @checkstyle JavadocMethodCheck (500 lines)
+ * @since 0.6
  */
-public final class BotsTest {
+public final class ApiLayerQuotesTest {
 
+    /**
+     * If there are no USD the quote() throws an exception.
+     * @throws Exception If some problem inside
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void noUsdIsNotAccepted() throws Exception {
+        new ApiLayerQuotes().quote(Currency.EUR, Currency.GBP);
+    }
+
+    /**
+     * Works with JSON.
+     * @throws Exception If some problem inside
+     */
     @Test
-    public void registersBot() throws Exception {
-        final Bots bots = new Bots(new Pmo(new FkFarm())).bootstrap();
-        bots.register(
-            Json.createReader(
-                this.getClass().getResourceAsStream("slack-bot.json")
-            ).readObject()
+    public void returnsQuote() throws Exception {
+        final Take take = new TkText(
+            "{\"quotes\": {\"USDEUR\": 1.25}}"
         );
-        MatcherAssert.assertThat(
-            bots.tokens().iterator().next().getKey(),
-            Matchers.is("UTTTTTTTTTTR")
-        );
-        MatcherAssert.assertThat(
-            bots.tokens().iterator().next().getValue(),
-            Matchers.is("xoxb-XXXXXXXXXXXX-TTTTTTTTTTTTTT")
+        new FtRemote(take).exec(
+            home -> MatcherAssert.assertThat(
+                new LoggingQuotes(new ApiLayerQuotes(home))
+                    .quote(Currency.EUR, Currency.USD),
+                // @checkstyle MagicNumber (1 lines)
+                Matchers.equalTo(0.8d)
+            )
         );
     }
 

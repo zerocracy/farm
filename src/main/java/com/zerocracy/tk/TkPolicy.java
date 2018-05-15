@@ -14,17 +14,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.apply_to_a_project
+package com.zerocracy.tk;
 
-import com.jcabi.xml.XML
-import com.zerocracy.Farm
-import com.zerocracy.Project
-import com.zerocracy.pmo.Awards
-import com.zerocracy.pmo.Catalog
+import com.zerocracy.Policy;
+import java.io.IOException;
+import org.takes.Request;
+import org.takes.Response;
+import org.takes.Take;
+import org.takes.rq.RqHref;
+import org.takes.rs.RsText;
 
-def exec(Project pmo, XML xml) {
-  String pid = 'XXXXXX000'
-  Farm farm = binding.variables.farm
-  new Catalog(pmo).bootstrap().add(pid, "2018/01/$pid/")
-  new Awards(farm, 'g4s8').bootstrap().add(pmo, 1000, 'gh:test/test#1', 'initial')
+/**
+ * Policy check.
+ *
+ * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @version $Id$
+ * @since 0.22
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ */
+final class TkPolicy implements Take {
+
+    @Override
+    public Response act(final Request req) throws IOException {
+        return new RsText(
+            new Policy().get(new RqHref.Smart(req).single("i"), "unknown")
+        );
+    }
+
 }

@@ -21,7 +21,6 @@ import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Par;
-import com.zerocracy.Project;
 import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
 import java.io.IOException;
@@ -54,7 +53,7 @@ public final class Debts {
     /**
      * PMO.
      */
-    private final Project pmo;
+    private final Pmo pmo;
 
     /**
      * Ctor.
@@ -68,7 +67,7 @@ public final class Debts {
      * Ctor.
      * @param pkt Project
      */
-    public Debts(final Project pkt) {
+    public Debts(final Pmo pkt) {
         this.pmo = pkt;
     }
 

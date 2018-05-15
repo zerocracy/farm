@@ -50,7 +50,7 @@ def exec(Project project, XML xml) {
         new Par(
           'You are a very respected person, but your reputation is very low: %d;',
           'please, do something or I will take some disciplinary actions, see §44'
-        ).say()
+        ).say(current)
       ).postTo(project)
     return
   }

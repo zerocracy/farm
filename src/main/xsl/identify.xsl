@@ -65,7 +65,8 @@ SOFTWARE.
       <a href="mailto:identity@zerocracy.com">
         <xsl:text>identity@zerocracy.com</xsl:text>
       </a>
-      <xsl:text>. In the email you will have to explain why you can't use third-party services. </xsl:text>
+      <xsl:text>. In the email you will have to explain why you can't use third-party services</xsl:text>
+      <xsl:text> and mention your GitHub nickname.</xsl:text>
       <xsl:text> Sometimes this may happen, if your ID is too old or your country is not in the list of supported countries.</xsl:text>
       <xsl:text> We can only accept your ID by email as an exception.</xsl:text>
     </p>

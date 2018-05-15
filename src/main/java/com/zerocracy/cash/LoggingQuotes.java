@@ -16,49 +16,37 @@
  */
 package com.zerocracy.cash;
 
+import com.jcabi.log.Logger;
 import java.io.IOException;
-import java.net.URL;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.Assume;
-import org.junit.Before;
-import org.junit.Test;
 
 /**
- * Integration case for {@link Cash}.
+ * The quotes that logs every single operation.
+ *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.6
+ * @since 0.22
  */
-public final class CashITCase {
+final class LoggingQuotes implements Quotes {
 
     /**
-     * Assume we're online.
+     * Origin.
      */
-    @Before
-    public void weAreOnline() {
-        try {
-            new URL("http://www.google.com").getContent();
-        } catch (final IOException ex) {
-            Assume.assumeTrue(false);
-        }
+    private final Quotes origin;
+
+    /**
+     * Ctor.
+     * @param quotes The quotes
+     */
+    LoggingQuotes(final Quotes quotes) {
+        this.origin = quotes;
     }
 
-    /**
-     * Cash can compare two monetary values using Google.
-     * @throws Exception If some problem inside
-     */
-    @Test
-    public void comparesMonetaryValuesUsingGoogleQuotes() throws Exception {
-        MatcherAssert.assertThat(
-            new Cash.S("USD 7")
-                .add(new Cash.S("EUR 11"))
-                .quotes(new GerQuotes())
-                .compareTo(
-                    new Cash.S("JPY 15").add(new Cash.S("GBP 1.5"))
-                ),
-            Matchers.greaterThan(0)
-        );
+    @Override
+    public double quote(final Currency src, final Currency dest)
+        throws IOException {
+        final double rate = this.origin.quote(src, dest);
+        Logger.info(this, "From %s to %s: %f", src, dest, rate);
+        return rate;
     }
 
 }

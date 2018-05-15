@@ -19,6 +19,7 @@ package com.zerocracy.pm.cost;
 import com.zerocracy.Project;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.farm.fake.FkProject;
+import com.zerocracy.pm.in.Orders;
 import com.zerocracy.pm.scope.Wbs;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -56,6 +57,7 @@ public final class EstimatesTest {
         final Estimates estimates = new Estimates(project).bootstrap();
         final String first = "gh:yegor256/pdd#4";
         new Wbs(project).bootstrap().add(first);
+        new Orders(project).bootstrap().assign(first, "yegor256", "no");
         estimates.update(first, new Cash.S("$45"));
         MatcherAssert.assertThat(
             estimates.get(first),
@@ -63,6 +65,7 @@ public final class EstimatesTest {
         );
         final String second = "gh:yegor256/pdd#1";
         new Wbs(project).bootstrap().add(second);
+        new Orders(project).bootstrap().assign(second, "yegor", "no");
         estimates.update(second, new Cash.S("$100"));
         MatcherAssert.assertThat(
             estimates.total(),
