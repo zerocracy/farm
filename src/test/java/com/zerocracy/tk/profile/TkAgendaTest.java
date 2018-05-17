@@ -24,6 +24,7 @@ import com.zerocracy.pmo.People;
 import com.zerocracy.tk.RqWithUser;
 import com.zerocracy.tk.TkApp;
 import java.net.HttpURLConnection;
+import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 import org.takes.facets.hamcrest.HmRsStatus;
@@ -37,12 +38,15 @@ import org.takes.rs.RsPrint;
  * @since 0.13
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @todo #402:30min Write tests confirming that awards and profile pages render
+ *  html for Firefox. Write also a test for RsPage that will check a general
+ *  case that any page sent to Firefox will be html and not xml.
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class TkAgendaTest {
 
     @Test
-    public void rendersAgendaPage() throws Exception {
+    public void rendersXmlAgendaPage() throws Exception {
         final Farm farm = new PropsFarm(new FkFarm());
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
@@ -50,7 +54,40 @@ public final class TkAgendaTest {
                     new TkApp(farm).act(
                         new RqWithUser(
                             farm,
-                            new RqFake("GET", "/u/Yegor256/agenda")
+                            new RqFake(
+                                new ListOf<>(
+                                    "GET /u/Yegor256/agenda",
+                                    "Host: www.example.com",
+                                    "Accept: application/xml"
+                                ),
+                                ""
+                            )
+                        )
+                    )
+                ).printBody()
+            ),
+            XhtmlMatchers.hasXPaths("/page")
+        );
+    }
+
+    @Test
+    public void rendersHtmlAgendaPageForFirefox() throws Exception {
+        final Farm farm = new PropsFarm(new FkFarm());
+        MatcherAssert.assertThat(
+            XhtmlMatchers.xhtml(
+                new RsPrint(
+                    new TkApp(farm).act(
+                        new RqWithUser(
+                            farm,
+                            new RqFake(
+                                new ListOf<>(
+                                    "GET /u/yegor256/agenda",
+                                    "Host: www.example.com",
+                                    // @checkstyle LineLength (1 line)
+                                    "User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:62.0) Gecko/20100101 Firefox/62.0"
+                                ),
+                                ""
+                            )
                         )
                     )
                 ).printBody()
