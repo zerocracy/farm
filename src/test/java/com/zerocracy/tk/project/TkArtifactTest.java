@@ -25,6 +25,8 @@ import com.zerocracy.tk.TkApp;
 import java.net.HttpURLConnection;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.hamcrest.core.IsNot;
+import org.hamcrest.core.StringContains;
 import org.junit.Test;
 import org.takes.Take;
 import org.takes.facets.hamcrest.HmRsStatus;
@@ -39,6 +41,7 @@ import org.takes.rs.RsPrint;
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class TkArtifactTest {
 
     @Test
@@ -73,6 +76,26 @@ public final class TkArtifactTest {
                 ).printBody()
             ),
             XhtmlMatchers.hasXPaths("//xhtml:table")
+        );
+    }
+
+    @Test
+    public void rendersWithoutChromeNotice() throws Exception {
+        final Farm farm = new PropsFarm(new FkFarm());
+        final String get = new RsPrint(
+            new TkApp(farm).act(
+                new RqWithUser(
+                    farm,
+                    new RqFake(
+                        "GET",
+                        "/a/C00000000?a=pm/staff/roles"
+                    )
+                )
+            )
+        ).printBody();
+        MatcherAssert.assertThat(
+            get,
+            new IsNot<>(new StringContains("Chrome"))
         );
     }
 
