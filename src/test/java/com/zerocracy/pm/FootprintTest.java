@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pm;
 
+import com.jcabi.aspects.Tv;
 import com.jcabi.xml.XML;
 import com.mongodb.client.model.Filters;
 import com.zerocracy.Farm;
@@ -23,6 +24,8 @@ import com.zerocracy.Project;
 import com.zerocracy.RunsInThreads;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.farm.sync.SyncFarm;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -42,12 +45,14 @@ public final class FootprintTest {
     @Test
     public void addsClaims() throws Exception {
         final Farm farm = new PropsFarm();
-        final Project project = farm.find("@id='FOOTPRNTX'").iterator().next();
+        final Project project = farm.find("@id='FOOTPRNTX'")
+            .iterator().next();
         new ClaimOut().type("Hello").postTo(project);
         final XML xml = new Claims(project).iterate().iterator().next();
         try (final Footprint footprint = new Footprint(farm, project)) {
             footprint.open(xml);
             footprint.close(xml);
+            footprint.cleanup(new Date());
             MatcherAssert.assertThat(
                 footprint.collection().find(
                     Filters.eq("project", project.pid())
@@ -82,4 +87,28 @@ public final class FootprintTest {
         }
     }
 
+    @Test
+    public void cleanOldClaims() throws Exception {
+        final Farm farm = new PropsFarm();
+        final Project project = farm.find("@id='FOOTPRNTY'")
+            .iterator().next();
+        new ClaimOut(new Date(0L)).type("Notify").postTo(project);
+        final XML xml = new Claims(project).iterate().iterator().next();
+        try (final Footprint footprint = new Footprint(farm, project)) {
+            footprint.open(xml);
+            footprint.close(xml);
+            MatcherAssert.assertThat(
+                footprint.cleanup(
+                    new Date(TimeUnit.DAYS.toMillis((long) Tv.HUNDRED))
+                ),
+                Matchers.equalTo(1L)
+            );
+            MatcherAssert.assertThat(
+                footprint.collection().find(
+                    Filters.eq("project", project.pid())
+                ),
+                Matchers.emptyIterable()
+            );
+        }
+    }
 }
