@@ -33,7 +33,7 @@ def exec(Project pmo, XML xml) {
   String student = claim.param('login')
   String author = claim.author()
   String job = 'gh:zerocracy/datum#1'
-  int points = new Policy().get('47.penalty', -256)
+  int points = -new Policy().get('47.penalty', 256)
   String reason = new Par(
     'Penalize for breakup with %s'
   ).say(student)

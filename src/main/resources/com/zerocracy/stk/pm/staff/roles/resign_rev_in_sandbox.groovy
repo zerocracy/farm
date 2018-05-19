@@ -67,7 +67,7 @@ def exec(Project project, XML xml) {
       'message', new Par(
         farm,
         'The user @%s was resigned from REV in %s',
-        'because of low enough reputation %+d (below %+d)'
+        'because of too low reputation %+d (below %+d)'
       ).say(uid, project.pid(), reputation, threshold)
     ).postTo(project)
   }
