@@ -18,7 +18,6 @@ package com.zerocracy.tk;
 
 import com.zerocracy.Farm;
 import com.zerocracy.Par;
-import com.zerocracy.Project;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pmo.People;
 import com.zerocracy.pmo.Pmo;
@@ -59,7 +58,7 @@ public final class TkAlias implements Take {
         final RqHref.Smart smart = new RqHref.Smart(new RqHref.Base(req));
         final String rel = smart.single("rel");
         final String href = smart.single("href");
-        final Project pmo = new Pmo(this.farm);
+        final Pmo pmo = new Pmo(this.farm);
         final People people = new People(pmo).bootstrap();
         if (people.find(rel, href).iterator().hasNext()) {
             throw new RsForward(
@@ -85,5 +84,4 @@ public final class TkAlias implements Take {
             )
         );
     }
-
 }

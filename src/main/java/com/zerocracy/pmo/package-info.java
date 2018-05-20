@@ -21,9 +21,5 @@
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
- * @todo #715:30min Change 'com.zerocracy.pmo' classes constructor
- *  to accept `Pmo` instead of `Project`, also all tests and groovy
- *  scripts should be fixed after refactoring.
- *  It is: Agenda, Catalog, People, Projects, Rfps, Speed.
  */
 package com.zerocracy.pmo;

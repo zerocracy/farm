@@ -69,6 +69,15 @@ public final class Agenda {
      * @param user The user
      */
     public Agenda(final Project pkt, final String user) {
+        this(new Pmo(pkt), user);
+    }
+
+    /**
+     * Ctor.
+     * @param pkt PMO
+     * @param user The user
+     */
+    public Agenda(final Pmo pkt, final String user) {
         this.pmo = pkt;
         this.login = user;
     }
@@ -241,5 +250,4 @@ public final class Agenda {
             String.format("agenda/%s.xml", this.login)
         );
     }
-
 }

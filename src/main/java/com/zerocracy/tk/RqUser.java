@@ -18,7 +18,6 @@ package com.zerocracy.tk;
 
 import com.zerocracy.Farm;
 import com.zerocracy.Par;
-import com.zerocracy.Project;
 import com.zerocracy.pmo.People;
 import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
@@ -74,7 +73,7 @@ public final class RqUser implements Scalar<String> {
      * @param pmo The PMO
      * @param req Request
      */
-    public RqUser(final Project pmo, final Request req) {
+    public RqUser(final Pmo pmo, final Request req) {
         this(pmo, req, true);
     }
 
@@ -84,7 +83,7 @@ public final class RqUser implements Scalar<String> {
      * @param req Request
      * @param invited TRUE if we need a user to be invited already
      */
-    public RqUser(final Project pmo, final Request req, final boolean invited) {
+    public RqUser(final Pmo pmo, final Request req, final boolean invited) {
         this.user = new SolidScalar<>(
             () -> {
                 final Identity identity = new RqAuth(req).identity();
@@ -126,5 +125,4 @@ public final class RqUser implements Scalar<String> {
     public String value() throws IOException {
         return new IoCheckedScalar<>(this.user).value();
     }
-
 }

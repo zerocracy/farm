@@ -18,6 +18,7 @@ package com.zerocracy.pm.staff.votes;
 
 import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.pmo.People;
+import com.zerocracy.pmo.Pmo;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -39,7 +40,7 @@ public final class VsVacationTest {
         people.invite(uid, uid);
         people.vacation(uid, true);
         MatcherAssert.assertThat(
-            new VsVacation(project).take(uid, new StringBuilder()),
+            new VsVacation(new Pmo(project)).take(uid, new StringBuilder()),
             Matchers.equalTo(1.0D)
         );
     }

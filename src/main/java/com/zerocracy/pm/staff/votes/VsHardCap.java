@@ -17,9 +17,9 @@
 package com.zerocracy.pm.staff.votes;
 
 import com.jcabi.log.Logger;
-import com.zerocracy.Project;
 import com.zerocracy.pm.staff.Votes;
 import com.zerocracy.pmo.Agenda;
+import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
 
 /**
@@ -36,7 +36,7 @@ public final class VsHardCap implements Votes {
     /**
      * PMO.
      */
-    private final Project pmo;
+    private final Pmo pmo;
 
     /**
      * Cap.
@@ -48,7 +48,7 @@ public final class VsHardCap implements Votes {
      * @param pkt The PMO
      * @param max Max jobs in the agenda
      */
-    public VsHardCap(final Project pkt, final int max) {
+    public VsHardCap(final Pmo pkt, final int max) {
         this.pmo = pkt;
         this.cap = max;
     }

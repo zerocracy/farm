@@ -17,7 +17,6 @@
 package com.zerocracy.tk.profile;
 
 import com.zerocracy.Farm;
-import com.zerocracy.Project;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.pmo.People;
 import com.zerocracy.pmo.Pmo;
@@ -55,7 +54,7 @@ public final class TkIdentify implements TkRegex {
 
     @Override
     public Response act(final RqRegex req) throws IOException {
-        final Project pmo = new Pmo(this.farm);
+        final Pmo pmo = new Pmo(this.farm);
         return new RsPage(
             this.farm,
             "/xsl/identify.xsl",
@@ -76,5 +75,4 @@ public final class TkIdentify implements TkRegex {
             }
         );
     }
-
 }

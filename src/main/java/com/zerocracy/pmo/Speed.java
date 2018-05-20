@@ -35,9 +35,9 @@ import org.xembly.Directives;
 public final class Speed {
 
     /**
-     * Project.
+     * PMO.
      */
-    private final Project pmo;
+    private final Pmo pmo;
 
     /**
      * Login of the person.
@@ -55,10 +55,19 @@ public final class Speed {
 
     /**
      * Ctor.
-     * @param pkt Project
+     * @param pkt The project
      * @param user The user
      */
     public Speed(final Project pkt, final String user) {
+        this(new Pmo(pkt), user);
+    }
+
+    /**
+     * Ctor.
+     * @param pkt PMO
+     * @param user The user
+     */
+    public Speed(final Pmo pkt, final String user) {
         this.pmo = pkt;
         this.login = user;
     }

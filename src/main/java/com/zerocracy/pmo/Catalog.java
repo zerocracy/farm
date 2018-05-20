@@ -49,9 +49,9 @@ public final class Catalog {
     private static final String PRJ_TITLE = "title";
 
     /**
-     * Project.
+     * PMO.
      */
-    private final Project pmo;
+    private final Pmo pmo;
 
     /**
      * Ctor.
@@ -66,6 +66,14 @@ public final class Catalog {
      * @param pkt Project
      */
     public Catalog(final Project pkt) {
+        this(new Pmo(pkt));
+    }
+
+    /**
+     * Ctor.
+     * @param pkt PMO
+     */
+    public Catalog(final Pmo pkt) {
         this.pmo = pkt;
     }
 
@@ -653,5 +661,4 @@ public final class Catalog {
     private Item item() throws IOException {
         return this.pmo.acq("catalog.xml");
     }
-
 }

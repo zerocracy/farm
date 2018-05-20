@@ -40,12 +40,30 @@ public final class Pmo implements Project {
 
     /**
      * Ctor.
+     * @param project Project
+     */
+    public Pmo(final Project project) {
+        this(() -> project);
+    }
+
+    /**
+     * Ctor.
      * @param farm Farm
      */
     public Pmo(final Farm farm) {
-        this.pkt = new SolidScalar<>(
-            () -> farm.find("@id='PMO'").iterator().next()
+        this(
+            new SolidScalar<>(
+                () -> farm.find("@id='PMO'").iterator().next()
+            )
         );
+    }
+
+    /**
+     * Ctor.
+     * @param orig Project
+     */
+    public Pmo(final Scalar<Project> orig) {
+        this.pkt = orig;
     }
 
     @Override
@@ -57,5 +75,4 @@ public final class Pmo implements Project {
     public Item acq(final String file) throws IOException {
         return new IoCheckedScalar<>(this.pkt).value().acq(file);
     }
-
 }

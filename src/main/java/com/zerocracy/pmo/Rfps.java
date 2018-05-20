@@ -41,13 +41,13 @@ import org.xembly.Directives;
  * @since 0.20
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@SuppressWarnings({ "PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods" })
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 public final class Rfps {
 
     /**
      * PMO.
      */
-    private final Project pmo;
+    private final Pmo pmo;
 
     /**
      * Ctor.
@@ -59,9 +59,17 @@ public final class Rfps {
 
     /**
      * Ctor.
-     * @param pkt Project
+     * @param pkt The project
      */
     public Rfps(final Project pkt) {
+        this(new Pmo(pkt));
+    }
+
+    /**
+     * Ctor.
+     * @param pkt Project
+     */
+    public Rfps(final Pmo pkt) {
         this.pmo = pkt;
     }
 
@@ -336,5 +344,4 @@ public final class Rfps {
     private Item item() throws IOException {
         return this.pmo.acq("rfps.xml");
     }
-
 }

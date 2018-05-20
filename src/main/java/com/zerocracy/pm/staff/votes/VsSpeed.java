@@ -17,8 +17,8 @@
 package com.zerocracy.pm.staff.votes;
 
 import com.jcabi.log.Logger;
-import com.zerocracy.Project;
 import com.zerocracy.pm.staff.Votes;
+import com.zerocracy.pmo.Pmo;
 import com.zerocracy.pmo.Speed;
 import java.io.IOException;
 import java.util.Collection;
@@ -54,7 +54,7 @@ public final class VsSpeed implements Votes {
      * @param pmo The PMO
      * @param others All other logins in the competition
      */
-    public VsSpeed(final Project pmo, final Collection<String> others) {
+    public VsSpeed(final Pmo pmo, final Collection<String> others) {
         this.speeds = new IoCheckedScalar<>(
             new SolidScalar<>(
                 () -> new SolidMap<>(

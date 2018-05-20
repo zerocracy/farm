@@ -33,9 +33,9 @@ import org.xembly.Directives;
 public final class Projects {
 
     /**
-     * Project.
+     * PMO.
      */
-    private final Project pmo;
+    private final Pmo pmo;
 
     /**
      * Login of the person.
@@ -53,10 +53,19 @@ public final class Projects {
 
     /**
      * Ctor.
-     * @param pkt Project
+     * @param pkt The project
      * @param user The user
      */
     public Projects(final Project pkt, final String user) {
+        this(new Pmo(pkt), user);
+    }
+
+    /**
+     * Ctor.
+     * @param pkt PMO
+     * @param user The user
+     */
+    public Projects(final Pmo pkt, final String user) {
         this.pmo = pkt;
         this.login = user;
     }
@@ -147,5 +156,4 @@ public final class Projects {
             String.format("projects/%s.xml", this.login)
         );
     }
-
 }

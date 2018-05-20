@@ -54,8 +54,7 @@ final class RqAnonProject implements Project {
         this.pkt = new SolidScalar<>(
             () -> {
                 final String pid = req.matcher().group(1);
-                final Project pmo = new Pmo(farm);
-                final Catalog catalog = new Catalog(pmo).bootstrap();
+                final Catalog catalog = new Catalog(new Pmo(farm)).bootstrap();
                 if (!"PMO".equals(pid) && !catalog.exists(pid)) {
                     throw new RsForward(
                         new RsParFlash(
@@ -80,5 +79,4 @@ final class RqAnonProject implements Project {
     public Item acq(final String file) throws IOException {
         return new IoCheckedScalar<>(this.pkt).value().acq(file);
     }
-
 }

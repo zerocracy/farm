@@ -16,9 +16,9 @@
  */
 package com.zerocracy.pm.staff.votes;
 
-import com.zerocracy.Project;
 import com.zerocracy.pm.staff.Votes;
 import com.zerocracy.pmo.People;
+import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
 
 /**
@@ -38,7 +38,7 @@ public final class VsVacation implements Votes {
      * Ctor.
      * @param pmo The PMO
      */
-    public VsVacation(final Project pmo) {
+    public VsVacation(final Pmo pmo) {
         this(new People(pmo));
     }
 

@@ -58,9 +58,9 @@ import org.xembly.Directives;
 public final class People {
 
     /**
-     * Project.
+     * PMO.
      */
-    private final Project pmo;
+    private final Pmo pmo;
 
     /**
      * Ctor.
@@ -75,6 +75,14 @@ public final class People {
      * @param pkt Project
      */
     public People(final Project pkt) {
+        this(new Pmo(pkt));
+    }
+
+    /**
+     * Ctor.
+     * @param pkt PMO
+     */
+    public People(final Pmo pkt) {
         this.pmo = pkt;
     }
 
