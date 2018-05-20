@@ -28,6 +28,8 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
+import org.cactoos.Func;
+import org.cactoos.func.UncheckedFunc;
 
 /**
  * Slack listening radar.
@@ -55,6 +57,11 @@ public final class SlackRadar implements AutoCloseable {
     private final Reaction<SlackChannelJoined> joined;
 
     /**
+     * Slack session provider.
+     */
+    private final UncheckedFunc<String, SlackSession> slacks;
+
+    /**
      * Ctor.
      * @param frm Farm
      */
@@ -74,7 +81,8 @@ public final class SlackRadar implements AutoCloseable {
                         )
                     )
                 )
-            )
+            ),
+            SlackSessionFactory::createWebSocketSlackSession
         );
     }
 
@@ -82,13 +90,16 @@ public final class SlackRadar implements AutoCloseable {
      * Ctor.
      * @param frm Farm
      * @param ptd Reaction on post
+     * @param sess Session generator
      */
-    SlackRadar(final Farm frm, final Reaction<SlackMessagePosted> ptd) {
+    SlackRadar(final Farm frm, final Reaction<SlackMessagePosted> ptd,
+        final Func<String, SlackSession> sess) {
         this.farm = frm;
         this.posted = ptd;
         this.joined = new ReLogged<>(
             new ReInvite()
         );
+        this.slacks = new UncheckedFunc<>(sess);
     }
 
     /**
@@ -140,8 +151,7 @@ public final class SlackRadar implements AutoCloseable {
      * @throws IOException If fails
      */
     private SlackSession start(final String token) throws IOException {
-        final SlackSession ssn =
-            SlackSessionFactory.createWebSocketSlackSession(token);
+        final SlackSession ssn = this.slacks.apply(token);
         ssn.connect();
         Logger.info(
             this, "Slack connected as @%s/%s to %s",
