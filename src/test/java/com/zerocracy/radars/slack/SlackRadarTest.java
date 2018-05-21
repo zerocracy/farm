@@ -46,8 +46,8 @@ public final class SlackRadarTest {
     @SuppressWarnings("unchecked")
     public void closesSession() throws IOException {
         final Farm farm = new PropsFarm(new FkFarm());
-        this.registerBots(farm);
-        final SlackSession session = this.mockSession();
+        SlackRadarTest.registerBots(farm);
+        final SlackSession session = SlackRadarTest.mockSession();
         final SlackRadar radar = new SlackRadar(
             farm,
             Mockito.mock(Reaction.class),
@@ -58,7 +58,7 @@ public final class SlackRadarTest {
         Mockito.verify(session).disconnect();
     }
 
-    private SlackSession mockSession() {
+    private static SlackSession mockSession() {
         final SlackSession session = Mockito.mock(SlackSession.class);
         Mockito.when(session.sessionPersona())
             .thenReturn(Mockito.mock(SlackPersona.class));
@@ -67,11 +67,11 @@ public final class SlackRadarTest {
         return session;
     }
 
-    private void registerBots(final Farm farm) throws IOException {
+    private static void registerBots(final Farm farm) throws IOException {
         final Bots bots = new Bots(new Pmo(farm)).bootstrap();
         bots.register(
             Json.createReader(
-                this.getClass().getResourceAsStream("slack-bot.json")
+                SlackRadar.class.getResourceAsStream("slack-bot.json")
             ).readObject()
         );
     }

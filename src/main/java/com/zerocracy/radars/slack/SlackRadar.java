@@ -59,7 +59,7 @@ public final class SlackRadar implements AutoCloseable {
     /**
      * Slack session provider.
      */
-    private final UncheckedFunc<String, SlackSession> slacks;
+    private final UncheckedFunc<String, SlackSession> slackssess;
 
     /**
      * Ctor.
@@ -99,7 +99,7 @@ public final class SlackRadar implements AutoCloseable {
         this.joined = new ReLogged<>(
             new ReInvite()
         );
-        this.slacks = new UncheckedFunc<>(sess);
+        this.slackssess = new UncheckedFunc<>(sess);
     }
 
     /**
@@ -151,7 +151,7 @@ public final class SlackRadar implements AutoCloseable {
      * @throws IOException If fails
      */
     private SlackSession start(final String token) throws IOException {
-        final SlackSession ssn = this.slacks.apply(token);
+        final SlackSession ssn = this.slackssess.apply(token);
         ssn.connect();
         Logger.info(
             this, "Slack connected as @%s/%s to %s",
