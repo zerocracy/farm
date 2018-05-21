@@ -176,8 +176,6 @@ public final class RsPage extends RsWrap {
                 new XeMillis(true)
             )
         );
-        final RsPrettyXml xml =
-            new RsPrettyXml(new RsWithType(raw, "text/xml"));
         final RsXslt html = new RsXslt(new RsWithType(raw, "text/html"));
         return new RsFork(
             req,
@@ -194,7 +192,9 @@ public final class RsPage extends RsWrap {
                     () -> new Opt.Empty<>()
                 )
             ).value(),
-            new FkTypes("application/xml,text/xml", xml),
+            new FkTypes("application/xml,text/xml",
+                new RsPrettyXml(new RsWithType(raw, "text/xml"))
+            ),
             new FkTypes("*/*", html)
         );
     }
