@@ -127,7 +127,7 @@ public final class StkSafe implements Stakeholder {
                     new TxtUnrecoverableError(
                         ex, props,
                         String.format(
-                            "CID: %d, Type: \"%s\", Author: %s",
+                            "CID: %d, Type: \"%s\", Author: \"%s\"",
                             claim.cid(), claim.type(),
                             claim.author()
                         )
