@@ -192,7 +192,8 @@ public final class RsPage extends RsWrap {
                     () -> new Opt.Empty<>()
                 )
             ).value(),
-            new FkTypes("application/xml,text/xml",
+            new FkTypes(
+                "application/xml,text/xml",
                 new RsPrettyXml(new RsWithType(raw, "text/xml"))
             ),
             new FkTypes("*/*", html)
