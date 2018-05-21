@@ -21,6 +21,7 @@ import com.zerocracy.pm.cost.Estimates;
 import java.util.Comparator;
 import org.cactoos.func.SyncBiFunc;
 import org.cactoos.func.UncheckedBiFunc;
+import org.cactoos.func.UncheckedFunc;
 
 /**
  * Give higher rank for most expensive tasks.
@@ -37,28 +38,30 @@ public final class RnkEstimates implements Comparator<String> {
         new UncheckedBiFunc<>(new SyncBiFunc<>(Estimates::get));
 
     /**
-     * Estimates.
+     * Cache.
      */
-    private final Estimates est;
+    private final UncheckedFunc<String, Cash> cch;
     /**
      * Ctor.
      * @param estimates Estimates
      */
     public RnkEstimates(final Estimates estimates) {
-        this.est = estimates;
+        this(
+            new UncheckedFunc<>(
+                job -> RnkEstimates.CACHED.apply(estimates, job)
+            )
+        );
+    }
+    /**
+     * Ctor.
+     * @param cache Estimate cache
+     */
+    RnkEstimates(final UncheckedFunc<String, Cash> cache) {
+        this.cch = cache;
     }
 
     @Override
     public int compare(final String left, final String right) {
-        return this.cash(right).compareTo(this.cash(left));
-    }
-
-    /**
-     * Estimated cash of a job.
-     * @param job Job id
-     * @return Cash
-     */
-    private Cash cash(final String job) {
-        return RnkEstimates.CACHED.apply(this.est, job);
+        return this.cch.apply(right).compareTo(this.cch.apply(left));
     }
 }

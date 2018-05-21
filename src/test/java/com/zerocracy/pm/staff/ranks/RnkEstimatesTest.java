@@ -24,6 +24,7 @@ import com.zerocracy.pm.in.Orders;
 import com.zerocracy.pm.scope.Wbs;
 import com.zerocracy.pm.staff.Roles;
 import java.util.Map;
+import org.cactoos.func.UncheckedFunc;
 import org.cactoos.list.ListOf;
 import org.cactoos.list.Sorted;
 import org.cactoos.map.MapEntry;
@@ -80,6 +81,33 @@ public final class RnkEstimatesTest {
                     Matchers.endsWith("#1")
                 )
             )
+        );
+    }
+
+    @Test
+    public void evaluatesFromCache() throws Exception {
+        final String expensive = "gh:test/cached#2";
+        MatcherAssert.assertThat(
+            new Sorted<>(
+                new RnkEstimates(
+                    new UncheckedFunc<>(
+                        job -> {
+                            final Cash cash;
+                            if (job.equals(expensive)) {
+                                cash = new Cash.S("$101");
+                            } else {
+                                cash = new Cash.S("$11");
+                            }
+                            return cash;
+                        })
+                ),
+                new ListOf<>(
+                    "gh:test/cached#1",
+                    expensive,
+                    "gh:test/cached#3"
+                )
+            ).get(0),
+            Matchers.equalTo(expensive)
         );
     }
 }
