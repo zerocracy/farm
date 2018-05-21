@@ -25,8 +25,6 @@ import com.zerocracy.tk.TkApp;
 import java.net.HttpURLConnection;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.hamcrest.core.IsNot;
-import org.hamcrest.core.StringContains;
 import org.junit.Test;
 import org.takes.Take;
 import org.takes.facets.hamcrest.HmRsStatus;
@@ -95,7 +93,7 @@ public final class TkArtifactTest {
         ).printBody();
         MatcherAssert.assertThat(
             get,
-            new IsNot<>(new StringContains("Chrome"))
+            Matchers.not(Matchers.containsString("Chrome"))
         );
     }
 
