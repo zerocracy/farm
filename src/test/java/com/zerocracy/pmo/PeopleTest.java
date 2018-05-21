@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.iterable.RangeOf;
 import org.cactoos.list.ListOf;
@@ -32,7 +31,6 @@ import org.cactoos.scalar.And;
 import org.cactoos.text.FormattedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.hamcrest.core.IsEqual;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -120,45 +118,48 @@ public final class PeopleTest {
     @Test
     public void failsForIncorrectBankName() throws Exception {
         final People people = new People(new FkProject()).bootstrap();
-        final String uid = new FormattedText(
-            "yegor%s", new Random().nextInt()
-        ).asString();
         final String bank = "test";
         this.exception.expect(SoftException.class);
         this.exception.expectMessage(
             new FormattedText("Bank name `%s` is invalid", bank).asString()
         );
-        people.wallet(uid, bank, "");
+        people.wallet("yegor128", bank, "");
     }
 
     @Test
     public void setsCorrectPaypalAddress() throws Exception {
-        this.setsWallet("paypal", "john@example.com");
+        PeopleTest.setsWallet("paypal", "john@example.com");
     }
 
     @Test
     public void setsCorrectBitcoinAddress() throws Exception {
-        this.setsWallet("btc", "3HcEB6bi4TFPdvk31Pwz77DwAzfAZz2fMn");
+        PeopleTest.setsWallet("btc", "3HcEB6bi4TFPdvk31Pwz77DwAzfAZz2fMn");
     }
 
     @Test
     public void setsCorrectBitcoinCashAddress() throws Exception {
-        this.setsWallet("bch", "qpm2qsznhks23z7629mms6s4cwef74vcwvy22gdx6a");
+        PeopleTest.setsWallet(
+            "bch", "qpm2qsznhks23z7629mms6s4cwef74vcwvy22gdx6a"
+        );
     }
 
     @Test
     public void setsCorrectEthereumAddress() throws Exception {
-        this.setsWallet("eth", "e79c3300773E8593fb332487E1EfdD8729b87445");
+        PeopleTest.setsWallet(
+            "eth", "e79c3300773E8593fb332487E1EfdD8729b87445"
+        );
     }
 
     @Test
     public void setsCorrectPrefixedEthereumAddress() throws Exception {
-        this.setsWallet("eth", "0xe79c3300773E8593fb332487E1EfdD8729b87445");
+        PeopleTest.setsWallet(
+            "eth", "0xe79c3300773E8593fb332487E1EfdD8729b87445"
+        );
     }
 
     @Test
     public void setsCorrectLitecoinAddress() throws Exception {
-        this.setsWallet("ltc", "LS78aoGtfuGCZ777x3Hmr6tcoW3WaYynx9");
+        PeopleTest.setsWallet("ltc", "LS78aoGtfuGCZ777x3Hmr6tcoW3WaYynx9");
     }
 
     @Test
@@ -383,29 +384,23 @@ public final class PeopleTest {
 
     private void failsWallet(final String bank)
         throws IOException {
-        final String wallet =
-            new FormattedText("%d", new Random().nextInt()).asString();
+        final String wallet = "123456";
         final People people = new People(new FkProject()).bootstrap();
-        final String uid = new FormattedText(
-            "yegor%s", new Random().nextInt()
-        ).asString();
         this.exception.expect(SoftException.class);
         this.exception.expectMessage(
             new FormattedText(" not valid: `%s`", wallet).asString()
         );
-        people.wallet(uid, bank, wallet);
+        people.wallet("yegor512", bank, wallet);
     }
 
-    private void setsWallet(final String bank, final String wallet)
+    private static void setsWallet(final String bank, final String wallet)
         throws IOException {
         final People people = new People(new FkProject()).bootstrap();
-        final String uid = new FormattedText(
-            "yegor%s", new Random().nextInt()
-        ).asString();
+        final String uid = "yegor64";
         people.wallet(uid, bank, wallet);
         MatcherAssert.assertThat(
             people.wallet(uid),
-            new IsEqual<>(wallet)
+            Matchers.is(wallet)
         );
     }
 
