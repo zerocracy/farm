@@ -60,7 +60,7 @@ def exec(Project project, XML xml) {
         .param(
           'message',
           new Par(
-            '@%s everybody who has role %s are banned at %s;',
+            '@%s everybody who has role %s is banned at %s;',
             'I won\'t be able to assign anyone automatically;',
             'consider assigning someone manually (as in §19),',
             'or invite more people (as in §51),',

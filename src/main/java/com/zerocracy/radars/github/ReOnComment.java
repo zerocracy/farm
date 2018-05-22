@@ -137,7 +137,7 @@ public final class ReOnComment implements Reaction {
             );
             result = String.format("%s#%s", repo.coordinates(), issue.number());
         } else {
-            result = String.format("comment to \"%s\" ignored", type);
+            result = String.format("Comment to \"%s\" ignored", type);
         }
         return result;
     }
