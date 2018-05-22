@@ -61,7 +61,7 @@ def exec(Project project, XML xml) {
           new Par(
             '@%s this pull request is too small,',
             'just %d lines changed (less than %d),',
-            'there will be no formal code review;',
+            'there will be no formal code review, see §53 and §28;',
             'in the future, try to make sure your pull requests are not too small;',
             '@%s please review this and merge or reject'
           ).say(issue.author().login(), lines, min, new Roles(project).bootstrap().findByRole('ARC')[0])

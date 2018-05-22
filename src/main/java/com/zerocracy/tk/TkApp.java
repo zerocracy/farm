@@ -164,6 +164,7 @@ public final class TkApp extends TkWrap {
                                                                     ),
                                                                     new FkRegex("/spam-send", new TkSpam(farm)),
                                                                     new FkRegex("/shutdown", new TkShutdown(props, farm)),
+                                                                    new FkRegex("/policy", new TkPolicy()),
                                                                     new FkRegex(
                                                                         "/join",
                                                                         (Take) req -> {

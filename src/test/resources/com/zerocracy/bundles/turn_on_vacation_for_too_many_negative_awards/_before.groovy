@@ -14,42 +14,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pmo.profile
+package com.zerocracy.bundles.refresh_awards
 
+import com.jcabi.github.Repos
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
-import com.zerocracy.Par
-import com.zerocracy.Policy
 import com.zerocracy.Project
-import com.zerocracy.farm.Assume
-import com.zerocracy.pm.ClaimIn
+import com.zerocracy.entry.ExtGithub
 import com.zerocracy.pmo.Awards
 
-
-def exec(Project pmo, XML xml) {
-  new Assume(pmo, xml).isPmo()
-  new Assume(pmo, xml).type('Breakup')
-  ClaimIn claim = new ClaimIn(xml)
-  String student = claim.param('login')
-  String author = claim.author()
-  String job = 'gh:zerocracy/datum#1'
-  int points = -new Policy().get('47.penalty', 256)
-  String reason = new Par(
-    'Penalize for breakup with %s'
-  ).say(student)
+@SuppressWarnings('UnnecessaryObjectReferences')
+def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
-  new Awards(farm, author).bootstrap().add(pmo, points, job, 'Penalize for breakup')
-  claim.copy()
-    .type('Award points were added')
-    .param('job', job)
-    .param('login', author)
-    .param('points', points)
-    .param('reason', reason)
-    .postTo(pmo)
-  claim.reply(
-    new Par(
-      'Since you broke up with student %s,',
-      'we deducted %d points from you in accordance with §47.'
-    ).say(student, -points)
-  ).postTo(pmo)
+  Awards awards = new Awards(farm, 'carlosmiranda').bootstrap()
+  new ExtGithub(farm).value().repos()
+    .create(new Repos.RepoCreate('test', false))
+  awards.add(project, -1, 'gh:test/test#1', 'test', new Date(1517432400000L))
+  awards.add(project, -2, 'gh:test/test#1', 'test', new Date(1517432400001L))
+  awards.add(project, -3, 'gh:test/test#1', 'test', new Date(1517432400002L))
+  awards.add(project, -4, 'gh:test/test#1', 'test', new Date(1517432400003L))
+  awards.add(project, -5, 'gh:test/test#1', 'test', new Date(1525122000004L))
+  awards.add(project, -6, 'gh:test/test#1', 'test', new Date(1517432400005L))
+  awards.add(project, -7, 'gh:test/test#1', 'test', new Date(1517432400006L))
+  awards.add(project, -8, 'gh:test/test#1', 'test', new Date(1525122000007L))
 }
