@@ -149,7 +149,7 @@ public final class Xocument {
             String.format("/%s/xsd/%s.xsd", Xocument.VERSION, xsd)
         ).toString();
         final Path path = this.file.value();
-        if (!Files.exists(path) || Files.size(path) == 0L) {
+        if (!path.toFile().exists() || Files.size(path) == 0L) {
             Files.write(
                 path,
                 String.join(

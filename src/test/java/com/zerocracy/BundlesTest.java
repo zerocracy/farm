@@ -160,7 +160,7 @@ public final class BundlesTest {
         this.home = Paths.get("target/testing-bundles")
             .resolve(this.name)
             .toAbsolutePath();
-        if (Files.exists(this.home)) {
+        if (this.home.toFile().exists()) {
             Files.walk(this.home, FileVisitOption.FOLLOW_LINKS)
                 .sorted(Comparator.reverseOrder())
                 .map(Path::toFile)

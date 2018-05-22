@@ -102,7 +102,7 @@ final class GsProject implements Project {
         if (pkts.hasNext()) {
             try (final Item item = pkts.next().acq(file)) {
                 final Path path = item.path();
-                if (Files.exists(path)
+                if (path.toFile().exists()
                     && path.toFile().length() != 0L) {
                     before = new XMLDocument(path);
                 }
