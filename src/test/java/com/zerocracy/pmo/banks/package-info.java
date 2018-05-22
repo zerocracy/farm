@@ -14,36 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pmo.banks;
-
-import com.zerocracy.cash.Cash;
-import java.io.IOException;
 
 /**
- * Bank payment method.
+ * Banks, tests.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @author Izbassar Tolegen (t.izbassar@gmail.com)
  * @version $Id$
- * @since 0.19
+ * @since 1.0
  */
-interface Bank {
-
-    /**
-     * Calculate payment commission.
-     * @param amount The amount
-     * @return Fee amount
-     * @throws IOException If fails
-     */
-    Cash fee(Cash amount) throws IOException;
-
-    /**
-     * Pay.
-     * @param target The target to pay to
-     * @param amount The amount to charge
-     * @param details Payment details
-     * @return Payment ID
-     * @throws IOException If fails
-     */
-    String pay(String target, Cash amount, String details) throws IOException;
-
-}
+package com.zerocracy.pmo.banks;
