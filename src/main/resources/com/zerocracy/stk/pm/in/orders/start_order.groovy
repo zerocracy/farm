@@ -22,8 +22,10 @@ import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.SoftException
+import com.zerocracy.cash.Cash
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pm.cost.Estimates
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.qa.Reviews
 import com.zerocracy.pm.scope.Wbs
@@ -88,16 +90,24 @@ def exec(Project project, XML xml) {
     ).say(job, login, project.pid(), claim.cid())
   }
   if (!new Roles(project).bootstrap().hasAnyRole(login)) {
-    msg += ' ' + new Par(
-      '@%s is not a member of this project yet,',
+    msg += new Par(
+      '; @%s is not a member of this project yet,',
       'but they can request to join, as §1 explains'
     ).say(login)
   }
   if (new People(farm).bootstrap().vacation(login)) {
     msg += new Par(
-      'We should be aware that %s is on vacation;',
+      '; we should be aware that %s is on vacation;',
       'this ticket may be delayed'
     ).say(login)
+  }
+  Cash cash = Cash.ZERO
+  Estimates estimates = new Estimates(project).bootstrap()
+  if (estimates.exists(job)) {
+    msg += new Par('; there will be a monetary reward for this job')
+    cash = estimates.get(job)
+  } else {
+    msg += new Par('; there will be no monetary reward for this job')
   }
   claim.reply(msg).postTo(project)
   claim.copy()
@@ -105,5 +115,6 @@ def exec(Project project, XML xml) {
     .param('role', role)
     .param('login', login)
     .param('reason', claim.cid())
+    .param('estimate', cash)
     .postTo(project)
 }
