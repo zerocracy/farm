@@ -20,6 +20,6 @@
  *
  * @author Izbassar Tolegen (t.izbassar@gmail.com)
  * @version $Id$
- * @since 1.0
+ * @since 0.22
  */
 package com.zerocracy.pmo.banks;

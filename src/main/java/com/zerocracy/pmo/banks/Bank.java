@@ -17,6 +17,7 @@
 package com.zerocracy.pmo.banks;
 
 import com.zerocracy.cash.Cash;
+import java.io.Closeable;
 import java.io.IOException;
 
 /**
@@ -26,7 +27,7 @@ import java.io.IOException;
  * @version $Id$
  * @since 0.19
  */
-interface Bank {
+interface Bank extends Closeable {
 
     /**
      * Calculate payment commission.

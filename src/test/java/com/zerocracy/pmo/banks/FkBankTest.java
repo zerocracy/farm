@@ -31,7 +31,7 @@ import org.junit.Test;
  * Test case for {@link FkBank}.
  * @author Izbassar Tolegen (t.izbassar@gmail.com)
  * @version $Id$
- * @since 1.0
+ * @since 0.22
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class FkBankTest {
@@ -54,7 +54,7 @@ public final class FkBankTest {
     @Ignore
     public void savesCalculatedFee() throws IOException {
         final Path file = FkBankTest.temp("x0");
-        try (final FkBank bank = new FkBank(file)) {
+        try (final Bank bank = new FkBank(file)) {
             bank.fee(new Cash.S("$0.50"));
             MatcherAssert.assertThat(
                 new XMLDocument(file).xpath("/fees/fee/result"),
@@ -69,7 +69,7 @@ public final class FkBankTest {
     @Ignore
     public void savesRequestedAmountForFeeCalculation() throws IOException {
         final Path file = FkBankTest.temp("x1");
-        try (final FkBank bank = new FkBank(file)) {
+        try (final Bank bank = new FkBank(file)) {
             final String amount = "$0.75";
             bank.fee(new Cash.S(amount));
             MatcherAssert.assertThat(
@@ -83,7 +83,7 @@ public final class FkBankTest {
     @Ignore
     public void savesPayId() throws IOException {
         final Path file = FkBankTest.temp("x2");
-        try (final FkBank bank = new FkBank(file)) {
+        try (final Bank bank = new FkBank(file)) {
             final String id = bank.pay(
                 "trgt2", new Cash.S("$0.60"), "dtls2"
             );
@@ -98,7 +98,7 @@ public final class FkBankTest {
     @Ignore
     public void savesPayAmount() throws IOException {
         final Path file = FkBankTest.temp("x3");
-        try (final FkBank bank = new FkBank(file)) {
+        try (final Bank bank = new FkBank(file)) {
             final String amount = "$1.60";
             bank.pay(
                 "trgt3", new Cash.S(amount), "dtls3"
@@ -114,7 +114,7 @@ public final class FkBankTest {
     @Ignore
     public void savesPayTarget() throws IOException {
         final Path file = FkBankTest.temp("x4");
-        try (final FkBank bank = new FkBank(file)) {
+        try (final Bank bank = new FkBank(file)) {
             final String target = "some_target";
             bank.pay(
                 target, new Cash.S("$1.65"), "dtls4"
@@ -130,7 +130,7 @@ public final class FkBankTest {
     @Ignore
     public void savesPayDetails() throws IOException {
         final Path file = FkBankTest.temp("x5");
-        try (final FkBank bank = new FkBank(file)) {
+        try (final Bank bank = new FkBank(file)) {
             final String details = "some_details";
             bank.pay(
                 "trgt5", new Cash.S("$1.68"), details
