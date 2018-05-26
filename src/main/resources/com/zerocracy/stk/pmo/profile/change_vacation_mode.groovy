@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pmo.profile
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.SoftException
@@ -27,10 +28,11 @@ import com.zerocracy.pmo.People
 def exec(Project pmo, XML xml) {
   new Assume(pmo, xml).isPmo()
   new Assume(pmo, xml).type('Change vacation mode')
+  Farm farm = binding.variables.farm
   ClaimIn claim = new ClaimIn(xml)
   String mode = claim.param('mode')
   String author = claim.author()
-  People people = new People(pmo).bootstrap()
+  People people = new People(farm).bootstrap()
   if ('on' == mode) {
     if (people.vacation(author)) {
       throw new SoftException(

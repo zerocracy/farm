@@ -42,7 +42,7 @@ def exec(Project pmo, XML xml) {
      */
     return
   }
-  People people = new People(pmo).bootstrap()
+  People people = new People(farm).bootstrap()
   ClaimIn claim = new ClaimIn(xml)
   people.iterate().each { uid ->
     User.Smart user = new User.Smart(new ExtGithub(farm).value().users().get(uid))

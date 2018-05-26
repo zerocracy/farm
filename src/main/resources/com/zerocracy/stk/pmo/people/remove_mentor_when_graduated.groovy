@@ -29,9 +29,9 @@ import com.zerocracy.pmo.People
 def exec(Project pmo, XML xml) {
   new Assume(pmo, xml).isPmo()
   new Assume(pmo, xml).type('Ping hourly')
-  People people = new People(pmo).bootstrap()
-  ClaimIn claim = new ClaimIn(xml)
   Farm farm = binding.variables.farm
+  People people = new People(farm).bootstrap()
+  ClaimIn claim = new ClaimIn(xml)
   people.iterate().each { uid ->
     if (!people.hasMentor(uid)) {
       return

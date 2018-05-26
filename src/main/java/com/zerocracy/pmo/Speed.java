@@ -18,7 +18,6 @@ package com.zerocracy.pmo;
 
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
-import com.zerocracy.Project;
 import com.zerocracy.Xocument;
 import java.io.IOException;
 import org.cactoos.collection.Mapped;
@@ -51,15 +50,6 @@ public final class Speed {
      */
     public Speed(final Farm farm, final String user) {
         this(new Pmo(farm), user);
-    }
-
-    /**
-     * Ctor.
-     * @param pkt The project
-     * @param user The user
-     */
-    public Speed(final Project pkt, final String user) {
-        this(new Pmo(pkt), user);
     }
 
     /**

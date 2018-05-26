@@ -32,14 +32,14 @@ def exec(Project pmo, XML xml) {
   new Assume(pmo, xml).type('Purchase RFP')
   ClaimIn claim = new ClaimIn(xml)
   int rid = Integer.parseInt(claim.param('id'))
-  Rfps rfps = new Rfps(pmo).bootstrap()
+  Farm farm = binding.variables.farm
+  Rfps rfps = new Rfps(farm).bootstrap()
   if (!rfps.exists(rid)) {
     throw new SoftException(
       new Par('RFP #%d doesn\'t exist, see [full list](/rfps)').say(rid)
     )
   }
   String author = claim.author()
-  Farm farm = binding.variables.farm
   new Exam(farm, author).min('40.min', 512)
   String job = 'gh:zerocracy/datum#1'
   int points = new Policy().get('40.price', -256)

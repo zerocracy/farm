@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pmo.profile
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.SoftException
@@ -29,7 +30,8 @@ import com.zerocracy.pmo.People
 def exec(Project pmo, XML xml) {
   new Assume(pmo, xml).isPmo()
   new Assume(pmo, xml).type('Set rate')
-  People people = new People(pmo).bootstrap()
+  Farm farm = binding.variables.farm
+  People people = new People(farm).bootstrap()
   ClaimIn claim = new ClaimIn(xml)
   String author = claim.author()
   if (!claim.hasParam('rate')) {

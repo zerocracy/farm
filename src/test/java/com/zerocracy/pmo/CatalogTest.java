@@ -43,6 +43,7 @@ public final class CatalogTest {
     @Test
     public void addsAndFindsProjects() throws Exception {
         final Project project = new FkProject();
+        final FkFarm farm = new FkFarm(project);
         final String pid = "67WE3343P";
         try (final Item item = CatalogTest.item(project)) {
             new Xocument(item.path()).bootstrap("pmo/catalog");
@@ -61,7 +62,7 @@ public final class CatalogTest {
                     .add("adviser").set("0crat").up()
             );
         }
-        final Catalog catalog = new Catalog(project);
+        final Catalog catalog = new Catalog(farm);
         catalog.link(pid, "github", "yegor256");
         try (final Item item = CatalogTest.item(project)) {
             MatcherAssert.assertThat(
@@ -74,7 +75,9 @@ public final class CatalogTest {
     @Test
     public void changesPublishStatus() throws Exception {
         final String pid = "67WE334FF";
-        final Catalog catalog = new Catalog(new FkProject()).bootstrap();
+        final FkProject project = new FkProject();
+        final FkFarm farm = new FkFarm(project);
+        final Catalog catalog = new Catalog(farm).bootstrap();
         catalog.add(pid, "2017/01/67WE334FF/");
         catalog.link(pid, "github", "yegor256/pdd");
         catalog.publish(pid, true);
@@ -87,7 +90,9 @@ public final class CatalogTest {
     @Test
     public void changesFee() throws Exception {
         final String pid = "67WEDD4FF";
-        final Catalog catalog = new Catalog(new FkProject()).bootstrap();
+        final FkProject project = new FkProject();
+        final FkFarm farm = new FkFarm(project);
+        final Catalog catalog = new Catalog(farm).bootstrap();
         catalog.add(pid, "2017/01/67WEDD4FF/");
         MatcherAssert.assertThat(
             catalog.fee(pid),
@@ -103,7 +108,9 @@ public final class CatalogTest {
     @Test
     public void setsItOnPause() throws Exception {
         final String pid = "67WEPP4FF";
-        final Catalog catalog = new Catalog(new FkProject()).bootstrap();
+        final FkProject project = new FkProject();
+        final FkFarm farm = new FkFarm(project);
+        final Catalog catalog = new Catalog(farm).bootstrap();
         catalog.add(pid, "2017/01/67WEPP4FF/");
         MatcherAssert.assertThat(
             catalog.pause(pid),
@@ -119,7 +126,9 @@ public final class CatalogTest {
     @Test
     public void addsAndRemovesLinks() throws Exception {
         final String pid = "67WE334GG";
-        final Catalog catalog = new Catalog(new FkProject()).bootstrap();
+        final FkProject project = new FkProject();
+        final FkFarm farm = new FkFarm(project);
+        final Catalog catalog = new Catalog(farm).bootstrap();
         catalog.add(pid, "2017/05/67WE334GG/");
         MatcherAssert.assertThat(catalog.exists(pid), Matchers.is(true));
         final String rel = "jira";
@@ -168,5 +177,4 @@ public final class CatalogTest {
     private static Item item(final Project project) throws IOException {
         return project.acq("catalog.xml");
     }
-
 }

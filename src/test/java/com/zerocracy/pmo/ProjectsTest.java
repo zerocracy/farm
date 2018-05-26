@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pmo;
 
+import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -32,8 +33,10 @@ public final class ProjectsTest {
 
     @Test
     public void addsAndRemovesProjects() throws Exception {
+        final FkProject project = new FkProject();
+        final FkFarm farm = new FkFarm(project);
         final Projects projects = new Projects(
-            new FkProject(), "yegor"
+            farm, "yegor"
         ).bootstrap();
         final String pkt = "12TEST789";
         projects.add(pkt);

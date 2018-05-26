@@ -36,7 +36,7 @@ def exec(Project pmo, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   Farm farm = binding.variables.farm
   String pid = claim.param('pid')
-  Catalog catalog = new Catalog(pmo).bootstrap()
+  Catalog catalog = new Catalog(farm).bootstrap()
   Cash rate = new Cash.S(claim.param('rate'))
   if (!catalog.exists(pid)) {
     throw new SoftException(
@@ -44,7 +44,7 @@ def exec(Project pmo, XML xml) {
     )
   }
   String author = claim.author()
-  People people = new People(pmo).bootstrap()
+  People people = new People(farm).bootstrap()
   Cash std = people.rate(author)
   if (rate > std) {
     throw new SoftException(

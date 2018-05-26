@@ -17,6 +17,7 @@
 package com.zerocracy.pmo;
 
 import com.jcabi.matchers.XhtmlMatchers;
+import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -36,7 +37,9 @@ public final class RfpsTest {
 
     @Test
     public void addsAndBuysRfp() throws Exception {
-        final Rfps rfps = new Rfps(new FkProject()).bootstrap();
+        final FkProject project = new FkProject();
+        final FkFarm farm = new FkFarm(project);
+        final Rfps rfps = new Rfps(farm).bootstrap();
         rfps.pay("dmarkov", "paid $25", "dmarkov@zerocracy.com");
         final String login = "yegor256";
         final String email = "yegor256@gmail.com";
@@ -49,7 +52,9 @@ public final class RfpsTest {
 
     @Test
     public void printsListToXembly() throws Exception {
-        final Rfps rfps = new Rfps(new FkProject()).bootstrap();
+        final FkProject project = new FkProject();
+        final FkFarm farm = new FkFarm(project);
+        final Rfps rfps = new Rfps(farm).bootstrap();
         final String login = "yegor";
         final int rid = rfps.pay(login, "paid $10", "yegor@zerocracy.com");
         MatcherAssert.assertThat(
@@ -68,7 +73,9 @@ public final class RfpsTest {
 
     @Test
     public void printsSingleToXembly() throws Exception {
-        final Rfps rfps = new Rfps(new FkProject()).bootstrap();
+        final FkProject project = new FkProject();
+        final FkFarm farm = new FkFarm(project);
+        final Rfps rfps = new Rfps(farm).bootstrap();
         final String login = "yegor1";
         final int rid = rfps.pay(login, "paid $7", "yegor@qulice.com");
         MatcherAssert.assertThat(
@@ -80,5 +87,4 @@ public final class RfpsTest {
             )
         );
     }
-
 }

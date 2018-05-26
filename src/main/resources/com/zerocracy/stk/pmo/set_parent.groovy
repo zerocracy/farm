@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pmo
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.farm.Assume
 import com.zerocracy.Project
@@ -28,9 +29,10 @@ def exec(Project pmo, XML xml) {
   new Assume(pmo, xml).type('Set parent project')
   new Assume(pmo, xml).roles('PO')
   ClaimIn claim = new ClaimIn(xml)
+  Farm farm = binding.variables.farm
   String child = claim.param('child')
   String parent = claim.param('parent')
-  new Catalog(pmo).parent(child, parent)
+  new Catalog(farm).parent(child, parent)
   claim.reply(
     new Par(
       'Done, the project %s is a child of %s'

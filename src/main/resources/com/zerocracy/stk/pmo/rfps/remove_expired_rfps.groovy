@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pmo.rfps
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
@@ -28,7 +29,8 @@ def exec(Project pmo, XML xml) {
   new Assume(pmo, xml).type('Ping daily')
   ClaimIn claim = new ClaimIn(xml)
   Date expiration = claim.created() - new Policy().get('41.days', 32)
-  Rfps rfps = new Rfps(pmo).bootstrap()
+  Farm farm = binding.variables.farm
+  Rfps rfps = new Rfps(farm).bootstrap()
   rfps.olderThan(expiration).each { rfp ->
     rfps.remove(rfp)
     claim.copy()

@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pmo;
 
+import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -32,7 +33,9 @@ public final class SpeedTest {
 
     @Test
     public void addsSpeed() throws Exception {
-        final Speed speed = new Speed(new FkProject(), "g4s8").bootstrap();
+        final FkProject project = new FkProject();
+        final FkFarm farm = new FkFarm(project);
+        final Speed speed = new Speed(farm, "g4s8").bootstrap();
         speed.add("TST000001", "gh:test/test#1", 2L);
         speed.add("TST000002", "gh:test/test#2", 1L);
         MatcherAssert.assertThat(speed.jobs(), Matchers.iterableWithSize(2));
@@ -40,7 +43,9 @@ public final class SpeedTest {
 
     @Test
     public void avgTest() throws Exception {
-        final Speed speed = new Speed(new FkProject(), "fast").bootstrap();
+        final FkProject project = new FkProject();
+        final FkFarm farm = new FkFarm(project);
+        final Speed speed = new Speed(farm, "fast").bootstrap();
         speed.add("TST100001", "gh:test/fast#1", 1L);
         speed.add("TST100002", "gh:test/fast#2", 2L);
         // @checkstyle MagicNumber (1 line)
@@ -50,8 +55,10 @@ public final class SpeedTest {
 
     @Test
     public void avgEmptyTest() throws Exception {
+        final FkProject project = new FkProject();
+        final FkFarm farm = new FkFarm(project);
         MatcherAssert.assertThat(
-            new Speed(new FkProject(), "user")
+            new Speed(farm, "user")
                 .bootstrap()
                 .avg(),
             Matchers.equalTo(0.0)

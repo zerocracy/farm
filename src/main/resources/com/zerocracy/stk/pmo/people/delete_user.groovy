@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pmo.people
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
@@ -26,8 +27,9 @@ def exec(Project pmo, XML xml) {
   new Assume(pmo, xml).isPmo()
   new Assume(pmo, xml).type('Delete user')
   ClaimIn claim = new ClaimIn(xml)
+  Farm farm = binding.variables.farm
   String user = claim.param('login')
-  new People(pmo).bootstrap().remove(user)
+  new People(farm).bootstrap().remove(user)
   claim.copy()
     .type('User was deleted')
     .postTo(pmo)

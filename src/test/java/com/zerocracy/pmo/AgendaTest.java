@@ -17,6 +17,7 @@
 package com.zerocracy.pmo;
 
 import com.zerocracy.Project;
+import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -36,7 +37,8 @@ public final class AgendaTest {
     @Test
     public void addsAndRemovesAgenda() throws Exception {
         final Project project = new FkProject();
-        final Agenda agenda = new Agenda(project, "yegor").bootstrap();
+        final FkFarm farm = new FkFarm(project);
+        final Agenda agenda = new Agenda(farm, "yegor").bootstrap();
         final String first = "gh:test/test#1";
         agenda.add(project, first, "REV");
         final String second = "gh:test/test#2";
@@ -52,7 +54,8 @@ public final class AgendaTest {
     @Test
     public void removesAllOrders() throws Exception {
         final Project project = new FkProject();
-        final Agenda agenda = new Agenda(project, "mihai").bootstrap();
+        final FkFarm farm = new FkFarm(project);
+        final Agenda agenda = new Agenda(farm, "mihai").bootstrap();
         agenda.add(project, "gh:test2/test#1", "REV");
         agenda.add(project, "gh:test2/test#2", "QA");
         agenda.add(project, "gh:test2/test#3", "DEV");
@@ -69,7 +72,8 @@ public final class AgendaTest {
     @Test
     public void removesSoleOrder() throws Exception {
         final Project project = new FkProject();
-        final Agenda agenda = new Agenda(project, "john").bootstrap();
+        final FkFarm farm = new FkFarm(project);
+        final Agenda agenda = new Agenda(farm, "john").bootstrap();
         agenda.add(project, "gh:test3/test#1", "ARC");
         MatcherAssert.assertThat(agenda.jobs(), Matchers.hasSize(1));
         agenda.removeAll();
@@ -82,7 +86,9 @@ public final class AgendaTest {
      */
     @Test
     public void removesOrdersFromEmptyAgenda() throws Exception {
-        final Agenda agenda = new Agenda(new FkProject(), "jane").bootstrap();
+        final FkProject project = new FkProject();
+        final FkFarm farm = new FkFarm(project);
+        final Agenda agenda = new Agenda(farm, "jane").bootstrap();
         MatcherAssert.assertThat(agenda.jobs(), Matchers.emptyIterable());
         agenda.removeAll();
         MatcherAssert.assertThat(agenda.jobs(), Matchers.emptyIterable());

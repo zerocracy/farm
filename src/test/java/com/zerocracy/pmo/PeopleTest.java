@@ -19,6 +19,7 @@ package com.zerocracy.pmo;
 import com.zerocracy.Project;
 import com.zerocracy.SoftException;
 import com.zerocracy.cash.Cash;
+import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
 import java.nio.file.Files;
 import java.util.Date;
@@ -47,7 +48,9 @@ public final class PeopleTest {
 
     @Test
     public void addsAndFindsPeople() throws Exception {
-        final People people = new People(new FkProject()).bootstrap();
+        final FkProject project = new FkProject();
+        final FkFarm farm = new FkFarm(project);
+        final People people = new People(farm).bootstrap();
         final String uid = "yegor256";
         final String rel = "slack";
         final String alias = "U67WE3343P";
@@ -69,7 +72,9 @@ public final class PeopleTest {
 
     @Test
     public void setsUserRate() throws Exception {
-        final People people = new People(new FkProject()).bootstrap();
+        final FkProject project = new FkProject();
+        final FkFarm farm = new FkFarm(project);
+        final People people = new People(farm).bootstrap();
         final String uid = "alex-palevsky";
         people.wallet(uid, "paypal", "test@example.com");
         people.rate(uid, new Cash.S("$35"));
@@ -82,7 +87,9 @@ public final class PeopleTest {
 
     @Test
     public void readsUnsetRate() throws Exception {
-        final People people = new People(new FkProject()).bootstrap();
+        final FkProject project = new FkProject();
+        final FkFarm farm = new FkFarm(project);
+        final People people = new People(farm).bootstrap();
         final String uid = "dmarkov9";
         MatcherAssert.assertThat(
             people.rate(uid),
@@ -92,7 +99,9 @@ public final class PeopleTest {
 
     @Test
     public void setsUserWallet() throws Exception {
-        final People people = new People(new FkProject()).bootstrap();
+        final FkProject project = new FkProject();
+        final FkFarm farm = new FkFarm(project);
+        final People people = new People(farm).bootstrap();
         final String uid = "yegor256-1";
         people.wallet(uid, "paypal", "yegor256@gmail.com");
         MatcherAssert.assertThat(
@@ -118,7 +127,8 @@ public final class PeopleTest {
                 "/xsd/project/people.xsd'/>"
             ).getBytes()
         );
-        final People people = new People(project).bootstrap();
+        final FkFarm farm = new FkFarm(project);
+        final People people = new People(farm).bootstrap();
         final String uid = "karato90";
         people.wallet(uid, "paypal", "tes1t@example.com");
         people.rate(uid, new Cash.S("$27"));
@@ -126,7 +136,9 @@ public final class PeopleTest {
 
     @Test
     public void invitesFriend() throws Exception {
-        final People people = new People(new FkProject()).bootstrap();
+        final FkProject project = new FkProject();
+        final FkFarm farm = new FkFarm(project);
+        final People people = new People(farm).bootstrap();
         final String uid = "jack";
         final String friend = "friend";
         people.invite(friend, uid);
@@ -139,7 +151,9 @@ public final class PeopleTest {
 
     @Test
     public void vacationTest() throws Exception {
-        final People people = new People(new FkProject()).bootstrap();
+        final FkProject project = new FkProject();
+        final FkFarm farm = new FkFarm(project);
+        final People people = new People(farm).bootstrap();
         final String uid = "g4s8";
         MatcherAssert.assertThat(
             people.vacation(uid),
@@ -159,7 +173,9 @@ public final class PeopleTest {
 
     @Test
     public void breakupTest() throws Exception {
-        final People people = new People(new FkProject()).bootstrap();
+        final FkProject project = new FkProject();
+        final FkFarm farm = new FkFarm(project);
+        final People people = new People(farm).bootstrap();
         final String uid = "john";
         final String friend = "jimmy";
         people.invite(friend, uid);
@@ -172,7 +188,9 @@ public final class PeopleTest {
 
     @Test
     public void mentorTest() throws Exception {
-        final People people = new People(new FkProject()).bootstrap();
+        final FkProject project = new FkProject();
+        final FkFarm farm = new FkFarm(project);
+        final People people = new People(farm).bootstrap();
         final String uid = "datum";
         final String mentor = "0crat";
         people.invite(uid, mentor);
@@ -184,7 +202,9 @@ public final class PeopleTest {
 
     @Test
     public void studentsTest() throws Exception {
-        final People ppl = new People(new FkProject()).bootstrap();
+        final FkProject project = new FkProject();
+        final FkFarm farm = new FkFarm(project);
+        final People ppl = new People(farm).bootstrap();
         final String mentor = "mentor";
         final List<String> students = new ListOf<>(
             "student1",
@@ -206,7 +226,9 @@ public final class PeopleTest {
     @Test(expected = SoftException.class)
     public void inviteSixteen() throws Exception {
         final String mentor = "mnt";
-        final People people = new People(new FkProject()).bootstrap();
+        final FkProject project = new FkProject();
+        final FkFarm farm = new FkFarm(project);
+        final People people = new People(farm).bootstrap();
         new And(
             (String std) -> people.invite(std, mentor),
             new Mapped<>(
@@ -219,7 +241,9 @@ public final class PeopleTest {
 
     @Test
     public void graduate() throws Exception {
-        final People people = new People(new FkProject()).bootstrap();
+        final FkProject project = new FkProject();
+        final FkFarm farm = new FkFarm(project);
+        final People people = new People(farm).bootstrap();
         final String uid = "yegor11";
         people.invite(uid, "the-mentor");
         people.graduate(uid);
@@ -231,7 +255,9 @@ public final class PeopleTest {
 
     @Test
     public void reputation() throws Exception {
-        final People people = new People(new FkProject()).bootstrap();
+        final FkProject project = new FkProject();
+        final FkFarm farm = new FkFarm(project);
+        final People people = new People(farm).bootstrap();
         final String uid = "user2345";
         people.invite(uid, uid);
         final int rep = 1024;
@@ -243,7 +269,9 @@ public final class PeopleTest {
     }
 
     public void remove() throws Exception {
-        final People people = new People(new FkProject()).bootstrap();
+        final FkProject project = new FkProject();
+        final FkFarm farm = new FkFarm(project);
+        final People people = new People(farm).bootstrap();
         final String uid = "remove";
         people.invite(uid, "mentor11");
         people.remove(uid);
@@ -255,7 +283,9 @@ public final class PeopleTest {
 
     @Test
     public void getSingleLink() throws Exception {
-        final People people = new People(new FkProject()).bootstrap();
+        final FkProject project = new FkProject();
+        final FkFarm farm = new FkFarm(project);
+        final People people = new People(farm).bootstrap();
         final String uid = "linker";
         people.invite(uid, uid);
         final String rel = "some-rel11";
@@ -269,7 +299,9 @@ public final class PeopleTest {
 
     @Test
     public void canApply() throws Exception {
-        final People people = new People(new FkProject()).bootstrap();
+        final FkProject project = new FkProject();
+        final FkFarm farm = new FkFarm(project);
+        final People people = new People(farm).bootstrap();
         final String uid = "user3236";
         final Date when = new Date(0L);
         people.invite(uid, uid);
@@ -288,13 +320,17 @@ public final class PeopleTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void throwIfApplyButDoesntExist() throws Exception {
-        new People(new FkProject()).bootstrap()
+        final FkProject project = new FkProject();
+        final FkFarm farm = new FkFarm(project);
+        new People(farm).bootstrap()
             .apply("user124", new Date(0L));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void throwIfgetAppliedDateIfNotApplied() throws Exception {
-        final People people = new People(new FkProject()).bootstrap();
+        final FkProject project = new FkProject();
+        final FkFarm farm = new FkFarm(project);
+        final People people = new People(farm).bootstrap();
         final String uid = "user3236";
         people.invite(uid, uid);
         people.appliedTime(uid);

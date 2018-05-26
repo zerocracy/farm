@@ -21,7 +21,6 @@ import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Par;
-import com.zerocracy.Project;
 import com.zerocracy.Xocument;
 import java.io.IOException;
 import java.util.Date;
@@ -55,14 +54,6 @@ public final class Rfps {
      */
     public Rfps(final Farm farm) {
         this(new Pmo(farm));
-    }
-
-    /**
-     * Ctor.
-     * @param pkt The project
-     */
-    public Rfps(final Project pkt) {
-        this(new Pmo(pkt));
     }
 
     /**

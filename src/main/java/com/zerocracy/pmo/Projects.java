@@ -18,7 +18,6 @@ package com.zerocracy.pmo;
 
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
-import com.zerocracy.Project;
 import com.zerocracy.Xocument;
 import java.io.IOException;
 import org.xembly.Directives;
@@ -49,15 +48,6 @@ public final class Projects {
      */
     public Projects(final Farm farm, final String user) {
         this(new Pmo(farm), user);
-    }
-
-    /**
-     * Ctor.
-     * @param pkt The project
-     * @param user The user
-     */
-    public Projects(final Project pkt, final String user) {
-        this(new Pmo(pkt), user);
     }
 
     /**

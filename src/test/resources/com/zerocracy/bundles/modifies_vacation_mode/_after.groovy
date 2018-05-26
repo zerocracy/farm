@@ -17,15 +17,17 @@
 package com.zerocracy.bundles.modifies_vacation_mode
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.pmo.People
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 
 def exec(Project pmo, XML xml) {
+  Farm farm = binding.variables.farm
   MatcherAssert.assertThat(
     'Vacation mode is "off"',
-    new People(pmo).vacation('g4s8'),
+    new People(farm).vacation('g4s8'),
     Matchers.is(true)
   )
 }

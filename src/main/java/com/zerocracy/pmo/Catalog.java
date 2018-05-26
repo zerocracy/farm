@@ -19,7 +19,6 @@ package com.zerocracy.pmo;
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Par;
-import com.zerocracy.Project;
 import com.zerocracy.SoftException;
 import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
@@ -59,14 +58,6 @@ public final class Catalog {
      */
     public Catalog(final Farm farm) {
         this(new Pmo(farm));
-    }
-
-    /**
-     * Ctor.
-     * @param pkt Project
-     */
-    public Catalog(final Project pkt) {
-        this(new Pmo(pkt));
     }
 
     /**

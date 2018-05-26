@@ -65,15 +65,6 @@ public final class Agenda {
 
     /**
      * Ctor.
-     * @param pkt Project
-     * @param user The user
-     */
-    public Agenda(final Project pkt, final String user) {
-        this(new Pmo(pkt), user);
-    }
-
-    /**
-     * Ctor.
      * @param pkt PMO
      * @param user The user
      */

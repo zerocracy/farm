@@ -25,6 +25,6 @@ import com.zerocracy.pmo.Catalog
 def exec(Project pmo, XML xml) {
   String pid = 'XXXXXX000'
   Farm farm = binding.variables.farm
-  new Catalog(pmo).bootstrap().add(pid, "2018/01/$pid/")
+  new Catalog(farm).bootstrap().add(pid, "2018/01/$pid/")
   new Awards(farm, 'g4s8').bootstrap().add(pmo, 1000, 'gh:test/test#1', 'initial')
 }

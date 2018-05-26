@@ -15,8 +15,8 @@ def exec(Project pmo, XML xml) {
   new Assume(pmo, xml).isPmo()
   new Assume(pmo, xml).type('Ping hourly')
   ClaimIn claim = new ClaimIn(xml)
-  People people = new People(pmo).bootstrap()
   Farm farm = binding.variables.farm
+  People people = new People(farm).bootstrap()
   new Shuffled<String>(people.iterate()).take(10).each { login ->
     Agenda agenda = new Agenda(farm, login).bootstrap()
     Projects projects = new Projects(farm, login).bootstrap()
