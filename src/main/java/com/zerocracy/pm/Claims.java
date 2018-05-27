@@ -118,7 +118,7 @@ public final class Claims {
                             new org.cactoos.iterable.Mapped<>(
                                 String::toString, signatures
                             )
-                        ),
+                        ).asString(),
                         new Xembler(claim).xmlQuietly()
                     )
                 );
