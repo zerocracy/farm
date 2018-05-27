@@ -20,7 +20,10 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.jcabi.log.Logger;
 import com.jcabi.s3.Ocket;
 import com.zerocracy.Item;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -28,15 +31,22 @@ import java.nio.file.attribute.FileTime;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicBoolean;
 import lombok.EqualsAndHashCode;
+import org.cactoos.io.InputOf;
+import org.cactoos.io.LengthOf;
+import org.cactoos.io.OutputTo;
+import org.cactoos.io.TeeInput;
+import org.cactoos.scalar.And;
+import org.cactoos.scalar.IoCheckedScalar;
 
 /**
  * Item in S3.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @since 0.1
  */
-@EqualsAndHashCode(of = { "ocket", "temp" })
+@EqualsAndHashCode(of = {"ocket", "temp"})
 final class S3Item implements Item {
 
     /**
@@ -119,13 +129,33 @@ final class S3Item implements Item {
     }
 
     @Override
+    @SuppressWarnings("PMD.PrematureDeclaration")
     public void close() throws IOException {
-        if (this.open.get() && Files.exists(this.temp)
-            && (!this.ocket.exists() || this.dirty())) {
-            final ObjectMetadata meta = new ObjectMetadata();
+        final Thread thread = Thread.currentThread();
+        final And opened = new And(
+            () -> !thread.isInterrupted(),
+            this.open::get,
+            () -> Files.exists(this.temp),
+            () -> !this.ocket.exists() || this.dirty()
+        );
+        if (new IoCheckedScalar<>(opened).value()) {
             final long start = System.currentTimeMillis();
-            meta.setContentLength(this.temp.toFile().length());
-            this.ocket.write(Files.newInputStream(this.temp), meta);
+            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            final long length = new LengthOf(
+                new TeeInput(new InputOf(this.temp), new OutputTo(baos))
+            ).longValue();
+            if (thread.isInterrupted()) {
+                thread.interrupt();
+                throw new InterruptedIOException(
+                    "S3Item.close() was interrupted"
+                );
+            }
+            final ObjectMetadata meta = new ObjectMetadata();
+            meta.setContentLength(length);
+            this.ocket.write(
+                new ByteArrayInputStream(baos.toByteArray()),
+                meta
+            );
             Files.setLastModifiedTime(
                 this.temp,
                 FileTime.fromMillis(
