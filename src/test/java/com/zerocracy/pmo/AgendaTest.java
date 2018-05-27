@@ -16,7 +16,9 @@
  */
 package com.zerocracy.pmo;
 
+import com.jcabi.aspects.Tv;
 import com.zerocracy.Project;
+import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -86,5 +88,20 @@ public final class AgendaTest {
         MatcherAssert.assertThat(agenda.jobs(), Matchers.emptyIterable());
         agenda.removeAll();
         MatcherAssert.assertThat(agenda.jobs(), Matchers.emptyIterable());
+    }
+
+    @Test
+    public void jobsForProject() throws Exception {
+        final FkProject prjone = new FkProject("FAKEPRJC1");
+        final FkProject prjtwo = new FkProject("FAKEPRJC2");
+        final Agenda agenda = new Agenda(new FkFarm(), "g4s8").bootstrap();
+        agenda.add(prjone, "gh:test4/test#1", "DEV");
+        agenda.add(prjtwo, "gh:test4/test#2", "DEV");
+        agenda.add(prjone, "gh:test4/test#3", "DEV");
+        agenda.add(prjone, "gh:test4/test#4", "DEV");
+        MatcherAssert.assertThat(
+            agenda.jobs(prjone),
+            Matchers.hasSize(Tv.THREE)
+        );
     }
 }
