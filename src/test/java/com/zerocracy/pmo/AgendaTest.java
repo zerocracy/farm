@@ -91,16 +91,16 @@ public final class AgendaTest {
     }
 
     @Test
-    public void jobsForProject() throws Exception {
-        final FkProject prjone = new FkProject("FAKEPRJC1");
-        final FkProject prjtwo = new FkProject("FAKEPRJC2");
+    public void returnsJobsForProject() throws Exception {
+        final Project first = new FkProject("FAKEPRJC1");
+        final Project second = new FkProject("FAKEPRJC2");
         final Agenda agenda = new Agenda(new FkFarm(), "g4s8").bootstrap();
-        agenda.add(prjone, "gh:test4/test#1", "DEV");
-        agenda.add(prjtwo, "gh:test4/test#2", "DEV");
-        agenda.add(prjone, "gh:test4/test#3", "DEV");
-        agenda.add(prjone, "gh:test4/test#4", "DEV");
+        agenda.add(first, "gh:test4/test#1", "DEV");
+        agenda.add(second, "gh:test4/test#2", "DEV");
+        agenda.add(first, "gh:test4/test#3", "DEV");
+        agenda.add(first, "gh:test4/test#4", "DEV");
         MatcherAssert.assertThat(
-            agenda.jobs(prjone),
+            agenda.jobs(first),
             Matchers.hasSize(Tv.THREE)
         );
     }
