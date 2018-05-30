@@ -88,7 +88,7 @@ final class S3Item implements Item {
                     this.temp.toFile().getAbsolutePath()
                 );
             }
-            if (this.ocket.exists() && (!Files.exists(this.temp)
+            if (this.ocket.exists() && (!this.temp.toFile().exists()
                 || this.expired())) {
                 final long start = System.currentTimeMillis();
                 this.ocket.read(
@@ -120,7 +120,7 @@ final class S3Item implements Item {
 
     @Override
     public void close() throws IOException {
-        if (this.open.get() && Files.exists(this.temp)
+        if (this.open.get() && this.temp.toFile().exists()
             && (!this.ocket.exists() || this.dirty())) {
             final ObjectMetadata meta = new ObjectMetadata();
             final long start = System.currentTimeMillis();
