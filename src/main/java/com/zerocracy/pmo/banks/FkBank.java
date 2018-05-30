@@ -35,23 +35,23 @@ import org.cactoos.scalar.SyncScalar;
  * @since 0.22
  * @todo #565:30min Implement method pay() that will write details about
  *  payment to the xml file in this format:
- *  &lt;payments&gt;
- *      &lt;payment&gt;
- *          &lt;target&gt;trg&lt;/target&gt;
- *          &lt;amount&gt;$0.55&lt;/amount&gt;
- *          &lt;details&gt;dtls&lt;/details&gt;
- *          &lt;result&gt;E0885448-5DEE-11E8-9C2D-FA7AE01BBEBC&lt;/result&gt;
- *      &lt;/payment&gt;
- *  &lt;/payments&gt;
+ *  `&lt;payments&gt;
+ *  `    &lt;payment&gt;
+ *  `        &lt;target&gt;trg&lt;/target&gt;
+ *  `        &lt;amount&gt;$0.55&lt;/amount&gt;
+ *  `        &lt;details&gt;dtls&lt;/details&gt;
+ *  `        &lt;result&gt;E0885448-5DEE-11E8-9C2D-FA7AE01BBEBC&lt;/result&gt;
+ *  `    &lt;/payment&gt;
+ *  `&lt;/payments&gt;
  *  Unignore relevant test case from FkBankTest.
  * @todo #565:30min Implement method fee() that will write details about
  *  fee to the xml file in this format:
- *  &lt;fees&gt;
- *      &lt;fee&gt;
- *          &lt;amount&gt;$0.50&lt;/amount&gt;
- *          &lt;result&gt;$0.80&lt;/result&gt;
- *      &lt;/fee&gt;
- *  &lt;/fees&gt;
+ *  `&lt;fees&gt;
+ *  `    &lt;fee&gt;
+ *  `        &lt;amount&gt;$0.50&lt;/amount&gt;
+ *  `        &lt;result&gt;$0.80&lt;/result&gt;
+ *  `    &lt;/fee&gt;
+ *  `&lt;/fees&gt;
  *  Unignore relevant test case from FkBankTest.
  * @todo #566:30min Implement equals so that it conforms the relevant test
  *  case from FkBankTest. Implement relevant to equals hashcode method.
