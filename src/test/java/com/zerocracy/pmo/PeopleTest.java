@@ -117,8 +117,8 @@ public final class PeopleTest {
     public void failsForIncorrectBankName() throws Exception {
         final People people = new People(new FkProject()).bootstrap();
         final String bank = "test";
-        this.exception.expect(SoftException.class);
-        this.exception.expectMessage(
+        this.thrown.expect(SoftException.class);
+        this.thrown.expectMessage(
             new FormattedText("Bank name `%s` is invalid", bank).asString()
         );
         people.wallet("yegor128", bank, "");
@@ -438,8 +438,8 @@ public final class PeopleTest {
         throws IOException {
         final String wallet = "123456";
         final People people = new People(new FkProject()).bootstrap();
-        this.exception.expect(SoftException.class);
-        this.exception.expectMessage(
+        this.thrown.expect(SoftException.class);
+        this.thrown.expectMessage(
             new FormattedText(" not valid: `%s`", wallet).asString()
         );
         people.wallet("yegor512", bank, wallet);
