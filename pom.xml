@@ -619,14 +619,13 @@ SOFTWARE.
                         </limit>
                         <!--
                            @todo #613:30min Continue increasing coverages to reach
-                            branch coverage 65%,
-                            class missed 15.
-                            Increase those coverages below in jacoco configuration.
+                            branch coverage of 65% and class missed count of max 15.
+                            Remember to increase those coverages below in jacoco configuration.
                         -->
                         <limit>
                         <counter>BRANCH</counter>
                         <value>COVEREDRATIO</value>
-                        <minimum>0.49</minimum>
+                        <minimum>0.65</minimum>
                         </limit>
                         <limit>
                         <counter>COMPLEXITY</counter>
