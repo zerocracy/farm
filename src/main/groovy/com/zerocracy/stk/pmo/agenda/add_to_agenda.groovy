@@ -19,6 +19,7 @@ package com.zerocracy.stk.pmo.agenda
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.cash.Cash
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.cost.Estimates
@@ -41,11 +42,14 @@ def exec(Project project, XML xml) {
   Agenda agenda = new Agenda(farm, owner).bootstrap()
   agenda.add(project, job, role)
   Estimates estimates = new Estimates(project).bootstrap()
+  Cash cash = Cash.ZERO
   if (estimates.exists(job)) {
-    agenda.estimate(job, estimates.get(job))
+    cash = estimates.get(job)
+    agenda.estimate(job, cash)
   }
   claim.copy()
     .type('Agenda was updated')
     .param('login', owner)
+    .param('estimate', cash)
     .postTo(project)
 }

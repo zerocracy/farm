@@ -51,7 +51,9 @@ def exec(Project pmo, XML xml) {
       new Par(
         farm,
         'Your profile rate is %s,',
-        'you can\'t suggest higher rate of %s for the project %s'
+        'you can\'t suggest higher rate of %s for the project %s;',
+        'the rate you want the project to pay you must be lower or equal',
+        'to your profile rate'
       ).say(std, rate, pid)
     )
   }
@@ -75,7 +77,7 @@ def exec(Project pmo, XML xml) {
   }
   Roles roles = new Roles(farm.find("@id='${pid}'")[0]).bootstrap()
   if (!roles.hasAnyRole(author)) {
-    int reputation = new Awards(pmo, author).bootstrap().total()
+    int reputation = new Awards(farm, author).bootstrap().total()
     if (reputation < new Policy().get('33.min-live', 256)
       && !catalog.sandbox().contains(pid)) {
       throw new SoftException(

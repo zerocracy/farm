@@ -17,9 +17,9 @@
 package com.zerocracy.pm.staff.votes;
 
 import com.jcabi.log.Logger;
-import com.zerocracy.Project;
 import com.zerocracy.pm.staff.Votes;
 import com.zerocracy.pmo.Awards;
+import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
@@ -50,7 +50,7 @@ public final class VsReputation implements Votes {
      * @param pmo The PMO
      * @param others All other logins to compete with
      */
-    public VsReputation(final Project pmo, final Collection<String> others) {
+    public VsReputation(final Pmo pmo, final Collection<String> others) {
         this.ranks = new IoCheckedScalar<>(
             new SolidScalar<>(
                 () -> new SolidMap<>(

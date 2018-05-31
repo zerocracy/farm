@@ -21,10 +21,12 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Policy
 import com.zerocracy.Project
+import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.Claims
 import com.zerocracy.pm.cost.Boosts
+import com.zerocracy.pm.cost.Estimates
 import com.zerocracy.pm.cost.Ledger
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.qa.Reviews
@@ -32,8 +34,11 @@ import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pm.staff.Elections
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pm.staff.ranks.RnkBoost
+import com.zerocracy.pm.staff.ranks.RnkEstimates
+import com.zerocracy.pm.staff.ranks.RnkGithubBug
 import com.zerocracy.pm.staff.ranks.RnkRev
 import com.zerocracy.pm.staff.votes.VsBanned
+import com.zerocracy.pm.staff.votes.VsBigDebt
 import com.zerocracy.pm.staff.votes.VsHardCap
 import com.zerocracy.pm.staff.votes.VsLosers
 import com.zerocracy.pm.staff.votes.VsNoRoom
@@ -64,12 +69,13 @@ def exec(Project project, XML xml) {
   Elections elections = new Elections(project).bootstrap()
   Reviews reviews = new Reviews(project).bootstrap()
   Farm farm = binding.variables.farm
-  Project pmo = new Pmo(farm)
+  Pmo pmo = new Pmo(farm)
   List<String> jobs = wbs.iterate().toList()
   [
-    // new RnkGithubBug(github),
-    new RnkBoost(new Boosts(project).bootstrap()),
-    new RnkRev(new Wbs(project).bootstrap())
+      new RnkGithubBug(new ExtGithub(farm).value()),
+      new RnkEstimates(new Estimates(project).bootstrap()),
+      new RnkBoost(new Boosts(project).bootstrap()),
+      new RnkRev(new Wbs(project).bootstrap())
   ].each { jobs.sort(it) }
   for (String job : jobs) {
     if (orders.assigned(job)) {
@@ -89,15 +95,17 @@ def exec(Project project, XML xml) {
     boolean done = elections.elect(
       job, logins,
       [
-        (new VsSafe(new VsHardCap(pmo, new Policy().get('3.absolute-max', 32)))): -100,
-        (new VsSafe(new VsReputation(pmo, logins)))                             : 5,
-        (new VsSafe(new VsLosers(pmo, new Policy().get('3.low-threshold', -128)))) : -100,
-        (new VsSafe(new VsRate(project, logins)))                               : 2,
-        (new VsSafe(new VsNoRoom(pmo)))                                         : role == 'REV' ? 0 : -100,
-        (new VsSafe(new VsBanned(project, job)))                                : -100,
-        (new VsSafe(new VsVacation(pmo)))                                       : -100,
-        (new VsSafe(new VsWorkload(pmo, logins)))                               : 1,
-        (new VsSafe(new VsSpeed(pmo, logins)))                                  : 3,
+        (new VsSafe(new VsHardCap(pmo, new Policy().get('3.absolute-max', 32))))  : -100,
+        (new VsSafe(new VsReputation(pmo, logins)))                               : 5,
+        (new VsSafe(new VsLosers(pmo, new Policy().get('3.low-threshold', -128)))): -100,
+        (new VsSafe(new VsRate(project, logins)))                                 : 2,
+        (new VsSafe(new VsBigDebt(pmo)))                                          : -100,
+        (new VsSafe(new VsNoRoom(pmo)))                                           : role == 'REV' ? 0 : -100,
+        (new VsSafe(new VsBanned(project, job)))                                  : -100,
+        (new VsSafe(new VsVacation(pmo)))                                         : -100,
+        (new VsSafe(new VsWorkload(farm, logins)))                                 : 1,
+        (new VsSafe(new VsWorkload(farm, project, logins)))                        : 1,
+        (new VsSafe(new VsSpeed(pmo, logins)))                                    : 3,
         (new VsSafe(new VsRandom()))                                          : 1
       ]
     )

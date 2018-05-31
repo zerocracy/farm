@@ -16,12 +16,17 @@
  */
 package com.zerocracy.tk.project;
 
+import com.jcabi.aspects.Tv;
 import com.jcabi.matchers.XhtmlMatchers;
+import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
+import com.zerocracy.Project;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.footprint.FtFarm;
 import com.zerocracy.farm.props.PropsFarm;
+import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.ClaimOut;
+import com.zerocracy.pm.Claims;
 import com.zerocracy.tk.RqWithUser;
 import com.zerocracy.tk.TkApp;
 import org.hamcrest.MatcherAssert;
@@ -36,12 +41,10 @@ import org.takes.rs.RsPrint;
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.20
- * @todo #489:30min Write more test cases for a claim's children.
- *  Currently only the no-children case is validated, tests for one
- *  and for more children are required.
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class TkClaimTest {
 
     @Test
@@ -76,4 +79,80 @@ public final class TkClaimTest {
         );
     }
 
+    @Test
+    public void renderClaimWithOneChild() throws Exception {
+        final FtFarm farm = new FtFarm(new PropsFarm(new FkFarm()));
+        final long parent = 111L;
+        final long child = 222L;
+        final Project proj = farm.find("@id='C00000000'").iterator().next();
+        new ClaimOut().type("test").cid(parent).postTo(proj);
+        final XML xml = new Claims(proj).iterate().iterator().next();
+        new ClaimIn(xml).copy().cid(child).postTo(proj);
+        MatcherAssert.assertThat(
+            XhtmlMatchers.xhtml(
+                new RsPrint(
+                    new TkApp(farm).act(
+                        new RqWithHeaders(
+                            new RqWithUser(
+                                farm,
+                                new RqFake(
+                                    "GET",
+                                    String.format(
+                                        "/footprint/%s/%d", proj.pid(), parent
+                                    )
+                                )
+                            ),
+                            "Accept: application/xml"
+                        )
+                    )
+                ).printBody()
+            ),
+            XhtmlMatchers.hasXPaths(
+                String.format("/page/claim/cid[text() = %d]", parent),
+                String.format("/page/children/child/cid[text() = %d]", child)
+            )
+        );
+    }
+
+    @Test
+    public void renderClaimWithManyChildren() throws Exception {
+        final FtFarm farm = new FtFarm(new PropsFarm(new FkFarm()));
+        final long parent = 164L;
+        final int children = Tv.FIFTY;
+        final Project proj = farm.find("@id='C00000000'").iterator().next();
+        new ClaimOut().type("test").cid(parent).postTo(proj);
+        final ClaimIn claim = new ClaimIn(
+            new Claims(proj).iterate().iterator().next()
+        );
+        for (int number = 0; number < children; ++number) {
+            claim.copy().cid((long) (Tv.THOUSAND + number))
+                .param("number", number).postTo(proj);
+        }
+        MatcherAssert.assertThat(
+            XhtmlMatchers.xhtml(
+                new RsPrint(
+                    new TkApp(farm).act(
+                        new RqWithHeaders(
+                            new RqWithUser(
+                                farm,
+                                new RqFake(
+                                    "GET",
+                                    String.format(
+                                        "/footprint/%s/%d",
+                                        proj.pid(),
+                                        parent
+                                    )
+                                )
+                            ),
+                            "Accept: application/xml"
+                        )
+                    )
+                ).printBody()
+            ),
+            XhtmlMatchers.hasXPaths(
+                String.format("/page/claim/cid[text() = %d]", parent),
+                String.format("/page/children[count(child) = %d]", children)
+            )
+        );
+    }
 }

@@ -22,11 +22,23 @@ import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pm.cost.Estimates
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Order was given')
   ClaimIn claim = new ClaimIn(xml)
+  String job = claim.param('job')
+  String role = claim.param('role')
+  Estimates estimates = new Estimates(project).bootstrap()
+  String tail
+  if (estimates.exists(job)) {
+    tail = new Par(
+      'you will earn %s on completion'
+    ).say(estimates.get(job))
+  } else {
+    tail = new Par('you won\'t earn any cash on completion').say()
+  }
   Farm farm = binding.variables.farm
   claim.copy()
     .type('Notify user')
@@ -35,9 +47,9 @@ def exec(Project project, XML xml) {
       'message',
       new Par(
         farm,
-        'The job %s was assigned to you in %s as %s a minute ago,',
-        'here is [why](/footprint/%s/%s)'
-      ).say(claim.param('job'), project.pid(), claim.param('role'), project.pid(), claim.param('reason'))
+        'The job %s was assigned to you in %s as %s a minute ago;',
+        'here is [why](/footprint/%2$s/%s);'
+      ).say(job, project.pid(), role, claim.param('reason')) + tail
     )
     .postTo(project)
 }

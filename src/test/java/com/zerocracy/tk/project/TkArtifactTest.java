@@ -39,6 +39,7 @@ import org.takes.rs.RsPrint;
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class TkArtifactTest {
 
     @Test
@@ -73,6 +74,26 @@ public final class TkArtifactTest {
                 ).printBody()
             ),
             XhtmlMatchers.hasXPaths("//xhtml:table")
+        );
+    }
+
+    @Test
+    public void rendersWithoutChromeNotice() throws Exception {
+        final Farm farm = new PropsFarm(new FkFarm());
+        final String get = new RsPrint(
+            new TkApp(farm).act(
+                new RqWithUser(
+                    farm,
+                    new RqFake(
+                        "GET",
+                        "/a/C00000000?a=pm/staff/roles"
+                    )
+                )
+            )
+        ).printBody();
+        MatcherAssert.assertThat(
+            get,
+            Matchers.not(Matchers.containsString("Chrome"))
         );
     }
 

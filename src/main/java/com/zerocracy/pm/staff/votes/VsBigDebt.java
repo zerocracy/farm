@@ -14,46 +14,50 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.cash;
+package com.zerocracy.pm.staff.votes;
 
+import com.zerocracy.Policy;
+import com.zerocracy.cash.Cash;
+import com.zerocracy.pm.staff.Votes;
+import com.zerocracy.pmo.Debts;
+import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
-import java.net.URL;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.Assume;
-import org.junit.Before;
-import org.junit.Test;
 
 /**
- * Integration case for {@link GerQuotes}.
+ * The debt is too big.
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.6
+ * @since 0.16
  */
-public final class GerQuotesITCase {
+public final class VsBigDebt implements Votes {
 
     /**
-     * Assume we're online.
+     * The PMO.
      */
-    @Before
-    public void weAreOnline() {
-        try {
-            new URL("http://www.getexchangerates.com").getContent();
-        } catch (final IOException ex) {
-            Assume.assumeTrue(false);
+    private final Pmo pmo;
+
+    /**
+     * Ctor.
+     * @param pkt The PMO
+     */
+    public VsBigDebt(final Pmo pkt) {
+        this.pmo = pkt;
+    }
+
+    @Override
+    public double take(final String login, final StringBuilder log)
+        throws IOException {
+        final double vote;
+        final Debts debts = new Debts(this.pmo).bootstrap();
+        final Cash max = new Policy().get("3.max-debt", Cash.ZERO);
+        if (debts.exists(login)
+            && debts.amount(login).compareTo(max) > 0) {
+            log.append("The debt is too big");
+            vote = 1.0D;
+        } else {
+            log.append("The debt is absent or small enough");
+            vote = 0.0D;
         }
+        return vote;
     }
-
-    /**
-     * GetexchangeratesQuotes can return a quote.
-     * @throws Exception If some problem inside
-     */
-    @Test
-    public void returnsQuote() throws Exception {
-        MatcherAssert.assertThat(
-            new GerQuotes().quote(Currency.EUR, Currency.USD),
-            Matchers.greaterThan(1.0d)
-        );
-    }
-
 }

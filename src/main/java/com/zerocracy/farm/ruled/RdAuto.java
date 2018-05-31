@@ -24,7 +24,6 @@ import com.zerocracy.Item;
 import com.zerocracy.Project;
 import java.io.IOException;
 import java.net.URI;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import org.apache.commons.lang3.StringUtils;
 import org.cactoos.Func;
@@ -123,7 +122,7 @@ final class RdAuto {
             )
         );
         try (final Item item = this.project.acq(target)) {
-            if (Files.exists(item.path())
+            if (item.path().toFile().exists()
                 && item.path().toFile().length() > 0L) {
                 final XML xml = new XMLDocument(item.path().toFile());
                 final XML after = new XSLDocument(

@@ -115,6 +115,11 @@ final class Crypto implements Bank {
         }
     }
 
+    @Override
+    public void close() throws IOException {
+        // Nothing to do
+    }
+
     /**
      * Fund account, if necessary.
      * @param base Base

@@ -108,6 +108,7 @@ public final class RbPingArchitect implements Rebound {
                 ).say(intro)
             );
             if (!new Roles(project).bootstrap().hasAnyRole(author)
+                && !"0pdd".equals(author)
                 && new Catalog(farm).bootstrap()
                 .fee(project.pid()).equals(Cash.ZERO)) {
                 new ThrottledComments(issue.comments()).post(

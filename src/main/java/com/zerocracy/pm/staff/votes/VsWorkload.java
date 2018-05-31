@@ -17,12 +17,14 @@
 package com.zerocracy.pm.staff.votes;
 
 import com.jcabi.log.Logger;
+import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.pm.staff.Votes;
 import com.zerocracy.pmo.Agenda;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
+import org.cactoos.Scalar;
 import org.cactoos.collection.Filtered;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.map.MapEntry;
@@ -36,6 +38,10 @@ import org.cactoos.scalar.SolidScalar;
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.17
+ * @todo #808:30min VsWorkload test is missed, workload votes are not tested
+ *  neither with first constructor (farm, others)
+ *  nor with second (farm, project, others). First should be tested for
+ *  all agenda items, second only for project items.
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class VsWorkload implements Votes {
@@ -47,23 +53,48 @@ public final class VsWorkload implements Votes {
 
     /**
      * Ctor.
-     * @param pmo The PMO
+     * @param farm The farm
      * @param others All other logins to compete with
      */
-    public VsWorkload(final Project pmo, final Collection<String> others) {
-        this.jobs = new IoCheckedScalar<>(
-            new SolidScalar<>(
-                () -> new SolidMap<>(
-                    new Mapped<>(
-                        login -> new MapEntry<>(
-                            login,
-                            new Agenda(pmo, login).bootstrap().jobs().size()
-                        ),
-                        others
-                    )
+    public VsWorkload(final Farm farm, final Collection<String> others) {
+        this(
+            () -> new SolidMap<>(
+                new Mapped<>(
+                    login -> new MapEntry<>(
+                        login,
+                        new Agenda(farm, login).bootstrap().jobs().size()
+                    ),
+                    others
                 )
             )
         );
+    }
+    /**
+     * Ctor.
+     * @param farm The farm
+     * @param pkt Project
+     * @param others All other logins to compete with
+     */
+    public VsWorkload(final Farm farm, final Project pkt,
+        final Collection<String> others) {
+        this(
+            () -> new SolidMap<>(
+                new Mapped<>(
+                    login -> new MapEntry<>(
+                        login,
+                        new Agenda(farm, login).bootstrap().jobs(pkt).size()
+                    ),
+                    others
+                )
+            )
+        );
+    }
+    /**
+     * Primary ctor.
+     * @param source Source jobs map
+     */
+    private VsWorkload(final Scalar<Map<String, Integer>> source) {
+        this.jobs = new IoCheckedScalar<>(new SolidScalar<>(source));
     }
 
     @Override

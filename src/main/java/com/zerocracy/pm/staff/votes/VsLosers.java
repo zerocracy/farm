@@ -17,9 +17,9 @@
 package com.zerocracy.pm.staff.votes;
 
 import com.jcabi.log.Logger;
-import com.zerocracy.Project;
 import com.zerocracy.pm.staff.Votes;
 import com.zerocracy.pmo.Awards;
+import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
 
 /**
@@ -35,7 +35,7 @@ public final class VsLosers implements Votes {
     /**
      * PMO.
      */
-    private final Project pmo;
+    private final Pmo pmo;
 
     /**
      * Reputation threshold.
@@ -47,7 +47,7 @@ public final class VsLosers implements Votes {
      * @param pkt The PMO
      * @param min The threshold in reputation
      */
-    public VsLosers(final Project pkt, final int min) {
+    public VsLosers(final Pmo pkt, final int min) {
         this.pmo = pkt;
         this.threshold = min;
     }

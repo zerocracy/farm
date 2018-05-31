@@ -19,7 +19,6 @@ package com.zerocracy.pmo;
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Par;
-import com.zerocracy.Project;
 import com.zerocracy.Xocument;
 import java.io.IOException;
 import java.util.HashMap;
@@ -42,7 +41,7 @@ public final class Bots {
     /**
      * Project.
      */
-    private final Project pmo;
+    private final Pmo pmo;
 
     /**
      * Ctor.
@@ -56,7 +55,7 @@ public final class Bots {
      * Ctor.
      * @param pkt Project
      */
-    public Bots(final Project pkt) {
+    public Bots(final Pmo pkt) {
         this.pmo = pkt;
     }
 

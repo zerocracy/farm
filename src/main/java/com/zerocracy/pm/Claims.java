@@ -32,6 +32,7 @@ import org.cactoos.collection.Mapped;
 import org.cactoos.collection.Sorted;
 import org.cactoos.func.IoCheckedProc;
 import org.cactoos.iterable.LengthOf;
+import org.cactoos.text.JoinedText;
 import org.cactoos.time.DateAsText;
 import org.xembly.Directive;
 import org.xembly.Directives;
@@ -108,10 +109,16 @@ public final class Claims {
                 throw new IllegalStateException(
                     new Par(
                         "Duplicate claims are not allowed in %s,",
-                        "can't add this XML to %d existing ones:\n%s"
+                        "can't add this XML to %d existing ones (%s):\n%s"
                     ).say(
                         this.project.pid(),
                         signatures.size(),
+                        new JoinedText(
+                            ",",
+                            new org.cactoos.iterable.Mapped<>(
+                                String::toString, signatures
+                            )
+                        ).asString(),
                         new Xembler(claim).xmlQuietly()
                     )
                 );

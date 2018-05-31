@@ -79,6 +79,14 @@ final class Paypal implements Bank {
     @Override
     public String pay(final String target, final Cash amount,
         final String details) throws IOException {
+        if (details.length() >= Tv.THOUSAND) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "PayPal details too long, the API won't accept it: %s",
+                    details
+                )
+            );
+        }
         final Props props = new Props(this.farm);
         final AdaptivePaymentsService service = new AdaptivePaymentsService(
             new SolidMap<String, String>(
@@ -154,6 +162,11 @@ final class Paypal implements Bank {
             )
         ).postTo(this.farm);
         return response.getPayKey();
+    }
+
+    @Override
+    public void close() throws IOException {
+        // Nothing to do
     }
 
     /**

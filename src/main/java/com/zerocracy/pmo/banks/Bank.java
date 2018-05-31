@@ -17,16 +17,17 @@
 package com.zerocracy.pmo.banks;
 
 import com.zerocracy.cash.Cash;
+import java.io.Closeable;
 import java.io.IOException;
 
 /**
- * Paypal payment method.
+ * Bank payment method.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.19
  */
-interface Bank {
+interface Bank extends Closeable {
 
     /**
      * Calculate payment commission.

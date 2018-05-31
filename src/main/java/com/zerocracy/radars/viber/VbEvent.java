@@ -1,0 +1,157 @@
+/**
+ * Copyright (c) 2016-2018 Zerocracy
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to read
+ * the Software only. Permissions is hereby NOT GRANTED to use, copy, modify,
+ * merge, publish, distribute, sublicense, and/or sell copies of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+package com.zerocracy.radars.viber;
+
+import java.util.Date;
+import javax.json.JsonObject;
+
+/**
+ * Viber event data.
+ *
+ * @author Carlos Miranda (miranda.cma@gmail.com)
+ * @version $Id$
+ * @since 0.22
+ * @todo #939:30min Implement VbEvent.Simple and VbEvent.Message. These
+ *  classes should be able to parse the underlying JSON and return the correct
+ *  data via the defined interface methods.
+ */
+@SuppressWarnings("PMD.TooManyMethods")
+interface VbEvent {
+    /**
+     * Type of event.
+     * @return Event
+     */
+    String event();
+
+    /**
+     * Timestamp of event.
+     * @return Timestamp
+     */
+    Date timestamp();
+
+    /**
+     * Unique ID of the message.
+     * @return Token
+     */
+    String token();
+
+    /**
+     * Raw JSON data.
+     * @return Raw JSON
+     */
+    JsonObject json();
+
+    /**
+     * Message received event.
+     */
+    final class Message implements VbEvent {
+        /**
+         * Underlying event.
+         */
+        private final VbEvent origin;
+        /**
+         * Ctor.
+         * @param event The event
+         */
+        Message(final VbEvent event) {
+            this.origin = event;
+        }
+
+        @Override
+        public String event() {
+            return this.origin.event();
+        }
+
+        @Override
+        public Date timestamp() {
+            return this.origin.timestamp();
+        }
+
+        @Override
+        public String token() {
+            return this.origin.token();
+        }
+
+        @Override
+        public JsonObject json() {
+            return this.origin.json();
+        }
+        /**
+         * Get message text.
+         * @return Message text
+         */
+        public String message() {
+            throw new UnsupportedOperationException(
+                "Message#message not yet implemented"
+            );
+        }
+        /**
+         * Get sender id.
+         * @return Sender ID
+         */
+        public String vid() {
+            throw new UnsupportedOperationException(
+                "Message#id not yet implemented"
+            );
+        }
+    }
+
+    /**
+     * Simple event.
+     */
+    final class Simple implements VbEvent {
+        /**
+         * Underlying event.
+         */
+        private final JsonObject origin;
+
+        /**
+         * Ctor.
+         * @param event The event
+         */
+        Simple(final JsonObject event) {
+            this.origin = event;
+        }
+
+        @Override
+        public String event() {
+            throw new UnsupportedOperationException(
+                "Simple#message not yet implemented"
+            );
+        }
+
+        @Override
+        public Date timestamp() {
+            throw new UnsupportedOperationException(
+                "Simple#timestamp not yet implemented"
+            );
+        }
+
+        @Override
+        public String token() {
+            throw new UnsupportedOperationException(
+                "Simple#token not yet implemented"
+            );
+        }
+
+        @Override
+        public JsonObject json() {
+            return this.origin;
+        }
+    }
+
+}
