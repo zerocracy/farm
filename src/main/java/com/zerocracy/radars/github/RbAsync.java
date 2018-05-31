@@ -14,37 +14,45 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pmo.banks;
+package com.zerocracy.radars.github;
 
-import com.zerocracy.cash.Cash;
-import java.io.Closeable;
-import java.io.IOException;
+import com.jcabi.github.Github;
+import com.zerocracy.Farm;
+import javax.json.JsonObject;
+import org.cactoos.Func;
+import org.cactoos.func.AsyncFunc;
 
 /**
- * Bank payment method.
+ * Rebound that works in background.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
- * @since 0.19
+ * @since 0.22
  */
-interface Bank extends Closeable {
+public final class RbAsync implements Rebound {
 
     /**
-     * Calculate payment commission.
-     * @param amount The amount
-     * @return Fee amount
-     * @throws IOException If fails
+     * Original reaction.
      */
-    Cash fee(Cash amount) throws IOException;
+    private final Rebound origin;
 
     /**
-     * Pay.
-     * @param target The target to pay to
-     * @param amount The amount to charge
-     * @param details Payment details
-     * @return Payment ID
-     * @throws IOException If fails
+     * Ctor.
+     * @param rtn Reaction
      */
-    String pay(String target, Cash amount, String details) throws IOException;
+    public RbAsync(final Rebound rtn) {
+        this.origin = rtn;
+    }
+
+    @Override
+    public String react(final Farm farm, final Github github,
+        final JsonObject event) {
+        new AsyncFunc<>(
+            (Func<JsonObject, String>) input -> this.origin.react(
+                farm, github, input
+            )
+        ).exec(event);
+        return "We will process it soon, thanks!";
+    }
 
 }

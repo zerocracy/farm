@@ -14,37 +14,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pmo.banks;
-
-import com.zerocracy.cash.Cash;
-import java.io.Closeable;
-import java.io.IOException;
+package com.zerocracy.radars.viber;
 
 /**
- * Bank payment method.
+ * Viber bot.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @author Carlos Miranda (miranda.cma@gmail.com)
  * @version $Id$
- * @since 0.19
+ * @since 0.22
+ * @todo #939:30min Implement Viber bot. We should be able to send messages via
+ *  the Viber REST API. There are other operations but I think that is the only
+ *  operation we need (I might be wrong). See:
+ *  https://developers.viber.com/docs/api/rest-bot-api/#authentication-token
+ *  https://developers.viber.com/docs/api/rest-bot-api/#send-message
  */
-interface Bank extends Closeable {
+final class VbBot {
 
     /**
-     * Calculate payment commission.
-     * @param amount The amount
-     * @return Fee amount
-     * @throws IOException If fails
+     * Send a message to a user.
+     * @param id User
+     * @param text Message text
      */
-    Cash fee(Cash amount) throws IOException;
-
-    /**
-     * Pay.
-     * @param target The target to pay to
-     * @param amount The amount to charge
-     * @param details Payment details
-     * @return Payment ID
-     * @throws IOException If fails
-     */
-    String pay(String target, Cash amount, String details) throws IOException;
+    public void sendMessage(final String id, final String text) {
+        throw new UnsupportedOperationException("Not yet implemented.");
+    }
 
 }

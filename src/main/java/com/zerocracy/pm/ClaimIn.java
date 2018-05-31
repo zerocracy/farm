@@ -27,6 +27,10 @@ import org.cactoos.time.DateOf;
 /**
  * Claim coming in.
  *
+ * <p>This class helps you parse the incoming XML claim and take
+ * its keep components out. Use it everywhere. Don't parse the XML
+ * manually.</p>
+ *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.9

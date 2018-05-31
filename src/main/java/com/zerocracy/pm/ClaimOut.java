@@ -40,6 +40,12 @@ import org.xembly.Xembler;
 /**
  * Claim.
  *
+ * <p>In order to create a claim before posting it to
+ * {@link Claims}, this class should be used. It's a "builder"
+ * with a simple fluent interface. It is very recommended to
+ * start with an existing claim and use method {@link ClaimIn#copy()}
+ * in order to create a new instance of {@link ClaimOut}.</p>
+ *
  * <p>Objects of this class are immutable.</p>
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)

@@ -164,6 +164,11 @@ final class Paypal implements Bank {
         return response.getPayKey();
     }
 
+    @Override
+    public void close() throws IOException {
+        // Nothing to do
+    }
+
     /**
      * Make a request.
      * @param email Email

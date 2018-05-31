@@ -36,7 +36,7 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   for (String login : new Roles(project).everybody()) {
     new Projects(farm, login).remove(project.pid())
-    new Agenda(project, login).removeAll()
+    new Agenda(farm, login).removeAll()
   }
   Catalog catalog = new Catalog(farm).bootstrap()
   String prefix = catalog.findByXPath("@id='${project.pid()}'").iterator().next()

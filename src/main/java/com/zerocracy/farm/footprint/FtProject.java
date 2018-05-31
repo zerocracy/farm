@@ -68,7 +68,7 @@ final class FtProject implements Project {
         if ("claims.xml".equals(file)) {
             final Path temp = Files.createTempFile("footprint", ".xml");
             final Path before = item.path();
-            if (Files.exists(before)) {
+            if (before.toFile().exists()) {
                 new LengthOf(new TeeInput(item.path(), temp)).intValue();
             }
             item = new FtItem(this, item, this.farm, temp);
