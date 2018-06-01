@@ -625,7 +625,7 @@ SOFTWARE.
                         <limit>
                         <counter>BRANCH</counter>
                         <value>COVEREDRATIO</value>
-                        <minimum>0.49</minimum>
+                        <minimum>0.50</minimum>
                         </limit>
                         <limit>
                         <counter>COMPLEXITY</counter>
@@ -640,7 +640,7 @@ SOFTWARE.
                         <limit>
                         <counter>CLASS</counter>
                         <value>MISSEDCOUNT</value>
-                        <maximum>54</maximum>
+                        <maximum>61</maximum>
                         </limit>
                       </limits>
                     </rule>
