@@ -37,7 +37,9 @@ public final class Zold implements Bank {
     @Override
     public String pay(final String target, final Cash amount,
         final String details) throws IOException {
-        throw new IOException("Zold payments are not implemented yet");
+        throw new UnsupportedOperationException(
+            "Zold payments are not implemented yet"
+        );
     }
 
     @Override
