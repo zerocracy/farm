@@ -60,7 +60,8 @@ public final class Payroll {
             new MapEntry<>("btc", new Crypto(frm, "BTC")),
             new MapEntry<>("bch", new Crypto(frm, "BCH")),
             new MapEntry<>("eth", new Crypto(frm, "ETH")),
-            new MapEntry<>("ltc", new Crypto(frm, "LTC"))
+            new MapEntry<>("ltc", new Crypto(frm, "LTC")),
+            new MapEntry<>("zld", new Zold())
         );
     }
 
