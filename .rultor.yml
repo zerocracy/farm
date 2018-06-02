@@ -40,6 +40,7 @@ release:
     curl -f --connect-timeout 15 --retry 5 --retry-delay 30 https://www.0crat.com > /dev/null
   commanders:
   - yegor256
+  - g4s8
 merge:
   script: |-
     pdd --source=$(pwd) --verbose --file=/dev/null
