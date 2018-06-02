@@ -26,7 +26,7 @@ import java.io.IOException;
  * @since 0.22
  * @todo #1074:30min Zold payments are not implemented, we have to modify
  *  wallet by including new transaction for user and push it to some node
- *  via restful API: PUT /wallet/ID.
+ *  via java-api: https://github.com/zold-io/java-api
  */
 public final class Zold implements Bank {
     @Override
