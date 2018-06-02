@@ -623,14 +623,14 @@ SOFTWARE.
                             Remember to increase those coverages below in jacoco configuration.
                         -->
                         <limit>
-                        <counter>BRANCH</counter>
-                        <value>COVEREDRATIO</value>
-                        <minimum>0.50</minimum>
+                          <counter>BRANCH</counter>
+                          <value>COVEREDRATIO</value>
+                          <minimum>0.50</minimum>
                         </limit>
                         <limit>
-                        <counter>COMPLEXITY</counter>
-                        <value>COVEREDRATIO</value>
-                        <minimum>0.57</minimum>
+                          <counter>COMPLEXITY</counter>
+                          <value>COVEREDRATIO</value>
+                          <minimum>0.57</minimum>
                         </limit>
                         <limit>
                           <counter>METHOD</counter>
@@ -638,9 +638,9 @@ SOFTWARE.
                           <minimum>0.57</minimum>
                         </limit>
                         <limit>
-                        <counter>CLASS</counter>
-                        <value>MISSEDCOUNT</value>
-                        <maximum>61</maximum>
+                          <counter>CLASS</counter>
+                          <value>MISSEDCOUNT</value>
+                          <maximum>61</maximum>
                         </limit>
                       </limits>
                     </rule>
