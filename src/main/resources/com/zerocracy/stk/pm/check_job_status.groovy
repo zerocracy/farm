@@ -170,7 +170,7 @@ def exec(Project project, XML xml) {
   )
   claim.reply(
     new Par(
-      'This is what I know about this job, as in §32:'
-    ).say() + '\n\n  * ' + items.join('\n  * ')
+      'This is what I know about this job in %s, as in §32:'
+    ).say(project.pid()) + '\n\n  * ' + items.join('\n  * ')
   ).postTo(project)
 }

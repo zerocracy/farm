@@ -25,26 +25,26 @@ import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
-    Farm farm = binding.variables.farm
-    People people = new People(farm).bootstrap()
-    MatcherAssert.assertThat(
-        'High reputation user\'s friend was not invited',
-        people.hasMentor('hfriend'),
-        Matchers.is(true)
-    )
-    MatcherAssert.assertThat(
-        'Low reputation user\'s friend was invited',
-        people.hasMentor('lfriend'),
-        Matchers.is(false)
-    )
-    MatcherAssert.assertThat(
-        'Breakup with "tmp" user failed',
-        people.hasMentor('tmp'),
-        Matchers.is(false)
-    )
-    MatcherAssert.assertThat(
-      '256 points has not been deducted after breakup',
-      new Awards(farm, 'high').total(),
-      Matchers.equalTo(1000)
-    )
+  Farm farm = binding.variables.farm
+  People people = new People(farm).bootstrap()
+  MatcherAssert.assertThat(
+    'High reputation user\'s friend was not invited',
+    people.hasMentor('hfriend'),
+    Matchers.is(true)
+  )
+  MatcherAssert.assertThat(
+    'Low reputation user\'s friend was invited',
+    people.hasMentor('lfriend'),
+    Matchers.is(false)
+  )
+  MatcherAssert.assertThat(
+    'Breakup with "tmp" user failed',
+    people.hasMentor('tmp'),
+    Matchers.is(false)
+  )
+  MatcherAssert.assertThat(
+    '256 points has not been deducted after breakup',
+    new Awards(farm, 'high').total(),
+    Matchers.equalTo(1000)
+  )
 }

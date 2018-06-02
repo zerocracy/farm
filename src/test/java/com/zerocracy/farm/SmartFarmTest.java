@@ -156,7 +156,7 @@ public final class SmartFarmTest {
             ).iterator().next();
             final String job = "gh:test/test#22";
             new Wbs(project).bootstrap().add(job);
-            new Orders(project).bootstrap().assign(job, "jeff", "reason 0");
+            new Orders(project).bootstrap().assign(job, "jeff", 0L);
             new VerboseRunnable(
                 new RunnableOf<>(
                     obj -> {
