@@ -14,37 +14,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pmo.banks;
-
-import com.zerocracy.cash.Cash;
-import java.io.Closeable;
-import java.io.IOException;
+package com.zerocracy.radars.viber;
 
 /**
- * Bank payment method.
+ * Viber token.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @author Carlos Miranda (miranda.cma@gmail.com)
  * @version $Id$
- * @since 0.19
+ * @since 0.22
  */
-interface Bank extends Closeable {
+final class VbToken {
 
     /**
-     * Calculate payment commission.
-     * @param amount The amount
-     * @return Fee amount
-     * @throws IOException If fails
+     * Encapsulated event.
      */
-    Cash fee(Cash amount) throws IOException;
+    private final VbEvent event;
 
     /**
-     * Pay.
-     * @param target The target to pay to
-     * @param amount The amount to charge
-     * @param details Payment details
-     * @return Payment ID
-     * @throws IOException If fails
+     * Ctor.
+     * @param event The event
      */
-    String pay(String target, Cash amount, String details) throws IOException;
+    VbToken(final VbEvent event) {
+        this.event = event;
+    }
 
+    @Override
+    public String toString() {
+        return String.format("viber;%d", this.event.token());
+    }
 }

@@ -25,6 +25,7 @@ import com.zerocracy.SoftException;
 import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.cash.CashParsingException;
+import com.zerocracy.pm.staff.Roles;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Iterator;
@@ -231,7 +232,8 @@ public final class People {
                         mentor
                     )
                 ).size();
-            if (current >= max) {
+            if (current >= max
+                && !new Roles(this.pmo).bootstrap().hasAnyRole(mentor)) {
                 throw new SoftException(
                     new Par(
                         "You can not invite more than %d students;",

@@ -99,6 +99,24 @@ public final class Agenda {
     }
 
     /**
+     * Return full list of jobs this person currently is working
+     * in particular project.
+     * @param pkt Project
+     * @return List of job IDs
+     * @throws IOException If fails
+     */
+    public Collection<String> jobs(final Project pkt) throws IOException {
+        try (final Item item = this.item()) {
+            return new Xocument(item.path()).xpath(
+                String.format(
+                    "/agenda/order[project = '%s']/@job",
+                    pkt.pid()
+                )
+            );
+        }
+    }
+
+    /**
      * This job exists in the agenda?
      * @param job The job
      * @return TRUE if exists

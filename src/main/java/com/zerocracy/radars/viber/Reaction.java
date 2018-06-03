@@ -14,37 +14,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pmo.banks;
+package com.zerocracy.radars.viber;
 
-import com.zerocracy.cash.Cash;
-import java.io.Closeable;
+import com.zerocracy.Farm;
 import java.io.IOException;
 
 /**
- * Bank payment method.
+ * Viber message reaction.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @author Carlos Miranda (miranda.cma@gmail.com)
  * @version $Id$
- * @since 0.19
+ * @since 0.22
  */
-interface Bank extends Closeable {
+interface Reaction {
 
     /**
-     * Calculate payment commission.
-     * @param amount The amount
-     * @return Fee amount
-     * @throws IOException If fails
+     * React for new request.
+     * @param bot Viber bot
+     * @param farm Project farm
+     * @param event The event
+     * @return Text of reaction
+     * @throws IOException If failed
      */
-    Cash fee(Cash amount) throws IOException;
-
-    /**
-     * Pay.
-     * @param target The target to pay to
-     * @param amount The amount to charge
-     * @param details Payment details
-     * @return Payment ID
-     * @throws IOException If fails
-     */
-    String pay(String target, Cash amount, String details) throws IOException;
-
+    boolean react(VbBot bot, Farm farm, VbEvent event) throws IOException;
 }

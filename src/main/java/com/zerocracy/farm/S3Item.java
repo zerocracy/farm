@@ -20,6 +20,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.jcabi.log.Logger;
 import com.jcabi.s3.Ocket;
 import com.zerocracy.Item;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -28,6 +29,8 @@ import java.nio.file.attribute.FileTime;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicBoolean;
 import lombok.EqualsAndHashCode;
+import org.cactoos.io.BytesOf;
+import org.cactoos.io.InputOf;
 
 /**
  * Item in S3.
@@ -35,8 +38,9 @@ import lombok.EqualsAndHashCode;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@EqualsAndHashCode(of = { "ocket", "temp" })
+@EqualsAndHashCode(of = {"ocket", "temp"})
 final class S3Item implements Item {
 
     /**
@@ -88,7 +92,7 @@ final class S3Item implements Item {
                     this.temp.toFile().getAbsolutePath()
                 );
             }
-            if (this.ocket.exists() && (!Files.exists(this.temp)
+            if (this.ocket.exists() && (!this.temp.toFile().exists()
                 || this.expired())) {
                 final long start = System.currentTimeMillis();
                 this.ocket.read(
@@ -120,12 +124,19 @@ final class S3Item implements Item {
 
     @Override
     public void close() throws IOException {
-        if (this.open.get() && Files.exists(this.temp)
+        if (this.open.get() && this.temp.toFile().exists()
             && (!this.ocket.exists() || this.dirty())) {
             final ObjectMetadata meta = new ObjectMetadata();
             final long start = System.currentTimeMillis();
             meta.setContentLength(this.temp.toFile().length());
-            this.ocket.write(Files.newInputStream(this.temp), meta);
+            this.ocket.write(
+                new ByteArrayInputStream(
+                    new BytesOf(
+                        new InputOf(this.temp)
+                    ).asBytes()
+                ),
+                meta
+            );
             Files.setLastModifiedTime(
                 this.temp,
                 FileTime.fromMillis(
@@ -171,5 +182,4 @@ final class S3Item implements Item {
         return !remote.equals(local)
             || this.temp.toFile().length() != meta.getContentLength();
     }
-
 }

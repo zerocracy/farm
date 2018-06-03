@@ -37,7 +37,7 @@ def exec(Project project, XML xml) {
       'you will earn %s on completion'
     ).say(estimates.get(job))
   } else {
-    tail = new Par('you won\'t earn any cash on completion')
+    tail = new Par('you won\'t earn any cash on completion').say()
   }
   Farm farm = binding.variables.farm
   claim.copy()

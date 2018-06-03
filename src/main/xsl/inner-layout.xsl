@@ -113,7 +113,7 @@ SOFTWARE.
             <a href="https://github.com/zerocracy">GitHub</a>
           </li>
           <li>
-            <a href="https://t.me/joinchat/CLxAaQ0xp-g_3WWI3MBr2g">Telegram</a>
+            <a href="https://t.me/zerocracy">Telegram</a>
           </li>
           <li>
             <a href="https://twitter.com/0crat">Twitter</a>

@@ -14,37 +14,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pmo.banks;
+package com.zerocracy.radars.viber;
 
-import com.zerocracy.cash.Cash;
-import java.io.Closeable;
+import com.zerocracy.Farm;
+import com.zerocracy.pmo.GoodPeople;
+import com.zerocracy.pmo.People;
 import java.io.IOException;
 
 /**
- * Bank payment method.
+ * Person in Viber.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @author Carlos Miranda (miranda.cma@gmail.com)
  * @version $Id$
- * @since 0.19
+ * @since 0.22
  */
-interface Bank extends Closeable {
+final class VbPerson {
+    /**
+     * Farm.
+     */
+    private final Farm farm;
 
     /**
-     * Calculate payment commission.
-     * @param amount The amount
-     * @return Fee amount
-     * @throws IOException If fails
+     * Viber message.
      */
-    Cash fee(Cash amount) throws IOException;
+    private final VbEvent.Message msg;
 
     /**
-     * Pay.
-     * @param target The target to pay to
-     * @param amount The amount to charge
-     * @param details Payment details
-     * @return Payment ID
+     * Ctor.
+     * @param frm Farm
+     * @param msg Viber message.
+     */
+    VbPerson(final Farm frm, final VbEvent.Message msg) {
+        this.farm = frm;
+        this.msg = msg;
+    }
+
+    /**
+     * User ID.
+     * @param invited The user must be invited
+     * @return User ID
      * @throws IOException If fails
      */
-    String pay(String target, Cash amount, String details) throws IOException;
-
+    public String uid(final boolean invited) throws IOException {
+        return new GoodPeople(new People(this.farm))
+            .get("viber", this.msg.vid(), invited);
+    }
 }

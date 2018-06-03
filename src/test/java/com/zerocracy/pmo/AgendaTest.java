@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pmo;
 
+import com.jcabi.aspects.Tv;
 import com.zerocracy.Project;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
@@ -92,5 +93,20 @@ public final class AgendaTest {
         MatcherAssert.assertThat(agenda.jobs(), Matchers.emptyIterable());
         agenda.removeAll();
         MatcherAssert.assertThat(agenda.jobs(), Matchers.emptyIterable());
+    }
+
+    @Test
+    public void returnsJobsForProject() throws Exception {
+        final Project first = new FkProject("FAKEPRJC1");
+        final Project second = new FkProject("FAKEPRJC2");
+        final Agenda agenda = new Agenda(new FkFarm(), "g4s8").bootstrap();
+        agenda.add(first, "gh:test4/test#1", "DEV");
+        agenda.add(second, "gh:test4/test#2", "DEV");
+        agenda.add(first, "gh:test4/test#3", "DEV");
+        agenda.add(first, "gh:test4/test#4", "DEV");
+        MatcherAssert.assertThat(
+            agenda.jobs(first),
+            Matchers.hasSize(Tv.THREE)
+        );
     }
 }

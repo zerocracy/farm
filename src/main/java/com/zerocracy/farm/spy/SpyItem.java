@@ -18,7 +18,6 @@ package com.zerocracy.farm.spy;
 
 import com.zerocracy.Item;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicReference;
 import lombok.EqualsAndHashCode;
@@ -72,7 +71,7 @@ public final class SpyItem implements Item {
     @Override
     public Path path() throws IOException {
         final Path path = this.origin.path();
-        if (Files.exists(path)) {
+        if (path.toFile().exists()) {
             this.start.compareAndSet(null, new TextOf(path).asString());
         }
         this.spy.exec(String.format("path:%s", this.origin.toString()));
@@ -87,7 +86,7 @@ public final class SpyItem implements Item {
         }
         final Path path = this.origin.path();
         String after = "";
-        if (Files.exists(path)) {
+        if (path.toFile().exists()) {
             after = new TextOf(path).asString();
         }
         if (!before.equals(after)) {

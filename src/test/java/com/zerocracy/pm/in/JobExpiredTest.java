@@ -49,7 +49,7 @@ public final class JobExpiredTest {
         final String job = "gh:test/test#1";
         new Wbs(pkt).bootstrap().add(job);
         final String performer = "user2241234";
-        orders.assign(job, performer, "test");
+        orders.assign(job, performer, 0L);
         new Awards(farm, performer).bootstrap()
             .add(pkt, 1300, "gh:none/none#1", "tst");
         MatcherAssert.assertThat(
@@ -72,7 +72,7 @@ public final class JobExpiredTest {
         final String job = "gh:test/test#2";
         new Wbs(pkt).bootstrap().add(job);
         final String performer = "user22234";
-        orders.assign(job, performer, "test2");
+        orders.assign(job, performer, 0L);
         new Awards(farm, performer).bootstrap()
             .add(pkt, 2500, "gh:none/none#2", "tst2");
         MatcherAssert.assertThat(

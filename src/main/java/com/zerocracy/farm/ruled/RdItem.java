@@ -87,7 +87,7 @@ final class RdItem implements Item {
                 () -> {
                     final Path tmp = Files.createTempFile("rdfarm", ".xml");
                     final Path src = this.origin.path();
-                    if (Files.exists(src)) {
+                    if (src.toFile().exists()) {
                         new LengthOf(new TeeInput(src, tmp)).intValue();
                     }
                     return tmp;

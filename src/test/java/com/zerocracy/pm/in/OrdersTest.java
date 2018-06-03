@@ -43,7 +43,7 @@ public final class OrdersTest {
         final Orders orders = new Orders(project).bootstrap();
         final String job = "gh:yegor256/0pdd#13";
         new Wbs(project).bootstrap().add(job);
-        orders.assign(job, "yegor256", "just for fun");
+        orders.assign(job, "yegor256", 0L);
     }
 
     @Test
@@ -64,7 +64,7 @@ public final class OrdersTest {
         wbs.add(job);
         wbs.role(job, "REV");
         final Orders orders = new Orders(project).bootstrap();
-        orders.assign(job, login, "just for fun again");
+        orders.assign(job, login, 0L);
         MatcherAssert.assertThat(
             new Estimates(project).bootstrap().get(job),
             Matchers.equalTo(new Cash.S("$12.50"))

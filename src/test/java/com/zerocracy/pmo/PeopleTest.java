@@ -30,7 +30,9 @@ import org.cactoos.list.ListOf;
 import org.cactoos.scalar.And;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
  * Test case for {@link People}.
@@ -38,13 +40,17 @@ import org.junit.Test;
  * @version $Id$
  * @since 0.1
  * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle JavadocVariableCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
- * @todo #552:30min Add tests for details(), links(), wallet() and rate()
+ * @todo #840:30min Add tests for links(), wallet() and rate()
  *  in People.java because these methods are not fully covered. Then
  *  remove People.java from jacoco excludes in pom.xml
  */
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 public final class PeopleTest {
+
+    @Rule
+    public final ExpectedException thrown = ExpectedException.none();
 
     @Test
     public void addsAndFindsPeople() throws Exception {
@@ -334,5 +340,58 @@ public final class PeopleTest {
         final String uid = "user3236";
         people.invite(uid, uid);
         people.appliedTime(uid);
+    }
+
+    @Test
+    public void readsEmptyDetails() throws Exception {
+        final People people = new People(new FkProject()).bootstrap();
+        final String uid = "read-empty-details";
+        people.invite(uid, uid);
+        MatcherAssert.assertThat(
+            people.details(uid),
+            Matchers.isEmptyString()
+        );
+    }
+
+    @Test
+    public void setsDetails() throws Exception {
+        final People people = new People(new FkProject()).bootstrap();
+        final String uid = "detailed";
+        people.invite(uid, uid);
+        final String details = "dtls";
+        people.details(uid, details);
+        MatcherAssert.assertThat(
+            people.details(uid),
+            Matchers.equalTo(details)
+        );
+    }
+
+    @Test
+    public void throwIfTryToSetDetailsButNotApplied() throws Exception {
+        final People people = new People(new FkProject()).bootstrap();
+        final String uid = "not-applied";
+        this.thrown.expect(SoftException.class);
+        this.thrown.expectMessage(
+            Matchers.allOf(
+                Matchers.containsString(uid),
+                Matchers.containsString("is not with us yet")
+            )
+        );
+        people.details(uid, "ignored");
+    }
+
+    @Test
+    public void throwIfTryToSetEmptyDetails() throws Exception {
+        final People people = new People(new FkProject()).bootstrap();
+        final String uid = "set-empty-details";
+        this.thrown.expect(SoftException.class);
+        this.thrown.expectMessage(
+            Matchers.allOf(
+                Matchers.containsString(uid),
+                Matchers.containsString("details can't be empty")
+            )
+        );
+        people.invite(uid, uid);
+        people.details(uid, "");
     }
 }

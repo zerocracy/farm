@@ -17,34 +17,33 @@
 package com.zerocracy.pmo.banks;
 
 import com.zerocracy.cash.Cash;
-import java.io.Closeable;
 import java.io.IOException;
 
 /**
- * Bank payment method.
- *
- * @author Yegor Bugayenko (yegor256@gmail.com)
+ * Zold payment.
+ * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
- * @since 0.19
+ * @since 0.22
+ * @todo #1074:30min Zold payments are not implemented, we have to modify
+ *  wallet by including new transaction for user and push it to some node
+ *  via java-api: https://github.com/zold-io/java-api
  */
-interface Bank extends Closeable {
+public final class Zold implements Bank {
+    @Override
+    public Cash fee(final Cash amount) throws IOException {
+        return Cash.ZERO;
+    }
 
-    /**
-     * Calculate payment commission.
-     * @param amount The amount
-     * @return Fee amount
-     * @throws IOException If fails
-     */
-    Cash fee(Cash amount) throws IOException;
+    @Override
+    public String pay(final String target, final Cash amount,
+        final String details) throws IOException {
+        throw new UnsupportedOperationException(
+            "Zold payments are not implemented yet"
+        );
+    }
 
-    /**
-     * Pay.
-     * @param target The target to pay to
-     * @param amount The amount to charge
-     * @param details Payment details
-     * @return Payment ID
-     * @throws IOException If fails
-     */
-    String pay(String target, Cash amount, String details) throws IOException;
-
+    @Override
+    public void close() throws IOException {
+        // Nothing to do
+    }
 }

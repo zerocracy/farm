@@ -59,9 +59,8 @@ def exec(Project project, XML xml) {
       ).say(login)
     )
   }
-  String reason = claim.param('reason')
   Orders orders = new Orders(project).bootstrap()
-  orders.assign(job, login, reason)
+  orders.assign(job, login, claim.cid())
   String role = new Wbs(project).bootstrap().role(job)
   String msg
   if (role == 'REV') {
@@ -97,17 +96,17 @@ def exec(Project project, XML xml) {
   }
   if (new People(farm).bootstrap().vacation(login)) {
     msg += new Par(
-      '; we should be aware that %s is on vacation;',
+      '; we should be aware that @%s is on vacation;',
       'this ticket may be delayed'
     ).say(login)
   }
   Cash cash = Cash.ZERO
   Estimates estimates = new Estimates(project).bootstrap()
   if (estimates.exists(job)) {
-    msg += new Par('; there will be a monetary reward for this job')
+    msg += new Par('; there will be a monetary reward for this job').say()
     cash = estimates.get(job)
   } else {
-    msg += new Par('; there will be no monetary reward for this job')
+    msg += new Par('; there will be no monetary reward for this job').say()
   }
   claim.reply(msg).postTo(project)
   claim.copy()
