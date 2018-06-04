@@ -35,6 +35,9 @@ SOFTWARE.
         </xsl:when>
         <xsl:otherwise>
           <img src="/badge/{project}.svg"/>
+          <a href="/contrib/{project}">
+            <img src="/contrib-badge/{project}.svg" style="margin-left:1em;"/>
+          </a>
         </xsl:otherwise>
       </xsl:choose>
     </p>
