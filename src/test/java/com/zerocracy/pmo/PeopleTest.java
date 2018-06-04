@@ -120,7 +120,8 @@ public final class PeopleTest {
 
     @Test
     public void failsForIncorrectBankName() throws Exception {
-        final People people = new People(new FkProject()).bootstrap();
+        final FkFarm farm = new FkFarm(new FkProject());
+        final People people = new People(farm).bootstrap();
         final String bank = "test";
         this.thrown.expect(SoftException.class);
         this.thrown.expectMessage(
@@ -461,7 +462,8 @@ public final class PeopleTest {
     private void failsWallet(final String bank)
         throws IOException {
         final String wallet = "123456";
-        final People people = new People(new FkProject()).bootstrap();
+        final FkFarm farm = new FkFarm(new FkProject());
+        final People people = new People(farm).bootstrap();
         this.thrown.expect(SoftException.class);
         this.thrown.expectMessage(
             new FormattedText(" not valid: `%s`", wallet).asString()
@@ -471,7 +473,8 @@ public final class PeopleTest {
 
     private static void setsWallet(final String bank, final String wallet)
         throws IOException {
-        final People people = new People(new FkProject()).bootstrap();
+        final FkFarm farm = new FkFarm(new FkProject());
+        final People people = new People(farm).bootstrap();
         final String uid = "yegor64";
         people.wallet(uid, bank, wallet);
         MatcherAssert.assertThat(
