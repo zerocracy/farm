@@ -20,6 +20,7 @@ import com.zerocracy.Farm;
 import com.zerocracy.Par;
 import com.zerocracy.Policy;
 import com.zerocracy.SoftException;
+import com.zerocracy.pm.staff.Roles;
 import java.io.IOException;
 
 /**
@@ -60,7 +61,10 @@ public final class Exam {
     public void min(final String item, final int def) throws IOException {
         final int min = new Policy(this.farm).get(item, def);
         final int rank = new Awards(this.farm, this.login).bootstrap().total();
-        if (rank < min) {
+        final boolean admin = new Roles(new Pmo(this.farm))
+            .bootstrap()
+            .hasAnyRole(this.login);
+        if (rank < min && !admin) {
             final int par = Integer.parseInt(item.replaceAll("\\..+$", ""));
             throw new SoftException(
                 new Par(

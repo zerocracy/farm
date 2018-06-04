@@ -66,7 +66,7 @@ public final class RnkEstimatesTest {
         );
         for (final Map.Entry<String, Cash> job : jobs.entrySet()) {
             wbs.add(job.getKey());
-            orders.assign(job.getKey(), "test", "none");
+            orders.assign(job.getKey(), "test", 0L);
             estimates.update(job.getKey(), job.getValue());
         }
         MatcherAssert.assertThat(

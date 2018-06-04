@@ -57,7 +57,7 @@ public final class EstimatesTest {
         final Estimates estimates = new Estimates(project).bootstrap();
         final String first = "gh:yegor256/pdd#4";
         new Wbs(project).bootstrap().add(first);
-        new Orders(project).bootstrap().assign(first, "yegor256", "no");
+        new Orders(project).bootstrap().assign(first, "yegor256", 0L);
         estimates.update(first, new Cash.S("$45"));
         MatcherAssert.assertThat(
             estimates.get(first),
@@ -65,7 +65,7 @@ public final class EstimatesTest {
         );
         final String second = "gh:yegor256/pdd#1";
         new Wbs(project).bootstrap().add(second);
-        new Orders(project).bootstrap().assign(second, "yegor", "no");
+        new Orders(project).bootstrap().assign(second, "yegor", 0L);
         estimates.update(second, new Cash.S("$100"));
         MatcherAssert.assertThat(
             estimates.total(),

@@ -618,30 +618,30 @@ SOFTWARE.
                           <minimum>0.65</minimum>
                         </limit>
                         <!--
-                          @todo #474:30min branch coverage, complexity coverage and class coverage
-                           limits are disabled, because current coverage is too low.
-                           Let's add tests and increase class and branch coverage.
+                           @todo #613:30min Continue increasing coverages to reach
+                            branch coverage of 65% and class missed count of max 15.
+                            Remember to increase those coverages below in jacoco configuration.
                         -->
-                        <!--<limit>-->
-                        <!--<counter>BRANCH</counter>-->
-                        <!--<value>COVEREDRATIO</value>-->
-                        <!--<minimum>0.65</minimum>-->
-                        <!--</limit>-->
-                        <!--<limit>-->
-                        <!--<counter>COMPLEXITY</counter>-->
-                        <!--<value>COVEREDRATIO</value>-->
-                        <!--<minimum>0.57</minimum>-->
-                        <!--</limit>-->
+                        <limit>
+                          <counter>BRANCH</counter>
+                          <value>COVEREDRATIO</value>
+                          <minimum>0.50</minimum>
+                        </limit>
+                        <limit>
+                          <counter>COMPLEXITY</counter>
+                          <value>COVEREDRATIO</value>
+                          <minimum>0.57</minimum>
+                        </limit>
                         <limit>
                           <counter>METHOD</counter>
                           <value>COVEREDRATIO</value>
                           <minimum>0.57</minimum>
                         </limit>
-                        <!--<limit>-->
-                        <!--<counter>CLASS</counter>-->
-                        <!--<value>MISSEDCOUNT</value>-->
-                        <!--<maximum>15</maximum>-->
-                        <!--</limit>-->
+                        <limit>
+                          <counter>CLASS</counter>
+                          <value>MISSEDCOUNT</value>
+                          <maximum>61</maximum>
+                        </limit>
                       </limits>
                     </rule>
                   </rules>

@@ -80,11 +80,11 @@ public final class Orders {
      * Assign job to performer.
      * @param job The job to assign
      * @param login The login of the user
-     * @param reason The reason of this order
+     * @param reason The reason of this order (ID of the claim)
      * @throws IOException If fails
      */
     public void assign(final String job, final String login,
-        final String reason) throws IOException {
+        final long reason) throws IOException {
         if (this.assigned(job)) {
             throw new SoftException(
                 String.format(

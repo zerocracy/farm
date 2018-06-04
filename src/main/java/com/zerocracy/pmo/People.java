@@ -26,6 +26,7 @@ import com.zerocracy.SoftException;
 import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.cash.CashParsingException;
+import com.zerocracy.pm.staff.Roles;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Iterator;
@@ -232,7 +233,8 @@ public final class People {
                         mentor
                     )
                 ).size();
-            if (current >= max) {
+            if (current >= max
+                && !new Roles(this.pmo).bootstrap().hasAnyRole(mentor)) {
                 throw new SoftException(
                     new Par(
                         "You can not invite more than %d students;",
@@ -387,32 +389,32 @@ public final class People {
                 ).say(bank)
             );
         }
-        if ("paypal".equals(wallet)
+        if ("paypal".equals(bank)
             && !wallet.matches("\\b[\\w.%-]+@[-.\\w]+\\.[A-Za-z]{2,4}\\b")) {
             throw new SoftException(
-                new Par("Email `%s` is not valid").say(wallet)
+                new Par("Email address is not valid: `%s`").say(wallet)
             );
         }
-        if ("btc".equals(wallet)
+        if ("btc".equals(bank)
             && !wallet.matches("(1|3|bc1)[a-zA-Z0-9]{20,40}")) {
             throw new SoftException(
                 new Par("Bitcoin address is not valid: `%s`").say(wallet)
             );
         }
-        if ("bch".equals(wallet)
-            && !wallet.matches("[pq]{41}")) {
+        if ("bch".equals(bank)
+            && !wallet.matches("[pq][a-z0-9]{41}")) {
             throw new SoftException(
                 new Par("Bitcoin Cash address is not valid: `%s`").say(wallet)
             );
         }
-        if ("eth".equals(wallet)
-            && !wallet.matches("[0-9a-f]{42}")) {
+        if ("eth".equals(bank)
+            && !wallet.matches("(0x)?[0-9a-fA-F]{40}")) {
             throw new SoftException(
-                new Par("Etherium address is not valid: `%s`").say(wallet)
+                new Par("Ethereum address is not valid: `%s`").say(wallet)
             );
         }
-        if ("ltc".equals(wallet)
-            && !wallet.matches("[0-9a-zA-Z]{35}")) {
+        if ("ltc".equals(bank)
+            && !wallet.matches("[0-9a-zA-Z]{34}")) {
             throw new SoftException(
                 new Par("Litecoin address is not valid: `%s`").say(wallet)
             );
