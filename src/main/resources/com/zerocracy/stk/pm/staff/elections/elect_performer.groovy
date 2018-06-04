@@ -26,7 +26,6 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.Claims
 import com.zerocracy.pm.cost.Boosts
-import com.zerocracy.pm.cost.Estimates
 import com.zerocracy.pm.cost.Ledger
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.qa.Reviews
@@ -34,7 +33,6 @@ import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pm.staff.Elections
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pm.staff.ranks.RnkBoost
-import com.zerocracy.pm.staff.ranks.RnkEstimates
 import com.zerocracy.pm.staff.ranks.RnkGithubBug
 import com.zerocracy.pm.staff.ranks.RnkRev
 import com.zerocracy.pm.staff.votes.VsBanned
@@ -73,7 +71,6 @@ def exec(Project project, XML xml) {
   List<String> jobs = wbs.iterate().toList()
   [
       new RnkGithubBug(new ExtGithub(farm).value()),
-      new RnkEstimates(new Estimates(project).bootstrap()),
       new RnkBoost(new Boosts(project).bootstrap()),
       new RnkRev(new Wbs(project).bootstrap())
   ].each { jobs.sort(it) }
