@@ -179,7 +179,7 @@ SOFTWARE.
     <dependency>
       <groupId>org.codehaus.groovy</groupId>
       <artifactId>groovy-all</artifactId>
-      <version>2.3.1</version>
+      <version>2.4.15</version>
     </dependency>
     <dependency>
       <groupId>org.takes</groupId>
@@ -565,7 +565,7 @@ SOFTWARE.
                   <classpathScope>compile</classpathScope>
                   <source><![CDATA[
                     import groovy.io.FileType
-                    def dir = new File("src/main/resources/com/zerocracy/stk")
+                    def dir = new File("src/main/groovy/com/zerocracy/stk")
                     dir.eachFileRecurse (FileType.FILES) { file ->
                       if (file.text.findAll('def [a-z]+ = ')) {
                         throw new Exception(
@@ -648,6 +648,12 @@ SOFTWARE.
                   <excludes combine.children="append">
                     <exclude>com/zerocracy/pmo/People.java</exclude>
                     <exclude>com/zerocracy/pings/*.*</exclude>
+                    <!--
+                      @todo #747:30min Groovy scripts are excluded from coverage report
+                       because they are not fully tested. Let's add tests for them and remove this
+                       `<exclude>` line.
+                    -->
+                    <exclude>com/zerocracy/stk/**/*</exclude>
                   </excludes>
                 </configuration>
               </execution>

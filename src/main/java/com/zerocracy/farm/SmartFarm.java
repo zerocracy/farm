@@ -22,19 +22,17 @@ import com.zerocracy.entry.ExtFarm;
 import com.zerocracy.farm.footprint.FtFarm;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.farm.reactive.RvFarm;
-import com.zerocracy.farm.reactive.StkGroovy;
+import com.zerocracy.farm.reactive.StkRuntime;
 import com.zerocracy.farm.ruled.RdFarm;
 import com.zerocracy.farm.strict.StrictFarm;
 import com.zerocracy.farm.sync.SyncFarm;
-import java.util.TreeSet;
-import java.util.regex.Pattern;
+import groovy.lang.Script;
 import org.cactoos.Scalar;
-import org.cactoos.io.ResourceOf;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.scalar.SolidScalar;
 import org.cactoos.scalar.UncheckedScalar;
 import org.reflections.Reflections;
-import org.reflections.scanners.ResourcesScanner;
+import org.reflections.scanners.SubTypesScanner;
 
 /**
  * Smart farm.
@@ -86,15 +84,15 @@ public final class SmartFarm implements Scalar<Farm> {
      */
     private Iterable<Stakeholder> stakeholders() {
         return new Mapped<>(
-            path -> new StkSafe(
-                path, this.value(),
-                new StkGroovy(new ResourceOf(path), path, this.value())
+            cls -> new StkSafe(
+                cls.getSimpleName(),
+                this.value(),
+                new StkRuntime(cls, this.value())
             ),
-            new TreeSet<>(
-                new Reflections(
-                    "com.zerocracy.stk", new ResourcesScanner()
-                ).getResources(Pattern.compile(".*\\.groovy"))
-            )
+            new Reflections(
+                "com.zerocracy.stk",
+                new SubTypesScanner(false)
+            ).getSubTypesOf(Script.class)
         );
     }
 }
