@@ -32,7 +32,6 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.stream.JsonParsingException;
 import org.cactoos.func.UncheckedProc;
-import org.takes.HttpException;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
@@ -147,12 +146,7 @@ public final class TkGithub implements Take, Runnable {
     @Override
     public Response act(final Request req) throws IOException {
         final RqForm form = new RqFormBase(req);
-        final Iterable<String> body;
-        try {
-            body = form.param("payload");
-        } catch (final IllegalArgumentException err) {
-            throw new HttpException(HttpURLConnection.HTTP_BAD_REQUEST, err);
-        }
+        final Iterable<String> body = form.param("payload");
         if (!body.iterator().hasNext()) {
             throw new RsForward(
                 new RsParFlash(
@@ -201,11 +195,11 @@ public final class TkGithub implements Take, Runnable {
      */
     private static JsonObject json(final String body) {
         try (final JsonReader reader =
-                 Json.createReader(
-                     new ByteArrayInputStream(
-                         body.getBytes(StandardCharsets.UTF_8)
-                     )
-                 )) {
+            Json.createReader(
+                new ByteArrayInputStream(
+                    body.getBytes(StandardCharsets.UTF_8)
+                )
+            )) {
             return reader.readObject();
         } catch (final JsonParsingException ex) {
             throw new IllegalArgumentException(
