@@ -466,7 +466,7 @@ SOFTWARE.
   </build>
   <profiles>
     <profile>
-      <id>qulice</id>
+      <id>codenarc</id>
       <dependencies>
         <dependency>
           <groupId>org.codenarc</groupId>
@@ -477,21 +477,6 @@ SOFTWARE.
       </dependencies>
       <build>
         <plugins>
-          <plugin>
-            <groupId>com.qulice</groupId>
-            <artifactId>qulice-maven-plugin</artifactId>
-            <configuration>
-              <excludes combine.children="append">
-                <exclude>checkstyle:/src/main/resources/png/.*</exclude>
-                <exclude>checkstyle:/src/main/resources/com/zerocracy/tk/project/badge.sketch</exclude>
-                <exclude>checkstyle:/src/main/resources/com/zerocracy/tk/project/contrib-badge.sketch</exclude>
-                <exclude>findbugs:.*</exclude>
-                <exclude>codenarc:**/*</exclude>
-                <exclude>duplicatefinder:.*</exclude>
-              </excludes>
-              <license>file:${basedir}/LICENSE.txt</license>
-            </configuration>
-          </plugin>
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>exec-maven-plugin</artifactId>
@@ -539,12 +524,12 @@ SOFTWARE.
                         for (XML file : pkg.nodes('.//File')) {
                           for (XML violation : file.nodes('.//Violation')) {
                             printf(
-                              '%s/%s[%s] %s: %s\n',
-                              pkg.xpath('@path').get(0),
-                              file.xpath('@name').get(0),
-                              violation.xpath('@lineNumber').get(0),
-                              violation.xpath('@ruleName').get(0),
-                              violation.xpath('Message/text()').get(0)
+                                '%s/%s[%s] %s: %s\n',
+                                pkg.xpath('@path').get(0),
+                                file.xpath('@name').get(0),
+                                violation.xpath('@lineNumber').get(0),
+                                violation.xpath('@ruleName').get(0),
+                                violation.xpath('Message/text()').get(0)
                             )
                           }
                         }
@@ -552,7 +537,7 @@ SOFTWARE.
                       throw new Exception('CodeNarc violations see above')
                     }
                     println('All ' + xml.xpath('//PackageSummary/@totalFiles').get(0) + ' Groovy files are clean!')
-                  ]]></source>
+                    ]]></source>
                 </configuration>
               </execution>
               <execution>
@@ -569,15 +554,37 @@ SOFTWARE.
                     dir.eachFileRecurse (FileType.FILES) { file ->
                       if (file.text.findAll('def [a-z]+ = ')) {
                         throw new Exception(
-                          'Don\'t use def, explicitly specify types in ' + file
+                            'Don\'t use def, explicitly specify types in ' + file
                         )
                       }
                     }
                     println('All Groovy files are clean!')
-                  ]]></source>
+                    ]]></source>
                 </configuration>
               </execution>
             </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>qulice</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.qulice</groupId>
+            <artifactId>qulice-maven-plugin</artifactId>
+            <configuration>
+              <excludes combine.children="append">
+                <exclude>checkstyle:/src/main/resources/png/.*</exclude>
+                <exclude>checkstyle:/src/main/resources/com/zerocracy/tk/project/badge.sketch</exclude>
+                <exclude>checkstyle:/src/main/resources/com/zerocracy/tk/project/contrib-badge.sketch</exclude>
+                <exclude>findbugs:.*</exclude>
+                <exclude>codenarc:**/*</exclude>
+                <exclude>duplicatefinder:.*</exclude>
+              </excludes>
+              <license>file:${basedir}/LICENSE.txt</license>
+            </configuration>
           </plugin>
           <plugin>
             <groupId>org.jacoco</groupId>
