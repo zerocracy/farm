@@ -23,7 +23,7 @@ import java.io.IOException;
 import org.xembly.Directives;
 
 /**
- * Available vacancies.
+ * Verbosity of a user.
  *
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$

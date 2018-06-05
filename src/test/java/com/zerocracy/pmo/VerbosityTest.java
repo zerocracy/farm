@@ -33,7 +33,7 @@ import org.junit.Test;
  */
 public final class VerbosityTest {
     @Test
-    public void addVerbosity() throws Exception {
+    public void addsVerbosity() throws Exception {
         final Pmo pmo = new Pmo(new FkFarm());
         final FkProject pkt = new FkProject();
         final String login = "user1234";
@@ -52,8 +52,8 @@ public final class VerbosityTest {
                     "/verbosity/order[@job = 'gh:test/test#1' and ./project/text() = '%s']/messages/text()",
                     pkt.pid()
                 )
-            ).get(0),
-            Matchers.equalTo("1")
+            ),
+            Matchers.contains("1")
         );
     }
 }
