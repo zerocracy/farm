@@ -262,7 +262,7 @@ and never hard-code any business constants.
 
 ## How to contribute
 
-Just fork it, make changes, run `mvn clean install -Pqulice -Pcodenarc`,
+Just fork it, make changes, run `mvn clean install -Pqulice,codenarc`,
 and submit a pull request. Read
 [this](http://www.yegor256.com/2014/04/15/github-guidelines.html), if lost.
 

@@ -77,4 +77,31 @@ public interface Rebound {
         }
     }
 
+    /**
+     * Fake rebound.
+     */
+    final class Fake implements Rebound {
+        /**
+         * Text to return.
+         */
+        private final String txt;
+        /**
+         * Ctor.
+         */
+        public Fake() {
+            this("");
+        }
+        /**
+         * Ctor.
+         * @param text Text
+         */
+        public Fake(final String text) {
+            this.txt = text;
+        }
+        @Override
+        public String react(final Farm farm, final Github github,
+            final JsonObject event) {
+            return this.txt;
+        }
+    }
 }
