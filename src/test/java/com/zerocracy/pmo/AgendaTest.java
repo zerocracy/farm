@@ -126,10 +126,10 @@ public final class AgendaTest {
     public void addTitleFailsIfNoJob() throws Exception {
         this.exception.expect(SoftException.class);
         this.exception.expectMessage(
-            Matchers.containsString("is not in the agenda of @user[/z]")
-        );
-        this.exception.expectMessage(
-            Matchers.containsString("can't set title")
+            Matchers.allOf(
+                Matchers.containsString("is not in the agenda of @user[/z]"),
+                Matchers.containsString("can't set title")
+            )
         );
         final Path tmp = this.folder.newFolder().toPath();
         final FkProject project = new FkProject(tmp, "AGENDPRJ1");
