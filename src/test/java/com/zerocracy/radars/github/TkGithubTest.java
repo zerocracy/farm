@@ -16,15 +16,13 @@
  */
 package com.zerocracy.radars.github;
 
-import com.zerocracy.Farm;
-import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.props.PropsFarm;
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
-import org.takes.Take;
+import org.takes.HttpException;
 import org.takes.facets.hamcrest.HmRsStatus;
 import org.takes.rq.RqFake;
 import org.takes.rq.RqWithBody;
@@ -37,15 +35,13 @@ import org.takes.rq.RqWithBody;
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class TkGithubTest {
-
     @Test
     public void parsesJson() throws Exception {
-        final Farm farm = new PropsFarm(new FkFarm());
-        final Take take = new TkGithub(
-            farm, (frm, github, event) -> "nothing"
-        );
         MatcherAssert.assertThat(
-            take.act(
+            new TkGithub(
+                new PropsFarm(),
+                (farm, github, event) -> "nothing"
+            ).act(
                 new RqWithBody(
                     new RqFake("POST", "/"),
                     String.format(
@@ -58,6 +54,19 @@ public final class TkGithubTest {
                 )
             ),
             new HmRsStatus(HttpURLConnection.HTTP_OK)
+        );
+    }
+
+    @Test(expected = HttpException.class)
+    public void handleNonEncodedPayload() throws Exception {
+        new TkGithub(
+            new PropsFarm(),
+            (farm, github, event) -> "none"
+        ).act(
+            new RqWithBody(
+                new RqFake(),
+                "payload={\"x\":\"% r\"}"
+            )
         );
     }
 }

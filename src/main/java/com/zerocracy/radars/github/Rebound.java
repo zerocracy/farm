@@ -76,5 +76,4 @@ public interface Rebound {
             return String.join("; ", answers);
         }
     }
-
 }
