@@ -35,13 +35,8 @@ import org.xembly.Directives;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.12
- * @todo #422:30min Title element, of an order in agenda, has been declared in
- *  agenda.xsd. Let's add method title(...), which will set the title of
- *  on order and add a new stakeholder, set_agenda_title_from_github.groovy,
- *  which will get title of a job from GitHub and set it to Agenda. THe reason
- *  for the new stakeholder is that not all orders will come from Github, some
- *  may also come from Jira, Trello etc, in the future.
  */
+@SuppressWarnings("PMD.TooManyMethods")
 public final class Agenda {
 
     /**
@@ -124,9 +119,7 @@ public final class Agenda {
      */
     public boolean exists(final String job) throws IOException {
         try (final Item item = this.item()) {
-            return !new Xocument(item.path()).nodes(
-                String.format("/agenda/order[@job= '%s']", job)
-            ).isEmpty();
+            return !new Xocument(item.path()).nodes(Agenda.path(job)).isEmpty();
         }
     }
 
@@ -137,6 +130,7 @@ public final class Agenda {
      * @param role The role
      * @throws IOException If fails
      */
+    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     public void add(final Project project, final String job,
         final String role) throws IOException {
         if (this.exists(job)) {
@@ -177,7 +171,7 @@ public final class Agenda {
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()
-                    .xpath(String.format("/agenda/order[@job='%s']", job))
+                    .xpath(Agenda.path(job))
                     .strict(1)
                     .remove()
             );
@@ -215,7 +209,7 @@ public final class Agenda {
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()
-                    .xpath(String.format("/agenda/order[@job='%s' ]", job))
+                    .xpath(Agenda.path(job))
                     .strict(1)
                     .addIf("estimate")
                     .set(cash)
@@ -224,7 +218,7 @@ public final class Agenda {
     }
 
     /**
-     * Add estimate.
+     * Add impediment.
      * @param job The job to mark
      * @param reason The reason
      * @throws IOException If fails
@@ -241,10 +235,36 @@ public final class Agenda {
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()
-                    .xpath(String.format("/agenda/order[@job= '%s' ]", job))
+                    .xpath(Agenda.path(job))
                     .strict(1)
                     .addIf("impediment")
                     .set(reason)
+            );
+        }
+    }
+
+    /**
+     * Add title of the specified job.
+     * @param job The job to modify
+     * @param title The title to add
+     * @throws IOException If fails
+     */
+    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
+    public void title(final String job, final String title) throws IOException {
+        if (!this.exists(job)) {
+            throw new SoftException(
+                new Par(
+                    "Job %s is not in the agenda of @%s, can't set title"
+                ).say(job, this.login)
+            );
+        }
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                new Directives()
+                    .xpath(Agenda.path(job))
+                    .strict(1)
+                    .addIf("title")
+                    .set(title)
             );
         }
     }
@@ -257,6 +277,18 @@ public final class Agenda {
     private Item item() throws IOException {
         return this.pmo.acq(
             String.format("agenda/%s.xml", this.login)
+        );
+    }
+
+    /**
+     * Construct the pull path to the given job.
+     * @param job The job
+     * @return The full path to the given job
+     */
+    private static String path(final String job) {
+        return String.format(
+            "/agenda/order[@job='%s']",
+            job
         );
     }
 }
