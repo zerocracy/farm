@@ -16,11 +16,14 @@
  */
 package com.zerocracy.entry;
 
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.jcabi.s3.Bucket;
+import com.jcabi.s3.Ocket;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import org.cactoos.io.InputStreamOf;
 
 /**
  * Heap dump in S3.
@@ -34,7 +37,6 @@ import java.nio.file.Path;
  *  be implemented after #680 would be resolved as part
  *  of the routine work, that needs to be done in background.
  */
-@SuppressWarnings({"PMD.SingularField", "PMD.UnusedPrivateField"})
 public final class HeapDump {
 
     /**
@@ -53,13 +55,18 @@ public final class HeapDump {
     private final Path temp;
 
     /**
+     * Name of file.
+     */
+    private final String file;
+
+    /**
      * Ctor.
      * @param bkt Bucket
      * @param pfx Prefix
      * @throws IOException If fails
      */
     public HeapDump(final Bucket bkt, final String pfx) throws IOException {
-        this(bkt, pfx, Files.createTempDirectory(""));
+        this(bkt, pfx, Files.createTempDirectory(""), "heapdump.hprof");
     }
 
     /**
@@ -67,11 +74,15 @@ public final class HeapDump {
      * @param bkt Bucket
      * @param pfx Prefix
      * @param tmp Storage
+     * @param file File
+     * @checkstyle ParameterNumber (4 lines)
      */
-    public HeapDump(final Bucket bkt, final String pfx, final Path tmp) {
+    public HeapDump(final Bucket bkt, final String pfx, final Path tmp,
+        final String file) {
         this.bucket = bkt;
         this.prefix = pfx;
         this.temp = tmp;
+        this.file = file;
     }
 
     /**
@@ -91,15 +102,29 @@ public final class HeapDump {
 
     /**
      * Save dump to S3.
-     * @todo #400:30min Should save heap dump to S3 bucket
-     *  if file with dump exists, but only do that, if there
-     *  is new version of file available. Ignore, if we
-     *  already have latest version in S3. Should be covered
-     *  with unit and integration tests.
+     * @throws IOException If fails
      */
-    public void save() {
-        throw new UnsupportedOperationException(
-            "HeapDump#save() not yet implemented"
-        );
+    public void save() throws IOException {
+        final String key = String.format("%s%s", this.prefix, this.file);
+        final Path dump =
+            this.temp.resolve(key.replaceAll("[<>:\"\\/|?*]", "_"));
+        if (!dump.toFile().exists()) {
+            throw new IOException(
+                String.format(
+                    "Dump file '%s' does not exist, cannot save to S3",
+                    dump
+                )
+            );
+        }
+        final Ocket ocket = this.bucket.ocket(key);
+        if (!ocket.exists()
+            || ocket.meta().getLastModified().getTime()
+            < Files.getLastModifiedTime(dump).toMillis()) {
+            try (final InputStream in = new InputStreamOf(dump)) {
+                final ObjectMetadata meta = new ObjectMetadata();
+                meta.setContentLength(Files.size(dump));
+                ocket.write(in, meta);
+            }
+        }
     }
 }
