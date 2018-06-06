@@ -40,7 +40,7 @@ public final class TkGithubTest {
         MatcherAssert.assertThat(
             new TkGithub(
                 new PropsFarm(),
-                new Rebound.Fake("nothing")
+                (farm, github, event) -> "nothing"
             ).act(
                 new RqWithBody(
                     new RqFake("POST", "/"),
@@ -61,7 +61,7 @@ public final class TkGithubTest {
     public void handleNonEncodedPayload() throws Exception {
         new TkGithub(
             new PropsFarm(),
-            new Rebound.Fake()
+            (farm, github, event) -> "none"
         ).act(
             new RqWithBody(
                 new RqFake(),
