@@ -38,7 +38,6 @@ import org.junit.rules.TemporaryFolder;
  * @checkstyle AvoidDuplicateLiterals (500 lines)
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle JavadocVariableCheck (500 lines)
- * @checkstyle StringLiteralsConcatenationCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class AgendaTest {
@@ -127,9 +126,10 @@ public final class AgendaTest {
     public void addTitleFailsIfNoJob() throws Exception {
         this.exception.expect(SoftException.class);
         this.exception.expectMessage(
-            "Job [#5](https://github.com/test5/test/issues/5) "
-                + "is not in the agenda of @user[/z]"
-                + "(https://www.0crat.com/u/user), can't set title"
+            Matchers.containsString("is not in the agenda of @user[/z]")
+        );
+        this.exception.expectMessage(
+            Matchers.containsString("can't set title")
         );
         final Path tmp = this.folder.newFolder().toPath();
         final FkProject project = new FkProject(tmp, "AGENDPRJ1");

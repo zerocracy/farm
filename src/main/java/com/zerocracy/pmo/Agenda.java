@@ -261,7 +261,7 @@ public final class Agenda {
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()
-                    .xpath(path(job))
+                    .xpath(Agenda.path(job))
                     .strict(1)
                     .addIf("title")
                     .set(title)
