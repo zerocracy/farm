@@ -864,10 +864,14 @@ SOFTWARE.
                 <goals>
                   <goal>reserve-network-port</goal>
                 </goals>
+                <phase>pre-integration-test</phase>
                 <configuration>
                   <portNames>
                     <portName>dynamo.port</portName>
                   </portNames>
+                  <minPortNumber>49152</minPortNumber>
+                  <maxPortNumber>65535</maxPortNumber>
+                  <randomPort>true</randomPort>
                 </configuration>
               </execution>
             </executions>
