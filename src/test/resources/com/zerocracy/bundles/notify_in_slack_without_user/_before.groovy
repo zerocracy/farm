@@ -20,20 +20,17 @@ import com.jcabi.xml.XML
 import com.ullink.slack.simpleslackapi.SlackChannel
 import com.ullink.slack.simpleslackapi.SlackSession
 import com.ullink.slack.simpleslackapi.SlackUser
-import com.zerocracy.entry.ExtSlack
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.entry.ExtSlack
 import com.zerocracy.pm.ClaimOut
 import org.cactoos.list.SolidList
 import org.mockito.Mockito
 
 /**
- * @todo #62:30min We have to implement simple
- *  slack session object to use inside 'notify_in_slack'
- *  stakeholder-script and fake object for tests.
- *  This session object may wrap `SlackSession` from
- *  `com.ullink.slack.simpleslackapi`.
- *  After that we should get rid of `Mockito` in this test.
+ * @todo # 89:30min Add a new class FakeSkSession that implements interface
+ *  SkSession, and then use this new class in tests instead of using Mockito.
+ *  This task can be implemented only when SkSession replaces SlackSession.
  */
 def exec(Project project, XML xml) {
   String channelId = 'C123'
