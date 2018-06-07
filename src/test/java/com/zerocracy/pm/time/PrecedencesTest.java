@@ -32,14 +32,14 @@ import org.junit.Test;
  */
 public final class PrecedencesTest {
     @Test
-    public void iterateAllAddedPrecedences() throws Exception {
+    public void iteratesAllAddedPrecedences() throws Exception {
         final Precedences precedences = new Precedences(new FkProject())
             .bootstrap();
         precedences.add("finish-to-start", "gh:test/test#1", "gh:test/test#2");
         precedences.add("start-to-start", "gh:test/test#4", "gh:test/test#5");
-        for(final XML prec : precedences.iterate()) {
+        for (final XML prec : precedences.iterate()) {
             MatcherAssert.assertThat(
-                prec.xpath("/precedence/successor/@type"),
+                prec.xpath("successor/@type").get(0),
                 Matchers.equalTo("job")
             );
         }

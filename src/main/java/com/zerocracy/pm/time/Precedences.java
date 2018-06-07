@@ -23,21 +23,16 @@ import com.zerocracy.Xocument;
 import java.io.IOException;
 import org.xembly.Directives;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
  * A Project's precedences. There are 4 types of precedence: finish-to-start,
  * start-to-start, finish-to-finish, and start-to-finish. Mode about it, here:
  * https://project-management-knowledge.com/definitions/p/precedence-diagramming-method/
- * 
+ *
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.23
  */
+@SuppressWarnings({"PMD.UseObjectForClearerAPI", "PMD.AvoidDuplicateLiterals"})
 public final class Precedences {
 
     /**
@@ -80,22 +75,23 @@ public final class Precedences {
         final String attr = "job";
         this.add(type, predecessor, attr, successor, attr);
     }
-    
+
     /**
      * Add a precedence.
      * @param type Type of the precedence (one of the four types).
      * @param predecessor The predecessor.
-     * @param predecessorType The predecessor's type.
+     * @param prectype The predecessor's type.
      * @param successor The successor.
-     * @param successorType The successor's type.
+     * @param suctype The successor's type.
      * @throws IOException If fails
+     * @checkstyle ParameterNumberCheck (10 lines)
      */
     public void add(
         final String type,
         final String predecessor,
-        final String predecessorType,
+        final String prectype,
         final String successor,
-        final String successorType
+        final String suctype
     ) throws IOException {
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
@@ -104,11 +100,13 @@ public final class Precedences {
                     .add("precedence")
                     .add("type")
                     .set(type)
+                    .up()
                     .add("predecessor")
-                    .attr("type", predecessorType)
+                    .attr("type", prectype)
                     .set(predecessor)
+                    .up()
                     .add("successor")
-                    .attr("type", successorType)
+                    .attr("type", suctype)
                     .set(successor)
                     .up()
                     .up()
@@ -127,7 +125,7 @@ public final class Precedences {
                 .nodes("/precedences/precedence");
         }
     }
-    
+
     /**
      * The item.
      * @return Item
