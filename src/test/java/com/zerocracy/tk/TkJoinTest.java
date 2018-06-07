@@ -20,7 +20,10 @@ import com.jcabi.matchers.XhtmlMatchers;
 import com.zerocracy.Farm;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.props.PropsFarm;
+import com.zerocracy.pmo.People;
 import java.net.HttpURLConnection;
+import java.util.Date;
+import org.cactoos.iterable.IterableOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -74,6 +77,33 @@ public final class TkJoinTest {
                 new HmRsStatus(HttpURLConnection.HTTP_SEE_OTHER),
                 new HmRsHeader("Location", "/join")
             )
+        );
+    }
+
+    @Test
+    public void rejectsIfAlreadyApplied() throws Exception {
+        final Farm farm = new PropsFarm(new FkFarm());
+        final People people = new People(farm).bootstrap();
+        final String uid = "yegor256";
+        people.touch(uid);
+        people.apply(uid, new Date());
+        final RqWithUser req = new RqWithUser(
+            farm,
+            new RqFake("POST", "/join-post")
+        );
+        MatcherAssert.assertThat(
+            new IterableOf<>(""),
+            Matchers.contains(Matchers.startsWith(""))
+        );
+        people.breakup(uid);
+        MatcherAssert.assertThat(
+            new TkApp(farm).act(
+                new RqWithBody(
+                    req,
+                    "personality=INTJ-A&stackoverflow=187241"
+                )
+            ),
+            new HmRsHeader("Set-Cookie", Matchers.iterableWithSize(2))
         );
     }
 }

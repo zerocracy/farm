@@ -22,6 +22,9 @@ import com.zerocracy.Policy;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pmo.People;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
@@ -37,10 +40,6 @@ import org.takes.rq.form.RqFormSmart;
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.20
- * @todo #653:30min We should allow user to send `/join` requests only once
- *  a week, it can be checked and updated via People.applied methods.
- *  The 7 days value can be accessed via Par after
- *  https://github.com/zerocracy/zerocracy.github.io/issues/9 fix.
  * @todo #800:30min Requests to /join should add an entry to 'resumes.xml'
  *  then an 'examiner' should be assigned. When the examiner "invites" a user,
  *  we check whether there was a resume for that user.
@@ -80,6 +79,23 @@ public final class TkJoin implements TkRegex {
                     new Par(
                         "You already have a mentor (@%s), why again?"
                     ).say(people.mentor(author)),
+                    Level.WARNING
+                ),
+                "/join"
+            );
+        }
+        final LocalDateTime when = LocalDateTime.ofInstant(
+            people.appliedTime(author).toInstant(),
+            ZoneOffset.UTC
+        );
+        final long days = (long) new Policy().get("1.lag", 16);
+        if (when.isBefore(LocalDateTime.now(ZoneOffset.UTC).plusDays(days))) {
+            throw new RsForward(
+                new RsParFlash(
+                    new Par(
+                        "You can apply only one time in %d days, ",
+                        "you've applied %s"
+                    ).say(days, when.format(DateTimeFormatter.ISO_LOCAL_DATE)),
                     Level.WARNING
                 ),
                 "/join"
