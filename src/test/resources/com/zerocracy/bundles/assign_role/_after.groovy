@@ -23,8 +23,19 @@ import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
+  Roles roles = new Roles(project).bootstrap()
   MatcherAssert.assertThat(
-    new Roles(project).bootstrap().allRoles('g4s8'),
+    'DEV roles was not assigned to g4s8',
+    roles.allRoles('g4s8'),
     Matchers.contains(Matchers.equalTo('DEV'))
   )
+  // @todo #989:30min MkGithub can't create private repository,
+  //  any repository from MkGithub is public, see _before in this test.
+  //  I suppose it's bug in jcabi-github so we need to submit it there
+  //  and uncomment this assertion then.
+//  MatcherAssert.assertThat(
+//    'DEV role was assigned to anonymous',
+//    roles.allRoles('anonymous'),
+//    Matchers.emptyIterable()
+//  )
 }

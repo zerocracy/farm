@@ -16,16 +16,21 @@
  */
 package com.zerocracy.stk.pm.staff.roles
 
+import com.jcabi.github.Coordinates
+import com.jcabi.github.Github
+import com.jcabi.github.Repo
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.SoftException
 import com.zerocracy.cash.Cash
+import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.cost.Rates
 import com.zerocracy.pm.staff.Roles
+import com.zerocracy.pmo.Catalog
 import com.zerocracy.pmo.People
 
 def exec(Project project, XML xml) {
@@ -48,6 +53,23 @@ def exec(Project project, XML xml) {
         '@%s doesn\'t have a payment method configured yet,',
         'we won\'t be able to pay them;',
         'the rate can\'t be set.'
+      ).say(login)
+    )
+  }
+  Github github = new ExtGithub(farm).value()
+  boolean hasAccess = true
+  for (String link: new Catalog(farm).links(project.pid(), 'github')) {
+    Repo.Smart repo = new Repo.Smart(github.repos().get(new Coordinates.Simple(link)))
+    if (repo.private && !repo.collaborators().isCollaborator(login)) {
+      hasAccess = false
+      break
+    }
+  }
+  if (!hasAccess) {
+    throw new SoftException(
+      new Par(
+        '@%s doesn\'t have an access in your repositories,',
+        'we won\'t be able to assign tasks'
       ).say(login)
     )
   }
