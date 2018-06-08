@@ -28,10 +28,6 @@ import java.io.IOException;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.23
- * @todo #540:30min Test cases are missing for this class. Add some
- *  unit tests and, when Negligence is finished (it is currently in
- *  development), use this voter inside elect_performer.groovy -- make
- *  sure to give it a big weight.
  */
 public final class VsNegligence implements Votes {
 
@@ -52,13 +48,7 @@ public final class VsNegligence implements Votes {
     public double take(
         final String login, final StringBuilder log
     ) throws IOException {
-        final double rate;
-        if (new Negligence(this.pmo, login).bootstrap().high()) {
-            rate = 0.0d;
-        } else {
-            rate = 1.0d;
-        }
-        return rate;
+        throw new UnsupportedOperationException("Not yet implemented!");
     }
 
 }

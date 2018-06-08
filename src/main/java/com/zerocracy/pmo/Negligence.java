@@ -31,7 +31,12 @@ import java.io.IOException;
  * @since 0.23
  * @todo #540:30min Finish implementing and testing this class,
  *  decide on the XML format and declare it in /datum repository.
- *  When done, use this metric inside resin_on_delay.groovy.
+ *  When done, use this metric inside resin_on_delay.groovy. After this,
+ *  finish implementing the voter VsNegligence: similar to VsSpeed and
+ *  VsWorkload, it should vote for the user with the highest negligence,
+ *  most number of delays. When done, the voted should be declared in
+ *  elect_performer.groovy with weight -1 (since the highest negligence will
+ *  have the highest vote).
  */
 public final class Negligence {
 
@@ -65,10 +70,10 @@ public final class Negligence {
     }
 
     /**
-     * Is the user's negligence high or not?
-     * @return True if high, false otherwise.
+     * How many times did the user lost tasks due to negligence?
+     * @return Integer number of delays..
      */
-    public boolean high() {
+    public int delays() {
         throw new UnsupportedOperationException("Not yet implemented!");
     }
 
