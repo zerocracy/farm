@@ -56,16 +56,13 @@ public final class ResumesTest {
             );
         try (final Item item = new Pmo(farm).acq("resumes.xml")) {
             MatcherAssert.assertThat(
-                new Xocument(item)
-                    .nodes("/resumes/resume[@login = 'new']"),
+                new Xocument(item).nodes("/resumes/resume[@login = 'new']"),
                 Matchers.contains(
-                    Matchers.allOf(
-                        // @checkstyle LineLength (5 line)
-                        XhtmlMatchers.hasXPath("resume/text[text() = 'Invite me']"),
-                        XhtmlMatchers.hasXPath("resume/submitted[text() = '2018-01-01T00:00:00']"),
-                        XhtmlMatchers.hasXPath("resume/personality[text() = 'INTJ-A']"),
-                        XhtmlMatchers.hasXPath("resume/stackoverflow[text() = '187141']"),
-                        XhtmlMatchers.hasXPath("resume/telegram[text() = 'test']")
+                    XhtmlMatchers.hasXPaths(
+                        "resume/text[text() = 'Invite me']",
+                        "resume/submitted[text() = '2018-01-01T00:00:00']",
+                        "resume/personality[text() = 'INTJ-A']",
+                        "resume/stackoverflow[text() = '187141']"
                     )
                 )
             );

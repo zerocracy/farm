@@ -105,7 +105,6 @@ public final class Resumes {
                     .up()
                     .add("telegram")
                     .set(telegram)
-                    .up()
             );
         }
     }
