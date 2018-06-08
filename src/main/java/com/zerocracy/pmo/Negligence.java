@@ -33,8 +33,8 @@ import java.io.IOException;
  *  decide on the XML format and declare it in /datum repository.
  *  When done, use this metric inside resin_on_delay.groovy. After this,
  *  finish implementing the voter VsNegligence: similar to VsSpeed and
- *  VsWorkload, it should vote for the user with the highest negligence,
- *  most number of delays. When done, the voted should be declared in
+ *  VsWorkload, it should vote for the user with the highest negligence
+ *  (most number of delays). When done, the voter should be declared in
  *  elect_performer.groovy with weight -1 (since the highest negligence will
  *  have the highest vote).
  */
