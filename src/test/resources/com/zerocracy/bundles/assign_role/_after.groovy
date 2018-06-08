@@ -31,8 +31,8 @@ def exec(Project project, XML xml) {
   )
   // @todo #989:30min MkGithub can't create private repository,
   //  any repository from MkGithub is public, see _before in this test.
-  //  I suppose it's bug in jcabi-github so we need to submit it there
-  //  and uncomment this assertion then.
+  //  I suppose it's bug in jcabi-github, see
+  //  https://github.com/jcabi/jcabi-github/issues/1421
 //  MatcherAssert.assertThat(
 //    'DEV role was assigned to anonymous',
 //    roles.allRoles('anonymous'),
