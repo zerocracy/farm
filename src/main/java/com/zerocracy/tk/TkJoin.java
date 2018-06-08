@@ -22,6 +22,7 @@ import com.zerocracy.Policy;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pmo.People;
 import java.io.IOException;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -89,13 +90,18 @@ public final class TkJoin implements TkRegex {
             ZoneOffset.UTC
         );
         final long days = (long) new Policy().get("1.lag", 16);
-        if (when.isBefore(LocalDateTime.now(ZoneOffset.UTC).plusDays(days))) {
+        final LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        if (when.isBefore(now.plusDays(days))) {
             throw new RsForward(
                 new RsParFlash(
                     new Par(
                         "You can apply only one time in %d days, ",
-                        "you've applied %s"
-                    ).say(days, when.format(DateTimeFormatter.ISO_LOCAL_DATE)),
+                        "you've applied %d days ago (%s)"
+                    ).say(
+                        days,
+                        Duration.between(when, now).toDays(),
+                        when.format(DateTimeFormatter.ISO_LOCAL_DATE)
+                    ),
                     Level.WARNING
                 ),
                 "/join"

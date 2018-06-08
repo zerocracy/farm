@@ -23,7 +23,6 @@ import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pmo.People;
 import java.net.HttpURLConnection;
 import java.util.Date;
-import org.cactoos.iterable.IterableOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -90,10 +89,6 @@ public final class TkJoinTest {
         final RqWithUser req = new RqWithUser(
             farm,
             new RqFake("POST", "/join-post")
-        );
-        MatcherAssert.assertThat(
-            new IterableOf<>(""),
-            Matchers.contains(Matchers.startsWith(""))
         );
         people.breakup(uid);
         MatcherAssert.assertThat(
