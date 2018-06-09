@@ -18,7 +18,7 @@ package com.zerocracy.radars.slack;
 
 import com.ullink.slack.simpleslackapi.SlackChannel;
 import com.ullink.slack.simpleslackapi.SlackUser;
-import java.io.IOException;
+import java.io.Closeable;
 
 /**
  * Session in Slack.
@@ -27,9 +27,10 @@ import java.io.IOException;
  * @version $Id$
  * @since 0.23
  * @todo #89:30min Use this interface and its implementation RealSkSession
- *  everywhere instead of SlackSession.
+ *  everywhere instead of SlackSession that is used currently. When it's done
+ *  some tests can be refactored to get rid of Mockito library.
  */
-public interface SkSession extends AutoCloseable {
+public interface SkSession extends Closeable {
     /**
      * Find channel by its identifier.
      * @param id Channel identifier
@@ -65,10 +66,4 @@ public interface SkSession extends AutoCloseable {
      * @return Where this session belongs to the given channel
      */
     boolean hasChannel(String id);
-
-    /**
-     * Close the session.
-     * @throws IOException If fails
-     */
-    void close() throws IOException;
 }

@@ -28,7 +28,7 @@ import org.cactoos.list.SolidList
 import org.mockito.Mockito
 
 /**
- * @todo # 89:30min Add a new class FakeSkSession that implements interface
+ * @todo #89:30min Add a new class FkSkSession that implements interface
  *  SkSession, and then use this new class in tests instead of using Mockito.
  *  This task can be implemented only when SkSession replaces SlackSession.
  */
