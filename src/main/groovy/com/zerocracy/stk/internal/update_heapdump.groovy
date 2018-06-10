@@ -33,5 +33,5 @@ def exec(Project project, XML xml) {
     Logger.info(this, 'skip in testing mode')
     return
   }
-  new HeapDump(new ExtBucket(farm).value(), "").save()
+  new HeapDump(new ExtBucket(farm).value(), '').save()
 }
