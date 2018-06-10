@@ -29,6 +29,10 @@ import javax.json.JsonObject;
 
 /**
  * Quotes.
+ * <p>
+ * Exchange rates from 'http://apilayer.com'.
+ * This class fetches current quotes from
+ * https://currencylayer.com/ and convert it to double.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
