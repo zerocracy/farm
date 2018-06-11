@@ -25,6 +25,10 @@ import org.xembly.Directives;
 
 /**
  * Blanks.
+ * <p>
+ * User metric which represents the amount of bugs user reported,
+ * which were not counted as bugs by project architects.
+ *
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id $
  * @since 0.23

@@ -33,7 +33,7 @@ import org.takes.rs.xe.XeDirectives;
 import org.takes.rs.xe.XeWhen;
 
 /**
- * One RFP.
+ * One RFP (request for proposal).
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
