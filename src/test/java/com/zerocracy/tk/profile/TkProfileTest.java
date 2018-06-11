@@ -18,14 +18,19 @@ package com.zerocracy.tk.profile;
 
 import com.jcabi.matchers.XhtmlMatchers;
 import com.zerocracy.Farm;
+import com.zerocracy.cash.Cash;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pmo.Agenda;
 import com.zerocracy.pmo.Awards;
+import com.zerocracy.pmo.People;
 import com.zerocracy.tk.RqWithUser;
 import com.zerocracy.tk.TkApp;
+import java.io.IOException;
+import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.takes.rq.RqFake;
 import org.takes.rs.RsPrint;
@@ -40,10 +45,15 @@ import org.takes.rs.RsPrint;
  */
 public final class TkProfileTest {
 
+    /**
+     * Known user ID.
+     */
+    private static final String UID = "yegor256";
+
     @Test
     public void rendersHomePage() throws Exception {
         final Farm farm = new PropsFarm(new FkFarm());
-        final String uid = "yegor256";
+        final String uid = "yegor";
         new Awards(farm, uid).bootstrap().add(
             new FkProject(), 1, "gh:test/test#1", "reason"
         );
@@ -65,4 +75,54 @@ public final class TkProfileTest {
         );
     }
 
+    @Test
+    public void rendersProfilePageWithRateInFirefox() throws Exception {
+        final Farm farm = new PropsFarm(new FkFarm());
+        final int rate = 99;
+        final People people = new People(farm);
+        people.bootstrap();
+        people.wallet(TkProfileTest.UID, "paypal", "test@example.com");
+        people.rate(
+            TkProfileTest.UID, new Cash.S(String.format("USD %d", rate))
+        );
+        MatcherAssert.assertThat(
+            this.firefoxView(farm, TkProfileTest.UID),
+            Matchers.containsString(String.format("$%d", rate))
+        );
+    }
+
+    @Test
+    public void rendersProfilePageWithoutInFirefox() throws Exception {
+        final Farm farm = new PropsFarm(new FkFarm());
+        final People people = new People(farm);
+        people.bootstrap();
+        people.wallet(
+            TkProfileTest.UID, "btc", "3HcEB6bi4TFPdvk31Pwz77DwAzfAZz2fMn"
+        );
+        MatcherAssert.assertThat(
+            this.firefoxView(farm, TkProfileTest.UID),
+            Matchers.containsString("rate</a> is not defined")
+        );
+    }
+
+    private String firefoxView(final Farm farm, final String uid)
+        throws IOException {
+        return new RsPrint(
+            new TkApp(farm).act(
+                new RqWithUser(
+                    farm,
+                    new RqFake(
+                        new ListOf<>(
+                            String.format("GET /u/%s", uid),
+                            "Host: www.example.com",
+                            "Accept: application/xml",
+                            // @checkstyle LineLength (1 line)
+                            "User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:62.0) Gecko/20100101 Firefox/62.0"
+                        ),
+                        ""
+                    )
+                )
+            )
+        ).printBody();
+    }
 }
