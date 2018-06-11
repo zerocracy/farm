@@ -14,42 +14,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pm.staff.votes;
+package com.zerocracy.pm.time.votes;
 
-import com.zerocracy.pm.staff.Votes;
+import com.zerocracy.farm.fake.FkFarm;
+import com.zerocracy.pm.staff.votes.VsNegligence;
 import com.zerocracy.pmo.Pmo;
-import java.io.IOException;
+import org.junit.Test;
 
 /**
- * Upvote user if they've been resigned from a lot of jobs because
- * of being late (spent more than the allowed number of days on it).
- * This voter's ranking will be multplied with a low weight (-1), so
- * it will lower the chances of the user with the highest rank of negligence.
+ * Test case for {@link VsNegligence}.
  *
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.23
+ * @checkstyle JavadocMethodCheck (500 lines)
  */
-public final class VsNegligence implements Votes {
+public final class VsNegligenceTest {
 
     /**
-     * PMO project.
+     * VsNegligence can vote (not yet implemented!).
+     * @throws Exception If something goes wrong.
      */
-    private final Pmo pmo;
-
-    /**
-     * Ctor.
-     * @param pmo PMO project.
-     */
-    public VsNegligence(final Pmo pmo) {
-        this.pmo = pmo;
-    }
-
-    @Override
-    public double take(
-        final String login, final StringBuilder log
-    ) throws IOException {
-        throw new UnsupportedOperationException("Not yet implemented!");
+    @Test(expected = UnsupportedOperationException.class)
+    public void takesAVote() throws Exception {
+        new VsNegligence(new Pmo(new FkFarm())).take(
+            "amihaiemil", new StringBuilder()
+        );
     }
 
 }
