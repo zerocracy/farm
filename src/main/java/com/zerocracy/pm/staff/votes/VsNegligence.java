@@ -30,6 +30,7 @@ import java.io.IOException;
  * @version $Id$
  * @since 0.23
  */
+@SuppressWarnings({ "PMD.SingularField", "PMD.UnusedPrivateField" })
 public final class VsNegligence implements Votes {
 
     /**
