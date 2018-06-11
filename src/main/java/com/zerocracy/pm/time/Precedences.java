@@ -108,7 +108,6 @@ public final class Precedences {
                     .add("successor")
                     .attr("type", suctype)
                     .set(successor)
-                    .up()
             );
         }
     }
