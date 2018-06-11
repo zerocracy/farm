@@ -57,21 +57,16 @@ def exec(Project project, XML xml) {
     )
   }
   Github github = new ExtGithub(farm).value()
-  boolean hasAccess = true
   for (String link: new Catalog(farm).links(project.pid(), 'github')) {
     Repo.Smart repo = new Repo.Smart(github.repos().get(new Coordinates.Simple(link)))
     if (repo.private && !repo.collaborators().isCollaborator(login)) {
-      hasAccess = false
-      break
+      throw new SoftException(
+        new Par(
+          '@%s doesn\'t have an access in your repositories,',
+          'we won\'t be able to assign tasks'
+        ).say(login)
+      )
     }
-  }
-  if (!hasAccess) {
-    throw new SoftException(
-      new Par(
-        '@%s doesn\'t have an access in your repositories,',
-        'we won\'t be able to assign tasks'
-      ).say(login)
-    )
   }
   Roles roles = new Roles(project).bootstrap()
   Rates rates = new Rates(project).bootstrap()

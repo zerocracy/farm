@@ -33,6 +33,7 @@ def exec(Project project, XML xml) {
   //  any repository from MkGithub is public, see _before in this test.
   //  I suppose it's bug in jcabi-github, see
   //  https://github.com/jcabi/jcabi-github/issues/1421
+  //  When the bug is fixed, update jcabi-github and uncomment code below.
 //  MatcherAssert.assertThat(
 //    'DEV role was assigned to anonymous',
 //    roles.allRoles('anonymous'),
