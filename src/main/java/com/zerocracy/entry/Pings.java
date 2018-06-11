@@ -38,8 +38,9 @@ import org.quartz.spi.TriggerFiredBundle;
  * Pings.
  * <p>
  * This class sends broadcasts (pings) in the system,
- * it submit new claim with type 'ping'
- * every minute, hour and day.
+ * it submit new claim with type 'Ping' every minute,
+ * 'Ping hourly' every hour and 'Ping daily' every day.
+ *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
