@@ -26,7 +26,7 @@ def exec(Project project, XML xml) {
 /**
  * @todo #185:30min let's implement this stakeholder. It will update
  *  precedences.xml. It should use the Precedences class, similar to how the
- *  Milestones class is used in updatE_milestones.groovy. The update should
+ *  Milestones class is used in update_milestones.groovy. The update should
  *  occur whenever a GitHub ticket gets assigned to a milestone.
  */
 }

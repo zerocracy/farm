@@ -25,8 +25,8 @@ import org.xembly.Directives;
 
 /**
  * A Project's precedences. There are 4 types of precedence: finish-to-start,
- * start-to-start, finish-to-finish, and start-to-finish. Mode about it, here:
- * https://project-management-knowledge.com/definitions/p/precedence-diagramming-method/
+ * start-to-start, finish-to-finish, and start-to-finish. More about it
+ * <a href="https://project-management-knowledge.com/definitions/p/precedence-diagramming-method/">here</a>.
  *
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
