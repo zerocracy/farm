@@ -272,6 +272,7 @@ public final class Agenda {
     /**
      * Retrieves title of the specified job.
      * @param job The job to retrieve the text
+     * @return The title of the job.
      * @throws IOException If fails
      */
     public String title(final String job) throws IOException {

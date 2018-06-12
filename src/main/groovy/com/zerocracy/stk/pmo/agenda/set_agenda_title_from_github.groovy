@@ -13,8 +13,7 @@ def exec(Project project, XML xml) {
     ClaimIn claim = new ClaimIn(xml)
     String job = claim.param('job')
     String login = claim.param('login')
-    Farm farm = binding.variables.farm
-    Agenda agenda = new Agenda(farm, login).bootstrap()
+    Agenda agenda = new Agenda(binding.variables.farm, login).bootstrap()
     if (agenda.exists(job)) {
         agenda.title(
             job,

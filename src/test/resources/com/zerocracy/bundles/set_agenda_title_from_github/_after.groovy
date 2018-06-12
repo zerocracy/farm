@@ -8,10 +8,10 @@ import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
-  Farm farm = binding.variables.farm
-  Agenda agenda = new Agenda(farm, 'anotheruser').bootstrap()
   MatcherAssert.assertThat(
-    agenda.title('gh:someuser/somerepo#1'),
+    new Agenda(binding.variables.farm, 'anotheruser')
+    .bootstrap()
+    .title('gh:someuser/somerepo#1'),
     Matchers.equalTo('Github Issue Title')
   )
 }
