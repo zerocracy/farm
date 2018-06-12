@@ -43,12 +43,8 @@ import org.takes.rs.RsPrint;
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class TkProfileTest {
-
-    /**
-     * Known user ID.
-     */
-    private static final String UID = "yegor256";
 
     @Test
     public void rendersHomePage() throws Exception {
@@ -78,33 +74,39 @@ public final class TkProfileTest {
     @Test
     public void rendersProfilePageWithRateInFirefox() throws Exception {
         final Farm farm = new PropsFarm(new FkFarm());
-        final int rate = 99;
-        final People people = new People(farm);
-        people.bootstrap();
-        people.wallet(TkProfileTest.UID, "paypal", "test@example.com");
+        final double rate = 99.99;
+        final People people = new People(farm).bootstrap();
+        people.wallet("yegor256", "paypal", "test@example.com");
         people.rate(
-            TkProfileTest.UID, new Cash.S(String.format("USD %d", rate))
+            "yegor256", new Cash.S(String.format("USD %f", rate))
         );
         MatcherAssert.assertThat(
-            this.firefoxView(farm, TkProfileTest.UID),
-            Matchers.containsString(String.format("$%d", rate))
+            this.firefoxView(farm, "yegor256"),
+            Matchers.containsString(
+                String.format(
+                    "rate</a> is <span style=\"color:darkgreen\">$%.2f</span>",
+                    rate
+                )
+            )
         );
     }
 
     @Test
     public void rendersProfilePageWithoutInFirefox() throws Exception {
         final Farm farm = new PropsFarm(new FkFarm());
-        final People people = new People(farm);
-        people.bootstrap();
+        final People people = new People(farm).bootstrap();
         people.wallet(
-            TkProfileTest.UID, "btc", "3HcEB6bi4TFPdvk31Pwz77DwAzfAZz2fMn"
+            "yegor256", "btc", "3HcEB6bi4TFPdvk31Pwz77DwAzfAZz2fMn"
         );
         MatcherAssert.assertThat(
-            this.firefoxView(farm, TkProfileTest.UID),
+            this.firefoxView(farm, "yegor256"),
             Matchers.containsString("rate</a> is not defined")
         );
     }
 
+    // @todo #1080:30min Refactor this method and similar functionality in
+    //  TkAwardsTest into a reusable class in which we could control what kind
+    //  of view we want to generate.
     private String firefoxView(final Farm farm, final String uid)
         throws IOException {
         return new RsPrint(
