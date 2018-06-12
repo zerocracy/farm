@@ -27,7 +27,7 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Assert.assertThat(
     'Total awards must include speed bonus +5 minutes',
-    new Awards(farm, "developer").bootstrap().total(),
+    new Awards(farm, 'developer').bootstrap().total(),
     new IsEqual<>(35)
   )
 }
