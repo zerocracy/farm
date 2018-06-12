@@ -1,0 +1,10 @@
+<claims xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.37/xsd/pm/claims.xsd" version="0.1" updated="2017-03-27T11:18:09.228Z">
+  <claim id="1">
+    <created>2018-06-10T11:18:09.228Z</created>
+    <type>Set order title from github</type>
+    <params>
+      <param name="job">gh:someuser/somerepo#1</param>
+      <param name="login">anotheruser</param>
+    </params>
+  </claim>
+</claims>
