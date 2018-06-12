@@ -1,7 +1,6 @@
 package com.zerocracy.stk.pmo.agenda
 
 import com.jcabi.xml.XML
-import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn

@@ -1,7 +1,6 @@
 package com.zerocracy.bundles.set_agenda_title_from_github
 
 import com.jcabi.xml.XML
-import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.pmo.Agenda
 import org.hamcrest.MatcherAssert
