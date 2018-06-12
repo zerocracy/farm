@@ -31,11 +31,6 @@ import org.cactoos.io.InputStreamOf;
  * @author Izbassar Tolegen (t.izbassar@gmail.com)
  * @version $Id$
  * @since 1.0
- *
- * @todo #400:30min Use this class, to periodically update
- *  contents from ./heapdump.hprof file to S3. Should
- *  be implemented after #680 would be resolved as part
- *  of the routine work, that needs to be done in background.
  */
 public final class HeapDump {
 
