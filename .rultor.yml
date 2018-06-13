@@ -5,7 +5,7 @@ assets:
   id_rsa: zerocracy/home#assets/heroku-key
   id_rsa.pub: zerocracy/home#assets/heroku-key.pub
 env:
-  MAVEN_OPTS: -XX:MaxPermSize=256m -Xmx1g
+  MAVEN_OPTS: -Xmx1g
 install: |-
   sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6
   echo "deb [ arch=amd64 ] http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
@@ -44,5 +44,5 @@ merge:
     mvn help:system clean install -Pqulice,codenarc --settings ../settings.xml
     mvn clean site -Psite --settings ../settings.xml --quiet
 architect:
-  - yegor256
   - g4s8
+  - yegor256

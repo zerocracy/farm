@@ -14,19 +14,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.staff.milestones
+package com.zerocracy.pm.time.votes;
 
-import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
-import com.zerocracy.Project
+import com.zerocracy.farm.fake.FkFarm;
+import com.zerocracy.pm.staff.votes.VsNegligence;
+import com.zerocracy.pmo.Pmo;
+import org.junit.Test;
 
-def exec(Project project, XML xml) {
-  new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Add milestone')
 /**
- * @todo #185:30min let's implement this stakeholder. It will update
- *  precedences.xml. It should use the Precedences class, similar to how the
- *  Milestones class is used in update_milestones.groovy. The update should
- *  occur whenever a GitHub ticket gets assigned to a milestone.
+ * Test case for {@link VsNegligence}.
+ *
+ * @author Mihai Andronache (amihaiemil@gmail.com)
+ * @version $Id$
+ * @since 0.23
+ * @checkstyle JavadocMethodCheck (500 lines)
  */
+public final class VsNegligenceTest {
+
+    /**
+     * VsNegligence can vote (not yet implemented!).
+     * @throws Exception If something goes wrong.
+     */
+    @Test(expected = UnsupportedOperationException.class)
+    public void takesAVote() throws Exception {
+        new VsNegligence(new Pmo(new FkFarm())).take(
+            "amihaiemil", new StringBuilder()
+        );
+    }
+
 }

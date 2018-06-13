@@ -21,7 +21,12 @@ import com.zerocracy.Par;
 import com.zerocracy.Policy;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pmo.People;
+import com.zerocracy.pmo.Resumes;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
@@ -37,17 +42,7 @@ import org.takes.rq.form.RqFormSmart;
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.20
- * @todo #653:30min We should allow user to send `/join` requests only once
- *  a week, it can be checked and updated via People.applied methods.
- *  The 7 days value can be accessed via Par after
- *  https://github.com/zerocracy/zerocracy.github.io/issues/9 fix.
- * @todo #800:30min Requests to /join should add an entry to 'resumes.xml'
- *  then an 'examiner' should be assigned. When the examiner "invites" a user,
- *  we check whether there was a resume for that user.
- *  If yes, we pay examiner +32 points. Examiner can reject a resume
- *  by saying 'deny {username}' (where username is a login in 'resumes.xml')
- *  to Zerocrat. In that case we also pay +32 to the examiner.
- *  Each user should see the status of his/her resume at /join.
+ * @todo #908:30min Each user should see the status of his/her resume at /join.
  *  If the resume is there, he/she should see the resume, not the form.
  *  If he/she already has a mentor, there should be a redirect,
  *  saying that "User @yegor256 is already your mentor, no need to join again".
@@ -85,6 +80,28 @@ public final class TkJoin implements TkRegex {
                 "/join"
             );
         }
+        final LocalDateTime when = LocalDateTime.ofInstant(
+            people.appliedTime(author).toInstant(),
+            ZoneOffset.UTC
+        );
+        final long days = (long) new Policy().get("1.lag", 16);
+        final LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        if (when.isBefore(now.plusDays(days))) {
+            throw new RsForward(
+                new RsParFlash(
+                    new Par(
+                        "You can apply only one time in %d days, ",
+                        "you've applied %d days ago (%s)"
+                    ).say(
+                        days,
+                        Duration.between(when, now).toDays(),
+                        when.format(DateTimeFormatter.ISO_LOCAL_DATE)
+                    ),
+                    Level.WARNING
+                ),
+                "/join"
+            );
+        }
         final RqFormSmart form = new RqFormSmart(new RqGreedy(req));
         final String telegram = form.single("telegram");
         final String personality = form.single("personality");
@@ -110,6 +127,15 @@ public final class TkJoin implements TkRegex {
                 "this is the message the user left for us:\n\n%s"
             ).say(author, personality, telegram, stko, about)
         ).param("min", new Policy().get("1.min-rep", 0)).postTo(this.farm);
+        new Resumes(this.farm).bootstrap()
+            .add(
+                author,
+                LocalDateTime.now(),
+                about,
+                personality,
+                stko,
+                telegram
+            );
         return new RsForward(
             new RsParFlash(
                 new Par(

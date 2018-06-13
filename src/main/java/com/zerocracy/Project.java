@@ -20,6 +20,8 @@ import java.io.IOException;
 
 /**
  * Project.
+ * <p>
+ * A project in {@link Farm}, collection of {@link Item}s.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
