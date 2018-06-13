@@ -13,8 +13,8 @@ install:
   - sudo apt-get update
   - sudo apt-get remove -y mongodb-org
   - sudo apt-get install -y --allow-unauthenticated mongodb-org
-  - sudo gem install pdd
-  - sudo gem install xcop
+  - gem install pdd
+  - gem install xcop
 env:
   global:
     - MAVEN_OPTS="-Xmx256m"
