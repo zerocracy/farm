@@ -11,6 +11,7 @@ install:
   - sudo apt-get update
   - sudo apt-get remove -y mongodb-org
   - sudo apt-get install -y --allow-unauthenticated mongodb-org
+  - sudo rvm install 2.5.1
   - sudo gem install pdd
   - sudo gem install xcop
 env:
@@ -19,5 +20,3 @@ env:
     - JAVA_OPTS="-Xmx256m"
 jdk:
   - oraclejdk8
-rvm:
-  - 2.2
