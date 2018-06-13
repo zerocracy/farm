@@ -5,15 +5,14 @@ cache:
     - $HOME/.m2
 script:
   - ./.travis/run.sh
+before_install:
+  - rvm install 2.5.1
 install:
   - sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6
   - echo 'deb [ arch=amd64 ] http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.6 multiverse' | sudo tee /etc/apt/sources.list.d/mongodb-org-3.6.list
   - sudo apt-get update
   - sudo apt-get remove -y mongodb-org
   - sudo apt-get install -y --allow-unauthenticated mongodb-org
-  - sudo gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB
-  - sudo curl -sSL https://get.rvm.io | bash -s stable
-  - sudo source $HOME/.rvm/scripts/rvm && rvm install 2.5.1
   - sudo gem install pdd
   - sudo gem install xcop
 env:
