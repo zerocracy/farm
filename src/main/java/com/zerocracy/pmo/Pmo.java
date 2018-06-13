@@ -25,7 +25,13 @@ import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.scalar.SolidScalar;
 
 /**
- * PMO.
+ * PMO (project management office).
+ * <p>
+ * PMO is a project with a special status.
+ * It has its own set of items, own XSD schemas, everything on its own.
+ * We keep system information there, like list of all users (people.xml),
+ * list of all projects (catalog.xml),
+ * user awards, etc.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$

@@ -41,6 +41,9 @@ import org.xembly.Directives;
 
 /**
  * Debts.
+ * <p>
+ * When Zerocrat fails to pay, for any reason,
+ * the payment amount will be added to 'debts'.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$

@@ -33,7 +33,7 @@ import org.xembly.Directive;
 import org.xembly.Directives;
 
 /**
- * All RFPs.
+ * All RFPs (requests for proposal).
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
