@@ -26,6 +26,12 @@ import javax.json.JsonObject;
 
 /**
  * Rebound.
+ * <p>
+ * Reaction for <a href="https://developer.github.com/webhooks/">
+ * GitHub web-hook</a>. It processes a
+ * <a href="https://developer.github.com/webhooks/#payloads">payload</a>
+ * of webhook and returns text which will be displayed in repository
+ * on "webhooks" section.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$

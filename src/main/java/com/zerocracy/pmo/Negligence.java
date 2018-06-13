@@ -18,22 +18,28 @@ package com.zerocracy.pmo;
 
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
-import com.zerocracy.Project;
 import com.zerocracy.Xocument;
 import java.io.IOException;
-import org.xembly.Directives;
 
 /**
- * Blanks.
- * <p>
- * User metric which represents the amount of bugs user reported,
- * which were not counted as bugs by project architects.
+ * Negligence. This metric calculates how many times a user has lost
+ * a job due to missing the deadline (too many days passed without a reason for
+ * waiting).
  *
- * @author Kirill (g4s8.public@gmail.com)
+ * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id $
  * @since 0.23
+ * @todo #540:30min Finish implementing and testing this class,
+ *  decide on the XML format and declare it in /datum repository.
+ *  When done, use this metric inside resin_on_delay.groovy. After this,
+ *  finish implementing the voter VsNegligence: similar to VsSpeed and
+ *  VsWorkload, it should vote for the user with the highest negligence
+ *  (most number of delays). When done, the voter should be declared in
+ *  elect_performer.groovy with weight -1 (since the highest negligence will
+ *  have the highest vote).
  */
-public final class Blanks {
+public final class Negligence {
+
     /**
      * Project.
      */
@@ -49,7 +55,7 @@ public final class Blanks {
      * @param farm The farm
      * @param user The user
      */
-    public Blanks(final Farm farm, final String user) {
+    public Negligence(final Farm farm, final String user) {
         this(new Pmo(farm), user);
     }
 
@@ -58,44 +64,17 @@ public final class Blanks {
      * @param pkt Pmo project
      * @param user The user
      */
-    public Blanks(final Pmo pkt, final String user) {
+    public Negligence(final Pmo pkt, final String user) {
         this.pmo = pkt;
         this.login = user;
     }
 
     /**
-     * Add a blank.
-     * @param proj Project
-     * @param job Job id
-     * @param kind Job kind
-     * @throws IOException If fails
+     * How many times did the user lost tasks due to negligence?
+     * @return Integer number of delays..
      */
-    public void add(final Project proj, final String job, final String kind)
-        throws IOException {
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
-                new Directives()
-                    .xpath("/blanks")
-                    .add("blank")
-                    .attr("job", job)
-                    .add("project")
-                    .set(proj.pid())
-                    .up()
-                    .add("kind")
-                    .set(kind)
-            );
-        }
-    }
-
-    /**
-     * Iterate over all jobs in blanks.
-     * @return Job ids iterable
-     * @throws IOException If fails
-     */
-    public Iterable<String> iterate() throws IOException {
-        try (final Item item = this.item()) {
-            return new Xocument(item.path()).xpath("/blanks/blank/@job");
-        }
+    public int delays() {
+        throw new UnsupportedOperationException("Not yet implemented!");
     }
 
     /**
@@ -103,9 +82,9 @@ public final class Blanks {
      * @return This
      * @throws IOException If fails
      */
-    public Blanks bootstrap() throws IOException {
+    public Negligence bootstrap() throws IOException {
         try (final Item item = this.item()) {
-            new Xocument(item.path()).bootstrap("pmo/blanks");
+            new Xocument(item.path()).bootstrap("pmo/negligence");
         }
         return this;
     }
@@ -117,7 +96,7 @@ public final class Blanks {
      */
     private Item item() throws IOException {
         return this.pmo.acq(
-            String.format("blanks/%s.xml", this.login)
+            String.format("negligence/%s.xml", this.login)
         );
     }
 }
