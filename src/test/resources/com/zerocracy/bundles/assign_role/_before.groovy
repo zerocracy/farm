@@ -27,8 +27,8 @@ import com.zerocracy.pmo.Catalog
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Repo repo = new ExtGithub(farm).value().repos().create(
-    new Repos.RepoCreate("prvt", true)
+    new Repos.RepoCreate('prvt', true)
   )
-  repo.collaborators().add("g4s8")
+  repo.collaborators().add('g4s8')
   new Catalog(farm).link(project.pid(), 'github', repo.coordinates().toString())
 }
