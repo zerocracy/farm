@@ -24,6 +24,10 @@ import com.zerocracy.pmo.People;
 import com.zerocracy.pmo.Resumes;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
@@ -39,10 +43,6 @@ import org.takes.rq.form.RqFormSmart;
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.20
- * @todo #653:30min We should allow user to send `/join` requests only once
- *  a week, it can be checked and updated via People.applied methods.
- *  The 7 days value can be accessed via Par after
- *  https://github.com/zerocracy/zerocracy.github.io/issues/9 fix.
  * @todo #908:30min Each user should see the status of his/her resume at /join.
  *  If the resume is there, he/she should see the resume, not the form.
  *  If he/she already has a mentor, there should be a redirect,
@@ -76,6 +76,28 @@ public final class TkJoin implements TkRegex {
                     new Par(
                         "You already have a mentor (@%s), why again?"
                     ).say(people.mentor(author)),
+                    Level.WARNING
+                ),
+                "/join"
+            );
+        }
+        final LocalDateTime when = LocalDateTime.ofInstant(
+            people.appliedTime(author).toInstant(),
+            ZoneOffset.UTC
+        );
+        final long days = (long) new Policy().get("1.lag", 16);
+        final LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        if (when.isBefore(now.plusDays(days))) {
+            throw new RsForward(
+                new RsParFlash(
+                    new Par(
+                        "You can apply only one time in %d days, ",
+                        "you've applied %d days ago (%s)"
+                    ).say(
+                        days,
+                        Duration.between(when, now).toDays(),
+                        when.format(DateTimeFormatter.ISO_LOCAL_DATE)
+                    ),
                     Level.WARNING
                 ),
                 "/join"

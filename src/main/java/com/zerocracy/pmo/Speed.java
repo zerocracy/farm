@@ -27,6 +27,9 @@ import org.xembly.Directives;
 
 /**
  * Speed of delivery.
+ * <p>
+ * User metric which represents how much time user spend to finish a job.
+ *
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.17

@@ -20,10 +20,8 @@ import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Xocument;
-import com.zerocracy.pmo.Agenda;
 import com.zerocracy.pmo.Pmo;
 import com.zerocracy.pmo.Projects;
-import com.zerocracy.pmo.Speed;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -45,6 +43,9 @@ import org.takes.rs.xe.XeWhen;
  * @version $Id$
  * @since 0.19
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @todo #1121:30min Speed and Agenda is skipped now because it
+ *  causes slow page loading. We have to fix #1121 bug and show
+ *  it on page as before.
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class TkTeam implements Take {
@@ -99,20 +100,8 @@ public final class TkTeam implements Take {
                 new XeAppend("login", node.xpath("@id").get(0)),
                 new XeAppend("mentor", node.xpath("mentor/text()").get(0)),
                 new XeAppend("awards", node.xpath("reputation/text()").get(0)),
-                new XeAppend(
-                    "speed",
-                    Double.toString(
-                        new Speed(this.farm, login).bootstrap().avg()
-                    )
-                ),
-                new XeAppend(
-                    "agenda",
-                    Integer.toString(
-                        new LengthOf(
-                            new Agenda(this.farm, login).bootstrap().jobs()
-                        ).intValue()
-                    )
-                ),
+                new XeAppend("speed", "0.0"),
+                new XeAppend("agenda", "-"),
                 new XeAppend(
                     "projects",
                     Integer.toString(

@@ -14,19 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.staff.milestones
 
-import com.jcabi.xml.XML
-import com.zerocracy.farm.Assume
-import com.zerocracy.Project
-
-def exec(Project project, XML xml) {
-  new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Add milestone')
 /**
- * @todo #185:30min let's implement this stakeholder. It will update
- *  precedences.xml. It should use the Precedences class, similar to how the
- *  Milestones class is used in update_milestones.groovy. The update should
- *  occur whenever a GitHub ticket gets assigned to a milestone.
+ * Project management time voters tests.
+ *
+ * @author Mihai Andronache (amihaiemilgmail.com)
+ * @version $Id$
+ * @since 0.23
  */
-}
+package com.zerocracy.pm.time.votes;
