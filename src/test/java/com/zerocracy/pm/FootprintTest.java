@@ -18,10 +18,12 @@ package com.zerocracy.pm;
 
 import com.jcabi.aspects.Tv;
 import com.jcabi.xml.XML;
+import com.mongodb.MongoClient;
 import com.mongodb.client.model.Filters;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.RunsInThreads;
+import com.zerocracy.entry.ExtMongo;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.farm.sync.SyncFarm;
 import java.util.Date;
@@ -73,8 +75,9 @@ public final class FootprintTest {
                     new ClaimOut().type("Version").postTo(project);
                     final XML xml = new Claims(project)
                         .iterate().iterator().next();
+                    final MongoClient mongo = new ExtMongo(farm).value();
                     try (final Footprint footprint =
-                        new Footprint(farm, project)) {
+                        new Footprint(mongo, project.pid())) {
                         footprint.open(xml);
                         footprint.close(xml);
                         return footprint.collection().find(
