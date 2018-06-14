@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.refresh_awards
+package com.zerocracy.bundles.turn_on_vacation_for_too_many_negative_awards
 
 import com.jcabi.github.Repos
 import com.jcabi.xml.XML
@@ -23,18 +23,20 @@ import com.zerocracy.Project
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.pmo.Awards
 
+import java.time.ZonedDateTime
+
 @SuppressWarnings('UnnecessaryObjectReferences')
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
-  Awards awards = new Awards(farm, 'carlosmiranda').bootstrap()
   new ExtGithub(farm).value().repos()
     .create(new Repos.RepoCreate('test', false))
-  awards.add(project, -1, 'gh:test/test#1', 'test', new Date(1517432400000L))
-  awards.add(project, -2, 'gh:test/test#1', 'test', new Date(1517432400001L))
-  awards.add(project, -3, 'gh:test/test#1', 'test', new Date(1517432400002L))
-  awards.add(project, -4, 'gh:test/test#1', 'test', new Date(1517432400003L))
-  awards.add(project, -5, 'gh:test/test#1', 'test', new Date(1525122000004L))
-  awards.add(project, -6, 'gh:test/test#1', 'test', new Date(1517432400005L))
-  awards.add(project, -7, 'gh:test/test#1', 'test', new Date(1517432400006L))
-  awards.add(project, -8, 'gh:test/test#1', 'test', new Date(1525122000007L))
+  Awards awards = new Awards(farm, 'carlosmiranda').bootstrap()
+  awards.add(project, -1, 'gh:test/test#1', 'test', new Date(ZonedDateTime.now().minusDays(1).toInstant().toEpochMilli()))
+  awards.add(project, -2, 'gh:test/test#1', 'test', new Date(ZonedDateTime.now().minusDays(2).toInstant().toEpochMilli()))
+  awards.add(project, -3, 'gh:test/test#1', 'test', new Date(ZonedDateTime.now().minusDays(3).toInstant().toEpochMilli()))
+  awards.add(project, -4, 'gh:test/test#1', 'test', new Date(ZonedDateTime.now().minusDays(4).toInstant().toEpochMilli()))
+  awards.add(project, -5, 'gh:test/test#1', 'test', new Date(ZonedDateTime.now().minusDays(5).toInstant().toEpochMilli()))
+  awards.add(project, -6, 'gh:test/test#1', 'test', new Date(ZonedDateTime.now().minusDays(6).toInstant().toEpochMilli()))
+  awards.add(project, -7, 'gh:test/test#1', 'test', new Date(ZonedDateTime.now().minusDays(7).toInstant().toEpochMilli()))
+  awards.add(project, -8, 'gh:test/test#1', 'test', new Date(ZonedDateTime.now().minusDays(8).toInstant().toEpochMilli()))
 }
