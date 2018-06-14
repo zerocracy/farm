@@ -101,4 +101,30 @@ public final class TkJoinTest {
             new HmRsHeader("Set-Cookie", Matchers.iterableWithSize(2))
         );
     }
+
+    @Test
+    public void acceptIfNeverApplied() throws Exception {
+        final Farm farm = new PropsFarm(new FkFarm());
+        final People people = new People(farm).bootstrap();
+        final String uid = "yegor256";
+        people.touch(uid);
+        final RqWithUser req = new RqWithUser(
+            farm,
+            new RqFake("POST", "/join-post")
+        );
+        people.breakup(uid);
+        MatcherAssert.assertThat(
+            new TkApp(farm).act(
+                new RqWithBody(
+                    req,
+                    // @checkstyle LineLength (1 line)
+                    "personality=INTJ-A&stackoverflow=187241&telegram=123&about=txt"
+                )
+            ),
+            Matchers.allOf(
+                new HmRsStatus(HttpURLConnection.HTTP_SEE_OTHER),
+                new HmRsHeader("Location", "/")
+            )
+        );
+    }
 }

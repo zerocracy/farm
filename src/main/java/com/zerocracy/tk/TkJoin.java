@@ -80,13 +80,18 @@ public final class TkJoin implements TkRegex {
                 "/join"
             );
         }
-        final LocalDateTime when = LocalDateTime.ofInstant(
-            people.appliedTime(author).toInstant(),
-            ZoneOffset.UTC
-        );
+        final LocalDateTime when;
+        if (people.applied(author)) {
+            when = LocalDateTime.ofInstant(
+                people.appliedTime(author).toInstant(),
+                ZoneOffset.UTC
+            );
+        } else {
+            when = LocalDateTime.MIN;
+        }
         final long days = (long) new Policy().get("1.lag", 16);
         final LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
-        if (when.isBefore(now.plusDays(days))) {
+        if (when.plusDays(days).isAfter(now)) {
             throw new RsForward(
                 new RsParFlash(
                     new Par(
