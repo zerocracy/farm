@@ -106,11 +106,28 @@ public final class ExtMongo implements Scalar<MongoClient> {
     private final Farm farm;
 
     /**
+     * Mongo instance identifier.
+     * Used to help with tests that depend on current mongo state.
+     */
+    private final long id;
+
+    /**
      * Ctor.
      * @param frm The farm
      */
     public ExtMongo(final Farm frm) {
         this.farm = frm;
+        this.id = 0;
+    }
+
+    /**
+     * Ctor.
+     * @param frm The farm
+     * @param ident Mongo instance identifier
+     */
+    public ExtMongo(final Farm frm, final long ident) {
+        this.farm = frm;
+        this.id = ident;
     }
 
     @Override
@@ -119,7 +136,7 @@ public final class ExtMongo implements Scalar<MongoClient> {
         final MongoClient client;
         if (props.has("//testing")) {
             client = new MongoClient(
-                "localhost", ExtMongo.FAKE.apply(Thread.currentThread().getId())
+                "localhost", ExtMongo.FAKE.apply(this.id)
             );
         } else {
             // @checkstyle MagicNumber (5 lines)

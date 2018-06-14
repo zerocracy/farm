@@ -18,7 +18,6 @@ package com.zerocracy.pm;
 
 import com.jcabi.aspects.Tv;
 import com.jcabi.xml.XML;
-import com.mongodb.MongoClient;
 import com.mongodb.client.model.Filters;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
@@ -51,7 +50,11 @@ public final class FootprintTest {
             .iterator().next();
         new ClaimOut().type("Hello").postTo(project);
         final XML xml = new Claims(project).iterate().iterator().next();
-        try (final Footprint footprint = new Footprint(farm, project)) {
+        try (
+            final Footprint footprint = new Footprint(
+                new ExtMongo(farm, System.nanoTime()).value(), project.pid()
+            )
+        ) {
             footprint.open(xml);
             footprint.close(xml);
             footprint.cleanup(new Date());
@@ -75,9 +78,12 @@ public final class FootprintTest {
                     new ClaimOut().type("Version").postTo(project);
                     final XML xml = new Claims(project)
                         .iterate().iterator().next();
-                    final MongoClient mongo = new ExtMongo(farm).value();
-                    try (final Footprint footprint =
-                        new Footprint(mongo, project.pid())) {
+                    try (
+                        final Footprint footprint = new Footprint(
+                            new ExtMongo(farm, System.nanoTime()).value(),
+                            project.pid()
+                        )
+                    ) {
                         footprint.open(xml);
                         footprint.close(xml);
                         return footprint.collection().find(
@@ -97,7 +103,11 @@ public final class FootprintTest {
             .iterator().next();
         new ClaimOut(new Date(0L)).type("Notify").postTo(project);
         final XML xml = new Claims(project).iterate().iterator().next();
-        try (final Footprint footprint = new Footprint(farm, project)) {
+        try (
+            final Footprint footprint = new Footprint(
+                new ExtMongo(farm, System.nanoTime()).value(), project.pid()
+            )
+        ) {
             footprint.open(xml);
             footprint.close(xml);
             MatcherAssert.assertThat(
