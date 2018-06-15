@@ -36,7 +36,7 @@ def exec(Project project, XML xml) {
     Policy policy = new Policy()
     if (
       new Filtered<>(
-        { int points -> (points < 0) },
+        { points -> (points < 0) },
         new Awards(farm, user).bootstrap().awards(
           policy.get('52.days', 16)
         )
