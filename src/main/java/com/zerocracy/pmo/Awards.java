@@ -185,6 +185,7 @@ public final class Awards {
                 Integer::parseInt,
                 new Xocument(item.path()).xpath(
                     new JoinedText(
+                        "",
                         "/awards/award[",
                         "xs:dateTime(added) > xs:dateTime('",
                         new DateAsText(
