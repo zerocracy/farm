@@ -31,12 +31,9 @@ def exec(Project project, XML xml) {
   new ExtGithub(farm).value().repos()
     .create(new Repos.RepoCreate('test', false))
   Awards awards = new Awards(farm, 'carlosmiranda').bootstrap()
-  awards.add(project, -1, 'gh:test/test#1', 'test', new Date(ZonedDateTime.now().minusDays(1).toInstant().toEpochMilli()))
-  awards.add(project, -2, 'gh:test/test#1', 'test', new Date(ZonedDateTime.now().minusDays(2).toInstant().toEpochMilli()))
-  awards.add(project, -3, 'gh:test/test#1', 'test', new Date(ZonedDateTime.now().minusDays(3).toInstant().toEpochMilli()))
-  awards.add(project, -4, 'gh:test/test#1', 'test', new Date(ZonedDateTime.now().minusDays(4).toInstant().toEpochMilli()))
-  awards.add(project, -5, 'gh:test/test#1', 'test', new Date(ZonedDateTime.now().minusDays(5).toInstant().toEpochMilli()))
-  awards.add(project, -6, 'gh:test/test#1', 'test', new Date(ZonedDateTime.now().minusDays(6).toInstant().toEpochMilli()))
-  awards.add(project, -7, 'gh:test/test#1', 'test', new Date(ZonedDateTime.now().minusDays(7).toInstant().toEpochMilli()))
-  awards.add(project, -8, 'gh:test/test#1', 'test', new Date(ZonedDateTime.now().minusDays(8).toInstant().toEpochMilli()))
+  for (int i = 1; i <= 8; ++i) {
+    awards.add(
+      project, -i, 'gh:test/test#1', 'test', new Date(ZonedDateTime.now().minusDays(i).toInstant().toEpochMilli())
+    )
+  }
 }
