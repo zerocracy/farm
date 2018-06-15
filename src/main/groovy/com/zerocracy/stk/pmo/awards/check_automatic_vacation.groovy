@@ -29,22 +29,20 @@ import org.cactoos.collection.Filtered
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Award points were added')
   ClaimIn claim = new ClaimIn(xml)
-
-  String login = claim.param('login')
-
+  String user = claim.param('login')
   Farm farm = binding.variables.farm
   People people = new People(farm).bootstrap()
-  if (!people.vacation(login)) {
+  if (!people.vacation(user)) {
     Policy policy = new Policy()
     if (
       new Filtered<>(
         { int points -> (points < 0) },
-        new Awards(farm, login).bootstrap().awards(
+        new Awards(farm, user).bootstrap().awards(
           policy.get('52.days', 16)
         )
       ).size() >= policy.get('52.awards', 8)
     ) {
-      people.vacation(login, true)
+      people.vacation(user, true)
     }
   }
 }
