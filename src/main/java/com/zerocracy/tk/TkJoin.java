@@ -69,6 +69,7 @@ public final class TkJoin implements TkRegex {
     public Response act(final RqRegex req) throws IOException {
         final String author = new RqUser(this.farm, req, false).value();
         final People people = new People(this.farm).bootstrap();
+        people.touch(author);
         if (people.hasMentor(author)) {
             throw new RsForward(
                 new RsParFlash(
