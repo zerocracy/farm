@@ -21,8 +21,8 @@ import com.zerocracy.Project
 
 def exec(Project project, XML xml) {
   // @todo #1035:30min Options are not used. Election should check
-  //   maxJobsInAgenda option and not elect users that already have already
-  //   max number of jobs. After this is implemented uncomment this test.
+  //  maxJobsInAgenda option and not elect users that already have already
+  //  max number of jobs. After this is implemented uncomment this test.
 
 //  String job = 'gh:test/test#1'
 //  Orders orders = new Orders(project).bootstrap()
