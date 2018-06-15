@@ -35,7 +35,7 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   People people = new People(farm).bootstrap()
   if (!people.vacation(login)) {
-    def policy = new Policy()
+    Policy policy = new Policy()
     if (
       new Filtered<>(
         { int points -> (points < 0) },
