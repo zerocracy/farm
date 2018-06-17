@@ -101,15 +101,13 @@ final class Terminator implements Closeable, Scalar<Iterable<Directive>> {
     public void submit(final Project project, final String file,
         final Lock lock) {
         synchronized (this.killers) {
-            if (!this.killers.containsKey(project)) {
-                this.killers.put(project, file);
-                this.service.submit(
-                    new VerboseRunnable(
-                        this.killer(project, file, lock),
-                        true, true
-                    )
-                );
-            }
+            this.killers.putIfAbsent(project, file);
+            this.service.submit(
+                new VerboseRunnable(
+                    this.killer(project, file, lock),
+                    true, true
+                )
+            );
         }
     }
 
@@ -126,7 +124,9 @@ final class Terminator implements Closeable, Scalar<Iterable<Directive>> {
         final Exception location = new IllegalStateException("Here!");
         return new RunnableOf<Object>(
             input -> {
-                if (!lock.tryLock(this.threshold, TimeUnit.MILLISECONDS)) {
+                if (lock.tryLock(this.threshold, TimeUnit.MILLISECONDS)) {
+                    lock.unlock();
+                } else {
                     Logger.warn(
                         this,
                         // @checkstyle LineLength (1 line)
@@ -137,7 +137,6 @@ final class Terminator implements Closeable, Scalar<Iterable<Directive>> {
                     thread.interrupt();
                     this.submit(project, file, lock);
                 }
-                lock.unlock();
                 this.killers.remove(project);
             }
         );
