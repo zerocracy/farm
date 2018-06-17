@@ -56,7 +56,7 @@ public final class ExtMongo implements Scalar<MongoClient> {
      * Thread with Mongodb.
      * @checkstyle ConstantUsageCheck (5 lines)
      */
-    private static final UncheckedFunc<Long, Integer> FAKE =
+    private static final UncheckedFunc<String, Integer> FAKE =
         new UncheckedFunc<>(
         new SolidFunc<>(
             (id) -> {
@@ -109,14 +109,14 @@ public final class ExtMongo implements Scalar<MongoClient> {
      * Mongo instance identifier.
      * Used to help with tests that depend on current mongo state.
      */
-    private final long id;
+    private final String id;
 
     /**
      * Ctor.
      * @param frm The farm
      */
     public ExtMongo(final Farm frm) {
-        this(frm, 0);
+        this(frm, "");
     }
 
     /**
@@ -124,7 +124,7 @@ public final class ExtMongo implements Scalar<MongoClient> {
      * @param frm The farm
      * @param ident Mongo instance identifier
      */
-    public ExtMongo(final Farm frm, final long ident) {
+    public ExtMongo(final Farm frm, final String ident) {
         this.farm = frm;
         this.id = ident;
     }

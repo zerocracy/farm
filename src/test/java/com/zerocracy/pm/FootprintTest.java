@@ -27,6 +27,7 @@ import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.farm.sync.SyncFarm;
 import java.io.IOException;
 import java.util.Date;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.hamcrest.MatcherAssert;
@@ -137,7 +138,8 @@ public final class FootprintTest {
     private static Footprint footprint(final Farm farm, final Project project)
         throws IOException {
         return new Footprint(
-            new ExtMongo(farm, System.nanoTime()).value(), project.pid()
+            new ExtMongo(farm, UUID.randomUUID().toString()).value(),
+            project.pid()
         );
     }
 }
