@@ -116,8 +116,7 @@ public final class ExtMongo implements Scalar<MongoClient> {
      * @param frm The farm
      */
     public ExtMongo(final Farm frm) {
-        this.farm = frm;
-        this.id = 0;
+        this(frm, 0);
     }
 
     /**
