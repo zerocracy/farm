@@ -27,5 +27,5 @@ def exec(Project project, XML xml) {
   //  has role of DEV and 30 points award. After fixing it uncomment following
   //  two lines and the test should pass.
   //assert new Wbs(project).bootstrap().role(job) == 'REV'
-  //assert new Boosts(project).bootstrap().factor(job) * 15 == 15
+  //assert new Boosts(project).bootstrap().factor(job) == 1
 }
