@@ -14,35 +14,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pmo.awards
+package com.zerocracy.bundles.assigns_performer_pr
 
 import com.jcabi.xml.XML
-import com.zerocracy.Farm
-import com.zerocracy.Policy
 import com.zerocracy.Project
-import com.zerocracy.farm.Assume
-import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pmo.Awards
-import com.zerocracy.pmo.People
-import org.cactoos.collection.Filtered
+import com.zerocracy.pm.in.Orders
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Award points were added')
-  ClaimIn claim = new ClaimIn(xml)
-  String user = claim.param('login')
-  Farm farm = binding.variables.farm
-  People people = new People(farm).bootstrap()
-  if (!people.vacation(user)) {
-    Policy policy = new Policy()
-    if (
-      new Filtered<>(
-        { points -> (points < 0) },
-        new Awards(farm, user).bootstrap().awards(
-          policy.get('52.days', 16)
-        )
-      ).size() >= policy.get('52.awards', 8)
-    ) {
-      people.vacation(user, true)
-    }
-  }
+  def job = 'gh:test/test#1'
+  assert new Orders(project).bootstrap().performer(job) == 'krzyk'
+  // @todo #1015:30min Fix the problem when PR job is assigned manually it
+  //  has role of DEV and 30 points award. After fixing it uncomment following
+  //  two lines and the test should pass.
+  //assert new Wbs(project).bootstrap().role(job) == 'REV'
+  //assert new Boosts(project).bootstrap().factor(job) == 1
 }

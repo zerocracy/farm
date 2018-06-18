@@ -14,35 +14,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pmo.awards
+package com.zerocracy.bundles.assigns_performer_pr
 
+import com.jcabi.github.Github
+import com.jcabi.github.Repo
+import com.jcabi.github.Repos
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
-import com.zerocracy.Policy
 import com.zerocracy.Project
-import com.zerocracy.farm.Assume
-import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pmo.Awards
-import com.zerocracy.pmo.People
-import org.cactoos.collection.Filtered
+import com.zerocracy.entry.ExtGithub
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Award points were added')
-  ClaimIn claim = new ClaimIn(xml)
-  String user = claim.param('login')
   Farm farm = binding.variables.farm
-  People people = new People(farm).bootstrap()
-  if (!people.vacation(user)) {
-    Policy policy = new Policy()
-    if (
-      new Filtered<>(
-        { points -> (points < 0) },
-        new Awards(farm, user).bootstrap().awards(
-          policy.get('52.days', 16)
-        )
-      ).size() >= policy.get('52.awards', 8)
-    ) {
-      people.vacation(user, true)
-    }
-  }
+  Github github = new ExtGithub(farm).value()
+  Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
+  repo.pulls().create('PR for hello, world', 'fixes', 'master')
 }
