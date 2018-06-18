@@ -28,7 +28,6 @@ import com.zerocracy.pm.cost.Ledger;
 import com.zerocracy.pmo.Catalog;
 import java.io.IOException;
 import org.cactoos.list.ListOf;
-import org.cactoos.text.JoinedText;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 import org.takes.rq.RqFake;
@@ -70,17 +69,11 @@ public final class TkBoardTest {
         MatcherAssert.assertThat(
             this.firefoxView(farm),
             XhtmlMatchers.hasXPaths(
-                new JoinedText(
-                    "/",
-                    "/xhtml:html/xhtml:body/xhtml:section/xhtml:article",
-                    "xhtml:table/xhtml:tbody/xhtml:tr[1]/xhtml:td[1]",
-                    "xhtml:span",
-                    String.format(
-                        // @checkstyle LineLength (1 line)
-                        "xhtml:span[@title = 'The project is funded' and . = '%s']",
-                        cash
-                    )
-                ).asString()
+                String.format(
+                    // @checkstyle LineLength (1 line)
+                    "//xhtml:span[@title = 'The project is funded' and . = '%s']",
+                    cash
+                )
             )
         );
     }
@@ -101,14 +94,8 @@ public final class TkBoardTest {
         MatcherAssert.assertThat(
             this.firefoxView(farm),
             XhtmlMatchers.hasXPaths(
-                new JoinedText(
-                    "/",
-                    "/xhtml:html/xhtml:body/xhtml:section/xhtml:article",
-                    "xhtml:table/xhtml:tbody/xhtml:tr[1]/xhtml:td[1]",
-                    "xhtml:span",
-                    // @checkstyle LineLength (1 line)
-                    "xhtml:span[@title = 'The project has no funds, you will work for free']"
-                ).asString()
+                // @checkstyle LineLength (1 line)
+                "//xhtml:span[@title = 'The project has no funds, you will work for free']"
             )
         );
     }
