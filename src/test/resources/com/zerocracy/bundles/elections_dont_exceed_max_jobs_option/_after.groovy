@@ -25,17 +25,16 @@ def exec(Project project, XML xml) {
   //  max number of jobs. After this is implemented uncomment this test.
 
 //  String job = 'gh:test/test#1'
-//  Orders orders = new Orders(project).bootstrap()
-//  SoftException exception = null
+//  Exception exception = null
 //  try {
-//    orders.performer(job)
+//    new Orders(project).bootstrap().orders.performer(job)
 //  } catch (SoftException ex) {
 //    exception = ex
+//    assert exception.getMessage() == String.format(
+//      'Job `%s` is not assigned, can\'t get performer', job
+//    )
 //  }
 //  assert exception != null
-//  assert exception.getMessage() == String.format(
-//    'Job `%s` is not assigned, can\'t get performer', job
-//  )
 //  Farm farm = binding.variables.farm
 //  assert new LengthOf(
 //    new Footprint(farm, project).collection().find(
