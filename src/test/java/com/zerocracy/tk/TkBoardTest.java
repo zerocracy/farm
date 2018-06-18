@@ -18,6 +18,7 @@ package com.zerocracy.tk;
 
 import com.jcabi.github.Repo;
 import com.jcabi.github.mock.MkGithub;
+import com.jcabi.matchers.XhtmlMatchers;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.cash.Cash;
@@ -27,8 +28,8 @@ import com.zerocracy.pm.cost.Ledger;
 import com.zerocracy.pmo.Catalog;
 import java.io.IOException;
 import org.cactoos.list.ListOf;
+import org.cactoos.text.JoinedText;
 import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.takes.rq.RqFake;
 import org.takes.rs.RsPrint;
@@ -68,10 +69,18 @@ public final class TkBoardTest {
         );
         MatcherAssert.assertThat(
             this.firefoxView(farm),
-            Matchers.containsString(
-                String.format(
-                    "title=\"The project is funded\">%s</", cash.toString()
-                )
+            XhtmlMatchers.hasXPaths(
+                new JoinedText(
+                    "/",
+                    "/xhtml:html/xhtml:body/xhtml:section/xhtml:article",
+                    "xhtml:table/xhtml:tbody/xhtml:tr[1]/xhtml:td[1]",
+                    "xhtml:span",
+                    String.format(
+                        // @checkstyle LineLength (1 line)
+                        "xhtml:span[@title = 'The project is funded' and . = '%s']",
+                        cash
+                    )
+                ).asString()
             )
         );
     }
@@ -91,14 +100,20 @@ public final class TkBoardTest {
         catalog.publish(project.pid(), true);
         MatcherAssert.assertThat(
             this.firefoxView(farm),
-            Matchers.containsString(
-                "title=\"The project has no funds, you will work for free\""
+            XhtmlMatchers.hasXPaths(
+                new JoinedText(
+                    "/",
+                    "/xhtml:html/xhtml:body/xhtml:section/xhtml:article",
+                    "xhtml:table/xhtml:tbody/xhtml:tr[1]/xhtml:td[1]",
+                    "xhtml:span",
+                    // @checkstyle LineLength (1 line)
+                    "xhtml:span[@title = 'The project has no funds, you will work for free']"
+                ).asString()
             )
         );
     }
 
-    private String firefoxView(final Farm farm)
-        throws IOException {
+    private String firefoxView(final Farm farm) throws IOException {
         return new RsPrint(
             new TkApp(farm).act(
                 new RqWithUser(
