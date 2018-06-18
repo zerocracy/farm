@@ -24,6 +24,7 @@ import com.zerocracy.farm.SmartFarm;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.radars.github.GithubRoutine;
 import com.zerocracy.radars.github.TkGithub;
+import com.zerocracy.radars.gitlab.TkGitlab;
 import com.zerocracy.radars.slack.SlackRadar;
 import com.zerocracy.radars.slack.TkSlack;
 import com.zerocracy.tk.TkAlias;
@@ -45,6 +46,7 @@ import org.takes.http.FtCli;
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class Main {
 
     /**
@@ -133,6 +135,10 @@ public final class Main {
                     new FkRegex(
                         "/ghook",
                         new TkMethods(new TkGithub(farm), "POST")
+                    ),
+                    new FkRegex(
+                        "/glhook",
+                        new TkMethods(new TkGitlab(), "POST")
                     )
                 ),
                 this.arguments
