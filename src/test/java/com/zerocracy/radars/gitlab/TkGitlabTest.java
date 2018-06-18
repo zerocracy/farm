@@ -31,6 +31,7 @@ import org.takes.rq.RqWithBody;
  * @since 0.23
  * @checkstyle JavadocMethodCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class TkGitlabTest {
     @Test
     public void worksForCorrectJson() throws Exception {
