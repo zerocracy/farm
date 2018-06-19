@@ -986,6 +986,7 @@ SOFTWARE.
               <configuration combine.children="append">
                 <excludes>
                   <exclude>com.zerocracy.pm.FootprintTest</exclude>
+                  <exclude>com.zerocracy.farm.S3ItemTest</exclude>
                 </excludes>
               </configuration>
             </plugin>
