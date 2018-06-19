@@ -65,7 +65,7 @@ public final class TkGitlab implements Take {
             throw new RsForward(
                 new RsParFlash(
                     new Par(
-                        "We expect this URL to be called by GitLub",
+                        "We expect this URL to be called by GitLab",
                         "with JSON as body of POST"
                     ).say(),
                     Level.WARNING

@@ -55,4 +55,12 @@ public final class TkGitlabTest {
         );
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void failsForInvalidJson() throws Exception {
+        new TkGitlab().act(
+            new RqWithBody(
+                new RqFake("POST", "/"), "{test"
+            )
+        );
+    }
 }
