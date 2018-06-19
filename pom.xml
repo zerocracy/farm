@@ -1002,7 +1002,9 @@ SOFTWARE.
               </configuration>
             </plugin>
             <plugin>
+              <groupId>org.jacoco</groupId>
               <artifactId>jacoco-maven-plugin</artifactId>
+              <version>0.8.0</version>
               <configuration>
                 <excludes combine.children="append">
                   <exclude>com.zerocracy.farm.S3ItemTest</exclude>
