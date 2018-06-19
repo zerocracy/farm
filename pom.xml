@@ -1001,6 +1001,19 @@ SOFTWARE.
                 </excludes>
               </configuration>
             </plugin>
+            <plugin>
+              <artifactId>jacoco-maven-plugin</artifactId>
+              <configuration>
+                <excludes combine.children="append">
+                  <exclude>com.zerocracy.farm.S3ItemTest</exclude>
+                  <exclude>com.zerocracy.tk.project.TkArtifactTest</exclude>
+                  <exclude>com.zerocracy.tk.project.TkFootprintTest</exclude>
+                  <exclude>com.zerocracy.pm.cost.EquityTest</exclude>
+                  <exclude>com.zerocracy.tk.TkAppTest</exclude>
+                  <exclude>com.zerocracy.tk.profile.TkIdentifyTest</exclude>
+                </excludes>
+              </configuration>
+            </plugin>
           </plugins>
         </pluginManagement>
       </build>
