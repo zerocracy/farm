@@ -30,10 +30,13 @@ import org.cactoos.scalar.NumberOf;
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id $
  * @since 0.22
- * @todo #703:30min Options are not used. Election should check
- *  maxJobsInAgenda option, notify stakeholders should check notify options:
- *  notifyPublish, notifyRfps, notifyStudents. Also user should be able to
- *  download, edit and upload options.xml file on profile page.
+ * @todo #1035:30min Notify stakeholders should check
+ *  notify options from the Options object specific to given user whether to
+ *  notify him about certain events. Options that should be used: notifyPublish,
+ *  notifyRfps, notifyStudents.
+ * @todo #1035:30min Options should be changeable by the user from their profile
+ *  page. Allow users to download, edit and upload options.xml file on profile
+ *  page.
  */
 public final class Options {
     /**
