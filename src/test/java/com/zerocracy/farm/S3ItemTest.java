@@ -41,11 +41,6 @@ import org.xembly.Directives;
  * @version $Id$
  * @since 0.1
  * @checkstyle JavadocMethodCheck (500 lines)
- * @todo #1041:30min This test is failing on Windows system,
- *  most probably because of locale and decimal point,
- *  see https://github.com/zerocracy/farm/pull/1178#issuecomment-398324645
- *  We need to fix it and remove exclusion from pom.xml in maven profile
- *  with id=windows.
  */
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 public final class S3ItemTest {
