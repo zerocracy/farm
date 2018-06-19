@@ -46,9 +46,10 @@ import org.takes.rs.RsWithStatus;
  *  full API.
  * @todo #1144:30min Create a generic interface for hosted version control
  *  systems that we could use in stakeholders (and other classes) where we
- *  don't care about specific vendor (Github or Gitlab). Most probably
- *  React and Rebound interfaces should be reworked to support such general
- *  vendor.
+ *  don't care about specific vendor (Github or Gitlab). Remember that besides
+ *  the generic interface stakeholders have to have a way to find out if they
+ *  are working with GitLab or GitHub. Most probably React and Rebound
+ *  interfaces should be reworked to support such general vendor.
  * @todo #1144:30min Mimic the functionality of TkGithub in this class. For
  *  Gitlab we should support all the webhook notifications that we currently do
  *  for Github.
