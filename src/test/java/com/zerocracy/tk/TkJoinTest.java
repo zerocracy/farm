@@ -25,6 +25,9 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.Date;
 import org.cactoos.iterable.IterableOf;
+import org.cactoos.matchers.TextHasString;
+import org.cactoos.text.FormattedText;
+import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.text.StringContainsInOrder;
@@ -133,44 +136,49 @@ public final class TkJoinTest {
     }
 
     /**
-     * {@link TkJoin} can show that user already has a mentor. TkJoin must
-     * show a message to user when he or she tries to access
+     * {@link TkJoin} can show that user already has a mentor.
+     * {@link TkJoin} must show a message to user when he or she tries to access
      * <code>/join</code> but already has a mentor, which means that the user
-     * has already joined or asked for menthor for joining.
-     * @throws IOException If something goes wrong accessing page.
+     * has already joined or asked for mentor for joining.
+     * @throws IOException If something goes wrong accessing page
      */
     @Test
     @Ignore
-    public void showThatUserAlreadyHasMentor() throws IOException {
+    public void showsThatUserAlreadyHasMentor() throws IOException {
         final Farm farm = new PropsFarm(new FkFarm());
         final People people = new People(farm).bootstrap();
-        final String uid = "yegor256";
-        people.touch(uid);
-        people.apply(uid, new Date());
+        final String mentorid = "yoda";
+        final String userid = "luke";
+        people.touch(mentorid);
+        people.touch(userid);
+        people.apply(userid, new Date());
+        people.invite(userid, mentorid);
         MatcherAssert.assertThat(
-            new RsPrint(
-                new TkApp(farm).act(
-                    new RqWithUser(farm, new RqFake("GET", "/join"))
-                )
-            ).printBody(),
-            new StringContainsInOrder(
-                new IterableOf<String>(
-                    "User",
-                    "is already your mentor, no need to join again"
-                )
+            new TextOf(
+                new RsPrint(
+                    new TkApp(farm).act(
+                        new RqWithUser(farm, new RqFake("GET", "/join"))
+                    )
+                ).printBody()
+            ),
+            new TextHasString(
+                new FormattedText(
+                    "User %s is already your mentor, no need to join again",
+                    mentorid
+                ).asString()
             )
         );
     }
 
     /**
-     * {@link TkJoin} can show resume if user already applied. TkJoin must
-     * show user's resume, if there is one, when user tries to access
-     * <code>/join</code> endpoint.
-     * @throws IOException If something goes wrong accessing page.
+     * {@link TkJoin} can show resume if user already applied.
+     * {@link TkJoin} must show user's resume, if there is one, when user tries
+     * to access <code>/join</code> endpoint.
+     * @throws IOException If something goes wrong accessing page
      */
     @Test
     @Ignore
-    public void showResumeIfAlreadyApplied() throws Exception {
+    public void showsResumeIfAlreadyApplied() throws Exception {
         final Farm farm = new PropsFarm(new FkFarm());
         final People people = new People(farm).bootstrap();
         final String uid = "yegor256";
