@@ -30,14 +30,11 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   new ExtGithub(farm).value().repos()
     .create(new Repos.RepoCreate('test', false))
-  Awards awards = new Awards(farm, 'krzyk').bootstrap()
   ZonedDateTime now = ZonedDateTime.now()
-  awards.add(
-    project, 15, 'gh:test/test#1', 'test', new Date(now.minusDays(9).toInstant().toEpochMilli())
-  )
-  for (int i = 1; i <= 8; ++i) {
-    awards.add(
-      project, -i, 'gh:test/test#1', 'test', new Date(now.minusDays(i).toInstant().toEpochMilli())
-    )
+  new Awards(farm, 'krzyk').bootstrap().with {
+    add project, 15, 'gh:test/test#1', 'test', new Date(now.minusDays(9).toInstant().toEpochMilli())
+    for (int i = 1; i <= 8; ++i) {
+      add project, -i, 'gh:test/test#1', 'test', new Date(now.minusDays(i).toInstant().toEpochMilli())
+    }
   }
 }
