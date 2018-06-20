@@ -77,6 +77,7 @@ import org.takes.rs.RsWithStatus;
 import org.takes.rs.RsWithType;
 import org.takes.rs.xe.XeAppend;
 import org.takes.tk.TkClasspath;
+import org.takes.tk.TkFixed;
 import org.takes.tk.TkGzip;
 import org.takes.tk.TkMeasured;
 import org.takes.tk.TkRedirect;
@@ -222,6 +223,10 @@ public final class TkApp extends TkWrap {
                                                                     new FkRegex("/gang", new TkRedirect("/team")),
                                                                     new FkRegex("/me", new TkRedirect("/home")),
                                                                     new FkRegex(
+                                                                        "/badge/([A-Z0-9]{9})\\.svg",
+                                                                        new TkFixed("badge disabled")
+                                                                    ),
+                                                                    new FkRegex(
                                                                         "/p/(PMO|[A-Z0-9]{9})",
                                                                         new TkProject(farm)
                                                                     ),
@@ -249,6 +254,10 @@ public final class TkApp extends TkWrap {
                                                                     new FkRegex(
                                                                         "/contrib-pay/([A-Z0-9]{9})",
                                                                         new TkContribPay(farm)
+                                                                    ),
+                                                                    new FkRegex(
+                                                                        "/contrib-badge/([A-Z0-9]{9})\\.svg",
+                                                                        new TkFixed("contrib-badge disabled")
                                                                     ),
                                                                     new FkRegex(
                                                                         "/contrib-ledger/([A-Z0-9]{9})",
