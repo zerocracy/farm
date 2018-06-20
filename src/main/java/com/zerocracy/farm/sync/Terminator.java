@@ -21,6 +21,7 @@ import com.jcabi.log.VerboseRunnable;
 import com.jcabi.log.VerboseThreads;
 import com.zerocracy.Project;
 import com.zerocracy.ShutUp;
+import io.sentry.Sentry;
 import java.io.Closeable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -119,26 +120,44 @@ final class Terminator implements Closeable, Scalar<Iterable<Directive>> {
      * @param file The file
      * @param lock The lock
      * @return The runnable
+     * @checkstyle IllegalCatchCheck (100 lines)
      */
+    @SuppressWarnings("PMD.AvoidCatchingThrowable")
     private Runnable killer(final Project project, final String file,
         final Lock lock) {
         final Thread thread = Thread.currentThread();
         final Exception location = new IllegalStateException("Here!");
         return new RunnableOf<Object>(
             input -> {
-                if (!lock.tryLock(this.threshold, TimeUnit.MILLISECONDS)) {
-                    Logger.warn(
-                        this,
-                        // @checkstyle LineLength (1 line)
-                        "Thread %d/%s interrupted because of too long hold of \"%s\" in %s (over %d msec), %s: %[exception]s",
-                        thread.getId(), thread.getName(),
-                        file, project.pid(), this.threshold, lock, location
-                    );
-                    thread.interrupt();
-                    this.submit(project, file, lock);
+                try {
+                    if (!lock.tryLock(this.threshold, TimeUnit.MILLISECONDS)) {
+                        Logger.warn(
+                            this,
+                            // @checkstyle LineLength (1 line)
+                            "Thread %d/%s interrupted because of too long hold of \"%s\" in %s (over %d msec), %s: %[exception]s",
+                            thread.getId(), thread.getName(),
+                            file, project.pid(), this.threshold, lock, location
+                        );
+                        Sentry.capture(
+                            new Exception(
+                                String.format(
+                                    // @checkstyle LineLength (1 line)
+                                    "Thread %d/%s interrupted because of too long hold of \"%s\" in %s (over %d msec), %s",
+                                    thread.getId(), thread.getName(),
+                                    file, project.pid(), this.threshold, lock
+                                ),
+                                location
+                            )
+                        );
+                        thread.interrupt();
+                        this.submit(project, file, lock);
+                    }
+                    lock.unlock();
+                    this.killers.remove(project);
+                } catch (final Throwable err) {
+                    Sentry.capture(err);
+                    throw err;
                 }
-                lock.unlock();
-                this.killers.remove(project);
             }
         );
     }

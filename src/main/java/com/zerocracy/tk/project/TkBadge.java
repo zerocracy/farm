@@ -30,10 +30,10 @@ import org.takes.rs.RsWithStatus;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.18
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @todo #1168:30min TkBadge is temporary disabled because of high load.
  *  There are a lot of requests to project badges, each request trigger
  *  SyncFarm lock acquire, which is broken right now.
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class TkBadge implements TkRegex {
     @Override
