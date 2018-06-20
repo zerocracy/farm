@@ -225,7 +225,7 @@ public final class TkApp extends TkWrap {
                                                                     new FkRegex("/me", new TkRedirect("/home")),
                                                                     new FkRegex(
                                                                         "/badge/([A-Z0-9]{9})\\.svg",
-                                                                        new TkBadge()
+                                                                        new TkBadge(farm)
                                                                     ),
                                                                     new FkRegex(
                                                                         "/p/(PMO|[A-Z0-9]{9})",

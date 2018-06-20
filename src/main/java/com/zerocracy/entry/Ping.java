@@ -21,13 +21,11 @@ import com.zerocracy.Project;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
 import com.zerocracy.pmo.Catalog;
-import io.sentry.Sentry;
 import java.io.IOException;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import org.cactoos.iterable.Shuffled;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
 
 /**
  * Ping as quartz job.
@@ -36,10 +34,6 @@ import org.quartz.JobExecutionContext;
  * @since 0.21.1
  */
 public final class Ping implements Job {
-    /**
-     * Ping executor.
-     */
-    private static final Executor EXEC = Executors.newCachedThreadPool();
     /**
      * Farm.
      */
@@ -53,22 +47,23 @@ public final class Ping implements Job {
     }
 
     @Override
-    public void execute(final JobExecutionContext ctx) {
-        final String claim = ctx.getMergedJobDataMap().getString("claim");
-        Ping.EXEC.execute(() -> this.post(claim));
+    public void execute(final JobExecutionContext ctx)
+        throws JobExecutionException {
+        try {
+            this.post(ctx.getMergedJobDataMap().getString("claim"));
+        } catch (final IOException err) {
+            throw new JobExecutionException(err);
+        }
     }
 
     /**
      * Post a ping.
      * @param type The type of claim to post
+     * @throws IOException If fails
      */
-    private void post(final String type) {
-        try {
-            for (final Project project : new Shuffled<>(this.farm.find(""))) {
-                this.post(project, type);
-            }
-        } catch (final IOException err) {
-            Sentry.capture(err);
+    private void post(final String type) throws IOException {
+        for (final Project project : new Shuffled<>(this.farm.find(""))) {
+            this.post(project, type);
         }
     }
 

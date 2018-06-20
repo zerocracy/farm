@@ -19,13 +19,8 @@ package com.zerocracy.farm.sync;
 import com.jcabi.log.Logger;
 import com.zerocracy.Item;
 import com.zerocracy.Project;
-import io.sentry.Sentry;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
 import lombok.EqualsAndHashCode;
 
@@ -39,10 +34,7 @@ import lombok.EqualsAndHashCode;
  */
 @EqualsAndHashCode(of = "origin")
 final class SyncProject implements Project {
-    /**
-     * Timer.
-     */
-    private static final Timer TIMER = new Timer(true);
+
     /**
      * Origin project.
      */
@@ -54,13 +46,20 @@ final class SyncProject implements Project {
     private final Lock lock;
 
     /**
+     * Terminator.
+     */
+    private final Terminator terminator;
+
+    /**
      * Ctor.
      * @param pkt Project
      * @param lck Lock
+     * @param tmr Terminator
      */
-    SyncProject(final Project pkt, final Lock lck) {
+    SyncProject(final Project pkt, final Lock lck, final Terminator tmr) {
         this.origin = pkt;
         this.lock = lck;
+        this.terminator = tmr;
     }
 
     @Override
@@ -95,74 +94,7 @@ final class SyncProject implements Project {
                 ex
             );
         }
-        final SyncProject.TrackItem item =
-            new SyncProject.TrackItem(
-                new SyncItem(this.origin.acq(file), this.lock)
-            );
-        final Exception exx = new IllegalStateException(
-            String.format("Item '%s' was not closed for 1 minute", file)
-        );
-        SyncProject.TIMER.schedule(
-            new TimerTask() {
-                @Override
-                public void run() {
-                    if (!item.closed()) {
-                        Sentry.capture(exx);
-                        try {
-                            item.close();
-                        } catch (final IOException err) {
-                            Sentry.capture(err);
-                        }
-                    }
-                }
-            },
-            // @checkstyle MagicNumber (1 line)
-            TimeUnit.MINUTES.toMillis(1L)
-        );
-        return item;
-    }
-
-    /**
-     * Track item close.
-     */
-    private static final class TrackItem implements Item {
-        /**
-         * Origin item.
-         */
-        private final Item itm;
-        /**
-         * Closed.
-         */
-        private final AtomicBoolean cls;
-        /**
-         * Ctor.
-         * @param origin Origin item
-         */
-        private TrackItem(final Item origin) {
-            this.itm = origin;
-            this.cls = new AtomicBoolean(false);
-        }
-
-        @Override
-        public Path path() throws IOException {
-            if (this.cls.get()) {
-                throw new IOException("Item closed");
-            }
-            return this.itm.path();
-        }
-
-        @Override
-        public void close() throws IOException {
-            if (this.cls.compareAndSet(false, true)) {
-                this.itm.close();
-            }
-        }
-        /**
-         * Item closed.
-         * @return true if closed
-         */
-        public boolean closed() {
-            return this.cls.get();
-        }
+        this.terminator.submit(this, file, this.lock);
+        return new SyncItem(this.origin.acq(file), this.lock);
     }
 }
