@@ -990,7 +990,8 @@ SOFTWARE.
                       some of them because of locale and decimal point,
                       see https://github.com/zerocracy/farm/pull/1178#discussion_r196476659
                       for more details.
-                      We need to fix them and remove exclusions from this profile.
+                      We need to fix them and remove surefire exclusions from this profile
+                      and jacoco exlusions also.
                   -->
                   <exclude>com.zerocracy.farm.S3ItemTest</exclude>
                   <exclude>com.zerocracy.tk.project.TkArtifactTest</exclude>
