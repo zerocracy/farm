@@ -1010,7 +1010,7 @@ SOFTWARE.
                 <rules>
                   <rule>
                     <limits>
-                      <limit combine.children="append">
+                      <limit combine.children="override">
                         <counter>BRANCH</counter>
                         <value>COVEREDRATIO</value>
                         <minimum>0.49</minimum>
