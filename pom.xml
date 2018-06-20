@@ -654,6 +654,8 @@ SOFTWARE.
                   </rules>
                   <excludes combine.children="append">
                     <exclude>com/zerocracy/pmo/People.java</exclude>
+                    <exclude>com/zerocracy/tk/project/TkBadge.java</exclude>
+                    <exclude>com/zerocracy/tk/project/TkContribBadge.java</exclude>
                     <exclude>com/zerocracy/pings/*.*</exclude>
                     <!--
                       @todo #747:30min Groovy scripts are excluded from coverage report
