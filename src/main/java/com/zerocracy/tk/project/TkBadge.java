@@ -16,15 +16,13 @@
  */
 package com.zerocracy.tk.project;
 
-import com.zerocracy.Farm;
-import com.zerocracy.Project;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
-import org.takes.rs.RsWithBody;
-import org.takes.rs.RsWithHeaders;
-import org.takes.rs.RsWithType;
+import org.takes.rs.RsText;
+import org.takes.rs.RsWithStatus;
 
 /**
  * Project badge.
@@ -33,35 +31,16 @@ import org.takes.rs.RsWithType;
  * @version $Id$
  * @since 0.18
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @todo #1168:30min TkBadge is temporary disabled because of high load.
+ *  There are a lot of requests to project badges, each request trigger
+ *  SyncFarm lock acquire, which is broken right now.
  */
 public final class TkBadge implements TkRegex {
-
-    /**
-     * Farm.
-     */
-    private final Farm farm;
-
-    /**
-     * Ctor.
-     * @param frm Farm
-     */
-    public TkBadge(final Farm frm) {
-        this.farm = frm;
-    }
-
     @Override
     public Response act(final RqRegex req) throws IOException {
-        final Project project = new RqAnonProject(this.farm, req);
-        return new RsWithHeaders(
-            new RsWithType(
-                new RsWithBody(
-                    this.getClass().getResource("badge.svg")
-                ),
-                "image/svg+xml"
-            ),
-            "Cache-Control: no-cache",
-            String.format("X-Zerocracy-Project-ID: %s", project.pid())
+        return new RsWithStatus(
+            new RsText("badges are temporary disabled"),
+            HttpURLConnection.HTTP_UNAVAILABLE
         );
     }
-
 }
