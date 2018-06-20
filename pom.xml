@@ -1009,11 +1009,13 @@ SOFTWARE.
               <configuration>
                 <rules>
                   <rule>
-                    <limit combine.children="append">
-                      <counter>BRANCH</counter>
-                      <value>COVEREDRATIO</value>
-                      <minimum>0.49</minimum>
-                    </limit>
+                    <limits>
+                      <limit combine.children="append">
+                        <counter>BRANCH</counter>
+                        <value>COVEREDRATIO</value>
+                        <minimum>0.49</minimum>
+                      </limit>
+                    </limits>
                   </rule>
                 </rules>
                 <excludes combine.children="append">
