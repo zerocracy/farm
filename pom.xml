@@ -1007,6 +1007,15 @@ SOFTWARE.
               <artifactId>jacoco-maven-plugin</artifactId>
               <version>0.8.0</version>
               <configuration>
+                <rules>
+                  <rule>
+                    <limit combine.children="append">
+                      <counter>BRANCH</counter>
+                      <value>COVEREDRATIO</value>
+                      <minimum>0.49</minimum>
+                    </limit>
+                  </rule>
+                </rules>
                 <excludes combine.children="append">
                   <exclude>com.zerocracy.farm.S3ItemTest</exclude>
                   <exclude>com.zerocracy.tk.project.TkArtifactTest</exclude>
