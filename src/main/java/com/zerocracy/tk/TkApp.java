@@ -273,6 +273,10 @@ public final class TkApp extends TkWrap {
                                                                         new TkClaim(farm)
                                                                     ),
                                                                     new FkRegex(
+                                                                        "/kill",
+                                                                        new TkKill()
+                                                                    ),
+                                                                    new FkRegex(
                                                                         "/report/(PMO|[A-Z0-9]{9})",
                                                                         new TkReport(farm)
                                                                     ),
