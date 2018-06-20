@@ -39,7 +39,10 @@ import lombok.EqualsAndHashCode;
  */
 @EqualsAndHashCode(of = "origin")
 final class SyncProject implements Project {
-
+    /**
+     * Timer.
+     */
+    private static final Timer TIMER = new Timer(true);
     /**
      * Origin project.
      */
@@ -70,7 +73,7 @@ final class SyncProject implements Project {
         final long start = System.currentTimeMillis();
         try {
             // @checkstyle MagicNumber (1 line)
-            if (!this.lock.tryLock(2L, TimeUnit.MINUTES)) {
+            if (!this.lock.tryLock(1L, TimeUnit.MINUTES)) {
                 throw new IllegalStateException(
                     Logger.format(
                         "Failed to acquire \"%s\" in \"%s\" in %[ms]s: %s",
@@ -97,19 +100,24 @@ final class SyncProject implements Project {
                 new SyncItem(this.origin.acq(file), this.lock)
             );
         final Exception exx = new IllegalStateException(
-            String.format("Item '%s' was not closed for 2 minutes", file)
+            String.format("Item '%s' was not closed for 1 minute", file)
         );
-        new Timer().schedule(
+        SyncProject.TIMER.schedule(
             new TimerTask() {
                 @Override
                 public void run() {
                     if (!item.closed()) {
                         Sentry.capture(exx);
+                        try {
+                            item.close();
+                        } catch (final IOException err) {
+                            Sentry.capture(err);
+                        }
                     }
                 }
             },
             // @checkstyle MagicNumber (1 line)
-            TimeUnit.MINUTES.toMillis(2L)
+            TimeUnit.MINUTES.toMillis(1L)
         );
         return item;
     }
@@ -137,6 +145,9 @@ final class SyncProject implements Project {
 
         @Override
         public Path path() throws IOException {
+            if (this.cls.get()) {
+                throw new IOException("Item closed");
+            }
             return this.itm.path();
         }
 
