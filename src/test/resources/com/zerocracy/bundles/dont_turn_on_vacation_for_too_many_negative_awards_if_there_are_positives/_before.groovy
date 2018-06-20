@@ -14,32 +14,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pmo.awards
+package com.zerocracy.bundles.dont_turn_on_vacation_for_too_many_negative_awards_if_there_are_positives
 
+import com.jcabi.github.Repos
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
-import com.zerocracy.Policy
 import com.zerocracy.Project
-import com.zerocracy.farm.Assume
-import com.zerocracy.pm.ClaimIn
+import com.zerocracy.entry.ExtGithub
 import com.zerocracy.pmo.Awards
-import com.zerocracy.pmo.People
-import org.cactoos.collection.Filtered
 
+import java.time.ZonedDateTime
+
+@SuppressWarnings('UnnecessaryObjectReferences')
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Award points were added')
-  ClaimIn claim = new ClaimIn(xml)
-  String user = claim.param('login')
   Farm farm = binding.variables.farm
-  People people = new People(farm).bootstrap()
-  if (!people.vacation(user)) {
-    Policy policy = new Policy()
-    List<Integer> awards = new Awards(farm, user).bootstrap().awards(policy.get('52.days', 16))
-    if (
-      new Filtered<>({ points -> (points < 0) }, awards).size() >= policy.get('52.awards', 8)
-      && new Filtered<>({ points -> (points > 0) }, awards).isEmpty()
-    ) {
-      people.vacation(user, true)
+  new ExtGithub(farm).value().repos()
+    .create(new Repos.RepoCreate('test', false))
+  ZonedDateTime now = ZonedDateTime.now()
+  new Awards(farm, 'krzyk').bootstrap().with {
+    add project, 15, 'gh:test/test#1', 'test', new Date(now.minusDays(9).toInstant().toEpochMilli())
+    for (int i = 1; i <= 8; ++i) {
+      add project, -i, 'gh:test/test#1', 'test', new Date(now.minusDays(i).toInstant().toEpochMilli())
     }
   }
 }
