@@ -1002,34 +1002,40 @@ SOFTWARE.
                 </excludes>
               </configuration>
             </plugin>
-            <plugin>
-              <groupId>org.jacoco</groupId>
-              <artifactId>jacoco-maven-plugin</artifactId>
-              <version>0.8.0</version>
-              <configuration>
-                <rules>
-                  <rule>
-                    <limits>
-                      <limit combine.children="override">
-                        <counter>BRANCH</counter>
-                        <value>COVEREDRATIO</value>
-                        <minimum>0.49</minimum>
-                      </limit>
-                    </limits>
-                  </rule>
-                </rules>
-                <excludes combine.children="append">
-                  <exclude>com.zerocracy.farm.S3ItemTest</exclude>
-                  <exclude>com.zerocracy.tk.project.TkArtifactTest</exclude>
-                  <exclude>com.zerocracy.tk.project.TkFootprintTest</exclude>
-                  <exclude>com.zerocracy.pm.cost.EquityTest</exclude>
-                  <exclude>com.zerocracy.tk.TkAppTest</exclude>
-                  <exclude>com.zerocracy.tk.profile.TkIdentifyTest</exclude>
-                </excludes>
-              </configuration>
-            </plugin>
           </plugins>
         </pluginManagement>
+        <plugins>
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>0.8.0</version>
+            <executions>
+              <execution>
+                <configuration>
+                  <rules>
+                    <rule>
+                      <limits>
+                        <limit combine.children="override">
+                          <counter>BRANCH</counter>
+                          <value>COVEREDRATIO</value>
+                          <minimum>0.49</minimum>
+                        </limit>
+                      </limits>
+                    </rule>
+                  </rules>
+                  <excludes combine.children="append">
+                    <exclude>com.zerocracy.farm.S3ItemTest</exclude>
+                    <exclude>com.zerocracy.tk.project.TkArtifactTest</exclude>
+                    <exclude>com.zerocracy.tk.project.TkFootprintTest</exclude>
+                    <exclude>com.zerocracy.pm.cost.EquityTest</exclude>
+                    <exclude>com.zerocracy.tk.TkAppTest</exclude>
+                    <exclude>com.zerocracy.tk.profile.TkIdentifyTest</exclude>
+                  </excludes>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
       </build>
     </profile>
   </profiles>
