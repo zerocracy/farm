@@ -33,6 +33,7 @@ import io.sentry.Sentry;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import javax.ws.rs.HttpMethod;
 import org.cactoos.func.AsyncFunc;
 import org.takes.facets.fork.FkRegex;
 import org.takes.facets.fork.TkMethods;
@@ -46,7 +47,6 @@ import org.takes.http.FtCli;
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class Main {
 
     /**
@@ -134,11 +134,11 @@ public final class Main {
                     new FkRegex("/alias", new TkAlias(farm)),
                     new FkRegex(
                         "/ghook",
-                        new TkMethods(new TkGithub(farm), "POST")
+                        new TkMethods(new TkGithub(farm), HttpMethod.POST)
                     ),
                     new FkRegex(
                         "/glhook",
-                        new TkMethods(new TkGitlab(), "POST")
+                        new TkMethods(new TkGitlab(), HttpMethod.POST)
                     )
                 ),
                 this.arguments
