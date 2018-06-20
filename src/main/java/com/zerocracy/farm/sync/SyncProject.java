@@ -46,20 +46,13 @@ final class SyncProject implements Project {
     private final Lock lock;
 
     /**
-     * Terminator.
-     */
-    private final Terminator terminator;
-
-    /**
      * Ctor.
      * @param pkt Project
      * @param lck Lock
-     * @param tmr Terminator
      */
-    SyncProject(final Project pkt, final Lock lck, final Terminator tmr) {
+    SyncProject(final Project pkt, final Lock lck) {
         this.origin = pkt;
         this.lock = lck;
-        this.terminator = tmr;
     }
 
     @Override
@@ -72,7 +65,7 @@ final class SyncProject implements Project {
         final long start = System.currentTimeMillis();
         try {
             // @checkstyle MagicNumber (1 line)
-            if (!this.lock.tryLock(1L, TimeUnit.MINUTES)) {
+            if (!this.lock.tryLock(2L, TimeUnit.MINUTES)) {
                 throw new IllegalStateException(
                     Logger.format(
                         "Failed to acquire \"%s\" in \"%s\" in %[ms]s: %s",
@@ -94,7 +87,6 @@ final class SyncProject implements Project {
                 ex
             );
         }
-        this.terminator.submit(this, file, this.lock);
         return new SyncItem(this.origin.acq(file), this.lock);
     }
 }

@@ -95,8 +95,7 @@ public final class SyncFarm implements Farm {
                         pkt,
                         this.pool.computeIfAbsent(
                             pkt, p -> new SmartLock()
-                        ),
-                        this.terminator
+                        )
                     ),
                     this.origin.find(query)
                 ),
