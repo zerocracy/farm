@@ -130,6 +130,7 @@ final class Terminator implements Closeable, Scalar<Iterable<Directive>> {
         return new RunnableOf<Object>(
             input -> {
                 try {
+                    boolean interrupt = false;
                     if (!lock.tryLock(this.threshold, TimeUnit.MILLISECONDS)) {
                         Logger.warn(
                             this,
@@ -149,10 +150,13 @@ final class Terminator implements Closeable, Scalar<Iterable<Directive>> {
                                 location
                             )
                         );
-                        thread.interrupt();
+                        interrupt = true;
                         this.submit(project, file, lock);
                     }
                     lock.unlock();
+                    if (interrupt) {
+                        thread.interrupt();
+                    }
                     this.killers.remove(project);
                 } catch (final Throwable err) {
                     Sentry.capture(err);
