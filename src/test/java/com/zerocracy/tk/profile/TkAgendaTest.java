@@ -87,7 +87,7 @@ public final class TkAgendaTest {
                                     "GET /u/yegor256/agenda",
                                     "Host: www.example.com",
                                     // @checkstyle LineLength (1 line)
-                                    "User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:62.0) Gecko/20100101 DisabledFirefox/62.0"
+                                    "User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:62.0) Gecko/20100101 Firefox/62.0"
                                 ),
                                 ""
                             )
