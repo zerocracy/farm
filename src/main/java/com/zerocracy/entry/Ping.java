@@ -37,7 +37,7 @@ public final class Ping implements Job {
     /**
      * Pings disabled.
      */
-    private static final boolean DISABLED = true;
+    private static final boolean DISABLED = false;
     /**
      * Farm.
      */
