@@ -24,7 +24,6 @@ import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.pmo.Pmo;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.concurrent.TimeUnit;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -55,18 +54,6 @@ public final class SyncProjectTest {
                 items.size(),
                 Matchers.greaterThan(0)
             );
-        }
-    }
-
-    @Test
-    public void workOnHighLoad() throws Exception{
-        try (final Farm farm = new SyncFarm(new FkFarm())) {
-            final Project project = new Pmo(farm);
-            for (int i = 0; i < 100000; i++) {
-                project.acq("test.txt");
-            }
-            TimeUnit.MINUTES.sleep(2L);
-            project.acq("test.txt");
         }
     }
 }
