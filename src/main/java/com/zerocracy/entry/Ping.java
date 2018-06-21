@@ -21,8 +21,8 @@ import com.zerocracy.Project;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
 import com.zerocracy.pmo.Catalog;
-import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
+import org.cactoos.iterable.Shuffled;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -34,10 +34,6 @@ import org.quartz.JobExecutionException;
  * @since 0.21.1
  */
 public final class Ping implements Job {
-    /**
-     * Pings disabled.
-     */
-    private static final boolean DISABLED = false;
     /**
      * Farm.
      */
@@ -53,12 +49,10 @@ public final class Ping implements Job {
     @Override
     public void execute(final JobExecutionContext ctx)
         throws JobExecutionException {
-        if (!Ping.DISABLED) {
-            try {
-                this.post(ctx.getMergedJobDataMap().getString("claim"));
-            } catch (final IOException err) {
-                throw new JobExecutionException(err);
-            }
+        try {
+            this.post(ctx.getMergedJobDataMap().getString("claim"));
+        } catch (final IOException err) {
+            throw new JobExecutionException(err);
         }
     }
 
@@ -68,7 +62,9 @@ public final class Ping implements Job {
      * @throws IOException If fails
      */
     private void post(final String type) throws IOException {
-        this.post(new Pmo(this.farm), type);
+        for (final Project project : new Shuffled<>(this.farm.find(""))) {
+            this.post(project, type);
+        }
     }
 
     /**
