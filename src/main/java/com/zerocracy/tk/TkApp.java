@@ -30,8 +30,10 @@ import com.zerocracy.tk.profile.TkYoti;
 import com.zerocracy.tk.project.RqProject;
 import com.zerocracy.tk.project.TkArchive;
 import com.zerocracy.tk.project.TkArtifact;
+import com.zerocracy.tk.project.TkBadge;
 import com.zerocracy.tk.project.TkClaim;
 import com.zerocracy.tk.project.TkContrib;
+import com.zerocracy.tk.project.TkContribBadge;
 import com.zerocracy.tk.project.TkContribLedger;
 import com.zerocracy.tk.project.TkContribPay;
 import com.zerocracy.tk.project.TkDonate;
@@ -77,7 +79,6 @@ import org.takes.rs.RsWithStatus;
 import org.takes.rs.RsWithType;
 import org.takes.rs.xe.XeAppend;
 import org.takes.tk.TkClasspath;
-import org.takes.tk.TkFixed;
 import org.takes.tk.TkGzip;
 import org.takes.tk.TkMeasured;
 import org.takes.tk.TkRedirect;
@@ -223,10 +224,6 @@ public final class TkApp extends TkWrap {
                                                                     new FkRegex("/gang", new TkRedirect("/team")),
                                                                     new FkRegex("/me", new TkRedirect("/home")),
                                                                     new FkRegex(
-                                                                        "/badge/([A-Z0-9]{9})\\.svg",
-                                                                        new TkFixed("badge disabled")
-                                                                    ),
-                                                                    new FkRegex(
                                                                         "/p/(PMO|[A-Z0-9]{9})",
                                                                         new TkProject(farm)
                                                                     ),
@@ -244,6 +241,14 @@ public final class TkApp extends TkWrap {
                                                                         }
                                                                     ),
                                                                     new FkRegex(
+                                                                        "/badge/([A-Z0-9]{9})\\.svg",
+                                                                        new TkBadge(farm)
+                                                                    ),
+                                                                    new FkRegex(
+                                                                        "/contrib-badge/([A-Z0-9]{9})\\.svg",
+                                                                        new TkContribBadge(farm)
+                                                                    ),
+                                                                    new FkRegex(
                                                                         "/hiring-send/([A-Z0-9]{9})",
                                                                         new TkHiring(farm)
                                                                     ),
@@ -254,10 +259,6 @@ public final class TkApp extends TkWrap {
                                                                     new FkRegex(
                                                                         "/contrib-pay/([A-Z0-9]{9})",
                                                                         new TkContribPay(farm)
-                                                                    ),
-                                                                    new FkRegex(
-                                                                        "/contrib-badge/([A-Z0-9]{9})\\.svg",
-                                                                        new TkFixed("contrib-badge disabled")
                                                                     ),
                                                                     new FkRegex(
                                                                         "/contrib-ledger/([A-Z0-9]{9})",
