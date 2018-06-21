@@ -35,6 +35,10 @@ import org.quartz.JobExecutionException;
  */
 public final class Ping implements Job {
     /**
+     * Pings disabled.
+     */
+    private static final boolean DISABLED = true;
+    /**
      * Farm.
      */
     private final Farm farm;
@@ -49,10 +53,12 @@ public final class Ping implements Job {
     @Override
     public void execute(final JobExecutionContext ctx)
         throws JobExecutionException {
-        try {
-            this.post(ctx.getMergedJobDataMap().getString("claim"));
-        } catch (final IOException err) {
-            throw new JobExecutionException(err);
+        if (!Ping.DISABLED) {
+            try {
+                this.post(ctx.getMergedJobDataMap().getString("claim"));
+            } catch (final IOException err) {
+                throw new JobExecutionException(err);
+            }
         }
     }
 
