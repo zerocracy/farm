@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pmo;
 
+import com.jcabi.aspects.Tv;
 import com.zerocracy.Project;
 import com.zerocracy.SoftException;
 import com.zerocracy.cash.Cash;
@@ -422,6 +423,34 @@ public final class PeopleTest {
         MatcherAssert.assertThat(
             people.details(uid),
             Matchers.equalTo(details)
+        );
+    }
+
+    @Test
+    public void setsJobs() throws Exception {
+        final FkFarm farm = new FkFarm(new FkProject());
+        final People people = new People(farm).bootstrap();
+        final String uid = "jobs";
+        people.invite(uid, uid);
+        final int jobs = Tv.TEN;
+        people.jobs(uid, jobs);
+        MatcherAssert.assertThat(
+            people.jobs(uid),
+            Matchers.is(jobs)
+        );
+    }
+
+    @Test
+    public void setsSpeed() throws Exception {
+        final FkFarm farm = new FkFarm(new FkProject());
+        final People people = new People(farm).bootstrap();
+        final String uid = "speed";
+        people.invite(uid, uid);
+        final double speed = 5.5;
+        people.speed(uid, speed);
+        MatcherAssert.assertThat(
+            people.speed(uid),
+            Matchers.is(speed)
         );
     }
 

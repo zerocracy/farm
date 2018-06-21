@@ -697,6 +697,106 @@ public final class People {
     }
 
     /**
+     * Update number of jobs in person's agenda.
+     * @param uid User id
+     * @param jobs Jobs
+     * @throws IOException If fails
+     */
+    public void jobs(final String uid, final int jobs)
+        throws IOException {
+        if (!this.exists(uid)) {
+            throw new IllegalArgumentException(
+                new Par("Person @%s doesn't exist").say(uid)
+            );
+        }
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                new Directives().xpath(
+                    String.format(
+                        "/people/person[@id='%s']",
+                        uid
+                    )
+                ).addIf("jobs").set(jobs)
+            );
+        }
+    }
+
+    /**
+     * Get number of jobs in person's agenda.
+     * @param uid User id
+     * @return Number of jobs in agenda
+     * @throws IOException If fails
+     */
+    public int jobs(final String uid) throws IOException {
+        if (!this.exists(uid)) {
+            throw new IllegalArgumentException(
+                new Par("Person @%s doesn't exist").say(uid)
+            );
+        }
+        try (final Item item = this.item()) {
+            return new NumberOf(
+                new Xocument(item.path()).xpath(
+                    String.format(
+                        "/people/person[@id='%s']/jobs/text()",
+                        uid
+                    ),
+                    "0"
+                )
+            ).intValue();
+        }
+    }
+
+    /**
+     * Update person's speed.
+     * @param uid User id
+     * @param speed Speed
+     * @throws IOException If fails
+     */
+    public void speed(final String uid, final double speed)
+        throws IOException {
+        if (!this.exists(uid)) {
+            throw new IllegalArgumentException(
+                    new Par("Person @%s doesn't exist").say(uid)
+            );
+        }
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                new Directives().xpath(
+                    String.format(
+                        "/people/person[@id='%s']",
+                        uid
+                    )
+                ).addIf("speed").set(speed)
+            );
+        }
+    }
+
+    /**
+     * Get person's speed.
+     * @param uid User id
+     * @return Speed
+     * @throws IOException If fails
+     */
+    public double speed(final String uid) throws IOException {
+        if (!this.exists(uid)) {
+            throw new IllegalArgumentException(
+                new Par("Person @%s doesn't exist").say(uid)
+            );
+        }
+        try (final Item item = this.item()) {
+            return new NumberOf(
+                new Xocument(item.path()).xpath(
+                    String.format(
+                        "/people/person[@id='%s']/speed/text()",
+                        uid
+                    ),
+                    "0.0"
+                )
+            ).doubleValue();
+        }
+    }
+    
+    /**
      * Person exists?
      * @param uid User ID
      * @return TRUE if it exists
