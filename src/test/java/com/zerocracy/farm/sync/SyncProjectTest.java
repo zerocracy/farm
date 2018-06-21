@@ -27,6 +27,7 @@ import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -36,6 +37,7 @@ import org.junit.Test;
  * @since 0.10
  * @checkstyle JavadocMethodCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class SyncProjectTest {
 
     @Test
@@ -59,10 +61,12 @@ public final class SyncProjectTest {
     }
 
     @Test
-    public void workOnHighLoad() throws Exception{
+    @Ignore
+    public void workOnHighLoad() throws Exception {
         try (final Farm farm = new SyncFarm(new FkFarm())) {
             final Project project = new Pmo(farm);
-            for (int i = 0; i < 100000; i++) {
+            // @checkstyle MagicNumber (1 line)
+            for (int num = 0; num < 100000; ++num) {
                 project.acq("test.txt");
             }
             TimeUnit.MINUTES.sleep(2L);
