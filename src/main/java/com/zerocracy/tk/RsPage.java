@@ -74,7 +74,7 @@ public final class RsPage extends RsWrap {
      * Regexp pattern to match Firefox browser.
      */
     private static final Pattern FIREFOX_AGENT =
-        Pattern.compile("User-Agent: .*Firefox.*");
+        Pattern.compile("User-Agent: .*DisabledFirefox.*");
 
     /**
      * Ctor.
