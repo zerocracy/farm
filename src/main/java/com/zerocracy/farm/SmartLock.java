@@ -138,6 +138,10 @@ public final class SmartLock implements Lock {
     @Override
     public void unlock() {
         this.origin.unlock();
+        final WeakReference<Thread> ref = this.owner.get();
+        if (ref != null) {
+            ref.clear();
+        }
     }
 
     @Override

@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import org.cactoos.iterable.Joined;
@@ -106,14 +107,18 @@ final class AsyncFlush implements Flush {
             project, p -> new AtomicInteger()
         );
         if (total.get() < AsyncFlush.QUEUE_LENGTH) {
+            final Lock lock = this.locks.computeIfAbsent(
+                project, p -> new SmartLock()
+            );
             this.service.submit(
                 new VerboseCallable<>(
                     () -> {
-                        final Lock lock = this.locks.computeIfAbsent(
-                            project, p -> new SmartLock()
-                        );
                         try {
-                            lock.lock();
+                            if (!lock.tryLock(1L, TimeUnit.SECONDS)) {
+                                throw new IllegalStateException(
+                                    "Project is locked"
+                                );
+                            }
                             try {
                                 this.origin.exec(project);
                             } finally {
