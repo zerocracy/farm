@@ -37,9 +37,6 @@ import org.takes.rs.RsWithType;
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.20
- * @todo #425:30min Download and analyze heap dump from
- *  https://www.0crat.com/heapdump after next out of memory error,
- *  then fix detected memory leaks. Also waiting for #400 to be solved.
  * @todo #400:30min Should use HeapDump to get contents from S3,
  *  rather than from the server file, as it might be deleted and won't be
  *  available anymore.

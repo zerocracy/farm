@@ -43,6 +43,9 @@ import org.xembly.Directives;
  * @version $Id$
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @todo #725:30min Fix memory leak in Terminator. It may keep references to
+ *  threads via thread local variable in `killer` method. I think it can
+ *  be replaced with WeakReference to thread.
  */
 final class Terminator implements Closeable, Scalar<Iterable<Directive>> {
 
