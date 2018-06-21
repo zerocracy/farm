@@ -24,7 +24,6 @@ import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.pmo.Pmo;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.concurrent.TimeUnit;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Ignore;
@@ -37,7 +36,6 @@ import org.junit.Test;
  * @since 0.10
  * @checkstyle JavadocMethodCheck (500 lines)
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class SyncProjectTest {
 
     @Test
@@ -57,20 +55,6 @@ public final class SyncProjectTest {
                 items.size(),
                 Matchers.greaterThan(0)
             );
-        }
-    }
-
-    @Test
-    @Ignore
-    public void workOnHighLoad() throws Exception {
-        try (final Farm farm = new SyncFarm(new FkFarm())) {
-            final Project project = new Pmo(farm);
-            // @checkstyle MagicNumber (1 line)
-            for (int num = 0; num < 100000; ++num) {
-                project.acq("test.txt");
-            }
-            TimeUnit.MINUTES.sleep(2L);
-            project.acq("test.txt");
         }
     }
 }
