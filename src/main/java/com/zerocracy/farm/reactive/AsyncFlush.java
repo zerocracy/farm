@@ -114,15 +114,12 @@ final class AsyncFlush implements Flush {
                 new VerboseCallable<>(
                     () -> {
                         try {
-                            if (!lock.tryLock(1L, TimeUnit.SECONDS)) {
-                                throw new IllegalStateException(
-                                    "Project is locked"
-                                );
-                            }
-                            try {
-                                this.origin.exec(project);
-                            } finally {
-                                lock.unlock();
+                            if (lock.tryLock(1L, TimeUnit.SECONDS)) {
+                                try {
+                                    this.origin.exec(project);
+                                } finally {
+                                    lock.unlock();
+                                }
                             }
                         } finally {
                             total.decrementAndGet();
