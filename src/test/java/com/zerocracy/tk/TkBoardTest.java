@@ -111,7 +111,7 @@ public final class TkBoardTest {
                             "Host: www.example.com",
                             "Accept: application/xml",
                             // @checkstyle LineLength (1 line)
-                            "User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:62.0) Gecko/20100101 DisabledFirefox/62.0"
+                            "User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:62.0) Gecko/20100101 Firefox/62.0"
                         ),
                         ""
                     )
