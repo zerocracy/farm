@@ -153,7 +153,7 @@ public final class TkApp extends TkWrap {
                                                                     new FkRegex("/identify", new TkIdentify(farm)),
                                                                     new FkRegex("/privacy", new TkRedirect("http://www.zerocracy.com/terms.html#privacy")),
                                                                     new FkRegex("/yoti", new TkYoti(farm)),
-                                                                    new FkRegex("/heapdump", new TkDump(farm)),
+                                                                    new FkRegex("/heapdump", new TkDump()),
                                                                     new FkRegex("/guts", new TkGuts(farm)),
                                                                     new FkRegex(
                                                                         "/spam",
