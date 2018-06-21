@@ -35,6 +35,9 @@ import org.takes.rq.RqFake;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
+ * @todo #1168:30min Revert all unnecessary changes which appeared
+ *  during #1168 bug fixing. It is: lock timeouts was changed,
+ *  badges takes was deleted, log levels was changed.
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle JavadocVariableCheck (500 lines)
  * @checkstyle VisibilityModifierCheck (500 lines)
