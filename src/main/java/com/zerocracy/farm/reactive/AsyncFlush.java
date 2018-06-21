@@ -40,10 +40,6 @@ import org.xembly.Directives;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
- * @todo #725:30min Fix memory leak in async-flush. AsyncFlush consumes
- *  about half of application memory (before OutOfMemoryError). It may keep
- *  references to threads via SmartLock references in
- *  `locks` field.
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 final class AsyncFlush implements Flush {
