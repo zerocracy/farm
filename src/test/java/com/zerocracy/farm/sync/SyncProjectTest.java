@@ -26,7 +26,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
