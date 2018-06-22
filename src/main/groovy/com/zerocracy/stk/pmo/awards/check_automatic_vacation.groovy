@@ -40,6 +40,13 @@ def exec(Project project, XML xml) {
       && new Filtered<>({ points -> (points > 0) }, awards).isEmpty()
     ) {
       people.vacation(user, true)
+      claim.copy()
+        .type('Notify user')
+        .token("user;${user}")
+        .param(
+        'message',
+        new Par('You have too many negative awards and no positive ones, turning automatic vacation on, see §52').say()
+      ).postTo(project)
     }
   }
 }
