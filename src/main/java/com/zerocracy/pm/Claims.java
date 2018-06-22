@@ -45,6 +45,9 @@ import org.xembly.Xembler;
  * @version $Id$
  * @since 0.9
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @todo #1208:30min During #1208 fixing PMO claims was saved locally
+ *  and removed from production. We need to analyze it, find critical claims
+ *  and submit them to current `claims.xml` in PMO.
  */
 public final class Claims {
 
