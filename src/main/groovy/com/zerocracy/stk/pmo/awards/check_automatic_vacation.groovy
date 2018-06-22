@@ -18,6 +18,7 @@ package com.zerocracy.stk.pmo.awards
 
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
+import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
