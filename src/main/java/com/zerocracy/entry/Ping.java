@@ -22,10 +22,14 @@ import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
 import com.zerocracy.pmo.Catalog;
 import java.io.IOException;
-import org.cactoos.iterable.Shuffled;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
+import org.cactoos.list.ListOf;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.quartz.SchedulerException;
 
 /**
  * Ping as quartz job.
@@ -35,9 +39,15 @@ import org.quartz.JobExecutionException;
  */
 public final class Ping implements Job {
     /**
+     * Batch size.
+     */
+    private static final int BATCHES = 5;
+
+    /**
      * Farm.
      */
     private final Farm farm;
+
     /**
      * Ctor.
      * @param frm Farm
@@ -50,8 +60,11 @@ public final class Ping implements Job {
     public void execute(final JobExecutionContext ctx)
         throws JobExecutionException {
         try {
-            this.post(ctx.getMergedJobDataMap().getString("claim"));
-        } catch (final IOException err) {
+            this.post(
+                ctx.getMergedJobDataMap().getString("claim"),
+                (AtomicInteger) ctx.getScheduler().getContext().get("counter")
+            );
+        } catch (final IOException | SchedulerException err) {
             throw new JobExecutionException(err);
         }
     }
@@ -59,12 +72,38 @@ public final class Ping implements Job {
     /**
      * Post a ping.
      * @param type The type of claim to post
+     * @param counter Counter of pings
      * @throws IOException If fails
      */
-    private void post(final String type) throws IOException {
-        for (final Project project : new Shuffled<>(this.farm.find(""))) {
+    private void post(final String type,
+        final AtomicInteger counter) throws IOException {
+        final Iterable<Project> projects;
+        if (Objects.equals(type, "Ping")) {
+            projects = this.sprojects(counter);
+        } else {
+            projects = this.farm.find("");
+        }
+        for (final Project project : projects) {
             this.post(project, type);
         }
+    }
+
+    /**
+     * Get project list for ping claim.
+     * @param counter Counter of pings
+     * @return List of projects to ping
+     * @throws IOException In case of error
+     */
+    private Iterable<Project> sprojects(final AtomicInteger counter)
+        throws IOException {
+        final int batch = counter.getAndIncrement() % Ping.BATCHES;
+        final List<Project> projects = new ListOf<>(this.farm.find(""));
+        final int size = (int) Math.ceil(
+            (double) projects.size() / Ping.BATCHES
+        );
+        return projects.subList(
+            batch * size, Math.min(projects.size(), (batch + 1) * size)
+        );
     }
 
     /**

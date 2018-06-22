@@ -16,10 +16,10 @@
  */
 package com.zerocracy.entry;
 
-import com.jcabi.aspects.Tv;
 import com.jcabi.log.Logger;
 import com.zerocracy.Farm;
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.scalar.SolidScalar;
@@ -52,14 +52,17 @@ public final class Pings {
      * Claim job param.
      */
     private static final String CLAIM = "claim";
+
     /**
      * Quartz group.
      */
     private static final String GROUP = "pings";
+
     /**
      * Farm.
      */
     private final IoCheckedScalar<Scheduler> quartz;
+
     /**
      * Ctor.
      * @param farm Farm
@@ -75,7 +78,9 @@ public final class Pings {
      */
     Pings(final Scalar<Scheduler> scheduler, final Farm farm) {
         this.quartz = new IoCheckedScalar<>(
-            new SolidScalar<>(new Pings.Quartz(scheduler, farm))
+            new SolidScalar<>(
+                new Pings.Quartz(scheduler, farm, new AtomicInteger(0))
+            )
         );
     }
 
@@ -93,7 +98,8 @@ public final class Pings {
             "minute",
             "Ping",
             SimpleScheduleBuilder.simpleSchedule()
-                .withIntervalInMinutes(Tv.FIVE)
+                // @checkstyle MagicNumber (1 line)
+                .withIntervalInSeconds(12)
                 .repeatForever()
         );
         this.start(
@@ -149,22 +155,33 @@ public final class Pings {
          * Farm.
          */
         private final Farm frm;
+
         /**
          * Quartz scheduler.
          */
         private final Scalar<Scheduler> schd;
+
+        /**
+         * Counter for jobs.
+         */
+        private final AtomicInteger counter;
+
         /**
          * Ctor.
          * @param scheduler Quartz scheduler
          * @param farm Farm
+         * @param cnt Counter for jobs
          */
-        private Quartz(final Scalar<Scheduler> scheduler, final Farm farm) {
+        private Quartz(final Scalar<Scheduler> scheduler, final Farm farm,
+            final AtomicInteger cnt) {
             this.schd = scheduler;
             this.frm = farm;
+            this.counter = cnt;
         }
         @Override
         public Scheduler value() throws Exception {
             final Scheduler scheduler = this.schd.value();
+            scheduler.getContext().put("counter", this.counter);
             scheduler.setJobFactory(
                 new Pings.Factory(this.frm, new SimpleJobFactory())
             );
