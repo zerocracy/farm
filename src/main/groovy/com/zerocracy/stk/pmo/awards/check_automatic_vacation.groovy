@@ -46,7 +46,8 @@ def exec(Project project, XML xml) {
         .token("user;${user}")
         .param(
         'message',
-        new Par('You have too many negative awards and no positive ones, turning automatic vacation on, see §52').say()
+        new Par('You have too many negative awards and no positive ones, turning vacation on automatically, see §52')
+          .say()
       ).postTo(project)
     }
   }
