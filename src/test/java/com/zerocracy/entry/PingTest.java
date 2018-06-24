@@ -73,7 +73,7 @@ public final class PingTest {
         final JobDataMap map = new JobDataMap();
         final String type = "Ping";
         map.put("claim", type);
-        new Ping(farm).execute(this.context(map));
+        new Ping(farm, 1).execute(this.context(map));
         final XML xml = new Claims(pkt).iterate().iterator().next();
         MatcherAssert.assertThat(
             new ClaimIn(xml).type(),

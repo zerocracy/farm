@@ -38,10 +38,6 @@ import org.quartz.SchedulerException;
  * @since 0.21.1
  */
 public final class Ping implements Job {
-    /**
-     * Batch size.
-     */
-    private static final int BATCHES = 5;
 
     /**
      * Farm.
@@ -49,11 +45,18 @@ public final class Ping implements Job {
     private final Farm farm;
 
     /**
+     * Batch size.
+     */
+    private final int batches;
+
+    /**
      * Ctor.
      * @param frm Farm
+     * @param btchs Number of batches for minute pings
      */
-    public Ping(final Farm frm) {
+    public Ping(final Farm frm, final int btchs) {
         this.farm = frm;
+        this.batches = btchs;
     }
 
     @Override
@@ -79,7 +82,7 @@ public final class Ping implements Job {
         final AtomicInteger counter) throws IOException {
         final Iterable<Project> projects;
         if (Objects.equals(type, "Ping")) {
-            projects = this.sprojects(counter);
+            projects = this.batch(counter);
         } else {
             projects = this.farm.find("");
         }
@@ -94,12 +97,12 @@ public final class Ping implements Job {
      * @return List of projects to ping
      * @throws IOException In case of error
      */
-    private Iterable<Project> sprojects(final AtomicInteger counter)
+    private Iterable<Project> batch(final AtomicInteger counter)
         throws IOException {
-        final int batch = counter.getAndIncrement() % Ping.BATCHES;
+        final int batch = counter.getAndIncrement() % this.batches;
         final List<Project> projects = new ListOf<>(this.farm.find(""));
         final int size = (int) Math.ceil(
-            (double) projects.size() / Ping.BATCHES
+            (double) projects.size() / this.batches
         );
         return projects.subList(
             batch * size, Math.min(projects.size(), (batch + 1) * size)

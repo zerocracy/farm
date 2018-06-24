@@ -16,6 +16,7 @@
  */
 package com.zerocracy.entry;
 
+import com.jcabi.aspects.Tv;
 import com.jcabi.log.Logger;
 import com.zerocracy.Farm;
 import java.io.IOException;
@@ -64,6 +65,11 @@ public final class Pings {
     private final IoCheckedScalar<Scheduler> quartz;
 
     /**
+     * Batch size.
+     */
+    private final int batches;
+
+    /**
      * Ctor.
      * @param farm Farm
      */
@@ -77,11 +83,22 @@ public final class Pings {
      * @param farm Farm
      */
     Pings(final Scalar<Scheduler> scheduler, final Farm farm) {
+        this(scheduler, farm, Tv.FIVE);
+    }
+
+    /**
+     * Ctor.
+     * @param scheduler Quartz scheduler
+     * @param farm Farm
+     * @param btchs Number of batches for minute pings
+     */
+    Pings(final Scalar<Scheduler> scheduler, final Farm farm, final int btchs) {
         this.quartz = new IoCheckedScalar<>(
             new SolidScalar<>(
-                new Pings.Quartz(scheduler, farm, new AtomicInteger(0))
+                new Pings.Quartz(scheduler, farm, new AtomicInteger(0), btchs)
             )
         );
+        this.batches = btchs;
     }
 
     /**
@@ -98,8 +115,7 @@ public final class Pings {
             "minute",
             "Ping",
             SimpleScheduleBuilder.simpleSchedule()
-                // @checkstyle MagicNumber (1 line)
-                .withIntervalInSeconds(12)
+                .withIntervalInSeconds(Tv.SIXTY / this.batches)
                 .repeatForever()
         );
         this.start(
@@ -167,23 +183,34 @@ public final class Pings {
         private final AtomicInteger counter;
 
         /**
+         * Batch size.
+         */
+        private final int batches;
+
+        /**
          * Ctor.
          * @param scheduler Quartz scheduler
          * @param farm Farm
          * @param cnt Counter for jobs
+         * @param btchs Number of batches for minute pings
+         * @checkstyle ParameterNumberCheck (3 lines)
          */
         private Quartz(final Scalar<Scheduler> scheduler, final Farm farm,
-            final AtomicInteger cnt) {
+            final AtomicInteger cnt, final int btchs) {
             this.schd = scheduler;
             this.frm = farm;
             this.counter = cnt;
+            this.batches = btchs;
         }
+
         @Override
         public Scheduler value() throws Exception {
             final Scheduler scheduler = this.schd.value();
             scheduler.getContext().put("counter", this.counter);
             scheduler.setJobFactory(
-                new Pings.Factory(this.frm, new SimpleJobFactory())
+                new Pings.Factory(
+                    this.frm, new SimpleJobFactory(), this.batches
+                )
             );
             return scheduler;
         }
@@ -197,25 +224,35 @@ public final class Pings {
          * Farm.
          */
         private final Farm farm;
+
         /**
          * Fallback factory.
          */
         private final JobFactory fallback;
+
+        /**
+         * Batch size.
+         */
+        private final int batches;
+
         /**
          * Ctor.
          * @param farm Farm
          * @param fallback Fallback factory
+         * @param btchs Number of batches for minute pings
          */
-        Factory(final Farm farm, final JobFactory fallback) {
+        Factory(final Farm farm, final JobFactory fallback, final int btchs) {
             this.farm = farm;
             this.fallback = fallback;
+            this.batches = btchs;
         }
+
         @Override
         public Job newJob(final TriggerFiredBundle bundle,
             final Scheduler scheduler) throws SchedulerException {
             final Job job;
             if (Ping.class.equals(bundle.getJobDetail().getJobClass())) {
-                job = new Ping(this.farm);
+                job = new Ping(this.farm, this.batches);
             } else {
                 job = this.fallback.newJob(bundle, scheduler);
             }
