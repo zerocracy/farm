@@ -270,6 +270,30 @@ public final class Agenda {
     }
 
     /**
+     * Retrieves title of the specified job.
+     * @param job The job to retrieve the text
+     * @return The title of the job.
+     * @throws IOException If fails
+     */
+    public String title(final String job) throws IOException {
+        if (!this.exists(job)) {
+            throw new SoftException(
+                new Par(
+                    "Job %s is not in the agenda of @%s, can't retrieve title"
+                ).say(job, this.login)
+            );
+        }
+        try (final Item item = this.item()) {
+            return new Xocument(item.path()).nodes(
+                String.format(
+                    "/agenda/order[@job='%s']/title",
+                    job
+                )
+            ).get(0).node().getTextContent();
+        }
+    }
+
+    /**
      * The item.
      * @return Item
      * @throws IOException If fails

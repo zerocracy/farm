@@ -63,7 +63,8 @@ public final class SyncFarm implements Farm {
      * @param farm Original farm
      */
     public SyncFarm(final Farm farm) {
-        this(farm, TimeUnit.MINUTES.toMillis(2L));
+        // @checkstyle MagicNumber (1 line)
+        this(farm, TimeUnit.MINUTES.toMillis(4L));
     }
 
     /**

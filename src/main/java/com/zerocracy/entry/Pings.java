@@ -16,6 +16,7 @@
  */
 package com.zerocracy.entry;
 
+import com.jcabi.aspects.Tv;
 import com.jcabi.log.Logger;
 import com.zerocracy.Farm;
 import java.io.IOException;
@@ -91,7 +92,9 @@ public final class Pings {
         this.start(
             "minute",
             "Ping",
-            SimpleScheduleBuilder.repeatMinutelyForever()
+            SimpleScheduleBuilder.simpleSchedule()
+                .withIntervalInMinutes(Tv.FIVE)
+                .repeatForever()
         );
         this.start(
             "hour",

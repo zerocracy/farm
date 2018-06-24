@@ -84,7 +84,7 @@ SOFTWARE.
       </a>
       <xsl:text> is </xsl:text>
       <xsl:choose>
-        <xsl:when test=".=0">
+        <xsl:when test=".='0'">
           <xsl:text>not defined</xsl:text>
         </xsl:when>
         <xsl:otherwise>
