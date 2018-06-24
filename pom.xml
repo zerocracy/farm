@@ -283,7 +283,7 @@ SOFTWARE.
     <dependency>
       <groupId>com.jcabi</groupId>
       <artifactId>jcabi-github</artifactId>
-      <version>0.38</version>
+      <version>0.41</version>
     </dependency>
     <dependency>
       <groupId>com.jcabi</groupId>
