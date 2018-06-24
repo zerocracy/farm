@@ -44,9 +44,6 @@ import org.junit.rules.ExpectedException;
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle JavadocVariableCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
- * @todo #840:30min Add tests for links(), wallet() and rate()
- *  in People.java because these methods are not fully covered. Then
- *  remove People.java from jacoco excludes in pom.xml
  */
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 public final class PeopleTest {
@@ -459,6 +456,32 @@ public final class PeopleTest {
         people.details(uid, "");
     }
 
+    @Test
+    public void setsLinks() throws Exception {
+        final FkFarm farm = new FkFarm(new FkProject());
+        final People people = new People(farm).bootstrap();
+        final String uid = "yegor256";
+        final String srel = "slack";
+        final String jrel = "jira";
+        final String salias = "U67WE3343P";
+        final String jalias = "https://www.0crat.com/jira";
+        people.link(uid, srel, salias);
+        people.link(uid, jrel, jalias);
+        final String format = "%s:%s";
+        MatcherAssert.assertThat(
+            people.links(uid),
+            Matchers.containsInAnyOrder(
+                String.format(format, srel, salias),
+                String.format(format, jrel, jalias),
+                String.format("github:%s", uid)
+            )
+        );
+        MatcherAssert.assertThat(
+            people.links(uid, jrel),
+            Matchers.contains(jalias)
+        );
+    }
+
     private void failsWallet(final String bank)
         throws IOException {
         final String wallet = "123456";
@@ -482,4 +505,5 @@ public final class PeopleTest {
             Matchers.is(wallet)
         );
     }
+
 }
