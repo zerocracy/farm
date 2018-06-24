@@ -22,6 +22,13 @@ import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 
+// @todo #1048:30min Implement logic for adding webhook in add_github_webhook
+//  stakeholder (see #1048 for details). After it is implemented uncomment
+//  adds_github_webhook test and make sure it passes. In production we need to
+//  use url: http://www.rehttp.net/p/https://www.0crat.com/ghook, and in testing
+//  we use  current url of our instance + "/ghook".
+//  Add another test that will check that in case
+//  we don't have enough permissions we will inform the user about it.
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Project link was added')
