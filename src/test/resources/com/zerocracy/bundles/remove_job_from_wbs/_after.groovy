@@ -18,12 +18,10 @@ package com.zerocracy.bundles.remove_job_from_wbs
 
 import com.jcabi.github.Coordinates
 import com.jcabi.github.Issue
-import com.jcabi.github.Label
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.entry.ExtGithub
-import org.cactoos.Func
 import org.cactoos.collection.Mapped
 import org.cactoos.list.ListOf
 import org.hamcrest.MatcherAssert
@@ -44,12 +42,7 @@ def exec(Project project, XML xml) {
     'Issue may have just a single label',
     new ListOf<>(
       new Mapped<>(
-        new Func<Label, String>() {
-          @Override
-          String apply(final Label label) throws Exception {
-            return label.name();
-          }
-        },
+        { label -> label.name() },
         issue.labels().iterate()
       )
     ),
