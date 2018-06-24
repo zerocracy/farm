@@ -749,7 +749,7 @@ SOFTWARE.
                   <goal>xml</goal>
                 </goals>
                 <configuration>
-                  <srcFolder>${basedir}/src/main/xsl</srcFolder>
+                  <srcFolder>${basedir}/src/main/resources/xsl</srcFolder>
                   <targetFolder>${project.build.outputDirectory}/xsl</targetFolder>
                   <fileExt>
                     <ext>xsl</ext>
