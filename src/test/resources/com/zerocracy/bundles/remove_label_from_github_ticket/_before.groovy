@@ -37,6 +37,6 @@ def exec(Project project, XML xml) {
   new ClaimOut()
     .type('Job removed from WBS')
     .token('test;C123;user42')
-    .param('job', 'gh:test/test#' + issue.number())
+    .param('job', "gh:test/test#${issue.number()}")
     .postTo(project)
 }

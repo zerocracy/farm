@@ -26,21 +26,21 @@ import com.zerocracy.entry.ExtGithub
 import org.cactoos.Func
 import org.cactoos.collection.Mapped
 import org.cactoos.list.ListOf
+import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 import org.hamcrest.core.IsEqual
-import org.junit.Assert
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Issue issue = new ExtGithub(farm).value().repos().get(
     new Coordinates.Simple('test', 'test')
   ).issues().get(1)
-  Assert.assertThat(
+  MatcherAssert.assertThat(
     'Incorrect issue is being checked',
     new Issue.Smart(issue).title(),
     new IsEqual<String>('A bug')
   )
-  Assert.assertThat(
+  MatcherAssert.assertThat(
     'Issue may have just a single label',
     new ListOf<>(
       new Mapped<>(
