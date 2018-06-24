@@ -119,7 +119,7 @@ SOFTWARE.
         </a>
         <span style="display:block;font-size:0.8em;line-height:1em;">
           <xsl:choose>
-            <xsl:when test="cash = 0">
+            <xsl:when test="cash = '0'">
               <span style="color:darkred;" title="The project has no funds, you will work for free">
                 <xsl:text>no funds</xsl:text>
               </span>
