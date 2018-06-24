@@ -18,6 +18,7 @@ package com.zerocracy.stk.pmo.awards
 
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
+import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
@@ -40,6 +41,14 @@ def exec(Project project, XML xml) {
       && new Filtered<>({ points -> (points > 0) }, awards).isEmpty()
     ) {
       people.vacation(user, true)
+      claim.copy()
+        .type('Notify user')
+        .token("user;${user}")
+        .param(
+        'message',
+        new Par('You have too many negative awards and no positive ones, turning vacation on automatically, see §52')
+          .say()
+      ).postTo(project)
     }
   }
 }
