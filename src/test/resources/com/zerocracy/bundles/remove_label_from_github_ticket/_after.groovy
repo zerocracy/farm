@@ -18,10 +18,15 @@ package com.zerocracy.bundles.remove_label_from_github_ticket
 
 import com.jcabi.github.Coordinates
 import com.jcabi.github.Issue
+import com.jcabi.github.Label
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.entry.ExtGithub
+import org.cactoos.Func
+import org.cactoos.collection.Mapped
+import org.cactoos.list.ListOf
+import org.hamcrest.Matchers
 import org.hamcrest.core.IsEqual
 import org.junit.Assert
 
@@ -31,8 +36,23 @@ def exec(Project project, XML xml) {
     new Coordinates.Simple('test', 'test')
   ).issues().get(1)
   Assert.assertThat(
-    'Issue may not have any labels',
-    issue.labels().iterate().iterator().hasNext(),
-    new IsEqual<Boolean>(false)
+    'Incorrect issue is being checked',
+    new Issue.Smart(issue).title(),
+    new IsEqual<String>('A bug')
+  )
+  Assert.assertThat(
+    'Issue may have just a single label',
+    new ListOf<>(
+      new Mapped<>(
+        new Func<Label, String>() {
+          @Override
+          String apply(final Label label) throws Exception {
+            return label.name();
+          }
+        },
+        issue.labels().iterate()
+      )
+    ),
+    Matchers.contains('bug')
   )
 }
