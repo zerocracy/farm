@@ -26,6 +26,11 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.farm.props.Props
 
 def exec(Project project, XML xml) {
+  /**
+   * @todo 766:30min Add a unit test for this stakeholder using fake S3 storage.
+   *  Maybe you will need to modify the stakeholder itself so that is
+   *  allows using fake S3 storage.
+   */
   new Assume(project, xml).isPmo()
   new Assume(project, xml).type('Ping hourly')
   Farm farm = binding.variables.farm

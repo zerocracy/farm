@@ -44,10 +44,10 @@ import org.xembly.Xembler;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.9
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @todo #1208:30min During #1208 fixing PMO claims was saved locally
  *  and removed from production. We need to analyze it, find critical claims
  *  and submit them to current `claims.xml` in PMO.
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class Claims {
 
@@ -173,6 +173,7 @@ public final class Claims {
                     public int compare(final XML left, final XML right) {
                         return Long.compare(this.cid(left), this.cid(right));
                     }
+
                     private long cid(final XML xml) {
                         return new ClaimIn(xml).cid();
                     }
