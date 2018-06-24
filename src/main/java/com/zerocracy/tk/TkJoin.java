@@ -42,12 +42,14 @@ import org.takes.rq.form.RqFormSmart;
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.20
- * @todo #908:30min Each user should see the status of his/her resume at /join.
+ * @todo #1147:30min Each user should see the status of his/her resume at /join.
  *  If the resume is there, he/she should see the resume, not the form.
  *  If he/she already has a mentor, there should be a redirect,
  *  saying that "User @yegor256 is already your mentor, no need to join again".
  *  See https://github.com/zerocracy/farm/issues/800#issuecomment-375551970
- *  comment for details.
+ *  comment for details. These two conditions are already tested in
+ *  TkJoinTest, in showResumeIfAlreadyApplied and showAlreadyHasMentor, and
+ *  the ignore tag on the tests should be removed upon puzzle completion.
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")

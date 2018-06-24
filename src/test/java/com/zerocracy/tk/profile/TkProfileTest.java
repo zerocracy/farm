@@ -92,7 +92,7 @@ public final class TkProfileTest {
     }
 
     @Test
-    public void rendersProfilePageWithoutInFirefox() throws Exception {
+    public void rendersProfilePageWithoutRateInFirefox() throws Exception {
         final Farm farm = new PropsFarm(new FkFarm());
         final People people = new People(farm).bootstrap();
         people.wallet(

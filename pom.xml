@@ -505,14 +505,12 @@ SOFTWARE.
                       <limit>
                         <counter>CLASS</counter>
                         <value>MISSEDCOUNT</value>
-                        <maximum>61</maximum>
+                        <maximum>60</maximum>
                       </limit>
                     </limits>
                   </rule>
                 </rules>
                 <excludes combine.children="append">
-                  <exclude>com/zerocracy/pmo/People.java</exclude>
-                  <exclude>com/zerocracy/pings/*.*</exclude>
                   <!--
                     @todo #747:30min Groovy scripts are excluded from coverage report
                      because they are not fully tested. Let's add tests for them and remove this

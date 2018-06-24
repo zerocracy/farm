@@ -21,7 +21,9 @@ import com.jcabi.log.VerboseRunnable;
 import com.jcabi.log.VerboseThreads;
 import com.zerocracy.Project;
 import com.zerocracy.ShutUp;
+import io.sentry.Sentry;
 import java.io.Closeable;
+import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -122,19 +124,36 @@ final class Terminator implements Closeable, Scalar<Iterable<Directive>> {
      */
     private Runnable killer(final Project project, final String file,
         final Lock lock) {
-        final Thread thread = Thread.currentThread();
+        final WeakReference<Thread> ref =
+            new WeakReference<>(Thread.currentThread());
         final Exception location = new IllegalStateException("Here!");
         return new RunnableOf<Object>(
             input -> {
                 if (!lock.tryLock(this.threshold, TimeUnit.MILLISECONDS)) {
-                    Logger.warn(
-                        this,
-                        // @checkstyle LineLength (1 line)
-                        "Thread %d/%s interrupted because of too long hold of \"%s\" in %s (over %d msec), %s: %[exception]s",
-                        thread.getId(), thread.getName(),
-                        file, project.pid(), this.threshold, lock, location
-                    );
-                    thread.interrupt();
+                    final Thread thread = ref.get();
+                    if (thread == null) {
+                        Logger.warn(this, "thread disposed");
+                    } else {
+                        Logger.warn(
+                            this,
+                            // @checkstyle LineLength (1 line)
+                            "Thread %d/%s interrupted because of too long hold of \"%s\" in %s (over %d msec), %s: %[exception]s",
+                            thread.getId(), thread.getName(),
+                            file, project.pid(), this.threshold, lock, location
+                        );
+                        Sentry.capture(
+                            new Exception(
+                                String.format(
+                                    // @checkstyle LineLength (1 line)
+                                    "Thread %d/%s interrupted because of too long hold of \"%s\" in %s (over %d msec), %s",
+                                    thread.getId(), thread.getName(),
+                                    file, project.pid(), this.threshold, lock
+                                ),
+                                location
+                            )
+                        );
+                        thread.interrupt();
+                    }
                     this.submit(project, file, lock);
                 }
                 lock.unlock();
@@ -142,5 +161,4 @@ final class Terminator implements Closeable, Scalar<Iterable<Directive>> {
             }
         );
     }
-
 }

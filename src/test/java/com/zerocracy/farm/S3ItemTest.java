@@ -31,7 +31,6 @@ import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.FileTime;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.xembly.Directives;
 
@@ -125,15 +124,8 @@ public final class S3ItemTest {
 
     /**
      * Test with ocket which simulates async work of real S3 client.
-     * @checkstyle AnonInnerLengthCheck (500 lines)
-     * @todo #511:30min S3Item does not handle InterruptedException properly.
-     *  It should not allow reading from io.channel stream if thread was
-     *  interrupted because it automatically check thread status before
-     *  reading and can throw `ClosedChannelException`.
      */
     @Test
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    @Ignore
     public void handleThreadInterruptionCorrectly() throws Exception {
         final Path target = Files.createTempFile("", "");
         final Ocket okt = new OcktInterrupted(
