@@ -470,9 +470,10 @@ public final class PeopleTest {
         final String format = "%s:%s";
         MatcherAssert.assertThat(
             people.links(uid),
-            Matchers.hasItems(
+            Matchers.containsInAnyOrder(
                 String.format(format, srel, salias),
-                String.format(format, jrel, jalias)
+                String.format(format, jrel, jalias),
+                String.format("github:%s", uid)
             )
         );
         MatcherAssert.assertThat(
