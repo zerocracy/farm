@@ -19,9 +19,6 @@ package com.zerocracy.bundles.terminates_orders_wbs_on_link_removal
 import com.jcabi.xml.XML
 import com.zerocracy.Project
 
-// @todo #1055:30min Implement logic for removal of all orders and clear WBS
-//  in terminate_orders_wbs_on_link_removal when the link to the Github repo is
-//  removed by the user. After it is implemented uncomment below test.
 def exec(Project project, XML xml) {
 //  Orders orders = new Orders(project).bootstrap()
 //  MatcherAssert.assertThat(orders.jobs('cmiranda'), Matchers.empty())
