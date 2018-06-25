@@ -1007,6 +1007,8 @@ SOFTWARE.
                   <exclude>com.zerocracy.pm.cost.EquityTest</exclude>
                   <exclude>com.zerocracy.tk.TkAppTest</exclude>
                   <exclude>com.zerocracy.tk.profile.TkIdentifyTest</exclude>
+                  <exclude>com.zerocracy.tk.profile.TkProfileTest</exclude>
+                  <exclude>com.zerocracy.tk.TkBoardTest</exclude>
                 </excludes>
               </configuration>
             </plugin>
@@ -1016,6 +1018,9 @@ SOFTWARE.
           <plugin>
             <groupId>org.jacoco</groupId>
             <artifactId>jacoco-maven-plugin</artifactId>
+            <configuration>
+              <skip>false</skip>
+            </configuration>
             <executions>
               <execution>
                 <configuration>
@@ -1027,6 +1032,8 @@ SOFTWARE.
                     <exclude>com/zerocracy/pm/cost/Equity.java</exclude>
                     <exclude>com/zerocracy/tk/TkApp.java</exclude>
                     <exclude>com/zerocracy/tk/profile/TkIdentify.java</exclude>
+                    <exclude>com/zerocracy/tk/profile/TkProfile.java</exclude>
+                    <exclude>com/zerocracy/tk/TkBoard.java</exclude>
                   </excludes>
                 </configuration>
               </execution>
