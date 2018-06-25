@@ -1018,6 +1018,9 @@ SOFTWARE.
           <plugin>
             <groupId>org.jacoco</groupId>
             <artifactId>jacoco-maven-plugin</artifactId>
+            <configuration>
+              <skip>false</skip>
+            </configuration>
             <executions>
               <execution>
                 <configuration>
@@ -1029,6 +1032,8 @@ SOFTWARE.
                     <exclude>com/zerocracy/pm/cost/Equity.java</exclude>
                     <exclude>com/zerocracy/tk/TkApp.java</exclude>
                     <exclude>com/zerocracy/tk/profile/TkIdentify.java</exclude>
+                    <exclude>com/zerocracy/tk/profile/TkProfile.java</exclude>
+                    <exclude>com/zerocracy/tk/TkBoard.java</exclude>
                   </excludes>
                 </configuration>
               </execution>
