@@ -1007,6 +1007,8 @@ SOFTWARE.
                   <exclude>com.zerocracy.pm.cost.EquityTest</exclude>
                   <exclude>com.zerocracy.tk.TkAppTest</exclude>
                   <exclude>com.zerocracy.tk.profile.TkIdentifyTest</exclude>
+                  <exclude>com.zerocracy.tk.profile.TkProfileTest</exclude>
+                  <exclude>com.zerocracy.tk.TkBoardTest</exclude>
                 </excludes>
               </configuration>
             </plugin>
