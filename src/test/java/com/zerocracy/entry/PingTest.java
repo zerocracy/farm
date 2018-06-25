@@ -16,6 +16,7 @@
  */
 package com.zerocracy.entry;
 
+import com.jcabi.aspects.Tv;
 import com.jcabi.xml.XML;
 import com.zerocracy.Item;
 import com.zerocracy.Xocument;
@@ -50,6 +51,7 @@ import org.xembly.Directives;
 public final class PingTest {
 
     @Test
+    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     public void worksForSingleProject() throws Exception {
         final FkProject pkt = new FkProject();
         final FkFarm farm = new FkFarm(pkt);
@@ -73,22 +75,31 @@ public final class PingTest {
         final JobDataMap map = new JobDataMap();
         final String type = "Ping";
         map.put("claim", type);
-        new Ping(farm, 1).execute(this.context(map));
+        final AtomicInteger counter = new AtomicInteger(0);
+        final int batches = Tv.FIVE;
+        for (int count = 0; count < batches; ++count) {
+            new Ping(farm, batches).execute(this.context(map, counter));
+        }
         final XML xml = new Claims(pkt).iterate().iterator().next();
+        MatcherAssert.assertThat(
+            new Claims(pkt).bootstrap().iterate(),
+            Matchers.hasSize(1)
+        );
         MatcherAssert.assertThat(
             new ClaimIn(xml).type(),
             Matchers.is(type)
         );
     }
 
-    private JobExecutionContext context(final JobDataMap map)
+    private JobExecutionContext context(final JobDataMap map,
+        final AtomicInteger counter)
         throws SchedulerException {
         final JobExecutionContext ctx = Mockito.mock(JobExecutionContext.class);
         Mockito.when(ctx.getMergedJobDataMap()).thenReturn(map);
         final Scheduler scheduler = Mockito.mock(Scheduler.class);
         Mockito.when(ctx.getScheduler()).thenReturn(scheduler);
         final SchedulerContext sctx = new SchedulerContext();
-        sctx.put("counter", new AtomicInteger(0));
+        sctx.put("counter", counter);
         Mockito.when(scheduler.getContext()).thenReturn(sctx);
         return ctx;
     }

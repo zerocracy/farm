@@ -101,11 +101,10 @@ public final class Ping implements Job {
         throws IOException {
         final int batch = counter.getAndIncrement() % this.batches;
         final List<Project> projects = new ListOf<>(this.farm.find(""));
-        final int size = (int) Math.ceil(
-            (double) projects.size() / this.batches
-        );
+        final double size = (double) projects.size() / this.batches;
         return projects.subList(
-            batch * size, Math.min(projects.size(), (batch + 1) * size)
+            (int) (batch * size),
+            (int) Math.min(projects.size(), (batch + 1) * size)
         );
     }
 
