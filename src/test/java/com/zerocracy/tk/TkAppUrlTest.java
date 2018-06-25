@@ -40,7 +40,7 @@ import org.takes.rq.RqFake;
  * @checkstyle VisibilityModifierCheck (500 lines)
  */
 @RunWith(Parameterized.class)
-public final class PingTest {
+public final class TkAppUrlTest {
 
     @Parameterized.Parameter
     public String url;
