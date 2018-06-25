@@ -42,8 +42,6 @@ import org.takes.rs.RsPrint;
  *  case that any page sent to Firefox will be rendered as html and not xml.
  * @todo #402:30min Write a test confirming that awards page when opened in a
  *  Firefox browser will always render html and not xml.
- * @todo #402:30min Write a test confirming that profile page when opened in a
- *  Firefox browser will always render html and not xml.
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class TkAgendaTest {
