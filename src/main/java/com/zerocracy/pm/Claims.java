@@ -173,6 +173,7 @@ public final class Claims {
                     public int compare(final XML left, final XML right) {
                         return Long.compare(this.cid(left), this.cid(right));
                     }
+
                     private long cid(final XML xml) {
                         return new ClaimIn(xml).cid();
                     }
