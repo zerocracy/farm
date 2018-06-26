@@ -19,6 +19,10 @@ package com.zerocracy.pmo;
 import com.zerocracy.Project;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Month;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -51,6 +55,42 @@ public final class VacanciesTest {
         MatcherAssert.assertThat(
             vacancies.iterate(),
             Matchers.emptyIterable()
+        );
+    }
+
+    @Test
+    public void removeOldVacancies() throws Exception {
+        final Vacancies vacancies = new Vacancies(new FkFarm()).bootstrap();
+        final Project first = new FkProject("FAKEPRJC1");
+        final FkProject second = new FkProject("FAKEPRJC2");
+        // @checkstyle MagicNumberCheck (30 lines)
+        vacancies.add(
+            first,
+            "old",
+            "old vacancy",
+            LocalDateTime.of(
+                LocalDate.of(2018, Month.JANUARY, 1),
+                LocalTime.of(0, 0)
+            )
+        );
+        vacancies.add(
+            second,
+            "fresh",
+            "fresh vacancy",
+            LocalDateTime.of(
+                LocalDate.of(2018, Month.JUNE, 1),
+                LocalTime.of(0, 0)
+            )
+        );
+        vacancies.removeOlderThan(
+            LocalDateTime.of(
+                LocalDate.of(2018, Month.APRIL, 1),
+                LocalTime.of(0, 0)
+            )
+        );
+        MatcherAssert.assertThat(
+            vacancies.iterate(),
+            Matchers.contains(Matchers.equalTo(second.pid()))
         );
     }
 }
