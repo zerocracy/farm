@@ -24,14 +24,14 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Vacancies
 
-import java.time.LocalDateTime
-import java.time.ZoneId
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
 
 def exec(Project pmo, XML xml) {
   new Assume(pmo, xml).isPmo()
   new Assume(pmo, xml).type('Ping daily')
   ClaimIn claim = new ClaimIn(xml)
-  LocalDateTime timestamp = LocalDateTime.ofInstant(claim.created().toInstant(), ZoneId.systemDefault())
+  ZonedDateTime timestamp = ZonedDateTime.ofInstant(claim.created().toInstant(), ZoneOffset.UTC)
   Farm farm = binding.variables.farm
   // @todo #917:30min Notify all project about expired vacancy.
   //  Notification text should include that vacancy was removed because it
