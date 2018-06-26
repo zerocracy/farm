@@ -27,6 +27,7 @@ import com.zerocracy.tk.TkApp;
 import java.io.IOException;
 import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.takes.rq.RqFake;
 import org.takes.rs.RsPrint;
@@ -63,18 +64,17 @@ public final class TkAwardsTest {
     public void rendersHtmlAwardsPageForFirefox() throws Exception {
         final Farm farm = new PropsFarm(new FkFarm());
         final String user = "yegor256";
-        final int points = 15;
+        final int points = 1234;
         new Awards(farm, user).bootstrap()
             .add(new FkProject(), points, "none", "reason");
+        final String html = this.firefoxView(farm, user);
         MatcherAssert.assertThat(
-            this.firefoxView(farm, user),
-            XhtmlMatchers.hasXPaths(
-                String.format(
-                    // @checkstyle LineLength (1 line)
-                    "//xhtml:table/xhtml:tbody/xhtml:tr[1]/xhtml:td[1]/xhtml:span[.='+%d']",
-                    points
-                )
-            )
+            html,
+            XhtmlMatchers.hasXPaths("//xhtml:html")
+        );
+        MatcherAssert.assertThat(
+            html,
+            Matchers.containsString(String.format("+%d", points))
         );
     }
 
