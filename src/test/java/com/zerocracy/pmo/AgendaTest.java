@@ -24,6 +24,7 @@ import com.zerocracy.Xocument;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
 import java.nio.file.Path;
+import org.cactoos.text.JoinedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Rule;
@@ -161,18 +162,27 @@ public final class AgendaTest {
     @Test
     public void addInspector() throws Exception {
         final Path tmp = this.folder.newFolder().toPath();
-        final FkProject project = new FkProject(tmp, "AGENDPRJ3");
-        final Agenda agenda = new Agenda(
-            new FkFarm(project),
-            "user42"
-        ).bootstrap();
+        final FkProject project = new FkProject(tmp);
+        final String performer = "user42";
+        final Agenda agenda = new Agenda(new FkFarm(project), performer)
+            .bootstrap();
         final String job = "gh:test/test#666";
         agenda.add(project, job, "DEV");
-        agenda.inspector(job, "qauser");
+        final String inspector = "qauser";
+        agenda.inspector(job, inspector);
         MatcherAssert.assertThat(
-            new Xocument(tmp.resolve("agenda/user42.xml")),
-            // @checkstyle LineLengthCheck (1 line)
-            XhtmlMatchers.hasXPath("/agenda/order[@job = 'gh:test/test#666']/inspector[text() = 'qauser']")
+            new Xocument(
+                tmp.resolve(String.format("agenda/%s.xml", performer))
+            ),
+            XhtmlMatchers.hasXPath(
+                new JoinedText(
+                    "",
+                    "/agenda/order",
+                    String.format("[@job = '%s']", job),
+                    "/inspector",
+                    String.format("[text() = '%s']", inspector)
+                ).asString()
+            )
         );
     }
 }
