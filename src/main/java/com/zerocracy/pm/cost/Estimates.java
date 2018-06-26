@@ -37,13 +37,32 @@ import org.xembly.Directives;
 
 /**
  * Cost estimates.
+ * <p>
+ * Estimate is an absolute cash value (not minutes of work)
+ * which will be payed for a job on complete.
+ * For example this estimate:
+ * <pre>
+ * <code>&lt;order id="gh:yegor256/pdd#3"&gt;
+ *   &lt;cash&gt;$15&lt;/cash&gt;
+ *   &lt;created&gt;2016-12-29T09:03:21.684Z&lt;/created&gt;
+ *   &lt;role&gt;REV&lt;/role&gt;
+ * &lt;/order&gt;
+ * </code>
+ * </pre>
+ * means that job {@code gh:yegor256/pdd#3} was estimated in $15 as a
+ * code-review task.<br/>
+ * Project estimates locks a cash from budget, so if estimated value is
+ * bigger that project's cash, project will be turned into deficit mode.
+ * <p>
+ * Estimate can be cleaned from {@link com.zerocracy.farm.ruled.RdAuto},
+ * see {@code 03-estimates-remove.xsl} in datum repo.
  *
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.10
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@SuppressWarnings({ "PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals"})
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals"})
 public final class Estimates {
 
     /**
