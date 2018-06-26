@@ -21,7 +21,10 @@ import com.zerocracy.Item;
 import com.zerocracy.Project;
 import com.zerocracy.Xocument;
 import java.io.IOException;
-import org.cactoos.time.DateAsText;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import org.cactoos.text.JoinedText;
 import org.xembly.Directives;
 
 /**
@@ -33,9 +36,6 @@ import org.xembly.Directives;
  * @todo #925:30min Vacancies are not rendered on `/vacancies` page.
  *  This page should list all current vacancies in all projects.
  *  Let's display vacancy author, date and text.
- * @todo #925:30min Old vacancies are not removed automatically.
- *  Let's add new stakeholder which will remove vacancies from `vacancies.xml`
- *  which are  older than 32 days.
  */
 public final class Vacancies {
 
@@ -81,6 +81,20 @@ public final class Vacancies {
      */
     public void add(final Project project, final String author,
         final String text) throws IOException {
+        this.add(project, author, text, ZonedDateTime.now(ZoneOffset.UTC));
+    }
+
+    /**
+     * Add new vacancy.
+     * @param project Hiring project
+     * @param author Vacancy author
+     * @param text Vacancy text
+     * @param added Added time
+     * @throws IOException If fails
+     * @checkstyle ParameterNumberCheck (4 lines)
+     */
+    public void add(final Project project, final String author,
+        final String text, final ZonedDateTime added) throws IOException {
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()
@@ -88,7 +102,7 @@ public final class Vacancies {
                     .add("vacancy")
                     .attr("project", project.pid())
                     .addIf("added")
-                    .set(new DateAsText().asString())
+                    .set(added.format(DateTimeFormatter.ISO_DATE_TIME))
                     .up()
                     .add("author")
                     .set(author)
@@ -127,6 +141,28 @@ public final class Vacancies {
         try (final Item item = this.item()) {
             return new Xocument(item.path())
                 .xpath("/vacancies/vacancy/@project");
+        }
+    }
+
+    /**
+     * Remove vacancies older than 'date' param.
+     * @param date Date param
+     * @throws IOException If fails
+     */
+    public void removeOlderThan(final ZonedDateTime date) throws IOException {
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                new Directives()
+                    .xpath(
+                        new JoinedText(
+                            "",
+                            "/vacancies/vacancy[xs:dateTime(added) < ",
+                            "xs:dateTime('",
+                            date.format(DateTimeFormatter.ISO_DATE_TIME),
+                            "')]"
+                        ).asString()
+                    ).remove()
+            );
         }
     }
 
