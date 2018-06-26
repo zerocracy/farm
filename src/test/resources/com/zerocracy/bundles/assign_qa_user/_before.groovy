@@ -24,10 +24,14 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.entry.ExtGithub
+import com.zerocracy.pmo.Agenda
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
   Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
-  new Issue.Smart(repo.issues().create('Hello, world', ''))
+  def issue = new Issue.Smart(repo.issues().create('Hello, world', ''))
+  issue.close()
+  def job = 'gh:test/test#1'
+  new Agenda(farm, 'yegor256').bootstrap().add(project, job, 'DEV')
 }

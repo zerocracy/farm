@@ -17,14 +17,16 @@
 package com.zerocracy.bundles.assign_qa_user
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Project
-import com.zerocracy.pm.scope.Wbs
+import com.zerocracy.pmo.Agenda
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
+  Farm farm = binding.variables.farm
   MatcherAssert.assertThat(
-    new Wbs(project).bootstrap().role('gh:test/test#1'),
-    Matchers.equalTo('DEV')
+    new Agenda(farm, 'yegor256').bootstrap().hasInspector('gh:test/test#1'),
+    Matchers.is(true)
   )
 }

@@ -17,6 +17,7 @@
 package com.zerocracy.pmo;
 
 import com.jcabi.aspects.Tv;
+import com.jcabi.matchers.XhtmlMatchers;
 import com.zerocracy.Project;
 import com.zerocracy.SoftException;
 import com.zerocracy.Xocument;
@@ -154,6 +155,24 @@ public final class AgendaTest {
             new Xocument(tmp.resolve("agenda/user.xml"))
                 .xpath("agenda/order/title/text()"),
             Matchers.contains(title)
+        );
+    }
+
+    @Test
+    public void addInspector() throws Exception {
+        final Path tmp = this.folder.newFolder().toPath();
+        final FkProject project = new FkProject(tmp, "AGENDPRJ3");
+        final Agenda agenda = new Agenda(
+            new FkFarm(project),
+            "user42"
+        ).bootstrap();
+        final String job = "gh:test/test#666";
+        agenda.add(project, job, "DEV");
+        agenda.inspector(job, "qauser");
+        MatcherAssert.assertThat(
+            new Xocument(tmp.resolve("agenda/user42.xml")),
+            // @checkstyle LineLengthCheck (1 line)
+            XhtmlMatchers.hasXPath("/agenda/order[@job = 'gh:test/test#666']/inspector[text() = 'qauser']")
         );
     }
 }
