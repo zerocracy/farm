@@ -28,6 +28,7 @@ import java.io.IOException;
 import javax.json.Json;
 import org.cactoos.map.MapEntry;
 import org.cactoos.map.MapOf;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -39,6 +40,7 @@ import org.mockito.Mockito;
  * @since 0.1
  * @checkstyle JavadocMethodCheck (500 lines)
  */
+@Ignore
 public final class SlackRadarTest {
 
     @Test

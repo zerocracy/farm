@@ -23,14 +23,13 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.entry.ExtGithub
-import com.zerocracy.pm.staff.Roles
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
   Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
-  repo.issues().create('Waiting', '')
-  new Roles(project).bootstrap().assign('yegor256', 'ARC')
+  repo.issues().create('One', '')
+  repo.issues().create('Two', '')
 }
 
 
