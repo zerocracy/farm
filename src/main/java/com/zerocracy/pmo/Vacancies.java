@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pmo;
 
+import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Project;
@@ -33,9 +34,6 @@ import org.xembly.Directives;
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id $
  * @since 0.22
- * @todo #925:30min Vacancies are not rendered on `/vacancies` page.
- *  This page should list all current vacancies in all projects.
- *  Let's display vacancy author, date and text.
  */
 public final class Vacancies {
 
@@ -114,6 +112,20 @@ public final class Vacancies {
     }
 
     /**
+     * Vacancy for project.
+     * @param pid Project id
+     * @return Vacancy data
+     * @throws IOException If fails
+     */
+    public XML vacancy(final String pid) throws IOException {
+        try (final Item item = this.item()) {
+            return new Xocument(item.path())
+                .nodes(Vacancies.xpath(pid))
+                .get(0);
+        }
+    }
+
+    /**
      * Remove vacancy.
      * @param project Hiring project
      * @throws IOException If fails
@@ -122,12 +134,8 @@ public final class Vacancies {
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()
-                    .xpath(
-                        String.format(
-                            "/vacancies/vacancy[@project='%s']",
-                            project.pid()
-                        )
-                    ).remove()
+                    .xpath(Vacancies.xpath(project.pid()))
+                    .remove()
             );
         }
     }
@@ -173,5 +181,15 @@ public final class Vacancies {
      */
     private Item item() throws IOException {
         return this.pmo.acq("vacancies.xml");
+    }
+
+    /**
+     * Vacancy xpath.
+     *
+     * @param pid Project id
+     * @return Xpath for vacancy
+     */
+    private static String xpath(final String pid) {
+        return String.format("/vacancies/vacancy[@project='%s']", pid);
     }
 }
