@@ -14,19 +14,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.assign_qa_user
+package com.zerocracy.stk.internal
 
+import com.jcabi.log.Logger
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
-import com.zerocracy.pmo.Agenda
-import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
+import com.zerocracy.entry.ExtBucket
+import com.zerocracy.entry.HeapDump
+import com.zerocracy.farm.Assume
+import com.zerocracy.farm.props.Props
 
 def exec(Project project, XML xml) {
+  /**
+   * @todo #766:30min Add a unit test for this stakeholder using fake S3 storage.
+   *  Maybe you will need to modify the stakeholder itself so that is
+   *  allows using fake S3 storage.
+   */
+  new Assume(project, xml).isPmo()
+  new Assume(project, xml).type('Ping hourly')
   Farm farm = binding.variables.farm
-  MatcherAssert.assertThat(
-    new Agenda(farm, 'yegor256').bootstrap().hasInspector('gh:test/test#1'),
-    Matchers.is(true)
-  )
+  if (new Props(farm).has('//testing')) {
+    Logger.info(this, 'skip in testing mode')
+    return
+  }
+  new HeapDump(new ExtBucket(farm).value(), '').save()
 }

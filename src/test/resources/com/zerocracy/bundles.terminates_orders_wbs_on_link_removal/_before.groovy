@@ -14,19 +14,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.assign_qa_user
+package com.zerocracy.bundles.terminates_orders_wbs_on_link_removal
 
+import com.jcabi.github.Github
+import com.jcabi.github.Repo
+import com.jcabi.github.Repos
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
-import com.zerocracy.pmo.Agenda
-import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
+import com.zerocracy.entry.ExtGithub
+import com.zerocracy.pm.ClaimOut
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
-  MatcherAssert.assertThat(
-    new Agenda(farm, 'yegor256').bootstrap().hasInspector('gh:test/test#1'),
-    Matchers.is(true)
-  )
+  Github github = new ExtGithub(farm).value()
+  Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
+  [1, 2, 3, 4].every
+    { num -> repo.issues().create("title ${num}", "body ${num}") }
+
+  new ClaimOut()
+    .type('Project link was removed')
+    .param('rel', 'github')
+    .param('href', repo.coordinates().toString())
+    .postTo(project)
 }

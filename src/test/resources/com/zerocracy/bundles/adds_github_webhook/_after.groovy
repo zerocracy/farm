@@ -14,19 +14,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.assign_qa_user
+package com.zerocracy.bundles.adds_github_webhook
 
+import com.jcabi.github.Coordinates
+import com.jcabi.github.Github
+import com.jcabi.github.Repo
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
-import com.zerocracy.pmo.Agenda
-import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
+import com.zerocracy.entry.ExtGithub
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
-  MatcherAssert.assertThat(
-    new Agenda(farm, 'yegor256').bootstrap().hasInspector('gh:test/test#1'),
-    Matchers.is(true)
-  )
+  Github github = new ExtGithub(farm).value()
+  new Repo.Smart(github.repos().get(new Coordinates.Simple('test/test')))
+//  MatcherAssert.assertThat(repo.hooks().iterate(), Matchers.hasSize(1))
+//  Hook.Smart hook = new Hook.Smart(repo.hooks().get(0))
+//  MatcherAssert.assertThat(hook.name(), Matchers.is('0crat'))
+//  JsonObject json = hook.json()
+//  MatcherAssert.assertThat(json.getBoolean('active'), Matchers.is(true))
+//  MatcherAssert.assertThat(
+//    json.getJsonArray('events').toListString(),
+//    Matchers.containsInAnyOrder('*')
+//  )
+//  MatcherAssert.assertThat(
+//    json.getJsonObject('config').getString('content_type'),
+//    Matchers.is('form')
+//  )
+//  MatcherAssert.assertThat(
+//    json.getJsonObject('config').getString('url'),
+//    Matchers.endsWith("/ghook")
+//  )
 }

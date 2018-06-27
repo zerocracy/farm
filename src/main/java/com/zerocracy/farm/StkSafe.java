@@ -35,6 +35,16 @@ import org.cactoos.text.TextOf;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
+ * @todo #1215:30min We should not try to add claims with 'Error' type
+ *  and stacktrace if error was thrown from Claims.add because of
+ *  claims overflow. It may produce very huge stacktraces
+ *  (about 2000 lines for stacktrace): claims.xml is full, we try to
+ *  add new claim, Claims throws an exception about overflow,
+ *  this exception is handled in StkSafe catch (Throwable), submitted
+ *  again (goto step 2), this exception may goes in a loop about few hundred
+ *  times, until some claims will be removed from claims.xml, and then this
+ *  error with thousand lines of stacktrace lines will be added
+ *  to `claims.xml`.
  */
 @EqualsAndHashCode(of = "identifier")
 public final class StkSafe implements Stakeholder {

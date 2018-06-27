@@ -14,19 +14,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.assign_qa_user
+package com.zerocracy.stk.pmo.vacancies
 
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
+import com.zerocracy.Policy
 import com.zerocracy.Project
-import com.zerocracy.pmo.Agenda
-import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
+import com.zerocracy.farm.Assume
+import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pmo.Vacancies
 
-def exec(Project project, XML xml) {
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
+
+def exec(Project pmo, XML xml) {
+  new Assume(pmo, xml).isPmo()
+  new Assume(pmo, xml).type('Ping daily')
+  ClaimIn claim = new ClaimIn(xml)
+  ZonedDateTime timestamp = ZonedDateTime.ofInstant(claim.created().toInstant(), ZoneOffset.UTC)
   Farm farm = binding.variables.farm
-  MatcherAssert.assertThat(
-    new Agenda(farm, 'yegor256').bootstrap().hasInspector('gh:test/test#1'),
-    Matchers.is(true)
-  )
+  // @todo #917:30min Notify all project about expired vacancy.
+  //  Notification text should include that vacancy was removed because it
+  //  was expired. Vacancies.removeOlderThan in such case should return
+  //  project ids of removed vacancies.
+  new Vacancies(farm)
+    .bootstrap()
+    .removeOlderThan(timestamp.minusDays(new Policy(farm).get('51.days', 32)))
 }

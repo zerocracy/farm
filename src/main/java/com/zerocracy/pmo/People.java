@@ -806,6 +806,7 @@ public final class People {
             .add("reputation").set("0").up()
             .add("jobs").set("0").up()
             .add("projects").set("0").up()
+            .add("speed").set("0.0").up()
             .add("skills").attr("updated", new DateAsText().asString()).up()
             .add("links")
             .add("link")

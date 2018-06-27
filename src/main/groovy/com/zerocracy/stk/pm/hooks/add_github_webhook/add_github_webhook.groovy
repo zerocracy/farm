@@ -14,19 +14,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.assign_qa_user
+package com.zerocracy.stk.pm.hooks.add_github_webhook
+
 
 import com.jcabi.xml.XML
-import com.zerocracy.Farm
 import com.zerocracy.Project
-import com.zerocracy.pmo.Agenda
-import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
+import com.zerocracy.farm.Assume
+import com.zerocracy.pm.ClaimIn
 
+// @todo #1048:30min Implement logic for adding webhook in add_github_webhook
+//  stakeholder (see #1048 for details). After it is implemented uncomment
+//  adds_github_webhook test and make sure it passes. In production we need to
+//  use url: http://www.rehttp.net/p/https://www.0crat.com/ghook, and in testing
+//  we use  current url of our instance + "/ghook".
+//  Add another test that will check that in case
+//  we don't have enough permissions we will inform the user about it.
 def exec(Project project, XML xml) {
-  Farm farm = binding.variables.farm
-  MatcherAssert.assertThat(
-    new Agenda(farm, 'yegor256').bootstrap().hasInspector('gh:test/test#1'),
-    Matchers.is(true)
-  )
+  new Assume(project, xml).notPmo()
+  new Assume(project, xml).type('Project link was added')
+  ClaimIn claim = new ClaimIn(xml)
+  if (claim.param('rel') != 'github') {
+    return
+  }
 }
