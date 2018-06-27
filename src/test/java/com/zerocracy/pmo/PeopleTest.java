@@ -42,9 +42,9 @@ import org.junit.rules.ExpectedException;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
- * @checkstyle JavadocMethodCheck (500 lines)
- * @checkstyle JavadocVariableCheck (500 lines)
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @checkstyle JavadocMethodCheck (1000 lines)
+ * @checkstyle JavadocVariableCheck (1000 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (3 lines)
  */
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 public final class PeopleTest {
@@ -428,8 +428,8 @@ public final class PeopleTest {
 
     @Test
     public void setsJobs() throws Exception {
-        final FkFarm farm = new FkFarm(new FkProject());
-        final People people = new People(farm).bootstrap();
+        final People people =
+            new People(new FkFarm(new FkProject())).bootstrap();
         final String uid = "jobs";
         people.invite(uid, uid);
         final int jobs = Tv.TEN;
@@ -440,10 +440,22 @@ public final class PeopleTest {
         );
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void throwsIfFetchingJobsOfNonExistentUser() throws Exception {
+        new People(new FkFarm(new FkProject())).bootstrap()
+            .jobs("jobs1");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void throwsIfSettingJobsOfNonExistentUser() throws Exception {
+        new People(new FkFarm(new FkProject())).bootstrap()
+            .jobs("jobs2", 1);
+    }
+
     @Test
     public void setsSpeed() throws Exception {
-        final FkFarm farm = new FkFarm(new FkProject());
-        final People people = new People(farm).bootstrap();
+        final People people =
+            new People(new FkFarm(new FkProject())).bootstrap();
         final String uid = "speed";
         people.invite(uid, uid);
         final double speed = 5.5;
@@ -452,6 +464,18 @@ public final class PeopleTest {
             people.speed(uid),
             Matchers.is(speed)
         );
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void throwsIfFetchingSpeedOfNonExistentUser() throws Exception {
+        new People(new FkFarm(new FkProject())).bootstrap()
+            .speed("speed1");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void throwsIfSettingSpeedOfNonExistentUser() throws Exception {
+        new People(new FkFarm(new FkProject())).bootstrap()
+            .speed("speed2", 1.0);
     }
 
     @Test

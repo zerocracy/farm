@@ -654,11 +654,7 @@ public final class People {
      */
     public void reputation(final String uid, final int rep)
         throws IOException {
-        if (!this.exists(uid)) {
-            throw new IllegalArgumentException(
-                new Par("Person @%s doesn't exist").say(uid)
-            );
-        }
+        this.checkExisting(uid);
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives().xpath(
@@ -678,11 +674,7 @@ public final class People {
      * @throws IOException If fails
      */
     public int reputation(final String uid) throws IOException {
-        if (!this.exists(uid)) {
-            throw new IllegalArgumentException(
-                new Par("Person @%s doesn't exist").say(uid)
-            );
-        }
+        this.checkExisting(uid);
         try (final Item item = this.item()) {
             return new NumberOf(
                 new Xocument(item.path()).xpath(
@@ -704,11 +696,7 @@ public final class People {
      */
     public void jobs(final String uid, final int jobs)
         throws IOException {
-        if (!this.exists(uid)) {
-            throw new IllegalArgumentException(
-                new Par("Person @%s doesn't exist").say(uid)
-            );
-        }
+        this.checkExisting(uid);
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives().xpath(
@@ -728,11 +716,7 @@ public final class People {
      * @throws IOException If fails
      */
     public int jobs(final String uid) throws IOException {
-        if (!this.exists(uid)) {
-            throw new IllegalArgumentException(
-                new Par("Person @%s doesn't exist").say(uid)
-            );
-        }
+        this.checkExisting(uid);
         try (final Item item = this.item()) {
             return new NumberOf(
                 new Xocument(item.path()).xpath(
@@ -759,11 +743,7 @@ public final class People {
      */
     public void speed(final String uid, final double speed)
         throws IOException {
-        if (!this.exists(uid)) {
-            throw new IllegalArgumentException(
-                    new Par("Person @%s doesn't exist").say(uid)
-            );
-        }
+        this.checkExisting(uid);
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives().xpath(
@@ -783,11 +763,7 @@ public final class People {
      * @throws IOException If fails
      */
     public double speed(final String uid) throws IOException {
-        if (!this.exists(uid)) {
-            throw new IllegalArgumentException(
-                new Par("Person @%s doesn't exist").say(uid)
-            );
-        }
+        this.checkExisting(uid);
         try (final Item item = this.item()) {
             return new NumberOf(
                 new Xocument(item.path()).xpath(
@@ -800,7 +776,7 @@ public final class People {
             ).doubleValue();
         }
     }
-    
+
     /**
      * Person exists?
      * @param uid User ID
@@ -822,11 +798,7 @@ public final class People {
      * @throws IOException If fails
      */
     public void apply(final String uid, final Date when) throws IOException {
-        if (!this.exists(uid)) {
-            throw new IllegalArgumentException(
-                new Par("Person @%s doesn't exist").say(uid)
-            );
-        }
+        this.checkExisting(uid);
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives().xpath(
@@ -843,11 +815,7 @@ public final class People {
      * @throws IOException If fails
      */
     public boolean applied(final String uid) throws IOException {
-        if (!this.exists(uid)) {
-            throw new IllegalArgumentException(
-                new Par("Person @%s doesn't exist").say(uid)
-            );
-        }
+        this.checkExisting(uid);
         try (final Item item = this.item()) {
             return !new Xocument(item).nodes(
                 String.format("//people/person[@id  ='%s']/applied", uid)
@@ -862,11 +830,7 @@ public final class People {
      * @throws IOException If fails
      */
     public Date appliedTime(final String uid) throws IOException {
-        if (!this.exists(uid)) {
-            throw new IllegalArgumentException(
-                new Par("Person @%s doesn't exist").say(uid)
-            );
-        }
+        this.checkExisting(uid);
         if (!this.applied(uid)) {
             throw new IllegalArgumentException(
                 new Par("Person @%s doesn't have apply-time").say(uid)
@@ -924,5 +888,18 @@ public final class People {
                 )
             )
             .strict(1);
+    }
+
+    /**
+     * Check if user exists.
+     * @param uid UID of user
+     * @throws IOException If fails
+     */
+    private void checkExisting(final String uid) throws IOException {
+        if (!this.exists(uid)) {
+            throw new IllegalArgumentException(
+                new Par("Person @%s doesn't exist").say(uid)
+            );
+        }
     }
 }
