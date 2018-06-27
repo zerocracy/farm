@@ -18,14 +18,18 @@ package com.zerocracy.tk;
 
 import com.zerocracy.Farm;
 import com.zerocracy.Par;
+import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.pmo.People;
 import com.zerocracy.pmo.Pmo;
+import com.zerocracy.pmo.Projects;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Locale;
 import java.util.logging.Level;
 import org.cactoos.Scalar;
+import org.cactoos.iterable.Mapped;
 import org.cactoos.scalar.IoCheckedScalar;
+import org.cactoos.scalar.Or;
 import org.cactoos.scalar.SolidScalar;
 import org.takes.Request;
 import org.takes.facets.auth.Identity;
@@ -65,25 +69,22 @@ public final class RqUser implements Scalar<String> {
      * @param invited TRUE if we need a user to be invited already
      */
     public RqUser(final Farm farm, final Request req, final boolean invited) {
-        this(new Pmo(farm), req, invited);
+        this(new Pmo(farm), farm, req, invited);
     }
 
     /**
      * Ctor.
      * @param pmo The PMO
-     * @param req Request
-     */
-    public RqUser(final Pmo pmo, final Request req) {
-        this(pmo, req, true);
-    }
-
-    /**
-     * Ctor.
-     * @param pmo The PMO
+     * @param farm Farm
      * @param req Request
      * @param invited TRUE if we need a user to be invited already
+     * @todo #1054:30min A check whether user is a PO in any of the projects
+     *  happens in this method and in RqLogin#value. Extract this check to
+     *  a common place and reuse it in both places.
+     * @checkstyle ParameterNumberCheck (3 lines)
      */
-    public RqUser(final Pmo pmo, final Request req, final boolean invited) {
+    public RqUser(final Pmo pmo, final Farm farm, final Request req,
+        final boolean invited) {
         this.user = new SolidScalar<>(
             () -> {
                 final Identity identity = new RqAuth(req).identity();
@@ -105,7 +106,22 @@ public final class RqUser implements Scalar<String> {
                 }
                 final String login = identity.properties()
                     .get("login").toLowerCase(Locale.ENGLISH);
-                if (invited && !new People(pmo).bootstrap().hasMentor(login)) {
+                final boolean owner = new IoCheckedScalar<>(
+                    new Or(
+                        new Mapped<>(
+                            pid -> new IoCheckedScalar<>(
+                                () -> new Roles(
+                                    farm.find(
+                                        String.format("@id='%s'", pid)
+                                    ).iterator().next()
+                                ).bootstrap().hasRole(login, "PO")
+                            ),
+                            new Projects(farm, login).bootstrap().iterate()
+                        )
+                    )
+                ).value();
+                if (invited && !new People(pmo).bootstrap().hasMentor(login)
+                    && !owner) {
                     throw new RsForward(
                         new RsParFlash(
                             new Par(
