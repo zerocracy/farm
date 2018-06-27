@@ -16,13 +16,11 @@
  */
 package com.zerocracy.bundles.assign_qa_user
 
-import com.jcabi.matchers.XhtmlMatchers
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
-import com.zerocracy.Item
 import com.zerocracy.Project
-import com.zerocracy.Xocument
 import com.zerocracy.cash.Cash
+import com.zerocracy.pm.qa.Reviews
 import com.zerocracy.pmo.Agenda
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
@@ -31,15 +29,13 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   String job = 'gh:test/test#1'
   MatcherAssert.assertThat(
+    'Doesn\'t have inspector',
     new Agenda(farm, 'yegor256').bootstrap().hasInspector(job),
     Matchers.is(true)
   )
-  project.acq('reviews.xml').withCloseable { Item item ->
-    MatcherAssert.assertThat(
-      new Xocument(item.path()),
-      XhtmlMatchers.hasXPath(
-        "/reviews/review[@job = '${job}']/bonus[text() = '${new Cash.S('$8')}']"
-      )
-    )
-  }
+  MatcherAssert.assertThat(
+    'Incorrect bonus',
+    new Reviews(project).bootstrap().bonus(job),
+    Matchers.<Cash> equalTo(new Cash.S('$8'))
+  )
 }
