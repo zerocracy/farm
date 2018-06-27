@@ -39,7 +39,9 @@ import org.xembly.Directives;
  * Cost estimates.
  * <p>
  * Estimate is an absolute cash value (not minutes of work)
- * which will be payed for a job on complete.
+ * which will be payed for a job on complete. It represents current state of
+ * <i>pending payments</i>: how much cash will be taken from project
+ * funds to pay for orders.<br/>
  * For example this estimate:
  * <pre>
  * <code>&lt;order id="gh:yegor256/pdd#3"&gt;
@@ -53,6 +55,7 @@ import org.xembly.Directives;
  * code-review task.<br/>
  * Project estimates locks a cash from budget, so if estimated value is
  * bigger that project's cash, project will be turned into deficit mode.
+ * </p>
  * <p>
  * Estimate can be cleaned from {@link com.zerocracy.farm.ruled.RdAuto},
  * see {@code 03-estimates-remove.xsl} in datum repo.
