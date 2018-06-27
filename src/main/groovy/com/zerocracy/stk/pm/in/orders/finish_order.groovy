@@ -46,6 +46,10 @@ def exec(Project project, XML xml) {
     price = estimates.get(job)
   }
   int minutes = new Boosts(project).bootstrap().factor(job) * 15
+  Policy policy = new Policy()
+  if (age < policy.get('36.hours', 48) * 60) {
+    minutes = minutes + policy.get('36.bonus', 5)
+  }
   Roles roles = new Roles(project).bootstrap()
   List<String> qa = roles.findByRole('QA')
   if (qa.empty || roles.hasRole(performer, 'ARC', 'PO')) {
@@ -75,7 +79,7 @@ def exec(Project project, XML xml) {
     Rates rates = new Rates(project).bootstrap()
     Cash bonus = Cash.ZERO
     if (rates.exists(performer)) {
-      bonus = rates.rate(performer).mul(new Policy().get('31.bonus', 5)) / 60
+      bonus = rates.rate(performer).mul(policy.get('31.bonus', 5)) / 60
     }
     claim.copy()
       .type('Start QA review')
