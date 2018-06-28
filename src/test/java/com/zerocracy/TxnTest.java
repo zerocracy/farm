@@ -16,6 +16,7 @@
  */
 package com.zerocracy;
 
+import com.jcabi.aspects.Tv;
 import com.zerocracy.farm.fake.FkProject;
 import java.nio.file.Files;
 import java.util.Arrays;
@@ -36,6 +37,7 @@ import org.junit.Test;
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class TxnTest {
+
     @Test
     public void commitLocalChangedAndPublishToProject() throws Exception {
         final String file = "test";
@@ -73,17 +75,26 @@ public final class TxnTest {
         }
     }
 
+    /**
+     * Tests if {@link Txn} allows concurrent access.
+     * @throws Exception If something goes wrong during test.
+     * @todo #993:30min Fix NullPointerException due concurrency issues.
+     *  Txn.acq() is throwing an NullPointerException when trying to read
+     *  this.items. Ignore annotation must be removed after puzzle solution.
+     */
     @Test
     @Ignore
-    public void acqConcurrentAccess() throws Exception {
-        final byte[] payload = {(byte) 42};
+    public void allowsConcurrentAccess() throws Exception {
+        final byte[] payload = {};
+        final Random rnd = new Random();
+        rnd.nextBytes(payload);
         final FkProject pkt = new FkProject();
         MatcherAssert.assertThat(
             t -> {
                 final String file = String.format(
                     "test%d",
                     //@checkstyle MagicNumberCheck (1 line)
-                    t.getAndIncrement() * new Random().nextInt(1000000000)
+                    t.getAndIncrement() * rnd.nextInt(1000000000)
                 );
                 final Txn txn = new Txn(pkt);
                 final Item item = txn.acq(file);
@@ -91,8 +102,7 @@ public final class TxnTest {
                 final byte[] arr = Files.readAllBytes(item.path());
                 return Arrays.equals(arr, payload);
             },
-            //@checkstyle MagicNumberCheck (1 line)
-            new RunsInThreads<>(new AtomicInteger(), 1000)
+            new RunsInThreads<>(new AtomicInteger(), Tv.THOUSAND)
         );
     }
 }
