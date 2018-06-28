@@ -505,7 +505,7 @@ SOFTWARE.
                       <limit>
                         <counter>CLASS</counter>
                         <value>MISSEDCOUNT</value>
-                        <maximum>60</maximum>
+                        <maximum>63</maximum>
                       </limit>
                     </limits>
                   </rule>

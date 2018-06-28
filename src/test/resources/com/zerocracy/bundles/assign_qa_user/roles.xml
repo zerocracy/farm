@@ -17,7 +17,7 @@ SOFTWARE.
 -->
 <roles xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.37/xsd/pm/staff/roles.xsd" version="0.1" updated="2017-03-27T11:18:09.228Z">
   <person id="yegor256">
-    <role>ARC</role>
+    <role>DEV</role>
   </person>
   <person id="test">
     <role>QA</role>
