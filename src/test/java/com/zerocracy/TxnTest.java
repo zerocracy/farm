@@ -18,8 +18,13 @@ package com.zerocracy;
 
 import com.zerocracy.farm.fake.FkProject;
 import java.nio.file.Files;
+import java.util.Arrays;
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
+import org.cactoos.matchers.RunsInThreads;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -66,5 +71,28 @@ public final class TxnTest {
                 Matchers.is(false)
             );
         }
+    }
+
+    @Test
+    @Ignore
+    public void acqConcurrentAccess() throws Exception {
+        final byte[] payload = {(byte) 42};
+        final FkProject pkt = new FkProject();
+        MatcherAssert.assertThat(
+            t -> {
+                final String file = String.format(
+                    "test%d",
+                    //@checkstyle MagicNumberCheck (1 line)
+                    t.getAndIncrement() * new Random().nextInt(1000000000)
+                );
+                final Txn txn = new Txn(pkt);
+                final Item item = txn.acq(file);
+                Files.write(item.path(), payload);
+                final byte[] arr = Files.readAllBytes(item.path());
+                return Arrays.equals(arr, payload);
+            },
+            //@checkstyle MagicNumberCheck (1 line)
+            new RunsInThreads<>(new AtomicInteger(), 1000)
+        );
     }
 }
