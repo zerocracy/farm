@@ -38,6 +38,7 @@ def exec(Project project, XML xml) {
     )
   }
   Reviews reviews = new Reviews(project).bootstrap()
+  String performer = reviews.performer(job)
   if (!reviews.exists(job)) {
     throw new SoftException(
       new Par('Thanks, but quality review is not required in this job').say()
@@ -74,12 +75,13 @@ def exec(Project project, XML xml) {
     .param('reason', 'Quality review completed')
     .param('minutes', new Policy().get('30.price', 8))
     .postTo(project)
-  Agenda performer = new Agenda(farm, reviews.performer(job)).bootstrap()
-  if (performer.exists(job)) {
-    performer.remove(job)
-    claim.copy()
-      .type('Agenda was updated')
-      .param('login', performer)
-      .postTo(project)
+  new Agenda(farm, performer).bootstrap().with {
+    if (it.exists(job)) {
+      it.remove(job)
+      claim.copy()
+        .type('Agenda was updated')
+        .param('login', performer)
+        .postTo(project)
+    }
   }
 }

@@ -35,6 +35,7 @@ import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pm.staff.ranks.RnkBoost
 import com.zerocracy.pm.staff.ranks.RnkGithubBug
 import com.zerocracy.pm.staff.ranks.RnkRev
+import com.zerocracy.pm.staff.votes.VsBalance
 import com.zerocracy.pm.staff.votes.VsBanned
 import com.zerocracy.pm.staff.votes.VsBigDebt
 import com.zerocracy.pm.staff.votes.VsHardCap
@@ -100,10 +101,11 @@ def exec(Project project, XML xml) {
         (new VsSafe(new VsNoRoom(pmo)))                                           : role == 'REV' ? 0 : -100,
         (new VsSafe(new VsBanned(project, job)))                                  : -100,
         (new VsSafe(new VsVacation(pmo)))                                         : -100,
-        (new VsSafe(new VsWorkload(farm, logins)))                                 : 1,
-        (new VsSafe(new VsWorkload(farm, project, logins)))                        : 1,
+        (new VsSafe(new VsWorkload(farm, logins)))                                : 1,
+        (new VsSafe(new VsWorkload(farm, project, logins)))                       : 1,
         (new VsSafe(new VsSpeed(pmo, logins)))                                    : 3,
-        (new VsSafe(new VsRandom()))                                          : 1
+        (new VsSafe(new VsBalance(project, farm, logins)))                        : 3,
+        (new VsSafe(new VsRandom()))                                              : 1
       ]
     )
     if (done && elections.elected(job)) {
