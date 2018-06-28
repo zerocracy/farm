@@ -99,8 +99,7 @@ public final class TkProfileTest {
             this.firefoxView(farm, user),
             XhtmlMatchers.hasXPath(
                 String.format(
-                    // @checkstyle LineLength (1 line)
-                    "//xhtml:article/xhtml:p[1]/xhtml:a[@href='https://github.com/%s']",
+                    "//xhtml:a[@href='https://github.com/%s']",
                     user
                 )
             )
