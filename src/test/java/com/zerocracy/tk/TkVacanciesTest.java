@@ -29,8 +29,8 @@ import org.takes.rs.RsPrint;
  * Test case for {@link TkVacancies}.
  *
  * @author Kirill (g4s8.public@gmail.com)
- * @version $
- * @since 0.21.1
+ * @version $Id$
+ * @since 0.24
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class TkVacanciesTest {
@@ -48,7 +48,10 @@ public final class TkVacanciesTest {
                     )
                 ).printBody()
             ),
-            XhtmlMatchers.hasXPaths("//xhtml:body")
+            XhtmlMatchers.hasXPaths(
+                "//xhtml:body",
+                "//xhtml:h1[text() = 'Vacancies']"
+            )
         );
     }
 }
