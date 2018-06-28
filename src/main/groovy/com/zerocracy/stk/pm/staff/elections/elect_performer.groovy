@@ -104,7 +104,7 @@ def exec(Project project, XML xml) {
         (new VsSafe(new VsWorkload(farm, logins)))                                : 1,
         (new VsSafe(new VsWorkload(farm, project, logins)))                       : 1,
         (new VsSafe(new VsSpeed(pmo, logins)))                                    : 3,
-        (new VsSafe(new VsBalance(project, farm, logins)))                        : 1,
+        (new VsSafe(new VsBalance(project, farm, logins)))                        : 3,
         (new VsSafe(new VsRandom()))                                              : 1
       ]
     )

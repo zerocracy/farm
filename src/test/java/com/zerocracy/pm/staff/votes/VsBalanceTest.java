@@ -32,13 +32,13 @@ import org.junit.Test;
  *
  * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
  * @version $Id$
- * @since 0.23
+ * @since 0.24
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class VsBalanceTest {
 
     @Test
-    public void returnsZeroForEmptyAgenda() throws IOException {
+    public void returnsHighestVoteForEmptyAgenda() throws IOException {
         final Project project = new FkProject();
         final FkFarm farm = new FkFarm();
         final String user = "krzyk";

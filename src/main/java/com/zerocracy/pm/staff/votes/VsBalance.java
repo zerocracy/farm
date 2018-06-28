@@ -30,11 +30,16 @@ import org.cactoos.scalar.MaxOf;
 import org.cactoos.scalar.SolidScalar;
 
 /**
- * Project balance voter.
+ * Most balanced agenda wins.
+ *
+ * Returns highest vote for person that has agenda most evenly spread between
+ * projects that he/she is assigned to (same amount of tasks in all projects).
+ * 0 for persons that have tasks only in one project but is a member of multiple
+ * projects.
  *
  * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
  * @version $Id$
- * @since 0.23
+ * @since 0.24
  */
 public final class VsBalance implements Votes {
     /**
