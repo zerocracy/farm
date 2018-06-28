@@ -33,7 +33,7 @@ import org.takes.rs.xe.XeChain;
  *
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
- * @since 0.23
+ * @since 0.24
  */
 public final class TkVacancies implements Take {
 
@@ -63,7 +63,7 @@ public final class TkVacancies implements Take {
                 "vacancies",
                 new XeChain(
                     new Mapped<>(
-                        (String pid) -> {
+                        pid -> {
                             final XML vacancy = vacancies.vacancy(pid);
                             return new XeAppend(
                                 "vacancy",
