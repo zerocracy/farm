@@ -73,6 +73,8 @@ public final class RqWithUser extends RqWrap {
      * @param init Initialize user and repo
      * @return The request
      * @throws IOException If fails
+     * @todo #1054:30min The code inside the init if should be extracted into
+     *  another class (a decorator?), as it doesn't belong here at all.
      * @checkstyle ParameterNumberCheck (3 lines)
      */
     private static Request make(final Farm farm, final Request req,
@@ -82,10 +84,9 @@ public final class RqWithUser extends RqWrap {
             final String pid = "C00000000";
             catalog.add(pid, String.format("2017/07/%s/", pid));
             catalog.link(pid, "github", "test/test");
-            final Roles roles = new Roles(
+            new Roles(
                 farm.find(String.format("@id='%s'", pid)).iterator().next()
-            ).bootstrap();
-            roles.assign(uid, "PO");
+            ).bootstrap().assign(uid, "PO");
             new People(new Pmo(farm)).bootstrap().invite(uid, "mentor");
         }
         return new RqWithHeaders(

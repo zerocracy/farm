@@ -149,7 +149,12 @@ public final class TkProfileTest {
                     )
                 ).printBody()
             ),
-            XhtmlMatchers.hasXPaths("/page/details/projects/project")
+            XhtmlMatchers.hasXPaths(
+                String.format(
+                    "/page/details/projects/project[.='%s']",
+                    project.pid()
+                )
+            )
         );
     }
 
