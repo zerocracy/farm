@@ -38,8 +38,6 @@ import org.takes.rs.RsPrint;
  * @since 0.13
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
- * @todo #402:30min Write a test confirming that awards page when opened in a
- *  Firefox browser will always render html and not xml.
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class TkAgendaTest {
