@@ -85,7 +85,7 @@ public final class TxnTest {
     @Test
     @Ignore
     public void allowsConcurrentAccess() throws Exception {
-        final byte[] payload = {};
+        final byte[] payload = new byte[1];
         final Random rnd = new Random();
         rnd.nextBytes(payload);
         final FkProject pkt = new FkProject();
