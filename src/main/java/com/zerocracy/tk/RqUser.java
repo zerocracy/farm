@@ -20,7 +20,6 @@ import com.zerocracy.Farm;
 import com.zerocracy.Par;
 import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.pmo.People;
-import com.zerocracy.pmo.Pmo;
 import com.zerocracy.pmo.Projects;
 import java.io.IOException;
 import java.net.URI;
@@ -67,23 +66,11 @@ public final class RqUser implements Scalar<String> {
      * @param farm Farm
      * @param req Request
      * @param invited TRUE if we need a user to be invited already
-     */
-    public RqUser(final Farm farm, final Request req, final boolean invited) {
-        this(new Pmo(farm), farm, req, invited);
-    }
-
-    /**
-     * Ctor.
-     * @param pmo The PMO
-     * @param farm Farm
-     * @param req Request
-     * @param invited TRUE if we need a user to be invited already
      * @todo #1054:30min A check whether user is a PO in any of the projects
      *  happens in this method and in RqLogin#value. Extract this check to
      *  a common place and reuse it in both places.
-     * @checkstyle ParameterNumberCheck (3 lines)
      */
-    public RqUser(final Pmo pmo, final Farm farm, final Request req,
+    public RqUser(final Farm farm, final Request req,
         final boolean invited) {
         this.user = new SolidScalar<>(
             () -> {
@@ -120,7 +107,7 @@ public final class RqUser implements Scalar<String> {
                         )
                     )
                 ).value();
-                if (invited && !new People(pmo).bootstrap().hasMentor(login)
+                if (invited && !new People(farm).bootstrap().hasMentor(login)
                     && !owner) {
                     throw new RsForward(
                         new RsParFlash(
