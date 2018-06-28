@@ -46,7 +46,7 @@ public final class VsBalanceTest {
         MatcherAssert.assertThat(
             new VsBalance(project, farm, new ListOf<>(user))
                 .take(user, new StringBuilder()),
-            Matchers.is(0.0)
+            Matchers.is(1.0)
         );
     }
 
@@ -63,7 +63,7 @@ public final class VsBalanceTest {
         MatcherAssert.assertThat(
             new VsBalance(first, farm, new ListOf<>(user))
                 .take(user, new StringBuilder()),
-            Matchers.greaterThan(
+            Matchers.lessThan(
                 new VsBalance(second, farm, new ListOf<>(user))
                     .take(user, new StringBuilder())
             )
