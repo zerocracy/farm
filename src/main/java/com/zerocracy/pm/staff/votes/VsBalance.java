@@ -32,10 +32,10 @@ import org.cactoos.scalar.SolidScalar;
 /**
  * Most balanced agenda wins.
  *
- * Returns highest vote for person that has agenda most evenly spread between
- * projects that he/she is assigned to (same amount of tasks in all projects).
- * 0 for persons that have tasks only in one project but is a member of multiple
- * projects.
+ * Returns high votes for person that has lower number of tasks in current
+ * project and higher in other projects.
+ * Returns low votes for persons that have more tasks in current project and
+ * lower in others where he/she is a member.
  *
  * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
  * @version $Id$
