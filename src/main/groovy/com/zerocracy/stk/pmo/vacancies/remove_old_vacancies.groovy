@@ -14,31 +14,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.set_boost_factor
+package com.zerocracy.stk.pmo.vacancies
 
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
+import com.zerocracy.Policy
 import com.zerocracy.Project
-import com.zerocracy.pm.cost.Boosts
-import com.zerocracy.pmo.Awards
-import com.zerocracy.pmo.Pmo
-import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
+import com.zerocracy.farm.Assume
+import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pmo.Vacancies
 
-def exec(Project project, XML xml) {
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
+
+def exec(Project pmo, XML xml) {
+  new Assume(pmo, xml).isPmo()
+  new Assume(pmo, xml).type('Ping daily')
+  ClaimIn claim = new ClaimIn(xml)
+  ZonedDateTime timestamp = ZonedDateTime.ofInstant(claim.created().toInstant(), ZoneOffset.UTC)
   Farm farm = binding.variables.farm
-  MatcherAssert.assertThat(
-    'Boost didn\'t change for ARC request',
-    new Boosts(project).bootstrap().factor('gh:test/test#1'),
-    Matchers.equalTo(42)
-  )
-  MatcherAssert.assertThat(
-    'Boost did change for DEV request',
-    new Boosts(project).bootstrap().factor('gh:test/test#2'),
-    Matchers.equalTo(2)
-  )
-  MatcherAssert.assertThat(
-      new Awards(new Pmo(farm), 'yegor256').bootstrap().total(),
-      Matchers.equalTo(-10)
-  )
+  // @todo #917:30min Notify all project about expired vacancy.
+  //  Notification text should include that vacancy was removed because it
+  //  was expired. Vacancies.removeOlderThan in such case should return
+  //  project ids of removed vacancies.
+  new Vacancies(farm)
+    .bootstrap()
+    .removeOlderThan(timestamp.minusDays(new Policy(farm).get('51.days', 32)))
 }

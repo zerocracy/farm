@@ -14,31 +14,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.set_boost_factor
+package com.zerocracy.bundles.remove_job_from_wbs
 
+import com.jcabi.github.Coordinates
+import com.jcabi.github.Issue
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
-import com.zerocracy.pm.cost.Boosts
-import com.zerocracy.pmo.Awards
-import com.zerocracy.pmo.Pmo
+import com.zerocracy.entry.ExtGithub
+import org.cactoos.collection.Mapped
+import org.cactoos.list.ListOf
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
+import org.hamcrest.core.IsEqual
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
+  Issue issue = new ExtGithub(farm).value().repos().get(
+    new Coordinates.Simple('test', 'test')
+  ).issues().get(1)
   MatcherAssert.assertThat(
-    'Boost didn\'t change for ARC request',
-    new Boosts(project).bootstrap().factor('gh:test/test#1'),
-    Matchers.equalTo(42)
+    'Incorrect issue is being checked',
+    new Issue.Smart(issue).title(),
+    new IsEqual<String>('A bug')
   )
   MatcherAssert.assertThat(
-    'Boost did change for DEV request',
-    new Boosts(project).bootstrap().factor('gh:test/test#2'),
-    Matchers.equalTo(2)
-  )
-  MatcherAssert.assertThat(
-      new Awards(new Pmo(farm), 'yegor256').bootstrap().total(),
-      Matchers.equalTo(-10)
+    'Issue may have just a single label',
+    new ListOf<>(
+      new Mapped<>(
+        { label -> label.name() },
+        issue.labels().iterate()
+      )
+    ),
+    Matchers.contains('bug')
   )
 }

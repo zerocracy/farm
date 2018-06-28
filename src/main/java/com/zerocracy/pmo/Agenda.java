@@ -124,6 +124,20 @@ public final class Agenda {
     }
 
     /**
+     * The job has inspector.
+     * @param job Job id
+     * @return TRUE if has
+     * @throws IOException If fails
+     */
+    public boolean hasInspector(final String job) throws IOException {
+        try (final Item item = this.item()) {
+            return !new Xocument(item.path())
+                .nodes(String.format("%s/inspector", Agenda.path(job)))
+                .isEmpty();
+        }
+    }
+
+    /**
      * Add an order to the agenda.
      * @param project The project
      * @param job Job ID
@@ -239,6 +253,32 @@ public final class Agenda {
                     .strict(1)
                     .addIf("impediment")
                     .set(reason)
+            );
+        }
+    }
+
+    /**
+     * Add inspector.
+     * @param job Job id
+     * @param inspector Inspector login
+     * @throws IOException If fails
+     */
+    public void inspector(final String job,
+        final String inspector) throws IOException {
+        if (!this.exists(job)) {
+            throw new SoftException(
+                new Par(
+                    "Job %s is not in the agenda of @%s, can't inspect"
+                ).say(job, this.login)
+            );
+        }
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                new Directives()
+                    .xpath(Agenda.path(job))
+                    .strict(1)
+                    .addIf("inspector")
+                    .set(inspector)
             );
         }
     }

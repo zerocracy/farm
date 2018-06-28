@@ -44,9 +44,11 @@ import org.xembly.Xembler;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.9
- * @todo #1208:30min During #1208 fixing PMO claims was saved locally
- *  and removed from production. We need to analyze it, find critical claims
- *  and submit them to current `claims.xml` in PMO.
+ * @todo #1215:30min Invent mechanism to prevent huge claims.xml files.
+ *  We can check claims.xml size before working with it and pause
+ *  a project if this size is too big. We can skip downloading from S3,
+ *  just need to check attributes, and if claims.xml is bigger than 10MB
+ *  stop working with this project and send notification to PMO.
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class Claims {
