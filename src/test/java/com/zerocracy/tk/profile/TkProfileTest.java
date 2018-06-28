@@ -105,6 +105,21 @@ public final class TkProfileTest {
     }
 
     @Test
+    public void rendersProfilePageInFirefoxWithReputation() throws Exception {
+        final Farm farm = new PropsFarm(new FkFarm());
+        final String user = "yegor256";
+        MatcherAssert.assertThat(
+            this.firefoxView(farm, user),
+            XhtmlMatchers.hasXPath(
+                String.format(
+                    "//xhtml:a[@href='https://github.com/%s']",
+                    user
+                )
+            )
+        );
+    }
+
+    @Test
     public void rendersProfilePageWithoutRateInFirefox() throws Exception {
         final Farm farm = new PropsFarm(new FkFarm());
         final People people = new People(farm).bootstrap();
