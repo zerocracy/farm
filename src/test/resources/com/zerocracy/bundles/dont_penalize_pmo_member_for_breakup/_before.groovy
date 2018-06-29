@@ -14,46 +14,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pmo.profile
+package com.zerocracy.bundles.dont_penalize_pmo_member_for_breakup
 
+import com.jcabi.github.Repos
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
-import com.zerocracy.Par
-import com.zerocracy.Policy
 import com.zerocracy.Project
-import com.zerocracy.farm.Assume
-import com.zerocracy.pm.ClaimIn
+import com.zerocracy.entry.ExtGithub
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.Awards
 import com.zerocracy.pmo.Pmo
 
-def exec(Project pmo, XML xml) {
-  new Assume(pmo, xml).isPmo()
-  new Assume(pmo, xml).type('Breakup')
-  ClaimIn claim = new ClaimIn(xml)
-  String author = claim.author()
-  if (new Roles(new Pmo(farm)).bootstrap().hasAnyRole(author)) {
-    return
-  }
-  String student = claim.param('login')
-  String job = 'gh:zerocracy/datum#1'
-  int points = -new Policy().get('47.penalty', 256)
-  String reason = new Par(
-    'Penalize for breakup with %s'
-  ).say(student)
+def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
-  new Awards(farm, author).bootstrap().add(pmo, points, job, 'Penalize for breakup')
-  claim.copy()
-    .type('Award points were added')
-    .param('job', job)
-    .param('login', author)
-    .param('points', points)
-    .param('reason', reason)
-    .postTo(pmo)
-  claim.reply(
-    new Par(
-      'Since you broke up with student %s,',
-      'we deducted %d points from you in accordance with §47.'
-    ).say(student, -points)
-  ).postTo(pmo)
+  new ExtGithub(farm).value().repos().create(new Repos.RepoCreate('test', false))
+  new Awards(farm, 'carlosmiranda').bootstrap().add(
+    project, 256, 'gh:test/test#1', 'test'
+  )
+  new Roles(new Pmo(farm)).bootstrap().assign('carlosmiranda', 'PO')
 }
