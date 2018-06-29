@@ -40,6 +40,7 @@ import org.mockito.Mockito;
  * @version $Id$
  * @since 0.1
  * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCoupling (500 lines)
  */
 public final class SlackRadarTest {
 
