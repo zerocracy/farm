@@ -19,6 +19,9 @@ package com.zerocracy.entry;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.jcabi.s3.Bucket;
 import com.jcabi.s3.Ocket;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -83,16 +86,29 @@ public final class HeapDump {
     /**
      * Load dump from S3.
      * @return Dump's content
-     * @todo #400:30min Should return the latest
-     *  version of heap dump, available in S3 or
-     *  temporary storage (if it is up to date).
-     *  Cover implementation with unit and
-     *  integration tests.
+     * @throws IOException If fails
+     * @todo #767:30min Create a cached implementation of ocket (similar to
+     *  CdOcket, but the cache should be in the filesystem) and use it
+     *  here (check last modified time for S3 Ocket and local file and decide
+     *  which one to use based on that). This new ocket should have a `read()`
+     *  method that will return InputStream directly, without the need for
+     *  OutputStream.
      */
-    public InputStream load() {
-        throw new UnsupportedOperationException(
-            "HeapDump#load() not yet implemented"
-        );
+    public InputStream load() throws IOException {
+        final String key = this.key();
+        final Ocket ocket = this.bucket.ocket(key);
+        if (!ocket.exists()) {
+            throw new IOException(
+                String.format(
+                    "Cannot load '%s' from S3, it doesn't exist",
+                    key
+                )
+            );
+        }
+        final File heapdump = Files.createTempDirectory("")
+            .resolve("heapdump").toFile();
+        ocket.read(new FileOutputStream(heapdump));
+        return new FileInputStream(heapdump);
     }
 
     /**
@@ -100,7 +116,7 @@ public final class HeapDump {
      * @throws IOException If fails
      */
     public void save() throws IOException {
-        final String key = String.format("%s%s", this.prefix, this.file);
+        final String key = this.key();
         final Path dump =
             this.temp.resolve(key.replaceAll("[<>:\"\\/|?*]", "_"));
         if (!dump.toFile().exists()) {
@@ -121,5 +137,13 @@ public final class HeapDump {
                 ocket.write(in, meta);
             }
         }
+    }
+
+    /**
+     * S3 key for heapdump.
+     * @return S3 key
+     */
+    private String key() {
+        return String.format("%s%s", this.prefix, this.file);
     }
 }

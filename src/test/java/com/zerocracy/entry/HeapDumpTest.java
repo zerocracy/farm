@@ -23,6 +23,7 @@ import de.flapdoodle.embed.process.io.file.Files;
 import java.io.File;
 import java.io.IOException;
 import org.cactoos.io.InputStreamOf;
+import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Rule;
@@ -36,6 +37,7 @@ import org.junit.rules.TemporaryFolder;
  * @version $Id$
  * @since 0.22
  * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class HeapDumpTest {
     /**
@@ -59,6 +61,36 @@ public final class HeapDumpTest {
             new Ocket.Text(bkt.ocket(key)).read(),
             Matchers.is(content)
         );
+    }
+
+    @Test
+    public void loadsDump() throws Exception {
+        final File dir = this.temp.newFolder();
+        final String prefix = "test-prefix3:";
+        final String file = "test-file3";
+        final String content = "test-content3";
+        Files.write(
+            content,
+            new File(dir, HeapDumpTest.key(prefix, file).replace(":", "_"))
+        );
+        final HeapDump dump = new HeapDump(
+            new FkBucket(), prefix, dir.toPath(), file
+        );
+        dump.save();
+        MatcherAssert.assertThat(
+            new TextOf(dump.load()).asString(),
+            Matchers.is(content)
+        );
+    }
+
+    @Test(expected = IOException.class)
+    public void failsToLoadWhenNoDumpSaved() throws Exception {
+        new HeapDump(
+            new FkBucket(),
+            "test-prefix5:",
+            this.temp.newFolder().toPath(),
+            "test-file5"
+        ).load();
     }
 
     @Test
