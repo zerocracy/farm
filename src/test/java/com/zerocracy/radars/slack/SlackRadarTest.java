@@ -26,7 +26,6 @@ import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pmo.Bots;
 import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
-import java.util.Random;
 import javax.json.Json;
 import org.cactoos.func.StickyFunc;
 import org.cactoos.map.MapEntry;
@@ -106,7 +105,7 @@ public final class SlackRadarTest {
     private static FkFarm uniqueFarm() {
         return new FkFarm(
             new StickyFunc<>(FkProject::new),
-            String.valueOf(new Random().nextLong())
+            String.valueOf(System.nanoTime())
         );
     }
 }
