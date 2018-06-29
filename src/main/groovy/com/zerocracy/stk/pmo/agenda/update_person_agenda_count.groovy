@@ -30,10 +30,13 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Agenda was updated')
   Farm farm = binding.variables.farm
   String login = new ClaimIn(xml).param('login')
-  new People(farm).bootstrap().jobs(
-    login,
-    new LengthOf(
+  People people = new People(farm).bootstrap()
+  if (people.exists(login)) {
+    people.jobs(
+      login,
+      new LengthOf(
         new Agenda(farm, login).bootstrap().jobs()
-    ).intValue()
-  )
+      ).intValue()
+    )
+  }
 }
