@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.invite_a_friend
+package com.zerocracy.bundles.dont_penalize_pmo_member_for_breakup
 
 import com.jcabi.github.Repos
 import com.jcabi.xml.XML

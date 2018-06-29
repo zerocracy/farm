@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.invite_a_friend
+package com.zerocracy.bundles.dont_penalize_pmo_member_for_breakup
 
 import com.jcabi.xml.XML
 import com.zerocracy.Project
@@ -24,7 +24,7 @@ import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
   MatcherAssert.assertThat(
-    '256 points deducted from PMO member',
+    'Points should not have been deducted from PMO member!',
     new Awards(binding.variables.farm, 'carlosmiranda').total(),
     Matchers.is(256)
   )
