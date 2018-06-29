@@ -21,14 +21,16 @@ import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.SlackTeam;
 import com.zerocracy.Farm;
 import com.zerocracy.farm.fake.FkFarm;
+import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pmo.Bots;
 import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
+import java.util.Random;
 import javax.json.Json;
+import org.cactoos.func.StickyFunc;
 import org.cactoos.map.MapEntry;
 import org.cactoos.map.MapOf;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -40,13 +42,12 @@ import org.mockito.Mockito;
  * @since 0.1
  * @checkstyle JavadocMethodCheck (500 lines)
  */
-@Ignore
 public final class SlackRadarTest {
 
     @Test
     @SuppressWarnings("unchecked")
     public void closesSession() throws IOException {
-        final Farm farm = new PropsFarm(new FkFarm());
+        final Farm farm = new PropsFarm(SlackRadarTest.uniqueFarm());
         SlackRadarTest.registerBots(farm, "slack-bot.json");
         final SlackSession session = SlackRadarTest.mockSession();
         final SlackRadar radar = new SlackRadar(
@@ -62,7 +63,7 @@ public final class SlackRadarTest {
     @Test
     @SuppressWarnings("unchecked")
     public void refreshesTokens() throws IOException {
-        final Farm farm = new PropsFarm(new FkFarm());
+        final Farm farm = new PropsFarm(SlackRadarTest.uniqueFarm());
         SlackRadarTest.registerBots(farm, "slack-bot2.json");
         final String first = "2xoxb-XXXXXXXXXXXX-TTTTTTTTTTTTTT";
         final MapOf<String, SlackSession> sessions = new MapOf<>(
@@ -93,6 +94,19 @@ public final class SlackRadarTest {
             Json.createReader(
                 SlackRadar.class.getResourceAsStream(file)
             ).readObject()
+        );
+    }
+
+    /**
+     * Creates a farm with unique identifier.
+     * This helps with singleton implementation of ExtSlack which caches the
+     * slack sessions based on farm equals/hashcode.
+     * @return Unique farm
+     */
+    private static FkFarm uniqueFarm() {
+        return new FkFarm(
+            new StickyFunc<>(FkProject::new),
+            String.valueOf(new Random().nextLong())
         );
     }
 }
