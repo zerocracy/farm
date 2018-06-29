@@ -38,5 +38,9 @@ def exec(Project project, XML xml) {
     Logger.info(this, 'skip in testing mode')
     return
   }
-  new HeapDump(new ExtBucket(farm).value(), '').save()
+  try {
+    new HeapDump(new ExtBucket(farm).value(), '').save()
+  } catch (IOException err) {
+    Logger.info(this, "Heap dump doesn't exist: ${err.message}")
+  }
 }

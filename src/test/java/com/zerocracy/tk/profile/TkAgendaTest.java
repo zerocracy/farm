@@ -38,10 +38,6 @@ import org.takes.rs.RsPrint;
  * @since 0.13
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
- * @todo #402:30min Let's write a test for RsPage that will check a general
- *  case that any page sent to Firefox will be rendered as html and not xml.
- * @todo #402:30min Write a test confirming that profile page when opened in a
- *  Firefox browser will always render html and not xml.
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class TkAgendaTest {

@@ -22,16 +22,23 @@ import com.zerocracy.cash.Cash;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.PropsFarm;
+import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.pmo.Agenda;
 import com.zerocracy.pmo.Awards;
+import com.zerocracy.pmo.Catalog;
 import com.zerocracy.pmo.People;
+import com.zerocracy.pmo.Pmo;
+import com.zerocracy.pmo.Projects;
 import com.zerocracy.tk.RqWithUser;
 import com.zerocracy.tk.TkApp;
 import java.io.IOException;
+import java.nio.file.Path;
 import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.takes.rq.RqFake;
 import org.takes.rs.RsPrint;
 
@@ -45,6 +52,12 @@ import org.takes.rs.RsPrint;
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class TkProfileTest {
+
+    /**
+     * Temporary folder.
+     */
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
 
     @Test
     public void rendersHomePage() throws Exception {
@@ -92,6 +105,21 @@ public final class TkProfileTest {
     }
 
     @Test
+    public void rendersProfilePageInFirefoxWithReputation() throws Exception {
+        final Farm farm = new PropsFarm(new FkFarm());
+        final String user = "yegor256";
+        MatcherAssert.assertThat(
+            this.firefoxView(farm, user),
+            XhtmlMatchers.hasXPath(
+                String.format(
+                    "//xhtml:a[@href='https://github.com/%s']",
+                    user
+                )
+            )
+        );
+    }
+
+    @Test
     public void rendersProfilePageWithoutRateInFirefox() throws Exception {
         final Farm farm = new PropsFarm(new FkFarm());
         final People people = new People(farm).bootstrap();
@@ -101,6 +129,47 @@ public final class TkProfileTest {
         MatcherAssert.assertThat(
             this.firefoxView(farm, "yegor256"),
             Matchers.containsString("rate</a> is not defined")
+        );
+    }
+
+    @Test
+    public void allowsPoToSeeProfile() throws Exception {
+        final Path tmp = this.folder.newFolder().toPath();
+        final FkProject project = new FkProject(tmp, "AGENDPRJ1");
+        final Farm farm = new PropsFarm(new FkFarm(project));
+        final Catalog catalog = new Catalog(new Pmo(farm)).bootstrap();
+        catalog.add(project.pid(), String.format("2017/07/%s/", project.pid()));
+        catalog.link(project.pid(), "github", "test/test");
+        final String uid = "krzyk";
+        new People(farm).bootstrap().touch(uid);
+        new Projects(farm, uid).bootstrap().add(project.pid());
+        new Roles(project).bootstrap().assign(uid, "PO");
+        MatcherAssert.assertThat(
+            XhtmlMatchers.xhtml(
+                new RsPrint(
+                    new TkApp(farm).act(
+                        new RqWithUser(
+                            farm,
+                            new RqFake(
+                                new ListOf<>(
+                                    String.format("GET /u/%s", uid),
+                                    "Host: www.example.com",
+                                    "Accept: application/xml"
+                                ),
+                                ""
+                            ),
+                            uid,
+                            false
+                        )
+                    )
+                ).printBody()
+            ),
+            XhtmlMatchers.hasXPaths(
+                String.format(
+                    "/page/details/projects/project[.='%s']",
+                    project.pid()
+                )
+            )
         );
     }
 
