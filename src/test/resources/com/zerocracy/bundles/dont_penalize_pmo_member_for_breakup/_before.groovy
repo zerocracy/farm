@@ -21,8 +21,9 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.entry.ExtGithub
+import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.Awards
-import com.zerocracy.pmo.Projects
+import com.zerocracy.pmo.Pmo
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
@@ -30,5 +31,5 @@ def exec(Project project, XML xml) {
   new Awards(farm, 'carlosmiranda').bootstrap().add(
     project, 256, 'gh:test/test#1', 'test'
   )
-  new Projects(farm, 'carlosmiranda').bootstrap().add('PMO')
+  new Roles(new Pmo(farm)).bootstrap().assign('carlosmiranda', 'PO')
 }
