@@ -26,7 +26,6 @@ import com.zerocracy.pmo.People
 import org.cactoos.iterable.LengthOf
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Agenda was updated')
   Farm farm = binding.variables.farm
   String login = new ClaimIn(xml).param('login')
