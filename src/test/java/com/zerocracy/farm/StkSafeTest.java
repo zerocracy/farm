@@ -16,6 +16,7 @@
  */
 package com.zerocracy.farm;
 
+import com.jcabi.aspects.Tv;
 import com.jcabi.xml.XML;
 import com.zerocracy.Project;
 import com.zerocracy.SoftException;
@@ -36,6 +37,7 @@ import org.xembly.Directives;
  * @version $Id$
  * @since 0.17
  * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (2 lines)
  */
 public final class StkSafeTest {
 
@@ -74,4 +76,36 @@ public final class StkSafeTest {
         );
     }
 
+    @Test
+    public void doesntAddNewClaimsIfErrorIsfromClaimAdd() throws Exception {
+        final Stakeholder stk = Mockito.mock(Stakeholder.class);
+        final Project project = new FkProject();
+        new ClaimOut().type("hi").postTo(project);
+        final XML claim = new Claims(project).iterate().iterator().next();
+        final RuntimeException exception = Mockito.mock(RuntimeException.class);
+        Mockito.when(exception.getStackTrace()).thenReturn(
+            new StackTraceElement[] {
+                new StackTraceElement(
+                    Claims.class.getCanonicalName(),
+                    "add",
+                    "Claims.java",
+                    Tv.HUNDRED
+                ),
+            }
+        );
+        Mockito.doThrow(exception).when(stk).process(project, claim);
+        MatcherAssert.assertThat(
+            new Claims(project).iterate(),
+            Matchers.iterableWithSize(1)
+        );
+        new StkSafe(
+            "welcome",
+            new PropsFarm(new Directives().xpath("//testing").remove()),
+            stk
+        ).process(project, claim);
+        MatcherAssert.assertThat(
+            new Claims(project).iterate(),
+            Matchers.iterableWithSize(1)
+        );
+    }
 }

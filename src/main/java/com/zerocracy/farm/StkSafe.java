@@ -23,9 +23,12 @@ import com.zerocracy.SoftException;
 import com.zerocracy.Stakeholder;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.pm.ClaimIn;
+import com.zerocracy.pm.Claims;
 import com.zerocracy.tools.TxtUnrecoverableError;
 import io.sentry.Sentry;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Objects;
 import lombok.EqualsAndHashCode;
 import org.cactoos.text.TextOf;
 
@@ -35,16 +38,6 @@ import org.cactoos.text.TextOf;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
- * @todo #1215:30min We should not try to add claims with 'Error' type
- *  and stacktrace if error was thrown from Claims.add because of
- *  claims overflow. It may produce very huge stacktraces
- *  (about 2000 lines for stacktrace): claims.xml is full, we try to
- *  add new claim, Claims throws an exception about overflow,
- *  this exception is handled in StkSafe catch (Throwable), submitted
- *  again (goto step 2), this exception may goes in a loop about few hundred
- *  times, until some claims will be removed from claims.xml, and then this
- *  error with thousand lines of stacktrace lines will be added
- *  to `claims.xml`.
  */
 @EqualsAndHashCode(of = "identifier")
 public final class StkSafe implements Stakeholder {
@@ -80,12 +73,11 @@ public final class StkSafe implements Stakeholder {
     @SuppressWarnings(
         {
             "PMD.AvoidCatchingThrowable",
-            "PMD.AvoidRethrowingException",
-            "PMD.CyclomaticComplexity"
+            "PMD.AvoidRethrowingException"
         }
     )
-    public void process(final Project project,
-        final XML xml) throws IOException {
+    public void process(final Project project, final XML xml)
+        throws IOException {
         final ClaimIn claim = new ClaimIn(xml);
         try {
             this.origin.process(project, xml);
@@ -120,22 +112,12 @@ public final class StkSafe implements Stakeholder {
             if (claim.hasToken()) {
                 msg.append(String.format(", token=\"%s\"", claim.token()));
             }
-            final Props props = new Props(this.farm);
-            if (props.has("//testing")) {
-                throw new IllegalStateException(ex);
-            }
-            claim.copy()
-                .type("Error")
-                .param("origin_id", claim.cid())
-                .param("origin_type", claim.type())
-                .param("message", msg.toString())
-                .param("stacktrace", new TextOf(ex).asString())
-                .postTo(project);
+            this.sendError(project, claim, ex, msg);
             Sentry.capture(ex);
             if (claim.hasToken() && !claim.type().startsWith("Notify")) {
                 claim.reply(
                     new TxtUnrecoverableError(
-                        ex, props,
+                        ex, new Props(this.farm),
                         String.format(
                             // @checkstyle LineLength (1 line)
                             "CID: [%d](https://www.0crat.com/%s/%1$d), Type: \"%s\", Author: \"%s\"",
@@ -146,5 +128,45 @@ public final class StkSafe implements Stakeholder {
                 ).postTo(project);
             }
         }
+    }
+
+    /**
+     * Send Error claim.
+     * @param project Target project
+     * @param claim Origin claim
+     * @param exception Exception received
+     * @param msg Message for the claim
+     * @throws IOException In case of error
+     * @checkstyle ParameterNumber (3 lines)
+     */
+    private void sendError(final Project project, final ClaimIn claim,
+        final Throwable exception, final StringBuilder msg) throws IOException {
+        if (new Props(this.farm).has("//testing")) {
+            throw new IllegalStateException(exception);
+        }
+        if (!StkSafe.fromClaimsAdd(exception)) {
+            claim.copy()
+                .type("Error")
+                .param("origin_id", claim.cid())
+                .param("origin_type", claim.type())
+                .param("message", msg.toString())
+                .param("stacktrace", new TextOf(exception).asString())
+                .postTo(project);
+        }
+    }
+
+    /**
+     * Is this exception from a Claims.add method?
+     * @param throwable Throwable to check
+     * @return True if from Claims.add
+     */
+    private static boolean fromClaimsAdd(final Throwable throwable) {
+        return throwable.getStackTrace() != null
+            && Arrays.stream(throwable.getStackTrace())
+            .anyMatch(
+                trace -> Objects.equals(
+                    trace.getClassName(), Claims.class.getCanonicalName()
+                ) && Objects.equals(trace.getMethodName(), "add")
+            );
     }
 }
