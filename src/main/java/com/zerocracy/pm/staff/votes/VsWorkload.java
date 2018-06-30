@@ -38,10 +38,6 @@ import org.cactoos.scalar.SolidScalar;
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.17
- * @todo #808:30min VsWorkload test is missed, workload votes are not tested
- *  neither with first constructor (farm, others)
- *  nor with second (farm, project, others). First should be tested for
- *  all agenda items, second only for project items.
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class VsWorkload implements Votes {
