@@ -42,46 +42,47 @@ public final class VsWorkloadTest {
     public void votesSmallerTotalAgendaHigher() throws IOException {
         final Project project = new FkProject();
         final FkFarm farm = new FkFarm();
-        final String first = "krzyk";
-        final String second = "g4s8";
-        new Projects(farm, first).bootstrap().add(project.pid());
-        new Agenda(farm, first).bootstrap()
+        final String krzyk = "krzyk";
+        final String llorllale = "llorllale";
+        new Projects(farm, krzyk).bootstrap().add(project.pid());
+        new Agenda(farm, krzyk).bootstrap()
             .add(project, "none", "DEV");
-        final CollectionOf<String> all = new CollectionOf<>(first, second);
+        final CollectionOf<String> all = new CollectionOf<>(krzyk, llorllale);
         MatcherAssert.assertThat(
-            new VsWorkload(farm, all).take(first, new StringBuilder()),
+            new VsWorkload(farm, all).take(krzyk, new StringBuilder()),
             Matchers.lessThan(
-                new VsWorkload(farm, all).take(second, new StringBuilder())
+                new VsWorkload(farm, all).take(llorllale, new StringBuilder())
             )
         );
     }
 
     @Test
     public void votesSmallerProjectAgendaHigher() throws IOException {
-        final Project project = new FkProject();
+        final Project first = new FkProject();
         final Project other = new FkProject("SECOND123");
         final FkFarm farm = new FkFarm();
-        final String first = "krzyk";
-        final String second = "g4s8";
-        new Projects(farm, first).bootstrap().add(project.pid());
-        new Agenda(farm, first).bootstrap()
-            .add(project, "none", "DEV");
-        final Agenda agenda = new Agenda(farm, second).bootstrap();
+        final String krzyk = "krzyk";
+        final String llorllale = "llorllale";
+        new Projects(farm, krzyk).bootstrap().add(first.pid());
+        new Projects(farm, llorllale).bootstrap().add(first.pid());
+        new Agenda(farm, krzyk).bootstrap()
+            .add(first, "none", "DEV");
+        final Agenda agenda = new Agenda(farm, llorllale).bootstrap();
         agenda.add(other, "none", "DEV");
         agenda.add(other, "gh:ABC", "DEV");
-        final CollectionOf<String> all = new CollectionOf<>(first, second);
+        final CollectionOf<String> all = new CollectionOf<>(krzyk, llorllale);
         MatcherAssert.assertThat(
-            new VsWorkload(farm, project, all).take(first, new StringBuilder()),
+            new VsWorkload(farm, first, all).take(krzyk, new StringBuilder()),
             Matchers.lessThan(
-                new VsWorkload(farm, project, all)
-                    .take(second, new StringBuilder())
+                new VsWorkload(farm, first, all)
+                    .take(llorllale, new StringBuilder())
             )
         );
         MatcherAssert.assertThat(
-            new VsWorkload(farm, other, all).take(first, new StringBuilder()),
+            new VsWorkload(farm, other, all).take(krzyk, new StringBuilder()),
             Matchers.greaterThan(
                 new VsWorkload(farm, other, all)
-                    .take(second, new StringBuilder())
+                    .take(llorllale, new StringBuilder())
             )
         );
     }
