@@ -54,9 +54,9 @@ public final class VsWorkload implements Votes {
     /**
      * Ctor.
      * @param farm The farm
-     * @param others All other logins to compete with
+     * @param all All other logins to compete with
      */
-    public VsWorkload(final Farm farm, final Collection<String> others) {
+    public VsWorkload(final Farm farm, final Collection<String> all) {
         this(
             () -> new SolidMap<>(
                 new Mapped<>(
@@ -64,7 +64,7 @@ public final class VsWorkload implements Votes {
                         login,
                         new Agenda(farm, login).bootstrap().jobs().size()
                     ),
-                    others
+                    all
                 )
             )
         );
@@ -73,10 +73,10 @@ public final class VsWorkload implements Votes {
      * Ctor.
      * @param farm The farm
      * @param pkt Project
-     * @param others All other logins to compete with
+     * @param all All other logins to compete with
      */
     public VsWorkload(final Farm farm, final Project pkt,
-        final Collection<String> others) {
+        final Collection<String> all) {
         this(
             () -> new SolidMap<>(
                 new Mapped<>(
@@ -84,7 +84,7 @@ public final class VsWorkload implements Votes {
                         login,
                         new Agenda(farm, login).bootstrap().jobs(pkt).size()
                     ),
-                    others
+                    all
                 )
             )
         );
@@ -102,7 +102,7 @@ public final class VsWorkload implements Votes {
         throws IOException {
         final int mine = this.jobs.value().get(login);
         final int smaller = new Filtered<>(
-            speed -> speed < mine,
+            size -> size < mine,
             this.jobs.value().values()
         ).size();
         log.append(
