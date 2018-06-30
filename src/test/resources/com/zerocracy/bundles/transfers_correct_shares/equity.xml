@@ -1,0 +1,11 @@
+<equity
+  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+  xsi:noNamespaceSchemaLocation='http://datum.zerocracy.com/0.52/xsd/pm/cost/equity.xsd'
+  version='0.1' updated='2017-03-27T11:18:09.228Z'>
+    <cap>$400000</cap>
+    <shares>100000</shares>
+    <owners>
+      <owner id='amihaiemil'>0</owner>
+      <owner id='krzyk'>0</owner>
+    </owners>
+</equity>
