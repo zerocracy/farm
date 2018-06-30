@@ -87,10 +87,6 @@ public final class HeapDump {
      * Load dump from S3.
      * @return Dump's content
      * @throws IOException If fails
-     * @todo #767:30min Implement cache using filesystem for heapdump retrieval.
-     *  With each load we should check if there is a file in the filesystem and
-     *  if there is one compare it with the one in S3 and provide the user with
-     *  the newer one.
      */
     public InputStream load() throws IOException {
         final Ocket ocket = this.bucket.ocket(this.key.value());
