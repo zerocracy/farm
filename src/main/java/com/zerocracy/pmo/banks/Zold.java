@@ -101,6 +101,6 @@ public final class Zold implements Bank {
      */
     private static String enc(final String src)
         throws UnsupportedEncodingException {
-        return URLEncoder.encode(src, StandardCharsets.UTF_8.displayName());
+        return URLEncoder.encode(src, StandardCharsets.UTF_8.name());
     }
 }

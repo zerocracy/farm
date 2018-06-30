@@ -38,11 +38,13 @@ def exec(Project project, XML xml) {
     .token("user;${author}")
     .param(
     'message',
-    new Par('We just send you %s ZLD for through https://wts.zold.io')
+    new Par('We just sent you %s ZLD through https://wts.zold.io')
       .say(amount.decimal())
   )
   claim.copy().type('Notify PMO').param(
-    'message', new Par(
-    'We just send %s ZLD to %s as %s via wts.zold.io in %s'
-  ).say(amount, claim.author(), reason, project.pid())).postTo(project)
+    'message',
+    new Par(
+      'We just send %s ZLD to %s as %s via wts.zold.io in %s'
+    ).say(amount, claim.author(), reason, project.pid())
+  ).postTo(project)
 }
