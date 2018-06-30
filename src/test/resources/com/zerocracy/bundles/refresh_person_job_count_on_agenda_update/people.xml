@@ -21,7 +21,7 @@ SOFTWARE.
     <rate>$39</rate>
     <reputation>1000</reputation>
     <details>Some details</details>
-    <jobs>1</jobs>
+    <jobs>0</jobs>
     <speed>2.0</speed>
     <projects>1</projects>
     <wallet bank="paypal">test@paypal.com</wallet>

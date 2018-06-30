@@ -17,11 +17,20 @@
 package com.zerocracy.bundles.refresh_person_job_count_on_agenda_update
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.pmo.Agenda
+import com.zerocracy.pmo.People
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
-  new Agenda(binding.variables.farm, 'carlosmiranda').bootstrap().with {
+  Farm farm = binding.variables.farm
+  MatcherAssert.assertThat(
+    new People(farm).bootstrap().jobs('carlosmiranda'),
+    Matchers.is(0)
+  )
+  new Agenda(farm, 'carlosmiranda').bootstrap().with {
     add project, 'gh:test/agenda#1', 'DEV'
     add project, 'gh:test/agenda#2', 'DEV'
     add project, 'gh:test/agenda#3', 'DEV'
