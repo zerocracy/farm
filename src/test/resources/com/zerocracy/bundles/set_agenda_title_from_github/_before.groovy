@@ -10,13 +10,13 @@ import com.zerocracy.pmo.Agenda
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   new ExtGithub(farm).value().repos()
-      .create(new Repos.RepoCreate('somerepo', false))
-      .issues()
-      .create('Github Issue Title', 'Github Issue Text')
+    .create(new Repos.RepoCreate('test', false))
+    .issues()
+    .create('Some github title', 'Github Issue Text')
   new Agenda(farm, 'anotheruser').bootstrap()
-      .add(
-          project,
-          'gh:someuser/somerepo#1',
-          'DEV'
-      )
+    .add(
+    project,
+    'gh:test/test#1',
+    'DEV'
+  )
 }

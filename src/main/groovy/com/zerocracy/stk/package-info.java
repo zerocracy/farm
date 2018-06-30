@@ -21,11 +21,5 @@
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.22
- * @todo #1105:30min Title element, of an order in agenda, has been declared in
- *  agenda.xsd. The stakeholder set_agenda_title_from_github.groovy must be
- *  implemented correctly: it just runs an script that returns the
- *  same value. It must get the title value from github issue and set agenda
- *  title with this value. The tests were already implemented in #1105
- *  resolution.
  */
 package com.zerocracy.stk;
