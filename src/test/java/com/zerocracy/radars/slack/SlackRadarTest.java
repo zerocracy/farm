@@ -26,6 +26,7 @@ import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pmo.Bots;
 import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
+import java.util.UUID;
 import javax.json.Json;
 import org.cactoos.func.StickyFunc;
 import org.cactoos.map.MapEntry;
@@ -40,7 +41,7 @@ import org.mockito.Mockito;
  * @version $Id$
  * @since 0.1
  * @checkstyle JavadocMethodCheck (500 lines)
- * @checkstyle ClassDataAbstractionCoupling (500 lines)
+ * @checkstyle ClassDataAbstractionCoupling (2 lines)
  */
 public final class SlackRadarTest {
 
@@ -106,7 +107,7 @@ public final class SlackRadarTest {
     private static FkFarm uniqueFarm() {
         return new FkFarm(
             new StickyFunc<>(FkProject::new),
-            String.valueOf(System.nanoTime())
+            UUID.randomUUID().toString()
         );
     }
 }
