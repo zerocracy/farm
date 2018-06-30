@@ -22,6 +22,7 @@ import com.jcabi.s3.fake.FkBucket;
 import de.flapdoodle.embed.process.io.file.Files;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import org.cactoos.io.InputStreamOf;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
@@ -77,10 +78,12 @@ public final class HeapDumpTest {
             new FkBucket(), prefix, dir.toPath(), file
         );
         dump.save();
-        MatcherAssert.assertThat(
-            new TextOf(dump.load()).asString(),
-            Matchers.is(content)
-        );
+        try (final InputStream load = dump.load()) {
+            MatcherAssert.assertThat(
+                new TextOf(load).asString(),
+                Matchers.is(content)
+            );
+        }
     }
 
     @Test(expected = IOException.class)

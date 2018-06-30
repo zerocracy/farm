@@ -27,6 +27,8 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.cactoos.io.InputStreamOf;
+import org.cactoos.scalar.IoCheckedScalar;
+import org.cactoos.scalar.StickyScalar;
 
 /**
  * Heap dump in S3.
@@ -43,19 +45,14 @@ public final class HeapDump {
     private final Bucket bucket;
 
     /**
-     * Path in bucket.
-     */
-    private final String prefix;
-
-    /**
      * Path to temporary storage.
      */
     private final Path temp;
 
     /**
-     * Name of file.
+     * S3 key for heapdump.
      */
-    private final String file;
+    private final IoCheckedScalar<String> key;
 
     /**
      * Ctor.
@@ -78,36 +75,38 @@ public final class HeapDump {
     public HeapDump(final Bucket bkt, final String pfx, final Path tmp,
         final String file) {
         this.bucket = bkt;
-        this.prefix = pfx;
         this.temp = tmp;
-        this.file = file;
+        this.key = new IoCheckedScalar<>(
+            new StickyScalar<>(
+                () -> String.format("%s%s", pfx, file)
+            )
+        );
     }
 
     /**
      * Load dump from S3.
      * @return Dump's content
      * @throws IOException If fails
-     * @todo #767:30min Create a cached implementation of ocket (similar to
-     *  CdOcket, but the cache should be in the filesystem) and use it
-     *  here (check last modified time for S3 Ocket and local file and decide
-     *  which one to use based on that). This new ocket should have a `read()`
-     *  method that will return InputStream directly, without the need for
-     *  OutputStream.
+     * @todo #767:30min Implement cache using filesystem for heapdump retrieval.
+     *  With each load we should check if there is a file in the filesystem and
+     *  if there is one compare it with the one in S3 and provide the user with
+     *  the newer one.
      */
     public InputStream load() throws IOException {
-        final String key = this.key();
-        final Ocket ocket = this.bucket.ocket(key);
+        final Ocket ocket = this.bucket.ocket(this.key.value());
         if (!ocket.exists()) {
             throw new IOException(
                 String.format(
                     "Cannot load '%s' from S3, it doesn't exist",
-                    key
+                    this.key.value()
                 )
             );
         }
         final File heapdump = Files.createTempDirectory("")
             .resolve("heapdump").toFile();
-        ocket.read(new FileOutputStream(heapdump));
+        try (final FileOutputStream output = new FileOutputStream(heapdump)) {
+            ocket.read(output);
+        }
         return new FileInputStream(heapdump);
     }
 
@@ -116,9 +115,9 @@ public final class HeapDump {
      * @throws IOException If fails
      */
     public void save() throws IOException {
-        final String key = this.key();
-        final Path dump =
-            this.temp.resolve(key.replaceAll("[<>:\"\\/|?*]", "_"));
+        final Path dump = this.temp.resolve(
+            this.key.value().replaceAll("[<>:\"\\/|?*]", "_")
+        );
         if (!dump.toFile().exists()) {
             throw new IOException(
                 String.format(
@@ -127,7 +126,7 @@ public final class HeapDump {
                 )
             );
         }
-        final Ocket ocket = this.bucket.ocket(key);
+        final Ocket ocket = this.bucket.ocket(this.key.value());
         if (!ocket.exists()
             || ocket.meta().getLastModified().getTime()
             < Files.getLastModifiedTime(dump).toMillis()) {
@@ -139,11 +138,4 @@ public final class HeapDump {
         }
     }
 
-    /**
-     * S3 key for heapdump.
-     * @return S3 key
-     */
-    private String key() {
-        return String.format("%s%s", this.prefix, this.file);
-    }
 }
