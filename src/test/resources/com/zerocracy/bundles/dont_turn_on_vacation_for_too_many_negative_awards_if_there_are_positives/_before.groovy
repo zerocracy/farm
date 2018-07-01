@@ -23,19 +23,18 @@ import com.zerocracy.Project
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.pmo.Awards
 
-import java.time.Duration
-import java.time.Instant
+import java.time.ZonedDateTime
 
 @SuppressWarnings('UnnecessaryObjectReferences')
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   new ExtGithub(farm).value().repos()
     .create(new Repos.RepoCreate('test', false))
-  Instant now = Instant.now()
+  ZonedDateTime now = ZonedDateTime.now()
   new Awards(farm, 'krzyk').bootstrap().with {
-    add project, 15, 'gh:test/test#1', 'test', now - Duration.ofDays(9)
+    add project, 15, 'gh:test/test#1', 'test', new Date(now.minusDays(9).toInstant().toEpochMilli())
     for (int i = 1; i <= 8; ++i) {
-      add project, -i, 'gh:test/test#1', 'test', now - Duration.ofDays(i)
+      add project, -i, 'gh:test/test#1', 'test', new Date(now.minusDays(i).toInstant().toEpochMilli())
     }
   }
 }

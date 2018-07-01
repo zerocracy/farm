@@ -17,17 +17,15 @@
 package com.zerocracy.bundles.dont_turn_on_vacation_for_too_many_negative_awards_if_there_are_positives
 
 import com.jcabi.xml.XML
-import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.pmo.People
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
-  Farm farm = binding.variables.farm
   MatcherAssert.assertThat(
       'Vacation mode is "on"',
-      new People(farm).vacation('krzyk'),
+      new People(binding.variables.farm).vacation('krzyk'),
       Matchers.is(false)
   )
 }
