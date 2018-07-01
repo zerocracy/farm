@@ -24,7 +24,7 @@ import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
-import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Locale;
@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 import org.cactoos.collection.Mapped;
 import org.cactoos.time.DateAsText;
+import org.cactoos.time.ZonedDateTimeAsText;
 import org.xembly.Directive;
 import org.xembly.Directives;
 import org.xembly.Xembler;
@@ -217,7 +218,11 @@ public final class ClaimOut implements Iterable<Directive> {
                 .remove()
                 .pop()
                 .add("until")
-                .set(Instant.now().plusSeconds(seconds))
+                .set(
+                    new ZonedDateTimeAsText(
+                        ZonedDateTime.now().plusSeconds(seconds)
+                    ).asString()
+                )
                 .up()
         );
     }

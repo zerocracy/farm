@@ -31,12 +31,6 @@ import org.xembly.Xembler;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.21
- * @todo #952:30min Continue replacing old Date classes with Instant (and
- *  other time classes from java.time). Remember also to remove instances of
- *  `DateAsText` (Instant.toString is a target replacement) and look at each
- *  instance of ZonedDateTime, LocalDateTime/LocalDate/LocalTime if it can't be
- *  replaced with Instant with less code. For examples on how to do the
- *  replacement look at PR for #952.
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */

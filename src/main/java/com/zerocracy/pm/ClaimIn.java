@@ -17,11 +17,12 @@
 package com.zerocracy.pm;
 
 import com.jcabi.xml.XML;
-import java.time.Instant;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
+import org.cactoos.time.DateOf;
 
 /**
  * Claim coming in.
@@ -108,10 +109,10 @@ public final class ClaimIn {
      * Created.
      * @return Date when it was created
      */
-    public Instant created() {
-        return Instant.parse(
+    public Date created() {
+        return new DateOf(
             this.xml.xpath("created/text()").get(0)
-        );
+        ).value();
     }
 
     /**

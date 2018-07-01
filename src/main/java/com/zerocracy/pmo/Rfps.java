@@ -23,10 +23,12 @@ import com.zerocracy.Item;
 import com.zerocracy.Par;
 import com.zerocracy.Xocument;
 import java.io.IOException;
-import java.time.Instant;
+import java.util.Date;
 import java.util.Iterator;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.text.JoinedText;
+import org.cactoos.time.DateAsText;
+import org.cactoos.time.DateOf;
 import org.xembly.Directive;
 import org.xembly.Directives;
 
@@ -93,9 +95,9 @@ public final class Rfps {
                         Logger.format(
                             "%[ms]s",
                             System.currentTimeMillis()
-                            - Instant.parse(
+                            - new DateOf(
                                 rfp.xpath("created/text()").get(0)
-                            ).toEpochMilli()
+                            ).value().getTime()
                         )
                     )
                     .up()
@@ -194,7 +196,7 @@ public final class Rfps {
                     .add("rfp")
                     .attr("id", rid)
                     .add("created")
-                    .set(Instant.now()).up()
+                    .set(new DateAsText().asString()).up()
                     .add("login").set(login).up()
                     .add("paid").set(payment).up()
                     .add("email").set(email).up()
@@ -293,7 +295,7 @@ public final class Rfps {
      * @return Rfp ids
      * @throws IOException If fails
      */
-    public Iterable<Integer> olderThan(final Instant date) throws IOException {
+    public Iterable<Integer> olderThan(final Date date) throws IOException {
         try (final Item item = this.item()) {
             return new Mapped<>(
                 Integer::parseInt,
@@ -302,7 +304,7 @@ public final class Rfps {
                         "",
                         "/rfps/rfp[xs:dateTime(created) < ",
                         "xs:dateTime('",
-                        date.toString(),
+                        new DateAsText(date).asString(),
                         "')]/@id"
                     ).asString()
                 )

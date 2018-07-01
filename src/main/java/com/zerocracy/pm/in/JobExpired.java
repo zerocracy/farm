@@ -21,8 +21,7 @@ import com.zerocracy.Policy;
 import com.zerocracy.pmo.Awards;
 import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
-import java.time.Duration;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import org.cactoos.Scalar;
 
 /**
@@ -47,7 +46,7 @@ public final class JobExpired implements Scalar<Boolean> {
     /**
      * Now local time.
      */
-    private final Instant now;
+    private final LocalDateTime now;
     /**
      * Job id.
      */
@@ -64,7 +63,7 @@ public final class JobExpired implements Scalar<Boolean> {
             new Pmo(farm),
             orders,
             new Policy(farm),
-            Instant.now(),
+            LocalDateTime.now(),
             job
         );
     }
@@ -79,7 +78,7 @@ public final class JobExpired implements Scalar<Boolean> {
      * @checkstyle ParameterNumberCheck (2 lines)
      */
     public JobExpired(final Pmo pmo, final Orders orders,
-        final Policy policy, final Instant now, final String job) {
+        final Policy policy, final LocalDateTime now, final String job) {
         this.orders = orders;
         this.pmo = pmo;
         this.policy = policy;
@@ -95,9 +94,10 @@ public final class JobExpired implements Scalar<Boolean> {
         ).bootstrap();
         return this.orders.created(this.job)
             // @checkstyle MagicNumberCheck (1 line)
-            .plus(Duration.ofDays((long) this.policy.get("8.days", 10)))
-            .plus(Duration.ofDays(JobExpired.extra(awards.total())))
-            .isBefore(this.now);
+            .plusDays((long) this.policy.get("8.days", 10))
+            .plusDays(
+                JobExpired.extra(awards.total())
+            ).isBefore(this.now);
     }
 
     /**
