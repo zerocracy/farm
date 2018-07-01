@@ -19,10 +19,9 @@ def exec(Project project, XML xml) {
   if (!job.startsWith('gh:')) {
     return
   }
-  String login = claim.param('login')
   Farm farm = binding.variables.farm
-  Agenda agenda = new Agenda(farm, login).bootstrap()
-  if (agenda.exists(job)) {
+  Agenda agenda = new Agenda(farm, claim.param('login')).bootstrap()
+  if (agenda.exists(job) && agenda.title(job) == '-') {
     Github github = new ExtGithub(farm).value()
     Issue.Smart issue = new Issue.Smart(new Job.Issue(github, job))
     agenda.title(
