@@ -27,8 +27,6 @@ import com.zerocracy.pm.Claims;
 import com.zerocracy.tools.TxtUnrecoverableError;
 import io.sentry.Sentry;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Objects;
 import lombok.EqualsAndHashCode;
 import org.cactoos.text.TextOf;
 
@@ -144,7 +142,7 @@ public final class StkSafe implements Stakeholder {
         if (new Props(this.farm).has("//testing")) {
             throw new IllegalStateException(exception);
         }
-        if (!StkSafe.fromClaimsAdd(exception)) {
+        if (!(Claims.AddException.class.isInstance(exception))) {
             claim.copy()
                 .type("Error")
                 .param("origin_id", claim.cid())
@@ -153,20 +151,5 @@ public final class StkSafe implements Stakeholder {
                 .param("stacktrace", new TextOf(exception).asString())
                 .postTo(project);
         }
-    }
-
-    /**
-     * Is this exception from a Claims.add method?
-     * @param throwable Throwable to check
-     * @return True if from Claims.add
-     */
-    private static boolean fromClaimsAdd(final Throwable throwable) {
-        return throwable.getStackTrace() != null
-            && Arrays.stream(throwable.getStackTrace())
-            .anyMatch(
-                trace -> Objects.equals(
-                    trace.getClassName(), Claims.class.getCanonicalName()
-                ) && Objects.equals(trace.getMethodName(), "add")
-            );
     }
 }

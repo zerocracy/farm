@@ -16,7 +16,6 @@
  */
 package com.zerocracy.farm;
 
-import com.jcabi.aspects.Tv;
 import com.jcabi.xml.XML;
 import com.zerocracy.Project;
 import com.zerocracy.SoftException;
@@ -82,18 +81,9 @@ public final class StkSafeTest {
         final Project project = new FkProject();
         new ClaimOut().type("hi").postTo(project);
         final XML claim = new Claims(project).iterate().iterator().next();
-        final RuntimeException exception = Mockito.mock(RuntimeException.class);
-        Mockito.when(exception.getStackTrace()).thenReturn(
-            new StackTraceElement[] {
-                new StackTraceElement(
-                    Claims.class.getCanonicalName(),
-                    "add",
-                    "Claims.java",
-                    Tv.HUNDRED
-                ),
-            }
-        );
-        Mockito.doThrow(exception).when(stk).process(project, claim);
+        Mockito.doThrow(Claims.AddException.class)
+            .when(stk)
+            .process(project, claim);
         MatcherAssert.assertThat(
             new Claims(project).iterate(),
             Matchers.iterableWithSize(1)
