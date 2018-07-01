@@ -70,11 +70,11 @@ final class TkPulse implements Take {
                 Json.createObjectBuilder()
                     .add(
                         "total",
-                        footprint.collection().countDocuments(since)
+                        footprint.collection().count(since)
                     )
                     .add(
                         "errors",
-                        footprint.collection().countDocuments(
+                        footprint.collection().count(
                             Filters.and(since, Filters.eq("type", "Error"))
                         )
                     )

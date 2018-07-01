@@ -91,7 +91,7 @@ public final class VacanciesTest {
                 LocalDate.of(2018, Month.APRIL, 1),
                 LocalTime.of(0, 0),
                 ZoneOffset.UTC
-            ).toInstant()
+            )
         );
         MatcherAssert.assertThat(
             vacancies.iterate(),

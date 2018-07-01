@@ -31,6 +31,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 import org.bson.Document;
 import org.cactoos.list.SolidList;
@@ -119,13 +120,17 @@ public final class TkReport implements TkRegex {
                         footprint.collection().aggregate(
                             TkReport.REPORTS.get(report).bson(
                                 project,
-                                start.atStartOfDay()
-                                    .atZone(ZoneOffset.UTC)
-                                    .toInstant(),
-                                // @checkstyle MagicNumber (1 line)
-                                end.atTime(23, 59)
-                                    .atZone(ZoneOffset.UTC)
-                                    .toInstant()
+                                Date.from(
+                                    start.atStartOfDay().atZone(
+                                        ZoneOffset.UTC
+                                    ).toInstant()
+                                ),
+                                Date.from(
+                                    // @checkstyle MagicNumber (1 line)
+                                    end.atTime(23, 59).atZone(
+                                        ZoneOffset.UTC
+                                    ).toInstant()
+                                )
                             )
                         )
                     );
