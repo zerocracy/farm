@@ -42,6 +42,10 @@ import org.junit.rules.ExpectedException;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
+ * @todo #952:30min Continue replacing old Date classes with Instant.
+ *  Remember also to remove instances of `DateAsText` (Instant.toString should
+ *  be used). There is a lot of classes to change so try to find a good small
+ *  cluster of related classes that can be updated.
  * @checkstyle JavadocMethodCheck (1000 lines)
  * @checkstyle JavadocVariableCheck (1000 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (3 lines)
