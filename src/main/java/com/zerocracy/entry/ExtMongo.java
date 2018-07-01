@@ -38,7 +38,6 @@ import java.util.concurrent.TimeUnit;
 import org.cactoos.Scalar;
 import org.cactoos.func.SolidFunc;
 import org.cactoos.func.UncheckedFunc;
-import org.cactoos.list.SolidList;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -145,12 +144,10 @@ public final class ExtMongo implements Scalar<MongoClient> {
                     props.get("//mongo/host"),
                     Integer.parseInt(props.get("//mongo/port"))
                 ),
-                new SolidList<>(
-                    MongoCredential.createCredential(
-                        props.get("//mongo/user"),
-                        props.get("//mongo/dbname"),
-                        props.get("//mongo/password").toCharArray()
-                    )
+                MongoCredential.createCredential(
+                    props.get("//mongo/user"),
+                    props.get("//mongo/dbname"),
+                    props.get("//mongo/password").toCharArray()
                 ),
                 MongoClientOptions.builder()
                     .maxWaitTime(timeout)

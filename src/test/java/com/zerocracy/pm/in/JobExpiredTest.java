@@ -26,7 +26,8 @@ import com.zerocracy.pm.scope.Wbs;
 import com.zerocracy.pmo.Awards;
 import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.time.Duration;
+import java.time.Instant;
 import org.cactoos.matchers.ScalarHasValue;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
@@ -57,7 +58,7 @@ public final class JobExpiredTest {
                 new Pmo(farm),
                 orders,
                 new Policy(),
-                LocalDateTime.now().plusDays(13L),
+                Instant.now().plus(Duration.ofDays(13L)),
                 job
             ),
             new ScalarHasValue<>(true)
@@ -80,7 +81,7 @@ public final class JobExpiredTest {
                 new Pmo(farm),
                 orders,
                 new Policy(),
-                LocalDateTime.now().plusDays(13L),
+                Instant.now().plus(Duration.ofDays(13L)),
                 job
             ),
             new ScalarHasValue<>(false)

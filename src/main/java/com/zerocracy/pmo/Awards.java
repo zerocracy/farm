@@ -21,12 +21,11 @@ import com.zerocracy.Item;
 import com.zerocracy.Project;
 import com.zerocracy.Xocument;
 import java.io.IOException;
-import java.time.ZonedDateTime;
-import java.util.Date;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 import org.cactoos.list.Mapped;
 import org.cactoos.text.JoinedText;
-import org.cactoos.time.DateAsText;
 import org.xembly.Directives;
 
 /**
@@ -84,7 +83,7 @@ public final class Awards {
      * @param date Date
      * @throws IOException If failed
      */
-    public void removeOlderThan(final Date date) throws IOException {
+    public void removeOlderThan(final Instant date) throws IOException {
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()
@@ -93,7 +92,7 @@ public final class Awards {
                             "",
                             "/awards/award[xs:dateTime(added) < ",
                             "xs:dateTime('",
-                            new DateAsText(date).asString(),
+                            date.toString(),
                             "')]"
                         ).asString()
                     ).remove()
@@ -113,7 +112,7 @@ public final class Awards {
     public void add(final Project project, final int points,
         final String job, final String reason)
         throws IOException {
-        this.add(project, points, job, reason, new Date());
+        this.add(project, points, job, reason, Instant.now());
     }
 
     /**
@@ -127,7 +126,7 @@ public final class Awards {
      * @checkstyle ParameterNumberCheck (5 lines)
      */
     public void add(final Project project, final int points,
-        final String job, final String reason, final Date date)
+        final String job, final String reason, final Instant date)
         throws IOException {
         if (points == 0) {
             throw new IllegalArgumentException(
@@ -145,7 +144,7 @@ public final class Awards {
                     .add("points")
                     .set(points)
                     .up()
-                    .add("added").set(new DateAsText(date).asString()).up()
+                    .add("added").set(date).up()
                     .add("project")
                     .set(project.pid())
                     .up()
@@ -188,12 +187,7 @@ public final class Awards {
                         "",
                         "/awards/award[",
                         "xs:dateTime(added) > xs:dateTime('",
-                        new DateAsText(
-                            ZonedDateTime.now()
-                                .minusDays(days)
-                                .toInstant()
-                                .toEpochMilli()
-                        ).asString(),
+                        Instant.now().minus(Duration.ofDays(days)).toString(),
                         "')]/points/text()"
                     ).asString()
                 )

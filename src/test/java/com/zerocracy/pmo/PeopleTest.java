@@ -24,7 +24,7 @@ import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.iterable.RangeOf;
@@ -368,7 +368,7 @@ public final class PeopleTest {
         final FkFarm farm = new FkFarm(new FkProject());
         final People people = new People(farm).bootstrap();
         final String uid = "user3236";
-        final Date when = new Date(0L);
+        final Instant when = Instant.now();
         people.invite(uid, uid);
         people.apply(uid, when);
         MatcherAssert.assertThat(
@@ -387,7 +387,7 @@ public final class PeopleTest {
     public void throwIfApplyButDoesntExist() throws Exception {
         final FkFarm farm = new FkFarm(new FkProject());
         new People(farm).bootstrap()
-            .apply("user124", new Date(0L));
+            .apply("user124", Instant.now());
     }
 
     @Test(expected = IllegalArgumentException.class)

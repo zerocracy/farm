@@ -24,11 +24,7 @@ import com.zerocracy.Xocument;
 import com.zerocracy.pm.cost.Boosts;
 import com.zerocracy.pm.scope.Wbs;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.chrono.ChronoZonedDateTime;
-import java.time.format.DateTimeFormatter;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Date;
 import org.cactoos.iterable.ItemAt;
@@ -236,7 +232,7 @@ public final class Orders {
      * @return Job list
      * @throws IOException If fails
      */
-    public Iterable<String> olderThan(final ChronoZonedDateTime<LocalDate> time)
+    public Iterable<String> olderThan(final Instant time)
         throws IOException {
         try (final Item item = this.item()) {
             return new SolidList<>(
@@ -245,7 +241,7 @@ public final class Orders {
                         "",
                         "/orders/order[",
                         "xs:dateTime(created) < xs:dateTime('",
-                        time.format(DateTimeFormatter.ISO_INSTANT),
+                        time.toString(),
                         "')]/@job"
                     ).asString()
                 )
@@ -259,17 +255,12 @@ public final class Orders {
      * @return Local date
      * @throws IOException If fails
      */
-    public LocalDateTime created(final String job) throws IOException {
+    public Instant created(final String job) throws IOException {
         try (final Item item = this.item()) {
             return new IoCheckedScalar<>(
                 new ItemAt<>(
-                    new Mapped<String, LocalDateTime>(
-                        (String txt) -> LocalDateTime.parse(
-                            txt,
-                            DateTimeFormatter.ISO_INSTANT.withZone(
-                                ZoneOffset.UTC
-                            )
-                        ),
+                    new Mapped<>(
+                        Instant::parse,
                         new Xocument(item.path()).xpath(
                             String.format(
                                 "/orders/order[@job = '%s']/created/text()",

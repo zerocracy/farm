@@ -28,8 +28,8 @@ import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.Hint
 import com.zerocracy.pmo.Pmo
-import java.time.ZoneOffset
-import java.time.ZonedDateTime
+
+import java.time.Duration
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
@@ -42,14 +42,11 @@ def exec(Project project, XML xml) {
     return
   }
   ClaimIn claim = new ClaimIn(xml)
-  ZonedDateTime now = ZonedDateTime.ofInstant(
-    claim.created().toInstant(), ZoneOffset.UTC
-  )
   Orders orders = new Orders(project).bootstrap()
   Impediments impediments = new Impediments(project).bootstrap()
   Farm farm = binding.variables.farm
   Roles pmos = new Roles(new Pmo(farm)).bootstrap()
-  orders.olderThan(now.minusDays(5)).each { job ->
+  orders.olderThan(claim.created() - Duration.ofDays(5)).each { job ->
     if (impediments.exists(job)) {
       return
     }

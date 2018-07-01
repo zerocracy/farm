@@ -25,11 +25,14 @@ import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Awards
 import com.zerocracy.pmo.People
 
+import java.time.Duration
+import java.time.Instant
+
 def exec(Project pmo, XML xml) {
   new Assume(pmo, xml).isPmo()
   new Assume(pmo, xml).type('Ping daily')
   ClaimIn claim = new ClaimIn(xml)
-  Date outdated = claim.created() - new Policy().get('18.days', 90)
+  Instant outdated = claim.created() - Duration.ofDays(new Policy().get('18.days', 90))
   Farm farm = binding.variables.farm
   new People(farm).bootstrap().iterate().each {
     Awards awards = new Awards(farm, it).bootstrap()

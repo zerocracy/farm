@@ -1,7 +1,10 @@
 package com.zerocracy.stk.pm.in.orders
 
 import com.jcabi.xml.XML
-import com.zerocracy.*
+import com.zerocracy.Farm
+import com.zerocracy.Par
+import com.zerocracy.Policy
+import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.cost.Boosts
@@ -13,8 +16,8 @@ import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.Pmo
 import org.cactoos.iterable.Filtered
 import org.cactoos.iterable.Limited
-import java.time.ZoneOffset
-import java.time.ZonedDateTime
+
+import java.time.Duration
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
@@ -26,9 +29,6 @@ def exec(Project project, XML xml) {
     return
   }
   ClaimIn claim = new ClaimIn(xml)
-  ZonedDateTime time = ZonedDateTime.ofInstant(
-    claim.created().toInstant(), ZoneOffset.UTC
-  )
   Orders orders = new Orders(project).bootstrap()
   Boosts boosts = new Boosts(project).bootstrap()
   Impediments impediments = new Impediments(project).bootstrap()
@@ -42,9 +42,9 @@ def exec(Project project, XML xml) {
     new Filtered<String>(
       { job ->
         !waiting.contains(job) &&
-          new JobExpired(new Pmo(farm), orders, policy, time.toLocalDateTime(), job).value()
+          new JobExpired(new Pmo(farm), orders, policy, claim.created(), job).value()
       },
-      orders.olderThan(time.minusDays(days))
+      orders.olderThan(claim.created() - Duration.ofDays(days))
     )
   ).forEach { String job ->
     String worker = orders.performer(job)

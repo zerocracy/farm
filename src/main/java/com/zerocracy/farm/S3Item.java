@@ -26,6 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.FileTime;
+import java.time.Instant;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicBoolean;
 import lombok.EqualsAndHashCode;
@@ -161,10 +162,8 @@ final class S3Item implements Item {
      * @throws IOException If fails
      */
     private boolean expired() throws IOException {
-        final Date local = new Date(
-            Files.getLastModifiedTime(this.temp).toMillis()
-        );
-        final Date remote = this.ocket.meta().getLastModified();
+        final Instant local = Files.getLastModifiedTime(this.temp).toInstant();
+        final Instant remote = this.ocket.meta().getLastModified().toInstant();
         return remote.compareTo(local) > 0;
     }
 

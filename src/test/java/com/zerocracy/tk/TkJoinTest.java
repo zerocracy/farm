@@ -23,7 +23,7 @@ import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pmo.People;
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.util.Date;
+import java.time.Instant;
 import org.cactoos.iterable.IterableOf;
 import org.cactoos.matchers.TextHasString;
 import org.cactoos.text.FormattedText;
@@ -92,7 +92,7 @@ public final class TkJoinTest {
         final People people = new People(farm).bootstrap();
         final String uid = "yegor256";
         people.touch(uid);
-        people.apply(uid, new Date());
+        people.apply(uid, Instant.now());
         final RqWithUser req = new RqWithUser(
             farm,
             new RqFake("POST", "/join-post")
@@ -151,7 +151,7 @@ public final class TkJoinTest {
         final String userid = "luke";
         people.touch(mentorid);
         people.touch(userid);
-        people.apply(userid, new Date());
+        people.apply(userid, Instant.now());
         people.invite(userid, mentorid);
         MatcherAssert.assertThat(
             new TextOf(
@@ -183,7 +183,7 @@ public final class TkJoinTest {
         final People people = new People(farm).bootstrap();
         final String uid = "yegor256";
         people.touch(uid);
-        people.apply(uid, new Date());
+        people.apply(uid, Instant.now());
         MatcherAssert.assertThat(
             new RsPrint(
                 new TkApp(farm).act(
@@ -191,7 +191,7 @@ public final class TkJoinTest {
                 )
             ).printBody(),
             new StringContainsInOrder(
-                new IterableOf<String>(
+                new IterableOf<>(
                     "User",
                     "here is your resume."
                 )

@@ -24,8 +24,10 @@ import com.zerocracy.pmo.People;
 import com.zerocracy.pmo.Resumes;
 import java.io.IOException;
 import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 import org.takes.Response;
@@ -83,18 +85,15 @@ public final class TkJoin implements TkRegex {
                 "/join"
             );
         }
-        final LocalDateTime when;
+        final Instant when;
         if (people.applied(author)) {
-            when = LocalDateTime.ofInstant(
-                people.appliedTime(author).toInstant(),
-                ZoneOffset.UTC
-            );
+            when = people.appliedTime(author);
         } else {
-            when = LocalDateTime.MIN;
+            when = Instant.MIN;
         }
         final long days = (long) new Policy().get("1.lag", 16);
-        final LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
-        if (when.plusDays(days).isAfter(now)) {
+        final Instant now = Instant.now();
+        if (when.plus(Duration.ofDays(days)).isAfter(now)) {
             throw new RsForward(
                 new RsParFlash(
                     new Par(
@@ -103,7 +102,8 @@ public final class TkJoin implements TkRegex {
                     ).say(
                         days,
                         Duration.between(when, now).toDays(),
-                        when.format(DateTimeFormatter.ISO_LOCAL_DATE)
+                        ZonedDateTime.ofInstant(now, ZoneOffset.UTC)
+                            .format(DateTimeFormatter.ISO_LOCAL_DATE)
                     ),
                     Level.WARNING
                 ),

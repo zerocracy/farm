@@ -18,7 +18,7 @@ package com.zerocracy.tk.project.reports;
 
 import com.zerocracy.Project;
 import java.io.IOException;
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 import org.bson.conversions.Bson;
 
@@ -41,7 +41,7 @@ public interface FtReport {
      * @throws IOException If fails
      */
     List<? extends Bson> bson(Project project,
-        Date start, Date end) throws IOException;
+        Instant start, Instant end) throws IOException;
 
     /**
      * Its title, in HTML.

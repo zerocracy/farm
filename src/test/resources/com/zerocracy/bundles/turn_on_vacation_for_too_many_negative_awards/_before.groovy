@@ -23,7 +23,8 @@ import com.zerocracy.Project
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.pmo.Awards
 
-import java.time.ZonedDateTime
+import java.time.Duration
+import java.time.Instant
 
 @SuppressWarnings('UnnecessaryObjectReferences')
 def exec(Project project, XML xml) {
@@ -33,7 +34,7 @@ def exec(Project project, XML xml) {
   Awards awards = new Awards(farm, 'carlosmiranda').bootstrap()
   for (int i = 1; i <= 8; ++i) {
     awards.add(
-      project, -i, 'gh:test/test#1', 'test', new Date(ZonedDateTime.now().minusDays(i).toInstant().toEpochMilli())
+      project, -i, 'gh:test/test#1', 'test', Instant.now() - Duration.ofDays(i)
     )
   }
 }

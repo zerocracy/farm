@@ -22,6 +22,7 @@ import com.zerocracy.Item;
 import com.zerocracy.Project;
 import com.zerocracy.Xocument;
 import java.io.IOException;
+import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -157,7 +158,7 @@ public final class Vacancies {
      * @param date Date param
      * @throws IOException If fails
      */
-    public void removeOlderThan(final ZonedDateTime date) throws IOException {
+    public void removeOlderThan(final Instant date) throws IOException {
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()
@@ -166,7 +167,7 @@ public final class Vacancies {
                             "",
                             "/vacancies/vacancy[xs:dateTime(added) < ",
                             "xs:dateTime('",
-                            date.format(DateTimeFormatter.ISO_DATE_TIME),
+                            date.toString(),
                             "')]"
                         ).asString()
                     ).remove()
