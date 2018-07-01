@@ -23,56 +23,28 @@ import com.zerocracy.Project
 import com.zerocracy.cash.Cash
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.cost.Ledger
+import com.zerocracy.pmo.banks.Zold
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Funded by Stripe')
+  new Assume(project, xml).type('Send zold')
   ClaimIn claim = new ClaimIn(xml)
   Cash amount = new Cash.S(claim.param('amount'))
-  String pid = claim.param('payment_id')
-  String details
-  if (claim.hasAuthor()) {
-    details = new Par(
-      'Funded via Stripe by @%s, payment ID is `%s`'
-    ).say(claim.author(), pid)
-  } else {
-    details = new Par(
-      'Funded via Stripe by recharge, payment ID is `%s`'
-    ).say(pid)
-  }
-  new Ledger(project).bootstrap().add(
-    new Ledger.Transaction(
-      amount,
-      'assets', 'cash',
-      'income', claim.param('stripe_customer'),
-      details
-    )
-  )
+  String author = claim.author()
+  String reason = claim.param('reason')
   Farm farm = binding.variables.farm
-  claim.copy()
-    .type('Notify project')
+  new Zold(farm).pay(author, amount, reason)
+  claim.copy().type('Notify user')
+    .token("user;${author}")
     .param(
-      'message',
-      new Par(
-        farm,
-        'The project %s has been funded via Stripe for %s;',
-        'payment ID is `%s`;',
-        'we will re-charge the card automatically for the same amount',
-        'when the project runs out of funds;',
-        'to stop that just put the project on pause, see §21'
-      ).say(project.pid(), amount, pid)
-    )
-    .postTo(project)
+    'message',
+    new Par('We just sent you %s ZLD through https://wts.zold.io')
+      .say(amount.decimal())
+  )
   claim.copy().type('Notify PMO').param(
-    'message', new Par(
-      farm,
-      'We just funded %s for %s via Stripe'
-    ).say(project.pid(), amount)
+    'message',
+    new Par(
+      'We just sent %s ZLD to %s as %s via wts.zold.io in %s'
+    ).say(amount, claim.author(), reason, project.pid())
   ).postTo(project)
-  if (claim.hasAuthor()) {
-    claim.copy().type('Send zold')
-      .param('reason', 'Funded reward')
-      .postTo(project)
-  }
 }
