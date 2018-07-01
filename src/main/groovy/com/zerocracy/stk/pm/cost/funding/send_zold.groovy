@@ -44,7 +44,7 @@ def exec(Project project, XML xml) {
   claim.copy().type('Notify PMO').param(
     'message',
     new Par(
-      'We just send %s ZLD to %s as %s via wts.zold.io in %s'
+      'We just sent %s ZLD to %s as %s via wts.zold.io in %s'
     ).say(amount, claim.author(), reason, project.pid())
   ).postTo(project)
 }
