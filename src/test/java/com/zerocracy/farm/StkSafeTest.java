@@ -36,6 +36,7 @@ import org.xembly.Directives;
  * @version $Id$
  * @since 0.17
  * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (2 lines)
  */
 public final class StkSafeTest {
 
@@ -74,4 +75,27 @@ public final class StkSafeTest {
         );
     }
 
+    @Test
+    public void doesntAddNewClaimsIfErrorIsfromClaimAdd() throws Exception {
+        final Stakeholder stk = Mockito.mock(Stakeholder.class);
+        final Project project = new FkProject();
+        new ClaimOut().type("hi").postTo(project);
+        final XML claim = new Claims(project).iterate().iterator().next();
+        Mockito.doThrow(Claims.AddException.class)
+            .when(stk)
+            .process(project, claim);
+        MatcherAssert.assertThat(
+            new Claims(project).iterate(),
+            Matchers.iterableWithSize(1)
+        );
+        new StkSafe(
+            "welcome",
+            new PropsFarm(new Directives().xpath("//testing").remove()),
+            stk
+        ).process(project, claim);
+        MatcherAssert.assertThat(
+            new Claims(project).iterate(),
+            Matchers.iterableWithSize(1)
+        );
+    }
 }
