@@ -86,13 +86,6 @@ def exec(Project project, XML xml) {
   String msg
   try {
     if (new Props(farm).has('//testing')) {
-      // @todo #1281:30min Make payment is currently throws exceptions during
-      //  testing under certain circumstances. It is untestable due to some
-      //  dependency to Paypal payment during testing mode. We should make
-      //  this more testable, perhaps by adding a test method of payments to
-      //  Payroll. That should also make Payroll testable, which it currently
-      //  isn't. Then we should create some test to ensure that payments are
-      //  properly sent.
       Logger.info(this, 'skip in testing mode')
       return
     }
