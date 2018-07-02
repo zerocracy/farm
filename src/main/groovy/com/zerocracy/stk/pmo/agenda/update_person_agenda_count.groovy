@@ -14,12 +14,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.zerocracy.stk.pmo.agenda
 
-/**
- * Groovy stakeholder scripts.
- *
- * @author Kirill (g4s8.public@gmail.com)
- * @version $Id$
- * @since 0.22
- */
-package com.zerocracy.stk;
+import com.jcabi.xml.XML
+import com.zerocracy.Farm
+import com.zerocracy.Project
+import com.zerocracy.farm.Assume
+import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pmo.Agenda
+import com.zerocracy.pmo.People
+import org.cactoos.iterable.LengthOf
+
+def exec(Project project, XML xml) {
+  new Assume(project, xml).type('Agenda was updated')
+  Farm farm = binding.variables.farm
+  String login = new ClaimIn(xml).param('login')
+  People people = new People(farm).bootstrap()
+  if (people.exists(login)) {
+    people.jobs(
+      login,
+      new LengthOf(
+        new Agenda(farm, login).bootstrap().jobs()
+      ).intValue()
+    )
+  }
+}

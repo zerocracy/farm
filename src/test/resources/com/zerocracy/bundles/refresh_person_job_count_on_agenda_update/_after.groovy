@@ -14,12 +14,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.zerocracy.bundles.refresh_person_job_count_on_agenda_update
 
-/**
- * Groovy stakeholder scripts.
- *
- * @author Kirill (g4s8.public@gmail.com)
- * @version $Id$
- * @since 0.22
- */
-package com.zerocracy.stk;
+import com.jcabi.xml.XML
+import com.zerocracy.Project
+import com.zerocracy.pmo.People
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
+
+def exec(Project project, XML xml) {
+  MatcherAssert.assertThat(
+    new People(binding.variables.farm).bootstrap().jobs('carlosmiranda'),
+    Matchers.is(3)
+  )
+}

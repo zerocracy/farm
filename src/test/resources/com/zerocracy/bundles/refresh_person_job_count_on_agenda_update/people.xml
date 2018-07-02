@@ -15,16 +15,18 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<claims xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.37/xsd/pm/claims.xsd" version="0.1" updated="2017-03-27T11:18:09.228Z">
-  <claim id="2147483640">
-    <created>2017-03-27T11:18:09.228Z</created>
-    <type>Start order</type>
-    <author>manager</author>
-    <token>job;gh:test/test#1</token>
-    <params>
-      <param name="job">gh:test/test#1</param>
-      <param name="login">anotheruser</param>
-      <param name="reason">Just for fun</param>
-    </params>
-  </claim>
-</claims>
+<people xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.61.2/xsd/pmo/people.xsd" version="1" updated="2016-12-29T09:03:21.684Z">
+  <person id="carlosmiranda">
+    <mentor>0crat</mentor>
+    <rate>$39</rate>
+    <reputation>1000</reputation>
+    <details>Some details</details>
+    <jobs>0</jobs>
+    <speed>2.0</speed>
+    <projects>1</projects>
+    <wallet bank="paypal">test@paypal.com</wallet>
+    <links/>
+    <vacation>false</vacation>
+    <skills updated="2018-01-01T00:00:00.000Z"/>
+  </person>
+</people>

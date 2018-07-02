@@ -99,4 +99,8 @@ SOFTWARE.
     <port>${pgsql.port}</port>
     <password>${pgsql.password}</password>
   </pgsql>
+  <zold>
+    <host>https://wts.zold.io/</host>
+    <secret>${zold.secret}</secret>
+  </zold>
 </props>

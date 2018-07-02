@@ -14,21 +14,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.set_agenda_title_from_github
+package com.zerocracy.stk.pm.cost.funding
 
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
+import com.zerocracy.Par
 import com.zerocracy.Project
-import com.zerocracy.pmo.Agenda
-import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
+import com.zerocracy.cash.Cash
+import com.zerocracy.farm.Assume
+import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pmo.banks.Zold
 
 def exec(Project project, XML xml) {
+  new Assume(project, xml).notPmo()
+  new Assume(project, xml).type('Send zold')
+  ClaimIn claim = new ClaimIn(xml)
+  Cash amount = new Cash.S(claim.param('amount'))
+  String author = claim.author()
+  String reason = claim.param('reason')
   Farm farm = binding.variables.farm
-  MatcherAssert.assertThat(
-    new Agenda(farm, 'anotheruser')
-    .bootstrap()
-    .title('gh:test/test#1'),
-    Matchers.equalTo('Some github title')
+  new Zold(farm).pay(author, amount, reason)
+  claim.copy().type('Notify user')
+    .token("user;${author}")
+    .param(
+    'message',
+    new Par('We just sent you %s ZLD through https://wts.zold.io')
+      .say(amount.decimal())
   )
+  claim.copy().type('Notify PMO').param(
+    'message',
+    new Par(
+      'We just sent %s ZLD to %s as %s via wts.zold.io in %s'
+    ).say(amount, claim.author(), reason, project.pid())
+  ).postTo(project)
 }

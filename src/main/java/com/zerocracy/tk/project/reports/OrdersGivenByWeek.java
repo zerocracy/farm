@@ -24,8 +24,8 @@ import com.mongodb.client.model.Sorts;
 import com.zerocracy.Par;
 import com.zerocracy.Project;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import org.bson.BsonArray;
 import org.bson.BsonDocument;
@@ -46,7 +46,7 @@ public final class OrdersGivenByWeek implements FtReport {
 
     @Override
     public List<? extends Bson> bson(final Project project,
-        final Date start, final Date end) {
+        final Instant start, final Instant end) {
         return Arrays.asList(
             new Match(
                 project, start, end,

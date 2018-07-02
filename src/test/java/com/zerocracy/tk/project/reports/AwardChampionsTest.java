@@ -23,7 +23,7 @@ import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
 import com.zerocracy.pm.Footprint;
-import java.util.Date;
+import java.time.Instant;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -53,8 +53,8 @@ public final class AwardChampionsTest {
                 footprint.collection().aggregate(
                     new AwardChampions().bson(
                         pkt,
-                        new Date(0L),
-                        new Date()
+                        Instant.ofEpochMilli(0L),
+                        Instant.now()
                     )
                 ).iterator().next().get("total"),
                 Matchers.equalTo(points)
