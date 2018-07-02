@@ -93,10 +93,6 @@ def exec(Project project, XML xml) {
       .param('payment_id', msg)
       .postTo(project)
     claim.copy()
-      .type('Send zold')
-      .param('recipient', login)
-      .postTo(project)
-    claim.copy()
       .type('Notify user')
       .token("user;${login}")
       .param(
@@ -148,6 +144,10 @@ def exec(Project project, XML xml) {
       )
       .postTo(project)
   }
+  claim.copy()
+    .type('Send zold')
+    .param('recipient', login)
+    .postTo(project)
   claim.copy()
     .type('Notify project')
     .param(
