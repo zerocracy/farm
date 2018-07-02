@@ -90,9 +90,9 @@ public final class Claims {
     /**
      * Add new directives.
      * @param claim The claim to add
+     * @throws IOException If fails
      */
-    @SuppressWarnings("PMD.AvoidCatchingThrowable")
-    public void add(final Iterable<Directive> claim) {
+    public void add(final Iterable<Directive> claim) throws IOException {
         try (final Item item = this.item()) {
             new Xocument(item).modify(
                 new Directives().xpath("/claims").append(claim)
@@ -128,18 +128,15 @@ public final class Claims {
                     )
                 );
             }
-            final int size = new LengthOf(this.iterate()).intValue();
-            if (size > Tv.HUNDRED) {
-                throw new IllegalStateException(
-                    String.format(
-                        "Can't add, claims overflow in %s, too many items: %d",
-                        this.project.pid(), size
-                    )
-                );
-            }
-            // @checkstyle IllegalCatchCheck (1 line)
-        } catch (final Throwable ex) {
-            throw new Claims.AddException(ex);
+        }
+        final int size = new LengthOf(this.iterate()).intValue();
+        if (size > Tv.HUNDRED) {
+            throw new IllegalStateException(
+                String.format(
+                    "Can't add, claims overflow in %s, too many items: %d",
+                    this.project.pid(), size
+                )
+            );
         }
     }
 
@@ -218,24 +215,6 @@ public final class Claims {
      */
     private Item item() throws IOException {
         return this.project.acq("claims.xml");
-    }
-
-    /**
-     * Exception during claim add.
-     */
-    public static final class AddException extends RuntimeException {
-        /**
-         * Serialization marker.
-         */
-        private static final long serialVersionUID = 9202303101888716333L;
-
-        /**
-         * Constructor.
-         * @param cause The cause of this exception
-         */
-        AddException(final Throwable cause) {
-            super(cause);
-        }
     }
 
 }
