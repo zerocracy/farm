@@ -18,12 +18,17 @@ package com.zerocracy.tk.profile;
 
 import com.zerocracy.Farm;
 import com.zerocracy.Par;
+import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.pmo.People;
+import com.zerocracy.pmo.Projects;
 import com.zerocracy.tk.RsParFlash;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.logging.Level;
 import org.cactoos.Scalar;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.scalar.IoCheckedScalar;
+import org.cactoos.scalar.Or;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.forward.RsForward;
 
@@ -70,7 +75,20 @@ public final class RqLogin implements Scalar<String> {
                 )
             );
         }
-        if (!new People(this.farm).bootstrap().hasMentor(login)) {
+        final boolean owner = new IoCheckedScalar<>(
+            new Or(
+                new Mapped<>(
+                    pid -> new IoCheckedScalar<>(
+                        () -> new Roles(
+                            this.farm.find(String.format("@id='%s'", pid))
+                                .iterator().next()
+                        ).bootstrap().hasRole(login, "PO")
+                    ),
+                    new Projects(this.farm, login).bootstrap().iterate()
+                )
+            )
+        ).value();
+        if (!new People(this.farm).bootstrap().hasMentor(login) && !owner) {
             throw new RsForward(
                 new RsParFlash(
                     new Par(

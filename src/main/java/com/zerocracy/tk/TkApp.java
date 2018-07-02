@@ -223,6 +223,7 @@ public final class TkApp extends TkWrap {
                                                                     new FkRegex("/team", new TkTeam(farm)),
                                                                     new FkRegex("/gang", new TkRedirect("/team")),
                                                                     new FkRegex("/me", new TkRedirect("/home")),
+                                                                    new FkRegex("/vacancies", new TkVacancies(farm)),
                                                                     new FkRegex(
                                                                         "/p/(PMO|[A-Z0-9]{9})",
                                                                         new TkProject(farm)

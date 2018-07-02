@@ -14,33 +14,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.internal
+package com.zerocracy.stk.pm.cost.funding
 
-import com.jcabi.log.Logger
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
+import com.zerocracy.Par
 import com.zerocracy.Project
-import com.zerocracy.entry.ExtBucket
-import com.zerocracy.entry.HeapDump
+import com.zerocracy.cash.Cash
 import com.zerocracy.farm.Assume
-import com.zerocracy.farm.props.Props
+import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pmo.banks.Zold
 
 def exec(Project project, XML xml) {
-  /**
-   * @todo #766:30min Add a unit test for this stakeholder using fake S3 storage.
-   *  Maybe you will need to modify the stakeholder itself so that is
-   *  allows using fake S3 storage.
-   */
-  new Assume(project, xml).isPmo()
-  new Assume(project, xml).type('Ping hourly')
+  new Assume(project, xml).notPmo()
+  new Assume(project, xml).type('Send zold')
+  ClaimIn claim = new ClaimIn(xml)
+  Cash amount = new Cash.S(claim.param('amount'))
+  String author = claim.author()
+  String reason = claim.param('reason')
   Farm farm = binding.variables.farm
-  if (new Props(farm).has('//testing')) {
-    Logger.info(this, 'skip in testing mode')
-    return
-  }
-  try {
-    new HeapDump(new ExtBucket(farm).value(), '').save()
-  } catch (IOException err) {
-    Logger.info(this, "Heap dump doesn't exist: ${err.message}")
-  }
+  new Zold(farm).pay(author, amount, reason)
+  claim.copy().type('Notify user')
+    .token("user;${author}")
+    .param(
+    'message',
+    new Par('We just sent you %s ZLD through https://wts.zold.io')
+      .say(amount.decimal())
+  )
+  claim.copy().type('Notify PMO').param(
+    'message',
+    new Par(
+      'We just sent %s ZLD to %s as %s via wts.zold.io in %s'
+    ).say(amount, claim.author(), reason, project.pid())
+  ).postTo(project)
 }

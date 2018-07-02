@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pmo;
 
+import com.jcabi.matchers.XhtmlMatchers;
 import com.zerocracy.Project;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
@@ -95,6 +96,22 @@ public final class VacanciesTest {
         MatcherAssert.assertThat(
             vacancies.iterate(),
             Matchers.contains(second.pid())
+        );
+    }
+
+    @Test
+    public void renderVacancy() throws Exception {
+        final Vacancies vacancies = new Vacancies(new FkFarm()).bootstrap();
+        final Project project = new FkProject();
+        final String author = "user125";
+        final String text = "vacancy text 123";
+        vacancies.add(project, author, text);
+        MatcherAssert.assertThat(
+            vacancies.vacancy(project.pid()),
+            XhtmlMatchers.hasXPaths(
+                String.format("/vacancy/author[text() = '%s']", author),
+                String.format("/vacancy/text[text() = '%s']", text)
+            )
         );
     }
 }
