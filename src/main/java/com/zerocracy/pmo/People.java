@@ -43,10 +43,6 @@ import org.xembly.Directives;
  * @version $Id$
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @since 0.1
- * @todo #552:30min Let's keep agenda inside `people.xml` and update it
- *  when agenda changed as described in
- *  https://github.com/zerocracy/farm/issues/366#issuecomment-359568311
- *  Also put it as 'agenda' element in TkGang xml.
  */
 @SuppressWarnings
     (
