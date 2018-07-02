@@ -147,6 +147,7 @@ def exec(Project project, XML xml) {
   claim.copy()
     .type('Send zold')
     .param('recipient', login)
+    .param('amount', price)
     .postTo(project)
   claim.copy()
     .type('Notify project')
