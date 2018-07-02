@@ -16,14 +16,23 @@
  */
 package com.zerocracy.pmo.banks;
 
+import com.jcabi.aspects.Tv;
 import com.zerocracy.cash.Cash;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.cactoos.Scalar;
+import org.cactoos.io.InputOf;
+import org.cactoos.io.LengthOf;
+import org.cactoos.io.OutputTo;
+import org.cactoos.io.TeeInput;
 import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.scalar.StickyScalar;
 import org.cactoos.scalar.SyncScalar;
+import org.cactoos.text.TextOf;
+import org.xembly.Directives;
+import org.xembly.ImpossibleModificationException;
+import org.xembly.Xembler;
 
 /**
  * Fake {@link Bank}.
@@ -44,15 +53,6 @@ import org.cactoos.scalar.SyncScalar;
  *  `    &lt;/payment&gt;
  *  `&lt;/payments&gt;
  *  Unignore relevant test case from FkBankTest.
- * @todo #565:30min Implement method fee() that will write details about
- *  fee to the xml file in this format:
- *  `&lt;fees&gt;
- *  `    &lt;fee&gt;
- *  `        &lt;amount&gt;$0.50&lt;/amount&gt;
- *  `        &lt;result&gt;$0.80&lt;/result&gt;
- *  `    &lt;/fee&gt;
- *  `&lt;/fees&gt;
- *  Unignore relevant test case from FkBankTest.
  * @todo #566:30min Implement equals so that it conforms the relevant test
  *  case from FkBankTest. Implement relevant to equals hashcode method.
  *  Implement toString() method, that will print the content of the underlying
@@ -60,13 +60,14 @@ import org.cactoos.scalar.SyncScalar;
  * @todo #565:30min Add FkBank to the Payroll under the file payment method.
  *  Ensure, that the opened files are closed properly and cover Payroll with
  *  tests.
+ * @checkstyle ClassDataAbstractionCouplingCheck (2 lines)
  */
 final class FkBank implements Bank {
 
     /**
      * Location of the file.
      */
-    private final Scalar<Path> file;
+    private final IoCheckedScalar<Path> file;
 
     /**
      * Delete on close? If false, deletes on JVM exit.
@@ -103,13 +104,33 @@ final class FkBank implements Bank {
      * @param del Delete on close()?
      */
     FkBank(final Scalar<Path> path, final boolean del) {
-        this.file = new SyncScalar<>(new StickyScalar<>(path));
+        this.file = new IoCheckedScalar<>(
+            new SyncScalar<>(new StickyScalar<>(path))
+        );
         this.delete = del;
     }
 
     @Override
     public Cash fee(final Cash amount) throws IOException {
-        throw new UnsupportedOperationException("fee is not yet implemented");
+        final Cash fee = amount.div(Tv.TEN);
+        try {
+            final String xml = new Xembler(
+                new Directives()
+                    .addIf("fees")
+                    .add("fee")
+                    .add("amount").set(amount).up()
+                    .add("result").set(fee).up()
+            ).xml();
+            new LengthOf(
+                new TeeInput(
+                    new InputOf(new TextOf(xml)),
+                    new OutputTo(this.file.value())
+                )
+            ).intValue();
+        } catch (final ImpossibleModificationException ex) {
+            throw new IllegalStateException(ex);
+        }
+        return fee;
     }
 
     @Override

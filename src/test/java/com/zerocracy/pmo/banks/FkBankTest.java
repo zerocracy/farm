@@ -51,29 +51,27 @@ public final class FkBankTest {
     }
 
     @Test
-    @Ignore
     public void savesCalculatedFee() throws IOException {
         final Path file = FkBankTest.temp("x0");
         try (final Bank bank = new FkBank(file)) {
             bank.fee(new Cash.S("$0.50"));
             MatcherAssert.assertThat(
-                new XMLDocument(file).xpath("/fees/fee/result"),
+                new XMLDocument(file).xpath("/fees/fee/result/text()"),
                 Matchers.contains(
-                    "$0.80"
+                    "$0.05"
                 )
             );
         }
     }
 
     @Test
-    @Ignore
     public void savesRequestedAmountForFeeCalculation() throws IOException {
         final Path file = FkBankTest.temp("x1");
         try (final Bank bank = new FkBank(file)) {
             final String amount = "$0.75";
             bank.fee(new Cash.S(amount));
             MatcherAssert.assertThat(
-                new XMLDocument(file).xpath("/fees/fee/amount"),
+                new XMLDocument(file).xpath("/fees/fee/amount/text()"),
                 Matchers.contains(amount)
             );
         }
