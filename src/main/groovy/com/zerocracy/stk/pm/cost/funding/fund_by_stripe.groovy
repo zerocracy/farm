@@ -72,6 +72,7 @@ def exec(Project project, XML xml) {
   ).postTo(project)
   if (claim.hasAuthor()) {
     claim.copy().type('Send zold')
+      .param('recipient', claim.author())
       .param('reason', 'Funded reward')
       .postTo(project)
   }

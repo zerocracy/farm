@@ -26,16 +26,20 @@ import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.banks.Zold
 
 def exec(Project project, XML xml) {
+  // @todo #1291:30min Add tests for payments via concrete banks, I suppose
+  //  `Payroll` may check 'testing' property in farm
+  //  and return fake `Bank` implementations for each supported payment
+  //  method. First of all we need to test Zold payments.
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Send zold')
   ClaimIn claim = new ClaimIn(xml)
   Cash amount = new Cash.S(claim.param('amount'))
-  String author = claim.author()
+  String recipient = claim.param('recipient')
   String reason = claim.param('reason')
   Farm farm = binding.variables.farm
-  new Zold(farm).pay(author, amount, reason)
+  new Zold(farm).pay(recipient, amount, reason)
   claim.copy().type('Notify user')
-    .token("user;${author}")
+    .token("user;${recipient}")
     .param(
     'message',
     new Par('We just sent you %s ZLD through https://wts.zold.io')
@@ -45,6 +49,6 @@ def exec(Project project, XML xml) {
     'message',
     new Par(
       'We just sent %s ZLD to %s as %s via wts.zold.io in %s'
-    ).say(amount, claim.author(), reason, project.pid())
+    ).say(amount, recipient, reason, project.pid())
   ).postTo(project)
 }
