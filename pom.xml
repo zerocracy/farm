@@ -75,7 +75,7 @@ SOFTWARE.
     </site>
   </distributionManagement>
   <properties>
-    <mongo.version>3.5.0</mongo.version>
+    <mongo.version>3.8.0</mongo.version>
     <telegram.version>3.6</telegram.version>
   </properties>
   <dependencies>

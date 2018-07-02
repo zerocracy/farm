@@ -23,7 +23,7 @@ import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
 import com.zerocracy.pm.Footprint;
-import java.util.Date;
+import java.time.Instant;
 import org.bson.Document;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -52,8 +52,8 @@ public final class OrdersGivenByWeekTest {
             final Iterable<Document> docs = footprint.collection().aggregate(
                 new OrdersGivenByWeek().bson(
                     pkt,
-                    new Date(0L),
-                    new Date()
+                    Instant.ofEpochMilli(0L),
+                    Instant.now()
                 )
             );
             MatcherAssert.assertThat(docs, Matchers.iterableWithSize(1));
@@ -79,8 +79,8 @@ public final class OrdersGivenByWeekTest {
                 footprint.collection().aggregate(
                     new OrdersGivenByWeek().bson(
                         pkt,
-                        new Date(0L),
-                        new Date()
+                        Instant.ofEpochMilli(0L),
+                        Instant.now()
                     )
                 ),
                 Matchers.emptyIterable()
