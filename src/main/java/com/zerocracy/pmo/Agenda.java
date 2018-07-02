@@ -124,6 +124,20 @@ public final class Agenda {
     }
 
     /**
+     * The job has inspector.
+     * @param job Job id
+     * @return TRUE if has
+     * @throws IOException If fails
+     */
+    public boolean hasInspector(final String job) throws IOException {
+        try (final Item item = this.item()) {
+            return !new Xocument(item.path())
+                .nodes(String.format("%s/inspector", Agenda.path(job)))
+                .isEmpty();
+        }
+    }
+
+    /**
      * Add an order to the agenda.
      * @param project The project
      * @param job Job ID
@@ -244,6 +258,32 @@ public final class Agenda {
     }
 
     /**
+     * Add inspector.
+     * @param job Job id
+     * @param inspector Inspector login
+     * @throws IOException If fails
+     */
+    public void inspector(final String job,
+        final String inspector) throws IOException {
+        if (!this.exists(job)) {
+            throw new SoftException(
+                new Par(
+                    "Job %s is not in the agenda of @%s, can't inspect"
+                ).say(job, this.login)
+            );
+        }
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                new Directives()
+                    .xpath(Agenda.path(job))
+                    .strict(1)
+                    .addIf("inspector")
+                    .set(inspector)
+            );
+        }
+    }
+
+    /**
      * Add title of the specified job.
      * @param job The job to modify
      * @param title The title to add
@@ -266,6 +306,30 @@ public final class Agenda {
                     .addIf("title")
                     .set(title)
             );
+        }
+    }
+
+    /**
+     * Retrieves title of the specified job.
+     * @param job The job to retrieve the text
+     * @return The title of the job.
+     * @throws IOException If fails
+     */
+    public String title(final String job) throws IOException {
+        if (!this.exists(job)) {
+            throw new SoftException(
+                new Par(
+                    "Job %s is not in the agenda of @%s, can't retrieve title"
+                ).say(job, this.login)
+            );
+        }
+        try (final Item item = this.item()) {
+            return new Xocument(item.path()).nodes(
+                String.format(
+                    "/agenda/order[@job='%s']/title",
+                    job
+                )
+            ).get(0).node().getTextContent();
         }
     }
 

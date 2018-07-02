@@ -24,6 +24,7 @@ import com.zerocracy.farm.SmartFarm;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.radars.github.GithubRoutine;
 import com.zerocracy.radars.github.TkGithub;
+import com.zerocracy.radars.gitlab.TkGitlab;
 import com.zerocracy.radars.slack.SlackRadar;
 import com.zerocracy.radars.slack.TkSlack;
 import com.zerocracy.tk.TkAlias;
@@ -32,6 +33,7 @@ import io.sentry.Sentry;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import javax.ws.rs.HttpMethod;
 import org.cactoos.func.AsyncFunc;
 import org.takes.facets.fork.FkRegex;
 import org.takes.facets.fork.TkMethods;
@@ -132,7 +134,11 @@ public final class Main {
                     new FkRegex("/alias", new TkAlias(farm)),
                     new FkRegex(
                         "/ghook",
-                        new TkMethods(new TkGithub(farm), "POST")
+                        new TkMethods(new TkGithub(farm), HttpMethod.POST)
+                    ),
+                    new FkRegex(
+                        "/glhook",
+                        new TkMethods(new TkGitlab(), HttpMethod.POST)
                     )
                 ),
                 this.arguments

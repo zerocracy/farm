@@ -36,9 +36,8 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.util.concurrent.TimeUnit;
 import org.cactoos.Scalar;
-import org.cactoos.list.SolidList;
-import org.cactoos.scalar.SolidScalar;
-import org.cactoos.scalar.UncheckedScalar;
+import org.cactoos.func.SolidFunc;
+import org.cactoos.func.UncheckedFunc;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -56,9 +55,10 @@ public final class ExtMongo implements Scalar<MongoClient> {
      * Thread with Mongodb.
      * @checkstyle ConstantUsageCheck (5 lines)
      */
-    private static final UncheckedScalar<Integer> FAKE = new UncheckedScalar<>(
-        new SolidScalar<>(
-            () -> {
+    private static final UncheckedFunc<String, Integer> FAKE =
+        new UncheckedFunc<>(
+        new SolidFunc<>(
+            (id) -> {
                 final int port;
                 try (ServerSocket socket = new ServerSocket()) {
                     socket.setReuseAddress(true);
@@ -105,11 +105,27 @@ public final class ExtMongo implements Scalar<MongoClient> {
     private final Farm farm;
 
     /**
+     * Mongo instance identifier.
+     * Used to help with tests that depend on current mongo state.
+     */
+    private final String id;
+
+    /**
      * Ctor.
      * @param frm The farm
      */
     public ExtMongo(final Farm frm) {
+        this(frm, "");
+    }
+
+    /**
+     * Ctor.
+     * @param frm The farm
+     * @param ident Mongo instance identifier
+     */
+    public ExtMongo(final Farm frm, final String ident) {
         this.farm = frm;
+        this.id = ident;
     }
 
     @Override
@@ -118,7 +134,7 @@ public final class ExtMongo implements Scalar<MongoClient> {
         final MongoClient client;
         if (props.has("//testing")) {
             client = new MongoClient(
-                "localhost", ExtMongo.FAKE.value()
+                "localhost", ExtMongo.FAKE.apply(this.id)
             );
         } else {
             // @checkstyle MagicNumber (5 lines)
@@ -128,12 +144,10 @@ public final class ExtMongo implements Scalar<MongoClient> {
                     props.get("//mongo/host"),
                     Integer.parseInt(props.get("//mongo/port"))
                 ),
-                new SolidList<>(
-                    MongoCredential.createCredential(
-                        props.get("//mongo/user"),
-                        props.get("//mongo/dbname"),
-                        props.get("//mongo/password").toCharArray()
-                    )
+                MongoCredential.createCredential(
+                    props.get("//mongo/user"),
+                    props.get("//mongo/dbname"),
+                    props.get("//mongo/password").toCharArray()
                 ),
                 MongoClientOptions.builder()
                     .maxWaitTime(timeout)

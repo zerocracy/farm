@@ -26,4 +26,14 @@ SOFTWARE.
     </params>
     <created>2017-01-15T01:00:00.000Z</created>
   </claim>
+  <claim id="2">
+    <type>Set boost</type>
+    <token>job;gh:test/test#2</token>
+    <author>programmer</author>
+    <params>
+      <param name="job">gh:test/test#2</param>
+      <param name="factor">42x</param>
+    </params>
+    <created>2017-01-15T01:00:00.000Z</created>
+  </claim>
 </claims>

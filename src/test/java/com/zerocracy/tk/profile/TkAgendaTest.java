@@ -18,8 +18,11 @@ package com.zerocracy.tk.profile;
 
 import com.jcabi.matchers.XhtmlMatchers;
 import com.zerocracy.Farm;
+import com.zerocracy.Project;
 import com.zerocracy.farm.fake.FkFarm;
+import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.PropsFarm;
+import com.zerocracy.pmo.Agenda;
 import com.zerocracy.pmo.People;
 import com.zerocracy.tk.RqWithUser;
 import com.zerocracy.tk.TkApp;
@@ -38,12 +41,6 @@ import org.takes.rs.RsPrint;
  * @since 0.13
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
- * @todo #402:30min Let's write a test for RsPage that will check a general
- *  case that any page sent to Firefox will be rendered as html and not xml.
- * @todo #402:30min Write a test confirming that awards page when opened in a
- *  Firefox browser will always render html and not xml.
- * @todo #402:30min Write a test confirming that profile page when opened in a
- *  Firefox browser will always render html and not xml.
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class TkAgendaTest {
@@ -114,6 +111,38 @@ public final class TkAgendaTest {
                 )
             ),
             new HmRsStatus(HttpURLConnection.HTTP_SEE_OTHER)
+        );
+    }
+
+    @Test
+    public void rendersAgendaPage() throws Exception {
+        final Farm farm = new PropsFarm(new FkFarm());
+        final Agenda agenda = new Agenda(farm, "yegor256").bootstrap();
+        final Project project = new FkProject();
+        final String job = "gh:test/test#2";
+        agenda.add(project, job, "DEV");
+        final String title = "Some random title is here";
+        agenda.title(job, title);
+        MatcherAssert.assertThat(
+            XhtmlMatchers.xhtml(
+                new RsPrint(
+                    new TkApp(farm).act(
+                        new RqWithUser(
+                            farm,
+                            new RqFake(
+                                new ListOf<>(
+                                    "GET /u/yegor256/agenda",
+                                    "Host: www.example.com"
+                                ),
+                                ""
+                            )
+                        )
+                    )
+                ).printBody()
+            ),
+            XhtmlMatchers.hasXPaths(
+                String.format("//xhtml:td[.='%s']", title)
+            )
         );
     }
 }

@@ -70,4 +70,10 @@ def exec(Project project, XML xml) {
       'We just funded %s for %s via Stripe'
     ).say(project.pid(), amount)
   ).postTo(project)
+  if (claim.hasAuthor()) {
+    claim.copy().type('Send zold')
+      .param('recipient', claim.author())
+      .param('reason', 'Funded reward')
+      .postTo(project)
+  }
 }

@@ -17,6 +17,7 @@
 package com.zerocracy.bundles.set_boost_factor
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.pm.cost.Boosts
 import com.zerocracy.pmo.Awards
@@ -25,12 +26,19 @@ import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
+  Farm farm = binding.variables.farm
   MatcherAssert.assertThat(
+    'Boost didn\'t change for ARC request',
     new Boosts(project).bootstrap().factor('gh:test/test#1'),
     Matchers.equalTo(42)
   )
   MatcherAssert.assertThat(
-      new Awards(new Pmo(binding.variables.farm), 'yegor256').bootstrap().total(),
+    'Boost did change for DEV request',
+    new Boosts(project).bootstrap().factor('gh:test/test#2'),
+    Matchers.equalTo(2)
+  )
+  MatcherAssert.assertThat(
+      new Awards(new Pmo(farm), 'yegor256').bootstrap().total(),
       Matchers.equalTo(-10)
   )
 }

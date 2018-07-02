@@ -23,15 +23,19 @@ import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.Awards
-
+import com.zerocracy.pmo.Pmo
 
 def exec(Project pmo, XML xml) {
   new Assume(pmo, xml).isPmo()
   new Assume(pmo, xml).type('Breakup')
   ClaimIn claim = new ClaimIn(xml)
-  String student = claim.param('login')
   String author = claim.author()
+  if (new Roles(new Pmo(farm)).bootstrap().hasAnyRole(author)) {
+    return
+  }
+  String student = claim.param('login')
   String job = 'gh:zerocracy/datum#1'
   int points = -new Policy().get('47.penalty', 256)
   String reason = new Par(

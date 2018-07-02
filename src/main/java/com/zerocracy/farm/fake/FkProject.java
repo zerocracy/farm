@@ -70,7 +70,7 @@ public final class FkProject implements Project {
      * @since 0.14
      */
     public FkProject(final Path file) {
-        this(file, file.getFileName().toString());
+        this(file, "FAKEPRJC2");
     }
 
     /**

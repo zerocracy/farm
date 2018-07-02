@@ -121,7 +121,7 @@ public final class ClaimsTest {
         );
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = Claims.AddException.class)
     public void prohibitsDuplicateClaims() throws Exception {
         final Claims claims = new Claims(new FkProject()).bootstrap();
         final String type = "hello future";

@@ -16,13 +16,10 @@
  */
 package com.zerocracy.tk;
 
-import com.google.common.collect.Sets;
-import com.zerocracy.Farm;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Set;
 import java.util.logging.Level;
 import org.takes.Request;
 import org.takes.Response;
@@ -37,46 +34,14 @@ import org.takes.rs.RsWithType;
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.20
- * @todo #425:30min Download and analyze heap dump from
- *  https://www.0crat.com/heapdump after next out of memory error,
- *  then fix detected memory leaks. Also waiting for #400 to be solved.
  * @todo #400:30min Should use HeapDump to get contents from S3,
  *  rather than from the server file, as it might be deleted and won't be
  *  available anymore.
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class TkDump implements Take {
-    /**
-     * Farm.
-     */
-    private final Farm farm;
-
-    /**
-     * Authorized users to look at dump.
-     */
-    private final Set<String> authorized;
-
-    /**
-     * Ctor.
-     * @param frm Farm
-     */
-    public TkDump(final Farm frm) {
-        this.authorized = Sets.newHashSet(
-            "g4s8", "t-izbassar", "yegor256"
-        );
-        this.farm = frm;
-    }
-
     @Override
     public Response act(final Request request) throws IOException {
-        if (!this.authorized.contains(new RqUser(this.farm, request).value())) {
-            throw new RsForward(
-                new RsParFlash(
-                    "You are not allowed to see this page, sorry.",
-                    Level.WARNING
-                )
-            );
-        }
         final File file = new File("./heapdump.hprof");
         if (!file.exists()) {
             throw new RsForward(

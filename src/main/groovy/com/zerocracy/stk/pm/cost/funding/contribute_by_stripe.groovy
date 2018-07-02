@@ -61,4 +61,8 @@ def exec(Project project, XML xml) {
       'many thanks for your support!'
     ).say(project.pid(), amount, claim.author())
   ).postTo(project)
+  claim.copy().type('Send zold')
+    .param('recipient', claim.author())
+    .param('reason', 'contribution reward')
+    .postTo(project)
 }

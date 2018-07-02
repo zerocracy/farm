@@ -44,6 +44,11 @@ import org.xembly.Xembler;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.9
+ * @todo #1215:30min Invent mechanism to prevent huge claims.xml files.
+ *  We can check claims.xml size before working with it and pause
+ *  a project if this size is too big. We can skip downloading from S3,
+ *  just need to check attributes, and if claims.xml is bigger than 10MB
+ *  stop working with this project and send notification to PMO.
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class Claims {
@@ -85,9 +90,9 @@ public final class Claims {
     /**
      * Add new directives.
      * @param claim The claim to add
-     * @throws IOException If fails
      */
-    public void add(final Iterable<Directive> claim) throws IOException {
+    @SuppressWarnings("PMD.AvoidCatchingThrowable")
+    public void add(final Iterable<Directive> claim) {
         try (final Item item = this.item()) {
             new Xocument(item).modify(
                 new Directives().xpath("/claims").append(claim)
@@ -123,15 +128,18 @@ public final class Claims {
                     )
                 );
             }
-        }
-        final int size = new LengthOf(this.iterate()).intValue();
-        if (size > Tv.HUNDRED) {
-            throw new IllegalStateException(
-                String.format(
-                    "Can't add, claims overflow in %s, too many items: %d",
-                    this.project.pid(), size
-                )
-            );
+            final int size = new LengthOf(this.iterate()).intValue();
+            if (size > Tv.HUNDRED) {
+                throw new IllegalStateException(
+                    String.format(
+                        "Can't add, claims overflow in %s, too many items: %d",
+                        this.project.pid(), size
+                    )
+                );
+            }
+            // @checkstyle IllegalCatchCheck (1 line)
+        } catch (final Throwable ex) {
+            throw new Claims.AddException(ex);
         }
     }
 
@@ -170,6 +178,7 @@ public final class Claims {
                     public int compare(final XML left, final XML right) {
                         return Long.compare(this.cid(left), this.cid(right));
                     }
+
                     private long cid(final XML xml) {
                         return new ClaimIn(xml).cid();
                     }
@@ -209,6 +218,24 @@ public final class Claims {
      */
     private Item item() throws IOException {
         return this.project.acq("claims.xml");
+    }
+
+    /**
+     * Exception during claim add.
+     */
+    public static final class AddException extends RuntimeException {
+        /**
+         * Serialization marker.
+         */
+        private static final long serialVersionUID = 9202303101888716333L;
+
+        /**
+         * Constructor.
+         * @param cause The cause of this exception
+         */
+        AddException(final Throwable cause) {
+            super(cause);
+        }
     }
 
 }

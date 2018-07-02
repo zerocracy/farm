@@ -72,7 +72,7 @@ final class SyncProject implements Project {
         final long start = System.currentTimeMillis();
         try {
             // @checkstyle MagicNumber (1 line)
-            if (!this.lock.tryLock(1L, TimeUnit.MINUTES)) {
+            if (!this.lock.tryLock(2L, TimeUnit.MINUTES)) {
                 throw new IllegalStateException(
                     Logger.format(
                         "Failed to acquire \"%s\" in \"%s\" in %[ms]s: %s",
