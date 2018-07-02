@@ -22,6 +22,7 @@ import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
 import com.zerocracy.farm.Assume
+import com.zerocracy.farm.props.Props
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.banks.Zold
 
@@ -32,11 +33,14 @@ def exec(Project project, XML xml) {
   //  method. First of all we need to test Zold payments.
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Send zold')
+  Farm farm = binding.variables.farm
+  if (new Props(farm).has('//testing')) {
+    return
+  }
   ClaimIn claim = new ClaimIn(xml)
   Cash amount = new Cash.S(claim.param('amount'))
   String recipient = claim.param('recipient')
   String reason = claim.param('reason')
-  Farm farm = binding.variables.farm
   new Zold(farm).pay(recipient, amount, reason)
   claim.copy().type('Notify user')
     .token("user;${recipient}")
