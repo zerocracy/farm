@@ -23,7 +23,6 @@ import com.zerocracy.SoftException;
 import com.zerocracy.Stakeholder;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.pm.ClaimIn;
-import com.zerocracy.pm.Claims;
 import com.zerocracy.tools.TxtUnrecoverableError;
 import io.sentry.Sentry;
 import java.io.IOException;
@@ -71,11 +70,12 @@ public final class StkSafe implements Stakeholder {
     @SuppressWarnings(
         {
             "PMD.AvoidCatchingThrowable",
-            "PMD.AvoidRethrowingException"
+            "PMD.AvoidRethrowingException",
+            "PMD.CyclomaticComplexity"
         }
     )
-    public void process(final Project project, final XML xml)
-        throws IOException {
+    public void process(final Project project,
+        final XML xml) throws IOException {
         final ClaimIn claim = new ClaimIn(xml);
         try {
             this.origin.process(project, xml);
@@ -110,12 +110,22 @@ public final class StkSafe implements Stakeholder {
             if (claim.hasToken()) {
                 msg.append(String.format(", token=\"%s\"", claim.token()));
             }
-            this.sendError(project, claim, ex, msg);
+            final Props props = new Props(this.farm);
+            if (props.has("//testing")) {
+                throw new IllegalStateException(ex);
+            }
+            claim.copy()
+                .type("Error")
+                .param("origin_id", claim.cid())
+                .param("origin_type", claim.type())
+                .param("message", msg.toString())
+                .param("stacktrace", new TextOf(ex).asString())
+                .postTo(project);
             Sentry.capture(ex);
             if (claim.hasToken() && !claim.type().startsWith("Notify")) {
                 claim.reply(
                     new TxtUnrecoverableError(
-                        ex, new Props(this.farm),
+                        ex, props,
                         String.format(
                             // @checkstyle LineLength (1 line)
                             "CID: [%d](https://www.0crat.com/%s/%1$d), Type: \"%s\", Author: \"%s\"",
@@ -125,31 +135,6 @@ public final class StkSafe implements Stakeholder {
                     ).asString()
                 ).postTo(project);
             }
-        }
-    }
-
-    /**
-     * Send Error claim.
-     * @param project Target project
-     * @param claim Origin claim
-     * @param exception Exception received
-     * @param msg Message for the claim
-     * @throws IOException In case of error
-     * @checkstyle ParameterNumber (3 lines)
-     */
-    private void sendError(final Project project, final ClaimIn claim,
-        final Throwable exception, final StringBuilder msg) throws IOException {
-        if (new Props(this.farm).has("//testing")) {
-            throw new IllegalStateException(exception);
-        }
-        if (!(Claims.AddException.class.isInstance(exception))) {
-            claim.copy()
-                .type("Error")
-                .param("origin_id", claim.cid())
-                .param("origin_type", claim.type())
-                .param("message", msg.toString())
-                .param("stacktrace", new TextOf(exception).asString())
-                .postTo(project);
         }
     }
 }

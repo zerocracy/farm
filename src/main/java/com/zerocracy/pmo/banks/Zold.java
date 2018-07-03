@@ -68,7 +68,7 @@ public final class Zold implements Bank {
         final String details) throws IOException {
         final int status = new JdkRequest(this.props.get("//zold/host"))
             .uri()
-            .path("do-pay")
+            .path("/do-pay")
             .back()
             .header("X-Zold-Wts", this.props.get("//zold/secret"))
             .body()
