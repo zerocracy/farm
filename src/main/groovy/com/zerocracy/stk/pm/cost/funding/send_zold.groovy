@@ -25,6 +25,7 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.farm.props.Props
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.banks.Zold
+import java.util.regex.Pattern
 
 def exec(Project project, XML xml) {
   // @todo #1291:30min Add tests for payments via concrete banks, I suppose
@@ -41,7 +42,11 @@ def exec(Project project, XML xml) {
   Cash amount = new Cash.S(claim.param('amount'))
   String recipient = claim.param('recipient')
   String reason = claim.param('reason')
-  new Zold(farm).pay(recipient, amount, reason)
+  new Zold(farm).pay(
+    recipient,
+    amount,
+    reason.replaceAll(Pattern.compile("[^a-zA-Z0-9 @!?*_\\-.:,']+"), ' ')
+  )
   claim.copy().type('Notify user')
     .token("user;${recipient}")
     .param(

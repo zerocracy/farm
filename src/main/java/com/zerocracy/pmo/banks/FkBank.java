@@ -21,6 +21,7 @@ import com.zerocracy.cash.Cash;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.UUID;
 import org.cactoos.Scalar;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.LengthOf;
@@ -42,17 +43,6 @@ import org.xembly.Xembler;
  * @author Tolegen Izbassar (t.izbassar@gmail.com)
  * @version $Id$
  * @since 0.22
- * @todo #565:30min Implement method pay() that will write details about
- *  payment to the xml file in this format:
- *  `&lt;payments&gt;
- *  `    &lt;payment&gt;
- *  `        &lt;target&gt;trg&lt;/target&gt;
- *  `        &lt;amount&gt;$0.55&lt;/amount&gt;
- *  `        &lt;details&gt;dtls&lt;/details&gt;
- *  `        &lt;result&gt;E0885448-5DEE-11E8-9C2D-FA7AE01BBEBC&lt;/result&gt;
- *  `    &lt;/payment&gt;
- *  `&lt;/payments&gt;
- *  Unignore relevant test case from FkBankTest.
  * @todo #566:30min Implement equals so that it conforms the relevant test
  *  case from FkBankTest. Implement relevant to equals hashcode method.
  *  Implement toString() method, that will print the content of the underlying
@@ -60,7 +50,7 @@ import org.xembly.Xembler;
  * @todo #565:30min Add FkBank to the Payroll under the file payment method.
  *  Ensure, that the opened files are closed properly and cover Payroll with
  *  tests.
- * @checkstyle ClassDataAbstractionCouplingCheck (2 lines)
+ * @checkstyle ClassDataAbstractionCoupling (2 lines)
  */
 final class FkBank implements Bank {
 
@@ -136,15 +126,35 @@ final class FkBank implements Bank {
     @Override
     public String pay(final String target, final Cash amount,
         final String details) throws IOException {
-        throw new UnsupportedOperationException("pay is not yet implemented");
+        final String result = UUID.randomUUID().toString();
+        try {
+            final String xml = new Xembler(
+                new Directives()
+                    .addIf("payments")
+                    .add("payment")
+                    .add("target").set(target).up()
+                    .add("amount").set(amount.toString()).up()
+                    .add("details").set(details).up()
+                    .add("result").set(result).up()
+            ).xml();
+            new LengthOf(
+                new TeeInput(
+                    new InputOf(new TextOf(xml)),
+                    new OutputTo(this.file.value())
+                )
+            ).intValue();
+        } catch (final ImpossibleModificationException ex) {
+            throw new IllegalStateException(ex);
+        }
+        return result;
     }
 
     @Override
     public void close() throws IOException {
         if (this.delete) {
-            Files.delete(new IoCheckedScalar<>(this.file).value());
+            Files.delete(this.file.value());
         } else {
-            new IoCheckedScalar<>(this.file).value().toFile().deleteOnExit();
+            this.file.value().toFile().deleteOnExit();
         }
     }
 }
