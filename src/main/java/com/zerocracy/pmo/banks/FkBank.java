@@ -20,6 +20,7 @@ import com.zerocracy.cash.Cash;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
 import java.util.UUID;
 import org.cactoos.Scalar;
 import org.cactoos.io.InputOf;
@@ -145,6 +146,31 @@ final class FkBank implements Bank {
             Files.delete(this.file.value());
         } else {
             this.file.value().toFile().deleteOnExit();
+        }
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        final boolean same;
+        if (FkBank.class.isInstance(obj)) {
+            final FkBank other = FkBank.class.cast(obj);
+            try {
+                same = Objects.equals(this.file.value(), other.file.value());
+            } catch (final IOException ex) {
+                throw new IllegalStateException(ex);
+            }
+        } else {
+            same = false;
+        }
+        return same;
+    }
+
+    @Override
+    public int hashCode() {
+        try {
+            return this.file.value().hashCode();
+        } catch (final IOException ex) {
+            throw new IllegalStateException(ex);
         }
     }
 }

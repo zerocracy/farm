@@ -37,15 +37,14 @@ import org.junit.Test;
 public final class FkBankTest {
 
     @Test
-    @Ignore
     public void equalsWorks() throws IOException {
         final Path dir = Files.createTempDirectory("eq");
         final String name = "test.xml";
         final Path path = dir.resolve(name);
-        try (final Closeable bank = new FkBank(path)) {
+        try (final Closeable bank = new FkBank(() -> path, false)) {
             MatcherAssert.assertThat(
                 bank,
-                Matchers.equalTo(new FkBank(path))
+                Matchers.equalTo(new FkBank(() -> path, false))
             );
         }
     }
