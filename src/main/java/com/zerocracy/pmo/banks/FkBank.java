@@ -52,10 +52,6 @@ import org.xembly.Xembler;
  *  `    &lt;/fee&gt;
  *  `&lt;/fees&gt;
  *  Unignore relevant test case from FkBankTest.
- * @todo #566:30min Implement equals so that it conforms the relevant test
- *  case from FkBankTest. Implement relevant to equals hashcode method.
- *  Implement toString() method, that will print the content of the underlying
- *  xml file. Cover with required test cases.
  * @todo #565:30min Add FkBank to the Payroll under the file payment method.
  *  Ensure, that the opened files are closed properly and cover Payroll with
  *  tests.
