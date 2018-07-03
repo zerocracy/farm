@@ -52,6 +52,7 @@ import org.xembly.Xembler;
  *  tests.
  * @checkstyle ClassDataAbstractionCoupling (2 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 final class FkBank implements Bank {
 
     /**
