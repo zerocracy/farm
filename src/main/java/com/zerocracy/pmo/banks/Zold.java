@@ -70,6 +70,7 @@ public final class Zold implements Bank {
             .uri()
             .path("/do-pay")
             .back()
+            .method("POST")
             .header("X-Zold-Wts", this.props.get("//zold/secret"))
             .body()
             .formParam("bnf", Zold.enc(target))
