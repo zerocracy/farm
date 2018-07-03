@@ -18,9 +18,10 @@ package com.zerocracy.pmo.banks;
 
 import com.zerocracy.cash.Cash;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Random;
+import java.util.UUID;
 import org.cactoos.Scalar;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.LengthOf;
@@ -116,7 +117,10 @@ final class FkBank implements Bank {
     @Override
     public String pay(final String target, final Cash amount,
         final String details) throws IOException {
-        final String result = String.valueOf(new Random().nextLong());
+        final String result = UUID.nameUUIDFromBytes(
+            String.format("%s%s%s", target, amount, details)
+                .getBytes(StandardCharsets.UTF_8)
+        ).toString();
         try {
             final String xml = new Xembler(
                 new Directives()
