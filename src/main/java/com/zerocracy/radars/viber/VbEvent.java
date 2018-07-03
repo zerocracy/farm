@@ -16,7 +16,7 @@
  */
 package com.zerocracy.radars.viber;
 
-import java.util.Date;
+import java.time.Instant;
 import javax.json.JsonObject;
 
 /**
@@ -25,9 +25,6 @@ import javax.json.JsonObject;
  * @author Carlos Miranda (miranda.cma@gmail.com)
  * @version $Id$
  * @since 0.22
- * @todo #939:30min Implement VbEvent.Simple and VbEvent.Message. These
- *  classes should be able to parse the underlying JSON and return the correct
- *  data via the defined interface methods.
  */
 @SuppressWarnings("PMD.TooManyMethods")
 interface VbEvent {
@@ -41,7 +38,7 @@ interface VbEvent {
      * Timestamp of event.
      * @return Timestamp
      */
-    Date timestamp();
+    Instant timestamp();
 
     /**
      * Unique ID of the message.
@@ -77,7 +74,7 @@ interface VbEvent {
         }
 
         @Override
-        public Date timestamp() {
+        public Instant timestamp() {
             return this.origin.timestamp();
         }
 
@@ -90,23 +87,23 @@ interface VbEvent {
         public JsonObject json() {
             return this.origin.json();
         }
+
         /**
          * Get message text.
          * @return Message text
          */
         public String message() {
-            throw new UnsupportedOperationException(
-                "Message#message not yet implemented"
-            );
+            return this.origin.json()
+                .getJsonObject("message")
+                .getString("text");
         }
+
         /**
          * Get sender id.
          * @return Sender ID
          */
         public String vid() {
-            throw new UnsupportedOperationException(
-                "Message#id not yet implemented"
-            );
+            return this.origin.json().getJsonObject("sender").getString("id");
         }
     }
 
@@ -129,23 +126,19 @@ interface VbEvent {
 
         @Override
         public String event() {
-            throw new UnsupportedOperationException(
-                "Simple#message not yet implemented"
-            );
+            return this.origin.getString("event");
         }
 
         @Override
-        public Date timestamp() {
-            throw new UnsupportedOperationException(
-                "Simple#timestamp not yet implemented"
+        public Instant timestamp() {
+            return Instant.ofEpochMilli(
+                this.origin.getJsonNumber("timestamp").longValue()
             );
         }
 
         @Override
         public String token() {
-            throw new UnsupportedOperationException(
-                "Simple#token not yet implemented"
-            );
+            return this.origin.getJsonNumber("message_token").toString();
         }
 
         @Override
