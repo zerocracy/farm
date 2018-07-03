@@ -18,7 +18,6 @@ package com.zerocracy.pmo.banks;
 
 import com.zerocracy.cash.Cash;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.UUID;
@@ -117,10 +116,7 @@ final class FkBank implements Bank {
     @Override
     public String pay(final String target, final Cash amount,
         final String details) throws IOException {
-        final String result = UUID.nameUUIDFromBytes(
-            String.format("%s%s%s", target, amount, details)
-                .getBytes(StandardCharsets.UTF_8)
-        ).toString();
+        final String result = UUID.randomUUID().toString();
         try {
             final String xml = new Xembler(
                 new Directives()
