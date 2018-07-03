@@ -16,12 +16,24 @@
  */
 package com.zerocracy.radars.viber;
 
+import com.zerocracy.Farm;
+import com.zerocracy.Par;
+import com.zerocracy.tk.RsParFlash;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.HttpURLConnection;
+import java.nio.charset.StandardCharsets;
+import java.util.Objects;
+import java.util.logging.Level;
+import javax.json.Json;
+import javax.json.JsonException;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
-import org.takes.rs.RsWithBody;
+import org.takes.facets.forward.RsForward;
 import org.takes.rs.RsWithStatus;
 
 /**
@@ -30,20 +42,79 @@ import org.takes.rs.RsWithStatus;
  * @author Carlos Miranda (miranda.cma@gmail.com)
  * @version $Id$
  * @since 0.22
- * @todo #939:30min Implement TkViber. We should be able to receive Viber
- *  webhook requests and react to them accordingly. In the case of "message"
- *  events, we should route them to ReProfile. For the rest we should at
- *  least be able to return a 200 OK response to Viber. When fully implemented
- *  this should be added to Main.java so that it can be called. See
- *  https://developers.viber.com/docs/api/rest-bot-api/
+ * @checkstyle ClassDataAbstractionCouplingCheck (2 lines)
  */
 public final class TkViber implements Take {
 
+    /**
+     * Farm to use.
+     */
+    private final Farm farm;
+
+    /**
+     * Reactions.
+     */
+    private final Reaction reaction;
+
+    /**
+     * Constructor.
+     * @param farm Farm to use
+     */
+    public TkViber(final Farm farm) {
+        this(farm, new ReProfile());
+    }
+
+    /**
+     * Constructor.
+     * @param farm Farm to use
+     * @param react Reaction to use
+     */
+    TkViber(final Farm farm, final Reaction react) {
+        this.farm = farm;
+        this.reaction = react;
+    }
+
     @Override
-    public Response act(final Request request) throws IOException {
-        return new RsWithStatus(
-            new RsWithBody("Not yet implemented."),
-            HttpURLConnection.HTTP_NOT_IMPLEMENTED
+    public Response act(final Request req) throws IOException {
+        final JsonObject json = TkViber.json(
+            new InputStreamReader(req.body(), StandardCharsets.UTF_8)
         );
+        if (json.isEmpty()) {
+            throw new RsForward(
+                new RsParFlash(
+                    new Par(
+                        "We expect this URL to be called by Viber",
+                        "with JSON as body of the request"
+                    ).say(),
+                    Level.WARNING
+                )
+            );
+        }
+        if (Objects.equals(json.getString("event"), "message")) {
+            this.reaction.react(
+                new VbBot(), this.farm, new VbEvent.Simple(json)
+            );
+        }
+        return new RsWithStatus(
+            HttpURLConnection.HTTP_OK
+        );
+    }
+
+    /**
+     * Read JSON from body.
+     * @param body The body
+     * @return The JSON object
+     */
+    private static JsonObject json(final Reader body) {
+        try (
+            final JsonReader reader = Json.createReader(body)
+        ) {
+            return reader.readObject();
+        } catch (final JsonException ex) {
+            throw new IllegalArgumentException(
+                String.format("Can't parse JSON: %s", body),
+                ex
+            );
+        }
     }
 }
