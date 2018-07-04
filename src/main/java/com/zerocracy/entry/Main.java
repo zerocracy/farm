@@ -28,6 +28,7 @@ import com.zerocracy.radars.gitlab.TkGitlab;
 import com.zerocracy.radars.slack.SlackRadar;
 import com.zerocracy.radars.slack.TkSlack;
 import com.zerocracy.radars.viber.TkViber;
+import com.zerocracy.radars.viber.VbBot;
 import com.zerocracy.tk.TkAlias;
 import com.zerocracy.tk.TkApp;
 import io.sentry.Sentry;
@@ -131,9 +132,9 @@ public final class Main {
             new FtCli(
                 new TkApp(
                     farm,
-                    new FkRegex("/slack", new TkSlack(farm, radar)),
-                    new FkRegex("/viber", new TkViber(farm)),
                     new FkRegex("/alias", new TkAlias(farm)),
+                    new FkRegex("/slack", new TkSlack(farm, radar)),
+                    new FkRegex("/viber", new TkViber(farm, new VbBot())),
                     new FkRegex(
                         "/ghook",
                         new TkMethods(new TkGithub(farm), HttpMethod.POST)

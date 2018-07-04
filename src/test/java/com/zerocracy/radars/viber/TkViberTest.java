@@ -17,6 +17,8 @@
 package com.zerocracy.radars.viber;
 
 import com.zerocracy.farm.fake.FkFarm;
+import java.io.StringReader;
+import javax.json.Json;
 import org.cactoos.text.TextOf;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -35,7 +37,7 @@ import org.takes.rq.RqWithBody;
 public final class TkViberTest {
     @Test(expected = IllegalArgumentException.class)
     public void failsForEmptyBody() throws Exception {
-        new TkViber(new FkFarm()).act(
+        new TkViber(new FkFarm(), new VbBot()).act(
             new RqWithBody(
                 new RqFake("POST", "/"), ""
             )
@@ -44,7 +46,7 @@ public final class TkViberTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void failsForInvalidJson() throws Exception {
-        new TkViber(new FkFarm()).act(
+        new TkViber(new FkFarm(), new VbBot()).act(
             new RqWithBody(
                 new RqFake("POST", "/"), "{test"
             )
@@ -54,16 +56,27 @@ public final class TkViberTest {
     @Test
     public void reactsToMessage() throws Exception {
         final Reaction reaction = Mockito.mock(Reaction.class);
-        new TkViber(new FkFarm(), reaction).act(
+        final FkFarm farm = new FkFarm();
+        final VbBot bot = new VbBot();
+        final String callback = new TextOf(
+            TkViberTest.class.getResourceAsStream("message.json")
+        ).asString();
+        new TkViber(farm, bot, reaction).act(
             new RqWithBody(
                 new RqFake("POST", "/"),
-                new TextOf(
-                    TkViberTest.class.getResourceAsStream("message.json")
-                ).asString()
+                callback
             )
         );
         Mockito.verify(reaction)
-            .react(Mockito.any(), Mockito.any(), Mockito.any());
+            .react(
+                Mockito.eq(bot), Mockito.eq(farm), Mockito.argThat(
+                    event -> event.json()
+                        .equals(
+                            Json.createReader(new StringReader(callback))
+                                .readObject()
+                        )
+                )
+            );
     }
 
 }

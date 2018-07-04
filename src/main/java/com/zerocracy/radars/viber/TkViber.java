@@ -17,23 +17,19 @@
 package com.zerocracy.radars.viber;
 
 import com.zerocracy.Farm;
-import com.zerocracy.Par;
-import com.zerocracy.tk.RsParFlash;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
-import java.util.Objects;
-import java.util.logging.Level;
 import javax.json.Json;
 import javax.json.JsonException;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
+import org.takes.HttpException;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
-import org.takes.facets.forward.RsForward;
 import org.takes.rs.RsWithStatus;
 
 /**
@@ -57,42 +53,42 @@ public final class TkViber implements Take {
     private final Reaction reaction;
 
     /**
+     * Bot to use.
+     */
+    private final VbBot bot;
+
+    /**
      * Constructor.
      * @param farm Farm to use
+     * @param bot Viber bot
      */
-    public TkViber(final Farm farm) {
-        this(farm, new ReProfile());
+    public TkViber(final Farm farm, final VbBot bot) {
+        this(farm, bot, new ReProfile());
     }
 
     /**
      * Constructor.
      * @param farm Farm to use
+     * @param bot Viber bot
      * @param react Reaction to use
      */
-    TkViber(final Farm farm, final Reaction react) {
+    TkViber(final Farm farm, final VbBot bot, final Reaction react) {
         this.farm = farm;
         this.reaction = react;
+        this.bot = bot;
     }
 
     @Override
     public Response act(final Request req) throws IOException {
-        final JsonObject json = TkViber.json(
+        final JsonObject callback = TkViber.json(
             new InputStreamReader(req.body(), StandardCharsets.UTF_8)
         );
-        if (json.isEmpty()) {
-            throw new RsForward(
-                new RsParFlash(
-                    new Par(
-                        "We expect this URL to be called by Viber",
-                        "with JSON as body of the request"
-                    ).say(),
-                    Level.WARNING
-                )
-            );
+        if (callback.isEmpty()) {
+            throw new HttpException(HttpURLConnection.HTTP_BAD_REQUEST);
         }
-        if (Objects.equals(json.getString("event"), "message")) {
+        if (callback.getString("event").equals("message")) {
             this.reaction.react(
-                new VbBot(), this.farm, new VbEvent.Simple(json)
+                this.bot, this.farm, new VbEvent.Simple(callback)
             );
         }
         return new RsWithStatus(
