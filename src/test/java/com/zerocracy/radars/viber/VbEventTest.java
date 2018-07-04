@@ -44,16 +44,7 @@ public final class VbEventTest {
         ) {
             final JsonObject json = reader.readObject();
             final VbEvent event = new VbEvent.Simple(json);
-            MatcherAssert.assertThat(event.event(), Matchers.is("message"));
-            MatcherAssert.assertThat(
-                event.timestamp(),
-                // @checkstyle MagicNumber (1 line)
-                Matchers.is(Instant.ofEpochMilli(1457764197627L))
-            );
-            MatcherAssert.assertThat(
-                event.token(), Matchers.is("4912661846655238145")
-            );
-            MatcherAssert.assertThat(event.json(), Matchers.is(json));
+            VbEventTest.validatesBasics(json, event);
         }
     }
 
@@ -68,19 +59,26 @@ public final class VbEventTest {
             final VbEvent.Message event = new VbEvent.Message(
                 new VbEvent.Simple(json)
             );
-            MatcherAssert.assertThat(event.event(), Matchers.is("message"));
-            MatcherAssert.assertThat(
-                event.timestamp(),
-                // @checkstyle MagicNumber (1 line)
-                Matchers.is(Instant.ofEpochMilli(1457764197627L))
-            );
-            MatcherAssert.assertThat(
-                event.token(), Matchers.is("4912661846655238145")
-            );
+            VbEventTest.validatesBasics(json, event);
             MatcherAssert.assertThat(event.vid(), Matchers.is("01234567890A="));
             MatcherAssert.assertThat(
                 event.message(), Matchers.is("a message to the service")
             );
         }
     }
+
+    private static void validatesBasics(final JsonObject json,
+        final VbEvent event) {
+        MatcherAssert.assertThat(event.event(), Matchers.is("message"));
+        MatcherAssert.assertThat(
+            event.timestamp(),
+            // @checkstyle MagicNumber (1 line)
+            Matchers.is(Instant.ofEpochMilli(1457764197627L))
+        );
+        MatcherAssert.assertThat(
+            event.token(), Matchers.is("4912661846655238145")
+        );
+        MatcherAssert.assertThat(event.json(), Matchers.is(json));
+    }
+
 }
