@@ -22,6 +22,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Ignore;
@@ -45,6 +46,20 @@ public final class FkBankTest {
             MatcherAssert.assertThat(
                 bank,
                 Matchers.equalTo(new FkBank(() -> path, false))
+            );
+        }
+    }
+
+    @Test
+    public void generatesToString() throws IOException {
+        final Path file = FkBankTest.temp("x9");
+        try (final Bank bank = new FkBank(file)) {
+            bank.pay(
+                "target", new Cash.S("$0.10"), "details"
+            );
+            MatcherAssert.assertThat(
+                new TextOf(file).asString(),
+                Matchers.is(bank.toString())
             );
         }
     }

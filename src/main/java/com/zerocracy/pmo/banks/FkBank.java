@@ -147,18 +147,18 @@ final class FkBank implements Bank {
 
     @Override
     public boolean equals(final Object obj) {
-        final boolean same;
+        final boolean equal;
         if (FkBank.class.isInstance(obj)) {
             final FkBank other = FkBank.class.cast(obj);
             try {
-                same = Objects.equals(this.file.value(), other.file.value());
+                equal = Objects.equals(this.file.value(), other.file.value());
             } catch (final IOException ex) {
                 throw new IllegalStateException(ex);
             }
         } else {
-            same = false;
+            equal = false;
         }
-        return same;
+        return equal;
     }
 
     @Override
@@ -167,6 +167,15 @@ final class FkBank implements Bank {
             return this.file.value().hashCode();
         } catch (final IOException ex) {
             throw new IllegalStateException(ex);
+        }
+    }
+
+    @Override
+    public String toString() {
+        try {
+            return new TextOf(this.file.value()).asString();
+        } catch (final IOException ex) {
+            throw new IllegalArgumentException(ex);
         }
     }
 }
