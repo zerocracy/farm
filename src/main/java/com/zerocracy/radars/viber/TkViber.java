@@ -18,15 +18,14 @@ package com.zerocracy.radars.viber;
 
 import com.zerocracy.Farm;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.StringReader;
 import java.net.HttpURLConnection;
-import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import javax.json.Json;
 import javax.json.JsonException;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
+import org.cactoos.text.TextOf;
 import org.takes.HttpException;
 import org.takes.Request;
 import org.takes.Response;
@@ -82,7 +81,7 @@ public final class TkViber implements Take {
     @Override
     public Response act(final Request req) throws IOException {
         final JsonObject callback = TkViber.json(
-            new InputStreamReader(req.body(), StandardCharsets.UTF_8)
+            new TextOf(req.body()).asString()
         );
         if (callback.isEmpty()) {
             throw new HttpException(HttpURLConnection.HTTP_BAD_REQUEST);
@@ -102,9 +101,9 @@ public final class TkViber implements Take {
      * @param body The body
      * @return The JSON object
      */
-    private static JsonObject json(final Reader body) {
+    private static JsonObject json(final String body) {
         try (
-            final JsonReader reader = Json.createReader(body)
+            final JsonReader reader = Json.createReader(new StringReader(body))
         ) {
             return reader.readObject();
         } catch (final JsonException ex) {
