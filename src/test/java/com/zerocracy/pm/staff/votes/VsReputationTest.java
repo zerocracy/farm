@@ -31,15 +31,14 @@ import org.junit.Test;
  * Test case for {@link VsReputation}.
  * @author Carlos Miranda (miranda.cma@gmail.com)
  * @version $Id$
- * @since 0.24
+ * @since 0.25
  * @checkstyle JavadocMethodCheck (500 lines)
- * @checkstyle MagicNumber (500 line)
  */
 public final class VsReputationTest {
     @Test
     public void givesHigherVoteForHigherRep() throws Exception {
-        final String high = "high";
-        final String low = "low";
+        final String high = "amihaiemil";
+        final String low = "carlosmiranda";
         final FkFarm farm = new FkFarm();
         final Project project = new FkProject();
         new Awards(farm, high).bootstrap().add(
