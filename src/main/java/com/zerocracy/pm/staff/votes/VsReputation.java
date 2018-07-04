@@ -70,16 +70,16 @@ public final class VsReputation implements Votes {
     public double take(final String login, final StringBuilder log)
         throws IOException {
         final int mine = this.ranks.value().get(login);
-        final int smaller = new Filtered<>(
-            rank -> rank < mine,
+        final int larger = new Filtered<>(
+            rank -> rank > mine,
             this.ranks.value().values()
         ).size();
         log.append(
             Logger.format(
                 "Reputation %+d jobs is no.%d",
-                mine, smaller + 1
+                mine, larger + 1
             )
         );
-        return 1.0d - (double) smaller / (double) this.ranks.value().size();
+        return 1.0d - (double) larger / (double) this.ranks.value().size();
     }
 }

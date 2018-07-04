@@ -23,6 +23,7 @@ import com.zerocracy.cash.Cash
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.cost.Equity
+import com.zerocracy.pm.cost.Rates
 import com.zerocracy.pm.cost.Vesting
 import com.zerocracy.pm.staff.Roles
 
@@ -50,7 +51,12 @@ def exec(Project project, XML xml) {
   if (claim.hasParam('cash')) {
     cash = new Cash.S(claim.param('cash'))
   } else {
-    cash = Cash.ZERO
+    Cash rate = Cash.ZERO
+    Rates rates = new Rates(project).bootstrap()
+    if (rates.exists(login)) {
+      rate = rates.rate(login)
+    }
+    cash = rate.mul(minutes) / 60
   }
   Vesting vesting = new Vesting(project).bootstrap()
   if (vesting.exists(login)) {
