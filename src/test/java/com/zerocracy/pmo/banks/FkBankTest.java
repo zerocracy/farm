@@ -22,6 +22,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Ignore;
@@ -37,15 +38,28 @@ import org.junit.Test;
 public final class FkBankTest {
 
     @Test
-    @Ignore
     public void equalsWorks() throws IOException {
         final Path dir = Files.createTempDirectory("eq");
         final String name = "test.xml";
         final Path path = dir.resolve(name);
-        try (final Closeable bank = new FkBank(path)) {
+        try (final Closeable bank = new FkBank(() -> path, false)) {
             MatcherAssert.assertThat(
                 bank,
-                Matchers.equalTo(new FkBank(path))
+                Matchers.equalTo(new FkBank(() -> path, false))
+            );
+        }
+    }
+
+    @Test
+    public void generatesToString() throws IOException {
+        final Path file = FkBankTest.temp("x9");
+        try (final Bank bank = new FkBank(file)) {
+            bank.pay(
+                "target", new Cash.S("$0.10"), "details"
+            );
+            MatcherAssert.assertThat(
+                new TextOf(file).asString(),
+                Matchers.is(bank.toString())
             );
         }
     }
