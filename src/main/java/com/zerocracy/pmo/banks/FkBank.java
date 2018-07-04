@@ -41,6 +41,18 @@ import org.xembly.Xembler;
  *
  * <p>There is no thread-safety guarantee.</p>
  *
+ * This Bank for each method creates an XML written to a file provided.
+ * For {@link #fee(Cash)} it will create following XML:
+ *
+ * <pre>
+ * &lt;fees&gt;
+ *     &lt;fee&gt;
+ *         &lt;amount&gt;$0.50&lt;/amount&gt;
+ *         &lt;result&gt;$0.80&lt;/result&gt;
+ *     &lt;/fee&gt;
+ * &lt;/fees&gt;
+ * </pre>
+ *
  * @author Tolegen Izbassar (t.izbassar@gmail.com)
  * @version $Id$
  * @since 0.22
@@ -101,13 +113,14 @@ final class FkBank implements Bank {
     @Override
     public Cash fee(final Cash amount) throws IOException {
         final Cash fee = amount.div(Tv.TEN);
+        final Directives dirs = new Directives()
+            .addIf("fees")
+            .add("fee")
+            .add("amount").set(amount).up()
+            .add("result").set(fee).up();
         try {
             final String xml = new Xembler(
-                new Directives()
-                    .addIf("fees")
-                    .add("fee")
-                    .add("amount").set(amount).up()
-                    .add("result").set(fee).up()
+                dirs
             ).xml();
             new LengthOf(
                 new TeeInput(
@@ -116,7 +129,10 @@ final class FkBank implements Bank {
                 )
             ).intValue();
         } catch (final ImpossibleModificationException ex) {
-            throw new IllegalStateException(ex);
+            throw new IllegalStateException(
+                String.format("Couldn't create XML from directives: %s", dirs),
+                ex
+            );
         }
         return fee;
     }
