@@ -41,14 +41,21 @@ def exec(Project project, XML xml) {
   Cash amount = new Cash.S(claim.param('amount'))
   String recipient = claim.param('recipient')
   String reason = claim.param('reason')
-  new Zold(farm).pay(recipient, amount, reason)
+  // @todo #1119:30min Reason is not attached to transaction as 'details'
+  //  because of this bug: https://github.com/zold-io/wts.zold.io/issues/36
+  //  let's use reason claim parameter as reason when it will be fixed.
+  new Zold(farm).pay(
+    recipient,
+    amount,
+    'none'
+  )
   claim.copy().type('Notify user')
     .token("user;${recipient}")
     .param(
     'message',
     new Par('We just sent you %s ZLD through https://wts.zold.io')
       .say(amount.decimal())
-  )
+  ).postTo(project)
   claim.copy().type('Notify PMO').param(
     'message',
     new Par(

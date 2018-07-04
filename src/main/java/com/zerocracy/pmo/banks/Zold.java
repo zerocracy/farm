@@ -70,6 +70,7 @@ public final class Zold implements Bank {
             .uri()
             .path("/do-pay")
             .back()
+            .method("POST")
             .header("X-Zold-Wts", this.props.get("//zold/secret"))
             .body()
             .formParam("bnf", Zold.enc(target))
@@ -79,7 +80,7 @@ public final class Zold implements Bank {
             .fetch()
             .as(RestResponse.class)
             .status();
-        if (status != HttpURLConnection.HTTP_MOVED_TEMP) {
+        if (status != HttpURLConnection.HTTP_SEE_OTHER) {
             throw new IOException(
                 String.format("Zold payment failed, code=%d", status)
             );

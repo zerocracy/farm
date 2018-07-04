@@ -40,6 +40,11 @@ import org.cactoos.text.TextOf;
 public final class StkSafe implements Stakeholder {
 
     /**
+     * Max stacktrace length.
+     */
+    private static final int STACKTRACE_MAX = 8192;
+
+    /**
      * Original stakeholder.
      */
     private final Stakeholder origin;
@@ -114,12 +119,19 @@ public final class StkSafe implements Stakeholder {
             if (props.has("//testing")) {
                 throw new IllegalStateException(ex);
             }
+            final String error = new TextOf(ex).asString();
+            final String stacktrace;
+            if (error.length() > StkSafe.STACKTRACE_MAX) {
+                stacktrace = error.substring(0, StkSafe.STACKTRACE_MAX);
+            } else {
+                stacktrace = error;
+            }
             claim.copy()
                 .type("Error")
                 .param("origin_id", claim.cid())
                 .param("origin_type", claim.type())
                 .param("message", msg.toString())
-                .param("stacktrace", new TextOf(ex).asString())
+                .param("stacktrace", stacktrace)
                 .postTo(project);
             Sentry.capture(ex);
             if (claim.hasToken() && !claim.type().startsWith("Notify")) {

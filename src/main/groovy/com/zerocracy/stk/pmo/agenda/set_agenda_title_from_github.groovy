@@ -13,8 +13,11 @@ import com.zerocracy.radars.github.Job
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Start order')
+  new Assume(project, xml).type('Agenda was updated')
   ClaimIn claim = new ClaimIn(xml)
+  if (!claim.hasParam('job')) {
+    return
+  }
   String job = claim.param('job')
   if (!job.startsWith('gh:')) {
     return
