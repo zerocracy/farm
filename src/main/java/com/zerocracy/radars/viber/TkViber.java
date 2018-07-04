@@ -22,6 +22,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 import javax.json.Json;
 import javax.json.JsonException;
 import javax.json.JsonObject;
@@ -86,7 +87,7 @@ public final class TkViber implements Take {
         if (callback.isEmpty()) {
             throw new HttpException(HttpURLConnection.HTTP_BAD_REQUEST);
         }
-        if (callback.getString("event").equals("message")) {
+        if (Objects.equals(callback.getString("event"), "message")) {
             this.reaction.react(
                 this.bot, this.farm, new VbEvent.Simple(callback)
             );
