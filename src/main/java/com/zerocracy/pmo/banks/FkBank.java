@@ -20,6 +20,7 @@ import com.zerocracy.cash.Cash;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
 import java.util.UUID;
 import org.cactoos.Scalar;
 import org.cactoos.io.InputOf;
@@ -51,10 +52,6 @@ import org.xembly.Xembler;
  *  `    &lt;/fee&gt;
  *  `&lt;/fees&gt;
  *  Unignore relevant test case from FkBankTest.
- * @todo #566:30min Implement equals so that it conforms the relevant test
- *  case from FkBankTest. Implement relevant to equals hashcode method.
- *  Implement toString() method, that will print the content of the underlying
- *  xml file. Cover with required test cases.
  * @todo #565:30min Add FkBank to the Payroll under the file payment method.
  *  Ensure, that the opened files are closed properly and cover Payroll with
  *  tests.
@@ -145,6 +142,40 @@ final class FkBank implements Bank {
             Files.delete(this.file.value());
         } else {
             this.file.value().toFile().deleteOnExit();
+        }
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        final boolean equal;
+        if (FkBank.class.isInstance(obj)) {
+            final FkBank other = FkBank.class.cast(obj);
+            try {
+                equal = Objects.equals(this.file.value(), other.file.value());
+            } catch (final IOException ex) {
+                throw new IllegalStateException(ex);
+            }
+        } else {
+            equal = false;
+        }
+        return equal;
+    }
+
+    @Override
+    public int hashCode() {
+        try {
+            return this.file.value().hashCode();
+        } catch (final IOException ex) {
+            throw new IllegalStateException(ex);
+        }
+    }
+
+    @Override
+    public String toString() {
+        try {
+            return new TextOf(this.file.value()).asString();
+        } catch (final IOException ex) {
+            throw new IllegalArgumentException(ex);
         }
     }
 }

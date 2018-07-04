@@ -119,19 +119,12 @@ public final class StkSafe implements Stakeholder {
             if (props.has("//testing")) {
                 throw new IllegalStateException(ex);
             }
-            final String error = new TextOf(ex).asString();
-            final String stacktrace;
-            if (error.length() > StkSafe.STACKTRACE_MAX) {
-                stacktrace = error.substring(0, StkSafe.STACKTRACE_MAX);
-            } else {
-                stacktrace = error;
-            }
             claim.copy()
                 .type("Error")
                 .param("origin_id", claim.cid())
                 .param("origin_type", claim.type())
                 .param("message", msg.toString())
-                .param("stacktrace", stacktrace)
+                .param("stacktrace", StkSafe.stacktrace(ex))
                 .postTo(project);
             Sentry.capture(ex);
             if (claim.hasToken() && !claim.type().startsWith("Notify")) {
@@ -148,5 +141,23 @@ public final class StkSafe implements Stakeholder {
                 ).postTo(project);
             }
         }
+    }
+
+    /**
+     * Stacktrace for error.
+     * @param exception Error
+     * @return Stacktrace
+     * @throws IOException If fails
+     */
+    private static String stacktrace(final Throwable exception)
+        throws IOException {
+        final String error = new TextOf(exception).asString();
+        final String stacktrace;
+        if (error.length() > StkSafe.STACKTRACE_MAX) {
+            stacktrace = error.substring(0, StkSafe.STACKTRACE_MAX);
+        } else {
+            stacktrace = error;
+        }
+        return stacktrace;
     }
 }
