@@ -68,4 +68,39 @@ public final class ResumesTest {
             );
         }
     }
+
+    @Test
+    public void findNotAssigned() throws Exception {
+        final Farm farm = new FkFarm();
+        final Resumes resumes = new Resumes(farm).bootstrap();
+        final String first = "first";
+        resumes.add(
+            first,
+            LocalDateTime.of(
+                LocalDate.of(2017, Month.FEBRUARY, 2),
+                LocalTime.of(0, 0)
+            ),
+            "I'm new java programmer here",
+            "INTJ-T",
+            151234,
+            "@first"
+        );
+        final String second = "second";
+        resumes.add(
+            second,
+            LocalDateTime.of(
+                LocalDate.of(2016, Month.MARCH, 3),
+                LocalTime.of(0, 0)
+            ),
+            "I'm old java programmer here",
+            "ENTJ-A",
+            257145,
+            "@second"
+        );
+        resumes.assign(second, "examiner");
+        MatcherAssert.assertThat(
+            resumes.unassigned(),
+            Matchers.contains(first)
+        );
+    }
 }
