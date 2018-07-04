@@ -25,7 +25,6 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.farm.props.Props
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.banks.Zold
-import java.util.regex.Pattern
 
 def exec(Project project, XML xml) {
   // @todo #1291:30min Add tests for payments via concrete banks, I suppose
@@ -42,10 +41,13 @@ def exec(Project project, XML xml) {
   Cash amount = new Cash.S(claim.param('amount'))
   String recipient = claim.param('recipient')
   String reason = claim.param('reason')
+  // @todo #1119:30min Reason is not attached to transaction as 'details'
+  //  because of this bug: https://github.com/zold-io/wts.zold.io/issues/36
+  //  let's use reason claim parameter as reason when it will be fixed.
   new Zold(farm).pay(
     recipient,
     amount,
-    reason.replaceAll(Pattern.compile("[^a-zA-Z0-9 @!?*_\\-.:,']+"), ' ')
+    'none'
   )
   claim.copy().type('Notify user')
     .token("user;${recipient}")
@@ -53,7 +55,7 @@ def exec(Project project, XML xml) {
     'message',
     new Par('We just sent you %s ZLD through https://wts.zold.io')
       .say(amount.decimal())
-  )
+  ).postTo(project)
   claim.copy().type('Notify PMO').param(
     'message',
     new Par(
