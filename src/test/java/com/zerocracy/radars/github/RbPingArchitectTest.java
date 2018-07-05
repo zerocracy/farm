@@ -16,8 +16,6 @@
  */
 package com.zerocracy.radars.github;
 
-import com.jcabi.github.Issue;
-import com.jcabi.github.Pull;
 import com.jcabi.github.Repo;
 import com.jcabi.github.Repos;
 import com.jcabi.github.mock.MkGithub;
@@ -26,6 +24,7 @@ import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.pm.staff.Roles;
 import java.io.IOException;
 import javax.json.Json;
+import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -44,27 +43,29 @@ public final class RbPingArchitectTest {
 
     @Test
     public void informsAboutMissingArc() throws IOException {
-        final MkGithub github = new MkGithub();
-        final JsonObjectBuilder builder =
-            RbPingArchitectTest.event(true, github, "random");
+        final MkGithub github = new MkGithub("random");
         MatcherAssert.assertThat(
-            new RbPingArchitect().react(new FkFarm(), github, builder.build()),
+            new RbPingArchitect().react(
+                new FkFarm(), github,
+                RbPingArchitectTest.event(true, github)
+            ),
             Matchers.is("No architects here")
         );
     }
 
     @Test
     public void handlesPullRequest() throws IOException {
-        final MkGithub github = new MkGithub("jeff");
-        final JsonObjectBuilder builder =
-            RbPingArchitectTest.event(false, github, "smith");
+        final MkGithub github = new MkGithub("smith");
         final FkProject pkt = new FkProject();
-        final FkFarm farm = new FkFarm(pkt.pid(), pkt);
         final Roles roles = new Roles(pkt).bootstrap();
         roles.assign("jeff", "ARC");
         roles.assign("john", "REV");
         MatcherAssert.assertThat(
-            new RbPingArchitect().react(farm, github, builder.build()),
+            new RbPingArchitect().react(
+                new FkFarm(pkt.pid(), pkt),
+                github,
+                RbPingArchitectTest.event(false, github)
+            ),
             Matchers.is("Some REV will pick it up")
         );
     }
@@ -72,19 +73,21 @@ public final class RbPingArchitectTest {
     @Test
     public void handlesArcIssue() throws IOException {
         final MkGithub github = new MkGithub("jeff");
-        final JsonObjectBuilder builder =
-            RbPingArchitectTest.event(true, github, "jeff");
         final FkProject pkt = new FkProject();
         final FkFarm farm = new FkFarm(pkt.pid(), pkt);
         new Roles(pkt).bootstrap().assign("jeff", "ARC");
         MatcherAssert.assertThat(
-            new RbPingArchitect().react(farm, github, builder.build()),
+            new RbPingArchitect().react(
+                farm,
+                github,
+                RbPingArchitectTest.event(true, github)
+            ),
             Matchers.is("The architect is speaking")
         );
     }
 
-    private static JsonObjectBuilder event(final boolean iss,
-        final MkGithub github, final String author)
+    private static JsonObject event(final boolean issue,
+        final MkGithub github)
         throws IOException {
         final Repo repo = github.repos().create(
             new Repos.RepoCreate("test", false)
@@ -96,24 +99,30 @@ public final class RbPingArchitectTest {
                     .add("full_name", repo.coordinates().toString())
                     .build()
             );
-        if (iss) {
-            final Issue issue =
-                github.relogin(author).repos().get(repo.coordinates())
-                    .issues().create("Some issue", "Body of issue");
+        if (issue) {
             builder.add(
                 "issue",
-                Json.createObjectBuilder().add("number", issue.number()).build()
+                Json.createObjectBuilder()
+                    .add(
+                        "number",
+                        github.repos().get(repo.coordinates())
+                            .issues()
+                            .create("Some issue", "Body of issue")
+                            .number()
+                    ).build()
             );
         } else {
-            github.relogin(author);
-            final Pull pull =
-                github.relogin(author).repos().get(repo.coordinates())
-                    .pulls().create("Some PR", "1", "2");
             builder.add(
                 "pull_request",
-                Json.createObjectBuilder().add("number", pull.number()).build()
+                Json.createObjectBuilder()
+                    .add(
+                        "number",
+                        github.repos().get(repo.coordinates())
+                            .pulls().create("Some PR", "1", "2")
+                            .number()
+                    ).build()
             );
         }
-        return builder;
+        return builder.build();
     }
 }
