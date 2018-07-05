@@ -16,10 +16,13 @@
  */
 package com.zerocracy.tk;
 
+import com.jcabi.s3.Bucket;
 import com.zerocracy.entry.ExtBucket;
 import com.zerocracy.entry.HeapDump;
 import java.io.BufferedInputStream;
 import java.io.IOException;
+import org.cactoos.Scalar;
+import org.cactoos.scalar.IoCheckedScalar;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
@@ -34,12 +37,33 @@ import org.takes.rs.RsWithType;
  * @since 0.20
  */
 public final class TkDump implements Take {
+
+    /**
+     * Bucket to load heapdump from.
+     */
+    private final IoCheckedScalar<Bucket> bucket;
+
+    /**
+     * Ctor.
+     */
+    public TkDump() {
+        this(new ExtBucket());
+    }
+
+    /**
+     * Ctor.
+     * @param bucket Bucket to load dump from.
+     */
+    public TkDump(final Scalar<Bucket> bucket) {
+        this.bucket = new IoCheckedScalar<>(bucket);
+    }
+
     @Override
     public Response act(final Request request) throws IOException {
         return new RsWithType(
             new RsWithBody(
                 new BufferedInputStream(
-                    new HeapDump(new ExtBucket().value(), "").load()
+                    new HeapDump(this.bucket.value(), "").load()
                 )
             ),
             "application/octet-stream"
