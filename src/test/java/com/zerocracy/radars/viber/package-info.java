@@ -16,10 +16,10 @@
  */
 
 /**
- * Tests for Viber.
+ * Tests for Viber interactions.
  *
  * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
- * @version $Id$
  * @since 0.25
+ * @version $Id$
  */
 package com.zerocracy.radars.viber;
