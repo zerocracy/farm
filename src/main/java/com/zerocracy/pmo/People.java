@@ -731,11 +731,6 @@ public final class People {
      * @param uid User id
      * @param speed Speed
      * @throws IOException If fails
-     * @todo #1121:30min We should periodically compute average speed for each
-     *  person and update it. This stat will be displayed in Team page.
-     *  Probably the most logical time to do this is after "Order was finished"
-     *  claim. We can add this logic to compute_speed.groovy stakeholder. We
-     *  should also add tests for it.
      */
     public void speed(final String uid, final double speed)
         throws IOException {
