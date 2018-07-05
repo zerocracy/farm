@@ -70,9 +70,9 @@ def exec(Project project, XML xml) {
         'message',
         new Par(
           farm,
-          'We just assigned new user @%s to you,',
-          'please review his resume and invite user or reject the resume,',
-          'in both cases you will receive +32 reputation points.'
+          'A new applicant, @%s, has been assigned to you.',
+          'Please review the resume, and either invite or reject the applicant.',
+          'In either case you will receive +32 reputation points as in §1'
         ).say(it)
       ).postTo(project)
   }

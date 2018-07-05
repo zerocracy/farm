@@ -70,7 +70,7 @@ public final class ResumesTest {
     }
 
     @Test
-    public void findNotAssigned() throws Exception {
+    public void findUnassignedResumes() throws Exception {
         final Farm farm = new FkFarm();
         final Resumes resumes = new Resumes(farm).bootstrap();
         final String first = "first";
