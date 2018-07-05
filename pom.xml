@@ -77,6 +77,7 @@ SOFTWARE.
   <properties>
     <mongo.version>3.8.0</mongo.version>
     <telegram.version>3.6</telegram.version>
+    <branch.coverage>0.52</branch.coverage>
   </properties>
   <dependencies>
     <dependency>
@@ -490,7 +491,7 @@ SOFTWARE.
                       <limit>
                         <counter>BRANCH</counter>
                         <value>COVEREDRATIO</value>
-                        <minimum>0.52</minimum>
+                        <minimum>${branch.coverage}</minimum>
                       </limit>
                       <limit>
                         <counter>COMPLEXITY</counter>
