@@ -29,6 +29,7 @@ import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Exam
 import com.zerocracy.pmo.People
 import javax.json.JsonObject
+import javax.json.JsonValue
 import org.cactoos.text.AbbreviatedText
 
 def exec(Project pmo, XML xml) {
@@ -61,11 +62,18 @@ def exec(Project pmo, XML xml) {
   }
   People people = new People(farm).bootstrap()
   people.invite(login, author)
+  String name
+  if (json.containsKey('name')
+    && json.get('name').getValueType == JsonValue.ValueType.STRING) {
+    name = "@${login} (%${json.getString('name')})"
+  } else {
+    name = "@${login}"
+  }
   claim.reply(
     new Par(
-      'Thanks, @%s (%s) can now work with us,',
+      'Thanks, %s can now work with us,',
       'and you are the mentor, see §1',
-    ).say(login, json.getString('name'))
+    ).say(name)
   ).postTo(pmo)
   claim.copy()
     .type('Notify user')
