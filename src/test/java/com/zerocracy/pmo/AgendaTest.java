@@ -24,6 +24,9 @@ import com.zerocracy.Xocument;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
 import java.nio.file.Path;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneOffset;
 import org.cactoos.text.JoinedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -183,6 +186,21 @@ public final class AgendaTest {
                     String.format("[text() = '%s']", inspector)
                 ).asString()
             )
+        );
+    }
+
+    @Test
+    public void returnsAddedTime() throws Exception {
+        final Project project = new FkProject();
+        final FkFarm farm = new FkFarm(project);
+        final Instant time = Instant.now();
+        final Agenda agenda = new Agenda(
+            farm, "yegor", Clock.fixed(time, ZoneOffset.UTC)
+        ).bootstrap();
+        final String first = "gh:test/test#1";
+        agenda.add(project, first, "REV");
+        MatcherAssert.assertThat(
+            agenda.added(first), Matchers.is(time)
         );
     }
 }
