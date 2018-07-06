@@ -26,6 +26,7 @@ import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
 import java.io.IOException;
+import org.cactoos.iterable.LengthOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -77,15 +78,19 @@ public final class StkSafeTest {
     public void dontRepeatErrorClaims() throws Exception {
         final FkProject project = new FkProject();
         new ClaimOut().type("Error").postTo(project);
-        final XML claim = new Claims(project).iterate().iterator().next();
+        final int before = new LengthOf(new Claims(project).iterate())
+            .intValue();
         new StkSafe(
             "errors1",
             new StkSafeTest.NonTestingFarm(),
             new StkSafeTest.StkError()
-        ).process(project, claim);
+        ).process(
+            project,
+            new Claims(project).iterate().iterator().next()
+        );
         MatcherAssert.assertThat(
             new Claims(project).iterate(),
-            Matchers.iterableWithSize(1)
+            Matchers.iterableWithSize(before)
         );
     }
 
@@ -113,20 +118,9 @@ public final class StkSafeTest {
          * Ctor.
          */
         NonTestingFarm() {
-            this(
-                new PropsFarm(
-                    new Directives().xpath("/props/testing").remove()
-                )
+            this.frm = new PropsFarm(
+                new Directives().xpath("/props/testing").remove()
             );
-        }
-
-        /**
-         * Ctor.
-         *
-         * @param farm Farm
-         */
-        private NonTestingFarm(final Farm farm) {
-            this.frm = farm;
         }
 
         @Override
