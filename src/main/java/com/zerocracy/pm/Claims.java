@@ -49,10 +49,6 @@ import org.xembly.Xembler;
  *  a project if this size is too big. We can skip downloading from S3,
  *  just need to check attributes, and if claims.xml is bigger than 10MB
  *  stop working with this project and send notification to PMO.
- * @todo #1307:30min Changes for #1245 fix were reverted in
- *  a2f5821c23469a680485ae8bb6ac875316eb3b24 because they produces
- *  #1307 bug: some claims may be missed and never added
- *  to claims.xml, so 0crat lose Github or chat actions.
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class Claims {
