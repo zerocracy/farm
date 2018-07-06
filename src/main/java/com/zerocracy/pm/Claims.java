@@ -103,14 +103,7 @@ public final class Claims {
             );
             final Collection<String> signatures = new Sorted<>(
                 new Mapped<>(
-                    input -> {
-                        final ClaimIn cin = new ClaimIn(input);
-                        return String.format(
-                            "%s;%s",
-                            cin.type(),
-                            cin.params()
-                        );
-                    },
+                    input -> Claims.signature(new ClaimIn(input)),
                     new Xocument(item).nodes("/claims/claim")
                 )
             );
@@ -221,4 +214,24 @@ public final class Claims {
         return this.project.acq("claims.xml");
     }
 
+    /**
+     * Claim signature.
+     *
+     * @param cin Claim in
+     * @return Signature
+     */
+    private static String signature(final ClaimIn cin) {
+        final String token;
+        if (cin.hasToken()) {
+            token = cin.token();
+        } else {
+            token = "";
+        }
+        return String.format(
+            "%s;%s;%s",
+            cin.type(),
+            cin.params(),
+            token
+        );
+    }
 }
