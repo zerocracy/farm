@@ -24,6 +24,15 @@ import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.People
 import com.zerocracy.pmo.Speed
 
+/**
+ * Stakeholder that recomputes average speed per user and posts
+ * it to <code>people.xml</code>.
+ * @author Carlos Miranda (miranda.cma@gmail.com)
+ * @version $Id: 14f140fbaae73ab381382eb74e38b9fe18252595 $
+ * @since 0.25
+ * @param project Project
+ * @param xml Claim XML
+ */
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Speed was updated')
   Farm farm = binding.variables.farm
