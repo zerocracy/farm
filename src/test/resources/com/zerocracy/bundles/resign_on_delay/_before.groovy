@@ -29,5 +29,5 @@ def exec(Project project, XML xml) {
   Github github = new ExtGithub(farm).value()
   Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
   repo.issues().create('Issue title', 'Issue body')
-  repo.issues().create('PR title', 'PR body')
+  repo.pulls().create('PR title', 'master', 'master')
 }
