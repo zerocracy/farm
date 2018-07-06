@@ -77,6 +77,7 @@ SOFTWARE.
   <properties>
     <mongo.version>3.8.0</mongo.version>
     <telegram.version>3.6</telegram.version>
+    <branch.coverage>0.52</branch.coverage>
   </properties>
   <dependencies>
     <dependency>
@@ -483,14 +484,14 @@ SOFTWARE.
                         <minimum>0.65</minimum>
                       </limit>
                       <!--
-                         @todo #613:30min Continue increasing coverages to reach
+                         @todo #1083:30min Continue to increase the coverages to reach
                           branch coverage of 65% and class missed count of max 15.
                           Remember to increase those coverages below in jacoco configuration.
                       -->
                       <limit>
                         <counter>BRANCH</counter>
                         <value>COVEREDRATIO</value>
-                        <minimum>0.50</minimum>
+                        <minimum>${branch.coverage}</minimum>
                       </limit>
                       <limit>
                         <counter>COMPLEXITY</counter>
@@ -505,7 +506,7 @@ SOFTWARE.
                       <limit>
                         <counter>CLASS</counter>
                         <value>MISSEDCOUNT</value>
-                        <maximum>67</maximum>
+                        <maximum>60</maximum>
                       </limit>
                     </limits>
                   </rule>
