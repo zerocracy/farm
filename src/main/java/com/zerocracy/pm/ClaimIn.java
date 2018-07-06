@@ -35,7 +35,7 @@ import org.cactoos.time.DateOf;
  * @version $Id$
  * @since 0.9
  */
-@SuppressWarnings({ "PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods" })
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 public final class ClaimIn {
 
     /**
@@ -121,6 +121,14 @@ public final class ClaimIn {
      */
     public String type() {
         return this.xml.xpath("type/text()").get(0);
+    }
+
+    /**
+     * Is this claim error.
+     * @return True if error
+     */
+    public boolean isError() {
+        return "Error".equals(this.type());
     }
 
     /**
