@@ -27,12 +27,14 @@ import org.junit.Test;
  * Test case for {@link RbRelease}.
  * @author Carlos Miranda (miranda.cma@gmail.com)
  * @version $Id$
- * @since 0.25
+ * @since 0.26
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class RbReleaseTest {
     @Test
     public void acceptsRelease() throws Exception {
+        final int id = 1;
+        final String tag = "0.0.1";
         MatcherAssert.assertThat(
             new RbRelease().react(
                 new FkFarm(),
@@ -41,13 +43,17 @@ public final class RbReleaseTest {
                     .add(
                         "release",
                         Json.createObjectBuilder()
-                            .add("tag_name", "0.0.1")
-                            .add("id", 1)
+                            .add("tag_name", tag)
+                            .add("id", id)
                             .add("published_at", "2018-04-06T07:00:00Z")
                             .build()
                     ).build()
             ),
-            Matchers.startsWith("Release published: 1")
+            Matchers.is(
+                String.format(
+                    "Release published: %d (tag: %s)", id, tag
+                )
+            )
         );
     }
 }

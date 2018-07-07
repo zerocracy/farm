@@ -26,14 +26,13 @@ import javax.json.JsonObject;
  *
  * @author Carlos Miranda (miranda.cma@gmail.com)
  * @version $Id$
- * @since 0.25
+ * @since 0.26
  * @todo #1269:30min Each time a release is published, we should pay the
  *  architect a release bonus. Let's create a stakeholder that will react to
  *  the "Release was published" claim that will do this. See the following:
  *  https://github.com/zerocracy/farm/issues/1269#issuecomment-402054891
  *  http://www.zerocracy.com/policy.html#53
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class RbRelease implements Rebound {
     /**
      * Release JSON key.
@@ -46,13 +45,15 @@ public final class RbRelease implements Rebound {
         final String answer;
         if (event.containsKey(RbRelease.JSON_KEY)) {
             final JsonObject release = event.getJsonObject(RbRelease.JSON_KEY);
+            final String tag = release.getString("tag_name");
             new ClaimOut()
                 .type("Release was published")
-                .param("tag", release.getString("tag_name"))
+                .param("tag", tag)
                 .param("date", release.getString("published_at"));
             answer = String.format(
-                "Release published: %d",
-                release.getInt("id")
+                "Release published: %d (tag: %s)",
+                release.getInt("id"),
+                tag
             );
         } else {
             answer = "Not a release event";
