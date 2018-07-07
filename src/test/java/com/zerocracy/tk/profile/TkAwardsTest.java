@@ -22,15 +22,10 @@ import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pmo.Awards;
-import com.zerocracy.tk.RqWithUser;
-import com.zerocracy.tk.TkApp;
-import java.io.IOException;
-import org.cactoos.list.ListOf;
+import com.zerocracy.tk.View;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
-import org.takes.rq.RqFake;
-import org.takes.rs.RsPrint;
 
 /**
  * Test case for {@link TkAwards}.
@@ -47,14 +42,9 @@ public final class TkAwardsTest {
         final Farm farm = new PropsFarm(new FkFarm());
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
-                new RsPrint(
-                    new TkApp(farm).act(
-                        new RqWithUser(
-                            farm,
-                            new RqFake("GET", "/u/yegor256/awards")
-                        )
-                    )
-                ).printBody()
+                XhtmlMatchers.xhtml(
+                    new View(farm, "/u/yegor256/awards").html()
+                )
             ),
             XhtmlMatchers.hasXPaths("//xhtml:body")
         );
@@ -67,7 +57,9 @@ public final class TkAwardsTest {
         final int points = 1234;
         new Awards(farm, user).bootstrap()
             .add(new FkProject(), points, "none", "reason");
-        final String html = this.firefoxView(farm, user);
+        final String html = new View(
+            farm, String.format("/u/%s/awards", user)
+        ).html();
         MatcherAssert.assertThat(
             html,
             XhtmlMatchers.hasXPaths("//xhtml:html")
@@ -76,27 +68,6 @@ public final class TkAwardsTest {
             html,
             Matchers.containsString(String.format("+%d", points))
         );
-    }
-
-    private String firefoxView(final Farm farm, final String uid)
-        throws IOException {
-        return new RsPrint(
-            new TkApp(farm).act(
-                new RqWithUser(
-                    farm,
-                    new RqFake(
-                        new ListOf<>(
-                            String.format("GET /u/%s/awards", uid),
-                            "Host: www.example.com",
-                            "Accept: application/xml",
-                            // @checkstyle LineLength (1 line)
-                            "User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:62.0) Gecko/20100101 Firefox/62.0"
-                        ),
-                        ""
-                    )
-                )
-            )
-        ).printBody();
     }
 
 }
