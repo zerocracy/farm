@@ -1039,6 +1039,10 @@ SOFTWARE.
                     <exclude>com/zerocracy/tk/profile/TkIdentify.java</exclude>
                     <exclude>com/zerocracy/tk/profile/TkProfile.java</exclude>
                     <exclude>com/zerocracy/tk/TkBoard.java</exclude>
+                    <exclude>com/zerocracy/tk/RsPage.java</exclude>
+                    <exclude>com/zerocracy/tk/profile/TkAwards.java</exclude>
+                    <exclude>com/zerocracy/tk/profile/TkAgenda.java</exclude>
+                    <exclude>com/zerocracy/tk/TkVacancies.java</exclude>
                   </excludes>
                 </configuration>
               </execution>
