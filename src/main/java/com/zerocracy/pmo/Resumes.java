@@ -29,12 +29,6 @@ import org.xembly.Directives;
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.22.2
- * @todo #908:30min Let's create new stakeholder to assign resume to examiner
- *  and notify. When the examiner "invites" a user,
- *  we check whether there was a resume for that user.
- *  If yes, we pay examiner +32 points. Examiner can reject a resume
- *  by saying 'deny {username}' (where username is a login in 'resumes.xml')
- *  to Zerocrat. In that case we also pay +32 to the examiner.
  */
 public final class Resumes {
     /**
@@ -105,6 +99,39 @@ public final class Resumes {
                     .up()
                     .add("telegram")
                     .set(telegram)
+            );
+        }
+    }
+
+    /**
+     * All not assigned yet resumes.
+     *
+     * @return Login list
+     * @throws IOException If fails
+     */
+    public Iterable<String> unassigned() throws IOException {
+        try (final Item item = this.item()) {
+            return new Xocument(item)
+                .xpath("/resumes/resume[not(./examiner)]/@login");
+        }
+    }
+
+    /**
+     * Assign examiner to resume.
+     *
+     * @param login Resume author
+     * @param examiner Examiner
+     * @throws IOException If fails
+     */
+    public void assign(final String login, final String examiner)
+        throws IOException {
+        try (final Item item = this.item()) {
+            new Xocument(item).modify(
+                new Directives()
+                    .xpath(
+                        String.format("/resumes/resume[@login = '%s']", login)
+                    ).addIf("examiner")
+                    .set(examiner)
             );
         }
     }
