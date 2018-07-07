@@ -1010,6 +1010,10 @@ SOFTWARE.
                   <exclude>com.zerocracy.tk.profile.TkIdentifyTest</exclude>
                   <exclude>com.zerocracy.tk.profile.TkProfileTest</exclude>
                   <exclude>com.zerocracy.tk.TkBoardTest</exclude>
+                  <exclude>com.zerocracy.tk.RsPageTest</exclude>
+                  <exclude>com.zerocracy.tk.profile.TkAwardsTest</exclude>
+                  <exclude>com.zerocracy.tk.profile.TkAgendaTest</exclude>
+                  <exclude>com.zerocracy.tk.TkVacanciesTest</exclude>
                 </excludes>
               </configuration>
             </plugin>
