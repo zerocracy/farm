@@ -32,6 +32,7 @@ import org.junit.Test;
  * @since 0.10
  * @checkstyle JavadocMethodCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class EstimatesTest {
 
     @Test
@@ -70,6 +71,36 @@ public final class EstimatesTest {
         MatcherAssert.assertThat(
             estimates.total(),
             Matchers.equalTo(new Cash.S("$145.00"))
+        );
+    }
+
+    @Test
+    public void estimatesJobsWithDifferentCurrencies() throws Exception {
+        final Project project = new FkProject();
+        new Ledger(project).bootstrap().add(
+            new Ledger.Transaction(
+                new Cash.S("$500"),
+                "assets", "cash",
+                "income", "sponsor",
+                "Funded by some guy"
+            )
+        );
+        final Estimates estimates = new Estimates(project).bootstrap();
+        final String first = "gh:yegor256/pdd#4";
+        new Wbs(project).bootstrap().add(first);
+        new Orders(project).bootstrap().assign(first, "yegor256", 0L);
+        estimates.update(first, new Cash.S("$45"));
+        MatcherAssert.assertThat(
+            estimates.get(first),
+            Matchers.equalTo(new Cash.S("$45.00"))
+        );
+        final String second = "gh:yegor256/pdd#1";
+        new Wbs(project).bootstrap().add(second);
+        new Orders(project).bootstrap().assign(second, "yegor", 0L);
+        estimates.update(second, new Cash.S("€100"));
+        MatcherAssert.assertThat(
+            estimates.total(),
+            Matchers.equalTo(new Cash.S("$177.00"))
         );
     }
 

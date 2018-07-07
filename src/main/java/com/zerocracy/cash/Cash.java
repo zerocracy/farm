@@ -106,6 +106,12 @@ public interface Cash extends Comparable<Cash>, Serializable {
     Cash exchange(Currency currency) throws IOException;
 
     /**
+     * Is cash representation unified?
+     * @return True if the cash has been unified.
+     */
+    boolean unified();
+
+    /**
      * Simple implementation.
      */
     @EqualsAndHashCode(of = "pairs")
@@ -235,7 +241,7 @@ public interface Cash extends Comparable<Cash>, Serializable {
 
         @Override
         public BigDecimal decimal() {
-            if (this.pairs.length != 1) {
+            if (!this.unified()) {
                 throw new IllegalStateException(
                     String.format(
                         "Use exchange() first to unify currencies: \"%s\"",
@@ -268,6 +274,11 @@ public interface Cash extends Comparable<Cash>, Serializable {
                 prs[num] = this.pairs[num].exchange(currency, this.qts);
             }
             return new Cash.S(prs, this.qts);
+        }
+
+        @Override
+        public boolean unified() {
+            return this.pairs.length == 1;
         }
 
         /**
