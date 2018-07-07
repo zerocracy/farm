@@ -169,6 +169,11 @@ public final class PeopleTest {
     }
 
     @Test
+    public void setCorrectZoldAddress() throws Exception {
+        PeopleTest.setsWallet("zld", "g4s8");
+    }
+
+    @Test
     public void failsForIncorrectPaypalAddress() throws Exception {
         this.failsWallet("paypal");
     }
@@ -191,6 +196,11 @@ public final class PeopleTest {
     @Test
     public void failsForIncorrectLitecoinAddress() throws Exception {
         this.failsWallet("ltc");
+    }
+
+    @Test
+    public void failsForIncorrectZoldAddress() throws Exception {
+        this.failsWallet("zld", "!@#$%fgs");
     }
 
     @Test
@@ -539,9 +549,8 @@ public final class PeopleTest {
         );
     }
 
-    private void failsWallet(final String bank)
+    private void failsWallet(final String bank, String wallet)
         throws IOException {
-        final String wallet = "123456";
         final FkFarm farm = new FkFarm(new FkProject());
         final People people = new People(farm).bootstrap();
         this.thrown.expect(SoftException.class);
@@ -549,6 +558,11 @@ public final class PeopleTest {
             new FormattedText(" not valid: `%s`", wallet).asString()
         );
         people.wallet("yegor512", bank, wallet);
+    }
+
+    private void failsWallet(final String bank)
+        throws IOException {
+        this.failsWallet(bank, "123456");
     }
 
     private static void setsWallet(final String bank, final String wallet)
