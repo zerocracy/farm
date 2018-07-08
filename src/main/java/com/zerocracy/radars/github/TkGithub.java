@@ -124,7 +124,8 @@ public final class TkGithub implements Take, Runnable {
                                         "labeled"
                                     ),
                                     new RbByActions(new RbOnAssign(), "assigned"),
-                                    new RbByActions(new RbOnUnassign(), "unassigned")
+                                    new RbByActions(new RbOnUnassign(), "unassigned"),
+                                    new RbByActions(new RbRelease(), "published")
                                 )
                             )
                         )

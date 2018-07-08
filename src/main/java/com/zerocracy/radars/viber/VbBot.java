@@ -28,7 +28,7 @@ package com.zerocracy.radars.viber;
  *  https://developers.viber.com/docs/api/rest-bot-api/#authentication-token
  *  https://developers.viber.com/docs/api/rest-bot-api/#send-message
  */
-final class VbBot {
+public final class VbBot {
 
     /**
      * Send a message to a user.

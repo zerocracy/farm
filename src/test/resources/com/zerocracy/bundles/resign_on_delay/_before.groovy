@@ -14,12 +14,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.zerocracy.bundles.resign_on_delay
 
-/**
- * Tests for Viber interactions.
- *
- * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
- * @since 0.25
- * @version $Id$
- */
-package com.zerocracy.radars.viber;
+import com.jcabi.github.Github
+import com.jcabi.github.Repo
+import com.jcabi.github.Repos
+import com.jcabi.xml.XML
+import com.zerocracy.Farm
+import com.zerocracy.Project
+import com.zerocracy.entry.ExtGithub
+
+def exec(Project project, XML xml) {
+  Farm farm = binding.variables.farm
+  Github github = new ExtGithub(farm).value()
+  Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
+  repo.issues().create('Issue title', 'Issue body')
+  repo.pulls().create('PR title', 'master', 'master')
+}

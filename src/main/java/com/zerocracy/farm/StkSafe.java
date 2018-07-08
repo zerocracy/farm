@@ -35,8 +35,12 @@ import org.cactoos.text.TextOf;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.1
+ * @checkstyle CyclomaticComplexityCheck (500 lines)
  */
 @EqualsAndHashCode(of = "identifier")
+@SuppressWarnings(
+    {"PMD.ModifiedCyclomaticComplexity", "PMD.StdCyclomaticComplexity"}
+)
 public final class StkSafe implements Stakeholder {
 
     /**
@@ -119,13 +123,15 @@ public final class StkSafe implements Stakeholder {
             if (props.has("//testing")) {
                 throw new IllegalStateException(ex);
             }
-            claim.copy()
-                .type("Error")
-                .param("origin_id", claim.cid())
-                .param("origin_type", claim.type())
-                .param("message", msg.toString())
-                .param("stacktrace", StkSafe.stacktrace(ex))
-                .postTo(project);
+            if (!claim.isError()) {
+                claim.copy()
+                    .type("Error")
+                    .param("origin_id", claim.cid())
+                    .param("origin_type", claim.type())
+                    .param("message", msg.toString())
+                    .param("stacktrace", StkSafe.stacktrace(ex))
+                    .postTo(project);
+            }
             Sentry.capture(ex);
             if (claim.hasToken() && !claim.type().startsWith("Notify")) {
                 claim.reply(

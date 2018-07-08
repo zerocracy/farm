@@ -14,12 +14,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.zerocracy.bundles.refresh_person_average_speed_on_speed_update
 
-/**
- * Tests for Viber interactions.
- *
- * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
- * @since 0.25
- * @version $Id$
- */
-package com.zerocracy.radars.viber;
+import com.jcabi.xml.XML
+import com.zerocracy.Project
+import com.zerocracy.pmo.People
+import org.hamcrest.MatcherAssert
+import org.hamcrest.number.IsCloseTo
+
+def exec(Project project, XML xml) {
+  MatcherAssert.assertThat(
+    new People(binding.variables.farm).bootstrap().speed('carlosmiranda'),
+    new IsCloseTo(20.0, 0.01)
+  )
+}

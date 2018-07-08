@@ -16,15 +16,16 @@
  */
 package com.zerocracy.tk;
 
+import com.jcabi.s3.Bucket;
+import com.zerocracy.entry.ExtBucket;
+import com.zerocracy.entry.HeapDump;
 import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.logging.Level;
+import org.cactoos.Scalar;
+import org.cactoos.scalar.IoCheckedScalar;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
-import org.takes.facets.forward.RsForward;
 import org.takes.rs.RsWithBody;
 import org.takes.rs.RsWithType;
 
@@ -34,27 +35,35 @@ import org.takes.rs.RsWithType;
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.20
- * @todo #400:30min Should use HeapDump to get contents from S3,
- *  rather than from the server file, as it might be deleted and won't be
- *  available anymore.
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class TkDump implements Take {
+
+    /**
+     * Bucket to load heapdump from.
+     */
+    private final IoCheckedScalar<Bucket> bucket;
+
+    /**
+     * Ctor.
+     */
+    public TkDump() {
+        this(new ExtBucket());
+    }
+
+    /**
+     * Ctor.
+     * @param bucket Bucket to load dump from.
+     */
+    public TkDump(final Scalar<Bucket> bucket) {
+        this.bucket = new IoCheckedScalar<>(bucket);
+    }
+
     @Override
     public Response act(final Request request) throws IOException {
-        final File file = new File("./heapdump.hprof");
-        if (!file.exists()) {
-            throw new RsForward(
-                new RsParFlash(
-                    String.format("File doesn't exist: %s", file),
-                    Level.SEVERE
-                )
-            );
-        }
         return new RsWithType(
             new RsWithBody(
                 new BufferedInputStream(
-                    new FileInputStream(file)
+                    new HeapDump(this.bucket.value(), "").load()
                 )
             ),
             "application/octet-stream"

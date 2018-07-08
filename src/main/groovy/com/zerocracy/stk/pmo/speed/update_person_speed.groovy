@@ -14,12 +14,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.zerocracy.stk.pmo.speed
+
+import com.jcabi.xml.XML
+import com.zerocracy.Farm
+import com.zerocracy.Project
+import com.zerocracy.farm.Assume
+import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pmo.People
+import com.zerocracy.pmo.Speed
 
 /**
- * Tests for Viber interactions.
- *
- * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
+ * Stakeholder that recomputes average speed per user and posts
+ * it to <code>people.xml</code>.
+ * @author Carlos Miranda (miranda.cma@gmail.com)
+ * @version $Id: 14f140fbaae73ab381382eb74e38b9fe18252595 $
  * @since 0.25
- * @version $Id$
+ * @param project Project
+ * @param xml Claim XML
  */
-package com.zerocracy.radars.viber;
+def exec(Project project, XML xml) {
+  new Assume(project, xml).type('Speed was updated')
+  Farm farm = binding.variables.farm
+  String login = new ClaimIn(xml).param('login')
+  People people = new People(farm).bootstrap()
+  if (people.exists(login)) {
+    people.speed(
+      login, new Speed(farm, login).bootstrap().avg()
+    )
+  }
+}
