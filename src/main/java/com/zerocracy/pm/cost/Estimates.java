@@ -163,26 +163,27 @@ public final class Estimates {
                     .add("cash")
                     .set(cash)
             );
+            final Cash value = new IoCheckedScalar<>(
+                new Ternary<>(
+                    new IoCheckedScalar<>(
+                        new Reduced<Cash, Cash>(
+                            Cash.ZERO,
+                            Cash::add,
+                            new Mapped<>(
+                                Cash.S::new,
+                                xoc.xpath("//order/cash/text()")
+                            )
+                        )
+                    ).value(),
+                    Cash::unified,
+                    csh -> csh,
+                    csh -> csh.exchange(Currency.USD)
+                )
+            ).value();
             xoc.modify(
                 new Directives().xpath("/estimates").attr(
                     "total",
-                    new IoCheckedScalar<>(
-                        new Ternary<>(
-                            new IoCheckedScalar<>(
-                                new Reduced<Cash, Cash>(
-                                    Cash.ZERO,
-                                    Cash::add,
-                                    new Mapped<>(
-                                        Cash.S::new,
-                                        xoc.xpath("//order/cash/text()")
-                                    )
-                                )
-                            ).value(),
-                            Cash::unified,
-                            first -> first,
-                            second -> second.exchange(Currency.USD)
-                        )
-                    ).value()
+                    value
                 )
             );
         }
