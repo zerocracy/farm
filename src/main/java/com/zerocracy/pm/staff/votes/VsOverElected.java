@@ -29,8 +29,8 @@ import org.cactoos.iterable.LengthOf;
  *
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
- * @since 0.24
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @since 0.26
+ * @checkstyle ClassDataAbstractionCouplingCheck (2 lines)
  */
 public final class VsOverElected implements Votes {
 

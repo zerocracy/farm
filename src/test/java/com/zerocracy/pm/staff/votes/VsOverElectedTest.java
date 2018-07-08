@@ -35,11 +35,16 @@ import org.junit.Test;
  *
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
- * @since 0.24
+ * @since 0.26
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle MagicNumberCheck (500 lines)
  */
 public final class VsOverElectedTest {
+    /**
+     * Fake votes.
+     */
+    private static final Votes VS_FAKE = (login, log) -> 1.0;
+
     @Test
     public void voteForOverElected() throws Exception {
         final int max = 9;
@@ -59,19 +64,9 @@ public final class VsOverElectedTest {
         final String login = "user2";
         new VsOverElectedTest.Elect(pkt, max).exec(login);
         MatcherAssert.assertThat(
-            new VsOverElected(pkt, max).take(login, new StringBuilder(1)),
+            new VsOverElected(pkt, max).take(login, new StringBuilder()),
             Matchers.closeTo(0.0, 0.001)
         );
-    }
-
-    /**
-     * Fake votes.
-     */
-    private static final class VsFake implements Votes {
-        @Override
-        public double take(final String login, final StringBuilder log) {
-            return 1.0;
-        }
     }
 
     /**
@@ -108,10 +103,7 @@ public final class VsOverElectedTest {
                     String.format("gh:test/test#%d", num),
                     new ListOf<>(login),
                     new MapOf<Votes, Integer>(
-                        new MapEntry<>(
-                            new VsOverElectedTest.VsFake(),
-                            1
-                        )
+                        new MapEntry<>(VsOverElectedTest.VS_FAKE, 1)
                     )
                 ),
                 new RangeOf<>(1, this.cnt, num -> num + 1)
