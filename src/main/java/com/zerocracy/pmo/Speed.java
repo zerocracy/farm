@@ -19,9 +19,9 @@ package com.zerocracy.pmo;
 import com.jcabi.aspects.Tv;
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
+import com.zerocracy.Policy;
 import com.zerocracy.Xocument;
 import java.io.IOException;
-import java.time.Duration;
 import org.cactoos.collection.Mapped;
 import org.cactoos.iterable.ItemAt;
 import org.cactoos.scalar.IoCheckedScalar;
@@ -146,7 +146,8 @@ public final class Speed {
                         )
                     ).get(0)
             );
-            if (minutes <= Duration.ofDays(2).toMinutes()) {
+            final int limit = new Policy().get("36.hours", 48) * Tv.SIXTY;
+            if (minutes <= limit) {
                 bonus = Tv.FIVE;
             } else {
                 bonus = 0;
