@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pmo;
 
+import com.jcabi.aspects.Tv;
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Xocument;
@@ -33,6 +34,9 @@ import org.xembly.Directives;
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.17
+ * @todo #860:30min Modify the stakeholder where the payments are made and
+ *  use method Speed.bonus(...) to pay the user a bonus in minutes if they
+ *  completed the job in less than 48 hours.
  */
 public final class Speed {
 
@@ -121,6 +125,34 @@ public final class Speed {
                 )
             ).value();
         }
+    }
+
+    /**
+     * If a job is completed in less than 48h, the user gets a
+     * bonus in minutes.
+     * @param job Job's id.
+     * @return The bonus for the speed of the job.
+     * @throws IOException If something goes wrong.
+     */
+    public int bonus(final String job) throws IOException {
+        final int bonus;
+        try (final Item item = this.item()) {
+            final int minutes = Integer.parseInt(
+                new Xocument(item.path())
+                    .xpath(
+                        String.format(
+                            "/speed/order[@job='%s']/minutes/text()", job
+                        )
+                    ).get(0)
+            );
+            // @checkstyle MagicNumber (1 line)
+            if (minutes <= 2880) {
+                bonus = Tv.FIVE;
+            } else {
+                bonus = 0;
+            }
+        }
+        return bonus;
     }
 
     /**

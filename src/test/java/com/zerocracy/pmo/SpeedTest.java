@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pmo;
 
+import com.jcabi.aspects.Tv;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
 import org.hamcrest.MatcherAssert;
@@ -63,5 +64,25 @@ public final class SpeedTest {
                 .avg(),
             Matchers.equalTo(0.0)
         );
+    }
+
+    @Test
+    public void givesBonus() throws Exception {
+        final FkProject project = new FkProject();
+        final FkFarm farm = new FkFarm(project);
+        final Speed speed = new Speed(farm, "amihaiemil").bootstrap();
+        final String job = "gh:bonus/fast#1";
+        speed.add("TST100006", job, Tv.THOUSAND);
+        MatcherAssert.assertThat(speed.bonus(job), Matchers.equalTo(Tv.FIVE));
+    }
+
+    @Test
+    public void givesNoBonus() throws Exception {
+        final FkProject project = new FkProject();
+        final FkFarm farm = new FkFarm(project);
+        final Speed speed = new Speed(farm, "other").bootstrap();
+        final String job = "gh:bonus/slow#1";
+        speed.add("TST100009", job, Tv.THREE * Tv.THOUSAND);
+        MatcherAssert.assertThat(speed.bonus(job), Matchers.equalTo(0));
     }
 }
