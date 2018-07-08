@@ -17,9 +17,11 @@
 package com.zerocracy.pm.staff.votes;
 
 import com.jcabi.log.Logger;
+import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.pm.staff.Elections;
 import com.zerocracy.pm.staff.Votes;
+import com.zerocracy.pmo.Awards;
 import java.io.IOException;
 import org.cactoos.collection.Filtered;
 import org.cactoos.iterable.LengthOf;
@@ -40,18 +42,18 @@ public final class VsOverElected implements Votes {
     private final Project pkt;
 
     /**
-     * Elections limit.
+     * Farm.
      */
-    private final int limit;
+    private final Farm frm;
 
     /**
      * Ctor.
      * @param project The project
-     * @param max Max jobs in the agenda
+     * @param farm Farm
      */
-    public VsOverElected(final Project project, final int max) {
+    public VsOverElected(final Project project, final Farm farm) {
         this.pkt = project;
-        this.limit = max;
+        this.frm = farm;
     }
 
     @Override
@@ -65,11 +67,12 @@ public final class VsOverElected implements Votes {
             )
         ).intValue();
         final double vote;
-        if (mine > this.limit) {
+        final int limit = this.threshold(login);
+        if (mine > limit) {
             log.append(
                 Logger.format(
                     "%d jobs was elected already, too many (max is %d)",
-                    mine, this.limit
+                    mine, limit
                 )
             );
             vote = 1.0d;
@@ -77,11 +80,37 @@ public final class VsOverElected implements Votes {
             log.append(
                 Logger.format(
                     "%d jobs was elected, still enough room (max is %d)",
-                    mine, this.limit
+                    mine, limit
                 )
             );
             vote = 0.0d;
         }
         return vote;
+    }
+
+    /**
+     * Max jobs for user, depends on awards.
+     * @param login A user
+     * @return Jobs threshold
+     * @throws IOException If fails
+     * @todo #926:30min Refactor this method - extract to some class,
+     *  because it's used in two different places: here and in VsNoRoom,
+     *  this class should encapsulate farm or pmo and accept login as
+     *  argument.
+     * @checkstyle MagicNumberCheck (20 lines)
+     */
+    private int threshold(final String login) throws IOException {
+        final int points = new Awards(this.frm, login).bootstrap().total();
+        final int max;
+        if (points < 512) {
+            max = 3;
+        } else if (points < 2048) {
+            max = 8;
+        } else if (points < 4096) {
+            max = 16;
+        } else {
+            max = 24;
+        }
+        return max;
     }
 }

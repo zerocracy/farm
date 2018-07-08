@@ -17,6 +17,7 @@
 package com.zerocracy.pm.staff.votes;
 
 import com.zerocracy.Project;
+import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.pm.staff.Elections;
 import com.zerocracy.pm.staff.Votes;
@@ -47,24 +48,24 @@ public final class VsOverElectedTest {
 
     @Test
     public void voteForOverElected() throws Exception {
-        final int max = 9;
+        final int max = 3;
         final FkProject pkt = new FkProject();
         final String login = "user1";
         new VsOverElectedTest.Elect(pkt, max + 1).exec(login);
         MatcherAssert.assertThat(
-            new VsOverElected(pkt, max).take(login, new StringBuilder(1)),
+            new VsOverElected(pkt, new FkFarm()).take(login, new StringBuilder()),
             Matchers.closeTo(1.0, 0.001)
         );
     }
 
     @Test
     public void ignoreForNotOverElected() throws Exception {
-        final int max = 4;
+        final int max = 3;
         final FkProject pkt = new FkProject();
         final String login = "user2";
         new VsOverElectedTest.Elect(pkt, max).exec(login);
         MatcherAssert.assertThat(
-            new VsOverElected(pkt, max).take(login, new StringBuilder()),
+            new VsOverElected(pkt, new FkFarm()).take(login, new StringBuilder()),
             Matchers.closeTo(0.0, 0.001)
         );
     }
