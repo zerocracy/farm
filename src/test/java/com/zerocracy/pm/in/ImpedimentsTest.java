@@ -17,6 +17,7 @@
 package com.zerocracy.pm.in;
 
 import com.zerocracy.Project;
+import com.zerocracy.SoftException;
 import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.pm.scope.Wbs;
 import org.hamcrest.MatcherAssert;
@@ -76,5 +77,11 @@ public final class ImpedimentsTest {
             imp.exists(job),
             Matchers.is(false)
         );
+    }
+
+    @Test(expected = SoftException.class)
+    public void removesMissingImpediment() throws Exception {
+        final Impediments imp = new Impediments(new FkProject()).bootstrap();
+        imp.remove("gh:test/test#8");
     }
 }
