@@ -53,7 +53,10 @@ public final class VsOverElectedTest {
         final String login = "user1";
         new VsOverElectedTest.Elect(pkt, max + 1).exec(login);
         MatcherAssert.assertThat(
-            new VsOverElected(pkt, new FkFarm()).take(login, new StringBuilder()),
+            new VsOverElected(
+                pkt,
+                new FkFarm()
+            ).take(login, new StringBuilder()),
             Matchers.closeTo(1.0, 0.001)
         );
     }
@@ -65,7 +68,10 @@ public final class VsOverElectedTest {
         final String login = "user2";
         new VsOverElectedTest.Elect(pkt, max).exec(login);
         MatcherAssert.assertThat(
-            new VsOverElected(pkt, new FkFarm()).take(login, new StringBuilder()),
+            new VsOverElected(
+                pkt,
+                new FkFarm()
+            ).take(login, new StringBuilder()),
             Matchers.closeTo(0.0, 0.001)
         );
     }
