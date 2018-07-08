@@ -32,6 +32,10 @@ import org.xembly.Directives;
  * @author Kirill (g4s8.public@gmail.com)
  * @version $Id$
  * @since 0.19
+ * @todo #1016:30min Add a new stackeholder, remove_impediment.groovy,
+ *  that will remove the impediment once a user says "@0crat continue"
+ *  on an Issue that is on hold. The "continue" command is already registered
+ *  in q-tracker.xml, the code is "Remove impediment".
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class Impediments {
@@ -113,6 +117,29 @@ public final class Impediments {
     }
 
     /**
+     * Remove a job's impediment.
+     * @param job The job for which we remove the impediment.
+     * @throws IOException If something goes wrong.
+     */
+    public void remove(final String job) throws IOException {
+        if (!this.exists(job)) {
+            throw new SoftException(
+                new Par(
+                    "Job %s is not on hold, no impediment to remove"
+                ).say(job)
+            );
+        }
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                new Directives()
+                    .xpath(Impediments.order(job))
+                    .strict(1)
+                    .remove()
+            );
+        }
+    }
+
+    /**
      * The impediment exists?
      * @param job The job
      * @return TRUE if exists
@@ -121,7 +148,7 @@ public final class Impediments {
     public boolean exists(final String job) throws IOException {
         try (final Item item = this.item()) {
             return !new Xocument(item.path()).nodes(
-                String.format("/impediments/order[@id='%s']", job)
+                Impediments.order(job)
             ).isEmpty();
         }
     }
@@ -145,5 +172,14 @@ public final class Impediments {
      */
     private Item item() throws IOException {
         return this.project.acq("impediments.xml");
+    }
+
+    /**
+     * Construct the pull path to the given job.
+     * @param job The job
+     * @return The full path to the given job
+     */
+    private static String order(final String job) {
+        return String.format("/impediments/order[@id='%s']", job);
     }
 }
