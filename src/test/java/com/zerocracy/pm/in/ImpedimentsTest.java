@@ -50,4 +50,31 @@ public final class ImpedimentsTest {
             Matchers.is(true)
         );
     }
+
+    @Test
+    public void removesImpediment() throws Exception {
+        final Project project = new FkProject();
+        final Impediments imp = new Impediments(project).bootstrap();
+        final String job = "gh:test/test#2";
+        new Wbs(project).bootstrap().add(job);
+        new Orders(project).bootstrap().assign(job, "amihaiemil", 0L);
+        imp.register(job, "reason");
+        MatcherAssert.assertThat(
+            imp.jobs(),
+            Matchers.contains(job)
+        );
+        MatcherAssert.assertThat(
+            imp.exists(job),
+            Matchers.is(true)
+        );
+        imp.remove(job);
+        MatcherAssert.assertThat(
+            imp.jobs(),
+            Matchers.not(Matchers.contains(job))
+        );
+        MatcherAssert.assertThat(
+            imp.exists(job),
+            Matchers.is(false)
+        );
+    }
 }
