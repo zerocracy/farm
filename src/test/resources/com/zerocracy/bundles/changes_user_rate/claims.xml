@@ -17,7 +17,7 @@ SOFTWARE.
 -->
 <claims xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.28/xsd/pm/claims.xsd" updated="2017-07-21T20:31:44.512Z" version="1">
   <claim id="1">
-    <created>2017-07-21T20:32:19.716Z</created>
+    <created>2018-07-07T20:32:19.716Z</created>
     <type>Change user rate</type>
     <token>test;C123;user42</token>
     <author>g4s8</author>

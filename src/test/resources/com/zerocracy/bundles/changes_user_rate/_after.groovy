@@ -24,7 +24,7 @@ import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
   MatcherAssert.assertThat(
-    new Rates(project).rate('user42').decimal().doubleValue(),
+    new Rates(project).bootstrap().rate('user42').decimal().doubleValue(),
     Matchers.equalTo(100.0D)
   )
 }

@@ -19,12 +19,21 @@ package com.zerocracy.bundles.changes_user_rate
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.cash.Cash
+import com.zerocracy.pm.cost.Rates
 import com.zerocracy.pmo.People
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   People people = new People(farm).bootstrap()
   String user = 'user42'
   people.wallet(user, 'paypal', 'user@example.com')
-  people.details(user, 'something')
+  Rates rates = new Rates(project).bootstrap()
+  rates.set(user, new Cash.S('$10'))
+  MatcherAssert.assertThat(
+    rates.rate(user).decimal().doubleValue(),
+    Matchers.equalTo(10.0D)
+  )
 }
