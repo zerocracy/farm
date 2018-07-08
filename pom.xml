@@ -503,7 +503,7 @@ SOFTWARE.
                       <limit>
                         <counter>COMPLEXITY</counter>
                         <value>COVEREDRATIO</value>
-                        <minimum>0.46</minimum>
+                        <minimum>0.45</minimum>
                       </limit>
                       <limit>
                         <counter>METHOD</counter>
