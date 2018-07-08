@@ -16,6 +16,7 @@
  */
 package com.zerocracy.stk.pm.in.orders
 
+
 import com.jcabi.github.Comment
 import com.jcabi.github.Github
 import com.jcabi.github.Issue
@@ -32,10 +33,12 @@ import com.zerocracy.pmo.Pmo
 import com.zerocracy.pmo.Verbosity
 import com.zerocracy.radars.github.Job
 import org.cactoos.iterable.Filtered
+import org.cactoos.iterable.IterableOf
 import org.cactoos.iterable.Joined
 import org.cactoos.iterable.LengthOf
 import org.cactoos.map.MapEntry
 import org.cactoos.map.MapOf
+import org.cactoos.scalar.Ternary
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
@@ -52,15 +55,19 @@ def exec(Project project, XML xml) {
         { Comment cmt -> (new Comment.Smart(cmt).author().login() == performer) },
         issue.comments().iterate(new Date(0))
       ),
-      new Filtered<>(
-        { RepoCommit comm -> new RepoCommit.Smart(comm).message().contains('#' + issue.number()) },
-        issue.repo().commits().iterate(
-          new MapOf<>(
-            new MapEntry<>('author', performer),
-            new MapEntry<>('since', new Agenda(farm, performer).bootstrap().added(job))
+      new Ternary<Iterable>(
+        issue.isPull(),
+        new IterableOf(),
+        new Filtered<>(
+          { RepoCommit comm -> new RepoCommit.Smart(comm).message().contains('#' + issue.number()) },
+          issue.repo().commits().iterate(
+            new MapOf<>(
+              new MapEntry<>('author', performer),
+              new MapEntry<>('since', new Agenda(farm, performer).bootstrap().added(job))
+            )
           )
         )
-      )
+      ).value()
     )
   ).value()
   new Verbosity(new Pmo(farm), performer).bootstrap().add(job, project, verbosity)
