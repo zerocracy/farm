@@ -47,20 +47,23 @@ public final class TkAgendaTest {
 
     @Test
     public void rendersXmlAgendaPage() throws Exception {
-        final Farm farm = new PropsFarm(new FkFarm());
         MatcherAssert.assertThat(
-            XhtmlMatchers.xhtml(new View(farm, "/u/yegor256/agenda").xml()),
+            XhtmlMatchers.xhtml(
+                new View(new PropsFarm(new FkFarm()), "/u/yegor256/agenda")
+                    .xml()
+            ),
             XhtmlMatchers.hasXPaths("/page")
         );
     }
 
     @Test
     public void rendersHtmlAgendaPageForFirefox() throws Exception {
-        final Farm farm = new PropsFarm(new FkFarm());
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
                 XhtmlMatchers.xhtml(
-                    new View(farm, "/u/yegor256/agenda").html()
+                    new View(
+                        new PropsFarm(new FkFarm()), "/u/yegor256/agenda"
+                    ).html()
                 )
             ),
             XhtmlMatchers.hasXPaths("//xhtml:body")
