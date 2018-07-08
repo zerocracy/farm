@@ -19,6 +19,7 @@ package com.zerocracy.pmo;
 import com.jcabi.aspects.Tv;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
+import java.time.Duration;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -68,21 +69,21 @@ public final class SpeedTest {
 
     @Test
     public void givesBonus() throws Exception {
-        final FkProject project = new FkProject();
-        final FkFarm farm = new FkFarm(project);
-        final Speed speed = new Speed(farm, "amihaiemil").bootstrap();
+        final Speed speed = new Speed(
+            new FkFarm(new FkProject()), "amihaiemil"
+        ).bootstrap();
         final String job = "gh:bonus/fast#1";
-        speed.add("TST100006", job, Tv.THOUSAND);
+        speed.add("TST100006", job, Duration.ofDays(1).toMinutes());
         MatcherAssert.assertThat(speed.bonus(job), Matchers.equalTo(Tv.FIVE));
     }
 
     @Test
     public void givesNoBonus() throws Exception {
-        final FkProject project = new FkProject();
-        final FkFarm farm = new FkFarm(project);
-        final Speed speed = new Speed(farm, "other").bootstrap();
+        final Speed speed = new Speed(
+            new FkFarm(new FkProject()), "other"
+        ).bootstrap();
         final String job = "gh:bonus/slow#1";
-        speed.add("TST100009", job, Tv.THREE * Tv.THOUSAND);
+        speed.add("TST100009", job, Duration.ofDays(Tv.THREE).toMinutes());
         MatcherAssert.assertThat(speed.bonus(job), Matchers.equalTo(0));
     }
 }

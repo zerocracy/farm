@@ -21,6 +21,7 @@ import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Xocument;
 import java.io.IOException;
+import java.time.Duration;
 import org.cactoos.collection.Mapped;
 import org.cactoos.iterable.ItemAt;
 import org.cactoos.scalar.IoCheckedScalar;
@@ -145,8 +146,7 @@ public final class Speed {
                         )
                     ).get(0)
             );
-            // @checkstyle MagicNumber (1 line)
-            if (minutes <= 2880) {
+            if (minutes <= Duration.ofDays(2).toMinutes()) {
                 bonus = Tv.FIVE;
             } else {
                 bonus = 0;
