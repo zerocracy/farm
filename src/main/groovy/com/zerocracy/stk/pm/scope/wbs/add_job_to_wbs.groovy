@@ -25,6 +25,7 @@ import com.zerocracy.Project
 import com.zerocracy.SoftException
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
+import com.zerocracy.farm.props.Props
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pm.staff.Roles
@@ -54,7 +55,12 @@ def exec(Project project, XML xml) {
     }
     if (role == 'REV' && issue.pull) {
       JsonObject pull = issue.pull().json()
-      int lines = pull.getInt('additions', 0) + pull.getInt('deletions', 0)
+      int lines;
+      if (new Props(farm).has('//testing')) {
+        lines = 20
+      } else {
+        lines = pull.getInt('additions', 0) + pull.getInt('deletions', 0)
+      }
       int min = 10
       if (lines < min) {
         throw new SoftException(
