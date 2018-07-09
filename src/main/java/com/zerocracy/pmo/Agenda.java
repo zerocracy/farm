@@ -24,8 +24,10 @@ import com.zerocracy.SoftException;
 import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
 import java.io.IOException;
+import java.time.Clock;
+import java.time.Instant;
 import java.util.Collection;
-import org.cactoos.time.DateAsText;
+import org.cactoos.text.JoinedText;
 import org.xembly.Directives;
 
 /**
@@ -50,12 +52,39 @@ public final class Agenda {
     private final String login;
 
     /**
+     * Time measure.
+     */
+    private final Clock clock;
+
+    /**
+     * Ctor.
+     * @param farm The farm
+     * @param user The user
+     * @param clock Clock to use
+     */
+    Agenda(final Farm farm, final String user, final Clock clock) {
+        this(new Pmo(farm), user, clock);
+    }
+
+    /**
      * Ctor.
      * @param farm The farm
      * @param user The user
      */
     public Agenda(final Farm farm, final String user) {
-        this(new Pmo(farm), user);
+        this(new Pmo(farm), user, Clock.systemUTC());
+    }
+
+    /**
+     * Ctor.
+     * @param pkt PMO
+     * @param user The user
+     * @param clock Clock to use
+     */
+    private Agenda(final Pmo pkt, final String user, final Clock clock) {
+        this.pmo = pkt;
+        this.login = user;
+        this.clock = clock;
     }
 
     /**
@@ -64,8 +93,7 @@ public final class Agenda {
      * @param user The user
      */
     public Agenda(final Pmo pkt, final String user) {
-        this.pmo = pkt;
-        this.login = user;
+        this(pkt, user, Clock.systemUTC());
     }
 
     /**
@@ -138,6 +166,36 @@ public final class Agenda {
     }
 
     /**
+     * When the job was added to agenda?
+     * @param job Job id
+     * @return Date and time job was added to agenda
+     * @throws IOException If fails
+     */
+    public Instant added(final String job) throws IOException {
+        if (!this.exists(job)) {
+            throw new SoftException(
+                new Par(
+                    new JoinedText(
+                        " ",
+                        "Job %s is not in the agenda of @%s,",
+                        "can't retrieve data and time of add"
+                    ).asString()
+                ).say(job, this.login)
+            );
+        }
+        try (final Item item = this.item()) {
+            return Instant.parse(
+                new Xocument(item.path()).nodes(
+                    String.format(
+                        "/agenda/order[@job='%s']/added",
+                        job
+                    )
+                ).get(0).node().getTextContent()
+            );
+        }
+    }
+
+    /**
      * Add an order to the agenda.
      * @param project The project
      * @param job Job ID
@@ -162,7 +220,7 @@ public final class Agenda {
                     .attr("job", job)
                     .add("role").set(role).up()
                     .add("title").set("-").up()
-                    .add("added").set(new DateAsText().asString()).up()
+                    .add("added").set(Instant.now(this.clock)).up()
                     .add("project")
                     .set(project.pid())
             );

@@ -81,6 +81,13 @@ SOFTWARE.
     <invited>false</invited>
   </cmd>
   <cmd>
+    <code>Remove impediment</code>
+    <regex>continue</regex>
+    <label>continue</label>
+    <help>Remove a job's impediment</help>
+    <invited>false</invited>
+  </cmd>
+  <cmd>
     <code>Check job status</code>
     <regex>status|check</regex>
     <label>status</label>
