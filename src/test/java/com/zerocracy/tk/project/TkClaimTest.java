@@ -67,7 +67,7 @@ public final class TkClaimTest {
                                     )
                                 )
                             ),
-                            "Accept: application/xml"
+                            "Accept: application/vnd.zerocracy+xml"
                         )
                     )
                 ).printBody()
@@ -102,7 +102,7 @@ public final class TkClaimTest {
                                     )
                                 )
                             ),
-                            "Accept: application/xml"
+                            "Accept: application/vnd.zerocracy+xml"
                         )
                     )
                 ).printBody()
@@ -144,7 +144,7 @@ public final class TkClaimTest {
                                     )
                                 )
                             ),
-                            "Accept: application/xml"
+                            "Accept: application/vnd.zerocracy+xml"
                         )
                     )
                 ).printBody()

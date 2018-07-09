@@ -61,7 +61,7 @@ public final class TkReportTest {
                                     "/report/C00000000?report=orders-given-by-week"
                                 )
                             ),
-                            "Accept: application/xml"
+                            "Accept: application/vnd.zerocracy+xml"
                         )
                     )
                 ).printBody()

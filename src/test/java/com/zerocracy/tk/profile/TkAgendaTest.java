@@ -58,7 +58,7 @@ public final class TkAgendaTest {
                                 new ListOf<>(
                                     "GET /u/Yegor256/agenda",
                                     "Host: www.example.com",
-                                    "Accept: application/xml"
+                                    "Accept: application/vnd.zerocracy+xml"
                                 ),
                                 ""
                             )
@@ -71,7 +71,7 @@ public final class TkAgendaTest {
     }
 
     @Test
-    public void rendersHtmlAgendaPageForFirefox() throws Exception {
+    public void rendersHtmlAgendaPage() throws Exception {
         final Farm farm = new PropsFarm(new FkFarm());
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(

@@ -50,7 +50,7 @@ public final class TkIndexTest {
                             new RqFake(
                                 "GET", "/"
                             ),
-                            "Accept: application/xml"
+                            "Accept: application/vnd.zerocracy+xml"
                         )
                     )
                 ).printBody()

@@ -57,7 +57,7 @@ public final class TkProjectTest {
                                     "/p/C00000000"
                                 )
                             ),
-                            "Accept: application/xml"
+                            "Accept: application/vnd.zerocracy+xml"
                         )
                     )
                 ).printBody()

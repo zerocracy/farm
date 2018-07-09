@@ -42,7 +42,7 @@ import org.takes.rq.RqFake;
 public final class RsPageTest {
 
     @Test
-    public void rendersHtmlForFirefox() throws IOException {
+    public void rendersHtml() throws IOException {
         MatcherAssert.assertThat(
             new TextOf(
                 new InputOf(
@@ -54,7 +54,7 @@ public final class RsPageTest {
                                 new ListOf<>(
                                     "GET /board",
                                     "Host: www.example.com",
-                                    "Accept: application/xml",
+                                    "Accept: text/html,application/xhtml+xml,application/xml",
                                     // @checkstyle LineLength (1 line)
                                     "User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:62.0) Gecko/20100101 Firefox/62.0"
                                 ),

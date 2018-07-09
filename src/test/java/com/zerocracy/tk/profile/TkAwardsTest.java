@@ -61,13 +61,13 @@ public final class TkAwardsTest {
     }
 
     @Test
-    public void rendersHtmlAwardsPageForFirefox() throws Exception {
+    public void rendersHtmlAwardsPage() throws Exception {
         final Farm farm = new PropsFarm(new FkFarm());
         final String user = "yegor256";
         final int points = 1234;
         new Awards(farm, user).bootstrap()
             .add(new FkProject(), points, "none", "reason");
-        final String html = this.firefoxView(farm, user);
+        final String html = this.htmlView(farm, user);
         MatcherAssert.assertThat(
             html,
             XhtmlMatchers.hasXPaths("//xhtml:html")
@@ -78,7 +78,7 @@ public final class TkAwardsTest {
         );
     }
 
-    private String firefoxView(final Farm farm, final String uid)
+    private String htmlView(final Farm farm, final String uid)
         throws IOException {
         return new RsPrint(
             new TkApp(farm).act(
@@ -88,7 +88,7 @@ public final class TkAwardsTest {
                         new ListOf<>(
                             String.format("GET /u/%s/awards", uid),
                             "Host: www.example.com",
-                            "Accept: application/xml",
+                            "Accept: text/html,application/xhtml+xml,application/xml",
                             // @checkstyle LineLength (1 line)
                             "User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:62.0) Gecko/20100101 Firefox/62.0"
                         ),

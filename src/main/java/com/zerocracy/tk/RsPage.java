@@ -23,12 +23,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.regex.Pattern;
 import org.cactoos.Scalar;
-import org.cactoos.iterable.Filtered;
-import org.cactoos.iterable.LengthOf;
 import org.cactoos.scalar.IoCheckedScalar;
-import org.cactoos.scalar.Ternary;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.facets.auth.Identity;
@@ -39,7 +35,6 @@ import org.takes.facets.auth.social.XeGithubLink;
 import org.takes.facets.flash.XeFlash;
 import org.takes.facets.fork.FkTypes;
 import org.takes.facets.fork.RsFork;
-import org.takes.misc.Opt;
 import org.takes.rs.RsPrettyXml;
 import org.takes.rs.RsWithType;
 import org.takes.rs.RsWrap;
@@ -69,12 +64,6 @@ import org.takes.rs.xe.XeWhen;
  */
 @SuppressWarnings("PMD.ExcessiveImports")
 public final class RsPage extends RsWrap {
-
-    /**
-     * Regexp pattern to match Firefox browser.
-     */
-    private static final Pattern FIREFOX_AGENT =
-        Pattern.compile("User-Agent: .*Firefox.*");
 
     /**
      * Ctor.
@@ -179,21 +168,8 @@ public final class RsPage extends RsWrap {
         final RsXslt html = new RsXslt(new RsWithType(raw, "text/html"));
         return new RsFork(
             req,
-            request -> new IoCheckedScalar<>(
-                new Ternary<Opt<Response>>(
-                    () -> new LengthOf(
-                        new Filtered<>(
-                            header -> RsPage.FIREFOX_AGENT.matcher(header)
-                                .matches(),
-                            request.head()
-                        )
-                    ).intValue() > 0,
-                    () -> new Opt.Single<>(html),
-                    () -> new Opt.Empty<>()
-                )
-            ).value(),
             new FkTypes(
-                "application/xml,text/xml",
+                "application/vnd.zerocracy+xml",
                 new RsPrettyXml(new RsWithType(raw, "text/xml"))
             ),
             new FkTypes("*/*", html)

@@ -67,7 +67,7 @@ public final class TkBoardTest {
             )
         );
         MatcherAssert.assertThat(
-            this.firefoxView(farm),
+            this.htmlView(farm),
             XhtmlMatchers.hasXPaths(
                 String.format(
                     // @checkstyle LineLength (1 line)
@@ -92,7 +92,7 @@ public final class TkBoardTest {
         );
         catalog.publish(project.pid(), true);
         MatcherAssert.assertThat(
-            this.firefoxView(farm),
+            this.htmlView(farm),
             XhtmlMatchers.hasXPaths(
                 // @checkstyle LineLength (1 line)
                 "//xhtml:span[@title = 'The project has no funds, you will work for free']"
@@ -100,7 +100,7 @@ public final class TkBoardTest {
         );
     }
 
-    private String firefoxView(final Farm farm) throws IOException {
+    private String htmlView(final Farm farm) throws IOException {
         return new RsPrint(
             new TkApp(farm).act(
                 new RqWithUser(
@@ -109,7 +109,7 @@ public final class TkBoardTest {
                         new ListOf<>(
                             "GET /board",
                             "Host: www.example.com",
-                            "Accept: application/xml",
+                            "Accept: text/html,application/xhtml+xml,application/xml",
                             // @checkstyle LineLength (1 line)
                             "User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:62.0) Gecko/20100101 Firefox/62.0"
                         ),
