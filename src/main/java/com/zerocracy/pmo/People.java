@@ -414,7 +414,8 @@ public final class People {
                 new Par("Litecoin address is not valid: `%s`").say(wallet)
             );
         }
-        if ("zld".equals(bank) && !wallet.matches("[a-z0-9-]{3,}")) {
+        if ("zld".equals(bank)
+            && !wallet.matches("^[a-z\\d](?:[a-z\\d]|-(?=[a-z\\d])){0,38}$")) {
             throw new SoftException(
                 new Par("Zold address is not valid: `%s`").say(wallet)
             );
