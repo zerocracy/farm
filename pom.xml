@@ -77,7 +77,7 @@ SOFTWARE.
   <properties>
     <mongo.version>3.8.0</mongo.version>
     <telegram.version>3.6</telegram.version>
-    <branch.coverage>0.52</branch.coverage>
+    <branch.coverage>0.45</branch.coverage>
   </properties>
   <dependencies>
     <dependency>
@@ -476,7 +476,7 @@ SOFTWARE.
                       <limit>
                         <counter>INSTRUCTION</counter>
                         <value>COVEREDRATIO</value>
-                        <minimum>0.60</minimum>
+                        <minimum>0.58</minimum>
                       </limit>
                       <limit>
                         <counter>LINE</counter>
@@ -488,6 +488,13 @@ SOFTWARE.
                           branch coverage of 65% and class missed count of max 15.
                           Remember to increase those coverages below in jacoco configuration.
                       -->
+                      <!-- 
+                           @todo #1088:30min Groovy scripts are now not excluded, as a result
+                            complexity coverage ration dropped from 0.57, and instruction
+                            coverage dropped from 0.60. Add tests to
+                            stakeholder scripts to the previous coverage of 0.57 for
+                            complexity and 0.60 for instruction coverage.
+                       -->
                       <limit>
                         <counter>BRANCH</counter>
                         <value>COVEREDRATIO</value>
@@ -496,7 +503,7 @@ SOFTWARE.
                       <limit>
                         <counter>COMPLEXITY</counter>
                         <value>COVEREDRATIO</value>
-                        <minimum>0.57</minimum>
+                        <minimum>0.45</minimum>
                       </limit>
                       <limit>
                         <counter>METHOD</counter>
@@ -506,19 +513,11 @@ SOFTWARE.
                       <limit>
                         <counter>CLASS</counter>
                         <value>MISSEDCOUNT</value>
-                        <maximum>60</maximum>
+                        <maximum>68</maximum>
                       </limit>
                     </limits>
                   </rule>
                 </rules>
-                <excludes combine.children="append">
-                  <!--
-                    @todo #747:30min Groovy scripts are excluded from coverage report
-                     because they are not fully tested. Let's add tests for them and remove this
-                     `<exclude>` line.
-                  -->
-                  <exclude>com/zerocracy/stk/**/*</exclude>
-                </excludes>
               </configuration>
             </execution>
             <execution>
