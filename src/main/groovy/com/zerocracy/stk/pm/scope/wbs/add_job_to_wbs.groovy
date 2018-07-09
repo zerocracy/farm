@@ -55,7 +55,7 @@ def exec(Project project, XML xml) {
     }
     if (role == 'REV' && issue.pull) {
       JsonObject pull = issue.pull().json()
-      int lines;
+      int lines
       if (new Props(farm).has('//testing')) {
         lines = 20
       } else {
