@@ -549,7 +549,7 @@ public final class PeopleTest {
         );
     }
 
-    private void failsWallet(final String bank, String wallet)
+    private void failsWallet(final String bank, final String wallet)
         throws IOException {
         final FkFarm farm = new FkFarm(new FkProject());
         final People people = new People(farm).bootstrap();

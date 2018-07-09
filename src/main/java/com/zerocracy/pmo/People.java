@@ -373,6 +373,7 @@ public final class People {
      * @param wallet Wallet value
      * @throws IOException If fails
      * @checkstyle CyclomaticComplexityCheck (100 lines)
+     * @checkstyle NPathComplexityCheck (100 lines)
      */
     public void wallet(final String uid, final String bank,
         final String wallet) throws IOException {
