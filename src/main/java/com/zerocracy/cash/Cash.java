@@ -106,7 +106,16 @@ public interface Cash extends Comparable<Cash>, Serializable {
     Cash exchange(Currency currency) throws IOException;
 
     /**
-     * Is cash representation unified?
+     * Is cash representation unified (there were no {@code add} method called)?
+     *
+     * Non-unified Cash object is created by doing {@link #add(Cash)} of
+     * {@code Cash} objects:
+     * <pre>
+     *     Cash cash = new Cash.S("$10").add(new Cash.S("$20"));
+     * </pre>
+     *
+     * To get a unified {@code Cash} object you need to call
+     * {@link #exchange(Currency)} method.
      * @return True if the cash has been unified.
      */
     boolean unified();

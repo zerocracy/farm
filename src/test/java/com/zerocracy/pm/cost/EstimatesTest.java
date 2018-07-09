@@ -87,7 +87,8 @@ public final class EstimatesTest {
         );
         final Estimates estimates = new Estimates(project).bootstrap();
         final String first = "gh:yegor256/pdd#4";
-        new Wbs(project).bootstrap().add(first);
+        final Wbs wbs = new Wbs(project).bootstrap();
+        wbs.add(first);
         new Orders(project).bootstrap().assign(first, "yegor256", 0L);
         estimates.update(first, new Cash.S("$45"));
         MatcherAssert.assertThat(
@@ -95,7 +96,7 @@ public final class EstimatesTest {
             Matchers.equalTo(new Cash.S("$45.00"))
         );
         final String second = "gh:yegor256/pdd#1";
-        new Wbs(project).bootstrap().add(second);
+        wbs.add(second);
         new Orders(project).bootstrap().assign(second, "yegor", 0L);
         estimates.update(second, new Cash.S("€100"));
         MatcherAssert.assertThat(
