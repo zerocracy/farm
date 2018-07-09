@@ -96,7 +96,8 @@ public final class VsOverElected implements Votes {
      * @todo #926:30min Refactor this method - extract to some class,
      *  because it's used in two different places: here and in VsNoRoom,
      *  this class should encapsulate farm or pmo and accept login as
-     *  argument.
+     *  argument and should get this information from policy,
+     *  not hard code it.
      * @checkstyle MagicNumberCheck (20 lines)
      */
     private int threshold(final String login) throws IOException {
