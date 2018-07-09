@@ -27,6 +27,9 @@ import org.takes.rs.RsPrint;
  * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
  * @version $Id$
  * @since 0.26
+ * @todo #1142:30min This class should be tested that it actually forwards
+ *  the call to the TkApp with the url provided by the user, and that the
+ *  resulting page is an xml or html, depending on the method.
  */
 public final class View {
 
