@@ -95,7 +95,7 @@ public final class XocumentTest {
                     phaser.arriveAndAwaitAdvance();
                     xocument.modify(
                         new Directives().xpath("/roles")
-                            .addIf("person")
+                            .add("person")
                             .attr("id", id)
                             .addIf("role").set("DEV")
                     );
