@@ -52,7 +52,12 @@ import org.junit.rules.ExpectedException;
  * @checkstyle JavadocVariableCheck (1000 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (3 lines)
  */
-@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
+@SuppressWarnings(
+    {
+        "PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods",
+        "PMD.ExcessivePublicCount ", "PMD.GodClass"
+    }
+)
 public final class PeopleTest {
 
     @Rule
