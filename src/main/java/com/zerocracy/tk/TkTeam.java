@@ -46,6 +46,8 @@ import org.takes.rs.xe.XeWhen;
  * @todo #1121:30min Speed and Agenda is skipped now because it
  *  causes slow page loading. We have to fix #1121 bug and show
  *  it on page as before.
+ * @todo #559:30min Let's display the data from people/skills on the profile
+ * page of a given user as well as on the team page.
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class TkTeam implements Take {
