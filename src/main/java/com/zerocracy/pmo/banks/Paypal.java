@@ -39,6 +39,7 @@ import com.zerocracy.cash.Cash;
 import com.zerocracy.cash.CashParsingException;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.pm.ClaimOut;
+import com.zerocracy.pm.ClaimOutSafe;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
@@ -54,6 +55,7 @@ import org.cactoos.map.SolidMap;
  * @since 0.19
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.ExcessiveImports")
 final class Paypal implements Bank {
 
     /**
@@ -135,30 +137,32 @@ final class Paypal implements Bank {
                 ex
             );
         }
-        new ClaimOut().type("Notify PMO").param(
-            "message",
-            new Par(
-                "PayPal payment has been sent;",
-                "Sender=%s, Receiver=%s,",
-                "Memo=\"%s\",",
-                "Amount=%s, Currency=%s,",
-                "TrackingId=%s,",
-                "Ack=%s, PayKey=%s, PaymentExecStatus=%s,",
-                "Build=%s, CorrelationId=%s,",
-                "Timestamp=%s"
-            ).say(
-                request.getSenderEmail(),
-                request.getReceiverList().getReceiver().get(0).getEmail(),
-                request.getMemo(),
-                request.getReceiverList().getReceiver().get(0).getAmount(),
-                request.getCurrencyCode(),
-                request.getTrackingId(),
-                response.getResponseEnvelope().getAck().getValue(),
-                response.getPayKey(),
-                response.getPaymentExecStatus(),
-                response.getResponseEnvelope().getBuild(),
-                response.getResponseEnvelope().getCorrelationId(),
-                response.getResponseEnvelope().getTimestamp()
+        new ClaimOutSafe(
+            new ClaimOut().type("Notify PMO").param(
+                "message",
+                new Par(
+                    "PayPal payment has been sent;",
+                    "Sender=%s, Receiver=%s,",
+                    "Memo=\"%s\",",
+                    "Amount=%s, Currency=%s,",
+                    "TrackingId=%s,",
+                    "Ack=%s, PayKey=%s, PaymentExecStatus=%s,",
+                    "Build=%s, CorrelationId=%s,",
+                    "Timestamp=%s"
+                ).say(
+                    request.getSenderEmail(),
+                    request.getReceiverList().getReceiver().get(0).getEmail(),
+                    request.getMemo(),
+                    request.getReceiverList().getReceiver().get(0).getAmount(),
+                    request.getCurrencyCode(),
+                    request.getTrackingId(),
+                    response.getResponseEnvelope().getAck().getValue(),
+                    response.getPayKey(),
+                    response.getPaymentExecStatus(),
+                    response.getResponseEnvelope().getBuild(),
+                    response.getResponseEnvelope().getCorrelationId(),
+                    response.getResponseEnvelope().getTimestamp()
+                )
             )
         ).postTo(this.farm);
         return response.getPayKey();
