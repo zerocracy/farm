@@ -186,8 +186,8 @@ public final class TkProfileTest {
                         new ListOf<>(
                             String.format("GET /u/%s", uid),
                             "Host: www.example.com",
+                            // @checkstyle LineLength (2 lines)
                             "Accept: text/html,application/xhtml+xml,application/xml",
-                            // @checkstyle LineLength (1 line)
                             "User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:62.0) Gecko/20100101 Firefox/62.0"
                         ),
                         ""
