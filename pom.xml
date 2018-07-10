@@ -1006,14 +1006,7 @@ SOFTWARE.
                   <exclude>com.zerocracy.tk.project.TkArtifactTest</exclude>
                   <exclude>com.zerocracy.tk.project.TkFootprintTest</exclude>
                   <exclude>com.zerocracy.pm.cost.EquityTest</exclude>
-                  <exclude>com.zerocracy.tk.TkAppTest</exclude>
-                  <exclude>com.zerocracy.tk.profile.TkIdentifyTest</exclude>
-                  <exclude>com.zerocracy.tk.profile.TkProfileTest</exclude>
-                  <exclude>com.zerocracy.tk.TkBoardTest</exclude>
-                  <exclude>com.zerocracy.tk.RsPageTest</exclude>
-                  <exclude>com.zerocracy.tk.profile.TkAwardsTest</exclude>
-                  <exclude>com.zerocracy.tk.profile.TkAgendaTest</exclude>
-                  <exclude>com.zerocracy.tk.TkVacanciesTest</exclude>
+                  <exclude>com.zerocracy.tk.*</exclude>
                 </excludes>
               </configuration>
             </plugin>
@@ -1032,17 +1025,8 @@ SOFTWARE.
                   <excludes combine.children="append">
                     <exclude>com/zerocracy/pings/*.*</exclude>
                     <exclude>com/zerocracy/farm/S3Item.java</exclude>
-                    <exclude>com/zerocracy/tk/project/TkArtifact.java</exclude>
-                    <exclude>com/zerocracy/tk/project/TkFootprint.java</exclude>
                     <exclude>com/zerocracy/pm/cost/Equity.java</exclude>
-                    <exclude>com/zerocracy/tk/TkApp.java</exclude>
-                    <exclude>com/zerocracy/tk/profile/TkIdentify.java</exclude>
-                    <exclude>com/zerocracy/tk/profile/TkProfile.java</exclude>
-                    <exclude>com/zerocracy/tk/TkBoard.java</exclude>
-                    <exclude>com/zerocracy/tk/RsPage.java</exclude>
-                    <exclude>com/zerocracy/tk/profile/TkAwards.java</exclude>
-                    <exclude>com/zerocracy/tk/profile/TkAgenda.java</exclude>
-                    <exclude>com/zerocracy/tk/TkVacancies.java</exclude>
+                    <exclude>com/zerocracy/tk/**/*.java</exclude>
                   </excludes>
                 </configuration>
               </execution>
