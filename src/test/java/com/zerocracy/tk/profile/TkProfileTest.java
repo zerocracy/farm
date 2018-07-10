@@ -31,7 +31,7 @@ import com.zerocracy.pmo.Pmo;
 import com.zerocracy.pmo.Projects;
 import com.zerocracy.tk.RqWithUser;
 import com.zerocracy.tk.TkApp;
-import java.io.IOException;
+import com.zerocracy.tk.View;
 import java.nio.file.Path;
 import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
@@ -70,22 +70,13 @@ public final class TkProfileTest {
             new FkProject(), "gh:test/test#2", "QA"
         );
         MatcherAssert.assertThat(
-            XhtmlMatchers.xhtml(
-                new RsPrint(
-                    new TkApp(farm).act(
-                        new RqWithUser(
-                            farm,
-                            new RqFake("GET", "/u/Yegor256")
-                        )
-                    )
-                ).printBody()
-            ),
+            XhtmlMatchers.xhtml(new View(farm, "/u/Yegor256").html()),
             XhtmlMatchers.hasXPaths("//xhtml:body")
         );
     }
 
     @Test
-    public void rendersProfilePageWithRate() throws Exception {
+    public void rendersProfilePageWithRateInFirefox() throws Exception {
         final Farm farm = new PropsFarm(new FkFarm());
         final double rate = 99.99;
         final People people = new People(farm).bootstrap();
@@ -94,7 +85,7 @@ public final class TkProfileTest {
             "yegor256", new Cash.S(String.format("USD %f", rate))
         );
         MatcherAssert.assertThat(
-            this.htmlView(farm, "yegor256"),
+            new View(farm, "/u/yegor256").html(),
             Matchers.containsString(
                 String.format(
                     "rate</a> is <span style=\"color:darkgreen\">$%.2f</span>",
@@ -105,11 +96,11 @@ public final class TkProfileTest {
     }
 
     @Test
-    public void rendersProfilePageWithReputation() throws Exception {
+    public void rendersProfilePageInFirefoxWithReputation() throws Exception {
         final Farm farm = new PropsFarm(new FkFarm());
         final String user = "yegor256";
         MatcherAssert.assertThat(
-            this.htmlView(farm, user),
+            new View(farm, String.format("/u/%s", user)).html(),
             XhtmlMatchers.hasXPath(
                 String.format(
                     "//xhtml:a[@href='https://github.com/%s']",
@@ -120,14 +111,15 @@ public final class TkProfileTest {
     }
 
     @Test
-    public void rendersProfilePageWithoutRate() throws Exception {
+    public void rendersProfilePageWithoutRateInFirefox() throws Exception {
         final Farm farm = new PropsFarm(new FkFarm());
         final People people = new People(farm).bootstrap();
+        final String uid = "yegor256";
         people.wallet(
-            "yegor256", "btc", "3HcEB6bi4TFPdvk31Pwz77DwAzfAZz2fMn"
+            uid, "btc", "3HcEB6bi4TFPdvk31Pwz77DwAzfAZz2fMn"
         );
         MatcherAssert.assertThat(
-            this.htmlView(farm, "yegor256"),
+            new View(farm, String.format("/u/%s", uid)).html(),
             Matchers.containsString("rate</a> is not defined")
         );
     }
@@ -154,7 +146,7 @@ public final class TkProfileTest {
                                 new ListOf<>(
                                     String.format("GET /u/%s", uid),
                                     "Host: www.example.com",
-                                    "Accept: application/vnd.zerocracy+xml"
+                                    "Accept: application/xml"
                                 ),
                                 ""
                             ),
@@ -173,27 +165,4 @@ public final class TkProfileTest {
         );
     }
 
-    // @todo #1080:30min Refactor this method and similar functionality in
-    //  TkAwardsTest into a reusable class in which we could control what kind
-    //  of view we want to generate.
-    private String htmlView(final Farm farm, final String uid)
-        throws IOException {
-        return new RsPrint(
-            new TkApp(farm).act(
-                new RqWithUser(
-                    farm,
-                    new RqFake(
-                        new ListOf<>(
-                            String.format("GET /u/%s", uid),
-                            "Host: www.example.com",
-                            // @checkstyle LineLength (2 lines)
-                            "Accept: text/html,application/xhtml+xml,application/xml",
-                            "User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:62.0) Gecko/20100101 Firefox/62.0"
-                        ),
-                        ""
-                    )
-                )
-            )
-        ).printBody();
-    }
 }
