@@ -373,10 +373,11 @@ public final class People {
      * @param wallet Wallet value
      * @throws IOException If fails
      * @checkstyle CyclomaticComplexityCheck (100 lines)
+     * @checkstyle NPathComplexityCheck (100 lines)
      */
     public void wallet(final String uid, final String bank,
         final String wallet) throws IOException {
-        if (!bank.matches("paypal|btc|bch|eth|ltc")) {
+        if (!bank.matches("paypal|btc|bch|eth|ltc|zld")) {
             throw new SoftException(
                 new Par(
                     "Bank name `%s` is invalid, we accept only",
@@ -412,6 +413,12 @@ public final class People {
             && !wallet.matches("[0-9a-zA-Z]{34}")) {
             throw new SoftException(
                 new Par("Litecoin address is not valid: `%s`").say(wallet)
+            );
+        }
+        if ("zld".equals(bank)
+            && !wallet.matches("^[a-z\\d](?:[a-z\\d]|-(?=[a-z\\d])){0,38}$")) {
+            throw new SoftException(
+                new Par("Zold address is not valid: `%s`").say(wallet)
             );
         }
         try (final Item item = this.item()) {
