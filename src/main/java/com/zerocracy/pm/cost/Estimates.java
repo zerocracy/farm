@@ -23,6 +23,7 @@ import com.zerocracy.SoftException;
 import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.cash.CashParsingException;
+import com.zerocracy.cash.Currency;
 import com.zerocracy.pm.in.Orders;
 import com.zerocracy.pm.scope.Wbs;
 import com.zerocracy.pm.staff.Roles;
@@ -32,6 +33,7 @@ import java.util.LinkedList;
 import org.cactoos.collection.Mapped;
 import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.scalar.Reduced;
+import org.cactoos.scalar.Ternary;
 import org.cactoos.time.DateAsText;
 import org.xembly.Directives;
 
@@ -161,9 +163,8 @@ public final class Estimates {
                     .add("cash")
                     .set(cash)
             );
-            xoc.modify(
-                new Directives().xpath("/estimates").attr(
-                    "total",
+            final Cash value = new IoCheckedScalar<>(
+                new Ternary<>(
                     new IoCheckedScalar<>(
                         new Reduced<Cash, Cash>(
                             Cash.ZERO,
@@ -173,7 +174,16 @@ public final class Estimates {
                                 xoc.xpath("//order/cash/text()")
                             )
                         )
-                    ).value()
+                    ).value(),
+                    Cash::unified,
+                    csh -> csh,
+                    csh -> csh.exchange(Currency.USD)
+                )
+            ).value();
+            xoc.modify(
+                new Directives().xpath("/estimates").attr(
+                    "total",
+                    value
                 )
             );
         }

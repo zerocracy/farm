@@ -35,19 +35,7 @@ import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pm.staff.ranks.RnkBoost
 import com.zerocracy.pm.staff.ranks.RnkGithubBug
 import com.zerocracy.pm.staff.ranks.RnkRev
-import com.zerocracy.pm.staff.votes.VsBalance
-import com.zerocracy.pm.staff.votes.VsBanned
-import com.zerocracy.pm.staff.votes.VsBigDebt
-import com.zerocracy.pm.staff.votes.VsHardCap
-import com.zerocracy.pm.staff.votes.VsLosers
-import com.zerocracy.pm.staff.votes.VsNoRoom
-import com.zerocracy.pm.staff.votes.VsRandom
-import com.zerocracy.pm.staff.votes.VsRate
-import com.zerocracy.pm.staff.votes.VsReputation
-import com.zerocracy.pm.staff.votes.VsSafe
-import com.zerocracy.pm.staff.votes.VsSpeed
-import com.zerocracy.pm.staff.votes.VsVacation
-import com.zerocracy.pm.staff.votes.VsWorkload
+import com.zerocracy.pm.staff.votes.*
 import com.zerocracy.pmo.Pmo
 
 def exec(Project project, XML xml) {
@@ -62,6 +50,10 @@ def exec(Project project, XML xml) {
   if (new Ledger(project).bootstrap().deficit()) {
     return
   }
+  // @todo #926:30min we should synchronize elected, but not assigned jobs
+  //  between different projects, because one project may elect a user
+  //  as a performer for few jobs and another project may elect same user
+  //  before jobs from first project will be assigned to the performer.
   Wbs wbs = new Wbs(project).bootstrap()
   Roles roles = new Roles(project).bootstrap()
   Orders orders = new Orders(project).bootstrap()
@@ -90,10 +82,12 @@ def exec(Project project, XML xml) {
     if (logins.empty) {
       return
     }
+    int max = new Policy().get('3.absolute-max', 32)
     boolean done = elections.elect(
       job, logins,
       [
-        (new VsSafe(new VsHardCap(pmo, new Policy().get('3.absolute-max', 32))))  : -100,
+        (new VsSafe(new VsHardCap(pmo, max)))                                     : -100,
+        (new VsSafe(new VsOverElected(project, farm)))                            : role == 'REV' ? 0 : -100,
         (new VsSafe(new VsReputation(pmo, logins)))                               : 5,
         (new VsSafe(new VsLosers(pmo, new Policy().get('3.low-threshold', -128)))): -100,
         (new VsSafe(new VsRate(project, logins)))                                 : 2,
