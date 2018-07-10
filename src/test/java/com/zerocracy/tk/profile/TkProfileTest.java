@@ -146,7 +146,7 @@ public final class TkProfileTest {
                                 new ListOf<>(
                                     String.format("GET /u/%s", uid),
                                     "Host: www.example.com",
-                                    "Accept: application/xml"
+                                    "Accept: application/vnd.zerocracy+xml"
                                 ),
                                 ""
                             ),

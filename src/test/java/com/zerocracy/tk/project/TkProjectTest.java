@@ -22,13 +22,9 @@ import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.pmo.Pmo;
-import com.zerocracy.tk.RqWithUser;
-import com.zerocracy.tk.TkApp;
+import com.zerocracy.tk.View;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
-import org.takes.rq.RqFake;
-import org.takes.rq.RqWithHeaders;
-import org.takes.rs.RsPrint;
 
 /**
  * Test case for {@link TkProject}.
@@ -47,20 +43,7 @@ public final class TkProjectTest {
         final Farm farm = new PropsFarm(raw);
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
-                new RsPrint(
-                    new TkApp(farm).act(
-                        new RqWithHeaders(
-                            new RqWithUser(
-                                farm,
-                                new RqFake(
-                                    "GET",
-                                    "/p/C00000000"
-                                )
-                            ),
-                            "Accept: application/vnd.zerocracy+xml"
-                        )
-                    )
-                ).printBody()
+                new View(farm, "/p/C00000000").xml()
             ),
             XhtmlMatchers.hasXPaths(
                 "/page[project='C00000000']",

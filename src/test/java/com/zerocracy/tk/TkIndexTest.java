@@ -23,10 +23,6 @@ import com.zerocracy.farm.footprint.FtFarm;
 import com.zerocracy.farm.props.PropsFarm;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
-import org.takes.Take;
-import org.takes.rq.RqFake;
-import org.takes.rq.RqWithHeaders;
-import org.takes.rs.RsPrint;
 
 /**
  * Test case for {@link TkIndex}.
@@ -41,20 +37,8 @@ public final class TkIndexTest {
     @Test
     public void rendersIndexPage() throws Exception {
         final Farm farm = new FtFarm(new PropsFarm(new FkFarm()));
-        final Take take = new TkApp(farm);
         MatcherAssert.assertThat(
-            XhtmlMatchers.xhtml(
-                new RsPrint(
-                    take.act(
-                        new RqWithHeaders(
-                            new RqFake(
-                                "GET", "/"
-                            ),
-                            "Accept: application/vnd.zerocracy+xml"
-                        )
-                    )
-                ).printBody()
-            ),
+            XhtmlMatchers.xhtml(new View(farm, "/").xml()),
             XhtmlMatchers.hasXPaths("/page/alive")
         );
     }

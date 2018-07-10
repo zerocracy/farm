@@ -85,7 +85,8 @@ public final class View {
      * @return Generated page
      * @throws IOException In case of error
      */
-    private String page(final String agent, final String accept) throws IOException {
+    private String page(final String agent, final String accept)
+        throws IOException {
         return new RsPrint(
             new TkApp(this.farm).act(
                 new RqWithUser(

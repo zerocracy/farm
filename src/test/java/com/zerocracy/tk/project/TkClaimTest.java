@@ -27,13 +27,9 @@ import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
-import com.zerocracy.tk.RqWithUser;
-import com.zerocracy.tk.TkApp;
+import com.zerocracy.tk.View;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
-import org.takes.rq.RqFake;
-import org.takes.rq.RqWithHeaders;
-import org.takes.rs.RsPrint;
 
 /**
  * Test case for {@link TkClaim}.
@@ -55,22 +51,9 @@ public final class TkClaimTest {
         claim.postTo(farm.find("@id='C00000000'").iterator().next());
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
-                new RsPrint(
-                    new TkApp(farm).act(
-                        new RqWithHeaders(
-                            new RqWithUser(
-                                farm,
-                                new RqFake(
-                                    "GET",
-                                    String.format(
-                                        "/footprint/C00000000/%d", cid
-                                    )
-                                )
-                            ),
-                            "Accept: application/vnd.zerocracy+xml"
-                        )
-                    )
-                ).printBody()
+                new View(
+                    farm,  String.format("/footprint/C00000000/%d", cid)
+                ).xml()
             ),
             XhtmlMatchers.hasXPaths(
                 String.format("/page/claim/cid[text() = %d]", cid),
@@ -90,22 +73,10 @@ public final class TkClaimTest {
         new ClaimIn(xml).copy().cid(child).postTo(proj);
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
-                new RsPrint(
-                    new TkApp(farm).act(
-                        new RqWithHeaders(
-                            new RqWithUser(
-                                farm,
-                                new RqFake(
-                                    "GET",
-                                    String.format(
-                                        "/footprint/%s/%d", proj.pid(), parent
-                                    )
-                                )
-                            ),
-                            "Accept: application/vnd.zerocracy+xml"
-                        )
-                    )
-                ).printBody()
+                new View(
+                    farm,
+                    String.format("/footprint/%s/%d", proj.pid(), parent)
+                ).xml()
             ),
             XhtmlMatchers.hasXPaths(
                 String.format("/page/claim/cid[text() = %d]", parent),
@@ -130,24 +101,10 @@ public final class TkClaimTest {
         }
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
-                new RsPrint(
-                    new TkApp(farm).act(
-                        new RqWithHeaders(
-                            new RqWithUser(
-                                farm,
-                                new RqFake(
-                                    "GET",
-                                    String.format(
-                                        "/footprint/%s/%d",
-                                        proj.pid(),
-                                        parent
-                                    )
-                                )
-                            ),
-                            "Accept: application/vnd.zerocracy+xml"
-                        )
-                    )
-                ).printBody()
+                new View(
+                    farm,
+                    String.format("/footprint/%s/%d", proj.pid(), parent)
+                ).xml()
             ),
             XhtmlMatchers.hasXPaths(
                 String.format("/page/claim/cid[text() = %d]", parent),
