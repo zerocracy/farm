@@ -59,8 +59,10 @@ public final class View {
      * @throws IOException In case of error
      */
     public String xml() throws IOException {
-        final String agent = "User-Agent: Some XML rendering user Agent";
-        return this.page(agent);
+        return this.page(
+            "Some XML rendering user Agent",
+            "application/vnd.zerocracy+xml"
+        );
     }
 
     /**
@@ -71,17 +73,19 @@ public final class View {
     public String html() throws IOException {
         return this.page(
             // @checkstyle LineLength (1 line)
-            "User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:62.0) Gecko/20100101 Firefox/62.0"
+            "Mozilla/5.0 (X11; Linux x86_64; rv:62.0) Gecko/20100101 Firefox/62.0",
+            "text/html,application/xhtml+xml,application/xml"
         );
     }
 
     /**
      * Generate view of page using provided user agent.
      * @param agent User agent to use
+     * @param accept Content types in Accept header
      * @return Generated page
      * @throws IOException In case of error
      */
-    private String page(final String agent) throws IOException {
+    private String page(final String agent, final String accept) throws IOException {
         return new RsPrint(
             new TkApp(this.farm).act(
                 new RqWithUser(
@@ -90,8 +94,8 @@ public final class View {
                         new ListOf<>(
                             String.format("GET %s", this.url),
                             "Host: www.example.com",
-                            "Accept: application/xml",
-                            agent
+                            String.format("Accept: %s", accept),
+                            String.format("User-Agent: %s", agent)
                         ),
                         ""
                     )
