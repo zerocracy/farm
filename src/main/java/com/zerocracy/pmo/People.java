@@ -849,7 +849,7 @@ public final class People {
     }
 
     /**
-     * Skills of a person
+     * Skills of a person.
      * @param uid Person's login
      * @return Iterable with skills
      * @throws IOException If fails
