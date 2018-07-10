@@ -95,6 +95,12 @@ public final class VsBalance implements Votes {
         final int all = new LengthOf(
             new Projects(this.farm, login).bootstrap().iterate()
         ).intValue();
+        log.append(
+            String.format(
+                "Has %d jobs in %d projects, %.2f%% from current project",
+                size, all, percent
+            )
+        );
         return 1.0 - (percent * all) / this.max.value();
     }
 }
