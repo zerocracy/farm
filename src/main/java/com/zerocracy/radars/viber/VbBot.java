@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,8 +19,6 @@ package com.zerocracy.radars.viber;
 /**
  * Viber bot.
  *
- * @author Carlos Miranda (miranda.cma@gmail.com)
- * @version $Id$
  * @since 0.22
  * @todo #939:30min Implement Viber bot. We should be able to send messages via
  *  the Viber REST API. There are other operations but I think that is the only

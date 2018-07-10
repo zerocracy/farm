@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,8 +23,6 @@ import java.io.Closeable;
 /**
  * Session in Slack.
  *
- * @author Roman Proshin (roman@proshin.org)
- * @version $Id$
  * @since 0.23
  * @todo #89:30min Use this interface and its implementation RealSkSession
  *  everywhere instead of SlackSession that is used currently. When it's done

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -32,8 +32,6 @@ import org.xembly.Directives;
  * <p>
  * User metric which represents how much time user spend to finish a job.
  *
- * @author Kirill (g4s8.public@gmail.com)
- * @version $Id$
  * @since 0.17
  * @todo #860:30min Modify the stakeholder where the payments are made and
  *  use method Speed.bonus(...) to pay the user a bonus in minutes if they

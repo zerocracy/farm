@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -39,8 +39,6 @@ import org.xembly.Directives;
 
 /**
  * Tests for {@link Ping}.
- * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
- * @version $Id$
  * @since 0.23
  * @todo #1200:30min Add a test that validates that pings are sent to projects
  *  in batches depending on the ping interval. All projects need to be pinged

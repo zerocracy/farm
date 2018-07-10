@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -37,8 +37,6 @@ import org.takes.rs.RsWithStatus;
 /**
  * GitLab hook, take.
  *
- * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
- * @version $Id$
  * @since 0.23
  * @todo #1144:30min Create an implementation of GitLab API that will mirror
  *  the one we use for Github (Github class and friends). We only need those

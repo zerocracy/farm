@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,8 +25,6 @@ import org.cactoos.Scalar;
 /**
  * XML file area, e.g. "pm/scope/wbs".
 
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
  * @since 0.17
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */

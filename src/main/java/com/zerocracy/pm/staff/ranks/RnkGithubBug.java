@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -29,8 +29,6 @@ import org.cactoos.func.UncheckedBiFunc;
 /**
  * Give higher rank for github tickets with 'bug' label.
  *
- * @author Kirill (g4s8.public@gmail.com)
- * @version $Id$
  * @since 0.21.1
  */
 public final class RnkGithubBug implements Comparator<String> {

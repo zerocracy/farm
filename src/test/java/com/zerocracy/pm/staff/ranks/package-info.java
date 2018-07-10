@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,8 +18,6 @@
 /**
  * Ranks tests.
  *
- * @author Kirill (g4s8.public@gmail.com)
- * @version $Id$
  * @since 0.18.8
  */
 package com.zerocracy.pm.staff.ranks;

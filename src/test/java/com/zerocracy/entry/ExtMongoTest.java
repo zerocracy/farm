@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -46,8 +46,6 @@ import org.xembly.Xembler;
 
 /**
  * Test case for {@link ExtMongo}.
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
  * @since 0.18
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
