@@ -850,18 +850,18 @@ public final class People {
 
     /**
      * Skills of a person.
-     * @param uid Person's login
+     * @param user Person's login
      * @return Iterable with skills
      * @throws IOException If fails
      */
-    public Iterable<String> skills(final String uid) throws IOException {
+    public Iterable<String> skills(final String user) throws IOException {
         try (final Item item = this.item()) {
             return new Mapped<>(
                 xml -> xml.node().getTextContent(),
                 new Xocument(item.path()).nodes(
                     String.format(
                         "/people/person[@id = '%s']/skills/skill",
-                        uid
+                        user
                     )
                 )
             );

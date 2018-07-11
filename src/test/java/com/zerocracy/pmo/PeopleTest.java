@@ -558,8 +558,9 @@ public final class PeopleTest {
 
     @Test
     public void setsSkills() throws IOException {
-        final People people =
-            new People(new FkFarm(new FkProject())).bootstrap();
+        final People people = new People(
+            new FkFarm(new FkProject())
+        ).bootstrap();
         final String uid = "user";
         people.invite(uid, "0crat");
         final Iterable<String> skills = new IterableOf<>("c", "cobol");
@@ -567,6 +568,19 @@ public final class PeopleTest {
         MatcherAssert.assertThat(
             new ArrayList<>(new ListOf<>(people.skills(uid))),
             Matchers.equalTo(new ArrayList<>(new ListOf<>(skills)))
+        );
+    }
+
+    @Test
+    public void getsEmptySkillList() throws IOException {
+        final People people = new People(
+            new FkFarm(new FkProject())
+        ).bootstrap();
+        final String uid = "user";
+        people.invite(uid, "0crat");
+        MatcherAssert.assertThat(
+            people.skills(uid),
+            Matchers.emptyIterable()
         );
     }
 
