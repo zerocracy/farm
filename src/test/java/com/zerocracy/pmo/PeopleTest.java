@@ -50,7 +50,12 @@ import org.junit.rules.ExpectedException;
  * @checkstyle JavadocVariableCheck (1000 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (3 lines)
  */
-@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
+@SuppressWarnings(
+    {
+        "PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods",
+        "PMD.ExcessivePublicCount", "PMD.GodClass"
+    }
+)
 public final class PeopleTest {
 
     @Rule
@@ -318,6 +323,19 @@ public final class PeopleTest {
                 (Integer num) -> String.format("student%d", num),
                 // @checkstyle MagicNumber (1 line)
                 new RangeOf<>(0, 16, x -> x + 1)
+            )
+        ).value();
+    }
+
+    @Test
+    public void inviteForce() throws Exception {
+        final String mentor = "supermentor";
+        final People people = new People(new FkFarm()).bootstrap();
+        new And(
+            (String std) -> people.invite(std, mentor, true),
+            new Mapped<>(
+                (Integer num) -> String.format("std%d", num),
+                new RangeOf<>(0, Tv.TWENTY, x -> x + 1)
             )
         ).value();
     }

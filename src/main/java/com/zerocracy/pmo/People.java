@@ -25,7 +25,6 @@ import com.zerocracy.SoftException;
 import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.cash.CashParsingException;
-import com.zerocracy.pm.staff.Roles;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Iterator;
@@ -206,12 +205,26 @@ public final class People {
 
     /**
      * Invite that person and set a mentor.
+     *
      * @param uid User ID
      * @param mentor User ID of the mentor
      * @throws IOException If fails
      */
     public void invite(final String uid, final String mentor)
         throws IOException {
+        this.invite(uid, mentor, false);
+    }
+
+    /**
+     * Invite that person and set a mentor.
+     *
+     * @param uid User ID
+     * @param mentor User ID of the mentor
+     * @param force Ignore max student limitation if true
+     * @throws IOException If fails
+     */
+    public void invite(final String uid, final String mentor,
+        final boolean force) throws IOException {
         if (this.hasMentor(uid)) {
             throw new SoftException(
                 new Par(
@@ -228,8 +241,7 @@ public final class People {
                         mentor
                     )
                 ).size();
-            if (current >= max
-                && !new Roles(this.pmo).bootstrap().hasAnyRole(mentor)) {
+            if (!force && current >= max) {
                 throw new SoftException(
                     new Par(
                         "You can not invite more than %d students;",
