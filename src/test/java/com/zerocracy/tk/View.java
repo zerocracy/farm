@@ -74,7 +74,7 @@ public final class View {
         return this.page(
             // @checkstyle LineLength (1 line)
             "Mozilla/5.0 (X11; Linux x86_64; rv:62.0) Gecko/20100101 Firefox/62.0",
-            "text/html,application/xhtml+xml,application/xml"
+            "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
         );
     }
 
