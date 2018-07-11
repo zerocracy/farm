@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Date;
 import java.util.List;
+import org.cactoos.iterable.Filtered;
+import org.cactoos.iterable.LengthOf;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.iterable.RangeOf;
 import org.cactoos.list.ListOf;
@@ -331,13 +333,27 @@ public final class PeopleTest {
     public void inviteForce() throws Exception {
         final String mentor = "supermentor";
         final People people = new People(new FkFarm()).bootstrap();
+        final int size = 16;
+        final String format = "std%d";
+        final Iterable<Integer> range = new RangeOf<>(0, size, x -> x + 1);
         new And(
             (String std) -> people.invite(std, mentor, true),
-            new Mapped<>(
-                (Integer num) -> String.format("std%d", num),
-                new RangeOf<>(0, Tv.TWENTY, x -> x + 1)
-            )
+            new Mapped<>((Integer num) -> String.format(format, num), range)
         ).value();
+        MatcherAssert.assertThat(
+            new LengthOf(
+                new Filtered<>(
+                    mentor::equals,
+                    new Mapped<>(
+                        (Integer num) -> people.mentor(
+                            String.format(format, num)
+                        ),
+                        range
+                    )
+                )
+            ).intValue(),
+            Matchers.equalTo(size + 1)
+        );
     }
 
     @Test

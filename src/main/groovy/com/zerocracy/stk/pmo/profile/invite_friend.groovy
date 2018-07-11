@@ -71,7 +71,7 @@ def exec(Project pmo, XML xml) {
       new Scalar<Boolean>() {
         @Override
         Boolean value() throws Exception {
-          return new Roles(new Pmo(farm)).bootstrap().hasAnyRole(author)
+          new Roles(new Pmo(farm)).bootstrap().hasAnyRole(author)
         }
       },
       new ItemAt<>(
