@@ -22,6 +22,14 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.Project
 import com.zerocracy.pm.ClaimIn
 
+/**
+ * Generic notify stakeholder. It can understand what channel
+ * to use to notify by token (claim parameter)
+ * and produce more concrete notification claim.
+ *
+ * @param project Any project
+ * @param xml Claim
+ */
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Notify')
   ClaimIn claim = new ClaimIn(xml)

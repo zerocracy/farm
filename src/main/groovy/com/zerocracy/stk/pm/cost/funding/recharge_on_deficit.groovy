@@ -26,6 +26,14 @@ import com.zerocracy.pm.cost.Estimates
 import com.zerocracy.pm.cost.Ledger
 import com.zerocracy.pmo.recharge.Recharge
 
+/**
+ * This stakeholder automatically recharge the project if detects
+ * deficit, it uses same Stripe account which was used previously
+ * fund the project.
+ *
+ * @param project Project to recharge
+ * @param xml Claim
+ */
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Make payment', 'Ping hourly')

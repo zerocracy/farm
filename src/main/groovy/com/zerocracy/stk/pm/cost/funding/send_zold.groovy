@@ -26,6 +26,12 @@ import com.zerocracy.farm.props.Props
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.banks.Zold
 
+/**
+ * Send Zold to user via wts.zold.io API and notify user about payment.
+ *
+ * @param project Current project
+ * @param xml Claim
+ */
 def exec(Project project, XML xml) {
   // @todo #1291:30min Add tests for payments via concrete banks, I suppose
   //  `Payroll` may check 'testing' property in farm
