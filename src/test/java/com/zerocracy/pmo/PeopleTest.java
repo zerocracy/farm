@@ -24,9 +24,11 @@ import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.cactoos.iterable.Filtered;
+import org.cactoos.iterable.IterableOf;
 import org.cactoos.iterable.LengthOf;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.iterable.RangeOf;
@@ -580,6 +582,34 @@ public final class PeopleTest {
         MatcherAssert.assertThat(
             people.links(uid, jrel),
             Matchers.contains(jalias)
+        );
+    }
+
+    @Test
+    public void setsSkills() throws IOException {
+        final People people = new People(
+            new FkFarm(new FkProject())
+        ).bootstrap();
+        final String uid = "user";
+        people.invite(uid, "0crat");
+        final Iterable<String> skills = new IterableOf<>("c", "cobol");
+        people.skills(uid, skills);
+        MatcherAssert.assertThat(
+            new ArrayList<>(new ListOf<>(people.skills(uid))),
+            Matchers.equalTo(new ArrayList<>(new ListOf<>(skills)))
+        );
+    }
+
+    @Test
+    public void getsEmptySkillList() throws IOException {
+        final People people = new People(
+            new FkFarm(new FkProject())
+        ).bootstrap();
+        final String uid = "user";
+        people.invite(uid, "0crat");
+        MatcherAssert.assertThat(
+            people.skills(uid),
+            Matchers.emptyIterable()
         );
     }
 

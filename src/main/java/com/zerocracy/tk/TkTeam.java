@@ -42,6 +42,8 @@ import org.takes.rs.xe.XeWhen;
  * @author Yegor Bugayenko (yegor256@gmail.com)
  * @version $Id$
  * @since 0.19
+ * @todo #559:30min Let's display the data from people/skills on the profile
+ *  page of a given user as well as on the team page.
  * @checkstyle ClassDataAbstractionCouplingCheck (3 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
