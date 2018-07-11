@@ -28,7 +28,8 @@ import java.nio.file.Path;
 import org.apache.commons.lang3.StringUtils;
 import org.cactoos.Func;
 import org.cactoos.Input;
-import org.cactoos.func.SolidFunc;
+import org.cactoos.cache.SoftFunc;
+import org.cactoos.func.SyncFunc;
 import org.cactoos.func.UncheckedFunc;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.LengthOf;
@@ -53,9 +54,11 @@ final class RdAuto {
      * Cache of documents.
      */
     private static final UncheckedFunc<URI, Input> CACHE = new UncheckedFunc<>(
-        new SolidFunc<>(
-            (Func<URI, Input>) uri -> new SyncInput(
-                new StickyInput(new InputOf(uri))
+        new SyncFunc<>(
+            new SoftFunc<>(
+                (Func<URI, Input>) uri -> new SyncInput(
+                    new StickyInput(new InputOf(uri))
+                )
             )
         )
     );

@@ -24,7 +24,8 @@ import com.zerocracy.Project;
 import java.io.IOException;
 import java.net.URI;
 import javax.xml.transform.stream.StreamSource;
-import org.cactoos.func.SolidFunc;
+import org.cactoos.cache.SoftFunc;
+import org.cactoos.func.SyncFunc;
 import org.cactoos.func.UncheckedFunc;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.InputStreamOf;
@@ -51,8 +52,10 @@ public final class XeXsl implements XeSource {
      */
     private static final UncheckedFunc<URI, String> STYLESHEETS =
         new UncheckedFunc<>(
-            new SolidFunc<>(
-                uri -> new TextOf(new InputOf(uri)).asString()
+            new SyncFunc<>(
+                new SoftFunc<>(
+                    uri -> new TextOf(new InputOf(uri)).asString()
+                )
             )
         );
 
