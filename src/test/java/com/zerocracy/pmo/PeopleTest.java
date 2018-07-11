@@ -55,7 +55,7 @@ import org.junit.rules.ExpectedException;
 @SuppressWarnings(
     {
         "PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods",
-        "PMD.ExcessivePublicCount ", "PMD.GodClass"
+        "PMD.ExcessivePublicCount", "PMD.GodClass"
     }
 )
 public final class PeopleTest {

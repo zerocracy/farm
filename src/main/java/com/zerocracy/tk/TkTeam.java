@@ -45,7 +45,6 @@ import org.takes.rs.xe.XeWhen;
  * @todo #559:30min Let's display the data from people/skills on the profile
  *  page of a given user as well as on the team page.
  * @checkstyle ClassDataAbstractionCouplingCheck (3 lines)
->>>>>>> master
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class TkTeam implements Take {
