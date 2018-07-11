@@ -24,8 +24,10 @@ import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.cactoos.iterable.IterableOf;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.iterable.RangeOf;
 import org.cactoos.list.ListOf;
@@ -50,7 +52,12 @@ import org.junit.rules.ExpectedException;
  * @checkstyle JavadocVariableCheck (1000 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (3 lines)
  */
-@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
+@SuppressWarnings(
+    {
+        "PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods",
+        "PMD.ExcessivePublicCount", "PMD.GodClass"
+    }
+)
 public final class PeopleTest {
 
     @Rule
@@ -546,6 +553,34 @@ public final class PeopleTest {
         MatcherAssert.assertThat(
             people.links(uid, jrel),
             Matchers.contains(jalias)
+        );
+    }
+
+    @Test
+    public void setsSkills() throws IOException {
+        final People people = new People(
+            new FkFarm(new FkProject())
+        ).bootstrap();
+        final String uid = "user";
+        people.invite(uid, "0crat");
+        final Iterable<String> skills = new IterableOf<>("c", "cobol");
+        people.skills(uid, skills);
+        MatcherAssert.assertThat(
+            new ArrayList<>(new ListOf<>(people.skills(uid))),
+            Matchers.equalTo(new ArrayList<>(new ListOf<>(skills)))
+        );
+    }
+
+    @Test
+    public void getsEmptySkillList() throws IOException {
+        final People people = new People(
+            new FkFarm(new FkProject())
+        ).bootstrap();
+        final String uid = "user";
+        people.invite(uid, "0crat");
+        MatcherAssert.assertThat(
+            people.skills(uid),
+            Matchers.emptyIterable()
         );
     }
 
