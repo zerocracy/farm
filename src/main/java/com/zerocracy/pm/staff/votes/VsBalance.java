@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -37,8 +37,6 @@ import org.cactoos.scalar.SolidScalar;
  * Returns low votes for persons that have more tasks in current project and
  * lower in others where he/she is a member.
  *
- * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
- * @version $Id$
  * @since 0.24
  */
 public final class VsBalance implements Votes {

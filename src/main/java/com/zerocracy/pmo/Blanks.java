@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -29,8 +29,6 @@ import org.xembly.Directives;
  * User metric which represents the amount of bugs user reported,
  * which were not counted as bugs by project architects.
  *
- * @author Kirill (g4s8.public@gmail.com)
- * @version $Id $
  * @since 0.23
  */
 public final class Blanks {

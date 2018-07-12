@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -27,8 +27,6 @@ import org.xembly.Directive;
 
 /**
  * Test case for {@link ClaimOut}.
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
  * @since 0.10
  * @checkstyle JavadocMethodCheck (500 lines)
  */

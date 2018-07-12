@@ -674,14 +674,15 @@ SOFTWARE.
           <plugin>
             <groupId>com.qulice</groupId>
             <artifactId>qulice-maven-plugin</artifactId>
+            <version>0.17.4</version>
             <configuration>
               <excludes combine.children="append">
-                <exclude>checkstyle:/src/main/resources/png/.*</exclude>
-                <exclude>checkstyle:/src/main/resources/com/zerocracy/tk/project/badge.sketch</exclude>
-                <exclude>checkstyle:/src/main/resources/com/zerocracy/tk/project/contrib-badge.sketch</exclude>
+                <exclude>checkstyle:.*/src/main/resources/png/.*</exclude>
+                <exclude>checkstyle:.*/src/main/resources/com/zerocracy/tk/project/badge.sketch</exclude>
+                <exclude>checkstyle:.*/src/main/resources/com/zerocracy/tk/project/contrib-badge.sketch</exclude>
                 <exclude>findbugs:.*</exclude>
-                <exclude>codenarc:**/*</exclude>
                 <exclude>duplicatefinder:.*</exclude>
+                <exclude>pmd:.*\.tex</exclude>
               </excludes>
               <license>file:${basedir}/LICENSE.txt</license>
             </configuration>

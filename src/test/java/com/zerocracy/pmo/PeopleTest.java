@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -43,8 +43,6 @@ import org.junit.rules.ExpectedException;
 
 /**
  * Test case for {@link People}.
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
  * @since 0.1
  * @todo #952:30min Continue replacing old Date classes with Instant.
  *  Remember also to remove instances of `DateAsText` (Instant.toString should
