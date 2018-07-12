@@ -79,6 +79,13 @@ SOFTWARE.
     <telegram.version>3.6</telegram.version>
     <branch.coverage>0.45</branch.coverage>
   </properties>
+  <repositories>
+    <repository>
+      <id>bintray-g4s8-maven</id>
+      <name>bintray-g4s8-maven</name>
+      <url>https://dl.bintray.com/g4s8/mvn</url>
+    </repository>
+  </repositories>
   <dependencies>
     <dependency>
       <groupId>org.cactoos</groupId>
@@ -416,6 +423,11 @@ SOFTWARE.
       <artifactId>postgresql</artifactId>
       <version>42.2.2</version>
       <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.g4s8</groupId>
+      <artifactId>cactoos-cache</artifactId>
+      <version>0.1.3</version>
     </dependency>
   </dependencies>
   <build>

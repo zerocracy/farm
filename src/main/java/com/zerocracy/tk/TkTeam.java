@@ -40,10 +40,9 @@ import org.takes.rs.xe.XeWhen;
  * List of all people.
  *
  * @since 0.19
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
- * @todo #1121:30min Speed and Agenda is skipped now because it
- *  causes slow page loading. We have to fix #1121 bug and show
- *  it on page as before.
+ * @todo #559:30min Let's display the data from people/skills on the profile
+ *  page of a given user as well as on the team page.
+ * @checkstyle ClassDataAbstractionCouplingCheck (3 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class TkTeam implements Take {
@@ -98,8 +97,8 @@ public final class TkTeam implements Take {
                 new XeAppend("login", node.xpath("@id").get(0)),
                 new XeAppend("mentor", node.xpath("mentor/text()").get(0)),
                 new XeAppend("awards", node.xpath("reputation/text()").get(0)),
-                new XeAppend("speed", "0.0"),
-                new XeAppend("agenda", "-"),
+                new XeAppend("speed", node.xpath("speed/text()").get(0)),
+                new XeAppend("agenda", node.xpath("jobs/text()").get(0)),
                 new XeAppend(
                     "projects",
                     Integer.toString(
