@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,8 +24,6 @@ import org.cactoos.scalar.NumberOf;
 /**
  * Reactive farm is still alive?
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
  * @since 0.18
  */
 public final class RvAlive extends NumberEnvelope {

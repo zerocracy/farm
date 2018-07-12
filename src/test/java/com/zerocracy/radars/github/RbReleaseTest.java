@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,8 +25,6 @@ import org.junit.Test;
 
 /**
  * Test case for {@link RbRelease}.
- * @author Carlos Miranda (miranda.cma@gmail.com)
- * @version $Id$
  * @since 0.26
  * @checkstyle JavadocMethodCheck (500 lines)
  */

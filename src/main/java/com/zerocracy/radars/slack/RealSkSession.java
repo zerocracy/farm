@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,8 +24,6 @@ import java.io.IOException;
 /**
  * Real session in Slack.
  *
- * @author Roman Proshin (roman@proshin.org)
- * @version $Id$
  * @since 0.23
  */
 public final class RealSkSession implements SkSession {

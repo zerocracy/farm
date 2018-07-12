@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -28,7 +28,8 @@ import java.nio.file.Path;
 import org.apache.commons.lang3.StringUtils;
 import org.cactoos.Func;
 import org.cactoos.Input;
-import org.cactoos.func.SolidFunc;
+import org.cactoos.cache.SoftFunc;
+import org.cactoos.func.SyncFunc;
 import org.cactoos.func.UncheckedFunc;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.LengthOf;
@@ -42,8 +43,6 @@ import org.cactoos.text.TextOf;
 /**
  * Auto updater of XML documents.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
  * @since 0.17
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
@@ -53,9 +52,11 @@ final class RdAuto {
      * Cache of documents.
      */
     private static final UncheckedFunc<URI, Input> CACHE = new UncheckedFunc<>(
-        new SolidFunc<>(
-            (Func<URI, Input>) uri -> new SyncInput(
-                new StickyInput(new InputOf(uri))
+        new SyncFunc<>(
+            new SoftFunc<>(
+                (Func<URI, Input>) uri -> new SyncInput(
+                    new StickyInput(new InputOf(uri))
+                )
             )
         )
     );

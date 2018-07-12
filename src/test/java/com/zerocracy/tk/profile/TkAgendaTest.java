@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,8 +26,8 @@ import com.zerocracy.pmo.Agenda;
 import com.zerocracy.pmo.People;
 import com.zerocracy.tk.RqWithUser;
 import com.zerocracy.tk.TkApp;
+import com.zerocracy.tk.View;
 import java.net.HttpURLConnection;
-import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 import org.takes.facets.hamcrest.HmRsStatus;
@@ -36,8 +36,6 @@ import org.takes.rs.RsPrint;
 
 /**
  * Test case for {@link TkAgenda}.
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
  * @since 0.13
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
@@ -47,24 +45,10 @@ public final class TkAgendaTest {
 
     @Test
     public void rendersXmlAgendaPage() throws Exception {
-        final Farm farm = new PropsFarm(new FkFarm());
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
-                new RsPrint(
-                    new TkApp(farm).act(
-                        new RqWithUser(
-                            farm,
-                            new RqFake(
-                                new ListOf<>(
-                                    "GET /u/Yegor256/agenda",
-                                    "Host: www.example.com",
-                                    "Accept: application/xml"
-                                ),
-                                ""
-                            )
-                        )
-                    )
-                ).printBody()
+                new View(new PropsFarm(new FkFarm()), "/u/yegor256/agenda")
+                    .xml()
             ),
             XhtmlMatchers.hasXPaths("/page")
         );
@@ -72,25 +56,13 @@ public final class TkAgendaTest {
 
     @Test
     public void rendersHtmlAgendaPageForFirefox() throws Exception {
-        final Farm farm = new PropsFarm(new FkFarm());
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
-                new RsPrint(
-                    new TkApp(farm).act(
-                        new RqWithUser(
-                            farm,
-                            new RqFake(
-                                new ListOf<>(
-                                    "GET /u/yegor256/agenda",
-                                    "Host: www.example.com",
-                                    // @checkstyle LineLength (1 line)
-                                    "User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:62.0) Gecko/20100101 Firefox/62.0"
-                                ),
-                                ""
-                            )
-                        )
-                    )
-                ).printBody()
+                XhtmlMatchers.xhtml(
+                    new View(
+                        new PropsFarm(new FkFarm()), "/u/yegor256/agenda"
+                    ).html()
+                )
             ),
             XhtmlMatchers.hasXPaths("//xhtml:body")
         );
@@ -125,20 +97,7 @@ public final class TkAgendaTest {
         agenda.title(job, title);
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
-                new RsPrint(
-                    new TkApp(farm).act(
-                        new RqWithUser(
-                            farm,
-                            new RqFake(
-                                new ListOf<>(
-                                    "GET /u/yegor256/agenda",
-                                    "Host: www.example.com"
-                                ),
-                                ""
-                            )
-                        )
-                    )
-                ).printBody()
+                new View(farm, "/u/yegor256/agenda").html()
             ),
             XhtmlMatchers.hasXPaths(
                 String.format("//xhtml:td[.='%s']", title)

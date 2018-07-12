@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -37,8 +37,6 @@ import org.cactoos.scalar.SolidScalar;
  * Returns low votes for persons that have more tasks in current project and
  * lower in others where he/she is a member.
  *
- * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
- * @version $Id$
  * @since 0.24
  */
 public final class VsBalance implements Votes {
@@ -95,6 +93,12 @@ public final class VsBalance implements Votes {
         final int all = new LengthOf(
             new Projects(this.farm, login).bootstrap().iterate()
         ).intValue();
+        log.append(
+            String.format(
+                "Has %d jobs in %d projects, %.2f%% from current project",
+                size, all, percent
+            )
+        );
         return 1.0 - (percent * all) / this.max.value();
     }
 }

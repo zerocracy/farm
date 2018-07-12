@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,8 +18,6 @@
 /**
  * Project management time voters tests.
  *
- * @author Mihai Andronache (amihaiemilgmail.com)
- * @version $Id$
  * @since 0.23
  */
 package com.zerocracy.pm.time.votes;

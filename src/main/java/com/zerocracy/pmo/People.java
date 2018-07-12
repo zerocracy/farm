@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,11 +25,12 @@ import com.zerocracy.SoftException;
 import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.cash.CashParsingException;
-import com.zerocracy.pm.staff.Roles;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.Date;
 import java.util.Iterator;
 import org.cactoos.iterable.ItemAt;
+import org.cactoos.iterable.Joined;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.scalar.NumberOf;
 import org.cactoos.scalar.UncheckedScalar;
@@ -39,8 +40,6 @@ import org.xembly.Directives;
 
 /**
  * Data about people.
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @since 0.1
  */
@@ -206,12 +205,26 @@ public final class People {
 
     /**
      * Invite that person and set a mentor.
+     *
      * @param uid User ID
      * @param mentor User ID of the mentor
      * @throws IOException If fails
      */
     public void invite(final String uid, final String mentor)
         throws IOException {
+        this.invite(uid, mentor, false);
+    }
+
+    /**
+     * Invite that person and set a mentor.
+     *
+     * @param uid User ID
+     * @param mentor User ID of the mentor
+     * @param force Ignore max student limitation if true
+     * @throws IOException If fails
+     */
+    public void invite(final String uid, final String mentor,
+        final boolean force) throws IOException {
         if (this.hasMentor(uid)) {
             throw new SoftException(
                 new Par(
@@ -228,8 +241,7 @@ public final class People {
                         mentor
                     )
                 ).size();
-            if (current >= max
-                && !new Roles(this.pmo).bootstrap().hasAnyRole(mentor)) {
+            if (!force && current >= max) {
                 throw new SoftException(
                     new Par(
                         "You can not invite more than %d students;",
@@ -373,10 +385,11 @@ public final class People {
      * @param wallet Wallet value
      * @throws IOException If fails
      * @checkstyle CyclomaticComplexityCheck (100 lines)
+     * @checkstyle NPathComplexityCheck (100 lines)
      */
     public void wallet(final String uid, final String bank,
         final String wallet) throws IOException {
-        if (!bank.matches("paypal|btc|bch|eth|ltc")) {
+        if (!bank.matches("paypal|btc|bch|eth|ltc|zld")) {
             throw new SoftException(
                 new Par(
                     "Bank name `%s` is invalid, we accept only",
@@ -412,6 +425,12 @@ public final class People {
             && !wallet.matches("[0-9a-zA-Z]{34}")) {
             throw new SoftException(
                 new Par("Litecoin address is not valid: `%s`").say(wallet)
+            );
+        }
+        if ("zld".equals(bank)
+            && !wallet.matches("^[a-z\\d](?:[a-z\\d]|-(?=[a-z\\d])){0,38}$")) {
+            throw new SoftException(
+                new Par("Zold address is not valid: `%s`").say(wallet)
             );
         }
         try (final Item item = this.item()) {
@@ -840,6 +859,58 @@ public final class People {
     }
 
     /**
+     * Skills of a person.
+     * @param user Person's login
+     * @return Iterable with skills
+     * @throws IOException If fails
+     */
+    public Iterable<String> skills(final String user) throws IOException {
+        try (final Item item = this.item()) {
+            return new Mapped<>(
+                xml -> xml.node().getTextContent(),
+                new Xocument(item.path()).nodes(
+                    String.format(
+                        "/people/person[@id = '%s']/skills/skill",
+                        user
+                    )
+                )
+            );
+        }
+    }
+
+    /**
+     * Update the list of user skills.
+     * @param uid User id
+     * @param skills List of skills
+     * @throws IOException If fails
+     */
+    public void skills(final String uid, final Iterable<String> skills)
+        throws IOException {
+        this.checkExisting(uid);
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                new Directives().xpath(
+                    String.format(
+                        "/people/person[@id='%s']/skills",
+                        uid
+                    )
+                )
+                    .remove()
+                    .add("skills").attr("updated", Instant.now())
+                    .append(
+                        new Joined<>(
+                            new Mapped<>(
+                                skill -> new Directives().add("skill")
+                                    .set(skill).up(),
+                                skills
+                            )
+                        )
+                    )
+            );
+        }
+    }
+
+    /**
      * The item.
      * @return Item
      * @throws IOException If fails
@@ -867,7 +938,7 @@ public final class People {
             .add("jobs").set("0").up()
             .add("projects").set("0").up()
             .add("speed").set("0.0").up()
-            .add("skills").attr("updated", new DateAsText().asString()).up()
+            .add("skills").attr("updated", Instant.now()).up()
             .add("links")
             .add("link")
             .attr("rel", "github")

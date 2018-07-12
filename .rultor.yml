@@ -27,7 +27,7 @@ release:
     mvn clean versions:set "-DnewVersion=${tag}" --quiet
     git commit -am "${tag}"
     cp ../settings.xml settings.xml
-    mvn clean package -Pqulice,codenarc,zc-farm --errors --batch-mode --quiet
+    mvn clean package -Pqulice,codenarc,zc-farm --errors --batch-mode --quiet --settings ../settings.xml
     git remote add heroku git@heroku.com:zerocrat.git
     mkdir ~/.ssh
     mv ../id_rsa ../id_rsa.pub ~/.ssh

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -43,9 +43,6 @@ import org.quartz.spi.TriggerFiredBundle;
  * it submit new claim with type 'Ping' every minute,
  * 'Ping hourly' every hour and 'Ping daily' every day.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @author Kirill (g4s8.public@gmail.com)
- * @version $Id$
  * @since 0.21
  */
 public final class Pings {

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,8 +26,6 @@ import java.io.IOException;
  * This voter's ranking will be multplied with a low weight (-1), so
  * it will lower the chances of the user with the highest rank of negligence.
  *
- * @author Mihai Andronache (amihaiemil@gmail.com)
- * @version $Id$
  * @since 0.23
  */
 @SuppressWarnings({ "PMD.SingularField", "PMD.UnusedPrivateField" })
