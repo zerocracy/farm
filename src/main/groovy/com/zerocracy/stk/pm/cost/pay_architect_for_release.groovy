@@ -60,10 +60,9 @@ def exec(Project project, XML xml) {
         Filters.gt('created', Date.from(latest)),
         Filters.not(
           Filters.or(
-            Filters.eq('type', 'Ping'),
-            Filters.eq('type', 'Ping hourly'),
-            Filters.eq('type', 'Ping daily'),
-            Filters.eq('type', 'Error')
+            Filters.regex('type', 'Ping.*'),
+            Filters.eq('type', 'Error'),
+            Filters.regex('type', 'Notify.*'),
           )
         ),
       )
