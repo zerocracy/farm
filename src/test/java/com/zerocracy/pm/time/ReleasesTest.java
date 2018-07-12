@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,15 +26,14 @@ import org.junit.Test;
 /**
  * Test case for {@link Releases}.
  *
- * @author Kirill (g4s8.public@gmail.com)
- * @version $
- * @since 0.21.1
+ * @since 0.25
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class ReleasesTest {
     @Test
     public void findLatest() throws Exception {
         final Releases releases = new Releases(new FkProject()).bootstrap();
+        // @checkstyle LineLengthCheck (4 lines)
         releases.add("test/one", "0.1", Instant.ofEpochMilli((long) Tv.THOUSAND));
         releases.add("test/two", "1.1", Instant.ofEpochMilli((long) Tv.FIVE));
         releases.add("test/three", "2.3", Instant.ofEpochMilli((long) Tv.MILLION));
