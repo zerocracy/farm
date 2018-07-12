@@ -24,7 +24,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import org.cactoos.Scalar;
+import org.cactoos.iterable.Mapped;
 import org.cactoos.scalar.IoCheckedScalar;
+import org.cactoos.scalar.Or;
+import org.cactoos.scalar.Ternary;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.facets.auth.Identity;
@@ -35,6 +38,7 @@ import org.takes.facets.auth.social.XeGithubLink;
 import org.takes.facets.flash.XeFlash;
 import org.takes.facets.fork.FkTypes;
 import org.takes.facets.fork.RsFork;
+import org.takes.misc.Opt;
 import org.takes.rs.RsPrettyXml;
 import org.takes.rs.RsWithType;
 import org.takes.rs.RsWrap;
@@ -166,11 +170,26 @@ public final class RsPage extends RsWrap {
         final RsXslt html = new RsXslt(new RsWithType(raw, "text/html"));
         return new RsFork(
             req,
+            request -> new IoCheckedScalar<>(
+                new Ternary<Opt<Response>>(
+                    () -> new Or(
+                        new Mapped<>(
+                            header -> new IoCheckedScalar<>(
+                                () -> header.contains(
+                                    "application/vnd.zerocracy+xml"
+                                )
+                            ),
+                            request.head()
+                        )
+                    ).value(),
+                    () -> new Opt.Empty<>(),
+                    () -> new Opt.Single<>(html)
+                )
+            ).value(),
             new FkTypes(
-                "application/vnd.zerocracy+xml",
+                "*/*",
                 new RsPrettyXml(new RsWithType(raw, "text/xml"))
-            ),
-            new FkTypes("*/*", html)
+            )
         );
     }
 
