@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,17 +26,11 @@ import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pm.cost.Ledger;
 import com.zerocracy.pmo.Catalog;
-import java.io.IOException;
-import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
-import org.takes.rq.RqFake;
-import org.takes.rs.RsPrint;
 
 /**
  * Test case for {@link TkBoard}.
- * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
- * @version $Id$
  * @since 0.23
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
@@ -67,7 +61,7 @@ public final class TkBoardTest {
             )
         );
         MatcherAssert.assertThat(
-            this.firefoxView(farm),
+            new View(farm, "/board").html(),
             XhtmlMatchers.hasXPaths(
                 String.format(
                     // @checkstyle LineLength (1 line)
@@ -92,31 +86,11 @@ public final class TkBoardTest {
         );
         catalog.publish(project.pid(), true);
         MatcherAssert.assertThat(
-            this.firefoxView(farm),
+            new View(farm, "/board").html(),
             XhtmlMatchers.hasXPaths(
                 // @checkstyle LineLength (1 line)
                 "//xhtml:span[@title = 'The project has no funds, you will work for free']"
             )
         );
-    }
-
-    private String firefoxView(final Farm farm) throws IOException {
-        return new RsPrint(
-            new TkApp(farm).act(
-                new RqWithUser(
-                    farm,
-                    new RqFake(
-                        new ListOf<>(
-                            "GET /board",
-                            "Host: www.example.com",
-                            "Accept: application/xml",
-                            // @checkstyle LineLength (1 line)
-                            "User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:62.0) Gecko/20100101 Firefox/62.0"
-                        ),
-                        ""
-                    )
-                )
-            )
-        ).printBody();
     }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,8 +26,6 @@ import java.io.IOException;
  * a job due to missing the deadline (too many days passed without a reason for
  * waiting).
  *
- * @author Mihai Andronache (amihaiemil@gmail.com)
- * @version $Id $
  * @since 0.23
  * @todo #540:30min Finish implementing and testing this class,
  *  decide on the XML format and declare it in /datum repository.

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,8 +25,6 @@ import org.junit.Test;
 /**
  * Unit tests for {@link Precedences}.
  *
- * @author Mihai Andronache (amihaiemil@gmail.com)
- * @version $Id$
  * @since 0.23
  * @checkstyle JavadocMethodCheck (500 lines)
  */

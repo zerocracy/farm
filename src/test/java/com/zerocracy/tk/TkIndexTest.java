@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,15 +23,9 @@ import com.zerocracy.farm.footprint.FtFarm;
 import com.zerocracy.farm.props.PropsFarm;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
-import org.takes.Take;
-import org.takes.rq.RqFake;
-import org.takes.rq.RqWithHeaders;
-import org.takes.rs.RsPrint;
 
 /**
  * Test case for {@link TkIndex}.
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
  * @since 0.18
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
@@ -41,20 +35,8 @@ public final class TkIndexTest {
     @Test
     public void rendersIndexPage() throws Exception {
         final Farm farm = new FtFarm(new PropsFarm(new FkFarm()));
-        final Take take = new TkApp(farm);
         MatcherAssert.assertThat(
-            XhtmlMatchers.xhtml(
-                new RsPrint(
-                    take.act(
-                        new RqWithHeaders(
-                            new RqFake(
-                                "GET", "/"
-                            ),
-                            "Accept: application/xml"
-                        )
-                    )
-                ).printBody()
-            ),
+            XhtmlMatchers.xhtml(new View(farm, "/").xml()),
             XhtmlMatchers.hasXPaths("/page/alive")
         );
     }

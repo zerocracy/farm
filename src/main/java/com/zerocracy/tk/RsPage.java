@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,11 +23,10 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.regex.Pattern;
 import org.cactoos.Scalar;
-import org.cactoos.iterable.Filtered;
-import org.cactoos.iterable.LengthOf;
+import org.cactoos.iterable.Mapped;
 import org.cactoos.scalar.IoCheckedScalar;
+import org.cactoos.scalar.Or;
 import org.cactoos.scalar.Ternary;
 import org.takes.Request;
 import org.takes.Response;
@@ -61,20 +60,12 @@ import org.takes.rs.xe.XeWhen;
 /**
  * Page.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
  * @since 0.6
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
  */
 @SuppressWarnings("PMD.ExcessiveImports")
 public final class RsPage extends RsWrap {
-
-    /**
-     * Regexp pattern to match Firefox browser.
-     */
-    private static final Pattern FIREFOX_AGENT =
-        Pattern.compile("User-Agent: .*Firefox.*");
 
     /**
      * Ctor.
@@ -181,22 +172,24 @@ public final class RsPage extends RsWrap {
             req,
             request -> new IoCheckedScalar<>(
                 new Ternary<Opt<Response>>(
-                    () -> new LengthOf(
-                        new Filtered<>(
-                            header -> RsPage.FIREFOX_AGENT.matcher(header)
-                                .matches(),
+                    () -> new Or(
+                        new Mapped<>(
+                            header -> new IoCheckedScalar<>(
+                                () -> header.contains(
+                                    "application/vnd.zerocracy+xml"
+                                )
+                            ),
                             request.head()
                         )
-                    ).intValue() > 0,
-                    () -> new Opt.Single<>(html),
-                    () -> new Opt.Empty<>()
+                    ).value(),
+                    () -> new Opt.Empty<>(),
+                    () -> new Opt.Single<>(html)
                 )
             ).value(),
             new FkTypes(
-                "application/xml,text/xml",
+                "*/*",
                 new RsPrettyXml(new RsWithType(raw, "text/xml"))
-            ),
-            new FkTypes("*/*", html)
+            )
         );
     }
 

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -29,8 +29,6 @@ import org.takes.rq.RqFake;
 /**
  * Test cases for {@link TkDump}.
  *
- * @author Roman Proshin (roman@proshin.org)
- * @version $Id$
  * @since 0.26
  * @checkstyle JavadocMethodCheck (500 lines)
  */

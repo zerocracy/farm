@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,8 +26,6 @@ import java.io.IOException;
 /**
  * The exam we take for a person before allowing him to do some operation.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
  * @since 0.22
  */
 public final class Exam {

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -27,8 +27,6 @@ import javax.json.JsonObject;
 /**
  * Release rebound.
  *
- * @author Carlos Miranda (miranda.cma@gmail.com)
- * @version $Id$
  * @since 0.26
  * @todo #1269:30min Each time a release is published, we should pay the
  *  architect a release bonus. Let's create a stakeholder that will react to
