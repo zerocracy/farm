@@ -57,7 +57,7 @@ def exec(Project project, XML xml) {
   long claims = new Footprint(farm, project).withCloseable { Footprint footprint ->
     footprint.collection().countDocuments(
       Filters.and(
-        Filters.gt("created", Date.from(latest)),
+        Filters.gt('created', Date.from(latest)),
         Filters.not(
           Filters.or(
             Filters.eq('type', 'Ping'),
