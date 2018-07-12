@@ -95,10 +95,9 @@ public final class TkAgendaTest {
         agenda.add(project, job, "DEV");
         final String title = "Some random title is here";
         agenda.title(job, title);
-        final String html = new View(farm, "/u/yegor256/agenda").html();
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
-                html
+                new View(farm, "/u/yegor256/agenda").html()
             ),
             XhtmlMatchers.hasXPaths(
                 String.format("//xhtml:td[.='%s']", title)
