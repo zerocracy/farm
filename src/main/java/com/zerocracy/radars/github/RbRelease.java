@@ -49,13 +49,12 @@ public final class RbRelease implements Rebound {
         if (event.containsKey(RbRelease.JSON_KEY)) {
             final JsonObject release = event.getJsonObject(RbRelease.JSON_KEY);
             final String tag = release.getString("tag_name");
-            final Repo repo = github.repos()
-                .get(
-                    new Coordinates.Simple(
-                        event.getJsonObject("repository")
-                            .getString("full_name")
-                    )
-                );
+            final Repo repo = github.repos().get(
+                new Coordinates.Simple(
+                    event.getJsonObject("repository")
+                        .getString("full_name")
+                )
+            );
             new ClaimOut()
                 .type("Release was published")
                 .param("tag", tag)

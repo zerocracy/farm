@@ -63,7 +63,7 @@ public final class Releases {
                 new ItemAt<>(
                     Instant.ofEpochMilli(0L),
                     new Sorted<>(
-                        Comparator.naturalOrder(),
+                        Comparator.reverseOrder(),
                         new Mapped<>(
                             Instant::parse,
                             new Xocument(item.path())
@@ -92,7 +92,7 @@ public final class Releases {
                     .add("release")
                     .attr("repo", repo)
                     .attr("tag", tag)
-                    .add(time)
+                    .add("published")
                     .set(time.toString())
             );
         }
