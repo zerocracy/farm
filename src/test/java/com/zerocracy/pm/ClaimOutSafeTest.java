@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,8 +24,6 @@ import org.junit.rules.ExpectedException;
 /**
  * Test case for {@link ClaimOutSafe}.
  *
- * @author Kirill (g4s8.public@gmail.com)
- * @version $Id$
  * @since 0.25
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle JavadocVariableCheck (500 lines)

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -53,8 +53,6 @@ import org.xembly.Xembler;
  * &lt;/fees&gt;
  * </pre>
  *
- * @author Tolegen Izbassar (t.izbassar@gmail.com)
- * @version $Id$
  * @since 0.22
  * @todo #565:30min Add FkBank to the Payroll under the file payment method.
  *  Ensure, that the opened files are closed properly and cover Payroll with

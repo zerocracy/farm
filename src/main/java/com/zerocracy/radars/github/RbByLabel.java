@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -29,8 +29,6 @@ import org.cactoos.text.FormattedText;
 /**
  * React for github issue labels.
  *
- * @author Kirill (g4s8.public@gmail.com)
- * @version $Id$
  * @since 0.12
  * @link https://developer.github.com/v3/activity/events/types/#labelevent
  */

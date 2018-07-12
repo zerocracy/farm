@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -29,8 +29,6 @@ import org.xembly.Directives;
 /**
  * Job impediments.
  *
- * @author Kirill (g4s8.public@gmail.com)
- * @version $Id$
  * @since 0.19
  * @todo #1016:30min Add a new stackeholder, remove_impediment.groovy,
  *  that will remove the impediment once a user says "@0crat continue"

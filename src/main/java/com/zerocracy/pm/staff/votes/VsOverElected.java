@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -29,8 +29,6 @@ import org.cactoos.iterable.LengthOf;
 /**
  * Make it impossible to over-elect one user.
  *
- * @author Kirill (g4s8.public@gmail.com)
- * @version $Id$
  * @since 0.26
  * @checkstyle ClassDataAbstractionCouplingCheck (2 lines)
  */

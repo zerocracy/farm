@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -34,7 +34,8 @@ import java.util.LinkedList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.cactoos.Scalar;
-import org.cactoos.func.SolidFunc;
+import org.cactoos.cache.SoftFunc;
+import org.cactoos.func.SyncFunc;
 import org.cactoos.func.UncheckedFunc;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.InputStreamOf;
@@ -56,8 +57,6 @@ import org.xembly.Xembler;
 
 /**
  * XML document.
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
  * @since 0.1
@@ -74,14 +73,16 @@ public final class Xocument {
      * Cache of documents.
      */
     private static final UncheckedFunc<URL, XML> INDEXES = new UncheckedFunc<>(
-        new SolidFunc<>(
-            url -> new XMLDocument(
-                new TextOf(
-                    new InputWithFallback(
-                        new InputOf(url),
-                        new InputOf("<index/>")
-                    )
-                ).asString()
+        new SyncFunc<>(
+            new SoftFunc<>(
+                url -> new XMLDocument(
+                    new TextOf(
+                        new InputWithFallback(
+                            new InputOf(url),
+                            new InputOf("<index/>")
+                        )
+                    ).asString()
+                )
             )
         )
     );

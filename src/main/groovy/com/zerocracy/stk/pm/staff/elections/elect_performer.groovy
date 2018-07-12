@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -88,7 +88,7 @@ def exec(Project project, XML xml) {
       [
         (new VsSafe(new VsHardCap(pmo, max)))                                     : -100,
         (new VsSafe(new VsOverElected(project, farm)))                            : role == 'REV' ? 0 : -100,
-        (new VsSafe(new VsReputation(pmo, logins)))                               : 5,
+        (new VsSafe(new VsReputation(pmo, logins)))                               : 4,
         (new VsSafe(new VsLosers(pmo, new Policy().get('3.low-threshold', -128)))): -100,
         (new VsSafe(new VsRate(project, logins)))                                 : 2,
         (new VsSafe(new VsBigDebt(pmo)))                                          : -100,

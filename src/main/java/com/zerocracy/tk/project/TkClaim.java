@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -47,8 +47,6 @@ import org.takes.rs.xe.XeTransform;
 /**
  * Single claim take.
  *
- * @author Kirill (g4s8.public@gmail.com)
- * @version $Id$
  * @since 0.20
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @todo #489:30min Change claim.xsl in such a way that it displays the

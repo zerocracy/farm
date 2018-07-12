@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -28,8 +28,6 @@ import org.xembly.Directives;
  * start-to-start, finish-to-finish, and start-to-finish. More about it
  * <a href="https://project-management-knowledge.com/definitions/p/precedence-diagramming-method/">here</a>.
  *
- * @author Mihai Andronache (amihaiemil@gmail.com)
- * @version $Id$
  * @since 0.23
  */
 @SuppressWarnings({"PMD.UseObjectForClearerAPI", "PMD.AvoidDuplicateLiterals"})

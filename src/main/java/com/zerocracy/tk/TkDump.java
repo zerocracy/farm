@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -32,8 +32,6 @@ import org.takes.rs.RsWithType;
 /**
  * Out of memory heap dump.
  *
- * @author Kirill (g4s8.public@gmail.com)
- * @version $Id$
  * @since 0.20
  */
 public final class TkDump implements Take {
