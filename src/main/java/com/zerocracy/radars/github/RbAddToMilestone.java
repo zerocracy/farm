@@ -36,8 +36,9 @@ import org.cactoos.text.FormattedText;
 public final class RbAddToMilestone implements Rebound {
 
     @Override
-    public String react(final Farm farm, final Github github,
-        final JsonObject event) throws IOException {
+    public String react(
+        final Farm farm, final Github github, final JsonObject event
+    ) throws IOException {
         final Issue.Smart issue = new Issue.Smart(
             new IssueOfEvent(github, event)
         );

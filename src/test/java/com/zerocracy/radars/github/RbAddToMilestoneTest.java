@@ -21,8 +21,12 @@ import com.jcabi.github.Milestone;
 import com.jcabi.github.Repo;
 import com.jcabi.github.Repos;
 import com.jcabi.github.mock.MkGithub;
+import com.jcabi.xml.XML;
 import com.zerocracy.farm.fake.FkFarm;
+import com.zerocracy.pm.ClaimIn;
+import com.zerocracy.pm.Claims;
 import java.io.IOException;
+import java.util.Collection;
 import javax.json.Json;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -34,6 +38,7 @@ import org.junit.Test;
  * @version $Id$
  * @since 0.26
  * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCoupling (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class RbAddToMilestoneTest {
@@ -48,9 +53,10 @@ public final class RbAddToMilestoneTest {
         final Milestone milestone =
             repo.milestones().create("my milestone");
         new Issue.Smart(bug).milestone(milestone);
+        final FkFarm farm = new FkFarm();
         MatcherAssert.assertThat(
             new RbAddToMilestone().react(
-                new FkFarm(),
+                farm,
                 github,
                 Json.createObjectBuilder()
                     .add(
@@ -78,6 +84,21 @@ public final class RbAddToMilestoneTest {
                     bug.number(), milestone.number()
                 )
             )
+        );
+        final Collection<XML> claims =
+            new Claims(new GhProject(farm, bug.repo())).bootstrap().iterate();
+        final ClaimIn claim = new ClaimIn(claims.iterator().next());
+        MatcherAssert.assertThat(
+            claim.type(),
+            Matchers.is("Job milestoned")
+        );
+        MatcherAssert.assertThat(
+            claim.param("milestone"),
+            Matchers.is(String.valueOf(milestone.number()))
+        );
+        MatcherAssert.assertThat(
+            claim.param("job"),
+            Matchers.is(new Job(bug).toString())
         );
     }
 }
