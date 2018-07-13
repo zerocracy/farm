@@ -451,19 +451,19 @@ SOFTWARE.
         <xsl:text>)</xsl:text>
       </xsl:if>
       <xsl:text>: </xsl:text>
-      <xsl:for-each select="item">
-        <xsl:if test="position() &gt; 1">
-          <xsl:text>; </xsl:text>
-        </xsl:if>
-        <strong>
-          <xsl:value-of select="amount"/>
-        </strong>
-        <xsl:text> </xsl:text>
-        <xsl:value-of select="ago"/>
-        <xsl:text> ago: </xsl:text>
-        <xsl:value-of select="details_html" disable-output-escaping="yes"/>
-      </xsl:for-each>
-      <xsl:text>.</xsl:text>
+      <ul>
+        <xsl:for-each select="item">
+          <li>
+            <strong>
+              <xsl:value-of select="amount"/>
+            </strong>
+            <xsl:text> </xsl:text>
+            <xsl:value-of select="ago"/>
+            <xsl:text> ago: </xsl:text>
+            <xsl:value-of select="details_html" disable-output-escaping="yes"/>
+          </li>
+        </xsl:for-each>
+      </ul>
     </p>
   </xsl:template>
 </xsl:stylesheet>
