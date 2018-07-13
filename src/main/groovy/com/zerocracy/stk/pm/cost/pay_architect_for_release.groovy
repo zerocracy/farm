@@ -32,8 +32,8 @@ import java.time.Duration
 import java.time.Instant
 
 /**
- * Every time a new release comes out, you get a bonus equal to the amount of
- * footprint items" since the last release.
+ * Every time a new release comes out, architect gets a bonus equal
+ * to the amount of footprint items" since the last release.
  * Routine items like `Ping` will be excluded.
  * The bonus has a limit, specified in policy.
  *
@@ -45,15 +45,12 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Release was published')
   Farm farm = binding.variables.farm
   ClaimIn claim = new ClaimIn(xml)
-  String repo = claim.param('repo')
-  String tag = claim.param('tag')
-  Instant time = Instant.parse(claim.param('date'))
   Releases releases = new Releases(project).bootstrap()
   Instant latest = releases.latest()
-  releases.add(repo, tag, time)
+  releases.add(claim.param('repo'), claim.param('tag'), Instant.parse(claim.param('date')))
   Policy policy = new Policy(farm)
-  Duration mpc = Duration.ofMinutes(policy.get('53.min-per-claim', 2))
-  Duration max = Duration.ofHours(policy.get('53.max', 4))
+  Duration mpc = Duration.ofMinutes(policy.get('54.min-per-claim', 2))
+  Duration max = Duration.ofHours(policy.get('54.max', 4))
   long claims = new Footprint(farm, project).withCloseable { Footprint footprint ->
     footprint.collection().countDocuments(
       Filters.and(
@@ -75,7 +72,7 @@ def exec(Project project, XML xml) {
     claim.copy()
       .type('Make payment')
       .param('login', it)
-      .param('reason', new Par('Release bonus for ARC §53').say())
+      .param('reason', new Par('Release bonus for ARC §54').say())
       .param('minutes', mpa)
       .postTo(project)
     claim.copy()

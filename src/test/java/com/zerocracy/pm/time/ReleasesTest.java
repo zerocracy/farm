@@ -43,4 +43,12 @@ public final class ReleasesTest {
             Matchers.equalTo(Instant.ofEpochMilli((long) Tv.MILLION))
         );
     }
+
+    @Test
+    public void findLatestInEmptyReleases() throws Exception {
+        MatcherAssert.assertThat(
+            new Releases(new FkProject()).bootstrap().latest(),
+            Matchers.equalTo(Instant.ofEpochMilli(0L))
+        );
+    }
 }
