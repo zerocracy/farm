@@ -451,10 +451,9 @@ SOFTWARE.
         <xsl:text>)</xsl:text>
       </xsl:if>
       <xsl:text>: </xsl:text>
+      <ul>
       <xsl:for-each select="item">
-        <xsl:if test="position() &gt; 1">
-          <xsl:text>; </xsl:text>
-        </xsl:if>
+        <li>
         <strong>
           <xsl:value-of select="amount"/>
         </strong>
@@ -462,8 +461,9 @@ SOFTWARE.
         <xsl:value-of select="ago"/>
         <xsl:text> ago: </xsl:text>
         <xsl:value-of select="details_html" disable-output-escaping="yes"/>
+        </li>
       </xsl:for-each>
-      <xsl:text>.</xsl:text>
+      </ul>
     </p>
   </xsl:template>
 </xsl:stylesheet>
