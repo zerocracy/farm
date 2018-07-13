@@ -50,7 +50,6 @@ import com.zerocracy.tk.rfp.TkPrepay;
 import com.zerocracy.tk.rfp.TkRfp;
 import com.zerocracy.tk.rfp.TkRfps;
 import com.zerocracy.tk.rfp.TkSubmit;
-import io.sentry.Sentry;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import org.apache.commons.text.StringEscapeUtils;
@@ -358,10 +357,7 @@ public final class TkApp extends TkWrap {
                             return new Opt.Empty<>();
                         },
                         new FbLog4j(),
-                        req -> {
-                            Sentry.capture(req.throwable());
-                            return new Opt.Empty<>();
-                        },
+                        req -> new Opt.Empty<>(),
                         req -> new Opt.Single<>(
                             new RsWithStatus(
                                 new RsWithType(

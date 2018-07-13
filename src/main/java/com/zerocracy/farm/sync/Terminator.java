@@ -21,7 +21,6 @@ import com.jcabi.log.VerboseRunnable;
 import com.jcabi.log.VerboseThreads;
 import com.zerocracy.Project;
 import com.zerocracy.ShutUp;
-import io.sentry.Sentry;
 import java.io.Closeable;
 import java.lang.ref.WeakReference;
 import java.util.Map;
@@ -138,17 +137,6 @@ final class Terminator implements Closeable, Scalar<Iterable<Directive>> {
                             "Thread %d/%s interrupted because of too long hold of \"%s\" in %s (over %d msec), %s: %[exception]s",
                             thread.getId(), thread.getName(),
                             file, project.pid(), this.threshold, lock, location
-                        );
-                        Sentry.capture(
-                            new Exception(
-                                String.format(
-                                    // @checkstyle LineLength (1 line)
-                                    "Thread %d/%s interrupted because of too long hold of \"%s\" in %s (over %d msec), %s",
-                                    thread.getId(), thread.getName(),
-                                    file, project.pid(), this.threshold, lock
-                                ),
-                                location
-                            )
                         );
                         thread.interrupt();
                     }

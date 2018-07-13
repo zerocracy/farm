@@ -82,7 +82,6 @@ public final class Main {
         try {
             new Main(args).exec();
         } catch (final Throwable ex) {
-            Sentry.capture(ex);
             Logger.error(Main.class, "The main app crashed: %[exception]s", ex);
             throw new IOException(ex);
         } finally {
