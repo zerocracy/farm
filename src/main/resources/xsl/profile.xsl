@@ -452,17 +452,17 @@ SOFTWARE.
       </xsl:if>
       <xsl:text>: </xsl:text>
       <ul>
-      <xsl:for-each select="item">
-        <li>
-        <strong>
-          <xsl:value-of select="amount"/>
-        </strong>
-        <xsl:text> </xsl:text>
-        <xsl:value-of select="ago"/>
-        <xsl:text> ago: </xsl:text>
-        <xsl:value-of select="details_html" disable-output-escaping="yes"/>
-        </li>
-      </xsl:for-each>
+        <xsl:for-each select="item">
+          <li>
+            <strong>
+              <xsl:value-of select="amount"/>
+            </strong>
+            <xsl:text> </xsl:text>
+            <xsl:value-of select="ago"/>
+            <xsl:text> ago: </xsl:text>
+            <xsl:value-of select="details_html" disable-output-escaping="yes"/>
+          </li>
+        </xsl:for-each>
       </ul>
     </p>
   </xsl:template>
