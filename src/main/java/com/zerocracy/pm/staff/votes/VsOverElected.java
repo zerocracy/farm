@@ -60,7 +60,8 @@ public final class VsOverElected implements Votes {
         final Elections elections = new Elections(this.pkt).bootstrap();
         final int mine = new LengthOf(
             new Filtered<>(
-                job -> elections.winner(job).equals(login),
+                job -> elections.elected(job)
+                    && elections.winner(job).equals(login),
                 elections.jobs()
             )
         ).intValue();
