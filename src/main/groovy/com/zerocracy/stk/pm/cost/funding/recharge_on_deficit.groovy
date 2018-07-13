@@ -27,9 +27,9 @@ import com.zerocracy.pm.cost.Ledger
 import com.zerocracy.pmo.recharge.Recharge
 
 /**
- * This stakeholder automatically recharge the project if detects
- * deficit, it uses same Stripe account which was used previously
- * fund the project.
+ * This stakeholder automatically recharge the project if it detects
+ * deficit, it uses the same Stripe account which was used previously
+ * to fund the project.
  *
  * @param project Project to recharge
  * @param xml Claim

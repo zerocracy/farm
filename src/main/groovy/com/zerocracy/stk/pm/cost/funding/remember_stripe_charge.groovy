@@ -25,8 +25,8 @@ import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.recharge.Recharge
 
 /**
- * Stakeholder to save Stripe customer account
- * to be able to recharge this project automatically on deficit.
+ * Stakeholder which saves Stripe customer account
+ * to be able to recharge the project automatically on deficit.
  *
  * @param project Funded project
  * @param xml Claim

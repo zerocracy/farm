@@ -23,9 +23,9 @@ import com.zerocracy.Project
 import com.zerocracy.pm.ClaimIn
 
 /**
- * Generic notify stakeholder. It can understand what channel
+ * Stakeholder for notifications. It can understand what channel
  * to use to notify by token (claim parameter)
- * and produce more concrete notification claim.
+ * and produce a more concrete notification claim.
  *
  * @param project Any project
  * @param xml Claim

@@ -26,7 +26,8 @@ import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.cost.Ledger
 
 /**
- * This stakeholder reacts to user contribution events.
+ * This stakeholder process user Stripe contributions: it adds funds
+ * to the project and notify project in Slack about contribution.
  * Everyone can donate to free and public open-source projects
  * (see {@link com.zerocracy.tk.project.TkContrib}
  * via 'Contribute badges' ({@link com.zerocracy.tk.project.TkContribBadge}).

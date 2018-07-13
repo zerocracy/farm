@@ -25,7 +25,7 @@ import com.zerocracy.pmo.recharge.Recharge
 
 /**
  * Stop auto-recharge for project. The project will not be funded
- * automatically from saved Stripe account until it funded manually.
+ * automatically from saved Stripe account until it is funded manually.
  *
  * @param project Project to stop
  * @param xml Claim
