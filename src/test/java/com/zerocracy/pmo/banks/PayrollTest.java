@@ -28,7 +28,7 @@ import org.junit.rules.ExpectedException;
 
 /**
  * Tests for {@link Payroll}.
- * @since 0.25.7
+ * @since 0.26
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle JavadocVariableCheck (500 lines)
  */
@@ -57,9 +57,6 @@ public final class PayrollTest {
         );
     }
 
-    // #1069:30min Implement test for wallet is empty check in Payroll. This
-    //  test will have to check if an Softexception is thrown when user does
-    //  not have a payment method configured
     @Test (expected = UnsupportedOperationException.class)
     public void walletIsEmpty() {
         throw new UnsupportedOperationException(
@@ -67,9 +64,6 @@ public final class PayrollTest {
         );
     }
 
-    // #1069:30min Implement test for unsupported payment check in Payroll.
-    //  This test will have to assure if an Softexception is thrown when user
-    //  tries to use an unsupported payment method.
     @Test (expected = UnsupportedOperationException.class)
     public void unsupportedPaymentMethod() {
         throw new UnsupportedOperationException(
@@ -77,8 +71,6 @@ public final class PayrollTest {
         );
     }
 
-    // #1069:30min Implement test for make payment in Payroll. This test will
-    //  have to assure the payment was made upon Payment.pay() method execution.
     @Test (expected = UnsupportedOperationException.class)
     public void makePayment() {
         throw new UnsupportedOperationException(

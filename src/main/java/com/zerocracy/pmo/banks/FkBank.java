@@ -55,8 +55,9 @@ import org.xembly.Xembler;
  *
  * @since 0.22
  * @todo #1069:30min Add FkBank to the Payroll under the file payment method.
- *  Ensure, that the opened files are closed properly and implement commented
- *  tests in PayrollTest.
+ *  Ensure, that the opened files are closed properly and implement
+ *  walletIsEmpty, unsupportedPaymentMethod and makePayment tests in
+ *  PayrollTest.
  * @checkstyle ClassDataAbstractionCoupling (2 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
