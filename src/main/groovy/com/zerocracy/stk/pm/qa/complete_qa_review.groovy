@@ -44,7 +44,7 @@ def exec(Project project, XML xml) {
       new Par('Thanks, but quality review is not required in this job').say()
     )
   }
-  int bonus = new Policy().get("31.bonus-minutes", 5)
+  int bonus = new Policy().get('31.bonus-minutes', 5)
   ClaimOut out = reviews.remove(job, quality == 'good' ? bonus : 0, claim.copy())
   if (quality == 'bad') {
     claim.copy()
