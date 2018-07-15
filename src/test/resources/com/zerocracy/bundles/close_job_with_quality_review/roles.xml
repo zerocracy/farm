@@ -22,4 +22,7 @@ SOFTWARE.
   <person id="qa-guy">
     <role>QA</role>
   </person>
+  <person id="coder">
+    <role>DEV</role>
+  </person>
 </roles>

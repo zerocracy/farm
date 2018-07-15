@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pm.qa;
 
+import com.jcabi.aspects.Tv;
 import com.jcabi.matchers.XhtmlMatchers;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.farm.fake.FkProject;
@@ -40,7 +41,7 @@ public final class ReviewsTest {
             job, "yegor256", "dmarkov",
             new Cash.S("$10"), 1, new Cash.S("$15")
         );
-        final ClaimOut out = reviews.remove(job, true, new ClaimOut());
+        final ClaimOut out = reviews.remove(job, Tv.HUNDRED, new ClaimOut());
         MatcherAssert.assertThat(
             new Xembler(out).xmlQuietly(),
             XhtmlMatchers.hasXPaths(
