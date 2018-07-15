@@ -18,20 +18,19 @@ package com.zerocracy.bundles.resign_on_delay
 
 import com.jcabi.xml.XML
 import com.zerocracy.Project
+import com.zerocracy.pm.in.Orders
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
-  // @todo #1302:30min This test always fail because for unknown reason
-  //  roles.xml in PMO is full copy of roles.xml in this fake project.
-  //  Files in PMO and in bundle test project should be different and
-  //  not correlate somehow.
-//  MatcherAssert.assertThat(
-//    'Issue wasn\'t resigned',
-//    new Orders(project).bootstrap().jobs('lazydev'),
-//    Matchers.emptyIterable()
-//  )
-//  MatcherAssert.assertThat(
-//    'PR was resigned',
-//    new Orders(project).bootstrap().jobs('lazyrev'),
-//    Matchers.contains('gh:test/test#2')
-//  )
+  MatcherAssert.assertThat(
+    'Issue wasn\'t resigned',
+    new Orders(project).bootstrap().jobs('lazydev'),
+    Matchers.emptyIterable()
+  )
+  MatcherAssert.assertThat(
+    'PR was resigned',
+    new Orders(project).bootstrap().jobs('lazyrev'),
+    Matchers.contains('gh:test/test#2')
+  )
 }

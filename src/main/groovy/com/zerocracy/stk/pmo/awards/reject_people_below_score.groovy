@@ -40,7 +40,7 @@ def exec(Project project, XML xml) {
     return
   }
   People people = new People(farm).bootstrap()
-  if (new Roles(new Pmo(farm)).hasAnyRole(login)
+  if (new Roles(new Pmo(farm)).bootstrap().hasAnyRole(login)
     || people.mentor(login) == '0crat') {
     claim.copy()
       .type('Notify user')
