@@ -112,7 +112,7 @@ public final class Pings {
             "minute",
             "Ping",
             SimpleScheduleBuilder.simpleSchedule()
-                .withIntervalInSeconds(Tv.SIXTY / this.batches)
+                .withIntervalInSeconds(Tv.HUNDRED / this.batches)
                 .repeatForever()
         );
         this.start(
