@@ -20,6 +20,7 @@ import com.jcabi.github.Github;
 import com.jcabi.github.Issue;
 import com.jcabi.github.mock.MkGithub;
 import com.zerocracy.Farm;
+import com.zerocracy.SafeSentry;
 import com.zerocracy.SoftException;
 import com.zerocracy.entry.ExtDynamo;
 import com.zerocracy.farm.Errors;
@@ -87,6 +88,11 @@ public final class RbSafe implements Rebound {
                                         event.getString("action")
                                     )
                                 ).asString()
+                            )
+                        );
+                        new SafeSentry().capture(
+                            new IllegalArgumentException(
+                                event.toString(), throwable
                             )
                         );
                         throw new IOException(throwable);

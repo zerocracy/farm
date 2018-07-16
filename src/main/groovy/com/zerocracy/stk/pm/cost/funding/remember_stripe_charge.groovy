@@ -24,6 +24,13 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.recharge.Recharge
 
+/**
+ * Stakeholder which saves Stripe customer account
+ * to be able to recharge the project automatically on deficit.
+ *
+ * @param project Funded project
+ * @param xml Claim
+ */
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Funded by Stripe')

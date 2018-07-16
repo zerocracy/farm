@@ -25,6 +25,16 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.cost.Ledger
 
+/**
+ * This stakeholder is called when project is funded by Stripe,
+ * PO can fund it directly from project page in
+ * {@link com.zerocracy.tk.project.TkStripePay}
+ * or it can be funded automatically due to
+ * {@link com.zerocracy.pmo.recharge.Recharge} mechanism.
+ *
+ * @param project Funded project
+ * @param xml Claim
+ */
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Funded by Stripe')
