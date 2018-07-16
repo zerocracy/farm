@@ -23,7 +23,7 @@ import java.nio.file.Path;
 /**
  * One item in a project.
  *
- * @since 0.2
+ * @since 1.0
  */
 public interface Item extends Closeable {
 

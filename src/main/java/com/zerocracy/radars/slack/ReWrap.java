@@ -24,7 +24,7 @@ import java.io.IOException;
 /**
  * Wrap.
  *
- * @since 0.1
+ * @since 1.0
  */
 public class ReWrap implements Reaction<SlackMessagePosted> {
 

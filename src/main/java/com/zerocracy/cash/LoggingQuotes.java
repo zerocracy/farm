@@ -22,7 +22,7 @@ import java.io.IOException;
 /**
  * The quotes that logs every single operation.
  *
- * @since 0.22
+ * @since 1.0
  */
 final class LoggingQuotes implements Quotes {
 

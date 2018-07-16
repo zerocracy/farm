@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 /**
  * Response if not my comment.
  *
- * @since 0.1
+ * @since 1.0
  */
 public final class ReIfAddressed implements Response {
 

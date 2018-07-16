@@ -25,7 +25,7 @@ import org.cactoos.func.AsyncFunc;
 /**
  * Rebound that works in background.
  *
- * @since 0.22
+ * @since 1.0
  */
 public final class RbAsync implements Rebound {
 

@@ -32,7 +32,7 @@ import org.takes.facets.forward.RsForward;
 /**
  * Rebound that validates access to GitHub.
  *
- * @since 0.19
+ * @since 1.0
  */
 public final class RbAccessible implements Rebound {
 

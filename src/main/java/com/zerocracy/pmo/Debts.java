@@ -45,7 +45,7 @@ import org.xembly.Directives;
  * When Zerocrat fails to pay, for any reason,
  * the payment amount will be added to 'debts'.
  *
- * @since 0.21
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})

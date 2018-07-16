@@ -37,7 +37,7 @@ import org.takes.rs.RsWithType;
 /**
  * Project contrib badge.
  *
- * @since 0.22
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class TkContribBadge implements TkRegex {

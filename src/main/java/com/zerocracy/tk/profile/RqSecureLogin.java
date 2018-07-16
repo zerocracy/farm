@@ -31,7 +31,7 @@ import org.takes.facets.forward.RsForward;
 /**
  * User login from the request.
  *
- * @since 0.12
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 final class RqSecureLogin implements Scalar<String> {

@@ -30,6 +30,6 @@
  * <p>Also, {@link com.zerocracy.farm.props.PropsFarm} may be used directly
  * in tests where PMO is needed, in order to have access to the properties.</p>
  *
- * @since 0.18
+ * @since 1.0
  */
 package com.zerocracy.farm.props;

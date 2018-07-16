@@ -27,7 +27,7 @@ import java.io.IOException;
  * Pass through and log.
  *
  * @param <T> Type of event
- * @since 0.1
+ * @since 1.0
  */
 public final class ReLogged<T extends SlackEvent> implements Reaction<T> {
 

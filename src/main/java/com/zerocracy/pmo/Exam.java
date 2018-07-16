@@ -26,7 +26,7 @@ import java.io.IOException;
 /**
  * The exam we take for a person before allowing him to do some operation.
  *
- * @since 0.22
+ * @since 1.0
  */
 public final class Exam {
 

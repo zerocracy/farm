@@ -24,7 +24,7 @@ import java.io.IOException;
 /**
  * Real session in Slack.
  *
- * @since 0.23
+ * @since 1.0
  */
 public final class RealSkSession implements SkSession {
 

@@ -25,7 +25,7 @@ import lombok.EqualsAndHashCode;
 /**
  * PMO project.
  *
- * @since 0.1
+ * @since 1.0
  */
 @EqualsAndHashCode(of = "origin")
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")

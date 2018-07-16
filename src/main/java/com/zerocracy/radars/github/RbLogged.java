@@ -25,7 +25,7 @@ import javax.json.JsonObject;
 /**
  * Rebound that logs.
  *
- * @since 0.10
+ * @since 1.0
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class RbLogged implements Rebound {

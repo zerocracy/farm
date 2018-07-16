@@ -34,7 +34,7 @@ import org.junit.Test;
 
 /**
  * Test case for {@link ReIfAddressed}.
- * @since 0.21.2
+ * @since 1.0
  */
 public final class ReIfAddressedTest {
 

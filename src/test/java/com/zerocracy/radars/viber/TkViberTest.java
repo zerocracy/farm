@@ -28,7 +28,7 @@ import org.takes.rq.RqWithBody;
 /**
  * Tests for {@link TkViber}.
  *
- * @since 0.25
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")

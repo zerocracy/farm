@@ -21,7 +21,7 @@ import java.io.IOException;
 /**
  * Voter.
  *
- * @since 0.12
+ * @since 1.0
  */
 public interface Votes {
 

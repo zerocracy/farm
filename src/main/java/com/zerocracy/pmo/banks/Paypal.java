@@ -50,7 +50,7 @@ import org.cactoos.map.SolidMap;
 /**
  * Paypal payment method.
  *
- * @since 0.19
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.ExcessiveImports")

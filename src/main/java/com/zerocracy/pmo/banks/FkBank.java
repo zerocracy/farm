@@ -53,7 +53,7 @@ import org.xembly.Xembler;
  * &lt;/fees&gt;
  * </pre>
  *
- * @since 0.22
+ * @since 1.0
  * @todo #1069:30min Add FkBank to the Payroll under the file payment method.
  *  Ensure, that the opened files are closed properly and implement
  *  walletIsEmpty, unsupportedPaymentMethod and makePayment tests in

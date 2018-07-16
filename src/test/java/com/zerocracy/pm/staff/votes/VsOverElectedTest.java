@@ -34,7 +34,7 @@ import org.junit.Test;
 /**
  * Test case for {@link VsOverElected}.
  *
- * @since 0.26
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle MagicNumberCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)

@@ -29,7 +29,7 @@ import org.cactoos.text.FormattedText;
 /**
  * React for github issue labels.
  *
- * @since 0.12
+ * @since 1.0
  * @link https://developer.github.com/v3/activity/events/types/#labelevent
  */
 public final class RbByLabel implements Rebound {

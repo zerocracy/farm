@@ -32,7 +32,7 @@ import org.xembly.Directives;
 /**
  * Equity.
  *
- * @since 0.20
+ * @since 1.0
  */
 public final class Equity {
 

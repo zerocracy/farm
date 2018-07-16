@@ -29,7 +29,7 @@ import org.junit.Test;
 
 /**
  * Test case for {@link RbOnUnassign}.
- * @since 0.17
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")

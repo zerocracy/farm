@@ -42,7 +42,7 @@ import org.takes.rs.xe.XeWhen;
 /**
  * Project page.
  *
- * @since 0.12
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class TkProject implements TkRegex {

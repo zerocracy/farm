@@ -33,7 +33,7 @@ import org.cactoos.scalar.SolidScalar;
 /**
  * Surrogate project.
  *
- * @since 0.1
+ * @since 1.0
  */
 public final class GhProject implements Project {
 

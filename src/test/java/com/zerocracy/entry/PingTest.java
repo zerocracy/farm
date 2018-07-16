@@ -39,7 +39,7 @@ import org.xembly.Directives;
 
 /**
  * Tests for {@link Ping}.
- * @since 0.23
+ * @since 1.0
  * @todo #1200:30min Add a test that validates that pings are sent to projects
  *  in batches depending on the ping interval. All projects need to be pinged
  *  eventually.

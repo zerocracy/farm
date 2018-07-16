@@ -24,7 +24,7 @@ import javax.json.JsonObject;
 /**
  * Release rebound.
  *
- * @since 0.26
+ * @since 1.0
  * @todo #1269:30min Each time a release is published, we should pay the
  *  architect a release bonus. Let's create a stakeholder that will react to
  *  the "Release was published" claim that will do this. See the following:

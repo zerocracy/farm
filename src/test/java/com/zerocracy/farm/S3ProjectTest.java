@@ -32,7 +32,7 @@ import org.xembly.Directives;
 
 /**
  * Test case for {@link S3Project}.
- * @since 0.1
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class S3ProjectTest {

@@ -27,7 +27,7 @@ import org.takes.rs.RsText;
 /**
  * Policy check.
  *
- * @since 0.22
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 final class TkPolicy implements Take {

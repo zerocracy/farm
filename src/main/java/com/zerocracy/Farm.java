@@ -27,7 +27,7 @@ import java.io.IOException;
  * in a catalog, which is described at catalog.xsd.</p>
  *
  * @see <a href="https://github.com/zerocracy/datum/blob/master/xsd/pmo/catalog.xsd">catalog.xsd</a>
- * @since 0.1
+ * @since 1.0
  */
 public interface Farm extends Closeable {
 

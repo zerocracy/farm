@@ -22,7 +22,7 @@ import javax.json.JsonObject;
 /**
  * Github issue event.
  * See <a href="https://developer.github.com/v3/activity/events/types/#issuesevent">Github docs</a>.
- * @since 0.17
+ * @since 1.0
  */
 public final class GhIssueEvent {
 

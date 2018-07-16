@@ -23,7 +23,7 @@ import java.io.IOException;
 /**
  * Bank payment method.
  *
- * @since 0.19
+ * @since 1.0
  */
 interface Bank extends Closeable {
 

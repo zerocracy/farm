@@ -31,7 +31,7 @@ import org.junit.Test;
 
 /**
  * Test case for {@link Equity}.
- * @since 0.20
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")

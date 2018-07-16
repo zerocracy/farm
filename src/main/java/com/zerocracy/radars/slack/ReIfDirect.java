@@ -24,7 +24,7 @@ import java.io.IOException;
 /**
  * React if the message is in direct channel with me.
  *
- * @since 0.1
+ * @since 1.0
  */
 public final class ReIfDirect implements Reaction<SlackMessagePosted> {
 

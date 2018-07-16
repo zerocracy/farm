@@ -60,7 +60,7 @@ import org.takes.rs.xe.XeWhen;
 /**
  * Page.
  *
- * @since 0.6
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
  */

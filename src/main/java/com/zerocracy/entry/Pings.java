@@ -43,7 +43,7 @@ import org.quartz.spi.TriggerFiredBundle;
  * it submit new claim with type 'Ping' every minute,
  * 'Ping hourly' every hour and 'Ping daily' every day.
  *
- * @since 0.21
+ * @since 1.0
  */
 public final class Pings {
     /**

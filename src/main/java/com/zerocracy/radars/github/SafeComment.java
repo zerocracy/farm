@@ -26,7 +26,7 @@ import javax.json.JsonObject;
 /**
  * Safe GitHub comment.
  *
- * @since 0.1
+ * @since 1.0
  */
 final class SafeComment implements Comment {
 

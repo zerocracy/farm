@@ -18,6 +18,6 @@
 /**
  * Tests for Viber interactions.
  *
- * @since 0.25
+ * @since 1.0
  */
 package com.zerocracy.radars.viber;

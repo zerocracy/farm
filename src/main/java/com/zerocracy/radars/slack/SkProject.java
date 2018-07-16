@@ -29,7 +29,7 @@ import org.cactoos.scalar.SolidScalar;
 /**
  * Project in Slack.
  *
- * @since 0.1
+ * @since 1.0
  */
 public final class SkProject implements Project {
 

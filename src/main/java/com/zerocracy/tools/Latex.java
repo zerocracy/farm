@@ -30,7 +30,7 @@ import org.cactoos.text.TextOf;
 /**
  * LaTeX document.
  *
- * @since 0.20
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")

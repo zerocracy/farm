@@ -22,7 +22,7 @@ import org.junit.Test;
 
 /**
  * Test case for {@link Quotes}.
- * @since 0.6
+ * @since 1.0
  */
 public final class QuotesTest {
 

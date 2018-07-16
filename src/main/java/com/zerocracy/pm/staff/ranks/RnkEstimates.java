@@ -26,7 +26,7 @@ import org.cactoos.func.UncheckedFunc;
 /**
  * Give higher rank for most expensive tasks.
  *
- * @since 0.22
+ * @since 1.0
  */
 public final class RnkEstimates implements Comparator<String> {
     /**

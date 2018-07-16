@@ -21,7 +21,7 @@ import java.io.IOException;
 /**
  * Cash parsing exception.
  *
- * @since 0.17
+ * @since 1.0
  */
 public class CashParsingException extends IOException {
 

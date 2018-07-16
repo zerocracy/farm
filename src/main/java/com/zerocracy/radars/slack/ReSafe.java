@@ -31,7 +31,7 @@ import org.cactoos.func.IoCheckedFunc;
 /**
  * Safe reaction.
  *
- * @since 0.1
+ * @since 1.0
  */
 public final class ReSafe implements Reaction<SlackMessagePosted> {
 

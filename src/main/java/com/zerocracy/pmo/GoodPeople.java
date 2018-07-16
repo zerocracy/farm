@@ -25,7 +25,7 @@ import org.takes.misc.Href;
 /**
  * People that we know.
  *
- * @since 0.10
+ * @since 1.0
  */
 @SuppressWarnings("PMD.TooManyMethods")
 public final class GoodPeople {

@@ -31,7 +31,7 @@ import org.cactoos.scalar.IoCheckedScalar;
 /**
  * Project's items transaction.
  *
- * @since 0.18.8
+ * @since 1.0
  */
 public final class Txn implements Project, Closeable {
     /**

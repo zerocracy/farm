@@ -18,6 +18,6 @@
 /**
  * Reports.
  *
- * @since 0.18
+ * @since 1.0
  */
 package com.zerocracy.tk.project.reports;

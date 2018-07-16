@@ -40,7 +40,7 @@ import org.xembly.Directives;
 /**
  * Terminator.
  *
- * @since 0.1
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 final class Terminator implements Closeable, Scalar<Iterable<Directive>> {

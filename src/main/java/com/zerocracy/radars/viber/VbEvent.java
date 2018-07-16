@@ -22,7 +22,7 @@ import javax.json.JsonObject;
 /**
  * Viber event data.
  *
- * @since 0.22
+ * @since 1.0
  */
 @SuppressWarnings("PMD.TooManyMethods")
 interface VbEvent {

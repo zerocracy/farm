@@ -33,7 +33,7 @@ import org.quartz.SchedulerException;
 
 /**
  * Ping as quartz job.
- * @since 0.21.1
+ * @since 1.0
  */
 public final class Ping implements Job {
 

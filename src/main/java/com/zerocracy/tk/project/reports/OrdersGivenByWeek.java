@@ -36,7 +36,7 @@ import org.bson.conversions.Bson;
 /**
  * Orders given by weeks.
  *
- * @since 0.18
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")

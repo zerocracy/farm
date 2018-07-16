@@ -25,7 +25,7 @@ import org.junit.Test;
 
 /**
  * Test case for {@link DefaultFlush}.
- * @since 0.22
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @checkstyle ExecutableStatementCountCheck (200 lines)
  * @checkstyle JavadocMethodCheck (500 lines)

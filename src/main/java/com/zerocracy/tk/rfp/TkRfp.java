@@ -35,7 +35,7 @@ import org.takes.rs.xe.XeWhen;
 /**
  * One RFP (request for proposal).
  *
- * @since 0.20
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class TkRfp implements Take {

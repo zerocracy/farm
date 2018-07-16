@@ -30,7 +30,7 @@ import org.xembly.Directives;
 /**
  * Vesting rates.
  *
- * @since 0.20
+ * @since 1.0
  */
 public final class Vesting {
 

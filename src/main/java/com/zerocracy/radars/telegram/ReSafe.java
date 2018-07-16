@@ -32,7 +32,7 @@ import org.telegram.telegrambots.api.objects.Update;
 /**
  * Safe Telegram reaction.
  *
- * @since 0.17
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class ReSafe implements Reaction {

@@ -38,7 +38,7 @@ import org.takes.rq.form.RqFormSmart;
 /**
  * Donate some money to the project.
  *
- * @since 0.19
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")

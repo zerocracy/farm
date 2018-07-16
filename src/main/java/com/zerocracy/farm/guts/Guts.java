@@ -32,7 +32,7 @@ import org.xembly.Directive;
 /**
  * Guts.
  *
- * @since 0.19
+ * @since 1.0
  */
 public final class Guts implements
     Func<String, Iterable<Project>>, Scalar<XML> {

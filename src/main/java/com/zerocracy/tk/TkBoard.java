@@ -44,7 +44,7 @@ import org.takes.rs.xe.XeTransform;
 /**
  * Board of projects.
  *
- * @since 0.13
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class TkBoard implements Take {

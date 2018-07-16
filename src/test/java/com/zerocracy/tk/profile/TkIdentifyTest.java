@@ -29,7 +29,7 @@ import org.takes.rs.RsPrint;
 
 /**
  * Test case for {@link TkIdentify}.
- * @since 0.22
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */

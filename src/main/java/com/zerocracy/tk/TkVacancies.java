@@ -31,7 +31,7 @@ import org.takes.rs.xe.XeChain;
 /**
  * Vacancies of all projects.
  *
- * @since 0.24
+ * @since 1.0
  */
 public final class TkVacancies implements Take {
 

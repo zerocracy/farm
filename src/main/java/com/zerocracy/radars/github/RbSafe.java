@@ -35,7 +35,7 @@ import org.cactoos.func.IoCheckedFunc;
 /**
  * Rebound that is safe.
  *
- * @since 0.17
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")

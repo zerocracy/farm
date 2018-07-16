@@ -25,7 +25,7 @@ import java.util.Map;
 /**
  * Give higher rank for 'REV' jobs.
  *
- * @since 0.18.8
+ * @since 1.0
  */
 public final class RnkRev implements Comparator<String> {
     /**

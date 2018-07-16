@@ -30,7 +30,7 @@ import lombok.EqualsAndHashCode;
 /**
  * Lock that is smart.
  *
- * @since 0.19
+ * @since 1.0
  */
 @EqualsAndHashCode(of = "origin")
 public final class SmartLock implements Lock {

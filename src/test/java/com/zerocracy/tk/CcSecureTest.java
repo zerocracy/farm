@@ -26,7 +26,7 @@ import org.takes.facets.auth.codecs.Codec;
 
 /**
  * Test case for {@link CcSecure}.
- * @since 0.21
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */

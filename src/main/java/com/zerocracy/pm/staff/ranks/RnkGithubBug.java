@@ -29,7 +29,7 @@ import org.cactoos.func.UncheckedBiFunc;
 /**
  * Give higher rank for github tickets with 'bug' label.
  *
- * @since 0.21.1
+ * @since 1.0
  */
 public final class RnkGithubBug implements Comparator<String> {
     /**

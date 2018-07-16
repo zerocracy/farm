@@ -34,7 +34,7 @@ import javax.json.JsonObject;
 /**
  * Issue close-event reaction. Remove it from WBS.
  *
- * @since 0.7
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")

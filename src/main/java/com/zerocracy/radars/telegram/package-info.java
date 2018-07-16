@@ -18,6 +18,6 @@
 /**
  * Telegram reactions.
  *
- * @since 0.15
+ * @since 1.0
  */
 package com.zerocracy.radars.telegram;

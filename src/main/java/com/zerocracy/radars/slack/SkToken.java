@@ -21,7 +21,7 @@ import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 /**
  * Slack Token.
  *
- * @since 0.1
+ * @since 1.0
  */
 public final class SkToken {
 

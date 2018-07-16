@@ -27,7 +27,7 @@ import com.zerocracy.pmo.Speed
 /**
  * Stakeholder that recomputes average speed per user and posts
  * it to <code>people.xml</code>.
- * @since 0.25
+ * @since 1.0
  * @param project Project
  * @param xml Claim XML
  */

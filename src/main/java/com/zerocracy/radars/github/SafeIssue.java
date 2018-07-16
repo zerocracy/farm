@@ -27,7 +27,7 @@ import javax.json.JsonObject;
 /**
  * Safe GitHub issue.
  *
- * @since 0.1
+ * @since 1.0
  */
 @SuppressWarnings("PMD.TooManyMethods")
 final class SafeIssue implements Issue {

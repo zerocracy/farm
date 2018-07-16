@@ -27,7 +27,7 @@ import org.xembly.Directives;
 
 /**
  * Test case for {@link GsProject}.
- * @since 0.19
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ExecutableStatementCountCheck (500 lines)
  */

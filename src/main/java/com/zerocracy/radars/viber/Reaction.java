@@ -22,7 +22,7 @@ import java.io.IOException;
 /**
  * Viber message reaction.
  *
- * @since 0.22
+ * @since 1.0
  */
 interface Reaction {
 

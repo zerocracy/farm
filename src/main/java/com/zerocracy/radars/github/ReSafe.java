@@ -30,7 +30,7 @@ import org.cactoos.func.IoCheckedFunc;
 /**
  * Safe Reaction on GitHub comment.
  *
- * @since 0.10
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCoupling (2 lines)
  */
 public final class ReSafe implements Response {

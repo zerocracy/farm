@@ -28,7 +28,7 @@ import org.takes.rs.xe.XeChain;
 /**
  * Index page.
  *
- * @since 0.1
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 final class TkIndex implements Take {
