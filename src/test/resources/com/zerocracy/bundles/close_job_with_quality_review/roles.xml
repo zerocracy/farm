@@ -25,4 +25,7 @@ SOFTWARE.
   <person id="coder">
     <role>DEV</role>
   </person>
+  <person id="reviewer">
+    <role>REV</role>
+  </person>
 </roles>

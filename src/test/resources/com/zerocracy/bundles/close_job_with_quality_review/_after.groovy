@@ -32,7 +32,13 @@ def exec(Project project, XML xml) {
   )
   Farm farm = binding.variables.farm
   MatcherAssert.assertThat(
+    'Incorrect QA bonus for DEV job',
     new Awards(farm, 'coder').bootstrap().total(),
     Matchers.equalTo(35)
+  )
+  MatcherAssert.assertThat(
+    'Incorrect QA bonus for REV job',
+    new Awards(farm, 'reviewer').bootstrap().total(),
+    Matchers.equalTo(20)
   )
 }

@@ -16,10 +16,7 @@
  */
 package com.zerocracy.bundles.close_job_with_quality_review
 
-import com.jcabi.github.Github
-import com.jcabi.github.Issue
-import com.jcabi.github.Repo
-import com.jcabi.github.Repos
+import com.jcabi.github.*
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
@@ -29,6 +26,8 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
   Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
-  Issue.Smart issue = new Issue.Smart(repo.issues().create('for test', ''))
-  issue.close()
+  new Issue.Smart(repo.issues().create('for test', '')).close()
+  new Issue.Smart(
+    new Pull.Smart(repo.pulls().create('PR', 'dev', 'mater')).issue()
+  ).close()
 }
