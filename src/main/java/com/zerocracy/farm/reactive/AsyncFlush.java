@@ -48,7 +48,7 @@ final class AsyncFlush implements Flush {
      * Queue length (the shorter the faster we are, but we may
      * lose some claims).
      */
-    private static final int QUEUE_LENGTH = 5;
+    private static final int QUEUE_LENGTH = 3;
 
     /**
      * Original flush.
