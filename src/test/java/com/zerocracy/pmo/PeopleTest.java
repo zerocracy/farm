@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,8 +24,12 @@ import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.cactoos.iterable.Filtered;
+import org.cactoos.iterable.IterableOf;
+import org.cactoos.iterable.LengthOf;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.iterable.RangeOf;
 import org.cactoos.list.ListOf;
@@ -39,8 +43,6 @@ import org.junit.rules.ExpectedException;
 
 /**
  * Test case for {@link People}.
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
  * @since 0.1
  * @todo #952:30min Continue replacing old Date classes with Instant.
  *  Remember also to remove instances of `DateAsText` (Instant.toString should
@@ -50,7 +52,12 @@ import org.junit.rules.ExpectedException;
  * @checkstyle JavadocVariableCheck (1000 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (3 lines)
  */
-@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
+@SuppressWarnings(
+    {
+        "PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods",
+        "PMD.ExcessivePublicCount", "PMD.GodClass"
+    }
+)
 public final class PeopleTest {
 
     @Rule
@@ -323,6 +330,33 @@ public final class PeopleTest {
     }
 
     @Test
+    public void inviteForce() throws Exception {
+        final String mentor = "supermentor";
+        final People people = new People(new FkFarm()).bootstrap();
+        final int size = 16;
+        final String format = "std%d";
+        final Iterable<Integer> range = new RangeOf<>(0, size, x -> x + 1);
+        new And(
+            (String std) -> people.invite(std, mentor, true),
+            new Mapped<>((Integer num) -> String.format(format, num), range)
+        ).value();
+        MatcherAssert.assertThat(
+            new LengthOf(
+                new Filtered<>(
+                    mentor::equals,
+                    new Mapped<>(
+                        (Integer num) -> people.mentor(
+                            String.format(format, num)
+                        ),
+                        range
+                    )
+                )
+            ).intValue(),
+            Matchers.equalTo(size + 1)
+        );
+    }
+
+    @Test
     public void graduate() throws Exception {
         final FkFarm farm = new FkFarm(new FkProject());
         final People people = new People(farm).bootstrap();
@@ -546,6 +580,34 @@ public final class PeopleTest {
         MatcherAssert.assertThat(
             people.links(uid, jrel),
             Matchers.contains(jalias)
+        );
+    }
+
+    @Test
+    public void setsSkills() throws IOException {
+        final People people = new People(
+            new FkFarm(new FkProject())
+        ).bootstrap();
+        final String uid = "user";
+        people.invite(uid, "0crat");
+        final Iterable<String> skills = new IterableOf<>("c", "cobol");
+        people.skills(uid, skills);
+        MatcherAssert.assertThat(
+            new ArrayList<>(new ListOf<>(people.skills(uid))),
+            Matchers.equalTo(new ArrayList<>(new ListOf<>(skills)))
+        );
+    }
+
+    @Test
+    public void getsEmptySkillList() throws IOException {
+        final People people = new People(
+            new FkFarm(new FkProject())
+        ).bootstrap();
+        final String uid = "user";
+        people.invite(uid, "0crat");
+        MatcherAssert.assertThat(
+            people.skills(uid),
+            Matchers.emptyIterable()
         );
     }
 

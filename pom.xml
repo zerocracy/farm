@@ -79,6 +79,13 @@ SOFTWARE.
     <telegram.version>3.6</telegram.version>
     <branch.coverage>0.45</branch.coverage>
   </properties>
+  <repositories>
+    <repository>
+      <id>bintray-g4s8-maven</id>
+      <name>bintray-g4s8-maven</name>
+      <url>https://dl.bintray.com/g4s8/mvn</url>
+    </repository>
+  </repositories>
   <dependencies>
     <dependency>
       <groupId>org.cactoos</groupId>
@@ -417,6 +424,11 @@ SOFTWARE.
       <version>42.2.2</version>
       <scope>runtime</scope>
     </dependency>
+    <dependency>
+      <groupId>com.g4s8</groupId>
+      <artifactId>cactoos-cache</artifactId>
+      <version>0.1.3</version>
+    </dependency>
   </dependencies>
   <build>
     <pluginManagement>
@@ -662,14 +674,15 @@ SOFTWARE.
           <plugin>
             <groupId>com.qulice</groupId>
             <artifactId>qulice-maven-plugin</artifactId>
+            <version>0.17.4</version>
             <configuration>
               <excludes combine.children="append">
-                <exclude>checkstyle:/src/main/resources/png/.*</exclude>
-                <exclude>checkstyle:/src/main/resources/com/zerocracy/tk/project/badge.sketch</exclude>
-                <exclude>checkstyle:/src/main/resources/com/zerocracy/tk/project/contrib-badge.sketch</exclude>
+                <exclude>checkstyle:.*/src/main/resources/png/.*</exclude>
+                <exclude>checkstyle:.*/src/main/resources/com/zerocracy/tk/project/badge.sketch</exclude>
+                <exclude>checkstyle:.*/src/main/resources/com/zerocracy/tk/project/contrib-badge.sketch</exclude>
                 <exclude>findbugs:.*</exclude>
-                <exclude>codenarc:**/*</exclude>
                 <exclude>duplicatefinder:.*</exclude>
+                <exclude>pmd:.*\.tex</exclude>
               </excludes>
               <license>file:${basedir}/LICENSE.txt</license>
             </configuration>

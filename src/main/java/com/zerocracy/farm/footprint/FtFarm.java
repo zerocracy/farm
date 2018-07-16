@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -27,8 +27,6 @@ import org.cactoos.iterable.Mapped;
  *
  * <p>All claims are tracked through {@link com.zerocracy.pm.Footprint}.</p>
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
  * @since 0.18
  */
 @EqualsAndHashCode(of = "origin")

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -37,8 +37,6 @@ import org.junit.rules.TemporaryFolder;
 
 /**
  * Test case for {@link Agenda}.
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
  * @since 0.12
  * @checkstyle AvoidDuplicateLiterals (500 lines)
  * @checkstyle JavadocMethodCheck (500 lines)

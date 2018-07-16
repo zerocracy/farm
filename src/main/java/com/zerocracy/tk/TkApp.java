@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -50,7 +50,6 @@ import com.zerocracy.tk.rfp.TkPrepay;
 import com.zerocracy.tk.rfp.TkRfp;
 import com.zerocracy.tk.rfp.TkRfps;
 import com.zerocracy.tk.rfp.TkSubmit;
-import io.sentry.Sentry;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import org.apache.commons.text.StringEscapeUtils;
@@ -92,8 +91,6 @@ import org.takes.tk.TkWrap;
 /**
  * Takes application.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @checkstyle LineLength (500 lines)
@@ -360,10 +357,7 @@ public final class TkApp extends TkWrap {
                             return new Opt.Empty<>();
                         },
                         new FbLog4j(),
-                        req -> {
-                            Sentry.capture(req.throwable());
-                            return new Opt.Empty<>();
-                        },
+                        req -> new Opt.Empty<>(),
                         req -> new Opt.Single<>(
                             new RsWithStatus(
                                 new RsWithType(

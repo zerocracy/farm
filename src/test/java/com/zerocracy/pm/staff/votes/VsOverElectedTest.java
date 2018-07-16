@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -34,11 +34,10 @@ import org.junit.Test;
 /**
  * Test case for {@link VsOverElected}.
  *
- * @author Kirill (g4s8.public@gmail.com)
- * @version $Id$
  * @since 0.26
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle MagicNumberCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class VsOverElectedTest {
     /**
@@ -67,6 +66,28 @@ public final class VsOverElectedTest {
         final FkProject pkt = new FkProject();
         final String login = "user2";
         new VsOverElectedTest.Elect(pkt, max).exec(login);
+        MatcherAssert.assertThat(
+            new VsOverElected(
+                pkt,
+                new FkFarm()
+            ).take(login, new StringBuilder()),
+            Matchers.closeTo(0.0, 0.001)
+        );
+    }
+
+    @Test
+    public void zeroVoteForEmptyElection() throws Exception {
+        final FkProject pkt = new FkProject();
+        final Elections elections = new Elections(pkt).bootstrap();
+        final String login = "newcomer";
+        final String job = "gh:test/test#1";
+        elections.elect(
+            job,
+            new ListOf<>(login),
+            new MapOf<Votes, Integer>(
+                new MapEntry<>((lgn, jbb) -> -100.0, 1)
+            )
+        );
         MatcherAssert.assertThat(
             new VsOverElected(
                 pkt,

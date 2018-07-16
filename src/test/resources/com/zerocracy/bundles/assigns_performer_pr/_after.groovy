@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,14 +18,13 @@ package com.zerocracy.bundles.assigns_performer_pr
 
 import com.jcabi.xml.XML
 import com.zerocracy.Project
+import com.zerocracy.pm.cost.Boosts
 import com.zerocracy.pm.in.Orders
+import com.zerocracy.pm.scope.Wbs
 
 def exec(Project project, XML xml) {
   def job = 'gh:test/test#1'
-  assert new Orders(project).bootstrap().performer(job) == 'krzyk'
-  // @todo #1015:30min Fix the problem when PR job is assigned manually it
-  //  has role of DEV and 30 points award. After fixing it uncomment following
-  //  two lines and the test should pass.
-  //assert new Wbs(project).bootstrap().role(job) == 'REV'
-  //assert new Boosts(project).bootstrap().factor(job) == 1
+  assert new Orders(project).performer(job) == 'krzyk'
+  assert new Wbs(project).role(job) == 'REV'
+  assert new Boosts(project).factor(job) == 1
 }

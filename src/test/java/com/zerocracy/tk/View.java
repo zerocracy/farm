@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,8 +24,6 @@ import org.takes.rs.RsPrint;
 
 /**
  * View of application pages.
- * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
- * @version $Id$
  * @since 0.26
  * @todo #1142:30min This class should be tested that it actually forwards
  *  the call to the TkApp with the url provided by the user, and that the
@@ -74,7 +72,7 @@ public final class View {
         return this.page(
             // @checkstyle LineLength (1 line)
             "Mozilla/5.0 (X11; Linux x86_64; rv:62.0) Gecko/20100101 Firefox/62.0",
-            "text/html,application/xhtml+xml,application/xml"
+            "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
         );
     }
 

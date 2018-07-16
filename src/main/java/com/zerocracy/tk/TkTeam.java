@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -39,9 +39,9 @@ import org.takes.rs.xe.XeWhen;
 /**
  * List of all people.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
  * @since 0.19
+ * @todo #559:30min Let's display the data from people/skills on the profile
+ *  page of a given user as well as on the team page.
  * @checkstyle ClassDataAbstractionCouplingCheck (3 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")

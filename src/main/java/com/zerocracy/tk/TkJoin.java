@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -38,9 +38,6 @@ import org.takes.rq.form.RqFormSmart;
 /**
  * Join Zerocracy form.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @author Kirill (g4s8.public@gmail.com)
- * @version $Id$
  * @since 0.20
  * @todo #1147:30min Each user should see the status of his/her resume at /join.
  *  If the resume is there, he/she should see the resume, not the form.

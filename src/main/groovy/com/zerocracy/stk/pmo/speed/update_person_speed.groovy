@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -27,8 +27,6 @@ import com.zerocracy.pmo.Speed
 /**
  * Stakeholder that recomputes average speed per user and posts
  * it to <code>people.xml</code>.
- * @author Carlos Miranda (miranda.cma@gmail.com)
- * @version $Id: 14f140fbaae73ab381382eb74e38b9fe18252595 $
  * @since 0.25
  * @param project Project
  * @param xml Claim XML

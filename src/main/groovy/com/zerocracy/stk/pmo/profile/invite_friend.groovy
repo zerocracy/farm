@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,18 +18,22 @@ package com.zerocracy.stk.pmo.profile
 
 import com.jcabi.github.User
 import com.jcabi.xml.XML
-import com.zerocracy.Farm
-import com.zerocracy.Par
-import com.zerocracy.Policy
-import com.zerocracy.Project
-import com.zerocracy.SoftException
+import com.zerocracy.*
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.Exam
 import com.zerocracy.pmo.People
-import javax.json.JsonObject
+import com.zerocracy.pmo.Pmo
+import org.cactoos.Scalar
+import org.cactoos.iterable.ItemAt
+import org.cactoos.iterable.Mapped
+import org.cactoos.list.ListOf
+import org.cactoos.scalar.Or
 import org.cactoos.text.AbbreviatedText
+
+import javax.json.JsonObject
 
 def exec(Project pmo, XML xml) {
   new Assume(pmo, xml).isPmo()
@@ -59,8 +63,28 @@ def exec(Project pmo, XML xml) {
       ).say(login, json.getString('type'))
     )
   }
+  // we allow to invite new students without limitations to PMO users
+  // and 'farm' (C3NDPUA8L) QA users
+  // see https://github.com/zerocracy/farm/issues/1410
+  Scalar<Boolean> force = new Or(
+    new ListOf<>(
+      new Scalar<Boolean>() {
+        @Override
+        Boolean value() throws Exception {
+          new Roles(new Pmo(farm)).bootstrap().hasAnyRole(author)
+        }
+      },
+      new ItemAt<>(
+        false,
+        new Mapped<>(
+          { Project project -> new Roles(project).bootstrap().hasRole(author, 'QA') },
+          farm.find('@id="C3NDPUA8L"')
+        )
+      )
+    )
+  )
   People people = new People(farm).bootstrap()
-  people.invite(login, author)
+  people.invite(login, author, force.value())
   String name
   if (json.getString('name', '')) {
     name = "@${login} (%${json.getString('name')})"

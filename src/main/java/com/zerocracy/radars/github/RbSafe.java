@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,7 +25,6 @@ import com.zerocracy.entry.ExtDynamo;
 import com.zerocracy.farm.Errors;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.tools.TxtUnrecoverableError;
-import io.sentry.Sentry;
 import java.io.IOException;
 import javax.json.JsonObject;
 import org.cactoos.func.FuncOf;
@@ -35,8 +34,6 @@ import org.cactoos.func.IoCheckedFunc;
 /**
  * Rebound that is safe.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
  * @since 0.17
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
@@ -90,12 +87,6 @@ public final class RbSafe implements Rebound {
                                         event.getString("action")
                                     )
                                 ).asString()
-                            )
-                        );
-                        Sentry.capture(
-                            new IllegalArgumentException(
-                                event.toString(),
-                                throwable
                             )
                         );
                         throw new IOException(throwable);

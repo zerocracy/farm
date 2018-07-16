@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,11 +22,11 @@ import com.zerocracy.farm.Assume
 
 def exec(Project pmo, XML xml) {
   new Assume(pmo, xml).isPmo()
+  new Assume(pmo, xml).type('Ping daily')
   /**
-   * @todo #492:30min Let's implement this stakeholder. It will take
-   *  a random user from the list, which has the oldest updated attribute,
-   *  go to its GitHub account, fetch all repositories he owns and contributes
-   *  to and fetch the most popular languages from them.
-   *  GitHub provides that information.
+   * @todo #559:30min Create a method People.oldestSkillsUpdate to retrieve the
+   *  login of the user that needs theirs skills updated and fetch all
+   *  repositories he owns and contributes to and fetch the most popular
+   *  languages from them. GitHub provides that information.
    */
 }
