@@ -19,6 +19,7 @@ package com.zerocracy.radars.slack;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.Farm;
+import com.zerocracy.SafeSentry;
 import com.zerocracy.SoftException;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.tools.TxtUnrecoverableError;
@@ -77,6 +78,7 @@ public final class ReSafe implements Reaction<SlackMessagePosted> {
                                 )
                             ).asString()
                         );
+                        new SafeSentry().capture(throwable);
                         throw new IOException(throwable);
                     }
                 )

@@ -19,6 +19,7 @@ package com.zerocracy.farm;
 import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
+import com.zerocracy.SafeSentry;
 import com.zerocracy.SoftException;
 import com.zerocracy.Stakeholder;
 import com.zerocracy.farm.props.Props;
@@ -90,6 +91,16 @@ public final class StkSafe implements Stakeholder {
         } catch (final SoftException ex) {
             if (claim.hasToken()) {
                 new ClaimIn(xml).reply(ex.getMessage()).postTo(project);
+            } else {
+                new SafeSentry().capture(
+                    new IllegalArgumentException(
+                        String.format(
+                            "Claim #%d \"%s\" has no token in %s",
+                            claim.cid(), claim.type(), this.identifier
+                        ),
+                        ex
+                    )
+                );
             }
             // @checkstyle IllegalCatchCheck (1 line)
         } catch (final Throwable ex) {
@@ -119,6 +130,7 @@ public final class StkSafe implements Stakeholder {
                     .param("stacktrace", StkSafe.stacktrace(ex))
                     .postTo(project);
             }
+            new SafeSentry().capture(ex);
             if (claim.hasToken() && !claim.type().startsWith("Notify")) {
                 claim.reply(
                     new TxtUnrecoverableError(
