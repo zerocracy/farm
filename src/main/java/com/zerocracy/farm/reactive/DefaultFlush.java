@@ -57,6 +57,7 @@ final class DefaultFlush implements Flush {
     @Override
     @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     public void exec(final Project project) throws IOException {
+        Logger.info(this, "Exec %s", project.pid());
         final Claims claims = new Claims(project).bootstrap();
         final AtomicInteger total = new AtomicInteger();
         final int left = new LengthOf(claims.iterate()).intValue();

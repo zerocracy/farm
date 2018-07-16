@@ -17,6 +17,7 @@
 package com.zerocracy.farm.reactive;
 
 import com.jcabi.aspects.Tv;
+import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseCallable;
 import com.jcabi.log.VerboseThreads;
 import com.zerocracy.Project;
@@ -47,7 +48,7 @@ final class AsyncFlush implements Flush {
      * Queue length (the shorter the faster we are, but we may
      * lose some claims).
      */
-    private static final int QUEUE_LENGTH = 3;
+    private static final int QUEUE_LENGTH = 5;
 
     /**
      * Original flush.
@@ -113,11 +114,22 @@ final class AsyncFlush implements Flush {
                     () -> {
                         try {
                             if (lock.tryLock(1L, TimeUnit.SECONDS)) {
+                                Logger.info(
+                                    this,
+                                    "%s was locked",
+                                    project.pid()
+                                );
                                 try {
                                     this.origin.exec(project);
                                 } finally {
                                     lock.unlock();
                                 }
+                            } else {
+                                Logger.info(
+                                    this,
+                                    "Failed to lock %s",
+                                    project.pid()
+                                );
                             }
                         } finally {
                             total.decrementAndGet();
@@ -128,6 +140,8 @@ final class AsyncFlush implements Flush {
                 )
             );
             total.incrementAndGet();
+        } else {
+            Logger.info(this, "exec skipped (total >= QUEUE_LENGTH)");
         }
     }
 
