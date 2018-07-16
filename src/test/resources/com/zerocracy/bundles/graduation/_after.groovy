@@ -39,6 +39,7 @@ def exec(Project project, XML xml) {
         Filters.and(
           Filters.eq('type', 'Make payment'),
           Filters.eq('login', 'mentor'),
+          Filters.exists('cash'),
         )
       ),
       Matchers.iterableWithSize(1)
