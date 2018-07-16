@@ -19,12 +19,12 @@ package com.zerocracy.farm;
 import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
+import com.zerocracy.SafeSentry;
 import com.zerocracy.SoftException;
 import com.zerocracy.Stakeholder;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.tools.TxtUnrecoverableError;
-import io.sentry.Sentry;
 import java.io.IOException;
 import lombok.EqualsAndHashCode;
 import org.cactoos.text.TextOf;
@@ -92,7 +92,7 @@ public final class StkSafe implements Stakeholder {
             if (claim.hasToken()) {
                 new ClaimIn(xml).reply(ex.getMessage()).postTo(project);
             } else {
-                Sentry.capture(
+                new SafeSentry().capture(
                     new IllegalArgumentException(
                         String.format(
                             "Claim #%d \"%s\" has no token in %s",
@@ -130,7 +130,7 @@ public final class StkSafe implements Stakeholder {
                     .param("stacktrace", StkSafe.stacktrace(ex))
                     .postTo(project);
             }
-            Sentry.capture(ex);
+            new SafeSentry().capture(ex);
             if (claim.hasToken() && !claim.type().startsWith("Notify")) {
                 claim.reply(
                     new TxtUnrecoverableError(

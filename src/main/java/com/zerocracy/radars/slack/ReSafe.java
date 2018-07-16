@@ -19,10 +19,10 @@ package com.zerocracy.radars.slack;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.Farm;
+import com.zerocracy.SafeSentry;
 import com.zerocracy.SoftException;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.tools.TxtUnrecoverableError;
-import io.sentry.Sentry;
 import java.io.IOException;
 import org.cactoos.func.FuncOf;
 import org.cactoos.func.FuncWithFallback;
@@ -78,7 +78,7 @@ public final class ReSafe implements Reaction<SlackMessagePosted> {
                                 )
                             ).asString()
                         );
-                        Sentry.capture(throwable);
+                        new SafeSentry().capture(throwable);
                         throw new IOException(throwable);
                     }
                 )

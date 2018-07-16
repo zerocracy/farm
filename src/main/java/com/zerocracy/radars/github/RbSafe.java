@@ -20,12 +20,12 @@ import com.jcabi.github.Github;
 import com.jcabi.github.Issue;
 import com.jcabi.github.mock.MkGithub;
 import com.zerocracy.Farm;
+import com.zerocracy.SafeSentry;
 import com.zerocracy.SoftException;
 import com.zerocracy.entry.ExtDynamo;
 import com.zerocracy.farm.Errors;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.tools.TxtUnrecoverableError;
-import io.sentry.Sentry;
 import java.io.IOException;
 import javax.json.JsonObject;
 import org.cactoos.func.FuncOf;
@@ -90,10 +90,9 @@ public final class RbSafe implements Rebound {
                                 ).asString()
                             )
                         );
-                        Sentry.capture(
+                        new SafeSentry().capture(
                             new IllegalArgumentException(
-                                event.toString(),
-                                throwable
+                                event.toString(), throwable
                             )
                         );
                         throw new IOException(throwable);
