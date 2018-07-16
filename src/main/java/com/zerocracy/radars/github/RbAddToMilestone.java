@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -14,7 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package com.zerocracy.radars.github;
 
 import com.jcabi.github.Github;
@@ -28,8 +27,6 @@ import org.cactoos.text.FormattedText;
 /**
  * Updates precedence for issues assigned to milestone.
  *
- * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
- * @version $Id$
  * @since 0.26
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
