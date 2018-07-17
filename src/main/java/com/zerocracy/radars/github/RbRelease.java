@@ -28,11 +28,6 @@ import javax.json.JsonObject;
  * Release rebound.
  *
  * @since 1.0
- * @todo #1269:30min Each time a release is published, we should pay the
- *  architect a release bonus. Let's create a stakeholder that will react to
- *  the "Release was published" claim that will do this. See the following:
- *  https://github.com/zerocracy/farm/issues/1269#issuecomment-402054891
- *  http://www.zerocracy.com/policy.html#53
  */
 public final class RbRelease implements Rebound {
     /**
