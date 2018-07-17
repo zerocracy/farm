@@ -29,7 +29,7 @@ import org.junit.runner.notification.RunListener;
 
 /**
  * Run listener for the entire test suite.
- * @since 0.18
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class TestListener extends RunListener {

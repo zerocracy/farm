@@ -21,7 +21,7 @@ import com.jcabi.github.Comment;
 /**
  * Token.
  *
- * @since 0.1
+ * @since 1.0
  */
 final class TokenOfComment {
 

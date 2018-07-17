@@ -34,7 +34,7 @@ import org.takes.rs.RsWithType;
 /**
  * Farm internals.
  *
- * @since 0.19
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class TkGuts implements Take {

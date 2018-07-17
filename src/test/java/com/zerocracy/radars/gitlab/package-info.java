@@ -18,6 +18,6 @@
 /**
  * GitLab crew, tests.
  *
- * @since 0.23
+ * @since 1.0
  */
 package com.zerocracy.radars.gitlab;

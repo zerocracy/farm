@@ -25,7 +25,7 @@ import org.junit.Test;
 
 /**
  * Test case for {@link RbRelease}.
- * @since 0.26
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class RbReleaseTest {

@@ -30,7 +30,7 @@ import org.junit.Test;
 /**
  * Tests for {@link VsBalance}.
  *
- * @since 0.24
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class VsBalanceTest {

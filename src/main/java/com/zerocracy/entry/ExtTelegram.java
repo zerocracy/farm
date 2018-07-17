@@ -29,7 +29,7 @@ import org.telegram.telegrambots.TelegramBotsApi;
 /**
  * Telegram bot.
  *
- * @since 0.11
+ * @since 1.0
  */
 @EqualsAndHashCode(of = "farm")
 public final class ExtTelegram implements Scalar<TmZerocrat> {

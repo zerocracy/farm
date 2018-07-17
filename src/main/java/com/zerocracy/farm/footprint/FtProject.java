@@ -29,7 +29,7 @@ import org.cactoos.io.TeeInput;
 /**
  * Footprint project.
  *
- * @since 0.18
+ * @since 1.0
  */
 @EqualsAndHashCode(of = "origin")
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")

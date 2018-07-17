@@ -25,7 +25,7 @@ import java.util.Random;
  * <p>
  * Returns double value between 0.0 and 1.0
  *
- * @since 0.21
+ * @since 1.0
  */
 public final class VsRandom implements Votes {
     /**

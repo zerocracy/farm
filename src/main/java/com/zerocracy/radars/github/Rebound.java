@@ -33,7 +33,7 @@ import javax.json.JsonObject;
  * of webhook and returns text which will be displayed in repository
  * on "webhooks" section.
  *
- * @since 0.7
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public interface Rebound {

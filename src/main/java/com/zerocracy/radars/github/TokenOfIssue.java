@@ -21,7 +21,7 @@ import com.jcabi.github.Issue;
 /**
  * Token of issue.
  *
- * @since 0.1
+ * @since 1.0
  */
 final class TokenOfIssue {
 

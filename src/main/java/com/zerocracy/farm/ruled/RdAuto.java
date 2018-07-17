@@ -43,7 +43,7 @@ import org.cactoos.text.TextOf;
 /**
  * Auto updater of XML documents.
  *
- * @since 0.17
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 final class RdAuto {

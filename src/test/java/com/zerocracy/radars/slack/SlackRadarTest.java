@@ -37,7 +37,7 @@ import org.mockito.Mockito;
 /**
  * Tests for {@link SlackRadar}.
  *
- * @since 0.1
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCoupling (2 lines)
  */

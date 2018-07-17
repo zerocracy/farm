@@ -30,7 +30,7 @@ import org.xembly.Directives;
 
 /**
  * Test case for {@link Options}.
- * @since 0.21
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")

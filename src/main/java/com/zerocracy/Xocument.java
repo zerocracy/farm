@@ -59,7 +59,7 @@ import org.xembly.Xembler;
  * XML document.
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
- * @since 0.1
+ * @since 1.0
  */
 @SuppressWarnings("PMD.ExcessiveImports")
 public final class Xocument {

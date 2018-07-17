@@ -25,7 +25,7 @@ import org.takes.tk.TkText;
 
 /**
  * Integration case for {@link ApiLayerQuotes}.
- * @since 0.6
+ * @since 1.0
  */
 public final class ApiLayerQuotesTest {
 

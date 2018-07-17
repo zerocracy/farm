@@ -32,7 +32,7 @@ import org.takes.rs.xe.XeChain;
 /**
  * Identify.
  *
- * @since 0.20
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class TkIdentify implements TkRegex {

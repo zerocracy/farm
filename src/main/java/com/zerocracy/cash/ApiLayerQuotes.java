@@ -34,7 +34,7 @@ import javax.json.JsonObject;
  * This class fetches current quotes from
  * https://currencylayer.com/ and converts it to double.
  *
- * @since 0.6
+ * @since 1.0
  */
 public final class ApiLayerQuotes implements Quotes {
 

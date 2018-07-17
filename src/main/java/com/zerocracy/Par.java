@@ -30,7 +30,7 @@ import org.cactoos.text.JoinedText;
 /**
  * Smart paragraph of text.
  *
- * @since 0.19
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")

@@ -27,7 +27,7 @@ import org.cactoos.func.UncheckedFunc;
 /**
  * Slack sessions.
  *
- * @since 0.11
+ * @since 1.0
  */
 public final class ExtSlack implements Scalar<Map<String, SlackSession>> {
 

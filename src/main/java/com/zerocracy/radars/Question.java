@@ -37,7 +37,7 @@ import org.cactoos.list.SolidList;
 /**
  * Question in text.
  *
- * @since 0.1
+ * @since 1.0
  */
 public final class Question {
 

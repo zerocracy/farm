@@ -24,7 +24,7 @@ import org.junit.Test;
 
 /**
  * Test case for {@link Blanks}.
- * @since 0.23
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class BlanksTest {

@@ -23,7 +23,7 @@ import java.io.IOException;
  * <p>
  * A project in {@link Farm}, collection of {@link Item}s.
  *
- * @since 0.1
+ * @since 1.0
  */
 public interface Project {
 
@@ -31,7 +31,7 @@ public interface Project {
      * Project ID.
      * @return PID
      * @throws IOException If fails on I/O
-     * @since 0.19
+     * @since 1.0
      */
     default String pid() throws IOException {
         throw new UnsupportedOperationException(

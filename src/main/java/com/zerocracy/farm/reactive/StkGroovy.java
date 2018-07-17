@@ -39,7 +39,7 @@ import org.cactoos.text.TextOf;
 /**
  * Stakeholder in Groovy.
  *
- * @since 0.10
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @EqualsAndHashCode(of = "label")

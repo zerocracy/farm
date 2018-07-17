@@ -35,7 +35,7 @@ import org.cactoos.collection.Mapped;
 /**
  * Github error comments stored in DynamoDB.
  *
- * @since 0.20
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class Errors {

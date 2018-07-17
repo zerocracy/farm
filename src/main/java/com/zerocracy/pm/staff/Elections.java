@@ -52,7 +52,7 @@ import org.xembly.Directives;
  * is different from the previous call, meaning that someone else
  * was elected.</p>
  *
- * @since 0.12
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.TooManyMethods")

@@ -25,7 +25,7 @@ import java.io.IOException;
 /**
  * Block losers (vote for them).
  *
- * @since 0.22
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class VsLosers implements Votes {

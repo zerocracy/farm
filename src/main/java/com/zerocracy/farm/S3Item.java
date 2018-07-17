@@ -35,7 +35,7 @@ import org.cactoos.io.InputOf;
 /**
  * Item in S3.
  *
- * @since 0.1
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @EqualsAndHashCode(of = {"ocket", "temp"})

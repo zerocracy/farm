@@ -25,7 +25,7 @@ import java.io.IOException;
 /**
  * Person in Slack.
  *
- * @since 0.1
+ * @since 1.0
  */
 public final class SkPerson {
 

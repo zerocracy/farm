@@ -18,6 +18,7 @@ package com.zerocracy.tk;
 
 import com.jcabi.log.Logger;
 import com.zerocracy.Farm;
+import com.zerocracy.SafeSentry;
 import com.zerocracy.farm.guts.TkGuts;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.pmo.Exam;
@@ -50,7 +51,6 @@ import com.zerocracy.tk.rfp.TkPrepay;
 import com.zerocracy.tk.rfp.TkRfp;
 import com.zerocracy.tk.rfp.TkRfps;
 import com.zerocracy.tk.rfp.TkSubmit;
-import io.sentry.Sentry;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import org.apache.commons.text.StringEscapeUtils;
@@ -92,7 +92,7 @@ import org.takes.tk.TkWrap;
 /**
  * Takes application.
  *
- * @since 0.1
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @checkstyle LineLength (500 lines)
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
@@ -359,7 +359,7 @@ public final class TkApp extends TkWrap {
                         },
                         new FbLog4j(),
                         req -> {
-                            Sentry.capture(req.throwable());
+                            new SafeSentry().capture(req.throwable());
                             return new Opt.Empty<>();
                         },
                         req -> new Opt.Single<>(

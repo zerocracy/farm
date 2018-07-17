@@ -29,13 +29,15 @@ import org.xembly.Directives;
  * a job due to missing the deadline (too many days passed without a reason for
  * waiting).
  *
- * @since 0.23
- * @todo #540:30min Use this class inside resin_on_delay.groovy to register
- *  the amount of delays. After this, finish implementing the voter
- *  VsNegligence: similar to VsSpeed and VsWorkload, it should vote for the
- *  user with the highest negligence (most number of delays). When done, the
- *  voter should be declared in elect_performer.groovy with weight -1
- *  (since the highest negligence will have the highest vote).
+ * @since 1.0
+ * @todo #540:30min Finish implementing and testing this class,
+ *  decide on the XML format and declare it in /datum repository.
+ *  When done, use this metric inside resin_on_delay.groovy. After this,
+ *  finish implementing the voter VsNegligence: similar to VsSpeed and
+ *  VsWorkload, it should vote for the user with the highest negligence
+ *  (most number of delays). When done, the voter should be declared in
+ *  elect_performer.groovy with weight -1 (since the highest negligence will
+ *  have the highest vote).
  */
 public final class Negligence {
 

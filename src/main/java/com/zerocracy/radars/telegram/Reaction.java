@@ -23,7 +23,7 @@ import org.telegram.telegrambots.api.objects.Update;
 /**
  * Telegram message reaction.
  *
- * @since 0.15
+ * @since 1.0
  */
 public interface Reaction {
 

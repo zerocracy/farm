@@ -18,6 +18,6 @@
 /**
  * Project management time voters tests.
  *
- * @since 0.23
+ * @since 1.0
  */
 package com.zerocracy.pm.time.votes;

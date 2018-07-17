@@ -43,7 +43,7 @@ import org.junit.rules.ExpectedException;
 
 /**
  * Test case for {@link People}.
- * @since 0.1
+ * @since 1.0
  * @todo #952:30min Continue replacing old Date classes with Instant.
  *  Remember also to remove instances of `DateAsText` (Instant.toString should
  *  be used). There is a lot of classes to change so try to find a good small

@@ -24,7 +24,7 @@ import java.util.Arrays;
 /**
  * React to GitHub comment.
  *
- * @since 0.1
+ * @since 1.0
  */
 public interface Response {
 

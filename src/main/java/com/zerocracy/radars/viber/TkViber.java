@@ -35,7 +35,7 @@ import org.takes.rs.RsWithStatus;
 /**
  * Viber webhook entry point.
  *
- * @since 0.22
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (2 lines)
  */
 public final class TkViber implements Take {

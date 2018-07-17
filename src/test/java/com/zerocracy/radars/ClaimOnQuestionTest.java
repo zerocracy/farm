@@ -29,7 +29,7 @@ import org.junit.runners.Parameterized;
 
 /**
  * Test case for {@link ClaimOnQuestion}.
- * @since 0.12
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle JavadocVariableCheck (500 lines)
  * @checkstyle VisibilityModifierCheck (500 lines)

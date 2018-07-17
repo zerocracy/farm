@@ -34,7 +34,7 @@ import org.cactoos.scalar.SolidScalar;
 /**
  * Lowest rate wins.
  *
- * @since 0.19
+ * @since 1.0
  */
 public final class VsRate implements Votes {
 

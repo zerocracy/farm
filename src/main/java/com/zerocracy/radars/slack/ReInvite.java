@@ -25,7 +25,7 @@ import java.io.IOException;
 /**
  * Invite to the channel.
  *
- * @since 0.1
+ * @since 1.0
  */
 final class ReInvite implements Reaction<SlackChannelJoined> {
 

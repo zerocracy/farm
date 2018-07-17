@@ -28,7 +28,7 @@ import org.cactoos.text.TextOf;
 /**
  * PGP signature for a piece of text.
  *
- * @since 0.22
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")

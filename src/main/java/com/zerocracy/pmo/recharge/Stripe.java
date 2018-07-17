@@ -36,7 +36,7 @@ import org.cactoos.map.SolidMap;
 /**
  * Stripe payment.
  *
- * @since 0.19
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")

@@ -31,7 +31,7 @@ import org.takes.rs.RsPrint;
 
 /**
  * Test case for {@link TkTeam}.
- * @since 0.26
+ * @since 1.0
  * @checkstyle JavadocMethod (500 lines)
  * @checkstyle MagicNumber (500 lines)
  * @checkstyle ClassDataAbstractionCoupling (3 lines)

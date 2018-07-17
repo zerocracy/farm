@@ -28,7 +28,7 @@ import org.cactoos.func.UncheckedProc;
  *
  * <p>There is no thread-safety guarantee.</p>
  *
- * @since 0.2
+ * @since 1.0
  */
 @EqualsAndHashCode(of = "origin")
 public final class SpyProject implements Project {

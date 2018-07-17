@@ -37,7 +37,7 @@ import org.cactoos.scalar.SolidScalar;
  * Returns low votes for persons that have more tasks in current project and
  * lower in others where he/she is a member.
  *
- * @since 0.24
+ * @since 1.0
  */
 public final class VsBalance implements Votes {
     /**

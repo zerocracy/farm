@@ -24,7 +24,7 @@ import javax.json.JsonObject;
 /**
  * Rebound that is syncronized.
  *
- * @since 0.22
+ * @since 1.0
  */
 public final class RbSync implements Rebound {
 

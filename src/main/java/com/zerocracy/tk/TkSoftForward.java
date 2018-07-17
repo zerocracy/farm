@@ -32,7 +32,7 @@ import org.takes.tk.TkWrap;
 /**
  * Forward to home on soft exception.
  *
- * @since 0.22
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 final class TkSoftForward extends TkWrap {

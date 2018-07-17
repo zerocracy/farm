@@ -29,7 +29,7 @@ import org.takes.tk.TkText;
 /**
  * Test case for {@link Cash}.
  * @checkstyle MagicNumber (500 lines)
- * @since 0.6
+ * @since 1.0
  */
 @SuppressWarnings("PMD.TooManyMethods")
 public final class CashTest {

@@ -29,7 +29,7 @@ import java.nio.charset.StandardCharsets;
 
 /**
  * Zold payment.
- * @since 0.22
+ * @since 1.0
  */
 public final class Zold implements Bank {
 

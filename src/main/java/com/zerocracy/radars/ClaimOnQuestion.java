@@ -21,7 +21,7 @@ import com.zerocracy.pm.ClaimOut;
 /**
  * Claim on question.
  *
- * @since 0.1
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class ClaimOnQuestion {

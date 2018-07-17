@@ -37,7 +37,7 @@ import org.cactoos.func.UncheckedFunc;
 /**
  * S3 Bucket.
  *
- * @since 0.11
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class ExtBucket implements Scalar<Bucket> {

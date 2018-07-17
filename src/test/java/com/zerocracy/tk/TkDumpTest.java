@@ -29,7 +29,7 @@ import org.takes.rq.RqFake;
 /**
  * Test cases for {@link TkDump}.
  *
- * @since 0.26
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public class TkDumpTest {

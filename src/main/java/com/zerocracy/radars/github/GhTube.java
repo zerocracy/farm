@@ -24,7 +24,7 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * Tube to GitHub.
  *
- * @since 0.8
+ * @since 1.0
  */
 public final class GhTube {
 

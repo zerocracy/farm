@@ -33,7 +33,7 @@ import org.cactoos.scalar.SolidScalar;
 /**
  * Reputation voter.
  *
- * @since 0.22
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class VsReputation implements Votes {

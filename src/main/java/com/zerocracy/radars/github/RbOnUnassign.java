@@ -32,7 +32,7 @@ import org.cactoos.text.FormattedText;
 /**
  * Cancel order on unassignment of issue.
  *
- * @since 0.16.1
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (2 lines)
  */
 public final class RbOnUnassign implements Rebound {

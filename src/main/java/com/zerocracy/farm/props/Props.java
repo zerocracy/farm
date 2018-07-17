@@ -32,7 +32,7 @@ import org.cactoos.text.TextOf;
  * which specifies properties such as S3 credentials, Paypal or Stripe secrets
  * etc.</p>
  *
- * @since 0.18
+ * @since 1.0
  */
 public final class Props {
 

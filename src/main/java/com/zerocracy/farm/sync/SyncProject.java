@@ -28,7 +28,7 @@ import lombok.EqualsAndHashCode;
  * Sync project.
  *
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
- * @since 0.1
+ * @since 1.0
  */
 @EqualsAndHashCode(of = "origin")
 final class SyncProject implements Project {

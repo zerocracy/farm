@@ -37,7 +37,7 @@ import org.bson.Document;
 /**
  * Footprint.
  *
- * @since 0.9
+ * @since 1.0
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class Footprint implements Closeable {

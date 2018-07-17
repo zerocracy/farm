@@ -25,7 +25,7 @@ import lombok.EqualsAndHashCode;
 /**
  * Cash.
  *
- * @since 0.6
+ * @since 1.0
  * @checkstyle TooManyMethods (500 lines)
  */
 @SuppressWarnings("PMD.TooManyMethods")

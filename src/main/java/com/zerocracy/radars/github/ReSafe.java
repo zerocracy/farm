@@ -18,10 +18,10 @@ package com.zerocracy.radars.github;
 
 import com.jcabi.github.Comment;
 import com.zerocracy.Farm;
+import com.zerocracy.SafeSentry;
 import com.zerocracy.SoftException;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.tools.TxtUnrecoverableError;
-import io.sentry.Sentry;
 import java.io.IOException;
 import org.cactoos.func.FuncOf;
 import org.cactoos.func.FuncWithFallback;
@@ -30,7 +30,8 @@ import org.cactoos.func.IoCheckedFunc;
 /**
  * Safe Reaction on GitHub comment.
  *
- * @since 0.10
+ * @since 1.0
+ * @checkstyle ClassDataAbstractionCoupling (2 lines)
  */
 public final class ReSafe implements Response {
 
@@ -76,7 +77,7 @@ public final class ReSafe implements Response {
                                 )
                             ).asString()
                         );
-                        Sentry.capture(throwable);
+                        new SafeSentry().capture(throwable);
                         throw new IOException(throwable);
                     }
                 )

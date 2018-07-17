@@ -31,7 +31,7 @@ import org.junit.Test;
 
 /**
  * Test case for {@link OrdersGivenByWeek}.
- * @since 0.18
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */

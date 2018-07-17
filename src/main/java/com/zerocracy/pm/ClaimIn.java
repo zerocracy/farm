@@ -31,7 +31,7 @@ import org.cactoos.time.DateOf;
  * its keep components out. Use it everywhere. Don't parse the XML
  * manually.</p>
  *
- * @since 0.9
+ * @since 1.0
  */
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 public final class ClaimIn {

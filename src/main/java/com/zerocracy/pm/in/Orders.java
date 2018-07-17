@@ -43,7 +43,7 @@ import org.xembly.Directives;
 /**
  * Work orders.
  *
- * @since 0.10
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.TooManyMethods")

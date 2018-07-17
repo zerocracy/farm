@@ -33,7 +33,7 @@ import org.cactoos.iterable.IterableOf;
 /**
  * Assumptions for stakeholder.
  *
- * @since 0.11
+ * @since 1.0
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class Assume {

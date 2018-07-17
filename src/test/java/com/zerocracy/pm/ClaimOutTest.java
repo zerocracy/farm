@@ -27,7 +27,7 @@ import org.xembly.Directive;
 
 /**
  * Test case for {@link ClaimOut}.
- * @since 0.10
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")

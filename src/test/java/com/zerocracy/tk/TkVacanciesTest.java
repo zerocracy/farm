@@ -28,7 +28,7 @@ import org.takes.rs.RsPrint;
 /**
  * Test case for {@link TkVacancies}.
  *
- * @since 0.24
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class TkVacanciesTest {

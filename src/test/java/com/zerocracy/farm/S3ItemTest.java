@@ -36,7 +36,7 @@ import org.xembly.Directives;
 
 /**
  * Test case for {@link S3Item}.
- * @since 0.1
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})

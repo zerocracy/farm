@@ -30,7 +30,7 @@ import org.takes.rs.xe.XeDirectives;
 /**
  * List of all RFPs.
  *
- * @since 0.20
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class TkRfps implements Take {

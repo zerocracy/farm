@@ -18,6 +18,6 @@
 /**
  * Staffing management.
  *
- * @since 0.12
+ * @since 1.0
  */
 package com.zerocracy.pm.staff;

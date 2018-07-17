@@ -25,7 +25,7 @@ import java.util.Map;
 /**
  * Give higher rank for boosted jobs.
  *
- * @since 0.18.8
+ * @since 1.0
  */
 public final class RnkBoost implements Comparator<String> {
     /**

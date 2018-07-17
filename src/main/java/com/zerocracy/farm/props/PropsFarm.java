@@ -33,7 +33,7 @@ import org.xembly.Directives;
  * have their {@code _props.xml} file loaded and accessible, by using the Props
  * class.</p>
  *
- * @since 0.18
+ * @since 1.0
  */
 @EqualsAndHashCode(of = "origin")
 public final class PropsFarm implements Farm {

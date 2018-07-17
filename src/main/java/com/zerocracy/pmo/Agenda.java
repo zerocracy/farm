@@ -34,7 +34,7 @@ import org.xembly.Directives;
  * Agenda of one person in one Project, tasks that
  * are assigned to them in that Project.
  *
- * @since 0.12
+ * @since 1.0
  */
 @SuppressWarnings("PMD.TooManyMethods")
 public final class Agenda {

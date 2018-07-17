@@ -37,7 +37,7 @@ import org.junit.rules.TemporaryFolder;
 
 /**
  * Test case for {@link Agenda}.
- * @since 0.12
+ * @since 1.0
  * @checkstyle AvoidDuplicateLiterals (500 lines)
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle JavadocVariableCheck (500 lines)

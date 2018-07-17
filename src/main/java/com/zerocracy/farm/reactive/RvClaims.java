@@ -27,7 +27,7 @@ import org.cactoos.func.IoCheckedProc;
 /**
  * Reactive claims item.
  *
- * @since 0.10
+ * @since 1.0
  */
 @EqualsAndHashCode(of = "origin")
 final class RvClaims implements Item {

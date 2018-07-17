@@ -30,7 +30,7 @@ import org.cactoos.text.TextOf;
  *
  * <p>There is no thread-safety guarantee.</p>
  *
- * @since 0.2
+ * @since 1.0
  */
 @EqualsAndHashCode(of = "origin")
 public final class SpyItem implements Item {

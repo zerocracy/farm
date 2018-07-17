@@ -32,7 +32,7 @@ import org.cactoos.text.TextOf;
 /**
  * Ruled rules.
  *
- * @since 0.17
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 final class RdSources implements Sources {

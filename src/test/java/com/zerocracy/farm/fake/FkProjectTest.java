@@ -26,7 +26,7 @@ import org.junit.Test;
 
 /**
  * Test case for {@link FkProject}.
- * @since 0.14
+ * @since 1.0
  * @checkstyle MagicNumber (500 lines)
  * @checkstyle JavadocMethodCheck (500 lines)
  */

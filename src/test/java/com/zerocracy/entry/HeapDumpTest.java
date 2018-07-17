@@ -34,7 +34,7 @@ import org.junit.rules.TemporaryFolder;
 /**
  * Test for {@link HeapDump}.
  *
- * @since 0.22
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */

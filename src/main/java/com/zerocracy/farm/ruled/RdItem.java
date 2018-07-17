@@ -34,7 +34,7 @@ import org.cactoos.scalar.SolidScalar;
 /**
  * Ruled item.
  *
- * @since 0.17
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @EqualsAndHashCode(of = "origin")

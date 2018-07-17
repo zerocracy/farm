@@ -18,6 +18,6 @@
 /**
  * Requests for proposal (RFP).
  *
- * @since 0.20
+ * @since 1.0
  */
 package com.zerocracy.tk.rfp;

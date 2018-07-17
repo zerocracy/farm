@@ -39,7 +39,7 @@ import org.takes.facets.forward.RsForward;
 /**
  * Project from the request.
  *
- * @since 0.12
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.CyclomaticComplexity")

@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Shut executor service up.
  *
- * @since 0.19
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class ShutUp {

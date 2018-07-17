@@ -30,7 +30,7 @@ import org.takes.rs.RsEmpty;
 /**
  * Shutdown the app.
  *
- * @since 0.20
+ * @since 1.0
  */
 public final class TkShutdown implements Take {
     /**
