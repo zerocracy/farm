@@ -16,9 +16,12 @@
  */
 package com.zerocracy.radars.github;
 
+import com.jcabi.github.Coordinates;
 import com.jcabi.github.Github;
+import com.jcabi.github.Repo;
 import com.zerocracy.Farm;
 import com.zerocracy.pm.ClaimOut;
+import java.io.IOException;
 import javax.json.JsonObject;
 
 /**
@@ -39,15 +42,23 @@ public final class RbRelease implements Rebound {
 
     @Override
     public String react(final Farm farm, final Github github,
-        final JsonObject event) {
+        final JsonObject event) throws IOException {
         final String answer;
         if (event.containsKey(RbRelease.JSON_KEY)) {
             final JsonObject release = event.getJsonObject(RbRelease.JSON_KEY);
             final String tag = release.getString("tag_name");
+            final Repo repo = github.repos().get(
+                new Coordinates.Simple(
+                    event.getJsonObject("repository")
+                        .getString("full_name")
+                )
+            );
             new ClaimOut()
                 .type("Release was published")
                 .param("tag", tag)
-                .param("date", release.getString("published_at"));
+                .param("repo", repo.coordinates().toString())
+                .param("date", release.getString("published_at"))
+                .postTo(new GhProject(farm, repo));
             answer = String.format(
                 "Release published: %d (tag: %s)",
                 release.getInt("id"),
