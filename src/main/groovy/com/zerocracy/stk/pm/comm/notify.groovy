@@ -32,7 +32,9 @@ import com.zerocracy.pm.ClaimIn
  * @todo #1071:30min Let's allow notification via Viber. If we receive a Notify
  *  claim with a 'viber' prefixed token, we copy the claim to a new claim,
  *  "Notify in Viber". Then, create a stakeholder that will handle the claim
- *  and send the actual message to the user.
+ *  and send the actual message to the user. Also create a mock/fake VbBot
+ *  implementation that we can use for stakeholder testing (may require
+ *  extracting an interface for VbBot).
  */
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Notify')
