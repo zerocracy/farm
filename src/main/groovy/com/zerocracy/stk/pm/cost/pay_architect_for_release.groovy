@@ -72,6 +72,7 @@ def exec(Project project, XML xml) {
       .param('login', it)
       .param('reason', new Par('Release bonus for ARC §54').say())
       .param('minutes', mpa)
+      .param('job', 'none')
       .postTo(project)
     claim.copy()
       .type('Notify PMO')
