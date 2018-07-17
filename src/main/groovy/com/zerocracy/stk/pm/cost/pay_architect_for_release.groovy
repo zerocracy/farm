@@ -55,12 +55,10 @@ def exec(Project project, XML xml) {
     footprint.collection().countDocuments(
       Filters.and(
         Filters.gt('created', Date.from(latest)),
-        Filters.not(
-          Filters.or(
-            Filters.regex('type', 'Ping.*'),
-            Filters.eq('type', 'Error'),
-            Filters.regex('type', 'Notify.*'),
-          )
+        Filters.and(
+          Filters.not(Filters.regex('type', 'Ping.*')),
+          Filters.ne('type', 'Error'),
+          Filters.not(Filters.regex('type', 'Notify.*')),
         ),
       )
     )
@@ -81,6 +79,6 @@ def exec(Project project, XML xml) {
       'message',
       new Par('We just sent "ARC release bonus" of %d minutes to %s in %s (%d claims)')
         .say(mpa, it, project.pid(), claims)
-      ).postTo(farm)
+    ).postTo(farm)
   }
 }
