@@ -83,4 +83,23 @@ public final class ReviewsTest {
         );
     }
 
+    @Test
+    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
+    public void fetchesReviewsOfInspector() throws Exception {
+        final Reviews reviews = new Reviews(new FkProject()).bootstrap();
+        final String[] jobs =
+            {"gh:yegor256/0pdd#200", "gh:yegor256/0pdd#201"};
+        final String inspector = "ypshenychka";
+        for (final String job : jobs) {
+            reviews.add(
+                job, inspector, "carlosmiranda",
+                new Cash.S("$111"), 1, new Cash.S("$24")
+            );
+        }
+        MatcherAssert.assertThat(
+            reviews.findByInspector(inspector),
+            Matchers.contains(jobs)
+        );
+    }
+
 }
