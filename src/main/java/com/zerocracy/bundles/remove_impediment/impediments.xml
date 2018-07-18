@@ -1,0 +1,5 @@
+<impediments version="1" updated="2018-07-02T00:00:00.000Z">
+  <order id="gh:test/test#1">
+    <impediment type="unknown">The user just asked to wait a bit.</impediment>
+  </order>
+</impediments>
