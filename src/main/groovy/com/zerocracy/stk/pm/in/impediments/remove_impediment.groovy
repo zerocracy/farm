@@ -24,12 +24,14 @@ import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.in.Impediments
 
 /**
- * This stackeholder responds to 'Remove impediment' event, which is
+ * This stakeholder responds to 'Remove impediment' event, which is
  * triggered when the user says "@0crat continue" on an issue that is
  * on hold.
  * @todo #1380:30min The impediment should also be removed from the Agenda. We
- *  should implement a mechanism similar to
- *  register_impediment.groovy/add_impediment_to_agenda.groovy.
+ *  should implement a mechanism similar to how register_impediment.groovy and 
+ *  add_impediment_to_agenda.groovy are working. This stakeholder should send a
+ *  'Impediment was removed' claim, caught and handled by
+ *  remove_impediment_from_agenda.groovy.
  */
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
