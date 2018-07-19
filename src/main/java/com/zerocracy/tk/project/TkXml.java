@@ -31,7 +31,7 @@ import org.takes.rs.RsWithType;
 /**
  * Artifact content, in XML.
  *
- * @since 0.17
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class TkXml implements TkRegex {

@@ -32,7 +32,7 @@ import org.takes.rq.RqFake;
 
 /**
  * Test case for {@link TkApp}.
- * @since 0.1
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle JavadocVariableCheck (500 lines)
  * @checkstyle VisibilityModifierCheck (500 lines)

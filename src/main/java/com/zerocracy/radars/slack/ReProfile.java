@@ -28,7 +28,7 @@ import java.io.IOException;
 /**
  * Direct profile reaction.
  *
- * @since 0.1
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class ReProfile implements Reaction<SlackMessagePosted> {

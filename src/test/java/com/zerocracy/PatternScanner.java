@@ -25,7 +25,7 @@ import org.reflections.vfs.Vfs;
 
 /**
  * Resource scanner which filter file names by pattern.
- * @since 0.17
+ * @since 1.0
  */
 public final class PatternScanner implements Scanner {
 

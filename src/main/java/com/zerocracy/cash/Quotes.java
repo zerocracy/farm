@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * Quotes.
  *
- * @since 0.6
+ * @since 1.0
  */
 public interface Quotes {
 

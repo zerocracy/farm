@@ -28,7 +28,7 @@ import org.cactoos.list.SolidList;
 /**
  * ReplaceRoot for Mongo.
  *
- * @since 0.18
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class ReplaceRoot implements Bson {

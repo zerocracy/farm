@@ -23,7 +23,7 @@ import java.io.Closeable;
 /**
  * Session in Slack.
  *
- * @since 0.23
+ * @since 1.0
  * @todo #89:30min Use this interface and its implementation RealSkSession
  *  everywhere instead of SlackSession that is used currently. When it's done
  *  some tests can be refactored to get rid of Mockito library.

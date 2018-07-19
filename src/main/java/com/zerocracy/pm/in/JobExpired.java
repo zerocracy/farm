@@ -26,7 +26,7 @@ import org.cactoos.Scalar;
 
 /**
  * Job expired.
- * @since 0.22
+ * @since 1.0
  */
 public final class JobExpired implements Scalar<Boolean> {
     /**

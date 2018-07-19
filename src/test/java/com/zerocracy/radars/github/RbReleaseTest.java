@@ -16,8 +16,11 @@
  */
 package com.zerocracy.radars.github;
 
+import com.jcabi.github.Github;
+import com.jcabi.github.Repos;
 import com.jcabi.github.mock.MkGithub;
-import com.zerocracy.farm.fake.FkFarm;
+import com.zerocracy.Farm;
+import com.zerocracy.farm.props.PropsFarm;
 import javax.json.Json;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -25,7 +28,7 @@ import org.junit.Test;
 
 /**
  * Test case for {@link RbRelease}.
- * @since 0.26
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class RbReleaseTest {
@@ -33,10 +36,13 @@ public final class RbReleaseTest {
     public void acceptsRelease() throws Exception {
         final int id = 1;
         final String tag = "0.0.1";
+        final Farm farm = new PropsFarm();
+        final Github github = new MkGithub().relogin("test");
+        github.repos().create(new Repos.RepoCreate("one", false));
         MatcherAssert.assertThat(
             new RbRelease().react(
-                new FkFarm(),
-                new MkGithub(),
+                farm,
+                github,
                 Json.createObjectBuilder()
                     .add(
                         "release",
@@ -44,7 +50,11 @@ public final class RbReleaseTest {
                             .add("tag_name", tag)
                             .add("id", id)
                             .add("published_at", "2018-04-06T07:00:00Z")
-                            .build()
+                    )
+                    .add(
+                        "repository",
+                        Json.createObjectBuilder()
+                            .add("full_name", "test/one")
                     ).build()
             ),
             Matchers.is(

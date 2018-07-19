@@ -26,7 +26,7 @@ import org.mockito.Mockito;
 /**
  * Test cases for {@link RealSkSession}.
  *
- * @since 0.23
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class RealSkSessionTest {

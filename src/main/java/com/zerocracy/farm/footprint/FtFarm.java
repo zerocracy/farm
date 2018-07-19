@@ -27,7 +27,7 @@ import org.cactoos.iterable.Mapped;
  *
  * <p>All claims are tracked through {@link com.zerocracy.pm.Footprint}.</p>
  *
- * @since 0.18
+ * @since 1.0
  */
 @EqualsAndHashCode(of = "origin")
 public final class FtFarm implements Farm {

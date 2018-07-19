@@ -22,7 +22,7 @@ import java.io.IOException;
 /**
  * Votes that always return [0..1].
  *
- * @since 0.17
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class VsSafe implements Votes {

@@ -27,7 +27,7 @@ import org.junit.Test;
 
 /**
  * Test case for {@link Latex}.
- * @since 0.20
+ * @since 1.0
  */
 public final class LatexITCase {
 

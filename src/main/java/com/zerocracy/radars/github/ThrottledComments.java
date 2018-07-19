@@ -32,7 +32,7 @@ import org.cactoos.text.SubText;
 /**
  * Comments that don't allow more than 5 posts from us in a row.
  *
- * @since 0.19
+ * @since 1.0
  */
 public final class ThrottledComments implements Comments {
 

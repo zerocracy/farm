@@ -17,6 +17,7 @@
 package com.zerocracy.radars.telegram;
 
 import com.zerocracy.Farm;
+import com.zerocracy.SafeSentry;
 import com.zerocracy.SoftException;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.tools.TxtUnrecoverableError;
@@ -31,7 +32,7 @@ import org.telegram.telegrambots.api.objects.Update;
 /**
  * Safe Telegram reaction.
  *
- * @since 0.17
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class ReSafe implements Reaction {
@@ -87,6 +88,7 @@ public final class ReSafe implements Reaction {
                                     ).asString()
                                 )
                         );
+                        new SafeSentry().capture(throwable);
                         throw new IOException(throwable);
                     }
                 )

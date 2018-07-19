@@ -29,7 +29,7 @@ import java.util.Set;
  * A stakeholder that doesn't hit the same
  * {@link MismatchException} exception twice.
  *
- * @since 0.19
+ * @since 1.0
  */
 final class StkSmart implements Stakeholder {
 

@@ -26,7 +26,7 @@ import org.junit.Test;
 
 /**
  * Test case for {@link VsVacation}.
- * @since 0.16
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class VsVacationTest {

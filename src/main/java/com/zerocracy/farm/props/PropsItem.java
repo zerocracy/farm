@@ -35,7 +35,7 @@ import org.xembly.Xembler;
  *
  * <p>This Item represents the {@code _props.xml} file in a PMO project.</p>
  *
- * @since 0.18
+ * @since 1.0
  */
 @EqualsAndHashCode(of = "temp")
 final class PropsItem implements Item {

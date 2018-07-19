@@ -34,6 +34,6 @@
  * a Xembly response with some system information, injected there by
  * every corresponding Farm.</p>
  *
- * @since 0.19
+ * @since 1.0
  */
 package com.zerocracy.farm.guts;

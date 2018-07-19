@@ -19,6 +19,7 @@ package com.zerocracy.entry;
 import com.jcabi.aspects.Loggable;
 import com.jcabi.log.Logger;
 import com.zerocracy.Farm;
+import com.zerocracy.SafeSentry;
 import com.zerocracy.farm.S3Farm;
 import com.zerocracy.farm.SmartFarm;
 import com.zerocracy.farm.props.Props;
@@ -44,7 +45,7 @@ import org.takes.http.FtCli;
 
 /**
  * Main entry point.
- * @since 0.1
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class Main {
@@ -82,6 +83,7 @@ public final class Main {
         try {
             new Main(args).exec();
         } catch (final Throwable ex) {
+            new SafeSentry().capture(ex);
             Logger.error(Main.class, "The main app crashed: %[exception]s", ex);
             throw new IOException(ex);
         } finally {

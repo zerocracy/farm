@@ -49,7 +49,7 @@ import org.xembly.Directives;
 /**
  * Footprint report.
  *
- * @since 0.18
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings({ "PMD.AvoidDuplicateLiterals", "PMD.ExcessiveImports" })

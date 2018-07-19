@@ -30,7 +30,7 @@ import twitter4j.auth.AccessToken;
 
 /**
  * Twitter client.
- * @since 0.21
+ * @since 1.0
  */
 public final class ExtTwitter implements Scalar<ExtTwitter.Tweets> {
 

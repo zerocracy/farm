@@ -32,7 +32,7 @@ import org.mockito.Mockito;
 
 /**
  * Test case for {@link ReProfile}.
- * @since 0.22
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")

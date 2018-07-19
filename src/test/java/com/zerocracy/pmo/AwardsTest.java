@@ -23,7 +23,7 @@ import org.junit.Test;
 
 /**
  * Test case for {@link Awards}.
- * @since 0.12
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class AwardsTest {

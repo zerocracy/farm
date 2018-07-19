@@ -29,7 +29,7 @@ import org.codehaus.groovy.runtime.InvokerInvocationException;
 
 /**
  * Runtime stakeholder.
- * @since 0.22
+ * @since 1.0
  */
 public final class StkRuntime implements Stakeholder {
     /**

@@ -32,7 +32,7 @@ import org.takes.rq.RqHref;
 /**
  * Add user alias.
  *
- * @since 0.1
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class TkAlias implements Take {

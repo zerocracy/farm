@@ -33,7 +33,7 @@ import org.xembly.Xembler;
 /**
  * Hints to publish.
  *
- * @since 0.22
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")

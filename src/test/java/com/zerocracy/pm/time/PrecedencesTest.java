@@ -25,7 +25,7 @@ import org.junit.Test;
 /**
  * Unit tests for {@link Precedences}.
  *
- * @since 0.23
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class PrecedencesTest {

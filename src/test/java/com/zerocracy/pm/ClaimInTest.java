@@ -27,7 +27,7 @@ import org.xembly.Xembler;
 
 /**
  * Test case for {@link ClaimIn}.
- * @since 0.9
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class ClaimInTest {

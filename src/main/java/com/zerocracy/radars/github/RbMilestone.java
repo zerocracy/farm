@@ -25,7 +25,7 @@ import javax.json.JsonObject;
 /**
  * Milestone rebound.
  *
- * @since 0.21
+ * @since 1.0
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class RbMilestone implements Rebound {

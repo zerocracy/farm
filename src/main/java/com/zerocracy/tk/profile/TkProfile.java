@@ -41,7 +41,7 @@ import org.xembly.Directives;
 /**
  * User profile page.
  *
- * @since 0.12
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class TkProfile implements TkRegex {

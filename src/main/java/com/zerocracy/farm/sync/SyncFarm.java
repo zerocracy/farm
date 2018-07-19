@@ -35,7 +35,7 @@ import org.xembly.Directives;
 /**
  * Synchronized farm.
  *
- * @since 0.1
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @EqualsAndHashCode(of = "origin")

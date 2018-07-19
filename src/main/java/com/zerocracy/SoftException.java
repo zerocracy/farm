@@ -21,7 +21,7 @@ import java.io.IOException;
 /**
  * Soft exception from {@link Stakeholder}.
  *
- * @since 0.11
+ * @since 1.0
  */
 public final class SoftException extends IOException {
 

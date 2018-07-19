@@ -25,7 +25,7 @@ import org.cactoos.Proc;
 /**
  * Reactive project.
  *
- * @since 0.1
+ * @since 1.0
  */
 @EqualsAndHashCode(of = "origin")
 final class RvProject implements Project {

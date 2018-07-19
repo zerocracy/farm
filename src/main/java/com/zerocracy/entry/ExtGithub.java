@@ -32,7 +32,7 @@ import org.cactoos.func.UncheckedFunc;
 /**
  * GitHub server connector.
  *
- * @since 0.7
+ * @since 1.0
  */
 public final class ExtGithub implements Scalar<Github> {
 

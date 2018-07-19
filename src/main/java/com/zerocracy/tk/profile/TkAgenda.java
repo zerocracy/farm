@@ -28,7 +28,7 @@ import org.takes.facets.fork.TkRegex;
 /**
  * User agenda page.
  *
- * @since 0.12
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class TkAgenda implements TkRegex {

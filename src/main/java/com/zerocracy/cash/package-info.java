@@ -18,6 +18,6 @@
 /**
  * Cash.
  *
- * @since 0.6
+ * @since 1.0
  */
 package com.zerocracy.cash;

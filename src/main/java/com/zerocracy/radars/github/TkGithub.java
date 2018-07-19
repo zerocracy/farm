@@ -46,7 +46,7 @@ import org.takes.rs.RsWithStatus;
 /**
  * GitHub hook, take.
  *
- * @since 0.7
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
  */

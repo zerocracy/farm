@@ -24,7 +24,7 @@ import lombok.EqualsAndHashCode;
 /**
  * Ruled project.
  *
- * @since 0.17
+ * @since 1.0
  */
 @EqualsAndHashCode(of = "origin")
 final class RdProject implements Project {

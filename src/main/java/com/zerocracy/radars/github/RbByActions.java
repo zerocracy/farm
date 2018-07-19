@@ -26,7 +26,7 @@ import javax.json.JsonObject;
 /**
  * React if it's in the action.
  *
- * @since 0.7
+ * @since 1.0
  */
 public final class RbByActions implements Rebound {
 

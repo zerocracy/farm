@@ -27,7 +27,7 @@ import org.xembly.Directives;
 /**
  * Farm with guts about all Ext details.
  *
- * @since 0.19
+ * @since 1.0
  */
 @EqualsAndHashCode(of = "origin")
 public final class ExtFarm implements Farm {

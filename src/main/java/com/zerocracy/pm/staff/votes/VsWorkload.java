@@ -35,7 +35,7 @@ import org.cactoos.scalar.SolidScalar;
 /**
  * Workload voter.
  *
- * @since 0.17
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class VsWorkload implements Votes {

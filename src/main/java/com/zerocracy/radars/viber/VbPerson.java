@@ -24,7 +24,7 @@ import java.io.IOException;
 /**
  * Person in Viber.
  *
- * @since 0.22
+ * @since 1.0
  */
 final class VbPerson {
     /**

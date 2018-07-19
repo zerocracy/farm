@@ -33,7 +33,7 @@ import org.cactoos.io.TeeInput;
 /**
  * Footprint item.
  *
- * @since 0.18
+ * @since 1.0
  */
 @EqualsAndHashCode(of = "origin")
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")

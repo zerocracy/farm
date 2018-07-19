@@ -38,7 +38,7 @@ import org.xembly.Directives;
 /**
  * Reactive farm.
  *
- * @since 0.1
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 final class AsyncFlush implements Flush {

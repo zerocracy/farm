@@ -32,7 +32,7 @@ import org.junit.Test;
 /**
  * Test case for {@link Resumes}.
  *
- * @since 0.22.1
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle MagicNumberCheck (500 lines)
  */

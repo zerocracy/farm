@@ -30,7 +30,7 @@ import org.junit.Test;
 /**
  * Test case for {@link Errors}.
  *
- * @since 0.20
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class ErrorsITCase {

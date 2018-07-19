@@ -33,7 +33,7 @@ import org.cactoos.text.TextOf;
  * finds the number needed inside the HTML, and returns it.
  * If it's a testing mode, the test value is returned.</p>
  *
- * @since 0.21
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class Policy {

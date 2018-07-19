@@ -38,7 +38,7 @@ import org.takes.rs.xe.XeChain;
 /**
  * Contribution page.
  *
- * @since 0.22
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class TkContrib implements TkRegex {

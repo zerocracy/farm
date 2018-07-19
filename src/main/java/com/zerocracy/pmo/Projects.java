@@ -25,7 +25,7 @@ import org.xembly.Directives;
 /**
  * Projects of a user.
  *
- * @since 0.12
+ * @since 1.0
  */
 public final class Projects {
 

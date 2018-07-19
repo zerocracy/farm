@@ -41,7 +41,7 @@ import org.xembly.Directives;
 /**
  * Data about people.
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
- * @since 0.1
+ * @since 1.0
  */
 @SuppressWarnings
     (

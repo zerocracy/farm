@@ -45,7 +45,7 @@ import org.cactoos.iterable.Mapped;
  * <p>This is what is coming in the JSON:
  * {@see http://developer.github.com/v3/activity/notifications/#list-your-notifications-in-a-repository}.</p>
  *
- * @since 0.1
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class ReOnComment implements Reaction {

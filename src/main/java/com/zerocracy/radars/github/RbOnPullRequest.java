@@ -28,7 +28,7 @@ import org.cactoos.text.FormattedText;
 /**
  * Add issue to WBS if it is a pull request.
  *
- * @since 0.15.4
+ * @since 1.0
  */
 public final class RbOnPullRequest implements Rebound {
 

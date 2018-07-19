@@ -29,7 +29,7 @@ import org.cactoos.Proc;
 /**
  * On GitHub invitations.
  *
- * @since 0.2
+ * @since 1.0
  */
 public final class AcceptInvitations implements Proc<Boolean> {
 

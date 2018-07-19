@@ -26,7 +26,7 @@ import java.util.Locale;
 /**
  * Author.
  *
- * @since 0.1
+ * @since 1.0
  */
 final class GhUser {
 

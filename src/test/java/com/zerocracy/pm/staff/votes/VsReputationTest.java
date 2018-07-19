@@ -29,7 +29,7 @@ import org.junit.Test;
 
 /**
  * Test case for {@link VsReputation}.
- * @since 0.25
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class VsReputationTest {

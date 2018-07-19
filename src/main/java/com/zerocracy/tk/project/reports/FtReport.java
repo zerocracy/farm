@@ -25,7 +25,7 @@ import org.bson.conversions.Bson;
 /**
  * Footprint report.
  *
- * @since 0.18
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public interface FtReport {

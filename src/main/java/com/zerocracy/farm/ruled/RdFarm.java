@@ -25,7 +25,7 @@ import org.cactoos.iterable.Mapped;
 /**
  * Ruled farm (auto-updates XMLs and checks for their consistency).
  *
- * @since 0.17
+ * @since 1.0
  */
 @EqualsAndHashCode(of = "origin")
 public final class RdFarm implements Farm {

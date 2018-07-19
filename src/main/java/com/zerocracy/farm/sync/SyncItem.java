@@ -25,7 +25,7 @@ import lombok.EqualsAndHashCode;
 /**
  * Synchronized and thread safe item.
  *
- * @since 0.1
+ * @since 1.0
  */
 @EqualsAndHashCode(of = "origin")
 final class SyncItem implements Item {

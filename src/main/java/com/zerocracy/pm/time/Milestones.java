@@ -29,7 +29,7 @@ import org.xembly.Directives;
 /**
  * Milestones.
  *
- * @since 0.21
+ * @since 1.0
  */
 public final class Milestones {
 

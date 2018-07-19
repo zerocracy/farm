@@ -22,7 +22,7 @@ import java.io.IOException;
 /**
  * Stakeholder, an active worker with project files.
  *
- * @since 0.1
+ * @since 1.0
  */
 public interface Stakeholder {
 

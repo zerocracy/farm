@@ -25,7 +25,7 @@ import java.io.IOException;
 
 /**
  * The debt is too big.
- * @since 0.16
+ * @since 1.0
  */
 public final class VsBigDebt implements Votes {
 

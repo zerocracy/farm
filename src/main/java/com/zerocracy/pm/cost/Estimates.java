@@ -62,7 +62,7 @@ import org.xembly.Directives;
  * Estimate can be cleaned from {@link com.zerocracy.farm.ruled.RdAuto},
  * see {@code 03-estimates-remove.xsl} in datum repo.
  *
- * @since 0.10
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals"})

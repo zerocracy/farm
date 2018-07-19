@@ -32,7 +32,7 @@ import org.xembly.Directives;
 /**
  * Awards of one person.
  *
- * @since 0.12
+ * @since 1.0
  */
 public final class Awards {
 

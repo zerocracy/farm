@@ -18,6 +18,6 @@
 /**
  * Ranks tests.
  *
- * @since 0.18.8
+ * @since 1.0
  */
 package com.zerocracy.pm.staff.ranks;

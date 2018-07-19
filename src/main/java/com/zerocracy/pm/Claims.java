@@ -41,7 +41,7 @@ import org.xembly.Xembler;
 /**
  * Claims.
  *
- * @since 0.9
+ * @since 1.0
  * @todo #1215:30min Invent mechanism to prevent huge claims.xml files.
  *  We can check claims.xml size before working with it and pause
  *  a project if this size is too big. We can skip downloading from S3,

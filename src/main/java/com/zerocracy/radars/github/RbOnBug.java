@@ -28,7 +28,7 @@ import org.cactoos.text.FormattedText;
 /**
  * Add issue to WBS if it labeled as bug.
  *
- * @since 0.12
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class RbOnBug implements Rebound {

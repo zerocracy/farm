@@ -29,7 +29,7 @@ import org.junit.Test;
 /**
  * Test case for {@link VsNoRoom}.
  *
- * @since 0.19
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class VsNoRoomTest {

@@ -26,7 +26,7 @@ import java.io.IOException;
  * Make it impossible to go over a hard cap for the amount of jobs
  * in the agenda.
  *
- * @since 0.20
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class VsHardCap implements Votes {

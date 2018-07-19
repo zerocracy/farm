@@ -18,6 +18,6 @@
 /**
  * Payments.
  *
- * @since 0.19
+ * @since 1.0
  */
 package com.zerocracy.pmo.banks;

@@ -23,7 +23,7 @@ import java.io.IOException;
 
 /**
  * Vacation voter.
- * @since 0.16
+ * @since 1.0
  */
 public final class VsVacation implements Votes {
 

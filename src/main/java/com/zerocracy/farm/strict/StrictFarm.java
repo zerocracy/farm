@@ -25,7 +25,7 @@ import org.cactoos.iterable.Mapped;
 /**
  * Strict farm.
  *
- * @since 0.18
+ * @since 1.0
  */
 @EqualsAndHashCode(of = "origin")
 public final class StrictFarm implements Farm {

@@ -25,7 +25,7 @@ import com.zerocracy.Stakeholder;
  *
  * <p>There is no thread-safety guarantee.</p>
  *
- * @since 0.2
+ * @since 1.0
  */
 public final class FkStakeholder implements Stakeholder {
 

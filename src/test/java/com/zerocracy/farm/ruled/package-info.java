@@ -18,6 +18,6 @@
 /**
  * Ruled farm.
  *
- * @since 0.17
+ * @since 1.0
  */
 package com.zerocracy.farm.ruled;

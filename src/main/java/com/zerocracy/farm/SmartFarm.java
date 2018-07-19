@@ -37,7 +37,7 @@ import org.reflections.scanners.SubTypesScanner;
 /**
  * Smart farm.
  *
- * @since 0.11
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.ExcessiveImports")

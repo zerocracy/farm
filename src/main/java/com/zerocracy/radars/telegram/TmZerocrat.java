@@ -28,7 +28,7 @@ import org.telegram.telegrambots.exceptions.TelegramApiException;
 /**
  * Actual bot implementation.
  *
- * @since 0.15
+ * @since 1.0
  */
 public final class TmZerocrat extends TelegramLongPollingBot {
 

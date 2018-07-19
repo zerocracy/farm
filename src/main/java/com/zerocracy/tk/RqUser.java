@@ -40,7 +40,7 @@ import org.takes.rq.RqRequestLine;
 /**
  * User login from OAuth.
  *
- * @since 0.12
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class RqUser implements Scalar<String> {

@@ -18,6 +18,6 @@
 /**
  * Voters tests.
  *
- * @since 0.13
+ * @since 1.0
  */
 package com.zerocracy.pm.staff.votes;

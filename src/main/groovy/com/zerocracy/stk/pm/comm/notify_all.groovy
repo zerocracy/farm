@@ -25,6 +25,13 @@ import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Awards
 import com.zerocracy.pmo.People
 
+/**
+ * Notify all users. Claim sender can specify minimum required reputation
+ * to receive notification. Also users on vacation are ignored.
+ *
+ * @param project Any project
+ * @param xml Claim
+ */
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Notify all')
   ClaimIn claim = new ClaimIn(xml)

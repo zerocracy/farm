@@ -21,7 +21,7 @@ import org.telegram.telegrambots.api.objects.Update;
 /**
  * Telegram token.
  *
- * @since 0.16
+ * @since 1.0
  */
 final class TmToken {
 

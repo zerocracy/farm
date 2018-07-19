@@ -24,7 +24,7 @@ import com.zerocracy.pmo.Pmo;
 /**
  * Claim out which doesn't throw exceptions on post.
  *
- * @since 0.25
+ * @since 1.0
  */
 public final class ClaimOutSafe {
 

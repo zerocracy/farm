@@ -27,7 +27,7 @@ import org.junit.Test;
 
 /**
  * Test case for {@link Estimates}.
- * @since 0.10
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")

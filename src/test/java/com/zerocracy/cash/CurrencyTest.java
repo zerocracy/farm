@@ -24,7 +24,7 @@ import org.junit.Test;
 
 /**
  * Test case for {@link Currency}.
- * @since 0.6
+ * @since 1.0
  */
 public final class CurrencyTest {
 

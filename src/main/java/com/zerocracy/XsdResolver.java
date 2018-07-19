@@ -29,7 +29,7 @@ import org.w3c.dom.ls.LSResourceResolver;
 
 /**
  * XML document.
- * @since 0.12
+ * @since 1.0
  */
 public final class XsdResolver implements LSResourceResolver {
 

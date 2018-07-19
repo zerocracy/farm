@@ -37,7 +37,7 @@ import org.takes.rs.RsWithStatus;
 /**
  * GitLab hook, take.
  *
- * @since 0.23
+ * @since 1.0
  * @todo #1144:30min Create an implementation of GitLab API that will mirror
  *  the one we use for Github (Github class and friends). We only need those
  *  API endpoints that we use in farm project so don't try to implement the

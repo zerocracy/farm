@@ -30,7 +30,7 @@ import org.junit.Test;
 /**
  * Tests for {@link VsWorkload}.
  *
- * @since 0.24
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
