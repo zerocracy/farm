@@ -28,7 +28,7 @@ def exec(Project pmo, XML xml) {
       }
       if (
         new Roles(
-            farm.find(String.format("@id='%s'", pid)).iterator().next()
+            farm.find("@id='${pid}'").iterator().next()
         ).bootstrap().hasRole('QA')
       ) {
         return
@@ -41,7 +41,7 @@ def exec(Project pmo, XML xml) {
         //  Reviews and retains those that are still awaiting verdict.
       }
       orders.addAll(
-          new Orders(farm.find("@id='${pid}'")[0]).bootstrap().jobs(login)
+        new Orders(farm.find("@id='${pid}'")[0]).bootstrap().jobs(login)
       )
     }
     boolean updated = false
