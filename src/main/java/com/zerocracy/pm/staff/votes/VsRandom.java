@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,9 +25,7 @@ import java.util.Random;
  * <p>
  * Returns double value between 0.0 and 1.0
  *
- * @author Kirill (g4s8.public@gmail.com)
- * @version $Id$
- * @since 0.21
+ * @since 1.0
  */
 public final class VsRandom implements Votes {
     /**

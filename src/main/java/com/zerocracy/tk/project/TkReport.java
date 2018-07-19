@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -31,7 +31,6 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Map;
 import org.bson.Document;
 import org.cactoos.list.SolidList;
@@ -50,9 +49,7 @@ import org.xembly.Directives;
 /**
  * Footprint report.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.18
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings({ "PMD.AvoidDuplicateLiterals", "PMD.ExcessiveImports" })
@@ -120,17 +117,13 @@ public final class TkReport implements TkRegex {
                         footprint.collection().aggregate(
                             TkReport.REPORTS.get(report).bson(
                                 project,
-                                Date.from(
-                                    start.atStartOfDay().atZone(
-                                        ZoneOffset.UTC
-                                    ).toInstant()
-                                ),
-                                Date.from(
-                                    // @checkstyle MagicNumber (1 line)
-                                    end.atTime(23, 59).atZone(
-                                        ZoneOffset.UTC
-                                    ).toInstant()
-                                )
+                                start.atStartOfDay().atZone(
+                                    ZoneOffset.UTC
+                                ).toInstant(),
+                                // @checkstyle MagicNumber (1 line)
+                                end.atTime(23, 59).atZone(
+                                    ZoneOffset.UTC
+                                ).toInstant()
                             )
                         )
                     );

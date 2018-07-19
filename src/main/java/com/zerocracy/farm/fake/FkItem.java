@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -33,9 +33,7 @@ import org.cactoos.scalar.UncheckedScalar;
  *
  * <p>There is no thread-safety guarantee.</p>
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.2
+ * @since 1.0
  */
 public final class FkItem implements Item {
 
@@ -59,7 +57,7 @@ public final class FkItem implements Item {
     /**
      * Ctor.
      * @param path Path of the file
-     * @since 0.14
+     * @since 1.0
      */
     public FkItem(final Path path) {
         this(
@@ -74,7 +72,7 @@ public final class FkItem implements Item {
     /**
      * Ctor.
      * @param content File content to return
-     * @since 0.20
+     * @since 1.0
      */
     public FkItem(final String content) {
         this(
@@ -91,7 +89,7 @@ public final class FkItem implements Item {
      * Ctor.
      * @param path Path of the file
      * @param del Delete on close()?
-     * @since 0.20
+     * @since 1.0
      */
     FkItem(final Scalar<Path> path, final boolean del) {
         this.file = new SyncScalar<>(new StickyScalar<>(path));

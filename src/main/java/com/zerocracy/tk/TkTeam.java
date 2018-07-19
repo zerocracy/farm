@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,10 +20,8 @@ import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Xocument;
-import com.zerocracy.pmo.Agenda;
 import com.zerocracy.pmo.Pmo;
 import com.zerocracy.pmo.Projects;
-import com.zerocracy.pmo.Speed;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -41,10 +39,10 @@ import org.takes.rs.xe.XeWhen;
 /**
  * List of all people.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.19
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @since 1.0
+ * @todo #559:30min Let's display the data from people/skills on the profile
+ *  page of a given user as well as on the team page.
+ * @checkstyle ClassDataAbstractionCouplingCheck (3 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class TkTeam implements Take {
@@ -99,20 +97,8 @@ public final class TkTeam implements Take {
                 new XeAppend("login", node.xpath("@id").get(0)),
                 new XeAppend("mentor", node.xpath("mentor/text()").get(0)),
                 new XeAppend("awards", node.xpath("reputation/text()").get(0)),
-                new XeAppend(
-                    "speed",
-                    Double.toString(
-                        new Speed(this.farm, login).bootstrap().avg()
-                    )
-                ),
-                new XeAppend(
-                    "agenda",
-                    Integer.toString(
-                        new LengthOf(
-                            new Agenda(this.farm, login).bootstrap().jobs()
-                        ).intValue()
-                    )
-                ),
+                new XeAppend("speed", node.xpath("speed/text()").get(0)),
+                new XeAppend("agenda", node.xpath("jobs/text()").get(0)),
                 new XeAppend(
                     "projects",
                     Integer.toString(

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -32,6 +32,15 @@ def exec(Project pmo, XML xml) {
   Date outdated = claim.created() - new Policy().get('18.days', 90)
   Farm farm = binding.variables.farm
   new People(farm).bootstrap().iterate().each {
-    new Awards(farm, it).bootstrap().removeOlderThan(outdated)
+    Awards awards = new Awards(farm, it).bootstrap()
+    int before = awards.total()
+    awards.removeOlderThan(outdated)
+    int after = awards.total()
+    claim.copy()
+      .type('Award points were added')
+      .param('login', it)
+      .param('points', after - before)
+      .param('reason', 'fresh awards')
+      .postTo(pmo)
   }
 }

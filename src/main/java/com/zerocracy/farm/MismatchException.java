@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,9 +21,7 @@ import java.io.IOException;
 /**
  * When type is not the right one.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.11
+ * @since 1.0
  */
 public final class MismatchException extends IOException {
 

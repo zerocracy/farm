@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,6 +25,16 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.cost.Ledger
 
+/**
+ * This stakeholder is called when project is funded by Stripe,
+ * PO can fund it directly from project page in
+ * {@link com.zerocracy.tk.project.TkStripePay}
+ * or it can be funded automatically due to
+ * {@link com.zerocracy.pmo.recharge.Recharge} mechanism.
+ *
+ * @param project Funded project
+ * @param xml Claim
+ */
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Funded by Stripe')
@@ -70,4 +80,10 @@ def exec(Project project, XML xml) {
       'We just funded %s for %s via Stripe'
     ).say(project.pid(), amount)
   ).postTo(project)
+  if (claim.hasAuthor()) {
+    claim.copy().type('Send zold')
+      .param('recipient', claim.author())
+      .param('reason', 'Funded reward')
+      .postTo(project)
+  }
 }

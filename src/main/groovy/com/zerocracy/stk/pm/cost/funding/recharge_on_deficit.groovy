@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,6 +26,14 @@ import com.zerocracy.pm.cost.Estimates
 import com.zerocracy.pm.cost.Ledger
 import com.zerocracy.pmo.recharge.Recharge
 
+/**
+ * This stakeholder automatically recharge the project if it detects
+ * deficit, it uses the same Stripe account which was used previously
+ * to fund the project.
+ *
+ * @param project Project to recharge
+ * @param xml Claim
+ */
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Make payment', 'Ping hourly')

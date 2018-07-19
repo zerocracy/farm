@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -37,10 +37,7 @@ import org.cactoos.scalar.SolidScalar;
  * Votes for that person who is the fastest.
  * Returns 1 for fast person and 0 for slow, 0.5 - for middle.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @author Kirill (g4s8.public@gmail.com)
- * @version $Id$
- * @since 0.19
+ * @since 1.0
  */
 public final class VsSpeed implements Votes {
 

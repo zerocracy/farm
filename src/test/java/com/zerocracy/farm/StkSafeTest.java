@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -17,6 +17,7 @@
 package com.zerocracy.farm;
 
 import com.jcabi.xml.XML;
+import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.SoftException;
 import com.zerocracy.Stakeholder;
@@ -24,6 +25,8 @@ import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
+import java.io.IOException;
+import org.cactoos.iterable.LengthOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -32,10 +35,9 @@ import org.xembly.Directives;
 
 /**
  * Test case for {@link StkSafe}.
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.17
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class StkSafeTest {
 
@@ -53,20 +55,16 @@ public final class StkSafeTest {
 
     @Test
     public void dontRepostNotifyFailures() throws Exception {
-        final Stakeholder stk = Mockito.mock(Stakeholder.class);
         final Project project = new FkProject();
         new ClaimOut()
             .type("Notify GitHub")
             .token("github;test/test#1")
             .postTo(project);
         final XML claim = new Claims(project).iterate().iterator().next();
-        Mockito.doThrow(new IllegalStateException("")).when(stk).process(
-            project, claim
-        );
         new StkSafe(
             "hello1",
-            new PropsFarm(new Directives().xpath("/props/testing").remove()),
-            stk
+            new StkSafeTest.NonTestingFarm(),
+            new StkSafeTest.StkError()
         ).process(project, claim);
         MatcherAssert.assertThat(
             new Claims(project).iterate(),
@@ -74,4 +72,58 @@ public final class StkSafeTest {
         );
     }
 
+    @Test
+    public void dontRepeatErrorClaims() throws Exception {
+        final FkProject project = new FkProject();
+        new ClaimOut().type("Error").postTo(project);
+        final int before = new LengthOf(new Claims(project).iterate())
+            .intValue();
+        new StkSafe(
+            "errors1",
+            new StkSafeTest.NonTestingFarm(),
+            new StkSafeTest.StkError()
+        ).process(
+            project,
+            new Claims(project).iterate().iterator().next()
+        );
+        MatcherAssert.assertThat(
+            new Claims(project).iterate(),
+            Matchers.iterableWithSize(before)
+        );
+    }
+
+    /**
+     * Always failing stakeholder.
+     */
+    private static final class StkError implements Stakeholder {
+        @Override
+        public void process(final Project project, final XML claim) {
+            throw new IllegalStateException("error");
+        }
+    }
+
+    /**
+     * Props farm without testing flag.
+     */
+    private static class NonTestingFarm implements Farm {
+
+        /**
+         * Farm.
+         */
+        private final Farm frm;
+
+        /**
+         * Ctor.
+         */
+        NonTestingFarm() {
+            this.frm = new PropsFarm(
+                new Directives().xpath("/props/testing").remove()
+            );
+        }
+
+        @Override
+        public Iterable<Project> find(final String xpath) throws IOException {
+            return this.frm.find(xpath);
+        }
+    }
 }

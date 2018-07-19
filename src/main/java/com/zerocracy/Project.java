@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,10 +20,10 @@ import java.io.IOException;
 
 /**
  * Project.
+ * <p>
+ * A project in {@link Farm}, collection of {@link Item}s.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.1
+ * @since 1.0
  */
 public interface Project {
 
@@ -31,7 +31,7 @@ public interface Project {
      * Project ID.
      * @return PID
      * @throws IOException If fails on I/O
-     * @since 0.19
+     * @since 1.0
      */
     default String pid() throws IOException {
         throw new UnsupportedOperationException(

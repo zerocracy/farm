@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,10 +19,10 @@ package com.zerocracy.radars.slack;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.Farm;
+import com.zerocracy.SafeSentry;
 import com.zerocracy.SoftException;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.tools.TxtUnrecoverableError;
-import io.sentry.Sentry;
 import java.io.IOException;
 import org.cactoos.func.FuncOf;
 import org.cactoos.func.FuncWithFallback;
@@ -31,9 +31,7 @@ import org.cactoos.func.IoCheckedFunc;
 /**
  * Safe reaction.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.1
+ * @since 1.0
  */
 public final class ReSafe implements Reaction<SlackMessagePosted> {
 
@@ -80,7 +78,7 @@ public final class ReSafe implements Reaction<SlackMessagePosted> {
                                 )
                             ).asString()
                         );
-                        Sentry.capture(throwable);
+                        new SafeSentry().capture(throwable);
                         throw new IOException(throwable);
                     }
                 )

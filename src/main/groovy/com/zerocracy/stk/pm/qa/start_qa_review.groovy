@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -48,12 +48,13 @@ def exec(Project project, XML xml) {
   Reviews reviews = new Reviews(project).bootstrap()
   reviews.add(job, inspector, performer, cash, minutes, bonus)
   Farm farm = binding.variables.farm
-  Agenda agenda = new Agenda(farm, inspector).bootstrap()
-  agenda.add(project, job, 'QA')
+  new Agenda(farm, inspector).bootstrap().add(project, job, 'QA')
   claim.copy()
     .type('Agenda was updated')
     .param('login', inspector)
+    .param('reason', 'start_qa_review')
     .postTo(project)
+  new Agenda(farm, performer).bootstrap().inspector(job, inspector)
   claim.copy().type('Notify job').token("job;${job}").param(
     'message',
     new Par(

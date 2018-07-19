@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,6 +21,7 @@ import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
+import com.zerocracy.cash.Cash
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Awards
@@ -36,7 +37,8 @@ def exec(Project pmo, XML xml) {
     if (!people.hasMentor(uid)) {
       return
     }
-    if (people.mentor(uid) == '0crat') {
+    String mentor = people.mentor(uid)
+    if (mentor == '0crat') {
       return
     }
     int reputation = new Awards(farm, uid).bootstrap().total()
@@ -58,5 +60,15 @@ def exec(Project pmo, XML xml) {
         'The user @%s just graduated with reputation of %d!'
       ).say(uid, reputation)
     ).postTo(pmo)
+    claim.copy()
+      .type('Make payment')
+      .param('login', mentor)
+      .param('job', 'none')
+      .param('cash', new Policy(farm).get('43.bonus', new Cash.S('$32')))
+      .param(
+        'reason',
+        new Par(farm, 'Bonus for student @%s graduation according to §43')
+          .say(uid)
+      ).postTo(pmo)
   }
 }

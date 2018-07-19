@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import org.cactoos.iterable.Joined;
@@ -37,9 +38,7 @@ import org.xembly.Directives;
 /**
  * Reactive farm.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.1
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 final class AsyncFlush implements Flush {
@@ -106,18 +105,19 @@ final class AsyncFlush implements Flush {
             project, p -> new AtomicInteger()
         );
         if (total.get() < AsyncFlush.QUEUE_LENGTH) {
+            final Lock lock = this.locks.computeIfAbsent(
+                project, p -> new SmartLock()
+            );
             this.service.submit(
                 new VerboseCallable<>(
                     () -> {
-                        final Lock lock = this.locks.computeIfAbsent(
-                            project, p -> new SmartLock()
-                        );
                         try {
-                            lock.lock();
-                            try {
-                                this.origin.exec(project);
-                            } finally {
-                                lock.unlock();
+                            if (lock.tryLock(1L, TimeUnit.SECONDS)) {
+                                try {
+                                    this.origin.exec(project);
+                                } finally {
+                                    lock.unlock();
+                                }
                             }
                         } finally {
                             total.decrementAndGet();

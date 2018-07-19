@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -27,10 +27,8 @@ import lombok.EqualsAndHashCode;
 /**
  * Sync project.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
- * @since 0.1
+ * @since 1.0
  */
 @EqualsAndHashCode(of = "origin")
 final class SyncProject implements Project {
@@ -72,7 +70,7 @@ final class SyncProject implements Project {
         final long start = System.currentTimeMillis();
         try {
             // @checkstyle MagicNumber (1 line)
-            if (!this.lock.tryLock(1L, TimeUnit.MINUTES)) {
+            if (!this.lock.tryLock(2L, TimeUnit.MINUTES)) {
                 throw new IllegalStateException(
                     Logger.format(
                         "Failed to acquire \"%s\" in \"%s\" in %[ms]s: %s",

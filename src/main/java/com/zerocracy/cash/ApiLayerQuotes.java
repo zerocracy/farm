@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -29,10 +29,12 @@ import javax.json.JsonObject;
 
 /**
  * Quotes.
+ * <p>
+ * Exchange rates from 'Apilayer'.
+ * This class fetches current quotes from
+ * https://currencylayer.com/ and converts it to double.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.6
+ * @since 1.0
  */
 public final class ApiLayerQuotes implements Quotes {
 

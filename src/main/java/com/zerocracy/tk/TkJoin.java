@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,7 +21,12 @@ import com.zerocracy.Par;
 import com.zerocracy.Policy;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pmo.People;
+import com.zerocracy.pmo.Resumes;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
@@ -33,26 +38,15 @@ import org.takes.rq.form.RqFormSmart;
 /**
  * Join Zerocracy form.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @author Kirill (g4s8.public@gmail.com)
- * @version $Id$
- * @since 0.20
- * @todo #653:30min We should allow user to send `/join` requests only once
- *  a week, it can be checked and updated via People.applied methods.
- *  The 7 days value can be accessed via Par after
- *  https://github.com/zerocracy/zerocracy.github.io/issues/9 fix.
- * @todo #800:30min Requests to /join should add an entry to 'resumes.xml'
- *  then an 'examiner' should be assigned. When the examiner "invites" a user,
- *  we check whether there was a resume for that user.
- *  If yes, we pay examiner +32 points. Examiner can reject a resume
- *  by saying 'deny {username}' (where username is a login in 'resumes.xml')
- *  to Zerocrat. In that case we also pay +32 to the examiner.
- *  Each user should see the status of his/her resume at /join.
+ * @since 1.0
+ * @todo #1147:30min Each user should see the status of his/her resume at /join.
  *  If the resume is there, he/she should see the resume, not the form.
  *  If he/she already has a mentor, there should be a redirect,
  *  saying that "User @yegor256 is already your mentor, no need to join again".
  *  See https://github.com/zerocracy/farm/issues/800#issuecomment-375551970
- *  comment for details.
+ *  comment for details. These two conditions are already tested in
+ *  TkJoinTest, in showResumeIfAlreadyApplied and showAlreadyHasMentor, and
+ *  the ignore tag on the tests should be removed upon puzzle completion.
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
@@ -74,12 +68,40 @@ public final class TkJoin implements TkRegex {
     public Response act(final RqRegex req) throws IOException {
         final String author = new RqUser(this.farm, req, false).value();
         final People people = new People(this.farm).bootstrap();
+        people.touch(author);
         if (people.hasMentor(author)) {
             throw new RsForward(
                 new RsParFlash(
                     new Par(
                         "You already have a mentor (@%s), why again?"
                     ).say(people.mentor(author)),
+                    Level.WARNING
+                ),
+                "/join"
+            );
+        }
+        final LocalDateTime when;
+        if (people.applied(author)) {
+            when = LocalDateTime.ofInstant(
+                people.appliedTime(author).toInstant(),
+                ZoneOffset.UTC
+            );
+        } else {
+            when = LocalDateTime.MIN;
+        }
+        final long days = (long) new Policy().get("1.lag", 16);
+        final LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        if (when.plusDays(days).isAfter(now)) {
+            throw new RsForward(
+                new RsParFlash(
+                    new Par(
+                        "You can apply only one time in %d days, ",
+                        "you've applied %d days ago (%s)"
+                    ).say(
+                        days,
+                        Duration.between(when, now).toDays(),
+                        when.format(DateTimeFormatter.ISO_LOCAL_DATE)
+                    ),
                     Level.WARNING
                 ),
                 "/join"
@@ -110,6 +132,15 @@ public final class TkJoin implements TkRegex {
                 "this is the message the user left for us:\n\n%s"
             ).say(author, personality, telegram, stko, about)
         ).param("min", new Policy().get("1.min-rep", 0)).postTo(this.farm);
+        new Resumes(this.farm).bootstrap()
+            .add(
+                author,
+                LocalDateTime.now(),
+                about,
+                personality,
+                stko,
+                telegram
+            );
         return new RsForward(
             new RsParFlash(
                 new Par(

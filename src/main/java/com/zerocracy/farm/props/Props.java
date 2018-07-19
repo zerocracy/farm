@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -32,9 +32,7 @@ import org.cactoos.text.TextOf;
  * which specifies properties such as S3 credentials, Paypal or Stripe secrets
  * etc.</p>
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.18
+ * @since 1.0
  */
 public final class Props {
 

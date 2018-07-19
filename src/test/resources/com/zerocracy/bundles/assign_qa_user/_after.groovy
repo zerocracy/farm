@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -17,14 +17,25 @@
 package com.zerocracy.bundles.assign_qa_user
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Project
-import com.zerocracy.pm.scope.Wbs
+import com.zerocracy.cash.Cash
+import com.zerocracy.pm.qa.Reviews
+import com.zerocracy.pmo.Agenda
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
+  Farm farm = binding.variables.farm
+  String job = 'gh:test/test#1'
   MatcherAssert.assertThat(
-    new Wbs(project).bootstrap().role('gh:test/test#1'),
-    Matchers.equalTo('DEV')
+    'Doesn\'t have inspector',
+    new Agenda(farm, 'yegor256').bootstrap().hasInspector(job),
+    Matchers.is(true)
+  )
+  MatcherAssert.assertThat(
+    'Incorrect bonus',
+    new Reviews(project).bootstrap().bonus(job),
+    Matchers.<Cash> equalTo(new Cash.S('$8'))
   )
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -36,9 +36,7 @@ import org.xembly.Directives;
 /**
  * The action that happens in the {@link DefaultFlush}.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.10
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 final class DefaultFlush implements Flush {
@@ -95,6 +93,11 @@ final class DefaultFlush implements Flush {
         final AtomicInteger idx) throws IOException {
         final long start = System.currentTimeMillis();
         final ClaimIn claim = new ClaimIn(xml);
+        Logger.info(
+            this,
+            "Processing #%d:\"%s/%d\" at \"%s\"",
+            idx.get(), claim.type(), claim.cid(), project.pid()
+        );
         final int total = this.brigade.apply(project, xml);
         final int left = new Claims(project).iterate().size();
         if (total == 0 && claim.hasToken()) {

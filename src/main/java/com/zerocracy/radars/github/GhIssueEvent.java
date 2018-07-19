@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,9 +22,7 @@ import javax.json.JsonObject;
 /**
  * Github issue event.
  * See <a href="https://developer.github.com/v3/activity/events/types/#issuesevent">Github docs</a>.
- * @author Kirill (g4s8.public@gmail.com)
- * @version $Id$
- * @since 0.17
+ * @since 1.0
  */
 public final class GhIssueEvent {
 

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,8 +18,6 @@
 /**
  * Banks, tests.
  *
- * @author Izbassar Tolegen (t.izbassar@gmail.com)
- * @version $Id$
- * @since 0.22
+ * @since 1.0
  */
 package com.zerocracy.pmo.banks;

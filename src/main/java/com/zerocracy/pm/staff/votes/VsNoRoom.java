@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,9 +26,7 @@ import java.io.IOException;
 /**
  * Says "yes" when there is no room for this developer.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.12
+ * @since 1.0
  */
 public final class VsNoRoom implements Votes {
 

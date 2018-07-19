@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,7 +20,7 @@ import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
 import com.zerocracy.Project;
 import java.io.IOException;
-import java.util.Date;
+import java.time.Instant;
 import org.bson.BsonDocument;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.conversions.Bson;
@@ -30,9 +30,7 @@ import org.cactoos.list.SolidList;
 /**
  * Match.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.18
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
@@ -46,12 +44,12 @@ final class Match implements Bson {
     /**
      * Start.
      */
-    private final Date start;
+    private final Instant start;
 
     /**
      * End.
      */
-    private final Date end;
+    private final Instant end;
 
     /**
      * Terms.
@@ -66,7 +64,7 @@ final class Match implements Bson {
      * @param items Extra terms
      * @checkstyle ParameterNumberCheck (5 lines)
      */
-    Match(final Project pkt, final Date left, final Date right,
+    Match(final Project pkt, final Instant left, final Instant right,
         final Bson... items) {
         this(pkt, left, right, new SolidList<>(items));
     }
@@ -79,7 +77,7 @@ final class Match implements Bson {
      * @param items Extra terms
      * @checkstyle ParameterNumberCheck (5 lines)
      */
-    Match(final Project pkt, final Date left, final Date right,
+    Match(final Project pkt, final Instant left, final Instant right,
         final Iterable<Bson> items) {
         this.project = pkt;
         this.start = left;

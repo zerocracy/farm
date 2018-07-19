@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -31,7 +31,7 @@ def exec(Project project, XML xml) {
   String login = claim.param('login')
   Farm farm = binding.variables.farm
   Agenda agenda = new Agenda(farm, login).bootstrap()
-  if (agenda.exists(job)) {
+  if (agenda.exists(job) && !agenda.hasInspector(job)) {
     agenda.remove(job)
   }
   claim.copy()

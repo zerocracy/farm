@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,6 +23,13 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.recharge.Recharge
 
+/**
+ * Stop auto-recharge for project. The project will not be funded
+ * automatically from saved Stripe account until it is funded manually.
+ *
+ * @param project Project to stop
+ * @param xml Claim
+ */
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Project was paused', 'Project was activated')

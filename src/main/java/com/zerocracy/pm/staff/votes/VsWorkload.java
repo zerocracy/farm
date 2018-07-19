@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -35,13 +35,7 @@ import org.cactoos.scalar.SolidScalar;
 /**
  * Workload voter.
  *
- * @author Kirill (g4s8.public@gmail.com)
- * @version $Id$
- * @since 0.17
- * @todo #808:30min VsWorkload test is missed, workload votes are not tested
- *  neither with first constructor (farm, others)
- *  nor with second (farm, project, others). First should be tested for
- *  all agenda items, second only for project items.
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class VsWorkload implements Votes {
@@ -54,9 +48,9 @@ public final class VsWorkload implements Votes {
     /**
      * Ctor.
      * @param farm The farm
-     * @param others All other logins to compete with
+     * @param all All other logins to compete with
      */
-    public VsWorkload(final Farm farm, final Collection<String> others) {
+    public VsWorkload(final Farm farm, final Collection<String> all) {
         this(
             () -> new SolidMap<>(
                 new Mapped<>(
@@ -64,7 +58,7 @@ public final class VsWorkload implements Votes {
                         login,
                         new Agenda(farm, login).bootstrap().jobs().size()
                     ),
-                    others
+                    all
                 )
             )
         );
@@ -73,10 +67,10 @@ public final class VsWorkload implements Votes {
      * Ctor.
      * @param farm The farm
      * @param pkt Project
-     * @param others All other logins to compete with
+     * @param all All other logins to compete with
      */
     public VsWorkload(final Farm farm, final Project pkt,
-        final Collection<String> others) {
+        final Collection<String> all) {
         this(
             () -> new SolidMap<>(
                 new Mapped<>(
@@ -84,7 +78,7 @@ public final class VsWorkload implements Votes {
                         login,
                         new Agenda(farm, login).bootstrap().jobs(pkt).size()
                     ),
-                    others
+                    all
                 )
             )
         );
@@ -102,7 +96,7 @@ public final class VsWorkload implements Votes {
         throws IOException {
         final int mine = this.jobs.value().get(login);
         final int smaller = new Filtered<>(
-            speed -> speed < mine,
+            size -> size < mine,
             this.jobs.value().values()
         ).size();
         log.append(

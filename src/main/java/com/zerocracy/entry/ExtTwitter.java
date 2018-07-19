@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -30,9 +30,7 @@ import twitter4j.auth.AccessToken;
 
 /**
  * Twitter client.
- * @author Kirill (g4s8.public@gmail.com)
- * @version $Id$
- * @since 0.21
+ * @since 1.0
  */
 public final class ExtTwitter implements Scalar<ExtTwitter.Tweets> {
 

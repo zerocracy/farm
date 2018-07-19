@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -17,6 +17,7 @@
 package com.zerocracy.pm;
 
 import com.jcabi.matchers.XhtmlMatchers;
+import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -26,9 +27,7 @@ import org.xembly.Xembler;
 
 /**
  * Test case for {@link ClaimIn}.
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.9
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class ClaimInTest {
@@ -36,9 +35,9 @@ public final class ClaimInTest {
     @Test
     public void readsParts() throws Exception {
         final ClaimIn claim = new ClaimIn(
-            new XMLDocument(
+            ClaimInTest.claim(
                 "<claim id='1'><author>yegor256</author></claim>"
-            ).nodes("/claim").get(0)
+            )
         );
         MatcherAssert.assertThat(
             claim.author(),
@@ -49,13 +48,13 @@ public final class ClaimInTest {
     @Test
     public void buildsClaimOut() throws Exception {
         final ClaimIn claim = new ClaimIn(
-            new XMLDocument(
+            ClaimInTest.claim(
                 String.join(
                     "",
                     "<claim id='1'><type>ZZ</type>",
                     "<author>jeff</author><token>X</token></claim>"
                 )
-            ).nodes("/claim ").get(0)
+            )
         );
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
@@ -77,7 +76,7 @@ public final class ClaimInTest {
     @Test
     public void makesCopy() throws Exception {
         final ClaimIn claim = new ClaimIn(
-            new XMLDocument(
+            ClaimInTest.claim(
                 String.join(
                     "",
                     "<claim id='1'><author>yegor</author> ",
@@ -85,7 +84,7 @@ public final class ClaimInTest {
                     "<token>the-token</token> ",
                     "<params><param name='a'>hello</param></params></claim>"
                 )
-            ).nodes("/claim   ").get(0)
+            )
         );
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
@@ -103,4 +102,22 @@ public final class ClaimInTest {
         );
     }
 
+    @Test
+    public void errorClaim() throws Exception {
+        MatcherAssert.assertThat(
+            new ClaimIn(
+                ClaimInTest.claim("<claim id='1'><type>Error</type></claim>")
+            ).isError(),
+            Matchers.is(true)
+        );
+    }
+
+    /**
+     * Claim from text.
+     * @param xml XML text
+     * @return Claim
+     */
+    private static XML claim(final String xml) {
+        return new XMLDocument(xml).nodes("/claim").get(0);
+    }
 }

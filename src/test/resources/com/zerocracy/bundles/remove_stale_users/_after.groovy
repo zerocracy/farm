@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -17,12 +17,16 @@
 package com.zerocracy.bundles.remove_stale_users
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.pmo.People
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
-//  Farm farm = binding.variables.farm
-//  MatcherAssert.assertThat(
-//    new People(farm).bootstrap().iterate(),
-//    Matchers.emptyIterable()
-//  )
+  Farm farm = binding.variables.farm
+  MatcherAssert.assertThat(
+    new People(farm).bootstrap().iterate(),
+    Matchers.emptyIterable()
+  )
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,12 +20,12 @@ import com.jcabi.github.Github;
 import com.jcabi.github.Issue;
 import com.jcabi.github.mock.MkGithub;
 import com.zerocracy.Farm;
+import com.zerocracy.SafeSentry;
 import com.zerocracy.SoftException;
 import com.zerocracy.entry.ExtDynamo;
 import com.zerocracy.farm.Errors;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.tools.TxtUnrecoverableError;
-import io.sentry.Sentry;
 import java.io.IOException;
 import javax.json.JsonObject;
 import org.cactoos.func.FuncOf;
@@ -35,9 +35,7 @@ import org.cactoos.func.IoCheckedFunc;
 /**
  * Rebound that is safe.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.17
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
@@ -92,10 +90,9 @@ public final class RbSafe implements Rebound {
                                 ).asString()
                             )
                         );
-                        Sentry.capture(
+                        new SafeSentry().capture(
                             new IllegalArgumentException(
-                                event.toString(),
-                                throwable
+                                event.toString(), throwable
                             )
                         );
                         throw new IOException(throwable);

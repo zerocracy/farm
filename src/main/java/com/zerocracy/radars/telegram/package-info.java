@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,9 +18,6 @@
 /**
  * Telegram reactions.
  *
- * @author Kirill (g4s8.public@gmail.com)
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @since 0.15
- * @version $Id$
+ * @since 1.0
  */
 package com.zerocracy.radars.telegram;

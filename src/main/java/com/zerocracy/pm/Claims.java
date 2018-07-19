@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -41,9 +41,12 @@ import org.xembly.Xembler;
 /**
  * Claims.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.9
+ * @since 1.0
+ * @todo #1215:30min Invent mechanism to prevent huge claims.xml files.
+ *  We can check claims.xml size before working with it and pause
+ *  a project if this size is too big. We can skip downloading from S3,
+ *  just need to check attributes, and if claims.xml is bigger than 10MB
+ *  stop working with this project and send notification to PMO.
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class Claims {
@@ -94,14 +97,7 @@ public final class Claims {
             );
             final Collection<String> signatures = new Sorted<>(
                 new Mapped<>(
-                    input -> {
-                        final ClaimIn cin = new ClaimIn(input);
-                        return String.format(
-                            "%s;%s",
-                            cin.type(),
-                            cin.params()
-                        );
-                    },
+                    input -> Claims.signature(new ClaimIn(input)),
                     new Xocument(item).nodes("/claims/claim")
                 )
             );
@@ -170,6 +166,7 @@ public final class Claims {
                     public int compare(final XML left, final XML right) {
                         return Long.compare(this.cid(left), this.cid(right));
                     }
+
                     private long cid(final XML xml) {
                         return new ClaimIn(xml).cid();
                     }
@@ -211,4 +208,24 @@ public final class Claims {
         return this.project.acq("claims.xml");
     }
 
+    /**
+     * Claim signature.
+     *
+     * @param cin Claim in
+     * @return Signature
+     */
+    private static String signature(final ClaimIn cin) {
+        final String token;
+        if (cin.hasToken()) {
+            token = cin.token();
+        } else {
+            token = "";
+        }
+        return String.format(
+            "%s;%s;%s",
+            cin.type(),
+            cin.params(),
+            token
+        );
+    }
 }

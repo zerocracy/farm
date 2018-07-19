@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,7 +23,7 @@ import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
 import com.zerocracy.pm.Footprint;
-import java.util.Date;
+import java.time.Instant;
 import org.bson.Document;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -31,9 +31,7 @@ import org.junit.Test;
 
 /**
  * Test case for {@link OrderChampions}.
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.18
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
@@ -52,8 +50,8 @@ public final class OrderChampionsTest {
             final Iterable<Document> docs = footprint.collection().aggregate(
                 new OrderChampions().bson(
                     pkt,
-                    new Date(0L),
-                    new Date()
+                    Instant.ofEpochMilli(0L),
+                    Instant.now()
                 )
             );
             MatcherAssert.assertThat(docs, Matchers.iterableWithSize(1));

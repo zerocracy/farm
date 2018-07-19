@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import org.cactoos.iterable.IterableOf;
+import org.cactoos.iterable.LengthOf;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.list.SolidList;
 import org.cactoos.text.JoinedText;
@@ -33,9 +35,7 @@ import org.xembly.Directives;
 /**
  * Project roles.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.1
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings(
@@ -258,7 +258,7 @@ public final class Roles {
      */
     public boolean hasRole(final String person, final String... list)
         throws IOException {
-        if (list.length == 0) {
+        if (new LengthOf(new IterableOf<>(list)).intValue() == 0) {
             throw new IllegalArgumentException(
                 "The list of roles can't be empty, use hasAnyRoles() instead"
             );

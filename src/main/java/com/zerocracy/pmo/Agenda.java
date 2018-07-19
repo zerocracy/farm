@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,24 +24,19 @@ import com.zerocracy.SoftException;
 import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
 import java.io.IOException;
+import java.time.Clock;
+import java.time.Instant;
 import java.util.Collection;
-import org.cactoos.time.DateAsText;
+import org.cactoos.text.JoinedText;
 import org.xembly.Directives;
 
 /**
  * Agenda of one person in one Project, tasks that
  * are assigned to them in that Project.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.12
- * @todo #422:30min Title element, of an order in agenda, has been declared in
- *  agenda.xsd. Let's add method title(...), which will set the title of
- *  on order and add a new stakeholder, set_agenda_title_from_github.groovy,
- *  which will get title of a job from GitHub and set it to Agenda. THe reason
- *  for the new stakeholder is that not all orders will come from Github, some
- *  may also come from Jira, Trello etc, in the future.
+ * @since 1.0
  */
+@SuppressWarnings("PMD.TooManyMethods")
 public final class Agenda {
 
     /**
@@ -55,12 +50,39 @@ public final class Agenda {
     private final String login;
 
     /**
+     * Time measure.
+     */
+    private final Clock clock;
+
+    /**
+     * Ctor.
+     * @param farm The farm
+     * @param user The user
+     * @param clock Clock to use
+     */
+    Agenda(final Farm farm, final String user, final Clock clock) {
+        this(new Pmo(farm), user, clock);
+    }
+
+    /**
      * Ctor.
      * @param farm The farm
      * @param user The user
      */
     public Agenda(final Farm farm, final String user) {
-        this(new Pmo(farm), user);
+        this(new Pmo(farm), user, Clock.systemUTC());
+    }
+
+    /**
+     * Ctor.
+     * @param pkt PMO
+     * @param user The user
+     * @param clock Clock to use
+     */
+    private Agenda(final Pmo pkt, final String user, final Clock clock) {
+        this.pmo = pkt;
+        this.login = user;
+        this.clock = clock;
     }
 
     /**
@@ -69,8 +91,7 @@ public final class Agenda {
      * @param user The user
      */
     public Agenda(final Pmo pkt, final String user) {
-        this.pmo = pkt;
-        this.login = user;
+        this(pkt, user, Clock.systemUTC());
     }
 
     /**
@@ -124,9 +145,51 @@ public final class Agenda {
      */
     public boolean exists(final String job) throws IOException {
         try (final Item item = this.item()) {
-            return !new Xocument(item.path()).nodes(
-                String.format("/agenda/order[@job= '%s']", job)
-            ).isEmpty();
+            return !new Xocument(item.path()).nodes(Agenda.path(job)).isEmpty();
+        }
+    }
+
+    /**
+     * The job has inspector.
+     * @param job Job id
+     * @return TRUE if has
+     * @throws IOException If fails
+     */
+    public boolean hasInspector(final String job) throws IOException {
+        try (final Item item = this.item()) {
+            return !new Xocument(item.path())
+                .nodes(String.format("%s/inspector", Agenda.path(job)))
+                .isEmpty();
+        }
+    }
+
+    /**
+     * When the job was added to agenda?
+     * @param job Job id
+     * @return Date and time job was added to agenda
+     * @throws IOException If fails
+     */
+    public Instant added(final String job) throws IOException {
+        if (!this.exists(job)) {
+            throw new SoftException(
+                new Par(
+                    new JoinedText(
+                        " ",
+                        "Job %s is not in the agenda of @%s,",
+                        "can't retrieve data and time of add"
+                    ).asString()
+                ).say(job, this.login)
+            );
+        }
+        try (final Item item = this.item()) {
+            return Instant.parse(
+                new Xocument(item.path()).nodes(
+                    String.format(
+                        "/agenda/order[@job='%s']/added",
+                        job
+                    )
+                ).get(0).node().getTextContent()
+            );
         }
     }
 
@@ -137,6 +200,7 @@ public final class Agenda {
      * @param role The role
      * @throws IOException If fails
      */
+    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     public void add(final Project project, final String job,
         final String role) throws IOException {
         if (this.exists(job)) {
@@ -154,7 +218,7 @@ public final class Agenda {
                     .attr("job", job)
                     .add("role").set(role).up()
                     .add("title").set("-").up()
-                    .add("added").set(new DateAsText().asString()).up()
+                    .add("added").set(Instant.now(this.clock)).up()
                     .add("project")
                     .set(project.pid())
             );
@@ -177,7 +241,7 @@ public final class Agenda {
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()
-                    .xpath(String.format("/agenda/order[@job='%s']", job))
+                    .xpath(Agenda.path(job))
                     .strict(1)
                     .remove()
             );
@@ -215,7 +279,7 @@ public final class Agenda {
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()
-                    .xpath(String.format("/agenda/order[@job='%s' ]", job))
+                    .xpath(Agenda.path(job))
                     .strict(1)
                     .addIf("estimate")
                     .set(cash)
@@ -224,7 +288,7 @@ public final class Agenda {
     }
 
     /**
-     * Add estimate.
+     * Add impediment.
      * @param job The job to mark
      * @param reason The reason
      * @throws IOException If fails
@@ -241,11 +305,87 @@ public final class Agenda {
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()
-                    .xpath(String.format("/agenda/order[@job= '%s' ]", job))
+                    .xpath(Agenda.path(job))
                     .strict(1)
                     .addIf("impediment")
                     .set(reason)
             );
+        }
+    }
+
+    /**
+     * Add inspector.
+     * @param job Job id
+     * @param inspector Inspector login
+     * @throws IOException If fails
+     */
+    public void inspector(final String job,
+        final String inspector) throws IOException {
+        if (!this.exists(job)) {
+            throw new SoftException(
+                new Par(
+                    "Job %s is not in the agenda of @%s, can't inspect"
+                ).say(job, this.login)
+            );
+        }
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                new Directives()
+                    .xpath(Agenda.path(job))
+                    .strict(1)
+                    .addIf("inspector")
+                    .set(inspector)
+            );
+        }
+    }
+
+    /**
+     * Add title of the specified job.
+     * @param job The job to modify
+     * @param title The title to add
+     * @throws IOException If fails
+     */
+    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
+    public void title(final String job, final String title) throws IOException {
+        if (!this.exists(job)) {
+            throw new SoftException(
+                new Par(
+                    "Job %s is not in the agenda of @%s, can't set title"
+                ).say(job, this.login)
+            );
+        }
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                new Directives()
+                    .xpath(Agenda.path(job))
+                    .strict(1)
+                    .addIf("title")
+                    .set(title)
+            );
+        }
+    }
+
+    /**
+     * Retrieves title of the specified job.
+     * @param job The job to retrieve the text
+     * @return The title of the job.
+     * @throws IOException If fails
+     */
+    public String title(final String job) throws IOException {
+        if (!this.exists(job)) {
+            throw new SoftException(
+                new Par(
+                    "Job %s is not in the agenda of @%s, can't retrieve title"
+                ).say(job, this.login)
+            );
+        }
+        try (final Item item = this.item()) {
+            return new Xocument(item.path()).nodes(
+                String.format(
+                    "/agenda/order[@job='%s']/title",
+                    job
+                )
+            ).get(0).node().getTextContent();
         }
     }
 
@@ -257,6 +397,18 @@ public final class Agenda {
     private Item item() throws IOException {
         return this.pmo.acq(
             String.format("agenda/%s.xml", this.login)
+        );
+    }
+
+    /**
+     * Construct the pull path to the given job.
+     * @param job The job
+     * @return The full path to the given job
+     */
+    private static String path(final String job) {
+        return String.format(
+            "/agenda/order[@job='%s']",
+            job
         );
     }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -27,6 +27,10 @@ import com.zerocracy.cash.Cash;
 import com.zerocracy.pm.ClaimOut;
 import java.io.IOException;
 import java.util.Date;
+import org.cactoos.iterable.ItemAt;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.scalar.IoCheckedScalar;
+import org.cactoos.text.JoinedText;
 import org.cactoos.time.DateAsText;
 import org.cactoos.time.DateOf;
 import org.xembly.Directives;
@@ -34,9 +38,7 @@ import org.xembly.Directives;
 /**
  * QA reviews.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.1
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
@@ -141,6 +143,33 @@ public final class Reviews {
             .param("login", review.xpath("performer/text()").get(0))
             .param("cash", cash)
             .param("minutes", minutes);
+    }
+
+    /**
+     * Bonus for a job.
+     * @param job Order id
+     * @return Bonus cash value
+     * @throws IOException If fails
+     */
+    public Cash bonus(final String job) throws IOException {
+        try (final Item item = this.item()) {
+            return
+                new IoCheckedScalar<>(
+                    new ItemAt<>(
+                        new Mapped<String, Cash>(
+                            Cash.S::new,
+                            new Xocument(item.path()).xpath(
+                                new JoinedText(
+                                    "",
+                                    "/reviews",
+                                    String.format("/review[@job = '%s']", job),
+                                    "/bonus/text()"
+                                ).asString()
+                            )
+                        )
+                    )
+                ).value();
+        }
     }
 
     /**

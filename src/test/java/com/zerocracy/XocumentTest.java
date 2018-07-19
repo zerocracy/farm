@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -16,9 +16,13 @@
  */
 package com.zerocracy;
 
+import com.jcabi.aspects.Tv;
 import com.jcabi.matchers.XhtmlMatchers;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Phaser;
+import java.util.concurrent.TimeUnit;
 import org.cactoos.io.LengthOf;
 import org.cactoos.io.TeeInput;
 import org.cactoos.text.JoinedText;
@@ -26,12 +30,11 @@ import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.xembly.Directives;
 
 /**
  * Test case for {@link Xocument}.
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.12
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
@@ -67,6 +70,41 @@ public final class XocumentTest {
         MatcherAssert.assertThat(
             new TextOf(temp).asString(),
             XhtmlMatchers.hasXPath("/catalog/project/publish")
+        );
+    }
+
+    // @todo #1037:30min Xocument is not thread safe. Because of this, multiple
+    //  threads modifying the same file can result in race conditions. Let's
+    //  fix the concurrency issue, then enable this unit test.
+    @Test
+    @org.junit.Ignore
+    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
+    public void concurrentlyModifiesXml() throws Exception {
+        final Path temp = Files.createTempFile("concurrent", "test.xml");
+        final Xocument xocument = new Xocument(temp)
+            .bootstrap("pm/staff/roles");
+        final int threads = Tv.HUNDRED;
+        final Phaser phaser = new Phaser(threads);
+        final CountDownLatch end = new CountDownLatch(threads);
+        for (int thread = 0; thread < threads; ++thread) {
+            final String id = String.format("thread%s", thread);
+            new Thread(
+                () -> {
+                    phaser.arriveAndAwaitAdvance();
+                    xocument.modify(
+                        new Directives().xpath("/roles")
+                            .add("person")
+                            .attr("id", id)
+                            .addIf("role").set("DEV")
+                    );
+                    end.countDown();
+                }
+            ).start();
+        }
+        end.await(Tv.TEN, TimeUnit.MINUTES);
+        MatcherAssert.assertThat(
+            xocument.nodes("/roles/person"),
+            Matchers.hasSize(threads)
         );
     }
 

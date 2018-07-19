@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -35,9 +35,7 @@ import org.xembly.Directives;
 /**
  * Synchronized farm.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.1
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @EqualsAndHashCode(of = "origin")
@@ -63,7 +61,8 @@ public final class SyncFarm implements Farm {
      * @param farm Original farm
      */
     public SyncFarm(final Farm farm) {
-        this(farm, TimeUnit.MINUTES.toMillis(2L));
+        // @checkstyle MagicNumber (1 line)
+        this(farm, TimeUnit.MINUTES.toMillis(4L));
     }
 
     /**

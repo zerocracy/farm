@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,12 +19,12 @@ package com.zerocracy.farm;
 import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
+import com.zerocracy.SafeSentry;
 import com.zerocracy.SoftException;
 import com.zerocracy.Stakeholder;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.tools.TxtUnrecoverableError;
-import io.sentry.Sentry;
 import java.io.IOException;
 import lombok.EqualsAndHashCode;
 import org.cactoos.text.TextOf;
@@ -32,12 +32,19 @@ import org.cactoos.text.TextOf;
 /**
  * Stakeholder that reports about failures and doesn't fail ever.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.1
+ * @since 1.0
+ * @checkstyle CyclomaticComplexityCheck (500 lines)
  */
 @EqualsAndHashCode(of = "identifier")
+@SuppressWarnings(
+    {"PMD.ModifiedCyclomaticComplexity", "PMD.StdCyclomaticComplexity"}
+)
 public final class StkSafe implements Stakeholder {
+
+    /**
+     * Max stacktrace length.
+     */
+    private static final int STACKTRACE_MAX = 8192;
 
     /**
      * Original stakeholder.
@@ -85,7 +92,7 @@ public final class StkSafe implements Stakeholder {
             if (claim.hasToken()) {
                 new ClaimIn(xml).reply(ex.getMessage()).postTo(project);
             } else {
-                Sentry.capture(
+                new SafeSentry().capture(
                     new IllegalArgumentException(
                         String.format(
                             "Claim #%d \"%s\" has no token in %s",
@@ -114,14 +121,16 @@ public final class StkSafe implements Stakeholder {
             if (props.has("//testing")) {
                 throw new IllegalStateException(ex);
             }
-            claim.copy()
-                .type("Error")
-                .param("origin_id", claim.cid())
-                .param("origin_type", claim.type())
-                .param("message", msg.toString())
-                .param("stacktrace", new TextOf(ex).asString())
-                .postTo(project);
-            Sentry.capture(ex);
+            if (!claim.isError()) {
+                claim.copy()
+                    .type("Error")
+                    .param("origin_id", claim.cid())
+                    .param("origin_type", claim.type())
+                    .param("message", msg.toString())
+                    .param("stacktrace", StkSafe.stacktrace(ex))
+                    .postTo(project);
+            }
+            new SafeSentry().capture(ex);
             if (claim.hasToken() && !claim.type().startsWith("Notify")) {
                 claim.reply(
                     new TxtUnrecoverableError(
@@ -136,5 +145,23 @@ public final class StkSafe implements Stakeholder {
                 ).postTo(project);
             }
         }
+    }
+
+    /**
+     * Stacktrace for error.
+     * @param exception Error
+     * @return Stacktrace
+     * @throws IOException If fails
+     */
+    private static String stacktrace(final Throwable exception)
+        throws IOException {
+        final String error = new TextOf(exception).asString();
+        final String stacktrace;
+        if (error.length() > StkSafe.STACKTRACE_MAX) {
+            stacktrace = error.substring(0, StkSafe.STACKTRACE_MAX);
+        } else {
+            stacktrace = error;
+        }
+        return stacktrace;
     }
 }

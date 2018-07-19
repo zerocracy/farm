@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -16,21 +16,26 @@
  */
 package com.zerocracy;
 
+import com.jcabi.aspects.Tv;
 import com.zerocracy.farm.fake.FkProject;
 import java.nio.file.Files;
+import java.util.Arrays;
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
+import org.cactoos.matchers.RunsInThreads;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * Test case for {@link Txn}.
  *
- * @author Kirill (g4s8.public@gmail.com)
- * @version $Id$
- * @since 0.18.8
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class TxnTest {
+
     @Test
     public void commitLocalChangedAndPublishToProject() throws Exception {
         final String file = "test";
@@ -66,5 +71,36 @@ public final class TxnTest {
                 Matchers.is(false)
             );
         }
+    }
+
+    /**
+     * Tests if {@link Txn} allows concurrent access.
+     * @throws Exception If something goes wrong during test.
+     * @todo #993:30min Fix NullPointerException due concurrency issues.
+     *  Txn.acq() is throwing an NullPointerException when trying to read
+     *  this.items. Ignore annotation must be removed after puzzle solution.
+     */
+    @Test
+    @Ignore
+    public void allowsConcurrentAccess() throws Exception {
+        final byte[] payload = new byte[1];
+        final Random rnd = new Random();
+        rnd.nextBytes(payload);
+        final FkProject pkt = new FkProject();
+        MatcherAssert.assertThat(
+            t -> {
+                final String file = String.format(
+                    "test%d",
+                    //@checkstyle MagicNumberCheck (1 line)
+                    t.getAndIncrement() * rnd.nextInt(1000000000)
+                );
+                final Txn txn = new Txn(pkt);
+                final Item item = txn.acq(file);
+                Files.write(item.path(), payload);
+                final byte[] arr = Files.readAllBytes(item.path());
+                return Arrays.equals(arr, payload);
+            },
+            new RunsInThreads<>(new AtomicInteger(), Tv.THOUSAND)
+        );
     }
 }

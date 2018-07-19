@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -17,6 +17,7 @@
 package com.zerocracy.pm.in;
 
 import com.zerocracy.Project;
+import com.zerocracy.SoftException;
 import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.pm.scope.Wbs;
 import org.hamcrest.MatcherAssert;
@@ -26,9 +27,7 @@ import org.junit.Test;
 /**
  * Test case for {@link Impediments}.
  *
- * @author Kirill (g4s8.public@gmail.com)
- * @version $Id$
- * @since 0.19
+ * @since 1.0
  *  @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class ImpedimentsTest {
@@ -49,5 +48,38 @@ public final class ImpedimentsTest {
             imp.exists(job),
             Matchers.is(true)
         );
+    }
+
+    @Test
+    public void removesImpediment() throws Exception {
+        final Project project = new FkProject();
+        final Impediments imp = new Impediments(project).bootstrap();
+        final String job = "gh:test/test#2";
+        new Wbs(project).bootstrap().add(job);
+        new Orders(project).bootstrap().assign(job, "amihaiemil", 0L);
+        imp.register(job, "reason");
+        MatcherAssert.assertThat(
+            imp.jobs(),
+            Matchers.contains(job)
+        );
+        MatcherAssert.assertThat(
+            imp.exists(job),
+            Matchers.is(true)
+        );
+        imp.remove(job);
+        MatcherAssert.assertThat(
+            imp.jobs(),
+            Matchers.not(Matchers.contains(job))
+        );
+        MatcherAssert.assertThat(
+            imp.exists(job),
+            Matchers.is(false)
+        );
+    }
+
+    @Test(expected = SoftException.class)
+    public void removesMissingImpediment() throws Exception {
+        final Impediments imp = new Impediments(new FkProject()).bootstrap();
+        imp.remove("gh:test/test#8");
     }
 }

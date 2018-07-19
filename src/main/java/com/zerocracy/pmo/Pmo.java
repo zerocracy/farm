@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,11 +25,15 @@ import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.scalar.SolidScalar;
 
 /**
- * PMO.
+ * PMO (project management office).
+ * <p>
+ * PMO is a project with a special status.
+ * It has its own set of items, own XSD schemas, everything on its own.
+ * We keep system information there, like list of all users (people.xml),
+ * list of all projects (catalog.xml),
+ * user awards, etc.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.1
+ * @since 1.0
  */
 public final class Pmo implements Project {
 

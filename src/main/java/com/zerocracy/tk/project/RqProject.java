@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -29,6 +29,8 @@ import com.zerocracy.tk.RsParFlash;
 import java.io.IOException;
 import java.util.logging.Level;
 import org.cactoos.Scalar;
+import org.cactoos.iterable.IterableOf;
+import org.cactoos.iterable.LengthOf;
 import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.scalar.SolidScalar;
 import org.takes.facets.fork.RqRegex;
@@ -37,9 +39,7 @@ import org.takes.facets.forward.RsForward;
 /**
  * Project from the request.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.12
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.CyclomaticComplexity")
@@ -65,7 +65,8 @@ public final class RqProject implements Project {
                 final String user = new RqUser(farm, req, false).value();
                 final Roles roles = new Roles(project).bootstrap();
                 final Roles admins = new Roles(pmo).bootstrap();
-                if (required.length > 0 && !roles.hasRole(user, required)
+                if (new LengthOf(new IterableOf<>(required)).intValue() > 0
+                    && !roles.hasRole(user, required)
                     && !admins.hasAnyRole(user)) {
                     throw new RsForward(
                         new RsParFlash(
@@ -77,7 +78,7 @@ public final class RqProject implements Project {
                         )
                     );
                 }
-                if (required.length == 0
+                if (new LengthOf(new IterableOf<>(required)).intValue() == 0
                     && !roles.hasAnyRole(user)
                     && !admins.hasAnyRole(user)
                     && !new Catalog(farm).published(project.pid())) {

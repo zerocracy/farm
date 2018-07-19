@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -31,15 +31,12 @@ import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.FileTime;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.xembly.Directives;
 
 /**
  * Test case for {@link S3Item}.
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.1
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
@@ -125,15 +122,8 @@ public final class S3ItemTest {
 
     /**
      * Test with ocket which simulates async work of real S3 client.
-     * @checkstyle AnonInnerLengthCheck (500 lines)
-     * @todo #511:30min S3Item does not handle InterruptedException properly.
-     *  It should not allow reading from io.channel stream if thread was
-     *  interrupted because it automatically check thread status before
-     *  reading and can throw `ClosedChannelException`.
      */
     @Test
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    @Ignore
     public void handleThreadInterruptionCorrectly() throws Exception {
         final Path target = Files.createTempFile("", "");
         final Ocket okt = new OcktInterrupted(

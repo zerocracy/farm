@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -41,9 +41,7 @@ import org.xembly.Directives;
 /**
  * User profile page.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.12
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class TkProfile implements TkRegex {
@@ -87,16 +85,13 @@ public final class TkProfile implements TkRegex {
                             ),
                             new XeAppend(
                                 "modifies_vacation_mode",
-                                Boolean.toString(
-                                    people.vacation(login)
-                                )
+                                Boolean.toString(people.vacation(login))
                             ),
                             new XeAppend(
                                 "projects",
                                 new XeTransform<>(
-                                    new Projects(
-                                        pmo, login
-                                    ).bootstrap().iterate(),
+                                    new Projects(pmo, login).bootstrap()
+                                        .iterate(),
                                     pkt -> new XeDirectives(
                                         new Directives()
                                             .add("project")
@@ -126,10 +121,7 @@ public final class TkProfile implements TkRegex {
                         "identified",
                         Boolean.toString(!people.details(login).isEmpty())
                     ),
-                    new XeAppend(
-                        "rate",
-                        people.rate(login).toString()
-                    ),
+                    new XeAppend("rate", people.rate(login).toString()),
                     new XeAppend(
                         "awards",
                         Integer.toString(
@@ -144,9 +136,14 @@ public final class TkProfile implements TkRegex {
                             ).intValue()
                         )
                     ),
-                    new XeAppend(
-                        "mentor",
-                        people.mentor(login)
+                    new XeWhen(
+                        people.hasMentor(login),
+                        new XeAppend(
+                            "mentor",
+                            () -> new XeDirectives(
+                                new Directives().set(people.mentor(login))
+                            )
+                        )
                     ),
                     new XeAppend(
                         "students",

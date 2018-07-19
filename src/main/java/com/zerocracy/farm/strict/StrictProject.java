@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,9 +25,7 @@ import lombok.EqualsAndHashCode;
 /**
  * PMO project.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.1
+ * @since 1.0
  */
 @EqualsAndHashCode(of = "origin")
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
@@ -53,7 +51,9 @@ final class StrictProject implements Project {
             "(agenda/[a-zA-Z0-9-]+\\.xml)",
             "(projects/[a-zA-Z0-9-]+\\.xml)",
             "(blanks/[a-zA-Z0-9-]+\\.xml)",
-            "(speed/[a-zA-Z0-9-]+\\.xml)"
+            "(speed/[a-zA-Z0-9-]+\\.xml)",
+            "(verbosity/[a-zA-Z0-9-]+\\.xml)",
+            "(resumes\\.xml)"
         )
     );
 
@@ -83,7 +83,8 @@ final class StrictProject implements Project {
             "(milestones\\.xml)",
             "(impediments\\.xml)",
             "(boosts\\.xml)",
-            "(reminders\\.xml)"
+            "(reminders\\.xml)",
+            "(releases\\.xml)"
         )
     );
 

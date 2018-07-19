@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,9 +19,7 @@ package com.zerocracy.radars.viber;
 /**
  * Viber token.
  *
- * @author Carlos Miranda (miranda.cma@gmail.com)
- * @version $Id$
- * @since 0.22
+ * @since 1.0
  */
 final class VbToken {
 

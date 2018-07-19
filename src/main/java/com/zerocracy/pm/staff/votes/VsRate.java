@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -34,9 +34,7 @@ import org.cactoos.scalar.SolidScalar;
 /**
  * Lowest rate wins.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.19
+ * @since 1.0
  */
 public final class VsRate implements Votes {
 

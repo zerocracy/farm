@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -35,9 +35,7 @@ import org.xembly.Xembler;
  *
  * <p>This Item represents the {@code _props.xml} file in a PMO project.</p>
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.18
+ * @since 1.0
  */
 @EqualsAndHashCode(of = "temp")
 final class PropsItem implements Item {

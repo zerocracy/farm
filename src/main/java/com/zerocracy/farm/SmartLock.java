@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -17,6 +17,7 @@
 package com.zerocracy.farm;
 
 import com.jcabi.log.Logger;
+import java.lang.ref.WeakReference;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
@@ -29,9 +30,7 @@ import lombok.EqualsAndHashCode;
 /**
  * Lock that is smart.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.19
+ * @since 1.0
  */
 @EqualsAndHashCode(of = "origin")
 public final class SmartLock implements Lock {
@@ -54,14 +53,15 @@ public final class SmartLock implements Lock {
     /**
      * Owner.
      */
-    private final AtomicReference<Thread> owner = new AtomicReference<>();
+    private final AtomicReference<WeakReference<Thread>> owner =
+        new AtomicReference<>();
 
     /**
      * Full stack trace of this lock holder.
      * @return The stacktrace
      */
     public StackTraceElement[] stacktrace() {
-        final Thread thread = this.owner.get();
+        final Thread thread = this.owner.get().get();
         final StackTraceElement[] array;
         if (thread == null) {
             array = new StackTraceElement[0];
@@ -75,6 +75,13 @@ public final class SmartLock implements Lock {
     public String toString() {
         final String text;
         if (this.origin.isLocked()) {
+            final Thread thread = this.owner.get().get();
+            final String name;
+            if (thread == null) {
+                name = "<disposed>";
+            } else {
+                name = thread.getName();
+            }
             text = Logger.format(
                 "%s/%[ms]s/%d/%d/%b/%b by %s",
                 this.uid,
@@ -83,7 +90,7 @@ public final class SmartLock implements Lock {
                 this.origin.getQueueLength(),
                 this.origin.hasQueuedThreads(),
                 this.origin.isHeldByCurrentThread(),
-                this.owner.get().getName()
+                name
             );
         } else {
             text = "free";
@@ -95,14 +102,14 @@ public final class SmartLock implements Lock {
     public void lock() {
         this.origin.lock();
         this.start.set(System.currentTimeMillis());
-        this.owner.set(Thread.currentThread());
+        this.owner.set(new WeakReference<>(Thread.currentThread()));
     }
 
     @Override
     public void lockInterruptibly() throws InterruptedException {
         this.origin.lockInterruptibly();
         this.start.set(System.currentTimeMillis());
-        this.owner.set(Thread.currentThread());
+        this.owner.set(new WeakReference<>(Thread.currentThread()));
     }
 
     @Override
@@ -110,7 +117,7 @@ public final class SmartLock implements Lock {
         final boolean done = this.origin.tryLock();
         if (done) {
             this.start.set(System.currentTimeMillis());
-            this.owner.set(Thread.currentThread());
+            this.owner.set(new WeakReference<>(Thread.currentThread()));
         }
         return done;
     }
@@ -121,7 +128,7 @@ public final class SmartLock implements Lock {
         final boolean done = this.origin.tryLock(time, unit);
         if (done) {
             this.start.set(System.currentTimeMillis());
-            this.owner.set(Thread.currentThread());
+            this.owner.set(new WeakReference<>(Thread.currentThread()));
         }
         return done;
     }
@@ -129,6 +136,10 @@ public final class SmartLock implements Lock {
     @Override
     public void unlock() {
         this.origin.unlock();
+        final WeakReference<Thread> ref = this.owner.get();
+        if (ref != null) {
+            ref.clear();
+        }
     }
 
     @Override

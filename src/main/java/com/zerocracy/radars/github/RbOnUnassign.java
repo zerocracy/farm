@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -32,9 +32,7 @@ import org.cactoos.text.FormattedText;
 /**
  * Cancel order on unassignment of issue.
  *
- * @author Carlos Miranda (miranda.cma@gmail.com)
- * @version $Id$
- * @since 0.16.1
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (2 lines)
  */
 public final class RbOnUnassign implements Rebound {

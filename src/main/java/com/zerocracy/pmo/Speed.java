@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -16,8 +16,10 @@
  */
 package com.zerocracy.pmo;
 
+import com.jcabi.aspects.Tv;
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
+import com.zerocracy.Policy;
 import com.zerocracy.Xocument;
 import java.io.IOException;
 import org.cactoos.collection.Mapped;
@@ -27,9 +29,13 @@ import org.xembly.Directives;
 
 /**
  * Speed of delivery.
- * @author Kirill (g4s8.public@gmail.com)
- * @version $Id$
- * @since 0.17
+ * <p>
+ * User metric which represents how much time user spend to finish a job.
+ *
+ * @since 1.0
+ * @todo #860:30min Modify the stakeholder where the payments are made and
+ *  use method Speed.bonus(...) to pay the user a bonus in minutes if they
+ *  completed the job in less than 48 hours.
  */
 public final class Speed {
 
@@ -118,6 +124,34 @@ public final class Speed {
                 )
             ).value();
         }
+    }
+
+    /**
+     * If a job is completed in less than 48h, the user gets a
+     * bonus in minutes.
+     * @param job Job's id.
+     * @return The bonus for the speed of the job.
+     * @throws IOException If something goes wrong.
+     */
+    public int bonus(final String job) throws IOException {
+        final int bonus;
+        try (final Item item = this.item()) {
+            final int minutes = Integer.parseInt(
+                new Xocument(item.path())
+                    .xpath(
+                        String.format(
+                            "/speed/order[@job='%s']/minutes/text()", job
+                        )
+                    ).get(0)
+            );
+            final int limit = new Policy().get("36.hours", 48) * Tv.SIXTY;
+            if (minutes <= limit) {
+                bonus = Tv.FIVE;
+            } else {
+                bonus = 0;
+            }
+        }
+        return bonus;
     }
 
     /**

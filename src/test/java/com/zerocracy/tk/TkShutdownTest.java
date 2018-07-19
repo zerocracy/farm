@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -28,9 +28,7 @@ import org.takes.rq.RqWrap;
 
 /**
  * Test case for {@link TkShutdown}.
- * @author Kirill (g4s8.public@gmail.com)
- * @version $Id$
- * @since 0.20
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class TkShutdownTest {

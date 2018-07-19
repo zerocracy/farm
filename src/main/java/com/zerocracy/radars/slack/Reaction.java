@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,10 +24,8 @@ import java.io.IOException;
 /**
  * React to Slack message.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
  * @param <T> Type of event
- * @since 0.1
+ * @since 1.0
  */
 public interface Reaction<T extends SlackEvent> {
 

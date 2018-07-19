@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -16,8 +16,19 @@
  */
 package com.zerocracy.bundles.assign_role
 
+import com.jcabi.github.Repo
+import com.jcabi.github.Repos
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.entry.ExtGithub
+import com.zerocracy.pmo.Catalog
 
 def exec(Project project, XML xml) {
+  Farm farm = binding.variables.farm
+  Repo repo = new ExtGithub(farm).value().repos().create(
+    new Repos.RepoCreate('prvt', true)
+  )
+  repo.collaborators().add('g4s8')
+  new Catalog(farm).link(project.pid(), 'github', repo.coordinates().toString())
 }

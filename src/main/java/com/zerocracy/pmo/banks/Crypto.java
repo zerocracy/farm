@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -37,9 +37,10 @@ import org.joda.money.Money;
 /**
  * Coinbase payment method.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.21
+ * @since 1.0
+ * @todo #980:30min We need to drop Etherium support from Zerocracy: Remove ETH
+ *  support mentioned in Policy (§20) and Remove ETH wallets support informing
+ *  that ETH cannot be used when user tries to use it.
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 final class Crypto implements Bank {

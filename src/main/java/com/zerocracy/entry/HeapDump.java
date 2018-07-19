@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -16,25 +16,25 @@
  */
 package com.zerocracy.entry;
 
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.jcabi.s3.Bucket;
+import com.jcabi.s3.Ocket;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import org.cactoos.io.InputStreamOf;
+import org.cactoos.scalar.IoCheckedScalar;
+import org.cactoos.scalar.StickyScalar;
 
 /**
  * Heap dump in S3.
  *
- * @author Izbassar Tolegen (t.izbassar@gmail.com)
- * @version $Id$
  * @since 1.0
- *
- * @todo #400:30min Use this class, to periodically update
- *  contents from ./heapdump.hprof file to S3. Should
- *  be implemented after #680 would be resolved as part
- *  of the routine work, that needs to be done in background.
  */
-@SuppressWarnings({"PMD.SingularField", "PMD.UnusedPrivateField"})
 public final class HeapDump {
 
     /**
@@ -43,14 +43,14 @@ public final class HeapDump {
     private final Bucket bucket;
 
     /**
-     * Path in bucket.
-     */
-    private final String prefix;
-
-    /**
      * Path to temporary storage.
      */
     private final Path temp;
+
+    /**
+     * S3 key for heapdump.
+     */
+    private final IoCheckedScalar<String> key;
 
     /**
      * Ctor.
@@ -59,7 +59,7 @@ public final class HeapDump {
      * @throws IOException If fails
      */
     public HeapDump(final Bucket bkt, final String pfx) throws IOException {
-        this(bkt, pfx, Files.createTempDirectory(""));
+        this(bkt, pfx, Files.createTempDirectory(""), "heapdump.hprof");
     }
 
     /**
@@ -67,39 +67,69 @@ public final class HeapDump {
      * @param bkt Bucket
      * @param pfx Prefix
      * @param tmp Storage
+     * @param file File
+     * @checkstyle ParameterNumber (4 lines)
      */
-    public HeapDump(final Bucket bkt, final String pfx, final Path tmp) {
+    public HeapDump(final Bucket bkt, final String pfx, final Path tmp,
+        final String file) {
         this.bucket = bkt;
-        this.prefix = pfx;
         this.temp = tmp;
+        this.key = new IoCheckedScalar<>(
+            new StickyScalar<>(
+                () -> String.format("%s%s", pfx, file)
+            )
+        );
     }
 
     /**
      * Load dump from S3.
      * @return Dump's content
-     * @todo #400:30min Should return the latest
-     *  version of heap dump, available in S3 or
-     *  temporary storage (if it is up to date).
-     *  Cover implementation with unit and
-     *  integration tests.
+     * @throws IOException If fails
      */
-    public InputStream load() {
-        throw new UnsupportedOperationException(
-            "HeapDump#load() not yet implemented"
-        );
+    public InputStream load() throws IOException {
+        final Ocket ocket = this.bucket.ocket(this.key.value());
+        if (!ocket.exists()) {
+            throw new IOException(
+                String.format(
+                    "Cannot load '%s' from S3, it doesn't exist",
+                    this.key.value()
+                )
+            );
+        }
+        final File heapdump = Files.createTempDirectory("")
+            .resolve("heapdump").toFile();
+        try (final FileOutputStream output = new FileOutputStream(heapdump)) {
+            ocket.read(output);
+        }
+        return new FileInputStream(heapdump);
     }
 
     /**
      * Save dump to S3.
-     * @todo #400:30min Should save heap dump to S3 bucket
-     *  if file with dump exists, but only do that, if there
-     *  is new version of file available. Ignore, if we
-     *  already have latest version in S3. Should be covered
-     *  with unit and integration tests.
+     * @throws IOException If fails
      */
-    public void save() {
-        throw new UnsupportedOperationException(
-            "HeapDump#save() not yet implemented"
+    public void save() throws IOException {
+        final Path dump = this.temp.resolve(
+            this.key.value().replaceAll("[<>:\"\\/|?*]", "_")
         );
+        if (!dump.toFile().exists()) {
+            throw new IOException(
+                String.format(
+                    "Dump file '%s' does not exist, cannot save to S3",
+                    dump
+                )
+            );
+        }
+        final Ocket ocket = this.bucket.ocket(this.key.value());
+        if (!ocket.exists()
+            || ocket.meta().getLastModified().getTime()
+            < Files.getLastModifiedTime(dump).toMillis()) {
+            try (final InputStream in = new InputStreamOf(dump)) {
+                final ObjectMetadata meta = new ObjectMetadata();
+                meta.setContentLength(Files.size(dump));
+                ocket.write(in, meta);
+            }
+        }
     }
+
 }

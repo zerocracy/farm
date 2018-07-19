@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pmo;
 
+import com.jcabi.aspects.Tv;
 import com.zerocracy.Project;
 import com.zerocracy.SoftException;
 import com.zerocracy.cash.Cash;
@@ -23,8 +24,12 @@ import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.cactoos.iterable.Filtered;
+import org.cactoos.iterable.IterableOf;
+import org.cactoos.iterable.LengthOf;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.iterable.RangeOf;
 import org.cactoos.list.ListOf;
@@ -38,17 +43,21 @@ import org.junit.rules.ExpectedException;
 
 /**
  * Test case for {@link People}.
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.1
- * @checkstyle JavadocMethodCheck (500 lines)
- * @checkstyle JavadocVariableCheck (500 lines)
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
- * @todo #840:30min Add tests for links(), wallet() and rate()
- *  in People.java because these methods are not fully covered. Then
- *  remove People.java from jacoco excludes in pom.xml
+ * @since 1.0
+ * @todo #952:30min Continue replacing old Date classes with Instant.
+ *  Remember also to remove instances of `DateAsText` (Instant.toString should
+ *  be used). There is a lot of classes to change so try to find a good small
+ *  cluster of related classes that can be updated.
+ * @checkstyle JavadocMethodCheck (1000 lines)
+ * @checkstyle JavadocVariableCheck (1000 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (3 lines)
  */
-@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
+@SuppressWarnings(
+    {
+        "PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods",
+        "PMD.ExcessivePublicCount", "PMD.GodClass"
+    }
+)
 public final class PeopleTest {
 
     @Rule
@@ -167,6 +176,11 @@ public final class PeopleTest {
     }
 
     @Test
+    public void setCorrectZoldAddress() throws Exception {
+        PeopleTest.setsWallet("zld", "g4s8");
+    }
+
+    @Test
     public void failsForIncorrectPaypalAddress() throws Exception {
         this.failsWallet("paypal");
     }
@@ -189,6 +203,11 @@ public final class PeopleTest {
     @Test
     public void failsForIncorrectLitecoinAddress() throws Exception {
         this.failsWallet("ltc");
+    }
+
+    @Test
+    public void failsForIncorrectZoldAddress() throws Exception {
+        this.failsWallet("zld", "!@#$%fgs");
     }
 
     @Test
@@ -311,6 +330,33 @@ public final class PeopleTest {
     }
 
     @Test
+    public void inviteForce() throws Exception {
+        final String mentor = "supermentor";
+        final People people = new People(new FkFarm()).bootstrap();
+        final int size = 16;
+        final String format = "std%d";
+        final Iterable<Integer> range = new RangeOf<>(0, size, x -> x + 1);
+        new And(
+            (String std) -> people.invite(std, mentor, true),
+            new Mapped<>((Integer num) -> String.format(format, num), range)
+        ).value();
+        MatcherAssert.assertThat(
+            new LengthOf(
+                new Filtered<>(
+                    mentor::equals,
+                    new Mapped<>(
+                        (Integer num) -> people.mentor(
+                            String.format(format, num)
+                        ),
+                        range
+                    )
+                )
+            ).intValue(),
+            Matchers.equalTo(size + 1)
+        );
+    }
+
+    @Test
     public void graduate() throws Exception {
         final FkFarm farm = new FkFarm(new FkProject());
         final People people = new People(farm).bootstrap();
@@ -429,6 +475,58 @@ public final class PeopleTest {
     }
 
     @Test
+    public void setsJobs() throws Exception {
+        final People people =
+            new People(new FkFarm(new FkProject())).bootstrap();
+        final String uid = "jobs";
+        people.invite(uid, uid);
+        final int jobs = Tv.TEN;
+        people.jobs(uid, jobs);
+        MatcherAssert.assertThat(
+            people.jobs(uid),
+            Matchers.is(jobs)
+        );
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void throwsIfFetchingJobsOfNonExistentUser() throws Exception {
+        new People(new FkFarm(new FkProject())).bootstrap()
+            .jobs("jobs1");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void throwsIfSettingJobsOfNonExistentUser() throws Exception {
+        new People(new FkFarm(new FkProject())).bootstrap()
+            .jobs("jobs2", 1);
+    }
+
+    @Test
+    public void setsSpeed() throws Exception {
+        final People people =
+            new People(new FkFarm(new FkProject())).bootstrap();
+        final String uid = "speed";
+        people.invite(uid, uid);
+        final double speed = 5.5;
+        people.speed(uid, speed);
+        MatcherAssert.assertThat(
+            people.speed(uid),
+            Matchers.is(speed)
+        );
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void throwsIfFetchingSpeedOfNonExistentUser() throws Exception {
+        new People(new FkFarm(new FkProject())).bootstrap()
+            .speed("speed1");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void throwsIfSettingSpeedOfNonExistentUser() throws Exception {
+        new People(new FkFarm(new FkProject())).bootstrap()
+            .speed("speed2", 1.0);
+    }
+
+    @Test
     public void throwIfTryToSetDetailsButNotApplied() throws Exception {
         final FkFarm farm = new FkFarm(new FkProject());
         final People people = new People(farm).bootstrap();
@@ -459,9 +557,62 @@ public final class PeopleTest {
         people.details(uid, "");
     }
 
-    private void failsWallet(final String bank)
+    @Test
+    public void setsLinks() throws Exception {
+        final FkFarm farm = new FkFarm(new FkProject());
+        final People people = new People(farm).bootstrap();
+        final String uid = "yegor256";
+        final String srel = "slack";
+        final String jrel = "jira";
+        final String salias = "U67WE3343P";
+        final String jalias = "https://www.0crat.com/jira";
+        people.link(uid, srel, salias);
+        people.link(uid, jrel, jalias);
+        final String format = "%s:%s";
+        MatcherAssert.assertThat(
+            people.links(uid),
+            Matchers.containsInAnyOrder(
+                String.format(format, srel, salias),
+                String.format(format, jrel, jalias),
+                String.format("github:%s", uid)
+            )
+        );
+        MatcherAssert.assertThat(
+            people.links(uid, jrel),
+            Matchers.contains(jalias)
+        );
+    }
+
+    @Test
+    public void setsSkills() throws IOException {
+        final People people = new People(
+            new FkFarm(new FkProject())
+        ).bootstrap();
+        final String uid = "user";
+        people.invite(uid, "0crat");
+        final Iterable<String> skills = new IterableOf<>("c", "cobol");
+        people.skills(uid, skills);
+        MatcherAssert.assertThat(
+            new ArrayList<>(new ListOf<>(people.skills(uid))),
+            Matchers.equalTo(new ArrayList<>(new ListOf<>(skills)))
+        );
+    }
+
+    @Test
+    public void getsEmptySkillList() throws IOException {
+        final People people = new People(
+            new FkFarm(new FkProject())
+        ).bootstrap();
+        final String uid = "user";
+        people.invite(uid, "0crat");
+        MatcherAssert.assertThat(
+            people.skills(uid),
+            Matchers.emptyIterable()
+        );
+    }
+
+    private void failsWallet(final String bank, final String wallet)
         throws IOException {
-        final String wallet = "123456";
         final FkFarm farm = new FkFarm(new FkProject());
         final People people = new People(farm).bootstrap();
         this.thrown.expect(SoftException.class);
@@ -469,6 +620,11 @@ public final class PeopleTest {
             new FormattedText(" not valid: `%s`", wallet).asString()
         );
         people.wallet("yegor512", bank, wallet);
+    }
+
+    private void failsWallet(final String bank)
+        throws IOException {
+        this.failsWallet(bank, "123456");
     }
 
     private static void setsWallet(final String bank, final String wallet)
@@ -482,4 +638,5 @@ public final class PeopleTest {
             Matchers.is(wallet)
         );
     }
+
 }

@@ -260,11 +260,25 @@ Here, `"18.days"` is the HTML `id` attribute and `90` is the default value to
 be used during unit testing. You must always use class `Policy` in your code
 and never hard-code any business constants.
 
+## Time API 
+
+We don't mix different Java Time APIs and we have chosen the new java.time.*
+classes instead of the old Date and Calendar classes. Old classes can be used
+only in cases where external libraries require or return them.
+
+When considering which of the new classes to use, it is best to first try 
+`Instant`, if more formatting or manipulation of the date/time is needed then
+`ZonedDateTime` with ZoneOffset.UTC. LocalDateTime/LocalDate/LocalTime should
+be used as a last resort (as it is e.g. problematic during the switch to
+daylight saving).
+
 ## How to contribute
 
-Just fork it, make changes, run `mvn clean install -Pqulice`, and submit
-a pull request. Read
+Just fork it, make changes, run `mvn clean install -Pqulice,codenarc`,
+and submit a pull request. Read
 [this](http://www.yegor256.com/2014/04/15/github-guidelines.html), if lost.
+Don't forget to add documentation for groovy scripts if you create new
+stakeholder.
 
 ## License
 

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,36 +22,50 @@ import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
 import com.zerocracy.pmo.Catalog;
 import java.io.IOException;
-import org.cactoos.iterable.Shuffled;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
+import org.cactoos.list.ListOf;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.quartz.SchedulerException;
 
 /**
  * Ping as quartz job.
- * @author Kirill (g4s8.public@gmail.com)
- * @version $Id$
- * @since 0.21.1
+ * @since 1.0
  */
 public final class Ping implements Job {
+
     /**
      * Farm.
      */
     private final Farm farm;
+
+    /**
+     * Batch size.
+     */
+    private final int batches;
+
     /**
      * Ctor.
      * @param frm Farm
+     * @param btchs Number of batches for minute pings
      */
-    public Ping(final Farm frm) {
+    public Ping(final Farm frm, final int btchs) {
         this.farm = frm;
+        this.batches = btchs;
     }
 
     @Override
     public void execute(final JobExecutionContext ctx)
         throws JobExecutionException {
         try {
-            this.post(ctx.getMergedJobDataMap().getString("claim"));
-        } catch (final IOException err) {
+            this.post(
+                ctx.getMergedJobDataMap().getString("claim"),
+                (AtomicInteger) ctx.getScheduler().getContext().get("counter")
+            );
+        } catch (final IOException | SchedulerException err) {
             throw new JobExecutionException(err);
         }
     }
@@ -59,12 +73,37 @@ public final class Ping implements Job {
     /**
      * Post a ping.
      * @param type The type of claim to post
+     * @param counter Counter of pings
      * @throws IOException If fails
      */
-    private void post(final String type) throws IOException {
-        for (final Project project : new Shuffled<>(this.farm.find(""))) {
+    private void post(final String type,
+        final AtomicInteger counter) throws IOException {
+        final Iterable<Project> projects;
+        if (Objects.equals(type, "Ping")) {
+            projects = this.batch(counter);
+        } else {
+            projects = this.farm.find("");
+        }
+        for (final Project project : projects) {
             this.post(project, type);
         }
+    }
+
+    /**
+     * Get project list for ping claim.
+     * @param counter Counter of pings
+     * @return List of projects to ping
+     * @throws IOException In case of error
+     */
+    private Iterable<Project> batch(final AtomicInteger counter)
+        throws IOException {
+        final int batch = counter.getAndIncrement() % this.batches;
+        final List<Project> projects = new ListOf<>(this.farm.find(""));
+        final double size = (double) projects.size() / this.batches;
+        return projects.subList(
+            (int) (batch * size),
+            (int) Math.min(projects.size(), (batch + 1) * size)
+        );
     }
 
     /**

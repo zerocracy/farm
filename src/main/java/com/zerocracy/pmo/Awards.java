@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,7 +21,10 @@ import com.zerocracy.Item;
 import com.zerocracy.Project;
 import com.zerocracy.Xocument;
 import java.io.IOException;
+import java.time.ZonedDateTime;
 import java.util.Date;
+import java.util.List;
+import org.cactoos.list.Mapped;
 import org.cactoos.text.JoinedText;
 import org.cactoos.time.DateAsText;
 import org.xembly.Directives;
@@ -29,9 +32,7 @@ import org.xembly.Directives;
 /**
  * Awards of one person.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.12
+ * @since 1.0
  */
 public final class Awards {
 
@@ -166,6 +167,34 @@ public final class Awards {
                 new Xocument(item.path()).xpath(
                     "sum(/awards/award/points/text())"
                 ).get(0)
+            );
+        }
+    }
+
+    /**
+     * Rewards for the last days.
+     * @param days Number of last days to check
+     * @return List of awards
+     * @throws IOException If fails
+     */
+    public List<Integer> awards(final int days) throws IOException {
+        try (final Item item = this.item()) {
+            return new Mapped<>(
+                Integer::parseInt,
+                new Xocument(item.path()).xpath(
+                    new JoinedText(
+                        "",
+                        "/awards/award[",
+                        "xs:dateTime(added) > xs:dateTime('",
+                        new DateAsText(
+                            ZonedDateTime.now()
+                                .minusDays(days)
+                                .toInstant()
+                                .toEpochMilli()
+                        ).asString(),
+                        "')]/points/text()"
+                    ).asString()
+                )
             );
         }
     }

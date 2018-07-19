@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,39 +19,52 @@ package com.zerocracy.tk.profile;
 import com.jcabi.matchers.XhtmlMatchers;
 import com.zerocracy.Farm;
 import com.zerocracy.farm.fake.FkFarm;
+import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.PropsFarm;
-import com.zerocracy.tk.RqWithUser;
-import com.zerocracy.tk.TkApp;
+import com.zerocracy.pmo.Awards;
+import com.zerocracy.tk.View;
 import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Test;
-import org.takes.rq.RqFake;
-import org.takes.rs.RsPrint;
 
 /**
  * Test case for {@link TkAwards}.
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.13
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class TkAwardsTest {
 
     @Test
-    public void rendersAgendaPage() throws Exception {
+    public void rendersXmlAwardsPage() throws Exception {
         final Farm farm = new PropsFarm(new FkFarm());
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
-                new RsPrint(
-                    new TkApp(farm).act(
-                        new RqWithUser(
-                            farm,
-                            new RqFake("GET", "/u/yegor256/awards")
-                        )
-                    )
-                ).printBody()
+                XhtmlMatchers.xhtml(
+                    new View(farm, "/u/yegor256/awards").html()
+                )
             ),
             XhtmlMatchers.hasXPaths("//xhtml:body")
+        );
+    }
+
+    @Test
+    public void rendersHtmlAwardsPageForFirefox() throws Exception {
+        final Farm farm = new PropsFarm(new FkFarm());
+        final String user = "yegor256";
+        final int points = 1234;
+        new Awards(farm, user).bootstrap()
+            .add(new FkProject(), points, "none", "reason");
+        final String html = new View(
+            farm, String.format("/u/%s/awards", user)
+        ).html();
+        MatcherAssert.assertThat(
+            html,
+            XhtmlMatchers.hasXPaths("//xhtml:html")
+        );
+        MatcherAssert.assertThat(
+            html,
+            Matchers.containsString(String.format("+%d", points))
         );
     }
 

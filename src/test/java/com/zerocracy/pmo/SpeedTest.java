@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -16,17 +16,17 @@
  */
 package com.zerocracy.pmo;
 
+import com.jcabi.aspects.Tv;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
+import java.time.Duration;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
  * Test case for {@link Speed}.
- * @author Kirill (g4s8.public@gmail.com)
- * @version $Id$
- * @since 0.17
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class SpeedTest {
@@ -63,5 +63,25 @@ public final class SpeedTest {
                 .avg(),
             Matchers.equalTo(0.0)
         );
+    }
+
+    @Test
+    public void givesBonus() throws Exception {
+        final Speed speed = new Speed(
+            new FkFarm(new FkProject()), "amihaiemil"
+        ).bootstrap();
+        final String job = "gh:bonus/fast#1";
+        speed.add("TST100006", job, Duration.ofDays(1).toMinutes());
+        MatcherAssert.assertThat(speed.bonus(job), Matchers.equalTo(Tv.FIVE));
+    }
+
+    @Test
+    public void givesNoBonus() throws Exception {
+        final Speed speed = new Speed(
+            new FkFarm(new FkProject()), "other"
+        ).bootstrap();
+        final String job = "gh:bonus/slow#1";
+        speed.add("TST100009", job, Duration.ofDays(Tv.THREE).toMinutes());
+        MatcherAssert.assertThat(speed.bonus(job), Matchers.equalTo(0));
     }
 }

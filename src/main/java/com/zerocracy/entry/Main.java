@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,19 +19,24 @@ package com.zerocracy.entry;
 import com.jcabi.aspects.Loggable;
 import com.jcabi.log.Logger;
 import com.zerocracy.Farm;
+import com.zerocracy.SafeSentry;
 import com.zerocracy.farm.S3Farm;
 import com.zerocracy.farm.SmartFarm;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.radars.github.GithubRoutine;
 import com.zerocracy.radars.github.TkGithub;
+import com.zerocracy.radars.gitlab.TkGitlab;
 import com.zerocracy.radars.slack.SlackRadar;
 import com.zerocracy.radars.slack.TkSlack;
+import com.zerocracy.radars.viber.TkViber;
+import com.zerocracy.radars.viber.VbBot;
 import com.zerocracy.tk.TkAlias;
 import com.zerocracy.tk.TkApp;
 import io.sentry.Sentry;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import javax.ws.rs.HttpMethod;
 import org.cactoos.func.AsyncFunc;
 import org.takes.facets.fork.FkRegex;
 import org.takes.facets.fork.TkMethods;
@@ -40,9 +45,7 @@ import org.takes.http.FtCli;
 
 /**
  * Main entry point.
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.1
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class Main {
@@ -80,7 +83,7 @@ public final class Main {
         try {
             new Main(args).exec();
         } catch (final Throwable ex) {
-            Sentry.capture(ex);
+            new SafeSentry().capture(ex);
             Logger.error(Main.class, "The main app crashed: %[exception]s", ex);
             throw new IOException(ex);
         } finally {
@@ -128,11 +131,16 @@ public final class Main {
             new FtCli(
                 new TkApp(
                     farm,
-                    new FkRegex("/slack", new TkSlack(farm, radar)),
                     new FkRegex("/alias", new TkAlias(farm)),
+                    new FkRegex("/slack", new TkSlack(farm, radar)),
+                    new FkRegex("/viber", new TkViber(farm, new VbBot())),
                     new FkRegex(
                         "/ghook",
-                        new TkMethods(new TkGithub(farm), "POST")
+                        new TkMethods(new TkGithub(farm), HttpMethod.POST)
+                    ),
+                    new FkRegex(
+                        "/glhook",
+                        new TkMethods(new TkGitlab(), HttpMethod.POST)
                     )
                 ),
                 this.arguments

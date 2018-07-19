@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,6 +25,15 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.cost.Ledger
 
+/**
+ * This stakeholder process user Stripe contributions: it adds funds
+ * to the project and notify project in Slack about contribution.
+ * Everyone can donate to free and public open-source projects
+ * (see {@link com.zerocracy.tk.project.TkContrib}
+ * via 'Contribute badges' ({@link com.zerocracy.tk.project.TkContribBadge}).
+ * @param project Contributed project
+ * @param xml Claim
+ */
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Contributed by Stripe')
@@ -61,4 +70,8 @@ def exec(Project project, XML xml) {
       'many thanks for your support!'
     ).say(project.pid(), amount, claim.author())
   ).postTo(project)
+  claim.copy().type('Send zold')
+    .param('recipient', claim.author())
+    .param('reason', 'contribution reward')
+    .postTo(project)
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -27,6 +27,7 @@ import com.zerocracy.pm.cost.Boosts
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Set boost')
+  new Assume(project, xml).roles('PO', 'ARC')
   ClaimIn claim = new ClaimIn(xml)
   int factor = Integer.valueOf(claim.param('factor').replaceAll('x$', ''))
   String job = claim.param('job')

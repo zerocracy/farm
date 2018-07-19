@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,10 +26,8 @@ import java.io.IOException;
  * you have to provide XPath query for it. All projects are stored
  * in a catalog, which is described at catalog.xsd.</p>
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
  * @see <a href="https://github.com/zerocracy/datum/blob/master/xsd/pmo/catalog.xsd">catalog.xsd</a>
- * @since 0.1
+ * @since 1.0
  */
 public interface Farm extends Closeable {
 

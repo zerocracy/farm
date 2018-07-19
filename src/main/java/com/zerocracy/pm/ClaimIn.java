@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -31,11 +31,9 @@ import org.cactoos.time.DateOf;
  * its keep components out. Use it everywhere. Don't parse the XML
  * manually.</p>
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.9
+ * @since 1.0
  */
-@SuppressWarnings({ "PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods" })
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 public final class ClaimIn {
 
     /**
@@ -121,6 +119,14 @@ public final class ClaimIn {
      */
     public String type() {
         return this.xml.xpath("type/text()").get(0);
+    }
+
+    /**
+     * Is this claim error.
+     * @return True if error
+     */
+    public boolean isError() {
+        return "Error".equals(this.type());
     }
 
     /**

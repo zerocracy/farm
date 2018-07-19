@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,6 +24,14 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.cost.Ledger
 
+/**
+ * Internal mechanism to add some amount of funds
+ * to a project without actual funding. This stakeholder
+ * can be called only by 'yegor256' (see project.xsl).
+ *
+ * @param project Project to fund
+ * @param xml Claim
+ */
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Donate')

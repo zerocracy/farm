@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,7 +26,6 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.cost.Boosts
 import com.zerocracy.pm.cost.Estimates
-import com.zerocracy.pm.cost.Rates
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.qa.JobAudit
 import com.zerocracy.pm.staff.Roles
@@ -72,11 +71,7 @@ def exec(Project project, XML xml) {
         .postTo(project)
     }
   } else {
-    Rates rates = new Rates(project).bootstrap()
-    Cash bonus = Cash.ZERO
-    if (rates.exists(performer)) {
-      bonus = rates.rate(performer).mul(new Policy().get('31.bonus', 5)) / 60
-    }
+    Cash bonus = price.mul(new Policy().get('31.bonus', 8)) / 100
     claim.copy()
       .type('Start QA review')
       .param('login', performer)

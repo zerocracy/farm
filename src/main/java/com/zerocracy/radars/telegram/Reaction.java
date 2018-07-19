@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,10 +23,7 @@ import org.telegram.telegrambots.api.objects.Update;
 /**
  * Telegram message reaction.
  *
- * @author Kirill (g4s8.public@gmail.com)
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.15
+ * @since 1.0
  */
 public interface Reaction {
 

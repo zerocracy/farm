@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,8 +24,8 @@ import com.mongodb.client.model.Sorts;
 import com.zerocracy.Par;
 import com.zerocracy.Project;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import org.bson.BsonArray;
 import org.bson.BsonDocument;
@@ -36,9 +36,7 @@ import org.bson.conversions.Bson;
 /**
  * Orders given by weeks.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.18
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
@@ -46,7 +44,7 @@ public final class OrdersGivenByWeek implements FtReport {
 
     @Override
     public List<? extends Bson> bson(final Project project,
-        final Date start, final Date end) {
+        final Instant start, final Instant end) {
         return Arrays.asList(
             new Match(
                 project, start, end,

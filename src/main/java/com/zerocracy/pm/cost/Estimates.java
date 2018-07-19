@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,6 +23,7 @@ import com.zerocracy.SoftException;
 import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.cash.CashParsingException;
+import com.zerocracy.cash.Currency;
 import com.zerocracy.pm.in.Orders;
 import com.zerocracy.pm.scope.Wbs;
 import com.zerocracy.pm.staff.Roles;
@@ -32,18 +33,39 @@ import java.util.LinkedList;
 import org.cactoos.collection.Mapped;
 import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.scalar.Reduced;
+import org.cactoos.scalar.Ternary;
 import org.cactoos.time.DateAsText;
 import org.xembly.Directives;
 
 /**
  * Cost estimates.
+ * <p>
+ * Estimate is an absolute cash value (not minutes of work)
+ * which will be payed for a job on complete. It represents current state of
+ * <i>pending payments</i>: how much cash will be taken from project
+ * funds to pay for orders.<br/>
+ * For example this estimate:
+ * <pre>
+ * <code>&lt;order id="gh:yegor256/pdd#3"&gt;
+ *   &lt;cash&gt;$15&lt;/cash&gt;
+ *   &lt;created&gt;2016-12-29T09:03:21.684Z&lt;/created&gt;
+ *   &lt;role&gt;REV&lt;/role&gt;
+ * &lt;/order&gt;
+ * </code>
+ * </pre>
+ * means that job {@code gh:yegor256/pdd#3} was estimated in $15 as a
+ * code-review task.<br/>
+ * Project estimates locks a cash from budget, so if estimated value is
+ * bigger that project's cash, project will be turned into deficit mode.
+ * </p>
+ * <p>
+ * Estimate can be cleaned from {@link com.zerocracy.farm.ruled.RdAuto},
+ * see {@code 03-estimates-remove.xsl} in datum repo.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.10
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@SuppressWarnings({ "PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals"})
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals"})
 public final class Estimates {
 
     /**
@@ -139,9 +161,8 @@ public final class Estimates {
                     .add("cash")
                     .set(cash)
             );
-            xoc.modify(
-                new Directives().xpath("/estimates").attr(
-                    "total",
+            final Cash value = new IoCheckedScalar<>(
+                new Ternary<>(
                     new IoCheckedScalar<>(
                         new Reduced<Cash, Cash>(
                             Cash.ZERO,
@@ -151,7 +172,16 @@ public final class Estimates {
                                 xoc.xpath("//order/cash/text()")
                             )
                         )
-                    ).value()
+                    ).value(),
+                    Cash::unified,
+                    csh -> csh,
+                    csh -> csh.exchange(Currency.USD)
+                )
+            ).value();
+            xoc.modify(
+                new Directives().xpath("/estimates").attr(
+                    "total",
+                    value
                 )
             );
         }

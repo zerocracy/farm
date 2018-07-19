@@ -1,7 +1,10 @@
 package com.zerocracy.stk.pm.in.orders
 
 import com.jcabi.xml.XML
-import com.zerocracy.*
+import com.zerocracy.Farm
+import com.zerocracy.Par
+import com.zerocracy.Policy
+import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.cost.Boosts
@@ -9,6 +12,7 @@ import com.zerocracy.pm.cost.Ledger
 import com.zerocracy.pm.in.Impediments
 import com.zerocracy.pm.in.JobExpired
 import com.zerocracy.pm.in.Orders
+import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.Pmo
 import org.cactoos.iterable.Filtered
@@ -36,6 +40,7 @@ def exec(Project project, XML xml) {
   Roles pmos = new Roles(new Pmo(farm)).bootstrap()
   List<String> waiting = impediments.jobs().toList()
   Policy policy = new Policy()
+  Wbs wbs = new Wbs(project).bootstrap()
   int days = policy.get('8.days', 10)
   new Limited<>(
     5,
@@ -48,6 +53,11 @@ def exec(Project project, XML xml) {
     )
   ).forEach { String job ->
     String worker = orders.performer(job)
+    if (wbs.role(job) == 'REV') {
+      // We are not removing REV performers, because they can't responsible
+      // for the delays there, since the code is not theirs.
+      return
+    }
     if (pmos.hasAnyRole(worker)) {
       // Members of PMO have special status, we should not resign
       // them from any tasks ever.

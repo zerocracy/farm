@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,9 +25,7 @@ import lombok.EqualsAndHashCode;
 /**
  * Cash.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.6
+ * @since 1.0
  * @checkstyle TooManyMethods (500 lines)
  */
 @SuppressWarnings("PMD.TooManyMethods")
@@ -104,6 +102,21 @@ public interface Cash extends Comparable<Cash>, Serializable {
      * @throws IOException If fails due to I/O problems
      */
     Cash exchange(Currency currency) throws IOException;
+
+    /**
+     * Is cash representation unified (there were no {@code add} method called)?
+     *
+     * Non-unified Cash object is created by doing {@link #add(Cash)} of
+     * {@code Cash} objects:
+     * <pre>
+     *     Cash cash = new Cash.S("$10").add(new Cash.S("$20"));
+     * </pre>
+     *
+     * To get a unified {@code Cash} object you need to call
+     * {@link #exchange(Currency)} method.
+     * @return True if the cash has been unified.
+     */
+    boolean unified();
 
     /**
      * Simple implementation.
@@ -235,7 +248,7 @@ public interface Cash extends Comparable<Cash>, Serializable {
 
         @Override
         public BigDecimal decimal() {
-            if (this.pairs.length != 1) {
+            if (!this.unified()) {
                 throw new IllegalStateException(
                     String.format(
                         "Use exchange() first to unify currencies: \"%s\"",
@@ -268,6 +281,11 @@ public interface Cash extends Comparable<Cash>, Serializable {
                 prs[num] = this.pairs[num].exchange(currency, this.qts);
             }
             return new Cash.S(prs, this.qts);
+        }
+
+        @Override
+        public boolean unified() {
+            return this.pairs.length == 1;
         }
 
         /**

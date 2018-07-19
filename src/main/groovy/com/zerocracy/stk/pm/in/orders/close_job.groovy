@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -32,11 +32,6 @@ import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.Blanks
 import com.zerocracy.radars.github.Job
 
-// @todo #535:30min Every time we close a job completed by a developer,
-//  we should count the amount of messages that person posted
-//  in the GitHub issue or a pull request.
-//  Let's count not only issue messages, but also commit messages.
-//  Then, post it to verbosity.xml
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Close job')

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,19 +22,13 @@ import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.footprint.FtFarm;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pm.ClaimOut;
-import com.zerocracy.tk.RqWithUser;
-import com.zerocracy.tk.TkApp;
+import com.zerocracy.tk.View;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
-import org.takes.rq.RqFake;
-import org.takes.rq.RqWithHeaders;
-import org.takes.rs.RsPrint;
 
 /**
  * Test case for {@link TkReport}.
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.18
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
@@ -50,21 +44,10 @@ public final class TkReportTest {
             .postTo(farm.find("@id='C00000000'").iterator().next());
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
-                new RsPrint(
-                    new TkApp(farm).act(
-                        new RqWithHeaders(
-                            new RqWithUser(
-                                farm,
-                                new RqFake(
-                                    "GET",
-                                    // @checkstyle LineLength (1 line)
-                                    "/report/C00000000?report=orders-given-by-week"
-                                )
-                            ),
-                            "Accept: application/xml"
-                        )
-                    )
-                ).printBody()
+                new View(
+                    farm,
+                    "/report/C00000000?report=orders-given-by-week"
+                ).xml()
             ),
             XhtmlMatchers.hasXPaths("/page/rows/row[week]")
         );

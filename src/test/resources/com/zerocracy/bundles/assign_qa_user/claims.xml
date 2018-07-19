@@ -19,7 +19,7 @@ SOFTWARE.
   <claim id="3">
     <created>2017-03-27T11:18:09.228Z</created>
     <type>Close job</type>
-    <author>yegor256</author>
+    <author>test</author>
     <token>test;C123;yegor256</token>
     <params>
       <param name="login">yegor256</param>

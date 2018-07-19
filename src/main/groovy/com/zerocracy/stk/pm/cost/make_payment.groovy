@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -16,6 +16,7 @@
  */
 package com.zerocracy.stk.pm.cost
 
+import com.jcabi.log.Logger
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Par
@@ -23,6 +24,7 @@ import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
 import com.zerocracy.farm.Assume
+import com.zerocracy.farm.props.Props
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.cost.Ledger
 import com.zerocracy.pm.cost.Rates
@@ -83,6 +85,10 @@ def exec(Project project, XML xml) {
   Ledger ledger = new Ledger(project).bootstrap()
   String msg
   try {
+    if (new Props(farm).has('//testing')) {
+      Logger.info(this, 'skip in testing mode')
+      return
+    }
     msg = new Payroll(farm).pay(
       ledger,
       login, price, "Payment for ${job} (${minutes} minutes): ${reason}"
@@ -144,6 +150,11 @@ def exec(Project project, XML xml) {
       )
       .postTo(project)
   }
+  claim.copy()
+    .type('Send zold')
+    .param('recipient', login)
+    .param('amount', price)
+    .postTo(project)
   claim.copy()
     .type('Notify project')
     .param(

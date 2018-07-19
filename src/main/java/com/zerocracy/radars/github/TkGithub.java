@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -32,6 +32,7 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.stream.JsonParsingException;
 import org.cactoos.func.UncheckedProc;
+import org.takes.HttpException;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
@@ -45,9 +46,7 @@ import org.takes.rs.RsWithStatus;
 /**
  * GitHub hook, take.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.7
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
  */
@@ -123,7 +122,8 @@ public final class TkGithub implements Take, Runnable {
                                         "labeled"
                                     ),
                                     new RbByActions(new RbOnAssign(), "assigned"),
-                                    new RbByActions(new RbOnUnassign(), "unassigned")
+                                    new RbByActions(new RbOnUnassign(), "unassigned"),
+                                    new RbByActions(new RbRelease(), "published")
                                 )
                             )
                         )
@@ -146,7 +146,12 @@ public final class TkGithub implements Take, Runnable {
     @Override
     public Response act(final Request req) throws IOException {
         final RqForm form = new RqFormBase(req);
-        final Iterable<String> body = form.param("payload");
+        final Iterable<String> body;
+        try {
+            body = form.param("payload");
+        } catch (final IllegalArgumentException err) {
+            throw new HttpException(HttpURLConnection.HTTP_BAD_REQUEST, err);
+        }
         if (!body.iterator().hasNext()) {
             throw new RsForward(
                 new RsParFlash(
@@ -194,12 +199,14 @@ public final class TkGithub implements Take, Runnable {
      * @return The JSON object
      */
     private static JsonObject json(final String body) {
-        try (final JsonReader reader =
-            Json.createReader(
-                new ByteArrayInputStream(
-                    body.getBytes(StandardCharsets.UTF_8)
+        try (
+            final JsonReader reader =
+                Json.createReader(
+                    new ByteArrayInputStream(
+                        body.getBytes(StandardCharsets.UTF_8)
+                    )
                 )
-            )) {
+        ) {
             return reader.readObject();
         } catch (final JsonParsingException ex) {
             throw new IllegalArgumentException(

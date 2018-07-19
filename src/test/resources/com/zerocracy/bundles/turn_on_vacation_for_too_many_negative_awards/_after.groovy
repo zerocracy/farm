@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -14,20 +14,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.refresh_awards
+package com.zerocracy.bundles.turn_on_vacation_for_too_many_negative_awards
 
 import com.jcabi.xml.XML
 import com.zerocracy.Project
+import com.zerocracy.pmo.People
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
-  // @todo #889:30min Implement stakeholder 'check_automatic_vacation.groovy'.
-  //  We should implement auto-vacation mechanism. See
-  //  https://github.com/zerocracy/farm/issues/889 and
-  //  http://www.zerocracy.com/policy.html#52 for details. When done uncomment
-  //  the assertion below to enable this test.
-//  MatcherAssert.assertThat(
-//      'Vacation mode is "off"',
-//      new People(binding.variables.farm).vacation('carlosmiranda'),
-//      Matchers.is(true)
-//  )
+  MatcherAssert.assertThat(
+      'Vacation mode is "off"',
+      new People(binding.variables.farm).vacation('carlosmiranda'),
+      Matchers.is(true)
+  )
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,8 +18,6 @@
 /**
  * Viber reactions.
  *
- * @author Carlos Miranda (miranda.cma@gmail.com)
- * @since 0.22
- * @version $Id$
+ * @since 1.0
  */
 package com.zerocracy.radars.viber;

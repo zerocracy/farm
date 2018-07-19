@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -34,9 +34,7 @@ import org.cactoos.func.StickyFunc;
  *
  * <p>There is no thread-safety guarantee.</p>
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.2
+ * @since 1.0
  */
 @EqualsAndHashCode(of = "fid")
 public final class FkFarm implements Farm {
@@ -77,7 +75,7 @@ public final class FkFarm implements Farm {
     /**
      * Ctor.
      * @param dir Directory where files will be kept
-     * @since 0.14
+     * @since 1.0
      */
     public FkFarm(final Path dir) {
         this(
@@ -93,7 +91,7 @@ public final class FkFarm implements Farm {
     /**
      * Ctor.
      * @param pkt Project to return
-     * @since 0.15
+     * @since 1.0
      */
     public FkFarm(final Project pkt) {
         this((Func<String, Project>) s -> pkt);
@@ -103,7 +101,7 @@ public final class FkFarm implements Farm {
      * Ctor.
      * @param pkt Project to return
      * @param identifier Identifier
-     * @since 0.15
+     * @since 1.0
      */
     public FkFarm(final Project pkt, final String identifier) {
         this((Func<String, Project>) s -> pkt, identifier);
@@ -145,7 +143,7 @@ public final class FkFarm implements Farm {
     /**
      * Ctor.
      * @param func Mapping function
-     * @since 0.15
+     * @since 1.0
      */
     public FkFarm(final Func<String, Project> func) {
         this(func, FkFarm.class.getCanonicalName());
@@ -155,7 +153,7 @@ public final class FkFarm implements Farm {
      * Ctor.
      * @param func Mapping function
      * @param identifier Identifier
-     * @since 0.15
+     * @since 1.0
      */
     public FkFarm(final Func<String, Project> func, final String identifier) {
         this.projects = func;

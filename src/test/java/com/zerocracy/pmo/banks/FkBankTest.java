@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,65 +22,73 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * Test case for {@link FkBank}.
- * @author Izbassar Tolegen (t.izbassar@gmail.com)
- * @version $Id$
- * @since 0.22
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class FkBankTest {
 
     @Test
-    @Ignore
     public void equalsWorks() throws IOException {
         final Path dir = Files.createTempDirectory("eq");
         final String name = "test.xml";
         final Path path = dir.resolve(name);
-        try (final Closeable bank = new FkBank(path)) {
+        try (final Closeable bank = new FkBank(() -> path, false)) {
             MatcherAssert.assertThat(
                 bank,
-                Matchers.equalTo(new FkBank(path))
+                Matchers.equalTo(new FkBank(() -> path, false))
             );
         }
     }
 
     @Test
-    @Ignore
+    public void generatesToString() throws IOException {
+        final Path file = FkBankTest.temp("x9");
+        try (final Bank bank = new FkBank(file)) {
+            bank.pay(
+                "target", new Cash.S("$0.10"), "details"
+            );
+            MatcherAssert.assertThat(
+                new TextOf(file).asString(),
+                Matchers.is(bank.toString())
+            );
+        }
+    }
+
+    @Test
     public void savesCalculatedFee() throws IOException {
         final Path file = FkBankTest.temp("x0");
         try (final Bank bank = new FkBank(file)) {
             bank.fee(new Cash.S("$0.50"));
             MatcherAssert.assertThat(
-                new XMLDocument(file).xpath("/fees/fee/result"),
+                new XMLDocument(file).xpath("/fees/fee/result/text()"),
                 Matchers.contains(
-                    "$0.80"
+                    "$0.05"
                 )
             );
         }
     }
 
     @Test
-    @Ignore
     public void savesRequestedAmountForFeeCalculation() throws IOException {
         final Path file = FkBankTest.temp("x1");
         try (final Bank bank = new FkBank(file)) {
             final String amount = "$0.75";
             bank.fee(new Cash.S(amount));
             MatcherAssert.assertThat(
-                new XMLDocument(file).xpath("/fees/fee/amount"),
+                new XMLDocument(file).xpath("/fees/fee/amount/text()"),
                 Matchers.contains(amount)
             );
         }
     }
 
     @Test
-    @Ignore
     public void savesPayId() throws IOException {
         final Path file = FkBankTest.temp("x2");
         try (final Bank bank = new FkBank(file)) {
@@ -88,14 +96,14 @@ public final class FkBankTest {
                 "trgt2", new Cash.S("$0.60"), "dtls2"
             );
             MatcherAssert.assertThat(
-                new XMLDocument(file).xpath("/payments/payment/result"),
+                new XMLDocument(file)
+                    .xpath("/payments/payment/result/text()"),
                 Matchers.contains(id)
             );
         }
     }
 
     @Test
-    @Ignore
     public void savesPayAmount() throws IOException {
         final Path file = FkBankTest.temp("x3");
         try (final Bank bank = new FkBank(file)) {
@@ -104,14 +112,14 @@ public final class FkBankTest {
                 "trgt3", new Cash.S(amount), "dtls3"
             );
             MatcherAssert.assertThat(
-                new XMLDocument(file).xpath("/payments/payment/amount"),
+                new XMLDocument(file)
+                    .xpath("/payments/payment/amount/text()"),
                 Matchers.contains(amount)
             );
         }
     }
 
     @Test
-    @Ignore
     public void savesPayTarget() throws IOException {
         final Path file = FkBankTest.temp("x4");
         try (final Bank bank = new FkBank(file)) {
@@ -120,14 +128,14 @@ public final class FkBankTest {
                 target, new Cash.S("$1.65"), "dtls4"
             );
             MatcherAssert.assertThat(
-                new XMLDocument(file).xpath("/payments/payment/target"),
+                new XMLDocument(file)
+                    .xpath("/payments/payment/target/text()"),
                 Matchers.contains(target)
             );
         }
     }
 
     @Test
-    @Ignore
     public void savesPayDetails() throws IOException {
         final Path file = FkBankTest.temp("x5");
         try (final Bank bank = new FkBank(file)) {
@@ -136,7 +144,8 @@ public final class FkBankTest {
                 "trgt5", new Cash.S("$1.68"), details
             );
             MatcherAssert.assertThat(
-                new XMLDocument(file).xpath("/payments/payment/details"),
+                new XMLDocument(file)
+                    .xpath("/payments/payment/details/text()"),
                 Matchers.contains(details)
             );
         }

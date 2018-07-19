@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,16 +18,14 @@ package com.zerocracy.tk.project.reports;
 
 import com.zerocracy.Project;
 import java.io.IOException;
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 import org.bson.conversions.Bson;
 
 /**
  * Footprint report.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.18
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public interface FtReport {
@@ -41,7 +39,7 @@ public interface FtReport {
      * @throws IOException If fails
      */
     List<? extends Bson> bson(Project project,
-        Date start, Date end) throws IOException;
+        Instant start, Instant end) throws IOException;
 
     /**
      * Its title, in HTML.

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,9 +25,7 @@ import org.cactoos.iterable.Mapped;
 /**
  * Ruled farm (auto-updates XMLs and checks for their consistency).
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
- * @since 0.17
+ * @since 1.0
  */
 @EqualsAndHashCode(of = "origin")
 public final class RdFarm implements Farm {

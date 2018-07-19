@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016-2018 Zerocracy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -16,57 +16,57 @@
  */
 package com.zerocracy.pmo.banks;
 
+import com.jcabi.aspects.Tv;
 import com.zerocracy.cash.Cash;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
+import java.util.UUID;
 import org.cactoos.Scalar;
+import org.cactoos.io.InputOf;
+import org.cactoos.io.LengthOf;
+import org.cactoos.io.OutputTo;
+import org.cactoos.io.TeeInput;
 import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.scalar.StickyScalar;
 import org.cactoos.scalar.SyncScalar;
+import org.cactoos.text.TextOf;
+import org.xembly.Directives;
+import org.xembly.ImpossibleModificationException;
+import org.xembly.Xembler;
 
 /**
  * Fake {@link Bank}.
  *
  * <p>There is no thread-safety guarantee.</p>
  *
- * @author Tolegen Izbassar (t.izbassar@gmail.com)
- * @version $Id$
- * @since 0.22
- * @todo #565:30min Implement method pay() that will write details about
- *  payment to the xml file in this format:
- *  `&lt;payments&gt;
- *  `    &lt;payment&gt;
- *  `        &lt;target&gt;trg&lt;/target&gt;
- *  `        &lt;amount&gt;$0.55&lt;/amount&gt;
- *  `        &lt;details&gt;dtls&lt;/details&gt;
- *  `        &lt;result&gt;E0885448-5DEE-11E8-9C2D-FA7AE01BBEBC&lt;/result&gt;
- *  `    &lt;/payment&gt;
- *  `&lt;/payments&gt;
- *  Unignore relevant test case from FkBankTest.
- * @todo #565:30min Implement method fee() that will write details about
- *  fee to the xml file in this format:
- *  `&lt;fees&gt;
- *  `    &lt;fee&gt;
- *  `        &lt;amount&gt;$0.50&lt;/amount&gt;
- *  `        &lt;result&gt;$0.80&lt;/result&gt;
- *  `    &lt;/fee&gt;
- *  `&lt;/fees&gt;
- *  Unignore relevant test case from FkBankTest.
- * @todo #566:30min Implement equals so that it conforms the relevant test
- *  case from FkBankTest. Implement relevant to equals hashcode method.
- *  Implement toString() method, that will print the content of the underlying
- *  xml file. Cover with required test cases.
- * @todo #565:30min Add FkBank to the Payroll under the file payment method.
- *  Ensure, that the opened files are closed properly and cover Payroll with
- *  tests.
+ * This Bank for each method creates an XML written to a file provided.
+ * For {@link #fee(Cash)} it will create following XML:
+ *
+ * <pre>
+ * &lt;fees&gt;
+ *     &lt;fee&gt;
+ *         &lt;amount&gt;$0.50&lt;/amount&gt;
+ *         &lt;result&gt;$0.80&lt;/result&gt;
+ *     &lt;/fee&gt;
+ * &lt;/fees&gt;
+ * </pre>
+ *
+ * @since 1.0
+ * @todo #1069:30min Add FkBank to the Payroll under the file payment method.
+ *  Ensure, that the opened files are closed properly and implement
+ *  walletIsEmpty, unsupportedPaymentMethod and makePayment tests in
+ *  PayrollTest.
+ * @checkstyle ClassDataAbstractionCoupling (2 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 final class FkBank implements Bank {
 
     /**
      * Location of the file.
      */
-    private final Scalar<Path> file;
+    private final IoCheckedScalar<Path> file;
 
     /**
      * Delete on close? If false, deletes on JVM exit.
@@ -103,27 +103,105 @@ final class FkBank implements Bank {
      * @param del Delete on close()?
      */
     FkBank(final Scalar<Path> path, final boolean del) {
-        this.file = new SyncScalar<>(new StickyScalar<>(path));
+        this.file = new IoCheckedScalar<>(
+            new SyncScalar<>(new StickyScalar<>(path))
+        );
         this.delete = del;
     }
 
     @Override
     public Cash fee(final Cash amount) throws IOException {
-        throw new UnsupportedOperationException("fee is not yet implemented");
+        final Cash fee = amount.div(Tv.TEN);
+        final Directives dirs = new Directives()
+            .addIf("fees")
+            .add("fee")
+            .add("amount").set(amount).up()
+            .add("result").set(fee).up();
+        try {
+            final String xml = new Xembler(
+                dirs
+            ).xml();
+            new LengthOf(
+                new TeeInput(
+                    new InputOf(new TextOf(xml)),
+                    new OutputTo(this.file.value())
+                )
+            ).intValue();
+        } catch (final ImpossibleModificationException ex) {
+            throw new IllegalStateException(
+                String.format("Couldn't create XML from directives: %s", dirs),
+                ex
+            );
+        }
+        return fee;
     }
 
     @Override
     public String pay(final String target, final Cash amount,
         final String details) throws IOException {
-        throw new UnsupportedOperationException("pay is not yet implemented");
+        final String result = UUID.randomUUID().toString();
+        try {
+            final String xml = new Xembler(
+                new Directives()
+                    .addIf("payments")
+                    .add("payment")
+                    .add("target").set(target).up()
+                    .add("amount").set(amount.toString()).up()
+                    .add("details").set(details).up()
+                    .add("result").set(result).up()
+            ).xml();
+            new LengthOf(
+                new TeeInput(
+                    new InputOf(new TextOf(xml)),
+                    new OutputTo(this.file.value())
+                )
+            ).intValue();
+        } catch (final ImpossibleModificationException ex) {
+            throw new IllegalStateException(ex);
+        }
+        return result;
     }
 
     @Override
     public void close() throws IOException {
         if (this.delete) {
-            Files.delete(new IoCheckedScalar<>(this.file).value());
+            Files.delete(this.file.value());
         } else {
-            new IoCheckedScalar<>(this.file).value().toFile().deleteOnExit();
+            this.file.value().toFile().deleteOnExit();
+        }
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        final boolean equal;
+        if (FkBank.class.isInstance(obj)) {
+            final FkBank other = FkBank.class.cast(obj);
+            try {
+                equal = Objects.equals(this.file.value(), other.file.value());
+            } catch (final IOException ex) {
+                throw new IllegalStateException(ex);
+            }
+        } else {
+            equal = false;
+        }
+        return equal;
+    }
+
+    @Override
+    public int hashCode() {
+        try {
+            return this.file.value().hashCode();
+        } catch (final IOException ex) {
+            throw new IllegalStateException(ex);
+        }
+    }
+
+    @Override
+    public String toString() {
+        try {
+            return new TextOf(this.file.value()).asString();
+        } catch (final IOException ex) {
+            throw new IllegalArgumentException(ex);
         }
     }
 }
