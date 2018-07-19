@@ -29,7 +29,9 @@ import com.zerocracy.pmo.Pmo
 // @todo #1186:30min Add ability to change options notifyStudents, notifyRfps
 //  and notifyPublish. This stakeholder (and maybe Options class itself) most
 //  probably will need to be refactored to allow easier addition of any future
-//  options.
+//  options. Introduce also handling of `/option` - should display all available
+//  options with their current values, and `/option name` - should display
+//  current value of a given option.
 def exec(Project pmo, XML xml) {
   new Assume(pmo, xml).isPmo()
   new Assume(pmo, xml).type('Change option')
