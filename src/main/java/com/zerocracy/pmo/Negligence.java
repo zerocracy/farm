@@ -30,9 +30,7 @@ import org.xembly.Directives;
  * waiting).
  *
  * @since 1.0
- * @todo #540:30min Finish implementing and testing this class,
- *  decide on the XML format and declare it in /datum repository.
- *  When done, use this metric inside resin_on_delay.groovy. After this,
+ * @todo #540:30min Use this metric inside resing_on_delay.groovy. After this,
  *  finish implementing the voter VsNegligence: similar to VsSpeed and
  *  VsWorkload, it should vote for the user with the highest negligence
  *  (most number of delays). When done, the voter should be declared in
