@@ -33,7 +33,7 @@ import org.xembly.Directives;
  * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 public final class OptionsTest {
     @Test
     public void readMaxJobs() throws Exception {
@@ -43,7 +43,7 @@ public final class OptionsTest {
                     .addIf("options")
                     .addIf("maxJobsInAgenda")
                     .set("2")
-            ).maxJobsInAgenda(0),
+            ).maxJobsInAgenda(),
             Matchers.equalTo(2)
         );
     }
@@ -55,7 +55,7 @@ public final class OptionsTest {
                 new Directives().append(
                     new OptionsTest.XeNotify("students", true)
                 )
-            ).notifyStudents(false),
+            ).notifyStudents(),
             Matchers.is(true)
         );
     }
@@ -67,7 +67,7 @@ public final class OptionsTest {
                 new Directives().append(
                     new OptionsTest.XeNotify("rfps", true)
                 )
-            ).notifyRfps(false),
+            ).notifyRfps(),
             Matchers.is(true)
         );
     }
@@ -79,7 +79,7 @@ public final class OptionsTest {
                 new Directives().append(
                     new OptionsTest.XeNotify("publish", true)
                 )
-            ).notifyPublish(false),
+            ).notifyPublish(),
             Matchers.is(true)
         );
     }
@@ -87,15 +87,26 @@ public final class OptionsTest {
     @Test
     public void readMaxJobsDefault() throws Exception {
         MatcherAssert.assertThat(
-            OptionsTest.options(new Directives()).maxJobsInAgenda(1),
-            Matchers.equalTo(1)
+            OptionsTest.options(new Directives()).maxJobsInAgenda(),
+            Matchers.equalTo(Integer.MAX_VALUE)
+        );
+    }
+
+    @Test
+    public void readSetMaxJobs() throws Exception {
+        final int max = 123;
+        final Options options = OptionsTest.options(new Directives());
+        options.maxJobsInAgenda(max);
+        MatcherAssert.assertThat(
+            options.maxJobsInAgenda(),
+            Matchers.equalTo(max)
         );
     }
 
     @Test
     public void readNotifyStudentsDefault() throws Exception {
         MatcherAssert.assertThat(
-            OptionsTest.options(new Directives()).notifyStudents(true),
+            OptionsTest.options(new Directives()).notifyStudents(),
             Matchers.is(true)
         );
     }
@@ -103,7 +114,7 @@ public final class OptionsTest {
     @Test
     public void readNotifyRfpsDefault() throws Exception {
         MatcherAssert.assertThat(
-            OptionsTest.options(new Directives()).notifyRfps(true),
+            OptionsTest.options(new Directives()).notifyRfps(),
             Matchers.is(true)
         );
     }
@@ -111,7 +122,7 @@ public final class OptionsTest {
     @Test
     public void notifyPublishDefault() throws Exception {
         MatcherAssert.assertThat(
-            OptionsTest.options(new Directives()).notifyPublish(true),
+            OptionsTest.options(new Directives()).notifyPublish(),
             Matchers.is(true)
         );
     }

@@ -23,10 +23,22 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.entry.ExtGithub
+import com.zerocracy.pm.staff.Roles
+import com.zerocracy.pmo.Agenda
+import com.zerocracy.pmo.Options
+import com.zerocracy.pmo.Pmo
+import com.zerocracy.pmo.Projects
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
   Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
-  repo.issues().create('Hello, world', '')
+  repo.issues().create('Hello, world1', '')
+  Pmo pmo = new Pmo(farm)
+  String user = 'yegor256'
+  new Options(pmo, user).bootstrap().maxJobsInAgenda(1)
+  new Agenda(pmo, user).bootstrap().add(project, 'none', 'DEV')
+  new Roles(project).bootstrap().assign(user, 'DEV')
+  new Projects(farm, user).bootstrap().add(project.pid())
+  assert new Agenda(farm, user).bootstrap().jobs().size() == 1
 }
