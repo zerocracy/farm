@@ -101,6 +101,11 @@ import org.reflections.scanners.ResourcesScanner;
  * one by one: https://www.youtube.com/watch?v=oWEN-vKEEYk</p>
  *
  * @since 1.0
+ * @todo #1364:30min This class is way to complex for a unit test. Most of the
+ *  code here should be extracted into another class. And this
+ *  new class should be covered with unit tests. And BundlesTess should be
+ *  a simple class that just calls a method or two from the other class.
+ *  Most of the checkstyle excludes should be removed after this refactoring.
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle JavadocVariableCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
