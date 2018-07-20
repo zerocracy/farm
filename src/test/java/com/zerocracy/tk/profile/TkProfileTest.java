@@ -26,6 +26,7 @@ import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.pmo.Agenda;
 import com.zerocracy.pmo.Awards;
 import com.zerocracy.pmo.Catalog;
+import com.zerocracy.pmo.Debts;
 import com.zerocracy.pmo.People;
 import com.zerocracy.pmo.Pmo;
 import com.zerocracy.pmo.Projects;
@@ -119,6 +120,29 @@ public final class TkProfileTest {
         MatcherAssert.assertThat(
             new View(farm, String.format("/u/%s", uid)).html(),
             Matchers.containsString("rate</a> is not defined")
+        );
+    }
+
+    @Test
+    public void rendersDebts() throws Exception {
+        final Farm farm = new PropsFarm(new FkFarm());
+        final Debts debts = new Debts(farm).bootstrap();
+        final String uid = "yegor256";
+        final String first = "details 1";
+        final String second = "details 2";
+        final String price = "$9.99";
+        final String amount = "$3.33";
+        debts.add(uid, new Cash.S(price), first, "reason");
+        debts.add(uid, new Cash.S(amount), second, "reason");
+        final String html = new View(farm, String.format("/u/%s", uid)).html();
+        MatcherAssert.assertThat(
+            html,
+            Matchers.allOf(
+                Matchers.containsString(first),
+                Matchers.containsString(second),
+                Matchers.containsString(price),
+                Matchers.containsString(amount)
+            )
         );
     }
 
