@@ -15,6 +15,12 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
+<!--
+@todo #1193:30min When https://github.com/zerocracy/datum/issues/375 is done we should refactor
+ this template to display debts table with Date | Project | Amount | Job. Where job
+ should be a job number with a link to the issue/PR, and amount should include both cash value and
+ minutes.
+-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" version="2.0">
   <xsl:output method="html" doctype-system="about:legacy-compat" encoding="UTF-8" indent="yes"/>
   <xsl:strip-space elements="*"/>
