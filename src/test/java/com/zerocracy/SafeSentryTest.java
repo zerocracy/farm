@@ -17,8 +17,8 @@
 package com.zerocracy;
 
 import io.sentry.SentryClient;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggingEvent;
@@ -40,15 +40,13 @@ public final class SafeSentryTest {
         final Logger logger = Logger.getRootLogger();
         logger.addAppender(appender);
         final String message = "Exceptional!";
-        synchronized (logger) {
-            try {
-                final SentryClient client = Mockito.mock(SentryClient.class);
-                Mockito.doThrow(new RuntimeException(message))
-                    .when(client).sendException(Mockito.any(Exception.class));
-                new SafeSentry(client).capture(new RuntimeException());
-            } finally {
-                logger.removeAppender(appender);
-            }
+        try {
+            final SentryClient client = Mockito.mock(SentryClient.class);
+            Mockito.doThrow(new RuntimeException(message))
+                .when(client).sendException(Mockito.any(Exception.class));
+            new SafeSentry(client).capture(new RuntimeException());
+        } finally {
+            logger.removeAppender(appender);
         }
         MatcherAssert.assertThat(
             appender.log,
@@ -68,7 +66,7 @@ public final class SafeSentryTest {
         /**
          * Log messages.
          */
-        private final List<String> log = new ArrayList<>(1);
+        private final List<String> log = new CopyOnWriteArrayList<>();
 
         @Override
         public boolean requiresLayout() {
