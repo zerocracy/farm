@@ -35,6 +35,7 @@ import com.zerocracy.tk.TkApp;
 import com.zerocracy.tk.View;
 import java.nio.file.Path;
 import org.cactoos.list.ListOf;
+import org.cactoos.text.FormattedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Rule;
@@ -132,16 +133,29 @@ public final class TkProfileTest {
         final String second = "details 2";
         final String price = "$9.99";
         final String amount = "$3.33";
-        debts.add(uid, new Cash.S(price), first, "reason");
-        debts.add(uid, new Cash.S(amount), second, "reason");
+        final String reason = "reason";
+        debts.add(uid, new Cash.S(price), first, reason);
+        debts.add(uid, new Cash.S(amount), second, reason);
         final String html = new View(farm, String.format("/u/%s", uid)).html();
         MatcherAssert.assertThat(
             html,
             Matchers.allOf(
-                Matchers.containsString(first),
-                Matchers.containsString(second),
-                Matchers.containsString(price),
-                Matchers.containsString(amount)
+                XhtmlMatchers.hasXPaths(
+                    new FormattedText(
+                        "//xhtml:td[.='%s (%s)']", first, reason
+                    ).asString()
+                ),
+                XhtmlMatchers.hasXPaths(
+                    new FormattedText(
+                        "//xhtml:td[.='%s (%s)']", second, reason
+                    ).asString()
+                ),
+                XhtmlMatchers.hasXPaths(
+                    new FormattedText("//xhtml:td[.='%s']", price).asString()
+                ),
+                XhtmlMatchers.hasXPaths(
+                    new FormattedText("//xhtml:td[.='%s']", amount).asString()
+                )
             )
         );
     }

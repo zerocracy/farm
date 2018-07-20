@@ -17,9 +17,9 @@ SOFTWARE.
 -->
 <!--
 @todo #1193:30min When https://github.com/zerocracy/datum/issues/375 is done we should refactor
- this template to display debts table with Date | Project | Amount | Job. Where job
+ this template to display debts table with Job/Project | Added | Amount. Where job
  should be a job number with a link to the issue/PR, and amount should include both cash value and
- minutes.
+ minutes (as close as possible to agenda table).
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" version="2.0">
   <xsl:output method="html" doctype-system="about:legacy-compat" encoding="UTF-8" indent="yes"/>
