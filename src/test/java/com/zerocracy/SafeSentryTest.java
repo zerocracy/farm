@@ -40,17 +40,19 @@ public final class SafeSentryTest {
         final Logger logger = Logger.getRootLogger();
         logger.addAppender(appender);
         final String message = "Exceptional!";
-        try {
-            final SentryClient client = Mockito.mock(SentryClient.class);
-            Mockito.doThrow(new RuntimeException(message))
-                .when(client).sendException(Mockito.any(Exception.class));
-            new SafeSentry(client).capture(new RuntimeException());
-        } finally {
-            logger.removeAppender(appender);
+        synchronized (logger) {
+            try {
+                final SentryClient client = Mockito.mock(SentryClient.class);
+                Mockito.doThrow(new RuntimeException(message))
+                    .when(client).sendException(Mockito.any(Exception.class));
+                new SafeSentry(client).capture(new RuntimeException());
+            } finally {
+                logger.removeAppender(appender);
+            }
         }
         MatcherAssert.assertThat(
             appender.log,
-            Matchers.contains(
+            Matchers.hasItem(
                 Matchers.allOf(
                     Matchers.startsWith("Sentry threw an error"),
                     Matchers.containsString(message)
