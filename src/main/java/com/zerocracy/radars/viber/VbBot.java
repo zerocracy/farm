@@ -16,25 +16,83 @@
  */
 package com.zerocracy.radars.viber;
 
+import com.jcabi.http.Request;
+import com.jcabi.http.request.JdkRequest;
+import com.zerocracy.Farm;
+import com.zerocracy.farm.props.Props;
+import java.io.IOException;
+import javax.json.Json;
+
 /**
  * Viber bot.
  *
  * @since 1.0
- * @todo #939:30min Implement Viber bot. We should be able to send messages via
- *  the Viber REST API. There are other operations but I think that is the only
- *  operation we need (I might be wrong). See:
- *  https://developers.viber.com/docs/api/rest-bot-api/#authentication-token
- *  https://developers.viber.com/docs/api/rest-bot-api/#send-message
  */
 public final class VbBot {
+
+    /**
+     * Authentication token.
+     */
+    private final String token;
+
+    /**
+     * Resource URL.
+     */
+    private final String endpoint;
+
+    /**
+     * Ctor.
+     * @param farm Farm
+     * @throws IOException If an IO Exception occurs.
+     */
+    public VbBot(final Farm farm) throws IOException {
+        this(new Props(farm).get("//viber/token"));
+    }
+
+    /**
+     * Ctor.
+     * @param token Authentication token
+     */
+    VbBot(final String token) {
+        this(token, "https://chatapi.viber.com/pa/send_message");
+    }
+
+    /**
+     * Ctor.
+     * @param token Authentication token
+     * @param uri Resource URI
+     */
+    VbBot(final String token, final String uri) {
+        this.token = token;
+        this.endpoint = uri;
+    }
 
     /**
      * Send a message to a user.
      * @param id User
      * @param text Message text
+     * @throws IOException If an IO exception occurs
      */
-    public void sendMessage(final String id, final String text) {
-        throw new UnsupportedOperationException("Not yet implemented.");
+    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
+    public void sendMessage(final String id, final String text)
+        throws IOException {
+        new JdkRequest(this.endpoint)
+            .method(Request.POST)
+            .header("X-Viber-Auth-Token", this.token)
+            .body()
+            .set(
+                Json.createObjectBuilder()
+                    .add("receiver", id)
+                    .add("type", "text")
+                    .add(
+                        "sender",
+                        Json.createObjectBuilder()
+                            .add("name", "0crat")
+                    )
+                    .add("text", text)
+                    .build()
+            )
+            .back().fetch();
     }
 
 }

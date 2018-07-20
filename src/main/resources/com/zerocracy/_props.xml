@@ -103,4 +103,7 @@ SOFTWARE.
     <host>https://wts.zold.io/</host>
     <secret>${zold.secret}</secret>
   </zold>
+  <viber>
+    <token>${viber.token}</token>
+  </viber>
 </props>
