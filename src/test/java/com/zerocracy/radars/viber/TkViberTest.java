@@ -35,7 +35,7 @@ import org.takes.rq.RqWithBody;
 public final class TkViberTest {
     @Test(expected = IllegalArgumentException.class)
     public void failsForEmptyBody() throws Exception {
-        new TkViber(new FkFarm(), new VbBot()).act(
+        new TkViber(new FkFarm(), new VbBot("token")).act(
             new RqWithBody(
                 new RqFake("POST", "/"), ""
             )
@@ -44,7 +44,7 @@ public final class TkViberTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void failsForInvalidJson() throws Exception {
-        new TkViber(new FkFarm(), new VbBot()).act(
+        new TkViber(new FkFarm(), new VbBot("token")).act(
             new RqWithBody(
                 new RqFake("POST", "/"), "{test"
             )
@@ -55,7 +55,7 @@ public final class TkViberTest {
     public void reactsToMessage() throws Exception {
         final Reaction reaction = Mockito.mock(Reaction.class);
         final FkFarm farm = new FkFarm();
-        final VbBot bot = new VbBot();
+        final VbBot bot = new VbBot("token");
         final String callback = new TextOf(
             TkViberTest.class.getResourceAsStream("message.json")
         ).asString();

@@ -31,10 +31,6 @@ import org.junit.Test;
  */
 public final class NegligenceTest {
 
-    /**
-     * {@link Negligence} can be bootstrapped.
-     * @throws Exception If something goes wrong.
-     */
     @Test
     public void bootstraps() throws Exception {
         MatcherAssert.assertThat(
@@ -47,15 +43,25 @@ public final class NegligenceTest {
         );
     }
 
-    /**
-     * {@link Negligence} can return the number of delays
-     * (not implemented yet).
-     * @throws Exception If something goes wrong.
-     */
-    @Test(expected = UnsupportedOperationException.class)
-    public void returnsDelays() throws Exception {
-        new Negligence(new FkFarm(new FkProject()), "g4s8")
-            .bootstrap().delays();
+    @Test
+    public void returnsNoDelays() throws Exception {
+        MatcherAssert.assertThat(
+            new Negligence(new FkFarm(new FkProject()), "g4s8")
+                .bootstrap().delays(),
+            Matchers.is(0)
+        );
+    }
+
+    @Test
+    public void registersDelay() throws Exception {
+        final Negligence negligence = new Negligence(
+            new FkFarm(new FkProject()), "krzyk"
+        ).bootstrap();
+        negligence.add(new FkProject(), "gh:test/test#1");
+        MatcherAssert.assertThat(
+            negligence.delays(),
+            Matchers.is(1)
+        );
     }
 
 }

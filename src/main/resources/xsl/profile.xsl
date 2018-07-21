@@ -15,6 +15,12 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
+<!--
+@todo #1193:30min When https://github.com/zerocracy/datum/issues/375 is done we should refactor
+ this template to display debts table with Job/Project | Added | Amount. Where job
+ should be a job number with a link to the issue/PR, and amount should include both cash value and
+ minutes (as close as possible to agenda table).
+-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" version="2.0">
   <xsl:output method="html" doctype-system="about:legacy-compat" encoding="UTF-8" indent="yes"/>
   <xsl:strip-space elements="*"/>
@@ -450,20 +456,34 @@ SOFTWARE.
         <xsl:value-of select="@failed"/>
         <xsl:text>)</xsl:text>
       </xsl:if>
-      <xsl:text>: </xsl:text>
-      <xsl:for-each select="item">
-        <xsl:if test="position() &gt; 1">
-          <xsl:text>; </xsl:text>
-        </xsl:if>
-        <strong>
-          <xsl:value-of select="amount"/>
-        </strong>
-        <xsl:text> </xsl:text>
-        <xsl:value-of select="ago"/>
-        <xsl:text> ago: </xsl:text>
-        <xsl:value-of select="details_html" disable-output-escaping="yes"/>
-      </xsl:for-each>
-      <xsl:text>.</xsl:text>
+      <table data-sortable="true">
+        <thead>
+          <th>
+            <xsl:text>Added</xsl:text>
+          </th>
+          <th>
+            <xsl:text>Amount</xsl:text>
+          </th>
+          <th>
+            <xsl:text>Details</xsl:text>
+          </th>
+        </thead>
+        <tbody>
+          <xsl:for-each select="item">
+            <tr>
+              <td>
+                <xsl:value-of select="ago"/>
+              </td>
+              <td>
+                <xsl:value-of select="amount"/>
+              </td>
+              <td>
+                <xsl:value-of select="details_html" disable-output-escaping="yes"/>
+              </td>
+            </tr>
+          </xsl:for-each>
+        </tbody>
+      </table>
     </p>
   </xsl:template>
 </xsl:stylesheet>

@@ -18,8 +18,11 @@ package com.zerocracy.pmo;
 
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
+import com.zerocracy.Project;
 import com.zerocracy.Xocument;
 import java.io.IOException;
+import java.time.Instant;
+import org.xembly.Directives;
 
 /**
  * Negligence. This metric calculates how many times a user has lost
@@ -27,9 +30,7 @@ import java.io.IOException;
  * waiting).
  *
  * @since 1.0
- * @todo #540:30min Finish implementing and testing this class,
- *  decide on the XML format and declare it in /datum repository.
- *  When done, use this metric inside resin_on_delay.groovy. After this,
+ * @todo #1141:30min Use this metric inside resing_on_delay.groovy. After this,
  *  finish implementing the voter VsNegligence: similar to VsSpeed and
  *  VsWorkload, it should vote for the user with the highest negligence
  *  (most number of delays). When done, the voter should be declared in
@@ -69,10 +70,37 @@ public final class Negligence {
 
     /**
      * How many times did the user lost tasks due to negligence?
-     * @return Integer number of delays..
+     * @return Integer number of delays
+     * @throws IOException If fails
      */
-    public int delays() {
-        throw new UnsupportedOperationException("Not yet implemented!");
+    public int delays() throws IOException {
+        try (final Item item = this.item()) {
+            return new Xocument(item.path())
+                .nodes("/negligence/order")
+                .size();
+        }
+    }
+
+    /**
+     * Add a negligence.
+     * @param proj Project
+     * @param job Job id
+     * @throws IOException If fails
+     */
+    public void add(final Project proj, final String job) throws IOException {
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                new Directives()
+                    .xpath("/negligence")
+                    .add("order")
+                    .attr("job", job)
+                    .add("project")
+                    .set(proj.pid())
+                    .up()
+                    .add("added")
+                    .set(Instant.now().toString())
+            );
+        }
     }
 
     /**

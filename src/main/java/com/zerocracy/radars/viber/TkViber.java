@@ -17,6 +17,7 @@
 package com.zerocracy.radars.viber;
 
 import com.zerocracy.Farm;
+import com.zerocracy.farm.props.Props;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
@@ -54,6 +55,19 @@ public final class TkViber implements Take {
      * Bot to use.
      */
     private final VbBot bot;
+
+    /**
+     * Constructor.
+     * @param farm Farm to use
+     * @throws IOException If an IO error occurs.
+     */
+    public TkViber(final Farm farm) throws IOException {
+        this(
+            farm,
+            new VbBot(new Props(farm).get("//viber/token")),
+            new ReProfile()
+        );
+    }
 
     /**
      * Constructor.

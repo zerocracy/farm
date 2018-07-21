@@ -17,8 +17,8 @@
 package com.zerocracy;
 
 import io.sentry.SentryClient;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggingEvent;
@@ -50,7 +50,7 @@ public final class SafeSentryTest {
         }
         MatcherAssert.assertThat(
             appender.log,
-            Matchers.contains(
+            Matchers.hasItem(
                 Matchers.allOf(
                     Matchers.startsWith("Sentry threw an error"),
                     Matchers.containsString(message)
@@ -66,7 +66,7 @@ public final class SafeSentryTest {
         /**
          * Log messages.
          */
-        private final List<String> log = new ArrayList<>(1);
+        private final List<String> log = new CopyOnWriteArrayList<>();
 
         @Override
         public boolean requiresLayout() {

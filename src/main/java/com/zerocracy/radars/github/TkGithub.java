@@ -103,6 +103,10 @@ public final class TkGithub implements Take, Runnable {
                                         "created"
                                     ),
                                     new RbByActions(
+                                        new RbAddToMilestone(),
+                                        "milestoned"
+                                    ),
+                                    new RbByActions(
                                         new RbOnPullRequest(),
                                         "opened", "reopened"
                                     ),
