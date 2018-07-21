@@ -17,31 +17,27 @@
 package com.zerocracy.bundles.elections_dont_exceed_max_jobs_option
 
 import com.jcabi.xml.XML
+import com.mongodb.client.model.Filters
+import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.pm.Footprint
+import com.zerocracy.pmo.Agenda
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
-  // @todo #1035:30min Options are not used. Election should check
-  //  maxJobsInAgenda option and not elect users that already have already
-  //  max number of jobs. After this is implemented uncomment this test.
-
-//  String job = 'gh:test/test#1'
-//  Exception exception = null
-//  try {
-//    new Orders(project).bootstrap().orders.performer(job)
-//  } catch (SoftException ex) {
-//    exception = ex
-//    assert exception.getMessage() == String.format(
-//      'Job `%s` is not assigned, can\'t get performer', job
-//    )
-//  }
-//  assert exception != null
-//  Farm farm = binding.variables.farm
-//  assert new LengthOf(
-//    new Footprint(farm, project).collection().find(
-//      Filters.and(
-//        Filters.eq('project', project.pid()),
-//        Filters.eq('type', 'Performer was elected')
-//      )
-//    )
-//  ).value() == 0
+  Farm farm = binding.variables.farm
+  MatcherAssert.assertThat(
+    new Agenda(farm, 'yegor256').bootstrap().jobs(),
+    Matchers.hasSize(1)
+  )
+  MatcherAssert.assertThat(
+    new Footprint(farm, project).collection().find(
+      Filters.and(
+        Filters.eq('project', project.pid()),
+        Filters.eq('type', 'Performer was elected')
+      )
+    ),
+    Matchers.emptyIterable()
+  )
 }
