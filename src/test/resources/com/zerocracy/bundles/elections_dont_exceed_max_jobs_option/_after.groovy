@@ -22,7 +22,6 @@ import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.pm.Footprint
 import com.zerocracy.pmo.Agenda
-import org.cactoos.iterable.LengthOf
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 
@@ -33,14 +32,12 @@ def exec(Project project, XML xml) {
     Matchers.hasSize(1)
   )
   MatcherAssert.assertThat(
-    new LengthOf(
-      new Footprint(farm, project).collection().find(
-        Filters.and(
-          Filters.eq('project', project.pid()),
-          Filters.eq('type', 'Performer was elected')
-        )
+    new Footprint(farm, project).collection().find(
+      Filters.and(
+        Filters.eq('project', project.pid()),
+        Filters.eq('type', 'Performer was elected')
       )
-    ).value().intValue(),
-    Matchers.is(0)
+    ),
+    Matchers.emptyIterable()
   )
 }
