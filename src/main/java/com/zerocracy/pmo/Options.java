@@ -33,6 +33,9 @@ import org.xembly.Directives;
  *  notify options from the Options object specific to given user whether to
  *  notify him about certain events. Options that should be used: notifyPublish,
  *  notifyRfps, notifyStudents.
+ * @todo #1035:30min Options should be changeable by the user from their profile
+ *  page. Allow users to download, edit and upload options.xml file on profile
+ *  page.
  */
 public final class Options {
     /**
@@ -59,8 +62,8 @@ public final class Options {
      * @throws IOException If fails
      */
     public Options bootstrap() throws IOException {
-        try (final Item itm = this.item()) {
-            new Xocument(itm).bootstrap("pmo/options");
+        try (final Item item = this.item()) {
+            new Xocument(item).bootstrap("pmo/options");
         }
         return this;
     }
@@ -103,29 +106,32 @@ public final class Options {
 
     /**
      * Notify students option.
+     * @param def Default value
      * @return True if set
      * @throws IOException If fails
      */
-    public boolean notifyStudents() throws IOException {
-        return this.notify("students", true);
+    public boolean notifyStudents(final boolean def) throws IOException {
+        return this.notify("students", def);
     }
 
     /**
      * Notify RFPS option.
+     * @param def Default value
      * @return True if set
      * @throws IOException If fails
      */
-    public boolean notifyRfps() throws IOException {
-        return this.notify("rfps", true);
+    public boolean notifyRfps(final boolean def) throws IOException {
+        return this.notify("rfps", def);
     }
 
     /**
      * Notify publish option.
+     * @param def Default value
      * @return True if set
      * @throws IOException If fails
      */
-    public boolean notifyPublish() throws IOException {
-        return this.notify("publish", true);
+    public boolean notifyPublish(final boolean def) throws IOException {
+        return this.notify("publish", def);
     }
 
     /**
