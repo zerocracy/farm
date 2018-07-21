@@ -16,7 +16,6 @@
  */
 package com.zerocracy.pm.staff.votes;
 
-import com.zerocracy.Par;
 import com.zerocracy.pm.staff.Votes;
 import com.zerocracy.pmo.Agenda;
 import com.zerocracy.pmo.Options;
@@ -53,16 +52,18 @@ public final class VsOptionsMaxJobs implements Votes {
         if (total >= max) {
             rate = 1.0d;
             log.append(
-                new Par(
-                    "%d job(s) already, maxJobsInAgenda option is %d"
-                ).say(total, max)
+                String.format(
+                    "%d job(s) already, maxJobsInAgenda option is %d",
+                    total, max
+                )
             );
         } else {
             rate = 0.0d;
             log.append(
-                new Par(
-                    "%d job(s) out of %d from maxJobsInAgenda option"
-                ).say(total, max)
+                String.format(
+                    "%d job(s) out of %d from maxJobsInAgenda option",
+                    total, max
+                )
             );
         }
         return rate;

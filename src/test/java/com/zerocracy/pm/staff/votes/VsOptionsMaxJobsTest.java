@@ -37,10 +37,9 @@ public final class VsOptionsMaxJobsTest {
     @Test
     public void votesHighIfMaxJobsReached() throws Exception {
         final Project project = new FkProject();
-        final FkFarm farm = new FkFarm();
         final String user = "g4s8";
         final int total = 10;
-        final Pmo pmo = new Pmo(farm);
+        final Pmo pmo = new Pmo(new FkFarm());
         new Options(pmo, user).bootstrap().maxJobsInAgenda(total);
         final Agenda agenda = new Agenda(pmo, user).bootstrap();
         for (int num = 0; num < total; ++num) {

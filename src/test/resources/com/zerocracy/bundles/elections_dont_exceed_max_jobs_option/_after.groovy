@@ -23,16 +23,24 @@ import com.zerocracy.Project
 import com.zerocracy.pm.Footprint
 import com.zerocracy.pmo.Agenda
 import org.cactoos.iterable.LengthOf
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
-  assert new Agenda(farm, 'yegor256').bootstrap().jobs().size() == 1
-  assert new LengthOf(
-    new Footprint(farm, project).collection().find(
-      Filters.and(
-        Filters.eq('project', project.pid()),
-        Filters.eq('type', 'Performer was elected')
+  MatcherAssert.assertThat(
+    new Agenda(farm, 'yegor256').bootstrap().jobs(),
+    Matchers.hasSize(1)
+  )
+  MatcherAssert.assertThat(
+    new LengthOf(
+      new Footprint(farm, project).collection().find(
+        Filters.and(
+          Filters.eq('project', project.pid()),
+          Filters.eq('type', 'Performer was elected')
+        )
       )
-    )
-  ).value() == 0
+    ).value().intValue(),
+    Matchers.is(0)
+  )
 }

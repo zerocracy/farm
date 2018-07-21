@@ -28,6 +28,8 @@ import com.zerocracy.pmo.Agenda
 import com.zerocracy.pmo.Options
 import com.zerocracy.pmo.Pmo
 import com.zerocracy.pmo.Projects
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
@@ -40,5 +42,8 @@ def exec(Project project, XML xml) {
   new Agenda(pmo, user).bootstrap().add(project, 'none', 'DEV')
   new Roles(project).bootstrap().assign(user, 'DEV')
   new Projects(farm, user).bootstrap().add(project.pid())
-  assert new Agenda(farm, user).bootstrap().jobs().size() == 1
+  MatcherAssert.assertThat(
+    new Agenda(farm, 'yegor256').bootstrap().jobs(),
+    Matchers.hasSize(1)
+  )
 }
