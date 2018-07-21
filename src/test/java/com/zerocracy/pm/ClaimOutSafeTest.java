@@ -24,7 +24,7 @@ import org.junit.rules.ExpectedException;
 /**
  * Test case for {@link ClaimOutSafe}.
  *
- * @since 0.25
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle JavadocVariableCheck (500 lines)
  */

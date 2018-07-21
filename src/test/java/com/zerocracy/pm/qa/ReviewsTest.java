@@ -28,7 +28,7 @@ import org.xembly.Xembler;
 
 /**
  * Test case for {@link Reviews}.
- * @since 0.22
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class ReviewsTest {

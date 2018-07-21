@@ -37,7 +37,7 @@ import org.cactoos.scalar.Or;
 /**
  * GitHub job audit.
  *
- * @since 0.22
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.TooManyMethods")

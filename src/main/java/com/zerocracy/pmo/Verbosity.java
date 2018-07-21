@@ -25,7 +25,7 @@ import org.xembly.Directives;
 /**
  * Verbosity of a user.
  *
- * @since 0.22
+ * @since 1.0
  */
 public final class Verbosity {
     /**

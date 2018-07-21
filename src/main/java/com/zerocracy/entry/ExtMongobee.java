@@ -30,7 +30,7 @@ import org.bson.BsonString;
 /**
  * Apply Mongobee changes.
  *
- * @since 0.18
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class ExtMongobee {

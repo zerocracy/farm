@@ -24,7 +24,7 @@ import java.io.IOException;
 /**
  * React if the message is directed to me.
  *
- * @since 0.1
+ * @since 1.0
  */
 public final class ReIfAddressed implements Reaction<SlackMessagePosted> {
 

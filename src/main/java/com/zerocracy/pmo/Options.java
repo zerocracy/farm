@@ -27,7 +27,7 @@ import org.cactoos.scalar.NumberOf;
 /**
  * User options.
  *
- * @since 0.22
+ * @since 1.0
  * @todo #1035:30min Notify stakeholders should check
  *  notify options from the Options object specific to given user whether to
  *  notify him about certain events. Options that should be used: notifyPublish,

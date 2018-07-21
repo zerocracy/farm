@@ -34,7 +34,7 @@ import org.takes.rs.RsJson;
 /**
  * Pulse.
  *
- * @since 0.22
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 final class TkPulse implements Take {

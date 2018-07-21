@@ -38,7 +38,7 @@ import org.xembly.Directives;
  * and represents the work specified in the current approved
  * project scope statement.
  *
- * @since 0.1
+ * @since 1.0
  */
 @SuppressWarnings("PMD.TooManyMethods")
 public final class Wbs {

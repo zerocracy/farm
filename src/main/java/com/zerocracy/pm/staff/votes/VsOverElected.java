@@ -29,7 +29,7 @@ import org.cactoos.iterable.LengthOf;
 /**
  * Make it impossible to over-elect one user.
  *
- * @since 0.26
+ * @since 1.0
  * @todo #1433:30min VsOverElected may cause dead-locks in some cases.
  *  Looks like lock for election.xml file can be acquired but never released
  *  for unknown reason (not sure about it). After fix also uncomment line

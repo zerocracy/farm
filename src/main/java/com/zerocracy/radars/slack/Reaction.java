@@ -25,7 +25,7 @@ import java.io.IOException;
  * React to Slack message.
  *
  * @param <T> Type of event
- * @since 0.1
+ * @since 1.0
  */
 public interface Reaction<T extends SlackEvent> {
 

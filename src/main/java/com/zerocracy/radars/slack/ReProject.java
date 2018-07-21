@@ -29,7 +29,7 @@ import java.io.IOException;
 /**
  * Project reaction.
  *
- * @since 0.1
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class ReProject implements Reaction<SlackMessagePosted> {

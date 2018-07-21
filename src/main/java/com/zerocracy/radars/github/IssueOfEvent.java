@@ -31,7 +31,7 @@ import org.cactoos.scalar.UncheckedScalar;
 /**
  * An issue in GitHub event.
  *
- * @since 0.10
+ * @since 1.0
  */
 final class IssueOfEvent implements Issue {
 

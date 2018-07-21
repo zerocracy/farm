@@ -29,7 +29,7 @@ import org.cactoos.func.UncheckedProc;
 /**
  * GitHub hook, take.
  *
- * @since 0.18
+ * @since 1.0
  */
 public final class GithubRoutine implements Runnable {
 

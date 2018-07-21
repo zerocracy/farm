@@ -26,7 +26,7 @@ import org.cactoos.text.JoinedText;
 
 /**
  * Error message for unrecoverable failure.
- * @since 0.17
+ * @since 1.0
  */
 public final class TxtUnrecoverableError implements Text {
 

@@ -36,7 +36,7 @@ import org.xembly.Directives;
 /**
  * The action that happens in the {@link DefaultFlush}.
  *
- * @since 0.10
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 final class DefaultFlush implements Flush {

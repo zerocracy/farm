@@ -40,7 +40,7 @@ import org.takes.rs.RsWithStatus;
 /**
  * Slack authentication entry point.
  *
- * @since 0.1
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class TkSlack implements Take {

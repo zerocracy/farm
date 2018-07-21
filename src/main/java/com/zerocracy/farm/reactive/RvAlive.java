@@ -24,7 +24,7 @@ import org.cactoos.scalar.NumberOf;
 /**
  * Reactive farm is still alive?
  *
- * @since 0.18
+ * @since 1.0
  */
 public final class RvAlive extends NumberEnvelope {
 

@@ -18,6 +18,6 @@
 /**
  * Integration management, tests.
  *
- * @since 0.10
+ * @since 1.0
  */
 package com.zerocracy.pm.in;

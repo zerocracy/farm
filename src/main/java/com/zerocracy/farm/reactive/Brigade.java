@@ -30,7 +30,7 @@ import org.cactoos.list.SolidList;
 
 /**
  * Brigade of stakeholders.
- * @since 0.10
+ * @since 1.0
  */
 final class Brigade implements BiFunc<Project, XML, Integer> {
 

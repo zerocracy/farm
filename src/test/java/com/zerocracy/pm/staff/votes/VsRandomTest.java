@@ -25,7 +25,7 @@ import org.mockito.Mockito;
 /**
  * Test case for {@link VsRandom}.
  *
- * @since 0.20
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class VsRandomTest {

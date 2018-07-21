@@ -48,7 +48,7 @@ import org.xembly.Xembler;
  *
  * <p>Objects of this class are immutable.</p>
  *
- * @since 0.9
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings({ "PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods" })

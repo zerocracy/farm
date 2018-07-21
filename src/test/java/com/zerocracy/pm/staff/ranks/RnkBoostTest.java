@@ -27,7 +27,7 @@ import org.junit.Test;
 /**
  * Test case for {@link RnkBoost}.
  *
- * @since 0.18.8
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class RnkBoostTest {

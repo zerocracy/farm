@@ -16,20 +16,18 @@
  */
 package com.zerocracy.radars.github;
 
+import com.jcabi.github.Coordinates;
 import com.jcabi.github.Github;
+import com.jcabi.github.Repo;
 import com.zerocracy.Farm;
 import com.zerocracy.pm.ClaimOut;
+import java.io.IOException;
 import javax.json.JsonObject;
 
 /**
  * Release rebound.
  *
- * @since 0.26
- * @todo #1269:30min Each time a release is published, we should pay the
- *  architect a release bonus. Let's create a stakeholder that will react to
- *  the "Release was published" claim that will do this. See the following:
- *  https://github.com/zerocracy/farm/issues/1269#issuecomment-402054891
- *  http://www.zerocracy.com/policy.html#53
+ * @since 1.0
  */
 public final class RbRelease implements Rebound {
     /**
@@ -39,15 +37,23 @@ public final class RbRelease implements Rebound {
 
     @Override
     public String react(final Farm farm, final Github github,
-        final JsonObject event) {
+        final JsonObject event) throws IOException {
         final String answer;
         if (event.containsKey(RbRelease.JSON_KEY)) {
             final JsonObject release = event.getJsonObject(RbRelease.JSON_KEY);
             final String tag = release.getString("tag_name");
+            final Repo repo = github.repos().get(
+                new Coordinates.Simple(
+                    event.getJsonObject("repository")
+                        .getString("full_name")
+                )
+            );
             new ClaimOut()
                 .type("Release was published")
                 .param("tag", tag)
-                .param("date", release.getString("published_at"));
+                .param("repo", repo.coordinates().toString())
+                .param("date", release.getString("published_at"))
+                .postTo(new GhProject(farm, repo));
             answer = String.format(
                 "Release published: %d (tag: %s)",
                 release.getInt("id"),

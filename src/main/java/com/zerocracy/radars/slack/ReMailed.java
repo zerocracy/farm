@@ -28,7 +28,7 @@ import org.cactoos.func.UncheckedFunc;
 /**
  * Mailed if exception.
  *
- * @since 0.11
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class ReMailed implements Reaction<SlackMessagePosted> {

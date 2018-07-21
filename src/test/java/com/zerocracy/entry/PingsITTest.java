@@ -38,7 +38,7 @@ import org.quartz.impl.StdSchedulerFactory;
 /**
  * Integration test for quartz with real database.
  * To start it replace PG_* constants with real connection parameters.
- * @since 0.21
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */

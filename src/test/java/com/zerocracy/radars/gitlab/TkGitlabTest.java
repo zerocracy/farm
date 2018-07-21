@@ -26,7 +26,7 @@ import org.takes.rq.RqWithBody;
 /**
  * GitLab hook, take.
  *
- * @since 0.23
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")

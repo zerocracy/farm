@@ -24,7 +24,7 @@ import javax.json.JsonObject;
 /**
  * Log and pass through.
  *
- * @since 0.1
+ * @since 1.0
  */
 public final class ReLogged implements Reaction {
 

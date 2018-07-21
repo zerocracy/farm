@@ -32,7 +32,7 @@ import org.takes.rs.RsWithType;
 /**
  * Out of memory heap dump.
  *
- * @since 0.20
+ * @since 1.0
  */
 public final class TkDump implements Take {
 

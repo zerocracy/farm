@@ -27,7 +27,7 @@ import org.junit.Test;
 /**
  * Tests for {@link VbEvent}.
  *
- * @since 0.25
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")

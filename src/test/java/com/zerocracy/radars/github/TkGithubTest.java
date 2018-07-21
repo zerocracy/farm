@@ -29,7 +29,7 @@ import org.takes.rq.RqWithBody;
 
 /**
  * Test case for {@link TkGithub}.
- * @since 0.7
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class TkGithubTest {

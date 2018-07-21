@@ -35,7 +35,7 @@ import org.takes.rs.RsPrint;
 
 /**
  * Test case for {@link TkFootprint}.
- * @since 0.13
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */

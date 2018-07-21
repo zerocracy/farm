@@ -22,7 +22,7 @@ import lombok.EqualsAndHashCode;
 /**
  * Currency.
  *
- * @since 0.6
+ * @since 1.0
  */
 public interface Currency extends Comparable<Currency>, Serializable {
 

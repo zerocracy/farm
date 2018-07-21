@@ -26,7 +26,7 @@ import java.io.IOException;
 /**
  * Says "yes" when there is no room for this developer.
  *
- * @since 0.12
+ * @since 1.0
  */
 public final class VsNoRoom implements Votes {
 

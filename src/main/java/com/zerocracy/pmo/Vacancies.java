@@ -31,7 +31,7 @@ import org.xembly.Directives;
 /**
  * Available vacancies.
  *
- * @since 0.22
+ * @since 1.0
  */
 public final class Vacancies {
 

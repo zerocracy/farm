@@ -32,7 +32,7 @@ import org.cactoos.text.TextOf;
 /**
  * Stakeholder that reports about failures and doesn't fail ever.
  *
- * @since 0.1
+ * @since 1.0
  * @checkstyle CyclomaticComplexityCheck (500 lines)
  */
 @EqualsAndHashCode(of = "identifier")

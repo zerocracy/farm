@@ -41,7 +41,7 @@ import org.xembly.Xembler;
 /**
  * Guts.
  *
- * @since 0.19
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 final class GsProject implements Project {

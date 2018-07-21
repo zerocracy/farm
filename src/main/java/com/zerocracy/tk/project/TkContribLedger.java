@@ -36,7 +36,7 @@ import org.takes.rs.xe.XeChain;
 /**
  * Contribution page ledger.
  *
- * @since 0.22
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class TkContribLedger implements TkRegex {

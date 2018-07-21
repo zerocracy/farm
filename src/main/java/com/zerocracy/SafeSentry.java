@@ -23,7 +23,7 @@ import io.sentry.SentryClientFactory;
 /**
  * Safe wrapper for {@link io.sentry.Sentry}.
  *
- * @since 0.26
+ * @since 1.0
  */
 public final class SafeSentry {
     /**

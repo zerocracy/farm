@@ -25,7 +25,7 @@ import org.cactoos.text.JoinedText;
 
 /**
  * Says "yes" when user was banned for electing job.
- * @since 0.13
+ * @since 1.0
  */
 public final class VsBanned implements Votes {
 

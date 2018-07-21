@@ -23,7 +23,7 @@ import java.io.IOException;
 /**
  * Reply to GitHub comment.
  *
- * @since 0.1
+ * @since 1.0
  */
 interface Reply {
 

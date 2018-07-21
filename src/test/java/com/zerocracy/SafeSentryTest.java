@@ -29,7 +29,7 @@ import org.mockito.Mockito;
 
 /**
  * Test case for {@link SafeSentry}.
- * @since 0.26
+ * @since 1.0
  * @checkstyle JavadocMethod (500 lines)
  */
 public final class SafeSentryTest {

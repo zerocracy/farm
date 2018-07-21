@@ -28,7 +28,7 @@ import org.mockito.Mockito;
 
 /**
  * Test case for {@link RbByLabel}.
- * @since 0.16
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")

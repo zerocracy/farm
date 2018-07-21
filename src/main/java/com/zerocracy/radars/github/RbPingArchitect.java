@@ -33,7 +33,7 @@ import javax.json.JsonObject;
 /**
  * Ping architect on new issues.
  *
- * @since 0.7
+ * @since 1.0
  */
 public final class RbPingArchitect implements Rebound {
 

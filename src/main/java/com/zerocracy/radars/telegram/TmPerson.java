@@ -25,7 +25,7 @@ import org.telegram.telegrambots.api.objects.Update;
 /**
  * Person in telegram.
  *
- * @since 0.16
+ * @since 1.0
  */
 final class TmPerson {
 

@@ -28,7 +28,7 @@ import org.xembly.Directives;
 
 /**
  * Integration case for {@link S3Item}.
- * @since 0.10
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class S3ItemITCase {

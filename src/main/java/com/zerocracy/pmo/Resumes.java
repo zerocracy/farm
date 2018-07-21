@@ -26,7 +26,7 @@ import org.xembly.Directives;
 
 /**
  * Resumes.
- * @since 0.22.2
+ * @since 1.0
  */
 public final class Resumes {
     /**

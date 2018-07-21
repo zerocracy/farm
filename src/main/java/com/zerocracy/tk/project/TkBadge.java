@@ -29,7 +29,7 @@ import org.takes.rs.RsWithType;
 /**
  * Project badge.
  *
- * @since 0.18
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class TkBadge implements TkRegex {

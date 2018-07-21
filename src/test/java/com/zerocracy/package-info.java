@@ -18,6 +18,6 @@
 /**
  * Zerocracy, tests.
  *
- * @since 0.11
+ * @since 1.0
  */
 package com.zerocracy;

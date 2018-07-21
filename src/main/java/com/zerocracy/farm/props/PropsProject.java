@@ -30,7 +30,7 @@ import org.xembly.Directives;
  * <p>A project which acquires its {@code _props.xml} file and also
  * adds some post processing directives to it.</p>
  *
- * @since 0.18
+ * @since 1.0
  */
 @EqualsAndHashCode(of = "origin")
 final class PropsProject implements Project {

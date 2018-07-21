@@ -18,6 +18,6 @@
 /**
  * Fake objects, test.
  *
- * @since 0.14
+ * @since 1.0
  */
 package com.zerocracy.farm.fake;

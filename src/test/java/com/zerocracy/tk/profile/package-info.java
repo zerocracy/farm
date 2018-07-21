@@ -18,6 +18,6 @@
 /**
  * Profile front, tests.
  *
- * @since 0.12
+ * @since 1.0
  */
 package com.zerocracy.tk.profile;

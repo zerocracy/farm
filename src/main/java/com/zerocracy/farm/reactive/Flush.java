@@ -25,7 +25,7 @@ import org.xembly.Directive;
 /**
  * The flush.
  *
- * @since 0.19
+ * @since 1.0
  */
 interface Flush extends Proc<Project>, Closeable, Scalar<Iterable<Directive>> {
 }

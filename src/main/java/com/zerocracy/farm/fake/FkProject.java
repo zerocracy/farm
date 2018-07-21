@@ -31,20 +31,20 @@ import lombok.EqualsAndHashCode;
  *
  * <p>There is no thread-safety guarantee.</p>
  *
- * @since 0.2
+ * @since 1.0
  */
 @EqualsAndHashCode(of = { "dir", "name" })
 public final class FkProject implements Project {
 
     /**
      * Directory.
-     * @since 0.14
+     * @since 1.0
      */
     private final Path dir;
 
     /**
      * Project name.
-     * @since 0.15
+     * @since 1.0
      */
     private final String name;
 
@@ -56,7 +56,7 @@ public final class FkProject implements Project {
     /**
      * Ctor.
      * @throws IOException If fails
-     * @since 0.14
+     * @since 1.0
      */
     public FkProject() throws IOException {
         this("FAKEPRJCT");
@@ -65,7 +65,7 @@ public final class FkProject implements Project {
     /**
      * Ctor.
      * @param file Location of files
-     * @since 0.14
+     * @since 1.0
      */
     public FkProject(final Path file) {
         this(file, "FAKEPRJC2");
@@ -75,7 +75,7 @@ public final class FkProject implements Project {
      * Ctor.
      * @param pid Project name/id
      * @throws IOException If fails
-     * @since 0.15
+     * @since 1.0
      */
     public FkProject(final String pid) throws IOException {
         this(Files.createTempDirectory("jstk").resolve(pid), pid);
@@ -85,7 +85,7 @@ public final class FkProject implements Project {
      * Ctor.
      * @param file Location of files
      * @param pid Project name/id
-     * @since 0.15
+     * @since 1.0
      */
     public FkProject(final Path file, final String pid) {
         this.dir = file;

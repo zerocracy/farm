@@ -34,7 +34,7 @@ import org.xembly.Directives;
 /**
  * Catalog of all projects.
  *
- * @since 0.1
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals"})

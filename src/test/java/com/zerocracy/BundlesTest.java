@@ -98,7 +98,7 @@ import org.reflections.scanners.ResourcesScanner;
  * <p>This video should help you understand how to run these tests
  * one by one: https://www.youtube.com/watch?v=oWEN-vKEEYk</p>
  *
- * @since 0.11
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle JavadocVariableCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)

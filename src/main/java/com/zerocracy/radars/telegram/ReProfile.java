@@ -28,7 +28,7 @@ import org.telegram.telegrambots.api.objects.Update;
 /**
  * Telegram profile reaction.
  *
- * @since 0.16
+ * @since 1.0
  */
 public final class ReProfile implements Reaction {
 

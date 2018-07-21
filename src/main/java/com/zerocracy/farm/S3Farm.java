@@ -34,7 +34,7 @@ import org.cactoos.list.SolidList;
 /**
  * Farm in S3.
  *
- * @since 0.1
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @EqualsAndHashCode(of = "bucket")

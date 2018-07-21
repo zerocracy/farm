@@ -25,7 +25,7 @@ import org.takes.rs.RsWrap;
 /**
  * RsFlash that converts Par into HTML.
  *
- * @since 0.20
+ * @since 1.0
  */
 public final class RsParFlash extends RsWrap {
 

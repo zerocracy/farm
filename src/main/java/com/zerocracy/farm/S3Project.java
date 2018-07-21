@@ -37,7 +37,7 @@ import org.xembly.Xembler;
 /**
  * Project in S3.
  *
- * @since 0.1
+ * @since 1.0
  */
 @EqualsAndHashCode(of = "prefix")
 final class S3Project implements Project {

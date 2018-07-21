@@ -38,7 +38,7 @@ import org.takes.rq.form.RqFormSmart;
 /**
  * Join Zerocracy form.
  *
- * @since 0.20
+ * @since 1.0
  * @todo #1147:30min Each user should see the status of his/her resume at /join.
  *  If the resume is there, he/she should see the resume, not the form.
  *  If he/she already has a mentor, there should be a redirect,

@@ -28,7 +28,7 @@ import org.xembly.Directives;
 
 /**
  * People banned from the job.
- * @since 0.13
+ * @since 1.0
  */
 public final class Bans {
 

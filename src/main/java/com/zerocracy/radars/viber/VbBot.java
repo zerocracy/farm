@@ -19,7 +19,7 @@ package com.zerocracy.radars.viber;
 /**
  * Viber bot.
  *
- * @since 0.22
+ * @since 1.0
  * @todo #939:30min Implement Viber bot. We should be able to send messages via
  *  the Viber REST API. There are other operations but I think that is the only
  *  operation we need (I might be wrong). See:

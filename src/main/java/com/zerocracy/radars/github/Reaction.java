@@ -23,7 +23,7 @@ import javax.json.JsonObject;
 /**
  * React to GitHub event.
  *
- * @since 0.1
+ * @since 1.0
  */
 public interface Reaction {
 

@@ -25,7 +25,7 @@ import org.cactoos.Scalar;
 /**
  * XML file area, e.g. "pm/scope/wbs".
 
- * @since 0.17
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 final class RdArea implements Scalar<String> {

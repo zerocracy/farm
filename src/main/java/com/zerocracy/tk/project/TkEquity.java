@@ -35,7 +35,7 @@ import org.takes.rs.RsWithHeaders;
 /**
  * Download equity PDF.
  *
- * @since 0.20
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class TkEquity implements TkRegex {

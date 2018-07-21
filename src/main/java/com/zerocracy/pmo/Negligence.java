@@ -26,7 +26,7 @@ import java.io.IOException;
  * a job due to missing the deadline (too many days passed without a reason for
  * waiting).
  *
- * @since 0.23
+ * @since 1.0
  * @todo #540:30min Finish implementing and testing this class,
  *  decide on the XML format and declare it in /datum repository.
  *  When done, use this metric inside resin_on_delay.groovy. After this,

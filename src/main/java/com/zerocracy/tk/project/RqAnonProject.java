@@ -34,7 +34,7 @@ import org.takes.facets.forward.RsForward;
 /**
  * Project from the request.
  *
- * @since 0.22
+ * @since 1.0
  */
 final class RqAnonProject implements Project {
 

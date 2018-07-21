@@ -28,7 +28,7 @@ import org.xembly.Directives;
  * start-to-start, finish-to-finish, and start-to-finish. More about it
  * <a href="https://project-management-knowledge.com/definitions/p/precedence-diagramming-method/">here</a>.
  *
- * @since 0.23
+ * @since 1.0
  */
 @SuppressWarnings({"PMD.UseObjectForClearerAPI", "PMD.AvoidDuplicateLiterals"})
 public final class Precedences {

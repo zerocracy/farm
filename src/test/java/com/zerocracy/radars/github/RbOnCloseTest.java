@@ -36,7 +36,7 @@ import org.xembly.Directives;
 
 /**
  * Test case for {@link RbOnClose}.
- * @since 0.16
+ * @since 1.0
  * @checkstyle LineLength (500 lines)
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)

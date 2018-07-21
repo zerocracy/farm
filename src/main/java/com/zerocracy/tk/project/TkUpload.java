@@ -40,7 +40,7 @@ import org.takes.rq.multipart.RqMtSmart;
 /**
  * Upload one file.
  *
- * @since 0.20
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class TkUpload implements TkRegex {

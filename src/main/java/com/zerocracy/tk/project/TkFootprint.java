@@ -57,7 +57,7 @@ import org.xembly.Xembler;
 /**
  * Footprint page.
  *
- * @since 0.12
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @checkstyle ExecutableStatementCountCheck (500 lines)
  */

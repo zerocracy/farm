@@ -30,7 +30,7 @@ import org.xembly.Directives;
 
 /**
  * Payment boosts.
- * @since 0.16
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class Boosts {

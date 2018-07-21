@@ -30,7 +30,7 @@ import org.junit.Test;
 
 /**
  * Test case for {@link SyncProject}.
- * @since 0.10
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class SyncProjectTest {

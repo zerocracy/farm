@@ -21,7 +21,7 @@ import java.io.IOException;
 /**
  * When type is not the right one.
  *
- * @since 0.11
+ * @since 1.0
  */
 public final class MismatchException extends IOException {
 

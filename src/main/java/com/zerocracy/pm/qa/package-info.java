@@ -18,6 +18,6 @@
 /**
  * Quality management.
  *
- * @since 0.22
+ * @since 1.0
  */
 package com.zerocracy.pm.qa;

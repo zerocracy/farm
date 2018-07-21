@@ -45,7 +45,7 @@ import org.takes.http.FtCli;
 
 /**
  * Main entry point.
- * @since 0.1
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class Main {

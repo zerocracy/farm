@@ -29,7 +29,7 @@ import org.xembly.Directives;
  * User metric which represents the amount of bugs user reported,
  * which were not counted as bugs by project architects.
  *
- * @since 0.23
+ * @since 1.0
  */
 public final class Blanks {
     /**

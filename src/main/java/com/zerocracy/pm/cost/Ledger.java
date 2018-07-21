@@ -31,7 +31,7 @@ import org.xembly.Directives;
 /**
  * Ledger.
  *
- * @since 0.19
+ * @since 1.0
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class Ledger {

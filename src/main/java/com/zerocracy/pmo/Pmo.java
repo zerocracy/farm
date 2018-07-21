@@ -33,7 +33,7 @@ import org.cactoos.scalar.SolidScalar;
  * list of all projects (catalog.xml),
  * user awards, etc.
  *
- * @since 0.1
+ * @since 1.0
  */
 public final class Pmo implements Project {
 

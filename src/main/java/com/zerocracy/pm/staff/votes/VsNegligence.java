@@ -26,7 +26,7 @@ import java.io.IOException;
  * This voter's ranking will be multplied with a low weight (-1), so
  * it will lower the chances of the user with the highest rank of negligence.
  *
- * @since 0.23
+ * @since 1.0
  */
 @SuppressWarnings({ "PMD.SingularField", "PMD.UnusedPrivateField" })
 public final class VsNegligence implements Votes {

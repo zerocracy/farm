@@ -37,7 +37,7 @@ import org.junit.Test;
 
 /**
  * Test case for {@link AsyncFlush}.
- * @since 0.11
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @checkstyle ExecutableStatementCountCheck (200 lines)
  * @checkstyle JavadocMethodCheck (500 lines)

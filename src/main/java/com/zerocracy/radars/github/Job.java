@@ -31,7 +31,7 @@ import javax.json.JsonObject;
 /**
  * Job in GitHub.
  *
- * @since 0.1
+ * @since 1.0
  */
 public final class Job {
 

@@ -31,7 +31,7 @@ import org.xembly.Directives;
 /**
  * Slack bots.
  *
- * @since 0.7
+ * @since 1.0
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class Bots {

@@ -29,7 +29,7 @@ import org.xembly.Directives;
 /**
  * Job impediments.
  *
- * @since 0.19
+ * @since 1.0
  * @todo #1016:30min Add a new stackeholder, remove_impediment.groovy,
  *  that will remove the impediment once a user says "@0crat continue"
  *  on an Issue that is on hold. The "continue" command is already registered

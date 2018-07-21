@@ -37,7 +37,7 @@ import org.hamcrest.TypeSafeMatcher;
  * Matcher for {@link Func} that must run in multiple threads.
  *
  * @param <T> Type of input
- * @since 0.18
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class RunsInThreads<T> extends TypeSafeMatcher<Func<T, Boolean>> {

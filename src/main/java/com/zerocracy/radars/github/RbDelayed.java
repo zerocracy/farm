@@ -25,7 +25,7 @@ import javax.json.JsonObject;
 /**
  * Rebound that acts in about 5 seconds.
  *
- * @since 0.10
+ * @since 1.0
  */
 public final class RbDelayed implements Rebound {
 

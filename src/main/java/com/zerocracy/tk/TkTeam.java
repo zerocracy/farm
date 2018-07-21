@@ -39,7 +39,7 @@ import org.takes.rs.xe.XeWhen;
 /**
  * List of all people.
  *
- * @since 0.19
+ * @since 1.0
  * @todo #559:30min Let's display the data from people/skills on the profile
  *  page of a given user as well as on the team page.
  * @checkstyle ClassDataAbstractionCouplingCheck (3 lines)

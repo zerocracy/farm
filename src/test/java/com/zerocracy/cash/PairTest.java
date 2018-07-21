@@ -25,7 +25,7 @@ import org.mockito.Mockito;
 
 /**
  * Test case for {@link Pair}.
- * @since 0.6
+ * @since 1.0
  * @checkstyle MagicNumber (500 lines)
  */
 public final class PairTest {

@@ -29,7 +29,7 @@ import org.takes.facets.auth.codecs.Codec;
 /**
  * Our secure codec.
  *
- * @since 0.21
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 final class CcSecure implements Codec {

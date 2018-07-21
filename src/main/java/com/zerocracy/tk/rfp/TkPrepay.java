@@ -36,7 +36,7 @@ import org.takes.rq.form.RqFormSmart;
 /**
  * Pay for RFP.
  *
- * @since 0.20
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")

@@ -31,7 +31,7 @@ import org.xembly.Directives;
 /**
  * Rates.
  *
- * @since 0.19
+ * @since 1.0
  */
 public final class Rates {
 

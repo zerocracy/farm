@@ -19,7 +19,7 @@ package com.zerocracy.radars.viber;
 /**
  * Viber token.
  *
- * @since 0.22
+ * @since 1.0
  */
 final class VbToken {
 
