@@ -47,6 +47,10 @@ import org.xembly.Xembler;
  *  a project if this size is too big. We can skip downloading from S3,
  *  just need to check attributes, and if claims.xml is bigger than 10MB
  *  stop working with this project and send notification to PMO.
+ * @todo #773:30min Use Amazon SQS instead of xml files for claims.
+ *  Let's convert `Claims` to interface and add two implementations:
+ *  one for SQS and another for xml file (we need to use xml claims in
+ *  bundle tests).
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class Claims {

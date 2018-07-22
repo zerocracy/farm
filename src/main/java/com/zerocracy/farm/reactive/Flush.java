@@ -26,6 +26,12 @@ import org.xembly.Directive;
  * The flush.
  *
  * @since 1.0
+ * @todo #773:30min Use long-polling for claims instead of reactions.
+ *  We are going to split application into web part and worker parts,
+ *  so we have to submit new claims in both parts, but receive them only in
+ *  worker parts via claims polling. Worker app will not be physically
+ *  connected to web part, so web part will not be able to notify worker app
+ *  about new claims as now via `Flush`es.
  */
 interface Flush extends Proc<Project>, Closeable, Scalar<Iterable<Directive>> {
 }
