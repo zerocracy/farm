@@ -38,6 +38,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
@@ -53,6 +54,7 @@ import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Limited;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.iterable.Sorted;
+import org.cactoos.list.ListOf;
 import org.cactoos.list.SolidList;
 import org.cactoos.scalar.And;
 import org.cactoos.text.JoinedText;
@@ -99,6 +101,11 @@ import org.reflections.scanners.ResourcesScanner;
  * one by one: https://www.youtube.com/watch?v=oWEN-vKEEYk</p>
  *
  * @since 1.0
+ * @todo #1364:30min This class is way to complex for a unit test. Most of the
+ *  code here should be extracted into another class. And this
+ *  new class should be covered with unit tests. And BundlesTess should be
+ *  a simple class that just calls a method or two from the other class.
+ *  Most of the checkstyle excludes should be removed after this refactoring.
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle JavadocVariableCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
@@ -180,12 +187,15 @@ public final class BundlesTest {
         );
         final String pmo = "PMO";
         final String pid;
+        final List<String> projects;
         if (setup.nodes("/setup/pmo").isEmpty()) {
             pid = this.name.toUpperCase(Locale.ENGLISH)
                 .replaceAll("[^A-Z0-9]", "")
                 .substring(0, Tv.NINE);
+            projects = new ListOf<>(pid, pmo);
         } else {
             pid = pmo;
+            projects = new ListOf<>(pmo);
         }
         try (final Farm farm = this.farm()) {
             final Project project = farm.find(
@@ -196,7 +206,7 @@ public final class BundlesTest {
             if (!pmo.equals(pid)) {
                 catalog.add(pid, String.format("2018/01/%s/", pid));
             }
-            for (final String pfx : new String[] {pid, pmo}) {
+            for (final String pfx : projects) {
                 new And(
                     path -> {
                         new LengthOf(
@@ -206,13 +216,15 @@ public final class BundlesTest {
                                     this.home.resolve(pfx).resolve(
                                         path.substring(
                                             path.lastIndexOf('/') + 1
-                                        )
+                                        ).replaceFirst("^pmo_", "")
                                     )
                                 )
                             )
                         ).intValue();
                     },
-                    BundlesTest.resources(this.bundle)
+                    BundlesTest.resources(
+                        this.bundle, pfx.equals(pmo) && !pid.equals(pmo)
+                    )
                 ).value();
             }
             new StkGroovy(
@@ -282,7 +294,8 @@ public final class BundlesTest {
         ).value();
     }
 
-    private static Iterable<String> resources(final String path) {
+    private static Iterable<String> resources(final String path,
+        final boolean pmo) {
         final Store store = new Reflections(
             path.replace(File.separator, "."),
             new PatternScanner(
@@ -296,7 +309,7 @@ public final class BundlesTest {
         return store.get(
             name,
             new Filtered<>(
-                p -> p.endsWith(".xml"),
+                p -> p.endsWith(".xml") && pmo == p.startsWith("pmo_"),
                 store.get(name).keySet()
             )
         );
