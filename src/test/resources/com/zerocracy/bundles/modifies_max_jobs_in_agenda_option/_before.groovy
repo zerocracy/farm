@@ -17,7 +17,17 @@
 package com.zerocracy.bundles.modifies_max_jobs_in_agenda_option
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.pmo.Options
+import com.zerocracy.pmo.Pmo
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
 
 def exec(Project pmo, XML xml) {
+  Farm farm = binding.variables.farm
+  MatcherAssert.assertThat(
+    new Options(new Pmo(farm), 'g4s8').bootstrap().maxJobsInAgenda(),
+    Matchers.is(Integer.MAX_VALUE)
+  )
 }

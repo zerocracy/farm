@@ -37,30 +37,18 @@ def exec(Project pmo, XML xml) {
   new Assume(pmo, xml).type('Change option')
   Farm farm = binding.variables.farm
   ClaimIn claim = new ClaimIn(xml)
-  String name = claim.param('name')
-  String value = claim.param('value')
-  String author = claim.author()
-  Options options = new Options(new Pmo(farm), author).bootstrap()
-  if (name == 'maxJobsInAgenda') {
-    boolean wrongFormat = false
-    int max = Integer.MAX_VALUE
-    try {
-      max = Integer.parseInt(value)
-    } catch (NumberFormatException ex) {
-      wrongFormat = true
-    }
-    if (max < 1) {
-      wrongFormat = true
-    }
-    if (wrongFormat) {
+  Options options = new Options(new Pmo(farm), claim.author()).bootstrap()
+  if (claim.param('name') == 'maxJobsInAgenda') {
+    String value = claim.param('value')
+    if (!value.integer || value.toInteger() < 1) {
       throw new SoftException(
         new Par(
           'maxJobsInAgenda accepts only positive integers'
         ).say()
       )
     }
-    options.maxJobsInAgenda(max)
-    claim.reply("Your maxJobsInAgenda option is set to ${max}").postTo(pmo)
+    options.maxJobsInAgenda(value.toInteger())
+    claim.reply("Your maxJobsInAgenda option is set to ${value.toInteger()}").postTo(pmo)
   } else {
     throw new SoftException(
       new Par(
