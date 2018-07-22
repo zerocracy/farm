@@ -205,7 +205,11 @@ In order to integrate and test the entire system we have a collection of
 "bundles" in `com.zerocracy.bundles` package,
 which are simulators of real projects. Each bundle is a collection
 of files, which we place into a fake project and run claims dispatcher,
-just like it would happen in a real project. `BundlesTest` does this.
+just like it would happen in a real project.  `BundlesTest` does this.
+If some fails need to be placed into PMO project then they should be prefixed
+with `pmo_`, e.g. pmo_people.xml, unless it is a PMO test (with `_setup.xml`
+`/setup/pmo` set to `true`), then there is no need to prefix the files
+with `pmo_`.
 
 In order to create a new bundle you just copy an existing one and edit
 its files. The key file, of course, is the `claims.xml`, which contains
