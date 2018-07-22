@@ -22,7 +22,7 @@ import com.zerocracy.Project
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Add milestone')
+  new Assume(project, xml).type('Job milestoned')
 /**
  * @todo #185:30min let's implement this stakeholder. It will update
  *  precedences.xml. It should use the Precedences class, similar to how the

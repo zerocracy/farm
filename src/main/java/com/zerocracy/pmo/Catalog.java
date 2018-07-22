@@ -85,7 +85,7 @@ public final class Catalog {
      */
     public Collection<String> sandbox() {
         return new CollectionOf<>(
-            "C3T46CUJJ", "C63314D6Z", "C7JGJ00DP"
+            "CAZPZR9FS", "C63314D6Z", "C7JGJ00DP"
         );
     }
 

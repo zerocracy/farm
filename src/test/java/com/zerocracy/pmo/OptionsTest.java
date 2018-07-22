@@ -33,7 +33,7 @@ import org.xembly.Directives;
  * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 public final class OptionsTest {
     @Test
     public void readMaxJobs() throws Exception {
@@ -43,7 +43,7 @@ public final class OptionsTest {
                     .addIf("options")
                     .addIf("maxJobsInAgenda")
                     .set("2")
-            ).maxJobsInAgenda(0),
+            ).maxJobsInAgenda(),
             Matchers.equalTo(2)
         );
     }
@@ -87,8 +87,19 @@ public final class OptionsTest {
     @Test
     public void readMaxJobsDefault() throws Exception {
         MatcherAssert.assertThat(
-            OptionsTest.options(new Directives()).maxJobsInAgenda(1),
-            Matchers.equalTo(1)
+            OptionsTest.options(new Directives()).maxJobsInAgenda(),
+            Matchers.equalTo(Integer.MAX_VALUE)
+        );
+    }
+
+    @Test
+    public void readSetMaxJobs() throws Exception {
+        final int max = 123;
+        final Options options = OptionsTest.options(new Directives());
+        options.maxJobsInAgenda(max);
+        MatcherAssert.assertThat(
+            options.maxJobsInAgenda(),
+            Matchers.equalTo(max)
         );
     }
 

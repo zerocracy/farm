@@ -27,6 +27,7 @@ import com.zerocracy.cash.Cash;
 import com.zerocracy.pm.ClaimOut;
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 import org.cactoos.iterable.ItemAt;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.scalar.IoCheckedScalar;
@@ -41,7 +42,7 @@ import org.xembly.Directives;
  * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 public final class Reviews {
 
     /**
@@ -271,6 +272,23 @@ public final class Reviews {
             return !new Xocument(reviews.path()).nodes(
                 String.format("//review[@job='%s']", job)
             ).isEmpty();
+        }
+    }
+
+    /**
+     * Find jobs to review by inspector.
+     * @param login Login name of inspector
+     * @return List of jobs to review
+     * @throws IOException If fails
+     */
+    public List<String> findByInspector(final String login)
+        throws IOException {
+        try (final Item reviews = this.item()) {
+            return new Xocument(reviews.path()).xpath(
+                String.format(
+                    "/reviews/review[inspector='%s']/@job", login
+                )
+            );
         }
     }
 

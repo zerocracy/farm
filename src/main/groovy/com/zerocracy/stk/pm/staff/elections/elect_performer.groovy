@@ -93,6 +93,7 @@ def exec(Project project, XML xml) {
         (new VsSafe(new VsRate(project, logins)))                                 : 2,
         (new VsSafe(new VsBigDebt(pmo)))                                          : -100,
         (new VsSafe(new VsNoRoom(pmo)))                                           : role == 'REV' ? 0 : -100,
+        (new VsSafe(new VsOptionsMaxJobs(pmo)))                                   : role == 'REV' ? 0 : -100,
         (new VsSafe(new VsBanned(project, job)))                                  : -100,
         (new VsSafe(new VsVacation(pmo)))                                         : -100,
         (new VsSafe(new VsWorkload(farm, logins)))                                : 1,
