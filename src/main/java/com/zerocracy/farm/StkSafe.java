@@ -73,6 +73,13 @@ public final class StkSafe implements Stakeholder {
         this.origin = stk;
     }
 
+    // @todo #733:30min Prevent StkSafe from swallowing exceptions generated
+    //  in tests. It was discovered in #733 that StkSafe is treating all
+    //  exceptions requests in the same way: thay're wrapped in an notify
+    //  claim and processed. This causes tests to never fail when throwing
+    //  exceptions: the exception which should break the test is treated like
+    //  a notification and does not breaks it. We should create a way to
+    //  avoid this exception swallowing.
     @Override
     @SuppressWarnings(
         {
