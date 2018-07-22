@@ -19,7 +19,6 @@ package com.zerocracy.pm.qa;
 import com.jcabi.xml.XML;
 import com.zerocracy.Item;
 import com.zerocracy.Par;
-import com.zerocracy.Policy;
 import com.zerocracy.Project;
 import com.zerocracy.SoftException;
 import com.zerocracy.Xocument;
@@ -109,11 +108,11 @@ public final class Reviews {
      * Remove review from the list and prepare the payment.
      * @param job The job to remove
      * @param claim The claim
-     * @param good Is quality good and we should pay the bonus?
+     * @param bonus QA bonus in minutes
      * @return New claim
      * @throws IOException If fails
      */
-    public ClaimOut remove(final String job, final boolean good,
+    public ClaimOut remove(final String job, final int bonus,
         final ClaimOut claim) throws IOException {
         if (!this.exists(job)) {
             throw new SoftException(
@@ -132,13 +131,11 @@ public final class Reviews {
             );
         }
         int minutes = Integer.parseInt(review.xpath("minutes/text()").get(0));
-        final Cash bonus = new Cash.S(review.xpath("bonus/text()").get(0));
+        final Cash extra = new Cash.S(review.xpath("bonus/text()").get(0));
         Cash cash = new Cash.S(review.xpath("cash/text()").get(0));
-        if (good) {
-            cash = cash.add(bonus);
-            // @checkstyle MagicNumber (2 lines)
-            // @checkstyle StringLiteralsConcatenationCheck (1 line)
-            minutes += new Policy().get("31.bonus", 5);
+        if (bonus > 0) {
+            cash = cash.add(extra);
+            minutes += bonus;
         }
         return claim
             .param("login", review.xpath("performer/text()").get(0))

@@ -22,4 +22,10 @@ SOFTWARE.
   <person id="qa-guy">
     <role>QA</role>
   </person>
+  <person id="coder">
+    <role>DEV</role>
+  </person>
+  <person id="reviewer">
+    <role>REV</role>
+  </person>
 </roles>
