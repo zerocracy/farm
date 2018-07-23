@@ -16,10 +16,8 @@
  */
 package com.zerocracy.pmo;
 
-import com.jcabi.aspects.Tv;
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
-import com.zerocracy.Policy;
 import com.zerocracy.Xocument;
 import java.io.IOException;
 import org.cactoos.collection.Mapped;
@@ -124,34 +122,6 @@ public final class Speed {
                 )
             ).value();
         }
-    }
-
-    /**
-     * If a job is completed in less than 48h, the user gets a
-     * bonus in minutes.
-     * @param job Job's id.
-     * @return The bonus for the speed of the job.
-     * @throws IOException If something goes wrong.
-     */
-    public int bonus(final String job) throws IOException {
-        final int bonus;
-        try (final Item item = this.item()) {
-            final int minutes = Integer.parseInt(
-                new Xocument(item.path())
-                    .xpath(
-                        String.format(
-                            "/speed/order[@job='%s']/minutes/text()", job
-                        )
-                    ).get(0)
-            );
-            final int limit = new Policy().get("36.hours", 48) * Tv.SIXTY;
-            if (minutes <= limit) {
-                bonus = Tv.FIVE;
-            } else {
-                bonus = 0;
-            }
-        }
-        return bonus;
     }
 
     /**

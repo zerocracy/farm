@@ -16,6 +16,7 @@
  */
 package com.zerocracy.stk.pm.in.orders
 
+
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Par
@@ -26,9 +27,12 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.cost.Boosts
 import com.zerocracy.pm.cost.Estimates
+import com.zerocracy.pm.cost.Rates
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.qa.JobAudit
 import com.zerocracy.pm.staff.Roles
+import java.time.Duration
+import java.time.Instant
 import java.util.concurrent.TimeUnit
 
 def exec(Project project, XML xml) {
@@ -37,18 +41,41 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
   Orders orders = new Orders(project).bootstrap()
-  long age = (System.currentTimeMillis() - orders.startTime(job).time) / TimeUnit.MINUTES.toMillis(1L)
+  Instant closed
+  if (claim.hasParam('closed')) {
+    closed = Instant.parse(claim.param('closed'))
+  } else {
+    closed = Instant.now()
+  }
+
+  long millis = closed.toEpochMilli() - orders.startTime(job).time
+  long age = millis / TimeUnit.MINUTES.toMillis(1L)
   String performer = orders.performer(job)
   Estimates estimates = new Estimates(project).bootstrap()
   Cash price = Cash.ZERO
+  Farm farm = binding.variables.farm
+  int speed = 0
+  if (millis <= Duration.ofHours(new Policy().get('36.hours', 48)).toMillis()) {
+    claim.copy()
+      .type('Notify job')
+      .token("job;${job}")
+      .param(
+      'message',
+      new Par('Job was finished in %d hours, bonus for fast delivery is possible (see §36)')
+        .say(Duration.ofMillis(millis).toHours())
+    ).postTo(project)
+    speed = new Policy().get('36.bonus', 5)
+  }
   if (estimates.exists(job)) {
     price = estimates.get(job)
+    if (speed > 0 && !price.empty) {
+      price = price.add(new Rates(project).bootstrap().rate(performer).mul(speed) / 60)
+    }
   }
-  int minutes = new Boosts(project).bootstrap().factor(job) * 15
+  int minutes = new Boosts(project).bootstrap().factor(job) * 15 + speed
   Roles roles = new Roles(project).bootstrap()
   List<String> qa = roles.findByRole('QA')
   if (qa.empty || roles.hasRole(performer, 'ARC', 'PO')) {
-    Farm farm = binding.variables.farm
     List<String> complaints = new JobAudit(farm, project).review(job)
     if (complaints.empty) {
       claim.copy()
