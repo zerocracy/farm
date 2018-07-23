@@ -25,7 +25,7 @@ import com.zerocracy.pmo.Debts
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 
-// @todo 1381:30min Create a test for checking that the speed bonus for
+// @todo #1381:30min Create a test for checking that the speed bonus for
 //  REV tasks is calculated correctly, and validate that for both DEV and REV
 //  tasks when quality is good, the bonus for speed and quality accumulates
 //  correctly.
