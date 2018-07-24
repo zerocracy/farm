@@ -30,35 +30,50 @@ def exec(Project pmo, XML xml) {
   new Assume(pmo, xml).type('Change vacation mode')
   Farm farm = binding.variables.farm
   ClaimIn claim = new ClaimIn(xml)
-  String mode = claim.param('mode')
-  String author = claim.author()
   People people = new People(farm).bootstrap()
-  if ('on' == mode) {
-    if (people.vacation(author)) {
+  String author = claim.author()
+  if (claim.hasParam('mode')) {
+    String mode = claim.param('mode')
+    if ('on' == mode) {
+      if (people.vacation(author)) {
+        throw new SoftException(
+                new Par(
+                        'You are already on vacation'
+                ).say()
+        )
+      }
+      people.vacation(author, true)
+      claim.reply('You are on vacation now').postTo(pmo)
+    } else if ('off' == mode) {
+      if (!people.vacation(author)) {
+        throw new SoftException(
+                new Par(
+                        'You are not on vacation now'
+                ).say()
+        )
+      }
+      people.vacation(author, false)
+      claim.reply('Your vacation has been ended').postTo(pmo)
+    } else {
       throw new SoftException(
-        new Par(
-          'You are already on vacation'
-        ).say()
+              new Par(
+                      'Incorrect vacation mode;',
+                      'Possible modes are "on" or "off"'
+              ).say()
       )
     }
-    people.vacation(author, true)
-    claim.reply('You are on vacation now').postTo(pmo)
-  } else if ('off' == mode) {
-    if (!people.vacation(author)) {
-      throw new SoftException(
-        new Par(
-          'You are not on vacation now'
-        ).say()
-      )
-    }
-    people.vacation(author, false)
-    claim.reply('Your vacation has been ended').postTo(pmo)
   } else {
-    throw new SoftException(
+    modes = 'To change the status use "on" or "off" as an option."'
+    if (!people.vacation(author)) {
+      vacation = 'You are NOT on vacation now.';
+    } else {
+      vacation = 'You are on vacation now.'
+    }
+    claim.reply(
       new Par(
-        'Incorrect vacation mode;',
-        'Possible modes are "on" or "off"'
+        vacation,
+        modes
       ).say()
-    )
+    ).postTo(pmo)
   }
 }

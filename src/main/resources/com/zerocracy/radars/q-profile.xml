@@ -67,8 +67,9 @@ SOFTWARE.
     <opts>
       <opt>
         <name>mode</name>
+        <optional>true</optional>
         <regex>(on|off)</regex>
-        <help>Vacation mode: 'on' or 'off'</help>
+        <help>Vacation mode: 'on' or 'off'.</help>
       </opt>
     </opts>
   </cmd>
