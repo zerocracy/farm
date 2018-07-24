@@ -215,7 +215,8 @@ public final class BundlesTest {
                                 new OutputTo(
                                     this.home.resolve(pfx).resolve(
                                         path.substring(
-                                            path.lastIndexOf('/') + 1
+                                            path.lastIndexOf(this.bundle)
+                                                + this.bundle.length() + 1
                                         ).replaceFirst("^pmo_", "")
                                     )
                                 )
