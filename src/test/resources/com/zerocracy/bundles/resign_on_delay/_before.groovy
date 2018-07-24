@@ -36,7 +36,7 @@ def exec(Project project, XML xml) {
     new Ledger.Transaction(
       new Cash.S('$1000'),
       'assets', 'cash',
-      'income', "@guy",
+      'income', '@guy',
       'Contributed via Stripe by someone'
     )
   )
