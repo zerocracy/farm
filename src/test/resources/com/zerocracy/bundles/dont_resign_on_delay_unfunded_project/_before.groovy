@@ -23,6 +23,9 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.entry.ExtGithub
+import com.zerocracy.pm.cost.Ledger
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
@@ -30,4 +33,8 @@ def exec(Project project, XML xml) {
   Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
   repo.issues().create('Issue title', 'Issue body')
   repo.pulls().create('PR title', 'master', 'master')
+  MatcherAssert.assertThat(
+    new Ledger(project).bootstrap().cash().decimal(),
+    Matchers.comparesEqualTo(BigDecimal.ZERO)
+  )
 }
