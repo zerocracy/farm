@@ -27,7 +27,7 @@ import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.reactive.RvAlive;
 import com.zerocracy.farm.reactive.StkGroovy;
 import com.zerocracy.pm.ClaimIn;
-import com.zerocracy.pm.Claims;
+import com.zerocracy.pm.ClaimsItem;
 import com.zerocracy.pm.Footprint;
 import com.zerocracy.pmo.Catalog;
 import java.io.File;
@@ -238,7 +238,8 @@ public final class BundlesTest {
                 new And(
                     x -> {
                         TimeUnit.SECONDS.sleep(1L);
-                        final Claims claims = new Claims(project).bootstrap();
+                        final ClaimsItem claims = new ClaimsItem(project)
+                            .bootstrap();
                         Logger.info(
                             this, "alive=%d, %d claims: %s",
                             new RvAlive(farm).intValue(),

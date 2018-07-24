@@ -22,6 +22,7 @@ import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Awards
@@ -54,12 +55,12 @@ def exec(Project pmo, XML xml) {
         'you successfully graduated and won\'t pay the tuition fee;',
         'congratulations!'
       ).say(threshold)
-    ).postTo(pmo)
+    ).postTo(new ClaimsOf(farm))
     claim.copy().type('Notify PMO').param(
       'message', new Par(
         'The user @%s just graduated with reputation of %d!'
       ).say(uid, reputation)
-    ).postTo(pmo)
+    ).postTo(new ClaimsOf(farm))
     claim.copy()
       .type('Make payment')
       .param('login', mentor)
@@ -69,6 +70,6 @@ def exec(Project pmo, XML xml) {
         'reason',
         new Par(farm, 'Bonus for student @%s graduation according to §43')
           .say(uid)
-      ).postTo(pmo)
+      ).postTo(new ClaimsOf(farm))
   }
 }

@@ -23,6 +23,7 @@ import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
@@ -59,6 +60,6 @@ def exec(Project project, XML xml) {
         ).say()
       )
       .param('minutes', -new Policy().get('19.self-penalty', 15))
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
   }
 }

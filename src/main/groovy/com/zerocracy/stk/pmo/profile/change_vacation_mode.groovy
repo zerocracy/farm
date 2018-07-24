@@ -21,6 +21,7 @@ import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.SoftException
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.People
@@ -42,7 +43,7 @@ def exec(Project pmo, XML xml) {
       )
     }
     people.vacation(author, true)
-    claim.reply('You are on vacation now').postTo(pmo)
+    claim.reply('You are on vacation now').postTo(new ClaimsOf(farm))
   } else if ('off' == mode) {
     if (!people.vacation(author)) {
       throw new SoftException(
@@ -52,7 +53,7 @@ def exec(Project pmo, XML xml) {
       )
     }
     people.vacation(author, false)
-    claim.reply('Your vacation has been ended').postTo(pmo)
+    claim.reply('Your vacation has been ended').postTo(new ClaimsOf(farm))
   } else {
     throw new SoftException(
       new Par(

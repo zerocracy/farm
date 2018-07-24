@@ -5,6 +5,7 @@ import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.cost.Boosts
@@ -73,14 +74,14 @@ def exec(Project project, XML xml) {
       .token("job;$job")
       .param('job', job)
       .param('reason', new Par('It is older than %d day(s), see §8').say(days))
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
     claim.copy()
       .type('Make payment')
       .param('job', job)
       .param('login', worker)
       .param('reason', new Par('Resigned on delay, see §8').say())
       .param('minutes', boosts.factor(job) * -15)
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
     claim.copy()
       .type('Notify project')
       .param(
@@ -89,6 +90,6 @@ def exec(Project project, XML xml) {
           'The order at %s cancelled for @%s, it is over %d day(s), see §8'
         ).say(job, worker, days)
       )
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
   }
 }

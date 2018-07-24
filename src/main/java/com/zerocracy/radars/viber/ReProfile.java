@@ -18,7 +18,7 @@ package com.zerocracy.radars.viber;
 
 import com.jcabi.xml.XMLDocument;
 import com.zerocracy.Farm;
-import com.zerocracy.pmo.Pmo;
+import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.radars.ClaimOnQuestion;
 import com.zerocracy.radars.Question;
 import java.io.IOException;
@@ -47,7 +47,7 @@ public final class ReProfile implements Reaction {
             .claim()
             .token(new VbToken(update))
             .author(new VbPerson(farm, msg).uid(question.invited()))
-            .postTo(new Pmo(farm));
+            .postTo(new ClaimsOf(farm));
         return question.matches();
     }
 }

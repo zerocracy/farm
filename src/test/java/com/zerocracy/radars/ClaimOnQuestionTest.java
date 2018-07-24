@@ -17,8 +17,10 @@
 package com.zerocracy.radars;
 
 import com.jcabi.xml.XMLDocument;
+import com.zerocracy.entry.ClaimsOf;
+import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
-import com.zerocracy.pm.Claims;
+import com.zerocracy.pm.ClaimsItem;
 import java.util.Collection;
 import org.cactoos.list.SolidList;
 import org.hamcrest.MatcherAssert;
@@ -33,6 +35,7 @@ import org.junit.runners.Parameterized;
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle JavadocVariableCheck (500 lines)
  * @checkstyle VisibilityModifierCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @RunWith(Parameterized.class)
 public final class ClaimOnQuestionTest {
@@ -58,8 +61,9 @@ public final class ClaimOnQuestionTest {
             this.query
         );
         final FkProject project = new FkProject();
-        new ClaimOnQuestion(question).claim().postTo(project);
-        final Claims claims = new Claims(project).bootstrap();
+        new ClaimOnQuestion(question).claim()
+            .postTo(new ClaimsOf(new FkFarm(), project));
+        final ClaimsItem claims = new ClaimsItem(project).bootstrap();
         MatcherAssert.assertThat(
             claims.iterate(),
             Matchers.iterableWithSize(1)

@@ -22,6 +22,7 @@ import com.jcabi.github.Repos
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.pm.ClaimOut
 
@@ -36,5 +37,5 @@ def exec(Project project, XML xml) {
     .type('Project link was removed')
     .param('rel', 'github')
     .param('href', repo.coordinates().toString())
-    .postTo(project)
+    .postTo(new ClaimsOf(farm, project))
 }

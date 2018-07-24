@@ -21,6 +21,7 @@ import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.cash.CashParsingException;
+import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.pmo.Pmo;
@@ -83,7 +84,7 @@ public final class TkDonate implements TkRegex {
             .type("Donate")
             .param("amount", amount)
             .author(user)
-            .postTo(project);
+            .postTo(new ClaimsOf(this.farm, project));
         return new RsForward(
             new RsParFlash(
                 new Par(

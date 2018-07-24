@@ -17,9 +17,11 @@
 package com.zerocracy.stk.pm.cost.vesting
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.cost.Equity
@@ -59,6 +61,7 @@ def exec(Project project, XML xml) {
     cash = rate.mul(minutes) / 60
   }
   Vesting vesting = new Vesting(project).bootstrap()
+  Farm farm = binding.variables.farm
   if (vesting.exists(login)) {
     Cash reward = (vesting.rate(login).mul(minutes) / 60).add(cash.mul(-1L))
     new Equity(project).bootstrap().add(login, reward)
@@ -69,7 +72,7 @@ def exec(Project project, XML xml) {
       .param('vesting_rate', vesting.rate(login))
       .param('minutes', minutes)
       .param('cash', cash)
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
     claim.copy()
       .type('Notify user')
       .token("user;${login}")
@@ -79,7 +82,7 @@ def exec(Project project, XML xml) {
           'You earned %s of new share in %s for %s'
         ).say(reward, project.pid(), job)
       )
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
     claim.copy()
       .type('Notify project')
       .param(
@@ -88,6 +91,6 @@ def exec(Project project, XML xml) {
           'We just transferred %s of share for %s to @%s'
         ).say(reward, job, login)
       )
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
   }
 }

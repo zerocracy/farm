@@ -21,6 +21,7 @@ import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.staff.Roles
@@ -63,7 +64,7 @@ def exec(Project project, XML xml) {
           reputation, uid, threshold
         )
       )
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
     claim.copy().type('Notify user').token("user;${uid}").param(
       'message',
       new Par(
@@ -74,12 +75,12 @@ def exec(Project project, XML xml) {
         'feel free to complete them;',
         'you are welcome to join [other](/board) non-sandbox projects!'
       ).say(reputation, threshold, project.pid())
-    ).postTo(project)
+    ).postTo(new ClaimsOf(farm, project))
     claim.copy().type('Notify PMO').param(
       'message', new Par(
         'The user @%s was kicked out of sandbox project %s',
         'because of too high reputation %d (over %d)'
       ).say(uid, project.pid(), reputation, threshold)
-    ).postTo(project)
+    ).postTo(new ClaimsOf(farm, project))
   }
 }

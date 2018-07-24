@@ -20,7 +20,7 @@ import com.zerocracy.Project;
 import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pm.ClaimOut;
-import com.zerocracy.pm.Claims;
+import com.zerocracy.pm.ClaimsItem;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -49,7 +49,7 @@ public final class HintTest {
         hint.postTo(project);
         hint.postTo(project);
         MatcherAssert.assertThat(
-            new Claims(project).bootstrap().iterate(),
+            new ClaimsItem(project).bootstrap().iterate(),
             Matchers.iterableWithSize(1)
         );
     }

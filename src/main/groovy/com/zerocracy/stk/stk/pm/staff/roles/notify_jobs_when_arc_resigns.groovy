@@ -17,8 +17,10 @@
 package com.zerocracy.stk.pm.staff.roles
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.in.Orders
@@ -36,6 +38,7 @@ def exec(Project project, XML xml) {
   Roles roles = new Roles(project).bootstrap()
   String arc = roles.findByRole('ARC')[0]
   Orders orders = new Orders(project).bootstrap()
+  Farm farm = binding.variables.farm
   orders.iterate().each { job ->
     claim.copy()
       .type('Notify job')
@@ -47,6 +50,6 @@ def exec(Project project, XML xml) {
           '@%s is the architect now'
         ).say(login, arc)
       )
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
   }
 }

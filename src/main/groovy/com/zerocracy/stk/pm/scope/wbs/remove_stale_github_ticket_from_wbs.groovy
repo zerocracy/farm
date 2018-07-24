@@ -21,6 +21,7 @@ import com.jcabi.github.Issue
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
@@ -54,7 +55,7 @@ def exec(Project project, XML xml) {
       .token("job;${job}")
       .param('job', job)
       .param('reason', 'GitHub issue is already closed')
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
     if (++done > 10) {
       break
     }

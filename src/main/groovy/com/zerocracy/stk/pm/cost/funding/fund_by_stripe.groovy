@@ -21,6 +21,7 @@ import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.cost.Ledger
@@ -73,17 +74,17 @@ def exec(Project project, XML xml) {
         'to stop that just put the project on pause, see §21'
       ).say(project.pid(), amount, pid)
     )
-    .postTo(project)
+    .postTo(new ClaimsOf(farm, project))
   claim.copy().type('Notify PMO').param(
     'message', new Par(
       farm,
       'We just funded %s for %s via Stripe'
     ).say(project.pid(), amount)
-  ).postTo(project)
+  ).postTo(new ClaimsOf(farm, project))
   if (claim.hasAuthor()) {
     claim.copy().type('Send zold')
       .param('recipient', claim.author())
       .param('reason', 'Funded reward')
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
   }
 }

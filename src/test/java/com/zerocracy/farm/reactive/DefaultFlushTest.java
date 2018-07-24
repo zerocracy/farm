@@ -18,7 +18,7 @@ package com.zerocracy.farm.reactive;
 
 import com.zerocracy.Project;
 import com.zerocracy.farm.fake.FkFarm;
-import com.zerocracy.pm.Claims;
+import com.zerocracy.pm.ClaimsItem;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -34,13 +34,14 @@ public final class DefaultFlushTest {
 
     @Test
     public void processesAllClaims() throws Exception {
-        final Project project = new FkFarm().find("@id='DFLTFLUSHT'")
+        final FkFarm farm = new FkFarm();
+        final Project project = farm.find("@id='DFLTFLUSHT'")
             .iterator().next();
-        try (final Flush flush = new DefaultFlush(new Brigade())) {
+        try (final Flush flush = new DefaultFlush(farm, new Brigade())) {
             flush.exec(project);
         }
         MatcherAssert.assertThat(
-            new Claims(project).iterate().size(),
+            new ClaimsItem(project).iterate().size(),
             Matchers.equalTo(0)
         );
     }

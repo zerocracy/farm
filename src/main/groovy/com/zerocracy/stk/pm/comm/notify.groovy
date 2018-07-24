@@ -19,8 +19,10 @@ package com.zerocracy.stk.pm.comm
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pm.Claims
 
 /**
  * Stakeholder for notifications. It can understand what channel
@@ -40,26 +42,28 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Notify')
   ClaimIn claim = new ClaimIn(xml)
   String[] parts = claim.token().split(';', 2)
+  Farm farm = binding.variables.farm
+  Claims claims = new ClaimsOf(farm, project)
   if (parts[0] == 'slack') {
     claim.copy()
       .type('Notify in Slack')
-      .postTo(project)
+      .postTo(claims)
   } else if (parts[0] == 'telegram') {
     claim.copy()
       .type('Notify in Telegram')
-      .postTo(project)
+      .postTo(claims)
   } else if (parts[0] == 'github') {
     claim.copy()
       .type('Notify in GitHub')
-      .postTo(project)
+      .postTo(claims)
   } else if (parts[0] == 'job') {
     claim.copy()
       .type('Notify job')
-      .postTo(project)
+      .postTo(claims)
   } else if (parts[0] == 'test') {
     claim.copy()
       .type('Notify test')
-      .postTo(project)
+      .postTo(claims)
   } else if (parts[0] == 'project') {
     String pid = parts[1]
     if (project.pid() != 'PMO' && pid != project.pid()) {
@@ -70,10 +74,10 @@ def exec(Project project, XML xml) {
         )
       )
     }
-    Farm farm = binding.variables.farm
+    Project notify = farm.find("@id='${pid}'")[0]
     claim.copy()
       .type('Notify project')
-      .postTo(farm.find("@id='${pid}'")[0])
+      .postTo(new ClaimsOf(farm, notify))
   } else {
     throw new IllegalStateException(
       String.format(

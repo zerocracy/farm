@@ -17,9 +17,11 @@
 package com.zerocracy.stk.pm.in.orders
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.SoftException
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.in.Orders
@@ -33,12 +35,13 @@ def exec(Project project, XML xml) {
   String login = claim.param('login')
   String job = claim.param('job')
   Wbs wbs = new Wbs(project).bootstrap()
+  Farm farm = binding.variables.farm
   if (!wbs.exists(job)) {
     wbs.add(job)
     claim.copy()
       .type('Job was added to WBS')
       .param('reason', 'Order start requested, but WBS is empty')
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
   }
   Orders orders = new Orders(project).bootstrap()
   if (orders.assigned(job)) {
@@ -54,7 +57,7 @@ def exec(Project project, XML xml) {
     claim.copy()
       .type('Order was canceled')
       .param('login', performer)
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
   }
   claim.copy()
     .type('Start order')
@@ -62,5 +65,5 @@ def exec(Project project, XML xml) {
     .param('login', login)
     .param('manual', true)
     .param('reason', claim.cid())
-    .postTo(project)
+    .postTo(new ClaimsOf(farm, project))
 }

@@ -18,6 +18,7 @@ package com.zerocracy.stk
 
 import com.jcabi.xml.XML
 import com.zerocracy.Par
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.farm.props.Props
 import com.zerocracy.Farm
@@ -34,5 +35,5 @@ def exec(Project project, XML xml) {
     ).say(props.get('//build/version', ''),
       props.get('//build/revision', ''),
       props.get('//build/date', ''))
-  ).postTo(project)
+  ).postTo(new ClaimsOf(farm, project))
 }

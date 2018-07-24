@@ -22,6 +22,7 @@ import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Par;
 import com.zerocracy.Project;
+import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.tk.RqUser;
 import java.io.FileOutputStream;
@@ -83,7 +84,7 @@ public final class TkArchive implements TkRegex {
             "message", new Par(
                 "Project %s was archived by @%s"
             ).say(project.pid(), new RqUser(this.farm, req, false).value())
-        ).postTo(this.farm);
+        ).postTo(new ClaimsOf(this.farm));
         return new RsWithType(
             new RsWithBody(new BytesOf(zip).asBytes()),
             "application/zip"

@@ -19,6 +19,7 @@ package com.zerocracy.tk;
 import com.zerocracy.Farm;
 import com.zerocracy.Par;
 import com.zerocracy.Policy;
+import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pmo.People;
 import com.zerocracy.pmo.Resumes;
@@ -118,7 +119,7 @@ public final class TkJoin implements TkRegex {
             .param("stackoverflow", stko)
             .param("about", about)
             .param("personality", personality)
-            .postTo(this.farm);
+            .postTo(new ClaimsOf(this.farm));
         new ClaimOut().type("Notify all").param(
             "message", new Par(
                 "A new user @%s (%s) would like to join us and needs a mentor;",
@@ -131,7 +132,9 @@ public final class TkJoin implements TkRegex {
                 "profiles of the user;",
                 "this is the message the user left for us:\n\n%s"
             ).say(author, personality, telegram, stko, about)
-        ).param("min", new Policy().get("1.min-rep", 0)).postTo(this.farm);
+        ).param("min", new Policy().get("1.min-rep", 0)).postTo(
+            new ClaimsOf(this.farm)
+        );
         new Resumes(this.farm).bootstrap()
             .add(
                 author,
