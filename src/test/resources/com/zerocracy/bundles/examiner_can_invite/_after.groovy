@@ -14,12 +14,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.invite_a_friend
+package com.zerocracy.bundles.pmo_user_invites
 
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
-import com.zerocracy.pmo.Awards
 import com.zerocracy.pmo.People
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
@@ -27,24 +26,13 @@ import org.hamcrest.Matchers
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   People people = new People(farm).bootstrap()
+  String friend = 'friend'
   MatcherAssert.assertThat(
-    'High reputation user\'s friend was not invited',
-    people.hasMentor('hfriend'),
+    people.hasMentor(friend),
     Matchers.is(true)
   )
   MatcherAssert.assertThat(
-    'Low reputation user\'s friend was invited',
-    people.hasMentor('lfriend'),
-    Matchers.is(false)
-  )
-  MatcherAssert.assertThat(
-    'Breakup with "tmp" user failed',
-    people.hasMentor('tmp'),
-    Matchers.is(false)
-  )
-  MatcherAssert.assertThat(
-    '256 points has not been deducted after breakup',
-    new Awards(farm, 'high').total(),
-    Matchers.equalTo(1000)
+    people.mentor(friend),
+    Matchers.is('user')
   )
 }
