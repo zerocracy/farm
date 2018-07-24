@@ -15,15 +15,15 @@ import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.Pmo
-import org.cactoos.iterable.Filtered
-import org.cactoos.iterable.Limited
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
+import org.cactoos.iterable.Filtered
+import org.cactoos.iterable.Limited
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Ping')
-  if (new Ledger(project).bootstrap().deficit()) {
+  if (new Ledger(project).bootstrap().cash().decimal() <= BigDecimal.ZERO) {
     // We must not resign when the project is not funded, simply
     // because developers can't do anything without money. Their PRs
     // will have no reviewers, etc.
