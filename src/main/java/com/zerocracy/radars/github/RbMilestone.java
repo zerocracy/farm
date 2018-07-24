@@ -60,7 +60,7 @@ public final class RbMilestone implements Rebound {
             answer = String.format(
                 "Milestone submitted: %d, for repo %s",
                 milestone.getInt("number"),
-                repo.coordinates().toString()
+                repo.coordinates()
             );
         } else {
             answer = "Not a milestone event";
