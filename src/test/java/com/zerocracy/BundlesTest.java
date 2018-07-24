@@ -150,7 +150,7 @@ public final class BundlesTest {
                 },
                 new Sorted<>(
                     new Reflections(
-                        "com.zerocracy.bundles.dont_resign_on_delay_unfunded_project", new ResourcesScanner()
+                        "com.zerocracy.bundles.resign_on_delay", new ResourcesScanner()
                     ).getResources(p -> p.endsWith("claims.xml"))
                 )
             )
