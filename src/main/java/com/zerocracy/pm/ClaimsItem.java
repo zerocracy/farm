@@ -39,7 +39,7 @@ import org.xembly.Directives;
 import org.xembly.Xembler;
 
 /**
- * Claims.
+ * Claims XML project's item.
  *
  * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
@@ -53,10 +53,10 @@ public final class ClaimsItem {
 
     /**
      * Ctor.
-     * @param pkt Project
+     * @param project Project
      */
-    public ClaimsItem(final Project pkt) {
-        this.project = pkt;
+    public ClaimsItem(final Project project) {
+        this.project = project;
     }
 
     /**
@@ -134,13 +134,11 @@ public final class ClaimsItem {
      */
     public boolean take(final Proc<XML> proc) throws IOException {
         boolean taken = false;
-        final Iterable<XML> found = new Limited<>(1, this.iterate());
-        if (found.iterator().hasNext()) {
-            final XML next = found.iterator().next();
+        for (final XML xml : new Limited<>(1, this.iterate())) {
             try {
-                new IoCheckedProc<>(proc).exec(next);
+                new IoCheckedProc<>(proc).exec(xml);
             } finally {
-                this.delete(next);
+                this.delete(xml);
             }
             taken = true;
         }

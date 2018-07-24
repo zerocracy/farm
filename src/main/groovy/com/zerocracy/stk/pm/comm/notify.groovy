@@ -22,8 +22,6 @@ import com.zerocracy.Project
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.Claims
-
 /**
  * Stakeholder for notifications. It can understand what channel
  * to use to notify by token (claim parameter)
@@ -43,27 +41,26 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   String[] parts = claim.token().split(';', 2)
   Farm farm = binding.variables.farm
-  Claims claims = new ClaimsOf(farm, project)
   if (parts[0] == 'slack') {
     claim.copy()
       .type('Notify in Slack')
-      .postTo(claims)
+      .postTo(new ClaimsOf(farm, project))
   } else if (parts[0] == 'telegram') {
     claim.copy()
       .type('Notify in Telegram')
-      .postTo(claims)
+      .postTo(new ClaimsOf(farm, project))
   } else if (parts[0] == 'github') {
     claim.copy()
       .type('Notify in GitHub')
-      .postTo(claims)
+      .postTo(new ClaimsOf(farm, project))
   } else if (parts[0] == 'job') {
     claim.copy()
       .type('Notify job')
-      .postTo(claims)
+      .postTo(new ClaimsOf(farm, project))
   } else if (parts[0] == 'test') {
     claim.copy()
       .type('Notify test')
-      .postTo(claims)
+      .postTo(new ClaimsOf(farm, project))
   } else if (parts[0] == 'project') {
     String pid = parts[1]
     if (project.pid() != 'PMO' && pid != project.pid()) {

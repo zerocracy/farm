@@ -46,7 +46,7 @@ import org.xembly.Directives;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public final class ClaimsXmlTest {
+public final class ClaimsItemTest {
 
     @Test
     @Ignore
