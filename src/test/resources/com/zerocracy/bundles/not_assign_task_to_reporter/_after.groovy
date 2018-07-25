@@ -18,13 +18,11 @@ package com.zerocracy.bundles.not_assign_task_to_reporter
 
 import com.jcabi.xml.XML
 import com.zerocracy.Project
+import com.zerocracy.pm.staff.Elections
 
 def exec(Project project, XML xml) {
-  // @todo #747:30min This test started to fail after moving groovy stakeholder
-  //  scripts to groovy directory. Assertion `elections.elected` is false now,
-  //  so it's needed to investigate why this test is failing and fix it.
-//  Elections elections = new Elections(project).bootstrap()
-//  String job = 'gh:test/farm#1'
-//  assert elections.elected(job)
-//  assert elections.winner(job) == 'g4s8'
+  Elections elections = new Elections(project).bootstrap()
+  String job = 'gh:test/farm#1'
+  assert elections.elected(job)
+  assert elections.winner(job) == 'g4s8'
 }
