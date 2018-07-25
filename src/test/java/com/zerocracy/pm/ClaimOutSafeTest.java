@@ -16,7 +16,9 @@
  */
 package com.zerocracy.pm;
 
-import com.zerocracy.Project;
+import com.jcabi.xml.XML;
+import java.io.IOException;
+import org.cactoos.Proc;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -30,8 +32,16 @@ import org.junit.rules.ExpectedException;
  */
 public final class ClaimOutSafeTest {
 
-    private static final Project FAILING = file -> {
-        throw new IllegalStateException("Fail");
+    private static final Claims FAILING = new Claims() {
+        @Override
+        public void take(final Proc<XML> proc, final int limit) {
+            throw new IllegalStateException("take failed");
+        }
+
+        @Override
+        public void submit(final XML claim) throws IOException {
+            throw new IllegalStateException("submit failed");
+        }
     };
 
     @Rule

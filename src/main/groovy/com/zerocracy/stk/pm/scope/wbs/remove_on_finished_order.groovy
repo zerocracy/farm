@@ -17,7 +17,9 @@
 package com.zerocracy.stk.pm.scope.wbs
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 
@@ -25,7 +27,8 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Order was finished')
   ClaimIn claim = new ClaimIn(xml)
+  Farm farm = binding.variables.farm
   claim.copy()
     .type('Remove job from WBS')
-    .postTo(project)
+    .postTo(new ClaimsOf(farm, project))
 }

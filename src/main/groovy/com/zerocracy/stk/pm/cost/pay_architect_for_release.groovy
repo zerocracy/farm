@@ -22,6 +22,7 @@ import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.Footprint
@@ -73,13 +74,13 @@ def exec(Project project, XML xml) {
       .param('reason', new Par('Release bonus for ARC §54').say())
       .param('minutes', mpa)
       .param('job', 'none')
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
     claim.copy()
       .type('Notify PMO')
       .param(
       'message',
       new Par('We just sent "ARC release bonus" of %d minutes to %s in %s (%d claims)')
         .say(mpa, it, project.pid(), claims)
-    ).postTo(farm)
+    ).postTo(new ClaimsOf(farm))
   }
 }

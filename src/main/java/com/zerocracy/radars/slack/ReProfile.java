@@ -20,7 +20,7 @@ import com.jcabi.xml.XMLDocument;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.Farm;
-import com.zerocracy.pmo.Pmo;
+import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.radars.ClaimOnQuestion;
 import com.zerocracy.radars.Question;
 import java.io.IOException;
@@ -51,7 +51,7 @@ public final class ReProfile implements Reaction<SlackMessagePosted> {
             .claim()
             .token(new SkToken(event))
             .author(new SkPerson(farm, event).uid(question.invited()))
-            .postTo(new Pmo(farm));
+            .postTo(new ClaimsOf(farm));
         return question.matches();
     }
 

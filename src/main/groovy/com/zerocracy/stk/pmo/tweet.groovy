@@ -20,6 +20,7 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtTwitter
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
@@ -32,11 +33,11 @@ def exec(Project project, XML xml) {
   ExtTwitter.Tweets tweets = new ExtTwitter(farm).value()
   String body = new Par.ToText(par).toString()
   long tid = tweets.publish(body)
-  claim.copy().type('Tweeted').postTo(project)
+  claim.copy().type('Tweeted').postTo(new ClaimsOf(farm, project))
   claim.copy().type('Notify PMO').param(
     'message', new Par(
       'We just [tweeted](https://twitter.com/0crat/status/%d) this text:',
       '`%s`'
     ).say(tid, body)
-  ).postTo(project)
+  ).postTo(new ClaimsOf(farm, project))
 }

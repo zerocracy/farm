@@ -28,6 +28,7 @@ import com.zerocracy.Farm;
 import com.zerocracy.Par;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.cash.Currency;
+import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.pm.ClaimOut;
 import java.io.IOException;
@@ -147,7 +148,7 @@ final class Crypto implements Bank {
                         bought.getStatus(),
                         balance
                     )
-                ).postTo(this.farm);
+                ).postTo(new ClaimsOf(this.farm));
             }
         } catch (final CoinbaseException ex) {
             throw new IOException("Failed to buy at Coinbase", ex);

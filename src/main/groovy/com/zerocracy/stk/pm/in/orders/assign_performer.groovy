@@ -17,7 +17,9 @@
 package com.zerocracy.stk.pm.in.orders
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.in.Orders
@@ -33,6 +35,7 @@ def exec(Project project, XML xml) {
   Orders orders = new Orders(project).bootstrap()
   Reviews reviews = new Reviews(project).bootstrap()
   Elections elections = new Elections(project).bootstrap()
+  Farm farm = binding.variables.farm
   for (String job : wbs.iterate()) {
     if (orders.assigned(job)) {
       continue
@@ -52,7 +55,7 @@ def exec(Project project, XML xml) {
       .param('login', winner)
       .param('reason', reason)
       .param('public', true)
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
   }
 }
 

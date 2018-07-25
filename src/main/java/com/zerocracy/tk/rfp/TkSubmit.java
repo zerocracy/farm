@@ -19,6 +19,7 @@ package com.zerocracy.tk.rfp;
 import com.zerocracy.Farm;
 import com.zerocracy.Par;
 import com.zerocracy.Policy;
+import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pmo.Rfps;
 import com.zerocracy.tk.RqUser;
@@ -88,7 +89,7 @@ public final class TkSubmit implements Take {
                     ).say(rid)
                 )
                 .param("min", new Policy().get("40.min", 0))
-                .postTo(this.farm);
+                .postTo(new ClaimsOf(this.farm));
         }
         return new RsForward(
             new RsParFlash(

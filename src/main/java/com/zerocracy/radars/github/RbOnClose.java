@@ -23,6 +23,7 @@ import com.jcabi.github.Label;
 import com.zerocracy.Farm;
 import com.zerocracy.Par;
 import com.zerocracy.Project;
+import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.pm.ClaimOut;
 import java.io.IOException;
 import java.util.Arrays;
@@ -64,13 +65,13 @@ public final class RbOnClose implements Rebound {
                         "GitHub issue was closed as 'invalid' by @%s"
                     ).say(author)
                 )
-                .postTo(project);
+                .postTo(new ClaimsOf(farm, project));
             new ClaimOut()
                 .type("Remove job from WBS")
                 .token(new TokenOfIssue(issue))
                 .author(author)
                 .param("job", job)
-                .postTo(project);
+                .postTo(new ClaimsOf(farm, project));
             answer = "It's invalid";
         } else {
             new ClaimOut()
@@ -80,7 +81,7 @@ public final class RbOnClose implements Rebound {
                 .param("job", job)
                 .until(TimeUnit.MINUTES.toSeconds((long) Tv.FIFTEEN))
                 .param("reason", "GitHub issue was closed")
-                .postTo(project);
+                .postTo(new ClaimsOf(farm, project));
             answer = "Asked WBS to take it out of scope";
         }
         return answer;

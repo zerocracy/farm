@@ -18,6 +18,7 @@ package com.zerocracy.stk.pm
 
 import com.jcabi.xml.XML
 import com.zerocracy.Par
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.Farm
 import com.zerocracy.Project
@@ -47,5 +48,5 @@ def exec(Project project, XML xml) {
     new Par(
       'The title changed to "%s"'
     ).say(title)
-  ).postTo(project)
+  ).postTo(new ClaimsOf(farm, project))
 }

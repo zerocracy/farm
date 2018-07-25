@@ -20,6 +20,7 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Policy
 import com.zerocracy.Project
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Awards
@@ -41,6 +42,6 @@ def exec(Project pmo, XML xml) {
       .param('login', it)
       .param('points', after - before)
       .param('reason', 'fresh awards')
-      .postTo(pmo)
+      .postTo(new ClaimsOf(farm))
   }
 }

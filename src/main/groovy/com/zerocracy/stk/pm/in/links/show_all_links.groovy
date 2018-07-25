@@ -18,6 +18,7 @@ package com.zerocracy.stk.pm.in.links
 
 import com.jcabi.xml.XML
 import com.zerocracy.Par
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.Farm
 import com.zerocracy.Project
@@ -36,5 +37,5 @@ def exec(Project project, XML xml) {
     new Par(
       'This project is linked with %d resource(s), by §17: `%s`',
     ).say(links.size(), String.join('`, `', links))
-  ).postTo(project)
+  ).postTo(new ClaimsOf(farm, project))
 }

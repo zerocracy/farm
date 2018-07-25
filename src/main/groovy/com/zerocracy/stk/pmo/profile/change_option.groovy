@@ -21,6 +21,7 @@ import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.SoftException
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Options
@@ -48,7 +49,8 @@ def exec(Project pmo, XML xml) {
       )
     }
     options.maxJobsInAgenda(value.toInteger())
-    claim.reply("Your maxJobsInAgenda option is set to ${value.toInteger()}").postTo(pmo)
+    claim.reply("Your maxJobsInAgenda option is set to ${value.toInteger()}")
+      .postTo(new ClaimsOf(farm))
   } else {
     throw new SoftException(
       new Par(
