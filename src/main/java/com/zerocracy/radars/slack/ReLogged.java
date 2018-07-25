@@ -17,7 +17,6 @@
 package com.zerocracy.radars.slack;
 
 import com.jcabi.log.Logger;
-import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackEvent;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.Farm;
@@ -46,7 +45,7 @@ public final class ReLogged<T extends SlackEvent> implements Reaction<T> {
 
     @Override
     public boolean react(final Farm farm, final T event,
-        final SlackSession session) throws IOException {
+        final SkSession session) throws IOException {
         if (event instanceof SlackMessagePosted) {
             final SlackMessagePosted posted =
                 SlackMessagePosted.class.cast(event);

@@ -17,8 +17,12 @@
 package com.zerocracy.radars.slack;
 
 import com.ullink.slack.simpleslackapi.SlackChannel;
+import com.ullink.slack.simpleslackapi.SlackPersona;
 import com.ullink.slack.simpleslackapi.SlackSession;
+import com.ullink.slack.simpleslackapi.SlackTeam;
 import com.ullink.slack.simpleslackapi.SlackUser;
+import com.ullink.slack.simpleslackapi.listeners.SlackChannelJoinedListener;
+import com.ullink.slack.simpleslackapi.listeners.SlackMessagePostedListener;
 import java.io.IOException;
 
 /**
@@ -26,6 +30,7 @@ import java.io.IOException;
  *
  * @since 1.0
  */
+@SuppressWarnings("PMD.TooManyMethods")
 public final class RealSkSession implements SkSession {
 
     /**
@@ -75,6 +80,40 @@ public final class RealSkSession implements SkSession {
             }
         }
         return has;
+    }
+
+    @Override
+    public SlackTeam getTeam() {
+        return this.origin.getTeam();
+    }
+
+    @Override
+    public void connect() throws IOException {
+        this.origin.connect();
+    }
+
+    @Override
+    public void disconnect() throws IOException {
+        this.origin.disconnect();
+    }
+
+    @Override
+    public SlackPersona persona() {
+        return this.origin.sessionPersona();
+    }
+
+    @Override
+    public void addMessagePostedListener(
+        final SlackMessagePostedListener listener
+    ) {
+        this.origin.addMessagePostedListener(listener);
+    }
+
+    @Override
+    public void addChannelJoinedListener(
+        final SlackChannelJoinedListener listener
+    ) {
+        this.origin.addChannelJoinedListener(listener);
     }
 
     @Override

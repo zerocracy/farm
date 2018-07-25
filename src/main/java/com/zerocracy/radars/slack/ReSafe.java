@@ -16,7 +16,6 @@
  */
 package com.zerocracy.radars.slack;
 
-import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.Farm;
 import com.zerocracy.SafeSentry;
@@ -50,7 +49,7 @@ public final class ReSafe implements Reaction<SlackMessagePosted> {
 
     @Override
     public boolean react(final Farm farm, final SlackMessagePosted event,
-        final SlackSession session) throws IOException {
+        final SkSession session) throws IOException {
         return new IoCheckedFunc<>(
             new FuncWithFallback<Boolean, Boolean>(
                 smart -> {
@@ -58,7 +57,7 @@ public final class ReSafe implements Reaction<SlackMessagePosted> {
                     try {
                         result = this.origin.react(farm, event, session);
                     } catch (final SoftException ex) {
-                        session.sendMessage(
+                        session.send(
                             event.getChannel(), ex.getMessage()
                         );
                     }
@@ -66,7 +65,7 @@ public final class ReSafe implements Reaction<SlackMessagePosted> {
                 },
                 new FuncOf<>(
                     throwable -> {
-                        session.sendMessage(
+                        session.send(
                             event.getChannel(),
                             new TxtUnrecoverableError(
                                 throwable, new Props(farm),

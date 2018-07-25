@@ -16,7 +16,6 @@
  */
 package com.zerocracy.radars.slack;
 
-import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.SlackUser;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.Farm;
@@ -44,8 +43,8 @@ public final class ReNotMine implements Reaction<SlackMessagePosted> {
 
     @Override
     public boolean react(final Farm farm, final SlackMessagePosted event,
-        final SlackSession session) throws IOException {
-        final String self = session.sessionPersona().getUserName();
+        final SkSession session) throws IOException {
+        final String self = session.persona().getUserName();
         final SlackUser sender = event.getSender();
         boolean done = false;
         if (!"USLACKBOT".equals(sender.getId())
