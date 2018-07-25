@@ -18,6 +18,6 @@ SOFTWARE.
 <claims xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.61.5/xsd/pm/claims.xsd" version="0.1" updated="2017-08-18T13:18:00.000Z">
   <claim id="1">
     <type>Ping</type>
-    <created>2018-01-20T11:18:09.228Z</created>
+    <created>2018-07-23T11:18:09.228Z</created>
   </claim>
 </claims>

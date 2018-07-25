@@ -21,6 +21,14 @@ import java.time.ZonedDateTime
 import org.cactoos.iterable.Filtered
 import org.cactoos.iterable.Limited
 
+/**
+ * Resign an order that is kept for too long.
+ * Orders in unfunded projects are not resigned at all, similarly REV tasks
+ * are not resigned even in funded projects.
+ *
+ * @param project A project
+ * @param xml XML file received
+ */
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Ping')

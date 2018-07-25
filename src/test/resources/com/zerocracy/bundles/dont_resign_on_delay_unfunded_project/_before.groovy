@@ -16,7 +16,7 @@
  */
 package com.zerocracy.bundles.dont_resign_on_delay_unfunded_project
 
-import com.jcabi.github.Github
+
 import com.jcabi.github.Repo
 import com.jcabi.github.Repos
 import com.jcabi.xml.XML
@@ -29,8 +29,7 @@ import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
-  Github github = new ExtGithub(farm).value()
-  Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
+  Repo repo = new ExtGithub(farm).value().repos().create(new Repos.RepoCreate('test', false))
   repo.issues().create('Issue title', 'Issue body')
   repo.pulls().create('PR title', 'master', 'master')
   MatcherAssert.assertThat(
