@@ -14,7 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.graduation
+package com.zerocracy.bundles.fetches_subdirectories
+
 
 import com.jcabi.xml.XML
 import com.zerocracy.Project
