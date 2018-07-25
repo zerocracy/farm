@@ -16,7 +16,6 @@
  */
 package com.zerocracy.stk.pm.in.orders
 
-
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Par
@@ -64,7 +63,7 @@ def exec(Project project, XML xml) {
       'message',
       new Par('Job was finished in %d hours, bonus for fast delivery is possible (see §36)')
         .say(Duration.ofMillis(millis).toHours())
-    ).postTo(project)
+    ).postTo(new ClaimsOf(farm, project))
     speed = new Policy().get('36.bonus', 5)
   }
   if (estimates.exists(job)) {
@@ -76,7 +75,6 @@ def exec(Project project, XML xml) {
   int minutes = new Boosts(project).bootstrap().factor(job) * 15 + speed
   Roles roles = new Roles(project).bootstrap()
   List<String> qa = roles.findByRole('QA')
-  Farm farm = binding.variables.farm
   if (qa.empty || roles.hasRole(performer, 'ARC', 'PO')) {
     List<String> complaints = new JobAudit(farm, project).review(job)
     if (complaints.empty) {
