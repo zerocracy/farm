@@ -47,7 +47,7 @@ def exec(Project pmo, XML xml) {
   String login = claim.param('login')
   if (new Resumes(farm).bootstrap().examiner(login) != author) {
     throw new SoftException(
-      new Par('You are not the examiner of @%s, see §1').say(login)
+      new Par('You are not the examiner of %s, see §1').say(login)
     )
   }
   User.Smart user = new User.Smart(
