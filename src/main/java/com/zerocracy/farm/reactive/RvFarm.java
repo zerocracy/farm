@@ -93,7 +93,7 @@ public final class RvFarm implements Farm {
      * @param threads How many threads to use
      */
     public RvFarm(final Farm farm, final Brigade bgd, final int threads) {
-        this(farm, new AsyncFlush(new DefaultFlush(bgd), threads));
+        this(farm, new AsyncFlush(new DefaultFlush(farm, bgd), threads));
     }
 
     /**

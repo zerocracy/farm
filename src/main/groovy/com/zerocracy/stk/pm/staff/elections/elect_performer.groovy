@@ -16,15 +16,14 @@
  */
 package com.zerocracy.stk.pm.staff.elections
 
-import com.jcabi.log.Logger
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Policy
 import com.zerocracy.Project
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.Claims
 import com.zerocracy.pm.cost.Boosts
 import com.zerocracy.pm.cost.Ledger
 import com.zerocracy.pm.in.Orders
@@ -42,11 +41,6 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Ping')
   ClaimIn claim = new ClaimIn(xml)
-  Claims claims = new Claims(project)
-  if (claims.iterate().size() > 1 && !new ClaimIn(xml).hasParam('force')) {
-    Logger.info(this, 'Still %d claims, can\'t elect', claims.iterate().size())
-    return
-  }
   if (new Ledger(project).bootstrap().deficit()) {
     return
   }
@@ -110,7 +104,7 @@ def exec(Project project, XML xml) {
         .param('job', job)
         .param('role', role)
         .param('reason', elections.reason(job))
-        .postTo(project)
+        .postTo(new ClaimsOf(farm, project))
       break
     }
   }

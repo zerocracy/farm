@@ -18,6 +18,8 @@ package com.zerocracy.tk.project;
 
 import com.jcabi.matchers.XhtmlMatchers;
 import com.zerocracy.Farm;
+import com.zerocracy.Project;
+import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.footprint.FtFarm;
 import com.zerocracy.farm.props.PropsFarm;
@@ -38,10 +40,11 @@ public final class TkReportTest {
     public void rendersReport() throws Exception {
         final Farm farm = new FtFarm(new PropsFarm(new FkFarm()));
         final String uid = "yegor256";
+        final Project project = farm.find("@id='C00000000'").iterator().next();
         new ClaimOut()
             .type("Order was given")
             .param("login", uid)
-            .postTo(farm.find("@id='C00000000'").iterator().next());
+            .postTo(new ClaimsOf(farm, project));
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
                 new View(

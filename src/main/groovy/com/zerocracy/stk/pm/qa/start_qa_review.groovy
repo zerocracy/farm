@@ -21,6 +21,7 @@ import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.qa.Reviews
@@ -53,7 +54,7 @@ def exec(Project project, XML xml) {
     .type('Agenda was updated')
     .param('login', inspector)
     .param('reason', 'start_qa_review')
-    .postTo(project)
+    .postTo(new ClaimsOf(farm, project))
   new Agenda(farm, performer).bootstrap().inspector(job, inspector)
   claim.copy().type('Notify job').token("job;${job}").param(
     'message',
@@ -62,5 +63,5 @@ def exec(Project project, XML xml) {
       'the job will be fully closed and all payments will be made',
       'when the quality review is completed'
     ).say(inspector, performer)
-  ).postTo(project)
+  ).postTo(new ClaimsOf(farm, project))
 }

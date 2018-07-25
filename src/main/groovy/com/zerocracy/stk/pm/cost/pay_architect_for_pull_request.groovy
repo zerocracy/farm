@@ -23,6 +23,7 @@ import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
@@ -39,6 +40,7 @@ def exec(Project project, XML xml) {
     return
   }
   List<String> logins = new Roles(project).bootstrap().findByRole('ARC')
+  Farm farm = binding.variables.farm
   if (logins.empty) {
     claim.copy()
       .type('Notify project')
@@ -49,7 +51,7 @@ def exec(Project project, XML xml) {
           'I can\'t pay for the pull request review by §28: %s',
         ).say(job)
       )
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
     return
   }
   if (logins.size() > 1) {
@@ -62,14 +64,13 @@ def exec(Project project, XML xml) {
           'I can\'t pay for the pull request review by §28: %s'
         ).say(job)
       )
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
     return
   }
   String arc = logins[0]
   if (arc == performer) {
     return
   }
-  Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
   Issue.Smart issue = new Issue.Smart(new Job.Issue(github, job))
   if (issue.pull) {
@@ -84,6 +85,6 @@ def exec(Project project, XML xml) {
         ).say()
       )
       .param('minutes', new Policy().get('28.price', 10))
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
   }
 }

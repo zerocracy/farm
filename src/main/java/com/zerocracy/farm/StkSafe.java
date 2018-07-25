@@ -22,6 +22,7 @@ import com.zerocracy.Project;
 import com.zerocracy.SafeSentry;
 import com.zerocracy.SoftException;
 import com.zerocracy.Stakeholder;
+import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.tools.TxtUnrecoverableError;
@@ -97,7 +98,9 @@ public final class StkSafe implements Stakeholder {
             throw ex;
         } catch (final SoftException ex) {
             if (claim.hasToken()) {
-                new ClaimIn(xml).reply(ex.getMessage()).postTo(project);
+                new ClaimIn(xml).reply(ex.getMessage()).postTo(
+                    new ClaimsOf(this.farm, project)
+                );
             } else {
                 new SafeSentry().capture(
                     new IllegalArgumentException(
@@ -135,7 +138,7 @@ public final class StkSafe implements Stakeholder {
                     .param("origin_type", claim.type())
                     .param("message", msg.toString())
                     .param("stacktrace", StkSafe.stacktrace(ex))
-                    .postTo(project);
+                    .postTo(new ClaimsOf(this.farm, project));
             }
             new SafeSentry().capture(ex);
             if (claim.hasToken() && !claim.type().startsWith("Notify")) {
@@ -149,7 +152,7 @@ public final class StkSafe implements Stakeholder {
                             claim.author()
                         )
                     ).asString()
-                ).postTo(project);
+                ).postTo(new ClaimsOf(this.farm, project));
             }
         }
     }

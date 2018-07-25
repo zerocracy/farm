@@ -21,12 +21,14 @@ import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
+import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.footprint.FtFarm;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.Claims;
+import com.zerocracy.pm.ClaimsItem;
 import com.zerocracy.tk.View;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
@@ -46,11 +48,12 @@ public final class TkClaimTest {
         final Farm farm = new FtFarm(new PropsFarm(new FkFarm()));
         final long cid = 42L;
         final ClaimOut claim = new ClaimOut().type("test").cid(cid);
-        claim.postTo(farm.find("@id='C00000000'").iterator().next());
+        final Project project = farm.find("@id='C00000000'").iterator().next();
+        claim.postTo(new ClaimsOf(farm, project));
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
                 new View(
-                    farm,  String.format("/footprint/C00000000/%d", cid)
+                    farm, String.format("/footprint/C00000000/%d", cid)
                 ).xml()
             ),
             XhtmlMatchers.hasXPaths(
@@ -66,9 +69,10 @@ public final class TkClaimTest {
         final long parent = 111L;
         final long child = 222L;
         final Project proj = farm.find("@id='C00000000'").iterator().next();
-        new ClaimOut().type("test").cid(parent).postTo(proj);
-        final XML xml = new Claims(proj).iterate().iterator().next();
-        new ClaimIn(xml).copy().cid(child).postTo(proj);
+        new ClaimOut().type("test").cid(parent)
+            .postTo(new ClaimsOf(farm, proj));
+        final XML xml = new ClaimsItem(proj).iterate().iterator().next();
+        new ClaimIn(xml).copy().cid(child).postTo(new ClaimsOf(farm, proj));
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
                 new View(
@@ -89,13 +93,16 @@ public final class TkClaimTest {
         final long parent = 164L;
         final int children = Tv.FIFTY;
         final Project proj = farm.find("@id='C00000000'").iterator().next();
-        new ClaimOut().type("test").cid(parent).postTo(proj);
+        final Claims claims = new ClaimsOf(farm, proj);
+        new ClaimOut().type("test").cid(parent)
+            .postTo(claims);
         final ClaimIn claim = new ClaimIn(
-            new Claims(proj).iterate().iterator().next()
+            new ClaimsItem(proj).iterate().iterator().next()
         );
         for (int number = 0; number < children; ++number) {
             claim.copy().cid((long) (Tv.THOUSAND + number))
-                .param("number", number).postTo(proj);
+                .param("number", number)
+                .postTo(claims);
         }
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(

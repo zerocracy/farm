@@ -22,6 +22,7 @@ import com.ullink.slack.simpleslackapi.SlackSession
 import com.ullink.slack.simpleslackapi.SlackUser
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtSlack
 import com.zerocracy.pm.ClaimOut
 import org.cactoos.list.SolidList
@@ -49,7 +50,7 @@ def exec(Project project, XML xml) {
     .type('Notify in Slack')
     .token("slack;${channelId};none;one-more-part")
     .param('message', 'Hello None!')
-    .postTo(project)
+    .postTo(new ClaimsOf(farm, project))
 }
 
 

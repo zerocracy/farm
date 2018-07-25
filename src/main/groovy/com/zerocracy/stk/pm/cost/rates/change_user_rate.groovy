@@ -22,6 +22,7 @@ import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.SoftException
 import com.zerocracy.cash.Cash
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.cost.Rates
@@ -76,6 +77,6 @@ def exec(Project project, XML xml) {
     .type('User rate was changed')
     .param('login', login)
     .param('rate', rate)
-    .postTo(project)
-  claim.reply(msg).postTo(project)
+    .postTo(new ClaimsOf(farm, project))
+  claim.reply(msg).postTo(new ClaimsOf(farm, project))
 }

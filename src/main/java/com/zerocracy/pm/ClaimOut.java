@@ -20,9 +20,6 @@ import com.jcabi.xml.ClasspathSources;
 import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSLChain;
 import com.jcabi.xml.XSLDocument;
-import com.zerocracy.Farm;
-import com.zerocracy.Project;
-import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.Date;
@@ -51,7 +48,7 @@ import org.xembly.Xembler;
  * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@SuppressWarnings({ "PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods" })
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 public final class ClaimOut implements Iterable<Directive> {
 
     /**
@@ -95,12 +92,12 @@ public final class ClaimOut implements Iterable<Directive> {
 
     /**
      * Post it to the project.
-     * @param project Project
+     * @param claims Claims
      * @throws IOException If fails
      */
     @SuppressWarnings("overloads")
-    public void postTo(final Project project) throws IOException {
-        new Claims(project).bootstrap().add(
+    public void postTo(final Claims claims) throws IOException {
+        claims.submit(
             new XSLChain(
                 new Mapped<>(
                     s -> XSLDocument.make(
@@ -122,16 +119,6 @@ public final class ClaimOut implements Iterable<Directive> {
                 .with(new ClasspathSources())
                 .transform(new XMLDocument(new Xembler(this).xmlQuietly()))
         );
-    }
-
-    /**
-     * Post it to the PMO.
-     * @param farm The farm
-     * @throws IOException If fails
-     */
-    @SuppressWarnings("overloads")
-    public void postTo(final Farm farm) throws IOException {
-        this.postTo(new Pmo(farm));
     }
 
     /**

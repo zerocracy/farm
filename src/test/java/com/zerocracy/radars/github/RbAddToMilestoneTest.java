@@ -24,7 +24,7 @@ import com.jcabi.github.mock.MkGithub;
 import com.jcabi.xml.XML;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.pm.ClaimIn;
-import com.zerocracy.pm.Claims;
+import com.zerocracy.pm.ClaimsItem;
 import java.io.IOException;
 import java.util.Collection;
 import javax.json.Json;
@@ -84,7 +84,9 @@ public final class RbAddToMilestoneTest {
             )
         );
         final Collection<XML> claims =
-            new Claims(new GhProject(farm, bug.repo())).bootstrap().iterate();
+            new ClaimsItem(new GhProject(farm, bug.repo()))
+                .bootstrap()
+                .iterate();
         final ClaimIn claim = new ClaimIn(claims.iterator().next());
         MatcherAssert.assertThat(
             claim.type(),

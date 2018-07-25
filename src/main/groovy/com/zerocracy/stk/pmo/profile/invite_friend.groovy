@@ -19,6 +19,7 @@ package com.zerocracy.stk.pmo.profile
 import com.jcabi.github.User
 import com.jcabi.xml.XML
 import com.zerocracy.*
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
@@ -102,7 +103,7 @@ def exec(Project pmo, XML xml) {
       'Thanks, %s can now work with us,',
       'and you are the mentor, see §1',
     ).say(name)
-  ).postTo(pmo)
+  ).postTo(new ClaimsOf(farm))
   claim.copy()
     .type('Notify user')
     .token("user;${login}")
@@ -113,19 +114,19 @@ def exec(Project pmo, XML xml) {
         'you can now apply to the projects, see §2'
       ).say(author)
     )
-    .postTo(pmo)
+    .postTo(new ClaimsOf(farm))
   claim.copy()
     .type('Make payment')
     .param('login', author)
     .param('job', 'none')
     .param('minutes', -new Policy().get('1.price', 64))
     .param('reason', new Par('Invited @%s').say(login))
-    .postTo(pmo)
+    .postTo(new ClaimsOf(farm))
   claim.copy().type('Notify PMO').param(
     'message', new Par(
       'New user @%s was invited by @%s'
     ).say(login, author)
-  ).postTo(pmo)
+  ).postTo(new ClaimsOf(farm))
   claim.copy().type('Tweet').param(
     'par', new Par(
       'A new user just joined us;',
@@ -134,5 +135,5 @@ def exec(Project pmo, XML xml) {
       'https://www.0crat.com/join',
       '#zerocracy #freelance #remotework'
     ).say(login)
-  ).postTo(pmo)
+  ).postTo(new ClaimsOf(farm))
 }

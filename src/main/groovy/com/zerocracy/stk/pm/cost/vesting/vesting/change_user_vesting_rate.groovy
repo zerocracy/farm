@@ -17,10 +17,12 @@
 package com.zerocracy.stk.pm.cost.vesting
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.SoftException
 import com.zerocracy.cash.Cash
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.cost.Vesting
@@ -51,6 +53,7 @@ def exec(Project project, XML xml) {
     ).say(login, rate)
   }
   vesting.rate(login, rate)
-  claim.reply(msg).postTo(project)
-  claim.copy().type('User vesting rate was changed').postTo(project)
+  Farm farm = binding.variables.farm
+  claim.reply(msg).postTo(new ClaimsOf(farm, project))
+  claim.copy().type('User vesting rate was changed').postTo(new ClaimsOf(farm, project))
 }

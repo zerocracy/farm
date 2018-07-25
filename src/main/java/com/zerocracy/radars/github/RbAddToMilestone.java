@@ -19,6 +19,7 @@ package com.zerocracy.radars.github;
 import com.jcabi.github.Github;
 import com.jcabi.github.Issue;
 import com.zerocracy.Farm;
+import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.pm.ClaimOut;
 import java.io.IOException;
 import javax.json.JsonObject;
@@ -27,7 +28,8 @@ import org.cactoos.text.FormattedText;
 /**
  * Updates precedence for issues assigned to milestone.
  *
- * @since 0.26
+ * @since 1.0
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class RbAddToMilestone implements Rebound {
@@ -47,7 +49,7 @@ public final class RbAddToMilestone implements Rebound {
             .token(new TokenOfIssue(issue))
             .param("job", new Job(issue))
             .param("milestone", milestone)
-            .postTo(new GhProject(farm, issue.repo()));
+            .postTo(new ClaimsOf(farm, new GhProject(farm, issue.repo())));
         return new FormattedText(
             "Issue #%d has been added to milestone #%d",
             issue.number(), milestone

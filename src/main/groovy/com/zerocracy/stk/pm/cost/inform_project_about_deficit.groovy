@@ -21,6 +21,7 @@ import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.cost.Estimates
@@ -48,7 +49,7 @@ def exec(Project project, XML xml) {
           'we will continue to assign jobs to performers.',
         ).say(project.pid(), cash, locked)
       )
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
   }
   if (!ledger.deficit() && cash < locked) {
     ledger.deficit(true)
@@ -65,6 +66,6 @@ def exec(Project project, XML xml) {
           'please, [fund the project](/p/%1$s) ASAP'
         ).say(project.pid(), cash, locked)
       )
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
   }
 }

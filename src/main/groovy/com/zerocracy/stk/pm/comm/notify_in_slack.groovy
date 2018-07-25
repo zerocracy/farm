@@ -23,6 +23,7 @@ import com.ullink.slack.simpleslackapi.SlackSession
 import com.ullink.slack.simpleslackapi.SlackUser
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtSlack
 import com.zerocracy.farm.Assume
 import com.zerocracy.farm.props.Props
@@ -55,7 +56,7 @@ def exec(Project project, XML xml) {
         claim.copy()
           .type('Error')
           .param('message', "Can't find ${parts[2]} in Slack session for ${parts[1]}")
-          .postTo(project)
+          .postTo(new ClaimsOf(farm, project))
         return
       }
       session.sendMessage(
@@ -69,7 +70,7 @@ def exec(Project project, XML xml) {
         claim.copy()
           .type('Error')
           .param('message', "Can't find ${parts[2]} in Slack session for ${parts[1]}")
-          .postTo(project)
+          .postTo(new ClaimsOf(farm, project))
         return
       }
       session.sendMessage(channel, "<@${user.id}> ${message}")

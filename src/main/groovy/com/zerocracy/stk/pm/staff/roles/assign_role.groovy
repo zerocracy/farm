@@ -25,6 +25,7 @@ import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.SoftException
 import com.zerocracy.cash.Cash
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
@@ -84,14 +85,14 @@ def exec(Project project, XML xml) {
     claim.copy()
       .type('Role was assigned')
       .param('role', role)
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
   }
   if (claim.hasParam('rate')) {
     Cash rate = new Cash.S(claim.param('rate'))
     claim.copy()
       .type('Change user rate')
       .param('rate', rate)
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
   } else {
     if (rates.exists(login)) {
       msg += new Par(
@@ -113,7 +114,7 @@ def exec(Project project, XML xml) {
     claim.copy()
       .type('Change user vesting rate')
       .param('rate', rate)
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
   }
-  claim.reply(msg).postTo(project)
+  claim.reply(msg).postTo(new ClaimsOf(farm, project))
 }

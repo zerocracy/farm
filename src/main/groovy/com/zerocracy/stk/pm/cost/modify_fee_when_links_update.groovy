@@ -25,6 +25,7 @@ import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
@@ -61,7 +62,7 @@ def exec(Project project, XML xml) {
           'the management fee is waived, see §23'
         ).say()
       )
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
   }
   if (!free && catalog.fee(project.pid()) == Cash.ZERO) {
     Cash fee = new Policy().get('23.fee', Cash.ZERO)
@@ -75,6 +76,6 @@ def exec(Project project, XML xml) {
           'the management fee %s is applied, see §23'
         ).say(fee)
       )
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
   }
 }

@@ -20,6 +20,7 @@ import com.jcabi.github.Comment;
 import com.jcabi.xml.XMLDocument;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
+import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.radars.ClaimOnQuestion;
 import com.zerocracy.radars.Question;
 import java.io.IOException;
@@ -58,7 +59,7 @@ public final class ReQuestion implements Response {
             .param("repo", comment.issue().repo().coordinates())
             .param("issue", comment.issue().number())
             .param("comment", comment.number())
-            .postTo(project);
+            .postTo(new ClaimsOf(farm, project));
         return question.matches();
     }
 
