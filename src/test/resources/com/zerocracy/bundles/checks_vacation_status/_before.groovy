@@ -22,7 +22,5 @@ import com.zerocracy.Project
 import com.zerocracy.pmo.People
 
 def exec(Project pmo, XML xml) {
-    Farm farm = binding.variables.farm
-    People people = new People(farm).bootstrap()
-    people.vacation('paulodamaso', true)
+    new People(binding.variables.farm).bootstrap().vacation('paulodamaso', true)
 }

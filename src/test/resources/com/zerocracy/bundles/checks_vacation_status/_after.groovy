@@ -26,12 +26,9 @@ import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 
 def exec(Project pmo, XML xml) {
-  Farm farm = binding.variables.farm
-  Claims claims = new Claims(pmo).bootstrap()
-  Item item = pmo.acq('test.txt')
-  assert item.path().toFile().newReader().readLine().contains(
-    'You are on vacation now. To change the status use "on" or "off" as an option.'
-  )
-  item.close()
-
+  Item item = pmo.acq('test.txt').withCloseable {
+    assert item.path().text.contains(
+      'You are on vacation now. To change the status use "on" or "off" as an option.'
+    )
+  }
 }

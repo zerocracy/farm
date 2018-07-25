@@ -37,9 +37,9 @@ def exec(Project pmo, XML xml) {
     if ('on' == mode) {
       if (people.vacation(author)) {
         throw new SoftException(
-                new Par(
-                        'You are already on vacation'
-                ).say()
+          new Par(
+            'You are already on vacation'
+          ).say()
         )
       }
       people.vacation(author, true)
@@ -47,27 +47,27 @@ def exec(Project pmo, XML xml) {
     } else if ('off' == mode) {
       if (!people.vacation(author)) {
         throw new SoftException(
-                new Par(
-                        'You are not on vacation now'
-                ).say()
+          new Par(
+            'You are not on vacation now'
+          ).say()
         )
       }
       people.vacation(author, false)
       claim.reply('Your vacation has been ended').postTo(pmo)
     } else {
       throw new SoftException(
-              new Par(
-                      'Incorrect vacation mode;',
-                      'Possible modes are "on" or "off"'
-              ).say()
+        new Par(
+          'Incorrect vacation mode;',
+          'Possible modes are "on" or "off"'
+        ).say()
       )
     }
   } else {
     modes = 'To change the status use "on" or "off" as an option."'
-    if (!people.vacation(author)) {
-      vacation = 'You are NOT on vacation now.';
+    if (people.vacation(author)) {
+      vacation = 'You are on vacation now.';
     } else {
-      vacation = 'You are on vacation now.'
+      vacation = 'You are NOT on vacation now.'
     }
     claim.reply(
       new Par(

@@ -62,7 +62,7 @@ public final class QuestionTest {
             new XMLDocument(
                 this.getClass().getResource("q-profile.xml")
             ),
-            "vacation"
+            "breakup"
         );
         MatcherAssert.assertThat(
             question.matches(),
@@ -70,7 +70,9 @@ public final class QuestionTest {
         );
         MatcherAssert.assertThat(
             question.help(),
-            Matchers.containsString("Option `<mode>` is missing")
+            Matchers.containsString(
+                "Option `<login>` is missing in `breakup <login>`"
+            )
         );
     }
 
