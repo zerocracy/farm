@@ -132,6 +132,7 @@ public final class ClaimsItem {
      * @return TRUE if something was taken
      * @throws IOException If fails
      */
+    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     public boolean take(final Proc<XML> proc) throws IOException {
         boolean taken = false;
         for (final XML xml : new Limited<>(1, this.iterate())) {
