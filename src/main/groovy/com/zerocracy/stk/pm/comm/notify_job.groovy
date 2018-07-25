@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pm.comm
 
 import com.jcabi.xml.XML
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.Project
 import com.zerocracy.pm.ClaimIn
@@ -43,11 +44,11 @@ def exec(Project project, XML xml) {
     claim.copy()
       .type('Notify in GitHub')
       .token("github;${coords[0]};${coords[1]}")
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
   } else if (parts[1] == 'none') {
     claim.copy()
       .type('Notify project')
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
   } else {
     throw new IllegalStateException(
       String.format(

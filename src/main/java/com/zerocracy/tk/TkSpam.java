@@ -18,6 +18,7 @@ package com.zerocracy.tk;
 
 import com.zerocracy.Farm;
 import com.zerocracy.Par;
+import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.pmo.Pmo;
@@ -67,12 +68,12 @@ public final class TkSpam implements TkRegex {
         final String body = form.single("body");
         new ClaimOut().type("Notify all").param(
             "message", new Par(body).say()
-        ).postTo(this.farm);
+        ).postTo(new ClaimsOf(this.farm));
         new ClaimOut().type("Notify PMO").param(
             "message", new Par(
                 "Spam request has been submitted by @%s"
             ).say(user)
-        ).postTo(this.farm);
+        ).postTo(new ClaimsOf(this.farm));
         return new RsForward(
             new RsParFlash(
                 new Par(

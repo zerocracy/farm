@@ -22,6 +22,7 @@ import com.mongodb.client.model.Filters;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.RunsInThreads;
+import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.entry.ExtMongo;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.farm.sync.SyncFarm;
@@ -49,8 +50,8 @@ public final class FootprintTest {
         final Farm farm = new PropsFarm();
         final Project project = farm.find("@id='FOOTPRNTX'")
             .iterator().next();
-        new ClaimOut().type("Hello").postTo(project);
-        final XML xml = new Claims(project).iterate().iterator().next();
+        new ClaimOut().type("Hello").postTo(new ClaimsOf(farm, project));
+        final XML xml = new ClaimsItem(project).iterate().iterator().next();
         try (
             final Footprint footprint = FootprintTest.footprint(farm, project)
         ) {
@@ -80,8 +81,9 @@ public final class FootprintTest {
                     final Project project = farm.find(
                         String.format("@id='%09d'", inc.incrementAndGet())
                     ).iterator().next();
-                    new ClaimOut().type("Version").postTo(project);
-                    final XML xml = new Claims(project)
+                    new ClaimOut().type("Version")
+                        .postTo(new ClaimsOf(farm, project));
+                    final XML xml = new ClaimsItem(project)
                         .iterate().iterator().next();
                     try (
                         final Footprint footprint =
@@ -104,8 +106,9 @@ public final class FootprintTest {
         final Farm farm = new PropsFarm();
         final Project project = farm.find("@id='FOOTPRNTY'")
             .iterator().next();
-        new ClaimOut(new Date(0L)).type("Notify").postTo(project);
-        final XML xml = new Claims(project).iterate().iterator().next();
+        new ClaimOut(new Date(0L)).type("Notify")
+            .postTo(new ClaimsOf(farm, project));
+        final XML xml = new ClaimsItem(project).iterate().iterator().next();
         try (
             final Footprint footprint = FootprintTest.footprint(farm, project)
         ) {

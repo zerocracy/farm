@@ -22,6 +22,7 @@ import com.mongodb.client.model.Filters;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.RunsInThreads;
+import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.farm.S3Farm;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.farm.sync.SyncFarm;
@@ -65,7 +66,7 @@ public final class FtFarmTest {
                         .type("Hello")
                         .param("something", num)
                         .author("0pdd")
-                        .postTo(project);
+                        .postTo(new ClaimsOf(farm, project));
                     return true;
                 },
                 new RunsInThreads<>(new AtomicInteger(), threads)

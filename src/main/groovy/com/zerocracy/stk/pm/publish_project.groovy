@@ -22,6 +22,7 @@ import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.SoftException
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Catalog
@@ -50,25 +51,25 @@ def exec(Project project, XML xml) {
       new Par(
         'The project is visible now at the [board](/board), according to §26'
       ).say()
-    ).postTo(project)
+    ).postTo(new ClaimsOf(farm, project))
     claim.copy()
       .type('Project was published')
       .param('pid', pid)
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
     claim.copy().type('Tweet').param(
       'par', new Par(
         farm,
         'A new project "%s" is looking for developers,',
         'feel free to apply and join: https://www.0crat.com/board'
       ).say(project.pid())
-    ).postTo(project)
+    ).postTo(new ClaimsOf(farm, project))
     claim.copy()
       .type('Make payment')
       .param('login', claim.author())
       .param('job', 'none')
       .param('minutes', -new Policy().get('26.price', 256))
       .param('reason', new Par('Project %s was published on the board').say(project.pid()))
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
     claim.copy().type('Notify all').param(
       'message',
       new Par(
@@ -76,7 +77,7 @@ def exec(Project project, XML xml) {
         'The project %s was published by @%s;',
         'feel free to apply, as explained in §2'
       ).say(pid, claim.author())
-    ).param('min', new Policy().get('33.min-live', 0)).postTo(project)
+    ).param('min', new Policy().get('33.min-live', 0)).postTo(new ClaimsOf(farm, project))
   } else if ('off' == mode) {
     if (!catalog.published(pid)) {
       throw new SoftException(
@@ -91,18 +92,18 @@ def exec(Project project, XML xml) {
       new Par(
         'The project is not visible anymore at the [board](/board), as in §26'
       ).say()
-    ).postTo(project)
+    ).postTo(new ClaimsOf(farm, project))
     claim.copy().type('Notify PMO').param(
       'message', new Par(
         farm,
         'The project %s was unpublished by @%s'
       ).say(pid, claim.author())
-    ).postTo(project)
+    ).postTo(new ClaimsOf(farm, project))
   } else {
     claim.reply(
       new Par(
         "Incorrect mode, possible values are 'on' or 'off', see §26"
       ).say()
-    ).postTo(project)
+    ).postTo(new ClaimsOf(farm, project))
   }
 }

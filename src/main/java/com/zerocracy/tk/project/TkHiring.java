@@ -20,6 +20,7 @@ import com.zerocracy.Farm;
 import com.zerocracy.Par;
 import com.zerocracy.Policy;
 import com.zerocracy.Project;
+import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pmo.Exam;
 import com.zerocracy.pmo.Vacancies;
@@ -70,7 +71,7 @@ public final class TkHiring implements TkRegex {
             .param("job", "none")
             .param("minutes", -new Policy().get("51.price", 0))
             .param("reason", "Job announced to all users")
-            .postTo(project);
+            .postTo(new ClaimsOf(this.farm, project));
         new Vacancies(this.farm).bootstrap().add(project, user, text);
         new ClaimOut()
             .type("Notify all")
@@ -87,7 +88,7 @@ public final class TkHiring implements TkRegex {
                 ).say(project.pid(), user, text)
             )
             .param("min", new Policy().get("33.min-live", 0))
-            .postTo(this.farm);
+            .postTo(new ClaimsOf(this.farm, project));
         return new RsForward(
             new RsParFlash(
                 new Par(

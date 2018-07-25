@@ -18,10 +18,12 @@ package com.zerocracy.tk.project.reports;
 
 import com.jcabi.xml.XML;
 import com.zerocracy.Project;
+import com.zerocracy.entry.ClaimsOf;
+import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pm.ClaimOut;
-import com.zerocracy.pm.Claims;
+import com.zerocracy.pm.ClaimsItem;
 import com.zerocracy.pm.Footprint;
 import java.time.Instant;
 import org.bson.Document;
@@ -43,8 +45,8 @@ public final class OrdersGivenByWeekTest {
         new ClaimOut()
             .type("Order was given")
             .param("login", "yegor256")
-            .postTo(pkt);
-        final XML xml = new Claims(pkt).iterate().iterator().next();
+            .postTo(new ClaimsOf(new FkFarm(), pkt));
+        final XML xml = new ClaimsItem(pkt).iterate().iterator().next();
         try (final Footprint footprint = new Footprint(new PropsFarm(), pkt)) {
             footprint.open(xml);
             final Iterable<Document> docs = footprint.collection().aggregate(
@@ -69,8 +71,9 @@ public final class OrdersGivenByWeekTest {
     @Test
     public void retrievesEmptyData() throws Exception {
         final Project pkt = new FkProject("746092829");
-        new ClaimOut().type("Just hello").postTo(pkt);
-        final XML xml = new Claims(pkt).iterate().iterator().next();
+        new ClaimOut().type("Just hello")
+            .postTo(new ClaimsOf(new FkFarm(), pkt));
+        final XML xml = new ClaimsItem(pkt).iterate().iterator().next();
         try (final Footprint footprint = new Footprint(new PropsFarm(), pkt)) {
             footprint.open(xml);
             MatcherAssert.assertThat(

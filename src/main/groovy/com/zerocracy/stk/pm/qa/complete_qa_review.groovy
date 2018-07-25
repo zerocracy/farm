@@ -18,6 +18,7 @@ package com.zerocracy.stk.pm.qa
 
 import com.jcabi.xml.XML
 import com.zerocracy.*
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.ClaimOut
@@ -45,19 +46,19 @@ def exec(Project project, XML xml) {
     )
   }
   int bonus = new Policy().get('31.bonus-minutes', 5)
+  Farm farm = binding.variables.farm
   ClaimOut out = reviews.remove(job, quality == 'good' ? bonus : 0, claim.copy())
   if (quality == 'bad') {
     claim.copy()
       .type('Notify job')
       .token("job;${job}")
       .param('message', new Par('Quality is low, no payment, see §31').say())
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
   } else {
     out.type('Make payment')
       .param('reason', new Par('Order was finished, quality is "%s"').say(quality))
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
   }
-  Farm farm = binding.variables.farm
   Agenda agenda = new Agenda(farm, inspector).bootstrap()
   if (agenda.exists(job)) {
     agenda.remove(job)
@@ -65,24 +66,24 @@ def exec(Project project, XML xml) {
   claim.copy()
     .type('Agenda was updated')
     .param('login', inspector)
-    .postTo(project)
+    .postTo(new ClaimsOf(farm, project))
   claim.copy()
     .type('Quality review completed')
     .param('login', inspector)
-    .postTo(project)
+    .postTo(new ClaimsOf(farm, project))
   claim.copy()
     .type('Make payment')
     .param('login', inspector)
     .param('reason', 'Quality review completed')
     .param('minutes', new Policy().get('30.price', 8))
-    .postTo(project)
+    .postTo(new ClaimsOf(farm, project))
   new Agenda(farm, performer).bootstrap().with {
     if (it.exists(job)) {
       it.remove(job)
       claim.copy()
         .type('Agenda was updated')
         .param('login', performer)
-        .postTo(project)
+        .postTo(new ClaimsOf(farm, project))
     }
   }
 }

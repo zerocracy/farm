@@ -17,9 +17,6 @@
 package com.zerocracy.pm;
 
 import com.jcabi.log.Logger;
-import com.zerocracy.Farm;
-import com.zerocracy.Project;
-import com.zerocracy.pmo.Pmo;
 
 /**
  * Claim out which doesn't throw exceptions on post.
@@ -45,13 +42,13 @@ public final class ClaimOutSafe {
     /**
      * Post to project without exception.
      *
-     * @param project Project
+     * @param claims Claims
      * @checkstyle IllegalCatchCheck (14 lines)
      */
     @SuppressWarnings({"overloads", "PMD.AvoidCatchingThrowable"})
-    public void postTo(final Project project) {
+    public void postTo(final Claims claims) {
         try {
-            this.claim.postTo(project);
+            this.claim.postTo(claims);
         } catch (final Throwable err) {
             Logger.error(
                 this,
@@ -59,15 +56,5 @@ public final class ClaimOutSafe {
                 err
             );
         }
-    }
-
-    /**
-     * Post to PMO without exception.
-     *
-     * @param farm Farm
-     */
-    @SuppressWarnings("overloads")
-    public void postTo(final Farm farm) {
-        this.postTo(new Pmo(farm));
     }
 }

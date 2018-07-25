@@ -21,6 +21,7 @@ import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.farm.props.Props
 import com.zerocracy.pm.ClaimIn
@@ -61,11 +62,11 @@ def exec(Project project, XML xml) {
     'message',
     new Par('We just sent you %s ZLD through https://wts.zold.io')
       .say(amount.decimal())
-  ).postTo(project)
+  ).postTo(new ClaimsOf(farm, project))
   claim.copy().type('Notify PMO').param(
     'message',
     new Par(
       'We just sent %s ZLD to %s as %s via wts.zold.io in %s'
     ).say(amount, recipient, reason, project.pid())
-  ).postTo(project)
+  ).postTo(new ClaimsOf(farm, project))
 }

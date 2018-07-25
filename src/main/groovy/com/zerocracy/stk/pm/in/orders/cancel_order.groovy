@@ -17,9 +17,11 @@
 package com.zerocracy.stk.pm.in.orders
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.SoftException
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.in.Orders
@@ -43,6 +45,7 @@ def exec(Project project, XML xml) {
     )
   }
   orders.resign(job)
+  Farm farm = binding.variables.farm
   String reason
   if (claim.hasParam('reason')) {
     reason = claim.param('reason')
@@ -53,10 +56,10 @@ def exec(Project project, XML xml) {
     new Par(
       'The user @%s resigned from %s, please stop working. Reason for job resignation: %s',
     ).say(performer, job, reason)
-  ).postTo(project)
+  ).postTo(new ClaimsOf(farm, project))
   claim.copy()
     .type('Order was canceled')
     .param('voluntarily', claim.hasAuthor() && claim.author() == performer)
     .param('login', performer)
-    .postTo(project)
+    .postTo(new ClaimsOf(farm, project))
 }

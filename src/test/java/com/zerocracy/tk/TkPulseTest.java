@@ -18,6 +18,7 @@ package com.zerocracy.tk;
 
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
+import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.footprint.FtFarm;
 import com.zerocracy.farm.props.PropsFarm;
@@ -43,7 +44,7 @@ public final class TkPulseTest {
         final Farm farm = new FtFarm(new PropsFarm(new FkFarm()));
         final Take take = new TkPulse(farm);
         final Project project = farm.find("@id='PULSETEST'").iterator().next();
-        new ClaimOut().type("Hello").postTo(project);
+        new ClaimOut().type("Hello").postTo(new ClaimsOf(farm, project));
         final JsonObject json = Json.createReader(
             take.act(new RqFake()).body()
         ).readObject();

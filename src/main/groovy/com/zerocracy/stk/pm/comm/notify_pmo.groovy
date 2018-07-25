@@ -19,6 +19,7 @@ package com.zerocracy.stk.pm.comm
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.staff.Roles
@@ -33,6 +34,6 @@ def exec(Project project, XML xml) {
     claim.copy()
       .type('Notify user')
       .token("user;${uid}")
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
   }
 }

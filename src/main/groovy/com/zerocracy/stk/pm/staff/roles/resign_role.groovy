@@ -20,6 +20,7 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.staff.Roles
@@ -41,8 +42,8 @@ def exec(Project project, XML xml) {
       'roles left for this user: [%s]',
       'see [full list](/a/%3$s?a=pm/staff/roles) of roles'
     ).say(role, login, project.pid(), roles.allRoles(login).join(', '), )
-  ).postTo(project)
+  ).postTo(new ClaimsOf(farm, project))
   claim.copy()
     .type('Role was resigned')
-    .postTo(project)
+    .postTo(new ClaimsOf(farm, project))
 }

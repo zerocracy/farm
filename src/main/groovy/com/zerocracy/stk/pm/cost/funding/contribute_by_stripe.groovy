@@ -21,6 +21,7 @@ import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.cost.Ledger
@@ -39,6 +40,7 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Contributed by Stripe')
   ClaimIn claim = new ClaimIn(xml)
   Cash amount = new Cash.S(claim.param('amount'))
+  Farm farm = binding.variables.farm
   new Ledger(project).bootstrap().add(
     new Ledger.Transaction(
       amount,
@@ -56,22 +58,21 @@ def exec(Project project, XML xml) {
         'it was a free contribution of @%s, as in §50'
       ).say(project.pid(), amount, claim.author())
     )
-    .postTo(project)
+    .postTo(new ClaimsOf(farm, project))
   claim.copy().type('Notify PMO').param(
     'message', new Par(
       'We just funded %s for %s via Stripe by @%s'
     ).say(project.pid(), amount, claim.author())
-  ).postTo(project)
-  Farm farm = binding.variables.farm
+  ).postTo(new ClaimsOf(farm, project))
   claim.copy().type('Tweet').param(
     'par', new Par(
       farm,
       'The project %s received a monetary contribution of %s from @%s;',
       'many thanks for your support!'
     ).say(project.pid(), amount, claim.author())
-  ).postTo(project)
+  ).postTo(new ClaimsOf(farm, project))
   claim.copy().type('Send zold')
     .param('recipient', claim.author())
     .param('reason', 'contribution reward')
-    .postTo(project)
+    .postTo(new ClaimsOf(farm, project))
 }
