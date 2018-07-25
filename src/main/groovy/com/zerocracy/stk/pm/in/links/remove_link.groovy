@@ -20,6 +20,7 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Catalog
@@ -38,10 +39,10 @@ def exec(Project project, XML xml) {
     new Par(
       'Link removed from %s to rel=`%s` and href=`%s`, by §17'
     ).say(pid, rel, href)
-  ).postTo(project)
+  ).postTo(new ClaimsOf(farm, project))
   claim.copy()
     .type('Project link was removed')
     .param('rel', rel)
     .param('href', href)
-    .postTo(project)
+    .postTo(new ClaimsOf(farm, project))
 }

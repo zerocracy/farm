@@ -29,7 +29,7 @@ import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.farm.sync.SyncFarm;
 import com.zerocracy.pm.ClaimOut;
-import com.zerocracy.pm.Claims;
+import com.zerocracy.pm.ClaimsItem;
 import com.zerocracy.pm.Footprint;
 import com.zerocracy.pmo.Pmo;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -85,8 +85,8 @@ public final class ExtMongoTest {
     public void createsMongo() throws Exception {
         final Farm farm = new PropsFarm(new FkFarm());
         final Project project = new Pmo(farm);
-        new ClaimOut().type("Hello").postTo(project);
-        final XML xml = new Claims(project).iterate().iterator().next();
+        new ClaimOut().type("Hello").postTo(new ClaimsOf(farm, project));
+        final XML xml = new ClaimsItem(project).iterate().iterator().next();
         final MongoClient mongo = new ExtMongo(farm).value();
         final String pid = "12MONGO89";
         try (final Footprint footprint = new Footprint(mongo, pid)) {

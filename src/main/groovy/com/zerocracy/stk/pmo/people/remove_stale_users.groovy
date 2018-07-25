@@ -21,6 +21,7 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.farm.props.Props
@@ -59,14 +60,14 @@ def exec(Project pmo, XML xml) {
             'We can\'t find your Github account: %s, ',
             'your profile will be deleted in %d hours.'
           ).say(uid, 12)
-      ).postTo(pmo)
+      ).postTo(new ClaimsOf(farm))
       ClaimOut delete = claim.copy()
         .type('Delete user')
         .param('login', uid)
       if (!new Props(farm).has('//testing')) {
         delete.until(TimeUnit.HOURS.toSeconds(12))
       }
-        delete.postTo(pmo)
+        delete.postTo(new ClaimsOf(farm))
     }
   }
 }

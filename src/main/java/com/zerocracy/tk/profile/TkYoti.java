@@ -22,6 +22,7 @@ import com.yoti.api.client.ProfileException;
 import com.yoti.api.client.YotiClientBuilder;
 import com.zerocracy.Farm;
 import com.zerocracy.Par;
+import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pmo.People;
@@ -93,12 +94,12 @@ public final class TkYoti implements TkRegex {
             .param("login", user)
             .param("details", name)
             .param("system", "yoti")
-            .postTo(this.farm);
+            .postTo(new ClaimsOf(this.farm));
         new ClaimOut().type("Notify PMO").param(
             "message", new Par(
                 "We just identified @%s as \"%s\" via Yoti"
             ).say(user, name)
-        ).postTo(this.farm);
+        ).postTo(new ClaimsOf(this.farm));
         return new RsForward(
             new RsParFlash(
                 new Par(

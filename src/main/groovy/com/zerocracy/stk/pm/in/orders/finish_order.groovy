@@ -23,6 +23,7 @@ import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.cost.Boosts
@@ -75,6 +76,7 @@ def exec(Project project, XML xml) {
   int minutes = new Boosts(project).bootstrap().factor(job) * 15 + speed
   Roles roles = new Roles(project).bootstrap()
   List<String> qa = roles.findByRole('QA')
+  Farm farm = binding.variables.farm
   if (qa.empty || roles.hasRole(performer, 'ARC', 'PO')) {
     List<String> complaints = new JobAudit(farm, project).review(job)
     if (complaints.empty) {
@@ -84,7 +86,7 @@ def exec(Project project, XML xml) {
         .param('reason', new Par('Order was finished').say())
         .param('minutes', minutes)
         .param('cash', price)
-        .postTo(project)
+        .postTo(new ClaimsOf(farm, project))
     } else {
       claim.copy()
         .type('Notify job')
@@ -95,7 +97,7 @@ def exec(Project project, XML xml) {
             complaints.join(', ')
           )
         )
-        .postTo(project)
+        .postTo(new ClaimsOf(farm, project))
     }
   } else {
     Cash bonus = price.mul(new Policy().get('31.bonus', 8)) / 100
@@ -105,12 +107,12 @@ def exec(Project project, XML xml) {
       .param('minutes', minutes)
       .param('cash', price)
       .param('bonus', bonus)
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
   }
   orders.resign(job)
   claim.copy()
     .type('Order was finished')
     .param('login', performer)
     .param('age', age)
-    .postTo(project)
+    .postTo(new ClaimsOf(farm, project))
 }

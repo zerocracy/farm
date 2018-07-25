@@ -19,6 +19,7 @@ package com.zerocracy.stk.pmo.awards
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Awards
@@ -33,6 +34,6 @@ def exec(Project project, XML xml) {
   People people = new People(farm).bootstrap()
   if (people.exists(login)) {
     people.reputation(login, awards.total())
-    claim.copy().type('Reputation was updated').postTo(project)
+    claim.copy().type('Reputation was updated').postTo(new ClaimsOf(farm, project))
   }
 }

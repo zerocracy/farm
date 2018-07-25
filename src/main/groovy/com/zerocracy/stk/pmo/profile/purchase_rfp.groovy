@@ -22,6 +22,7 @@ import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.SoftException
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Exam
@@ -54,14 +55,14 @@ def exec(Project pmo, XML xml) {
     .param('login', author)
     .param('points', points)
     .param('reason', reason)
-    .postTo(pmo)
+    .postTo(new ClaimsOf(farm))
   claim.reply(
     new Par(
       'Thanks for purchasing RFP #%d;',
       'the email of the client is %s;',
       'we deducted %d points from your reputation, according to §40'
     ).say(rid, email, -points)
-  ).postTo(pmo)
+  ).postTo(new ClaimsOf(farm))
   claim.copy().type('Notify user').token("user;${owner}").param(
     'message',
     new Par(
@@ -70,10 +71,10 @@ def exec(Project pmo, XML xml) {
       'since he/she now knows your email;',
       'wish you luck in your new project!'
     ).say(rid, author)
-  ).postTo(pmo)
+  ).postTo(new ClaimsOf(farm))
   claim.copy().type('Notify PMO').param(
     'message', new Par(
       'RFP #%d has been purchased by @%s: %s'
     ).say(rid, author, email)
-  ).postTo(pmo)
+  ).postTo(new ClaimsOf(farm))
 }

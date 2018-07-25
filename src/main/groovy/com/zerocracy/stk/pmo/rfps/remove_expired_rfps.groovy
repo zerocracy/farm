@@ -20,6 +20,7 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Policy
 import com.zerocracy.Project
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Rfps
@@ -36,6 +37,6 @@ def exec(Project pmo, XML xml) {
     claim.copy()
       .type('RFP was removed')
       .param('rfp', rfp)
-      .postTo(pmo)
+      .postTo(new ClaimsOf(farm))
   }
 }

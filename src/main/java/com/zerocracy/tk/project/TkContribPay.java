@@ -20,8 +20,10 @@ import com.zerocracy.Farm;
 import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.cash.Cash;
+import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pmo.Catalog;
+import com.zerocracy.pmo.Pmo;
 import com.zerocracy.pmo.recharge.Stripe;
 import com.zerocracy.tk.RqUser;
 import com.zerocracy.tk.RsParFlash;
@@ -101,13 +103,13 @@ public final class TkContribPay implements TkRegex {
             .param("amount", amount)
             .param("payment_id", pid)
             .author(user)
-            .postTo(project);
+            .postTo(new ClaimsOf(this.farm, project));
         new ClaimOut().type("Notify PMO").param(
             "message", new Par(
                 "Project %s received contribution for %s by @%s;",
                 "customer `%s`, payment `%s`"
             ).say(project.pid(), amount, user, customer, pid)
-        ).postTo(this.farm);
+        ).postTo(new ClaimsOf(this.farm, new Pmo(this.farm)));
         return new RsForward(
             new RsParFlash(
                 new Par(

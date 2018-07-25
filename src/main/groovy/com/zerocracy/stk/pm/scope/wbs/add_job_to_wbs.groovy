@@ -23,6 +23,7 @@ import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.SoftException
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.farm.props.Props
@@ -79,9 +80,9 @@ def exec(Project project, XML xml) {
   wbs.role(job, role)
   claim.reply(
     new Par('Job %s is now in scope, role is %s').say(job, role)
-  ).postTo(project)
+  ).postTo(new ClaimsOf(farm, project))
   claim.copy()
     .type('Job was added to WBS')
     .param('role', role)
-    .postTo(project)
+    .postTo(new ClaimsOf(farm, project))
 }

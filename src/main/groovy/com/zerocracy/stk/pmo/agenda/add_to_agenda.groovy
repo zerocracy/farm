@@ -20,6 +20,7 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.cost.Estimates
@@ -51,5 +52,5 @@ def exec(Project project, XML xml) {
     .type('Agenda was updated')
     .param('login', owner)
     .param('estimate', cash)
-    .postTo(project)
+    .postTo(new ClaimsOf(farm, project))
 }

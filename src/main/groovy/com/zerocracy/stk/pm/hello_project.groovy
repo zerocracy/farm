@@ -17,7 +17,9 @@
 package com.zerocracy.stk.pm
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Par
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.Project
 import com.zerocracy.pm.ClaimIn
@@ -25,10 +27,11 @@ import com.zerocracy.pm.ClaimIn
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Hello project')
+  Farm farm = binding.variables.farm
   new ClaimIn(xml).reply(
     new Par(
       'Hey, what\'s up, how is it going?',
       'More information about the project and its artifacts find [here](/p/%s).'
     ).say(project.pid())
-  ).postTo(project)
+  ).postTo(new ClaimsOf(farm, project))
 }

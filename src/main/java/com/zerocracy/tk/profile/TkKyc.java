@@ -18,6 +18,7 @@ package com.zerocracy.tk.profile;
 
 import com.zerocracy.Farm;
 import com.zerocracy.Par;
+import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.pmo.People;
@@ -74,12 +75,12 @@ public final class TkKyc implements TkRegex {
             .param("details", details)
             .param("system", "manual")
             .author(user)
-            .postTo(this.farm);
+            .postTo(new ClaimsOf(this.farm));
         new ClaimOut().type("Notify PMO").param(
             "message", new Par(
                 "We just identified @%s as `%s` manually"
             ).say(login, details)
-        ).postTo(this.farm);
+        ).postTo(new ClaimsOf(this.farm));
         new ClaimOut()
             .type("Notify user")
             .token(String.format("user;%s", login))
@@ -87,7 +88,7 @@ public final class TkKyc implements TkRegex {
                 "message",
                 new Par("We just identified you as `%s`").say(details)
             )
-            .postTo(this.farm);
+            .postTo(new ClaimsOf(this.farm));
         return new RsForward(
             new RsParFlash(
                 new Par(

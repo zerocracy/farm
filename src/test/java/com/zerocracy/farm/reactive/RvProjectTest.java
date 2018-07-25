@@ -20,10 +20,11 @@ import com.jcabi.aspects.Tv;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.RunsInThreads;
+import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.sync.SyncFarm;
 import com.zerocracy.pm.ClaimOut;
-import com.zerocracy.pm.Claims;
+import com.zerocracy.pm.ClaimsItem;
 import com.zerocracy.pmo.Pmo;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.list.SolidList;
@@ -45,7 +46,7 @@ public final class RvProjectTest {
         try (final Farm farm = new SyncFarm(new FkFarm())) {
             final Project raw = new Pmo(farm);
             final Flush def = new DefaultFlush(
-                new Brigade(
+                farm, new Brigade(
                     new SolidList<>(
                         (project, xml) -> done.incrementAndGet()
                     )
@@ -53,7 +54,7 @@ public final class RvProjectTest {
             );
             try (final Flush flush = new AsyncFlush(def)) {
                 final Project project = new RvProject(raw, flush);
-                final Claims claims = new Claims(project).bootstrap();
+                final ClaimsItem claims = new ClaimsItem(project).bootstrap();
                 claims.add(new ClaimOut().type("hello A").token("test;t1"));
                 claims.add(new ClaimOut().type("hello B").token("test;t2"));
                 while (true) {
@@ -72,7 +73,7 @@ public final class RvProjectTest {
         try (final Farm farm = new SyncFarm(new FkFarm())) {
             final Project raw = new Pmo(farm);
             final Flush def = new DefaultFlush(
-                new Brigade(
+                farm, new Brigade(
                     new SolidList<>(
                         (project, xml) -> total.decrementAndGet()
                     )
@@ -85,12 +86,12 @@ public final class RvProjectTest {
                         new ClaimOut()
                             .type("hello you")
                             .param("something", input.incrementAndGet())
-                            .postTo(project);
+                            .postTo(new ClaimsOf(farm, project));
                         return true;
                     },
                     new RunsInThreads<>(new AtomicInteger(), total.get())
                 );
-                final Claims claims = new Claims(project).bootstrap();
+                final ClaimsItem claims = new ClaimsItem(project).bootstrap();
                 while (true) {
                     if (!claims.iterate().iterator().hasNext()) {
                         break;

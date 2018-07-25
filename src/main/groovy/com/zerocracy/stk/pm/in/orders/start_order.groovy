@@ -23,6 +23,7 @@ import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.SoftException
 import com.zerocracy.cash.Cash
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.farm.props.Props
 import com.zerocracy.pm.ClaimIn
@@ -114,12 +115,12 @@ def exec(Project project, XML xml) {
   } else {
     msg += new Par('; there will be no monetary reward for this job').say()
   }
-  claim.reply(msg).postTo(project)
+  claim.reply(msg).postTo(new ClaimsOf(farm, project))
   claim.copy()
     .type('Order was given')
     .param('role', role)
     .param('login', login)
     .param('reason', claim.cid())
     .param('estimate', cash)
-    .postTo(project)
+    .postTo(new ClaimsOf(farm, project))
 }

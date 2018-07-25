@@ -16,6 +16,8 @@
  */
 package com.zerocracy.radars.github;
 
+import com.jcabi.github.Repo;
+import com.jcabi.github.Repos;
 import com.jcabi.github.mock.MkGithub;
 import com.zerocracy.farm.fake.FkFarm;
 import javax.json.Json;
@@ -31,22 +33,37 @@ import org.junit.Test;
 public final class RbMilestoneTest {
     @Test
     public void acceptMilestones() throws Exception {
+        final MkGithub github = new MkGithub();
+        final Repo repo = github.repos()
+            .create(new Repos.RepoCreate("test", false));
+        final int number = 1;
         MatcherAssert.assertThat(
             new RbMilestone().react(
                 new FkFarm(),
-                new MkGithub(),
+                github,
                 Json.createObjectBuilder()
+                    .add(
+                        "repository",
+                        Json.createObjectBuilder()
+                            .add("full_name", repo.coordinates().toString())
+                            .build()
+                    )
                     .add(
                         "milestone",
                         Json.createObjectBuilder()
                             .add("title", "milestone-title")
-                            .add("number", 1)
+                            .add("number", number)
                             .add("description", "some descripton")
                             .add("due_on", "2018-04-06T07:00:00Z")
                             .build()
                     ).build()
             ),
-            Matchers.startsWith("Milestone submitted: 1")
+            Matchers.startsWith(
+                String.format(
+                    "Milestone submitted: %s, for repo %s",
+                    number, repo.coordinates()
+                )
+            )
         );
     }
 }

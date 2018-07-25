@@ -23,6 +23,7 @@ import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.SoftException
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
@@ -69,7 +70,7 @@ def exec(Project project, XML xml) {
             'please, re-open it and ask @%2$s to close it'
           ).say(claim.author(), issue.author().login())
         )
-        .postTo(project)
+        .postTo(new ClaimsOf(farm, project))
       return
     }
   }
@@ -78,10 +79,10 @@ def exec(Project project, XML xml) {
       .type('Finish order')
       .param('reason', 'Job was closed, order is finished')
       .param('closed', claim.created().toInstant().toString())
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
   } else {
     claim.copy()
       .type('Remove job from WBS')
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
   }
 }

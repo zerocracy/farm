@@ -21,6 +21,7 @@ import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.People
@@ -74,6 +75,6 @@ def exec(Project project, XML xml) {
           'Please review the resume, and either invite or reject the applicant.',
           'In either case you will receive +32 reputation points as in §1'
         ).say(it)
-      ).postTo(project)
+      ).postTo(new ClaimsOf(farm, project))
   }
 }
