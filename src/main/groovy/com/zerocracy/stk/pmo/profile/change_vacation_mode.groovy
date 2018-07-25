@@ -75,6 +75,6 @@ def exec(Project pmo, XML xml) {
         vacation,
         modes
       ).say()
-    ).postTo(pmo)
+    ).postTo(new ClaimsOf(farm, pmo))
   }
 }

@@ -27,7 +27,7 @@ import org.hamcrest.Matchers
 
 def exec(Project pmo, XML xml) {
   Item item = pmo.acq('test.txt').withCloseable {
-    assert item.path().text.contains(
+    item -> assert item.path().text.contains(
       'You are on vacation now. To change the status use "on" or "off" as an option.'
     )
   }
