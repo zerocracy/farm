@@ -17,9 +17,11 @@
 package com.zerocracy.stk.pm.cost.rates
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 
@@ -28,6 +30,7 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('User rate was changed')
   ClaimIn claim = new ClaimIn(xml)
   String login = claim.param('login')
+  Farm farm = binding.variables.farm
   Cash rate = new Cash.S(claim.param('rate'))
   claim.copy()
     .type('Notify user')
@@ -39,5 +42,5 @@ def exec(Project project, XML xml) {
         'only new tasks will be affected, by §16'
       ).say(project.pid(), rate)
     )
-    .postTo(project)
+    .postTo(new ClaimsOf(farm, project))
 }

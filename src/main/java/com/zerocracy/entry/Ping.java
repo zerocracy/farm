@@ -19,7 +19,6 @@ package com.zerocracy.entry;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.pm.ClaimOut;
-import com.zerocracy.pm.Claims;
 import com.zerocracy.pmo.Catalog;
 import java.io.IOException;
 import java.util.List;
@@ -116,10 +115,7 @@ public final class Ping implements Job {
         throws IOException {
         final Catalog catalog = new Catalog(this.farm).bootstrap();
         if (catalog.exists(project.pid()) && !catalog.pause(project.pid())) {
-            final Claims claims = new Claims(project).bootstrap();
-            if (claims.iterate().isEmpty()) {
-                new ClaimOut().type(type).postTo(project);
-            }
+            new ClaimOut().type(type).postTo(new ClaimsOf(this.farm, project));
         }
     }
 }

@@ -20,6 +20,7 @@ import com.jcabi.github.Coordinates;
 import com.jcabi.github.Github;
 import com.jcabi.github.Repo;
 import com.zerocracy.Farm;
+import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.pm.ClaimOut;
 import java.io.IOException;
 import javax.json.JsonObject;
@@ -56,7 +57,7 @@ public final class RbMilestone implements Rebound {
                 .type("Add milestone")
                 .param("milestone", milestone.getString("title"))
                 .param("date", milestone.getString("due_on"))
-                .postTo(new GhProject(farm, repo));
+                .postTo(new ClaimsOf(farm, new GhProject(farm, repo)));
             answer = String.format(
                 "Milestone submitted: %d, for repo %s",
                 milestone.getInt("number"),

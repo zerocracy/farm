@@ -27,6 +27,7 @@ import com.stripe.net.RequestOptions;
 import com.zerocracy.Farm;
 import com.zerocracy.Par;
 import com.zerocracy.cash.Cash;
+import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.pm.ClaimOut;
 import java.io.IOException;
@@ -98,7 +99,7 @@ public final class Stripe {
             "message", new Par(
                 "Stripe customer `%s` registered as %s"
             ).say(cid, email)
-        ).postTo(this.farm);
+        ).postTo(new ClaimsOf(this.farm));
         return cid;
     }
 
@@ -137,7 +138,7 @@ public final class Stripe {
             "message", new Par(
                 "Stripe customer `%s` charged %s for \"%s\": `%s`"
             ).say(customer, amount, details, pid)
-        ).postTo(this.farm);
+        ).postTo(new ClaimsOf(this.farm));
         return pid;
     }
 

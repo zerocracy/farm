@@ -21,6 +21,7 @@ import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.cost.Ledger
@@ -46,7 +47,7 @@ def exec(Project project, XML xml) {
             'because your project is in the free trial period'
           ).say(fee, job)
         )
-        .postTo(project)
+        .postTo(new ClaimsOf(farm, project))
     } else {
       new Ledger(project).bootstrap().add(
         new Ledger.Transaction(
@@ -70,7 +71,7 @@ def exec(Project project, XML xml) {
             'Management fee %s has been deducted for %s, see §23'
           ).say(fee, job)
         )
-        .postTo(project)
+        .postTo(new ClaimsOf(farm, project))
     }
   }
 }

@@ -20,6 +20,7 @@ package com.zerocracy.radars.github;
 import com.jcabi.github.Github;
 import com.jcabi.github.Issue;
 import com.zerocracy.Farm;
+import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.pm.ClaimOut;
 import java.io.IOException;
 import javax.json.JsonObject;
@@ -44,7 +45,7 @@ public final class RbOnBug implements Rebound {
             .param("job", new Job(issue))
             .param("reason", "GitHub label was attached")
             .param("quiet", true)
-            .postTo(new GhProject(farm, issue.repo()));
+            .postTo(new ClaimsOf(farm, new GhProject(farm, issue.repo())));
         return new FormattedText(
             "Issue #%d added to WBS by 'bug' label",
             issue.number()

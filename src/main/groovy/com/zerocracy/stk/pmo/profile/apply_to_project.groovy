@@ -23,6 +23,7 @@ import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.SoftException
 import com.zerocracy.cash.Cash
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.staff.Roles
@@ -99,6 +100,7 @@ def exec(Project pmo, XML xml) {
       )
     }
   }
+  Project project = farm.find("@id='${pid}'")[0]
   claim.copy()
     .type('Notify project')
     .param(
@@ -112,11 +114,11 @@ def exec(Project pmo, XML xml) {
         'you can use that rate or define another one, see §13'
       ).say(claim.author(), pid, rate, std)
     )
-    .postTo(farm.find("@id='${pid}'")[0])
+    .postTo(new ClaimsOf(farm, project))
   claim.reply(
     new Par(
       farm,
       'The project %s was notified about your desire to join them'
     ).say(pid)
-  ).postTo(pmo)
+  ).postTo(new ClaimsOf(farm))
 }

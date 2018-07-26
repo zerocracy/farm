@@ -23,6 +23,7 @@ import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.SoftException
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
@@ -53,7 +54,7 @@ def exec(Project project, XML xml) {
       'par', new Par(
         'We started to work with https://github.com/%s',
       ).say(href)
-    ).postTo(project)
+    ).postTo(new ClaimsOf(farm, project))
   }
   Catalog catalog = new Catalog(farm).bootstrap()
   catalog.link(pid, rel, href)
@@ -61,10 +62,10 @@ def exec(Project project, XML xml) {
     new Par(
       'The project is linked with rel=`%s` and href=`%s`, by §17'
     ).say(rel, href)
-  ).postTo(project)
+  ).postTo(new ClaimsOf(farm, project))
   claim.copy()
     .type('Project link was added')
     .param('rel', rel)
     .param('href', href)
-    .postTo(project)
+    .postTo(new ClaimsOf(farm, project))
 }

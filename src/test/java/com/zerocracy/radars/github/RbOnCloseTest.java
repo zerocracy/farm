@@ -23,7 +23,7 @@ import com.jcabi.github.Repos;
 import com.jcabi.github.mock.MkGithub;
 import com.jcabi.github.mock.MkStorage;
 import com.zerocracy.farm.fake.FkFarm;
-import com.zerocracy.pm.Claims;
+import com.zerocracy.pm.ClaimsItem;
 import com.zerocracy.pm.scope.Wbs;
 import java.io.IOException;
 import javax.json.Json;
@@ -80,7 +80,7 @@ public final class RbOnCloseTest {
         new RbOnClose().react(farm, github, RbOnCloseTest.json(issue));
         MatcherAssert.assertThat(
             "issue is not delayed",
-            new Claims(pkt).bootstrap().iterate(),
+            new ClaimsItem(pkt).bootstrap().iterate(),
             Matchers.emptyIterable()
         );
     }

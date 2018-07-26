@@ -23,6 +23,7 @@ import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.farm.fake.FkProject
 import com.zerocracy.pm.ClaimIn
@@ -75,7 +76,7 @@ def exec(Project pmo, XML xml) {
         .param('payment_id', pid)
         .param('details', details)
         .param('amount', debt)
-        .postTo(pmo)
+        .postTo(new ClaimsOf(farm))
       claim.copy()
         .type('Notify user')
         .token("user;${uid}")
@@ -85,7 +86,7 @@ def exec(Project pmo, XML xml) {
             'We just paid you the debt of %s (`%s`)'
           ).say(debt, pid)
         )
-        .postTo(pmo)
+        .postTo(new ClaimsOf(farm))
     } catch (IOException ex) {
       debts.failure(uid, ex.message)
       claim.copy()
@@ -93,7 +94,7 @@ def exec(Project pmo, XML xml) {
         .param('login', uid)
         .param('amount', debt)
         .param('failure', ex.message)
-        .postTo(pmo)
+        .postTo(new ClaimsOf(farm))
       claim.copy()
         .type('Notify user')
         .token("user;${uid}")
@@ -104,13 +105,13 @@ def exec(Project pmo, XML xml) {
             'don\'t worry, we will retry very soon'
           ).say(debt, ex.message)
         )
-        .postTo(pmo)
+        .postTo(new ClaimsOf(farm))
       claim.copy().type('Notify PMO').param(
         'message',
         new Par(
           'We failed to pay the debt of %s to @%s: %s'
         ).say(debt, uid, ex.message)
-      ).postTo(pmo)
+      ).postTo(new ClaimsOf(farm))
       throw ex
     }
   }

@@ -16,7 +16,6 @@
  */
 package com.zerocracy.farm.fake;
 
-import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Project;
 import java.io.IOException;
@@ -27,7 +26,7 @@ import java.util.Map;
 import lombok.EqualsAndHashCode;
 
 /**
- * Fake {@link Farm}.
+ * Fake {@link Project}.
  *
  * <p>There is no thread-safety guarantee.</p>
  *

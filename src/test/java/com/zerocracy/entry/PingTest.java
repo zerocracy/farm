@@ -23,7 +23,7 @@ import com.zerocracy.Xocument;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.pm.ClaimIn;
-import com.zerocracy.pm.Claims;
+import com.zerocracy.pm.ClaimsItem;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.time.DateAsText;
 import org.hamcrest.MatcherAssert;
@@ -78,9 +78,9 @@ public final class PingTest {
         for (int count = 0; count < batches; ++count) {
             new Ping(farm, batches).execute(this.context(map, counter));
         }
-        final XML xml = new Claims(pkt).iterate().iterator().next();
+        final XML xml = new ClaimsItem(pkt).iterate().iterator().next();
         MatcherAssert.assertThat(
-            new Claims(pkt).bootstrap().iterate(),
+            new ClaimsItem(pkt).bootstrap().iterate(),
             Matchers.hasSize(1)
         );
         MatcherAssert.assertThat(

@@ -17,8 +17,10 @@
 package com.zerocracy.stk.pm.staff.roles
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.staff.Roles
@@ -29,18 +31,19 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   String login = claim.param('login')
   Roles roles = new Roles(project).bootstrap()
+  Farm farm = binding.variables.farm
   claim.reply(
     new Par('All roles were resigned from @%s in %s').say(
       login, project.pid()
     )
-  ).postTo(project)
+  ).postTo(new ClaimsOf(farm, project))
   roles.allRoles(login).each { role ->
     roles.resign(login, role)
     claim.copy()
       .type('Role was resigned')
       .param('login', login)
       .param('role', role)
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
   }
   claim.copy()
     .type('Notify project')
@@ -50,5 +53,5 @@ def exec(Project project, XML xml) {
         'Project member @%s was resigned from all project roles: %s',
       ).say(login, claim.param('reason'))
     )
-    .postTo(project)
+    .postTo(new ClaimsOf(farm, project))
 }

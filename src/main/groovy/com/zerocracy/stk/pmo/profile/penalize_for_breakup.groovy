@@ -21,6 +21,7 @@ import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.staff.Roles
@@ -49,11 +50,11 @@ def exec(Project pmo, XML xml) {
     .param('login', author)
     .param('points', points)
     .param('reason', reason)
-    .postTo(pmo)
+    .postTo(new ClaimsOf(farm))
   claim.reply(
     new Par(
       'Since you broke up with student %s,',
       'we deducted %d points from you in accordance with §47.'
     ).say(student, -points)
-  ).postTo(pmo)
+  ).postTo(new ClaimsOf(farm))
 }

@@ -20,6 +20,7 @@ package com.zerocracy.radars.github;
 import com.jcabi.github.Github;
 import com.jcabi.github.Issue;
 import com.zerocracy.Farm;
+import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.pm.ClaimOut;
 import java.io.IOException;
 import javax.json.JsonObject;
@@ -29,6 +30,7 @@ import org.cactoos.text.FormattedText;
  * Add issue to WBS if it is a pull request.
  *
  * @since 1.0
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class RbOnPullRequest implements Rebound {
 
@@ -45,7 +47,7 @@ public final class RbOnPullRequest implements Rebound {
                 .token(new TokenOfIssue(issue))
                 .param("job", new Job(issue))
                 .param("role", "REV")
-                .postTo(new GhProject(farm, issue.repo()));
+                .postTo(new ClaimsOf(farm, new GhProject(farm, issue.repo())));
             answer = new FormattedText(
                 "Pull request #%d added to WBS", issue.number()
             ).asString();

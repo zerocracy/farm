@@ -17,9 +17,11 @@
 package com.zerocracy.stk.pmo.awards
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 
@@ -28,6 +30,7 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Start order')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
+  Farm farm = binding.variables.farm
   if (!claim.hasAuthor()) {
     return
   }
@@ -41,6 +44,6 @@ def exec(Project project, XML xml) {
         new Par('Manual assignment of issues is discouraged, see §19').say()
       )
       .param('minutes', -new Policy().get('19.penalty', 5))
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
   }
 }

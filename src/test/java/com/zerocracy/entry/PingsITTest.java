@@ -21,7 +21,7 @@ import com.jcabi.xml.XML;
 import com.zerocracy.Project;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.pm.ClaimIn;
-import com.zerocracy.pm.Claims;
+import com.zerocracy.pm.ClaimsItem;
 import com.zerocracy.pmo.Catalog;
 import java.util.Date;
 import java.util.Properties;
@@ -104,7 +104,7 @@ public final class PingsITTest {
         );
         pings.start();
         final Date start = new Date();
-        final Claims claims = new Claims(prj).bootstrap();
+        final ClaimsItem claims = new ClaimsItem(prj).bootstrap();
         boolean get = false;
         while (
             new Date().getTime() - start.getTime()

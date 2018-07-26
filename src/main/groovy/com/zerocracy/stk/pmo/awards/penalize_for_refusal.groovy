@@ -17,9 +17,11 @@
 package com.zerocracy.stk.pmo.awards
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 
@@ -28,6 +30,7 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Order was canceled')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
+  Farm farm = binding.variables.farm
   if (claim.hasParam('voluntarily') && claim.param('voluntarily') == 'true') {
     claim.copy()
       .type('Make payment')
@@ -38,6 +41,6 @@ def exec(Project project, XML xml) {
         new Par('Tasks refusal is discouraged, see §6').say()
       )
       .param('minutes', -new Policy().get('6.penalty', 15))
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
   }
 }
