@@ -17,20 +17,27 @@
 package com.zerocracy.pm;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.AmazonSQSClient;
+import com.amazonaws.services.sqs.model.CreateQueueRequest;
 import com.jcabi.aspects.Tv;
 import com.jcabi.log.Logger;
+import com.zerocracy.entry.PropsAwsCredentials;
+import com.zerocracy.farm.fake.FkProject;
+import com.zerocracy.farm.props.Props;
+import com.zerocracy.farm.props.PropsFarm;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
+import org.cactoos.map.MapEntry;
+import org.cactoos.map.MapOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.After;
+import org.junit.Assume;
 import org.junit.Before;
-import org.junit.Ignore;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -40,43 +47,52 @@ import org.junit.Test;
  *
  * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@Ignore
 public final class ClaimsSqsITCase {
-
-    /**
-     * SQS AWS key.
-     */
-    private static final String SQS_KEY = "";
-
-    /**
-     * SQS AWS secret.
-     */
-    private static final String SQS_SECRET = "";
 
     /**
      * SQS client.
      */
     private AmazonSQS client;
+
     /**
      * Queue url.
      */
     private String queue;
+
+    @BeforeClass
+    public static void checkProps() throws Exception {
+        Assume.assumeTrue(
+            "sqs credentials are not provided",
+            new Props(new PropsFarm()).has("//sqs")
+        );
+    }
 
     @Before
     public void setUp() {
         this.client = AmazonSQSClient.builder()
             .withCredentials(
                 new AWSStaticCredentialsProvider(
-                    new BasicAWSCredentials(
-                        ClaimsSqsITCase.SQS_KEY,
-                        ClaimsSqsITCase.SQS_SECRET
-                    )
+                    new PropsAwsCredentials(new PropsFarm(), "sqs")
                 )
             ).withRegion(Regions.DEFAULT_REGION)
             .build();
         this.queue = this.client
-            .createQueue(UUID.randomUUID().toString()).getQueueUrl();
+            .createQueue(
+                new CreateQueueRequest(
+                    String.format(
+                        "%s.fifo",
+                        UUID.randomUUID()
+                    )
+                ).withAttributes(
+                    new MapOf<String, String>(
+                        // @checkstyle LineLength (2 lines)
+                        new MapEntry<>("FifoQueue", Boolean.toString(true)),
+                        new MapEntry<>("ContentBasedDeduplication", Boolean.toString(true))
+                    )
+                )
+            ).getQueueUrl();
         Logger.info(this, "Created queue: %s", this.queue);
     }
 
@@ -88,7 +104,9 @@ public final class ClaimsSqsITCase {
 
     @Test
     public void sendAndReceiveClaim() throws Exception {
-        final Claims claims = new ClaimsSqs(this.client, this.queue);
+        final Claims claims = new ClaimsSqs(
+            this.client, this.queue, new FkProject()
+        );
         final String type = "test";
         new ClaimOut()
             .type(type)

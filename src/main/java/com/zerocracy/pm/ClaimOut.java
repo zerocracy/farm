@@ -56,7 +56,7 @@ public final class ClaimOut implements Iterable<Directive> {
     /**
      * Max delay for claim.
      */
-    private static final long MAX_DELAY_MINUTES = 15L;
+    private static final Duration MAX_DELAY = Duration.ofMinutes(15L);
 
     /**
      * Counter of IDs.
@@ -208,8 +208,7 @@ public final class ClaimOut implements Iterable<Directive> {
             Instant.now(),
             Instant.ofEpochSecond(seconds)
         );
-        if (delay
-            .compareTo(Duration.ofMinutes(ClaimOut.MAX_DELAY_MINUTES)) > 0) {
+        if (delay.compareTo(ClaimOut.MAX_DELAY) > 0) {
             throw new IOException("Can't set delay more than 15 minutes");
         }
         return new ClaimOut(

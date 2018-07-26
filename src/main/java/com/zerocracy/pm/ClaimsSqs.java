@@ -21,6 +21,7 @@ import com.amazonaws.services.sqs.model.ReceiveMessageRequest;
 import com.amazonaws.services.sqs.model.SendMessageRequest;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.zerocracy.Project;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
@@ -50,14 +51,22 @@ public final class ClaimsSqs implements Claims {
     private final String queue;
 
     /**
+     * Project.
+     */
+    private final Project project;
+
+    /**
      * Ctor.
      *
      * @param sqs SQS client
      * @param queue Queue url
+     * @param project Project
      */
-    public ClaimsSqs(final AmazonSQS sqs, final String queue) {
+    public ClaimsSqs(final AmazonSQS sqs, final String queue,
+        final Project project) {
         this.sqs = sqs;
         this.queue = queue;
+        this.project = project;
     }
 
     @Override
@@ -88,7 +97,7 @@ public final class ClaimsSqs implements Claims {
         final SendMessageRequest msg = new SendMessageRequest(
             this.queue,
             claim.toString()
-        );
+        ).withMessageGroupId(this.project.pid());
         final long until = new IoCheckedScalar<>(
             new ItemAt<>(
                 0L,

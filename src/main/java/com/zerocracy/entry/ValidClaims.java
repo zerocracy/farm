@@ -70,8 +70,10 @@ public final class ValidClaims implements Claims {
         if (limit < ValidClaims.MIN_LIMIT || limit > ValidClaims.MAX_LIMIT) {
             throw new IllegalArgumentException(
                 String.format(
-                    "Invalid limit value: %d, should be > 0 and <= 10",
-                    limit
+                    "Invalid limit value: %d, should be >= %d and <= %d",
+                    limit,
+                    ValidClaims.MIN_LIMIT,
+                    ValidClaims.MAX_CLAIM_LENGTH
                 )
             );
         }
@@ -80,9 +82,14 @@ public final class ValidClaims implements Claims {
 
     @Override
     public void submit(final XML claim) throws IOException {
-        if (claim.toString().length() > ValidClaims.MAX_CLAIM_LENGTH) {
+        final int size = claim.toString().length();
+        if (size > ValidClaims.MAX_CLAIM_LENGTH) {
             throw new IllegalArgumentException(
-                "Claim is too big, max claim size is 256 KB"
+                String.format(
+                    "Claim is too big: %d bytes, max claim size is %d bytes",
+                    size,
+                    ValidClaims.MAX_CLAIM_LENGTH
+                )
             );
         }
         this.claims.submit(claim);

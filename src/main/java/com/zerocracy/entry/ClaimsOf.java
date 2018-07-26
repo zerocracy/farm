@@ -54,23 +54,23 @@ public final class ClaimsOf implements Claims {
                     if (props.has("//sqs")) {
                         final AmazonSQS sqs = new ExtSqs(farm).value();
                         final String name =
-                            String.format("project-%s", project.pid());
+                            String.format("project-%s.fifo", project.pid());
                         String url;
                         try {
                             url = sqs.getQueueUrl(name).getQueueUrl();
                         } catch (final QueueDoesNotExistException ignored) {
                             url = sqs.createQueue(
                                 new CreateQueueRequest(name)
-                                .withAttributes(
-                                    new MapOf<>(
-                                        // @checkstyle LineLength (2 lines)
-                                        new MapEntry<>("FifoQueue", "true"),
-                                        new MapEntry<>("ContentBasedDeduplication", "true")
+                                    .withAttributes(
+                                        new MapOf<String, String>(
+                                            // @checkstyle LineLength (2 lines)
+                                            new MapEntry<>("FifoQueue", Boolean.toString(true)),
+                                            new MapEntry<>("ContentBasedDeduplication", Boolean.toString(true))
+                                        )
                                     )
-                                )
                             ).getQueueUrl();
                         }
-                        claims = new ClaimsSqs(sqs, url);
+                        claims = new ClaimsSqs(sqs, url, project);
                     } else {
                         claims = new ClaimsXml(project);
                     }

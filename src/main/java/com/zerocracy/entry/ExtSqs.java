@@ -17,12 +17,10 @@
 package com.zerocracy.entry;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.AmazonSQSClient;
 import com.zerocracy.Farm;
-import com.zerocracy.farm.props.Props;
 import org.cactoos.Scalar;
 import org.cactoos.func.IoCheckedFunc;
 import org.cactoos.func.SolidFunc;
@@ -40,19 +38,13 @@ public final class ExtSqs implements Scalar<AmazonSQS> {
     private static final IoCheckedFunc<Farm, AmazonSQS> INSTANCES =
         new IoCheckedFunc<>(
             new SolidFunc<>(
-                frm -> {
-                    final Props props = new Props(frm);
-                    return AmazonSQSClient.builder()
-                        .withCredentials(
-                            new AWSStaticCredentialsProvider(
-                                new BasicAWSCredentials(
-                                    props.get("//sqs/key"),
-                                    props.get("//sqs/secret")
-                                )
-                            )
-                        ).withRegion(Regions.US_EAST_1)
-                        .build();
-                }
+                frm -> AmazonSQSClient.builder()
+                    .withCredentials(
+                        new AWSStaticCredentialsProvider(
+                            new PropsAwsCredentials(frm, "sqs")
+                        )
+                    ).withRegion(Regions.US_EAST_1)
+                    .build()
             )
         );
 

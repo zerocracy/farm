@@ -18,61 +18,50 @@ package com.zerocracy.entry;
 
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.zerocracy.Farm;
-import com.zerocracy.Item;
 import com.zerocracy.Project;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
-import org.cactoos.io.LengthOf;
-import org.cactoos.io.TeeInput;
+import com.zerocracy.farm.props.Props;
+import com.zerocracy.farm.props.PropsFarm;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Ignore;
+import org.junit.Assume;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import org.xembly.Directives;
-import org.xembly.Xembler;
 
 /**
  * Test case for {@link ClaimsOf}.
  * <p>
  * To start this test you have to create AWS user with full access to
- * SQS queues policy and insert credentials to SQS_KEY and SQS_SECRET
- * fields.
+ * SQS queues policy and insert credentials to test {@code _props.xml}:
+ * <pre><code>
+ * &lt;props&gt;
+ *     &lt;sqs&gt;
+ *         &lt;key&gt;your-key&lt;/key&gt;
+ *         &lt;secret&gt;your-secret&lt;/secret&gt;
+ *     &lt;/sqs&gt;
+ * &lt;/props&gt;
+ * </code></pre>
  *
  * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @checkstyle JavadocStyleCheck (500 lines)
  * @checkstyle JavadocMethodCheck (500 lines)
  */
-@Ignore
 public final class ClaimsOfITCase {
 
-    /**
-     * SQS AWS key.
-     */
-    private static final String SQS_KEY = "";
-
-    /**
-     * SQS AWS secret.
-     */
-    private static final String SQS_SECRET = "";
+    @BeforeClass
+    public static void checkProps() throws Exception {
+        Assume.assumeTrue(
+            "sqs credentials are not provided",
+            new Props(new PropsFarm()).has("//sqs")
+        );
+    }
 
     @Test
     public void createsNewQueue() throws Exception {
         final Project project = new FkProject();
-        try (final Item item = project.acq("_props.xml")) {
-            new LengthOf(
-                new TeeInput(
-                    new Xembler(
-                        new Directives()
-                            .add("props")
-                            .add("sqs")
-                            .add("key").set(ClaimsOfITCase.SQS_KEY).up()
-                            .add("secret").set(ClaimsOfITCase.SQS_SECRET).up()
-                    ).xmlQuietly(),
-                    item.path()
-                )
-            ).value();
-        }
-        final Farm farm = new FkFarm(project);
+        final Farm farm = new PropsFarm(new FkFarm(project));
         new ClaimsOf(farm).take(
             xml -> {
             },
@@ -80,7 +69,7 @@ public final class ClaimsOfITCase {
         );
         final AmazonSQS sqs = new ExtSqs(farm).value();
         final String url = sqs.getQueueUrl(
-            String.format("project-%s", project.pid())
+            String.format("project-%s.fifo", project.pid())
         ).getQueueUrl();
         sqs.deleteQueue(url);
         MatcherAssert.assertThat(
