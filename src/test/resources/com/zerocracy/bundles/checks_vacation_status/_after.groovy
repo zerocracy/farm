@@ -17,13 +17,8 @@
 package com.zerocracy.bundles.modifies_vacation_mode
 
 import com.jcabi.xml.XML
-import com.zerocracy.Farm
 import com.zerocracy.Item
 import com.zerocracy.Project
-import com.zerocracy.pm.Claims
-import com.zerocracy.pmo.People
-import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
 
 def exec(Project pmo, XML xml) {
   Item item = pmo.acq('test.txt').withCloseable {
