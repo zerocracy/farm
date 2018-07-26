@@ -18,8 +18,8 @@ package com.zerocracy.radars;
 
 import com.jcabi.xml.XMLDocument;
 import com.zerocracy.entry.ClaimsOf;
-import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
+import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pm.ClaimsItem;
 import java.util.Collection;
 import org.cactoos.list.SolidList;
@@ -62,7 +62,7 @@ public final class ClaimOnQuestionTest {
         );
         final FkProject project = new FkProject();
         new ClaimOnQuestion(question).claim()
-            .postTo(new ClaimsOf(new FkFarm(), project));
+            .postTo(new ClaimsOf(new PropsFarm(), project));
         final ClaimsItem claims = new ClaimsItem(project).bootstrap();
         MatcherAssert.assertThat(
             claims.iterate(),

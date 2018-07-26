@@ -16,21 +16,29 @@
  */
 package com.zerocracy.entry;
 
+import com.amazonaws.services.sqs.AmazonSQS;
+import com.amazonaws.services.sqs.model.CreateQueueRequest;
+import com.amazonaws.services.sqs.model.QueueDoesNotExistException;
 import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
+import com.zerocracy.farm.props.Props;
 import com.zerocracy.pm.Claims;
+import com.zerocracy.pm.ClaimsSqs;
 import com.zerocracy.pm.ClaimsXml;
 import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
 import org.cactoos.Proc;
 import org.cactoos.func.IoCheckedBiFunc;
 import org.cactoos.func.StickyBiFunc;
+import org.cactoos.map.MapEntry;
+import org.cactoos.map.MapOf;
 
 /**
  * Claims for farm.
  *
  * @since 1.0
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class ClaimsOf implements Claims {
 
@@ -40,7 +48,34 @@ public final class ClaimsOf implements Claims {
     private static final IoCheckedBiFunc<Farm, Project, Claims> SINGLETON =
         new IoCheckedBiFunc<>(
             new StickyBiFunc<>(
-                (farm, project) -> new ClaimsXml(project)
+                (farm, project) -> {
+                    final Props props = new Props(farm);
+                    final Claims claims;
+                    if (props.has("//sqs")) {
+                        final AmazonSQS sqs = new ExtSqs(farm).value();
+                        final String name =
+                            String.format("project-%s", project.pid());
+                        String url;
+                        try {
+                            url = sqs.getQueueUrl(name).getQueueUrl();
+                        } catch (final QueueDoesNotExistException ignored) {
+                            url = sqs.createQueue(
+                                new CreateQueueRequest(name)
+                                .withAttributes(
+                                    new MapOf<>(
+                                        // @checkstyle LineLength (2 lines)
+                                        new MapEntry<>("FifoQueue", "true"),
+                                        new MapEntry<>("ContentBasedDeduplication", "true")
+                                    )
+                                )
+                            ).getQueueUrl();
+                        }
+                        claims = new ClaimsSqs(sqs, url);
+                    } else {
+                        claims = new ClaimsXml(project);
+                    }
+                    return new ValidClaims(claims);
+                }
             )
         );
 
