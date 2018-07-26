@@ -14,22 +14,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.invite_a_friend
+package com.zerocracy.bundles.examiner_can_invite
 
-import com.jcabi.github.Repos
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
-import com.zerocracy.entry.ExtGithub
-import com.zerocracy.pmo.Awards
+import com.zerocracy.pmo.People
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
-  new ExtGithub(farm).value().repos().create(new Repos.RepoCreate('test', false))
-  new Awards(farm, 'high').bootstrap().add(
-    project, 1256, 'gh:test/test#1', 'test'
+  People people = new People(farm).bootstrap()
+  String friend = 'friend'
+  MatcherAssert.assertThat(
+    people.hasMentor(friend),
+    Matchers.is(true)
   )
-  new Awards(farm, 'low').bootstrap().add(
-    project, 1, 'gh:test/test#1', 'test'
+  MatcherAssert.assertThat(
+    people.mentor(friend),
+    Matchers.is('user')
   )
 }

@@ -135,6 +135,26 @@ public final class Resumes {
     }
 
     /**
+     * Get the user's examiner.
+     *
+     * @param login Resume author
+     * @return Examiner of given user
+     * @throws IOException If fails
+     */
+    public String examiner(final String login) throws IOException {
+        try (final Item item = this.item()) {
+            return new Xocument(item.path())
+                .xpath(
+                    String.format(
+                        "/resumes/resume[@login='%s']/examiner/text()",
+                        login
+                    )
+                )
+                .get(0);
+        }
+    }
+
+    /**
      * The item.
      * @return Item
      * @throws IOException If fails

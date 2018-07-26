@@ -14,37 +14,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.invite_a_friend
+package com.zerocracy.bundles.examiner_can_invite
 
+import com.jcabi.github.Repos
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.entry.ExtGithub
 import com.zerocracy.pmo.Awards
-import com.zerocracy.pmo.People
-import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
+import com.zerocracy.pmo.Resumes
+import java.time.LocalDateTime
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
-  People people = new People(farm).bootstrap()
-  MatcherAssert.assertThat(
-    'High reputation user\'s friend was not invited',
-    people.hasMentor('hfriend'),
-    Matchers.is(true)
+  Resumes resumes = new Resumes(farm).bootstrap()
+  resumes.add(
+    'friend',
+    LocalDateTime.now(),
+    'User description on himself',
+    'INTP-A',
+    1000541,
+    'telegramFriend'
   )
-  MatcherAssert.assertThat(
-    'Low reputation user\'s friend was invited',
-    people.hasMentor('lfriend'),
-    Matchers.is(false)
+  String user = 'user'
+  resumes.assign('friend', user)
+  new ExtGithub(farm).value().repos().create(new Repos.RepoCreate('test', false))
+  new Awards(farm, user).bootstrap().add(
+    project, 1234, 'gh:test/test#1', 'test'
   )
-  MatcherAssert.assertThat(
-    'Breakup with "tmp" user failed',
-    people.hasMentor('tmp'),
-    Matchers.is(false)
-  )
-  MatcherAssert.assertThat(
-    '256 points has not been deducted after breakup',
-    new Awards(farm, 'high').total(),
-    Matchers.equalTo(1000)
+  new Awards(farm, 'other-user').bootstrap().add(
+    project, 2048, 'gh:test/test#1', 'test'
   )
 }

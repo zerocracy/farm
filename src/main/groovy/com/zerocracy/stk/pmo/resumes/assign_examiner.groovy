@@ -36,10 +36,9 @@ import org.cactoos.list.Shuffled
  * {@code resumes.xml} it should be assigned to examiner which can
  * invite user or deny the resume.
  *
- * @todo #1146:30min New user should be invited only by examiner.
- *  We should check that user has a resume in resumes.xml and
- *  author of invite is his examiner also new users can be invited by PMO
- *  members (has any role in PMO project) without resumes check.
+ * @todo #1352:30min New users can also be invited by PMO
+ *  members (has any role in PMO project) or QAs in Zerocracy (C3NDPUA8L)
+ *  project without resumes check.
  *  On invite we should notify user and examiner and add +32 reputation
  *  points to examiner. Also examiner should be able to reject resume by
  *  saying `deny @username`.
