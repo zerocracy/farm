@@ -209,7 +209,12 @@ public final class ClaimOut implements Iterable<Directive> {
             Instant.ofEpochSecond(seconds)
         );
         if (delay.compareTo(ClaimOut.MAX_DELAY) > 0) {
-            throw new IOException("Can't set delay more than 15 minutes");
+            throw new IOException(
+                String.format(
+                    "Can't set delay more than %s minutes",
+                    ClaimOut.MAX_DELAY.toMinutes()
+                )
+            );
         }
         return new ClaimOut(
             this.dirs
