@@ -33,26 +33,26 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   String fast = 'fast-developer'
   String slow = 'slow-developer'
-  int dev = 30
-  int speed = 5
+  int payment = 30
+  int bonus = 5
   MatcherAssert.assertThat(
     new Awards(farm, fast).bootstrap().total(),
-    Matchers.is(dev + speed)
+    Matchers.is(payment + bonus)
   )
   MatcherAssert.assertThat(
     new Awards(farm, slow).bootstrap().total(),
-    Matchers.is(dev)
+    Matchers.is(payment)
   )
   MatcherAssert.assertThat(
     new Debts(farm).bootstrap().amount(fast),
     Matchers.comparesEqualTo(
-      new Rates(project).bootstrap().rate(fast).mul(dev + speed)/ 60
+      new Rates(project).bootstrap().rate(fast).mul(payment + bonus)/ 60
     )
   )
   MatcherAssert.assertThat(
     new Debts(farm).bootstrap().amount(slow),
     Matchers.comparesEqualTo(
-      new Rates(project).bootstrap().rate(slow).mul(dev) / 60
+      new Rates(project).bootstrap().rate(slow).mul(payment) / 60
     )
   )
 

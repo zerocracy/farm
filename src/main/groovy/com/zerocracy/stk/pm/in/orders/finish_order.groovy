@@ -48,21 +48,23 @@ def exec(Project project, XML xml) {
     closed = Instant.now()
   }
 
-  long millis = closed.toEpochMilli() - orders.startTime(job).time
-  long age = millis / TimeUnit.MINUTES.toMillis(1L)
+  long velocity = closed.toEpochMilli() - orders.startTime(job).time
   String performer = orders.performer(job)
   Estimates estimates = new Estimates(project).bootstrap()
   Cash price = Cash.ZERO
   Farm farm = binding.variables.farm
   int speed = 0
-  if (millis <= Duration.ofHours(new Policy().get('36.hours', 48)).toMillis()) {
+  if (velocity <= Duration.ofHours(new Policy().get('36.hours', 48)).toMillis()) {
+    // @todo #1381:30min This message has to be moved to the final message in
+    //  make_payment.groovy stakeholder. For that you'll most probably need
+    //  to create a new parameter that can be retrieved during the payment.
     claim.copy()
       .type('Notify job')
       .token("job;${job}")
       .param(
       'message',
       new Par('Job was finished in %d hours, bonus for fast delivery is possible (see §36)')
-        .say(Duration.ofMillis(millis).toHours())
+        .say(Duration.ofMillis(velocity).toHours())
     ).postTo(new ClaimsOf(farm, project))
     speed = new Policy().get('36.bonus', 5)
   }
@@ -111,6 +113,6 @@ def exec(Project project, XML xml) {
   claim.copy()
     .type('Order was finished')
     .param('login', performer)
-    .param('age', age)
+    .param('age', velocity / TimeUnit.MINUTES.toMillis(1L) as long)
     .postTo(new ClaimsOf(farm, project))
 }
