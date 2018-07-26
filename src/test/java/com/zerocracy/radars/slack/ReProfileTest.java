@@ -22,7 +22,7 @@ import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.Farm;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.pm.ClaimIn;
-import com.zerocracy.pm.Claims;
+import com.zerocracy.pm.ClaimsItem;
 import com.zerocracy.pmo.People;
 import com.zerocracy.pmo.Pmo;
 import org.hamcrest.MatcherAssert;
@@ -55,7 +55,7 @@ public final class ReProfileTest {
         people.link(uid, "slack", sid);
         new ReProfile().react(farm, event, null);
         final ClaimIn claim = new ClaimIn(
-            new Claims(new Pmo(farm)).iterate().iterator().next()
+            new ClaimsItem(new Pmo(farm)).iterate().iterator().next()
         );
         MatcherAssert.assertThat(
             claim.type(),
@@ -84,7 +84,7 @@ public final class ReProfileTest {
         people.link(uid, "slack", sid);
         new ReProfile().react(farm, event, null);
         final ClaimIn claim = new ClaimIn(
-            new Claims(new Pmo(farm)).iterate().iterator().next()
+            new ClaimsItem(new Pmo(farm)).iterate().iterator().next()
         );
         MatcherAssert.assertThat(
             claim.type(),

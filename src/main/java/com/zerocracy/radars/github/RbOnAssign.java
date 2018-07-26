@@ -20,6 +20,7 @@ package com.zerocracy.radars.github;
 import com.jcabi.github.Github;
 import com.jcabi.github.Issue;
 import com.zerocracy.Farm;
+import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.pm.ClaimOut;
 import java.io.IOException;
 import java.util.Locale;
@@ -54,7 +55,7 @@ public final class RbOnAssign implements Rebound {
                 // @checkstyle AvoidInlineConditionalsCheck (1 line)
                 .param("role", issue.isPull() ? "REV" : "DEV")
                 .param("reason", "GitHub issue was assigned to 0crat")
-                .postTo(new GhProject(farm, issue.repo()));
+                .postTo(new ClaimsOf(farm, new GhProject(farm, issue.repo())));
             reply = new FormattedText(
                 "Issue #%d assigned to 0crat, adding to WBS",
                 issue.number()
@@ -75,7 +76,7 @@ public final class RbOnAssign implements Rebound {
                     "reason",
                     String.format("GitHub issue was assigned by @%s", sender)
                 )
-                .postTo(new GhProject(farm, issue.repo()));
+                .postTo(new ClaimsOf(farm, new GhProject(farm, issue.repo())));
             reply = new FormattedText(
                 "Issue #%d assigned to %s via Github",
                 issue.number(), login

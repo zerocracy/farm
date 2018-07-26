@@ -22,13 +22,17 @@ import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.cost.Boosts
 import com.zerocracy.pm.cost.Estimates
+import com.zerocracy.pm.cost.Rates
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.qa.JobAudit
 import com.zerocracy.pm.staff.Roles
+import java.time.Duration
+import java.time.Instant
 import java.util.concurrent.TimeUnit
 
 def exec(Project project, XML xml) {
@@ -37,18 +41,45 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
   Orders orders = new Orders(project).bootstrap()
-  long age = (System.currentTimeMillis() - orders.startTime(job).time) / TimeUnit.MINUTES.toMillis(1L)
+  Instant closed
+  if (claim.hasParam('closed')) {
+    closed = Instant.parse(claim.param('closed'))
+  } else {
+    closed = Instant.now()
+  }
+
+  long velocity = closed.toEpochMilli() - orders.startTime(job).time
   String performer = orders.performer(job)
   Estimates estimates = new Estimates(project).bootstrap()
   Cash price = Cash.ZERO
+  Farm farm = binding.variables.farm
+  int speed = 0
+  if (velocity <= Duration.ofHours(new Policy().get('36.hours', 48)).toMillis()) {
+    // @todo #1381:30min This message has to be moved to the final message in
+    //  make_payment.groovy stakeholder. Leaving it here adds a pointless message
+    //  in issue tracker, we could reduce it into a single message that contains
+    //  all the reasons for bonuses (QA and speed). For that you'll most probably need
+    //  to create a new parameter that can be retrieved during the payment.
+    claim.copy()
+      .type('Notify job')
+      .token("job;${job}")
+      .param(
+      'message',
+      new Par('Job was finished in %d hours, bonus for fast delivery is possible (see §36)')
+        .say(Duration.ofMillis(velocity).toHours())
+    ).postTo(new ClaimsOf(farm, project))
+    speed = new Policy().get('36.bonus', 5)
+  }
   if (estimates.exists(job)) {
     price = estimates.get(job)
+    if (speed > 0 && !price.empty) {
+      price = price.add(new Rates(project).bootstrap().rate(performer).mul(speed) / 60)
+    }
   }
-  int minutes = new Boosts(project).bootstrap().factor(job) * 15
+  int minutes = new Boosts(project).bootstrap().factor(job) * 15 + speed
   Roles roles = new Roles(project).bootstrap()
   List<String> qa = roles.findByRole('QA')
   if (qa.empty || roles.hasRole(performer, 'ARC', 'PO')) {
-    Farm farm = binding.variables.farm
     List<String> complaints = new JobAudit(farm, project).review(job)
     if (complaints.empty) {
       claim.copy()
@@ -57,7 +88,7 @@ def exec(Project project, XML xml) {
         .param('reason', new Par('Order was finished').say())
         .param('minutes', minutes)
         .param('cash', price)
-        .postTo(project)
+        .postTo(new ClaimsOf(farm, project))
     } else {
       claim.copy()
         .type('Notify job')
@@ -68,7 +99,7 @@ def exec(Project project, XML xml) {
             complaints.join(', ')
           )
         )
-        .postTo(project)
+        .postTo(new ClaimsOf(farm, project))
     }
   } else {
     Cash bonus = price.mul(new Policy().get('31.bonus', 8)) / 100
@@ -78,12 +109,12 @@ def exec(Project project, XML xml) {
       .param('minutes', minutes)
       .param('cash', price)
       .param('bonus', bonus)
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
   }
   orders.resign(job)
   claim.copy()
     .type('Order was finished')
     .param('login', performer)
-    .param('age', age)
-    .postTo(project)
+    .param('age', velocity / TimeUnit.MINUTES.toMillis(1L) as long)
+    .postTo(new ClaimsOf(farm, project))
 }

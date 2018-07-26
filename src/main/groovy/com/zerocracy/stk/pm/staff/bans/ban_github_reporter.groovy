@@ -21,6 +21,7 @@ import com.jcabi.github.Issue
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
@@ -45,6 +46,6 @@ def exec(Project project, XML xml) {
     claim.copy()
       .type('User was banned')
       .param('reason', 'The user reported GitHub issue')
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
   }
 }

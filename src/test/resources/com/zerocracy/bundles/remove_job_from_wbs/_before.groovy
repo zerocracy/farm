@@ -23,6 +23,7 @@ import com.jcabi.github.Repos
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.pm.scope.Wbs
@@ -42,5 +43,5 @@ def exec(Project project, XML xml) {
     .type('Remove job from WBS')
     .token('test;C123;user42')
     .param('job', job)
-    .postTo(project)
+    .postTo(new ClaimsOf(farm, project))
 }

@@ -22,6 +22,7 @@ import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Par;
 import com.zerocracy.Project;
+import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.tk.RqUser;
 import com.zerocracy.tk.RsParFlash;
@@ -86,7 +87,7 @@ public final class TkUpload implements TkRegex {
             "message", new Par(
                 "File `%s` uploaded manually to %s by @%s"
             ).say(artifact, project.pid(), new RqUser(this.farm, req).value())
-        ).postTo(this.farm);
+        ).postTo(new ClaimsOf(this.farm));
         return new RsForward(
             new RsParFlash(
                 new Par(

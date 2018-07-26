@@ -21,6 +21,7 @@ import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.staff.Roles
@@ -51,7 +52,7 @@ def exec(Project project, XML xml) {
           'You are a very respected person, but your reputation is very low: %d;',
           'please, do something or I will take some disciplinary actions, see §44'
         ).say(current)
-      ).postTo(project)
+      ).postTo(new ClaimsOf(farm, project))
     return
   }
   people.breakup(login)
@@ -64,7 +65,7 @@ def exec(Project project, XML xml) {
         'Your reputation became too low,',
         'you have been disconnected from your mentor as in §44'
       ).say()
-    ).postTo(project)
+    ).postTo(new ClaimsOf(farm, project))
   String job = claim.param('job')
   String reason = new Par(
     'The score of @%s %d is too low and will be reset'
@@ -75,5 +76,5 @@ def exec(Project project, XML xml) {
     .type('Award points were added')
     .param('points', points)
     .param('reason', reason)
-    .postTo(project)
+    .postTo(new ClaimsOf(farm, project))
 }

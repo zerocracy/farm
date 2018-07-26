@@ -21,10 +21,12 @@ import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.SoftException;
 import com.zerocracy.Stakeholder;
+import com.zerocracy.entry.ClaimsOf;
+import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pm.ClaimOut;
-import com.zerocracy.pm.Claims;
+import com.zerocracy.pm.ClaimsItem;
 import java.io.IOException;
 import org.cactoos.iterable.LengthOf;
 import org.hamcrest.MatcherAssert;
@@ -45,8 +47,9 @@ public final class StkSafeTest {
     public void catchesSoftException() throws Exception {
         final Stakeholder stk = Mockito.mock(Stakeholder.class);
         final Project project = new FkProject();
-        new ClaimOut().type("hello you").postTo(project);
-        final XML claim = new Claims(project).iterate().iterator().next();
+        new ClaimOut().type("hello you")
+            .postTo(new ClaimsOf(new FkFarm(), project));
+        final XML claim = new ClaimsItem(project).iterate().iterator().next();
         Mockito.doThrow(new SoftException("")).when(stk).process(
             project, claim
         );
@@ -59,15 +62,15 @@ public final class StkSafeTest {
         new ClaimOut()
             .type("Notify GitHub")
             .token("github;test/test#1")
-            .postTo(project);
-        final XML claim = new Claims(project).iterate().iterator().next();
+            .postTo(new ClaimsOf(new FkFarm(), project));
+        final XML claim = new ClaimsItem(project).iterate().iterator().next();
         new StkSafe(
             "hello1",
             new StkSafeTest.NonTestingFarm(),
             new StkSafeTest.StkError()
         ).process(project, claim);
         MatcherAssert.assertThat(
-            new Claims(project).iterate(),
+            new ClaimsItem(project).iterate(),
             Matchers.iterableWithSize(2)
         );
     }
@@ -75,8 +78,10 @@ public final class StkSafeTest {
     @Test
     public void dontRepeatErrorClaims() throws Exception {
         final FkProject project = new FkProject();
-        new ClaimOut().type("Error").postTo(project);
-        final int before = new LengthOf(new Claims(project).iterate())
+        new ClaimOut().type("Error").postTo(
+            new ClaimsOf(new FkFarm(), project)
+        );
+        final int before = new LengthOf(new ClaimsItem(project).iterate())
             .intValue();
         new StkSafe(
             "errors1",
@@ -84,10 +89,10 @@ public final class StkSafeTest {
             new StkSafeTest.StkError()
         ).process(
             project,
-            new Claims(project).iterate().iterator().next()
+            new ClaimsItem(project).iterate().iterator().next()
         );
         MatcherAssert.assertThat(
-            new Claims(project).iterate(),
+            new ClaimsItem(project).iterate(),
             Matchers.iterableWithSize(before)
         );
     }

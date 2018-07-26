@@ -14,37 +14,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.invite_a_friend
+package com.zerocracy.bundles.dont_resign_on_delay_unfunded_project
 
+
+import com.jcabi.github.Repo
+import com.jcabi.github.Repos
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
-import com.zerocracy.pmo.Awards
-import com.zerocracy.pmo.People
+import com.zerocracy.entry.ExtGithub
+import com.zerocracy.pm.cost.Ledger
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
-  People people = new People(farm).bootstrap()
+  Repo repo = new ExtGithub(farm).value().repos().create(new Repos.RepoCreate('test', false))
+  repo.issues().create('Issue title', 'Issue body')
+  repo.pulls().create('PR title', 'master', 'master')
   MatcherAssert.assertThat(
-    'High reputation user\'s friend was not invited',
-    people.hasMentor('hfriend'),
-    Matchers.is(true)
-  )
-  MatcherAssert.assertThat(
-    'Low reputation user\'s friend was invited',
-    people.hasMentor('lfriend'),
-    Matchers.is(false)
-  )
-  MatcherAssert.assertThat(
-    'Breakup with "tmp" user failed',
-    people.hasMentor('tmp'),
-    Matchers.is(false)
-  )
-  MatcherAssert.assertThat(
-    '256 points has not been deducted after breakup',
-    new Awards(farm, 'high').total(),
-    Matchers.equalTo(1000)
+    new Ledger(project).bootstrap().cash().decimal(),
+    Matchers.comparesEqualTo(BigDecimal.ZERO)
   )
 }

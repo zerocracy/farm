@@ -21,6 +21,7 @@ import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Awards
@@ -48,7 +49,7 @@ def exec(Project project, XML xml) {
         'message',
         new Par('You have too many negative awards and no positive ones, turning vacation on automatically, see §52')
           .say()
-      ).postTo(project)
+      ).postTo(new ClaimsOf(farm, project))
     }
   }
 }

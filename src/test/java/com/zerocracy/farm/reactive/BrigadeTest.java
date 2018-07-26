@@ -20,12 +20,13 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.zerocracy.Project;
 import com.zerocracy.Stakeholder;
+import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.farm.MismatchException;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.fake.FkStakeholder;
 import com.zerocracy.pm.ClaimOut;
-import com.zerocracy.pm.Claims;
+import com.zerocracy.pm.ClaimsItem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -60,16 +61,21 @@ public final class BrigadeTest {
                     "import com.zerocracy.Project",
                     "import com.jcabi.xml.XML",
                     "import com.zerocracy.pm.ClaimOut",
+                    "import com.zerocracy.Farm",
+                    "import com.zerocracy.entry.ClaimsOf",
                     "def exec(Project project, XML xml) {",
-                    "new ClaimOut().type('one more').postTo(project)",
+                    "Farm farm = binding.variables.farm",
+                    "new ClaimOut().type('one more')",
+                    ".postTo(new ClaimsOf(farm, project))",
                     "}"
                 ),
                 file.toFile()
             )
         ).intValue();
         final Project project = new FkProject();
-        new ClaimOut().type("just some fun").postTo(project);
-        final Claims claims = new Claims(project).bootstrap();
+        new ClaimOut().type("just some fun")
+            .postTo(new ClaimsOf(new FkFarm(), project));
+        final ClaimsItem claims = new ClaimsItem(project).bootstrap();
         final XML xml = claims.iterate().iterator().next();
         final Brigade brigade = new Brigade(
             new StkGroovy(
@@ -87,8 +93,10 @@ public final class BrigadeTest {
     @Test
     public void runsGroovyScript() throws Exception {
         final Project project = new FkProject();
-        new ClaimOut().type("Hello").token("test;notoken").postTo(project);
-        final Claims claims = new Claims(project).bootstrap();
+        new ClaimOut().type("Hello").token("test;notoken").postTo(
+            new ClaimsOf(new FkFarm(), project)
+        );
+        final ClaimsItem claims = new ClaimsItem(project).bootstrap();
         final XML xml = claims.iterate().iterator().next();
         final Brigade brigade = new Brigade(
             new StkRuntime(

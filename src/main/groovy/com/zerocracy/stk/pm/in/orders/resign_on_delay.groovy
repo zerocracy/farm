@@ -5,6 +5,7 @@ import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.cost.Boosts
@@ -15,15 +16,23 @@ import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.Pmo
-import org.cactoos.iterable.Filtered
-import org.cactoos.iterable.Limited
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
+import org.cactoos.iterable.Filtered
+import org.cactoos.iterable.Limited
 
+/**
+ * Resign an order that is kept for too long.
+ * Orders in unfunded projects are not resigned at all, similarly REV tasks
+ * are not resigned even in funded projects.
+ *
+ * @param project A project
+ * @param xml XML file received
+ */
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Ping')
-  if (new Ledger(project).bootstrap().deficit()) {
+  if (new Ledger(project).bootstrap().cash().decimal() <= BigDecimal.ZERO) {
     // We must not resign when the project is not funded, simply
     // because developers can't do anything without money. Their PRs
     // will have no reviewers, etc.
@@ -73,14 +82,14 @@ def exec(Project project, XML xml) {
       .token("job;$job")
       .param('job', job)
       .param('reason', new Par('It is older than %d day(s), see §8').say(days))
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
     claim.copy()
       .type('Make payment')
       .param('job', job)
       .param('login', worker)
       .param('reason', new Par('Resigned on delay, see §8').say())
       .param('minutes', boosts.factor(job) * -15)
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
     claim.copy()
       .type('Notify project')
       .param(
@@ -89,6 +98,6 @@ def exec(Project project, XML xml) {
           'The order at %s cancelled for @%s, it is over %d day(s), see §8'
         ).say(job, worker, days)
       )
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
   }
 }

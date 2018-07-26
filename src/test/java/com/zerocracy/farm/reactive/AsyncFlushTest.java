@@ -23,11 +23,12 @@ import com.jcabi.s3.fake.FkBucket;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.Stakeholder;
+import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.farm.S3Farm;
 import com.zerocracy.farm.sync.SyncFarm;
 import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.ClaimOut;
-import com.zerocracy.pm.Claims;
+import com.zerocracy.pm.ClaimsItem;
 import java.nio.file.Files;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -59,11 +60,12 @@ public final class AsyncFlushTest {
                 (Stakeholder) (pkt, claim) -> {
                     done.incrementAndGet();
                     if (new ClaimIn(claim).type().startsWith("nex")) {
-                        new ClaimIn(claim).reply("the answer").postTo(project);
+                        new ClaimIn(claim).reply("the answer")
+                            .postTo(new ClaimsOf(farm, project));
                     }
                 }
             );
-            new ClaimOut().type("first").postTo(project);
+            new ClaimOut().type("first").postTo(new ClaimsOf(farm, project));
             final int max = Tv.FIVE;
             final Thread thread = new Thread(
                 new VerboseRunnable(
@@ -74,7 +76,7 @@ public final class AsyncFlushTest {
                                 .token("test;t")
                                 .type("next")
                                 .param("something", idx)
-                                .postTo(project);
+                                .postTo(new ClaimsOf(farm, project));
                         }
                         return null;
                     }
@@ -82,13 +84,13 @@ public final class AsyncFlushTest {
             );
             thread.start();
             try (final Flush flush =
-                new AsyncFlush(new DefaultFlush(brigade))) {
+                new AsyncFlush(new DefaultFlush(farm, brigade))) {
                 latch.countDown();
                 while (thread.isAlive()) {
                     flush.exec(project);
                 }
                 thread.join();
-                final Claims claims = new Claims(project).bootstrap();
+                final ClaimsItem claims = new ClaimsItem(project).bootstrap();
                 while (!claims.iterate().isEmpty()) {
                     flush.exec(project);
                 }

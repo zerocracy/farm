@@ -17,7 +17,9 @@
 package com.zerocracy.stk.pm.staff.bans
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.staff.Bans
@@ -29,11 +31,12 @@ def exec(Project project, XML xml) {
   String job = claim.param('job')
   String performer = claim.param('login')
   Bans bans = new Bans(project).bootstrap()
+  Farm farm = binding.variables.farm
   if (!bans.exists(job, performer)) {
     bans.ban(job, performer, 'User was resigned from the ticket')
     claim.copy()
       .type('User was banned')
       .param('login', performer)
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
   }
 }

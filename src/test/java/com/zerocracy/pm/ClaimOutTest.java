@@ -18,6 +18,8 @@ package com.zerocracy.pm;
 
 import com.jcabi.matchers.XhtmlMatchers;
 import com.zerocracy.Project;
+import com.zerocracy.entry.ClaimsOf;
+import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -35,7 +37,7 @@ public final class ClaimOutTest {
 
     @Test
     public void chainsThem() throws Exception {
-        final Claims claims = new Claims(new FkProject()).bootstrap();
+        final ClaimsItem claims = new ClaimsItem(new FkProject()).bootstrap();
         claims.add(
             new Concat<Directive>(
                 new ClaimOut()
@@ -63,10 +65,10 @@ public final class ClaimOutTest {
             .param("minutes", "45min")
             .param("cause_type", "Ping")
             .param("message", "hello, world")
-            .postTo(project);
+            .postTo(new ClaimsOf(new FkFarm(), project));
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
-                new Claims(project).iterate().iterator().next()
+                new ClaimsItem(project).iterate().iterator().next()
             ),
             XhtmlMatchers.hasXPaths(
                 "/claim/params/param[@name='login' and .='yegor256']",
@@ -77,7 +79,7 @@ public final class ClaimOutTest {
 
     @Test
     public void complainsAboutInvalidClaim() throws Exception {
-        final ClaimOut[] claims = {
+        final ClaimOut[] data = {
             new ClaimOut()
                 .type("Hello dude")
                 .param("author", "yegor256"),
@@ -98,9 +100,10 @@ public final class ClaimOutTest {
                 .param("role", "this is not a role"),
         };
         final Project project = new FkProject();
-        for (final ClaimOut claim : claims) {
+        final Claims claims = new ClaimsOf(new FkFarm(), project);
+        for (final ClaimOut claim : data) {
             try {
-                claim.postTo(project);
+                claim.postTo(claims);
             } catch (final IllegalArgumentException ex) {
                 MatcherAssert.assertThat(
                     ex.getLocalizedMessage(),

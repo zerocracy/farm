@@ -19,6 +19,7 @@ package com.zerocracy.stk.pmo.speed
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Speed
@@ -34,5 +35,5 @@ def exec(Project project, XML xml) {
   new Speed(farm, login)
     .bootstrap()
     .add(project.pid(), job, age)
-  claim.copy().type('Speed was updated').postTo(project)
+  claim.copy().type('Speed was updated').postTo(new ClaimsOf(farm, project))
 }

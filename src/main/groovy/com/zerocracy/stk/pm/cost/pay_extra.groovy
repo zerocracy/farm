@@ -17,10 +17,12 @@
 package com.zerocracy.stk.pm.cost
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.SoftException
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.cost.Ledger
@@ -75,13 +77,14 @@ def exec(Project project, XML xml) {
     )
   }
   String author = claim.author()
+  Farm farm = binding.variables.farm
   claim.copy()
     .type('Make payment')
     .param('login', login)
     .param('minutes', minutes)
     .param('no-tuition-fee', true)
     .param('reason', new Par('Direct payment from @%s').say(author))
-    .postTo(project)
+    .postTo(new ClaimsOf(farm, project))
   claim.copy()
     .type('Make payment')
     .param('login', author)
@@ -92,5 +95,5 @@ def exec(Project project, XML xml) {
         'Direct payment to @%s in %s, which is discouraged, see §49'
       ).say(login, job)
     )
-    .postTo(project)
+    .postTo(new ClaimsOf(farm, project))
 }

@@ -21,6 +21,7 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.cost.Boosts
@@ -172,5 +173,5 @@ def exec(Project project, XML xml) {
     new Par(
       'This is what I know about this job in %s, as in §32:'
     ).say(project.pid()) + '\n\n  * ' + items.join('\n  * ')
-  ).postTo(project)
+  ).postTo(new ClaimsOf(farm, project))
 }

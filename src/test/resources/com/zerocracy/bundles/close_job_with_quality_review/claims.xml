@@ -47,7 +47,7 @@ SOFTWARE.
     </params>
   </claim>
   <claim id="2147483641">
-    <created>2017-03-27T11:18:09.228Z</created>
+    <created>2017-03-30T11:18:09.228Z</created>
     <type>Close job</type>
     <author>manager</author>
     <token>job;gh:test/test#1</token>

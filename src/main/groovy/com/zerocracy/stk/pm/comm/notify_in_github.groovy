@@ -24,6 +24,7 @@ import com.jcabi.github.Repo
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.farm.props.Props
@@ -50,7 +51,7 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
   if (new Quota(github).over()) {
-    claim.copy().until(TimeUnit.MINUTES.toSeconds(5L)).postTo(project)
+    claim.copy().until(TimeUnit.MINUTES.toSeconds(5L)).postTo(new ClaimsOf(farm, project))
     return
   }
   Repo repo = github.repos().get(

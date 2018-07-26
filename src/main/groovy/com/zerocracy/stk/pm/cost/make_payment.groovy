@@ -16,15 +16,14 @@
  */
 package com.zerocracy.stk.pm.cost
 
-import com.jcabi.log.Logger
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
-import com.zerocracy.farm.props.Props
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.cost.Ledger
 import com.zerocracy.pm.cost.Rates
@@ -76,7 +75,7 @@ def exec(Project project, XML xml) {
       .param('student', login)
       .param('no-tuition-fee', true)
       .param('reason', new Par('Tuition fee from @%s').say(login))
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
     tail = new Par(
       'the tuition fee %s was deducted',
       'and sent to @%s (your mentor), according to §45'
@@ -85,10 +84,6 @@ def exec(Project project, XML xml) {
   Ledger ledger = new Ledger(project).bootstrap()
   String msg
   try {
-    if (new Props(farm).has('//testing')) {
-      Logger.info(this, 'skip in testing mode')
-      return
-    }
     msg = new Payroll(farm).pay(
       ledger,
       login, price, "Payment for ${job} (${minutes} minutes): ${reason}"
@@ -97,7 +92,7 @@ def exec(Project project, XML xml) {
       .type('Payment was made')
       .param('amount', price)
       .param('payment_id', msg)
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
     claim.copy()
       .type('Notify user')
       .token("user;${login}")
@@ -107,7 +102,7 @@ def exec(Project project, XML xml) {
           'We just paid you %s (`%s`) for %s: %s'
         ).say(price, msg, job, reason) + tail
       )
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
   } catch (IOException ex) {
     Cash commission = price.mul(3) / 100
     ledger.add(
@@ -135,7 +130,7 @@ def exec(Project project, XML xml) {
     claim.copy()
       .type('Payment was added to debts')
       .param('amount', price)
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
     claim.copy()
       .type('Notify user')
       .token("user;${login}")
@@ -148,13 +143,13 @@ def exec(Project project, XML xml) {
           'we will keep you informed, see §20'
         ).say(price, job, ex.message) + tail
       )
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
   }
   claim.copy()
     .type('Send zold')
     .param('recipient', login)
     .param('amount', price)
-    .postTo(project)
+    .postTo(new ClaimsOf(farm, project))
   claim.copy()
     .type('Notify project')
     .param(
@@ -163,5 +158,5 @@ def exec(Project project, XML xml) {
         'We just paid %s to @%s for %s: %s'
       ).say(price, login, job, reason)
     )
-    .postTo(project)
+    .postTo(new ClaimsOf(farm, project))
 }

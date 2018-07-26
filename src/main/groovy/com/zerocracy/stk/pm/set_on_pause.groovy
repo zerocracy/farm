@@ -18,6 +18,7 @@ package com.zerocracy.stk.pm
 
 import com.jcabi.xml.XML
 import com.zerocracy.Par
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.Farm
 import com.zerocracy.Project
@@ -45,15 +46,15 @@ def exec(Project project, XML xml) {
   if (flag) {
     claim.copy()
       .type('Project was paused')
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
   } else {
     claim.copy()
       .type('Project was activated')
-      .postTo(project)
+      .postTo(new ClaimsOf(farm, project))
   }
   claim.reply(
     new Par(
       'Done, the project is currently %s'
     ).say(catalog.pause(pid) ? 'on pause' : 'alive (not on pause)')
-  ).postTo(project)
+  ).postTo(new ClaimsOf(farm, project))
 }

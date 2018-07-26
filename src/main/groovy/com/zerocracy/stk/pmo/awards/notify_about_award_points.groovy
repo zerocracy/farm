@@ -20,6 +20,7 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pmo.Awards
@@ -45,7 +46,7 @@ def exec(Project project, XML xml) {
         'your total is [%+d](/u/%s/awards), see §18: %s'
       ).say(points, job, project.pid(), awards.total(), login, reason)
     )
-    .postTo(project)
+    .postTo(new ClaimsOf(farm, project))
   if (claim.hasParam('student')) {
     return
   }
@@ -58,5 +59,5 @@ def exec(Project project, XML xml) {
         '%s: %+d point(s) just awarded to @%s'
       ).say(reason, points, login)
     )
-    .postTo(project)
+    .postTo(new ClaimsOf(farm, project))
 }

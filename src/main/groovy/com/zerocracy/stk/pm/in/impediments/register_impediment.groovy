@@ -17,8 +17,10 @@
 package com.zerocracy.stk.pm.in.impediments
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.in.Impediments
@@ -30,6 +32,7 @@ def exec(Project project, XML xml) {
   String job = claim.param('job')
   String author = claim.author()
   String reason = new Par('@%s asked to wait a bit').say(author)
+  Farm farm = binding.variables.farm
   new Impediments(project)
     .bootstrap()
     .register(job, reason)
@@ -37,10 +40,10 @@ def exec(Project project, XML xml) {
     new Par(
       'The impediment for %s was registered successfully by @%s'
     ).say(job, author)
-  ).postTo(project)
+  ).postTo(new ClaimsOf(farm, project))
   claim.copy()
     .type('Impediment was registered')
     .param('job', job)
     .param('reason', reason)
-    .postTo(project)
+    .postTo(new ClaimsOf(farm, project))
 }
