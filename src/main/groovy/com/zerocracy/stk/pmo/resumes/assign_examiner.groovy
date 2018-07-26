@@ -37,7 +37,8 @@ import org.cactoos.list.Shuffled
  * invite user or deny the resume.
  *
  * @todo #1352:30min New users can also be invited by PMO
- *  members (has any role in PMO project) without resumes check.
+ *  members (has any role in PMO project) or QAs in Zerocracy (C3NDPUA8L)
+ *  project without resumes check.
  *  On invite we should notify user and examiner and add +32 reputation
  *  points to examiner. Also examiner should be able to reject resume by
  *  saying `deny @username`.
