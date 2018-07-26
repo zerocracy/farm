@@ -78,6 +78,7 @@ def exec(Project project, XML xml) {
     claim.copy()
       .type('Finish order')
       .param('reason', 'Job was closed, order is finished')
+      .param('closed', claim.created().toInstant().toString())
       .postTo(new ClaimsOf(farm, project))
   } else {
     claim.copy()

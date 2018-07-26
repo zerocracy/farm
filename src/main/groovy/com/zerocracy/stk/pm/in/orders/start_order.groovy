@@ -60,8 +60,7 @@ def exec(Project project, XML xml) {
       ).say(login)
     )
   }
-  Orders orders = new Orders(project).bootstrap()
-  orders.assign(job, login, claim.cid())
+  new Orders(project).bootstrap().assign(job, login, claim.cid(), claim.created().toInstant())
   String role = new Wbs(project).bootstrap().role(job)
   String msg
   if (role == 'REV') {

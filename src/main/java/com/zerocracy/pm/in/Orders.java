@@ -24,6 +24,7 @@ import com.zerocracy.Xocument;
 import com.zerocracy.pm.cost.Boosts;
 import com.zerocracy.pm.scope.Wbs;
 import java.io.IOException;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -36,7 +37,6 @@ import org.cactoos.iterable.Mapped;
 import org.cactoos.list.SolidList;
 import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.text.JoinedText;
-import org.cactoos.time.DateAsText;
 import org.cactoos.time.DateOf;
 import org.xembly.Directives;
 
@@ -83,6 +83,20 @@ public final class Orders {
      */
     public void assign(final String job, final String login,
         final long reason) throws IOException {
+        this.assign(job, login, reason, Instant.now());
+    }
+
+    /**
+     * Assign job to performer with custom start time.
+     * @param job The job to assign
+     * @param login The login of the user
+     * @param reason The reason of this order (ID of the claim)
+     * @param start Start time of assignment
+     * @throws IOException If fails
+     * @checkstyle ParameterNumber (3 lines)
+     */
+    public void assign(final String job, final String login,
+        final long reason, final Instant start) throws IOException {
         if (this.assigned(job)) {
             throw new SoftException(
                 String.format(
@@ -112,7 +126,7 @@ public final class Orders {
                         .strict(1)
                         .add("order")
                         .attr("job", job)
-                        .add("created").set(new DateAsText().asString()).up()
+                        .add("created").set(start.toString()).up()
                         .add("performer")
                         .set(login)
                         .up()
