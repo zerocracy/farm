@@ -56,7 +56,9 @@ def exec(Project project, XML xml) {
   int speed = 0
   if (velocity <= Duration.ofHours(new Policy().get('36.hours', 48)).toMillis()) {
     // @todo #1381:30min This message has to be moved to the final message in
-    //  make_payment.groovy stakeholder. For that you'll most probably need
+    //  make_payment.groovy stakeholder. Leaving it here adds a pointless message
+    //  in issue tracker, we could reduce it into a single message that contains
+    //  all the reasons for bonuses (QA and speed). For that you'll most probably need
     //  to create a new parameter that can be retrieved during the payment.
     claim.copy()
       .type('Notify job')

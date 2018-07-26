@@ -25,7 +25,6 @@ import com.zerocracy.SoftException
 import com.zerocracy.cash.Cash
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
-import com.zerocracy.farm.props.Props
 import com.zerocracy.pm.ClaimIn
 import com.zerocracy.pm.cost.Estimates
 import com.zerocracy.pm.in.Orders
@@ -61,13 +60,7 @@ def exec(Project project, XML xml) {
       ).say(login)
     )
   }
-  Orders orders = new Orders(project).bootstrap()
-
-  if (new Props(farm).has('//testing')) {
-    orders.assign(job, login, claim.cid(), claim.created().toInstant())
-  } else {
-    orders.assign(job, login, claim.cid())
-  }
+  new Orders(project).bootstrap().assign(job, login, claim.cid(), claim.created().toInstant())
   String role = new Wbs(project).bootstrap().role(job)
   String msg
   if (role == 'REV') {
