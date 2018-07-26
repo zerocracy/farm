@@ -66,7 +66,7 @@ def exec(Project pmo, XML xml) {
   } else {
     modes = 'To change the status use "on" or "off" as an option."'
     if (people.vacation(author)) {
-      vacation = 'You are on vacation now.';
+      vacation = 'You are on vacation now.'
     } else {
       vacation = 'You are NOT on vacation now.'
     }
