@@ -135,7 +135,7 @@ public final class Resumes {
     }
 
     /**
-     * Get users examiner.
+     * Get the user's examiner.
      *
      * @param login Resume author
      * @return Examiner of given user

@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.pmo_user_invites
+package com.zerocracy.bundles.examiner_can_invite
 
 import com.jcabi.github.Repos
 import com.jcabi.xml.XML
@@ -31,10 +31,10 @@ def exec(Project project, XML xml) {
   resumes.add(
     'friend',
     LocalDateTime.now(),
-    '',
+    'User description on himself',
     'INTP-A',
-    1234,
-    'friend'
+    1000541,
+    'telegramFriend'
   )
   String user = 'user'
   resumes.assign('friend', user)

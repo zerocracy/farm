@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.pmo_user_invites
+package com.zerocracy.bundles.examiner_can_invite
 
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
