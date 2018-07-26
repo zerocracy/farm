@@ -17,11 +17,13 @@
 package com.zerocracy.radars.slack;
 
 import com.ullink.slack.simpleslackapi.SlackChannel;
+import com.ullink.slack.simpleslackapi.SlackMessageHandle;
 import com.ullink.slack.simpleslackapi.SlackPersona;
 import com.ullink.slack.simpleslackapi.SlackTeam;
 import com.ullink.slack.simpleslackapi.SlackUser;
 import com.ullink.slack.simpleslackapi.listeners.SlackChannelJoinedListener;
 import com.ullink.slack.simpleslackapi.listeners.SlackMessagePostedListener;
+import com.ullink.slack.simpleslackapi.replies.SlackChannelReply;
 import java.io.Closeable;
 import java.io.IOException;
 
@@ -30,6 +32,7 @@ import java.io.IOException;
  *
  * @since 1.0
  */
+@SuppressWarnings("PMD.TooManyMethods")
 public interface SkSession extends Closeable {
     /**
      * Find channel by its identifier.
@@ -102,4 +105,13 @@ public interface SkSession extends Closeable {
      * @param listener Listener for channel joined
      */
     void addChannelJoinedListener(SlackChannelJoinedListener listener);
+
+    /**
+     * Opens direct message channel for user.
+     * @param user User for direct message channel
+     * @return Message channel
+     */
+    SlackMessageHandle<SlackChannelReply> openDirectMessageChannel(
+        SlackUser user
+    );
 }

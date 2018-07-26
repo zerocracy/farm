@@ -106,6 +106,7 @@ public final class ClaimsTest {
     }
 
     @Test
+    @Ignore
     public void ignoresClaimsUntilTheyBecomeValid() throws Exception {
         final Claims claims = new Claims(new FkProject()).bootstrap();
         claims.add(

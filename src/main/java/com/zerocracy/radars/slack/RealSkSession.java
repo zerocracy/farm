@@ -17,12 +17,14 @@
 package com.zerocracy.radars.slack;
 
 import com.ullink.slack.simpleslackapi.SlackChannel;
+import com.ullink.slack.simpleslackapi.SlackMessageHandle;
 import com.ullink.slack.simpleslackapi.SlackPersona;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.SlackTeam;
 import com.ullink.slack.simpleslackapi.SlackUser;
 import com.ullink.slack.simpleslackapi.listeners.SlackChannelJoinedListener;
 import com.ullink.slack.simpleslackapi.listeners.SlackMessagePostedListener;
+import com.ullink.slack.simpleslackapi.replies.SlackChannelReply;
 import java.io.IOException;
 
 /**
@@ -114,6 +116,13 @@ public final class RealSkSession implements SkSession {
         final SlackChannelJoinedListener listener
     ) {
         this.origin.addChannelJoinedListener(listener);
+    }
+
+    @Override
+    public SlackMessageHandle<SlackChannelReply> openDirectMessageChannel(
+        final SlackUser user
+    ) {
+        return this.origin.openDirectMessageChannel(user);
     }
 
     @Override
