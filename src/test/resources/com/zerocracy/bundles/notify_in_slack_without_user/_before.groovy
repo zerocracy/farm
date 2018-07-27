@@ -43,7 +43,6 @@ def exec(Project project, XML xml) {
     .thenThrow(NullPointerException)
   SlackChannel channel = Mockito.mock(SlackChannel)
   Mockito.when(channel.id).thenReturn(channelId)
-//  Mockito.when(session.channels).thenReturn(new SolidList<>(channel))
   Farm farm = binding.variables.farm
   new ExtSlack(farm).value()[channelId] = session
   new ClaimOut()
