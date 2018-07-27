@@ -33,8 +33,9 @@ import org.cactoos.collection.Limited;
 import org.cactoos.collection.Mapped;
 import org.cactoos.collection.Sorted;
 import org.cactoos.func.IoCheckedProc;
-import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.LengthOf;
+import org.cactoos.scalar.IoCheckedScalar;
+import org.cactoos.scalar.Or;
 import org.cactoos.time.DateAsText;
 import org.xembly.Directive;
 import org.xembly.Directives;
@@ -90,30 +91,30 @@ public final class ClaimsItem {
      */
     public void add(final Iterable<Directive> claim) throws IOException {
         try (final Item item = this.item()) {
-            final String signature;
-            try {
-                signature = ClaimsItem.signature(
-                    new ClaimIn(
-                        new XMLDocument(new Xembler(claim).dom())
-                            .nodes("/claim").get(0)
-                    )
-                );
-            } catch (final ImpossibleModificationException err) {
-                throw new IOException("Failed to read input claim", err);
-            }
+            final List<XML> claims = new XMLDocument(
+                new Xembler(
+                    new Directives()
+                        .add("claims")
+                        .append(claim)
+                ).dom()
+            ).nodes("/claims/claim");
             final List<XML> nodes = new Xocument(item).nodes("/claims/claim");
-            final int duplicates = new LengthOf(
-                new Filtered<>(
-                    signature::equals,
-                    new Sorted<>(
-                        new Mapped<>(
-                            xml -> ClaimsItem.signature(new ClaimIn(xml)),
-                            nodes
-                        )
+            final Sorted<String> signatures = new Sorted<>(
+                new Mapped<>(
+                    xml -> ClaimsItem.signature(new ClaimIn(xml)),
+                    nodes
+                )
+            );
+            final boolean duplicates = new IoCheckedScalar<>(
+                new Or(
+                    signatures::contains,
+                    new Mapped<>(
+                        xml -> ClaimsItem.signature(new ClaimIn(xml)),
+                        claims
                     )
                 )
-            ).intValue();
-            if (duplicates > 0) {
+            ).value();
+            if (duplicates) {
                 Logger.error(
                     this,
                     new Par(
@@ -130,6 +131,8 @@ public final class ClaimsItem {
                     new Directives().xpath("/claims").append(claim)
                 );
             }
+        } catch (final ImpossibleModificationException err) {
+            throw new IOException("Failed to read input claim", err);
         }
         final int size = new LengthOf(this.iterate()).intValue();
         if (size > Tv.HUNDRED) {
