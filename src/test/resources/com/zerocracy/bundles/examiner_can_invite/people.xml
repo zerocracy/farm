@@ -15,15 +15,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<claims xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.37/xsd/pm/claims.xsd" version="0.1" updated="2017-03-27T11:18:09.228Z">
-  <claim id="3">
-    <created>2017-03-30T11:18:09.228Z</created>
-    <type>Close job</type>
-    <author>test</author>
-    <token>test;C123;yegor256</token>
-    <params>
-      <param name="login">yegor256</param>
-      <param name="job">gh:test/test#1</param>
-    </params>
-  </claim>
-</claims>
+<people xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.37/xsd/pmo/people.xsd" version="1" updated="2016-12-29T09:03:21.684Z">
+  <person id="user">
+    <mentor>0crat</mentor>
+  </person>
+  <person id="other-user">
+    <mentor>0crat</mentor>
+  </person>
+</people>

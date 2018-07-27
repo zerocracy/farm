@@ -14,30 +14,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.resign_on_delay
+package com.zerocracy.bundles.modifies_vacation_mode
 
-import com.jcabi.github.Github
-import com.jcabi.github.Repo
-import com.jcabi.github.Repos
 import com.jcabi.xml.XML
-import com.zerocracy.Farm
+import com.zerocracy.Item
 import com.zerocracy.Project
-import com.zerocracy.cash.Cash
-import com.zerocracy.entry.ExtGithub
-import com.zerocracy.pm.cost.Ledger
 
-def exec(Project project, XML xml) {
-  Farm farm = binding.variables.farm
-  Github github = new ExtGithub(farm).value()
-  Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
-  repo.issues().create('Issue title', 'Issue body')
-  repo.pulls().create('PR title', 'master', 'master')
-  new Ledger(project).bootstrap().add(
-    new Ledger.Transaction(
-      new Cash.S('$1000'),
-      'assets', 'cash',
-      'income', '@guy',
-      'Contributed via Stripe by someone'
+def exec(Project pmo, XML xml) {
+  Item item = pmo.acq('test.txt').withCloseable {
+    item -> assert item.path().text.contains(
+      'You are on vacation now. To change the status use "on" or "off" as an option.'
     )
-  )
+  }
 }

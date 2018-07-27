@@ -14,30 +14,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.resign_on_delay
+package com.zerocracy.bundles.examiner_can_invite
 
-import com.jcabi.github.Github
-import com.jcabi.github.Repo
 import com.jcabi.github.Repos
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
-import com.zerocracy.cash.Cash
 import com.zerocracy.entry.ExtGithub
-import com.zerocracy.pm.cost.Ledger
+import com.zerocracy.pmo.Awards
+import com.zerocracy.pmo.Resumes
+import java.time.LocalDateTime
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
-  Github github = new ExtGithub(farm).value()
-  Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
-  repo.issues().create('Issue title', 'Issue body')
-  repo.pulls().create('PR title', 'master', 'master')
-  new Ledger(project).bootstrap().add(
-    new Ledger.Transaction(
-      new Cash.S('$1000'),
-      'assets', 'cash',
-      'income', '@guy',
-      'Contributed via Stripe by someone'
-    )
+  Resumes resumes = new Resumes(farm).bootstrap()
+  resumes.add(
+    'friend',
+    LocalDateTime.now(),
+    'User description on himself',
+    'INTP-A',
+    1000541,
+    'telegramFriend'
+  )
+  String user = 'user'
+  resumes.assign('friend', user)
+  new ExtGithub(farm).value().repos().create(new Repos.RepoCreate('test', false))
+  new Awards(farm, user).bootstrap().add(
+    project, 1234, 'gh:test/test#1', 'test'
+  )
+  new Awards(farm, 'other-user').bootstrap().add(
+    project, 2048, 'gh:test/test#1', 'test'
   )
 }

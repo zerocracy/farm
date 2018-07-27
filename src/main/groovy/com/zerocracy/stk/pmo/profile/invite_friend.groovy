@@ -27,6 +27,7 @@ import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.Exam
 import com.zerocracy.pmo.People
 import com.zerocracy.pmo.Pmo
+import com.zerocracy.pmo.Resumes
 import org.cactoos.Scalar
 import org.cactoos.iterable.ItemAt
 import org.cactoos.iterable.Mapped
@@ -44,6 +45,11 @@ def exec(Project pmo, XML xml) {
   Farm farm = binding.variables.farm
   new Exam(farm, author).min('1.min-rep', 1024)
   String login = claim.param('login')
+  if (new Resumes(farm).bootstrap().examiner(login) != author) {
+    throw new SoftException(
+      new Par('You are not the examiner of %s, see §1').say(login)
+    )
+  }
   User.Smart user = new User.Smart(
     new ExtGithub(farm).value().users().get(login)
   )
