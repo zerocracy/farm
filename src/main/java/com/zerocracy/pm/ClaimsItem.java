@@ -27,15 +27,17 @@ import com.zerocracy.Xocument;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.cactoos.Proc;
+import org.cactoos.collection.Filtered;
 import org.cactoos.collection.Limited;
 import org.cactoos.collection.Mapped;
 import org.cactoos.collection.Sorted;
 import org.cactoos.func.IoCheckedProc;
 import org.cactoos.iterable.LengthOf;
-import org.cactoos.scalar.IoCheckedScalar;
-import org.cactoos.scalar.Or;
+import org.cactoos.map.MapOf;
 import org.cactoos.time.DateAsText;
 import org.xembly.Directive;
 import org.xembly.Directives;
@@ -89,6 +91,7 @@ public final class ClaimsItem {
      * @param claim The claim to add
      * @throws IOException If fails
      */
+    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     public void add(final Iterable<Directive> claim) throws IOException {
         try (final Item item = this.item()) {
             final List<XML> claims = new XMLDocument(
@@ -98,23 +101,35 @@ public final class ClaimsItem {
                         .append(claim)
                 ).dom()
             ).nodes("/claims/claim");
-            final List<XML> nodes = new Xocument(item).nodes("/claims/claim");
-            final Sorted<String> signatures = new Sorted<>(
-                new Mapped<>(
-                    xml -> ClaimsItem.signature(new ClaimIn(xml)),
-                    nodes
-                )
-            );
-            final boolean duplicates = new IoCheckedScalar<>(
-                new Or(
-                    signatures::contains,
+            final Xocument xocument = new Xocument(item);
+            final List<XML> nodes = xocument.nodes("/claims/claim");
+            final Set<String> signatures = new HashSet<>(
+                new Sorted<>(
                     new Mapped<>(
                         xml -> ClaimsItem.signature(new ClaimIn(xml)),
-                        claims
+                        nodes
                     )
                 )
-            ).value();
-            if (duplicates) {
+            );
+            final Collection<Iterable<Directive>> filtered = new Mapped<>(
+                entry -> new Directives().xpath("/claims").append(
+                    new Directives()
+                    .add("claim")
+                    .append(Directives.copyOf(entry.getValue().node()))
+                ),
+                new Filtered<>(
+                    entry -> !signatures.contains(entry.getKey()),
+                    new MapOf<>(
+                        xml -> ClaimsItem.signature(new ClaimIn(xml)),
+                        xml -> xml,
+                        claims
+                    ).entrySet()
+                )
+            );
+            for (final Iterable<Directive> dirs : filtered) {
+                xocument.modify(dirs);
+            }
+            if (filtered.size() != claims.size()) {
                 Logger.error(
                     this,
                     new Par(
@@ -125,10 +140,6 @@ public final class ClaimsItem {
                         nodes.size(),
                         new Xembler(claim).xmlQuietly()
                     )
-                );
-            } else {
-                new Xocument(item).modify(
-                    new Directives().xpath("/claims").append(claim)
                 );
             }
         } catch (final ImpossibleModificationException err) {
