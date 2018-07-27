@@ -17,7 +17,9 @@
 package com.zerocracy.pm;
 
 import com.jcabi.aspects.Tv;
+import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
 import com.zerocracy.Item;
 import com.zerocracy.Par;
 import com.zerocracy.Project;
@@ -25,17 +27,18 @@ import com.zerocracy.Xocument;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashSet;
+import java.util.List;
 import org.cactoos.Proc;
 import org.cactoos.collection.Limited;
 import org.cactoos.collection.Mapped;
 import org.cactoos.collection.Sorted;
 import org.cactoos.func.IoCheckedProc;
+import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.LengthOf;
-import org.cactoos.text.JoinedText;
 import org.cactoos.time.DateAsText;
 import org.xembly.Directive;
 import org.xembly.Directives;
+import org.xembly.ImpossibleModificationException;
 import org.xembly.Xembler;
 
 /**
@@ -87,31 +90,44 @@ public final class ClaimsItem {
      */
     public void add(final Iterable<Directive> claim) throws IOException {
         try (final Item item = this.item()) {
-            new Xocument(item).modify(
-                new Directives().xpath("/claims").append(claim)
-            );
-            final Collection<String> signatures = new Sorted<>(
-                new Mapped<>(
-                    input -> ClaimsItem.signature(new ClaimIn(input)),
-                    new Xocument(item).nodes("/claims/claim")
+            final String signature;
+            try {
+                signature = ClaimsItem.signature(
+                    new ClaimIn(
+                        new XMLDocument(new Xembler(claim).dom())
+                            .nodes("/claim").get(0)
+                    )
+                );
+            } catch (final ImpossibleModificationException err) {
+                throw new IOException("Failed to read input claim", err);
+            }
+            final List<XML> nodes = new Xocument(item).nodes("/claims/claim");
+            final int duplicates = new LengthOf(
+                new Filtered<>(
+                    signature::equals,
+                    new Sorted<>(
+                        new Mapped<>(
+                            xml -> ClaimsItem.signature(new ClaimIn(xml)),
+                            nodes
+                        )
+                    )
                 )
-            );
-            if (signatures.size() != new HashSet<>(signatures).size()) {
-                throw new IllegalStateException(
+            ).intValue();
+            if (duplicates > 0) {
+                Logger.error(
+                    this,
                     new Par(
                         "Duplicate claims are not allowed in %s,",
-                        "can't add this XML to %d existing ones (%s):\n%s"
+                        "can't add this XML to %d existing ones:\n%s"
                     ).say(
                         this.project.pid(),
-                        signatures.size(),
-                        new JoinedText(
-                            ",",
-                            new org.cactoos.iterable.Mapped<>(
-                                String::toString, signatures
-                            )
-                        ).asString(),
+                        nodes.size(),
                         new Xembler(claim).xmlQuietly()
                     )
+                );
+            } else {
+                new Xocument(item).modify(
+                    new Directives().xpath("/claims").append(claim)
                 );
             }
         }
