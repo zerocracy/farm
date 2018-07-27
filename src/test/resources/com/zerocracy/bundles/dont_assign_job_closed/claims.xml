@@ -18,7 +18,7 @@ SOFTWARE.
 <claims xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.27/xsd/pm/claims.xsd" version="0.1" updated="2017-03-27T11:18:09.228Z">
   <claim id="1">
     <created>2017-03-27T11:18:09.228Z</created>
-    <type>ping</type>
+    <type>Ping</type>
     <params>
       <param name="force">yes</param>
       <param name="reason">Need it</param>
@@ -26,7 +26,7 @@ SOFTWARE.
   </claim>
   <claim id="2">
     <created>2017-03-27T11:19:09.228Z</created>
-    <type>ping</type>
+    <type>Ping</type>
     <params>
       <param name="force">yes</param>
       <param name="reason">Need it again</param>

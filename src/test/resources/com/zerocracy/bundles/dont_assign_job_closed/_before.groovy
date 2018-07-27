@@ -14,9 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.elects_and_assigns_performer
+package com.zerocracy.bundles.dont_assign_job_closed
 
-import com.jcabi.github.Github
 import com.jcabi.github.Issue
 import com.jcabi.github.Repo
 import com.jcabi.github.Repos
@@ -27,7 +26,6 @@ import com.zerocracy.entry.ExtGithub
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
-  Github github = new ExtGithub(farm).value()
-  Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
+  Repo repo = new ExtGithub(farm).value().repos().create(new Repos.RepoCreate('test', false))
   new Issue.Smart(repo.issues().create('Hello, world', '')).close()
 }

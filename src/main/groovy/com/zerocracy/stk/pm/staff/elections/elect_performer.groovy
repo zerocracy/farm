@@ -58,7 +58,7 @@ def exec(Project project, XML xml) {
   // @todo #1214:30min 0crat is assigning closed jobs. It happens when the
   //  issue was closed in github but the Close Job flow fails
   //  for some reason and the job does not leave WBS. Assure that we are
-  //  iterating only in open issues when electing performer and correct
+  //  iterating only in open issues when electing performer and uncomment
   //  _after.groovy tests in dont_assign_job_closed bundle.
   List<String> jobs = wbs.iterate().toList()
   [

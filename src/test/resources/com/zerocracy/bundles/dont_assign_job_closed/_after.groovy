@@ -14,31 +14,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.elects_and_assigns_performer
+package com.zerocracy.bundles.dont_assign_job_closed
 
 import com.jcabi.xml.XML
-import com.mongodb.client.model.Filters
-import com.zerocracy.Farm
 import com.zerocracy.Project
-import com.zerocracy.pm.Footprint
-import com.zerocracy.pm.in.Orders
-import com.zerocracy.pm.staff.Elections
-import org.cactoos.iterable.LengthOf
-
 
 def exec(Project project, XML xml) {
-  String job = 'gh:test/test#1'
-  Orders orders = new Orders(project).bootstrap()
-  assert orders.performer(job) == 'yegor256'
-  Elections elections = new Elections(project).bootstrap()
-  assert !elections.elected(job)
-  Farm farm = binding.variables.farm
-  assert new LengthOf(
-    new Footprint(farm, project).collection().find(
-      Filters.and(
-        Filters.eq('project', project.pid()),
-        Filters.eq('type', 'Performer was elected')
-      )
-    )
-  ).value() == 1
+//  String job = 'gh:test/test#1'
+//  Orders orders = new Orders(project).bootstrap()
+//  MatcherAssert.assertThat(
+//    "Performer was assigned",
+//    orders.performer(job),
+//    new IsNot<String>(new IsEqual<>("yegor256"))
+//  )
 }
