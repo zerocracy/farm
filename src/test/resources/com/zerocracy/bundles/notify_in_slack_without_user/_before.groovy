@@ -25,7 +25,6 @@ import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtSlack
 import com.zerocracy.pm.ClaimOut
 import com.zerocracy.radars.slack.SkSession
-import org.cactoos.list.SolidList
 import org.mockito.Mockito
 
 /**
