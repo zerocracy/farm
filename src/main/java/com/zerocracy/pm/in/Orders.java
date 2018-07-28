@@ -169,6 +169,22 @@ public final class Orders {
     }
 
     /**
+     * Remove order.
+     * @param job The order to remove
+     * @throws IOException If fails
+     */
+    public void remove(final String job) throws IOException {
+        try (final Item wbs = this.item()) {
+            new Xocument(wbs.path()).modify(
+                new Directives()
+                    .xpath(String.format("/orders/order[@job ='%s']", job))
+                    .strict(1)
+                    .remove()
+            );
+        }
+    }
+
+    /**
      * All jobs we have orders for.
      * @return List of jobs
      * @throws IOException If fails of it there is no assignee

@@ -19,13 +19,19 @@ package com.zerocracy.stk.pm.in.links
 import com.jcabi.xml.XML
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
+import com.zerocracy.pm.in.Orders
+import com.zerocracy.pm.scope.Wbs
 
-// @todo #1055:30min Implement logic for removal of all orders and clear WBS
-//  when the link to the Github repo is
-//  removed by the user. After it is implemented uncomment
-//  terminates_orders_wbs_on_link_removal test.
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Remove link')
+  new Assume(project, xml).type('Project link was removed')
   new Assume(project, xml).roles('PO', 'ARC')
+  Orders orders = new Orders(project).bootstrap()
+  orders.iterate().each{
+    order -> orders.remove(order)
+  }
+  Wbs wbs = new Wbs(project).bootstrap()
+  wbs.iterate().each {
+    job -> wbs.remove(job)
+  }
 }

@@ -14,18 +14,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.terminates_orders_wbs_on_link_removal
+package com.zerocracy.bundles.bundles.terminates_orders_wbs_on_link_removal
 
 import com.jcabi.xml.XML
 import com.zerocracy.Project
+import com.zerocracy.pm.in.Orders
+import com.zerocracy.pm.scope.Wbs
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
-//  Orders orders = new Orders(project).bootstrap()
-//  MatcherAssert.assertThat(orders.jobs('cmiranda'), Matchers.empty())
-//  MatcherAssert.assertThat(orders.jobs('krzyk'), Matchers.empty())
-//  MatcherAssert.assertThat(orders.jobs('yegor256'), Matchers.empty())
-//  MatcherAssert.assertThat(
-//    new Wbs(project).bootstrap().iterate(),
-//    Matchers.empty()
-//  )
+  Orders orders = new Orders(project).bootstrap()
+  MatcherAssert.assertThat(orders.jobs('cmiranda'), Matchers.empty())
+  MatcherAssert.assertThat(orders.jobs('krzyk'), Matchers.empty())
+  MatcherAssert.assertThat(orders.jobs('yegor256'), Matchers.empty())
+  MatcherAssert.assertThat(
+    new Wbs(project).bootstrap().iterate(),
+    Matchers.empty()
+  )
 }
