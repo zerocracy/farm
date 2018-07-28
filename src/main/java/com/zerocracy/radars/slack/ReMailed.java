@@ -17,7 +17,6 @@
 package com.zerocracy.radars.slack;
 
 import com.jcabi.log.Logger;
-import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.Farm;
 import org.cactoos.Func;
@@ -48,7 +47,7 @@ public final class ReMailed implements Reaction<SlackMessagePosted> {
 
     @Override
     public boolean react(final Farm farm, final SlackMessagePosted event,
-        final SlackSession session) {
+        final SkSession session) {
         return new UncheckedFunc<>(
             new FuncWithFallback<>(
                 (Func<Boolean, Boolean>) input -> this.origin.react(

@@ -16,7 +16,6 @@
  */
 package com.zerocracy.radars.slack;
 
-import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.Farm;
 import java.io.IOException;
@@ -43,7 +42,7 @@ public class ReWrap implements Reaction<SlackMessagePosted> {
 
     @Override
     public final boolean react(final Farm farm, final SlackMessagePosted event,
-        final SlackSession session) throws IOException {
+        final SkSession session) throws IOException {
         return this.origin.react(farm, event, session);
     }
 

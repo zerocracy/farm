@@ -18,14 +18,13 @@ package com.zerocracy.bundles.notify_in_slack_without_user
 
 import com.jcabi.xml.XML
 import com.ullink.slack.simpleslackapi.SlackChannel
-import com.ullink.slack.simpleslackapi.SlackSession
 import com.ullink.slack.simpleslackapi.SlackUser
 import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtSlack
 import com.zerocracy.pm.ClaimOut
-import org.cactoos.list.SolidList
+import com.zerocracy.radars.slack.SkSession
 import org.mockito.Mockito
 
 /**
@@ -36,14 +35,13 @@ import org.mockito.Mockito
 def exec(Project project, XML xml) {
   String channelId = 'C123'
   binding.variables.slack_testing = true
-  SlackSession session = Mockito.mock(SlackSession)
-  Mockito.when(session.findUserByUserName(Mockito.any(String)))
+  SkSession session = Mockito.mock(SkSession)
+  Mockito.when(session.user(Mockito.any(String)))
     .thenReturn(null)
   Mockito.when(session.openDirectMessageChannel(Mockito.<SlackUser>isNull()))
     .thenThrow(NullPointerException)
   SlackChannel channel = Mockito.mock(SlackChannel)
   Mockito.when(channel.id).thenReturn(channelId)
-  Mockito.when(session.channels).thenReturn(new SolidList<>(channel))
   Farm farm = binding.variables.farm
   new ExtSlack(farm).value()[channelId] = session
   new ClaimOut()

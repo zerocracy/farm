@@ -14,32 +14,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.radars.slack;
+package com.zerocracy.bundles.dont_assign_job_closed
 
-import com.ullink.slack.simpleslackapi.events.SlackChannelJoined;
-import com.zerocracy.Farm;
-import com.zerocracy.Par;
-import java.io.IOException;
+import com.jcabi.github.Issue
+import com.jcabi.github.Repo
+import com.jcabi.github.Repos
+import com.jcabi.xml.XML
+import com.zerocracy.Farm
+import com.zerocracy.Project
+import com.zerocracy.entry.ExtGithub
 
-/**
- * Invite to the channel.
- *
- * @since 1.0
- */
-final class ReInvite implements Reaction<SlackChannelJoined> {
-
-    @Override
-    public boolean react(final Farm farm, final SlackChannelJoined event,
-        final SkSession session) throws IOException {
-        session.send(
-            event.getSlackChannel(),
-            new Par(
-                "Thanks for inviting me here;",
-                "now you have to bootstrap the project, as explained in §12;",
-                "project ID is %s"
-            ).say(event.getSlackChannel().getId())
-        );
-        return true;
-    }
-
+def exec(Project project, XML xml) {
+  Farm farm = binding.variables.farm
+  Repo repo = new ExtGithub(farm).value().repos().create(new Repos.RepoCreate('test', false))
+  new Issue.Smart(repo.issues().create('Hello, world', '')).close()
 }

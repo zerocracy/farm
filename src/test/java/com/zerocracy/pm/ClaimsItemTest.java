@@ -121,12 +121,16 @@ public final class ClaimsItemTest {
         );
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void prohibitsDuplicateClaims() throws Exception {
+    @Test
+    public void ignoreDuplicateClaims() throws Exception {
         final ClaimsItem claims = new ClaimsItem(new FkProject()).bootstrap();
         final String type = "hello future";
         claims.add(new ClaimOut().type(type));
         claims.add(new ClaimOut().type(type));
+        MatcherAssert.assertThat(
+            claims.iterate(),
+            Matchers.iterableWithSize(1)
+        );
     }
 
     @Test
