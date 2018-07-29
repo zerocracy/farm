@@ -49,6 +49,7 @@ public final class AcceptInvitations implements Proc<Boolean> {
     @Override
     public void exec(final Boolean input) throws IOException {
         if (new Quota(this.github).over()) {
+        	Logger.warn(this, "GitHub API is over quota. Cancelling AcceptInvitations execution.");
             return;
         }
         final Request entry = this.github.entry().reset("Accept").header(
