@@ -21,6 +21,7 @@ import com.zerocracy.Item;
 import com.zerocracy.Project;
 import com.zerocracy.Xocument;
 import java.io.IOException;
+import java.time.Instant;
 import org.xembly.Directives;
 
 /**
@@ -81,6 +82,9 @@ public final class Blanks {
                     .up()
                     .add("kind")
                     .set(kind)
+                    .up()
+                    .add("added")
+                    .set(Instant.now())
             );
         }
     }

@@ -20,6 +20,7 @@ import com.zerocracy.Item;
 import com.zerocracy.Project;
 import com.zerocracy.Xocument;
 import java.io.IOException;
+import java.time.Instant;
 import org.xembly.Directives;
 
 /**
@@ -66,6 +67,9 @@ public final class Verbosity {
                     .up()
                     .add("messages")
                     .set(verbosity)
+                    .up()
+                    .add("added")
+                    .set(Instant.now())
             );
         }
     }

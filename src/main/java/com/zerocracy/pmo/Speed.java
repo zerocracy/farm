@@ -20,9 +20,11 @@ import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Xocument;
 import java.io.IOException;
+import java.time.Instant;
 import org.cactoos.collection.Mapped;
 import org.cactoos.iterable.ItemAt;
 import org.cactoos.scalar.IoCheckedScalar;
+import org.cactoos.text.JoinedText;
 import org.xembly.Directives;
 
 /**
@@ -80,9 +82,12 @@ public final class Speed {
      * @param project A project
      * @param job A job
      * @param minutes How many minutes was spent on this job
+     * @param added Date and time when the speed metric was added
      * @throws IOException If fails
+     * @checkstyle ParameterNumber (3 lines)
      */
-    public void add(final String project, final String job, final long minutes)
+    public void add(final String project, final String job, final long minutes,
+        final Instant added)
         throws IOException {
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
@@ -95,6 +100,9 @@ public final class Speed {
                     .up()
                     .add("minutes")
                     .set(minutes)
+                    .up()
+                    .add("added")
+                    .set(added)
                     .up()
                     .up()
             );
@@ -141,6 +149,28 @@ public final class Speed {
         try (final Item item = this.item()) {
             return new Xocument(item.path()).xpath(
                 "/speed/order/@job"
+            );
+        }
+    }
+
+    /**
+     * Remove all items older than specified date.
+     * @param date Date
+     * @throws IOException If failed
+     */
+    public void removeOlderThan(final Instant date) throws IOException {
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                new Directives()
+                    .xpath(
+                        new JoinedText(
+                            "",
+                            "/speed/order[xs:dateTime(added) < ",
+                            "xs:dateTime('",
+                            date.toString(),
+                            "')]"
+                        ).asString()
+                    ).remove()
             );
         }
     }
