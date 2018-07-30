@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.Date;
 import org.cactoos.iterable.IterableOf;
+import org.cactoos.text.FormattedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.text.StringContainsInOrder;
@@ -161,10 +162,16 @@ public final class TkJoinTest {
             ),
             Matchers.allOf(
                 new HmRsStatus(HttpURLConnection.HTTP_SEE_OTHER),
+                new HmRsHeader("Location", "/join"),
                 new HmRsHeader(
                     "Set-Cookie",
                     Matchers.hasItems(
-                        Matchers.containsString(mentor)
+                        Matchers.containsString(
+                            new FormattedText(
+                                "You+already+have+a+mentor+%%28%%40yoda%%29",
+                                mentor
+                            ).asString()
+                        )
                     )
                 )
             )

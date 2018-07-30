@@ -40,7 +40,7 @@ import org.takes.rq.form.RqFormSmart;
  * Join Zerocracy form.
  *
  * @since 1.0
- * @todo #1147:30min Each user should see the status of his/her resume at /join.
+ * @todo #1179:30min Each user should see the status of his/her resume at /join.
  *  If the resume is there, he/she should see the resume, not the form.
  *  See https://github.com/zerocracy/farm/issues/800#issuecomment-375551970
  *  comment for details. This condition is already tested in
