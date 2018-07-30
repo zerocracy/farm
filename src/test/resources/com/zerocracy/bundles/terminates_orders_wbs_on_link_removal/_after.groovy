@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.bundles.terminates_orders_wbs_on_link_removal
+package com.zerocracy.bundles.terminates_orders_wbs_on_link_removal
 
 import com.jcabi.xml.XML
 import com.zerocracy.Project

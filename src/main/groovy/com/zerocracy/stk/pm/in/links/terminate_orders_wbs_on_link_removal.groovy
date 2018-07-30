@@ -27,7 +27,7 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Project link was removed')
   new Assume(project, xml).roles('PO', 'ARC')
   Orders orders = new Orders(project).bootstrap()
-  orders.iterate().each{
+  orders.iterate().each{ 
     order -> orders.remove(order)
   }
   Wbs wbs = new Wbs(project).bootstrap()

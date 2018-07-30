@@ -174,8 +174,8 @@ public final class Orders {
      * @throws IOException If fails
      */
     public void remove(final String job) throws IOException {
-        try (final Item wbs = this.item()) {
-            new Xocument(wbs.path()).modify(
+        try (final Item orders = this.item()) {
+            new Xocument(orders.path()).modify(
                 new Directives()
                     .xpath(String.format("/orders/order[@job ='%s']", job))
                     .strict(1)
