@@ -23,11 +23,11 @@ import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pmo.People;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import org.cactoos.iterable.IterableOf;
-import org.cactoos.matchers.TextHasString;
 import org.cactoos.text.FormattedText;
-import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.text.StringContainsInOrder;
@@ -135,35 +135,50 @@ public final class TkJoinTest {
 
     /**
      * {@link TkJoin} can show that user already has a mentor.
-     * {@link TkJoin} must show a message to user when he or she tries to access
-     * <code>/join</code> but already has a mentor, which means that the user
-     * has already joined or asked for mentor for joining.
+     * {@link TkJoin} must redirect and show a message to user when he or she
+     * tries to access <code>/join-post</code> but already has a mentor, which
+     * means that the user has already joined or asked for mentor for joining.
      * @throws IOException If something goes wrong accessing page
      */
     @Test
-    @Ignore
+    @SuppressWarnings("unchecked")
     public void showsThatUserAlreadyHasMentor() throws IOException {
         final Farm farm = new PropsFarm(new FkFarm());
         final People people = new People(farm).bootstrap();
-        final String mentorid = "yoda";
-        final String userid = "luke";
-        people.touch(mentorid);
-        people.touch(userid);
-        people.apply(userid, new Date());
-        people.invite(userid, mentorid);
+        final String mentor = "yoda";
+        final String applicant = "luke";
+        people.touch(mentor);
+        people.touch(applicant);
+        people.invite(applicant, mentor, true);
         MatcherAssert.assertThat(
-            new TextOf(
-                new RsPrint(
-                    new TkApp(farm).act(
-                        new RqWithUser(farm, new RqFake("GET", "/join"))
-                    )
-                ).printBody()
+            new TkApp(farm).act(
+                new RqWithBody(
+                    new RqWithUser(
+                        farm,
+                        new RqFake("GET", "/join-post"),
+                        applicant,
+                        false
+                    ),
+                    "personality=INTJ-A&stackoverflow=187242"
+                )
             ),
-            new TextHasString(
-                new FormattedText(
-                    "User %s is already your mentor, no need to join again",
-                    mentorid
-                ).asString()
+            Matchers.allOf(
+                new HmRsStatus(HttpURLConnection.HTTP_SEE_OTHER),
+                new HmRsHeader("Location", "/join"),
+                new HmRsHeader(
+                    "Set-Cookie",
+                    Matchers.hasItems(
+                        Matchers.containsString(
+                            URLEncoder.encode(
+                                new FormattedText(
+                                    "You already have a mentor (@%s)",
+                                    mentor
+                                ).asString(),
+                                StandardCharsets.UTF_8.displayName()
+                            )
+                        )
+                    )
+                )
             )
         );
     }
