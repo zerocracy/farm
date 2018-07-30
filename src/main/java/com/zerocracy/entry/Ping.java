@@ -18,6 +18,7 @@ package com.zerocracy.entry;
 
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
+import com.zerocracy.SafeSentry;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pmo.Catalog;
 import java.io.IOException;
@@ -64,8 +65,14 @@ public final class Ping implements Job {
                 ctx.getMergedJobDataMap().getString("claim"),
                 (AtomicInteger) ctx.getScheduler().getContext().get("counter")
             );
-        } catch (final IOException | SchedulerException err) {
-            throw new JobExecutionException(err);
+        } catch (final SchedulerException err) {
+            throw new JobExecutionException(
+                "Failed to obtain job counter",
+                err
+            );
+        } catch (final IOException | IllegalStateException err) {
+            new SafeSentry().capture(err);
+            throw new JobExecutionException("Failed to execute a job", err);
         }
     }
 
