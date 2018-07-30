@@ -23,6 +23,8 @@ import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pmo.People;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import org.cactoos.iterable.IterableOf;
 import org.cactoos.text.FormattedText;
@@ -167,10 +169,13 @@ public final class TkJoinTest {
                     "Set-Cookie",
                     Matchers.hasItems(
                         Matchers.containsString(
-                            new FormattedText(
-                                "You+already+have+a+mentor+%%28%%40yoda%%29",
-                                mentor
-                            ).asString()
+                            URLEncoder.encode(
+                                new FormattedText(
+                                    "You already have a mentor (@%s)",
+                                    mentor
+                                ).asString(),
+                                StandardCharsets.UTF_8.displayName()
+                            )
                         )
                     )
                 )
