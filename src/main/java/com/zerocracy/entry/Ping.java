@@ -72,7 +72,10 @@ public final class Ping implements Job {
             );
         } catch (final IOException | IllegalStateException err) {
             new SafeSentry().capture(err);
-            throw new JobExecutionException("Failed to execute a job", err);
+            final JobExecutionException exx =
+                new JobExecutionException("Failed to execute a job", err);
+            exx.setRefireImmediately(true);
+            throw exx;
         }
     }
 
