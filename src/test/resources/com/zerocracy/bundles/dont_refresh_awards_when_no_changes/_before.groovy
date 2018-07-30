@@ -20,11 +20,13 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.pmo.Awards
+import java.text.SimpleDateFormat
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Awards awards = new Awards(farm, 'g4s8').bootstrap()
-  awards.add(project, 15, 'gh:test/test#1', 'test', new Date(1517432400000L))
-  awards.add(project, 100, 'gh:test/test#1', 'test', new Date(1525122000000L))
-  awards.add(project, 10, 'gh:test/test#1', 'test', new Date(1517432400001L))
+  SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+  awards.add(project, 15, 'gh:test/test#1', 'test', format.parse("2018-01-31 21:00:00.000"))
+  awards.add(project, 100, 'gh:test/test#2', 'test', format.parse("2018-04-30 18:00:00.000"))
+  awards.add(project, 10, 'gh:test/test#4', 'test', format.parse("2018-01-31 21:00:00.000"))
 }

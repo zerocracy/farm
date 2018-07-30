@@ -20,16 +20,15 @@ import com.jcabi.xml.XML
 import com.zerocracy.Project
 
 def exec(Project project, XML xml) {
+//  Farm farm = binding.variables.farm
 //  MatcherAssert.assertThat(
 //    "Empty claim submitted",
-//    new LengthOf(
-//      new Footprint(farm, project).collection().find(
-//        Filters.and(
-//          Filters.eq('project', project.pid()),
-//          Filters.eq('type', 'Award points were added')
-//        )
+//    new Footprint(farm, project).collection().find(
+//      Filters.and(
+//        Filters.eq('project', project.pid()),
+//        Filters.eq('type', 'Award points were added')
 //      )
-//    ).intValue(),
-//    new IsEqual<>(0)
+//    ),
+//    new IsEmptyIterable<>()
 //  )
 }
