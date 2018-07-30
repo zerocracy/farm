@@ -25,6 +25,7 @@ import com.zerocracy.pm.cost.Rates;
 import com.zerocracy.pm.scope.Wbs;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.hamcrest.collection.IsEmptyCollection;
 import org.junit.Test;
 
 /**
@@ -33,6 +34,7 @@ import org.junit.Test;
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class OrdersTest {
 
     @Test
@@ -66,6 +68,21 @@ public final class OrdersTest {
         MatcherAssert.assertThat(
             new Estimates(project).bootstrap().get(job),
             Matchers.equalTo(new Cash.S("$12.50"))
+        );
+    }
+
+    @Test
+    public void removesOrder() throws Exception {
+        final Project project = new FkProject();
+        final Orders orders = new Orders(project).bootstrap();
+        final String job = "gh:yegor256/0pdd#13";
+        new Wbs(project).bootstrap().add(job);
+        orders.assign(job, "yegor256", 0L);
+        orders.remove(job);
+        MatcherAssert.assertThat(
+            "Order not removed",
+            orders.iterate(),
+            new IsEmptyCollection<>()
         );
     }
 }
