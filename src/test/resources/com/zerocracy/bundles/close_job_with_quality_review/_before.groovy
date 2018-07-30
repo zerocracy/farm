@@ -16,11 +16,24 @@
  */
 package com.zerocracy.bundles.close_job_with_quality_review
 
-import com.jcabi.github.*
+
+import com.jcabi.github.Github
+import com.jcabi.github.Issue
+import com.jcabi.github.Pull
+import com.jcabi.github.Repo
+import com.jcabi.github.Repos
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.cash.Cash
 import com.zerocracy.entry.ExtGithub
+import com.zerocracy.pm.cost.Ledger
+import com.zerocracy.pm.cost.Rates
+import com.zerocracy.pmo.Awards
+import com.zerocracy.pmo.Debts
+import com.zerocracy.pmo.Projects
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
@@ -30,4 +43,28 @@ def exec(Project project, XML xml) {
   new Issue.Smart(
     new Pull.Smart(repo.pulls().create('PR', 'dev', 'mater')).issue()
   ).close()
+  new Ledger(project).bootstrap().add(
+    new Ledger.Transaction(
+      new Cash.S('$1000'),
+      'assets', 'cash',
+      'income', 'zerocracy',
+      'Donated by unknown'
+    )
+  )
+  String coder = 'coder'
+  String reviewer = 'reviewer'
+  new Projects(farm, coder).bootstrap().add(project.pid())
+  new Rates(project).bootstrap().set(coder, new Cash.S('$100'))
+  new Projects(farm, reviewer).bootstrap().add(project.pid())
+  new Rates(project).bootstrap().set(reviewer, new Cash.S('$200'))
+  [coder, reviewer].each {
+    MatcherAssert.assertThat(
+      new Awards(farm, it).bootstrap().total(),
+      Matchers.is(0)
+    )
+    MatcherAssert.assertThat(
+      new Debts(farm).bootstrap().exists(it),
+      Matchers.is(false)
+    )
+  }
 }

@@ -19,8 +19,10 @@ package com.zerocracy.bundles.close_job_with_quality_review
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.pm.cost.Rates
 import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pmo.Awards
+import com.zerocracy.pmo.Debts
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 
@@ -31,17 +33,31 @@ def exec(Project project, XML xml) {
     Matchers.not(Matchers.contains(Matchers.equalTo('gh:test/test#1')))
   )
   Farm farm = binding.variables.farm
+  String coder = 'coder'
   MatcherAssert.assertThat(
     'Incorrect QA bonus for DEV job',
-    new Awards(farm, 'coder').bootstrap().total(),
+    new Awards(farm, coder).bootstrap().total(),
     Matchers.equalTo(35)
   )
   // @todo #1395:30min This assertion fails because Wbs.role(job, role)
   //  is not working in `add_job_to_wbs` groovy script for this test case.
   //  We need to understand why it fails and fix it.
-//  MatcherAssert.assertThat(
-//    'Incorrect QA bonus for REV job',
-//    new Awards(farm, 'reviewer').bootstrap().total(),
-//    Matchers.equalTo(20)
-//  )
+  String reviewer = 'reviewer'
+  MatcherAssert.assertThat(
+    'Incorrect QA bonus for REV job',
+    new Awards(farm, reviewer).bootstrap().total(),
+    Matchers.equalTo(20)
+  )
+  MatcherAssert.assertThat(
+    new Debts(farm).bootstrap().amount(coder),
+    Matchers.comparesEqualTo(
+      new Rates(project).bootstrap().rate(coder).mul(30).mul(116) / 100 / 60
+    )
+  )
+  MatcherAssert.assertThat(
+    new Debts(farm).bootstrap().amount(reviewer),
+    Matchers.comparesEqualTo(
+      new Rates(project).bootstrap().rate(reviewer).mul(15).mul(133) / 100 / 60
+    )
+  )
 }
