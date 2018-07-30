@@ -25,6 +25,8 @@ import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.ClaimsItem;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.cactoos.map.MapEntry;
+import org.cactoos.map.MapOf;
 import org.cactoos.time.DateAsText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -32,6 +34,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerContext;
 import org.quartz.SchedulerException;
@@ -47,6 +50,11 @@ import org.xembly.Directives;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class PingTest {
+
+    /**
+     * Ping type.
+     */
+    private static final String PING = "Ping";
 
     @Test
     @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
@@ -70,13 +78,11 @@ public final class PingTest {
                     .add("adviser").set("0crat").up()
             );
         }
-        final JobDataMap map = new JobDataMap();
-        final String type = "Ping";
-        map.put("claim", type);
         final AtomicInteger counter = new AtomicInteger(0);
         final int batches = Tv.FIVE;
         for (int count = 0; count < batches; ++count) {
-            new Ping(farm, batches).execute(this.context(map, counter));
+            new Ping(farm, batches)
+                .execute(this.context(PingTest.map(), counter));
         }
         final XML xml = new ClaimsItem(pkt).iterate().iterator().next();
         MatcherAssert.assertThat(
@@ -85,7 +91,22 @@ public final class PingTest {
         );
         MatcherAssert.assertThat(
             new ClaimIn(xml).type(),
-            Matchers.is(type)
+            Matchers.is(PingTest.PING)
+        );
+    }
+
+    @Test(expected = JobExecutionException.class)
+    public void throwJobExecutionExceptionOnClaimFail() throws Exception {
+        new Ping(
+            xpath -> {
+                throw new IllegalStateException("Farm error");
+            },
+            1
+        ).execute(
+            this.context(
+                PingTest.map(),
+                new AtomicInteger()
+            )
         );
     }
 
@@ -100,5 +121,13 @@ public final class PingTest {
         sctx.put("counter", counter);
         Mockito.when(scheduler.getContext()).thenReturn(sctx);
         return ctx;
+    }
+
+    private static JobDataMap map() {
+        return new JobDataMap(
+            new MapOf<String, String>(
+                new MapEntry<>("claim", PingTest.PING)
+            )
+        );
     }
 }
