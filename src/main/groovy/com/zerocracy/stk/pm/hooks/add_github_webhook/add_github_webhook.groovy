@@ -17,7 +17,6 @@
 package com.zerocracy.stk.pm.hooks.add_github_webhook
 
 import com.jcabi.github.Coordinates
-import com.jcabi.github.Github
 import com.jcabi.github.Repo
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
