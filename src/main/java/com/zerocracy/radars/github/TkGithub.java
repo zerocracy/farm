@@ -147,6 +147,11 @@ public final class TkGithub implements Take, Runnable {
         this.rebound = rbd;
     }
 
+    // @todo #1390:30min When Quota.over(), before forwarding HTTP_UNAVAILABLE,
+    //  must log using warning level when quota is over, this way warning
+    //  message will also be sent to Sentry to warn us about the quota.
+    //  PR https://github.com/zerocracy/farm/pull/1501 has an example
+    //  of such log implemented for AcceptInvitations.
     @Override
     public Response act(final Request req) throws IOException {
         final RqForm form = new RqFormBase(req);
