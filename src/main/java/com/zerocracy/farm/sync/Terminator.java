@@ -139,9 +139,10 @@ final class Terminator implements Closeable, Scalar<Iterable<Directive>> {
                         Logger.warn(
                             this,
                             // @checkstyle LineLength (1 line)
-                            "Thread disposed. Cancelling terminator for \"%s\" in %s, %s: %[exception]s",
+                            "Thread disposed without proper lock unlock. Unlocking lock for \"%s\" in %s, %s: %[exception]s",
                             file, project.pid(), lock, location
                         );
+                        lock.unlock();
                         this.killers.remove(project);
                     } else {
                         Logger.warn(
