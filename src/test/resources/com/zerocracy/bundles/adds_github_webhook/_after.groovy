@@ -23,7 +23,6 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.entry.ExtGithub
-import com.zerocracy.farm.props.Props
 import org.hamcrest.MatcherAssert
 import org.hamcrest.core.IsEqual
 
@@ -35,7 +34,6 @@ import org.hamcrest.core.IsEqual
 //  and add another test that will check that in case we don't have enough
 //  permissions we will inform the user about it.
 def exec(Project project, XML xml) {
-  Props props = new Props();
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
   Repo repo = github.repos().get(new Coordinates.Simple('test/test'))

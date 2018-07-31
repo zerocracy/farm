@@ -18,7 +18,6 @@ package com.zerocracy.stk.pm.hooks.add_github_webhook
 
 import com.jcabi.github.Coordinates
 import com.jcabi.github.Github
-import com.jcabi.github.Hook
 import com.jcabi.github.Repo
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
@@ -27,7 +26,6 @@ import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.farm.props.Props
 import com.zerocracy.pm.ClaimIn
-import org.cactoos.list.Mapped
 import org.cactoos.map.MapEntry
 import org.cactoos.map.MapOf
 
@@ -40,7 +38,7 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Project link was added')
   ClaimIn claim = new ClaimIn(xml)
   if (claim.param('rel') == 'github') {
-    Props props = new Props();
+    Props props = new Props()
     Farm farm = binding.variables.farm
     Github github = new ExtGithub(farm).value()
     Repo repo = github.repos().get(new Coordinates.Simple(claim.param('href')))
