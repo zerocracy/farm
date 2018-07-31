@@ -23,26 +23,51 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.entry.ExtGithub
+import com.zerocracy.farm.props.Props
+import org.hamcrest.MatcherAssert
+import org.hamcrest.core.IsEqual
 
+// @todo #1226:30min add_github_webhook.groovy bundletest can't be
+//  properly implemented because we are not able to retrieve a valid github
+//  hook instance: repo.hooks().get(0) returns a MkHook instance and MkHook
+//  does not have the #json() method implemented. Wait fr the resolution of
+//  this case or find another solution and then uncomment the remaining tests
+//  and add another test that will check that in case we don't have enough
+//  permissions we will inform the user about it.
 def exec(Project project, XML xml) {
+  Props props = new Props();
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
-  new Repo.Smart(github.repos().get(new Coordinates.Simple('test/test')))
-//  MatcherAssert.assertThat(repo.hooks().iterate(), Matchers.hasSize(1))
+  Repo repo = github.repos().get(new Coordinates.Simple('test/test'))
+  MatcherAssert.assertThat(
+    'Hook was not created',
+    repo.hooks().iterate().iterator().size(),
+    new IsEqual<Integer>(1)
+  )
 //  Hook.Smart hook = new Hook.Smart(repo.hooks().get(0))
-//  MatcherAssert.assertThat(hook.name(), Matchers.is('0crat'))
+//  MatcherAssert.assertThat(
+//    'Hook name is wrong',
+//    hook.name(),
+//    new IsEqual<String>('web')
+//  )
 //  JsonObject json = hook.json()
+//  MatcherAssert.assertThat(
+//    'Hook is inactive',
+//    hook,
+//    json.getBoolean('active'),
+//    new IsEqual<>(true)
+//  )
 //  MatcherAssert.assertThat(json.getBoolean('active'), Matchers.is(true))
 //  MatcherAssert.assertThat(
 //    json.getJsonArray('events').toListString(),
-//    Matchers.containsInAnyOrder('*')
+//    new IsIterableContainingInAnyOrder(new IsEqual<>('*'))
 //  )
 //  MatcherAssert.assertThat(
 //    json.getJsonObject('config').getString('content_type'),
-//    Matchers.is('form')
+//    new IsEqual<String>('form')
 //  )
 //  MatcherAssert.assertThat(
 //    json.getJsonObject('config').getString('url'),
-//    Matchers.endsWith("/ghook")
+//    new StringEndsWith('/ghook')
 //  )
 }

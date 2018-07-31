@@ -16,24 +16,40 @@
  */
 package com.zerocracy.stk.pm.hooks.add_github_webhook
 
-
+import com.jcabi.github.Coordinates
+import com.jcabi.github.Github
+import com.jcabi.github.Hook
+import com.jcabi.github.Repo
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
+import com.zerocracy.farm.props.Props
 import com.zerocracy.pm.ClaimIn
+import org.cactoos.list.Mapped
+import org.cactoos.map.MapEntry
+import org.cactoos.map.MapOf
 
-// @todo #1048:30min Implement logic for adding webhook in add_github_webhook
-//  stakeholder (see #1048 for details). After it is implemented uncomment
-//  adds_github_webhook test and make sure it passes. In production we need to
-//  use url: http://www.rehttp.net/p/https://www.0crat.com/ghook, and in testing
-//  we use  current url of our instance + "/ghook".
-//  Add another test that will check that in case
-//  we don't have enough permissions we will inform the user about it.
+// @todo #1226:30min Add property github.webhook.url to production
+//  environment. We need adding this property to production environment
+//  because it points to github hooks page. This value must be set to
+//  http://www.rehttp.net/p/https://www.0crat.com/ghook
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Project link was added')
   ClaimIn claim = new ClaimIn(xml)
-  if (claim.param('rel') != 'github') {
-    return
+  if (claim.param('rel') == 'github') {
+    Props props = new Props();
+    Farm farm = binding.variables.farm
+    Github github = new ExtGithub(farm).value()
+    Repo repo = github.repos().get(new Coordinates.Simple(claim.param('href')))
+    repo.hooks().create(
+      'web',
+      new MapOf<String, String>(
+        new MapEntry<String, String>('url',props.get('//github/webhook.url', '/ghook'))
+      ),
+      true
+    )
   }
 }

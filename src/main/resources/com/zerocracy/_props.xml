@@ -35,6 +35,7 @@ SOFTWARE.
     <app.client_secret>${github.app.client_secret}</app.client_secret>
     <zerocrat.login>0crat</zerocrat.login>
     <zerocrat.password>${github.0crat.password}</zerocrat.password>
+    <webhook.url>${github.webhook.url}</webhook.url>
   </github>
   <slack>
     <client_id>${slack.client_id}</client_id>
@@ -83,7 +84,7 @@ SOFTWARE.
     <tsecret>${twitter.tsecret}</tsecret>
   </twitter>
   <sentry>
-    <dsn>${sentry.dsn}</dsn>
+    <dsn>https://0a196c22b66149fdbf4414184a6a17ca:d4c4fca56adc4e5aa0a716972ff15356@sentry.io/1250159</dsn>
   </sentry>
   <telegram>
     <token>${telegram.token}</token>
