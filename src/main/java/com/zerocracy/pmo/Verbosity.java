@@ -52,6 +52,11 @@ public final class Verbosity {
      * @param project Project
      * @param verbosity Messages for a job
      * @throws IOException If fails
+     * @todo #1233:30min Verbosity.add is throwing an exception when trying
+     *  to add verbosity to a job more than once. We should check verbosity
+     *  before adding a new element and override the previous value to
+     *  prevent this exception being thrown. After the fix, test the code
+     *  removing ignore tag from VerbositTest.overrideVerbosity.
      */
     public void add(final String job, final Project project,
         final int verbosity) throws IOException {

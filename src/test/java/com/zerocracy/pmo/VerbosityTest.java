@@ -19,8 +19,10 @@ package com.zerocracy.pmo;
 import com.zerocracy.Xocument;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
+import java.io.IOException;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -52,6 +54,39 @@ public final class VerbosityTest {
                 )
             ),
             Matchers.contains("1")
+        );
+    }
+
+    @Test
+    @Ignore
+    public void overridesVerbosity() throws IOException {
+        final Pmo pmo = new Pmo(new FkFarm());
+        final FkProject pkt = new FkProject();
+        final String login = "paulodamaso";
+        final String job = "gh:test/test#256";
+        final Verbosity verbosity = new Verbosity(pmo, login).bootstrap();
+        verbosity.add(
+            job,
+            pkt,
+            1
+        );
+        verbosity.add(
+            job,
+            pkt,
+            // @checkstyle MagicNumberCheck (1 line)
+            5
+        );
+        MatcherAssert.assertThat(
+            new Xocument(
+                pmo.acq("verbosity/paulodamaso.xml")
+            ).xpath(
+                String.format(
+                    // @checkstyle LineLengthCheck (1 line)
+                    "/verbosity/order[@job = 'gh:test/test#256' and ./project/text() = '%s']/messages/text()",
+                    pkt.pid()
+                )
+            ),
+            Matchers.contains("5")
         );
     }
 }
