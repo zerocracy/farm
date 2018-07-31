@@ -40,12 +40,11 @@ def exec(Project project, XML xml) {
   if (claim.param('rel') == 'github') {
     Props props = new Props()
     Farm farm = binding.variables.farm
-    Github github = new ExtGithub(farm).value()
-    Repo repo = github.repos().get(new Coordinates.Simple(claim.param('href')))
+    Repo repo = new ExtGithub(farm).value().repos().get(new Coordinates.Simple(claim.param('href')))
     repo.hooks().create(
       'web',
       new MapOf<String, String>(
-        new MapEntry<String, String>('url',props.get('//github/webhook.url', '/ghook'))
+        new MapEntry<String, String>('url', props.get('//github/webhook.url', '/ghook'))
       ),
       true
     )

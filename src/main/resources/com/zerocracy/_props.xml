@@ -84,7 +84,7 @@ SOFTWARE.
     <tsecret>${twitter.tsecret}</tsecret>
   </twitter>
   <sentry>
-    <dsn>https://0a196c22b66149fdbf4414184a6a17ca:d4c4fca56adc4e5aa0a716972ff15356@sentry.io/1250159</dsn>
+    <dsn>${sentry.dsn}</dsn>
   </sentry>
   <telegram>
     <token>${telegram.token}</token>

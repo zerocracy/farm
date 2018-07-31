@@ -29,10 +29,11 @@ import org.hamcrest.core.IsEqual
 // @todo #1226:30min add_github_webhook.groovy bundletest can't be
 //  properly implemented because we are not able to retrieve a valid github
 //  hook instance: repo.hooks().get(0) returns a MkHook instance and MkHook
-//  does not have the #json() method implemented. Wait fr the resolution of
-//  this case or find another solution and then uncomment the remaining tests
-//  and add another test that will check that in case we don't have enough
-//  permissions we will inform the user about it.
+//  does not have the #json() method implemented. Wait for the resolution of
+//  this case (https://github.com/jcabi/jcabi-github/issues/1425) or find
+//  another solution and then uncomment the remaining tests and add another
+//  test that will check that in case we don't have enough permissions we
+//  will inform the user about it.
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
@@ -46,12 +47,11 @@ def exec(Project project, XML xml) {
 //  MatcherAssert.assertThat(
 //    'Hook name is wrong',
 //    hook.name(),
-//    new IsEqual<String>('web')
+//    new IsEqual<>('web')
 //  )
 //  JsonObject json = hook.json()
 //  MatcherAssert.assertThat(
 //    'Hook is inactive',
-//    hook,
 //    json.getBoolean('active'),
 //    new IsEqual<>(true)
 //  )
@@ -62,7 +62,7 @@ def exec(Project project, XML xml) {
 //  )
 //  MatcherAssert.assertThat(
 //    json.getJsonObject('config').getString('content_type'),
-//    new IsEqual<String>('form')
+//    new IsEqual<>('form')
 //  )
 //  MatcherAssert.assertThat(
 //    json.getJsonObject('config').getString('url'),
