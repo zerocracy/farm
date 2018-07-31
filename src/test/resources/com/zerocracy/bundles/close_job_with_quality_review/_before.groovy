@@ -54,9 +54,11 @@ def exec(Project project, XML xml) {
   String coder = 'coder'
   String reviewer = 'reviewer'
   new Projects(farm, coder).bootstrap().add(project.pid())
-  new Rates(project).bootstrap().set(coder, new Cash.S('$100'))
   new Projects(farm, reviewer).bootstrap().add(project.pid())
-  new Rates(project).bootstrap().set(reviewer, new Cash.S('$200'))
+  new Rates(project).bootstrap().with {
+   set coder, new Cash.S('$100')
+   set reviewer, new Cash.S('$200')
+}
   [coder, reviewer].each {
     MatcherAssert.assertThat(
       new Awards(farm, it).bootstrap().total(),

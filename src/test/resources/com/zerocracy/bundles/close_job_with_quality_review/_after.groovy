@@ -19,7 +19,7 @@ package com.zerocracy.bundles.close_job_with_quality_review
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
-import com.zerocracy.pm.cost.Rates
+import com.zerocracy.cash.Cash
 import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pmo.Awards
 import com.zerocracy.pmo.Debts
@@ -51,13 +51,13 @@ def exec(Project project, XML xml) {
   MatcherAssert.assertThat(
     new Debts(farm).bootstrap().amount(coder),
     Matchers.comparesEqualTo(
-      new Rates(project).bootstrap().rate(coder).mul(30).mul(116) / 100 / 60
+      new Cash.S('$58')
     )
   )
   MatcherAssert.assertThat(
     new Debts(farm).bootstrap().amount(reviewer),
     Matchers.comparesEqualTo(
-      new Rates(project).bootstrap().rate(reviewer).mul(15).mul(133) / 100 / 60
+      new Cash.S('$66.50')
     )
   )
 }

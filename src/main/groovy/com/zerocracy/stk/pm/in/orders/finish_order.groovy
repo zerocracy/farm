@@ -104,10 +104,10 @@ def exec(Project project, XML xml) {
     }
   } else {
     Cash bonus
-    if (new Wbs(project).bootstrap().role(job) == 'DEV') {
-      bonus = price.mul(new Policy().get('31.bonus', 16)) / 100
-    } else {
+    if (new Wbs(project).bootstrap().role(job) == 'REV') {
       bonus = price.mul(new Policy().get('31.rev-bonus', 33)) / 100
+    } else {
+      bonus = price.mul(new Policy().get('31.bonus', 16)) / 100
     }
     claim.copy()
       .type('Start QA review')
