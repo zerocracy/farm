@@ -21,6 +21,7 @@ import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.pmo.People
 import com.zerocracy.pmo.Speed
+import java.time.Instant
 import org.hamcrest.MatcherAssert
 import org.hamcrest.number.IsCloseTo
 
@@ -31,8 +32,8 @@ def exec(Project project, XML xml) {
     new IsCloseTo(0.0, 0.01)
   )
   new Speed(farm, 'carlosmiranda').bootstrap().with {
-    add project.pid(), 'gh:test/speed#1', 10L
-    add project.pid(), 'gh:test/speed#2', 20L
-    add project.pid(), 'gh:test/speed#3', 30L
+    add project.pid(), 'gh:test/speed#1', 10L, Instant.now()
+    add project.pid(), 'gh:test/speed#2', 20L, Instant.now()
+    add project.pid(), 'gh:test/speed#3', 30L, Instant.now()
   }
 }
