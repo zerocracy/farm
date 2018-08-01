@@ -16,11 +16,18 @@
  */
 package com.zerocracy.pmo;
 
+import com.zerocracy.Item;
 import com.zerocracy.Xocument;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
+import java.io.IOException;
+import java.util.List;
+import org.cactoos.text.FormattedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.hamcrest.core.IsCollectionContaining;
+import org.hamcrest.core.IsEqual;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -28,6 +35,7 @@ import org.junit.Test;
  *
  * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class VerbosityTest {
     @Test
@@ -53,5 +61,44 @@ public final class VerbosityTest {
             ),
             Matchers.contains("1")
         );
+    }
+
+    @Test
+    @Ignore
+    public void overridesVerbosity() throws IOException {
+        final Pmo pmo = new Pmo(new FkFarm());
+        final FkProject pkt = new FkProject();
+        final String login = "paulodamaso";
+        final String job = "gh:test/test#256";
+        final int newvalue = 5;
+        final Verbosity verbosity = new Verbosity(pmo, login).bootstrap();
+        verbosity.add(job, pkt, 1);
+        verbosity.add(job, pkt, newvalue);
+        try (
+            Item item = pmo.acq(
+                new FormattedText(
+                    "verbosity/%s.xml",
+                    login
+                ).asString()
+            )
+        ) {
+            final List<String> result = new Xocument(item).xpath(
+                new FormattedText(
+                    // @checkstyle LineLengthCheck (1 line)
+                    "/verbosity/order[@job = '%s' and ./project/text() = '%s']/messages/text()",
+                    job,
+                    pkt.pid()
+                ).asString()
+            );
+            MatcherAssert.assertThat(
+                "Added verbosity twice",
+                result,
+                new IsCollectionContaining<>(
+                    new IsEqual<>(
+                        Integer.toString(newvalue)
+                    )
+                )
+            );
+        }
     }
 }
