@@ -17,6 +17,7 @@
 package com.zerocracy.farm.reactive;
 
 import com.zerocracy.Item;
+import com.zerocracy.Xocument;
 import java.io.IOException;
 import java.nio.file.Path;
 import lombok.EqualsAndHashCode;
@@ -63,6 +64,13 @@ final class RvClaims implements Item {
 
     @Override
     public void close() throws IOException {
-        new IoCheckedProc<>(this.flush).exec(this);
+        final int total = new Xocument(this.path())
+            .bootstrap("pm/claims")
+            .nodes("/claims/claim").size();
+        this.origin.close();
+        if (total > 0) {
+            new IoCheckedProc<>(this.flush).exec(this);
+        }
     }
+
 }
