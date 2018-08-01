@@ -54,7 +54,7 @@ public final class ClaimsOf implements Claims {
                     if (props.has("//sqs")) {
                         final AmazonSQS sqs = new ExtSqs(farm).value();
                         final String name =
-                            String.format("project-%s.fifo", project.pid());
+                            String.format("0crat-%s.fifo", project.pid());
                         String url;
                         try {
                             url = sqs.getQueueUrl(name).getQueueUrl();

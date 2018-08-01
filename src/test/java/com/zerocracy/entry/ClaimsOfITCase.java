@@ -69,7 +69,7 @@ public final class ClaimsOfITCase {
         );
         final AmazonSQS sqs = new ExtSqs(farm).value();
         final String url = sqs.getQueueUrl(
-            String.format("project-%s.fifo", project.pid())
+            String.format("0crat-%s.fifo", project.pid())
         ).getQueueUrl();
         sqs.deleteQueue(url);
         MatcherAssert.assertThat(

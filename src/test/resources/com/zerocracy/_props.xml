@@ -20,4 +20,8 @@ SOFTWARE.
   Don't add anything here, just use the second argument
   of Props.get().
   -->
+  <sqs>
+    <key>AKIAITHTLXK2FAF747IA</key>
+    <secret>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</secret>
+  </sqs>
 </props>
