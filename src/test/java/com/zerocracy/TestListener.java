@@ -31,6 +31,7 @@ import org.junit.runner.notification.RunListener;
  * Run listener for the entire test suite.
  * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle NoJavadocForOverriddenMethodsCheck (500 lines)
  */
 public final class TestListener extends RunListener {
 
