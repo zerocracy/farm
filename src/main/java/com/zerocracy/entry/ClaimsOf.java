@@ -26,6 +26,7 @@ import com.zerocracy.farm.props.Props;
 import com.zerocracy.pm.Claims;
 import com.zerocracy.pm.ClaimsSqs;
 import com.zerocracy.pm.ClaimsXml;
+import com.zerocracy.pm.CompositeClaims;
 import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
 import org.cactoos.Proc;
@@ -70,7 +71,10 @@ public final class ClaimsOf implements Claims {
                                     )
                             ).getQueueUrl();
                         }
-                        claims = new ClaimsSqs(sqs, url, project);
+                        claims = new CompositeClaims(
+                            new ClaimsXml(project),
+                            new ClaimsSqs(sqs, url, project)
+                        );
                     } else {
                         claims = new ClaimsXml(project);
                     }
