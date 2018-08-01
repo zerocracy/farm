@@ -22,9 +22,11 @@ import com.zerocracy.Item;
 import com.zerocracy.Project;
 import com.zerocracy.Xocument;
 import java.io.IOException;
+import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import org.cactoos.text.JoinedText;
 import org.xembly.Directives;
 
@@ -153,22 +155,26 @@ public final class Vacancies {
     /**
      * Remove vacancies older than 'date' param.
      * @param date Date param
+     * @return List of project pids that had vacancies removed
      * @throws IOException If fails
      */
-    public void removeOlderThan(final ZonedDateTime date) throws IOException {
+    public Iterable<String> removeOlderThan(final Instant date)
+        throws IOException {
         try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
-                new Directives()
-                    .xpath(
-                        new JoinedText(
-                            "",
-                            "/vacancies/vacancy[xs:dateTime(added) < ",
-                            "xs:dateTime('",
-                            date.format(DateTimeFormatter.ISO_DATE_TIME),
-                            "')]"
-                        ).asString()
-                    ).remove()
+            final String xpath = new JoinedText(
+                "",
+                "/vacancies/vacancy[xs:dateTime(added) < ",
+                "xs:dateTime('",
+                date.toString(),
+                "')]"
+            ).asString();
+            final List<String> pids = new Xocument(item.path()).xpath(
+                new JoinedText("", xpath, "/@project").asString()
             );
+            new Xocument(item.path()).modify(
+                new Directives().xpath(xpath).remove()
+            );
+            return pids;
         }
     }
 
