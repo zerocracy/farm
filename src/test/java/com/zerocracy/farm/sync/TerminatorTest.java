@@ -38,12 +38,16 @@ public final class TerminatorTest {
         Mockito.when(lock.tryLock(Mockito.anyLong(), Mockito.any()))
             .thenReturn(false).thenReturn(true);
         final FkProject project = new FkProject();
-        new Thread(
-            () -> new Terminator(1).submit(project, "foo", lock)
-        ).start();
-        // @checkstyle MagicNumber (3 lines)
-        Mockito.verify(lock, Mockito.timeout(20000).times(2))
-            .tryLock(Mockito.anyLong(), Mockito.any());
-        Mockito.verify(lock, Mockito.timeout(10000).times(1)).unlock();
+        try (final Terminator terminator = new Terminator(1)) {
+            new Thread(
+                () -> {
+                    terminator.submit(project, "foo", lock);
+                }
+            ).start();
+            // @checkstyle MagicNumber (3 lines)
+            Mockito.verify(lock, Mockito.timeout(10000).times(2))
+                .tryLock(Mockito.anyLong(), Mockito.any());
+            Mockito.verify(lock, Mockito.timeout(10000).times(1)).unlock();
+        }
     }
 }
