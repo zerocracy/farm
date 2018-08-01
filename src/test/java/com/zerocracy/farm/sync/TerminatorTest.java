@@ -16,8 +16,13 @@
  */
 package com.zerocracy.farm.sync;
 
+import com.jcabi.aspects.Tv;
 import com.zerocracy.farm.fake.FkProject;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -39,15 +44,28 @@ public final class TerminatorTest {
             .thenReturn(false).thenReturn(true);
         final FkProject project = new FkProject();
         try (final Terminator terminator = new Terminator(1)) {
+            final AtomicBoolean interrupted = new AtomicBoolean(false);
             new Thread(
                 () -> {
                     terminator.submit(project, "foo", lock);
+                    try {
+                        Thread.sleep(TimeUnit.SECONDS.toMillis(Tv.FIVE));
+                    } catch (final InterruptedException ex) {
+                        interrupted.set(true);
+                    }
                 }
             ).start();
-            // @checkstyle MagicNumber (3 lines)
-            Mockito.verify(lock, Mockito.timeout(10000).times(2))
-                .tryLock(Mockito.anyLong(), Mockito.any());
-            Mockito.verify(lock, Mockito.timeout(10000).times(1)).unlock();
+            Mockito.verify(
+                lock,
+                Mockito.timeout(TimeUnit.SECONDS.toMillis(Tv.FIVE)).times(2)
+            ).tryLock(Mockito.anyLong(), Mockito.any());
+            Mockito.verify(
+                lock,
+                Mockito.timeout(TimeUnit.SECONDS.toMillis(Tv.FIVE)).times(1)
+            ).unlock();
+            MatcherAssert.assertThat(
+                interrupted.get(), Matchers.is(Boolean.TRUE)
+            );
         }
     }
 }
