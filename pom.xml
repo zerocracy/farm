@@ -1010,20 +1010,20 @@ SOFTWARE.
           <plugins>
             <plugin>
               <artifactId>maven-surefire-plugin</artifactId>
-                <configuration combine.children="append">
+                <configuration>
                     <excludes>
                       <exclude>com.zerocracy.farm.S3ItemTest</exclude>
                     </excludes>
                     <argLine>-Duser.language=en -Duser.region=US</argLine>
                 </configuration>
-                  <!--
-                     @todo #1231:30min Fixing language issues of #1231 did not
-                      resolved problems with S3ItemTest. Discover why S3ItemTest
-                      is not working in windows builds and fix it. Remove
-                      surefire and jacoco exclusions after fixing this problem.
-                      See #1041 https://github.com/zerocracy/farm/pull/1178#discussion_r196476659
-                      for more details about windows build failure.
-                  -->
+                <!--
+                   @todo #1231:30min Fixing language issues of #1231 did not
+                    resolved problems with S3ItemTest. Discover why S3ItemTest
+                    is not working in windows builds and fix it. Remove
+                    surefire and jacoco exclusions after fixing this problem.
+                    See #1041 https://github.com/zerocracy/farm/pull/1178#discussion_r196476659
+                    for more details about windows build failure.
+                -->
             </plugin>
           </plugins>
         </pluginManagement>
