@@ -28,7 +28,7 @@ import java.io.IOException;
 
 /**
  * Fake {@link SkSession}.
- * @since 0.27.4
+ * @since 0.28
  */
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals"})
 public final class FkSkSession implements SkSession {

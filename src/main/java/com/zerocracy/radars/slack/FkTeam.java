@@ -20,7 +20,7 @@ import com.ullink.slack.simpleslackapi.SlackTeam;
 
 /**
  * Fake {@link SlackTeam}.
- * @since 0.27.4
+ * @since 0.28
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class FkTeam implements SlackTeam {

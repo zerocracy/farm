@@ -20,7 +20,7 @@ import com.ullink.slack.simpleslackapi.SlackPersona;
 
 /**
  * Fake {@link SlackPersona}.
- * @since 0.27.4
+ * @since 0.28
  */
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals"})
 public final class FkPersona implements SlackPersona {
