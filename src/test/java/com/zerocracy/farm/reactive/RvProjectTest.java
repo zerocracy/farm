@@ -53,7 +53,7 @@ public final class RvProjectTest {
                 )
             );
             try (final Flush flush = new AsyncFlush(def)) {
-                final Project project = new RvProject(raw, flush);
+                final Project project = new RvProject(raw, flush, true);
                 final ClaimsItem claims = new ClaimsItem(project).bootstrap();
                 claims.add(new ClaimOut().type("hello A").token("test;t1"));
                 claims.add(new ClaimOut().type("hello B").token("test;t2"));
@@ -80,7 +80,7 @@ public final class RvProjectTest {
                 )
             );
             try (final Flush flush = new AsyncFlush(def)) {
-                final Project project = new RvProject(raw, flush);
+                final Project project = new RvProject(raw, flush, true);
                 MatcherAssert.assertThat(
                     input -> {
                         new ClaimOut()
