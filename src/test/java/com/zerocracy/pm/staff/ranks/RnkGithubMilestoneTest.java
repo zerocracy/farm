@@ -23,7 +23,7 @@ import com.jcabi.github.Repo;
 import com.jcabi.github.Repos;
 import com.jcabi.github.mock.MkGithub;
 import com.zerocracy.radars.github.Job;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import org.cactoos.func.StickyBiFunc;
 import org.hamcrest.MatcherAssert;
@@ -33,7 +33,7 @@ import org.junit.Test;
 /**
  * Test case for {@link RnkGithubMilestone}.
  *
- * @since 0.21.1
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class RnkGithubMilestoneTest {
@@ -43,7 +43,7 @@ public final class RnkGithubMilestoneTest {
         final Repo repo = github.repos().create(
             new Repos.RepoCreate("milestones", false)
         );
-        final List<String> jobs = new ArrayList<>(3);
+        final List<String> jobs = new LinkedList<>();
         jobs.add(
             new Job(repo.issues().create("No milestone 1", ""))
                 .toString()
