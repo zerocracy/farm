@@ -17,6 +17,7 @@
 package com.zerocracy.farm.sync;
 
 import com.jcabi.aspects.Tv;
+import com.zerocracy.Project;
 import com.zerocracy.farm.fake.FkProject;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -32,13 +33,16 @@ import org.mockito.Mockito;
  */
 public final class TerminatorTest {
     /**
-     * Tests that {@link Terminator} implementation, when the
-     * {@link Lock#tryLock()} returns {@code false}, executes again, and calls
-     * {@link Lock#unlock()} only when it acquired the lock by itself.
+     * Terminator can interrupt thread after lock timeout and checks lock again.
+     * Tests that after calling
+     * {@link Terminator#submit(Project, String, Lock)}, if the lock cannot be
+     * acquired by the terminator thread, it will interrupt the thread and
+     * repeat the lock check.
      * @throws Exception if error occurred during test.
      */
     @Test
-    public void runsAgainIfTryLockFail() throws Exception {
+    public void interruptsThreadAfterLockTimeoutAndChecksLockAgain()
+        throws Exception {
         final Lock lock = Mockito.mock(Lock.class);
         Mockito.when(lock.tryLock(Mockito.anyLong(), Mockito.any()))
             .thenReturn(false).thenReturn(true);
