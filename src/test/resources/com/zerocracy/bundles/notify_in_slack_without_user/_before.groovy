@@ -29,7 +29,7 @@ import org.mockito.Mockito
 
 /**
  * @todo #1139:30min Finish implementation of FkSkSession, FkTeam and
- * FkPersona and use these classes to replace Mockito in tests.
+ *  FkPersona and use these classes to replace Mockito in tests.
  */
 def exec(Project project, XML xml) {
   String channelId = 'C123'
