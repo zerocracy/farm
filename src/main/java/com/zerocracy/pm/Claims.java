@@ -24,9 +24,6 @@ import org.cactoos.Proc;
  * Claims.
  *
  * @since 1.0
- * @todo #1436:30min Add SQS claims implementation and integration test
- *  to verify that it's working, then use it for production code in
- *  `ClaimsOf` and use `ClaimsXml` for tests.
  */
 public interface Claims {
 

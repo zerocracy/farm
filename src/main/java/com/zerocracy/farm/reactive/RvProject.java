@@ -41,13 +41,21 @@ final class RvProject implements Project {
     private final Proc<Project> flush;
 
     /**
+     * Testing.
+     */
+    private final boolean testing;
+
+    /**
      * Ctor.
      * @param pkt Project
      * @param tgr Trigger
+     * @param tst Testing
      */
-    RvProject(final Project pkt, final Proc<Project> tgr) {
+    RvProject(final Project pkt, final Proc<Project> tgr,
+        final boolean tst) {
         this.origin = pkt;
         this.flush = tgr;
+        this.testing = tst;
     }
 
     @Override
@@ -61,7 +69,8 @@ final class RvProject implements Project {
         if ("claims.xml".equals(file)) {
             item = new RvClaims(
                 item,
-                item1 -> this.flush.exec(this)
+                item1 -> this.flush.exec(this),
+                this.testing
             );
         }
         return item;

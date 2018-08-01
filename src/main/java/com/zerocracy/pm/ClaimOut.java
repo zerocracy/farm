@@ -21,6 +21,8 @@ import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSLChain;
 import com.jcabi.xml.XSLDocument;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.Iterator;
@@ -50,6 +52,11 @@ import org.xembly.Xembler;
  */
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 public final class ClaimOut implements Iterable<Directive> {
+
+    /**
+     * Max delay for claim.
+     */
+    private static final Duration MAX_DELAY = Duration.ofMinutes(15L);
 
     /**
      * Counter of IDs.
@@ -194,8 +201,21 @@ public final class ClaimOut implements Iterable<Directive> {
      * Until this amount of seconds.
      * @param seconds The amount of seconds to wait
      * @return This
+     * @throws IOException If fails
      */
-    public ClaimOut until(final long seconds) {
+    public ClaimOut until(final long seconds) throws IOException {
+        final Duration delay = Duration.between(
+            Instant.now(),
+            Instant.ofEpochSecond(seconds)
+        );
+        if (delay.compareTo(ClaimOut.MAX_DELAY) > 0) {
+            throw new IOException(
+                String.format(
+                    "Can't set delay more than %s minutes",
+                    ClaimOut.MAX_DELAY.toMinutes()
+                )
+            );
+        }
         return new ClaimOut(
             this.dirs
                 .push()
