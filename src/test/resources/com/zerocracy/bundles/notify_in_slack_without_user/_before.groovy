@@ -29,7 +29,8 @@ import org.mockito.Mockito
 
 /**
  * @todo #1139:30min Finish implementation of FkSkSession, FkTeam and
- *  FkPersona and use these classes to replace Mockito in tests.
+ *  FkPersona, fake classes implementing SkSession, SlackTeam and
+ *  SlackPersona. Then use these classes to replace Mockito in tests
  */
 def exec(Project project, XML xml) {
   String channelId = 'C123'
