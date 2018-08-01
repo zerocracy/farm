@@ -22,7 +22,8 @@ import com.jcabi.github.Repo;
 import com.jcabi.github.Repos;
 import com.jcabi.github.mock.MkGithub;
 import com.jcabi.github.mock.MkStorage;
-import com.zerocracy.farm.fake.FkFarm;
+import com.zerocracy.Farm;
+import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pm.ClaimsItem;
 import com.zerocracy.pm.scope.Wbs;
 import java.io.IOException;
@@ -57,7 +58,7 @@ public final class RbOnCloseTest {
         storage.apply(RbOnCloseTest.closeEvent(issue));
         MatcherAssert.assertThat(
             "issue wasn't closed",
-            new RbOnClose().react(new FkFarm(), github, RbOnCloseTest.json(issue)),
+            new RbOnClose().react(new PropsFarm(), github, RbOnCloseTest.json(issue)),
             Matchers.startsWith("Asked WBS")
         );
     }
@@ -74,7 +75,7 @@ public final class RbOnCloseTest {
         );
         issue.close();
         storage.apply(RbOnCloseTest.closeEvent(issue));
-        final FkFarm farm = new FkFarm();
+        final Farm farm = new PropsFarm();
         final GhProject pkt = new GhProject(farm, repo);
         new Wbs(pkt).bootstrap().add(new Job(issue).toString());
         new RbOnClose().react(farm, github, RbOnCloseTest.json(issue));

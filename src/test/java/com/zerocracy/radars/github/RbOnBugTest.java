@@ -21,6 +21,7 @@ import com.jcabi.github.Repos;
 import com.jcabi.github.mock.MkGithub;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
+import com.zerocracy.farm.props.PropsFarm;
 import javax.json.Json;
 import javax.json.JsonObject;
 import org.hamcrest.MatcherAssert;
@@ -42,7 +43,7 @@ public final class RbOnBugTest {
             .issues().create("bug", "");
         MatcherAssert.assertThat(
             new RbOnBug().react(
-                new FkFarm(new FkProject()),
+                new PropsFarm(new FkFarm(new FkProject())),
                 github,
                 RbOnBugTest.payload(bug)
             ),

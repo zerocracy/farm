@@ -19,7 +19,6 @@ package com.zerocracy.tk.project.reports;
 import com.jcabi.xml.XML;
 import com.zerocracy.Project;
 import com.zerocracy.entry.ClaimsOf;
-import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pm.ClaimOut;
@@ -45,7 +44,7 @@ public final class OrdersGivenByWeekTest {
         new ClaimOut()
             .type("Order was given")
             .param("login", "yegor256")
-            .postTo(new ClaimsOf(new FkFarm(), pkt));
+            .postTo(new ClaimsOf(new PropsFarm(), pkt));
         final XML xml = new ClaimsItem(pkt).iterate().iterator().next();
         try (final Footprint footprint = new Footprint(new PropsFarm(), pkt)) {
             footprint.open(xml);
@@ -72,7 +71,7 @@ public final class OrdersGivenByWeekTest {
     public void retrievesEmptyData() throws Exception {
         final Project pkt = new FkProject("746092829");
         new ClaimOut().type("Just hello")
-            .postTo(new ClaimsOf(new FkFarm(), pkt));
+            .postTo(new ClaimsOf(new PropsFarm(), pkt));
         final XML xml = new ClaimsItem(pkt).iterate().iterator().next();
         try (final Footprint footprint = new Footprint(new PropsFarm(), pkt)) {
             footprint.open(xml);
