@@ -115,5 +115,6 @@ public final class ClaimsSqs implements Claims {
             msg.setDelaySeconds((int) delay);
         }
         this.sqs.sendMessage(msg);
+        new ClaimsItem(this.project).bootstrap();
     }
 }
