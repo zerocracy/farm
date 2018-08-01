@@ -24,7 +24,8 @@ import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
   MatcherAssert.assertThat(
-    ((ExtTwitter.Retrievable) new ExtTwitter(farm).value()).tweets(),
+    ((ExtTwitter.Retrievable) new ExtTwitter(binding.variables.farm)
+        .value()).tweets(),
     Matchers.contains(
      'a contribution of $1 from http://github.com/carlosmiranda'
     )
