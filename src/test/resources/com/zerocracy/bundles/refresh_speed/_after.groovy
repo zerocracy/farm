@@ -14,27 +14,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pmo.speed
+package com.zerocracy.bundles.refresh_speed
 
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
-import com.zerocracy.entry.ClaimsOf
-import com.zerocracy.farm.Assume
-import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pmo.People
 import com.zerocracy.pmo.Speed
-import java.time.Instant
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Order was finished')
-  new Assume(project, xml).notPmo()
   Farm farm = binding.variables.farm
-  ClaimIn claim = new ClaimIn(xml)
-  String job = claim.param('job')
-  long age = Long.parseLong(claim.param('age'))
-  String login = claim.param('login')
-  new Speed(farm, login)
-    .bootstrap()
-    .add(project.pid(), job, age, Instant.now())
-  claim.copy().type('Speed was updated').postTo(new ClaimsOf(farm, project))
+  String login = 'developer'
+  MatcherAssert.assertThat(
+    new People(farm).bootstrap().speed(login),
+    Matchers.closeTo(0.0d, 0.0001d)
+  )
+  MatcherAssert.assertThat(
+    new Speed(farm, login).bootstrap().avg(),
+    Matchers.closeTo(0.0d, 0.0001d)
+  )
 }

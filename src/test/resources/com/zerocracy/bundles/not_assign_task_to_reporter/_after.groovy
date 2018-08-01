@@ -20,9 +20,9 @@ import com.jcabi.xml.XML
 import com.zerocracy.Project
 
 def exec(Project project, XML xml) {
-  // @todo #747:30min This test started to fail after moving groovy stakeholder
-  //  scripts to groovy directory. Assertion `elections.elected` is false now,
-  //  so it's needed to investigate why this test is failing and fix it.
+// @todo #1089:30min This test should be fixed already. However, it is not
+//  stable and fails intermittently. Let's stabilize the test and uncomment
+//  the code below.
 //  Elections elections = new Elections(project).bootstrap()
 //  String job = 'gh:test/farm#1'
 //  assert elections.elected(job)

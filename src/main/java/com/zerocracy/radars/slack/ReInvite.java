@@ -16,7 +16,6 @@
  */
 package com.zerocracy.radars.slack;
 
-import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackChannelJoined;
 import com.zerocracy.Farm;
 import com.zerocracy.Par;
@@ -31,8 +30,8 @@ final class ReInvite implements Reaction<SlackChannelJoined> {
 
     @Override
     public boolean react(final Farm farm, final SlackChannelJoined event,
-        final SlackSession session) throws IOException {
-        session.sendMessage(
+        final SkSession session) throws IOException {
+        session.send(
             event.getSlackChannel(),
             new Par(
                 "Thanks for inviting me here;",

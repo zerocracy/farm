@@ -17,17 +17,17 @@
 package com.zerocracy.bundles.notify_in_slack_without_user
 
 import com.jcabi.xml.XML
-import com.ullink.slack.simpleslackapi.SlackSession
 import com.ullink.slack.simpleslackapi.SlackUser
 import com.zerocracy.entry.ExtSlack
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.radars.slack.SkSession
 import org.mockito.Mockito
 
 def exec(Project project, XML xml) {
   String channelId = 'C123'
   Farm farm = binding.variables.farm
-  SlackSession session = new ExtSlack(farm).value()[channelId]
+  SkSession session = new ExtSlack(farm).value()[channelId]
   Mockito.verify(
     session,
     Mockito.never()

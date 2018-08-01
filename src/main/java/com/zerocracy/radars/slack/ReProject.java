@@ -17,7 +17,6 @@
 package com.zerocracy.radars.slack;
 
 import com.jcabi.xml.XMLDocument;
-import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.Farm;
 import com.zerocracy.Par;
@@ -37,7 +36,7 @@ public final class ReProject implements Reaction<SlackMessagePosted> {
 
     @Override
     public boolean react(final Farm farm, final SlackMessagePosted event,
-        final SlackSession session) throws IOException {
+        final SkSession session) throws IOException {
         final Question question = new Question(
             new XMLDocument(
                 this.getClass().getResource(

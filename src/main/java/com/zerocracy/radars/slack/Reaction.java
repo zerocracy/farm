@@ -16,7 +16,6 @@
  */
 package com.zerocracy.radars.slack;
 
-import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackEvent;
 import com.zerocracy.Farm;
 import java.io.IOException;
@@ -37,7 +36,7 @@ public interface Reaction<T extends SlackEvent> {
      * @return TRUE if reacted
      * @throws IOException If fails on I/O
      */
-    boolean react(Farm farm, T event, SlackSession session) throws IOException;
+    boolean react(Farm farm, T event, SkSession session) throws IOException;
 
     /**
      * Reactions chained.
@@ -57,7 +56,7 @@ public interface Reaction<T extends SlackEvent> {
         }
         @Override
         public boolean react(final Farm farm, final T event,
-            final SlackSession session) throws IOException {
+            final SkSession session) throws IOException {
             boolean done = false;
             for (final Reaction<T> reaction : this.reactions) {
                 done = reaction.react(farm, event, session);

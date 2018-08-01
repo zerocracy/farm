@@ -57,7 +57,7 @@ public final class SlackRadar implements AutoCloseable {
     /**
      * Slack session provider.
      */
-    private final UncheckedFunc<String, SlackSession> slackssess;
+    private final UncheckedFunc<String, SkSession> slackssess;
 
     /**
      * Ctor.
@@ -97,7 +97,9 @@ public final class SlackRadar implements AutoCloseable {
         this.joined = new ReLogged<>(
             new ReInvite()
         );
-        this.slackssess = new UncheckedFunc<>(sess);
+        this.slackssess = new UncheckedFunc<>(
+            (token) -> new RealSkSession(sess.apply(token))
+        );
     }
 
     /**
@@ -137,7 +139,7 @@ public final class SlackRadar implements AutoCloseable {
 
     @Override
     public void close() throws IOException {
-        for (final SlackSession session : this.sessions().values()) {
+        for (final SkSession session : this.sessions().values()) {
             session.disconnect();
         }
     }
@@ -148,13 +150,13 @@ public final class SlackRadar implements AutoCloseable {
      * @return The session
      * @throws IOException If fails
      */
-    private SlackSession start(final String token) throws IOException {
-        final SlackSession ssn = this.slackssess.apply(token);
+    private SkSession start(final String token) throws IOException {
+        final SkSession ssn = this.slackssess.apply(token);
         ssn.connect();
         Logger.info(
             this, "Slack connected as @%s/%s to %s",
-            ssn.sessionPersona().getUserName(),
-            ssn.sessionPersona().getId(),
+            ssn.persona().getUserName(),
+            ssn.persona().getId(),
             ssn.getTeam().getName()
         );
         ssn.addMessagePostedListener(
@@ -182,7 +184,7 @@ public final class SlackRadar implements AutoCloseable {
      * Sessions.
      * @return Sessions
      */
-    private Map<String, SlackSession> sessions() {
+    private Map<String, SkSession> sessions() {
         return new ExtSlack(this.farm).value();
     }
 

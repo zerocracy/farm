@@ -67,4 +67,15 @@ public final class VsBalanceTest {
             )
         );
     }
+
+    @Test
+    public void returnsDefaultVoteIfNobodyAssignedToProjects()
+        throws IOException {
+        final String user = "carlosmiranda";
+        MatcherAssert.assertThat(
+            new VsBalance(new FkProject(), new FkFarm(), new ListOf<>(user))
+                .take(user, new StringBuilder()),
+            Matchers.is(1.0)
+        );
+    }
 }

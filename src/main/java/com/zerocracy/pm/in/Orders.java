@@ -46,7 +46,7 @@ import org.xembly.Directives;
  * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@SuppressWarnings("PMD.TooManyMethods")
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals"})
 public final class Orders {
 
     /**
@@ -160,6 +160,22 @@ public final class Orders {
         }
         try (final Item wbs = this.item()) {
             new Xocument(wbs.path()).modify(
+                new Directives()
+                    .xpath(String.format("/orders/order[@job ='%s']", job))
+                    .strict(1)
+                    .remove()
+            );
+        }
+    }
+
+    /**
+     * Remove order.
+     * @param job The order to remove
+     * @throws IOException If fails
+     */
+    public void remove(final String job) throws IOException {
+        try (final Item orders = this.item()) {
+            new Xocument(orders.path()).modify(
                 new Directives()
                     .xpath(String.format("/orders/order[@job ='%s']", job))
                     .strict(1)

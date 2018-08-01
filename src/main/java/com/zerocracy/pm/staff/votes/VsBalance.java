@@ -82,23 +82,34 @@ public final class VsBalance implements Votes {
     @Override
     public double take(final String login, final StringBuilder log)
         throws IOException {
-        final Agenda agenda = new Agenda(this.farm, login).bootstrap();
-        final int size = agenda.jobs().size();
-        final double percent;
-        if (size == 0) {
-            percent = 0;
+        final double result;
+        if (this.max.value() > 0) {
+            final Agenda agenda = new Agenda(this.farm, login).bootstrap();
+            final int size = agenda.jobs().size();
+            final double percent;
+            if (size == 0) {
+                percent = 0;
+            } else {
+                percent = (double) agenda.jobs(this.project).size() / size;
+            }
+            final int all = new LengthOf(
+                new Projects(this.farm, login).bootstrap().iterate()
+            ).intValue();
+            log.append(
+                String.format(
+                    "Has %d jobs in %d projects, %.2f%% from current project",
+                    size, all, percent
+                )
+            );
+            result = 1.0 - (percent * all) / this.max.value();
         } else {
-            percent = (double) agenda.jobs(this.project).size() / size;
+            log.append(
+                String.format(
+                    "Nobody assigned to any project, using default score"
+                )
+            );
+            result = 1.0;
         }
-        final int all = new LengthOf(
-            new Projects(this.farm, login).bootstrap().iterate()
-        ).intValue();
-        log.append(
-            String.format(
-                "Has %d jobs in %d projects, %.2f%% from current project",
-                size, all, percent
-            )
-        );
-        return 1.0 - (percent * all) / this.max.value();
+        return result;
     }
 }

@@ -37,6 +37,11 @@ def exec(Project pmo, XML xml) {
     int before = awards.total()
     awards.removeOlderThan(outdated)
     int after = awards.total()
+    // @todo #1218:30min refresh_awards.groovy is submitting claims for all
+    //  users in Zerocracy even if reputation didn't change. Fix
+    //  refresh_awards.groovy so it only submit claims when there is a
+    //  reputation change for user and uncomment tests in
+    //  dont_refresh_awards_when_no_change/_after.groovy
     claim.copy()
       .type('Award points were added')
       .param('login', it)

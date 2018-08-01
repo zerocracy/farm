@@ -14,27 +14,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pmo.speed
+package com.zerocracy.bundles.dont_refresh_awards_when_no_changes
 
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
-import com.zerocracy.entry.ClaimsOf
-import com.zerocracy.farm.Assume
-import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pmo.Speed
-import java.time.Instant
+import com.zerocracy.pmo.Awards
+import java.text.SimpleDateFormat
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Order was finished')
-  new Assume(project, xml).notPmo()
   Farm farm = binding.variables.farm
-  ClaimIn claim = new ClaimIn(xml)
-  String job = claim.param('job')
-  long age = Long.parseLong(claim.param('age'))
-  String login = claim.param('login')
-  new Speed(farm, login)
-    .bootstrap()
-    .add(project.pid(), job, age, Instant.now())
-  claim.copy().type('Speed was updated').postTo(new ClaimsOf(farm, project))
+  Awards awards = new Awards(farm, 'g4s8').bootstrap()
+  SimpleDateFormat format = new SimpleDateFormat('yyyy-MM-dd HH:mm:ss.SSS', Locale.US)
+  awards.add(project, 15, 'gh:test/test#1', 'test', format.parse('2018-01-31 21:00:00.000'))
+  awards.add(project, 100, 'gh:test/test#2', 'test', format.parse('2018-04-30 18:00:00.000'))
+  awards.add(project, 10, 'gh:test/test#4', 'test', format.parse('2018-01-31 21:00:00.000'))
 }
