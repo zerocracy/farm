@@ -30,6 +30,7 @@ import com.zerocracy.pm.cost.Estimates
 import com.zerocracy.pm.cost.Rates
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.qa.JobAudit
+import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pm.staff.Roles
 import java.time.Duration
 import java.time.Instant
@@ -102,7 +103,12 @@ def exec(Project project, XML xml) {
         .postTo(new ClaimsOf(farm, project))
     }
   } else {
-    Cash bonus = price.mul(new Policy().get('31.bonus', 8)) / 100
+    Cash bonus
+    if (new Wbs(project).bootstrap().role(job) == 'REV') {
+      bonus = price.mul(new Policy().get('31.rev-bonus', 33)) / 100
+    } else {
+      bonus = price.mul(new Policy().get('31.bonus', 16)) / 100
+    }
     claim.copy()
       .type('Start QA review')
       .param('login', performer)

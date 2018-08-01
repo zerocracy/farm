@@ -36,6 +36,6 @@ def exec(Project project, XML xml) {
   MatcherAssert.assertThat(
     'Incorrect bonus',
     new Reviews(project).bootstrap().bonus(job),
-    Matchers.<Cash> equalTo(new Cash.S('$8'))
+    Matchers.<Cash> equalTo(new Cash.S('$16'))
   )
 }

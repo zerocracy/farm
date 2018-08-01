@@ -14,27 +14,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pmo.speed
+package com.zerocracy.stk.pmo
 
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
+import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.ClaimIn
+import com.zerocracy.pmo.People
 import com.zerocracy.pmo.Speed
 import java.time.Instant
 
-def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Order was finished')
-  new Assume(project, xml).notPmo()
-  Farm farm = binding.variables.farm
+def exec(Project pmo, XML xml) {
+  new Assume(pmo, xml).type('Ping daily')
   ClaimIn claim = new ClaimIn(xml)
-  String job = claim.param('job')
-  long age = Long.parseLong(claim.param('age'))
-  String login = claim.param('login')
-  new Speed(farm, login)
-    .bootstrap()
-    .add(project.pid(), job, age, Instant.now())
-  claim.copy().type('Speed was updated').postTo(new ClaimsOf(farm, project))
+  Instant outdated = (claim.created() - new Policy().get('18.days', 90)).toInstant()
+  Farm farm = binding.variables.farm
+  new People(farm).bootstrap().iterate().each {
+    login ->
+      Speed speed = new Speed(farm, login).bootstrap()
+      double before = speed.avg()
+      speed.removeOlderThan(outdated)
+      double after = speed.avg()
+      if (Math.abs(after - before) > 0.001) {
+        claim.copy()
+          .param('login', login)
+          .type('Speed was updated')
+          .postTo(new ClaimsOf(farm))
+      }
+  }
 }

@@ -21,7 +21,7 @@ import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.RunsInThreads;
 import com.zerocracy.entry.ClaimsOf;
-import com.zerocracy.farm.fake.FkFarm;
+import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.farm.sync.SyncFarm;
 import com.zerocracy.pm.ClaimOut;
 import com.zerocracy.pm.ClaimsItem;
@@ -43,7 +43,7 @@ public final class RvProjectTest {
     @Test
     public void closesClaims() throws Exception {
         final AtomicInteger done = new AtomicInteger();
-        try (final Farm farm = new SyncFarm(new FkFarm())) {
+        try (final Farm farm = new SyncFarm(new PropsFarm())) {
             final Project raw = new Pmo(farm);
             final Flush def = new DefaultFlush(
                 farm, new Brigade(
@@ -70,7 +70,7 @@ public final class RvProjectTest {
     @Test
     public void closesClaimsInThreads() throws Exception {
         final AtomicInteger total = new AtomicInteger(Tv.FIFTY);
-        try (final Farm farm = new SyncFarm(new FkFarm())) {
+        try (final Farm farm = new SyncFarm(new PropsFarm())) {
             final Project raw = new Pmo(farm);
             final Flush def = new DefaultFlush(
                 farm, new Brigade(

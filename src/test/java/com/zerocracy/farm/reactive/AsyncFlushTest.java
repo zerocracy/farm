@@ -25,6 +25,7 @@ import com.zerocracy.Project;
 import com.zerocracy.Stakeholder;
 import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.farm.S3Farm;
+import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.farm.sync.SyncFarm;
 import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.ClaimOut;
@@ -51,7 +52,9 @@ public final class AsyncFlushTest {
             Files.createTempDirectory("").toFile(),
             "the-bucket"
         );
-        try (final Farm farm = new SyncFarm(new S3Farm(bucket))) {
+        try (
+            final Farm farm = new SyncFarm(new PropsFarm(new S3Farm(bucket)))
+        ) {
             final Project project = farm.find("@id='ABCZZFE03'")
                 .iterator().next();
             final AtomicInteger done = new AtomicInteger(0);

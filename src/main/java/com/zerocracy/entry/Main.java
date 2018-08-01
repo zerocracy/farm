@@ -126,7 +126,6 @@ public final class Main {
                 }
             ).exec(null);
             new GithubRoutine(farm).start();
-            new Pings(farm).start();
             new FtCli(
                 new TkApp(
                     farm,

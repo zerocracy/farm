@@ -20,7 +20,7 @@ import com.ullink.slack.simpleslackapi.SlackChannel;
 import com.ullink.slack.simpleslackapi.SlackUser;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.Farm;
-import com.zerocracy.farm.fake.FkFarm;
+import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pm.ClaimIn;
 import com.zerocracy.pm.ClaimsItem;
 import com.zerocracy.pmo.People;
@@ -48,7 +48,7 @@ public final class ReProfileTest {
         final String sid = "U12345678";
         Mockito.doReturn(sid).when(sender).getId();
         Mockito.doReturn(sender).when(event).getSender();
-        final Farm farm = new FkFarm();
+        final Farm farm = new PropsFarm();
         final People people = new People(farm).bootstrap();
         final String uid = "yegor256";
         people.invite(uid, "mentor");
@@ -77,7 +77,7 @@ public final class ReProfileTest {
         final String sid = "U12345679";
         Mockito.doReturn(sid).when(sender).getId();
         Mockito.doReturn(sender).when(event).getSender();
-        final Farm farm = new FkFarm();
+        final Farm farm = new PropsFarm();
         final People people = new People(farm).bootstrap();
         final String uid = "dmarkov";
         people.invite(uid, "mentor1");
