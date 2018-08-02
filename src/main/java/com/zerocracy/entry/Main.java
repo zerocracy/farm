@@ -17,7 +17,6 @@
 package com.zerocracy.entry;
 
 import com.jcabi.aspects.Loggable;
-import com.jcabi.aspects.Tv;
 import com.jcabi.log.Logger;
 import com.zerocracy.Farm;
 import com.zerocracy.SafeSentry;
@@ -124,7 +123,6 @@ public final class Main {
             final ClaimsRoutine claims = new ClaimsRoutine(
                 farm,
                 new AsyncProc(
-                    Tv.TEN,
                     new DeleteProc(
                         farm,
                         new SentryProc(
