@@ -23,7 +23,7 @@ import com.zerocracy.Item;
 import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.entry.ClaimsOf;
-import com.zerocracy.pm.ClaimOut;
+import com.zerocracy.claims.ClaimOut;
 import com.zerocracy.tk.RqUser;
 import com.zerocracy.tk.RsParFlash;
 import java.io.IOException;

@@ -14,31 +14,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pm;
+package com.zerocracy.claims;
 
 import com.amazonaws.services.sqs.AmazonSQS;
-import com.amazonaws.services.sqs.model.ReceiveMessageRequest;
+import com.amazonaws.services.sqs.model.MessageAttributeValue;
 import com.amazonaws.services.sqs.model.SendMessageRequest;
 import com.jcabi.xml.XML;
-import com.jcabi.xml.XMLDocument;
 import com.zerocracy.Project;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
-import org.cactoos.Proc;
+import java.util.HashMap;
+import java.util.Map;
 import org.cactoos.iterable.ItemAt;
 import org.cactoos.iterable.Mapped;
-import org.cactoos.map.MapOf;
-import org.cactoos.scalar.And;
 import org.cactoos.scalar.IoCheckedScalar;
 
 /**
  * Claims queue on Amazon SQS.
  *
  * @since 1.0
- * @todo #1480:30min Prevent claims duplication, let's add claim's hash
- *  based on it's content to claims attributes, save it in footprint
- *  and check before processing new claim.
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class ClaimsSqs implements Claims {
@@ -73,29 +68,6 @@ public final class ClaimsSqs implements Claims {
     }
 
     @Override
-    public void take(final Proc<XML> proc, final int limit)
-        throws IOException {
-        new IoCheckedScalar<>(
-            new And(
-                entry -> {
-                    proc.exec(entry.getValue().nodes("/claim").get(0));
-                    this.sqs.deleteMessage(
-                        this.queue, entry.getKey().getReceiptHandle()
-                    );
-                },
-                new MapOf<>(
-                    msg -> msg,
-                    msg -> new XMLDocument(msg.getBody()),
-                    this.sqs.receiveMessage(
-                        new ReceiveMessageRequest(this.queue)
-                            .withMaxNumberOfMessages(limit)
-                    ).getMessages()
-                ).entrySet()
-            )
-        ).value();
-    }
-
-    @Override
     public void submit(final XML claim) throws IOException {
         final SendMessageRequest msg = new SendMessageRequest(
             this.queue,
@@ -117,6 +89,24 @@ public final class ClaimsSqs implements Claims {
         if (delay > 0L) {
             msg.setDelaySeconds((int) delay);
         }
+        final Map<String, MessageAttributeValue> attrs = new HashMap<>(1);
+        final String signature = new ClaimSignature(
+            claim.nodes("//claim").get(0)
+        ).asString();
+        attrs.put(
+            "signature",
+            new MessageAttributeValue()
+                .withDataType("String")
+                .withStringValue(signature)
+        );
+        msg.setMessageDeduplicationId(
+            String.format(
+                "%s:%s",
+                this.project.pid(),
+                signature
+            )
+        );
+        msg.setMessageAttributes(attrs);
         this.sqs.sendMessage(msg);
         new ClaimsItem(this.project).bootstrap();
     }

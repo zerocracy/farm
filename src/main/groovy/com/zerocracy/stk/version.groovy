@@ -23,7 +23,7 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.farm.props.Props
 import com.zerocracy.Farm
 import com.zerocracy.Project
-import com.zerocracy.pm.ClaimIn
+import com.zerocracy.claims.ClaimIn
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Version')

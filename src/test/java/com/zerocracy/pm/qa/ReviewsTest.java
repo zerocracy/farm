@@ -20,7 +20,7 @@ import com.jcabi.aspects.Tv;
 import com.jcabi.matchers.XhtmlMatchers;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.farm.fake.FkProject;
-import com.zerocracy.pm.ClaimOut;
+import com.zerocracy.claims.ClaimOut;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;

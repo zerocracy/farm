@@ -23,7 +23,7 @@ import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtSlack
-import com.zerocracy.pm.ClaimOut
+import com.zerocracy.claims.ClaimOut
 import com.zerocracy.radars.slack.SkSession
 import org.mockito.Mockito
 

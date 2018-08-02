@@ -17,7 +17,7 @@
 package com.zerocracy.entry;
 
 import com.jcabi.xml.XML;
-import com.zerocracy.pm.Claims;
+import com.zerocracy.claims.Claims;
 import java.io.IOException;
 import org.cactoos.Proc;
 

@@ -18,7 +18,7 @@ package com.zerocracy.tk;
 
 import com.mongodb.client.model.Filters;
 import com.zerocracy.Farm;
-import com.zerocracy.pm.Footprint;
+import com.zerocracy.claims.Footprint;
 import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
 import java.time.ZonedDateTime;

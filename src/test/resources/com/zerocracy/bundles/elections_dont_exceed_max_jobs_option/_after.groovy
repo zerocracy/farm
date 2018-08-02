@@ -20,7 +20,7 @@ import com.jcabi.xml.XML
 import com.mongodb.client.model.Filters
 import com.zerocracy.Farm
 import com.zerocracy.Project
-import com.zerocracy.pm.Footprint
+import com.zerocracy.claims.Footprint
 import com.zerocracy.pmo.Agenda
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers

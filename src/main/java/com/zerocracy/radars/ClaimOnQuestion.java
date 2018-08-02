@@ -16,7 +16,7 @@
  */
 package com.zerocracy.radars;
 
-import com.zerocracy.pm.ClaimOut;
+import com.zerocracy.claims.ClaimOut;
 
 /**
  * Claim on question.

@@ -24,7 +24,7 @@ import com.jcabi.github.mock.MkGithub;
 import com.jcabi.github.mock.MkStorage;
 import com.zerocracy.Farm;
 import com.zerocracy.farm.props.PropsFarm;
-import com.zerocracy.pm.ClaimsItem;
+import com.zerocracy.claims.ClaimsItem;
 import com.zerocracy.pm.scope.Wbs;
 import java.io.IOException;
 import javax.json.Json;

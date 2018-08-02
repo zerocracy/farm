@@ -21,7 +21,7 @@ import com.zerocracy.Par;
 import com.zerocracy.Policy;
 import com.zerocracy.Project;
 import com.zerocracy.entry.ClaimsOf;
-import com.zerocracy.pm.ClaimOut;
+import com.zerocracy.claims.ClaimOut;
 import com.zerocracy.pmo.Exam;
 import com.zerocracy.pmo.Vacancies;
 import com.zerocracy.tk.RqUser;

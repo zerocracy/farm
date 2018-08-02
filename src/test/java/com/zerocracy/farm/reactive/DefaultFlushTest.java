@@ -19,7 +19,7 @@ package com.zerocracy.farm.reactive;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.farm.props.PropsFarm;
-import com.zerocracy.pm.ClaimsItem;
+import com.zerocracy.claims.ClaimsItem;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;

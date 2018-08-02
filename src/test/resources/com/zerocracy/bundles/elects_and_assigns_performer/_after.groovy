@@ -20,7 +20,7 @@ import com.jcabi.xml.XML
 import com.mongodb.client.model.Filters
 import com.zerocracy.Farm
 import com.zerocracy.Project
-import com.zerocracy.pm.Footprint
+import com.zerocracy.claims.Footprint
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.staff.Elections
 import org.cactoos.iterable.LengthOf

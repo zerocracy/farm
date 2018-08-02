@@ -20,7 +20,7 @@ import com.jcabi.github.Github;
 import com.jcabi.github.Issue;
 import com.zerocracy.Farm;
 import com.zerocracy.entry.ClaimsOf;
-import com.zerocracy.pm.ClaimOut;
+import com.zerocracy.claims.ClaimOut;
 import java.io.IOException;
 import javax.json.JsonObject;
 import org.cactoos.text.FormattedText;

@@ -24,7 +24,7 @@ import com.zerocracy.SoftException;
 import com.zerocracy.Stakeholder;
 import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.farm.props.Props;
-import com.zerocracy.pm.ClaimIn;
+import com.zerocracy.claims.ClaimIn;
 import com.zerocracy.tools.TxtUnrecoverableError;
 import java.io.IOException;
 import lombok.EqualsAndHashCode;

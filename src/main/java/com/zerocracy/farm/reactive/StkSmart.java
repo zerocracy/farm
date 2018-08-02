@@ -20,7 +20,7 @@ import com.jcabi.xml.XML;
 import com.zerocracy.Project;
 import com.zerocracy.Stakeholder;
 import com.zerocracy.farm.MismatchException;
-import com.zerocracy.pm.ClaimIn;
+import com.zerocracy.claims.ClaimIn;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;

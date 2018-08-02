@@ -22,7 +22,7 @@ import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.farm.props.Props
-import com.zerocracy.pm.Footprint
+import com.zerocracy.claims.Footprint
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Ping daily')

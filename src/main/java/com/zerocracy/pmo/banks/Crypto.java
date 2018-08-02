@@ -30,7 +30,7 @@ import com.zerocracy.cash.Cash;
 import com.zerocracy.cash.Currency;
 import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.farm.props.Props;
-import com.zerocracy.pm.ClaimOut;
+import com.zerocracy.claims.ClaimOut;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import org.joda.money.Money;

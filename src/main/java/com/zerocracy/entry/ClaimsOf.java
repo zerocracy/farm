@@ -22,10 +22,10 @@ import com.amazonaws.services.sqs.model.QueueDoesNotExistException;
 import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
+import com.zerocracy.claims.Claims;
+import com.zerocracy.claims.ClaimsSqs;
+import com.zerocracy.claims.ClaimsXml;
 import com.zerocracy.farm.props.Props;
-import com.zerocracy.pm.Claims;
-import com.zerocracy.pm.ClaimsSqs;
-import com.zerocracy.pm.ClaimsXml;
 import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
 import org.cactoos.Proc;
@@ -63,9 +63,10 @@ public final class ClaimsOf implements Claims {
                                 new CreateQueueRequest(name)
                                     .withAttributes(
                                         new MapOf<String, String>(
-                                            // @checkstyle LineLength (2 lines)
-                                            new MapEntry<>("FifoQueue", Boolean.toString(true)),
-                                            new MapEntry<>("ContentBasedDeduplication", Boolean.toString(true))
+                                            new MapEntry<>(
+                                                "FifoQueue",
+                                                Boolean.toString(true)
+                                            )
                                         )
                                     )
                             ).getQueueUrl();

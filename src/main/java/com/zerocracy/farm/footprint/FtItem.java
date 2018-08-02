@@ -21,7 +21,7 @@ import com.jcabi.xml.XMLDocument;
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Project;
-import com.zerocracy.pm.Footprint;
+import com.zerocracy.claims.Footprint;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;

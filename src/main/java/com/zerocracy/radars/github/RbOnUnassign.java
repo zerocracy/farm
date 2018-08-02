@@ -23,7 +23,7 @@ import com.zerocracy.Farm;
 import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.entry.ClaimsOf;
-import com.zerocracy.pm.ClaimOut;
+import com.zerocracy.claims.ClaimOut;
 import com.zerocracy.pm.in.Orders;
 import java.io.IOException;
 import java.util.Locale;

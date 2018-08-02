@@ -21,7 +21,7 @@ import com.jcabi.github.Github;
 import com.jcabi.github.Repo;
 import com.zerocracy.Farm;
 import com.zerocracy.entry.ClaimsOf;
-import com.zerocracy.pm.ClaimOut;
+import com.zerocracy.claims.ClaimOut;
 import java.io.IOException;
 import javax.json.JsonObject;
 

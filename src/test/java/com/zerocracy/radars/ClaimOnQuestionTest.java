@@ -20,7 +20,7 @@ import com.jcabi.xml.XMLDocument;
 import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.PropsFarm;
-import com.zerocracy.pm.ClaimsItem;
+import com.zerocracy.claims.ClaimsItem;
 import java.util.Collection;
 import org.cactoos.list.SolidList;
 import org.hamcrest.MatcherAssert;

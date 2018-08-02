@@ -22,7 +22,7 @@ import com.zerocracy.Project;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.cash.CashParsingException;
 import com.zerocracy.entry.ClaimsOf;
-import com.zerocracy.pm.ClaimOut;
+import com.zerocracy.claims.ClaimOut;
 import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.pmo.Pmo;
 import com.zerocracy.tk.RqUser;

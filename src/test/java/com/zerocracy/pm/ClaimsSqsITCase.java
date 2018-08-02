@@ -21,8 +21,14 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.AmazonSQSClient;
 import com.amazonaws.services.sqs.model.CreateQueueRequest;
+import com.amazonaws.services.sqs.model.Message;
+import com.amazonaws.services.sqs.model.ReceiveMessageRequest;
 import com.jcabi.aspects.Tv;
 import com.jcabi.log.Logger;
+import com.zerocracy.claims.ClaimIn;
+import com.zerocracy.claims.ClaimOut;
+import com.zerocracy.claims.Claims;
+import com.zerocracy.claims.ClaimsSqs;
 import com.zerocracy.entry.PropsAwsCredentials;
 import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.Props;
@@ -87,9 +93,10 @@ public final class ClaimsSqsITCase {
                     )
                 ).withAttributes(
                     new MapOf<String, String>(
-                        // @checkstyle LineLength (2 lines)
-                        new MapEntry<>("FifoQueue", Boolean.toString(true)),
-                        new MapEntry<>("ContentBasedDeduplication", Boolean.toString(true))
+                        new MapEntry<>(
+                            "FifoQueue",
+                            Boolean.toString(true)
+                        )
                     )
                 )
             ).getQueueUrl();
@@ -121,6 +128,46 @@ public final class ClaimsSqsITCase {
         MatcherAssert.assertThat(
             claim.type(),
             Matchers.equalTo(type)
+        );
+    }
+
+    @Test
+    public void ignoresDuplicateClaims() throws Exception {
+        final Claims claims = new ClaimsSqs(
+            this.client, this.queue, new FkProject()
+        );
+        final int limit = 10;
+        final ClaimOut claim = new ClaimOut().type("duplicates");
+        for (int num = 0; num < limit; num++) {
+            claim.postTo(claims);
+        }
+        final List<Message> messages = this.client.receiveMessage(
+            new ReceiveMessageRequest(this.queue)
+                .withMaxNumberOfMessages(limit)
+        ).getMessages();
+        MatcherAssert.assertThat(
+            messages,
+            Matchers.hasSize(1)
+        );
+    }
+
+    @Test
+    public void sendMultiple() throws Exception {
+        final Claims claims = new ClaimsSqs(
+            this.client, this.queue, new FkProject()
+        );
+        final int limit = 10;
+        final ClaimOut claim = new ClaimOut().type("test");
+        for (int num = 0; num < limit; num++) {
+            claim.param("num", num).postTo(claims);
+        }
+        final List<Message> messages = this.client.receiveMessage(
+            new ReceiveMessageRequest(this.queue)
+                .withMaxNumberOfMessages(limit)
+        ).getMessages();
+        MatcherAssert.assertThat(
+            messages,
+            Matchers.hasSize(limit)
         );
     }
 }

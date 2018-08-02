@@ -21,7 +21,7 @@ import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.entry.ClaimsOf;
-import com.zerocracy.pm.ClaimOut;
+import com.zerocracy.claims.ClaimOut;
 import com.zerocracy.pmo.Catalog;
 import com.zerocracy.pmo.Pmo;
 import com.zerocracy.pmo.recharge.Stripe;

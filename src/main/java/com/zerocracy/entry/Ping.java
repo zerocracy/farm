@@ -19,7 +19,7 @@ package com.zerocracy.entry;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.SafeSentry;
-import com.zerocracy.pm.ClaimOut;
+import com.zerocracy.claims.ClaimOut;
 import com.zerocracy.pmo.Catalog;
 import java.io.IOException;
 import java.util.List;

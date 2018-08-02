@@ -23,7 +23,7 @@ import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.footprint.FtFarm;
 import com.zerocracy.farm.props.PropsFarm;
-import com.zerocracy.pm.ClaimOut;
+import com.zerocracy.claims.ClaimOut;
 import com.zerocracy.tk.View;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;

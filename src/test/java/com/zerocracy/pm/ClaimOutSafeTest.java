@@ -17,6 +17,9 @@
 package com.zerocracy.pm;
 
 import com.jcabi.xml.XML;
+import com.zerocracy.claims.ClaimOut;
+import com.zerocracy.claims.ClaimOutSafe;
+import com.zerocracy.claims.Claims;
 import java.io.IOException;
 import org.cactoos.Proc;
 import org.junit.Rule;

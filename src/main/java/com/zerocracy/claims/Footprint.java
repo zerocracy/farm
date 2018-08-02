@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pm;
+package com.zerocracy.claims;
 
 import com.jcabi.aspects.Tv;
 import com.jcabi.xml.XML;

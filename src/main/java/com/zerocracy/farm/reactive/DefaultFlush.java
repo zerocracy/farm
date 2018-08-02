@@ -21,7 +21,7 @@ import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.entry.ClaimsOf;
-import com.zerocracy.pm.ClaimIn;
+import com.zerocracy.claims.ClaimIn;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
