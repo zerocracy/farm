@@ -17,11 +17,9 @@
 package com.zerocracy.bundles.close_job_with_quality_review
 
 import com.jcabi.xml.XML
-import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.scope.Wbs
-import com.zerocracy.pmo.Awards
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 
