@@ -16,9 +16,6 @@
  */
 package com.zerocracy.claims;
 
-import com.jcabi.xml.XML;
-import java.io.IOException;
-import java.util.concurrent.atomic.AtomicReference;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -35,7 +32,7 @@ public final class ClaimSignatureTest {
     public void computesHash() throws Exception {
         MatcherAssert.assertThat(
             new ClaimSignature(
-                new ClaimToXml(
+                new ClaimXml(
                     new ClaimOut()
                         .type("signature-test")
                         .author("unit-test")
@@ -55,13 +52,13 @@ public final class ClaimSignatureTest {
     public void withDifferentType() throws Exception {
         MatcherAssert.assertThat(
             new ClaimSignature(
-                new ClaimToXml(
+                new ClaimXml(
                     new ClaimOut()
                         .type("type-one")
                 ).asXml()
             ).asString().equals(
                 new ClaimSignature(
-                    new ClaimToXml(
+                    new ClaimXml(
                         new ClaimOut()
                             .type("type-two")
                     ).asXml()
@@ -75,14 +72,14 @@ public final class ClaimSignatureTest {
     public void withDifferentAuthors() throws Exception {
         MatcherAssert.assertThat(
             new ClaimSignature(
-                new ClaimToXml(
+                new ClaimXml(
                     new ClaimOut()
                         .type("test")
                         .author("author-one")
                 ).asXml()
             ).asString().equals(
                 new ClaimSignature(
-                    new ClaimToXml(
+                    new ClaimXml(
                         new ClaimOut()
                             .type("test")
                             .author("author-two")
@@ -97,14 +94,14 @@ public final class ClaimSignatureTest {
     public void withDifferentTokens() throws Exception {
         MatcherAssert.assertThat(
             new ClaimSignature(
-                new ClaimToXml(
+                new ClaimXml(
                     new ClaimOut()
                         .type("test")
                         .token("token-one")
                 ).asXml()
             ).asString().equals(
                 new ClaimSignature(
-                    new ClaimToXml(
+                    new ClaimXml(
                         new ClaimOut()
                             .type("test")
                             .token("token-two")
@@ -119,14 +116,14 @@ public final class ClaimSignatureTest {
     public void withDifferentParams() throws Exception {
         MatcherAssert.assertThat(
             new ClaimSignature(
-                new ClaimToXml(
+                new ClaimXml(
                     new ClaimOut()
                         .type("test")
                         .param("name", "value1")
                 ).asXml()
             ).asString().equals(
                 new ClaimSignature(
-                    new ClaimToXml(
+                    new ClaimXml(
                         new ClaimOut()
                             .type("test")
                             .param("name", "value2")
@@ -137,37 +134,4 @@ public final class ClaimSignatureTest {
         );
     }
 
-    /**
-     * Convert claim to xml.
-     */
-    private static final class ClaimToXml {
-
-        /**
-         * Source claim.
-         */
-        private final ClaimOut src;
-
-        /**
-         * Ctor.
-         *
-         * @param claim Source claim
-         */
-        ClaimToXml(final ClaimOut claim) {
-            this.src = claim;
-        }
-
-        /**
-         * Convert to xml.
-         *
-         * @return XML
-         * @throws IOException If fails
-         */
-        public XML asXml() throws IOException {
-            final AtomicReference<XML> xml = new AtomicReference<>();
-            this.src.postTo(
-                claim -> xml.set(claim.nodes("//claim").get(0))
-            );
-            return xml.get();
-        }
-    }
 }
