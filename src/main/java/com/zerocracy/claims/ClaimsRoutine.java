@@ -24,7 +24,6 @@ import com.jcabi.log.VerboseRunnable;
 import com.jcabi.log.VerboseThreads;
 import com.zerocracy.Farm;
 import com.zerocracy.entry.ExtSqs;
-import com.zerocracy.radars.github.GithubRoutine;
 import java.io.Closeable;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -48,7 +47,7 @@ public final class ClaimsRoutine implements Runnable, Closeable {
     /**
      * Messages limit.
      */
-    private static final int LIMIT = 4;
+    private static final int LIMIT = 8;
 
     /**
      * Delay to fetch claims.
@@ -79,7 +78,7 @@ public final class ClaimsRoutine implements Runnable, Closeable {
     public ClaimsRoutine(final Farm farm, final Proc<Message> proc) {
         this.proc = proc;
         this.service = Executors.newSingleThreadScheduledExecutor(
-            new VerboseThreads(GithubRoutine.class)
+            new VerboseThreads(ClaimsRoutine.class)
         );
         this.farm = farm;
     }
