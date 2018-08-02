@@ -36,6 +36,9 @@ import org.cactoos.scalar.IoCheckedScalar;
  * Claims queue on Amazon SQS.
  *
  * @since 1.0
+ * @todo #1480:30min Prevent claims duplication, let's add claim's hash
+ *  based on it's content to claims attributes, save it in footprint
+ *  and check before processing new claim.
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class ClaimsSqs implements Claims {
