@@ -26,6 +26,7 @@ import com.zerocracy.claims.proc.BrigadeProc;
 import com.zerocracy.claims.proc.DeleteProc;
 import com.zerocracy.claims.proc.FootprintProc;
 import com.zerocracy.claims.proc.SentryProc;
+import com.zerocracy.claims.proc.SkipStaleProc;
 import com.zerocracy.farm.S3Farm;
 import com.zerocracy.farm.SmartFarm;
 import com.zerocracy.farm.props.Props;
@@ -126,9 +127,11 @@ public final class Main {
                     new DeleteProc(
                         farm,
                         new SentryProc(
-                            new FootprintProc(
-                                farm,
-                                new BrigadeProc(farm)
+                            new SkipStaleProc(
+                                new FootprintProc(
+                                    farm,
+                                    new BrigadeProc(farm)
+                                )
                             )
                         )
                     )
