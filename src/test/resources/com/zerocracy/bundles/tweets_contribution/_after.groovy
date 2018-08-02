@@ -28,7 +28,7 @@ def exec(Project project, XML xml) {
         .value()).tweets(),
     Matchers.hasItem(
       Matchers.containsString(
-      'a contribution of $1.00 from http://github.com/carlosmiranda'
+      'a monetary contribution of $1.00 from https://github.com/carlosmiranda'
       )
     )
   )
