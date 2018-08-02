@@ -18,12 +18,14 @@ package com.zerocracy.entry;
 
 import com.jcabi.aspects.Tv;
 import com.jcabi.xml.XML;
+import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Xocument;
+import com.zerocracy.claims.ClaimIn;
+import com.zerocracy.claims.ClaimsItem;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
-import com.zerocracy.pm.ClaimIn;
-import com.zerocracy.pm.ClaimsItem;
+import com.zerocracy.farm.props.PropsFarm;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.map.MapEntry;
 import org.cactoos.map.MapOf;
@@ -60,7 +62,7 @@ public final class PingTest {
     @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     public void worksForSingleProject() throws Exception {
         final FkProject pkt = new FkProject();
-        final FkFarm farm = new FkFarm(pkt);
+        final Farm farm = new PropsFarm(new FkFarm(pkt));
         try (final Item item = pkt.acq("catalog.xml")) {
             new Xocument(item.path()).bootstrap("pmo/catalog");
             new Xocument(item.path()).modify(

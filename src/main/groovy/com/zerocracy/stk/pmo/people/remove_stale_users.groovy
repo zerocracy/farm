@@ -25,8 +25,8 @@ import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.farm.props.Props
-import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
+import com.zerocracy.claims.ClaimIn
+import com.zerocracy.claims.ClaimOut
 import com.zerocracy.pmo.People
 import groovy.mock.interceptor.MockFor
 

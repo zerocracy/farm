@@ -43,13 +43,20 @@ final class RvClaims implements Item {
     private final Proc<Item> flush;
 
     /**
+     * Testing.
+     */
+    private final boolean testing;
+
+    /**
      * Ctor.
      * @param item Original item
      * @param tgr Trigger
+     * @param tst Testing
      */
-    RvClaims(final Item item, final Proc<Item> tgr) {
+    RvClaims(final Item item, final Proc<Item> tgr, final boolean tst) {
         this.origin = item;
         this.flush = tgr;
+        this.testing = tst;
     }
 
     @Override
@@ -68,7 +75,7 @@ final class RvClaims implements Item {
             .bootstrap("pm/claims")
             .nodes("/claims/claim").size();
         this.origin.close();
-        if (total > 0) {
+        if (total > 0 || !this.testing) {
             new IoCheckedProc<>(this.flush).exec(this);
         }
     }

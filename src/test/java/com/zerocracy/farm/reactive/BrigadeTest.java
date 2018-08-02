@@ -18,15 +18,16 @@ package com.zerocracy.farm.reactive;
 
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.Stakeholder;
+import com.zerocracy.claims.ClaimOut;
+import com.zerocracy.claims.ClaimsItem;
 import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.farm.MismatchException;
-import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.fake.FkStakeholder;
-import com.zerocracy.pm.ClaimOut;
-import com.zerocracy.pm.ClaimsItem;
+import com.zerocracy.farm.props.PropsFarm;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -60,7 +61,7 @@ public final class BrigadeTest {
                     "\n",
                     "import com.zerocracy.Project",
                     "import com.jcabi.xml.XML",
-                    "import com.zerocracy.pm.ClaimOut",
+                    "import com.zerocracy.claims.ClaimOut",
                     "import com.zerocracy.Farm",
                     "import com.zerocracy.entry.ClaimsOf",
                     "def exec(Project project, XML xml) {",
@@ -73,14 +74,15 @@ public final class BrigadeTest {
             )
         ).intValue();
         final Project project = new FkProject();
+        final Farm farm = new PropsFarm();
         new ClaimOut().type("just some fun")
-            .postTo(new ClaimsOf(new FkFarm(), project));
+            .postTo(new ClaimsOf(farm, project));
         final ClaimsItem claims = new ClaimsItem(project).bootstrap();
         final XML xml = claims.iterate().iterator().next();
         final Brigade brigade = new Brigade(
             new StkGroovy(
                 new InputOf(file), "brigadetest-parsesgroovy",
-                new FkFarm()
+                farm
             )
         );
         brigade.apply(project, xml);
@@ -94,14 +96,14 @@ public final class BrigadeTest {
     public void runsGroovyScript() throws Exception {
         final Project project = new FkProject();
         new ClaimOut().type("Hello").token("test;notoken").postTo(
-            new ClaimsOf(new FkFarm(), project)
+            new ClaimsOf(new PropsFarm(), project)
         );
         final ClaimsItem claims = new ClaimsItem(project).bootstrap();
         final XML xml = claims.iterate().iterator().next();
         final Brigade brigade = new Brigade(
             new StkRuntime(
                 com.zerocracy.stk.hello.class,
-                new FkFarm()
+                new PropsFarm()
             )
         );
         brigade.apply(project, xml);

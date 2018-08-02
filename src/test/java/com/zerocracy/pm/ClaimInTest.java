@@ -19,6 +19,7 @@ package com.zerocracy.pm;
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.zerocracy.claims.ClaimIn;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;

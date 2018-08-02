@@ -18,9 +18,9 @@ package com.zerocracy.bundles.notify_in_slack_without_user
 
 import com.jcabi.xml.XML
 import com.ullink.slack.simpleslackapi.SlackUser
-import com.zerocracy.entry.ExtSlack
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.entry.ExtSlack
 import com.zerocracy.radars.slack.SkSession
 import org.mockito.Mockito
 

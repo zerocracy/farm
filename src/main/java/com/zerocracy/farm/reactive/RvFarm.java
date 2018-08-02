@@ -23,6 +23,7 @@ import com.zerocracy.Project;
 import com.zerocracy.ShutUp;
 import com.zerocracy.Stakeholder;
 import com.zerocracy.farm.guts.Guts;
+import com.zerocracy.farm.props.Props;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -83,7 +84,7 @@ public final class RvFarm implements Farm {
      * @param bgd Stakeholders
      */
     public RvFarm(final Farm farm, final Brigade bgd) {
-        this(farm, bgd, Runtime.getRuntime().availableProcessors());
+        this(farm, bgd, 1);
     }
 
     /**
@@ -93,7 +94,7 @@ public final class RvFarm implements Farm {
      * @param threads How many threads to use
      */
     public RvFarm(final Farm farm, final Brigade bgd, final int threads) {
-        this(farm, new AsyncFlush(new DefaultFlush(farm, bgd), threads));
+        this(farm, new AsyncFlush(new DefaultFlush(bgd), threads));
     }
 
     /**
@@ -136,7 +137,10 @@ public final class RvFarm implements Farm {
         return new Guts(
             this.origin,
             () -> new Mapped<>(
-                pkt -> new RvProject(pkt, this.flush),
+                pkt -> new RvProject(
+                    pkt, this.flush,
+                    new Props(this.origin).has("//testing")
+                ),
                 this.origin.find(query)
             ),
             () -> new Directives()

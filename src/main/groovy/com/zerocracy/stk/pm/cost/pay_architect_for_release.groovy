@@ -24,8 +24,8 @@ import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
-import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.Footprint
+import com.zerocracy.claims.ClaimIn
+import com.zerocracy.claims.Footprint
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pm.time.Releases
 

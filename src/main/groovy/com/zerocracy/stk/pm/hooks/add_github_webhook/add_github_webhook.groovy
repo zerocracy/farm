@@ -24,9 +24,9 @@ import com.zerocracy.Project
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.farm.props.Props
-import com.zerocracy.pm.ClaimIn
 import org.cactoos.map.MapEntry
 import org.cactoos.map.MapOf
+import com.zerocracy.claims.ClaimIn
 
 // @todo #1226:30min Add property github.webhook.url to production
 //  environment. We need adding this property to production environment

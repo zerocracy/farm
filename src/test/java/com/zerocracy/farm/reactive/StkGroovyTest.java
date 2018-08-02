@@ -19,12 +19,12 @@ package com.zerocracy.farm.reactive;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.SoftException;
+import com.zerocracy.claims.ClaimIn;
+import com.zerocracy.claims.ClaimsItem;
 import com.zerocracy.farm.MismatchException;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.PropsFarm;
-import com.zerocracy.pm.ClaimIn;
-import com.zerocracy.pm.ClaimsItem;
 import com.zerocracy.pmo.Pmo;
 import org.cactoos.io.InputOf;
 import org.cactoos.text.TextOf;
@@ -50,7 +50,7 @@ public final class StkGroovyTest {
                     "\n",
                     "import com.zerocracy.Project",
                     "import com.jcabi.xml.XML",
-                    "import com.zerocracy.pm.ClaimOut",
+                    "import com.zerocracy.claims.ClaimOut",
                     "import com.zerocracy.farm.props.Props",
                     "import com.zerocracy.Farm",
                     "import com.zerocracy.entry.ClaimsOf",

@@ -22,7 +22,7 @@ import com.zerocracy.Item;
 import com.zerocracy.Par;
 import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
-import com.zerocracy.pm.ClaimOut;
+import com.zerocracy.claims.ClaimOut;
 import com.zerocracy.pmo.Catalog;
 import com.zerocracy.pmo.Pmo;
 import java.io.IOException;

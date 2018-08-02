@@ -21,9 +21,9 @@ import com.jcabi.github.Issue
 import com.jcabi.github.Repo
 import com.jcabi.github.Repos
 import com.jcabi.xml.XML
-import com.zerocracy.entry.ExtGithub
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.entry.ExtGithub
 import com.zerocracy.pmo.Agenda
 
 def exec(Project project, XML xml) {

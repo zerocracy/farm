@@ -21,12 +21,11 @@ import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.SoftException;
 import com.zerocracy.Stakeholder;
+import com.zerocracy.claims.ClaimOut;
+import com.zerocracy.claims.ClaimsItem;
 import com.zerocracy.entry.ClaimsOf;
-import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.PropsFarm;
-import com.zerocracy.pm.ClaimOut;
-import com.zerocracy.pm.ClaimsItem;
 import java.io.IOException;
 import org.cactoos.iterable.LengthOf;
 import org.hamcrest.MatcherAssert;
@@ -48,7 +47,7 @@ public final class StkSafeTest {
         final Stakeholder stk = Mockito.mock(Stakeholder.class);
         final Project project = new FkProject();
         new ClaimOut().type("hello you")
-            .postTo(new ClaimsOf(new FkFarm(), project));
+            .postTo(new ClaimsOf(new PropsFarm(), project));
         final XML claim = new ClaimsItem(project).iterate().iterator().next();
         Mockito.doThrow(new SoftException("")).when(stk).process(
             project, claim
@@ -62,7 +61,7 @@ public final class StkSafeTest {
         new ClaimOut()
             .type("Notify GitHub")
             .token("github;test/test#1")
-            .postTo(new ClaimsOf(new FkFarm(), project));
+            .postTo(new ClaimsOf(new PropsFarm(), project));
         final XML claim = new ClaimsItem(project).iterate().iterator().next();
         new StkSafe(
             "hello1",
@@ -79,7 +78,7 @@ public final class StkSafeTest {
     public void dontRepeatErrorClaims() throws Exception {
         final FkProject project = new FkProject();
         new ClaimOut().type("Error").postTo(
-            new ClaimsOf(new FkFarm(), project)
+            new ClaimsOf(new PropsFarm(), project)
         );
         final int before = new LengthOf(new ClaimsItem(project).iterate())
             .intValue();

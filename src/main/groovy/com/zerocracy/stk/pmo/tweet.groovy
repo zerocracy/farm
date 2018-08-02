@@ -23,7 +23,7 @@ import com.zerocracy.Project
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtTwitter
 import com.zerocracy.farm.Assume
-import com.zerocracy.pm.ClaimIn
+import com.zerocracy.claims.ClaimIn
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Tweet')

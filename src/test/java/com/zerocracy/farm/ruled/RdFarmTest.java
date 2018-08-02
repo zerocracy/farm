@@ -21,12 +21,13 @@ import com.jcabi.s3.fake.FkBucket;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.RunsInThreads;
+import com.zerocracy.claims.ClaimOut;
+import com.zerocracy.claims.ClaimsItem;
 import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.farm.S3Farm;
+import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.farm.strict.StrictFarm;
 import com.zerocracy.farm.sync.SyncFarm;
-import com.zerocracy.pm.ClaimOut;
-import com.zerocracy.pm.ClaimsItem;
 import com.zerocracy.pm.scope.Wbs;
 import com.zerocracy.pmo.Pmo;
 import java.nio.file.Files;
@@ -77,7 +78,10 @@ public final class RdFarmTest {
             Files.createTempDirectory("").toFile(),
             "some-bucket-pmo"
         );
-        try (final Farm farm = new RdFarm(new StrictFarm(new S3Farm(bucket)))) {
+        try (
+            final Farm farm =
+                new RdFarm(new StrictFarm(new PropsFarm(new S3Farm(bucket))))
+        ) {
             final Project pmo = new Pmo(farm);
             new ClaimOut().type("hello you").postTo(new ClaimsOf(farm));
             MatcherAssert.assertThat(

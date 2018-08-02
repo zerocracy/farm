@@ -14,37 +14,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pm;
+package com.zerocracy.claims;
 
-import com.jcabi.xml.XML;
-import java.io.IOException;
-import org.cactoos.Proc;
+import com.jcabi.log.Logger;
 
 /**
- * Claims.
+ * Claim out which doesn't throw exceptions on post.
  *
  * @since 1.0
- * @todo #1436:30min Add SQS claims implementation and integration test
- *  to verify that it's working, then use it for production code in
- *  `ClaimsOf` and use `ClaimsXml` for tests.
  */
-public interface Claims {
+public final class ClaimOutSafe {
 
     /**
-     * Take all available claims, process them and remove if
-     * processed successfully.
-     *
-     * @param proc Processor
-     * @param limit Claims limit to take
-     * @throws IOException If fails
+     * Origin claim.
      */
-    void take(Proc<XML> proc, int limit) throws IOException;
+    private final ClaimOut claim;
 
     /**
-     * Submit new claim.
+     * Ctor.
      *
-     * @param claim Claim to submit
-     * @throws IOException If fails
+     * @param origin Origin claim
      */
-    void submit(XML claim) throws IOException;
+    public ClaimOutSafe(final ClaimOut origin) {
+        this.claim = origin;
+    }
+
+    /**
+     * Post to project without exception.
+     *
+     * @param claims Claims
+     * @checkstyle IllegalCatchCheck (14 lines)
+     */
+    @SuppressWarnings({"overloads", "PMD.AvoidCatchingThrowable"})
+    public void postTo(final Claims claims) {
+        try {
+            this.claim.postTo(claims);
+        } catch (final Throwable err) {
+            Logger.error(
+                this,
+                "Failed to post claim: %[exception]s",
+                err
+            );
+        }
+    }
 }

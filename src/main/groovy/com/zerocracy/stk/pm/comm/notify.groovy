@@ -21,7 +21,7 @@ import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
-import com.zerocracy.pm.ClaimIn
+import com.zerocracy.claims.ClaimIn
 /**
  * Stakeholder for notifications. It can understand what channel
  * to use to notify by token (claim parameter)

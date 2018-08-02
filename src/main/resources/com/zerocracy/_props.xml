@@ -66,6 +66,10 @@ SOFTWARE.
     <secret>${s3.secret}</secret>
     <bucket>${s3.bucket}</bucket>
   </s3>
+  <sqs>
+    <key>${sqs.key}</key>
+    <secret>${sqs.secret}</secret>
+  </sqs>
   <mongo>
     <dbname>${mongo.dbname}</dbname>
     <host>${mongo.host}</host>

@@ -18,10 +18,9 @@ package com.zerocracy.farm.reactive;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
-import com.zerocracy.Farm;
 import com.zerocracy.Project;
-import com.zerocracy.entry.ClaimsOf;
-import com.zerocracy.pm.ClaimIn;
+import com.zerocracy.claims.ClaimIn;
+import com.zerocracy.claims.ClaimsXml;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -52,17 +51,10 @@ final class DefaultFlush implements Flush {
     private final IoCheckedBiFunc<Project, XML, Integer> brigade;
 
     /**
-     * Farm.
-     */
-    private final Farm frm;
-
-    /**
      * Ctor.
-     * @param farm Farm
      * @param bgd Brigade
      */
-    DefaultFlush(final Farm farm, final BiFunc<Project, XML, Integer> bgd) {
-        this.frm = farm;
+    DefaultFlush(final BiFunc<Project, XML, Integer> bgd) {
         this.brigade = new IoCheckedBiFunc<>(bgd);
     }
 
@@ -70,7 +62,7 @@ final class DefaultFlush implements Flush {
     @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     public void exec(final Project project) throws IOException {
         final AtomicInteger total = new AtomicInteger();
-        new ClaimsOf(this.frm, project).take(
+        new ClaimsXml(project).take(
             xml -> this.process(project, xml, total),
             DefaultFlush.LIMIT
         );

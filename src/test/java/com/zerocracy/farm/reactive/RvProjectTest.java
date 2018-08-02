@@ -20,11 +20,11 @@ import com.jcabi.aspects.Tv;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.RunsInThreads;
+import com.zerocracy.claims.ClaimOut;
+import com.zerocracy.claims.ClaimsItem;
 import com.zerocracy.entry.ClaimsOf;
-import com.zerocracy.farm.fake.FkFarm;
+import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.farm.sync.SyncFarm;
-import com.zerocracy.pm.ClaimOut;
-import com.zerocracy.pm.ClaimsItem;
 import com.zerocracy.pmo.Pmo;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.list.SolidList;
@@ -43,17 +43,17 @@ public final class RvProjectTest {
     @Test
     public void closesClaims() throws Exception {
         final AtomicInteger done = new AtomicInteger();
-        try (final Farm farm = new SyncFarm(new FkFarm())) {
+        try (final Farm farm = new SyncFarm(new PropsFarm())) {
             final Project raw = new Pmo(farm);
             final Flush def = new DefaultFlush(
-                farm, new Brigade(
+                new Brigade(
                     new SolidList<>(
                         (project, xml) -> done.incrementAndGet()
                     )
                 )
             );
             try (final Flush flush = new AsyncFlush(def)) {
-                final Project project = new RvProject(raw, flush);
+                final Project project = new RvProject(raw, flush, true);
                 final ClaimsItem claims = new ClaimsItem(project).bootstrap();
                 claims.add(new ClaimOut().type("hello A").token("test;t1"));
                 claims.add(new ClaimOut().type("hello B").token("test;t2"));
@@ -70,17 +70,17 @@ public final class RvProjectTest {
     @Test
     public void closesClaimsInThreads() throws Exception {
         final AtomicInteger total = new AtomicInteger(Tv.FIFTY);
-        try (final Farm farm = new SyncFarm(new FkFarm())) {
+        try (final Farm farm = new SyncFarm(new PropsFarm())) {
             final Project raw = new Pmo(farm);
             final Flush def = new DefaultFlush(
-                farm, new Brigade(
+                new Brigade(
                     new SolidList<>(
                         (project, xml) -> total.decrementAndGet()
                     )
                 )
             );
             try (final Flush flush = new AsyncFlush(def)) {
-                final Project project = new RvProject(raw, flush);
+                final Project project = new RvProject(raw, flush, true);
                 MatcherAssert.assertThat(
                     input -> {
                         new ClaimOut()

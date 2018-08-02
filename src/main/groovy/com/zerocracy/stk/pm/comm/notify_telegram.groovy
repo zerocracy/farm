@@ -21,7 +21,7 @@ import com.zerocracy.entry.ExtTelegram
 import com.zerocracy.farm.Assume
 import com.zerocracy.Farm
 import com.zerocracy.Project
-import com.zerocracy.pm.ClaimIn
+import com.zerocracy.claims.ClaimIn
 import org.cactoos.Proc
 import org.cactoos.func.RetryFunc
 import org.telegram.telegrambots.api.methods.send.SendMessage

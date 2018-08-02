@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pm;
+package com.zerocracy.claims;
 
 import com.jcabi.xml.XML;
 import java.util.Date;
@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
+import org.cactoos.text.UncheckedText;
 import org.cactoos.time.DateOf;
 
 /**
@@ -86,6 +87,10 @@ public final class ClaimIn {
         }
         out.params(this.params());
         out.param("cause", this.cid());
+        out.param(
+            "_parent_sig",
+            new UncheckedText(new ClaimSignature(this.xml)).asString()
+        );
         final StringBuilder flow = new StringBuilder("");
         if (this.params().containsKey("flow")) {
             flow.append(this.param("flow")).append("; ");

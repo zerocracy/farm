@@ -19,18 +19,21 @@ package com.zerocracy.entry;
 import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
-import com.zerocracy.pm.Claims;
-import com.zerocracy.pm.ClaimsXml;
+import com.zerocracy.claims.Claims;
+import com.zerocracy.claims.ClaimsQueueUrl;
+import com.zerocracy.claims.ClaimsSqs;
+import com.zerocracy.claims.ClaimsXml;
+import com.zerocracy.farm.props.Props;
 import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
-import org.cactoos.Proc;
 import org.cactoos.func.IoCheckedBiFunc;
-import org.cactoos.func.StickyBiFunc;
+import org.cactoos.func.SolidBiFunc;
 
 /**
  * Claims for farm.
  *
  * @since 1.0
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class ClaimsOf implements Claims {
 
@@ -39,8 +42,21 @@ public final class ClaimsOf implements Claims {
      */
     private static final IoCheckedBiFunc<Farm, Project, Claims> SINGLETON =
         new IoCheckedBiFunc<>(
-            new StickyBiFunc<>(
-                (farm, project) -> new ClaimsXml(project)
+            new SolidBiFunc<>(
+                (farm, project) -> {
+                    final Props props = new Props(farm);
+                    final Claims claims;
+                    if (props.has("//sqs")) {
+                        claims = new ClaimsSqs(
+                            new ExtSqs(farm).value(),
+                            new ClaimsQueueUrl(farm).asString(),
+                            project
+                        );
+                    } else {
+                        claims = new ClaimsXml(project);
+                    }
+                    return new ValidClaims(claims);
+                }
             )
         );
 
@@ -72,11 +88,6 @@ public final class ClaimsOf implements Claims {
     public ClaimsOf(final Farm farm, final Project project) {
         this.frm = farm;
         this.proj = project;
-    }
-
-    @Override
-    public void take(final Proc<XML> proc, final int limit) throws IOException {
-        ClaimsOf.SINGLETON.apply(this.frm, this.proj).take(proc, limit);
     }
 
     @Override

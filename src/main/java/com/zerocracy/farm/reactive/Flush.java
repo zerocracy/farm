@@ -26,12 +26,12 @@ import org.xembly.Directive;
  * The flush.
  *
  * @since 1.0
- * @todo #773:30min Use long-polling for claims instead of reactions.
- *  We are going to split application into web part and worker parts,
- *  so we have to submit new claims in both parts, but receive them only in
- *  worker parts via claims polling. Worker app will not be physically
- *  connected to web part, so web part will not be able to notify worker app
- *  about new claims as now via `Flush`es.
+ * @todo #1464:30min Get rid of flushes and refactor the code to
+ *  use similar logic for unit-tests and web app. Now web-app logic
+ *  located in ClaimsRoutine class + com.zerocracy.claims.proc classes,
+ *  ClaimsRoutine was designed to use claims long-polling with Amazon SQS,
+ *  but unit tests uses claims.xml files and Flush implementations with
+ *  RvFarm class.
  */
 interface Flush extends Proc<Project>, Closeable, Scalar<Iterable<Directive>> {
 }
