@@ -63,11 +63,11 @@ public final class TerminatorTest {
             thread.join();
             Mockito.verify(
                 lock,
-                Mockito.times(2)
+                Mockito.timeout(TimeUnit.SECONDS.toMillis(Tv.FIVE)).times(2)
             ).tryLock(Mockito.anyLong(), Mockito.any());
             Mockito.verify(
                 lock,
-                Mockito.times(1)
+                Mockito.timeout(TimeUnit.SECONDS.toMillis(Tv.FIVE)).times(1)
             ).unlock();
             MatcherAssert.assertThat(
                 interrupted.get(), Matchers.is(true)
