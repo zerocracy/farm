@@ -19,7 +19,6 @@ package com.zerocracy.claims;
 import com.jcabi.xml.XML;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
-import org.cactoos.Proc;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -30,6 +29,7 @@ import org.junit.Test;
  * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class ClaimSignatureTest {
     @Test
     public void computesHash() throws Exception {
@@ -152,7 +152,7 @@ public final class ClaimSignatureTest {
          *
          * @param claim Source claim
          */
-        private ClaimToXml(final ClaimOut claim) {
+        ClaimToXml(final ClaimOut claim) {
             this.src = claim;
         }
 
@@ -164,16 +164,9 @@ public final class ClaimSignatureTest {
          */
         public XML asXml() throws IOException {
             final AtomicReference<XML> xml = new AtomicReference<>();
-            this.src.postTo(new Claims() {
-                @Override
-                public void take(final Proc<XML> proc, final int limit) {
-                    throw new IllegalStateException("Not supported");
-                }
-                @Override
-                public void submit(final XML claim) {
-                    xml.set(claim.nodes("//claim").get(0));
-                }
-            });
+            this.src.postTo(
+                claim -> xml.set(claim.nodes("//claim").get(0))
+            );
             return xml.get();
         }
     }

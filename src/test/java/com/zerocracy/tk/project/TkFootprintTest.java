@@ -20,12 +20,12 @@ import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
-import com.zerocracy.entry.ClaimsOf;
-import com.zerocracy.farm.fake.FkFarm;
-import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.claims.ClaimOut;
 import com.zerocracy.claims.ClaimsItem;
 import com.zerocracy.claims.Footprint;
+import com.zerocracy.entry.ClaimsOf;
+import com.zerocracy.farm.fake.FkFarm;
+import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.tk.RqWithUser;
 import com.zerocracy.tk.TkApp;
 import org.hamcrest.MatcherAssert;
@@ -71,7 +71,7 @@ public final class TkFootprintTest {
         new ClaimOut().type("Hello").postTo(new ClaimsOf(farm, project));
         final XML xml = new ClaimsItem(project).iterate().iterator().next();
         try (final Footprint footprint = new Footprint(farm, project)) {
-            footprint.open(xml);
+            footprint.open(xml, "test");
             footprint.close(xml);
             MatcherAssert.assertThat(
                 new RsPrint(

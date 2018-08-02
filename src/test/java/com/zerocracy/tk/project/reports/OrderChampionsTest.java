@@ -18,12 +18,12 @@ package com.zerocracy.tk.project.reports;
 
 import com.jcabi.xml.XML;
 import com.zerocracy.Project;
-import com.zerocracy.entry.ClaimsOf;
-import com.zerocracy.farm.fake.FkProject;
-import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.claims.ClaimOut;
 import com.zerocracy.claims.ClaimsItem;
 import com.zerocracy.claims.Footprint;
+import com.zerocracy.entry.ClaimsOf;
+import com.zerocracy.farm.fake.FkProject;
+import com.zerocracy.farm.props.PropsFarm;
 import java.time.Instant;
 import org.bson.Document;
 import org.hamcrest.MatcherAssert;
@@ -47,7 +47,7 @@ public final class OrderChampionsTest {
             .postTo(new ClaimsOf(new PropsFarm(), pkt));
         final XML xml = new ClaimsItem(pkt).iterate().iterator().next();
         try (final Footprint footprint = new Footprint(new PropsFarm(), pkt)) {
-            footprint.open(xml);
+            footprint.open(xml, "test");
             final Iterable<Document> docs = footprint.collection().aggregate(
                 new OrderChampions().bson(
                     pkt,

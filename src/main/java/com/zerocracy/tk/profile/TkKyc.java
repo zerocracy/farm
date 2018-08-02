@@ -18,8 +18,8 @@ package com.zerocracy.tk.profile;
 
 import com.zerocracy.Farm;
 import com.zerocracy.Par;
-import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.claims.ClaimOut;
+import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.pmo.People;
 import com.zerocracy.pmo.Pmo;

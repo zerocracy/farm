@@ -101,7 +101,10 @@ final class FtItem implements Item {
             }
             for (final XML claim : after.nodes("//claim[type!='Ping' ]")) {
                 if (!FtItem.exists(before, claim)) {
-                    footprint.open(claim);
+                    footprint.open(
+                        claim,
+                        "testFT"
+                    );
                 }
             }
         }

@@ -18,8 +18,8 @@ package com.zerocracy.farm.reactive;
 
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
-import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.claims.ClaimsItem;
+import com.zerocracy.farm.props.PropsFarm;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -38,7 +38,7 @@ public final class DefaultFlushTest {
         final Farm farm = new PropsFarm();
         final Project project = farm.find("@id='DFLTFLUSHT'")
             .iterator().next();
-        try (final Flush flush = new DefaultFlush(farm, new Brigade())) {
+        try (final Flush flush = new DefaultFlush(new Brigade())) {
             flush.exec(project);
         }
         MatcherAssert.assertThat(

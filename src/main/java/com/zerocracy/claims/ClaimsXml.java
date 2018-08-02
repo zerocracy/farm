@@ -52,7 +52,13 @@ public final class ClaimsXml implements Claims {
         this.pkt = project;
     }
 
-    @Override
+    /**
+     * Take claims to process them.
+     *
+     * @param proc Proc func
+     * @param limit Limit
+     * @throws IOException If fails
+     */
     public void take(final Proc<XML> proc, final int limit)
         throws IOException {
         final ClaimsItem item = new ClaimsItem(this.pkt).bootstrap();

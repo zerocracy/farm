@@ -58,7 +58,7 @@ public final class FootprintTest {
         try (
             final Footprint footprint = FootprintTest.footprint(farm, project)
         ) {
-            footprint.open(xml);
+            footprint.open(xml, "test");
             footprint.close(xml);
             footprint.cleanup(new Date());
             MatcherAssert.assertThat(
@@ -92,7 +92,7 @@ public final class FootprintTest {
                         final Footprint footprint =
                             FootprintTest.footprint(farm, project)
                     ) {
-                        footprint.open(xml);
+                        footprint.open(xml, "test2");
                         footprint.close(xml);
                         return footprint.collection().find(
                             Filters.eq("project", project.pid())
@@ -115,7 +115,7 @@ public final class FootprintTest {
         try (
             final Footprint footprint = FootprintTest.footprint(farm, project)
         ) {
-            footprint.open(xml);
+            footprint.open(xml, "test3");
             footprint.close(xml);
             MatcherAssert.assertThat(
                 footprint.cleanup(
@@ -129,6 +129,24 @@ public final class FootprintTest {
                 ),
                 Matchers.emptyIterable()
             );
+        }
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void rejectDuplicates() throws Exception {
+        final Farm farm = new PropsFarm();
+        final Project project = farm.find("@id='FOOTPRNTZ'")
+            .iterator().next();
+        new ClaimOut().type("Hello").postTo(new ClaimsOf(farm, project));
+        new ClaimOut().type("Hello").postTo(new ClaimsOf(farm, project));
+        final XML first = new ClaimsItem(project).iterate().iterator().next();
+        final XML second = new ClaimsItem(project).iterate().iterator().next();
+        try (
+            final Footprint footprint = FootprintTest.footprint(farm, project)
+        ) {
+            final String signature = "sign";
+            footprint.open(first, signature);
+            footprint.open(second, signature);
         }
     }
 

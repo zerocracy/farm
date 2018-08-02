@@ -36,6 +36,7 @@ import org.cactoos.scalar.IoCheckedScalar;
  * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class ClaimsSqs implements Claims {
 
     /**
@@ -99,6 +100,12 @@ public final class ClaimsSqs implements Claims {
                 .withDataType("String")
                 .withStringValue(signature)
         );
+        attrs.put(
+            "project",
+            new MessageAttributeValue()
+                .withDataType("String")
+                .withStringValue(this.project.pid())
+        );
         msg.setMessageDeduplicationId(
             String.format(
                 "%s:%s",
@@ -108,6 +115,5 @@ public final class ClaimsSqs implements Claims {
         );
         msg.setMessageAttributes(attrs);
         this.sqs.sendMessage(msg);
-        new ClaimsItem(this.project).bootstrap();
     }
 }

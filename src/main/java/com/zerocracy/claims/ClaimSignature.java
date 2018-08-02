@@ -17,7 +17,6 @@
 package com.zerocracy.claims;
 
 import com.jcabi.xml.XML;
-import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -54,15 +53,15 @@ public final class ClaimSignature implements Text {
     }
 
     @Override
-    public String asString() throws IOException {
-        final ClaimIn claim = new ClaimIn(this.xml);
+    public String asString() {
         final MessageDigest digest;
         try {
             digest = MessageDigest.getInstance("SHA-256");
         } catch (final NoSuchAlgorithmException err) {
-            throw new RuntimeException("SHA-256 algorithm required", err);
+            throw new IllegalStateException("SHA-256 algorithm required", err);
         }
         final Charset charset = StandardCharsets.UTF_8;
+        final ClaimIn claim = new ClaimIn(this.xml);
         digest.update(claim.type().getBytes(charset));
         if (claim.hasToken()) {
             digest.update(claim.token().getBytes(charset));

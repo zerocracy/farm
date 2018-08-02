@@ -19,7 +19,6 @@ package com.zerocracy.entry;
 import com.jcabi.xml.XML;
 import com.zerocracy.claims.Claims;
 import java.io.IOException;
-import org.cactoos.Proc;
 
 /**
  * Validation decorator for claims.
@@ -34,16 +33,6 @@ import org.cactoos.Proc;
  * @checkstyle MagicNumberCheck (500 lines)
  */
 public final class ValidClaims implements Claims {
-
-    /**
-     * Can't take more than 10 claims.
-     */
-    private static final int MAX_LIMIT = 10;
-
-    /**
-     * Can't try to take less than 1 claim.
-     */
-    private static final int MIN_LIMIT = 1;
 
     /**
      * Max claim size is 256 KB.
@@ -62,22 +51,6 @@ public final class ValidClaims implements Claims {
      */
     public ValidClaims(final Claims claims) {
         this.claims = claims;
-    }
-
-    @Override
-    public void take(final Proc<XML> proc, final int limit)
-        throws IOException {
-        if (limit < ValidClaims.MIN_LIMIT || limit > ValidClaims.MAX_LIMIT) {
-            throw new IllegalArgumentException(
-                String.format(
-                    "Invalid limit value: %d, should be >= %d and <= %d",
-                    limit,
-                    ValidClaims.MIN_LIMIT,
-                    ValidClaims.MAX_CLAIM_LENGTH
-                )
-            );
-        }
-        this.claims.take(proc, limit);
     }
 
     @Override

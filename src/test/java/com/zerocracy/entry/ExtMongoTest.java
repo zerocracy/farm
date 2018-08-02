@@ -24,14 +24,15 @@ import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Project;
 import com.zerocracy.RunsInThreads;
+import com.zerocracy.claims.ClaimOut;
+import com.zerocracy.claims.ClaimsItem;
+import com.zerocracy.claims.Footprint;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.farm.sync.SyncFarm;
-import com.zerocracy.claims.ClaimOut;
-import com.zerocracy.claims.ClaimsItem;
-import com.zerocracy.claims.Footprint;
 import com.zerocracy.pmo.Pmo;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.bson.BsonDocument;
 import org.bson.BsonString;
@@ -90,7 +91,7 @@ public final class ExtMongoTest {
         final MongoClient mongo = new ExtMongo(farm).value();
         final String pid = "12MONGO89";
         try (final Footprint footprint = new Footprint(mongo, pid)) {
-            footprint.open(xml);
+            footprint.open(xml, "test");
             footprint.close(xml);
             MatcherAssert.assertThat(
                 footprint.collection().find(Filters.eq("project", pid)),
@@ -119,7 +120,7 @@ public final class ExtMongoTest {
                                 "<type>Hi there</type></claim>"
                             )
                         ).nodes("/claim").get(0);
-                        footprint.open(xml);
+                        footprint.open(xml, UUID.randomUUID().toString());
                         footprint.close(xml);
                         return footprint.collection()
                             .find(Filters.eq("project", pid))
