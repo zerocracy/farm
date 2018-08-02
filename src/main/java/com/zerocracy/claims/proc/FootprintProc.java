@@ -54,26 +54,31 @@ public final class FootprintProc implements Proc<Message> {
 
     @Override
     public void exec(final Message input) throws Exception {
-        final Footprint footprint = new Footprint(
-            this.farm, new SqsProject(this.farm, input)
-        );
-        final XML xml = new XMLDocument(input.getBody())
-            .nodes("/claim").get(0);
-        Logger.info(
-            this, "Processing message %s", input.getMessageId()
-        );
-        footprint.open(
-            xml, input.getMessageAttributes().get("signature").getStringValue()
-        );
-        Logger.info(
-            this, "Claim was opened for message %s",
-            input.getMessageId()
-        );
-        this.origin.exec(input);
-        footprint.close(xml);
-        Logger.info(
-            this, "Claim was closed for message %s",
-            input.getMessageId()
-        );
+        try (
+            final Footprint footprint = new Footprint(
+                this.farm, new SqsProject(this.farm, input)
+            )
+        ) {
+            final XML xml = new XMLDocument(input.getBody())
+                .nodes("/claim").get(0);
+            Logger.info(
+                this, "Processing message %s",
+                input.getMessageId()
+            );
+            footprint.open(
+                xml,
+                input.getMessageAttributes().get("signature").getStringValue()
+            );
+            Logger.info(
+                this, "Claim was opened for message %s",
+                input.getMessageId()
+            );
+            this.origin.exec(input);
+            footprint.close(xml);
+            Logger.info(
+                this, "Claim was closed for message %s",
+                input.getMessageId()
+            );
+        }
     }
 }
