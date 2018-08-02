@@ -26,8 +26,10 @@ def exec(Project project, XML xml) {
   MatcherAssert.assertThat(
     ((ExtTwitter.Retrievable) new ExtTwitter(binding.variables.farm)
         .value()).tweets(),
-    Matchers.contains(
-     'a contribution of $1 from http://github.com/carlosmiranda'
+    Matchers.hasItem(
+      Matchers.containsString(
+      'a contribution of $1.00 from http://github.com/carlosmiranda'
+      )
     )
   )
 }
