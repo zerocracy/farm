@@ -17,7 +17,6 @@
 package com.zerocracy.stk.internal
 
 import com.jcabi.log.Logger
-import com.jcabi.s3.Bucket
 import com.jcabi.s3.fake.FkBucket
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
@@ -26,21 +25,14 @@ import com.zerocracy.entry.ExtBucket
 import com.zerocracy.entry.HeapDump
 import com.zerocracy.farm.Assume
 import com.zerocracy.farm.props.Props
-
-import java.nio.file.Path
 import java.nio.file.Paths
 
 def exec(Project project, XML xml) {
-  /**
-   * @todo #766:30min Add a unit test for this stakeholder using fake S3 storage.
-   *  Maybe you will need to modify the stakeholder itself so that is
-   *  allows using fake S3 storage.
-   */
   new Assume(project, xml).isPmo()
   new Assume(project, xml).type('Ping hourly')
   Farm farm = binding.variables.farm
   if (new Props(farm).has('//testing')) {
-    Logger.debug(this, 'Saving test heap')
+    Logger.info(this, 'Saving test heap')
     new HeapDump(
       new FkBucket(
         'target/testing-bundles/update_heapdump/bucket',
@@ -48,7 +40,7 @@ def exec(Project project, XML xml) {
       ),
       '',
       Paths.get('target/testing-bundles/update_heapdump/'),
-      'dump'
+      'heap'
     ).save()
   } else {
     try {

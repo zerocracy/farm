@@ -17,7 +17,6 @@
 package com.zerocracy.bundles.update_heapdump
 
 import com.jcabi.xml.XML
-import com.zerocracy.Farm
 import com.zerocracy.Project
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -25,11 +24,10 @@ import org.cactoos.io.LengthOf
 import org.cactoos.io.TeeInput
 
 def exec(Project project, XML xml) {
-  Farm farm = binding.variables.farm
   new LengthOf(
     new TeeInput(
-      "This is a dump file for testing purposes",
-      Files.createFile(Paths.get('target/testing-bundles/update_heapdump/dump'))
+      'This is a heap file for testing purposes',
+      Files.createFile(Paths.get('target/testing-bundles/update_heapdump/heap'))
     )
   ).intValue()
 }

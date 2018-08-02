@@ -16,19 +16,22 @@
  */
 package com.zerocracy.bundles.update_heapdump
 
-import com.jcabi.s3.Bucket
+import com.jcabi.s3.Ocket
 import com.jcabi.s3.fake.FkBucket
 import com.jcabi.xml.XML
-import com.zerocracy.Farm
 import com.zerocracy.Project
-import com.zerocracy.entry.HeapDump
-import com.zerocracy.pmo.Catalog
 import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
+import org.hamcrest.core.IsEqual
 
 def exec(Project project, XML xml) {
-    Bucket bucket = new FkBucket(
+  MatcherAssert.assertThat(
+    'Dumped wrong value to bucket',
+    new Ocket.Text(
+      new FkBucket(
         'target/testing-bundles/update_heapdump/bucket',
         'dumpbucket'
-    ).list('')
+      ).ocket('heap')
+    ).read(),
+    new IsEqual<>('This is a heap file for testing purposes')
+  )
 }
