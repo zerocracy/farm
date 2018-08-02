@@ -50,7 +50,7 @@ public final class SentryProc implements Proc<Message> {
      * Ctor.
      *
      * @param sentry Sentry
-     * @param origin origin proc
+     * @param origin Origin proc
      */
     public SentryProc(final SafeSentry sentry, final Proc<Message> origin) {
         this.sentry = sentry;

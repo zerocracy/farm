@@ -55,7 +55,7 @@ public final class ExtMongobee {
     public void apply() throws IOException {
         final Props props = new Props(this.farm);
         try (final MongoClient client = new ExtMongo(this.farm).value()) {
-            final String dbname = props.get("//mongo/dbname", "");
+            final String dbname = props.get("//mongo/dbname", "footprint");
             final Version version = Version.valueOf(
                 client.getDatabase(dbname).runCommand(
                     new BsonDocument("buildinfo", new BsonString(""))

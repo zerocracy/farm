@@ -42,6 +42,7 @@ import org.junit.Test;
  *
  * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class BrigadeProcTest {
     @Test
@@ -98,7 +99,7 @@ public final class BrigadeProcTest {
          * @param pid Project id matcher
          * @param claim Claim matcher
          */
-        private AssertClaim(final Matcher<String> pid,
+        AssertClaim(final Matcher<String> pid,
             final Matcher<XML> claim) {
             this.pid = pid;
             this.claim = claim;
