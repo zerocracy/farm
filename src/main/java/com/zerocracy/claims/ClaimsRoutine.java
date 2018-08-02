@@ -48,7 +48,7 @@ public final class ClaimsRoutine implements Runnable, Closeable {
     /**
      * Messages limit.
      */
-    private static final int LIMIT = 10;
+    private static final int LIMIT = 4;
 
     /**
      * Delay to fetch claims.
