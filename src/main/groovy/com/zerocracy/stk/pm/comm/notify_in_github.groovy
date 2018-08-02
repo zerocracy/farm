@@ -50,12 +50,12 @@ def exec(Project project, XML xml) {
   }
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
-  if (new Quota(github).over()) {
-    // @todo #1390:30min Must log using warning level when quota is over, this
-    //  way warning message will also be sent to Sentry to warn us about the
-    //  quota.
-    //  PR https://github.com/zerocracy/farm/pull/1501 has an example of such
-    //  log implemented for AcceptInvitations.
+  // @todo #1390:30min Adjust call to Quota.over with proper message and
+  //  create test case for the scenario it returns true.
+  //  PR https://github.com/zerocracy/farm/pull/1501 introduced this change
+  //  on Quota.over and has example of its adjustment and test for
+  //  AcceptInvitations.
+  if (new Quota(github).over(null)) {
     claim.copy().until(TimeUnit.MINUTES.toSeconds(5L)).postTo(new ClaimsOf(farm, project))
     return
   }

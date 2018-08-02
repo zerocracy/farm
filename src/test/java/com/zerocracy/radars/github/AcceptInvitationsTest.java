@@ -75,18 +75,9 @@ public final class AcceptInvitationsTest {
             logger.removeAppender(testappender);
         }
         MatcherAssert.assertThat(
-            testappender.logevents, Matchers.hasItem(
-                Matchers.allOf(
-                    Matchers.hasProperty(
-                        "message", Matchers.equalTo(
-                            // @checkstyle LineLength (1 line)
-                            "GitHub API is over quota. Cancelling AcceptInvitations execution."
-                        )
-                    ),
-                    Matchers.hasProperty(
-                        "level", Matchers.equalTo(Level.WARN)
-                    )
-                )
+            testappender.warns, Matchers.hasItem(
+                // @checkstyle LineLength (1 line)
+                "GitHub API is over quota. Cancelling AcceptInvitations execution."
             )
         );
     }
@@ -96,10 +87,9 @@ public final class AcceptInvitationsTest {
      */
     private static class TestAppender extends AppenderSkeleton {
         /**
-         * Log events.
+         * Warn messages logged.
          */
-        private final List<LoggingEvent> logevents =
-            new CopyOnWriteArrayList<>();
+        private final List<String> warns = new CopyOnWriteArrayList<>();
 
         @Override
         public boolean requiresLayout() {
@@ -113,7 +103,9 @@ public final class AcceptInvitationsTest {
 
         @Override
         protected void append(final LoggingEvent event) {
-            this.logevents.add(event);
+            if (event.getLevel() == Level.WARN) {
+                this.warns.add(event.getMessage().toString());
+            }
         }
     }
 }
