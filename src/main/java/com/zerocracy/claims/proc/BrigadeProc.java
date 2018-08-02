@@ -28,7 +28,6 @@ import com.zerocracy.farm.reactive.Brigade;
 import com.zerocracy.farm.reactive.StkRuntime;
 import groovy.lang.Script;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.Proc;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.text.JoinedText;
@@ -53,11 +52,6 @@ public final class BrigadeProc implements Proc<Message> {
      * Farm.
      */
     private final Farm farm;
-
-    /**
-     * Counter.
-     */
-    private final AtomicInteger idx;
 
     /**
      * Ctor.
@@ -92,7 +86,6 @@ public final class BrigadeProc implements Proc<Message> {
     public BrigadeProc(final Brigade brigade, final Farm farm) {
         this.brigade = brigade;
         this.farm = farm;
-        this.idx = new AtomicInteger();
     }
 
     @Override
@@ -105,8 +98,8 @@ public final class BrigadeProc implements Proc<Message> {
         final ClaimIn claim = new ClaimIn(xml);
         Logger.info(
             this,
-            "Processing #%d:\"%s/%d\" at \"%s\"",
-            this.idx.incrementAndGet(), claim.type(),
+            "Processing message %d:\"%s/%d\" at \"%s\"",
+            input.getMessageId(), claim.type(),
             claim.cid(), project.pid()
         );
         final int total = this.brigade.apply(project, xml);
@@ -120,8 +113,8 @@ public final class BrigadeProc implements Proc<Message> {
         }
         Logger.info(
             this,
-            "Seen #%d:\"%s/%d\" at \"%s\" by %d stk, %[ms]s [%s]%s",
-            this.idx.get(), claim.type(), claim.cid(),
+            "Seen message %s:\"%s/%d\" at \"%s\" by %d stk, %[ms]s [%s]%s",
+            input.getMessageId(), claim.type(), claim.cid(),
             project.pid(),
             total,
             System.currentTimeMillis() - start,
