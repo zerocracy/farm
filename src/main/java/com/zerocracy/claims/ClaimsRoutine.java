@@ -18,6 +18,7 @@ package com.zerocracy.claims;
 
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.model.Message;
+import com.amazonaws.services.sqs.model.MessageAttributeValue;
 import com.amazonaws.services.sqs.model.ReceiveMessageRequest;
 import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseRunnable;
@@ -25,7 +26,11 @@ import com.jcabi.log.VerboseThreads;
 import com.zerocracy.Farm;
 import com.zerocracy.entry.ExtSqs;
 import java.io.Closeable;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -47,7 +52,7 @@ public final class ClaimsRoutine implements Runnable, Closeable {
     /**
      * Messages limit.
      */
-    private static final int LIMIT = 8;
+    private static final int LIMIT = 6;
 
     /**
      * Delay to fetch claims.
@@ -103,13 +108,28 @@ public final class ClaimsRoutine implements Runnable, Closeable {
             .asString();
         final List<Message> messages = sqs.receiveMessage(
             new ReceiveMessageRequest(queue)
-                .withMessageAttributeNames("project", "signature")
+                .withMessageAttributeNames("project", "signature", "ping")
                 .withMaxNumberOfMessages(ClaimsRoutine.LIMIT)
         ).getMessages();
+        final List<Message> merged = new LinkedList<>();
+        final Collection<String> pings = new HashSet<>(1);
+        for (final Message message : messages) {
+            final Map<String, MessageAttributeValue> attr =
+                message.getMessageAttributes();
+            final String pid = attr.get("project").getStringValue();
+            final boolean ping = attr.containsKey("ping");
+            if (ping && !pings.contains(pid)) {
+                pings.add(pid);
+                merged.add(message);
+            } else if (!ping) {
+                merged.add(message);
+            }
+        }
         Logger.info(
-            this, "received %d messages from SQS", messages.size()
+            this, "received %d (actual %d) messages from SQS",
+            messages.size(), merged.size()
         );
-        new UncheckedScalar<>(new And(this.proc, messages)).value();
+        new UncheckedScalar<>(new And(this.proc, merged)).value();
     }
 
     @Override

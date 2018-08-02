@@ -106,6 +106,15 @@ public final class ClaimsSqs implements Claims {
                 .withDataType("String")
                 .withStringValue(this.project.pid())
         );
+        final String type = claim.xpath("/claim/type/text()").get(0);
+        if ("ping".equalsIgnoreCase(type)) {
+            attrs.put(
+                "ping",
+                new MessageAttributeValue()
+                    .withDataType("String")
+                    .withStringValue(Boolean.toString(true))
+            );
+        }
         msg.setMessageDeduplicationId(
             String.format(
                 "%s:%s",
