@@ -98,7 +98,7 @@ public final class BrigadeProc implements Proc<Message> {
         final ClaimIn claim = new ClaimIn(xml);
         Logger.info(
             this,
-            "Processing message %d:\"%s/%d\" at \"%s\"",
+            "Processing message %s:\"%s/%d\" at \"%s\"",
             input.getMessageId(), claim.type(),
             claim.cid(), project.pid()
         );
