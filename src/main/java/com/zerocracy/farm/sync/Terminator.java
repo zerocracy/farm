@@ -121,12 +121,12 @@ final class Terminator implements Closeable, Scalar<Iterable<Directive>> {
      * @param project The project
      * @param file The file
      * @param lock The lock
-     * @param threadref A weak reference for the Thread that acquired the lock
+     * @param ref A weak reference for the Thread that acquired the lock
      * @return The runnable
      * @checkstyle ParameterNumber (4 lines)
      */
     private Runnable killer(final Project project, final String file,
-        final Lock lock, final WeakReference<Thread> threadref) {
+        final Lock lock, final WeakReference<Thread> ref) {
         final Exception location = new IllegalStateException("Here!");
         return new RunnableOf<Object>(
             input -> {
@@ -134,7 +134,7 @@ final class Terminator implements Closeable, Scalar<Iterable<Directive>> {
                     lock.unlock();
                     this.killers.remove(project);
                 } else {
-                    final Thread thread = threadref.get();
+                    final Thread thread = ref.get();
                     if (thread == null) {
                         Logger.warn(
                             this,
@@ -166,7 +166,7 @@ final class Terminator implements Closeable, Scalar<Iterable<Directive>> {
                         thread.interrupt();
                         this.service.submit(
                             new VerboseRunnable(
-                                this.killer(project, file, lock, threadref),
+                                this.killer(project, file, lock, ref),
                                 true, true
                             )
                         );

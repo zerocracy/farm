@@ -49,7 +49,7 @@ public final class TerminatorTest {
         final FkProject project = new FkProject();
         try (final Terminator terminator = new Terminator(1)) {
             final AtomicBoolean interrupted = new AtomicBoolean(false);
-            new Thread(
+            final Thread thread = new Thread(
                 () -> {
                     terminator.submit(project, "foo", lock);
                     try {
@@ -58,17 +58,19 @@ public final class TerminatorTest {
                         interrupted.set(true);
                     }
                 }
-            ).start();
+            );
+            thread.start();
+            thread.join();
             Mockito.verify(
                 lock,
-                Mockito.timeout(TimeUnit.SECONDS.toMillis(Tv.FIVE)).times(2)
+                Mockito.times(2)
             ).tryLock(Mockito.anyLong(), Mockito.any());
             Mockito.verify(
                 lock,
-                Mockito.timeout(TimeUnit.SECONDS.toMillis(Tv.FIVE)).times(1)
+                Mockito.times(1)
             ).unlock();
             MatcherAssert.assertThat(
-                interrupted.get(), Matchers.is(Boolean.TRUE)
+                interrupted.get(), Matchers.is(true)
             );
         }
     }
