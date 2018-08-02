@@ -21,9 +21,9 @@ import com.jcabi.github.Coordinates
 import com.jcabi.github.Github
 import com.jcabi.github.Issue
 import com.jcabi.xml.XML
-import com.zerocracy.entry.ExtGithub
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.entry.ExtGithub
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 

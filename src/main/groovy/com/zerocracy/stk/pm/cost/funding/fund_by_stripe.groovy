@@ -23,7 +23,7 @@ import com.zerocracy.Project
 import com.zerocracy.cash.Cash
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
-import com.zerocracy.pm.ClaimIn
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pm.cost.Ledger
 
 /**

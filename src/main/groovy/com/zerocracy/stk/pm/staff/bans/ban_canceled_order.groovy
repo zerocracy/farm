@@ -21,7 +21,7 @@ import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
-import com.zerocracy.pm.ClaimIn
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pm.staff.Bans
 
 def exec(Project project, XML xml) {

@@ -21,10 +21,11 @@ import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.pmo.People
 import com.zerocracy.pmo.Speed
-import java.time.Duration
-import java.time.Instant
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
+
+import java.time.Duration
+import java.time.Instant
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm

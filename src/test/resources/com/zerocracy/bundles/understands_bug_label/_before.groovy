@@ -26,6 +26,7 @@ import com.zerocracy.Project
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.fake.FkFarm
 import com.zerocracy.radars.github.RbOnBug
+
 import javax.json.Json
 
 def exec(Project project, XML xml) {

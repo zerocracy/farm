@@ -18,7 +18,7 @@ package com.zerocracy.tk.project;
 
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
-import com.zerocracy.pm.Footprint;
+import com.zerocracy.claims.Footprint;
 import com.zerocracy.tk.RsPage;
 import com.zerocracy.tk.project.reports.AwardChampions;
 import com.zerocracy.tk.project.reports.FtReport;

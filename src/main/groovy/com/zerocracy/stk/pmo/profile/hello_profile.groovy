@@ -22,7 +22,7 @@ import com.zerocracy.Par
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.Project
-import com.zerocracy.pm.ClaimIn
+import com.zerocracy.claims.ClaimIn
 
 def exec(Project pmo, XML xml) {
   new Assume(pmo, xml).isPmo()
