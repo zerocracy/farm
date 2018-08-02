@@ -44,7 +44,7 @@ public final class AcceptInvitationsTest {
      * @throws Exception if error occurs during test.
      */
     @Test
-    public void quotaExceeded() throws Exception {
+    public void exceedsQuota() throws Exception {
         final Github github = Mockito.mock(Github.class);
         final Limits limits = Mockito.mock(Limits.class);
         Mockito.doReturn(
