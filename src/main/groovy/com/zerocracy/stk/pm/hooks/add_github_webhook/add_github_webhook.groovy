@@ -28,10 +28,6 @@ import org.cactoos.map.MapEntry
 import org.cactoos.map.MapOf
 import com.zerocracy.claims.ClaimIn
 
-// @todo #1226:30min Add property github.webhook.url to production
-//  environment. We need adding this property to production environment
-//  because it points to github hooks page. This value must be set to
-//  http://www.rehttp.net/p/https://www.0crat.com/ghook
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Project link was added')
