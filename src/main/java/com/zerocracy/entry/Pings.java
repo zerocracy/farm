@@ -105,7 +105,7 @@ public final class Pings {
         this.start(
             "minute",
             "Ping",
-            SimpleScheduleBuilder.repeatMinutelyForever()
+            SimpleScheduleBuilder.repeatMinutelyForever(Tv.FIVE)
         );
         this.start(
             "hour",
