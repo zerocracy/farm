@@ -79,6 +79,7 @@ SOFTWARE.
     <telegram.version>3.6</telegram.version>
     <branch.coverage>0.45</branch.coverage>
     <aws.version>1.11.211</aws.version>
+    <argLine>-Duser.language=en -Duser.country=US</argLine>
   </properties>
   <repositories>
     <repository>
@@ -1016,23 +1017,20 @@ SOFTWARE.
           <plugins>
             <plugin>
               <artifactId>maven-surefire-plugin</artifactId>
-              <configuration combine.children="append">
+              <configuration>
                 <excludes>
-                  <!--
-                     @todo #1041:30min These tests are failing on Windows system,
-                      some of them because of locale and decimal point,
-                      see https://github.com/zerocracy/farm/pull/1178#discussion_r196476659
-                      for more details.
-                      We need to fix them and remove surefire exclusions from this profile
-                      and jacoco exlusions also.
-                  -->
                   <exclude>com.zerocracy.farm.S3ItemTest</exclude>
-                  <exclude>com.zerocracy.tk.project.TkArtifactTest</exclude>
-                  <exclude>com.zerocracy.tk.project.TkFootprintTest</exclude>
-                  <exclude>com.zerocracy.pm.cost.EquityTest</exclude>
-                  <exclude>com.zerocracy.tk.*</exclude>
                 </excludes>
               </configuration>
+              <!--
+               @todo #1231:30min Fixing language issues of #1231 did not
+                resolved problems with S3ItemTest. Discover why S3ItemTest
+                is not working in windows builds and fix it. Remove
+                surefire and jacoco exclusions after fixing this problem
+                and update jacoco coverage values.
+                See #1041 https://github.com/zerocracy/farm/pull/1178#discussion_r196476659
+                for more details about windows build failure.
+              -->
             </plugin>
           </plugins>
         </pluginManagement>
@@ -1047,10 +1045,7 @@ SOFTWARE.
               <execution>
                 <configuration>
                   <excludes combine.children="append">
-                    <exclude>com/zerocracy/pings/*.*</exclude>
                     <exclude>com/zerocracy/farm/S3Item.java</exclude>
-                    <exclude>com/zerocracy/pm/cost/Equity.java</exclude>
-                    <exclude>com/zerocracy/tk/**/*.java</exclude>
                   </excludes>
                 </configuration>
               </execution>
