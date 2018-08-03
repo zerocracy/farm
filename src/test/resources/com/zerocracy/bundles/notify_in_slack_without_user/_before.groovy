@@ -28,9 +28,9 @@ import com.zerocracy.radars.slack.SkSession
 import org.mockito.Mockito
 
 /**
- * @todo #89:30min Add a new class FkSkSession that implements interface
- *  SkSession, and then use this new class in tests instead of using Mockito.
- *  This task can be implemented only when SkSession replaces SlackSession.
+ * @todo #1139:30min Finish implementation of FkSkSession, FkTeam and
+ *  FkPersona, fake classes implementing SkSession, SlackTeam and
+ *  SlackPersona. Then use these classes to replace Mockito in tests
  */
 def exec(Project project, XML xml) {
   String channelId = 'C123'
