@@ -61,11 +61,12 @@ public final class TestListener extends RunListener {
      * {@link IllegalStateException} but the test results show no failures or
      * exceptions stracktraces. That means that some exceptions was swallowed
      * or treated in tests execution but its log have been added to result
-     * anyways. See @link{https://github.com/zerocracy/farm/issues/1227
+     * anyways. See {@link https://github.com/zerocracy/farm/issues/1227
      * #1227} for more information about this.
      *
-     * @param result Test run results.
-     * @throws Exception
+     * @param result Test run results
+     * @throws Exception When threads are still alive or when are exceptions
+     *  in the test log
      */
     @Override
     public void testRunFinished(final Result result) throws Exception {
