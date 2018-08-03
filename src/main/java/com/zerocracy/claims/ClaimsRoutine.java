@@ -22,11 +22,15 @@ import com.amazonaws.services.sqs.model.ReceiveMessageRequest;
 import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseRunnable;
 import com.jcabi.log.VerboseThreads;
+import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
 import com.zerocracy.Farm;
 import com.zerocracy.entry.ExtSqs;
-import com.zerocracy.radars.github.GithubRoutine;
 import java.io.Closeable;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -48,7 +52,7 @@ public final class ClaimsRoutine implements Runnable, Closeable {
     /**
      * Messages limit.
      */
-    private static final int LIMIT = 4;
+    private static final int LIMIT = 8;
 
     /**
      * Delay to fetch claims.
@@ -79,7 +83,7 @@ public final class ClaimsRoutine implements Runnable, Closeable {
     public ClaimsRoutine(final Farm farm, final Proc<Message> proc) {
         this.proc = proc;
         this.service = Executors.newSingleThreadScheduledExecutor(
-            new VerboseThreads(GithubRoutine.class)
+            new VerboseThreads(ClaimsRoutine.class)
         );
         this.farm = farm;
     }
@@ -97,6 +101,13 @@ public final class ClaimsRoutine implements Runnable, Closeable {
     }
 
     @Override
+    @SuppressWarnings(
+        {
+            "PMD.AvoidInstantiatingObjectsInLoops",
+            "PMD.AvoidDuplicateLiterals",
+            "PMD.ConfusingTernary"
+        }
+    )
     public void run() {
         final AmazonSQS sqs = new UncheckedScalar<>(new ExtSqs(this.farm))
             .value();
@@ -107,10 +118,30 @@ public final class ClaimsRoutine implements Runnable, Closeable {
                 .withMessageAttributeNames("project", "signature")
                 .withMaxNumberOfMessages(ClaimsRoutine.LIMIT)
         ).getMessages();
+        final Set<String> projects = new HashSet<>();
+        final List<Message> merged = new LinkedList<>();
+        for (final Message message : messages) {
+            final XML xml = new XMLDocument(message.getBody())
+                .nodes("/claim").get(0);
+            final String pid = message.getMessageAttributes()
+                .get("project")
+                .getStringValue();
+            final ClaimIn claim = new ClaimIn(xml);
+            final boolean ping = "ping".equalsIgnoreCase(claim.type());
+            if (ping && !projects.contains(pid)) {
+                projects.add(pid);
+                merged.add(message);
+            } else if (!ping) {
+                merged.add(message);
+            } else {
+                sqs.deleteMessage(queue, message.getReceiptHandle());
+            }
+        }
         Logger.info(
-            this, "received %d messages from SQS", messages.size()
+            this, "received %d (%d actual) messages from SQS",
+            messages.size(), merged.size()
         );
-        new UncheckedScalar<>(new And(this.proc, messages)).value();
+        new UncheckedScalar<>(new And(this.proc, merged)).value();
     }
 
     @Override

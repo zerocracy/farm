@@ -62,11 +62,6 @@ public final class Pings {
     private final IoCheckedScalar<Scheduler> quartz;
 
     /**
-     * Batch size.
-     */
-    private final int batches;
-
-    /**
      * Ctor.
      * @param farm Farm
      */
@@ -95,7 +90,6 @@ public final class Pings {
                 new Pings.Quartz(scheduler, farm, new AtomicInteger(0), btchs)
             )
         );
-        this.batches = btchs;
     }
 
     /**
@@ -111,9 +105,7 @@ public final class Pings {
         this.start(
             "minute",
             "Ping",
-            SimpleScheduleBuilder.simpleSchedule()
-                .withIntervalInSeconds(Tv.HUNDRED / this.batches)
-                .repeatForever()
+            SimpleScheduleBuilder.repeatMinutelyForever(Tv.FIVE)
         );
         this.start(
             "hour",
