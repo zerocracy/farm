@@ -67,8 +67,8 @@ def exec(Project project, XML xml) {
   claim.copy().type('Tweet').param(
     'par', new Par(
       farm,
-      'The project %s received a monetary contribution of %s from @%s;',
-      'many thanks for your support!'
+      'The project %s received a monetary contribution of %s',
+      'from https://github.com/%s; many thanks for your support!'
     ).say(project.pid(), amount, claim.author())
   ).postTo(new ClaimsOf(farm, project))
   claim.copy().type('Send zold')
