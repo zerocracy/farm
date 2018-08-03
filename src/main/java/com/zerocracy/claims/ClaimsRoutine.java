@@ -129,6 +129,8 @@ public final class ClaimsRoutine implements Runnable, Closeable {
                 merged.add(message);
             } else if (!ping) {
                 merged.add(message);
+            } else {
+                sqs.deleteMessage(queue, message.getReceiptHandle());
             }
         }
         Logger.info(
