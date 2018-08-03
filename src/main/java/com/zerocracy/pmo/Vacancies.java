@@ -164,7 +164,7 @@ public final class Vacancies {
         try (final Item item = this.item()) {
             final String xpath = new FormattedText(
                 "/vacancies/vacancy[xs:dateTime(added) < xs:dateTime('%s')]",
-                date.toString()
+                date
             ).asString();
             final List<String> pids = new Xocument(item.path()).xpath(
                 new JoinedText("", xpath, "/@project").asString()
