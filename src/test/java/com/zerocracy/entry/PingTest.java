@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.map.MapEntry;
 import org.cactoos.map.MapOf;
+import org.cactoos.text.FormattedText;
 import org.cactoos.time.DateAsText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -52,6 +53,7 @@ import org.xembly.Directives;
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.ExcessiveImports")
 public final class PingTest {
 
     /**
@@ -102,7 +104,8 @@ public final class PingTest {
     @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     public void worksForManyProjects() throws Exception {
         final List<Project> projects = new LinkedList<>();
-        for (int ident = 0; ident < Tv.NINE; ++ident) {
+        final int batches = Tv.FIVE;
+        for (int ident = 0; ident < batches; ++ident) {
             // @checkstyle MagicNumber (1 line)
             final String pid = String.valueOf(100000000 + ident);
             projects.add(new FkProject(pid));
@@ -112,18 +115,16 @@ public final class PingTest {
         for (final Project pkt : projects) {
             catalog.add(
                 pkt.pid(),
-                String.format("2017/01/%s/", pkt.pid())
+                new FormattedText("2017/01/%s/", pkt.pid()).asString()
             );
         }
         final AtomicInteger counter = new AtomicInteger(0);
-        final int batches = Tv.FIVE;
         final Ping ping = new Ping(farm, batches);
         final JobExecutionContext context =
             this.context(PingTest.map(), counter);
         for (int count = 0; count < batches; ++count) {
             ping.execute(context);
-        }
-        for (final Project pkt : projects) {
+            final Project pkt = projects.get(0);
             final XML xml = new ClaimsItem(pkt).iterate().iterator().next();
             MatcherAssert.assertThat(
                 new ClaimsItem(pkt).bootstrap().iterate(),
