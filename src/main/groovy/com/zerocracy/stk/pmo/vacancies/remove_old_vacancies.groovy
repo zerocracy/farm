@@ -42,11 +42,12 @@ def exec(Project pmo, XML xml) {
       claim.copy()
         .type('Notify project')
         .param(
-        'message',
-        new Par(
-          'Vacancy was removed because it expired after %d days (see §51)',
-        ).say(days))
+          'message',
+          new Par(
+            'Vacancy was removed because it expired after %d days (see §51)'
+          ).say(days)
+        )
         .postTo(new ClaimsOf(farm, notify))
-    }
+  }
 
 }

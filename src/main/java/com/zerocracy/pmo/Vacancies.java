@@ -27,6 +27,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import org.cactoos.text.FormattedText;
 import org.cactoos.text.JoinedText;
 import org.xembly.Directives;
 
@@ -161,12 +162,9 @@ public final class Vacancies {
     public Iterable<String> removeOlderThan(final Instant date)
         throws IOException {
         try (final Item item = this.item()) {
-            final String xpath = new JoinedText(
-                "",
-                "/vacancies/vacancy[xs:dateTime(added) < ",
-                "xs:dateTime('",
-                date.toString(),
-                "')]"
+            final String xpath = new FormattedText(
+                "/vacancies/vacancy[xs:dateTime(added) < xs:dateTime('%s')]",
+                date.toString()
             ).asString();
             final List<String> pids = new Xocument(item.path()).xpath(
                 new JoinedText("", xpath, "/@project").asString()
