@@ -102,7 +102,11 @@ public final class ClaimsRoutine implements Runnable, Closeable {
 
     @Override
     @SuppressWarnings(
-        {"PMD.AvoidInstantiatingObjectsInLoops", "PMD.AvoidDuplicateLiterals"}
+        {
+            "PMD.AvoidInstantiatingObjectsInLoops",
+            "PMD.AvoidDuplicateLiterals",
+            "PMD.ConfusingTernary"
+        }
     )
     public void run() {
         final AmazonSQS sqs = new UncheckedScalar<>(new ExtSqs(this.farm))
