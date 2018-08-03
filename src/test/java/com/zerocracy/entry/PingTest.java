@@ -124,7 +124,7 @@ public final class PingTest {
             this.context(PingTest.map(), counter);
         for (int count = 0; count < batches; ++count) {
             ping.execute(context);
-            final Project pkt = projects.get(0);
+            final Project pkt = projects.get(count);
             final XML xml = new ClaimsItem(pkt).iterate().iterator().next();
             MatcherAssert.assertThat(
                 new ClaimsItem(pkt).bootstrap().iterate(),
