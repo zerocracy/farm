@@ -20,16 +20,18 @@ import com.amazonaws.services.sqs.model.Message;
 import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseCallable;
 import com.jcabi.log.VerboseThreads;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.cactoos.Proc;
+import org.cactoos.scalar.And;
 
 /**
  * Proc to execute origin proc asynchronously.
  *
  * @since 1.0
  */
-public final class AsyncProc implements Proc<Message> {
+public final class AsyncProc implements Proc<List<Message>> {
 
     /**
      * Executor.
@@ -64,23 +66,23 @@ public final class AsyncProc implements Proc<Message> {
     }
 
     @Override
-    public void exec(final Message input) {
+    public void exec(final List<Message> input) {
         this.service.submit(
             new VerboseCallable<>(
                 () -> {
                     Logger.info(
-                        this, "Processing message %s",
-                        input.getMessageId()
+                        this, "Processing %d messages",
+                        input.size()
                     );
-                    this.origin.exec(input);
+                    new And(this.origin, input).value();
                     return null;
                 },
                 true, true
             )
         );
         Logger.info(
-            this, "Submitted message %s",
-            input.getMessageId()
+            this, "Submitted %d messages",
+            input.size()
         );
     }
 }

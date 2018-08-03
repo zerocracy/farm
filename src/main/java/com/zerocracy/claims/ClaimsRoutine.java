@@ -72,7 +72,7 @@ public final class ClaimsRoutine implements Runnable, Closeable {
     /**
      * Process queue messages.
      */
-    private final Proc<Message> proc;
+    private final Proc<List<Message>> proc;
 
     /**
      * Ctor.
@@ -80,7 +80,7 @@ public final class ClaimsRoutine implements Runnable, Closeable {
      * @param farm Farm
      * @param proc Proc
      */
-    public ClaimsRoutine(final Farm farm, final Proc<Message> proc) {
+    public ClaimsRoutine(final Farm farm, final Proc<List<Message>> proc) {
         this.proc = proc;
         this.service = Executors.newSingleThreadScheduledExecutor(
             new VerboseThreads(ClaimsRoutine.class)

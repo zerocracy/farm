@@ -31,6 +31,7 @@ import com.zerocracy.farm.props.PropsFarm;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
+import org.cactoos.scalar.And;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Assume;
@@ -63,9 +64,13 @@ public final class ClaimsRoutineITCase {
         final List<Message> messages = new CopyOnWriteArrayList<>();
         final ClaimsRoutine routine = new ClaimsRoutine(
             farm,
-            msg -> {
-                messages.add(msg);
-                sqs.deleteMessage(queue, msg.getReceiptHandle());
+            msgs -> {
+                messages.addAll(msgs);
+                new And(
+                    (Message msg) -> sqs.deleteMessage(
+                        queue, msg.getReceiptHandle()
+                    ), msgs
+                ).value();
             }
         );
         routine.start();
