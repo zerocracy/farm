@@ -17,7 +17,17 @@
 package com.zerocracy.bundles.remove_old_vacancies
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.pmo.Catalog
 
-def exec(Project project, XML xml) {
+def exec(Project pmo, XML xml) {
+  Farm farm = binding.variables.farm
+  String first = 'C12345678'
+  String second = 'C12345670'
+  Catalog catalog = new Catalog(farm).bootstrap()
+  catalog.add(first, "2018/01/$first/")
+  catalog.link(first, 'slack', '/one')
+  catalog.add(second, "2018/01/$second/")
+  catalog.link(second, 'slack', '/two')
 }

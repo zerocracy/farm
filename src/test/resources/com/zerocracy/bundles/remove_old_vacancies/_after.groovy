@@ -29,4 +29,7 @@ def exec(Project project, XML xml) {
     new Vacancies(farm).bootstrap().iterate(),
     Matchers.contains('C12345678')
   )
+  // @todo #1257:30min After all the puzzles are solved from #89 (a way to test
+  //  slack communication) add an assert that will validate that slack messages
+  //  notifying project about expired vacancies has been posted.
 }

@@ -84,12 +84,16 @@ public final class VacanciesTest {
                 ZoneOffset.UTC
             )
         );
-        vacancies.removeOlderThan(
+        final Iterable<String> pids = vacancies.removeOlderThan(
             ZonedDateTime.of(
                 LocalDate.of(2018, Month.APRIL, 1),
                 LocalTime.of(0, 0),
                 ZoneOffset.UTC
-            )
+            ).toInstant()
+        );
+        MatcherAssert.assertThat(
+            pids,
+            Matchers.contains(first.pid())
         );
         MatcherAssert.assertThat(
             vacancies.iterate(),
