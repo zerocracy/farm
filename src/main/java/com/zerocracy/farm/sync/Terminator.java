@@ -105,7 +105,10 @@ final class Terminator implements Closeable, Scalar<Iterable<Directive>> {
                 this.killers.put(project, file);
                 this.service.submit(
                     new VerboseRunnable(
-                        this.killer(project, file, lock),
+                        this.killer(
+                            project, file, lock,
+                            new WeakReference<>(Thread.currentThread())
+                        ),
                         true, true
                     )
                 );
@@ -118,19 +121,29 @@ final class Terminator implements Closeable, Scalar<Iterable<Directive>> {
      * @param project The project
      * @param file The file
      * @param lock The lock
+     * @param ref A weak reference for the Thread that acquired the lock
      * @return The runnable
+     * @checkstyle ParameterNumber (4 lines)
      */
     private Runnable killer(final Project project, final String file,
-        final Lock lock) {
-        final WeakReference<Thread> ref =
-            new WeakReference<>(Thread.currentThread());
+        final Lock lock, final WeakReference<Thread> ref) {
         final Exception location = new IllegalStateException("Here!");
         return new RunnableOf<Object>(
             input -> {
-                if (!lock.tryLock(this.threshold, TimeUnit.MILLISECONDS)) {
+                if (lock.tryLock(this.threshold, TimeUnit.MILLISECONDS)) {
+                    lock.unlock();
+                    this.killers.remove(project);
+                } else {
                     final Thread thread = ref.get();
                     if (thread == null) {
-                        Logger.warn(this, "thread disposed");
+                        Logger.warn(
+                            this,
+                            // @checkstyle LineLength (1 line)
+                            "Thread disposed without proper lock unlock. Unlocking lock for \"%s\" in %s, %s: %[exception]s",
+                            file, project.pid(), lock, location
+                        );
+                        lock.unlock();
+                        this.killers.remove(project);
                     } else {
                         Logger.warn(
                             this,
@@ -151,11 +164,14 @@ final class Terminator implements Closeable, Scalar<Iterable<Directive>> {
                             )
                         );
                         thread.interrupt();
+                        this.service.submit(
+                            new VerboseRunnable(
+                                this.killer(project, file, lock, ref),
+                                true, true
+                            )
+                        );
                     }
-                    this.submit(project, file, lock);
                 }
-                lock.unlock();
-                this.killers.remove(project);
             }
         );
     }
