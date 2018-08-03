@@ -18,6 +18,9 @@ package com.zerocracy.pm;
 
 import com.jcabi.matchers.XhtmlMatchers;
 import com.zerocracy.Project;
+import com.zerocracy.claims.ClaimOut;
+import com.zerocracy.claims.Claims;
+import com.zerocracy.claims.ClaimsItem;
 import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.PropsFarm;

@@ -20,11 +20,11 @@ import com.jcabi.aspects.Tv;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.RunsInThreads;
+import com.zerocracy.claims.ClaimOut;
+import com.zerocracy.claims.ClaimsItem;
 import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.farm.sync.SyncFarm;
-import com.zerocracy.pm.ClaimOut;
-import com.zerocracy.pm.ClaimsItem;
 import com.zerocracy.pmo.Pmo;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.list.SolidList;
@@ -46,7 +46,7 @@ public final class RvProjectTest {
         try (final Farm farm = new SyncFarm(new PropsFarm())) {
             final Project raw = new Pmo(farm);
             final Flush def = new DefaultFlush(
-                farm, new Brigade(
+                new Brigade(
                     new SolidList<>(
                         (project, xml) -> done.incrementAndGet()
                     )
@@ -73,7 +73,7 @@ public final class RvProjectTest {
         try (final Farm farm = new SyncFarm(new PropsFarm())) {
             final Project raw = new Pmo(farm);
             final Flush def = new DefaultFlush(
-                farm, new Brigade(
+                new Brigade(
                     new SolidList<>(
                         (project, xml) -> total.decrementAndGet()
                     )

@@ -84,7 +84,7 @@ public final class RvFarm implements Farm {
      * @param bgd Stakeholders
      */
     public RvFarm(final Farm farm, final Brigade bgd) {
-        this(farm, bgd, Runtime.getRuntime().availableProcessors());
+        this(farm, bgd, 1);
     }
 
     /**
@@ -94,7 +94,7 @@ public final class RvFarm implements Farm {
      * @param threads How many threads to use
      */
     public RvFarm(final Farm farm, final Brigade bgd, final int threads) {
-        this(farm, new AsyncFlush(new DefaultFlush(farm, bgd), threads));
+        this(farm, new AsyncFlush(new DefaultFlush(bgd), threads));
     }
 
     /**

@@ -20,7 +20,7 @@ package com.zerocracy.stk.pm.hooks.add_github_webhook
 import com.jcabi.xml.XML
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
-import com.zerocracy.pm.ClaimIn
+import com.zerocracy.claims.ClaimIn
 
 // @todo #1048:30min Implement logic for adding webhook in add_github_webhook
 //  stakeholder (see #1048 for details). After it is implemented uncomment

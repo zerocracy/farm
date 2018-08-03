@@ -24,7 +24,7 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.farm.S3Farm
 import com.zerocracy.Farm
 import com.zerocracy.Project
-import com.zerocracy.pm.ClaimIn
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.Agenda
 import com.zerocracy.pmo.Catalog

@@ -20,8 +20,8 @@ import com.jcabi.xml.XML
 import com.zerocracy.*
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
-import com.zerocracy.pm.ClaimIn
-import com.zerocracy.pm.ClaimOut
+import com.zerocracy.claims.ClaimIn
+import com.zerocracy.claims.ClaimOut
 import com.zerocracy.pm.qa.Reviews
 import com.zerocracy.pmo.Agenda
 

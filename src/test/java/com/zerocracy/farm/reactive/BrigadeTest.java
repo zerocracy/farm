@@ -21,13 +21,13 @@ import com.jcabi.xml.XMLDocument;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.Stakeholder;
+import com.zerocracy.claims.ClaimOut;
+import com.zerocracy.claims.ClaimsItem;
 import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.farm.MismatchException;
 import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.fake.FkStakeholder;
 import com.zerocracy.farm.props.PropsFarm;
-import com.zerocracy.pm.ClaimOut;
-import com.zerocracy.pm.ClaimsItem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -61,7 +61,7 @@ public final class BrigadeTest {
                     "\n",
                     "import com.zerocracy.Project",
                     "import com.jcabi.xml.XML",
-                    "import com.zerocracy.pm.ClaimOut",
+                    "import com.zerocracy.claims.ClaimOut",
                     "import com.zerocracy.Farm",
                     "import com.zerocracy.entry.ClaimsOf",
                     "def exec(Project project, XML xml) {",

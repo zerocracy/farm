@@ -18,6 +18,7 @@ package com.zerocracy.farm.footprint;
 
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
+import com.zerocracy.claims.Footprint;
 import java.io.IOException;
 import lombok.EqualsAndHashCode;
 import org.cactoos.iterable.Mapped;
@@ -25,7 +26,7 @@ import org.cactoos.iterable.Mapped;
 /**
  * Footprint farm.
  *
- * <p>All claims are tracked through {@link com.zerocracy.pm.Footprint}.</p>
+ * <p>All claims are tracked through {@link Footprint}.</p>
  *
  * @since 1.0
  */

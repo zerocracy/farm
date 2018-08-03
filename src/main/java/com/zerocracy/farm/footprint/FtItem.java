@@ -21,7 +21,7 @@ import com.jcabi.xml.XMLDocument;
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Project;
-import com.zerocracy.pm.Footprint;
+import com.zerocracy.claims.Footprint;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -101,7 +101,10 @@ final class FtItem implements Item {
             }
             for (final XML claim : after.nodes("//claim[type!='Ping' ]")) {
                 if (!FtItem.exists(before, claim)) {
-                    footprint.open(claim);
+                    footprint.open(
+                        claim,
+                        "testFT"
+                    );
                 }
             }
         }

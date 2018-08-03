@@ -25,7 +25,7 @@ import com.zerocracy.Project
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
-import com.zerocracy.pm.ClaimIn
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.radars.github.Job
 
 def exec(Project project, XML xml) {

@@ -14,47 +14,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pm;
+package com.zerocracy.claims;
 
-import com.jcabi.log.Logger;
+import com.jcabi.xml.XML;
+import java.io.IOException;
 
 /**
- * Claim out which doesn't throw exceptions on post.
+ * Claims.
  *
  * @since 1.0
  */
-public final class ClaimOutSafe {
+public interface Claims {
 
     /**
-     * Origin claim.
-     */
-    private final ClaimOut claim;
-
-    /**
-     * Ctor.
+     * Submit new claim.
      *
-     * @param origin Origin claim
+     * @param claim Claim to submit
+     * @throws IOException If fails
      */
-    public ClaimOutSafe(final ClaimOut origin) {
-        this.claim = origin;
-    }
-
-    /**
-     * Post to project without exception.
-     *
-     * @param claims Claims
-     * @checkstyle IllegalCatchCheck (14 lines)
-     */
-    @SuppressWarnings({"overloads", "PMD.AvoidCatchingThrowable"})
-    public void postTo(final Claims claims) {
-        try {
-            this.claim.postTo(claims);
-        } catch (final Throwable err) {
-            Logger.error(
-                this,
-                "Failed to post claim: %[exception]s",
-                err
-            );
-        }
-    }
+    void submit(XML claim) throws IOException;
 }

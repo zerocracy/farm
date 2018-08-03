@@ -16,12 +16,7 @@
  */
 package com.zerocracy.bundles.close_job_with_quality_review
 
-
-import com.jcabi.github.Github
-import com.jcabi.github.Issue
-import com.jcabi.github.Pull
-import com.jcabi.github.Repo
-import com.jcabi.github.Repos
+import com.jcabi.github.*
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project

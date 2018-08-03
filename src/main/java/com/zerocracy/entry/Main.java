@@ -20,6 +20,12 @@ import com.jcabi.aspects.Loggable;
 import com.jcabi.log.Logger;
 import com.zerocracy.Farm;
 import com.zerocracy.SafeSentry;
+import com.zerocracy.claims.ClaimsRoutine;
+import com.zerocracy.claims.proc.AsyncProc;
+import com.zerocracy.claims.proc.BrigadeProc;
+import com.zerocracy.claims.proc.DeleteProc;
+import com.zerocracy.claims.proc.FootprintProc;
+import com.zerocracy.claims.proc.SentryProc;
 import com.zerocracy.farm.S3Farm;
 import com.zerocracy.farm.SmartFarm;
 import com.zerocracy.farm.props.Props;
@@ -47,6 +53,7 @@ import org.takes.http.FtCli;
  * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.ExcessiveImports")
 public final class Main {
 
     /**
@@ -112,9 +119,24 @@ public final class Main {
             final Farm farm = new SmartFarm(
                 new S3Farm(new ExtBucket().value(), temp)
             ).value();
-            final SlackRadar radar = new SlackRadar(farm)
+            final SlackRadar radar = new SlackRadar(farm);
+            final ClaimsRoutine claims = new ClaimsRoutine(
+                farm,
+                new AsyncProc(
+                    new DeleteProc(
+                        farm,
+                        new SentryProc(
+                            new FootprintProc(
+                                farm,
+                                new BrigadeProc(farm)
+                            )
+                        )
+                    )
+                )
+            )
         ) {
             new ExtMongobee(farm).apply();
+            claims.start();
             new AsyncFunc<>(
                 input -> {
                     new ExtTelegram(farm).value();

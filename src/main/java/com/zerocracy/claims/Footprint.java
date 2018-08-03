@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pm;
+package com.zerocracy.claims;
 
 import com.jcabi.aspects.Tv;
 import com.jcabi.xml.XML;
@@ -82,13 +82,16 @@ public final class Footprint implements Closeable {
     /**
      * Add new claim, it was just opened.
      * @param xml The claim XML
+     * @param signature Claim signature
      * @throws IOException If fails
      */
-    public void open(final XML xml) throws IOException {
+    public void open(final XML xml, final String signature)
+        throws IOException {
         final ClaimIn claim = new ClaimIn(xml);
         final long cid = claim.cid();
         final MongoCollection<Document> col =
-            this.mongo.getDatabase("footprint").getCollection("claims");
+            this.mongo.getDatabase("footprint")
+                .getCollection("claims");
         final Iterator<Document> found = col.find(
             Filters.and(
                 Filters.eq("cid", cid),
@@ -108,7 +111,8 @@ public final class Footprint implements Closeable {
             .append("version", new Props().get("//build/version", ""))
             .append("project", this.pid)
             .append("type", claim.type())
-            .append("created", claim.created());
+            .append("created", claim.created())
+            .append("signature", signature);
         if (claim.hasAuthor()) {
             doc = doc.append("author", claim.author());
         }
