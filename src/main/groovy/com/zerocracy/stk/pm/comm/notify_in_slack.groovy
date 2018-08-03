@@ -26,7 +26,7 @@ import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtSlack
 import com.zerocracy.farm.Assume
 import com.zerocracy.farm.props.Props
-import com.zerocracy.pm.ClaimIn
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.radars.slack.SkSession
 
 // Token must look like: slack;C43789437;yegor256;direct

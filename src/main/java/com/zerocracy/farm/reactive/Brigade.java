@@ -32,7 +32,7 @@ import org.cactoos.list.SolidList;
  * Brigade of stakeholders.
  * @since 1.0
  */
-final class Brigade implements BiFunc<Project, XML, Integer> {
+public final class Brigade implements BiFunc<Project, XML, Integer> {
 
     /**
      * Stakeholders.
@@ -43,7 +43,7 @@ final class Brigade implements BiFunc<Project, XML, Integer> {
      * Ctor.
      * @param list List of stakeholders
      */
-    Brigade(final Stakeholder... list) {
+    public Brigade(final Stakeholder... list) {
         this(new IterableOf<>(list));
     }
 
@@ -51,7 +51,7 @@ final class Brigade implements BiFunc<Project, XML, Integer> {
      * Ctor.
      * @param list List of stakeholders
      */
-    Brigade(final Iterable<Stakeholder> list) {
+    public Brigade(final Iterable<Stakeholder> list) {
         this.pool = new SolidList<>(new Mapped<>(StkSmart::new, list));
     }
 

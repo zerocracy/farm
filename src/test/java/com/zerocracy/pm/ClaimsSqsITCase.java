@@ -21,15 +21,19 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.AmazonSQSClient;
 import com.amazonaws.services.sqs.model.CreateQueueRequest;
+import com.amazonaws.services.sqs.model.Message;
+import com.amazonaws.services.sqs.model.ReceiveMessageRequest;
 import com.jcabi.aspects.Tv;
 import com.jcabi.log.Logger;
+import com.zerocracy.claims.ClaimOut;
+import com.zerocracy.claims.Claims;
+import com.zerocracy.claims.ClaimsSqs;
 import com.zerocracy.entry.PropsAwsCredentials;
 import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.farm.props.PropsFarm;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.CopyOnWriteArrayList;
 import org.cactoos.map.MapEntry;
 import org.cactoos.map.MapOf;
 import org.hamcrest.MatcherAssert;
@@ -43,7 +47,16 @@ import org.junit.Test;
 /**
  * Test case for {@link ClaimsSqs}.
  * <p>
- * See {@link com.zerocracy.entry.ClaimsOfITCase} for usage.
+ * To start this test you have to create AWS user with full access to
+ * SQS queues policy and insert credentials to test {@code _props.xml}:
+ * <pre><code>
+ * &lt;props&gt;
+ *     &lt;sqs&gt;
+ *         &lt;key&gt;your-key&lt;/key&gt;
+ *         &lt;secret&gt;your-secret&lt;/secret&gt;
+ *     &lt;/sqs&gt;
+ * &lt;/props&gt;
+ * </code></pre>
  *
  * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
@@ -87,9 +100,10 @@ public final class ClaimsSqsITCase {
                     )
                 ).withAttributes(
                     new MapOf<String, String>(
-                        // @checkstyle LineLength (2 lines)
-                        new MapEntry<>("FifoQueue", Boolean.toString(true)),
-                        new MapEntry<>("ContentBasedDeduplication", Boolean.toString(true))
+                        new MapEntry<>(
+                            "FifoQueue",
+                            Boolean.toString(true)
+                        )
                     )
                 )
             ).getQueueUrl();
@@ -107,20 +121,57 @@ public final class ClaimsSqsITCase {
         final Claims claims = new ClaimsSqs(
             this.client, this.queue, new FkProject()
         );
-        final String type = "test";
+        final String type = "test1";
         new ClaimOut()
             .type(type)
             .postTo(claims);
-        final List<ClaimIn> received = new CopyOnWriteArrayList<>();
-        claims.take(xml -> received.add(new ClaimIn(xml)), Tv.TEN);
+        final List<Message> messages = this.client.receiveMessage(
+            new ReceiveMessageRequest(this.queue)
+                .withMaxNumberOfMessages(Tv.TEN)
+        ).getMessages();
         MatcherAssert.assertThat(
-            received,
+            messages,
             Matchers.hasSize(1)
         );
-        final ClaimIn claim = received.get(0);
+    }
+
+    @Test
+    public void ignoresDuplicateClaims() throws Exception {
+        final Claims claims = new ClaimsSqs(
+            this.client, this.queue, new FkProject()
+        );
+        final int limit = 10;
+        final ClaimOut claim = new ClaimOut().type("duplicates");
+        for (int num = 0; num < limit; ++num) {
+            claim.postTo(claims);
+        }
+        final List<Message> messages = this.client.receiveMessage(
+            new ReceiveMessageRequest(this.queue)
+                .withMaxNumberOfMessages(limit)
+        ).getMessages();
         MatcherAssert.assertThat(
-            claim.type(),
-            Matchers.equalTo(type)
+            messages,
+            Matchers.hasSize(1)
+        );
+    }
+
+    @Test
+    public void sendMultiple() throws Exception {
+        final Claims claims = new ClaimsSqs(
+            this.client, this.queue, new FkProject()
+        );
+        final int limit = 10;
+        final ClaimOut claim = new ClaimOut().type("test2");
+        for (int num = 0; num < limit; ++num) {
+            claim.param("num", num).postTo(claims);
+        }
+        final List<Message> messages = this.client.receiveMessage(
+            new ReceiveMessageRequest(this.queue)
+                .withMaxNumberOfMessages(limit)
+        ).getMessages();
+        MatcherAssert.assertThat(
+            messages,
+            Matchers.hasSize(limit)
         );
     }
 }

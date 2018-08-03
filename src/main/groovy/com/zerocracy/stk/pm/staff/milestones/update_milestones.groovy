@@ -19,7 +19,7 @@ package com.zerocracy.stk.pm.staff.milestones
 import com.jcabi.xml.XML
 import com.zerocracy.Project
 import com.zerocracy.farm.Assume
-import com.zerocracy.pm.ClaimIn
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pm.time.Milestones
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter

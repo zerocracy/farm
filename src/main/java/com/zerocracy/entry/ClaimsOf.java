@@ -16,23 +16,18 @@
  */
 package com.zerocracy.entry;
 
-import com.amazonaws.services.sqs.AmazonSQS;
-import com.amazonaws.services.sqs.model.CreateQueueRequest;
-import com.amazonaws.services.sqs.model.QueueDoesNotExistException;
 import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
+import com.zerocracy.claims.Claims;
+import com.zerocracy.claims.ClaimsQueueUrl;
+import com.zerocracy.claims.ClaimsSqs;
+import com.zerocracy.claims.ClaimsXml;
 import com.zerocracy.farm.props.Props;
-import com.zerocracy.pm.Claims;
-import com.zerocracy.pm.ClaimsSqs;
-import com.zerocracy.pm.ClaimsXml;
 import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
-import org.cactoos.Proc;
 import org.cactoos.func.IoCheckedBiFunc;
-import org.cactoos.func.StickyBiFunc;
-import org.cactoos.map.MapEntry;
-import org.cactoos.map.MapOf;
+import org.cactoos.func.SolidBiFunc;
 
 /**
  * Claims for farm.
@@ -47,30 +42,16 @@ public final class ClaimsOf implements Claims {
      */
     private static final IoCheckedBiFunc<Farm, Project, Claims> SINGLETON =
         new IoCheckedBiFunc<>(
-            new StickyBiFunc<>(
+            new SolidBiFunc<>(
                 (farm, project) -> {
                     final Props props = new Props(farm);
                     final Claims claims;
                     if (props.has("//sqs")) {
-                        final AmazonSQS sqs = new ExtSqs(farm).value();
-                        final String name =
-                            String.format("0crat-%s.fifo", project.pid());
-                        String url;
-                        try {
-                            url = sqs.getQueueUrl(name).getQueueUrl();
-                        } catch (final QueueDoesNotExistException ignored) {
-                            url = sqs.createQueue(
-                                new CreateQueueRequest(name)
-                                    .withAttributes(
-                                        new MapOf<String, String>(
-                                            // @checkstyle LineLength (2 lines)
-                                            new MapEntry<>("FifoQueue", Boolean.toString(true)),
-                                            new MapEntry<>("ContentBasedDeduplication", Boolean.toString(true))
-                                        )
-                                    )
-                            ).getQueueUrl();
-                        }
-                        claims = new ClaimsSqs(sqs, url, project);
+                        claims = new ClaimsSqs(
+                            new ExtSqs(farm).value(),
+                            new ClaimsQueueUrl(farm).asString(),
+                            project
+                        );
                     } else {
                         claims = new ClaimsXml(project);
                     }
@@ -107,11 +88,6 @@ public final class ClaimsOf implements Claims {
     public ClaimsOf(final Farm farm, final Project project) {
         this.frm = farm;
         this.proj = project;
-    }
-
-    @Override
-    public void take(final Proc<XML> proc, final int limit) throws IOException {
-        ClaimsOf.SINGLETON.apply(this.frm, this.proj).take(proc, limit);
     }
 
     @Override

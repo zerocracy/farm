@@ -16,17 +16,14 @@
  */
 package com.zerocracy.bundles.deducts_points_from_arc_upon_manual_assignment
 
-import com.jcabi.github.Event
-import com.jcabi.github.Github
-import com.jcabi.github.Issue
-import com.jcabi.github.Repo
-import com.jcabi.github.Repos
+import com.jcabi.github.*
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.fake.FkFarm
 import com.zerocracy.radars.github.RbOnAssign
+
 import javax.json.Json
 
 def exec(Project project, XML xml) {

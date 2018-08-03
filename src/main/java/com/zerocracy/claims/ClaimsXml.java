@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pm;
+package com.zerocracy.claims;
 
 import com.jcabi.xml.XML;
 import com.zerocracy.Project;
@@ -52,7 +52,13 @@ public final class ClaimsXml implements Claims {
         this.pkt = project;
     }
 
-    @Override
+    /**
+     * Take claims to process them.
+     *
+     * @param proc Proc func
+     * @param limit Limit
+     * @throws IOException If fails
+     */
     public void take(final Proc<XML> proc, final int limit)
         throws IOException {
         final ClaimsItem item = new ClaimsItem(this.pkt).bootstrap();

@@ -24,6 +24,8 @@ import com.zerocracy.Item;
 import com.zerocracy.Project;
 import com.zerocracy.RunsInThreads;
 import com.zerocracy.Xocument;
+import com.zerocracy.claims.ClaimOut;
+import com.zerocracy.claims.ClaimsItem;
 import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.farm.S3Farm;
 import com.zerocracy.farm.fake.FkProject;

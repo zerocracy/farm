@@ -20,7 +20,7 @@ import com.jcabi.xml.XML
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.Project
-import com.zerocracy.pm.ClaimIn
+import com.zerocracy.claims.ClaimIn
 
 // The token must look like: job;gh:zerocracy/farm#123
 

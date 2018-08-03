@@ -25,7 +25,7 @@ import com.zerocracy.SoftException
 import com.zerocracy.cash.Cash
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
-import com.zerocracy.pm.ClaimIn
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.Awards
 import com.zerocracy.pmo.Catalog

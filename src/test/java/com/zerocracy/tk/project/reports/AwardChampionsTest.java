@@ -18,12 +18,12 @@ package com.zerocracy.tk.project.reports;
 
 import com.jcabi.xml.XML;
 import com.zerocracy.Project;
+import com.zerocracy.claims.ClaimOut;
+import com.zerocracy.claims.ClaimsItem;
+import com.zerocracy.claims.Footprint;
 import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.PropsFarm;
-import com.zerocracy.pm.ClaimOut;
-import com.zerocracy.pm.ClaimsItem;
-import com.zerocracy.pm.Footprint;
 import java.time.Instant;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -47,7 +47,7 @@ public final class AwardChampionsTest {
             .postTo(new ClaimsOf(new PropsFarm(), pkt));
         final XML xml = new ClaimsItem(pkt).iterate().iterator().next();
         try (final Footprint footprint = new Footprint(new PropsFarm(), pkt)) {
-            footprint.open(xml);
+            footprint.open(xml, "test");
             MatcherAssert.assertThat(
                 footprint.collection().aggregate(
                     new AwardChampions().bson(

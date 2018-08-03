@@ -28,7 +28,7 @@ import com.zerocracy.cash.Cash
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
-import com.zerocracy.pm.ClaimIn
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pmo.Catalog
 
 def exec(Project project, XML xml) {

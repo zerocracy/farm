@@ -16,11 +16,7 @@
  */
 package com.zerocracy.bundles.assigns_and_notifies_on_vacation
 
-import com.jcabi.github.Comment
-import com.jcabi.github.Coordinates
-import com.jcabi.github.Github
-import com.jcabi.github.Issue
-import com.jcabi.github.Repo
+import com.jcabi.github.*
 import com.jcabi.xml.XML
 import com.zerocracy.Project
 import com.zerocracy.entry.ExtGithub
