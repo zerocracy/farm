@@ -52,24 +52,16 @@ public final class StkVerbose implements Stakeholder {
     }
 
     @Override
-    @SuppressWarnings("PMD.AvoidCatchingThrowable")
+    @SuppressWarnings("PMD.PrematureDeclaration")
     public void process(final Project project, final XML claim)
         throws IOException {
-        final String info = String.format(
-            "['%s' in '%s' for claim '%s']",
-            this.name, project.pid(), new ClaimIn(claim).type()
+        final long start = System.currentTimeMillis();
+        this.origin.process(project, claim);
+        Logger.info(
+            this,
+            "Completed ['%s' in '%s' for claim '%s'] in %dms",
+            this.name, project.pid(), new ClaimIn(claim).type(),
+            System.currentTimeMillis() - start
         );
-        Logger.info(this, "Running %s", info);
-        try {
-            this.origin.process(project, claim);
-            // @checkstyle IllegalCatch (1 line)
-        } catch (final Throwable err) {
-            Logger.info(
-                this,
-                "Failed %s: %s", info, err.getMessage()
-            );
-            throw err;
-        }
-        Logger.info(this, "Completed %s", info);
     }
 }
