@@ -64,7 +64,10 @@ public final class StkVerbose implements Stakeholder {
             this.origin.process(project, claim);
             // @checkstyle IllegalCatch (1 line)
         } catch (final Throwable err) {
-            Logger.info(this, "Failed %s: %[exception]s", info, err);
+            Logger.info(
+                this,
+                "Failed %s: %s", info, err.getMessage()
+            );
             throw err;
         }
         Logger.info(this, "Completed %s", info);
