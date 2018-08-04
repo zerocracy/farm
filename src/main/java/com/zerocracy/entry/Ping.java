@@ -128,7 +128,6 @@ public final class Ping implements Job {
         if (catalog.exists(project.pid()) && !catalog.pause(project.pid())) {
             new ClaimOut()
                 .type(type)
-                .param("timestamp", Instant.now().toEpochMilli())
                 .postTo(new ClaimsOf(this.farm, project));
         }
     }
