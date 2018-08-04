@@ -23,7 +23,8 @@ import com.jcabi.log.Logger;
 import com.zerocracy.Farm;
 import com.zerocracy.entry.ExtGithub;
 import java.io.IOException;
-import java.util.function.Supplier;
+import org.cactoos.Text;
+import org.cactoos.text.FormattedText;
 
 /**
  * GitHub API is over its quota.
@@ -71,12 +72,20 @@ public final class Quota {
 
     /**
      * Is it over?
-     * @param msg Message to log as warn if result is true. If {@code null} a
-     *  generic log message will be used.
      * @return TRUE if over
      * @throws IOException If fails
      */
-    public boolean over(final Supplier<? extends CharSequence> msg)
+    public boolean over() throws IOException {
+        return this.over(new FormattedText("Quota is over: %s", this));
+    }
+
+    /**
+     * Is it over?
+     * @param msg Message to log as warn if result is true.
+     * @return TRUE if over
+     * @throws IOException If fails
+     */
+    public boolean over(final Text msg)
         throws IOException {
         final Limit.Smart limit = new Limit.Smart(
             this.github.limits().get(Limits.CORE)
@@ -84,11 +93,7 @@ public final class Quota {
         // @checkstyle MagicNumber (1 line)
         final boolean result = limit.remaining() < 500;
         if (result) {
-            if (msg == null) {
-                Logger.warn(this, "Quota is over: %s", this);
-            } else {
-                Logger.warn(this, msg.get().toString());
-            }
+            Logger.warn(this, msg.asString());
         }
         return result;
     }

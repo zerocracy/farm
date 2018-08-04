@@ -173,7 +173,7 @@ public final class TkGithub implements Take, Runnable {
             );
         }
         final Github github = new ExtGithub(this.farm).value();
-        if (new Quota(github).over(null)) {
+        if (new Quota(github).over()) {
             throw new RsForward(
                 new RsWithBody(
                     new Par(
