@@ -20,9 +20,11 @@ import com.amazonaws.services.sqs.model.Message;
 import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseCallable;
 import com.jcabi.log.VerboseThreads;
+import com.zerocracy.shutdown.ShutdownFarm;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.Proc;
 import org.cactoos.scalar.And;
 
@@ -44,12 +46,24 @@ public final class AsyncProc implements Proc<List<Message>> {
     private final Proc<Message> origin;
 
     /**
+     * Shutdown hook.
+     */
+    private final ShutdownFarm.Hook shutdown;
+
+    /**
+     * Counter.
+     */
+    private final AtomicInteger count;
+
+    /**
      * Ctor.
      *
      * @param origin Origin proc
+     * @param shutdown Shutdown hook
      */
-    public AsyncProc(final Proc<Message> origin) {
-        this(Runtime.getRuntime().availableProcessors(), origin);
+    public AsyncProc(final Proc<Message> origin,
+        final ShutdownFarm.Hook shutdown) {
+        this(Runtime.getRuntime().availableProcessors(), origin, shutdown);
     }
 
     /**
@@ -57,12 +71,16 @@ public final class AsyncProc implements Proc<List<Message>> {
      *
      * @param threads Threads
      * @param origin Origin proc
+     * @param shutdown Shutdown hook
      */
-    public AsyncProc(final int threads, final Proc<Message> origin) {
+    public AsyncProc(final int threads, final Proc<Message> origin,
+        final ShutdownFarm.Hook shutdown) {
         this.service = Executors.newFixedThreadPool(
             threads, new VerboseThreads(AsyncProc.class)
         );
         this.origin = origin;
+        this.shutdown = shutdown;
+        this.count = new AtomicInteger();
     }
 
     @Override
@@ -70,19 +88,26 @@ public final class AsyncProc implements Proc<List<Message>> {
         this.service.submit(
             new VerboseCallable<>(
                 () -> {
-                    Logger.info(
-                        this, "Processing %d messages",
-                        input.size()
-                    );
-                    new And(this.origin, input).value();
+                    try {
+                        Logger.info(
+                            this, "Processing %d messages",
+                            input.size()
+                        );
+                        new And(this.origin, input).value();
+                    } finally {
+                        if (this.count.decrementAndGet() == 0
+                            && this.shutdown.isStopping()) {
+                            this.shutdown.complete();
+                        }
+                    }
                     return null;
                 },
                 true, true
             )
         );
         Logger.info(
-            this, "Submitted %d messages",
-            input.size()
+            this, "Submitted %d messages (count=%d)",
+            input.size(), this.count.incrementAndGet()
         );
     }
 }

@@ -28,6 +28,7 @@ import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.farm.props.PropsFarm;
+import com.zerocracy.shutdown.ShutdownFarm;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
@@ -73,7 +74,7 @@ public final class ClaimsRoutineITCase {
                 ).value();
             }
         );
-        routine.start();
+        routine.start(new ShutdownFarm.Hook());
         TimeUnit.SECONDS.sleep((long) Tv.FIVE);
         final String type = "test";
         new ClaimOut()

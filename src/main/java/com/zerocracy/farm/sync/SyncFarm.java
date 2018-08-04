@@ -130,20 +130,9 @@ public final class SyncFarm implements Farm {
     @Override
     public void close() throws IOException {
         try {
-            this.freeze();
             this.terminator.close();
         } finally {
             this.origin.close();
         }
-    }
-
-    /**
-     * Freeze the farm. It will lock all projects so they will stop
-     *  returning new items.
-     * @throws IOException If already called
-     * @checkstyle NonStaticMethodCheck (5 lines)
-     */
-    private void freeze() throws IOException {
-        // not implemented, see SyncFarmTests
     }
 }

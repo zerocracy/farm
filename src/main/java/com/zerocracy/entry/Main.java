@@ -35,6 +35,7 @@ import com.zerocracy.radars.gitlab.TkGitlab;
 import com.zerocracy.radars.slack.SlackRadar;
 import com.zerocracy.radars.slack.TkSlack;
 import com.zerocracy.radars.viber.TkViber;
+import com.zerocracy.shutdown.ShutdownFarm;
 import com.zerocracy.tk.TkAlias;
 import com.zerocracy.tk.TkApp;
 import io.sentry.Sentry;
@@ -52,6 +53,7 @@ import org.takes.http.FtCli;
  * Main entry point.
  * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @checkstyle ClassFanOutComplexityCheck (500 lines)
  */
 @SuppressWarnings("PMD.ExcessiveImports")
 public final class Main {
@@ -115,10 +117,14 @@ public final class Main {
             );
         }
         Logger.info(this, "Farm is ready to start");
+        final ShutdownFarm.Hook shutdown = new ShutdownFarm.Hook();
         try (
-            final Farm farm = new SmartFarm(
-                new S3Farm(new ExtBucket().value(), temp)
-            ).value();
+            final Farm farm = new ShutdownFarm(
+                new SmartFarm(
+                    new S3Farm(new ExtBucket().value(), temp)
+                ).value(),
+                shutdown
+            );
             final SlackRadar radar = new SlackRadar(farm);
             final ClaimsRoutine claims = new ClaimsRoutine(
                 farm,
@@ -131,12 +137,13 @@ public final class Main {
                                 new BrigadeProc(farm)
                             )
                         )
-                    )
+                    ),
+                    shutdown
                 )
             )
         ) {
             new ExtMongobee(farm).apply();
-            claims.start();
+            claims.start(shutdown);
             new AsyncFunc<>(
                 input -> {
                     new ExtTelegram(farm).value();
