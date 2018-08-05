@@ -30,9 +30,6 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   new Footprint(farm, project).withCloseable {
     Footprint footprint ->
-      footprint.collection().find().each {
-        println(it)
-      }
       MatcherAssert.assertThat(
         'Mentor not notified',
         footprint.collection().find(
