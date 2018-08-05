@@ -21,10 +21,12 @@ import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.SoftException
+import com.zerocracy.claims.ClaimOut
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pmo.People
+import org.cactoos.text.FormattedText
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).isPmo()
@@ -45,9 +47,26 @@ def exec(Project project, XML xml) {
     )
   }
   people.breakup(login)
-  claim.reply(
+  new ClaimOut(new Date()).type('Notify user').token(
+    new FormattedText(
+      "user;%s",
+      author
+    ).asString()
+  ).param(
+    'message',
     new Par(
       'User @%s is not your student anymore, see §47'
-    ).say()
+    ).say(login)
+  ).postTo(new ClaimsOf(farm, project))
+  new ClaimOut(new Date()).type('Notify user').token(
+    new FormattedText(
+      "user;%s",
+      login
+    ).asString()
+  ).param(
+    'message',
+    new Par(
+      'User @%s is not your mentor anymore, he/she broke up with you, see §47'
+    ).say(author)
   ).postTo(new ClaimsOf(farm, project))
 }

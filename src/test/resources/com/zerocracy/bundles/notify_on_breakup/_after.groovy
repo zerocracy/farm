@@ -17,30 +17,43 @@
 package com.zerocracy.bundles.notify_on_breakup
 
 import com.jcabi.xml.XML
-import com.zerocracy.Item
+import com.mongodb.client.model.Filters
+import com.zerocracy.Farm
 import com.zerocracy.Project
-import com.zerocracy.pmo.Awards
-import org.cactoos.text.FormattedText
+import com.zerocracy.claims.Footprint
 import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
+import org.hamcrest.collection.IsIterableWithSize
+import org.hamcrest.core.IsEqual
 
 def exec(Project project, XML xml) {
-  Item item = project.acq('test.txt').withCloseable {
-    item -> assert (item.path().text.contains(
-          'User @paulodamaso is not your student anymore, see §47',
-      ) && item.path().text.contains(
-          'User @g4s8 is not your mentor anymore , he/she broke up with you, see §47'
+  Farm farm = binding.variables.farm
+  new Footprint(farm, project).withCloseable {
+    Footprint footprint ->
+      MatcherAssert.assertThat(
+        'Mentor not notified',
+        footprint.collection().find(
+          Filters.and(
+            Filters.eq('project', project.pid()),
+            Filters.eq('type', 'Notify user'),
+            Filters.eq('token', 'user;g4s8'),
+          )
+        ),
+        new IsIterableWithSize<>(
+          new IsEqual<Integer>(1)
+        )
       )
-    )
+      MatcherAssert.assertThat(
+        'Student not notified',
+        footprint.collection().find(
+          Filters.and(
+            Filters.eq('project', project.pid()),
+            Filters.eq('type', 'Notify user'),
+            Filters.eq('token', 'user;paulodamaso'),
+          )
+        ),
+        new IsIterableWithSize<>(
+          new IsEqual<Integer>(1)
+        )
+      )
   }
-//  MatcherAssert.assertThat(
-//    'Mentor did not received notification',
-//    new Awards(binding.variables.farm, 'g4s8').total(),
-//    Matchers.is(256)
-//  )
-//  MatcherAssert.assertThat(
-//    'Student did not received notification',
-//    new Awards(binding.variables.farm, 'paulodamaso').total(),
-//    Matchers.is(256)
-//  )
 }

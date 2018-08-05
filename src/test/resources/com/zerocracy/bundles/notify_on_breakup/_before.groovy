@@ -16,20 +16,9 @@
  */
 package com.zerocracy.bundles.notify_on_breakup
 
-import com.jcabi.github.Repos
 import com.jcabi.xml.XML
-import com.zerocracy.Farm
 import com.zerocracy.Project
-import com.zerocracy.entry.ExtGithub
-import com.zerocracy.pm.staff.Roles
-import com.zerocracy.pmo.Awards
-import com.zerocracy.pmo.Pmo
 
 def exec(Project project, XML xml) {
-  Farm farm = binding.variables.farm
-  new ExtGithub(farm).value().repos().create(new Repos.RepoCreate('test', false))
-  new Awards(farm, 'g4s8').bootstrap().add(
-    project, 256, 'gh:test/test#1', 'test'
-  )
-  new Roles(new Pmo(farm)).bootstrap().assign('g4s8', 'PO')
+
 }
