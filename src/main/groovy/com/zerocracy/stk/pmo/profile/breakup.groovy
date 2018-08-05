@@ -49,7 +49,7 @@ def exec(Project project, XML xml) {
   people.breakup(login)
   new ClaimOut(new Date()).type('Notify user').token(
     new FormattedText(
-      "user;%s",
+      'user;%s',
       author
     ).asString()
   ).param(
@@ -63,7 +63,7 @@ def exec(Project project, XML xml) {
   ).postTo(new ClaimsOf(farm, project))
   new ClaimOut(new Date()).type('Notify user').token(
     new FormattedText(
-      "user;%s",
+      'user;%s',
       login
     ).asString()
   ).param(
