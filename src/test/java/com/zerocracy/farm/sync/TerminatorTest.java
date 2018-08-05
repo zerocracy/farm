@@ -19,6 +19,7 @@ package com.zerocracy.farm.sync;
 import com.jcabi.aspects.Tv;
 import com.zerocracy.Project;
 import com.zerocracy.farm.fake.FkProject;
+import com.zerocracy.farm.props.PropsFarm;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
@@ -47,7 +48,8 @@ public final class TerminatorTest {
         Mockito.when(lock.tryLock(Mockito.anyLong(), Mockito.any()))
             .thenReturn(false).thenReturn(true);
         final FkProject project = new FkProject();
-        try (final Terminator terminator = new Terminator(1)) {
+        final PropsFarm farm = new PropsFarm();
+        try (final Terminator terminator = new Terminator(farm, 1L)) {
             final AtomicBoolean interrupted = new AtomicBoolean(false);
             final Thread thread = new Thread(
                 () -> {

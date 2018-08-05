@@ -102,7 +102,7 @@ public final class StkSafe implements Stakeholder {
                     new ClaimsOf(this.farm, project)
                 );
             } else {
-                new SafeSentry().capture(
+                new SafeSentry(this.farm).capture(
                     new IllegalArgumentException(
                         String.format(
                             "Claim #%d \"%s\" has no token in %s",
@@ -140,7 +140,7 @@ public final class StkSafe implements Stakeholder {
                     .param("stacktrace", StkSafe.stacktrace(ex))
                     .postTo(new ClaimsOf(this.farm, project));
             }
-            new SafeSentry().capture(ex);
+            new SafeSentry(this.farm).capture(ex);
             if (claim.hasToken() && !claim.type().startsWith("Notify")) {
                 claim.reply(
                     new TxtUnrecoverableError(

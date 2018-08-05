@@ -88,7 +88,7 @@ public final class ReSafe implements Reaction {
                                     ).asString()
                                 )
                         );
-                        new SafeSentry().capture(throwable);
+                        new SafeSentry(farm).capture(throwable);
                         throw new IOException(throwable);
                     }
                 )

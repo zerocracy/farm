@@ -359,7 +359,7 @@ public final class TkApp extends TkWrap {
                         },
                         new FbLog4j(),
                         req -> {
-                            new SafeSentry().capture(req.throwable());
+                            new SafeSentry(farm).capture(req.throwable());
                             return new Opt.Empty<>();
                         },
                         req -> new Opt.Single<>(

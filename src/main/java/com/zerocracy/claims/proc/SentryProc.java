@@ -17,6 +17,7 @@
 package com.zerocracy.claims.proc;
 
 import com.amazonaws.services.sqs.model.Message;
+import com.zerocracy.Farm;
 import com.zerocracy.SafeSentry;
 import org.cactoos.Proc;
 
@@ -40,10 +41,11 @@ public final class SentryProc implements Proc<Message> {
     /**
      * Ctor.
      *
+     * @param farm Farm
      * @param origin Origin proc
      */
-    public SentryProc(final Proc<Message> origin) {
-        this(new SafeSentry(), origin);
+    public SentryProc(final Farm farm, final Proc<Message> origin) {
+        this(new SafeSentry(farm), origin);
     }
 
     /**

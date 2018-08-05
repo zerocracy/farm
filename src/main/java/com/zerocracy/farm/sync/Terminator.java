@@ -19,6 +19,7 @@ package com.zerocracy.farm.sync;
 import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseRunnable;
 import com.jcabi.log.VerboseThreads;
+import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.SafeSentry;
 import com.zerocracy.ShutUp;
@@ -61,10 +62,17 @@ final class Terminator implements Closeable, Scalar<Iterable<Directive>> {
     private final Map<Project, String> killers;
 
     /**
+     * Farm.
+     */
+    private final Farm farm;
+
+    /**
      * Ctor.
+     * @param farm Farm
      * @param msec Seconds to give to each thread
      */
-    Terminator(final long msec) {
+    Terminator(final Farm farm, final long msec) {
+        this.farm = farm;
         this.threshold = msec;
         this.service = Executors.newCachedThreadPool(
             new VerboseThreads(
@@ -152,7 +160,7 @@ final class Terminator implements Closeable, Scalar<Iterable<Directive>> {
                             thread.getId(), thread.getName(),
                             file, project.pid(), this.threshold, lock, location
                         );
-                        new SafeSentry().capture(
+                        new SafeSentry(this.farm).capture(
                             new Exception(
                                 String.format(
                                     // @checkstyle LineLength (1 line)

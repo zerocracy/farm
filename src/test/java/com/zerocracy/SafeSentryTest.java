@@ -16,6 +16,7 @@
  */
 package com.zerocracy;
 
+import com.zerocracy.farm.props.PropsFarm;
 import io.sentry.SentryClient;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -26,6 +27,7 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.xembly.Directives;
 
 /**
  * Test case for {@link SafeSentry}.
@@ -44,7 +46,12 @@ public final class SafeSentryTest {
             final SentryClient client = Mockito.mock(SentryClient.class);
             Mockito.doThrow(new RuntimeException(message))
                 .when(client).sendException(Mockito.any(Exception.class));
-            new SafeSentry(client).capture(new RuntimeException());
+            new SafeSentry(
+                client,
+                new PropsFarm(
+                    new Directives().xpath("/props/testing").remove()
+                )
+            ).capture(new RuntimeException());
         } finally {
             logger.removeAppender(appender);
         }
