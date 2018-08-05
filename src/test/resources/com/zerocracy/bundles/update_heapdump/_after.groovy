@@ -25,7 +25,7 @@ import org.hamcrest.MatcherAssert
 import org.hamcrest.core.IsEqual
 
 def exec(Project project, XML xml) {
-    Bucket bucket;
+    Bucket bucket
     project.acq('test/bucket').withCloseable {
       bucket = new FkBucket(
           it.path(),

@@ -34,7 +34,7 @@ def exec(Project project, XML xml) {
   if (new Props(farm).has('//testing')) {
     project.acq('test').withCloseable {
       if (it.path().toString().contains('update_heapdump')) {
-        Bucket bucket;
+        Bucket bucket
         project.acq('test/bucket').withCloseable {
           bucket = new FkBucket(
               it.path(),
