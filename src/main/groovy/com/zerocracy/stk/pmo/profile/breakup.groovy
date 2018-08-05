@@ -53,6 +53,9 @@ def exec(Project project, XML xml) {
       author
     ).asString()
   ).param(
+    'flow',
+    'Breakup; Notify'
+  ).param(
     'message',
     new Par(
       'User @%s is not your student anymore, see §47'
@@ -63,6 +66,9 @@ def exec(Project project, XML xml) {
       "user;%s",
       login
     ).asString()
+  ).param(
+    'flow',
+    'Breakup; Notify'
   ).param(
     'message',
     new Par(

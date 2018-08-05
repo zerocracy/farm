@@ -24,11 +24,15 @@ import com.zerocracy.claims.Footprint
 import org.hamcrest.MatcherAssert
 import org.hamcrest.collection.IsIterableWithSize
 import org.hamcrest.core.IsEqual
+import org.hamcrest.core.IsNot
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   new Footprint(farm, project).withCloseable {
     Footprint footprint ->
+      footprint.collection().find().each {
+        println(it)
+      }
       MatcherAssert.assertThat(
         'Mentor not notified',
         footprint.collection().find(
@@ -36,10 +40,11 @@ def exec(Project project, XML xml) {
             Filters.eq('project', project.pid()),
             Filters.eq('type', 'Notify user'),
             Filters.eq('token', 'user;g4s8'),
+            Filters.eq('flow', 'Breakup; Notify')
           )
         ),
         new IsIterableWithSize<>(
-          new IsEqual<Integer>(1)
+          new IsNot(new IsEqual<Integer>(0))
         )
       )
       MatcherAssert.assertThat(
@@ -49,10 +54,11 @@ def exec(Project project, XML xml) {
             Filters.eq('project', project.pid()),
             Filters.eq('type', 'Notify user'),
             Filters.eq('token', 'user;paulodamaso'),
+            Filters.eq('flow', 'Breakup; Notify')
           )
         ),
         new IsIterableWithSize<>(
-          new IsEqual<Integer>(1)
+          new IsNot(new IsEqual<Integer>(0))
         )
       )
   }
