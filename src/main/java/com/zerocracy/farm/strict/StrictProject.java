@@ -54,7 +54,10 @@ final class StrictProject implements Project {
             "(speed/[a-zA-Z0-9-]+\\.xml)",
             "(options/[a-zA-Z0-9-]+\\.xml)",
             "(verbosity/[a-zA-Z0-9-]+\\.xml)",
-            "(resumes\\.xml)"
+            "(resumes\\.xml)",
+            "(test)",
+            "(test/heap)",
+            "(test/bucket)"
         )
     );
 

@@ -18,16 +18,17 @@ package com.zerocracy.bundles.update_heapdump
 
 import com.jcabi.xml.XML
 import com.zerocracy.Project
-import java.nio.file.Files
-import java.nio.file.Paths
 import org.cactoos.io.LengthOf
 import org.cactoos.io.TeeInput
 
 def exec(Project project, XML xml) {
-  new LengthOf(
-    new TeeInput(
-      'This is a heap file for testing purposes',
-      Files.createFile(Paths.get('target/testing-bundles/update_heapdump/heap'))
-    )
-  ).intValue()
+  project.acq('test/heap').withCloseable {
+    new LengthOf(
+      new TeeInput(
+        'This is a heap file for testing purposes',
+        it.path()
+      )
+    ).intValue()
+  }
+
 }
