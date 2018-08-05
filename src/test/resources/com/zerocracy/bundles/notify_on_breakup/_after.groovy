@@ -22,8 +22,7 @@ import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.claims.Footprint
 import org.hamcrest.MatcherAssert
-import org.hamcrest.collection.IsIterableWithSize
-import org.hamcrest.core.IsEqual
+import org.hamcrest.collection.IsEmptyIterable
 import org.hamcrest.core.IsNot
 
 def exec(Project project, XML xml) {
@@ -40,9 +39,7 @@ def exec(Project project, XML xml) {
             Filters.eq('flow', 'Breakup; Notify')
           )
         ),
-        new IsIterableWithSize<>(
-          new IsNot(new IsEqual<Integer>(0))
-        )
+        new IsNot(new IsEmptyIterable<>())
       )
       MatcherAssert.assertThat(
         'Student not notified',
@@ -54,9 +51,7 @@ def exec(Project project, XML xml) {
             Filters.eq('flow', 'Breakup; Notify')
           )
         ),
-        new IsIterableWithSize<>(
-          new IsNot(new IsEqual<Integer>(0))
-        )
+        new IsNot(new IsEmptyIterable<>())
       )
   }
 }

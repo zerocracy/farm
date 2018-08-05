@@ -17,8 +17,30 @@
 package com.zerocracy.bundles.notify_on_breakup
 
 import com.jcabi.xml.XML
+import com.mongodb.client.model.Filters
+import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.claims.Footprint
+import org.hamcrest.MatcherAssert
+import org.hamcrest.collection.IsEmptyIterable
+import org.hamcrest.core.IsNot
 
 def exec(Project project, XML xml) {
-
+  Farm farm = binding.variables.farm
+  new Footprint(farm, project).withCloseable {
+    Footprint footprint ->
+    footprint.collection().find().each {
+      println(it)
+    }
+    MatcherAssert.assertThat(
+      'Database not empty of notifications',
+      footprint.collection().find(
+        Filters.and(
+          Filters.eq('project', project.pid()),
+          Filters.eq('type', 'Notify user')
+        ),
+      ).iterator(),
+      new IsNot(new IsEmptyIterable())
+    )
+  }
 }
