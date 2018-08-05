@@ -28,6 +28,7 @@ import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.farm.props.PropsFarm;
+import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
@@ -44,6 +45,7 @@ import org.junit.Test;
  * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @checkstyle ExecutableStatementCountCheck (500 lines)
  */
 public final class ClaimsRoutineITCase {
     @BeforeClass
@@ -78,12 +80,17 @@ public final class ClaimsRoutineITCase {
         final String type = "test";
         new ClaimOut()
             .type(type)
-            .param("nonce", System.currentTimeMillis())
+            .param("nonce1", System.nanoTime())
+            .postTo(claims);
+        new ClaimOut()
+            .type("delayed")
+            .until(Duration.ofMinutes(1L))
+            .param("nonce2", System.nanoTime())
             .postTo(claims);
         TimeUnit.SECONDS.sleep((long) Tv.FIVE);
         routine.close();
         MatcherAssert.assertThat(
-            "didn't receive",
+            "expected one message",
             messages,
             Matchers.hasSize(1)
         );

@@ -18,6 +18,7 @@ package com.zerocracy.claims;
 
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.model.Message;
+import com.amazonaws.services.sqs.model.MessageAttributeValue;
 import com.amazonaws.services.sqs.model.ReceiveMessageRequest;
 import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseRunnable;
@@ -27,9 +28,11 @@ import com.jcabi.xml.XMLDocument;
 import com.zerocracy.Farm;
 import com.zerocracy.entry.ExtSqs;
 import java.io.Closeable;
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -48,6 +51,10 @@ import org.cactoos.text.UncheckedText;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class ClaimsRoutine implements Runnable, Closeable {
+    /**
+     * Until attribute.
+     */
+    private static final String UNTIL = "until";
 
     /**
      * Messages limit.
@@ -115,15 +122,24 @@ public final class ClaimsRoutine implements Runnable, Closeable {
             .asString();
         final List<Message> messages = sqs.receiveMessage(
             new ReceiveMessageRequest(queue)
-                .withMessageAttributeNames("project", "signature")
+                .withMessageAttributeNames(
+                    "project", "signature", ClaimsRoutine.UNTIL
+                )
                 .withMaxNumberOfMessages(ClaimsRoutine.LIMIT)
         ).getMessages();
         final Set<String> projects = new HashSet<>();
         final List<Message> merged = new LinkedList<>();
         for (final Message message : messages) {
+            final Map<String, MessageAttributeValue> attr =
+                message.getMessageAttributes();
+            if (attr.containsKey(ClaimsRoutine.UNTIL)
+                // @checkstyle LineLength (1 line)
+                && Instant.parse(attr.get(ClaimsRoutine.UNTIL).getStringValue()).isAfter(Instant.now())) {
+                continue;
+            }
             final XML xml = new XMLDocument(message.getBody())
                 .nodes("/claim").get(0);
-            final String pid = message.getMessageAttributes()
+            final String pid = attr
                 .get("project")
                 .getStringValue();
             final ClaimIn claim = new ClaimIn(xml);

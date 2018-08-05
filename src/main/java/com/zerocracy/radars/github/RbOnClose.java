@@ -26,10 +26,10 @@ import com.zerocracy.Project;
 import com.zerocracy.claims.ClaimOut;
 import com.zerocracy.entry.ClaimsOf;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 import javax.json.JsonObject;
 
 /**
@@ -79,7 +79,7 @@ public final class RbOnClose implements Rebound {
                 .token(new TokenOfIssue(issue))
                 .author(author)
                 .param("job", job)
-                .until(TimeUnit.MINUTES.toSeconds((long) Tv.FIFTEEN))
+                .until(Duration.ofMinutes((long) Tv.FIFTEEN))
                 .param("reason", "GitHub issue was closed")
                 .postTo(new ClaimsOf(farm, project));
             answer = "Asked WBS to take it out of scope";

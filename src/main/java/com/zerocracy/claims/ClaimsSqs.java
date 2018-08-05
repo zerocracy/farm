@@ -22,12 +22,9 @@ import com.amazonaws.services.sqs.model.SendMessageRequest;
 import com.jcabi.xml.XML;
 import com.zerocracy.Project;
 import java.io.IOException;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
-import org.cactoos.iterable.ItemAt;
-import org.cactoos.iterable.Mapped;
+import org.cactoos.scalar.And;
 import org.cactoos.scalar.IoCheckedScalar;
 
 /**
@@ -74,22 +71,6 @@ public final class ClaimsSqs implements Claims {
             this.queue,
             claim.toString()
         ).withMessageGroupId(this.project.pid());
-        final long until = new IoCheckedScalar<>(
-            new ItemAt<>(
-                0L,
-                new Mapped<>(
-                    Long::parseLong,
-                    claim.xpath("/claim/until/text()")
-                )
-            )
-        ).value();
-        final long delay = Duration.between(
-            Instant.now(),
-            Instant.ofEpochSecond(until)
-        ).getSeconds();
-        if (delay > 0L) {
-            msg.setDelaySeconds((int) delay);
-        }
         final Map<String, MessageAttributeValue> attrs = new HashMap<>(1);
         final String signature = new ClaimSignature(
             claim.nodes("//claim").get(0)
@@ -106,6 +87,17 @@ public final class ClaimsSqs implements Claims {
                 .withDataType("String")
                 .withStringValue(this.project.pid())
         );
+        new IoCheckedScalar<>(
+            new And(
+                (String delay) -> attrs.put(
+                    "until",
+                    new MessageAttributeValue()
+                        .withDataType("String")
+                        .withStringValue(delay)
+                ),
+                claim.xpath("/claim/until/text()")
+            )
+        ).value();
         msg.setMessageDeduplicationId(
             String.format(
                 "%s:%s",

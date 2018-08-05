@@ -23,7 +23,6 @@ import com.jcabi.xml.XSLDocument;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Locale;
@@ -31,7 +30,6 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 import org.cactoos.collection.Mapped;
 import org.cactoos.time.DateAsText;
-import org.cactoos.time.ZonedDateTimeAsText;
 import org.xembly.Directive;
 import org.xembly.Directives;
 import org.xembly.Xembler;
@@ -199,15 +197,11 @@ public final class ClaimOut implements Iterable<Directive> {
 
     /**
      * Until this amount of seconds.
-     * @param seconds The amount of seconds to wait
+     * @param delay The duration to wait
      * @return This
      * @throws IOException If fails
      */
-    public ClaimOut until(final long seconds) throws IOException {
-        final Duration delay = Duration.between(
-            Instant.now(),
-            Instant.ofEpochSecond(seconds)
-        );
+    public ClaimOut until(final Duration delay) throws IOException {
         if (delay.compareTo(ClaimOut.MAX_DELAY) > 0) {
             throw new IOException(
                 String.format(
@@ -223,11 +217,7 @@ public final class ClaimOut implements Iterable<Directive> {
                 .remove()
                 .pop()
                 .add("until")
-                .set(
-                    new ZonedDateTimeAsText(
-                        ZonedDateTime.now().plusSeconds(seconds)
-                    ).asString()
-                )
+                .set(Instant.now().plus(delay).toString())
                 .up()
         );
     }
