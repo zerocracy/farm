@@ -32,21 +32,25 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Ping hourly')
   Farm farm = binding.variables.farm
   if (new Props(farm).has('//testing')) {
-    Bucket bucket;
-    project.acq('test/bucket').withCloseable {
-      bucket = new FkBucket(
-          it.path(),
-          'dumpbucket'
-      )
-    }
-    Logger.info(this, 'Saving test heap')
     project.acq('test').withCloseable {
-      new HeapDump(
-        bucket,
-        '',
-        it.path(),
-        'heap'
-      ).save()
+      if (it.path().toString().contains('update_heapdump')) {
+        Bucket bucket;
+        project.acq('test/bucket').withCloseable {
+          bucket = new FkBucket(
+              it.path(),
+              'dumpbucket'
+          )
+        }
+        Logger.info(this, 'Saving test heap')
+        project.acq('test').withCloseable {
+          new HeapDump(
+              bucket,
+              '',
+              it.path(),
+              'heap'
+          ).save()
+        }
+      }
     }
   } else {
     try {
