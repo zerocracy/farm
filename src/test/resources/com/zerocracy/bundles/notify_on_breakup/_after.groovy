@@ -29,29 +29,27 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   new Footprint(farm, project).withCloseable {
     Footprint footprint ->
-      MatcherAssert.assertThat(
-        'Mentor not notified',
-        footprint.collection().find(
-          Filters.and(
-            Filters.eq('project', project.pid()),
-            Filters.eq('type', 'Notify user'),
-            Filters.eq('token', 'user;g4s8'),
-            Filters.eq('flow', 'Breakup; Notify')
-          )
-        ),
-        new IsNot(new IsEmptyIterable<>())
-      )
-      MatcherAssert.assertThat(
-        'Student not notified',
-        footprint.collection().find(
-          Filters.and(
-            Filters.eq('project', project.pid()),
-            Filters.eq('type', 'Notify user'),
-            Filters.eq('token', 'user;paulodamaso'),
-            Filters.eq('flow', 'Breakup; Notify')
-          )
-        ),
-        new IsNot(new IsEmptyIterable<>())
-      )
+    MatcherAssert.assertThat(
+      'Mentor not notified',
+      footprint.collection().find(
+        Filters.and(
+          Filters.eq('project', project.pid()),
+          Filters.eq('type', 'Notify test'),
+          Filters.eq('token', 'test;C123;g4s8')
+        )
+      ),
+      new IsNot(new IsEmptyIterable<>())
+    )
+    MatcherAssert.assertThat(
+      'Student not notified',
+      footprint.collection().find(
+        Filters.and(
+          Filters.eq('project', project.pid()),
+          Filters.eq('type', 'Notify user'),
+          Filters.eq('token', 'user;paulodamaso')
+        )
+      ),
+      new IsNot(new IsEmptyIterable<>())
+    )
   }
 }

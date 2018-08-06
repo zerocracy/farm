@@ -29,15 +29,16 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   new Footprint(farm, project).withCloseable {
     Footprint footprint ->
-    footprint.collection().find().each {
-      println(it)
-    }
     MatcherAssert.assertThat(
       'Database not empty of notifications',
       footprint.collection().find(
         Filters.and(
           Filters.eq('project', project.pid()),
-          Filters.eq('type', 'Notify user')
+          Filters.or(
+            Filters.eq('type', 'Notify test'),
+            Filters.eq('type', 'Notify'),
+            Filters.eq('type', 'Notify user')
+          )
         ),
       ).iterator(),
       new IsNot(new IsEmptyIterable())
