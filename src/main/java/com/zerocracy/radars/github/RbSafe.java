@@ -19,6 +19,7 @@ package com.zerocracy.radars.github;
 import com.jcabi.github.Github;
 import com.jcabi.github.Issue;
 import com.jcabi.github.mock.MkGithub;
+import com.jcabi.log.Logger;
 import com.zerocracy.Farm;
 import com.zerocracy.SafeSentry;
 import com.zerocracy.SoftException;
@@ -74,6 +75,19 @@ public final class RbSafe implements Rebound {
                 new FuncOf<>(
                     throwable -> {
                         final Issue issue = RbSafe.issue(github, event);
+                        Logger.error(
+                            this,
+                            "Issue: %s#%d, Action: `%s`, error: %[exception]s",
+                            issue.repo().coordinates(),
+                            issue.number(),
+                            event.getString("action"),
+                            throwable
+                        );
+                        new SafeSentry(farm).capture(
+                            new IllegalArgumentException(
+                                event.toString(), throwable
+                            )
+                        );
                         new Errors.Github(
                             new Errors(new ExtDynamo(farm).value()),
                             github
@@ -88,11 +102,6 @@ public final class RbSafe implements Rebound {
                                         event.getString("action")
                                     )
                                 ).asString()
-                            )
-                        );
-                        new SafeSentry().capture(
-                            new IllegalArgumentException(
-                                event.toString(), throwable
                             )
                         );
                         throw new IOException(throwable);

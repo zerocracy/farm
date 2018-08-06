@@ -20,6 +20,8 @@ import com.jcabi.log.Logger;
 import com.zerocracy.Farm;
 import com.zerocracy.farm.props.Props;
 import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import org.cactoos.Scalar;
 import org.cactoos.func.SolidFunc;
 import org.cactoos.func.UncheckedFunc;
@@ -106,6 +108,17 @@ public final class ExtTwitter implements Scalar<ExtTwitter.Tweets> {
     }
 
     /**
+     * Tweets that can retrieve tweeted messages.
+     */
+    public interface Retrievable extends Tweets {
+        /**
+         * Get list of tweets.
+         * @return List of tweets
+         */
+        List<String> tweets();
+    }
+
+    /**
      * Twitter api tweets.
      */
     private static final class ProdTweets implements ExtTwitter.Tweets {
@@ -134,11 +147,22 @@ public final class ExtTwitter implements Scalar<ExtTwitter.Tweets> {
     /**
      * Test tweets.
      */
-    private static final class MkTweets implements ExtTwitter.Tweets {
+    private static final class MkTweets implements ExtTwitter.Retrievable {
+        /**
+         * Published tweets.
+         */
+        private final List<String> messages = new CopyOnWriteArrayList<>();
+
         @Override
         public long publish(final String text) {
+            this.messages.add(text);
             Logger.debug(this, "tweet: %s", text);
             return 0L;
+        }
+
+        @Override
+        public List<String> tweets() {
+            return this.messages;
         }
     }
 }

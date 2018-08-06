@@ -19,10 +19,10 @@ package com.zerocracy.stk.pmo.profile
 import com.jcabi.github.User
 import com.jcabi.xml.XML
 import com.zerocracy.*
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
-import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.Exam
 import com.zerocracy.pmo.People
@@ -33,6 +33,7 @@ import org.cactoos.iterable.ItemAt
 import org.cactoos.iterable.Mapped
 import org.cactoos.list.ListOf
 import org.cactoos.scalar.Or
+import org.cactoos.scalar.StickyScalar
 import org.cactoos.text.AbbreviatedText
 
 import javax.json.JsonObject
@@ -45,7 +46,29 @@ def exec(Project pmo, XML xml) {
   Farm farm = binding.variables.farm
   new Exam(farm, author).min('1.min-rep', 1024)
   String login = claim.param('login')
-  if (new Resumes(farm).bootstrap().examiner(login) != author) {
+  // we allow to invite new students without limitations to PMO users
+  // and 'farm' (C3NDPUA8L) QA users
+  // see https://github.com/zerocracy/farm/issues/1410
+  Scalar<Boolean> force = new StickyScalar<>(
+    new Or(
+      new ListOf<>(
+        new Scalar<Boolean>() {
+          @Override
+          Boolean value() throws Exception {
+            new Roles(new Pmo(farm)).bootstrap().hasAnyRole(author)
+          }
+        },
+        new ItemAt<>(
+          false,
+          new Mapped<>(
+            { Project project -> new Roles(project).bootstrap().hasRole(author, 'QA') },
+            farm.find('@id="C3NDPUA8L"')
+          )
+        )
+      )
+    )
+  )
+  if (new Resumes(farm).bootstrap().examiner(login) != author && !force.value()) {
     throw new SoftException(
       new Par('You are not the examiner of %s, see §1').say(login)
     )
@@ -70,26 +93,7 @@ def exec(Project pmo, XML xml) {
       ).say(login, json.getString('type'))
     )
   }
-  // we allow to invite new students without limitations to PMO users
-  // and 'farm' (C3NDPUA8L) QA users
-  // see https://github.com/zerocracy/farm/issues/1410
-  Scalar<Boolean> force = new Or(
-    new ListOf<>(
-      new Scalar<Boolean>() {
-        @Override
-        Boolean value() throws Exception {
-          new Roles(new Pmo(farm)).bootstrap().hasAnyRole(author)
-        }
-      },
-      new ItemAt<>(
-        false,
-        new Mapped<>(
-          { Project project -> new Roles(project).bootstrap().hasRole(author, 'QA') },
-          farm.find('@id="C3NDPUA8L"')
-        )
-      )
-    )
-  )
+
   People people = new People(farm).bootstrap()
   people.invite(login, author, force.value())
   String name

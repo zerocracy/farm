@@ -32,10 +32,12 @@ import com.zerocracy.entry.PropsAwsCredentials;
 import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.farm.props.PropsFarm;
+import java.time.Duration;
 import java.util.List;
 import java.util.UUID;
 import org.cactoos.map.MapEntry;
 import org.cactoos.map.MapOf;
+import org.cactoos.matchers.MatcherOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.After;
@@ -172,6 +174,33 @@ public final class ClaimsSqsITCase {
         MatcherAssert.assertThat(
             messages,
             Matchers.hasSize(limit)
+        );
+    }
+
+    @Test
+    public void submitWithDelay() throws Exception {
+        final Claims claims = new ClaimsSqs(
+            this.client, this.queue, new FkProject()
+        );
+        final Duration delay = Duration.ofSeconds((long) Tv.THIRTY);
+        new ClaimOut()
+            .type("delayed")
+            .until(delay)
+            .postTo(claims);
+        final String until = "until";
+        MatcherAssert.assertThat(
+            "received claim with delay",
+            this.client.receiveMessage(
+                new ReceiveMessageRequest(this.queue)
+                    .withMaxNumberOfMessages(Tv.TEN)
+                    .withMessageAttributeNames(until)
+            ).getMessages(),
+            Matchers.contains(
+                new MatcherOf<>(
+                    (Message msg) -> msg.getMessageAttributes()
+                        .containsKey(until)
+                )
+            )
         );
     }
 }

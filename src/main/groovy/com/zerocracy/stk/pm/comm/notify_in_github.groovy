@@ -50,6 +50,11 @@ def exec(Project project, XML xml) {
   }
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
+  // @todo #1390:30min Adjust call below to Quota.over with proper message and
+  //  create test case for the scenario it returns true.
+  //  The PR https://github.com/zerocracy/farm/pull/1501 introduced this change
+  //  on Quota.over and has example of its adjustment and test for the case of
+  //  over use in AcceptInvitations.
   if (new Quota(github).over()) {
     claim.copy().until(TimeUnit.MINUTES.toSeconds(5L)).postTo(new ClaimsOf(farm, project))
     return

@@ -73,7 +73,7 @@ public final class SyncFarm implements Farm {
     public SyncFarm(final Farm farm, final long sec) {
         this.origin = farm;
         this.pool = new ConcurrentHashMap<>(0);
-        this.terminator = new Terminator(sec);
+        this.terminator = new Terminator(farm, sec);
     }
 
     @Override

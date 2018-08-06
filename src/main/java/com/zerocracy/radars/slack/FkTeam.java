@@ -14,22 +14,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.remove_old_vacancies
+package com.zerocracy.radars.slack;
 
-import com.jcabi.xml.XML
-import com.zerocracy.Farm
-import com.zerocracy.Project
-import com.zerocracy.pmo.Vacancies
-import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
+import com.ullink.slack.simpleslackapi.SlackTeam;
 
-def exec(Project project, XML xml) {
-  Farm farm = binding.variables.farm
-  MatcherAssert.assertThat(
-    new Vacancies(farm).bootstrap().iterate(),
-    Matchers.contains('C12345678')
-  )
-  // @todo #1257:30min After all the puzzles are solved from #89 (a way to test
-  //  slack communication) add an assert that will validate that slack messages
-  //  notifying project about expired vacancies has been posted.
+/**
+ * Fake {@link SlackTeam}.
+ * @since 0.28
+ */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+public final class FkTeam implements SlackTeam {
+    @Override
+    public String getId() {
+        throw new IllegalStateException("Not implemented");
+    }
+
+    @Override
+    public String getName() {
+        throw new IllegalStateException("Not implemented");
+    }
+
+    @Override
+    public String getDomain() {
+        throw new IllegalStateException("Not implemented");
+    }
 }

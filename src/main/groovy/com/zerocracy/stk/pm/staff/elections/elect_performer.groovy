@@ -16,6 +16,7 @@
  */
 package com.zerocracy.stk.pm.staff.elections
 
+import com.jcabi.github.Github
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Policy
@@ -33,6 +34,7 @@ import com.zerocracy.pm.staff.Elections
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pm.staff.ranks.RnkBoost
 import com.zerocracy.pm.staff.ranks.RnkGithubBug
+import com.zerocracy.pm.staff.ranks.RnkGithubMilestone
 import com.zerocracy.pm.staff.ranks.RnkRev
 import com.zerocracy.pm.staff.votes.*
 import com.zerocracy.pmo.Pmo
@@ -55,6 +57,7 @@ def exec(Project project, XML xml) {
   Reviews reviews = new Reviews(project).bootstrap()
   Farm farm = binding.variables.farm
   Pmo pmo = new Pmo(farm)
+  Github github = new ExtGithub(farm).value()
   // @todo #1214:30min 0crat is assigning closed jobs. It happens when the
   //  issue was closed in github but the Close Job flow fails
   //  for some reason and the job does not leave WBS. Assure that we are
@@ -62,8 +65,9 @@ def exec(Project project, XML xml) {
   //  _after.groovy tests in dont_assign_job_closed bundle.
   List<String> jobs = wbs.iterate().toList()
   [
-      new RnkGithubBug(new ExtGithub(farm).value()),
+      new RnkGithubBug(github),
       new RnkBoost(new Boosts(project).bootstrap()),
+      new RnkGithubMilestone(github),
       new RnkRev(new Wbs(project).bootstrap())
   ].each { jobs.sort(it) }
   for (String job : jobs) {

@@ -77,7 +77,7 @@ public final class ReSafe implements Response {
                                 )
                             ).asString()
                         );
-                        new SafeSentry().capture(throwable);
+                        new SafeSentry(farm).capture(throwable);
                         throw new IOException(throwable);
                     }
                 )

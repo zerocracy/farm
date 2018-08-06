@@ -31,6 +31,7 @@ import org.junit.runner.notification.RunListener;
  * Run listener for the entire test suite.
  * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle NoJavadocForOverriddenMethodsCheck (500 lines)
  */
 public final class TestListener extends RunListener {
 
@@ -47,6 +48,26 @@ public final class TestListener extends RunListener {
         );
     }
 
+    /**
+     * Method executed after test run is finished.
+     *
+     * It runs receiving result parameter, which is the result from finished
+     * test run. If the string "Caused by:" is found inside result it means
+     * that some exception were triggered in some test execution, and
+     * {@link #testRunFinished(Result)} throws an {@link IllegalStateException}
+     * to make explicit that some exceptions occured during the tests.
+     *
+     * Sometimes {@link #testRunFinished(Result)} throws the
+     * {@link IllegalStateException} but the test results show no failures or
+     * exceptions stracktraces. That means that some exceptions was swallowed
+     * or treated in tests execution but its log have been added to result
+     * anyways. See {@link https://github.com/zerocracy/farm/issues/1227
+     * #1227} for more information about this.
+     *
+     * @param result Test run results
+     * @throws Exception When threads are still alive or when are exceptions
+     *  in the test log
+     */
     @Override
     public void testRunFinished(final Result result) throws Exception {
         super.testRunFinished(result);

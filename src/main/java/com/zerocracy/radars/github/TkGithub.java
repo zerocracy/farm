@@ -147,6 +147,11 @@ public final class TkGithub implements Take, Runnable {
         this.rebound = rbd;
     }
 
+    // @todo #1390:30min Adjust call to Quota.over with proper message and
+    //  create test case for the scenario it returns true.
+    //  PR https://github.com/zerocracy/farm/pull/1501 introduced this change
+    //  on Quota.over and has example of its adjustment and test for
+    //  AcceptInvitations.
     @Override
     public Response act(final Request req) throws IOException {
         final RqForm form = new RqFormBase(req);

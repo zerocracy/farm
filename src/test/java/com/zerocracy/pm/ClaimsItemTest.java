@@ -31,7 +31,7 @@ import com.zerocracy.farm.S3Farm;
 import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.sync.SyncFarm;
 import java.nio.file.Files;
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.io.LengthOf;
 import org.cactoos.io.TeeInput;
@@ -114,7 +114,7 @@ public final class ClaimsItemTest {
         final ClaimsItem claims = new ClaimsItem(new FkProject()).bootstrap();
         claims.add(
             new ClaimOut()
-                .until(TimeUnit.MINUTES.toSeconds(1L))
+                .until(Duration.ofMinutes(1L))
                 .type("hello future")
         );
         MatcherAssert.assertThat(

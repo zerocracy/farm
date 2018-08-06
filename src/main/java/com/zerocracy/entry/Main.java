@@ -29,6 +29,7 @@ import com.zerocracy.claims.proc.SentryProc;
 import com.zerocracy.farm.S3Farm;
 import com.zerocracy.farm.SmartFarm;
 import com.zerocracy.farm.props.Props;
+import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.radars.github.GithubRoutine;
 import com.zerocracy.radars.github.TkGithub;
 import com.zerocracy.radars.gitlab.TkGitlab;
@@ -91,7 +92,7 @@ public final class Main {
         try {
             new Main(args).exec();
         } catch (final Throwable ex) {
-            new SafeSentry().capture(ex);
+            new SafeSentry(new PropsFarm()).capture(ex);
             Logger.error(Main.class, "The main app crashed: %[exception]s", ex);
             throw new IOException(ex);
         } finally {
@@ -132,6 +133,7 @@ public final class Main {
                     new DeleteProc(
                         farm,
                         new SentryProc(
+                            farm,
                             new FootprintProc(
                                 farm,
                                 new BrigadeProc(farm)

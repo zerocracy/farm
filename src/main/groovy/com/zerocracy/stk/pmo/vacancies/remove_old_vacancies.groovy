@@ -18,26 +18,36 @@ package com.zerocracy.stk.pmo.vacancies
 
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
+import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pmo.Vacancies
-
-import java.time.ZoneOffset
-import java.time.ZonedDateTime
+import java.time.Duration
+import java.time.Instant
 
 def exec(Project pmo, XML xml) {
   new Assume(pmo, xml).isPmo()
   new Assume(pmo, xml).type('Ping daily')
   ClaimIn claim = new ClaimIn(xml)
-  ZonedDateTime timestamp = ZonedDateTime.ofInstant(claim.created().toInstant(), ZoneOffset.UTC)
+  Instant timestamp = claim.created().toInstant()
   Farm farm = binding.variables.farm
-  // @todo #917:30min Notify all project about expired vacancy.
-  //  Notification text should include that vacancy was removed because it
-  //  was expired. Vacancies.removeOlderThan in such case should return
-  //  project ids of removed vacancies.
+  int days = new Policy(farm).get('51.days', 32)
   new Vacancies(farm)
     .bootstrap()
-    .removeOlderThan(timestamp.minusDays(new Policy(farm).get('51.days', 32)))
+    .removeOlderThan(timestamp - Duration.ofDays(days)).each { pid ->
+      Project notify = farm.find("@id='${pid}'")[0]
+      claim.copy()
+        .type('Notify project')
+        .param(
+          'message',
+          new Par(
+            'Vacancy was removed because it expired after %d days (see §51)'
+          ).say(days)
+        )
+        .postTo(new ClaimsOf(farm, notify))
+  }
+
 }

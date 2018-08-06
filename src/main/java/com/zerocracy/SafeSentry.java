@@ -17,6 +17,7 @@
 package com.zerocracy;
 
 import com.jcabi.log.Logger;
+import com.zerocracy.farm.props.Props;
 import io.sentry.SentryClient;
 import io.sentry.SentryClientFactory;
 
@@ -26,24 +27,34 @@ import io.sentry.SentryClientFactory;
  * @since 1.0
  */
 public final class SafeSentry {
+
     /**
      * Encapsulated Sentry client.
      */
     private final SentryClient client;
 
     /**
-     * Ctor.
+     * Farm.
      */
-    public SafeSentry() {
-        this(SentryClientFactory.sentryClient());
+    private final Farm farm;
+
+    /**
+     * Ctor.
+     *
+     * @param farm Farm
+     */
+    public SafeSentry(final Farm farm) {
+        this(SentryClientFactory.sentryClient(), farm);
     }
 
     /**
      * Ctor.
      * @param client Sentry client
+     * @param farm Farm
      */
-    SafeSentry(final SentryClient client) {
+    SafeSentry(final SentryClient client, final Farm farm) {
         this.client = client;
+        this.farm = farm;
     }
 
     /**
@@ -53,7 +64,9 @@ public final class SafeSentry {
     @SuppressWarnings("PMD.AvoidCatchingThrowable")
     public void capture(final Throwable error) {
         try {
-            this.client.sendException(error);
+            if (!new Props(this.farm).has("//testing")) {
+                this.client.sendException(error);
+            }
             // @checkstyle IllegalCatch (1 line)
         } catch (final Throwable ex) {
             Logger.error(

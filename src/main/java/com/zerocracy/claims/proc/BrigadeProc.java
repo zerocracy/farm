@@ -24,6 +24,7 @@ import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.claims.ClaimIn;
 import com.zerocracy.farm.StkSafe;
+import com.zerocracy.farm.StkVerbose;
 import com.zerocracy.farm.reactive.Brigade;
 import com.zerocracy.farm.reactive.StkRuntime;
 import groovy.lang.Script;
@@ -65,7 +66,10 @@ public final class BrigadeProc implements Proc<Message> {
                     cls -> new StkSafe(
                         cls.getSimpleName(),
                         farm,
-                        new StkRuntime(cls, farm)
+                        new StkVerbose(
+                            new StkRuntime(cls, farm),
+                            cls.getName()
+                        )
                     ),
                     new Reflections(
                         "com.zerocracy.stk",
