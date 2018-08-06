@@ -20,15 +20,20 @@ import com.jcabi.aspects.Tv;
 import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
+import com.zerocracy.Project;
 import com.zerocracy.Xocument;
 import com.zerocracy.claims.ClaimIn;
 import com.zerocracy.claims.ClaimsItem;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.PropsFarm;
+import com.zerocracy.pmo.Catalog;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.map.MapEntry;
 import org.cactoos.map.MapOf;
+import org.cactoos.text.FormattedText;
 import org.cactoos.time.DateAsText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -45,12 +50,10 @@ import org.xembly.Directives;
 /**
  * Tests for {@link Ping}.
  * @since 1.0
- * @todo #1200:30min Add a test that validates that pings are sent to projects
- *  in batches depending on the ping interval. All projects need to be pinged
- *  eventually.
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.ExcessiveImports")
 public final class PingTest {
 
     /**
@@ -95,6 +98,43 @@ public final class PingTest {
             new ClaimIn(xml).type(),
             Matchers.is(PingTest.PING)
         );
+    }
+
+    @Test
+    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
+    public void worksForManyProjects() throws Exception {
+        final List<Project> projects = new LinkedList<>();
+        final int batches = Tv.FIVE;
+        for (int ident = 0; ident < batches; ++ident) {
+            // @checkstyle MagicNumber (1 line)
+            final String pid = String.valueOf(100000000 + ident);
+            projects.add(new FkProject(pid));
+        }
+        final Farm farm = new PropsFarm(s -> projects);
+        final Catalog catalog = new Catalog(farm).bootstrap();
+        for (final Project pkt : projects) {
+            catalog.add(
+                pkt.pid(),
+                new FormattedText("2017/01/%s/", pkt.pid()).asString()
+            );
+        }
+        final AtomicInteger counter = new AtomicInteger(0);
+        final Ping ping = new Ping(farm, batches);
+        final JobExecutionContext context =
+            this.context(PingTest.map(), counter);
+        for (int count = 0; count < batches; ++count) {
+            ping.execute(context);
+            final Project pkt = projects.get(count);
+            final XML xml = new ClaimsItem(pkt).iterate().iterator().next();
+            MatcherAssert.assertThat(
+                new ClaimsItem(pkt).bootstrap().iterate(),
+                Matchers.hasSize(1)
+            );
+            MatcherAssert.assertThat(
+                new ClaimIn(xml).type(),
+                Matchers.is(PingTest.PING)
+            );
+        }
     }
 
     @Test(expected = JobExecutionException.class)
