@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.close_job_with_quality_review
+package com.zerocracy.bundles.ping_after_pr_completed
 
 import com.jcabi.github.*
 import com.jcabi.xml.XML
@@ -24,8 +24,9 @@ import com.zerocracy.entry.ExtGithub
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
-  Github github = new ExtGithub(farm).value()
-  Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
+  Repo repo = new ExtGithub(farm).value().repos().create(
+    new Repos.RepoCreate('test', false)
+  )
   new Issue.Smart(
     new Pull.Smart(repo.pulls().create('PR', 'dev', 'master')).issue()
   ).close()

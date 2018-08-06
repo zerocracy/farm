@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.close_job_with_quality_review
+package com.zerocracy.bundles.ping_after_pr_completed
 
 import com.jcabi.xml.XML
 import com.zerocracy.Project
@@ -24,8 +24,10 @@ import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
-  Wbs wbs = new Wbs(project).bootstrap()
-  MatcherAssert.assertThat(wbs.iterate(), Matchers.empty())
-  Orders orders = new Orders(project).bootstrap()
-  MatcherAssert.assertThat(orders.iterate(), Matchers.empty())
+  MatcherAssert.assertThat(
+    new Wbs(project).bootstrap().iterate(), Matchers.empty()
+  )
+  MatcherAssert.assertThat(
+      new Orders(project).bootstrap().iterate(), Matchers.empty()
+  )
 }
