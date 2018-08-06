@@ -34,12 +34,17 @@ public final class ShutdownFarmTest {
     @Test
     public void shutdown() {
         final ShutdownFarm.Hook hook = new ShutdownFarm.Hook();
+        MatcherAssert.assertThat(
+            "Check failed",
+            hook.check(), Matchers.is(true)
+        );
         final ScheduledExecutorService exec =
             Executors.newSingleThreadScheduledExecutor();
         exec.schedule(hook::complete, 1L, TimeUnit.SECONDS);
         hook.shutdown();
         MatcherAssert.assertThat(
-            hook, Matchers.hasToString("stopped")
+            "Shutdown wasn't completed",
+            hook.stopped(), Matchers.is(true)
         );
     }
 }

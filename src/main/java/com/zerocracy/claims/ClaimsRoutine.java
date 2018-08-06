@@ -181,7 +181,7 @@ public final class ClaimsRoutine implements Runnable, Closeable {
 
         @Override
         public void run() {
-            if (!this.shutdown.isStopping()) {
+            if (this.shutdown.check()) {
                 this.origin.run();
             }
         }

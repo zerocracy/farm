@@ -24,6 +24,7 @@ import com.zerocracy.shutdown.ShutdownFarm;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.Proc;
 import org.cactoos.scalar.And;
@@ -84,30 +85,37 @@ public final class AsyncProc implements Proc<List<Message>> {
     }
 
     @Override
+    @SuppressWarnings("PMD.PrematureDeclaration")
     public void exec(final List<Message> input) {
-        this.service.submit(
-            new VerboseCallable<>(
-                () -> {
-                    try {
-                        Logger.info(
-                            this, "Processing %d messages",
-                            input.size()
-                        );
-                        new And(this.origin, input).value();
-                    } finally {
-                        if (this.count.decrementAndGet() == 0
-                            && this.shutdown.isStopping()) {
-                            this.shutdown.complete();
+        final int cnt = this.count.incrementAndGet();
+        try {
+            this.service.submit(
+                new VerboseCallable<>(
+                    () -> {
+                        try {
+                            Logger.info(
+                                this, "Processing %d messages",
+                                input.size()
+                            );
+                            new And(this.origin, input).value();
+                        } finally {
+                            if (this.count.decrementAndGet() == 0
+                                && this.shutdown.stopping()) {
+                                this.shutdown.complete();
+                            }
                         }
-                    }
-                    return null;
-                },
-                true, true
-            )
-        );
+                        return null;
+                    },
+                    true, true
+                )
+            );
+        } catch (final RejectedExecutionException err) {
+            this.count.decrementAndGet();
+            throw new IllegalStateException("Task was rejected", err);
+        }
         Logger.info(
             this, "Submitted %d messages (count=%d)",
-            input.size(), this.count.incrementAndGet()
+            input.size(), cnt
         );
     }
 }

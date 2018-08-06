@@ -72,17 +72,17 @@ public final class ShutdownFarm implements Farm {
         /**
          * Initial state.
          */
-        private static final String NONE = "none";
+        private static final String ST_NONE = "none";
 
         /**
          * Shutdown in progress.
          */
-        private static final String STOPPING = "stopping";
+        private static final String ST_STOPPING = "stopping";
 
         /**
          * Shutdown completed.
          */
-        private static final String STOPPED = "stopped";
+        private static final String ST_STOPPED = "stopped";
 
         /**
          * Current state.
@@ -93,7 +93,7 @@ public final class ShutdownFarm implements Farm {
          * Default ctor.
          */
         public Hook() {
-            this(new AtomicReference<>(ShutdownFarm.Hook.NONE));
+            this(new AtomicReference<>(ShutdownFarm.Hook.ST_NONE));
         }
 
         /**
@@ -110,13 +110,13 @@ public final class ShutdownFarm implements Farm {
          */
         public void shutdown() {
             if (!this.state.compareAndSet(
-                ShutdownFarm.Hook.NONE, ShutdownFarm.Hook.STOPPING
+                ShutdownFarm.Hook.ST_NONE, ShutdownFarm.Hook.ST_STOPPING
             )) {
                 throw new IllegalStateException(
                     String.format("Cant stop when %s", this.state.get())
                 );
             }
-            while (!ShutdownFarm.Hook.STOPPED.equals(this.state.get())) {
+            while (!ShutdownFarm.Hook.ST_STOPPED.equals(this.state.get())) {
                 try {
                     TimeUnit.SECONDS.sleep(1L);
                 } catch (final InterruptedException ignored) {
@@ -131,15 +131,33 @@ public final class ShutdownFarm implements Farm {
          *
          * @return TRUE if in progress
          */
-        public boolean isStopping() {
-            return !this.state.get().equals(ShutdownFarm.Hook.NONE);
+        public boolean stopping() {
+            return this.state.get().equals(ShutdownFarm.Hook.ST_STOPPING);
+        }
+
+        /**
+         * Check shutdown was completed.
+         *
+         * @return TRUE if stopped
+         */
+        public boolean stopped() {
+            return this.state.get().equals(ShutdownFarm.Hook.ST_STOPPED);
+        }
+
+        /**
+         * Check that shutdown wasn't requested.
+         *
+         * @return TRUE if not requested
+         */
+        public boolean check() {
+            return this.state.get().equals(ShutdownFarm.Hook.ST_NONE);
         }
 
         /**
          * Complete shutdown.
          */
         public void complete() {
-            this.state.set(ShutdownFarm.Hook.STOPPED);
+            this.state.set(ShutdownFarm.Hook.ST_STOPPED);
         }
 
         @Override
