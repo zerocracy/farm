@@ -16,6 +16,8 @@
  */
 package com.zerocracy.shutdown;
 
+import com.zerocracy.Farm;
+import com.zerocracy.farm.fake.FkFarm;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -32,7 +34,7 @@ import org.junit.Test;
 public final class ShutdownFarmTest {
 
     @Test
-    public void shutdown() {
+    public void shutdown() throws Exception {
         final ShutdownFarm.Hook hook = new ShutdownFarm.Hook();
         MatcherAssert.assertThat(
             "Check failed",
@@ -40,8 +42,9 @@ public final class ShutdownFarmTest {
         );
         final ScheduledExecutorService exec =
             Executors.newSingleThreadScheduledExecutor();
+        final Farm farm = new ShutdownFarm(new FkFarm(), hook);
         exec.schedule(hook::complete, 1L, TimeUnit.SECONDS);
-        hook.shutdown();
+        farm.close();
         MatcherAssert.assertThat(
             "Shutdown wasn't completed",
             hook.stopped(), Matchers.is(true)
