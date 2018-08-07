@@ -103,4 +103,22 @@ public final class ReviewsTest {
         );
     }
 
+    @Test
+    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
+    public void fetchesAllReviews() throws Exception {
+        final Reviews reviews = new Reviews(new FkProject()).bootstrap();
+        final String[] jobs =
+            {"gh:zerocracy/farm#200", "gh:zerocracy/farm#201"};
+        for (final String job : jobs) {
+            reviews.add(
+                job, "amihaiemil", "g4s8",
+                new Cash.S("$112"), 1, new Cash.S("$25")
+            );
+        }
+        MatcherAssert.assertThat(
+            reviews.iterate(),
+            Matchers.contains(jobs)
+        );
+    }
+
 }

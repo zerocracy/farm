@@ -60,6 +60,21 @@ public final class Elections {
 
     /**
      * XSLT.
+     * @todo #1553:30min This 'stylesheet' is not merely a document transform,
+     *  but in fact the central mechanism for determining the result of the
+     *  election. Not only is this approach confusing and convoluted, it's
+     *  also very inefficient, since we have to do a XSL transform each and
+     *  every time we want to determine the result of an election. Let's remove
+     *  this XSL transform, and replace it with a programmatic version. What I
+     *  am thinking is to create an inner type, Elections.Result, representing
+     *  a single election. It should contain the following information:
+     *  1) "elected", true if at least one person has a total non-zero vote
+     *  2) "winner", username of person with the highest non-zero vote.
+     *  3) "reason", the reason why the winner won.
+     *  We should replace all usages of XSL Stylesheet with Elections.Result.
+     *  Let's prioritize implementing "elected", since the repeated usage of
+     *  this in assign_performer.groovy and elect_performer.groovy is not
+     *  scalable for increasingly big projects.
      */
     private static final XSL STYLESHEET = XSLDocument.make(
         Elections.class.getResource("to-winner.xsl")

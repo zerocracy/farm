@@ -19,9 +19,9 @@ package com.zerocracy.stk.pm.in.orders
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
-import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.qa.Reviews
 import com.zerocracy.pm.scope.Wbs
@@ -32,18 +32,15 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Ping')
   ClaimIn claim = new ClaimIn(xml)
   Wbs wbs = new Wbs(project).bootstrap()
-  Orders orders = new Orders(project).bootstrap()
-  Reviews reviews = new Reviews(project).bootstrap()
+  Collection<String> orders = new Orders(project).bootstrap().iterate()
+  Collection<String> reviews = new Reviews(project).bootstrap().iterate()
   Elections elections = new Elections(project).bootstrap()
   Farm farm = binding.variables.farm
   for (String job : wbs.iterate()) {
-    if (orders.assigned(job)) {
+    if (orders.contains(job) || reviews.contains(job)) {
       continue
     }
     if (!elections.elected(job)) {
-      continue
-    }
-    if (reviews.exists(job)) {
       continue
     }
     String winner = elections.winner(job)

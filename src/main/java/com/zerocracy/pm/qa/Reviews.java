@@ -290,6 +290,17 @@ public final class Reviews {
     }
 
     /**
+     * Iterate all jobs under review.
+     * @return List of jobs under review.
+     * @throws IOException If fails
+     */
+    public List<String> iterate() throws IOException {
+        try (final Item reviews = this.item()) {
+            return new Xocument(reviews.path()).xpath("/reviews/review/@job");
+        }
+    }
+
+    /**
      * The item.
      * @return Item
      * @throws IOException If fails

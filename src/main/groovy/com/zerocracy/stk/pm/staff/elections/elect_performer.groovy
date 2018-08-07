@@ -21,10 +21,10 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Policy
 import com.zerocracy.Project
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
-import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pm.cost.Boosts
 import com.zerocracy.pm.cost.Ledger
 import com.zerocracy.pm.in.Orders
@@ -36,7 +36,20 @@ import com.zerocracy.pm.staff.ranks.RnkBoost
 import com.zerocracy.pm.staff.ranks.RnkGithubBug
 import com.zerocracy.pm.staff.ranks.RnkGithubMilestone
 import com.zerocracy.pm.staff.ranks.RnkRev
-import com.zerocracy.pm.staff.votes.*
+import com.zerocracy.pm.staff.votes.VsBalance
+import com.zerocracy.pm.staff.votes.VsBanned
+import com.zerocracy.pm.staff.votes.VsBigDebt
+import com.zerocracy.pm.staff.votes.VsHardCap
+import com.zerocracy.pm.staff.votes.VsLosers
+import com.zerocracy.pm.staff.votes.VsNoRoom
+import com.zerocracy.pm.staff.votes.VsOptionsMaxJobs
+import com.zerocracy.pm.staff.votes.VsRandom
+import com.zerocracy.pm.staff.votes.VsRate
+import com.zerocracy.pm.staff.votes.VsReputation
+import com.zerocracy.pm.staff.votes.VsSafe
+import com.zerocracy.pm.staff.votes.VsSpeed
+import com.zerocracy.pm.staff.votes.VsVacation
+import com.zerocracy.pm.staff.votes.VsWorkload
 import com.zerocracy.pmo.Pmo
 
 def exec(Project project, XML xml) {
@@ -52,9 +65,9 @@ def exec(Project project, XML xml) {
   //  before jobs from first project will be assigned to the performer.
   Wbs wbs = new Wbs(project).bootstrap()
   Roles roles = new Roles(project).bootstrap()
-  Orders orders = new Orders(project).bootstrap()
+  Collection<String> orders = new Orders(project).bootstrap().iterate()
   Elections elections = new Elections(project).bootstrap()
-  Reviews reviews = new Reviews(project).bootstrap()
+  Collection<String> reviews = new Reviews(project).bootstrap().iterate()
   Farm farm = binding.variables.farm
   Pmo pmo = new Pmo(farm)
   Github github = new ExtGithub(farm).value()
@@ -71,10 +84,7 @@ def exec(Project project, XML xml) {
       new RnkRev(new Wbs(project).bootstrap())
   ].each { jobs.sort(it) }
   for (String job : jobs) {
-    if (orders.assigned(job)) {
-      continue
-    }
-    if (reviews.exists(job)) {
+    if (orders.contains(job) || reviews.contains(job)) {
       continue
     }
     if (elections.exists(job)) {
