@@ -27,6 +27,11 @@ import org.xembly.Directives;
 /**
  * Resumes.
  * @since 1.0
+ *
+ * @todo #1506:30min Implement resumes.resume(login), which will return the
+ *  resume sent for some user. It will have to return a Map mapping the resume
+ *  information so it can be used in resume page. Don't
+ *  forget to create a test for it in ResumesTest.
  */
 public final class Resumes {
     /**

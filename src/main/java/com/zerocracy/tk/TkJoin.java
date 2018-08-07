@@ -17,46 +17,35 @@
 package com.zerocracy.tk;
 
 import com.zerocracy.Farm;
-import com.zerocracy.Par;
-import com.zerocracy.Policy;
-import com.zerocracy.claims.ClaimOut;
-import com.zerocracy.entry.ClaimsOf;
-import com.zerocracy.pmo.People;
-import com.zerocracy.pmo.Resumes;
 import java.io.IOException;
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
-import java.util.logging.Level;
 import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
-import org.takes.facets.forward.RsForward;
-import org.takes.rq.RqGreedy;
-import org.takes.rq.form.RqFormSmart;
 
 /**
  * Join Zerocracy form.
  *
- * @since 1.0
- * @todo #1179:30min Each user should see the status of his/her resume at /join.
- *  If the resume is there, he/she should see the resume, not the form.
- *  See https://github.com/zerocracy/farm/issues/800#issuecomment-375551970
- *  comment for details. This condition is already tested in
- *  TkJoinTest, in showResumeIfAlreadyApplied. If implemented, update the test
- *  if necessary and the ignore tag should be removed upon puzzle completion.
+ * @since 0.30
+ *
+ * @todo #1506:30min Each user should see the status of his/her resume at /join.
+ *  If the resume is there, he/she should see the resume, not the form. For
+ *  this, a resume page must be implemented in zerocracy-datum (pmo/resume
+ *  .xsl), which will show the resume extracted from Resumes.This condition is
+ *  already tested in TkJoinTest, in showResumeIfAlreadyApplied. When
+ *  implemented, update the test and the ignore tag should be removed upon
+ *  puzzle completion.
+ * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class TkJoin implements TkRegex {
+
     /**
      * Farm.
      */
     private final Farm farm;
 
     /**
-     * Ctor.
+     * Constructor.
      * @param frm Farm
      */
     public TkJoin(final Farm frm) {
@@ -65,90 +54,6 @@ public final class TkJoin implements TkRegex {
 
     @Override
     public Response act(final RqRegex req) throws IOException {
-        final String author = new RqUser(this.farm, req, false).value();
-        final People people = new People(this.farm).bootstrap();
-        people.touch(author);
-        if (people.hasMentor(author)) {
-            throw new RsForward(
-                new RsParFlash(
-                    new Par(
-                        "You already have a mentor (@%s), no need to rejoin."
-                    ).say(people.mentor(author)),
-                    Level.WARNING
-                ),
-                "/join"
-            );
-        }
-        final LocalDateTime when;
-        if (people.applied(author)) {
-            when = LocalDateTime.ofInstant(
-                people.appliedTime(author).toInstant(),
-                ZoneOffset.UTC
-            );
-        } else {
-            when = LocalDateTime.MIN;
-        }
-        final long days = (long) new Policy().get("1.lag", 16);
-        final LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
-        if (when.plusDays(days).isAfter(now)) {
-            throw new RsForward(
-                new RsParFlash(
-                    new Par(
-                        "You can apply only one time in %d days, ",
-                        "you've applied %d days ago (%s)"
-                    ).say(
-                        days,
-                        Duration.between(when, now).toDays(),
-                        when.format(DateTimeFormatter.ISO_LOCAL_DATE)
-                    ),
-                    Level.WARNING
-                ),
-                "/join"
-            );
-        }
-        final RqFormSmart form = new RqFormSmart(new RqGreedy(req));
-        final String telegram = form.single("telegram");
-        final String personality = form.single("personality");
-        final String about = form.single("about");
-        final int stko = Integer.parseInt(form.single("stackoverflow"));
-        new ClaimOut().type("Join form submitted")
-            .author(author)
-            .param("telegram", telegram)
-            .param("stackoverflow", stko)
-            .param("about", about)
-            .param("personality", personality)
-            .postTo(new ClaimsOf(this.farm));
-        new ClaimOut().type("Notify all").param(
-            "message", new Par(
-                "A new user @%s (%s) would like to join us and needs a mentor;",
-                "you can get in touch with him/her",
-                "(telegram: `%s`) to discuss;",
-                "if you become a mentor, you may earn",
-                "some extra income, see §45;",
-                "here are [GitHub](https://github.com/%1$s)",
-                "and [StackOverflow](https://stackoverflow.com/users/%d)",
-                "profiles of the user;",
-                "this is the message the user left for us:\n\n%s"
-            ).say(author, personality, telegram, stko, about)
-        ).param("min", new Policy().get("1.min-rep", 0)).postTo(
-            new ClaimsOf(this.farm)
-        );
-        new Resumes(this.farm).bootstrap()
-            .add(
-                author,
-                LocalDateTime.now(),
-                about,
-                personality,
-                stko,
-                telegram
-            );
-        return new RsForward(
-            new RsParFlash(
-                new Par(
-                    "The request will be sent to all high-ranked users"
-                ).say(),
-                Level.INFO
-            )
-        );
+        return new RsPage(this.farm, "/xsl/join.xsl", req);
     }
 }
