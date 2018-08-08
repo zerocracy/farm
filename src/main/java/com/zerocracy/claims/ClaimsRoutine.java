@@ -27,6 +27,7 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.zerocracy.Farm;
 import com.zerocracy.entry.ExtSqs;
+import com.zerocracy.shutdown.ShutdownFarm;
 import java.io.Closeable;
 import java.time.Instant;
 import java.util.HashSet;
@@ -97,10 +98,12 @@ public final class ClaimsRoutine implements Runnable, Closeable {
 
     /**
      * Start routine.
+     *
+     * @param shutdown Shutdown hook
      */
-    public void start() {
+    public void start(final ShutdownFarm.Hook shutdown) {
         this.service.scheduleWithFixedDelay(
-            new VerboseRunnable(this),
+            new VerboseRunnable(new ShutdownRunnable(this, shutdown)),
             0L,
             ClaimsRoutine.DELAY,
             TimeUnit.SECONDS
@@ -163,5 +166,40 @@ public final class ClaimsRoutine implements Runnable, Closeable {
     @Override
     public void close() {
         this.service.shutdown();
+    }
+
+    /**
+     * Runnable decorator with shutdown hook check.
+     */
+    private static final class ShutdownRunnable implements Runnable {
+
+        /**
+         * Origin runnable.
+         */
+        private final Runnable origin;
+
+        /**
+         * Shutdown hook.
+         */
+        private final ShutdownFarm.Hook shutdown;
+
+        /**
+         * Ctor.
+         *
+         * @param origin Origin runnable
+         * @param shutdown Shutdown hook
+         */
+        ShutdownRunnable(final Runnable origin,
+            final ShutdownFarm.Hook shutdown) {
+            this.origin = origin;
+            this.shutdown = shutdown;
+        }
+
+        @Override
+        public void run() {
+            if (this.shutdown.check()) {
+                this.origin.run();
+            }
+        }
     }
 }

@@ -23,12 +23,9 @@ import com.zerocracy.Item;
 import com.zerocracy.Project;
 import com.zerocracy.RunsInThreads;
 import com.zerocracy.farm.S3Farm;
-import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.pm.scope.Wbs;
 import com.zerocracy.pm.staff.Roles;
-import com.zerocracy.pmo.People;
 import com.zerocracy.pmo.Pmo;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -36,7 +33,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.func.RunnableOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -114,21 +110,5 @@ public final class SyncFarmTest {
                 );
             }
         }
-    }
-
-    /**
-     * Shutdown test.
-     * @throws Exception Expected
-     * @todo #476:30min Method freeze should wait for all processed claims,
-     *  and stop giving new claims with IOException,
-     *  it should block all SyncProjects so they stops to
-     *  return SyncItems and wait for all current opened SyncItems to close.
-     */
-    @Test(expected = IOException.class)
-    @Ignore
-    public void freezeAndBlockNewItems() throws Exception {
-        final SyncFarm farm = new SyncFarm(new FkFarm());
-        farm.close();
-        new People(farm).bootstrap();
     }
 }
