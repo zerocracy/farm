@@ -25,6 +25,7 @@ import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pmo.People
+import org.cactoos.text.FormattedText
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).isPmo()
@@ -48,6 +49,17 @@ def exec(Project project, XML xml) {
   claim.reply(
     new Par(
       'User @%s is not your student anymore, see §47'
-    ).say()
+    ).say(login)
+  ).postTo(new ClaimsOf(farm, project))
+  claim.copy().type('Notify user')
+  .token(
+    new FormattedText(
+      'user;%s',
+      login
+    ).asString()
+  ).param('message',
+    new Par(
+      'User @%s is not your mentor anymore, he/she broke up with you, see §47'
+    ).say(author)
   ).postTo(new ClaimsOf(farm, project))
 }
