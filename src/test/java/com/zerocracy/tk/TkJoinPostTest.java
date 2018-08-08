@@ -37,7 +37,7 @@ import org.takes.rq.RqWithBody;
 /**
  * Test case for {@link TkJoinPost}.
  *
- * @since 0.30
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */

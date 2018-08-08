@@ -39,7 +39,7 @@ import org.takes.rq.form.RqFormSmart;
 /**
  * Join Zerocracy form processing.
  *
- * @since 0.30
+ * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
@@ -50,7 +50,7 @@ public final class TkJoinPost implements TkRegex {
     private final Farm farm;
 
     /**
-     * Ctor.
+     * Constructor.
      * @param frm Farm
      */
     public TkJoinPost(final Farm frm) {

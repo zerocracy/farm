@@ -25,7 +25,7 @@ import org.takes.facets.fork.TkRegex;
 /**
  * Join Zerocracy form.
  *
- * @since 0.30
+ * @since 1.0
  *
  * @todo #1506:30min Each user should see the status of his/her resume at /join.
  *  If the resume is there, he/she should see the resume, not the form. For
