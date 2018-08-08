@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import org.bson.Document;
 
@@ -41,6 +42,12 @@ import org.bson.Document;
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class Footprint implements Closeable {
+
+    /**
+     * Footprint lock.
+     */
+    private static final Object LOCK = new Object();
+
     /**
      * Database name.
      */
@@ -87,48 +94,52 @@ public final class Footprint implements Closeable {
      */
     public void open(final XML xml, final String signature)
         throws IOException {
-        final ClaimIn claim = new ClaimIn(xml);
-        final long cid = claim.cid();
-        final MongoCollection<Document> col =
-            this.mongo.getDatabase("footprint")
-                .getCollection("claims");
-        final Iterator<Document> found = col.find(
-            Filters.and(
-                Filters.eq("cid", cid),
-                Filters.eq("project", this.pid)
-            )
-        ).iterator();
-        if (found.hasNext()) {
-            throw new IllegalArgumentException(
-                String.format(
-                    "Claim #%d (%s) already exists for %s in the footprint",
-                    cid, claim.type(), this.pid
+        synchronized (Footprint.LOCK) {
+            final ClaimIn claim = new ClaimIn(xml);
+            final long cid = claim.cid();
+            final MongoCollection<Document> col =
+                this.mongo.getDatabase("footprint")
+                    .getCollection("claims");
+            final Iterator<Document> found = col.find(
+                Filters.and(
+                    Filters.eq("cid", cid),
+                    Filters.eq("project", this.pid)
                 )
-            );
-        }
-        Document doc = new Document()
-            .append("cid", cid)
-            .append("version", new Props().get("//build/version", ""))
-            .append("project", this.pid)
-            .append("type", claim.type())
-            .append("created", claim.created())
-            .append("signature", signature);
-        if (claim.hasAuthor()) {
-            doc = doc.append("author", claim.author());
-        }
-        if (claim.hasToken()) {
-            doc = doc.append("token", claim.token());
-        }
-        for (final Map.Entry<String, String> ent : claim.params().entrySet()) {
-            final Object val;
-            if (ent.getValue().matches("[0-9]+")) {
-                val = Long.parseLong(ent.getValue());
-            } else {
-                val = ent.getValue();
+            ).iterator();
+            if (found.hasNext()) {
+                throw new IllegalArgumentException(
+                    String.format(
+                        "Claim #%d (%s) already exists for %s",
+                        cid, claim.type(), this.pid
+                    )
+                );
             }
-            doc = doc.append(ent.getKey(), val);
+            Document doc = new Document()
+                .append("cid", cid)
+                .append("version", new Props().get("//build/version", ""))
+                .append("project", this.pid)
+                .append("type", claim.type())
+                .append("created", claim.created())
+                .append("signature", signature);
+            if (claim.hasAuthor()) {
+                doc = doc.append("author", claim.author());
+            }
+            if (claim.hasToken()) {
+                doc = doc.append("token", claim.token());
+            }
+            final Set<Map.Entry<String, String>> entries =
+                claim.params().entrySet();
+            for (final Map.Entry<String, String> ent : entries) {
+                final Object val;
+                if (ent.getValue().matches("[0-9]+")) {
+                    val = Long.parseLong(ent.getValue());
+                } else {
+                    val = ent.getValue();
+                }
+                doc = doc.append(ent.getKey(), val);
+            }
+            col.insertOne(doc);
         }
-        col.insertOne(doc);
     }
 
     /**
@@ -136,18 +147,20 @@ public final class Footprint implements Closeable {
      * @param xml The claim XML
      */
     public void close(final XML xml) {
-        final ClaimIn claim = new ClaimIn(xml);
-        this.mongo.getDatabase(Footprint.DBNAME)
-            .getCollection(Footprint.CLAIMS)
-            .updateOne(
-                Filters.and(
-                    Filters.eq("cid", claim.cid()),
-                    Filters.eq("project", this.pid),
-                    Filters.eq("type", claim.type()),
-                    Filters.eq("created", claim.created())
-                ),
-                Updates.currentDate("closed")
-            );
+        synchronized (Footprint.LOCK) {
+            final ClaimIn claim = new ClaimIn(xml);
+            this.mongo.getDatabase(Footprint.DBNAME)
+                .getCollection(Footprint.CLAIMS)
+                .updateOne(
+                    Filters.and(
+                        Filters.eq("cid", claim.cid()),
+                        Filters.eq("project", this.pid),
+                        Filters.eq("type", claim.type()),
+                        Filters.eq("created", claim.created())
+                    ),
+                    Updates.currentDate("closed")
+                );
+        }
     }
 
     /**
