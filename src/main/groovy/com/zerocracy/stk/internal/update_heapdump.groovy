@@ -42,14 +42,12 @@ def exec(Project project, XML xml) {
           )
         }
         Logger.info(this, 'Saving test heap')
-        project.acq('test').withCloseable {
-          new HeapDump(
-              bucket,
-              '',
-              it.path(),
-              'heap'
-          ).save()
-        }
+        new HeapDump(
+            bucket,
+            '',
+            it.path(),
+            'heap'
+        ).save()
       }
     }
   } else {
