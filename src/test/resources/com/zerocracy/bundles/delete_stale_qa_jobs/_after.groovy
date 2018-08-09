@@ -21,8 +21,6 @@ import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.pmo.Agenda
 import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
-import org.hamcrest.collection.IsIterableContainingInAnyOrder
 import org.hamcrest.core.IsCollectionContaining
 import org.hamcrest.core.IsEqual
 import org.hamcrest.core.IsNot

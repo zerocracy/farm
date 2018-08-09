@@ -30,5 +30,7 @@ def exec(Project project, XML xml) {
   new Projects(new Pmo(farm), 'test').bootstrap().add('TESTPROJECT')
   new Agenda(farm, 'test').bootstrap().add(farm.find("@id='TESTPROJECT'")[0], 'gh:test/test#1', 'QA')
   new Agenda(farm, 'test').bootstrap().add(farm.find("@id='TESTPROJECT'")[0], 'gh:test/test#2', 'QA')
-  new Reviews(farm.find("@id='TESTPROJECT'")[0]).bootstrap().add('gh:test/test#2','test', 'g4s8', new Cash.S('$10'), 30, new Cash.S('$0'))
+  new Reviews(
+    farm.find("@id='TESTPROJECT'")[0]
+  ).bootstrap().add('gh:test/test#2','test', 'g4s8', new Cash.S('$10'), 30, new Cash.S('$0'))
 }
