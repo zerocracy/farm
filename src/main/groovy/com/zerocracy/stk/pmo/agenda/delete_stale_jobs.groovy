@@ -7,7 +7,7 @@ import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pm.in.Orders
-import com.zerocracy.pm.staff.Roles
+import com.zerocracy.pm.qa.Reviews
 import com.zerocracy.pmo.Agenda
 import com.zerocracy.pmo.People
 import com.zerocracy.pmo.Projects
@@ -27,22 +27,11 @@ def exec(Project pmo, XML xml) {
       if (pid == 'PMO') {
         return
       }
-      if (
-        new Roles(
-            farm.find("@id='${pid}'").iterator().next()
-        ).bootstrap().hasRole('QA')
-      ) {
-        return
-        // @todo #1414:30min Cleanup of stale jobs is disabled for QA roles.
-        //  This is because QA jobs are not in Orders, but in Reviews. This
-        //  causes a bug where QA agenda is removed even though the jobs have
-        //  not completed review yet. For QA roles, get the list of jobs from
-        //  Reviews.findByInspector(). Let's also add a Bundles test case
-        //  where delete_stale_jobs should clean up jobs that are not in
-        //  Reviews and retains those that are still awaiting verdict.
-      }
       orders.addAll(
         new Orders(farm.find("@id='${pid}'")[0]).bootstrap().jobs(login)
+      )
+      orders.addAll(
+        new Reviews(farm.find("@id='${pid}'")[0]).bootstrap().findByInspector(login)
       )
     }
     boolean updated = false
