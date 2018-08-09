@@ -25,12 +25,12 @@ import org.hamcrest.MatcherAssert
 import org.hamcrest.core.IsEqual
 
 def exec(Project project, XML xml) {
-    project.acq('test/bucket').withCloseable {
-      Bucket bucket
-      bucket = new FkBucket(
-          it.path(),
-          'dumpbucket'
-      )
+  project.acq('test/bucket').withCloseable {
+    Bucket bucket
+    bucket = new FkBucket(
+      it.path(),
+      'dumpbucket'
+    )
     MatcherAssert.assertThat(
       'Dumped wrong value to bucket',
       new Ocket.Text(
