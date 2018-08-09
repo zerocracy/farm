@@ -48,9 +48,9 @@ def exec(Project project, XML xml) {
     if (people.vacation(uid)) {
       continue
     }
-    if (claim.hasParam("reason")) {
+    if (claim.hasParam('reason')) {
       Options options = new Options(new Pmo(farm), uid).bootstrap()
-      String reason = claim.param("reason")
+      String reason = claim.param('reason')
       if (reason == 'RFP' && !options.notifyRfps(true)) {
         continue
       }
