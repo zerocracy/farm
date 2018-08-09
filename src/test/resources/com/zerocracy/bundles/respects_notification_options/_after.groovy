@@ -37,7 +37,7 @@ def exec(Project project, XML xml) {
           Filters.eq('token', 'user;g4s8')
         )
       ),
-      Matchers.iterableWithSize(3)
+      Matchers.iterableWithSize(Matchers.greaterThanOrEqualTo(3))
     )
     MatcherAssert.assertThat(
       'Notifications received, even if disabled',
