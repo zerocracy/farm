@@ -16,7 +16,6 @@
  */
 package com.zerocracy.bundles.update_heapdump
 
-import com.jcabi.s3.Bucket
 import com.jcabi.s3.Ocket
 import com.jcabi.s3.fake.FkBucket
 import com.jcabi.xml.XML
