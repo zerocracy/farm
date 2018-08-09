@@ -27,7 +27,6 @@ import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
-  println new Agenda(farm, 'yegor256').bootstrap().jobs()
   MatcherAssert.assertThat(
     new Agenda(farm, 'yegor256').bootstrap().jobs(),
     Matchers.hasSize(1)
