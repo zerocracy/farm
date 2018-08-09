@@ -20,11 +20,13 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
-import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pmo.Awards
+import com.zerocracy.pmo.Options
 import com.zerocracy.pmo.People
+import com.zerocracy.pmo.Pmo
 
 /**
  * Notify all users. Claim sender can specify minimum required reputation
@@ -45,6 +47,19 @@ def exec(Project project, XML xml) {
   for (String uid : people.iterate()) {
     if (people.vacation(uid)) {
       continue
+    }
+    if (claim.hasParam("reason")) {
+      Options options = new Options(new Pmo(farm), uid).bootstrap()
+      String reason = claim.param("reason")
+      if (reason == 'RFP' && !options.notifyRfps(true)) {
+        continue
+      }
+      if (reason == 'Project published' && !options.notifyPublish(true)) {
+        continue
+      }
+      if (reason == 'New student' && !options.notifyStudents(true)) {
+        continue
+      }
     }
     int reputation = new Awards(farm, uid).bootstrap().total()
     if (reputation < min) {

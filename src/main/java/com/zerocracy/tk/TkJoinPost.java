@@ -124,9 +124,9 @@ public final class TkJoinPost implements TkRegex {
                 "profiles of the user;",
                 "this is the message the user left for us:\n\n%s"
             ).say(author, personality, telegram, stko, about)
-        ).param("min", new Policy().get("1.min-rep", 0)).postTo(
-            new ClaimsOf(this.farm)
-        );
+        ).param("min", new Policy().get("1.min-rep", 0))
+        .param("reason", "New student")
+        .postTo(new ClaimsOf(this.farm));
         new Resumes(this.farm).bootstrap()
             .add(
                 author,
