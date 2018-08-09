@@ -71,7 +71,7 @@ public final class ElectionsTest {
             )
         );
         MatcherAssert.assertThat(
-            elections.reason(job),
+            elections.result(job).reason(),
             Matchers.containsString("@yegor256 (")
         );
     }
@@ -90,11 +90,9 @@ public final class ElectionsTest {
                 )
             )
         );
-        MatcherAssert.assertThat(elections.elected(job), Matchers.is(true));
-        MatcherAssert.assertThat(
-            elections.winner(job),
-            Matchers.startsWith("wi")
-        );
+        final ElectionResult result = elections.result(job);
+        MatcherAssert.assertThat(result.elected(), Matchers.is(true));
+        MatcherAssert.assertThat(result.winner(), Matchers.startsWith("wi"));
     }
 
     @Test
@@ -112,7 +110,10 @@ public final class ElectionsTest {
             )
         );
         elections.remove(job);
-        MatcherAssert.assertThat(elections.elected(job), Matchers.is(false));
+        MatcherAssert.assertThat(
+            elections.result(job).elected(),
+            Matchers.is(false)
+        );
     }
 
     @Test
@@ -129,7 +130,10 @@ public final class ElectionsTest {
                 )
             )
         );
-        MatcherAssert.assertThat(elections.elected(job), Matchers.is(false));
+        MatcherAssert.assertThat(
+            elections.result(job).elected(),
+            Matchers.is(false)
+        );
     }
 
     @Test

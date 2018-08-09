@@ -46,7 +46,7 @@ def exec(Project project, XML xml) {
     if (orders.assigned(job)) {
       return
     }
-    if (elections.elected(job)) {
+    if (elections.result(job).elected()) {
       return
     }
     pending.add(job)

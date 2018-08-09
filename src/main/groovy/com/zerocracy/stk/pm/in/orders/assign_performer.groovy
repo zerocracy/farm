@@ -27,6 +27,15 @@ import com.zerocracy.pm.qa.Reviews
 import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pm.staff.Elections
 
+/**
+ * Assign elected performer.
+ *
+ * @param project Current project
+ * @param xml Claim
+ * @todo #1564:30min Change this stakeholder to handle 'Performer was elected'
+ *  claims instead of 'Ping' and assign elected performer from 'login' param
+ *  to job from 'job' claim param.
+ */
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Ping')
@@ -40,11 +49,12 @@ def exec(Project project, XML xml) {
     if (orders.contains(job) || reviews.contains(job)) {
       continue
     }
-    if (!elections.elected(job)) {
+    def result = elections.result(job)
+    if (!result.elected()) {
       continue
     }
-    String winner = elections.winner(job)
-    String reason = elections.reason(job)
+    String winner = result.winner()
+    String reason = result.reason()
     claim.copy()
       .type('Start order')
       .token("job;${job}")

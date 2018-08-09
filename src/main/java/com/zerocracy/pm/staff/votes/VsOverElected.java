@@ -25,6 +25,7 @@ import com.zerocracy.pmo.Awards;
 import java.io.IOException;
 import org.cactoos.collection.Filtered;
 import org.cactoos.iterable.LengthOf;
+import org.cactoos.iterable.Mapped;
 
 /**
  * Make it impossible to over-elect one user.
@@ -64,9 +65,8 @@ public final class VsOverElected implements Votes {
         final Elections elections = new Elections(this.pkt).bootstrap();
         final int mine = new LengthOf(
             new Filtered<>(
-                job -> elections.elected(job)
-                    && elections.winner(job).equals(login),
-                elections.jobs()
+                res -> res.elected() && res.winner().equals(login),
+                new Mapped<>(elections::result, elections.jobs())
             )
         ).intValue();
         final double vote;

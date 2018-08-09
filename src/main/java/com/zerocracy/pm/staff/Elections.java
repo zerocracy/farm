@@ -17,8 +17,6 @@
 package com.zerocracy.pm.staff;
 
 import com.jcabi.xml.XMLDocument;
-import com.jcabi.xml.XSL;
-import com.jcabi.xml.XSLDocument;
 import com.zerocracy.Item;
 import com.zerocracy.Project;
 import com.zerocracy.Xocument;
@@ -57,28 +55,6 @@ import org.xembly.Directives;
  */
 @SuppressWarnings("PMD.TooManyMethods")
 public final class Elections {
-
-    /**
-     * XSLT.
-     * @todo #1553:30min This 'stylesheet' is not merely a document transform,
-     *  but in fact the central mechanism for determining the result of the
-     *  election. Not only is this approach confusing and convoluted, it's
-     *  also very inefficient, since we have to do a XSL transform each and
-     *  every time we want to determine the result of an election. Let's remove
-     *  this XSL transform, and replace it with a programmatic version. What I
-     *  am thinking is to create an inner type, Elections.Result, representing
-     *  a single election. It should contain the following information:
-     *  1) "elected", true if at least one person has a total non-zero vote
-     *  2) "winner", username of person with the highest non-zero vote.
-     *  3) "reason", the reason why the winner won.
-     *  We should replace all usages of XSL Stylesheet with Elections.Result.
-     *  Let's prioritize implementing "elected", since the repeated usage of
-     *  this in assign_performer.groovy and elect_performer.groovy is not
-     *  scalable for increasingly big projects.
-     */
-    private static final XSL STYLESHEET = XSLDocument.make(
-        Elections.class.getResource("to-winner.xsl")
-    );
 
     /**
      * Project.
@@ -235,60 +211,21 @@ public final class Elections {
     }
 
     /**
-     * Retrieve TRUE if the performer is elected for the job.
-     * @param job The job
-     * @return TRUE if it has a winner
+     * Election result for a job.
+     *
+     * @param job Job id
+     * @return Result of election
      * @throws IOException If fails
      */
-    public boolean elected(final String job) throws IOException {
-        boolean elected = this.exists(job);
-        if (elected) {
-            try (final Item item = this.item()) {
-                elected = Elections.STYLESHEET.transform(
-                    new XMLDocument(item.path().toFile()).nodes(
-                        String.format(
-                            "/elections/job[@id ='%s']/election[ last()]", job
-                        )
-                    ).get(0)
-                ).nodes("/summary/winner").iterator().hasNext();
-            }
-        }
-        return elected;
-    }
-
-    /**
-     * Retrieve the reason for the given job.
-     * @param job The job
-     * @return The reason
-     * @throws IOException If fails
-     */
-    public String reason(final String job) throws IOException {
+    public ElectionResult result(final String job) throws IOException {
         try (final Item item = this.item()) {
-            return Elections.STYLESHEET.transform(
+            return new ElectionResult(
                 new XMLDocument(item.path().toFile()).nodes(
                     String.format(
                         "/elections/job[@id ='%s']/election[last()]", job
                     )
-                ).get(0)
-            ).xpath("/summary/reason/text()").get(0);
-        }
-    }
-
-    /**
-     * Retrieve the reason for the given job.
-     * @param job The job
-     * @return The reason
-     * @throws IOException If fails
-     */
-    public String winner(final String job) throws IOException {
-        try (final Item item = this.item()) {
-            return Elections.STYLESHEET.transform(
-                new XMLDocument(item.path().toFile()).nodes(
-                    String.format(
-                        "/elections/job[@id='%s']/election[last()]", job
-                    )
-                ).get(0)
-            ).xpath("/summary/winner/text()").get(0);
+                )
+            );
         }
     }
 
@@ -300,9 +237,10 @@ public final class Elections {
      */
     private String state(final String job) throws IOException {
         final StringBuilder state = new StringBuilder(0);
-        state.append(this.exists(job)).append(' ').append(this.elected(job));
-        if (this.elected(job)) {
-            state.append(' ').append(this.winner(job));
+        final ElectionResult result = this.result(job);
+        state.append(this.exists(job)).append(' ').append(result.elected());
+        if (result.elected()) {
+            state.append(' ').append(result.winner());
         }
         return state.toString();
     }

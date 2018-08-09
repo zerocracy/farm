@@ -30,7 +30,7 @@ def exec(Project project, XML xml) {
   Orders orders = new Orders(project).bootstrap()
   assert orders.performer(job) == 'yegor256'
   Elections elections = new Elections(project).bootstrap()
-  assert !elections.elected(job)
+  assert !elections.result(job).elected()
   Farm farm = binding.variables.farm
   assert new LengthOf(
     new Footprint(farm, project).collection().find(

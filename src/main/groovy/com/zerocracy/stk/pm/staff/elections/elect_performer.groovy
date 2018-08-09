@@ -116,13 +116,14 @@ def exec(Project project, XML xml) {
         (new VsSafe(new VsRandom()))                                              : 1
       ]
     )
-    if (done && elections.elected(job)) {
+    def result = elections.result(job)
+    if (done && result.elected()) {
       claim.copy()
         .type('Performer was elected')
-        .param('login', elections.winner(job))
+        .param('login', result.winner())
         .param('job', job)
         .param('role', role)
-        .param('reason', elections.reason(job))
+        .param('reason', result.reason())
         .postTo(new ClaimsOf(farm, project))
       break
     }
