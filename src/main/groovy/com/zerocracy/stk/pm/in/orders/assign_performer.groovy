@@ -25,6 +25,7 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.qa.Reviews
 import com.zerocracy.pm.scope.Wbs
+import com.zerocracy.pm.staff.ElectionResult
 import com.zerocracy.pm.staff.Elections
 
 /**
@@ -49,7 +50,7 @@ def exec(Project project, XML xml) {
     if (orders.contains(job) || reviews.contains(job)) {
       continue
     }
-    def result = elections.result(job)
+    ElectionResult result = elections.result(job)
     if (!result.elected()) {
       continue
     }
