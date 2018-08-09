@@ -26,15 +26,13 @@ import org.hamcrest.core.IsEqual
 
 def exec(Project project, XML xml) {
   project.acq('test/bucket').withCloseable {
-    Bucket bucket
-    bucket = new FkBucket(
-      it.path(),
-      'dumpbucket'
-    )
     MatcherAssert.assertThat(
       'Dumped wrong value to bucket',
       new Ocket.Text(
-        bucket.ocket('heap')
+        new FkBucket(
+          it.path(),
+          'dumpbucket'
+        ).ocket('heap')
       ).read(),
       new IsEqual<>('This is a heap file for testing purposes')
     )
