@@ -36,5 +36,5 @@ def exec(Project project, XML xml) {
   ).bootstrap().add('gh:test/test#2','test', 'g4s8', new Cash.S('$10'), 30, new Cash.S('$0'))
   new Reviews(
     farm.find("@id='TESTPROJECT'")[0]
-  ).bootstrap().add('gh:test/test#3','test', 'g4s8', new Cash.S('$10'), 30, new Cash.S('$0'))
+  ).bootstrap().add('gh:test/test#3','g4s8', 'test', new Cash.S('$10'), 30, new  Cash.S('$0'))
 }
