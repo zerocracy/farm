@@ -24,12 +24,12 @@ import java.io.IOException;
  *
  * @since 1.0
  * @todo #1172:30min Add performance metrics: add measurement of time taken
- *  to execute Measured stakeholder in stakeholder script . Time taken must be
- *  saved to mongodb instance on database "metrics", collection "time_taken".
- *  Fields to be saved: "stakeholder" with stakeholder class qualified name,
- *  "claim_type" with claim type, "date_time" with datetime of execution,
- *  "time_taken" with time taken to stakeholder process claim. After this,
- *  fix test in MeasuredText.collectTimeTakenToExecute if needed.
+ *  to execute Measured stakeholder in each stakeholder script . Time taken
+ *  must be saved to mongodb instance on database "metrics", collection
+ *  "time_taken". Fields to be saved: "stakeholder" with stakeholder class
+ *  qualified name, "claim_type" with claim type, "date_time" with datetime of
+ *  execution, "time_taken" with time taken to stakeholder process claim. After
+ *  this, fix test in MeasuredText.collectTimeTakenToExecute if needed.
  * @todo #1172:30min Add performance metrics: add measurement of other
  *  performance metrics (track S3 artifacts download, xml document
  *  modifications, footprint access) and save the to mongodb under database
