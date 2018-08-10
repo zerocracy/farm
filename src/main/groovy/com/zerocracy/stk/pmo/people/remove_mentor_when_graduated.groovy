@@ -22,11 +22,12 @@ import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
-import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pmo.Awards
 import com.zerocracy.pmo.People
+import org.cactoos.text.FormattedText
 
 def exec(Project pmo, XML xml) {
   new Assume(pmo, xml).isPmo()
@@ -48,7 +49,23 @@ def exec(Project pmo, XML xml) {
       return
     }
     people.graduate(uid)
-    claim.reply(
+    claim.copy()
+      .type('Notify user')
+      .token(new FormattedText('user;%s', uid).asString())
+      .param(
+      'message',
+      new Par(
+        'Since your reputation is over %d,',
+        'you don\'t need a mentor anymore, as explained in §43;',
+        'you successfully graduated and won\'t pay the tuition fee;',
+        'congratulations!'
+      ).say(threshold)
+    ).postTo(new ClaimsOf(farm))
+    claim.copy()
+      .type('Notify user')
+      .token(new FormattedText('user;%s', uid).asString())
+      .param(
+      'message',
       new Par(
         'Since your reputation is over %d,',
         'you don\'t need a mentor anymore, as explained in §43;',
