@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.delete_stale_jobs
+package com.zerocracy.bundles.delete_stale_qa_jobs
 
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
@@ -30,6 +30,7 @@ def exec(Project project, XML xml) {
   new Projects(new Pmo(farm), 'test').bootstrap().add('TESTPROJECT')
   new Agenda(farm, 'test').bootstrap().add(farm.find("@id='TESTPROJECT'")[0], 'gh:test/test#1', 'QA')
   new Agenda(farm, 'test').bootstrap().add(farm.find("@id='TESTPROJECT'")[0], 'gh:test/test#2', 'QA')
+  new Agenda(farm, 'test').bootstrap().add(farm.find("@id='TESTPROJECT'")[0], 'gh:test/test#3', 'DEV')
   new Reviews(
     farm.find("@id='TESTPROJECT'")[0]
   ).bootstrap().add('gh:test/test#2','test', 'g4s8', new Cash.S('$10'), 30, new Cash.S('$0'))

@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.delete_stale_jobs
+package com.zerocracy.bundles.delete_stale_qa_jobs
 
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
@@ -29,7 +29,7 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Agenda agenda = new Agenda(farm, 'test').bootstrap()
   MatcherAssert.assertThat(
-    'Did not removed stale job',
+    'Did not removed QA stale job',
     agenda.jobs(),
     new IsNot<Collection<String>>(
       new IsCollectionContaining<>(new IsEqual<>('gh:test/test#1'))
@@ -39,5 +39,12 @@ def exec(Project project, XML xml) {
     'Removed valid job',
     agenda.jobs(),
     new IsCollectionContaining<>(new IsEqual<>('gh:test/test#2'))
+  )
+  MatcherAssert.assertThat(
+    'Did not removed DEV stale job',
+    agenda.jobs(),
+    new IsNot<Collection<String>>(
+      new IsCollectionContaining<>(new IsEqual<>('gh:test/test#3'))
+    )
   )
 }
