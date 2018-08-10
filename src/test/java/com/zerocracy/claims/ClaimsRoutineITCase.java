@@ -74,7 +74,8 @@ public final class ClaimsRoutineITCase {
                         queue, msg.getReceiptHandle()
                     ), msgs
                 ).value();
-            }
+            },
+            () -> true
         );
         routine.start(new ShutdownFarm.Hook());
         TimeUnit.SECONDS.sleep((long) Tv.FIVE);

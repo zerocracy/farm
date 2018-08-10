@@ -23,6 +23,7 @@ import com.zerocracy.SafeSentry;
 import com.zerocracy.claims.ClaimsRoutine;
 import com.zerocracy.claims.proc.AsyncProc;
 import com.zerocracy.claims.proc.BrigadeProc;
+import com.zerocracy.claims.proc.CountingProc;
 import com.zerocracy.claims.proc.DeleteProc;
 import com.zerocracy.claims.proc.FootprintProc;
 import com.zerocracy.claims.proc.SentryProc;
@@ -43,6 +44,7 @@ import io.sentry.Sentry;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.concurrent.atomic.AtomicInteger;
 import javax.ws.rs.HttpMethod;
 import org.cactoos.func.AsyncFunc;
 import org.takes.facets.fork.FkRegex;
@@ -119,6 +121,8 @@ public final class Main {
         }
         Logger.info(this, "Farm is ready to start");
         final ShutdownFarm.Hook shutdown = new ShutdownFarm.Hook();
+        final AtomicInteger count = new AtomicInteger();
+        final int threads = Runtime.getRuntime().availableProcessors();
         try (
             final Farm farm = new ShutdownFarm(
                 new SmartFarm(
@@ -130,18 +134,23 @@ public final class Main {
             final ClaimsRoutine claims = new ClaimsRoutine(
                 farm,
                 new AsyncProc(
+                    threads,
                     new DeleteProc(
                         farm,
                         new SentryProc(
                             farm,
                             new FootprintProc(
                                 farm,
-                                new BrigadeProc(farm)
+                                new CountingProc(
+                                    new BrigadeProc(farm),
+                                    count
+                                )
                             )
                         )
                     ),
                     shutdown
-                )
+                ),
+                () -> count.intValue() >= threads
             )
         ) {
             new ExtMongobee(farm).apply();
