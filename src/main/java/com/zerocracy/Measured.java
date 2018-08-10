@@ -24,12 +24,12 @@ import java.io.IOException;
  *
  * @since 1.0
  * @todo #1172:30min Add performance metrics: add measurement of time taken
- *  to execute Measured stakeholder. Time taken must be saved to mongodb
- *  instance on database "metrics", collection "time_taken". Fields to be saved:
- *  "stakeholder" with stakeholder class qualified name, "claim_type" with
- *  claim type, "date_time" with datetime of execution, "time_taken" with time
- *  taken to stakeholder process claim. After this, fix test in MeasuredText
- *  .collectTimeTakenToExecute if needed.
+ *  to execute Measured stakeholder in stakeholder script . Time taken must be
+ *  saved to mongodb instance on database "metrics", collection "time_taken".
+ *  Fields to be saved: "stakeholder" with stakeholder class qualified name,
+ *  "claim_type" with claim type, "date_time" with datetime of execution,
+ *  "time_taken" with time taken to stakeholder process claim. After this,
+ *  fix test in MeasuredText.collectTimeTakenToExecute if needed.
  * @todo #1172:30min Add performance metrics: add measurement of other
  *  performance metrics (track S3 artifacts download, xml document
  *  modifications, footprint access) and save the to mongodb under database
@@ -48,22 +48,22 @@ public final class Measured implements Stakeholder {
     public static final String TIME_TAKEN = "time_taken";
 
     /**
-     * Origin stakeholder.
+     * Stakeholder to be measured.
      */
-    private final Stakeholder origin;
+    private final Stakeholder stk;
 
     /**
      * Ctor.
      * @param stk Stakeholder to be measured
      */
     public Measured(final Stakeholder stk) {
-        this.origin = stk;
+        this.stk = stk;
     }
 
     @Override
-    public void process(final Project project, final XML claim) throws
-    IOException {
-        this.origin.process(project, claim);
+    public void process(final Project project, final XML claim)
+        throws IOException {
+        this.stk.process(project, claim);
         throw new IllegalStateException("measured stakeholder not implemented");
     }
 }
