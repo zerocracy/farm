@@ -48,9 +48,19 @@ def exec(Project project, XML xml) {
   String message = claim.param('message')
   if (!claim.hasParam('reason')) {
     Logger.info(
-        this,
-        'Received "Notify All" with no specific reason [message: %s]',
-        message
+      this,
+      'Received "Notify All" with no given reason [message: %s]',
+      message
+    )
+  } else if (
+    ![ 'RFP', 'Project published', 'New student']
+      .contains(claim.param('reason'))
+  ) {
+    Logger.info(
+      this,
+      'Received "Notify All" with unknown reason [message: %s, reason: %s]',
+      message,
+      claim.param('reason')
     )
   }
   for (String uid : people.iterate()) {
