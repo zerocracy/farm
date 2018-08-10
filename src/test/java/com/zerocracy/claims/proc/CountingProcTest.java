@@ -21,6 +21,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.hamcrest.core.IsEqual;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -36,13 +37,17 @@ public final class CountingProcTest {
         final AtomicInteger count = new AtomicInteger();
         new CountingProc(msg -> { }, count).exec(Mockito.mock(Message.class));
         MatcherAssert.assertThat(
+            "Counter should be 0 after exec finishes.",
             count.get(),
-            Matchers.is(0)
+            new IsEqual<>(0)
         );
     }
 
     @Test
     @SuppressWarnings("PMD.AvoidCatchingGenericException")
+    // @todo #1539:30min Create a FakeMessage and use it each test where
+    //  a Message is used. An example is in staysAtOneIfBlocked, remove Mockito
+    //  mock and use the newly created fake message.
     public void staysAtOneIfBlocked() throws Exception {
         final AtomicInteger count = new AtomicInteger();
         final CountDownLatch start = new CountDownLatch(1);
@@ -65,14 +70,16 @@ public final class CountingProcTest {
             }
         ).start();
         MatcherAssert.assertThat(
+            "Counter should be 0 before exec starts.",
             count.get(),
-            Matchers.is(0)
+            new IsEqual<>(0)
         );
         start.countDown();
         inside.await();
         MatcherAssert.assertThat(
+            "Counter should be 1 while exec is still running.",
             count.get(),
-            Matchers.is(1)
+            new IsEqual<>(1)
         );
     }
 }
