@@ -34,10 +34,11 @@ def exec(Project project, XML xml) {
         Filters.and(
           Filters.eq('project', project.pid()),
           Filters.eq('type', 'Notify user'),
-          Filters.eq('token', 'user;g4s8')
+          Filters.eq('token', 'user;g4s8'),
+          Filters.regex('message', '^Test')
         )
       ),
-      Matchers.iterableWithSize(Matchers.greaterThanOrEqualTo(3))
+      Matchers.iterableWithSize(3)
     )
     MatcherAssert.assertThat(
       'Notifications received, even if disabled',
@@ -45,7 +46,8 @@ def exec(Project project, XML xml) {
         Filters.and(
           Filters.eq('project', project.pid()),
           Filters.eq('type', 'Notify user'),
-          Filters.eq('token', 'user;paulodamaso')
+          Filters.eq('token', 'user;paulodamaso'),
+          Filters.regex('message', '^Test')
         )
       ),
       Matchers.emptyIterable()
