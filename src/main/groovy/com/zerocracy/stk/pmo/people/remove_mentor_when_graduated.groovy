@@ -53,26 +53,14 @@ def exec(Project pmo, XML xml) {
       .type('Notify user')
       .token(new FormattedText('user;%s', uid).asString())
       .param(
-      'message',
-      new Par(
-        'Since your reputation is over %d,',
-        'you don\'t need a mentor anymore, as explained in §43;',
-        'you successfully graduated and won\'t pay the tuition fee;',
-        'congratulations!'
-      ).say(threshold)
-    ).postTo(new ClaimsOf(farm))
-    claim.copy()
-      .type('Notify user')
-      .token(new FormattedText('user;%s', uid).asString())
-      .param(
-      'message',
-      new Par(
-        'Since your reputation is over %d,',
-        'you don\'t need a mentor anymore, as explained in §43;',
-        'you successfully graduated and won\'t pay the tuition fee;',
-        'congratulations!'
-      ).say(threshold)
-    ).postTo(new ClaimsOf(farm))
+        'message',
+        new Par(
+          'Since your reputation is over %d,',
+          'you no longer need a mentor, as explained in §43;',
+          'you successfully graduated and won\'t pay the tuition fee anymore;',
+          'congratulations!'
+        ).say(threshold)
+      ).postTo(new ClaimsOf(farm))
     claim.copy().type('Notify PMO').param(
       'message', new Par(
         'The user @%s just graduated with reputation of %d!'
