@@ -24,12 +24,4 @@ SOFTWARE.
       <param name="reason">Need it</param>
     </params>
   </claim>
-  <claim id="2">
-    <created>2017-03-27T11:19:09.228Z</created>
-    <type>ping</type>
-    <params>
-      <param name="force">yes</param>
-      <param name="reason">Need it again</param>
-    </params>
-  </claim>
 </claims>

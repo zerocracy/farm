@@ -20,6 +20,7 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.claims.ClaimIn
+import com.zerocracy.claims.ClaimOut
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.in.Orders
@@ -33,37 +34,36 @@ import com.zerocracy.pm.staff.Elections
  *
  * @param project Current project
  * @param xml Claim
- * @todo #1564:30min Change this stakeholder to handle 'Performer was elected'
- *  claims instead of 'Ping' and assign elected performer from 'login' param
- *  to job from 'job' claim param.
  */
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Ping')
+  new Assume(project, xml).type('Performer was elected')
   ClaimIn claim = new ClaimIn(xml)
   Wbs wbs = new Wbs(project).bootstrap()
   Collection<String> orders = new Orders(project).bootstrap().iterate()
   Collection<String> reviews = new Reviews(project).bootstrap().iterate()
   Elections elections = new Elections(project).bootstrap()
   Farm farm = binding.variables.farm
-  for (String job : wbs.iterate()) {
-    if (orders.contains(job) || reviews.contains(job)) {
-      continue
-    }
-    ElectionResult result = elections.result(job)
-    if (!result.elected()) {
-      continue
-    }
-    String winner = result.winner()
-    String reason = result.reason()
-    claim.copy()
-      .type('Start order')
-      .token("job;${job}")
-      .param('job', job)
-      .param('login', winner)
-      .param('reason', reason)
-      .param('public', true)
-      .postTo(new ClaimsOf(farm, project))
+  String job = claim.param('job')
+  String login = claim.param('login')
+  ElectionResult result = elections.result(job)
+  if (!wbs.exists(job)) {
+    return
   }
+  if (orders.contains(job) || reviews.contains(job)) {
+    return
+  }
+  if (!result.elected() || result.winner() != login) {
+    return
+  }
+  new ClaimOut()
+    .type('Start order')
+    .token("job;${job}")
+    .param('job', job)
+    .param('login', login)
+    .param('reason', claim.param('reason'))
+    .param('public', true)
+    .postTo(new ClaimsOf(farm, project))
+  elections.remove(job)
 }
 
