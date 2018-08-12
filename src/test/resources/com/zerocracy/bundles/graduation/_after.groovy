@@ -24,6 +24,8 @@ import com.zerocracy.claims.Footprint
 import com.zerocracy.pmo.People
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
+import org.hamcrest.collection.IsEmptyIterable
+import org.hamcrest.core.IsNot
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
@@ -43,6 +45,17 @@ def exec(Project project, XML xml) {
         )
       ),
       Matchers.iterableWithSize(1)
+    )
+    MatcherAssert.assertThat(
+      'Student not notified',
+      footprint.collection().find(
+        Filters.and(
+          Filters.eq('project', project.pid()),
+          Filters.eq('type', 'Notify user'),
+          Filters.eq('token', 'user;student')
+        )
+      ),
+      new IsNot(new IsEmptyIterable<>())
     )
   }
 }
