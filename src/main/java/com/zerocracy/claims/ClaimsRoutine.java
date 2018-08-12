@@ -39,6 +39,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import org.cactoos.Proc;
+import org.cactoos.Scalar;
 import org.cactoos.scalar.And;
 import org.cactoos.scalar.UncheckedScalar;
 import org.cactoos.text.UncheckedText;
@@ -83,13 +84,21 @@ public final class ClaimsRoutine implements Runnable, Closeable {
     private final Proc<List<Message>> proc;
 
     /**
+     * If we can proceed with execution.
+     */
+    private final Scalar<Boolean> proceed;
+
+    /**
      * Ctor.
      *
      * @param farm Farm
      * @param proc Proc
+     * @param proceed A flag that signals if the processing can proceed
      */
-    public ClaimsRoutine(final Farm farm, final Proc<List<Message>> proc) {
+    public ClaimsRoutine(final Farm farm, final Proc<List<Message>> proc,
+        final Scalar<Boolean> proceed) {
         this.proc = proc;
+        this.proceed = proceed;
         this.service = Executors.newSingleThreadScheduledExecutor(
             new VerboseThreads(ClaimsRoutine.class)
         );
@@ -119,48 +128,52 @@ public final class ClaimsRoutine implements Runnable, Closeable {
         }
     )
     public void run() {
-        final AmazonSQS sqs = new UncheckedScalar<>(new ExtSqs(this.farm))
-            .value();
-        final String queue = new UncheckedText(new ClaimsQueueUrl(this.farm))
-            .asString();
-        final List<Message> messages = sqs.receiveMessage(
-            new ReceiveMessageRequest(queue)
-                .withMessageAttributeNames(
-                    "project", "signature", ClaimsRoutine.UNTIL
-                )
-                .withMaxNumberOfMessages(ClaimsRoutine.LIMIT)
-        ).getMessages();
-        final Set<String> projects = new HashSet<>();
-        final List<Message> merged = new LinkedList<>();
-        for (final Message message : messages) {
-            final Map<String, MessageAttributeValue> attr =
-                message.getMessageAttributes();
-            if (attr.containsKey(ClaimsRoutine.UNTIL)
-                // @checkstyle LineLength (1 line)
-                && Instant.parse(attr.get(ClaimsRoutine.UNTIL).getStringValue()).isAfter(Instant.now())) {
-                continue;
+        if (new UncheckedScalar<>(this.proceed).value()) {
+            final AmazonSQS sqs = new UncheckedScalar<>(new ExtSqs(this.farm))
+                .value();
+            final String queue =
+                new UncheckedText(new ClaimsQueueUrl(this.farm))
+                    .asString();
+            final List<Message> messages = sqs.receiveMessage(
+                new ReceiveMessageRequest(queue)
+                    .withMessageAttributeNames(
+                        "project", "signature", ClaimsRoutine.UNTIL
+                    )
+                    .withMaxNumberOfMessages(ClaimsRoutine.LIMIT)
+            ).getMessages();
+            final Set<String> projects = new HashSet<>();
+            final List<Message> merged = new LinkedList<>();
+            for (final Message message : messages) {
+                final Map<String, MessageAttributeValue> attr =
+                    message.getMessageAttributes();
+                if (attr.containsKey(ClaimsRoutine.UNTIL)
+                    && Instant.parse(
+                        attr.get(ClaimsRoutine.UNTIL).getStringValue()
+                    ).isAfter(Instant.now())) {
+                    continue;
+                }
+                final XML xml = new XMLDocument(message.getBody())
+                    .nodes("/claim").get(0);
+                final String pid = attr
+                    .get("project")
+                    .getStringValue();
+                final ClaimIn claim = new ClaimIn(xml);
+                final boolean ping = "ping".equalsIgnoreCase(claim.type());
+                if (ping && !projects.contains(pid)) {
+                    projects.add(pid);
+                    merged.add(message);
+                } else if (!ping) {
+                    merged.add(message);
+                } else {
+                    sqs.deleteMessage(queue, message.getReceiptHandle());
+                }
             }
-            final XML xml = new XMLDocument(message.getBody())
-                .nodes("/claim").get(0);
-            final String pid = attr
-                .get("project")
-                .getStringValue();
-            final ClaimIn claim = new ClaimIn(xml);
-            final boolean ping = "ping".equalsIgnoreCase(claim.type());
-            if (ping && !projects.contains(pid)) {
-                projects.add(pid);
-                merged.add(message);
-            } else if (!ping) {
-                merged.add(message);
-            } else {
-                sqs.deleteMessage(queue, message.getReceiptHandle());
-            }
+            Logger.info(
+                this, "received %d (%d actual) messages from SQS",
+                messages.size(), merged.size()
+            );
+            new UncheckedScalar<>(new And(this.proc, merged)).value();
         }
-        Logger.info(
-            this, "received %d (%d actual) messages from SQS",
-            messages.size(), merged.size()
-        );
-        new UncheckedScalar<>(new And(this.proc, merged)).value();
     }
 
     @Override
