@@ -150,7 +150,7 @@ public final class Main {
                     ),
                     shutdown
                 ),
-                () -> count.intValue() >= threads
+                () -> count.intValue() < threads
             )
         ) {
             new ExtMongobee(farm).apply();
