@@ -111,7 +111,7 @@ public final class ElectionResult {
             "\n",
             new Mapped<>(
                 entry -> String.format(
-                    "@%s (%f of %d):\n%s",
+                    "@%s (%.2f of %d):\n%s",
                     entry.getKey(),
                     new SumOf(
                         new Mapped<>(
@@ -123,7 +123,7 @@ public final class ElectionResult {
                     String.join(
                         "\n",
                         new Mapped<>(
-                            vote -> String.format("  %s", vote.toString()),
+                            vote -> String.format("  %s", vote),
                             entry.getValue()
                         )
                     )
@@ -256,13 +256,13 @@ public final class ElectionResult {
          * @return Score of this vote
          */
         public double score() {
-            return (double) this.weight * this.points;
+            return this.weight * this.points;
         }
 
         @Override
         public String toString() {
             return String.format(
-                "+%f=%fx%d %s",
+                "+%.2f=%.2fx%d %s",
                 this.score(), this.points, this.weight, this.details
             );
         }
