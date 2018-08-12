@@ -33,6 +33,7 @@ def exec(Project pmo, XML xml) {
   new Assume(pmo, xml).type('Breakup')
   ClaimIn claim = new ClaimIn(xml)
   String author = claim.author()
+  Farm farm = binding.variables.farm
   if (new Roles(new Pmo(farm)).bootstrap().hasAnyRole(author)) {
     return
   }
@@ -42,7 +43,6 @@ def exec(Project pmo, XML xml) {
   String reason = new Par(
     'Penalize for breakup with %s'
   ).say(student)
-  Farm farm = binding.variables.farm
   new Awards(farm, author).bootstrap().add(pmo, points, job, 'Penalize for breakup')
   claim.copy()
     .type('Award points were added')

@@ -577,6 +577,14 @@ SOFTWARE.
   </build>
   <profiles>
     <profile>
+      <!--
+        @todo #1500:30min Code warnings in groovy scripts
+         doesn't affect build process. Let's try to fail build
+         if any warning in groovy code was found. It may be an option
+         in gmaven plugin like 'treat warnings as errors' or some
+         codenarc option. We need to prevent such mistakes as in
+         #1500 bug.
+       -->
       <id>codenarc</id>
       <dependencies>
         <dependency>

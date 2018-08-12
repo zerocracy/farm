@@ -19,6 +19,7 @@ package com.zerocracy.stk.pmo
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Par
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.Project
 import com.zerocracy.claims.ClaimIn
@@ -37,5 +38,5 @@ def exec(Project pmo, XML xml) {
     new Par(
       'Done, the project %s is a child of %s'
     ).say(child, parent)
-  ).postTo(pmo)
+  ).postTo(new ClaimsOf(farm))
 }

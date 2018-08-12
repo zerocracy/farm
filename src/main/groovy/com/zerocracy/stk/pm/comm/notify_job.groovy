@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pm.comm
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.Project
@@ -38,6 +39,7 @@ def exec(Project project, XML xml) {
       "Something is wrong with this token: ${claim.token()}"
     )
   }
+  Farm farm = binding.variables.farm
   String[] slices = parts[1].split(':')
   if (slices[0] == 'gh') {
     String[] coords = slices[1].split('#')

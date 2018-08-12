@@ -25,6 +25,7 @@ import com.zerocracy.SoftException
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.claims.ClaimIn
+import com.zerocracy.pmo.Awards
 import com.zerocracy.pmo.Exam
 import com.zerocracy.pmo.Rfps
 
@@ -48,6 +49,7 @@ def exec(Project pmo, XML xml) {
   String reason = new Par(
     'RFP #%d has been purchased: %s'
   ).say(rid, email)
+  Awards awards = new Awards(farm, author)
   awards.add(pmo, points, job, new Par.ToText(reason).toString())
   claim.copy()
     .type('Award points were added')
