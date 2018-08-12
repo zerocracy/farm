@@ -17,6 +17,8 @@
 package com.zerocracy.stk.internal
 
 import com.jcabi.log.Logger
+import com.jcabi.s3.Bucket
+import com.jcabi.s3.fake.FkBucket
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
@@ -26,21 +28,33 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.farm.props.Props
 
 def exec(Project project, XML xml) {
-  /**
-   * @todo #766:30min Add a unit test for this stakeholder using fake S3 storage.
-   *  Maybe you will need to modify the stakeholder itself so that is
-   *  allows using fake S3 storage.
-   */
   new Assume(project, xml).isPmo()
   new Assume(project, xml).type('Ping hourly')
   Farm farm = binding.variables.farm
   if (new Props(farm).has('//testing')) {
-    Logger.info(this, 'skip in testing mode')
-    return
-  }
-  try {
-    new HeapDump(new ExtBucket(farm).value(), '').save()
-  } catch (IOException err) {
-    Logger.info(this, "Heap dump doesn't exist: ${err.message}")
+    project.acq('test').withCloseable {
+      if (it.path().toString().contains('update_heapdump')) {
+        Bucket bucket
+        project.acq('test/bucket').withCloseable {
+          bucket = new FkBucket(
+              it.path(),
+              'dumpbucket'
+          )
+        }
+        Logger.info(this, 'Saving test heap')
+        new HeapDump(
+            bucket,
+            '',
+            it.path(),
+            'heap'
+        ).save()
+      }
+    }
+  } else {
+    try {
+      new HeapDump(new ExtBucket(farm).value(), '').save()
+    } catch (IOException err) {
+      Logger.info(this, "Heap dump doesn't exist: ${err.message}")
+    }
   }
 }
