@@ -30,26 +30,14 @@ import com.zerocracy.pm.cost.Ledger
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.qa.Reviews
 import com.zerocracy.pm.scope.Wbs
+import com.zerocracy.pm.staff.ElectionResult
 import com.zerocracy.pm.staff.Elections
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pm.staff.ranks.RnkBoost
 import com.zerocracy.pm.staff.ranks.RnkGithubBug
 import com.zerocracy.pm.staff.ranks.RnkGithubMilestone
 import com.zerocracy.pm.staff.ranks.RnkRev
-import com.zerocracy.pm.staff.votes.VsBalance
-import com.zerocracy.pm.staff.votes.VsBanned
-import com.zerocracy.pm.staff.votes.VsBigDebt
-import com.zerocracy.pm.staff.votes.VsHardCap
-import com.zerocracy.pm.staff.votes.VsLosers
-import com.zerocracy.pm.staff.votes.VsNoRoom
-import com.zerocracy.pm.staff.votes.VsOptionsMaxJobs
-import com.zerocracy.pm.staff.votes.VsRandom
-import com.zerocracy.pm.staff.votes.VsRate
-import com.zerocracy.pm.staff.votes.VsReputation
-import com.zerocracy.pm.staff.votes.VsSafe
-import com.zerocracy.pm.staff.votes.VsSpeed
-import com.zerocracy.pm.staff.votes.VsVacation
-import com.zerocracy.pm.staff.votes.VsWorkload
+import com.zerocracy.pm.staff.votes.*
 import com.zerocracy.pmo.Pmo
 
 def exec(Project project, XML xml) {
@@ -116,13 +104,14 @@ def exec(Project project, XML xml) {
         (new VsSafe(new VsRandom()))                                              : 1
       ]
     )
-    if (done && elections.elected(job)) {
+    ElectionResult result = elections.result(job)
+    if (done && result.elected()) {
       claim.copy()
         .type('Performer was elected')
-        .param('login', elections.winner(job))
+        .param('login', result.winner())
         .param('job', job)
         .param('role', role)
-        .param('reason', elections.reason(job))
+        .param('reason', result.reason())
         .postTo(new ClaimsOf(farm, project))
       break
     }
