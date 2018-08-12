@@ -36,7 +36,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -71,12 +70,6 @@ public final class FootprintTest {
     }
 
     @Test
-    @Ignore
-    // @todo #1050:30min This test is not stable (depending on environment it
-    //  fails in about 5% cases) refactor it to make it stable. Remember to run
-    //  large number of builds to make sure it doesn't fail (at least 100
-    //  builds are needed, maybe more). The trouble is most probably in ExtMongo
-    //  for the fake Mongo instance.
     public void addsInThreads() throws Exception {
         try (final Farm farm = new SyncFarm(new PropsFarm())) {
             MatcherAssert.assertThat(
