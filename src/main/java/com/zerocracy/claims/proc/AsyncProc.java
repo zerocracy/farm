@@ -16,23 +16,39 @@
  */
 package com.zerocracy.claims.proc;
 
+import com.amazonaws.services.sqs.AmazonSQS;
+import com.amazonaws.services.sqs.model.ChangeMessageVisibilityBatchRequest;
+import com.amazonaws.services.sqs.model.ChangeMessageVisibilityBatchRequestEntry;
 import com.amazonaws.services.sqs.model.Message;
 import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseCallable;
 import com.jcabi.log.VerboseThreads;
+import com.zerocracy.Farm;
+import com.zerocracy.claims.ClaimsQueueUrl;
+import com.zerocracy.entry.ExtSqs;
 import com.zerocracy.shutdown.ShutdownFarm;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.Proc;
-import org.cactoos.scalar.And;
+import org.cactoos.Scalar;
+import org.cactoos.iterable.LengthOf;
+import org.cactoos.iterable.Partitioned;
+import org.cactoos.scalar.UncheckedScalar;
+import org.cactoos.text.UncheckedText;
 
 /**
  * Proc to execute origin proc asynchronously.
  *
  * @since 1.0
+ * @checkstyle ClassDataAbstractionCoupling (2 lines)
  */
 public final class AsyncProc implements Proc<List<Message>> {
 
@@ -57,14 +73,31 @@ public final class AsyncProc implements Proc<List<Message>> {
     private final AtomicInteger count;
 
     /**
+     * Amazon SQS instance.
+     */
+    private final UncheckedScalar<AmazonSQS> sqs;
+
+    /**
+     * Message queue name.
+     */
+    private final String queue;
+
+    /**
      * Ctor.
      *
+     * @param farm Farm
      * @param origin Origin proc
      * @param shutdown Shutdown hook
      */
-    public AsyncProc(final Proc<Message> origin,
+    public AsyncProc(final Farm farm, final Proc<Message> origin,
         final ShutdownFarm.Hook shutdown) {
-        this(Runtime.getRuntime().availableProcessors(), origin, shutdown);
+        this(
+            Runtime.getRuntime().availableProcessors(),
+            origin,
+            new ExtSqs(farm),
+            new UncheckedText(new ClaimsQueueUrl(farm)).asString(),
+            shutdown
+        );
     }
 
     /**
@@ -72,23 +105,42 @@ public final class AsyncProc implements Proc<List<Message>> {
      *
      * @param threads Threads
      * @param origin Origin proc
+     * @param sqs SQS client
+     * @param queue Name of SQS queue
      * @param shutdown Shutdown hook
+     * @checkstyle ParameterNumber (4 lines)
      */
     public AsyncProc(final int threads, final Proc<Message> origin,
+        final Scalar<AmazonSQS> sqs, final String queue,
         final ShutdownFarm.Hook shutdown) {
         this.service = Executors.newFixedThreadPool(
             threads, new VerboseThreads(AsyncProc.class)
         );
         this.origin = origin;
         this.shutdown = shutdown;
+        this.sqs = new UncheckedScalar<>(sqs);
+        this.queue = queue;
         this.count = new AtomicInteger();
     }
 
+    // @todo #1567:30min This method is too complicated at the moment. Let's
+    //  separate the functionality of extending validity of messages into
+    //  another class somehow. Note, one complication: we need to keep track
+    //  of which messages have already been sent by AsyncProc for processing
+    //  (since they are deleted from the queue very soon after). After
+    //  refactoring let's remove any unnecessary suppressions here.
+    // @checkstyle ExecutableStatementCount (60 lines)
     @Override
-    @SuppressWarnings("PMD.PrematureDeclaration")
+    @SuppressWarnings(
+        {
+            "PMD.PrematureDeclaration", "PMD.AvoidInstantiatingObjectsInLoops"
+        }
+    )
     public void exec(final List<Message> input) {
         final int cnt = this.count.incrementAndGet();
         try {
+            final List<Message> copy = new CopyOnWriteArrayList<>(input);
+            final CountDownLatch done = new CountDownLatch(copy.size());
             this.service.submit(
                 new VerboseCallable<>(
                     () -> {
@@ -97,7 +149,12 @@ public final class AsyncProc implements Proc<List<Message>> {
                                 this, "Processing %d messages",
                                 input.size()
                             );
-                            new And(this.origin, input).value();
+                            final Iterator<Message> messages = copy.iterator();
+                            while (messages.hasNext()) {
+                                this.origin.exec(messages.next());
+                                messages.remove();
+                                done.countDown();
+                            }
                         } finally {
                             if (this.count.decrementAndGet() == 0
                                 && this.shutdown.stopping()) {
@@ -109,13 +166,52 @@ public final class AsyncProc implements Proc<List<Message>> {
                     true, true
                 )
             );
+            do {
+                // @checkstyle MagicNumber (2 lines)
+                for (final Iterable<Message> msgs
+                    : new Partitioned<>(10, copy)) {
+                    this.extendMessage(msgs);
+                }
+            } while (done.await(1, TimeUnit.MINUTES));
         } catch (final RejectedExecutionException err) {
             this.count.decrementAndGet();
             throw new IllegalStateException("Task was rejected", err);
+        } catch (final InterruptedException ex) {
+            Logger.warn(
+                this,
+                "Interrupted while processing messages: %[exception]s",
+                ex
+            );
         }
         Logger.info(
             this, "Submitted %d messages (count=%d)",
             input.size(), cnt
+        );
+    }
+
+    /**
+     * Extend message visibility.
+     * @param msgs Messages
+     */
+    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
+    private void extendMessage(final Iterable<Message> msgs) {
+        final List<ChangeMessageVisibilityBatchRequestEntry> entries =
+            new ArrayList<>(new LengthOf(msgs).intValue());
+        int num = 0;
+        for (final Message msg : msgs) {
+            entries.add(
+                new ChangeMessageVisibilityBatchRequestEntry(
+                    String.format("msg_%d", num),
+                    msg.getReceiptHandle()
+                // @checkstyle MagicNumber (1 line)
+                ).withVisibilityTimeout(120)
+            );
+            num += 1;
+        }
+        this.sqs.value().changeMessageVisibilityBatch(
+            new ChangeMessageVisibilityBatchRequest(
+                this.queue, entries
+            )
         );
     }
 }

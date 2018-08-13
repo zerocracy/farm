@@ -134,7 +134,7 @@ public final class Main {
             final ClaimsRoutine claims = new ClaimsRoutine(
                 farm,
                 new AsyncProc(
-                    threads,
+                    farm,
                     new DeleteProc(
                         farm,
                         new SentryProc(

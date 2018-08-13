@@ -139,6 +139,8 @@ public final class ClaimsRoutine implements Runnable, Closeable {
                     .withMessageAttributeNames(
                         "project", "signature", ClaimsRoutine.UNTIL
                     )
+                    // @checkstyle MagicNumber (1 line)
+                    .withVisibilityTimeout(120)
                     .withMaxNumberOfMessages(ClaimsRoutine.LIMIT)
             ).getMessages();
             final Set<String> projects = new HashSet<>();
