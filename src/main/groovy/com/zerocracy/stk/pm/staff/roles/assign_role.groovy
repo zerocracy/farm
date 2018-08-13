@@ -84,9 +84,12 @@ def exec(Project project, XML xml) {
         .postTo(new ClaimsOf(farm, project))
     }
     roles.assign(login, role)
+    String text = 'Role %s was successfully assigned to @%s, see [full list](/a/%s?a=pm/staff/roles) of roles; ';
+    if (role.equals('DEV')) {
+        text = text + 'If you don\'t want this user as \'REV\', use resign REV command'
+    }
     msg = new Par(
-      'Role %s was successfully assigned to @%s,',
-      'see [full list](/a/%s?a=pm/staff/roles) of roles; '
+        text
     ).say(role, login, project.pid())
     claim.copy()
       .type('Role was assigned')
