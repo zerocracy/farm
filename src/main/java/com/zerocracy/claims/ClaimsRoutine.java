@@ -29,7 +29,6 @@ import com.zerocracy.Farm;
 import com.zerocracy.entry.ExtSqs;
 import com.zerocracy.shutdown.ShutdownFarm;
 import java.io.Closeable;
-import java.time.Duration;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -140,9 +139,8 @@ public final class ClaimsRoutine implements Runnable, Closeable {
                     .withMessageAttributeNames(
                         "project", "signature", ClaimsRoutine.UNTIL
                     )
-                    .withVisibilityTimeout(
-                        (int) Duration.ofMinutes(2).getSeconds()
-                    )
+                    // @checkstyle MagicNumber (1 line)
+                    .withVisibilityTimeout(120)
                     .withMaxNumberOfMessages(ClaimsRoutine.LIMIT)
             ).getMessages();
             final Set<String> projects = new HashSet<>();

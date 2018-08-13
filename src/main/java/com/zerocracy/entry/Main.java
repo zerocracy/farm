@@ -135,7 +135,6 @@ public final class Main {
                 farm,
                 new AsyncProc(
                     farm,
-                    threads,
                     new DeleteProc(
                         farm,
                         new SentryProc(
