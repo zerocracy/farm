@@ -29,7 +29,9 @@ import com.zerocracy.entry.ExtSqs;
 import com.zerocracy.shutdown.ShutdownFarm;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
@@ -158,11 +160,15 @@ public final class AsyncProc implements Proc<List<Message>> {
                                 input.size()
                             );
                             final Iterator<Message> messages = copy.iterator();
+                            final Collection<Message> remove =
+                                new LinkedList<>();
                             while (messages.hasNext()) {
-                                this.origin.exec(messages.next());
-                                messages.remove();
+                                final Message message = messages.next();
+                                this.origin.exec(message);
+                                remove.add(message);
                                 done.countDown();
                             }
+                            copy.removeAll(remove);
                         } finally {
                             if (this.count.decrementAndGet() == 0
                                 && this.shutdown.stopping()) {
