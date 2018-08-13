@@ -20,14 +20,24 @@ import com.jcabi.xml.XML
 import com.zerocracy.Project
 import com.zerocracy.pm.staff.Roles
 import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
+import org.hamcrest.core.IsCollectionContaining
+import org.hamcrest.core.IsEqual
 
 def exec(Project project, XML xml) {
   Roles roles = new Roles(project).bootstrap()
   MatcherAssert.assertThat(
-    'DEV roles was not assigned to g4s8',
+    'DEV role was not assigned to g4s8',
     roles.allRoles('g4s8'),
-    Matchers.contains(Matchers.equalTo('DEV'))
+    new IsCollectionContaining<>(
+      new IsEqual('DEV')
+    )
+  )
+  MatcherAssert.assertThat(
+    'REV role was not assigned to g4s8',
+    roles.allRoles('g4s8'),
+    new IsCollectionContaining<>(
+      new IsEqual('REV')
+    )
   )
   // @todo #989:30min MkGithub can't create private repository,
   //  any repository from MkGithub is public, see _before in this test.

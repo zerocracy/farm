@@ -77,6 +77,12 @@ def exec(Project project, XML xml) {
       'Role %s was already assigned to @%s; '
     ).say(role, login)
   } else {
+    if (role.equals('DEV')) {
+      claim.copy()
+        .type('Assign Role')
+        .param('role', 'REV')
+        .postTo(new ClaimsOf(farm, project))
+    }
     roles.assign(login, role)
     msg = new Par(
       'Role %s was successfully assigned to @%s,',
