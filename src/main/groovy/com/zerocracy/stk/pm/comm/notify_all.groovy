@@ -16,15 +16,18 @@
  */
 package com.zerocracy.stk.pm.comm
 
+import com.jcabi.log.Logger
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
-import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pmo.Awards
+import com.zerocracy.pmo.Options
 import com.zerocracy.pmo.People
+import com.zerocracy.pmo.Pmo
 
 /**
  * Notify all users. Claim sender can specify minimum required reputation
@@ -42,9 +45,40 @@ def exec(Project project, XML xml) {
   }
   Farm farm = binding.variables.farm
   People people = new People(farm).bootstrap()
+  String message = claim.param('message')
+  if (!claim.hasParam('reason')) {
+    Logger.info(
+      this,
+      'Received "Notify All" with no given reason [message: %s]',
+      message
+    )
+  } else if (
+    ![ 'RFP', 'Project published', 'New student']
+      .contains(claim.param('reason'))
+  ) {
+    Logger.info(
+      this,
+      'Received "Notify All" with unknown reason [message: %s, reason: %s]',
+      message,
+      claim.param('reason')
+    )
+  }
   for (String uid : people.iterate()) {
     if (people.vacation(uid)) {
       continue
+    }
+    if (claim.hasParam('reason')) {
+      Options options = new Options(new Pmo(farm), uid).bootstrap()
+      String reason = claim.param('reason')
+      if (reason == 'RFP' && !options.notifyRfps()) {
+        continue
+      }
+      if (reason == 'Project published' && !options.notifyPublish()) {
+        continue
+      }
+      if (reason == 'New student' && !options.notifyStudents()) {
+        continue
+      }
     }
     int reputation = new Awards(farm, uid).bootstrap().total()
     if (reputation < min) {
@@ -64,7 +98,7 @@ def exec(Project project, XML xml) {
     claim.copy()
       .type('Notify user')
       .token("user;${uid}")
-      .param('message', claim.param('message') + '\n\n' + tail)
+      .param('message', message + '\n\n' + tail)
       .postTo(new ClaimsOf(farm, project))
   }
 }

@@ -55,7 +55,7 @@ public final class OptionsTest {
                 new Directives().append(
                     new OptionsTest.XeNotify("students", true)
                 )
-            ).notifyStudents(false),
+            ).notifyStudents(),
             Matchers.is(true)
         );
     }
@@ -67,7 +67,7 @@ public final class OptionsTest {
                 new Directives().append(
                     new OptionsTest.XeNotify("rfps", true)
                 )
-            ).notifyRfps(false),
+            ).notifyRfps(),
             Matchers.is(true)
         );
     }
@@ -79,7 +79,7 @@ public final class OptionsTest {
                 new Directives().append(
                     new OptionsTest.XeNotify("publish", true)
                 )
-            ).notifyPublish(false),
+            ).notifyPublish(),
             Matchers.is(true)
         );
     }
@@ -106,7 +106,7 @@ public final class OptionsTest {
     @Test
     public void readNotifyStudentsDefault() throws Exception {
         MatcherAssert.assertThat(
-            OptionsTest.options(new Directives()).notifyStudents(true),
+            OptionsTest.options(new Directives()).notifyStudents(),
             Matchers.is(true)
         );
     }
@@ -114,7 +114,7 @@ public final class OptionsTest {
     @Test
     public void readNotifyRfpsDefault() throws Exception {
         MatcherAssert.assertThat(
-            OptionsTest.options(new Directives()).notifyRfps(true),
+            OptionsTest.options(new Directives()).notifyRfps(),
             Matchers.is(true)
         );
     }
@@ -122,7 +122,7 @@ public final class OptionsTest {
     @Test
     public void notifyPublishDefault() throws Exception {
         MatcherAssert.assertThat(
-            OptionsTest.options(new Directives()).notifyPublish(true),
+            OptionsTest.options(new Directives()).notifyPublish(),
             Matchers.is(true)
         );
     }

@@ -88,6 +88,7 @@ public final class TkHiring implements TkRegex {
                 ).say(project.pid(), user, text)
             )
             .param("min", new Policy().get("33.min-live", 0))
+            .param("reason", "Project published")
             .postTo(new ClaimsOf(this.farm, project));
         return new RsForward(
             new RsParFlash(

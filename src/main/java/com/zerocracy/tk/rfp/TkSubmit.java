@@ -89,6 +89,7 @@ public final class TkSubmit implements Take {
                     ).say(rid)
                 )
                 .param("min", new Policy().get("40.min", 0))
+                .param("reason", "RFP")
                 .postTo(new ClaimsOf(this.farm));
         }
         return new RsForward(
