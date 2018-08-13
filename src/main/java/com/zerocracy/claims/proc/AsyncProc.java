@@ -27,6 +27,7 @@ import com.zerocracy.Farm;
 import com.zerocracy.claims.ClaimsQueueUrl;
 import com.zerocracy.entry.ExtSqs;
 import com.zerocracy.shutdown.ShutdownFarm;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -51,7 +52,11 @@ import org.cactoos.text.UncheckedText;
  * @checkstyle ClassDataAbstractionCoupling (2 lines)
  */
 public final class AsyncProc implements Proc<List<Message>> {
-
+    /**
+     * Maximum size of visibility timeout batch request.
+     * @see https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_ChangeMessageVisibilityBatch.html
+     */
+    private static final int VIS_BATCH_MAX = 10;
     /**
      * Executor.
      */
@@ -85,14 +90,17 @@ public final class AsyncProc implements Proc<List<Message>> {
     /**
      * Ctor.
      *
+     * @param threads Threads
      * @param farm Farm
      * @param origin Origin proc
      * @param shutdown Shutdown hook
+     * @checkstyle ParameterNumber (4 lines)
      */
-    public AsyncProc(final Farm farm, final Proc<Message> origin,
+    public AsyncProc(final Farm farm, final int threads,
+        final Proc<Message> origin,
         final ShutdownFarm.Hook shutdown) {
         this(
-            Runtime.getRuntime().availableProcessors(),
+            threads,
             origin,
             new ExtSqs(farm),
             new UncheckedText(new ClaimsQueueUrl(farm)).asString(),
@@ -167,9 +175,12 @@ public final class AsyncProc implements Proc<List<Message>> {
                 )
             );
             do {
-                // @checkstyle MagicNumber (2 lines)
-                for (final Iterable<Message> msgs
-                    : new Partitioned<>(10, copy)) {
+                for (
+                    final Iterable<Message> msgs
+                        : new Partitioned<>(
+                            AsyncProc.VIS_BATCH_MAX, copy
+                        )
+                ) {
                     this.extendMessage(msgs);
                 }
             } while (done.await(1, TimeUnit.MINUTES));
@@ -177,6 +188,7 @@ public final class AsyncProc implements Proc<List<Message>> {
             this.count.decrementAndGet();
             throw new IllegalStateException("Task was rejected", err);
         } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
             Logger.warn(
                 this,
                 "Interrupted while processing messages: %[exception]s",
@@ -203,8 +215,9 @@ public final class AsyncProc implements Proc<List<Message>> {
                 new ChangeMessageVisibilityBatchRequestEntry(
                     String.format("msg_%d", num),
                     msg.getReceiptHandle()
-                // @checkstyle MagicNumber (1 line)
-                ).withVisibilityTimeout(120)
+                ).withVisibilityTimeout(
+                    (int) Duration.ofMinutes(2).getSeconds()
+                )
             );
             num += 1;
         }
