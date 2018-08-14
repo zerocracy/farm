@@ -19,7 +19,6 @@ package com.zerocracy.bundles.assign_role
 import com.jcabi.xml.XML
 import com.mongodb.client.model.Filters
 import com.zerocracy.Farm
-import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.claims.Footprint
 import com.zerocracy.pm.staff.Roles
