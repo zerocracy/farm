@@ -55,6 +55,7 @@ public final class MessageMonitorProc implements Proc<Message> {
      * @see https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_ChangeMessageVisibilityBatch.html
      */
     public static final int VIS_BATCH_MAX = 10;
+
     /**
      * SQS client.
      */
@@ -73,7 +74,7 @@ public final class MessageMonitorProc implements Proc<Message> {
     /**
      * Messages to queue.
      */
-    private final UncheckedScalar<Set<Message>> messages;
+    private final Set<Message> messages;
 
     /**
      * Queue name.
@@ -129,9 +130,7 @@ public final class MessageMonitorProc implements Proc<Message> {
         this.queue = queue;
         this.duration = duration;
         this.shutdown = shutdown;
-        this.messages = new UncheckedScalar<>(
-            new SolidScalar<>(ConcurrentHashMap::newKeySet)
-        );
+        this.messages = ConcurrentHashMap.newKeySet();
         this.routine = new UncheckedScalar<>(
             new SolidScalar<>(
                 () -> {
@@ -153,14 +152,14 @@ public final class MessageMonitorProc implements Proc<Message> {
 
     @Override
     public void exec(final Message input) throws Exception {
-        this.messages.value().add(input);
+        this.messages.add(input);
         this.origin.exec(input);
         this.sqs.value().deleteMessage(
             new DeleteMessageRequest()
                 .withQueueUrl(this.queue)
                 .withReceiptHandle(input.getReceiptHandle())
         );
-        this.messages.value().remove(input);
+        this.messages.remove(input);
         Logger.info(
             this, "Message %s was deleted", input.getMessageId()
         );
@@ -175,7 +174,7 @@ public final class MessageMonitorProc implements Proc<Message> {
                 final List<Message> msgs
                     : new Partitioned<>(
                         MessageMonitorProc.VIS_BATCH_MAX,
-                        this.messages.value()
+                        this.messages
                     )
             ) {
                 this.sendMessageVisibilityBatch(msgs);
