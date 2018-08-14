@@ -25,6 +25,7 @@ import com.zerocracy.claims.proc.AsyncProc;
 import com.zerocracy.claims.proc.BrigadeProc;
 import com.zerocracy.claims.proc.CountingProc;
 import com.zerocracy.claims.proc.DeleteProc;
+import com.zerocracy.claims.proc.ExpiryProc;
 import com.zerocracy.claims.proc.FootprintProc;
 import com.zerocracy.claims.proc.SentryProc;
 import com.zerocracy.farm.S3Farm;
@@ -137,13 +138,15 @@ public final class Main {
                     threads,
                     new DeleteProc(
                         farm,
-                        new SentryProc(
-                            farm,
-                            new FootprintProc(
+                        new ExpiryProc(
+                            new SentryProc(
                                 farm,
-                                new CountingProc(
-                                    new BrigadeProc(farm),
-                                    count
+                                new FootprintProc(
+                                    farm,
+                                    new CountingProc(
+                                        new BrigadeProc(farm),
+                                        count
+                                    )
                                 )
                             )
                         )
