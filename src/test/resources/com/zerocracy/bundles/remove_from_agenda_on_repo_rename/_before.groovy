@@ -30,6 +30,6 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Repo repo = new ExtGithub(farm).value().repos().create(new Repos.RepoCreate('repo', false))
   repo.issues().create('hello', 'world')
-  new Agenda(farm, 'g4s8').bootstrap().add(project, 'gh:repo/what#1', 'DEV')
-  repo.patch(Json.createObjectBuilder().add("name", "other").build())
+  new Agenda(farm, 'g4s8').bootstrap().add(project, 'gh:test/repo#1', 'DEV')
+  repo.patch(Json.createObjectBuilder().add('name', 'other').build())
 }
