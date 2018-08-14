@@ -25,7 +25,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 /**
- * Test case for {@link  MessageMonitorProc}.
+ * Test case for {@link MessageMonitorProc}.
  *
  * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
