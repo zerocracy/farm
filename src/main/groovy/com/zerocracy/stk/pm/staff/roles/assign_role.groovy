@@ -77,17 +77,16 @@ def exec(Project project, XML xml) {
       'Role %s was already assigned to @%s; '
     ).say(role, login)
   } else {
+    String text = 'Role %s was successfully assigned to @%s, see [full list](/a/%s?a=pm/staff/roles) of roles; '
     if (role == 'DEV') {
       claim.copy()
         .type('Assign Role')
         .param('role', 'REV')
         .postTo(new ClaimsOf(farm, project))
+    } else if (role == 'REV') {
+        text = text + 'If you don\'t want this user as \'REV\', use `resign REV` command; '
     }
     roles.assign(login, role)
-    String text = 'Role %s was successfully assigned to @%s, see [full list](/a/%s?a=pm/staff/roles) of roles; '
-    if (role == 'REV') {
-        text = text + 'If you don\'t want this user as \'REV\', use resign REV command'
-    }
     msg = new Par(
         text
     ).say(role, login, project.pid())
