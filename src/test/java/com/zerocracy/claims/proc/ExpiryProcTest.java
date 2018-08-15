@@ -17,8 +17,8 @@
 package com.zerocracy.claims.proc;
 
 import com.amazonaws.services.sqs.model.Message;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.hamcrest.MatcherAssert;
@@ -40,8 +40,7 @@ public final class ExpiryProcTest {
             new Message().withAttributes(
                 Collections.singletonMap(
                     "expires",
-                    ZonedDateTime.now().plusDays(1)
-                        .format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+                    Instant.now().plus(Duration.ofDays(1)).toString()
                 )
             )
         );
@@ -66,8 +65,7 @@ public final class ExpiryProcTest {
             new Message().withAttributes(
                 Collections.singletonMap(
                     "expires",
-                    ZonedDateTime.now().minusMinutes(1)
-                        .format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+                        Instant.now().minus(Duration.ofMinutes(1)).toString()
                 )
             )
         );

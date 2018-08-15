@@ -17,11 +17,9 @@
 package com.zerocracy.claims.proc;
 
 import com.amazonaws.services.sqs.model.Message;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
+import java.time.Instant;
 import java.util.Map;
 import org.cactoos.Proc;
-import org.cactoos.time.ZonedDateTimeOf;
 
 /**
  * Proc that checks for claims expiry.
@@ -35,6 +33,7 @@ public final class ExpiryProc implements Proc<Message> {
      * Expires attribute.
      */
     private static final String KEY_EXPIRES = "expires";
+
     /**
      * Decorated proc.
      */
@@ -52,11 +51,9 @@ public final class ExpiryProc implements Proc<Message> {
     public void exec(final Message input) throws Exception {
         final Map<String, String> attrs = input.getAttributes();
         if (attrs.containsKey(ExpiryProc.KEY_EXPIRES)) {
-            final ZonedDateTime expiry = new ZonedDateTimeOf(
-                attrs.get(ExpiryProc.KEY_EXPIRES),
-                DateTimeFormatter.ISO_OFFSET_DATE_TIME
-            ).value();
-            if (ZonedDateTime.now().isAfter(expiry)) {
+            final Instant expiry =
+                Instant.parse(attrs.get(ExpiryProc.KEY_EXPIRES));
+            if (Instant.now().isAfter(expiry)) {
                 return;
             }
         }
