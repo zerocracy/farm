@@ -27,6 +27,7 @@ import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pm.cost.Ledger;
 import com.zerocracy.pmo.Catalog;
 import org.hamcrest.MatcherAssert;
+import org.hamcrest.core.IsEqual;
 import org.junit.Test;
 
 /**
@@ -90,6 +91,51 @@ public final class TkBoardTest {
             XhtmlMatchers.hasXPaths(
                 // @checkstyle LineLength (1 line)
                 "//xhtml:span[@title = 'The project has no funds, you will work for free']"
+            )
+        );
+    }
+
+    @Test
+    public void doesNotShowProjectsNegativeBalance() throws Exception {
+        final Farm farm = new PropsFarm(new FkFarm());
+        final Repo repo = new MkGithub().randomRepo();
+        final Project project = farm.find("").iterator().next();
+        final Catalog catalog = new Catalog(farm).bootstrap();
+        catalog.add(project.pid(), "2017/01/AAAABBBBC/");
+        catalog.link(
+            project.pid(),
+            "github",
+            repo.coordinates().repo()
+        );
+        catalog.publish(project.pid(), true);
+        final Ledger ledger = new Ledger(project).bootstrap();
+        final Cash.S liabilities = new Cash.S("$256");
+        final Cash.S funding = new Cash.S("$200");
+        ledger.add(
+            new Ledger.Transaction(
+                funding,
+                "assets", "cash",
+                "income", "sponsor",
+                "There is some funding just arrived"
+            ),
+            new Ledger.Transaction(
+                liabilities,
+                "expenses", "jobs",
+                "liabilities", "debt",
+                "Expenses for jobs done"
+            )
+        );
+        ledger.deficit(true);
+        MatcherAssert.assertThat(
+            ledger.cash().decimal().signum(),
+            new IsEqual<>(-1)
+        );
+        final String html = new View(farm, "/board").html();
+        MatcherAssert.assertThat(
+            html,
+            XhtmlMatchers.hasXPaths(
+                // @checkstyle LineLength (1 line)
+                "//xhtml:span[@title = 'The project is not properly funded' and . = 'no funds']"
             )
         );
     }
