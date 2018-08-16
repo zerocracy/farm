@@ -110,14 +110,7 @@ public final class TkBoardTest {
         catalog.publish(project.pid(), true);
         final Ledger ledger = new Ledger(project).bootstrap();
         final Cash.S liabilities = new Cash.S("$256");
-        final Cash.S funding = new Cash.S("$200");
         ledger.add(
-            new Ledger.Transaction(
-                funding,
-                "assets", "cash",
-                "income", "sponsor",
-                "There is some funding just arrived"
-            ),
             new Ledger.Transaction(
                 liabilities,
                 "expenses", "jobs",
@@ -127,11 +120,13 @@ public final class TkBoardTest {
         );
         ledger.deficit(true);
         MatcherAssert.assertThat(
+            "Ledger cash amount should be less than zero.",
             ledger.cash().decimal().signum(),
             new IsEqual<>(-1)
         );
         final String html = new View(farm, "/board").html();
         MatcherAssert.assertThat(
+            "Project with negative ledger cash should be shown as 'no funds'.",
             html,
             XhtmlMatchers.hasXPaths(
                 // @checkstyle LineLength (1 line)
