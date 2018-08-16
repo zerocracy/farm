@@ -34,9 +34,10 @@ def exec(Project project, XML xml) {
   Repo repo = new ExtGithub(farm).value().repos().create(new Repos.RepoCreate('repo', false))
   Projects prjs = new Projects(farm, 'g4s8').bootstrap()
   prjs.add('ZEROCRACY')
-  Project prj = farm.find("@id='ZEROCRACY'").getAt(0);
+  Project prj = farm.find("@id='ZEROCRACY'")[(0)]
   repo.issues().create('hello', 'world')
   new Wbs(prj).bootstrap().add('gh:test/repo#1')
   new Orders(prj).bootstrap().assign('gh:test/repo#1','g4s8',5)
   new Agenda(farm, 'g4s8').bootstrap().add(project, 'gh:test/repo#1', 'DEV')
-  repo.patch(Json.createObjectBuilder().add('name', 'other').build())}
+  repo.patch(Json.createObjectBuilder().add('name', 'other').build())
+}
