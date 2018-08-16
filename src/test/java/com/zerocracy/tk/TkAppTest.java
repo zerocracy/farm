@@ -24,8 +24,10 @@ import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.props.PropsFarm;
 import java.net.HttpURLConnection;
 import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.takes.Take;
+import org.takes.facets.hamcrest.HmRsStatus;
 import org.takes.http.FtRemote;
 import org.takes.rq.RqFake;
 import org.takes.rq.RqWithHeader;
@@ -37,6 +39,7 @@ import org.takes.rs.RsPrint;
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class TkAppTest {
 
     @Test
@@ -74,4 +77,35 @@ public final class TkAppTest {
         );
     }
 
+    // @todo #512:30min 0crat is displaying an error page when trying to use
+    //  PsByFlag=PsGithub parameter. This test is triggering this behavior.
+    //  Find what is causing it and fix it so this exception screen is not
+    //  displayed anymore and remove expected exception from this test.
+    @Test(expected = IllegalStateException.class)
+    public void redirectOnError() throws Exception {
+        final Take take = new TkApp(new PropsFarm(new FkFarm()));
+        MatcherAssert.assertThat(
+            "Could not redirect on error",
+            take.act(new RqFake("GET", "/?PsByFlag=PsGithub")),
+            Matchers.not(
+                new HmRsStatus(
+                    HttpURLConnection.HTTP_OK
+                )
+            )
+        );
+        MatcherAssert.assertThat(
+            "Could not redirect on error (with code)",
+            take.act(
+                new RqFake(
+                    "GET",
+                    "/?PsByFlag=PsGithub&code=1257b773ba07221e7eb5"
+                )
+            ),
+            Matchers.not(
+                new HmRsStatus(
+                    HttpURLConnection.HTTP_OK
+                )
+            )
+        );
+    }
 }
