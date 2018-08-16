@@ -81,7 +81,7 @@ public final class TkAppTest {
     //  PsByFlag=PsGithub parameter. This test is triggering this behavior.
     //  Find what is causing it and fix it so this exception screen is not
     //  displayed anymore and remove expected exception from this test.
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void redirectOnError() throws Exception {
         final Take take = new TkApp(new PropsFarm(new FkFarm()));
         MatcherAssert.assertThat(
