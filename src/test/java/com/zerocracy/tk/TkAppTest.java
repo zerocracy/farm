@@ -23,11 +23,11 @@ import com.jcabi.matchers.XhtmlMatchers;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.props.PropsFarm;
 import java.net.HttpURLConnection;
+import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
+import org.hamcrest.core.StringContains;
 import org.junit.Test;
 import org.takes.Take;
-import org.takes.facets.hamcrest.HmRsStatus;
 import org.takes.http.FtRemote;
 import org.takes.rq.RqFake;
 import org.takes.rq.RqWithHeader;
@@ -80,32 +80,30 @@ public final class TkAppTest {
     // @todo #512:30min 0crat is displaying an error page when trying to use
     //  PsByFlag=PsGithub parameter. This test is triggering this behavior.
     //  Find what is causing it and fix it so this exception screen is not
-    //  displayed anymore and remove expected exception from this test.
+    //  displayed anymore and fix the test below negating
+    //  new StringContains(message) occurences in matchers.
     @Test
     public void redirectOnError() throws Exception {
         final Take take = new TkApp(new PropsFarm(new FkFarm()));
+        final String message = "Internal application error";
         MatcherAssert.assertThat(
             "Could not redirect on error",
-            take.act(new RqFake("GET", "/?PsByFlag=PsGithub")),
-            Matchers.not(
-                new HmRsStatus(
-                    HttpURLConnection.HTTP_OK
-                )
-            )
+            new TextOf(
+                take.act(new RqFake("GET", "/?PsByFlag=PsGithub")).body()
+            ).asString(),
+            new StringContains(message)
         );
         MatcherAssert.assertThat(
             "Could not redirect on error (with code)",
-            take.act(
-                new RqFake(
-                    "GET",
-                    "/?PsByFlag=PsGithub&code=1257b773ba07221e7eb5"
-                )
-            ),
-            Matchers.not(
-                new HmRsStatus(
-                    HttpURLConnection.HTTP_OK
-                )
-            )
+            new TextOf(
+                take.act(
+                    new RqFake(
+                        "GET",
+                        "/?PsByFlag=PsGithub&code=1257b773ba07221e7eb5"
+                    )
+                ).body()
+            ).asString(),
+            new StringContains(message)
         );
     }
 }
