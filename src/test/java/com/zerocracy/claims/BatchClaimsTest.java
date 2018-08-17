@@ -17,39 +17,34 @@
 package com.zerocracy.claims;
 
 import com.jcabi.aspects.Tv;
-import com.jcabi.xml.XML;
-import com.zerocracy.Farm;
-import com.zerocracy.Item;
-import com.zerocracy.Project;
-import com.zerocracy.Xocument;
-import com.zerocracy.entry.ClaimsOf;
-import com.zerocracy.farm.fake.FkFarm;
-import com.zerocracy.farm.fake.FkProject;
-import org.junit.Test;
-import org.xembly.Directives;
-
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import org.junit.Test;
+import org.mockito.Mockito;
 
 /**
  * Tests for {@link BatchClaims}.
  *
  * @since 1.0
+ * @checkstyle JavadocMethodCheck (500 lines)
  */
-public class BatchClaimsTest {
+@SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
+public final class BatchClaimsTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void obeyClaimBatchMaxSize()throws IOException {
-        final Project project = new FkProject();
-        final int total = Tv.HUNDRED;
+        final int total = Tv.FIVE;
         final List<ClaimOut> claims = new LinkedList<>();
         for (int idx = 0; idx < total; ++idx) {
             claims.add(new ClaimOut().type("hello my future"));
         }
-        Claims claims = new BatchClaims();
-        for (XML claim : new ClaimsItem(project).iterate()){
-            claims.submit(claim);
+        final BatchClaims batch = Mockito.mock(BatchClaims.class);
+        Mockito.doCallRealMethod().when(batch).close();
+        Mockito.doCallRealMethod().when(batch).submit(Mockito.any());
+        for (final ClaimOut claim : claims) {
+            claim.postTo(batch);
         }
+        Mockito.verify(batch, Mockito.times(Tv.FIVE)).close();
     }
 }

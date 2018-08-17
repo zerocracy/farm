@@ -17,7 +17,6 @@
 package com.zerocracy.claims;
 
 import com.jcabi.xml.XML;
-
 import java.io.Closeable;
 import java.io.IOException;
 
@@ -26,9 +25,10 @@ import java.io.IOException;
  *
  * @since 1.0
  */
-public class BatchClaims implements Claims, Closeable {
+public final class BatchClaims implements Claims, Closeable {
+
     @Override
-    public void submit(XML claim) throws IOException {
+    public void submit(final XML claim) throws IOException {
         throw new UnsupportedOperationException("submit(XML) not implemented");
     }
 
