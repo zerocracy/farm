@@ -57,4 +57,14 @@ SOFTWARE.
       <param name="login">yegor256</param>
     </params>
   </claim>
+  <claim id="6">
+    <created>2017-03-27T11:18:09.228Z</created>
+    <type>Assign role</type>
+    <author>yegor256</author>
+    <token>test;C123;yegor256</token>
+    <params>
+      <param name="role">DEV</param>
+      <param name="login">yegor256</param>
+    </params>
+  </claim>
 </claims>
