@@ -90,7 +90,6 @@ public final class Main {
                 "Hey, we are in the testing mode!"
             );
         }
-        Sentry.init(props.get("//sentry/dsn", ""));
         final long start = System.currentTimeMillis();
         try {
             new Main(args).exec();

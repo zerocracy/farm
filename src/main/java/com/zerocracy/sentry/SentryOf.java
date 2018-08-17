@@ -30,6 +30,11 @@ import org.cactoos.func.UncheckedFunc;
 public final class SentryOf implements Sentry {
 
     /**
+     * Sentry DSN property name.
+     */
+    private static final String PROP_DSN = "//sentry/dsn";
+
+    /**
      * Sentry for farm.
      */
     private static final UncheckedFunc<Farm, Sentry> SENTRY =
@@ -37,12 +42,15 @@ public final class SentryOf implements Sentry {
             new SolidFunc<>(
                 farm -> {
                     final Sentry sentry;
-                    if (new Props(farm).has("//testing")) {
-                        sentry = Sentry.FAKE;
-                    } else {
+                    final Props props = new Props(farm);
+                    if (props.has(SentryOf.PROP_DSN)) {
                         sentry = new SentryWithClient(
-                            SentryClientFactory.sentryClient()
+                            SentryClientFactory.sentryClient(
+                                props.get(SentryOf.PROP_DSN)
+                            )
                         );
+                    } else {
+                        sentry = Sentry.FAKE;
                     }
                     return sentry;
                 }
