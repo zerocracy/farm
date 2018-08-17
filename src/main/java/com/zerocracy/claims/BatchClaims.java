@@ -30,6 +30,27 @@ import java.io.IOException;
  */
 public final class BatchClaims implements Claims, Closeable {
 
+    /**
+     * Maximum batch size (in KB).
+     */
+    private final int max;
+
+    /**
+     * Default ctor.
+     */
+    BatchClaims() {
+        // @checkstyle MagicNumberCheck (1 line)
+        this(256);
+    }
+
+    /**
+     * Ctor.
+     * @param max Maximum batch size, in KB
+     */
+    BatchClaims(final int max) {
+        this.max = max;
+    }
+
     @Override
     public void submit(final XML claim) throws IOException {
         throw new UnsupportedOperationException("submit(XML) not implemented");
@@ -39,4 +60,13 @@ public final class BatchClaims implements Claims, Closeable {
     public void close() throws IOException {
         throw new UnsupportedOperationException("close() not implemented");
     }
+
+    /**
+     * Return the maximum batch size (in KB) allowed.
+     * @return Maximum batch size (in KB)
+     */
+    public int maximum() {
+        return this.max;
+    }
+
 }

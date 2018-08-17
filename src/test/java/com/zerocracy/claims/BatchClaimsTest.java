@@ -17,11 +17,13 @@
 package com.zerocracy.claims;
 
 import com.jcabi.aspects.Tv;
+import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.xembly.Xembler;
 
 /**
  * Tests for {@link BatchClaims}.
@@ -35,30 +37,27 @@ public final class BatchClaimsTest {
     @Test(expected = UnsupportedOperationException.class)
     public void obeyClaimBatchMaxSize()throws IOException {
         final List<ClaimOut> claims = new LinkedList<>();
-        for (int idx = 0; idx < Tv.FIVE; ++idx) {
-            claims.add(new ClaimOut().type("hello my future"));
-        }
-        final BatchClaims batch = Mockito.mock(BatchClaims.class);
-        Mockito.doCallRealMethod().when(batch).close();
-        Mockito.doCallRealMethod().when(batch).submit(Mockito.any());
-        for (final ClaimOut claim : claims) {
-            claim.postTo(batch);
-        }
-        Mockito.verify(batch, Mockito.times(Tv.FIVE)).close();
-    }
-
-    @Test(expected = UnsupportedOperationException.class)
-    public void sendClaimsInBatches()throws IOException {
-        final List<ClaimOut> claims = new LinkedList<>();
-        for (int idx = 0; idx < Tv.FIVE; ++idx) {
+        final int count = Tv.FIVE;
+        final ClaimOut claim = new ClaimOut();
+        final int size = new XMLDocument(
+            new Xembler(
+                claim
+            ).xmlQuietly()
+        ).toString().length();
+        for (int idx = 0; idx < count; ++idx) {
             claims.add(new ClaimOut());
         }
         final BatchClaims batch = Mockito.mock(BatchClaims.class);
+        Mockito.doCallRealMethod().when(batch).maximum();
         Mockito.doCallRealMethod().when(batch).close();
         Mockito.doCallRealMethod().when(batch).submit(Mockito.any());
-        for (final ClaimOut claim : claims) {
-            claim.postTo(batch);
+        final int perbatch = (int) Math.ceil((double) size / batch.maximum());
+        for (final ClaimOut item : claims) {
+            item.postTo(batch);
         }
-        Mockito.verify(batch, Mockito.times(Tv.THREE)).close();
+        Mockito.verify(
+            batch,
+            Mockito.times((int) Math.ceil((double) count / perbatch))
+        ).close();
     }
 }
