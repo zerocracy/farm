@@ -124,6 +124,11 @@ SOFTWARE.
                 <xsl:text>no funds</xsl:text>
               </span>
             </xsl:when>
+            <xsl:when test="deficit = 'true'">
+              <span style="color:darkgreen;" title="The project is not properly funded">
+                <xsl:text>no funds</xsl:text>
+              </span>
+            </xsl:when>
             <xsl:otherwise>
               <span style="color:darkgreen;" title="The project is funded">
                 <xsl:value-of select="cash"/>
