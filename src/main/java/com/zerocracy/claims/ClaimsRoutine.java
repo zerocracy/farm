@@ -137,7 +137,7 @@ public final class ClaimsRoutine implements Runnable, Closeable {
             final List<Message> messages = sqs.receiveMessage(
                 new ReceiveMessageRequest(queue)
                     .withMessageAttributeNames(
-                        "project", "signature", ClaimsRoutine.UNTIL
+                        "project", "signature", ClaimsRoutine.UNTIL, "expires"
                     )
                     .withMaxNumberOfMessages(ClaimsRoutine.LIMIT)
             ).getMessages();
