@@ -86,7 +86,7 @@ public final class TkTicksTest {
      */
     @Test
     public void rendersSvgWithoutTicks() throws Exception {
-        final Take home = new TkTicks(new Pulse.Emtpy());
+        final Take home = new TkTicks(new Pulse.Empty());
         MatcherAssert.assertThat(
             new RsPrint(home.act(new RqFake())).printBody(),
             Matchers.notNullValue()

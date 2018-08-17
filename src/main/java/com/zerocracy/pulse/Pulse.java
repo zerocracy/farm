@@ -57,7 +57,7 @@ public interface Pulse {
     /**
      * Empty.
      */
-    class Emtpy implements Pulse {
+    class Empty implements Pulse {
 
         @Override
         public void add(final Tick tick) {
