@@ -26,28 +26,28 @@ public final class Tick {
     /**
      * When was it started.
      */
-    private final transient long when;
+    private final long date;
 
     /**
      * Duration.
      */
-    private final transient long msec;
+    private final long msec;
 
     /**
      * Footprint items processed.
      */
-    private final transient int items;
+    private final int items;
 
     /**
      * Ctor.
      * @param date When
-     * @param duration Duration in msec
+     * @param msec Duration in msec
      * @param total Total processed
      */
-    public Tick(final long date, final long duration,
+    public Tick(final long date, final long msec,
         final int total) {
-        this.when = date;
-        this.msec = duration;
+        this.date = date;
+        this.msec = msec;
         this.items = total;
     }
 
@@ -56,7 +56,7 @@ public final class Tick {
      * @return Time of start
      */
     public long start() {
-        return this.when;
+        return this.date;
     }
 
     /**

@@ -35,11 +35,12 @@ import org.takes.rs.RsPrint;
  * Tests for {@link TkTicks}.
  *
  * @since 1.0
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class TkTicksTest {
 
     /**
-     * TkSVG can render SVG.
+     * {@link TkTicks} can render SVG.
      * @throws Exception If some problem inside
      */
     @Test
@@ -80,12 +81,12 @@ public final class TkTicksTest {
     }
 
     /**
-     * TkSVG can render SVG without ticks.
+     * {@link TkTicks} can render SVG without ticks.
      * @throws Exception If some problem inside
      */
     @Test
     public void rendersSvgWithoutTicks() throws Exception {
-        final Take home = new TkTicks(Pulse.EMPTY);
+        final Take home = new TkTicks(new Pulse.Emtpy());
         MatcherAssert.assertThat(
             new RsPrint(home.act(new RqFake())).printBody(),
             Matchers.notNullValue()

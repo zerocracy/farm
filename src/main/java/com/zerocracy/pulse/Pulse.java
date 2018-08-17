@@ -31,28 +31,6 @@ import java.util.Collections;
 public interface Pulse {
 
     /**
-     * Empty.
-     */
-    Pulse EMPTY = new Pulse() {
-        @Override
-        public void add(final Tick tick) {
-            throw new UnsupportedOperationException("#add()");
-        }
-        @Override
-        public Iterable<Tick> ticks() {
-            return Collections.emptyList();
-        }
-        @Override
-        public Iterable<Throwable> error() {
-            return Collections.emptyList();
-        }
-        @Override
-        public void error(final Iterable<Throwable> errors) {
-            throw new UnsupportedOperationException("#error()");
-        }
-    };
-
-    /**
      * Add new tick.
      * @param tick The tick
      */
@@ -76,4 +54,29 @@ public interface Pulse {
      */
     void error(Iterable<Throwable> errors);
 
+    /**
+     * Empty.
+     */
+    class Emtpy implements Pulse {
+
+        @Override
+        public void add(final Tick tick) {
+            throw new UnsupportedOperationException("#add()");
+        }
+
+        @Override
+        public Iterable<Tick> ticks() {
+            return Collections.emptyList();
+        }
+
+        @Override
+        public Iterable<Throwable> error() {
+            return Collections.emptyList();
+        }
+
+        @Override
+        public void error(final Iterable<Throwable> errors) {
+            throw new UnsupportedOperationException("#error()");
+        }
+    };
 }
