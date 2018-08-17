@@ -153,16 +153,19 @@ public final class MessageMonitorProc implements Proc<Message> {
     @Override
     public void exec(final Message input) throws Exception {
         this.messages.add(input);
-        this.origin.exec(input);
-        this.sqs.value().deleteMessage(
-            new DeleteMessageRequest()
-                .withQueueUrl(this.queue)
-                .withReceiptHandle(input.getReceiptHandle())
-        );
-        this.messages.remove(input);
-        Logger.info(
-            this, "Message %s was deleted", input.getMessageId()
-        );
+        try {
+            this.origin.exec(input);
+        } finally {
+            this.sqs.value().deleteMessage(
+                new DeleteMessageRequest()
+                    .withQueueUrl(this.queue)
+                    .withReceiptHandle(input.getReceiptHandle())
+            );
+            this.messages.remove(input);
+            Logger.info(
+                this, "Message %s was deleted", input.getMessageId()
+            );
+        }
     }
 
     /**
