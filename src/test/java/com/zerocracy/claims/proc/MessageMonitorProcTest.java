@@ -21,6 +21,7 @@ import com.amazonaws.services.sqs.model.Message;
 import com.zerocracy.shutdown.ShutdownFarm;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import javafx.util.Duration;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -55,12 +56,15 @@ public final class MessageMonitorProcTest {
                 1,
                 hook
             ).exec(msg);
+            Mockito.verify(
+                sqs,
+                Mockito.timeout((long) Duration.minutes(1).toMillis())
+                    .atLeastOnce()
+            ).changeMessageVisibilityBatch(
+                Mockito.eq(queue), Mockito.anyList()
+            );
         } finally {
             hook.complete();
         }
-        Mockito.verify(sqs, Mockito.atLeastOnce())
-            .changeMessageVisibilityBatch(
-                Mockito.eq(queue), Mockito.anyList()
-            );
     }
 }
