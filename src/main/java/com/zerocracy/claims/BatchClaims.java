@@ -24,6 +24,9 @@ import java.io.IOException;
  * Batch processing of {@link Claims}.
  *
  * @since 1.0
+ * @todo #1545:30min Implement BatchClaims for sending claims in batch.
+ *  Assure that maximum batch size is 256KB for each batch and after
+ *  implementation remove expected exception from tests in BatchClaimsTest.
  */
 public final class BatchClaims implements Claims, Closeable {
 

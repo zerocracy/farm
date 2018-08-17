@@ -47,4 +47,20 @@ public final class BatchClaimsTest {
         }
         Mockito.verify(batch, Mockito.times(Tv.FIVE)).close();
     }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void sendClaimsInBatches()throws IOException {
+        final int total = Tv.FIVE;
+        final List<ClaimOut> claims = new LinkedList<>();
+        for (int idx = 0; idx < total; ++idx) {
+            claims.add(new ClaimOut());
+        }
+        final BatchClaims batch = Mockito.mock(BatchClaims.class);
+        Mockito.doCallRealMethod().when(batch).close();
+        Mockito.doCallRealMethod().when(batch).submit(Mockito.any());
+        for (final ClaimOut claim : claims) {
+            claim.postTo(batch);
+        }
+        Mockito.verify(batch, Mockito.times(Tv.THREE)).close();
+    }
 }
