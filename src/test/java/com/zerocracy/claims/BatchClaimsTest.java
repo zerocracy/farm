@@ -30,6 +30,9 @@ import org.xembly.Xembler;
  *
  * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
+ * @todo #1545:30min We should use Fake classes instead of Mocks. So,
+ *  implement another way of testing BatchClaims behavior in this test
+ *  without relying on mockito and mocking.
  */
 @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
 public final class BatchClaimsTest {
