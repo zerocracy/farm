@@ -78,7 +78,7 @@ def exec(Project project, XML xml) {
     ).say(role, login)
   } else {
     String text = 'Role %s was successfully assigned to @%s, see [full list](/a/%s?a=pm/staff/roles) of roles; '
-    if (role == 'DEV') {
+    if (role == 'DEV' && !roles.hasRole(login, 'ARC')) {
       claim.copy()
         .type('Assign Role')
         .param('role', 'REV')

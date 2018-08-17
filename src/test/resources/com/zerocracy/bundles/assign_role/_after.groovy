@@ -47,6 +47,15 @@ def exec(Project project, XML xml) {
     )
   )
   MatcherAssert.assertThat(
+    'REV role was assigned to yegor256',
+    roles.allRoles('yegor256'),
+    new IsNot<>(
+        new IsCollectionContaining<>(
+          new IsEqual('REV')
+        )
+    )
+  )
+  MatcherAssert.assertThat(
     'Messages not sent to ARC',
     new Footprint(farm, project).collection().find(
       Filters.and(
