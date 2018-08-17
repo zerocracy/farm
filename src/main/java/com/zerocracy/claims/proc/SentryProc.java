@@ -18,7 +18,7 @@ package com.zerocracy.claims.proc;
 
 import com.amazonaws.services.sqs.model.Message;
 import com.zerocracy.Farm;
-import com.zerocracy.SafeSentry;
+import com.zerocracy.sentry.SafeSentry;
 import org.cactoos.Proc;
 
 /**
