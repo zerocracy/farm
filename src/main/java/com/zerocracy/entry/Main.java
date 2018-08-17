@@ -24,6 +24,7 @@ import com.zerocracy.claims.ClaimsRoutine;
 import com.zerocracy.claims.proc.AsyncProc;
 import com.zerocracy.claims.proc.BrigadeProc;
 import com.zerocracy.claims.proc.CountingProc;
+import com.zerocracy.claims.proc.ExpiryProc;
 import com.zerocracy.claims.proc.FootprintProc;
 import com.zerocracy.claims.proc.MessageMonitorProc;
 import com.zerocracy.claims.proc.SentryProc;
@@ -137,13 +138,15 @@ public final class Main {
                     threads,
                     new MessageMonitorProc(
                         farm,
-                        new SentryProc(
-                            farm,
-                            new FootprintProc(
+                        new ExpiryProc(
+                            new SentryProc(
                                 farm,
-                                new CountingProc(
-                                    new BrigadeProc(farm),
-                                    count
+                                new FootprintProc(
+                                    farm,
+                                    new CountingProc(
+                                        new BrigadeProc(farm),
+                                        count
+                                    )
                                 )
                             )
                         ),
