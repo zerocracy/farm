@@ -101,4 +101,9 @@ public final class TestListener extends RunListener {
         }
     }
 
+    @Override
+    public void testStarted(final Description description) throws Exception {
+        super.testStarted(description);
+        this.log.reset();
+    }
 }

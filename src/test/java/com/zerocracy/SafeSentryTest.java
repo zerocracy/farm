@@ -32,6 +32,7 @@ import org.junit.Test;
  * @since 1.0
  * @checkstyle JavadocMethod (500 lines)
  */
+@SuppressWarnings("PMD.AvoidThrowingRawExceptionTypes")
 public final class SafeSentryTest {
 
     @Test
