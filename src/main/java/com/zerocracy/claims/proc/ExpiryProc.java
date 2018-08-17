@@ -17,6 +17,7 @@
 package com.zerocracy.claims.proc;
 
 import com.amazonaws.services.sqs.model.Message;
+import com.amazonaws.services.sqs.model.MessageAttributeValue;
 import java.time.Instant;
 import java.util.Map;
 import org.cactoos.Proc;
@@ -49,10 +50,12 @@ public final class ExpiryProc implements Proc<Message> {
 
     @Override
     public void exec(final Message input) throws Exception {
-        final Map<String, String> attrs = input.getAttributes();
+        final Map<String, MessageAttributeValue> attrs =
+            input.getMessageAttributes();
         if (attrs.containsKey(ExpiryProc.KEY_EXPIRES)) {
-            final Instant expiry =
-                Instant.parse(attrs.get(ExpiryProc.KEY_EXPIRES));
+            final Instant expiry = Instant.parse(
+                attrs.get(ExpiryProc.KEY_EXPIRES).getStringValue()
+            );
             if (Instant.now().isAfter(expiry)) {
                 return;
             }

@@ -17,6 +17,7 @@
 package com.zerocracy.claims.proc;
 
 import com.amazonaws.services.sqs.model.Message;
+import com.amazonaws.services.sqs.model.MessageAttributeValue;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Collections;
@@ -37,10 +38,12 @@ public final class ExpiryProcTest {
     public void acceptsNonExpiredMessage() throws Exception {
         final AtomicBoolean result = new AtomicBoolean(false);
         new ExpiryProc((msg) -> result.set(true)).exec(
-            new Message().withAttributes(
+            new Message().withMessageAttributes(
                 Collections.singletonMap(
                     "expires",
-                    Instant.now().plus(Duration.ofDays(1)).toString()
+                    new MessageAttributeValue().withStringValue(
+                        Instant.now().plus(Duration.ofDays(1)).toString()
+                    )
                 )
             )
         );
@@ -62,10 +65,12 @@ public final class ExpiryProcTest {
     public void rejectsExpiredMessage() throws Exception {
         final AtomicBoolean result = new AtomicBoolean(false);
         new ExpiryProc((msg) -> result.set(true)).exec(
-            new Message().withAttributes(
+            new Message().withMessageAttributes(
                 Collections.singletonMap(
                     "expires",
+                    new MessageAttributeValue().withStringValue(
                         Instant.now().minus(Duration.ofMinutes(1)).toString()
+                    )
                 )
             )
         );
