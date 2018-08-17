@@ -15,14 +15,12 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-    xmlns="http://www.w3.org/1999/xhtml" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" version="2.0">
     <xsl:output method="xml" omit-xml-declaration="yes"/>
     <xsl:template match="pulse">
         <xsl:variable name="height" select="5"/>
         <xsl:variable name="width" select="3600000"/>
-        <svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" version="1.1"
-            width="100%" height="100%">
+        <svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" version="1.1" width="100%" height="100%">
             <xsl:attribute name="viewBox">
                 <xsl:value-of select="-$width"/>
                 <xsl:text> </xsl:text>
@@ -55,8 +53,7 @@ SOFTWARE.
                 </rect>
             </xsl:for-each>
             <xsl:variable name="age" select="-number(tick[last()]/@start) div 1000"/>
-            <text x="0" y="0" style="text-anchor:middle;"
-                transform="scale(46000,1) translate(-39,1.5)">
+            <text x="0" y="0" style="text-anchor:middle;" transform="scale(46000,1) translate(-39,1.5)">
                 <xsl:choose>
                     <xsl:when test="not($age) or $age &gt; 600">
                         <tspan style="fill:red">
@@ -75,8 +72,7 @@ SOFTWARE.
                     </xsl:otherwise>
                 </xsl:choose>
             </text>
-            <text x="0" y="0" style="text-anchor:end;"
-                transform="scale(46000,1) translate(0,1.5)">
+            <text x="0" y="0" style="text-anchor:end;" transform="scale(46000,1) translate(0,1.5)">
                 <xsl:value-of select="format-number($age,'0')"/>
                 <xsl:text> sec</xsl:text>
             </text>
