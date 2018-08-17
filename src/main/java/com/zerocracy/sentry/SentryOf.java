@@ -40,9 +40,9 @@ public final class SentryOf implements Sentry {
     private static final UncheckedFunc<Farm, Sentry> SENTRY =
         new UncheckedFunc<>(
             new SolidFunc<>(
-                farm -> {
+                frm -> {
                     final Sentry sentry;
-                    final Props props = new Props(farm);
+                    final Props props = new Props(frm);
                     if (props.has(SentryOf.PROP_DSN)) {
                         sentry = new SentryWithClient(
                             SentryClientFactory.sentryClient(
@@ -60,7 +60,7 @@ public final class SentryOf implements Sentry {
     /**
      * Farm.
      */
-    private final Farm frm;
+    private final Farm farm;
 
     /**
      * Ctor.
@@ -68,11 +68,11 @@ public final class SentryOf implements Sentry {
      * @param farm Farm
      */
     public SentryOf(final Farm farm) {
-        this.frm = farm;
+        this.farm = farm;
     }
 
     @Override
     public void capture(final Throwable error) {
-        SentryOf.SENTRY.apply(this.frm).capture(error);
+        SentryOf.SENTRY.apply(this.farm).capture(error);
     }
 }

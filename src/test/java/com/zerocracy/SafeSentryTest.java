@@ -32,7 +32,6 @@ import org.junit.Test;
  * @since 1.0
  * @checkstyle JavadocMethod (500 lines)
  */
-@SuppressWarnings("PMD.AvoidThrowingRawExceptionTypes")
 public final class SafeSentryTest {
 
     @Test
@@ -44,9 +43,9 @@ public final class SafeSentryTest {
         try {
             new SafeSentry(
                 (Sentry) error -> {
-                    throw new RuntimeException(message);
+                    throw new IllegalStateException(message);
                 }
-            ).capture(new RuntimeException());
+            ).capture(new IllegalStateException("error"));
         } finally {
             logger.removeAppender(appender);
         }
