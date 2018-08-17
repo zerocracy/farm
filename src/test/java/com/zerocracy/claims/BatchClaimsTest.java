@@ -34,9 +34,8 @@ public final class BatchClaimsTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void obeyClaimBatchMaxSize()throws IOException {
-        final int total = Tv.FIVE;
         final List<ClaimOut> claims = new LinkedList<>();
-        for (int idx = 0; idx < total; ++idx) {
+        for (int idx = 0; idx < Tv.FIVE; ++idx) {
             claims.add(new ClaimOut().type("hello my future"));
         }
         final BatchClaims batch = Mockito.mock(BatchClaims.class);
@@ -50,9 +49,8 @@ public final class BatchClaimsTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void sendClaimsInBatches()throws IOException {
-        final int total = Tv.FIVE;
         final List<ClaimOut> claims = new LinkedList<>();
-        for (int idx = 0; idx < total; ++idx) {
+        for (int idx = 0; idx < Tv.FIVE; ++idx) {
             claims.add(new ClaimOut());
         }
         final BatchClaims batch = Mockito.mock(BatchClaims.class);
