@@ -16,8 +16,8 @@
  */
 package com.zerocracy;
 
-import com.zerocracy.farm.props.PropsFarm;
-import io.sentry.SentryClient;
+import com.zerocracy.sentry.SafeSentry;
+import com.zerocracy.sentry.Sentry;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.apache.log4j.AppenderSkeleton;
@@ -26,8 +26,6 @@ import org.apache.log4j.spi.LoggingEvent;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
-import org.mockito.Mockito;
-import org.xembly.Directives;
 
 /**
  * Test case for {@link SafeSentry}.
@@ -43,14 +41,10 @@ public final class SafeSentryTest {
         logger.addAppender(appender);
         final String message = "Exceptional!";
         try {
-            final SentryClient client = Mockito.mock(SentryClient.class);
-            Mockito.doThrow(new RuntimeException(message))
-                .when(client).sendException(Mockito.any(Exception.class));
             new SafeSentry(
-                client,
-                new PropsFarm(
-                    new Directives().xpath("/props/testing").remove()
-                )
+                (Sentry) error -> {
+                    throw new RuntimeException(message);
+                }
             ).capture(new RuntimeException());
         } finally {
             logger.removeAppender(appender);
@@ -89,8 +83,6 @@ public final class SafeSentryTest {
         protected void append(final LoggingEvent event) {
             this.log.add((String) event.getMessage());
         }
-
     }
-
 }
 

@@ -21,7 +21,7 @@ import com.jcabi.log.VerboseRunnable;
 import com.jcabi.log.VerboseThreads;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
-import com.zerocracy.SafeSentry;
+import com.zerocracy.sentry.SafeSentry;
 import com.zerocracy.ShutUp;
 import java.io.Closeable;
 import java.lang.ref.WeakReference;

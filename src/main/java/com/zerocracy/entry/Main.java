@@ -19,7 +19,7 @@ package com.zerocracy.entry;
 import com.jcabi.aspects.Loggable;
 import com.jcabi.log.Logger;
 import com.zerocracy.Farm;
-import com.zerocracy.SafeSentry;
+import com.zerocracy.sentry.SafeSentry;
 import com.zerocracy.claims.ClaimsRoutine;
 import com.zerocracy.claims.proc.AsyncProc;
 import com.zerocracy.claims.proc.BrigadeProc;

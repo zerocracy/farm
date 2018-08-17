@@ -18,7 +18,7 @@ package com.zerocracy.tk;
 
 import com.jcabi.log.Logger;
 import com.zerocracy.Farm;
-import com.zerocracy.SafeSentry;
+import com.zerocracy.sentry.SafeSentry;
 import com.zerocracy.farm.guts.TkGuts;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.pmo.Exam;

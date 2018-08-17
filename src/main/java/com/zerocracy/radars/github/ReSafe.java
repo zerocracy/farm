@@ -18,7 +18,7 @@ package com.zerocracy.radars.github;
 
 import com.jcabi.github.Comment;
 import com.zerocracy.Farm;
-import com.zerocracy.SafeSentry;
+import com.zerocracy.sentry.SafeSentry;
 import com.zerocracy.SoftException;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.tools.TxtUnrecoverableError;

@@ -19,7 +19,7 @@ package com.zerocracy.farm;
 import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
-import com.zerocracy.SafeSentry;
+import com.zerocracy.sentry.SafeSentry;
 import com.zerocracy.SoftException;
 import com.zerocracy.Stakeholder;
 import com.zerocracy.claims.ClaimIn;

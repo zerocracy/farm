@@ -21,7 +21,7 @@ import com.jcabi.github.Issue;
 import com.jcabi.github.mock.MkGithub;
 import com.jcabi.log.Logger;
 import com.zerocracy.Farm;
-import com.zerocracy.SafeSentry;
+import com.zerocracy.sentry.SafeSentry;
 import com.zerocracy.SoftException;
 import com.zerocracy.entry.ExtDynamo;
 import com.zerocracy.farm.Errors;

@@ -64,7 +64,7 @@ def exec(Project pmo, XML xml) {
             { Project project -> new Roles(project).bootstrap().hasRole(author, 'QA') },
             farm.find('@id="C3NDPUA8L"')
           )
-        )
+        ),
       )
     )
   )
