@@ -17,15 +17,7 @@
 package com.zerocracy.stk.pm.cost.funding
 
 import com.jcabi.xml.XML
-import com.zerocracy.Farm
 import com.zerocracy.Project
-import com.zerocracy.cash.Cash
-import com.zerocracy.entry.ClaimsOf
-import com.zerocracy.farm.Assume
-import com.zerocracy.claims.ClaimIn
-import com.zerocracy.pm.cost.Estimates
-import com.zerocracy.pm.cost.Ledger
-import com.zerocracy.pmo.recharge.Recharge
 
 /**
  * This stakeholder automatically recharge the project if it detects
@@ -36,19 +28,19 @@ import com.zerocracy.pmo.recharge.Recharge
  * @param xml Claim
  */
 def exec(Project project, XML xml) {
-  new Assume(project, xml).notPmo()
+//  new Assume(project, xml).notPmo()
 //  new Assume(project, xml).type('Make payment', 'Ping hourly')
-  ClaimIn claim = new ClaimIn(xml)
-  Farm farm = binding.variables.farm
-  Recharge recharge = new Recharge(farm, project.pid())
-  if (!recharge.exists()) {
-    return
-  }
-  Ledger ledger = new Ledger(project).bootstrap()
-  Cash cash = ledger.cash()
-  Cash locked = new Estimates(project).bootstrap().total()
-  if (cash > locked.add(new Cash.S('$16'))) {
-    return
-  }
-  recharge.pay(claim.copy()).postTo(new ClaimsOf(farm, project))
+//  ClaimIn claim = new ClaimIn(xml)
+//  Farm farm = binding.variables.farm
+//  Recharge recharge = new Recharge(farm, project.pid())
+//  if (!recharge.exists()) {
+//    return
+//  }
+//  Ledger ledger = new Ledger(project).bootstrap()
+//  Cash cash = ledger.cash()
+//  Cash locked = new Estimates(project).bootstrap().total()
+//  if (cash > locked.add(new Cash.S('$16'))) {
+//    return
+//  }
+//  recharge.pay(claim.copy()).postTo(new ClaimsOf(farm, project))
 }
