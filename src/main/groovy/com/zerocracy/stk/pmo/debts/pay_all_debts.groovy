@@ -45,7 +45,7 @@ def exec(Project pmo, XML xml) {
   Farm farm = binding.variables.farm
   Debts debts = new Debts(farm).bootstrap()
   ClaimIn claim = new ClaimIn(xml)
-  debts.iterate().each { uid ->
+  debts.iterate().each { uid ->e
     if (!debts.expired(uid)) {
       return
     }

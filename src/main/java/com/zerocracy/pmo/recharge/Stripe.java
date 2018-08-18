@@ -23,6 +23,7 @@ import com.stripe.exception.CardException;
 import com.stripe.exception.InvalidRequestException;
 import com.stripe.model.Charge;
 import com.stripe.model.Customer;
+import com.stripe.model.Refund;
 import com.stripe.net.RequestOptions;
 import com.zerocracy.Farm;
 import com.zerocracy.Par;
