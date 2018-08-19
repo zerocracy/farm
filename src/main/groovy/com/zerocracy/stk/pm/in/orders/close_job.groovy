@@ -59,17 +59,24 @@ def exec(Project project, XML xml) {
     if (author != claim.author()
       && !issue.pull
       && !new Roles(project).bootstrap().hasRole(claim.author(), 'PO', 'ARC')) {
+      String message;
+      if (issue.open) {
+        message = new Par(
+          '@%s you are not allowed to close this job,',
+          'I won\'t close the order;',
+          'ask @%s (its author), ARC or PO do close it'
+        ).say(claim.author(), issue.author().login())
+      } else {
+        message = new Par(
+          '@%s the issue is closed not by @%s (its creator);',
+          'I won\'t close the order;',
+          'please, re-open it and ask @%2$s to close it'
+        ).say(claim.author(), issue.author().login())
+      }
       claim.copy()
         .type('Notify job')
         .token("job;${job}")
-        .param(
-          'message',
-          new Par(
-            '@%s the issue is closed not by @%s (its creator);',
-            'I won\'t close the order;',
-            'please, re-open it and ask @%2$s to close it'
-          ).say(claim.author(), issue.author().login())
-        )
+        .param('message', message)
         .postTo(new ClaimsOf(farm, project))
       return
     }
