@@ -97,8 +97,8 @@ public final class VsBalance implements Votes {
             ).intValue();
             log.append(
                 String.format(
-                    "Has %d jobs in %d projects, %.2f%% from current project",
-                    size, all, percent
+                    "Has %d jobs in %d projects, %.1f%% from current project",
+                    size, all, percent * 100
                 )
             );
             result = 1.0 - (percent * all) / this.max.value();
