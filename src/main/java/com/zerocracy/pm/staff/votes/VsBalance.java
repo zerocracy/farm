@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pm.staff.votes;
 
+import com.jcabi.aspects.Tv;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.pm.staff.Votes;
@@ -98,7 +99,7 @@ public final class VsBalance implements Votes {
             log.append(
                 String.format(
                     "Has %d jobs in %d projects, %.0f%% from current project",
-                    size, all, percent * 100
+                    size, all, percent * Tv.HUNDRED
                 )
             );
             result = 1.0 - (percent * all) / this.max.value();
