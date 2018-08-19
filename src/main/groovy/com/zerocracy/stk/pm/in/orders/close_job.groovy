@@ -59,7 +59,7 @@ def exec(Project project, XML xml) {
     if (author != claim.author()
       && !issue.pull
       && !new Roles(project).bootstrap().hasRole(claim.author(), 'PO', 'ARC')) {
-      String message;
+      String message
       if (issue.open) {
         message = new Par(
           '@%s you are not allowed to close this job,',
