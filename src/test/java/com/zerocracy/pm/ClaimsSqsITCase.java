@@ -33,6 +33,7 @@ import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.farm.props.PropsFarm;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import org.cactoos.map.MapEntry;
@@ -64,6 +65,7 @@ import org.junit.Test;
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.ExcessiveImports")
 public final class ClaimsSqsITCase {
 
     /**
@@ -199,6 +201,32 @@ public final class ClaimsSqsITCase {
                 new MatcherOf<>(
                     (Message msg) -> msg.getMessageAttributes()
                         .containsKey(until)
+                )
+            )
+        );
+    }
+
+    @Test
+    public void submitWithExpiry() throws Exception {
+        final Claims claims = new ClaimsSqs(
+            this.client, this.queue, new FkProject()
+        );
+        final Instant expire = Instant.now().plus(Duration.ofDays(1));
+        new ClaimOut()
+            .type("Ping")
+            .postTo(claims, expire);
+        final String attr = "expire";
+        MatcherAssert.assertThat(
+            "received claim with expiry",
+            this.client.receiveMessage(
+                new ReceiveMessageRequest(this.queue)
+                    .withMaxNumberOfMessages(Tv.TEN)
+                    .withMessageAttributeNames(attr)
+            ).getMessages(),
+            Matchers.contains(
+                new MatcherOf<>(
+                    (Message msg) -> msg.getMessageAttributes()
+                        .containsKey(attr)
                 )
             )
         );

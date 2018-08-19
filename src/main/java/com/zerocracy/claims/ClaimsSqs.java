@@ -22,6 +22,7 @@ import com.amazonaws.services.sqs.model.SendMessageRequest;
 import com.jcabi.xml.XML;
 import com.zerocracy.Project;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import org.cactoos.scalar.And;
@@ -66,7 +67,8 @@ public final class ClaimsSqs implements Claims {
     }
 
     @Override
-    public void submit(final XML claim) throws IOException {
+    public void submit(final XML claim, final Instant expires)
+        throws IOException {
         final SendMessageRequest msg = new SendMessageRequest(
             this.queue,
             claim.toString()
@@ -75,6 +77,14 @@ public final class ClaimsSqs implements Claims {
         final String signature = new ClaimSignature(
             claim.nodes("//claim").get(0)
         ).asString();
+        if (expires.equals(Instant.MAX)) {
+            attrs.put(
+                "expires",
+                new MessageAttributeValue()
+                    .withDataType("String")
+                    .withStringValue(expires.toString())
+            );
+        }
         attrs.put(
             "signature",
             new MessageAttributeValue()
@@ -107,5 +117,10 @@ public final class ClaimsSqs implements Claims {
         );
         msg.setMessageAttributes(attrs);
         this.sqs.sendMessage(msg);
+    }
+
+    @Override
+    public void submit(final XML claim) throws IOException {
+        this.submit(claim, Instant.MAX);
     }
 }

@@ -26,6 +26,7 @@ import com.zerocracy.claims.ClaimsXml;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
+import java.time.Instant;
 import org.cactoos.func.IoCheckedBiFunc;
 import org.cactoos.func.SolidBiFunc;
 
@@ -93,5 +94,11 @@ public final class ClaimsOf implements Claims {
     @Override
     public void submit(final XML claim) throws IOException {
         ClaimsOf.SINGLETON.apply(this.frm, this.proj).submit(claim);
+    }
+
+    @Override
+    public void submit(final XML claim, final Instant expires)
+        throws IOException {
+        ClaimsOf.SINGLETON.apply(this.frm, this.proj).submit(claim, expires);
     }
 }
