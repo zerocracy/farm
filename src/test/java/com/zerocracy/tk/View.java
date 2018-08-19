@@ -18,6 +18,7 @@ package com.zerocracy.tk;
 
 import com.zerocracy.Farm;
 import java.io.IOException;
+import org.cactoos.list.Joined;
 import org.cactoos.list.ListOf;
 import org.takes.rq.RqFake;
 import org.takes.rs.RsPrint;
@@ -65,14 +66,16 @@ public final class View {
 
     /**
      * HTML view of given page.
+     * @param headers Headers to add to request
      * @return HTML view
      * @throws IOException In case of error
      */
-    public String html() throws IOException {
+    public String html(final String... headers) throws IOException {
         return this.page(
             // @checkstyle LineLength (1 line)
             "Mozilla/5.0 (X11; Linux x86_64; rv:62.0) Gecko/20100101 Firefox/62.0",
-            "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+            "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            headers
         );
     }
 
@@ -80,21 +83,26 @@ public final class View {
      * Generate view of page using provided user agent.
      * @param agent User agent to use
      * @param accept Content types in Accept header
+     * @param headers Headers to add to request
      * @return Generated page
      * @throws IOException In case of error
      */
-    private String page(final String agent, final String accept)
+    private String page(final String agent, final String accept,
+        final String... headers)
         throws IOException {
         return new RsPrint(
             new TkApp(this.farm).act(
                 new RqWithUser(
                     this.farm,
                     new RqFake(
-                        new ListOf<>(
-                            String.format("GET %s", this.url),
-                            "Host: www.example.com",
-                            String.format("Accept: %s", accept),
-                            String.format("User-Agent: %s", agent)
+                        new Joined<String>(
+                            new ListOf<>(
+                                String.format("GET %s", this.url),
+                                "Host: www.example.com",
+                                String.format("Accept: %s", accept),
+                                String.format("User-Agent: %s", agent)
+                            ),
+                            new ListOf<>(headers)
                         ),
                         ""
                     )

@@ -33,6 +33,8 @@ import com.zerocracy.pmo.Projects;
 import com.zerocracy.tk.RqWithUser;
 import com.zerocracy.tk.TkApp;
 import com.zerocracy.tk.View;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import org.cactoos.list.ListOf;
 import org.cactoos.text.FormattedText;
@@ -198,6 +200,22 @@ public final class TkProfileTest {
                     project.pid()
                 )
             )
+        );
+    }
+
+    @Test
+    public void showsLinkToPolicyForUnknownUser() throws Exception {
+        final String flash =
+            // @checkstyle LineLength (1 line)
+            "@nvseenu is not invited to us yet, see <a href=\"www.zerocracy.com/policy.html#1\">§1</a>";
+        MatcherAssert.assertThat(
+            new View(new PropsFarm(new FkFarm()), "/").html(
+                String.format(
+                    "Cookie: RsFlash=%s/WARNING",
+                    URLEncoder.encode(flash, StandardCharsets.UTF_8.toString())
+                )
+            ),
+            Matchers.containsString(flash)
         );
     }
 
