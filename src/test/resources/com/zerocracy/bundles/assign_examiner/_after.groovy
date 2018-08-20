@@ -25,10 +25,9 @@ import org.hamcrest.core.IsEqual
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
-  Resumes resumes = new Resumes(farm).bootstrap()
   MatcherAssert.assertThat(
     'Examination was assigned wrong user',
-    resumes.bootstrap().examiner('newuser'),
+    new Resumes(farm).bootstrap().examiner('newuser'),
     new IsEqual<String>('valid')
   )
   // @todo #989:30min MkGithub can't create private repository,

@@ -24,6 +24,5 @@ import java.time.LocalDateTime
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
-  Resumes resumes = new Resumes(farm).bootstrap()
-  resumes.add('newuser', LocalDateTime.now(), 'This is a resume', 'INTJ-A', 1024, '@newuswer')
+  new Resumes(farm).bootstrap().add('newuser', LocalDateTime.now(), 'This is a resume', 'INTJ-A', 1024, '@newuswer')
 }
