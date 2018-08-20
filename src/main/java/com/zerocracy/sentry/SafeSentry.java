@@ -14,29 +14,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy;
+package com.zerocracy.sentry;
 
 import com.jcabi.log.Logger;
-import com.zerocracy.farm.props.Props;
-import io.sentry.SentryClient;
-import io.sentry.SentryClientFactory;
+import com.zerocracy.Farm;
 
 /**
  * Safe wrapper for {@link io.sentry.Sentry}.
  *
  * @since 1.0
  */
-public final class SafeSentry {
+public final class SafeSentry implements Sentry {
 
     /**
-     * Encapsulated Sentry client.
+     * Origin sentry.
      */
-    private final SentryClient client;
-
-    /**
-     * Farm.
-     */
-    private final Farm farm;
+    private final Sentry sentry;
 
     /**
      * Ctor.
@@ -44,17 +37,16 @@ public final class SafeSentry {
      * @param farm Farm
      */
     public SafeSentry(final Farm farm) {
-        this(SentryClientFactory.sentryClient(), farm);
+        this(new SentryOf(farm));
     }
 
     /**
      * Ctor.
-     * @param client Sentry client
-     * @param farm Farm
+     *
+     * @param sentry Sentry
      */
-    SafeSentry(final SentryClient client, final Farm farm) {
-        this.client = client;
-        this.farm = farm;
+    public SafeSentry(final Sentry sentry) {
+        this.sentry = sentry;
     }
 
     /**
@@ -64,9 +56,7 @@ public final class SafeSentry {
     @SuppressWarnings("PMD.AvoidCatchingThrowable")
     public void capture(final Throwable error) {
         try {
-            if (!new Props(this.farm).has("//testing")) {
-                this.client.sendException(error);
-            }
+            this.sentry.capture(error);
             // @checkstyle IllegalCatch (1 line)
         } catch (final Throwable ex) {
             Logger.error(

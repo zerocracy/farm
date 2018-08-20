@@ -18,9 +18,9 @@ package com.zerocracy.entry;
 
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
-import com.zerocracy.SafeSentry;
 import com.zerocracy.claims.ClaimOut;
 import com.zerocracy.pmo.Catalog;
+import com.zerocracy.sentry.SafeSentry;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
