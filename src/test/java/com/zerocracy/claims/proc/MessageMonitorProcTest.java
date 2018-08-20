@@ -62,7 +62,7 @@ public final class MessageMonitorProcTest {
                     .atLeastOnce()
             ).changeMessageVisibilityBatch(
                 Mockito.eq(queue), Mockito.anyList()
-            );
+                );
         } finally {
             hook.complete();
         }
