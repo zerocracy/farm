@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pm.cost.funding
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
 import com.zerocracy.claims.ClaimOut
@@ -37,6 +38,7 @@ import java.time.Duration
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Make payment', 'Ping hourly')
+  Farm farm = binding.variables.farm
   Ledger ledger = new Ledger(project).bootstrap()
   Cash cash = ledger.cash()
   Cash locked = new Estimates(project).bootstrap().total()
@@ -46,6 +48,6 @@ def exec(Project project, XML xml) {
     if (!new Props(farm).has('//testing')) {
       recharge.until(Duration.ofMinutes(5))
     }
-    recharge.postTo(new ClaimsOf(binding.variables.farm, project))
+    recharge.postTo(new ClaimsOf(farm, project))
   }
 }
