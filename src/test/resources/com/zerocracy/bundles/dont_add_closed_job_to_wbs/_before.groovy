@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.zerocrat_dont_add_closed_job_to_wbs
+package com.zerocracy.bundles.dont_add_closed_job_to_wbs
 
 import com.jcabi.github.Github
 import com.jcabi.github.Issue
@@ -36,7 +36,7 @@ def exec(Project project, XML xml) {
   issue.assign('0crat')
   issue.close()
   new RbOnAssign().react(
-    new FkFarm(project),
+    farm,
     github,
     Json.createObjectBuilder()
       .add('issue', Json.createObjectBuilder().add('number', issue.number()))

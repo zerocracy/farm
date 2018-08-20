@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.zerocrat_dont_add_closed_job_to_wbs
+package com.zerocracy.bundles.dont_add_closed_job_to_wbs
 
 import com.jcabi.xml.XML
 import com.zerocracy.Project
@@ -23,10 +23,9 @@ import com.zerocracy.Project
 //  is already closed. Correct add_job_to_wbs.groovy so closed jobs aren't added
 //  to WBS. Then uncomment this test.
 def exec(Project project, XML xml) {
-//  Wbs wbs = new Wbs(project).bootstrap()
 //  MatcherAssert.assertThat(
 //    'Closed issue added to WBS',
-//    wbs.exists('gh:test/test#1'),
+//    new Wbs(project).bootstrap().exists('gh:test/test#1'),
 //    new IsEqual<>(false)
 //  )
 }
