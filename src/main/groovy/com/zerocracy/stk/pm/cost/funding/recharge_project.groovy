@@ -17,35 +17,27 @@
 package com.zerocracy.stk.pm.cost.funding
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Project
-import com.zerocracy.cash.Cash
-import com.zerocracy.claims.ClaimOut
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
-import com.zerocracy.farm.props.Props
-import com.zerocracy.pm.cost.Estimates
-import com.zerocracy.pm.cost.Ledger
-import java.time.Duration
+import com.zerocracy.pmo.recharge.Recharge
 
 /**
- * This stakeholder automatically requests for a recharge the project if it
- * detects a deficit.
+ * This stakeholder recharges a project using the same Stripe account which was
+ * used previously to fund the project.
  *
  * @param project Project to recharge
  * @param xml Claim
  */
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Make payment', 'Ping hourly')
-  Ledger ledger = new Ledger(project).bootstrap()
-  Cash cash = ledger.cash()
-  Cash locked = new Estimates(project).bootstrap().total()
-  if (cash < locked.add(new Cash.S('$16'))) {
-    ClaimOut recharge = new ClaimOut()
-      .type('Recharge project')
-    if (!new Props(farm).has('//testing')) {
-      recharge.until(Duration.ofMinutes(5))
-    }
-    recharge.postTo(new ClaimsOf(binding.variables.farm, project))
+  new Assume(project, xml).type('Recharge project')
+  ClaimIn claim = new ClaimIn(xml)
+  Farm farm = binding.variables.farm
+  Recharge recharge = new Recharge(farm, project.pid())
+  if (recharge.exists()) {
+    recharge.pay(claim.copy()).postTo(new ClaimsOf(farm, project))
   }
 }
