@@ -20,6 +20,7 @@ import com.zerocracy.Farm;
 import java.io.IOException;
 import org.cactoos.list.Joined;
 import org.cactoos.list.ListOf;
+import org.cactoos.text.FormattedText;
 import org.takes.rq.RqFake;
 import org.takes.rs.RsPrint;
 
@@ -97,10 +98,13 @@ public final class View {
                     new RqFake(
                         new Joined<String>(
                             new ListOf<>(
-                                String.format("GET %s", this.url),
+                                new FormattedText("GET %s", this.url)
+                                    .asString(),
                                 "Host: www.example.com",
-                                String.format("Accept: %s", accept),
-                                String.format("User-Agent: %s", agent)
+                                new FormattedText("Accept: %s", accept)
+                                    .asString(),
+                                new FormattedText("User-Agent: %s", agent)
+                                    .asString()
                             ),
                             new ListOf<>(headers)
                         ),

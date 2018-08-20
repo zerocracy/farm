@@ -40,6 +40,7 @@ import org.cactoos.list.ListOf;
 import org.cactoos.text.FormattedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.hamcrest.core.StringContains;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -52,7 +53,7 @@ import org.takes.rs.RsPrint;
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.ExcessiveImports"})
 public final class TkProfileTest {
 
     /**
@@ -210,12 +211,12 @@ public final class TkProfileTest {
             "@nvseenu is not invited to us yet, see <a href=\"www.zerocracy.com/policy.html#1\">§1</a>";
         MatcherAssert.assertThat(
             new View(new PropsFarm(new FkFarm()), "/").html(
-                String.format(
+                new FormattedText(
                     "Cookie: RsFlash=%s/WARNING",
                     URLEncoder.encode(flash, StandardCharsets.UTF_8.toString())
-                )
+                ).asString()
             ),
-            Matchers.containsString(flash)
+            new StringContains(flash)
         );
     }
 
