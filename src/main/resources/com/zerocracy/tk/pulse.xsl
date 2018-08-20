@@ -38,16 +38,15 @@ SOFTWARE.
           }
         </style>
       </defs>
-      <line x1="{-$width}" y1="{$height}" x2="0" y2="{$height}"
-        stroke="lightgray" stroke-width="4px"
-        vector-effect="non-scaling-stroke"/>
+      <line x1="{-$width}" y1="{$height}" x2="0" y2="{$height}" stroke="lightgray" stroke-width="4px" vector-effect="non-scaling-stroke"/>
       <xsl:for-each select="tick">
-        <rect height="{@total + 0.5}"
-          x="{@start}" y="{$height - @total - 0.5}" fill="#348C62">
+        <rect height="{@total + 0.5}" x="{@start}" y="{$height - @total - 0.5}" fill="#348C62">
           <xsl:attribute name="width">
             <xsl:choose>
               <xsl:when test="@msec &lt; 5000">5000</xsl:when>
-              <xsl:otherwise><xsl:value-of select="@msec"/></xsl:otherwise>
+              <xsl:otherwise>
+                <xsl:value-of select="@msec"/>
+              </xsl:otherwise>
             </xsl:choose>
           </xsl:attribute>
         </rect>
