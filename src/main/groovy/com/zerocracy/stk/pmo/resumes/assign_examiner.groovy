@@ -46,7 +46,7 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   Farm farm = binding.variables.farm
   Resumes resumes = new Resumes(farm).bootstrap()
-  int reputation = new Policy(farm).get('1.min-rep', 1024)
+  int reputation = new Policy(farm).get('1.min-rep', 256)
   People people = new People(farm).bootstrap()
   List<String> examiners = new ListOf<>(
     new Filtered<String>(
