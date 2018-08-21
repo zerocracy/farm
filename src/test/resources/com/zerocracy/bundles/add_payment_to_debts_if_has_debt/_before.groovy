@@ -28,8 +28,7 @@ import com.zerocracy.pmo.Debts
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
-  Github github = new ExtGithub(farm).value()
-  github.repos().create(new Repos.RepoCreate('test', false))
+  new ExtGithub(farm).value().repos().create(new Repos.RepoCreate('test', false))
   new Rates(project).bootstrap().set('paulodamaso', new Cash.S('$100'))
   new Debts(farm).bootstrap().add('paulodamaso', new Cash.S('$5'), 'Old debt', 'Any reason')
 }
