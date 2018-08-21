@@ -11,3 +11,4 @@ sed -i "s/\${buildNumber}/${head}/g" src/main/resources/com/zerocracy/_props.xml
 git add src/main/resources/com/zerocracy/_props.xml
 git commit -m 'changes for heroku'
 git push heroku master -f
+
