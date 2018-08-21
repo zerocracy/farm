@@ -14,40 +14,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.cost.funding
+package com.zerocracy.bundles.recharges_on_deficit
 
 import com.jcabi.xml.XML
-import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
-import com.zerocracy.claims.ClaimOut
-import com.zerocracy.entry.ClaimsOf
-import com.zerocracy.farm.Assume
-import com.zerocracy.farm.props.Props
-import com.zerocracy.pm.cost.Estimates
 import com.zerocracy.pm.cost.Ledger
-import java.time.Duration
 
-/**
- * This stakeholder automatically requests for a recharge the project if it
- * detects a deficit.
- *
- * @param project Project to recharge
- * @param xml Claim
- */
 def exec(Project project, XML xml) {
-  new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Make payment', 'Ping hourly')
-  Farm farm = binding.variables.farm
-  Ledger ledger = new Ledger(project).bootstrap()
-  Cash cash = ledger.cash()
-  Cash locked = new Estimates(project).bootstrap().total()
-  if (cash < locked.add(new Cash.S('$16'))) {
-    ClaimOut recharge = new ClaimOut()
-      .type('Recharge project')
-    if (!new Props(farm).has('//testing')) {
-      recharge.until(Duration.ofMinutes(5))
-    }
-    recharge.postTo(new ClaimsOf(farm, project))
-  }
+  new Ledger(project).bootstrap().add(
+    new Ledger.Transaction(
+      new Cash.S('$1000'),
+      'expenses', 'jobs',
+      'liabilities', '@yegor256',
+      'Yegor is super expensive'
+    )
+  )
 }
