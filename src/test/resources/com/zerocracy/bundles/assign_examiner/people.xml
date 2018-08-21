@@ -19,7 +19,7 @@ SOFTWARE.
   <person id="lowrep">
     <mentor>yegor256</mentor>
     <rate>$39</rate>
-    <reputation>1024</reputation>
+    <reputation>256</reputation>
     <details>Some details</details>
     <jobs>0</jobs>
     <projects>1</projects>
@@ -31,7 +31,7 @@ SOFTWARE.
   <person id="vacation">
     <mentor>0crat</mentor>
     <rate>$39</rate>
-    <reputation>1024</reputation>
+    <reputation>512</reputation>
     <details>Some details</details>
     <jobs>0</jobs>
     <projects>1</projects>
@@ -43,7 +43,7 @@ SOFTWARE.
   <person id="valid">
     <mentor>0crat</mentor>
     <rate>$39</rate>
-    <reputation>2048</reputation>
+    <reputation>512</reputation>
     <details>Some details</details>
     <jobs>0</jobs>
     <projects>1</projects>
