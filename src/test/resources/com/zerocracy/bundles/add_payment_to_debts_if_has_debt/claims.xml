@@ -1,0 +1,15 @@
+<claims xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.61.2/xsd/pm/claims.xsd" updated="2017-07-21T20:31:44.512Z" version="1">
+  <claim id="1">
+    <created>2017-07-21T20:32:19.716Z</created>
+    <type>Make payment</type>
+    <author>0crat</author>
+    <token>test;C123;user42</token>
+    <params>
+      <param name="login">paulodamaso</param>
+      <param name="minutes">60</param>
+      <param name="cash">$100</param>
+      <param name="job">gh:test/test#1</param>
+      <param name="reason">Order was finished</param>
+    </params>
+  </claim>
+</claims>
