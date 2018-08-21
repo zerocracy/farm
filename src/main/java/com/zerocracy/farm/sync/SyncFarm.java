@@ -49,7 +49,7 @@ public final class SyncFarm implements Farm {
     /**
      * Pool of locks.
      */
-    private final Map<Project, SmartLock> pool;
+    private final Map<Project, Lock> pool;
 
     /**
      * Terminator.
