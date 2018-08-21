@@ -23,9 +23,9 @@ import com.zerocracy.claims.ClaimsRoutine;
 import com.zerocracy.claims.proc.AsyncProc;
 import com.zerocracy.claims.proc.BrigadeProc;
 import com.zerocracy.claims.proc.CountingProc;
-import com.zerocracy.claims.proc.DeleteProc;
 import com.zerocracy.claims.proc.ExpiryProc;
 import com.zerocracy.claims.proc.FootprintProc;
+import com.zerocracy.claims.proc.MessageMonitorProc;
 import com.zerocracy.claims.proc.SentryProc;
 import com.zerocracy.farm.S3Farm;
 import com.zerocracy.farm.SmartFarm;
@@ -134,7 +134,7 @@ public final class Main {
                 farm,
                 new AsyncProc(
                     threads,
-                    new DeleteProc(
+                    new MessageMonitorProc(
                         farm,
                         new ExpiryProc(
                             new SentryProc(
@@ -147,7 +147,8 @@ public final class Main {
                                     )
                                 )
                             )
-                        )
+                        ),
+                        shutdown
                     ),
                     shutdown
                 ),
