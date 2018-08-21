@@ -77,7 +77,7 @@ public final class ClaimsSqs implements Claims {
         final String signature = new ClaimSignature(
             claim.nodes("//claim").get(0)
         ).asString();
-        if (expires.equals(Instant.MAX)) {
+        if (!expires.equals(Instant.MAX)) {
             attrs.put(
                 "expires",
                 new MessageAttributeValue()

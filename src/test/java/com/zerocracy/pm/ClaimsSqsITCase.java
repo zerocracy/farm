@@ -41,6 +41,7 @@ import org.cactoos.map.MapOf;
 import org.cactoos.matchers.MatcherOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.hamcrest.core.IsCollectionContaining;
 import org.junit.After;
 import org.junit.Assume;
 import org.junit.Before;
@@ -223,7 +224,7 @@ public final class ClaimsSqsITCase {
                     .withMaxNumberOfMessages(Tv.TEN)
                     .withMessageAttributeNames(attr)
             ).getMessages(),
-            Matchers.contains(
+            new IsCollectionContaining<>(
                 new MatcherOf<>(
                     (Message msg) -> msg.getMessageAttributes()
                         .containsKey(attr)
