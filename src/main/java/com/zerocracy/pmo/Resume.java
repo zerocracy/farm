@@ -16,7 +16,7 @@
  */
 package com.zerocracy.pmo;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 /**
  * Resume.
@@ -30,7 +30,7 @@ public interface Resume {
      * Time of resume submission.
      * @return Time of resume submission
      */
-    LocalDateTime submitted();
+    Instant submitted();
 
     /**
      * Login of user which sent the resume.
@@ -70,7 +70,7 @@ public interface Resume {
         /**
         * Resume submission date time.
         */
-        private final LocalDateTime time;
+        private final Instant time;
 
         /**
         * Resume user.
@@ -108,7 +108,7 @@ public interface Resume {
          * @param tele Telegram login of resume user
          * @checkstyle ParameterNumberCheck (10 lines)
          */
-        public Fake(final LocalDateTime time, final String user,
+        public Fake(final Instant time, final String user,
             final String txt, final String person, final long id,
             final String tele) {
             this.time = time;
@@ -120,7 +120,7 @@ public interface Resume {
         }
 
         @Override
-        public LocalDateTime submitted() {
+        public Instant submitted() {
             return this.time;
         }
 

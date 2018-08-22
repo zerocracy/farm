@@ -21,10 +21,12 @@ import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Xocument;
 import com.zerocracy.farm.fake.FkFarm;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
+import java.time.ZoneId;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.core.IsEqual;
@@ -107,10 +109,7 @@ public final class ResumesTest {
     public void findResume() throws Exception {
         final Farm farm = new FkFarm();
         final String login = "login";
-        final LocalDateTime time = LocalDateTime.of(
-            LocalDate.of(2018, Month.JANUARY, 1),
-            LocalTime.of(0, 0)
-        );
+        final Instant time = Instant.parse("2018-01-01T00:00:00Z");
         final String text = "Resume text";
         final String personality = "ENTP-T";
         final int id = 187141;
@@ -126,7 +125,7 @@ public final class ResumesTest {
         final Resumes resumes = new Resumes(farm).bootstrap();
         resumes.add(
             login,
-            time,
+            LocalDateTime.ofInstant(time, ZoneId.of("UTC")),
             text,
             personality,
             id,
