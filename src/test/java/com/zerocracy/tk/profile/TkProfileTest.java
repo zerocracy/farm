@@ -33,11 +33,14 @@ import com.zerocracy.pmo.Projects;
 import com.zerocracy.tk.RqWithUser;
 import com.zerocracy.tk.TkApp;
 import com.zerocracy.tk.View;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import org.cactoos.list.ListOf;
 import org.cactoos.text.FormattedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.hamcrest.core.StringContains;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -50,7 +53,7 @@ import org.takes.rs.RsPrint;
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.ExcessiveImports"})
 public final class TkProfileTest {
 
     /**
@@ -198,6 +201,22 @@ public final class TkProfileTest {
                     project.pid()
                 )
             )
+        );
+    }
+
+    @Test
+    public void showsLinkToPolicyForUnknownUser() throws Exception {
+        final String flash =
+            // @checkstyle LineLength (1 line)
+            "@nvseenu is not invited to us yet, see <a href=\"www.zerocracy.com/policy.html#1\">§1</a>";
+        MatcherAssert.assertThat(
+            new View(new PropsFarm(new FkFarm()), "/").html(
+                new FormattedText(
+                    "Cookie: RsFlash=%s/WARNING",
+                    URLEncoder.encode(flash, StandardCharsets.UTF_8.toString())
+                ).asString()
+            ),
+            new StringContains(flash)
         );
     }
 

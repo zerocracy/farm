@@ -39,9 +39,6 @@ import org.cactoos.list.Shuffled
  * @todo #1486:30min On invite we should notify user and examiner and add +32 reputation
  *  points to examiner. Also examiner should be able to reject resume by
  *  saying `deny @username`.
- * @todo #1146:30min Test for this stakeholder is missed. We should verify
- *  that new resume can be assigned only to high-reputation user (>= 1024)
- *  and can't be assigned to users on vacation.
  */
 def exec(Project project, XML xml) {
   new Assume(project, xml).isPmo()
@@ -49,7 +46,7 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   Farm farm = binding.variables.farm
   Resumes resumes = new Resumes(farm).bootstrap()
-  int reputation = new Policy(farm).get('1.min-rep', 1024)
+  int reputation = new Policy(farm).get('1.min-rep', 256)
   People people = new People(farm).bootstrap()
   List<String> examiners = new ListOf<>(
     new Filtered<String>(

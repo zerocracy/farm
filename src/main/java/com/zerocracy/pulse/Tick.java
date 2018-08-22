@@ -14,40 +14,65 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.tk;
-
-import com.zerocracy.Par;
-import java.io.UnsupportedEncodingException;
-import java.util.logging.Level;
-import org.takes.facets.flash.RsFlash;
-import org.takes.rs.RsWrap;
+package com.zerocracy.pulse;
 
 /**
- * RsFlash that converts Par into HTML.
+ * {@link Pulse} tick.
  *
  * @since 1.0
  */
-public final class RsParFlash extends RsWrap {
+public final class Tick {
+
+    /**
+     * When was it started.
+     */
+    private final long date;
+
+    /**
+     * Duration.
+     */
+    private final long msec;
+
+    /**
+     * Footprint items processed.
+     */
+    private final int items;
 
     /**
      * Ctor.
-     * @param err The error
-     * @throws UnsupportedEncodingException If fails
+     * @param date When
+     * @param msec Duration in msec
+     * @param total Total processed
      */
-    public RsParFlash(final Throwable err)
-        throws UnsupportedEncodingException {
-        this(err.getLocalizedMessage(), Level.SEVERE);
+    public Tick(final long date, final long msec,
+        final int total) {
+        this.date = date;
+        this.msec = msec;
+        this.items = total;
     }
 
     /**
-     * Ctor.
-     * @param text The text
-     * @param level The level
-     * @throws UnsupportedEncodingException If fails
+     * Time of start.
+     * @return Time of start
      */
-    public RsParFlash(final String text, final Level level)
-        throws UnsupportedEncodingException {
-        super(new RsFlash(new Par.ToHtml(text).toString(), level));
+    public long start() {
+        return this.date;
+    }
+
+    /**
+     * Duration in msec.
+     * @return Duration
+     */
+    public long duration() {
+        return this.msec;
+    }
+
+    /**
+     * Total processed.
+     * @return Number of footprint items
+     */
+    public int total() {
+        return this.items;
     }
 
 }

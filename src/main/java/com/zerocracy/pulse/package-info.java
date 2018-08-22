@@ -14,40 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.tk;
-
-import com.zerocracy.Par;
-import java.io.UnsupportedEncodingException;
-import java.util.logging.Level;
-import org.takes.facets.flash.RsFlash;
-import org.takes.rs.RsWrap;
 
 /**
- * RsFlash that converts Par into HTML.
+ * Pulse.
  *
  * @since 1.0
  */
-public final class RsParFlash extends RsWrap {
-
-    /**
-     * Ctor.
-     * @param err The error
-     * @throws UnsupportedEncodingException If fails
-     */
-    public RsParFlash(final Throwable err)
-        throws UnsupportedEncodingException {
-        this(err.getLocalizedMessage(), Level.SEVERE);
-    }
-
-    /**
-     * Ctor.
-     * @param text The text
-     * @param level The level
-     * @throws UnsupportedEncodingException If fails
-     */
-    public RsParFlash(final String text, final Level level)
-        throws UnsupportedEncodingException {
-        super(new RsFlash(new Par.ToHtml(text).toString(), level));
-    }
-
-}
+package com.zerocracy.pulse;

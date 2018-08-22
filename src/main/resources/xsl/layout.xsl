@@ -31,7 +31,7 @@ SOFTWARE.
       <body>
         <section>
           <xsl:if test="flash">
-            <xsl:call-template name="takes_flash">
+            <xsl:call-template name="takes_flash_without_escaping">
               <xsl:with-param name="flash" select="flash"/>
             </xsl:call-template>
           </xsl:if>
@@ -39,5 +39,18 @@ SOFTWARE.
         </section>
       </body>
     </html>
+  </xsl:template>
+  <xsl:template name="takes_flash_without_escaping">
+    <xsl:param name="flash"/>
+    <xsl:if test="$flash/message">
+      <p>
+        <xsl:attribute name="class">
+          <xsl:text>flash</xsl:text>
+          <xsl:text> flash-</xsl:text>
+          <xsl:value-of select="$flash/level"/>
+        </xsl:attribute>
+        <xsl:value-of select="$flash/message" disable-output-escaping="yes"/>
+      </p>
+    </xsl:if>
   </xsl:template>
 </xsl:stylesheet>
