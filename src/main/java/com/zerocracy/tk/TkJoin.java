@@ -18,6 +18,11 @@ package com.zerocracy.tk;
 
 import com.zerocracy.Farm;
 import java.io.IOException;
+
+import com.zerocracy.pmo.People;
+import com.zerocracy.pmo.Pmo;
+import com.zerocracy.pmo.Resumes;
+import com.zerocracy.tk.profile.RqSecureLogin;
 import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
@@ -54,6 +59,25 @@ public final class TkJoin implements TkRegex {
 
     @Override
     public Response act(final RqRegex req) throws IOException {
-        return new RsPage(this.farm, "/xsl/join.xsl", req);
+        final String author = new RqUser(this.farm, req, false).value();
+        final People people = new People(this.farm).bootstrap();
+        people.touch(author);
+        RsPage result;
+        final Resumes resumes = new Resumes(this.farm).bootstrap();
+        if (people.exists(author)){
+            result =  new RsPage(
+                this.farm,
+                "/xsl/resume.xsl",
+                req,
+                () -> new XeXsl(
+                    new Pmo(this.farm),
+                    resumes.resume(author),
+                    "pmo/resume.xsl"
+                )
+            );
+        } else {
+            result =  new RsPage(this.farm, "/xsl/join.xsl", req);
+        }
+        return result;
     }
 }
