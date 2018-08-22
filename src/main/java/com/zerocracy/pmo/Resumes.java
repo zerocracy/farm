@@ -161,6 +161,17 @@ public final class Resumes {
     }
 
     /**
+     * Returns the {@link Resume} from user.
+     *
+     * @param login Resume author login
+     * @return Resume from author
+     * @throws IOException If fails or resume not found
+     */
+    public Resume resume(final String login) throws IOException {
+        throw new UnsupportedOperationException("resume() not implemented");
+    }
+
+    /**
      * The item.
      * @return Item
      * @throws IOException If fails

@@ -27,6 +27,7 @@ import java.time.LocalTime;
 import java.time.Month;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.hamcrest.core.IsEqual;
 import org.junit.Test;
 
 /**
@@ -99,6 +100,42 @@ public final class ResumesTest {
         MatcherAssert.assertThat(
             resumes.unassigned(),
             Matchers.contains(first)
+        );
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void findResume() throws Exception {
+        final Farm farm = new FkFarm();
+        final String login = "login";
+        final LocalDateTime time = LocalDateTime.of(
+            LocalDate.of(2018, Month.JANUARY, 1),
+            LocalTime.of(0, 0)
+        );
+        final String text = "Resume text";
+        final String personality = "ENTP-T";
+        final int id = 187141;
+        final String telegram = "telegram";
+        final Resume fake = new Resume.Fake(
+            time,
+            login,
+            text,
+            personality,
+            id,
+            telegram
+        );
+        final Resumes resumes = new Resumes(farm).bootstrap();
+        resumes.add(
+            login,
+            time,
+            text,
+            personality,
+            id,
+            telegram
+        );
+        MatcherAssert.assertThat(
+            "Could not find resume",
+            resumes.resume(login),
+            new IsEqual<>(fake)
         );
     }
 }
