@@ -25,6 +25,7 @@ import com.zerocracy.pmo.Projects;
 import com.zerocracy.tk.RqWithUser;
 import com.zerocracy.tk.TkApp;
 import org.cactoos.list.ListOf;
+import org.cactoos.text.FormattedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.StringContains;
 import org.junit.Test;
@@ -55,7 +56,8 @@ public final class TkUserWbsTest {
                         farm,
                         new RqFake(
                             new ListOf<>(
-                                String.format("GET /u/%s/wbs", uid),
+                                new FormattedText("GET /u/%s/wbs", uid)
+                                    .asString(),
                                 "Host: www.example.com",
                                 "Accept: application/vnd.zerocracy+xml"
                             ),
