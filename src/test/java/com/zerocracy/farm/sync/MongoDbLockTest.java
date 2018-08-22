@@ -23,17 +23,16 @@ import org.hamcrest.text.IsEmptyString;
 import org.junit.Test;
 
 /**
- * Test case for {@link MongoDBLock}.
+ * Test case for {@link MongoDbLock}.
  *
  * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
- * @checkstyle AbbreviationAsWordInNameCheck (500 lines)
  */
-public final class MongoDBLockTest {
+public final class MongoDbLockTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void buildsToStringWhenFresh() throws Exception {
-        final Lock lock = new MongoDBLock();
+        final Lock lock = new MongoDbLock();
         MatcherAssert.assertThat(
             lock.toString(),
             new IsNot<>(
@@ -44,7 +43,7 @@ public final class MongoDBLockTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void buildsToStringWhenLocked() throws Exception {
-        final Lock lock = new MongoDBLock();
+        final Lock lock = new MongoDbLock();
         lock.lock();
         try {
             MatcherAssert.assertThat(
@@ -60,7 +59,7 @@ public final class MongoDBLockTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void buildsToStringWhenLockedInterruptibly() throws Exception {
-        final Lock lock = new MongoDBLock();
+        final Lock lock = new MongoDbLock();
         lock.lockInterruptibly();
         try {
             MatcherAssert.assertThat(

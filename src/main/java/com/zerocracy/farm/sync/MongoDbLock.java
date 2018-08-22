@@ -27,9 +27,8 @@ import java.util.concurrent.locks.Condition;
  *  The lock must be set to some resource in a table where resource path and
  *  name must be set, along with time of lock. Then remove expects from
  *  MongoDBLockTest.
- * @checkstyle AbbreviationAsWordInNameCheck (500 lines)
  */
-public final class MongoDBLock implements Lock {
+public final class MongoDbLock implements Lock {
 
     @Override
     public StackTraceElement[] stacktrace() {
