@@ -26,6 +26,8 @@ deploy:
     mvn clean install -Prultor --settings ../settings.xml --quiet
     mvn clean --quiet
 release:
+  sensitive:
+    - settings.xml
   script: |
     [[ "${tag}" =~ ^[0-9]+(\.[0-9]+)*$ ]] || exit -1
     mvn clean process-resources --quiet
@@ -40,9 +42,10 @@ release:
     echo -e "Host *\n  StrictHostKeyChecking no\n  UserKnownHostsFile=/dev/null" > ~/.ssh/config
     git fetch
     git add settings.xml
-    mvn initialize -Pshutdown --settings ../settings.xml
+    mvn initialize -Pshutdown --settings settings.xml
     git commit -m 'settings.xml'; trap "git reset HEAD~1" EXIT
     git push -f heroku $(git symbolic-ref --short HEAD):master
+    rm -rf settings.xml
     curl -f --connect-timeout 15 --retry 5 --retry-delay 30 https://www.0crat.com > /dev/null
 merge:
   script: |-
