@@ -16,7 +16,6 @@
  */
 package com.zerocracy.bundles.add_payment_to_debts_if_has_debt
 
-import com.jcabi.github.Github
 import com.jcabi.github.Repos
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
