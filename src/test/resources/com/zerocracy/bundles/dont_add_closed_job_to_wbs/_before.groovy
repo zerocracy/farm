@@ -16,33 +16,24 @@
  */
 package com.zerocracy.bundles.dont_add_closed_job_to_wbs
 
-import com.jcabi.github.Github
-import com.jcabi.github.Issue
-import com.jcabi.github.Repo
-import com.jcabi.github.Repos
 import com.jcabi.xml.XML
-import com.zerocracy.Farm
 import com.zerocracy.Project
-import com.zerocracy.entry.ExtGithub
-import com.zerocracy.farm.fake.FkFarm
-import com.zerocracy.radars.github.RbOnAssign
-import javax.json.Json
 
 def exec(Project project, XML xml) {
-  Farm farm = binding.variables.farm
-  Github github = new ExtGithub(farm).value()
-  Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
-  Issue issue = new Issue.Smart(repo.issues().create('Hello, world', ''))
-  issue.assign('0crat')
-  issue.close()
-  new RbOnAssign().react(
-    farm,
-    github,
-    Json.createObjectBuilder()
-      .add('issue', Json.createObjectBuilder().add('number', issue.number()))
-      .add('repository', Json.createObjectBuilder().add('full_name', repo.coordinates().toString()))
-      .add('sender', Json.createObjectBuilder().add('login', 'yegor256'))
-      .add('assignee', Json.createObjectBuilder().add('login', '0crat'))
-      .build()
-  )
+//  Farm farm = binding.variables.farm
+//  Github github = new ExtGithub(farm).value()
+//  Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
+//  Issue issue = new Issue.Smart(repo.issues().create('Hello, world', ''))
+//  issue.assign('0crat')
+//  issue.close()
+//  new RbOnAssign().react(
+//    farm,
+//    github,
+//    Json.createObjectBuilder()
+//      .add('issue', Json.createObjectBuilder().add('number', issue.number()))
+//      .add('repository', Json.createObjectBuilder().add('full_name', repo.coordinates().toString()))
+//      .add('sender', Json.createObjectBuilder().add('login', 'yegor256'))
+//      .add('assignee', Json.createObjectBuilder().add('login', '0crat'))
+//      .build()
+//  )
 }
