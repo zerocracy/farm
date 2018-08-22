@@ -59,11 +59,11 @@ public final class MessageMonitorProcTest {
             ).exec(msg);
             Mockito.verify(
                 sqs,
-                Mockito.timeout(Duration.ofMinutes(1).toMillis())
-                    .atLeastOnce()
-            ).changeMessageVisibilityBatch(
+                Mockito.timeout(Duration.ofMinutes(1).toMillis()).atLeastOnce()
+            )
+            .changeMessageVisibilityBatch(
                 ArgumentMatchers.eq(queue), ArgumentMatchers.anyList()
-                );
+            );
         } finally {
             hook.complete();
         }
