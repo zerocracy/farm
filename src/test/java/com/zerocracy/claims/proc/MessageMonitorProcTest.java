@@ -63,7 +63,7 @@ public final class MessageMonitorProcTest {
                     .atLeastOnce()
             ).changeMessageVisibilityBatch(
                 ArgumentMatchers.eq(queue), ArgumentMatchers.anyList()
-            );
+                );
         } finally {
             hook.complete();
         }
