@@ -26,7 +26,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
-import java.time.ZoneId;
+import java.time.ZoneOffset;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.core.IsEqual;
@@ -125,7 +125,7 @@ public final class ResumesTest {
         final Resumes resumes = new Resumes(farm).bootstrap();
         resumes.add(
             login,
-            LocalDateTime.ofInstant(time, ZoneId.of("UTC")),
+            LocalDateTime.ofInstant(time, ZoneOffset.UTC),
             text,
             personality,
             id,
