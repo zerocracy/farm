@@ -16,12 +16,15 @@
  */
 package com.zerocracy.entry;
 
+import com.jcabi.aspects.Tv;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.claims.ClaimOut;
 import com.zerocracy.pmo.Catalog;
 import com.zerocracy.sentry.SafeSentry;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -127,7 +130,10 @@ public final class Ping implements Job {
         if (catalog.exists(project.pid()) && !catalog.pause(project.pid())) {
             new ClaimOut()
                 .type(type)
-                .postTo(new ClaimsOf(this.farm, project));
+                .postTo(
+                    new ClaimsOf(this.farm, project),
+                    Instant.now().plus(Duration.ofMinutes(Tv.FIVE))
+                );
         }
     }
 }

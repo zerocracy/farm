@@ -26,8 +26,6 @@ import org.cactoos.Proc;
  * Proc that checks for claims expiry.
  *
  * @since 1.0
- * @todo #1534:30min For 'Ping' claims, we should add expiry attribute to SQS
- *  messages. The expiry period should be 5 minutes after the claim is created.
  */
 public final class ExpiryProc implements Proc<Message> {
     /**

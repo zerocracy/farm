@@ -18,6 +18,7 @@ package com.zerocracy.claims;
 
 import com.jcabi.xml.XML;
 import java.io.IOException;
+import java.time.Instant;
 
 /**
  * Claims.
@@ -33,4 +34,16 @@ public interface Claims {
      * @throws IOException If fails
      */
     void submit(XML claim) throws IOException;
+
+    /**
+     * Submit new claim with a time to live.
+     *
+     * @param claim Claim to submit
+     * @param expires When this claim expires
+     * @throws IOException If fails
+     */
+    default void submit(final XML claim, final Instant expires)
+        throws IOException {
+        this.submit(claim);
+    }
 }
