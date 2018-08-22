@@ -53,8 +53,12 @@ public final class BatchClaimsTest {
         final BatchClaims batch = Mockito.mock(BatchClaims.class);
         Mockito.doCallRealMethod().when(batch).maximum();
         Mockito.doCallRealMethod().when(batch).close();
-        Mockito.doCallRealMethod().when(batch).submit(Mockito.any());
-        final int perbatch = (int) Math.ceil((double) size / batch.maximum());
+        Mockito.doCallRealMethod().when(batch).submit(
+            Mockito.any(), Mockito.any()
+        );
+        final int perbatch = (int) Math.ceil(
+            (double) size / (batch.maximum() * 1024)
+        );
         for (final ClaimOut item : claims) {
             item.postTo(batch);
         }
