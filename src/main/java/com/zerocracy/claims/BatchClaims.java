@@ -59,7 +59,9 @@ public final class BatchClaims implements Claims, Closeable {
 
     @Override
     public void submit(final XML claim, final Instant expires) {
-        throw new UnsupportedOperationException("submit(XML) not implemented");
+        throw new UnsupportedOperationException(
+            "submit(XML, Instant) not implemented"
+        );
     }
 
     @Override
