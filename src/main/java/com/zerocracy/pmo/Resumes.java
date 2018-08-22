@@ -29,9 +29,11 @@ import org.xembly.Directives;
  * @since 1.0
  *
  * @todo #1569:30min Implement resumes.resume(login), which will return the
- *  resume sent for some user. It will have to return a Resume (the interface
- *  needs to be created, too) object mapping the resume information so it
- *  can be used in resume page. Then remove expected from ResumesTest.findResume
+ *  resume sent for some user. It will have to return a Resume
+ *  implementation which reads the resume from resumes.xml. It must read
+ *  /resumes/resume attributes and return them in its methods.
+ *  Then remove expected from ResumesTest.findResume so it can be tested to
+ *  be used in resume page.
  */
 public final class Resumes {
     /**
