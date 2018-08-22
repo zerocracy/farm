@@ -28,11 +28,10 @@ import org.xembly.Directives;
  * Resumes.
  * @since 1.0
  *
- * @todo #1506:30min Implement resumes.resume(login), which will return the
+ * @todo #1569:30min Implement resumes.resume(login), which will return the
  *  resume sent for some user. It will have to return a Resume (the interface
  *  needs to be created, too) object mapping the resume information so it
- *  can be used in resume page. Don't forget to create a test for it in
- *  ResumesTest.
+ *  can be used in resume page. Then remove expected from ResumesTest.findResume
  */
 public final class Resumes {
     /**
