@@ -78,7 +78,7 @@ public final class BatchClaimsTest {
         /**
          * Count of {@link BatchClaims#close()} invocations.
          */
-        private int closecount;
+        private int count;
 
         /**
          * Constructor.
@@ -95,7 +95,7 @@ public final class BatchClaimsTest {
 
         @Override
         public void close() throws IOException {
-            this.closecount = this.closecount + 1;
+            this.count = this.count + 1;
             this.origin.close();
         }
 
@@ -112,7 +112,7 @@ public final class BatchClaimsTest {
          * @return The times that the count method was invoked
          */
         public int closes() {
-            return this.closecount;
+            return this.count;
         }
     }
 }
