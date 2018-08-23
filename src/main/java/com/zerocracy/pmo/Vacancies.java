@@ -94,6 +94,7 @@ public final class Vacancies {
      */
     public void add(final Project project, final String author,
         final String text, final ZonedDateTime added) throws IOException {
+        this.remove(project);
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()

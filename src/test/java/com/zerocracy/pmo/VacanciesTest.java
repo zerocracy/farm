@@ -47,6 +47,18 @@ public final class VacanciesTest {
     }
 
     @Test
+    public void addsExistentVacancy() throws Exception {
+        final Vacancies vacancies = new Vacancies(new FkFarm()).bootstrap();
+        final Project project = new FkProject();
+        vacancies.add(project, "author1", "unit test1 is hiring");
+        vacancies.add(project, "author2", "unit test2 is hiring");
+        MatcherAssert.assertThat(
+            vacancies.iterate(),
+            Matchers.contains(Matchers.equalTo(project.pid()))
+        );
+    }
+
+    @Test
     public void removesVacancy() throws Exception {
         final Vacancies vacancies = new Vacancies(new FkFarm()).bootstrap();
         final Project project = new FkProject();
