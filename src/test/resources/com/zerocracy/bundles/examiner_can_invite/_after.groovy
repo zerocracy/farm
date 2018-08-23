@@ -19,6 +19,7 @@ package com.zerocracy.bundles.examiner_can_invite
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.pmo.Awards
 import com.zerocracy.pmo.People
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
@@ -31,8 +32,13 @@ def exec(Project project, XML xml) {
     people.hasMentor(friend),
     Matchers.is(true)
   )
+  String user = 'user'
   MatcherAssert.assertThat(
     people.mentor(friend),
-    Matchers.is('user')
+    Matchers.is(user)
+  )
+  MatcherAssert.assertThat(
+    new Awards(farm, user).bootstrap().total(),
+    Matchers.is(1138)
   )
 }

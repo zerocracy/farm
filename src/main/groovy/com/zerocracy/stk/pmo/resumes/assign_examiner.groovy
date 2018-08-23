@@ -36,9 +36,9 @@ import org.cactoos.list.Shuffled
  * {@code resumes.xml} it should be assigned to examiner which can
  * invite user or deny the resume.
  *
- * @todo #1486:30min On invite we should notify user and examiner and add +32 reputation
- *  points to examiner. Also examiner should be able to reject resume by
- *  saying `deny @username`.
+ * @todo #1552:30min Allow examiner to reject resume by saying `deny @username`.
+ *  In that case examiner should still get +32 points of reputation (and be
+ *  notified about that).
  */
 def exec(Project project, XML xml) {
   new Assume(project, xml).isPmo()
