@@ -21,12 +21,15 @@ import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Xocument;
 import com.zerocracy.farm.fake.FkFarm;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
+import java.time.ZoneOffset;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.hamcrest.core.IsEqual;
 import org.junit.Test;
 
 /**
@@ -99,6 +102,39 @@ public final class ResumesTest {
         MatcherAssert.assertThat(
             resumes.unassigned(),
             Matchers.contains(first)
+        );
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void findResume() throws Exception {
+        final Farm farm = new FkFarm();
+        final String login = "login";
+        final Instant time = Instant.parse("2018-01-01T00:00:00Z");
+        final String text = "Resume text";
+        final String personality = "ENTP-T";
+        final int id = 187141;
+        final String telegram = "telegram";
+        final Resume fake = new Resume.Fake(
+            time,
+            login,
+            text,
+            personality,
+            id,
+            telegram
+        );
+        final Resumes resumes = new Resumes(farm).bootstrap();
+        resumes.add(
+            login,
+            LocalDateTime.ofInstant(time, ZoneOffset.UTC),
+            text,
+            personality,
+            id,
+            telegram
+        );
+        MatcherAssert.assertThat(
+            "Could not find resume",
+            resumes.resume(login),
+            new IsEqual<>(fake)
         );
     }
 }

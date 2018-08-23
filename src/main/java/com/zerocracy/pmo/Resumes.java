@@ -28,11 +28,12 @@ import org.xembly.Directives;
  * Resumes.
  * @since 1.0
  *
- * @todo #1506:30min Implement resumes.resume(login), which will return the
- *  resume sent for some user. It will have to return a Resume (the interface
- *  needs to be created, too) object mapping the resume information so it
- *  can be used in resume page. Don't forget to create a test for it in
- *  ResumesTest.
+ * @todo #1569:30min Implement resumes.resume(login), which will return the
+ *  resume sent for some user. It will have to return a Resume
+ *  implementation which reads the resume from resumes.xml. It must read
+ *  /resumes/resume attributes and return them in its methods.
+ *  Then remove expected from ResumesTest.findResume so it can be tested to
+ *  be used in resume page.
  */
 public final class Resumes {
     /**
@@ -158,6 +159,17 @@ public final class Resumes {
                 )
                 .get(0);
         }
+    }
+
+    /**
+     * Returns the {@link Resume} from user.
+     *
+     * @param login Resume author login
+     * @return Resume from author
+     * @throws IOException If fails or resume not found
+     */
+    public Resume resume(final String login) throws IOException {
+        throw new UnsupportedOperationException("resume() not implemented");
     }
 
     /**
