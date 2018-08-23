@@ -39,6 +39,9 @@ import org.xembly.Directives;
  * project scope statement.
  *
  * @since 1.0
+ * @todo #1159:30min Modify add method to accept user that created the given
+ *  Wbs item and use it in stakeholders (and tests). All Wbs items should have
+ *  an author (see zerocracy/datum#383).
  */
 @SuppressWarnings("PMD.TooManyMethods")
 public final class Wbs {
