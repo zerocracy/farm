@@ -53,7 +53,8 @@ import org.xembly.Directives;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @checkstyle ExecutableStatementCountCheck (500 lines)
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals",
+    "PMD.AvoidInstantiatingObjectsInLoops"})
 public final class CatalogTest {
 
     @Test
@@ -209,16 +210,13 @@ public final class CatalogTest {
             repo.issues().create("Job number one", "")
         ).toString();
         wbs.add(one);
-        wbs.add(
-            new Job(
-                repo.issues().create("Job number two", "")
-            ).toString()
-        );
-        wbs.add(
-            new Job(
-                repo.issues().create("Job number three", "")
-            ).toString()
-        );
+        for (int cont = 0; cont < Tv.THREE; cont = cont + 1) {
+            wbs.add(
+                new Job(
+                    repo.issues().create("Job", "")
+                ).toString()
+            );
+        }
         new Orders(project).bootstrap().assign(
             one,
             dev,
@@ -268,7 +266,7 @@ public final class CatalogTest {
                 new IsEqual<>(1)
             );
             MatcherAssert.assertThat(
-                "Assigned jobs not found",
+                "Total jobs not found",
                 new Xocument(item.path()).xpath(
                     new FormattedText(
                         "/catalog/project[@id='%s']/jobs[@total]",
