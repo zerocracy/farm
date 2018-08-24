@@ -37,6 +37,7 @@ import org.cactoos.time.DateAsText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.collection.IsEmptyIterable;
+import org.hamcrest.core.IsCollectionContaining;
 import org.hamcrest.core.IsEqual;
 import org.hamcrest.core.IsNot;
 import org.junit.Ignore;
@@ -224,14 +225,16 @@ public final class CatalogTest {
         );
         try (final Item item = CatalogTest.item(project)) {
             MatcherAssert.assertThat(
-                "Architect not found",
+                "Architect(s) not found",
                 new Xocument(item.path()).xpath(
                     new FormattedText(
                         "/catalog/project[@id='%s']/architect",
                         project.pid()
                     ).asString()
                 ),
-                new IsEqual<>(arc)
+                new IsCollectionContaining<>(
+                    new IsEqual<String>(arc)
+                )
             );
             MatcherAssert.assertThat(
                 "Members not found",
@@ -241,7 +244,9 @@ public final class CatalogTest {
                         project.pid()
                     ).asString()
                 ),
-                new IsEqual<>(dev)
+                new IsCollectionContaining<>(
+                    new IsEqual<String>(dev)
+                )
             );
             MatcherAssert.assertThat(
                 "Jobs not found",
