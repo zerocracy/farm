@@ -19,6 +19,10 @@ package com.zerocracy.bundles.pays_adviser_on_funding
 import com.jcabi.xml.XML
 import com.zerocracy.Project
 
+// @todo #1536:30min Project is not paying adviser when being funded. Correct
+//  fund_by_stripe.groovy and donate.groovy to send a payment of 4% of the
+//  amount of funding to the project advisor on every funding operation. Then
+//  uncomment these tests to make sure that these payments are happening.'
 def exec(Project project, XML xml) {
 //  Farm farm = binding.variables.farm
 //  new Footprint(farm, project).withCloseable {
