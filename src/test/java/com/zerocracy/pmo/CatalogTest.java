@@ -22,11 +22,13 @@ import com.jcabi.github.Repo;
 import com.jcabi.github.Repos;
 import com.jcabi.github.mock.MkGithub;
 import com.zerocracy.Item;
+import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
+import com.zerocracy.pm.cost.Ledger;
 import com.zerocracy.pm.in.Orders;
 import com.zerocracy.pm.scope.Wbs;
 import com.zerocracy.pm.staff.Roles;
@@ -196,6 +198,14 @@ public final class CatalogTest {
     @Ignore
     public void catalogHasBoardPageInfo() throws Exception {
         final FkProject project = new FkProject();
+        new Ledger(project).bootstrap().add(
+            new Ledger.Transaction(
+              new Cash.S("$100"),
+              "assets", "cash",
+              "income", "zerocracy",
+              "Project funds"
+            )
+        );
         new Catalog(new FkFarm(project)).bootstrap();
         final Github github = new MkGithub();
         final Repo repo = github.repos().create(
@@ -279,6 +289,16 @@ public final class CatalogTest {
                     ).asString()
                 ),
                 new IsEqual<>(Tv.THREE)
+            );
+            MatcherAssert.assertThat(
+                "Funding info incorrect",
+                new Xocument(item.path()).xpath(
+                    new FormattedText(
+                        "/catalog/project[@id='%s']/funding[@amount]",
+                        project.pid()
+                    ).asString()
+                ),
+                new IsEqual<>(100)
             );
         }
     }
