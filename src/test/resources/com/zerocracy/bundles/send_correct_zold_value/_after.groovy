@@ -28,10 +28,12 @@ def exec(Project project, XML xml) {
 //        Filters.and(
 //          Filters.eq('type', 'Notify test'),
 //          Filters.eq('login', 'krzyk'),
-//          Filters.eq('message', 'We just sent you 100 ZLD through https://wts.zold.io'),
+//          Filters.eq('message', 'We just sent you 60 ZLD through https://wts.zold.io'),
 //        )
 //      ),
-//      new IsIterableWithSize<>(1)
+//      new IsIterableWithSize<>(
+//          new IsEqual(1)
+//      )
 //    );
 //    MatcherAssert.assertThat(
 //      'User without vesting received wrong ZLD value',
@@ -39,10 +41,12 @@ def exec(Project project, XML xml) {
 //        Filters.and(
 //          Filters.eq('type', 'Notify test'),
 //          Filters.eq('login', 'amihaiemil'),
-//          Filters.eq('message', 'We just sent you 20 ZLD through https://wts.zold.io'),
+//          Filters.eq('message', 'We just sent you 10 ZLD through https://wts.zold.io'),
 //        )
 //      ),
-//      new IsIterableWithSize<>(1)
+//      new IsIterableWithSize<>(
+//          new IsEqual(1)
+//      )
 //    )
 //  }
 }
