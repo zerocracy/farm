@@ -18,10 +18,13 @@ package com.zerocracy.bundles.examiner_can_invite
 
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
+import com.zerocracy.Par
 import com.zerocracy.Project
+import com.zerocracy.pmo.Awards
 import com.zerocracy.pmo.People
 import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
+import org.hamcrest.core.IsEqual
+import org.hamcrest.core.StringContains
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
@@ -29,10 +32,23 @@ def exec(Project project, XML xml) {
   String friend = 'friend'
   MatcherAssert.assertThat(
     people.hasMentor(friend),
-    Matchers.is(true)
+    new IsEqual<>(true)
   )
+  String user = 'user'
   MatcherAssert.assertThat(
     people.mentor(friend),
-    Matchers.is('user')
+    new IsEqual<>(user)
   )
+  MatcherAssert.assertThat(
+    new Awards(farm, user).bootstrap().total(),
+    new IsEqual<>(1138)
+  )
+  project.acq('test.txt').withCloseable {
+    item -> MatcherAssert.assertThat(
+      item.path().text,
+      new StringContains(
+        new Par('You received bonus %d points for @%s resume examination').say(32, friend)
+      )
+    )
+  }
 }
