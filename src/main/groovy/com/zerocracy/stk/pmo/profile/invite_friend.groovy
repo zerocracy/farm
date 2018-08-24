@@ -38,6 +38,7 @@ import org.cactoos.iterable.Mapped
 import org.cactoos.list.ListOf
 import org.cactoos.scalar.Or
 import org.cactoos.scalar.StickyScalar
+import org.cactoos.text.FormattedText
 
 def exec(Project pmo, XML xml) {
   new Assume(pmo, xml).isPmo()
@@ -124,13 +125,18 @@ def exec(Project pmo, XML xml) {
     .param('minutes', -new Policy().get('1.price', 128))
     .param('reason', new Par('Invited @%s').say(login))
     .postTo(new ClaimsOf(farm))
+  String reason = new Par('@%s resume examination').say(login)
+  int bonus = new Policy().get('1.bonus', 32)
   claim.copy()
     .type('Add award points')
     .param('login', author)
     .param('job', 'none')
-    .param('minutes', new Policy().get('1.bonus', 32))
-    .param('reason', new Par('Invited @%s').say(login))
+    .param('minutes', bonus)
+    .param('reason', reason)
     .postTo(new ClaimsOf(farm))
+  claim.reply(
+    new FormattedText('You received bonus %d points for %s', bonus, reason).asString()
+  ).postTo(new ClaimsOf(farm))
   claim.copy().type('Notify PMO').param(
     'message', new Par(
       'New user @%s was invited by @%s'
