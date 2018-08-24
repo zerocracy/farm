@@ -41,7 +41,14 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Send zold')
   Farm farm = binding.variables.farm
-  if (new Props(farm).has('//testing')) {
+  // @todo #1346:30min Incorrect zold extra payments. Zold payments are not
+  //  including shares part of the payment, just cash part. Correct this and
+  //  change send_zold so it emits a notification of payment even when testing
+  //  ('Notify test' claim) so we can assure that the correct value was
+  //  calculated. Then, uncomment \send_correct_zold_value\_after.groovy which
+  //  checks footprint for these notifications in this bundle test. See #1346
+  //  for the correct formula for calculating zold value.
+    if (new Props(farm).has('//testing')) {
     return
   }
   ClaimIn claim = new ClaimIn(xml)
