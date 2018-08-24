@@ -17,12 +17,15 @@
 package com.zerocracy.claims;
 
 import com.jcabi.aspects.Tv;
+import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import java.io.Closeable;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.core.IsEqual;
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.xembly.Xembler;
 
 /**
@@ -50,21 +53,66 @@ public final class BatchClaimsTest {
         for (int idx = 0; idx < count; ++idx) {
             claims.add(new ClaimOut());
         }
-        final BatchClaims batch = Mockito.mock(BatchClaims.class);
-        Mockito.doCallRealMethod().when(batch).maximum();
-        Mockito.doCallRealMethod().when(batch).close();
-        Mockito.doCallRealMethod().when(batch).submit(
-            Mockito.any(), Mockito.any()
-        );
-        final int perbatch = (int) Math.ceil(
-            (double) size / (batch.maximum() * 1024)
-        );
+        final FkBatchClaims batch = new FkBatchClaims(new BatchClaims());
+        final int perbatch = (int) Math.ceil((double) size / batch.maximum());
         for (final ClaimOut item : claims) {
             item.postTo(batch);
         }
-        Mockito.verify(
-            batch,
-            Mockito.times((int) Math.ceil((double) count / perbatch))
-        ).close();
+        MatcherAssert.assertThat(
+            "Called close() wrong number of times",
+            batch.closes(),
+            new IsEqual<>((int) Math.ceil((double) count / perbatch))
+        );
+    }
+
+    /**
+     * Decorator for {@link BatchClaims} testing.
+     */
+    private final class FkBatchClaims implements Claims, Closeable {
+
+        /**
+         * Origin.
+         */
+        private final BatchClaims origin;
+
+        /**
+         * Count of {@link BatchClaims#close()} invocations.
+         */
+        private int count;
+
+        /**
+         * Constructor.
+         * @param origin The {@link BatchClaims} to be tested.
+         */
+        FkBatchClaims(final BatchClaims origin) {
+            this.origin = origin;
+        }
+
+        @Override
+        public void submit(final XML claim) throws IOException {
+            this.origin.submit(claim);
+        }
+
+        @Override
+        public void close() throws IOException {
+            this.count = this.count + 1;
+            this.origin.close();
+        }
+
+        /**
+         * Return the maximum batch size (in KB) allowed.
+         * @return Maximum batch size (in KB)
+         */
+        public int maximum() {
+            return this.origin.maximum();
+        }
+
+        /**
+         * Returns the times that the count method was invoked.
+         * @return The times that the count method was invoked
+         */
+        public int closes() {
+            return this.count;
+        }
     }
 }
