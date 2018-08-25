@@ -150,32 +150,6 @@ public final class PeopleTest {
     }
 
     @Test
-    public void setsCorrectBitcoinCashAddress() throws Exception {
-        PeopleTest.setsWallet(
-            "bch", "qpm2qsznhks23z7629mms6s4cwef74vcwvy22gdx6a"
-        );
-    }
-
-    @Test
-    public void setsCorrectEthereumAddress() throws Exception {
-        PeopleTest.setsWallet(
-            "eth", "e79c3300773E8593fb332487E1EfdD8729b87445"
-        );
-    }
-
-    @Test
-    public void setsCorrectPrefixedEthereumAddress() throws Exception {
-        PeopleTest.setsWallet(
-            "eth", "0xe79c3300773E8593fb332487E1EfdD8729b87445"
-        );
-    }
-
-    @Test
-    public void setsCorrectLitecoinAddress() throws Exception {
-        PeopleTest.setsWallet("ltc", "LS78aoGtfuGCZ777x3Hmr6tcoW3WaYynx9");
-    }
-
-    @Test
     public void setCorrectZoldAddress() throws Exception {
         PeopleTest.setsWallet("zld", "g4s8");
     }
@@ -191,23 +165,23 @@ public final class PeopleTest {
     }
 
     @Test
-    public void failsForIncorrectEthereumAddress() throws Exception {
-        this.failsWallet("eth");
-    }
-
-    @Test
-    public void failsForIncorrectBitcoinCashAddress() throws Exception {
-        this.failsWallet("bch");
-    }
-
-    @Test
-    public void failsForIncorrectLitecoinAddress() throws Exception {
-        this.failsWallet("ltc");
-    }
-
-    @Test
     public void failsForIncorrectZoldAddress() throws Exception {
         this.failsWallet("zld", "!@#$%fgs");
+    }
+
+    @Test
+    public void doesnAcceptEthereumAddress() throws Exception {
+        this.doesnSupportWallet("eth", "Ethereum");
+    }
+
+    @Test
+    public void doesnAcceptBitcoinCashAddress() throws Exception {
+        this.doesnSupportWallet("bch", "Bitcoin Cash");
+    }
+
+    @Test
+    public void doesnAcceptLitecoinAddress() throws Exception {
+        this.doesnSupportWallet("ltc", "Litecoin");
     }
 
     @Test
@@ -620,6 +594,17 @@ public final class PeopleTest {
             new FormattedText(" not valid: `%s`", wallet).asString()
         );
         people.wallet("yegor512", bank, wallet);
+    }
+
+    private void doesnSupportWallet(final String bank, final String name)
+        throws IOException {
+        final FkFarm farm = new FkFarm(new FkProject());
+        final People people = new People(farm).bootstrap();
+        this.thrown.expect(SoftException.class);
+        this.thrown.expectMessage(
+            String.format("We doesn't support %s wallets", name)
+        );
+        people.wallet("yegor512", bank, "123");
     }
 
     private void failsWallet(final String bank)
