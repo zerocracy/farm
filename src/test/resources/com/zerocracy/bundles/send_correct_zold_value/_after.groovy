@@ -40,7 +40,7 @@ def exec(Project project, XML xml) {
       new IsIterableWithSize<>(
           new IsEqual<>(1)
       )
-    );
+    )
     MatcherAssert.assertThat(
       'User without vesting received wrong ZLD value',
       footprint.collection().find(
