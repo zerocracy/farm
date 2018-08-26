@@ -22,7 +22,6 @@ import com.jcabi.github.Repo;
 import com.jcabi.github.Repos;
 import com.jcabi.github.mock.MkGithub;
 import com.zerocracy.Item;
-import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
@@ -200,10 +199,10 @@ public final class CatalogTest {
         final FkProject project = new FkProject();
         new Ledger(project).bootstrap().add(
             new Ledger.Transaction(
-              new Cash.S("$100"),
-              "assets", "cash",
-              "income", "zerocracy",
-              "Project funds"
+                new Cash.S("$100"),
+                "assets", "cash",
+                "income", "zerocracy",
+                "Current project funds"
             )
         );
         new Catalog(new FkFarm(project)).bootstrap();
@@ -222,17 +221,9 @@ public final class CatalogTest {
         ).toString();
         wbs.add(one);
         for (int cont = 0; cont < Tv.THREE; cont = cont + 1) {
-            wbs.add(
-                new Job(
-                    repo.issues().create("Job", "")
-                ).toString()
-            );
+            wbs.add(new Job(repo.issues().create("Job", "")).toString());
         }
-        new Orders(project).bootstrap().assign(
-            one,
-            dev,
-            Tv.TEN
-        );
+        new Orders(project).bootstrap().assign(one, dev, Tv.TEN);
         try (final Item item = CatalogTest.item(project)) {
             MatcherAssert.assertThat(
                 "Architect(s) not found",
@@ -242,9 +233,7 @@ public final class CatalogTest {
                         project.pid()
                     ).asString()
                 ),
-                new IsCollectionContaining<>(
-                    new IsEqual<String>(arc)
-                )
+                new IsCollectionContaining<>(new IsEqual<>(arc))
             );
             MatcherAssert.assertThat(
                 "Members not found",
@@ -254,9 +243,7 @@ public final class CatalogTest {
                         project.pid()
                     ).asString()
                 ),
-                new IsCollectionContaining<>(
-                    new IsEqual<String>(dev)
-                )
+                new IsCollectionContaining<>(new IsEqual<>(dev))
             );
             MatcherAssert.assertThat(
                 "Jobs not found",
@@ -266,9 +253,7 @@ public final class CatalogTest {
                         project.pid()
                     ).asString()
                 ),
-                new IsNot<>(
-                    new IsEmptyIterable<>()
-                )
+                new IsNot<>(new IsEmptyIterable<>())
             );
             MatcherAssert.assertThat(
                 "Assigned jobs not found",
@@ -298,7 +283,7 @@ public final class CatalogTest {
                         project.pid()
                     ).asString()
                 ),
-                new IsEqual<>(100)
+                new IsEqual<>("$100")
             );
         }
     }
