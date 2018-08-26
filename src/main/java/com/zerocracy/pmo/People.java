@@ -410,13 +410,13 @@ public final class People {
             );
         }
         if ("bch".equals(bank)) {
-            throw new SoftException("We doesn't support Bitcoin Cash wallets");
+            throw new SoftException("We don't support Bitcoin Cash wallets");
         }
         if ("eth".equals(bank)) {
-            throw new SoftException("We doesn't support Ethereum wallets");
+            throw new SoftException("We don't support Ethereum wallets");
         }
         if ("ltc".equals(bank)) {
-            throw new SoftException("We doesn't support Litecoin wallets");
+            throw new SoftException("We don't support Litecoin wallets");
         }
         if ("zld".equals(bank)
             && !wallet.matches("^[a-z\\d](?:[a-z\\d]|-(?=[a-z\\d])){0,38}$")) {
