@@ -18,7 +18,7 @@ SOFTWARE.
 <claims xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.61.2/xsd/pm/claims.xsd" version="0.1" updated="2017-03-27T11:18:09.228Z">
   <claim id="1">
     <type>Funded by Stripe</type>
-    <author>yegor256</author>
+    <author>paulodamaso</author>
     <created>2017-01-15T01:00:00.000Z</created>
     <params>
       <param name="amount">$100</param>
@@ -28,11 +28,10 @@ SOFTWARE.
   </claim>
   <claim id="2">
     <type>Donate</type>
-    <author>yegor256</author>
+    <author>paulodamaso</author>
     <params>
       <param name="amount">$200</param>
     </params>
     <created>2017-01-15T01:00:00.000Z</created>
   </claim>
 </claims>
-

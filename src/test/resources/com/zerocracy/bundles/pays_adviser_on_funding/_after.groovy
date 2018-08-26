@@ -38,7 +38,7 @@ def exec(Project project, XML xml) {
 //        )
 //      ),
 //      new IsIterableWithSize<>(
-//        new IsEqual<Integer>(1)
+//        new IsEqual<>(1)
 //      )
 //    )
 //    MatcherAssert.assertThat(
@@ -52,7 +52,7 @@ def exec(Project project, XML xml) {
 //        )
 //      ),
 //      new IsIterableWithSize<>(
-//        new IsEqual<Integer>(1)
+//        new IsEqual<>(1)
 //      )
 //    )
 //    MatcherAssert.assertThat(
@@ -66,7 +66,7 @@ def exec(Project project, XML xml) {
 //        )
 //      ),
 //      new IsIterableWithSize<>(
-//        new IsEqual<Integer>(1)
+//        new IsEqual<>(1)
 //      )
 //    )
 //    MatcherAssert.assertThat(
@@ -80,7 +80,7 @@ def exec(Project project, XML xml) {
 //        )
 //      ),
 //      new IsIterableWithSize<>(
-//        new IsEqual<Integer>(1)
+//        new IsEqual<>(1)
 //      )
 //    )
 //  }
