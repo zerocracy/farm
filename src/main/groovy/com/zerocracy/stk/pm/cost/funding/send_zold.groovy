@@ -47,7 +47,7 @@ def exec(Project project, XML xml) {
   Vesting vesting = new Vesting(project).bootstrap()
   Cash amount = new Cash.S(claim.param('amount'))
   if (claim.hasParam('minutes') && vesting.exists(recipient)){
-    amount = amount.add(vesting.rate(recipient).mul(Integer.parseInt(claim.param('minutes'))) / 60)
+    amount = vesting.rate(recipient).mul(Integer.parseInt(claim.param('minutes'))) / 60
   }
   String reason = claim.param('reason')
   // @todo #1119:30min Reason is not attached to transaction as 'details'
