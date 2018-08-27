@@ -28,7 +28,7 @@ import com.zerocracy.farm.Errors
 import com.zerocracy.farm.props.Props
 import com.zerocracy.radars.github.Quota
 
-// @todo: #1570#30min cleanup_comments often fails. This happens because we
+// @todo #1570:30min cleanup_comments often fails. This happens because we
 //  are trying to remove from github some comment that had already been
 //  deleted before using github interface. We must test if the comment exists
 //  in github before trying to delete it. After the correction, uncomment
