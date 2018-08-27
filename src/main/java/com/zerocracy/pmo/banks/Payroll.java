@@ -95,7 +95,8 @@ public final class Payroll {
                 ).say(login, amount)
             );
         }
-        if (new Debts(this.farm).bootstrap().exists(login)) {
+        if (new Debts(this.farm).bootstrap().exists(login)
+            && !reason.startsWith("Debt repayment")) {
             throw new SoftException(
                 new Par(
                     "Debt already exists, adding payment of %s for %s to debts"
