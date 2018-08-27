@@ -14,41 +14,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.examiner_can_invite
+package com.zerocracy.bundles.dont_add_closed_job_to_wbs
 
 import com.jcabi.xml.XML
-import com.zerocracy.Farm
-import com.zerocracy.Par
 import com.zerocracy.Project
-import com.zerocracy.pmo.Awards
-import com.zerocracy.pmo.People
-import org.hamcrest.MatcherAssert
-import org.hamcrest.core.IsEqual
-import org.hamcrest.core.StringContains
 
 def exec(Project project, XML xml) {
-  Farm farm = binding.variables.farm
-  People people = new People(farm).bootstrap()
-  String friend = 'friend'
-  MatcherAssert.assertThat(
-    people.hasMentor(friend),
-    new IsEqual<>(true)
-  )
-  String user = 'user'
-  MatcherAssert.assertThat(
-    people.mentor(friend),
-    new IsEqual<>(user)
-  )
-  MatcherAssert.assertThat(
-    new Awards(farm, user).bootstrap().total(),
-    new IsEqual<>(1138)
-  )
-  project.acq('test.txt').withCloseable {
-    item -> MatcherAssert.assertThat(
-      item.path().text,
-      new StringContains(
-        new Par('You received bonus %d points for @%s resume examination').say(32, friend)
-      )
-    )
-  }
+//  Farm farm = binding.variables.farm
+//  Github github = new ExtGithub(farm).value()
+//  Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
+//  Issue issue = new Issue.Smart(repo.issues().create('Hello, world', ''))
+//  issue.assign('0crat')
+//  issue.close()
+//  new RbOnAssign().react(
+//    farm,
+//    github,
+//    Json.createObjectBuilder()
+//      .add('issue', Json.createObjectBuilder().add('number', issue.number()))
+//      .add('repository', Json.createObjectBuilder().add('full_name', repo.coordinates().toString()))
+//      .add('sender', Json.createObjectBuilder().add('login', 'yegor256'))
+//      .add('assignee', Json.createObjectBuilder().add('login', '0crat'))
+//      .build()
+//  )
 }

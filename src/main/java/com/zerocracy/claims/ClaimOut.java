@@ -98,10 +98,12 @@ public final class ClaimOut implements Iterable<Directive> {
     /**
      * Post it to the project.
      * @param claims Claims
+     * @param expires When this claim expires
      * @throws IOException If fails
      */
     @SuppressWarnings("overloads")
-    public void postTo(final Claims claims) throws IOException {
+    public void postTo(final Claims claims, final Instant expires)
+        throws IOException {
         claims.submit(
             new XSLChain(
                 new Mapped<>(
@@ -122,8 +124,21 @@ public final class ClaimOut implements Iterable<Directive> {
                 )
             )
                 .with(new ClasspathSources())
-                .transform(new XMLDocument(new Xembler(this).xmlQuietly()))
+                .transform(
+                    new XMLDocument(new Xembler(this).xmlQuietly())
+                ),
+            expires
         );
+    }
+
+    /**
+     * Post it to the project.
+     * @param claims Claims
+     * @throws IOException If fails
+     */
+    @SuppressWarnings("overloads")
+    public void postTo(final Claims claims) throws IOException {
+        this.postTo(claims, Instant.MAX);
     }
 
     /**

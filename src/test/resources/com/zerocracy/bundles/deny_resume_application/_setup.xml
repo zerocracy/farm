@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <!--
 Copyright (c) 2016-2018 Zerocracy
 
@@ -15,23 +15,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<claims xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.37/xsd/pm/claims.xsd" version="0.1" updated="2017-03-27T11:18:09.228Z">
-  <claim id="100">
-    <type>Invite a friend</type>
-    <token>test;C123;test</token>
-    <author>other-user</author>
-    <params>
-      <param name="login">friend</param>
-    </params>
-    <created>2018-07-15T01:00:00.000Z</created>
-  </claim>
-  <claim id="10000">
-    <type>Invite a friend</type>
-    <token>test;C123;test</token>
-    <author>user</author>
-    <params>
-      <param name="login">friend</param>
-    </params>
-    <created>2018-07-24T01:00:00.000Z</created>
-  </claim>
-</claims>
+<setup>
+  <pmo>true</pmo>
+</setup>

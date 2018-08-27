@@ -18,7 +18,11 @@ package com.zerocracy.stk.pmo.profile
 
 import com.jcabi.github.User
 import com.jcabi.xml.XML
-import com.zerocracy.*
+import com.zerocracy.Farm
+import com.zerocracy.Par
+import com.zerocracy.Policy
+import com.zerocracy.Project
+import com.zerocracy.SoftException
 import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtGithub
@@ -34,9 +38,7 @@ import org.cactoos.iterable.Mapped
 import org.cactoos.list.ListOf
 import org.cactoos.scalar.Or
 import org.cactoos.scalar.StickyScalar
-import org.cactoos.text.AbbreviatedText
-
-import javax.json.JsonObject
+import org.cactoos.text.FormattedText
 
 def exec(Project pmo, XML xml) {
   new Assume(pmo, xml).isPmo()
@@ -76,29 +78,26 @@ def exec(Project pmo, XML xml) {
   User.Smart user = new User.Smart(
     new ExtGithub(farm).value().users().get(login)
   )
-  JsonObject json
-  try {
-    json = user.json()
-  } catch (AssertionError ex) {
+  if (!user.exists()) {
     throw new SoftException(
       new Par(
         'We can\'t find @%s in Github: https://github.com/%1$s: %s'
-      ).say(login, new AbbreviatedText(ex.message, 100).asString())
+      ).say(login)
     )
   }
-  if (json.getString('type') != 'User') {
+  if (user.type() != 'User') {
     throw new SoftException(
       new Par(
         'The GitHub user @%s is not a regular user, but "%s"'
-      ).say(login, json.getString('type'))
+      ).say(login, user.type())
     )
   }
 
   People people = new People(farm).bootstrap()
   people.invite(login, author, force.value())
   String name
-  if (json.getString('name', '')) {
-    name = "@${login} (%${json.getString('name')})"
+  if (user.name()) {
+    name = "@${login} (%${user.name()})"
   } else {
     name = "@${login}"
   }
@@ -120,12 +119,24 @@ def exec(Project pmo, XML xml) {
     )
     .postTo(new ClaimsOf(farm))
   claim.copy()
-    .type('Make payment')
+    .type('Add award points')
     .param('login', author)
     .param('job', 'none')
-    .param('minutes', -new Policy().get('1.price', 64))
+    .param('minutes', -new Policy().get('1.price', 128))
     .param('reason', new Par('Invited @%s').say(login))
     .postTo(new ClaimsOf(farm))
+  String reason = new Par('@%s resume examination').say(login)
+  int bonus = new Policy().get('1.bonus', 32)
+  claim.copy()
+    .type('Add award points')
+    .param('login', author)
+    .param('job', 'none')
+    .param('minutes', bonus)
+    .param('reason', reason)
+    .postTo(new ClaimsOf(farm))
+  claim.reply(
+    new FormattedText('You received bonus %d points for %s', bonus, reason).asString()
+  ).postTo(new ClaimsOf(farm))
   claim.copy().type('Notify PMO').param(
     'message', new Par(
       'New user @%s was invited by @%s'

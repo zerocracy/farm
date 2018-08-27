@@ -14,36 +14,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.claims;
-
-import com.jcabi.xml.XML;
-import java.io.IOException;
-import java.time.Instant;
+package com.zerocracy.farm.sync;
 
 /**
- * Claims.
+ * Zerocracy interface for synchronization locks.
  *
  * @since 1.0
  */
-public interface Claims {
+public interface Lock extends java.util.concurrent.locks.Lock {
 
     /**
-     * Submit new claim.
-     *
-     * @param claim Claim to submit
-     * @throws IOException If fails
+     * Full stack trace of this lock holder.
+     * @return The stacktrace
      */
-    void submit(XML claim) throws IOException;
-
-    /**
-     * Submit new claim with a time to live.
-     *
-     * @param claim Claim to submit
-     * @param expires When this claim expires
-     * @throws IOException If fails
-     */
-    default void submit(final XML claim, final Instant expires)
-        throws IOException {
-        this.submit(claim);
-    }
+    StackTraceElement[] stacktrace();
 }

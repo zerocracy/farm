@@ -17,13 +17,13 @@
 package com.zerocracy.farm;
 
 import com.jcabi.log.Logger;
+import com.zerocracy.farm.sync.Lock;
 import java.lang.ref.WeakReference;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import lombok.EqualsAndHashCode;
 
@@ -56,10 +56,7 @@ public final class SmartLock implements Lock {
     private final AtomicReference<WeakReference<Thread>> owner =
         new AtomicReference<>();
 
-    /**
-     * Full stack trace of this lock holder.
-     * @return The stacktrace
-     */
+    @Override
     public StackTraceElement[] stacktrace() {
         final Thread thread;
         final WeakReference<Thread> ref = this.owner.get();

@@ -14,41 +14,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.examiner_can_invite
+package com.zerocracy.bundles.deny_resume_application
 
 import com.jcabi.xml.XML
-import com.zerocracy.Farm
-import com.zerocracy.Par
 import com.zerocracy.Project
-import com.zerocracy.pmo.Awards
-import com.zerocracy.pmo.People
-import org.hamcrest.MatcherAssert
-import org.hamcrest.core.IsEqual
-import org.hamcrest.core.StringContains
 
 def exec(Project project, XML xml) {
-  Farm farm = binding.variables.farm
-  People people = new People(farm).bootstrap()
-  String friend = 'friend'
-  MatcherAssert.assertThat(
-    people.hasMentor(friend),
-    new IsEqual<>(true)
-  )
-  String user = 'user'
-  MatcherAssert.assertThat(
-    people.mentor(friend),
-    new IsEqual<>(user)
-  )
-  MatcherAssert.assertThat(
-    new Awards(farm, user).bootstrap().total(),
-    new IsEqual<>(1138)
-  )
-  project.acq('test.txt').withCloseable {
-    item -> MatcherAssert.assertThat(
-      item.path().text,
-      new StringContains(
-        new Par('You received bonus %d points for @%s resume examination').say(32, friend)
-      )
-    )
-  }
+//  Farm farm = binding.variables.farm
+//  String friend = 'friend'
+//  MatcherAssert.assertThat(
+//    new People(farm).bootstrap().hasMentor(friend),
+//    new IsEqual<>(false)
+//  )
+//  MatcherAssert.assertThat(
+//    new Awards(farm, 'user').bootstrap().total(),
+//    new IsEqual<>(1032)
+//  )
+//  project.acq('test.txt').withCloseable {
+//    item -> MatcherAssert.assertThat(
+//      item.path().text,
+//      new StringContains(
+//        new Par('You received bonus %d points for @%s resume examination').say(32, friend)
+//      )
+//    )
+//  }
 }

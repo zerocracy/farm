@@ -14,41 +14,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.examiner_can_invite
+package com.zerocracy.bundles.send_correct_zold_value
 
+import com.jcabi.github.Repos
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
-import com.zerocracy.Par
 import com.zerocracy.Project
-import com.zerocracy.pmo.Awards
-import com.zerocracy.pmo.People
-import org.hamcrest.MatcherAssert
-import org.hamcrest.core.IsEqual
-import org.hamcrest.core.StringContains
+import com.zerocracy.cash.Cash
+import com.zerocracy.entry.ExtGithub
+import com.zerocracy.pm.cost.Rates
+import com.zerocracy.pm.cost.Vesting
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
-  People people = new People(farm).bootstrap()
-  String friend = 'friend'
-  MatcherAssert.assertThat(
-    people.hasMentor(friend),
-    new IsEqual<>(true)
-  )
-  String user = 'user'
-  MatcherAssert.assertThat(
-    people.mentor(friend),
-    new IsEqual<>(user)
-  )
-  MatcherAssert.assertThat(
-    new Awards(farm, user).bootstrap().total(),
-    new IsEqual<>(1138)
-  )
-  project.acq('test.txt').withCloseable {
-    item -> MatcherAssert.assertThat(
-      item.path().text,
-      new StringContains(
-        new Par('You received bonus %d points for @%s resume examination').say(32, friend)
-      )
-    )
-  }
+  new ExtGithub(farm).value().repos().create(new Repos.RepoCreate('test', false))
+  Rates rates = new Rates(project).bootstrap()
+  rates.set('krzyk', new Cash.S('$32'))
+  rates.set('amihaiemil', new Cash.S('$32'))
+  new Vesting(project).bootstrap().rate('krzyk', new Cash.S('$64'))
 }

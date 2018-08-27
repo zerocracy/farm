@@ -14,29 +14,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pmo
+package com.zerocracy.bundles.add_payment_to_debts_if_has_debt
 
+import com.jcabi.github.Repos
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
-import com.zerocracy.Par
-import com.zerocracy.entry.ClaimsOf
-import com.zerocracy.farm.Assume
 import com.zerocracy.Project
-import com.zerocracy.claims.ClaimIn
-import com.zerocracy.pmo.Catalog
+import com.zerocracy.cash.Cash
+import com.zerocracy.entry.ExtGithub
+import com.zerocracy.pmo.Debts
+import com.zerocracy.pmo.People
 
-def exec(Project pmo, XML xml) {
-  new Assume(pmo, xml).isPmo()
-  new Assume(pmo, xml).type('Set parent project')
-  new Assume(pmo, xml).roles('PO')
-  ClaimIn claim = new ClaimIn(xml)
+
+def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
-  String child = claim.param('child')
-  String parent = claim.param('parent')
-  new Catalog(farm).parent(child, parent)
-  claim.reply(
-    new Par(
-      'Done, the project %s is a child of %s'
-    ).say(child, parent)
-  ).postTo(new ClaimsOf(farm))
+  new ExtGithub(farm).value().repos().create(new Repos.RepoCreate('test', false))
+  new People(farm).bootstrap().wallet('paulodamaso', 'paypal', 'pauloeduardolobo@gmail.com')
+  new Debts(farm).bootstrap().add('paulodamaso', new Cash.S('$5'), 'Five dollars', 'Too small')
 }

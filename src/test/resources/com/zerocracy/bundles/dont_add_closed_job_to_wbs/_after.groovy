@@ -14,41 +14,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.examiner_can_invite
+package com.zerocracy.bundles.dont_add_closed_job_to_wbs
 
 import com.jcabi.xml.XML
-import com.zerocracy.Farm
-import com.zerocracy.Par
 import com.zerocracy.Project
-import com.zerocracy.pmo.Awards
-import com.zerocracy.pmo.People
-import org.hamcrest.MatcherAssert
-import org.hamcrest.core.IsEqual
-import org.hamcrest.core.StringContains
 
+// @todo #1102:30min 0crat should not add job to WBS and create order if issue
+//  is already closed. Correct add_job_to_wbs.groovy so closed jobs aren't added
+//  to WBS. Then uncomment this test.
 def exec(Project project, XML xml) {
-  Farm farm = binding.variables.farm
-  People people = new People(farm).bootstrap()
-  String friend = 'friend'
-  MatcherAssert.assertThat(
-    people.hasMentor(friend),
-    new IsEqual<>(true)
-  )
-  String user = 'user'
-  MatcherAssert.assertThat(
-    people.mentor(friend),
-    new IsEqual<>(user)
-  )
-  MatcherAssert.assertThat(
-    new Awards(farm, user).bootstrap().total(),
-    new IsEqual<>(1138)
-  )
-  project.acq('test.txt').withCloseable {
-    item -> MatcherAssert.assertThat(
-      item.path().text,
-      new StringContains(
-        new Par('You received bonus %d points for @%s resume examination').say(32, friend)
-      )
-    )
-  }
+//  MatcherAssert.assertThat(
+//    'Closed issue added to WBS',
+//    new Wbs(project).bootstrap().exists('gh:test/test#1'),
+//    new IsEqual<>(false)
+//  )
 }

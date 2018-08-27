@@ -14,40 +14,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.examiner_can_invite
+package com.zerocracy.bundles.send_correct_zold_value
 
 import com.jcabi.xml.XML
+import com.mongodb.client.model.Filters
 import com.zerocracy.Farm
-import com.zerocracy.Par
 import com.zerocracy.Project
-import com.zerocracy.pmo.Awards
-import com.zerocracy.pmo.People
+import com.zerocracy.claims.Footprint
 import org.hamcrest.MatcherAssert
+import org.hamcrest.collection.IsIterableWithSize
 import org.hamcrest.core.IsEqual
-import org.hamcrest.core.StringContains
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
-  People people = new People(farm).bootstrap()
-  String friend = 'friend'
-  MatcherAssert.assertThat(
-    people.hasMentor(friend),
-    new IsEqual<>(true)
-  )
-  String user = 'user'
-  MatcherAssert.assertThat(
-    people.mentor(friend),
-    new IsEqual<>(user)
-  )
-  MatcherAssert.assertThat(
-    new Awards(farm, user).bootstrap().total(),
-    new IsEqual<>(1138)
-  )
-  project.acq('test.txt').withCloseable {
-    item -> MatcherAssert.assertThat(
-      item.path().text,
-      new StringContains(
-        new Par('You received bonus %d points for @%s resume examination').say(32, friend)
+  new Footprint(farm, project).withCloseable { Footprint footprint ->
+    MatcherAssert.assertThat(
+      'User with vesting received wrong ZLD value',
+      footprint.collection().find(
+        Filters.and(
+          Filters.eq('type', 'Notify user'),
+          Filters.eq('login', 'krzyk'),
+          Filters.eq('message', 'We just sent you 32 ZLD through https://wts.zold.io'),
+        )
+      ),
+      new IsIterableWithSize<>(
+          new IsEqual<>(1)
+      )
+    )
+    MatcherAssert.assertThat(
+      'User without vesting received wrong ZLD value',
+      footprint.collection().find(
+        Filters.and(
+          Filters.eq('type', 'Notify user'),
+          Filters.eq('login', 'amihaiemil'),
+          Filters.eq('message', 'We just sent you 16 ZLD through https://wts.zold.io'),
+        )
+      ),
+      new IsIterableWithSize<>(
+          new IsEqual<>(1)
       )
     )
   }

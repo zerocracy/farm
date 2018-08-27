@@ -26,10 +26,6 @@ import lombok.EqualsAndHashCode;
  * Synchronized and thread safe item.
  *
  * @since 1.0
- * @todo #773:30min Use external synchronization of items instead of java
- *  locks. There will be multiple instances of worker apps which can access
- *  same resources from different machines. We need to invent something to
- *  be able to synchronize access to files for all worker instances.
  */
 @EqualsAndHashCode(of = "origin")
 final class SyncItem implements Item {

@@ -19,10 +19,11 @@ package com.zerocracy.claims.proc;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.model.Message;
 import com.zerocracy.shutdown.ShutdownFarm;
+import java.time.Duration;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import javafx.util.Duration;
 import org.junit.Test;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 
 /**
@@ -39,7 +40,7 @@ public final class MessageMonitorProcTest {
         final CountDownLatch latch = new CountDownLatch(1);
         final Message msg = Mockito.mock(Message.class);
         Mockito.when(msg.getReceiptHandle()).thenAnswer(
-            (invocation) -> {
+            invocation -> {
                 latch.countDown();
                 return "blah";
             }
@@ -49,7 +50,7 @@ public final class MessageMonitorProcTest {
         final String queue = "test-queue";
         try {
             new MessageMonitorProc(
-                (input) -> latch.await(1, TimeUnit.MINUTES),
+                input -> latch.await(1, TimeUnit.MINUTES),
                 () -> sqs,
                 queue,
                 1,
@@ -58,10 +59,11 @@ public final class MessageMonitorProcTest {
             ).exec(msg);
             Mockito.verify(
                 sqs,
-                Mockito.timeout((long) Duration.minutes(1).toMillis())
+                Mockito.timeout(Duration.ofMinutes(1L).toMillis())
                     .atLeastOnce()
-            ).changeMessageVisibilityBatch(
-                Mockito.eq(queue), Mockito.anyList()
+            )
+                .changeMessageVisibilityBatch(
+                    ArgumentMatchers.eq(queue), ArgumentMatchers.anyList()
                 );
         } finally {
             hook.complete();
