@@ -510,32 +510,6 @@ public final class Catalog {
     }
 
     /**
-     * Set a parent to the pmo.
-     * @param pid Project ID
-     * @param parent Parent
-     * @throws IOException If fails
-     */
-    public void parent(final String pid, final String parent)
-        throws IOException {
-        if (!this.exists(pid)) {
-            throw new IllegalArgumentException(
-                new Par(
-                    "Project %s doesn't exist, can't set parent"
-                ).say(pid)
-            );
-        }
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
-                new Directives()
-                    .xpath(String.format("/catalog/project[@id='%s' ]", pid))
-                    .strict(1)
-                    .addIf("parent")
-                    .set(parent)
-            );
-        }
-    }
-
-    /**
      * Change project title.
      * @param pid Project id
      * @param title New title
