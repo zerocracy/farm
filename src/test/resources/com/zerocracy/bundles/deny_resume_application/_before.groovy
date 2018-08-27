@@ -29,8 +29,9 @@ import java.time.LocalDateTime
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Resumes resumes = new Resumes(farm).bootstrap()
+  String login = 'friend'
   resumes.add(
-    'friend',
+    login,
     LocalDateTime.now(),
     'User description on himself',
     'INTP-A',
@@ -38,7 +39,7 @@ def exec(Project project, XML xml) {
     'telegramFriend'
   )
   String user = 'user'
-  resumes.assign('friend', user)
+  resumes.assign(login, user)
   new ExtGithub(farm).value().repos().create(new Repos.RepoCreate('test', false))
   new Awards(farm, user).bootstrap().add(
     project, 1000, 'gh:test/test#1', 'test'

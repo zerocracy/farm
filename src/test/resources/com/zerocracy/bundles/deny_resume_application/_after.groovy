@@ -21,10 +21,9 @@ import com.zerocracy.Project
 
 def exec(Project project, XML xml) {
 //  Farm farm = binding.variables.farm
-//  People people = new People(farm).bootstrap()
 //  String friend = 'friend'
 //  MatcherAssert.assertThat(
-//    people.hasMentor(friend),
+//    new People(farm).bootstrap().hasMentor(friend),
 //    new IsEqual<>(false)
 //  )
 //  MatcherAssert.assertThat(
