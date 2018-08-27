@@ -24,7 +24,7 @@ SOFTWARE.
     <params>
       <param name="login">amihaiemil</param>
       <param name="minutes">30</param>
-      <param name="cash">$10</param>
+      <param name="cash">$16</param>
       <param name="job">gh:test/test#1</param>
       <param name="reason">Order was finished</param>
     </params>
@@ -37,7 +37,7 @@ SOFTWARE.
     <params>
       <param name="login">krzyk</param>
       <param name="minutes">30</param>
-      <param name="cash">$10</param>
+      <param name="cash">$16</param>
       <param name="job">gh:test/test#2</param>
       <param name="reason">Order was finished</param>
     </params>

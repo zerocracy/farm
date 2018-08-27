@@ -17,36 +17,42 @@
 package com.zerocracy.bundles.send_correct_zold_value
 
 import com.jcabi.xml.XML
+import com.mongodb.client.model.Filters
+import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.claims.Footprint
+import org.hamcrest.MatcherAssert
+import org.hamcrest.collection.IsIterableWithSize
+import org.hamcrest.core.IsEqual
 
 def exec(Project project, XML xml) {
-//  Farm farm = binding.variables.farm
-//  new Footprint(farm, project).withCloseable { Footprint footprint ->
-//    MatcherAssert.assertThat(
-//      'User with vesting received wrong ZLD value',
-//      footprint.collection().find(
-//        Filters.and(
-//          Filters.eq('type', 'Notify test'),
-//          Filters.eq('login', 'krzyk'),
-//          Filters.eq('message', 'We just sent you 60 ZLD through https://wts.zold.io'),
-//        )
-//      ),
-//      new IsIterableWithSize<>(
-//          new IsEqual(1)
-//      )
-//    );
-//    MatcherAssert.assertThat(
-//      'User without vesting received wrong ZLD value',
-//      footprint.collection().find(
-//        Filters.and(
-//          Filters.eq('type', 'Notify test'),
-//          Filters.eq('login', 'amihaiemil'),
-//          Filters.eq('message', 'We just sent you 10 ZLD through https://wts.zold.io'),
-//        )
-//      ),
-//      new IsIterableWithSize<>(
-//          new IsEqual(1)
-//      )
-//    )
-//  }
+  Farm farm = binding.variables.farm
+  new Footprint(farm, project).withCloseable { Footprint footprint ->
+    MatcherAssert.assertThat(
+      'User with vesting received wrong ZLD value',
+      footprint.collection().find(
+        Filters.and(
+          Filters.eq('type', 'Notify user'),
+          Filters.eq('login', 'krzyk'),
+          Filters.eq('message', 'We just sent you 32 ZLD through https://wts.zold.io'),
+        )
+      ),
+      new IsIterableWithSize<>(
+          new IsEqual<>(1)
+      )
+    )
+    MatcherAssert.assertThat(
+      'User without vesting received wrong ZLD value',
+      footprint.collection().find(
+        Filters.and(
+          Filters.eq('type', 'Notify user'),
+          Filters.eq('login', 'amihaiemil'),
+          Filters.eq('message', 'We just sent you 16 ZLD through https://wts.zold.io'),
+        )
+      ),
+      new IsIterableWithSize<>(
+          new IsEqual<>(1)
+      )
+    )
+  }
 }
