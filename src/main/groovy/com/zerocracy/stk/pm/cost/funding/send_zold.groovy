@@ -56,7 +56,7 @@ def exec(Project project, XML xml) {
   if (!new Props(farm).has('//testing')) {
     new Zold(farm).pay(
       recipient,
-      amount,
+      amount.decimal(),
       'none'
     )
   }
@@ -65,7 +65,7 @@ def exec(Project project, XML xml) {
     .param(
     'message',
     new Par('We just sent you %s ZLD through https://wts.zold.io')
-      .say(amount)
+      .say(amount.decimal())
   ).postTo(new ClaimsOf(farm, project))
   claim.copy().type('Notify PMO').param(
     'message',

@@ -34,7 +34,7 @@ def exec(Project project, XML xml) {
         Filters.and(
           Filters.eq('type', 'Notify user'),
           Filters.eq('login', 'krzyk'),
-          Filters.eq('message', 'We just sent you $50.00 ZLD through https://wts.zold.io'),
+          Filters.eq('message', 'We just sent you 32 ZLD through https://wts.zold.io'),
         )
       ),
       new IsIterableWithSize<>(
@@ -47,7 +47,7 @@ def exec(Project project, XML xml) {
         Filters.and(
           Filters.eq('type', 'Notify user'),
           Filters.eq('login', 'amihaiemil'),
-          Filters.eq('message', 'We just sent you $10.00 ZLD through https://wts.zold.io'),
+          Filters.eq('message', 'We just sent you 16 ZLD through https://wts.zold.io'),
         )
       ),
       new IsIterableWithSize<>(

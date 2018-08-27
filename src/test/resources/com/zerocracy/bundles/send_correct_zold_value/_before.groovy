@@ -29,7 +29,7 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   new ExtGithub(farm).value().repos().create(new Repos.RepoCreate('test', false))
   Rates rates = new Rates(project).bootstrap()
-  rates.set('krzyk', new Cash.S('$20'))
-  rates.set('amihaiemil', new Cash.S('$20'))
-  new Vesting(project).bootstrap().rate('krzyk', new Cash.S('$100'))
+  rates.set('krzyk', new Cash.S('$32'))
+  rates.set('amihaiemil', new Cash.S('$32'))
+  new Vesting(project).bootstrap().rate('krzyk', new Cash.S('$64'))
 }
