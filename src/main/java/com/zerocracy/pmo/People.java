@@ -409,23 +409,14 @@ public final class People {
                 new Par("Bitcoin address is not valid: `%s`").say(wallet)
             );
         }
-        if ("bch".equals(bank)
-            && !wallet.matches("[pq][a-z0-9]{41}")) {
-            throw new SoftException(
-                new Par("Bitcoin Cash address is not valid: `%s`").say(wallet)
-            );
+        if ("bch".equals(bank)) {
+            throw new SoftException("We don't support Bitcoin Cash wallets");
         }
-        if ("eth".equals(bank)
-            && !wallet.matches("(0x)?[0-9a-fA-F]{40}")) {
-            throw new SoftException(
-                new Par("Ethereum address is not valid: `%s`").say(wallet)
-            );
+        if ("eth".equals(bank)) {
+            throw new SoftException("We don't support Ethereum wallets");
         }
-        if ("ltc".equals(bank)
-            && !wallet.matches("[0-9a-zA-Z]{34}")) {
-            throw new SoftException(
-                new Par("Litecoin address is not valid: `%s`").say(wallet)
-            );
+        if ("ltc".equals(bank)) {
+            throw new SoftException("We don't support Litecoin wallets");
         }
         if ("zld".equals(bank)
             && !wallet.matches("^[a-z\\d](?:[a-z\\d]|-(?=[a-z\\d])){0,38}$")) {

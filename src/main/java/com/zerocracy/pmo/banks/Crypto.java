@@ -39,9 +39,6 @@ import org.joda.money.Money;
  * Coinbase payment method.
  *
  * @since 1.0
- * @todo #980:30min We need to drop Etherium support from Zerocracy: Remove ETH
- *  support mentioned in Policy (§20) and Remove ETH wallets support informing
- *  that ETH cannot be used when user tries to use it.
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 final class Crypto implements Bank {
