@@ -17,19 +17,17 @@
 package com.zerocracy.bundles.add_payment_to_debts_if_has_debt
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.cash.Cash
+import com.zerocracy.pmo.Debts
+import org.hamcrest.MatcherAssert
+import org.hamcrest.core.IsEqual
 
-// @todo #921:30min 0crat ignores debt on new payment. Change
-//  make_payment.groovy so we check if user already has some debts on new
-//  payment. If he/she already has, fail the payment and add it to debts. After
-//  this, uncomment this test to assure that payment has been added to debts.
 def exec(Project project, XML xml) {
-//  Farm farm = binding.variables.farm
-//  MatcherAssert.assertThat(
-//    new Debts(farm).bootstrap().iterate(),
-//    new IsIterableContainingInAnyOrder<>(
-//      new IsEqual<>('$100'),
-//      new IsEqual<>('$5')
-//    )
-//  )
+  Farm farm = binding.variables.farm
+  MatcherAssert.assertThat(
+    new Debts(farm).bootstrap().amount('paulodamaso'),
+    new IsEqual<>(new Cash.S('$105'))
+  )
 }

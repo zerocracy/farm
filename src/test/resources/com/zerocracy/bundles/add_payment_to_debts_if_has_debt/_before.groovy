@@ -20,9 +20,15 @@ import com.jcabi.github.Repos
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.cash.Cash
 import com.zerocracy.entry.ExtGithub
+import com.zerocracy.pmo.Debts
+import com.zerocracy.pmo.People
+
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   new ExtGithub(farm).value().repos().create(new Repos.RepoCreate('test', false))
+  new People(farm).bootstrap().wallet('paulodamaso', 'paypal', 'pauloeduardolobo@gmail.com')
+  new Debts(farm).bootstrap().add('paulodamaso', new Cash.S('$5'), 'Five dollars', 'Too small')
 }
