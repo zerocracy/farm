@@ -48,7 +48,6 @@ def exec(Project project, XML xml) {
     claim.copy()
       .type('Job was declined')
       .token("job;${job}")
-      .param('message', message)
       .postTo(new ClaimsOf(farm, project))
   }
   Orders orders = new Orders(project).bootstrap()

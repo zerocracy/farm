@@ -32,11 +32,10 @@ def exec(Project project, XML xml) {
   claim.copy()
     .type('Notify job')
     .param(
-    'message',
-    new Par(
-      farm,
-      'This job is not in scope, closed by @%s'
-    ).say(claim.author())
-  )
-    .postTo(new ClaimsOf(farm, project))
+      'message',
+      new Par(
+        farm,
+        'This job is not in scope, closed by @%s'
+      ).say(claim.author())
+    ).postTo(new ClaimsOf(farm, project))
 }

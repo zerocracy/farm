@@ -16,7 +16,6 @@
  */
 package com.zerocracy.bundles.notifies_declined_job
 
-import com.jcabi.github.Github
 import com.jcabi.github.Repos
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
@@ -25,8 +24,8 @@ import com.zerocracy.entry.ExtGithub
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
-  Github github = new ExtGithub(farm).value()
-  github.repos().create(new Repos.RepoCreate('test', false))
+  new ExtGithub(farm).value().repos()
+    .create(new Repos.RepoCreate('test', false))
     .issues()
     .create('hello, world', '')
 }
