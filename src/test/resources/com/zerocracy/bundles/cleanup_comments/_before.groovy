@@ -25,10 +25,12 @@ import com.zerocracy.Project
 import com.zerocracy.entry.ExtGithub
 
 def exec(Project pmo, XML xml) {
-    Farm farm = binding.variables.farm
-    Issue issue = new ExtGithub(farm).value().repos().create(new Repos.RepoCreate('test', false)).issues().create('Some issue', '')
-    Comment deleted = issue.comments().post('Deleted comment')
-    issue.comments().post('Retained comment')
-    deleted.remove()
+  Farm farm = binding.variables.farm
+  Issue issue = new ExtGithub(farm).value().repos().create(
+    new Repos.RepoCreate('test', false)
+  ).issues().create('Some issue', '')
+  Comment deleted = issue.comments().post('Deleted comment')
+  issue.comments().post('Retained comment')
+  deleted.remove()
 }
 
