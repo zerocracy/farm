@@ -54,7 +54,7 @@ public interface Votes {
         }
 
         @Override
-        public double take(final String login, final StringBuilder log) throws IOException {
+        public double take(final String login, final StringBuilder log) {
             return this.value;
         }
     }
