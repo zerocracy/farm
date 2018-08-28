@@ -16,6 +16,7 @@
  */
 package com.zerocracy.farm.sync;
 
+import com.zerocracy.farm.props.PropsFarm;
 import java.util.concurrent.locks.Lock;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsNot;
@@ -24,15 +25,19 @@ import org.junit.Test;
 
 /**
  * Test case for {@link MongoDbLock}.
- *
  * @since 1.0
+ * @todo #1644:30min Implement external locking mechanism based in MongoDB.
+ *  Implement tests for methods in MongoDbLock. These methods must behave as
+ *  specified in in java 8 java.util.concurrent.locks.Lock interface, except
+ *  stacktrace() which must behave like SmartLock.stacktrace(). Then
+ *  implement these methods so them pass all tests.
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class MongoDbLockTest {
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void buildsToStringWhenFresh() throws Exception {
-        final Lock lock = new MongoDbLock();
+        final Lock lock = new MongoDbLock(new PropsFarm(), "unlockedresource");
         MatcherAssert.assertThat(
             lock.toString(),
             new IsNot<>(
@@ -41,9 +46,9 @@ public final class MongoDbLockTest {
         );
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void buildsToStringWhenLocked() throws Exception {
-        final Lock lock = new MongoDbLock();
+        final Lock lock = new MongoDbLock(new PropsFarm(), "lockedresource");
         lock.lock();
         try {
             MatcherAssert.assertThat(
@@ -59,7 +64,7 @@ public final class MongoDbLockTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void buildsToStringWhenLockedInterruptibly() throws Exception {
-        final Lock lock = new MongoDbLock();
+        final Lock lock = new MongoDbLock(new PropsFarm(), "someresource");
         lock.lockInterruptibly();
         try {
             MatcherAssert.assertThat(
