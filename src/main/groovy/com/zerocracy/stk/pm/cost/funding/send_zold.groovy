@@ -56,7 +56,7 @@ def exec(Project project, XML xml) {
   if (!new Props(farm).has('//testing')) {
     new Zold(farm).pay(
       recipient,
-      amount.decimal(),
+      amount,
       'none'
     )
   }

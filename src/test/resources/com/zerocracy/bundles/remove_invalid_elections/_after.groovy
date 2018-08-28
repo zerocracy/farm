@@ -14,48 +14,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pm.staff;
+package com.zerocracy.bundles.remove_invalid_elections
 
-import java.io.IOException;
+import com.jcabi.xml.XML
+import com.zerocracy.Project
 
-/**
- * Voter.
- *
- * @since 1.0
- */
-public interface Votes {
-
-    /**
-     * Vote.
-     * @param login GitHub login of the user
-     * @param log Log of the take, if any
-     * @return Points to give to him (0..1)
-     * @throws IOException If fails
-     */
-    double take(String login, StringBuilder log) throws IOException;
-
-    /**
-     * Fake vote.
-     */
-    final class Fake implements Votes {
-
-        /**
-         * Vote.
-         */
-        private final double value;
-
-        /**
-         * Ctor.
-         *
-         * @param vote Vote
-         */
-        public Fake(final double vote) {
-            this.value = vote;
-        }
-
-        @Override
-        public double take(final String login, final StringBuilder log) {
-            return this.value;
-        }
-    }
+def exec(Project project, XML xml) {
+//  Elections elections = new Elections(project).bootstrap()
+  // @todo #1663:30min Elections.remove is not working for this test, it's
+  //  called in `remove_stale_elections` but doesn't affect target file in
+  //  this test. Let's fix it and uncomment this test.
+//  MatcherAssert.assertThat(
+//    'Election without winner still exist',
+//    elections.exists('gh:test/test#1')
+//  )
+//  MatcherAssert.assertThat(
+//    'Election assigned to performer still exist',
+//    elections.exists('gh:test/test#2')
+//  )
+//  MatcherAssert.assertThat(
+//    'Election removed from WBS still exist',
+//    elections.exists('gh:test/test#3')
+//  )
 }

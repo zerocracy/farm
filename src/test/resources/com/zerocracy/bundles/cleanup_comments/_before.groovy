@@ -14,48 +14,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pm.staff;
+package com.zerocracy.bundles.cleanup_comments
 
-import java.io.IOException;
+import com.jcabi.github.Comment
+import com.jcabi.github.Issue
+import com.jcabi.github.Repos
+import com.jcabi.xml.XML
+import com.zerocracy.Farm
+import com.zerocracy.Project
+import com.zerocracy.entry.ExtGithub
 
-/**
- * Voter.
- *
- * @since 1.0
- */
-public interface Votes {
-
-    /**
-     * Vote.
-     * @param login GitHub login of the user
-     * @param log Log of the take, if any
-     * @return Points to give to him (0..1)
-     * @throws IOException If fails
-     */
-    double take(String login, StringBuilder log) throws IOException;
-
-    /**
-     * Fake vote.
-     */
-    final class Fake implements Votes {
-
-        /**
-         * Vote.
-         */
-        private final double value;
-
-        /**
-         * Ctor.
-         *
-         * @param vote Vote
-         */
-        public Fake(final double vote) {
-            this.value = vote;
-        }
-
-        @Override
-        public double take(final String login, final StringBuilder log) {
-            return this.value;
-        }
-    }
+def exec(Project pmo, XML xml) {
+  Farm farm = binding.variables.farm
+  Issue issue = new ExtGithub(farm).value().repos().create(
+    new Repos.RepoCreate('test', false)
+  ).issues().create('Some issue', '')
+  Comment deleted = issue.comments().post('Deleted comment')
+  issue.comments().post('Retained comment')
+  deleted.remove()
 }
+

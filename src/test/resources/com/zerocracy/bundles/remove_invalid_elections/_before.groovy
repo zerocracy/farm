@@ -14,44 +14,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.internal
+package com.zerocracy.bundles.remove_invalid_elections
 
 import com.jcabi.github.Github
-import com.jcabi.log.Logger
+import com.jcabi.github.Repo
+import com.jcabi.github.Repos
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
-import com.zerocracy.entry.ExtDynamo
 import com.zerocracy.entry.ExtGithub
-import com.zerocracy.farm.Assume
-import com.zerocracy.farm.Errors
-import com.zerocracy.farm.props.Props
-import com.zerocracy.radars.github.Quota
+import com.zerocracy.pm.in.Orders
+import com.zerocracy.pm.scope.Wbs
+import com.zerocracy.pm.staff.Elections
+import com.zerocracy.pm.staff.Votes
+import org.cactoos.map.MapEntry
+import org.cactoos.map.MapOf
 
-// @todo #1570:30min cleanup_comments often fails. This happens because we
-//  are trying to remove from github some comment that had already been
-//  deleted before using github interface. We must test if the comment exists
-//  in github before trying to delete it. After the correction, uncomment
-//  tests in /cleanup_comments/_after.groovy. Don't forget to remove the lines
-//  that skip this stakeholder in test mode too so we can test its behavior.
 def exec(Project project, XML xml) {
-  new Assume(project, xml).isPmo()
-  new Assume(project, xml).type('Ping hourly')
   Farm farm = binding.variables.farm
-  if (new Props(farm).has('//testing')) {
-    Logger.info(this, 'skip in testing mode')
-    return
-  }
   Github github = new ExtGithub(farm).value()
-  if (!new Quota(github).quiet()) {
-    return
-  }
-  Errors.Github errors = new Errors.Github(
-    new Errors(new ExtDynamo(farm).value()),
-    github
+  Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
+  repo.issues().create('Hello, world', '')
+  Elections elections = new Elections(project).bootstrap()
+  String performer = 'performer'
+  elections.elect(
+    'gh:test/test#1',
+    [performer],
+    new MapOf<Votes, Integer>(new MapEntry<Votes, Integer>(new Votes.Fake(0.0D), -1))
   )
-  errors.iterate(10, 72L).each { error ->
-    errors.remove(error)
-    error.remove()
-  }
+  elections.elect(
+    'gh:test/test#2',
+    [performer],
+    new MapOf<Votes, Integer>(new MapEntry<Votes, Integer>(new Votes.Fake(1.0D), 1))
+  )
+  new Orders(project).bootstrap().assign('gh:test/test#2', performer , 1L)
+  elections.elect(
+    'gh:test/test#3',
+    [performer],
+    new MapOf<Votes, Integer>(new MapEntry<Votes, Integer>(new Votes.Fake(1.0D), 1))
+  )
+  new Wbs(project).bootstrap().remove('gh:test/test#3')
 }
