@@ -21,9 +21,7 @@ import com.zerocracy.Project
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.scope.Wbs
-import com.zerocracy.pm.staff.ElectionResult
 import com.zerocracy.pm.staff.Elections
-
 /**
  * Remove all invalid elections: if election result is not successful or
  * job was assigned to performer or job was removed from WBS.
@@ -37,10 +35,9 @@ def exec(Project project, XML xml) {
   Elections elections = new Elections(project).bootstrap()
   Orders orders = new Orders(project).bootstrap()
   Wbs wbs = new Wbs(project).bootstrap()
-  elections.jobs().each {
-    ElectionResult result = elections.result(it)
-    if (!result.elected() || orders.assigned(it) || !wbs.exists(it)) {
-      elections.remove(it)
+  elections.jobs().each { job ->
+    if (!elections.result(job).elected() || orders.assigned(job) || !wbs.exists(job)) {
+      elections.remove(job)
     }
   }
 }

@@ -36,20 +36,21 @@ def exec(Project project, XML xml) {
   Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
   repo.issues().create('Hello, world', '')
   Elections elections = new Elections(project).bootstrap()
+  String performer = 'performer'
   elections.elect(
     'gh:test/test#1',
-    ['performer'],
-    new MapOf<Votes, Integer>(new MapEntry<Votes, Integer>(new Votes.Fake(0.0D), 1))
+    [performer],
+    new MapOf<Votes, Integer>(new MapEntry<Votes, Integer>(new Votes.Fake(0.0D), -1))
   )
   elections.elect(
     'gh:test/test#2',
-    ['performer'],
+    [performer],
     new MapOf<Votes, Integer>(new MapEntry<Votes, Integer>(new Votes.Fake(1.0D), 1))
   )
-  new Orders(project).bootstrap().assign('gh:test/test#2', 'performer' , 1L)
+  new Orders(project).bootstrap().assign('gh:test/test#2', performer , 1L)
   elections.elect(
     'gh:test/test#3',
-    ['performer'],
+    [performer],
     new MapOf<Votes, Integer>(new MapEntry<Votes, Integer>(new Votes.Fake(1.0D), 1))
   )
   new Wbs(project).bootstrap().remove('gh:test/test#3')

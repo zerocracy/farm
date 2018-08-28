@@ -18,10 +18,9 @@ package com.zerocracy.bundles.remove_invalid_elections
 
 import com.jcabi.xml.XML
 import com.zerocracy.Project
-import com.zerocracy.pm.staff.Elections
 
 def exec(Project project, XML xml) {
-  Elections elections = new Elections(project).bootstrap()
+//  Elections elections = new Elections(project).bootstrap()
   // @todo #1663:30min Elections.remove is not working for this test, it's
   //  called in `remove_stale_elections` but doesn't affect target file in
   //  this test. Let's fix it and uncomment this test.
