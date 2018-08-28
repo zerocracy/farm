@@ -17,15 +17,7 @@
 package com.zerocracy.bundles.cleanup_comments
 
 import com.jcabi.xml.XML
-import com.zerocracy.Farm
-import com.zerocracy.Item
 import com.zerocracy.Project
-import com.zerocracy.entry.ExtDynamo
-import com.zerocracy.entry.ExtGithub
-import com.zerocracy.farm.Errors
-import org.hamcrest.MatcherAssert
-import org.hamcrest.collection.IsEmptyCollection
-import org.hamcrest.core.IsNot
 
 def exec(Project pmo, XML xml) {
 //  Farm farm = binding.variables.farm
