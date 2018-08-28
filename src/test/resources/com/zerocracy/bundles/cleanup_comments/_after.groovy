@@ -36,8 +36,6 @@ def exec(Project pmo, XML xml) {
 //  MatcherAssert.assertThat(
 //    "Comments not cleaned from dynamo",
 //    errors.iterate(10,72L),
-//    new IsNot<>(
-//      new IsEmptyCollection<>()
-//    )
+//    new IsEmptyCollection<>()
 //  )
 }
