@@ -21,7 +21,7 @@ import com.mongodb.client.model.Filters;
 import com.zerocracy.Farm;
 import com.zerocracy.entry.ExtMongo;
 import java.io.IOException;
-import java.util.Date;
+import java.time.Instant;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import org.bson.Document;
@@ -36,22 +36,22 @@ public final class MongoDbLock implements Lock {
     /**
      * Mongo database name.
      */
-    public static final String DATABASE = "locksdb";
+    private static final String DATABASE = "locksdb";
 
     /**
      * Mongo lock collection name.
      */
-    public static final String COLLECTION = "locks";
+    private static final String COLLECTION = "locks";
 
     /**
      * Resource field name.
      */
-    public static final String RESOURCE = "resource";
+    private static final String RESOURCE = "resource";
 
     /**
      * Time field name.
      */
-    public static final String TIME = "time";
+    private static final String TIME = "time";
 
     /**
      * MongoDB client.
@@ -85,7 +85,7 @@ public final class MongoDbLock implements Lock {
     public void lock() {
         final Document lock = new Document();
         lock.put(MongoDbLock.RESOURCE, this.resource);
-        lock.put(MongoDbLock.TIME, new Date());
+        lock.put(MongoDbLock.TIME, Instant.now());
         this.client.getDatabase(
             MongoDbLock.DATABASE
         ).getCollection(MongoDbLock.COLLECTION).insertOne(lock);

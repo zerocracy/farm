@@ -27,10 +27,13 @@ import org.junit.Test;
  * Test case for {@link MongoDbLock}.
  * @since 1.0
  * @todo #1644:30min Implement external locking mechanism based in MongoDB.
- *  Implement tests for methods in MongoDbLock. These methods must behave as
- *  specified in in java 8 java.util.concurrent.locks.Lock interface, except
- *  stacktrace() which must behave like SmartLock.stacktrace(). Then
- *  implement these methods so them pass all tests.
+ *  Implement tests for methods in MongoDbLock (stacktrace(), lock(),
+ *  lockInterruptibly(), tryLock(),
+ *  tryLock(final long time, final TimeUnit unit), unlock() and newCondition()).
+ *  These methods must behave as specified in in java 8
+ *  java.util.concurrent.locks.Lock interface, except stacktrace() which must
+ *  behave like SmartLock.stacktrace(). Then implement these methods so they'll
+ *  pass all the tests below.
  * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class MongoDbLockTest {
