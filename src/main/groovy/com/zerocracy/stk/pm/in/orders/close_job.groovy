@@ -23,10 +23,10 @@ import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.SoftException
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
-import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pm.staff.Roles
@@ -45,9 +45,11 @@ def exec(Project project, XML xml) {
   String author = issue.author().login().toLowerCase(Locale.ENGLISH)
   if (!wbs.exists(job)) {
     new Blanks(farm, author).bootstrap().add(project, job, issue.pull ? 'pull-request' : 'issue')
-    throw new SoftException(
-      new Par('The job is not in WBS, won\'t close the order').say()
-    )
+    claim.copy()
+      .type('Job was declined')
+      .token("job;${job}")
+      .param('message', message)
+      .postTo(new ClaimsOf(farm, project))
   }
   Orders orders = new Orders(project).bootstrap()
   if (job.startsWith('gh:') && orders.assigned(job)) {
