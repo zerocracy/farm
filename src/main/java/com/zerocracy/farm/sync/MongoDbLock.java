@@ -82,10 +82,10 @@ public final class MongoDbLock implements Lock {
     }
 
     // @todo #1644:30min Implement external locking mechanism based in MongoDB.
-    // According to javas Lock interface, when there is already a lock on given
-    // resource, it should suspend the thread until it is possible to do a lock.
-    // This class is not implementing this behavior on lock() method. Implement
-    // this so this lock should block until the resource is unlocked.
+    //  According to javas Lock interface, when there is already a lock on given
+    //  resource, it should suspend the thread until it is possible to do a
+    //  lock. This class is not implementing this behavior on lock() method.
+    //  Implement this so this lock should block until the resource is unlocked.
     @Override
     public void lock() {
         final Document lock = new Document();
