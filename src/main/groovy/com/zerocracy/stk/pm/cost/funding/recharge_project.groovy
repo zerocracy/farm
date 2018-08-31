@@ -17,12 +17,16 @@
 package com.zerocracy.stk.pm.cost.funding
 
 import com.jcabi.xml.XML
+import com.mongodb.client.model.Filters
 import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.claims.ClaimIn
+import com.zerocracy.claims.Footprint
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pmo.recharge.Recharge
+import java.time.Duration
+import java.time.Instant
 
 /**
  * This stakeholder recharges a project using the same Stripe account which was
@@ -34,8 +38,22 @@ import com.zerocracy.pmo.recharge.Recharge
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Recharge project')
-  ClaimIn claim = new ClaimIn(xml)
   Farm farm = binding.variables.farm
+  boolean recharged = new Footprint(farm, project).withCloseable { Footprint footprint ->
+    footprint.collection().countDocuments(
+      Filters.and(
+        Filters.gt(
+          'created',
+          Date.from(Instant.now() - Duration.ofHours(1L))
+        ),
+        Filters.eq('type', 'Recharge project')
+      )
+    ) > 0L
+  }
+  if (recharged) {
+    return
+  }
+  ClaimIn claim = new ClaimIn(xml)
   Recharge recharge = new Recharge(farm, project)
   if (recharge.exists() && recharge.required()) {
     recharge.pay(claim.copy()).postTo(new ClaimsOf(farm, project))
