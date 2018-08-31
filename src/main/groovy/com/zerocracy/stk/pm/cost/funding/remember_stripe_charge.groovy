@@ -38,5 +38,5 @@ def exec(Project project, XML xml) {
   Cash amount = new Cash.S(claim.param('amount'))
   String customer = claim.param('stripe_customer')
   Farm farm = binding.variables.farm
-  new Recharge(farm, project.pid()).set('stripe', amount, customer)
+  new Recharge(farm, project).set('stripe', amount, customer)
 }

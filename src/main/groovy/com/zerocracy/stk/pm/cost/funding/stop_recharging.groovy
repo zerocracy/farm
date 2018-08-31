@@ -36,7 +36,7 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Project was paused', 'Project was activated')
   ClaimIn claim = new ClaimIn(xml)
   Farm farm = binding.variables.farm
-  Recharge recharge = new Recharge(farm, project.pid())
+  Recharge recharge = new Recharge(farm, project)
   if (!recharge.exists()) {
     return
   }

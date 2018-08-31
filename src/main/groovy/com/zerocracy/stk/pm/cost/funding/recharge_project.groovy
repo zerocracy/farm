@@ -36,8 +36,8 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Recharge project')
   ClaimIn claim = new ClaimIn(xml)
   Farm farm = binding.variables.farm
-  Recharge recharge = new Recharge(farm, project.pid())
-  if (recharge.exists()) {
+  Recharge recharge = new Recharge(farm, project)
+  if (recharge.exists() && recharge.required()) {
     recharge.pay(claim.copy()).postTo(new ClaimsOf(farm, project))
   }
 }

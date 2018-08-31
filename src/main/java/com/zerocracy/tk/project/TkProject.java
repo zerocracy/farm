@@ -71,7 +71,7 @@ public final class TkProject implements TkRegex {
                 final Project project = new RqProject(this.farm, req);
                 final Catalog catalog = new Catalog(this.farm).bootstrap();
                 final String pid = project.pid();
-                final Recharge recharge = new Recharge(this.farm, pid);
+                final Recharge recharge = new Recharge(this.farm, project);
                 final String user = new RqUser(this.farm, req, false).value();
                 return new XeChain(
                     new XeAppend("project", pid),

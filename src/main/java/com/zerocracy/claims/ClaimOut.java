@@ -238,6 +238,28 @@ public final class ClaimOut implements Iterable<Directive> {
     }
 
     /**
+     * Override signature, use this value as source for signature hash.
+     *
+     * @param src Source of signature
+     * @return This
+     */
+    public ClaimOut unique(final String src) {
+        if (src == null) {
+            throw new IllegalArgumentException("src can't be null");
+        }
+        return new ClaimOut(
+            this.dirs
+                .push()
+                .xpath("unique")
+                .remove()
+                .pop()
+                .add("unique")
+                .set(src)
+                .up()
+        );
+    }
+
+    /**
      * With this param.
      * @param name Name
      * @param value Value
