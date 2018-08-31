@@ -16,16 +16,19 @@
  */
 package com.zerocracy.tk;
 
+import com.jcabi.aspects.Tv;
 import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Xocument;
+import com.zerocracy.pmo.Awards;
 import com.zerocracy.pmo.Pmo;
 import com.zerocracy.pmo.Projects;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
 import org.cactoos.func.FuncOf;
+import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.LengthOf;
 import org.cactoos.scalar.And;
 import org.takes.Request;
@@ -75,7 +78,12 @@ public final class TkTeam implements Take {
                             input -> sources.add(this.source(input)),
                             true
                         ),
-                        new Xocument(item).nodes("/people/person[mentor]")
+                        new Filtered<>(
+                            node -> !new Awards(
+                                this.farm, node.xpath("@id").get(0)
+                            ).bootstrap().awards(Tv.NINETY).isEmpty(),
+                            new Xocument(item).nodes("/people/person[mentor]")
+                        )
                     ).value();
                 }
                 return new XeAppend("people", new XeChain(sources));
