@@ -41,7 +41,7 @@ def exec(Project project, XML xml) {
   if (new Recharge(farm, project).required()) {
     ClaimOut recharge = new ClaimIn(xml).copy()
       .type('Recharge project')
-      .unique("recharge")
+      .unique('recharge')
     if (!new Props(farm).has('//testing')) {
       recharge.until(Duration.ofMinutes(5))
     }
