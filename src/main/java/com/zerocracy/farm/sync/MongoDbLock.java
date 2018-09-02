@@ -16,19 +16,63 @@
  */
 package com.zerocracy.farm.sync;
 
+import com.mongodb.MongoClient;
+import com.mongodb.client.model.Filters;
+import com.zerocracy.Farm;
+import com.zerocracy.entry.ExtMongo;
+import java.io.IOException;
+import java.time.Instant;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
+import org.bson.Document;
 
 /**
  * {@link Lock} using MongoDB.
  *
  * @since 1.0
- * @todo #1465:30min Implement external locking mechanism based in MongoDB.
- *  The lock must be set to some resource in a table where resource path and
- *  name must be set, along with time of lock. Then remove expects from
- *  MongoDBLockTest.
  */
 public final class MongoDbLock implements Lock {
+
+    /**
+     * Mongo database name.
+     */
+    private static final String DATABASE = "locksdb";
+
+    /**
+     * Mongo lock collection name.
+     */
+    private static final String COLLECTION = "locks";
+
+    /**
+     * Resource field name.
+     */
+    private static final String RESOURCE = "resource";
+
+    /**
+     * Time field name.
+     */
+    private static final String TIME = "time";
+
+    /**
+     * MongoDB client.
+     */
+    private final MongoClient client;
+
+    /**
+     * Resource to be locked.
+     */
+    private final String resource;
+
+    /**
+     * Constructor.
+     * @param farm Farm containing the resource
+     * @param resource Resource to be locked
+     * @throws IOException If something goes wrong
+     */
+    MongoDbLock(final Farm farm, final String resource) throws IOException {
+        this.client = new ExtMongo(farm).value();
+        this.resource = resource;
+    }
 
     @Override
     public StackTraceElement[] stacktrace() {
@@ -37,11 +81,19 @@ public final class MongoDbLock implements Lock {
         );
     }
 
+    // @todo #1644:30min Implement external locking mechanism based in MongoDB.
+    //  According to javas Lock interface, when there is already a lock on given
+    //  resource, it should suspend the thread until it is possible to do a
+    //  lock. This class is not implementing this behavior on lock() method.
+    //  Implement this so this lock should block until the resource is unlocked.
     @Override
     public void lock() {
-        throw new UnsupportedOperationException(
-            "lock() is not implemented"
-        );
+        final Document lock = new Document();
+        lock.put(MongoDbLock.RESOURCE, this.resource);
+        lock.put(MongoDbLock.TIME, Instant.now());
+        this.client.getDatabase(
+            MongoDbLock.DATABASE
+        ).getCollection(MongoDbLock.COLLECTION).insertOne(lock);
     }
 
     @Override
@@ -53,9 +105,14 @@ public final class MongoDbLock implements Lock {
 
     @Override
     public boolean tryLock() {
-        throw new UnsupportedOperationException(
-            "tryLock() is not implemented"
-        );
+        final boolean lock;
+        if (this.locked()) {
+            lock = false;
+        } else {
+            this.lock();
+            lock = true;
+        }
+        return lock;
     }
 
     @Override
@@ -68,9 +125,11 @@ public final class MongoDbLock implements Lock {
 
     @Override
     public void unlock() {
-        throw new UnsupportedOperationException(
-            "unlock() is not implemented"
-        );
+        this.client.getDatabase(
+            MongoDbLock.DATABASE
+        ).getCollection(MongoDbLock.COLLECTION).deleteOne(
+            Filters.eq(MongoDbLock.RESOURCE, this.resource)
+            );
     }
 
     @Override
@@ -82,8 +141,24 @@ public final class MongoDbLock implements Lock {
 
     @Override
     public String toString() {
-        throw new UnsupportedOperationException(
-            "toString() is not implemented"
-        );
+        final String text;
+        if (this.locked()) {
+            text = "locked";
+        } else {
+            text = "free";
+        }
+        return text;
+    }
+
+    /**
+     * Is this lock locked?
+     * @return The lock locked status
+     */
+    private boolean locked() {
+        return this.client.getDatabase(
+            MongoDbLock.DATABASE
+        ).getCollection(MongoDbLock.COLLECTION).find(
+            Filters.eq(MongoDbLock.RESOURCE, this.resource)
+        ).iterator().hasNext();
     }
 }
