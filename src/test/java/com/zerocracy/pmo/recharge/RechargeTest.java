@@ -36,6 +36,7 @@ import org.junit.Test;
  * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle AvoidDuplicateLiterals (600 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class RechargeTest {
