@@ -41,14 +41,14 @@ def exec(Project project, XML xml) {
   KpiMetrics metrics = new KpiOf(farm)
   Duration period = Duration.ofHours(1)
   StringBuilder builder = new StringBuilder()
-  builder.append("KPI for period: ${(Instant.now() - period)} - ${Instant.now()}").append('\n')
+  builder.append("KPI for period: ${(Instant.now() - period)} - ${Instant.now()}\n")
   metrics.metrics().each { name ->
     KpiStats stats = metrics.statistic(name, period)
     builder.append("`${name}`:\t`")
     if (stats.min() != Double.valueOf(1) || stats.max() != Double.valueOf(1)) {
       builder.append("`avg=`${stats.avg()}` (min=`${stats.min()}` - max=`${stats.max()}`) ")
     }
-    builder.append("${stats.count()}` events").append('\n')
+    builder.append("${stats.count()}` events\n")
   }
   new ClaimIn(xml).copy()
     .type('Notify PMO')
