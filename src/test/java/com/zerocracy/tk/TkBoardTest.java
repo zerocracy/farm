@@ -22,6 +22,7 @@ import com.jcabi.matchers.XhtmlMatchers;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.cash.Cash;
+import com.zerocracy.entry.ExtGithub;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pm.cost.Ledger;
@@ -41,14 +42,15 @@ public final class TkBoardTest {
     @Test
     public void rendersBoardWithFundedProject() throws Exception {
         final Farm farm = new PropsFarm(new FkFarm());
-        final Repo repo = new MkGithub().randomRepo();
+        final Repo repo = ((MkGithub) new ExtGithub(farm).value())
+            .randomRepo();
         final Project project = farm.find("").iterator().next();
         final Catalog catalog = new Catalog(farm).bootstrap();
         catalog.add(project.pid(), "2017/01/AAAABBBBC/");
         catalog.link(
             project.pid(),
             "github",
-            repo.coordinates().repo()
+            repo.coordinates().toString()
         );
         catalog.publish(project.pid(), true);
         final Ledger ledger = new Ledger(project).bootstrap();
@@ -76,14 +78,15 @@ public final class TkBoardTest {
     @Test
     public void rendersBoardWithProjectWithoutFunding() throws Exception {
         final Farm farm = new PropsFarm(new FkFarm());
-        final Repo repo = new MkGithub().randomRepo();
+        final Repo repo = ((MkGithub) new ExtGithub(farm).value())
+            .randomRepo();
         final Project project = farm.find("").iterator().next();
         final Catalog catalog = new Catalog(farm).bootstrap();
         catalog.add(project.pid(), "2017/02/AAAABBBBC/");
         catalog.link(
             project.pid(),
             "github",
-            repo.coordinates().repo()
+            repo.coordinates().toString()
         );
         catalog.publish(project.pid(), true);
         MatcherAssert.assertThat(
@@ -98,14 +101,15 @@ public final class TkBoardTest {
     @Test
     public void doesNotShowProjectsNegativeBalance() throws Exception {
         final Farm farm = new PropsFarm(new FkFarm());
-        final Repo repo = new MkGithub().randomRepo();
+        final Repo repo = ((MkGithub) new ExtGithub(farm).value())
+            .randomRepo();
         final Project project = farm.find("").iterator().next();
         final Catalog catalog = new Catalog(farm).bootstrap();
         catalog.add(project.pid(), "2017/01/AAAABBBBC/");
         catalog.link(
             project.pid(),
             "github",
-            repo.coordinates().repo()
+            repo.coordinates().toString()
         );
         catalog.publish(project.pid(), true);
         final Ledger ledger = new Ledger(project).bootstrap();
@@ -131,6 +135,29 @@ public final class TkBoardTest {
             XhtmlMatchers.hasXPaths(
                 // @checkstyle LineLength (1 line)
                 "//xhtml:span[@title = 'The project is not properly funded' and . = 'no funds']"
+            )
+        );
+    }
+
+    @Test
+    public void displaysLanguages() throws Exception {
+        final Farm farm = new PropsFarm(new FkFarm());
+        final Repo repo = ((MkGithub) new ExtGithub(farm).value())
+            .randomRepo();
+        final Project project = farm.find("").iterator().next();
+        final Catalog catalog = new Catalog(farm).bootstrap();
+        catalog.add(project.pid(), "2017/02/AAAABBBBC/");
+        catalog.link(
+            project.pid(),
+            "github",
+            repo.coordinates().toString()
+        );
+        catalog.publish(project.pid(), true);
+        MatcherAssert.assertThat(
+            new View(farm, "/board").html(),
+            XhtmlMatchers.hasXPaths(
+                // @checkstyle LineLength (1 line)
+                "//xhtml:td[contains(text(), 'Java')]"
             )
         );
     }
