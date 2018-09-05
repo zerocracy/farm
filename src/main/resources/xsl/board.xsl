@@ -71,6 +71,9 @@ SOFTWARE.
             <xsl:text>GitHub Repositories</xsl:text>
           </th>
           <th>
+            <xsl:text>Languages</xsl:text>
+          </th>
+          <th>
             <xsl:text>Members</xsl:text>
           </th>
           <th>
@@ -150,6 +153,9 @@ SOFTWARE.
       </td>
       <td>
         <xsl:apply-templates select="repositories"/>
+      </td>
+      <td>
+        <xsl:value-of select="languages"/>
       </td>
       <td style="text-align:right;">
         <xsl:if test="mine='false'">
