@@ -24,17 +24,12 @@ import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.staff.Roles
-import com.zerocracy.pmo.Catalog
 import com.zerocracy.pmo.People
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Ping hourly')
   Farm farm = binding.variables.farm
-  Catalog catalog = new Catalog(farm).bootstrap()
-  if (!catalog.sandbox().contains(project.pid())) {
-    return
-  }
   ClaimIn claim = new ClaimIn(xml)
   People people = new People(farm).bootstrap()
   Roles roles = new Roles(project).bootstrap()
