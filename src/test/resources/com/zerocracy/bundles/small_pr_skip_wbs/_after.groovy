@@ -18,6 +18,14 @@ package com.zerocracy.bundles.small_pr_skip_wbs
 
 import com.jcabi.xml.XML
 import com.zerocracy.Project
+import com.zerocracy.pm.scope.Wbs
+import org.hamcrest.MatcherAssert
+import org.hamcrest.core.IsEqual
 
 def exec(Project project, XML xml) {
+  MatcherAssert.assertThat(
+    'Small PR (less than 10 lines) added to WBS',
+    new Wbs(project).bootstrap().exists('gh:test/test#1'),
+    new IsEqual<>(false)
+  )
 }
