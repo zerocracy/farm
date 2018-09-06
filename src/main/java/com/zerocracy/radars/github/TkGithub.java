@@ -21,6 +21,7 @@ import com.zerocracy.Farm;
 import com.zerocracy.Par;
 import com.zerocracy.entry.ExtDynamo;
 import com.zerocracy.entry.ExtGithub;
+import com.zerocracy.sentry.SafeSentry;
 import com.zerocracy.tk.RsParFlash;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -31,7 +32,7 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.stream.JsonParsingException;
-import org.cactoos.func.UncheckedProc;
+import org.cactoos.func.IoCheckedProc;
 import org.takes.HttpException;
 import org.takes.Request;
 import org.takes.Response;
@@ -197,9 +198,13 @@ public final class TkGithub implements Take, Runnable {
 
     @Override
     public void run() {
-        new UncheckedProc<>(
-            new AcceptInvitations(new ExtGithub(this.farm).value())
-        ).exec(true);
+        try {
+            new IoCheckedProc<>(
+                new AcceptInvitations(new ExtGithub(this.farm).value())
+            ).exec(true);
+        } catch (final IOException err) {
+            new SafeSentry(this.farm).capture(err);
+        }
     }
 
     /**
