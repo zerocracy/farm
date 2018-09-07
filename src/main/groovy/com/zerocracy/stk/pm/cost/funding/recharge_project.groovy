@@ -25,6 +25,7 @@ import com.zerocracy.claims.Footprint
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pmo.recharge.Recharge
+
 import java.time.Duration
 import java.time.Instant
 
@@ -44,7 +45,7 @@ def exec(Project project, XML xml) {
       Filters.and(
         Filters.gt(
           'created',
-          Date.from(Instant.now() - Duration.ofHours(1L))
+          Date.from(Instant.now() - Duration.ofMinutes(30L))
         ),
         Filters.eq('type', 'Project was recharged')
       )
@@ -57,8 +58,8 @@ def exec(Project project, XML xml) {
   Recharge recharge = new Recharge(farm, project)
   if (recharge.exists() && recharge.required()) {
     recharge.pay(claim.copy()).postTo(new ClaimsOf(farm, project))
+    claim.copy()
+      .type('Project was recharged')
+      .postTo(new ClaimsOf(farm, project))
   }
-  claim.copy()
-    .type('Project was recharged')
-    .postTo(new ClaimsOf(farm, project))
 }
