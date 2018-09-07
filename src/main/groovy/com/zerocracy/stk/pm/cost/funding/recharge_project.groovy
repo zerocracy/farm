@@ -46,7 +46,7 @@ def exec(Project project, XML xml) {
           'created',
           Date.from(Instant.now() - Duration.ofHours(1L))
         ),
-        Filters.eq('type', 'Recharge project')
+        Filters.eq('type', 'Project was recharged')
       )
     ) > 0L
   }
@@ -58,4 +58,7 @@ def exec(Project project, XML xml) {
   if (recharge.exists() && recharge.required()) {
     recharge.pay(claim.copy()).postTo(new ClaimsOf(farm, project))
   }
+  claim.copy()
+    .type('Project was recharged')
+    .postTo(new ClaimsOf(farm, project))
 }
