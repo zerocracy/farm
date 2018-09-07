@@ -15,41 +15,44 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<claims xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.54.2/xsd/pm/claims.xsd" version="0.1" updated="2017-03-27T11:18:09.228Z">
-  <claim id="5">
-    <created>2017-03-27T11:18:09.228Z</created>
-    <type>Close job</type>
-    <author>test</author>
-    <token>test;test</token>
-    <params>
-      <param name="job">gh:test/test#1</param>
-    </params>
-  </claim>
-  <claim id="7">
-    <created>2017-03-27T11:18:09.228Z</created>
-    <type>Close job</type>
-    <author>rultor</author>
-    <token>test;C123;rultor</token>
-    <params>
-      <param name="job">gh:test/test#2</param>
-    </params>
-  </claim>
-  <claim id="9">
-    <created>2017-03-27T11:18:09.228Z</created>
-    <type>Close job</type>
-    <author>architect</author>
-    <token>test;architect</token>
-    <params>
-      <param name="job">gh:test/test#3</param>
-    </params>
-  </claim>
-  <claim id="11">
-    <created>2017-03-27T11:18:09.228Z</created>
-    <type>Close job</type>
-    <author>owner</author>
-    <token>test;owner</token>
-    <params>
-      <param name="job">gh:test/test#4</param>
-    </params>
-  </claim>
+<claims xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        updated="2018-09-07T06:54:31Z"
+        version="0.62.5"
+        xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.62.5/xsd/pm/claims.xsd">
+   <claim id="5">
+      <created>2017-03-27T11:18:09.228Z</created>
+      <type>Close job</type>
+      <author>test</author>
+      <token>test;test</token>
+      <params>
+         <param name="job">gh:test/test#1</param>
+      </params>
+   </claim>
+   <claim id="7">
+      <created>2017-03-27T11:18:09.228Z</created>
+      <type>Close job</type>
+      <author>rultor</author>
+      <token>test;C123;rultor</token>
+      <params>
+         <param name="job">gh:test/test#2</param>
+      </params>
+   </claim>
+   <claim id="9">
+      <created>2017-03-27T11:18:09.228Z</created>
+      <type>Close job</type>
+      <author>architect</author>
+      <token>test;architect</token>
+      <params>
+         <param name="job">gh:test/test#3</param>
+      </params>
+   </claim>
+   <claim id="11">
+      <created>2017-03-27T11:18:09.228Z</created>
+      <type>Close job</type>
+      <author>owner</author>
+      <token>test;owner</token>
+      <params>
+         <param name="job">gh:test/test#4</param>
+      </params>
+   </claim>
 </claims>

@@ -15,41 +15,50 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<people xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.37/xsd/pmo/people.xsd" version="1" updated="2016-12-29T09:03:21.684Z">
-  <person id="lowrep">
-    <mentor>yegor256</mentor>
-    <rate>$39</rate>
-    <reputation>256</reputation>
-    <details>Some details</details>
-    <jobs>0</jobs>
-    <projects>1</projects>
-    <wallet bank="paypal">lowrep@paypal.com</wallet>
-    <links/>
-    <vacation>false</vacation>
-    <skills updated="2018-01-01T00:00:00.000Z"/>
-  </person>
-  <person id="vacation">
-    <mentor>0crat</mentor>
-    <rate>$39</rate>
-    <reputation>512</reputation>
-    <details>Some details</details>
-    <jobs>0</jobs>
-    <projects>1</projects>
-    <wallet bank="paypal">vacation@paypal.com</wallet>
-    <links/>
-    <vacation>true</vacation>
-    <skills updated="2018-01-01T00:00:00.000Z"/>
-  </person>
-  <person id="valid">
-    <mentor>0crat</mentor>
-    <rate>$39</rate>
-    <reputation>512</reputation>
-    <details>Some details</details>
-    <jobs>0</jobs>
-    <projects>1</projects>
-    <wallet bank="paypal">valid@paypal.com</wallet>
-    <links/>
-    <vacation>false</vacation>
-    <skills updated="2018-01-01T00:00:00.000Z"/>
-  </person>
+<people xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        updated="2018-09-07T06:54:41Z"
+        version="0.62.5"
+        xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.62.5/xsd/pmo/people.xsd">
+   <person id="lowrep">
+      <mentor>yegor256</mentor>
+      <rate>$39</rate>
+      <reputation>256</reputation>
+      <details>Some details</details>
+      <jobs>0</jobs>
+      <projects>1</projects>
+      <wallet bank="paypal">lowrep@paypal.com</wallet>
+      <links/>
+      <vacation>false</vacation>
+      <skills updated="2018-01-01T00:00:00.000Z"/>
+      <applied>2018-01-01T00:00:00.000Z</applied>
+      <speed>0.0</speed>
+   </person>
+   <person id="vacation">
+      <mentor>0crat</mentor>
+      <rate>$39</rate>
+      <reputation>512</reputation>
+      <details>Some details</details>
+      <jobs>0</jobs>
+      <projects>1</projects>
+      <wallet bank="paypal">vacation@paypal.com</wallet>
+      <links/>
+      <vacation>true</vacation>
+      <skills updated="2018-01-01T00:00:00.000Z"/>
+      <applied>2018-01-01T00:00:00.000Z</applied>
+      <speed>0.0</speed>
+   </person>
+   <person id="valid">
+      <mentor>0crat</mentor>
+      <rate>$39</rate>
+      <reputation>512</reputation>
+      <details>Some details</details>
+      <jobs>0</jobs>
+      <projects>1</projects>
+      <wallet bank="paypal">valid@paypal.com</wallet>
+      <links/>
+      <vacation>false</vacation>
+      <skills updated="2018-01-01T00:00:00.000Z"/>
+      <applied>2018-01-01T00:00:00.000Z</applied>
+      <speed>0.0</speed>
+   </person>
 </people>

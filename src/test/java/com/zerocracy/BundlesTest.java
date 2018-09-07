@@ -235,6 +235,12 @@ public final class BundlesTest {
                 String.format("%s_before", this.bundle),
                 farm
             ).process(project, null);
+
+            final ClaimsItem claims = new ClaimsItem(project);
+            while (claims.iterate().size() > 0) {
+                claims.take()
+            }
+
             MatcherAssert.assertThat(
                 new And(
                     x -> {

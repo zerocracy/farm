@@ -15,11 +15,14 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<equity xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.61.2/xsd/pm/cost/equity.xsd" version="0.1" updated="2017-03-27T11:18:09.228Z">
-  <cap>$400000</cap>
-  <shares>100000</shares>
-  <owners>
-    <owner id="amihaiemil">0</owner>
-    <owner id="krzyk">0</owner>
-  </owners>
+<equity xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        updated="2018-09-07T06:54:35Z"
+        version="0.62.5"
+        xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.62.5/xsd/pm/cost/equity.xsd">
+   <cap>$400000</cap>
+   <shares>100000</shares>
+   <owners>
+      <owner id="amihaiemil">0</owner>
+      <owner id="krzyk">0</owner>
+   </owners>
 </equity>

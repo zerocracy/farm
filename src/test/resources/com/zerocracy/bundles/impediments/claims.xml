@@ -15,27 +15,30 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<claims xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.27/xsd/pm/claims.xsd" version="0.1" updated="2017-03-27T11:18:09.228Z">
-  <claim id="1">
-    <type>Register impediment</type>
-    <author>yegor256</author>
-    <token>job;gh:test/test#1</token>
-    <params>
-      <param name="job">gh:test/test#1</param>
-    </params>
-    <created>2017-01-15T01:00:00.000Z</created>
-  </claim>
-  <claim id="2">
-    <type>Register impediment</type>
-    <author>yegor256</author>
-    <token>job;gh:test/test#2</token>
-    <params>
-      <param name="job">gh:test/test#2</param>
-    </params>
-    <created>2017-01-15T01:00:00.000Z</created>
-  </claim>
-  <claim id="3">
-    <type>Ping</type>
-    <created>2017-01-15T01:00:01.000Z</created>
-  </claim>
+<claims xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        updated="2018-09-07T06:54:37Z"
+        version="0.62.5"
+        xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.62.5/xsd/pm/claims.xsd">
+   <claim id="1">
+      <type>Register impediment</type>
+      <author>yegor256</author>
+      <token>job;gh:test/test#1</token>
+      <params>
+         <param name="job">gh:test/test#1</param>
+      </params>
+      <created>2017-01-15T01:00:00.000Z</created>
+   </claim>
+   <claim id="2">
+      <type>Register impediment</type>
+      <author>yegor256</author>
+      <token>job;gh:test/test#2</token>
+      <params>
+         <param name="job">gh:test/test#2</param>
+      </params>
+      <created>2017-01-15T01:00:00.000Z</created>
+   </claim>
+   <claim id="3">
+      <type>Ping</type>
+      <created>2017-01-15T01:00:01.000Z</created>
+   </claim>
 </claims>

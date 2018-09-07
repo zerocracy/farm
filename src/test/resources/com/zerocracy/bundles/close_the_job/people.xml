@@ -15,32 +15,89 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<people xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.54.2/xsd/pmo/people.xsd" version="1" updated="2016-12-29T09:03:21.684Z">
-  <person id="test">
-    <mentor>0crat</mentor>
-  </person>
-  <person id="rultor">
-    <mentor>0crat</mentor>
-  </person>
-  <person id="architect">
-    <mentor>0crat</mentor>
-  </person>
-  <person id="owner">
-    <mentor>0crat</mentor>
-  </person>
-  <person id="dev1">
-    <mentor>0crat</mentor>
-  </person>
-  <person id="dev2">
-    <mentor>0crat</mentor>
-  </person>
-  <person id="dev3">
-    <mentor>0crat</mentor>
-  </person>
-  <person id="dev4">
-    <mentor>0crat</mentor>
-  </person>
-  <person id="assigner">
-    <mentor>0crat</mentor>
-  </person>
+<people xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        updated="2018-09-07T06:54:31Z"
+        version="0.62.5"
+        xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.62.5/xsd/pmo/people.xsd">
+   <person id="test">
+      <mentor>0crat</mentor>
+      <reputation>0</reputation>
+      <projects>0</projects>
+      <jobs>0</jobs>
+      <skills updated="2018-02-22T18:35:15.684Z"/>
+      <applied>2018-01-01T00:00:00.000Z</applied>
+      <speed>0.0</speed>
+   </person>
+   <person id="rultor">
+      <mentor>0crat</mentor>
+      <reputation>0</reputation>
+      <projects>0</projects>
+      <jobs>0</jobs>
+      <skills updated="2018-02-22T18:35:15.684Z"/>
+      <applied>2018-01-01T00:00:00.000Z</applied>
+      <speed>0.0</speed>
+   </person>
+   <person id="architect">
+      <mentor>0crat</mentor>
+      <reputation>0</reputation>
+      <projects>0</projects>
+      <jobs>0</jobs>
+      <skills updated="2018-02-22T18:35:15.684Z"/>
+      <applied>2018-01-01T00:00:00.000Z</applied>
+      <speed>0.0</speed>
+   </person>
+   <person id="owner">
+      <mentor>0crat</mentor>
+      <reputation>0</reputation>
+      <projects>0</projects>
+      <jobs>0</jobs>
+      <skills updated="2018-02-22T18:35:15.684Z"/>
+      <applied>2018-01-01T00:00:00.000Z</applied>
+      <speed>0.0</speed>
+   </person>
+   <person id="dev1">
+      <mentor>0crat</mentor>
+      <reputation>0</reputation>
+      <projects>0</projects>
+      <jobs>0</jobs>
+      <skills updated="2018-02-22T18:35:15.684Z"/>
+      <applied>2018-01-01T00:00:00.000Z</applied>
+      <speed>0.0</speed>
+   </person>
+   <person id="dev2">
+      <mentor>0crat</mentor>
+      <reputation>0</reputation>
+      <projects>0</projects>
+      <jobs>0</jobs>
+      <skills updated="2018-02-22T18:35:15.684Z"/>
+      <applied>2018-01-01T00:00:00.000Z</applied>
+      <speed>0.0</speed>
+   </person>
+   <person id="dev3">
+      <mentor>0crat</mentor>
+      <reputation>0</reputation>
+      <projects>0</projects>
+      <jobs>0</jobs>
+      <skills updated="2018-02-22T18:35:15.684Z"/>
+      <applied>2018-01-01T00:00:00.000Z</applied>
+      <speed>0.0</speed>
+   </person>
+   <person id="dev4">
+      <mentor>0crat</mentor>
+      <reputation>0</reputation>
+      <projects>0</projects>
+      <jobs>0</jobs>
+      <skills updated="2018-02-22T18:35:15.684Z"/>
+      <applied>2018-01-01T00:00:00.000Z</applied>
+      <speed>0.0</speed>
+   </person>
+   <person id="assigner">
+      <mentor>0crat</mentor>
+      <reputation>0</reputation>
+      <projects>0</projects>
+      <jobs>0</jobs>
+      <skills updated="2018-02-22T18:35:15.684Z"/>
+      <applied>2018-01-01T00:00:00.000Z</applied>
+      <speed>0.0</speed>
+   </person>
 </people>

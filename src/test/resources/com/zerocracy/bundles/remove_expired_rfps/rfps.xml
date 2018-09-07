@@ -15,12 +15,15 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<rfps xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.60/xsd/pmo/rfps.xsd" updated="2017-07-21T20:31:44.512Z" version="1">
-  <rfp id="1">
-    <login>user111</login>
-    <paid>stripe:$1</paid>
-    <created>2017-03-16T13:05:40.111Z</created>
-    <email>user@user.com</email>
-    <sow>Fast C compiler</sow>
-  </rfp>
+<rfps xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      updated="2018-09-07T06:54:14Z"
+      version="0.62.5"
+      xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.62.5/xsd/pmo/rfps.xsd">
+   <rfp id="1">
+      <login>user111</login>
+      <paid>stripe:$1</paid>
+      <created>2017-03-16T13:05:40.111Z</created>
+      <email>user@user.com</email>
+      <sow>Fast C compiler</sow>
+   </rfp>
 </rfps>
