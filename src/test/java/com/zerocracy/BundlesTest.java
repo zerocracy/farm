@@ -17,19 +17,21 @@
 package com.zerocracy;
 
 import com.jcabi.aspects.Tv;
-import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.mongodb.client.model.Filters;
-import com.zerocracy.claims.ClaimIn;
 import com.zerocracy.claims.ClaimsItem;
 import com.zerocracy.claims.Footprint;
 import com.zerocracy.farm.SmartFarm;
+import com.zerocracy.farm.StkSafe;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
-import com.zerocracy.farm.reactive.RvAlive;
+import com.zerocracy.farm.reactive.Brigade;
 import com.zerocracy.farm.reactive.StkGroovy;
+import com.zerocracy.farm.reactive.StkRuntime;
 import com.zerocracy.pmo.Catalog;
+import com.zerocracy.pmo.Pmo;
+import groovy.lang.Script;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileVisitOption;
@@ -40,7 +42,6 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import org.cactoos.Func;
 import org.cactoos.io.InputOf;
@@ -49,15 +50,12 @@ import org.cactoos.io.LengthOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.io.TeeInput;
-import org.cactoos.iterable.Endless;
 import org.cactoos.iterable.Filtered;
-import org.cactoos.iterable.Limited;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.iterable.Sorted;
 import org.cactoos.list.ListOf;
 import org.cactoos.list.SolidList;
 import org.cactoos.scalar.And;
-import org.cactoos.text.JoinedText;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -70,6 +68,7 @@ import org.junit.runners.Parameterized;
 import org.reflections.Reflections;
 import org.reflections.Store;
 import org.reflections.scanners.ResourcesScanner;
+import org.reflections.scanners.SubTypesScanner;
 
 /**
  * Test case for all bundles.
@@ -175,29 +174,36 @@ public final class BundlesTest {
 
     @Test
     public void oneBundleWorksFine() throws Exception {
-        final XML setup = new XMLDocument(
-            new TextOf(
-                new InputWithFallback(
-                    new ResourceOf(
-                        String.format("%s/_setup.xml", this.bundle)
-                    ),
-                    new InputOf("<setup/>")
-                )
-            ).asString()
-        );
-        final String pmo = "PMO";
-        final String pid;
-        final List<String> projects;
-        if (setup.nodes("/setup/pmo").isEmpty()) {
-            pid = this.name.toUpperCase(Locale.ENGLISH)
-                .replaceAll("[^A-Z0-9]", "")
-                .substring(0, Tv.NINE);
-            projects = new ListOf<>(pid, pmo);
-        } else {
-            pid = pmo;
-            projects = new ListOf<>(pmo);
-        }
-        try (final Farm farm = this.farm()) {
+        try (final Farm farm = new SmartFarm(
+            new FkFarm(
+                (Func<String, Project>) pid -> new FkProject(
+                    this.home.resolve(pid), pid
+                ),
+                this.home.toString()
+            )
+        )) {
+            final XML setup = new XMLDocument(
+                new TextOf(
+                    new InputWithFallback(
+                        new ResourceOf(
+                            String.format("%s/_setup.xml", this.bundle)
+                        ),
+                        new InputOf("<setup/>")
+                    )
+                ).asString()
+            );
+            final String pmo = "PMO";
+            final String pid;
+            final List<String> projects;
+            if (setup.nodes("/setup/pmo").isEmpty()) {
+                pid = this.name.toUpperCase(Locale.ENGLISH)
+                    .replaceAll("[^A-Z0-9]", "")
+                    .substring(0, Tv.NINE);
+                projects = new ListOf<>(pid, pmo);
+            } else {
+                pid = pmo;
+                projects = new ListOf<>(pmo);
+            }
             final Project project = farm.find(
                 String.format("@id='%s'", pid)
             ).iterator().next();
@@ -235,41 +241,7 @@ public final class BundlesTest {
                 String.format("%s_before", this.bundle),
                 farm
             ).process(project, null);
-
-            final ClaimsItem claims = new ClaimsItem(project);
-            while (claims.iterate().size() > 0) {
-                claims.take()
-            }
-
-            MatcherAssert.assertThat(
-                new And(
-                    x -> {
-                        TimeUnit.SECONDS.sleep(1L);
-                        final ClaimsItem claims = new ClaimsItem(project)
-                            .bootstrap();
-                        Logger.info(
-                            this, "alive=%d, %d claims: %s",
-                            new RvAlive(farm).intValue(),
-                            claims.iterate().size(),
-                            new JoinedText(
-                                ", ",
-                                new Mapped<>(
-                                    xml -> String.format(
-                                        "%s/%d",
-                                        new ClaimIn(xml).type(),
-                                        new ClaimIn(xml).cid()
-                                    ),
-                                    claims.iterate()
-                                )
-                            ).asString()
-                        );
-                        return !claims.iterate().isEmpty()
-                            || new RvAlive(farm).intValue() > 0;
-                    },
-                    new Limited<>(Tv.THOUSAND, new Endless<>(1))
-                ).value(),
-                Matchers.equalTo(false)
-            );
+            BundlesTest.run(farm, project);
             new StkGroovy(
                 new ResourceOf(
                     String.format("%s/_after.groovy", this.bundle)
@@ -279,6 +251,7 @@ public final class BundlesTest {
             ).process(project, null);
             try (final Footprint footprint = new Footprint(farm, project)) {
                 MatcherAssert.assertThat(
+                    "Error in footprint",
                     footprint.collection().find(
                         Filters.and(
                             Filters.eq("project", project.pid()),
@@ -289,17 +262,6 @@ public final class BundlesTest {
                 );
             }
         }
-    }
-
-    private Farm farm() {
-        return new SmartFarm(
-            new FkFarm(
-                (Func<String, Project>) pid -> new FkProject(
-                    this.home.resolve(pid), pid
-                ),
-                this.home.toString()
-            )
-        ).value();
     }
 
     private static Iterable<String> resources(final String path,
@@ -321,5 +283,29 @@ public final class BundlesTest {
                 store.get(name).keySet()
             )
         );
+    }
+
+    private static void run(final Farm farm, final Project project)
+        throws IOException {
+        final Brigade brigade = new Brigade(
+            new Mapped<>(
+                cls -> new StkSafe(
+                    cls.getSimpleName(),
+                    farm,
+                    new StkRuntime(cls, farm)
+                ),
+                new Reflections(
+                    "com.zerocracy.stk",
+                    new SubTypesScanner(false)
+                ).getSubTypesOf(Script.class)
+            )
+        );
+        final Pmo pmo = new Pmo(farm);
+        final ClaimsItem cpkt = new ClaimsItem(project).bootstrap();
+        final ClaimsItem cpmo = new ClaimsItem(pmo).bootstrap();
+        while (!cpkt.iterate().isEmpty() || !cpmo.iterate().isEmpty()) {
+            cpkt.take(xml -> brigade.apply(project, xml));
+            cpmo.take(xml -> brigade.apply(pmo, xml));
+        }
     }
 }
