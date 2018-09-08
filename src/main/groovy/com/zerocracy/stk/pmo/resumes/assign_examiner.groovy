@@ -36,12 +36,6 @@ import org.cactoos.list.Shuffled
  * {@code resumes.xml} it should be assigned to examiner which can
  * invite user or deny the resume.
  *
- * @todo #1552:30min Allow examiner to reject resume by saying `deny @username`.
- *  In that case examiner should still get +32 points of reputation (and be
- *  notified about that). Implement deny @username stakeholder and create claim
- *  Deny resume which must accept parameters set in
- *  deny_resume_application\claims.xml. Then uncomment
- *  deny_resume_application\_after.groovy tests.
  */
 def exec(Project project, XML xml) {
   new Assume(project, xml).isPmo()
