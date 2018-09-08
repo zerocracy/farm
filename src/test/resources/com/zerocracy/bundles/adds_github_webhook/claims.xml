@@ -15,18 +15,15 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<claims xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        updated="2018-09-07T06:54:19Z"
-        version="0.62.5"
-        xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.62.5/xsd/pm/claims.xsd">
-   <claim id="3">
-      <created>2017-03-27T11:18:09.228Z</created>
-      <type>Project link was added</type>
-      <author>yegor256</author>
-      <token>test;C123;user42</token>
-      <params>
-         <param name="rel">github</param>
-         <param name="href">test/test</param>
-      </params>
-   </claim>
+<claims xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" updated="2018-09-07T06:54:19Z" version="0.62.5" xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.62.5/xsd/pm/claims.xsd">
+  <claim id="3">
+    <created>2017-03-27T11:18:09.228Z</created>
+    <type>Project link was added</type>
+    <author>yegor256</author>
+    <token>test;C123;user42</token>
+    <params>
+      <param name="rel">github</param>
+      <param name="href">test/test</param>
+    </params>
+  </claim>
 </claims>

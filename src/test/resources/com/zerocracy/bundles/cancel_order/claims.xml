@@ -15,39 +15,36 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<claims xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        updated="2018-09-07T06:54:31Z"
-        version="0.62.5"
-        xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.62.5/xsd/pm/claims.xsd">
-   <claim id="1">
-      <created>2017-07-21T20:32:19.716Z</created>
-      <type>Check job status</type>
-      <author>g4s8</author>
-      <token>github;test/test;1</token>
-      <params>
-         <param name="job">gh:test/test#1</param>
-         <param name="reason">Need it</param>
-      </params>
-   </claim>
-   <claim id="2">
-      <created>2017-07-21T20:32:19.716Z</created>
-      <type>Cancel order</type>
-      <author>g4s8</author>
-      <token>github;test/test;1</token>
-      <params>
-         <param name="job">gh:test/test#1</param>
-         <param name="login">g4s8</param>
-         <param name="reason">Test reason</param>
-      </params>
-   </claim>
-   <claim id="4">
-      <created>2017-03-27T11:18:09.228Z</created>
-      <type>Check job status</type>
-      <token>job;gh:test/test#1</token>
-      <author>yegor256</author>
-      <params>
-         <param name="job">gh:test/test#1</param>
-         <param name="reason">Need it again</param>
-      </params>
-   </claim>
+<claims xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" updated="2018-09-07T06:54:31Z" version="0.62.5" xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.62.5/xsd/pm/claims.xsd">
+  <claim id="1">
+    <created>2017-07-21T20:32:19.716Z</created>
+    <type>Check job status</type>
+    <author>g4s8</author>
+    <token>github;test/test;1</token>
+    <params>
+      <param name="job">gh:test/test#1</param>
+      <param name="reason">Need it</param>
+    </params>
+  </claim>
+  <claim id="2">
+    <created>2017-07-21T20:32:19.716Z</created>
+    <type>Cancel order</type>
+    <author>g4s8</author>
+    <token>github;test/test;1</token>
+    <params>
+      <param name="job">gh:test/test#1</param>
+      <param name="login">g4s8</param>
+      <param name="reason">Test reason</param>
+    </params>
+  </claim>
+  <claim id="4">
+    <created>2017-03-27T11:18:09.228Z</created>
+    <type>Check job status</type>
+    <token>job;gh:test/test#1</token>
+    <author>yegor256</author>
+    <params>
+      <param name="job">gh:test/test#1</param>
+      <param name="reason">Need it again</param>
+    </params>
+  </claim>
 </claims>

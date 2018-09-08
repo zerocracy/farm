@@ -15,41 +15,38 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<claims xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        updated="2018-09-07T06:53:27Z"
-        version="0.62.5"
-        xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.62.5/xsd/pm/claims.xsd">
-   <claim id="4">
-      <type>Notify all</type>
-      <token>test;C123;g4s8</token>
-      <author>g4s8</author>
-      <params>
-         <param name="min">1</param>
-         <param name="reason">RFP</param>
-         <param name="message">Test RFP was posted</param>
-      </params>
-      <created>2017-01-15T01:00:00.000Z</created>
-   </claim>
-   <claim id="5">
-      <type>Notify all</type>
-      <token>test;C123;g4s8</token>
-      <author>g4s8</author>
-      <params>
-         <param name="min">1</param>
-         <param name="reason">New student</param>
-         <param name="message">Test new student needs mentor</param>
-      </params>
-      <created>2017-01-15T01:00:00.000Z</created>
-   </claim>
-   <claim id="6">
-      <type>Notify all</type>
-      <token>test;C123;g4s8</token>
-      <author>g4s8</author>
-      <params>
-         <param name="min">1</param>
-         <param name="reason">Project published</param>
-         <param name="message">Test project was published</param>
-      </params>
-      <created>2017-01-15T01:00:00.000Z</created>
-   </claim>
+<claims xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" updated="2018-09-07T06:53:27Z" version="0.62.5" xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.62.5/xsd/pm/claims.xsd">
+  <claim id="4">
+    <type>Notify all</type>
+    <token>test;C123;g4s8</token>
+    <author>g4s8</author>
+    <params>
+      <param name="min">1</param>
+      <param name="reason">RFP</param>
+      <param name="message">Test RFP was posted</param>
+    </params>
+    <created>2017-01-15T01:00:00.000Z</created>
+  </claim>
+  <claim id="5">
+    <type>Notify all</type>
+    <token>test;C123;g4s8</token>
+    <author>g4s8</author>
+    <params>
+      <param name="min">1</param>
+      <param name="reason">New student</param>
+      <param name="message">Test new student needs mentor</param>
+    </params>
+    <created>2017-01-15T01:00:00.000Z</created>
+  </claim>
+  <claim id="6">
+    <type>Notify all</type>
+    <token>test;C123;g4s8</token>
+    <author>g4s8</author>
+    <params>
+      <param name="min">1</param>
+      <param name="reason">Project published</param>
+      <param name="message">Test project was published</param>
+    </params>
+    <created>2017-01-15T01:00:00.000Z</created>
+  </claim>
 </claims>

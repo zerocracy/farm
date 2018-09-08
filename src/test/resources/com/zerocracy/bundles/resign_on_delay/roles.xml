@@ -15,14 +15,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<roles xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       updated="2018-09-07T06:54:20Z"
-       version="0.62.5"
-       xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.62.5/xsd/pm/staff/roles.xsd">
-   <person id="lazydev">
-      <role>DEV</role>
-   </person>
-   <person id="lazyrev">
-      <role>REV</role>
-   </person>
+<roles xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" updated="2018-09-07T06:54:20Z" version="0.62.5" xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.62.5/xsd/pm/staff/roles.xsd">
+  <person id="lazydev">
+    <role>DEV</role>
+  </person>
+  <person id="lazyrev">
+    <role>REV</role>
+  </person>
 </roles>

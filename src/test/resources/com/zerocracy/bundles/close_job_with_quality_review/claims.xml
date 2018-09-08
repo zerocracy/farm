@@ -15,68 +15,65 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<claims xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        updated="2018-09-07T06:54:30Z"
-        version="0.62.5"
-        xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.62.5/xsd/pm/claims.xsd">
-   <claim id="2147483640">
-      <created>2017-03-27T11:18:09.228Z</created>
-      <type>Start order</type>
-      <author>manager</author>
-      <token>job;gh:test/test#1</token>
-      <params>
-         <param name="job">gh:test/test#1</param>
-         <param name="login">coder</param>
-         <param name="reason">Just for fun</param>
-      </params>
-   </claim>
-   <claim id="2147483641">
-      <created>2017-03-30T11:18:09.228Z</created>
-      <type>Close job</type>
-      <author>manager</author>
-      <token>job;gh:test/test#1</token>
-      <params>
-         <param name="job">gh:test/test#1</param>
-      </params>
-   </claim>
-   <claim id="2147483642">
-      <created>2017-03-27T11:18:09.228Z</created>
-      <type>Complete QA review</type>
-      <author>qa-guy</author>
-      <token>job;gh:test/test#1</token>
-      <params>
-         <param name="job">gh:test/test#1</param>
-         <param name="quality">good</param>
-      </params>
-   </claim>
-   <claim id="2147483650">
-      <created>2017-03-27T11:18:09.228Z</created>
-      <type>Start order</type>
-      <author>manager</author>
-      <token>job;gh:test/test#2</token>
-      <params>
-         <param name="job">gh:test/test#2</param>
-         <param name="login">reviewer</param>
-         <param name="reason">Just for fun</param>
-      </params>
-   </claim>
-   <claim id="2147483651">
-      <created>2017-04-01T11:18:09.228Z</created>
-      <type>Close job</type>
-      <author>manager</author>
-      <token>job;gh:test/test#2</token>
-      <params>
-         <param name="job">gh:test/test#2</param>
-      </params>
-   </claim>
-   <claim id="2147483652">
-      <created>2017-04-02T11:18:09.228Z</created>
-      <type>Complete QA review</type>
-      <author>qa-guy</author>
-      <token>job;gh:test/test#2</token>
-      <params>
-         <param name="job">gh:test/test#2</param>
-         <param name="quality">good</param>
-      </params>
-   </claim>
+<claims xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" updated="2018-09-07T06:54:30Z" version="0.62.5" xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.62.5/xsd/pm/claims.xsd">
+  <claim id="2147483640">
+    <created>2017-03-27T11:18:09.228Z</created>
+    <type>Start order</type>
+    <author>manager</author>
+    <token>job;gh:test/test#1</token>
+    <params>
+      <param name="job">gh:test/test#1</param>
+      <param name="login">coder</param>
+      <param name="reason">Just for fun</param>
+    </params>
+  </claim>
+  <claim id="2147483641">
+    <created>2017-03-30T11:18:09.228Z</created>
+    <type>Close job</type>
+    <author>manager</author>
+    <token>job;gh:test/test#1</token>
+    <params>
+      <param name="job">gh:test/test#1</param>
+    </params>
+  </claim>
+  <claim id="2147483642">
+    <created>2017-03-27T11:18:09.228Z</created>
+    <type>Complete QA review</type>
+    <author>qa-guy</author>
+    <token>job;gh:test/test#1</token>
+    <params>
+      <param name="job">gh:test/test#1</param>
+      <param name="quality">good</param>
+    </params>
+  </claim>
+  <claim id="2147483650">
+    <created>2017-03-27T11:18:09.228Z</created>
+    <type>Start order</type>
+    <author>manager</author>
+    <token>job;gh:test/test#2</token>
+    <params>
+      <param name="job">gh:test/test#2</param>
+      <param name="login">reviewer</param>
+      <param name="reason">Just for fun</param>
+    </params>
+  </claim>
+  <claim id="2147483651">
+    <created>2017-04-01T11:18:09.228Z</created>
+    <type>Close job</type>
+    <author>manager</author>
+    <token>job;gh:test/test#2</token>
+    <params>
+      <param name="job">gh:test/test#2</param>
+    </params>
+  </claim>
+  <claim id="2147483652">
+    <created>2017-04-02T11:18:09.228Z</created>
+    <type>Complete QA review</type>
+    <author>qa-guy</author>
+    <token>job;gh:test/test#2</token>
+    <params>
+      <param name="job">gh:test/test#2</param>
+      <param name="quality">good</param>
+    </params>
+  </claim>
 </claims>

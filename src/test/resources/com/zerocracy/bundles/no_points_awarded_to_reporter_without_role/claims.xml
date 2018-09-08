@@ -15,17 +15,14 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<claims xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        updated="2018-09-07T06:52:48Z"
-        version="0.62.5"
-        xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.62.5/xsd/pm/claims.xsd">
-   <claim id="2">
-      <type>Add job to WBS</type>
-      <created>2016-12-29T09:03:21.684Z</created>
-      <author>jeff</author>
-      <token>github;yegor256/test;1</token>
-      <params>
-         <param name="job">gh:yegor256/test#1</param>
-      </params>
-   </claim>
+<claims xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" updated="2018-09-07T06:52:48Z" version="0.62.5" xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.62.5/xsd/pm/claims.xsd">
+  <claim id="2">
+    <type>Add job to WBS</type>
+    <created>2016-12-29T09:03:21.684Z</created>
+    <author>jeff</author>
+    <token>github;yegor256/test;1</token>
+    <params>
+      <param name="job">gh:yegor256/test#1</param>
+    </params>
+  </claim>
 </claims>

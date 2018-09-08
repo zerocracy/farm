@@ -15,27 +15,24 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<claims xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        updated="2018-09-07T06:54:47Z"
-        version="0.62.5"
-        xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.62.5/xsd/pm/claims.xsd">
-   <claim id="3">
-      <created>2017-03-27T11:18:09.228Z</created>
-      <type>Start QA review</type>
-      <author>0crat</author>
-      <token>test;C123;user42</token>
-      <params>
-         <param name="login">test</param>
-         <param name="cash">$1</param>
-         <param name="job">gh:test/test#1</param>
-         <param name="bonus">$1</param>
-         <param name="minutes">15</param>
-      </params>
-   </claim>
-   <claim id="4">
-      <created>2017-03-27T11:18:09.228Z</created>
-      <type>Ping hourly</type>
-      <author>0crat</author>
-      <token>test;C123;user42</token>
-   </claim>
+<claims xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" updated="2018-09-07T06:54:47Z" version="0.62.5" xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.62.5/xsd/pm/claims.xsd">
+  <claim id="3">
+    <created>2017-03-27T11:18:09.228Z</created>
+    <type>Start QA review</type>
+    <author>0crat</author>
+    <token>test;C123;user42</token>
+    <params>
+      <param name="login">test</param>
+      <param name="cash">$1</param>
+      <param name="job">gh:test/test#1</param>
+      <param name="bonus">$1</param>
+      <param name="minutes">15</param>
+    </params>
+  </claim>
+  <claim id="4">
+    <created>2017-03-27T11:18:09.228Z</created>
+    <type>Ping hourly</type>
+    <author>0crat</author>
+    <token>test;C123;user42</token>
+  </claim>
 </claims>

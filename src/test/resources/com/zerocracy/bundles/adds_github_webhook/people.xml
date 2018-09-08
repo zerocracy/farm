@@ -15,17 +15,14 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<people xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        updated="2018-09-07T06:54:19Z"
-        version="0.62.5"
-        xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.62.5/xsd/pmo/people.xsd">
-   <person id="yegor256">
-      <mentor>0crat</mentor>
-      <reputation>0</reputation>
-      <projects>0</projects>
-      <jobs>0</jobs>
-      <skills updated="2018-02-22T18:35:15.684Z"/>
-      <applied>2018-01-01T00:00:00.000Z</applied>
-      <speed>0.0</speed>
-   </person>
+<people xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" updated="2018-09-07T06:54:19Z" version="0.62.5" xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.62.5/xsd/pmo/people.xsd">
+  <person id="yegor256">
+    <mentor>0crat</mentor>
+    <reputation>0</reputation>
+    <projects>0</projects>
+    <jobs>0</jobs>
+    <skills updated="2018-02-22T18:35:15.684Z"/>
+    <applied>2018-01-01T00:00:00.000Z</applied>
+    <speed>0.0</speed>
+  </person>
 </people>

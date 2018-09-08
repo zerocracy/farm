@@ -15,87 +15,84 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<claims xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        updated="2018-09-07T06:54:44Z"
-        version="0.62.5"
-        xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.62.5/xsd/pm/claims.xsd">
-   <claim id="1">
-      <created>2018-03-27T11:17:09.228Z</created>
-      <type>Add job to WBS</type>
-      <author>manager</author>
-      <token>job;gh:test/test#1</token>
-      <params>
-         <param name="job">gh:test/test#1</param>
-      </params>
-   </claim>
-   <claim id="2">
-      <created>2018-03-27T11:18:09.228Z</created>
-      <type>Start order</type>
-      <author>manager</author>
-      <token>job;gh:test/test#1</token>
-      <params>
-         <param name="job">gh:test/test#1</param>
-         <param name="login">fast-developer</param>
-         <param name="reason">Just for fun</param>
-      </params>
-   </claim>
-   <claim id="3">
-      <created>2018-03-29T11:18:09.228Z</created>
-      <type>Close job</type>
-      <author>manager</author>
-      <token>job;gh:test/test#1</token>
-      <params>
-         <param name="job">gh:test/test#1</param>
-      </params>
-   </claim>
-   <claim id="2147483646">
-      <created>2018-03-29T22:28:09.228Z</created>
-      <type>Complete QA review</type>
-      <author>qa-guy</author>
-      <token>job;gh:test/test#1</token>
-      <params>
-         <param name="job">gh:test/test#1</param>
-         <param name="quality">acceptable</param>
-      </params>
-   </claim>
-   <claim id="5">
-      <created>2018-03-27T11:17:09.228Z</created>
-      <type>Add job to WBS</type>
-      <author>manager</author>
-      <token>job;gh:test/test#2</token>
-      <params>
-         <param name="job">gh:test/test#2</param>
-      </params>
-   </claim>
-   <claim id="6">
-      <created>2018-03-27T11:18:09.228Z</created>
-      <type>Start order</type>
-      <author>manager</author>
-      <token>job;gh:test/test#2</token>
-      <params>
-         <param name="job">gh:test/test#2</param>
-         <param name="login">slow-developer</param>
-         <param name="reason">Just for fun</param>
-      </params>
-   </claim>
-   <claim id="7">
-      <created>2018-03-29T11:19:09.228Z</created>
-      <type>Close job</type>
-      <author>manager</author>
-      <token>job;gh:test/test#2</token>
-      <params>
-         <param name="job">gh:test/test#2</param>
-         <param name="closed">2018-03-29T11:19:09.228Z</param>
-      </params>
-   </claim>
-   <claim id="2147483645">
-      <created>2018-03-29T22:18:09.228Z</created>
-      <type>Complete QA review</type>
-      <author>qa-guy</author>
-      <token>job;gh:test/test#2</token>
-      <params>
-         <param name="job">gh:test/test#2</param>
-         <param name="quality">acceptable</param>
-      </params>
-   </claim>
+<claims xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" updated="2018-09-07T06:54:44Z" version="0.62.5" xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.62.5/xsd/pm/claims.xsd">
+  <claim id="1">
+    <created>2018-03-27T11:17:09.228Z</created>
+    <type>Add job to WBS</type>
+    <author>manager</author>
+    <token>job;gh:test/test#1</token>
+    <params>
+      <param name="job">gh:test/test#1</param>
+    </params>
+  </claim>
+  <claim id="2">
+    <created>2018-03-27T11:18:09.228Z</created>
+    <type>Start order</type>
+    <author>manager</author>
+    <token>job;gh:test/test#1</token>
+    <params>
+      <param name="job">gh:test/test#1</param>
+      <param name="login">fast-developer</param>
+      <param name="reason">Just for fun</param>
+    </params>
+  </claim>
+  <claim id="3">
+    <created>2018-03-29T11:18:09.228Z</created>
+    <type>Close job</type>
+    <author>manager</author>
+    <token>job;gh:test/test#1</token>
+    <params>
+      <param name="job">gh:test/test#1</param>
+    </params>
+  </claim>
+  <claim id="2147483646">
+    <created>2018-03-29T22:28:09.228Z</created>
+    <type>Complete QA review</type>
+    <author>qa-guy</author>
+    <token>job;gh:test/test#1</token>
+    <params>
+      <param name="job">gh:test/test#1</param>
+      <param name="quality">acceptable</param>
+    </params>
+  </claim>
+  <claim id="5">
+    <created>2018-03-27T11:17:09.228Z</created>
+    <type>Add job to WBS</type>
+    <author>manager</author>
+    <token>job;gh:test/test#2</token>
+    <params>
+      <param name="job">gh:test/test#2</param>
+    </params>
+  </claim>
+  <claim id="6">
+    <created>2018-03-27T11:18:09.228Z</created>
+    <type>Start order</type>
+    <author>manager</author>
+    <token>job;gh:test/test#2</token>
+    <params>
+      <param name="job">gh:test/test#2</param>
+      <param name="login">slow-developer</param>
+      <param name="reason">Just for fun</param>
+    </params>
+  </claim>
+  <claim id="7">
+    <created>2018-03-29T11:19:09.228Z</created>
+    <type>Close job</type>
+    <author>manager</author>
+    <token>job;gh:test/test#2</token>
+    <params>
+      <param name="job">gh:test/test#2</param>
+      <param name="closed">2018-03-29T11:19:09.228Z</param>
+    </params>
+  </claim>
+  <claim id="2147483645">
+    <created>2018-03-29T22:18:09.228Z</created>
+    <type>Complete QA review</type>
+    <author>qa-guy</author>
+    <token>job;gh:test/test#2</token>
+    <params>
+      <param name="job">gh:test/test#2</param>
+      <param name="quality">acceptable</param>
+    </params>
+  </claim>
 </claims>

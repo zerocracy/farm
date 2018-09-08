@@ -15,32 +15,29 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<roles xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       updated="2018-09-07T06:54:31Z"
-       version="0.62.5"
-       xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.62.5/xsd/pm/staff/roles.xsd">
-   <person id="test">
-      <role>DEV</role>
-   </person>
-   <person id="architect">
-      <role>ARC</role>
-   </person>
-   <person id="owner">
-      <role>PO</role>
-   </person>
-   <person id="dev1">
-      <role>DEV</role>
-   </person>
-   <person id="dev2">
-      <role>DEV</role>
-   </person>
-   <person id="dev3">
-      <role>DEV</role>
-   </person>
-   <person id="dev4">
-      <role>DEV</role>
-   </person>
-   <person id="assigner">
-      <role>ARC</role>
-   </person>
+<roles xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" updated="2018-09-07T06:54:31Z" version="0.62.5" xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.62.5/xsd/pm/staff/roles.xsd">
+  <person id="test">
+    <role>DEV</role>
+  </person>
+  <person id="architect">
+    <role>ARC</role>
+  </person>
+  <person id="owner">
+    <role>PO</role>
+  </person>
+  <person id="dev1">
+    <role>DEV</role>
+  </person>
+  <person id="dev2">
+    <role>DEV</role>
+  </person>
+  <person id="dev3">
+    <role>DEV</role>
+  </person>
+  <person id="dev4">
+    <role>DEV</role>
+  </person>
+  <person id="assigner">
+    <role>ARC</role>
+  </person>
 </roles>
