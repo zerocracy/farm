@@ -17,7 +17,6 @@
 package com.zerocracy.bundles.resigns_stale_users_from_project
 
 import com.jcabi.xml.XML
-import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.pm.staff.Roles
 import org.hamcrest.MatcherAssert
@@ -27,22 +26,21 @@ import org.hamcrest.core.IsEqual
 import org.hamcrest.core.IsNot
 
 def exec(Project project, XML xml) {
-  Farm farm = binding.variables.farm
   Roles roles = new Roles(project).bootstrap()
   MatcherAssert.assertThat(
-      'g4s8 is resigned from project',
+      'g4s8 is not found but not resigned from project',
       roles.allRoles('g4s8'),
       new IsEmptyCollection<>()
   )
   MatcherAssert.assertThat(
-      'yegor256 is still PO',
+      'yegor256 was removed, even with role PO',
       roles.allRoles('yegor256'),
       new IsCollectionContaining<>(
           new IsEqual('PO')
       )
   )
   MatcherAssert.assertThat(
-      'carlosmiranda is still DEV',
+      'carlosmiranda is active and supposed to remain DEV',
       roles.allRoles('carlosmiranda'),
       new IsNot<>(
           new IsCollectionContaining<>(
