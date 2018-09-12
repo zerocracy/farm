@@ -14,18 +14,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.small_pr_skip_wbs
+package com.zerocracy.stk.pm.staff
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
+import com.zerocracy.Par
 import com.zerocracy.Project
-import com.zerocracy.pm.scope.Wbs
-import org.hamcrest.MatcherAssert
-import org.hamcrest.core.IsEqual
+import com.zerocracy.claims.ClaimIn
+import com.zerocracy.entry.ClaimsOf
+import com.zerocracy.farm.Assume
+import com.zerocracy.pm.staff.Roles
+import com.zerocracy.pmo.People
 
 def exec(Project project, XML xml) {
-  MatcherAssert.assertThat(
-    'Small PR (less than 10 lines) added to WBS',
-    new Wbs(project).bootstrap().exists('gh:test/test#1'),
-    new IsEqual<>(false)
-  )
+  new Assume(project, xml).notPmo()
+  new Assume(project, xml).type('Ping hourly')
+  Farm farm = binding.variables.farm
+  ClaimIn claim = new ClaimIn(xml)
+  People people = new People(farm).bootstrap()
+  Roles roles = new Roles(project).bootstrap()
+  roles.everybody().each { uid ->
+    if (people.exists(uid) || roles.hasRole(uid, 'PO')) {
+      return
+    }
+    claim.copy()
+      .type('Resign all roles')
+      .param('login', uid)
+      .param(
+        'reason',
+        new Par('@%s is no longer part of Zerocracy').say(uid)
+      ).postTo(new ClaimsOf(farm, project))
+  }
 }
