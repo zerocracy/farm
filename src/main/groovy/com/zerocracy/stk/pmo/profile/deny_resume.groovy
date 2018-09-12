@@ -47,6 +47,7 @@ def exec(Project pmo, XML xml) {
     new ExtGithub(farm).value().users().get(login)
   )
   if (!user.exists()) {
+    resumes.remove(login)
     throw new SoftException(
       new Par(
         'We can\'t find @%s in Github: https://github.com/%1$s: %s'
@@ -54,6 +55,7 @@ def exec(Project pmo, XML xml) {
     )
   }
   if (user.type() != 'User') {
+    resumes.remove(login)
     throw new SoftException(
       new Par(
         'The GitHub user @%s is not a regular user, but "%s"'
