@@ -45,6 +45,20 @@ SOFTWARE.
     </opts>
   </cmd>
   <cmd>
+    <code>Deny resume</code>
+    <regex>deny</regex>
+    <label>deny</label>
+    <help>Deny resume</help>
+    <invited>true</invited>
+    <opts>
+      <opt>
+        <name>login</name>
+        <regex>@?[A-Za-z0-9-]+</regex>
+        <help>GitHub login of applicant</help>
+      </opt>
+    </opts>
+  </cmd>
+  <cmd>
     <code>Breakup</code>
     <regex>breakup</regex>
     <label>breakup</label>
