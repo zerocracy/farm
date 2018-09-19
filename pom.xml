@@ -985,6 +985,34 @@ SOFTWARE.
       </build>
     </profile>
     <profile>
+      <id>test-mongo</id>
+      <activation>
+        <property>
+          <name>test.mongo.user</name>
+        </property>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-surefire-plugin</artifactId>
+              <configuration combine.children="append">
+                <argLine>${argLine} -Dtest.mongo.host=${test.mongo.host} -Dtest.mongo.port=${test.mongo.port} -Dtest.mongo.user=${test.mongo.user} -Dtest.mongo.password=${test.mongo.password} -Dtest.mongo.dbname=${test.mongo.dbname}</argLine>
+              </configuration>
+            </plugin>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-failsafe-plugin</artifactId>
+              <configuration combine.children="append">
+                <argLine>${argLine} -Dtest.mongo.host=${test.mongo.host} -Dtest.mongo.port=${test.mongo.port} -Dtest.mongo.user=${test.mongo.user} -Dtest.mongo.password=${test.mongo.password} -Dtest.mongo.dbname=${test.mongo.dbname}</argLine>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+    <profile>
       <id>test-proxy</id>
       <activation>
         <property>
