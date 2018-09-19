@@ -127,7 +127,7 @@ public final class Main {
             final Farm farm = new ShutdownFarm(
                 new SmartFarm(
                     new S3Farm(new ExtBucket().value(), temp)
-                ).value(),
+                ),
                 shutdown
             );
             final SlackRadar radar = new SlackRadar(farm);

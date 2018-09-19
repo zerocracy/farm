@@ -28,14 +28,18 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Job was declined')
   ClaimIn claim = new ClaimIn(xml)
+  String message
   Farm farm = binding.variables.farm
+  if (claim.hasAuthor()) {
+    message = new Par(
+      farm,
+      'This job is not in scope, closed by @%s'
+    ).say(claim.author())
+  } else {
+    message = 'This job is not in scope'
+  }
   claim.copy()
     .type('Notify job')
-    .param(
-      'message',
-      new Par(
-        farm,
-        'This job is not in scope, closed by @%s'
-      ).say(claim.author())
-    ).postTo(new ClaimsOf(farm, project))
+    .param('message', message)
+    .postTo(new ClaimsOf(farm, project))
 }

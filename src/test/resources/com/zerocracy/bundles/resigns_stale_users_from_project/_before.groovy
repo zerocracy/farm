@@ -14,35 +14,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.farm.reactive;
+package com.zerocracy.bundles.resigns_stale_users_from_project
 
-import com.zerocracy.Farm;
-import com.zerocracy.farm.guts.Guts;
-import org.cactoos.scalar.NumberEnvelope;
-import org.cactoos.scalar.NumberOf;
+import com.jcabi.xml.XML
+import com.zerocracy.Project
 
-/**
- * Reactive farm is still alive?
- *
- * @since 1.0
- */
-public final class RvAlive extends NumberEnvelope {
-
-    /**
-     * Serialization marker.
-     */
-    private static final long serialVersionUID = 8977134566634953102L;
-
-    /**
-     * Ctor.
-     * @param farm Original farm
-     */
-    public RvAlive(final Farm farm) {
-        super(() -> new NumberOf(
-            new Guts(farm).value().xpath(
-                "sum(/guts/farm[@id='RvFarm']/alive/count/text())"
-            ).get(0)
-        ).doubleValue());
-    }
-
+def exec(Project project, XML xml) {
+  // Nothing to do.
 }
