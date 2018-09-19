@@ -17,18 +17,8 @@
 package com.zerocracy.stk.pm.staff
 
 import com.jcabi.xml.XML
-import com.zerocracy.Farm
-import com.zerocracy.Par
 import com.zerocracy.Project
-import com.zerocracy.claims.ClaimIn
 import com.zerocracy.farm.Assume
-import com.zerocracy.pm.in.Orders
-import com.zerocracy.pm.scope.Wbs
-import com.zerocracy.pm.staff.Roles
-import com.zerocracy.pmo.Hint
-import com.zerocracy.pmo.People
-
-import java.util.concurrent.TimeUnit
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
@@ -36,11 +26,11 @@ def exec(Project project, XML xml) {
   // @todo #1396:30min This stakeholder was disabled, because `Elections` class
   //  was removed. Let's find another way to check the lack of staff to
   //  notify a project about it.
-  ClaimIn claim = new ClaimIn(xml)
-  Wbs wbs = new Wbs(project).bootstrap()
-  Orders orders = new Orders(project).bootstrap()
+//  ClaimIn claim = new ClaimIn(xml)
+//  Wbs wbs = new Wbs(project).bootstrap()
+//  Orders orders = new Orders(project).bootstrap()
 //  Elections elections = new Elections(project).bootstrap()
-  List<String> pending = []
+//  List<String> pending = []
 //  elections.jobs().each { job ->
 //    Date created = wbs.created(job)
 //    if (created.time > System.currentTimeMillis() - TimeUnit.DAYS.toMillis(2L)) {
@@ -54,29 +44,29 @@ def exec(Project project, XML xml) {
 //    }
 //    pending.add(job)
 //  }
-  if (pending.empty) {
-    return
-  }
-  Roles roles = new Roles(project).bootstrap()
-  Farm farm = binding.variables.farm
-  People people = new People(farm).bootstrap()
-  int vacation = roles.everybody().count { uid -> people.vacation(uid) }
-  new Hint(
-    farm,
-    (int) TimeUnit.DAYS.toSeconds(5L),
-    claim.copy()
-      .type('Notify project')
-      .token("project;${project.pid()}")
-      .param('mnemo', 'Deficit of people')
-      .param(
-      'message',
-      new Par(
-        'There are %d jobs, which are not assigned to anyone: %s;',
-        'most likely there is a deficit of people in the project;',
-        'there are [%d people](/a/%s?a=pm/staff/roles) in the project now',
-        '(%d are on vacation);',
-        'consider announcing your project as explained in §51'
-      ).say(pending.size(), pending.join(', '), roles.everybody().size(), project.pid(), vacation)
-    )
-  ).postTo(project)
+//  if (pending.empty) {
+//    return
+//  }
+//  Roles roles = new Roles(project).bootstrap()
+//  Farm farm = binding.variables.farm
+//  People people = new People(farm).bootstrap()
+//  int vacation = roles.everybody().count { uid -> people.vacation(uid) }
+//  new Hint(
+//    farm,
+//    (int) TimeUnit.DAYS.toSeconds(5L),
+//    claim.copy()
+//      .type('Notify project')
+//      .token("project;${project.pid()}")
+//      .param('mnemo', 'Deficit of people')
+//      .param(
+//      'message',
+//      new Par(
+//        'There are %d jobs, which are not assigned to anyone: %s;',
+//        'most likely there is a deficit of people in the project;',
+//        'there are [%d people](/a/%s?a=pm/staff/roles) in the project now',
+//        '(%d are on vacation);',
+//        'consider announcing your project as explained in §51'
+//      ).say(pending.size(), pending.join(', '), roles.everybody().size(), project.pid(), vacation)
+//    )
+//  ).postTo(project)
 }
