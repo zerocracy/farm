@@ -21,9 +21,8 @@ import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.claims.ClaimOut;
 import com.zerocracy.entry.ClaimsOf;
-import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.footprint.FtFarm;
-import com.zerocracy.farm.props.PropsFarm;
+import com.zerocracy.tk.TestWithUser;
 import com.zerocracy.tk.View;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
@@ -34,11 +33,12 @@ import org.junit.Test;
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-public final class TkReportTest {
+@SuppressWarnings("PMD.TestClassWithoutTestCases")
+public final class TkReportTest extends TestWithUser {
 
     @Test
     public void rendersReport() throws Exception {
-        final Farm farm = new FtFarm(new PropsFarm(new FkFarm()));
+        final Farm farm = new FtFarm(this.farm);
         final String uid = "yegor256";
         final Project project = farm.find("@id='C00000000'").iterator().next();
         new ClaimOut()

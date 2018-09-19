@@ -17,14 +17,12 @@
 package com.zerocracy.tk.profile;
 
 import com.jcabi.matchers.XhtmlMatchers;
-import com.zerocracy.Farm;
 import com.zerocracy.Project;
-import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
-import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pmo.Agenda;
 import com.zerocracy.pmo.People;
 import com.zerocracy.tk.RqWithUser;
+import com.zerocracy.tk.TestWithUser;
 import com.zerocracy.tk.TkApp;
 import com.zerocracy.tk.View;
 import java.net.HttpURLConnection;
@@ -40,15 +38,16 @@ import org.takes.rs.RsPrint;
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public final class TkAgendaTest {
+@SuppressWarnings(
+    { "PMD.AvoidDuplicateLiterals", "PMD.TestClassWithoutTestCases" }
+)
+public final class TkAgendaTest extends TestWithUser {
 
     @Test
     public void rendersXmlAgendaPage() throws Exception {
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
-                new View(new PropsFarm(new FkFarm()), "/u/yegor256/agenda")
-                    .xml()
+                new View(this.farm, "/u/yegor256/agenda").xml()
             ),
             XhtmlMatchers.hasXPaths("/page")
         );
@@ -59,9 +58,7 @@ public final class TkAgendaTest {
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
                 XhtmlMatchers.xhtml(
-                    new View(
-                        new PropsFarm(new FkFarm()), "/u/yegor256/agenda"
-                    ).html()
+                    new View(this.farm, "/u/yegor256/agenda").html()
                 )
             ),
             XhtmlMatchers.hasXPaths("//xhtml:body")
@@ -71,13 +68,12 @@ public final class TkAgendaTest {
     @Test
     public void redirectsWhenAccessingNonexistentUsersAgenda()
         throws Exception {
-        final Farm farm = new PropsFarm(new FkFarm());
-        new People(farm).bootstrap().touch("yegor256");
+        new People(this.farm).bootstrap().touch("yegor256");
         MatcherAssert.assertThat(
             new RsPrint(
-                new TkApp(farm).act(
+                new TkApp(this.farm).act(
                     new RqWithUser(
-                        farm,
+                        this.farm,
                         new RqFake("GET", "/u/foo-user/agenda")
                     )
                 )
@@ -88,8 +84,7 @@ public final class TkAgendaTest {
 
     @Test
     public void rendersAgendaPage() throws Exception {
-        final Farm farm = new PropsFarm(new FkFarm());
-        final Agenda agenda = new Agenda(farm, "yegor256").bootstrap();
+        final Agenda agenda = new Agenda(this.farm, "yegor256").bootstrap();
         final Project project = new FkProject();
         final String job = "gh:test/test#2";
         agenda.add(project, job, "DEV");
@@ -97,7 +92,7 @@ public final class TkAgendaTest {
         agenda.title(job, title);
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
-                new View(farm, "/u/yegor256/agenda").html()
+                new View(this.farm, "/u/yegor256/agenda").html()
             ),
             XhtmlMatchers.hasXPaths(
                 String.format("//xhtml:td[.='%s']", title)

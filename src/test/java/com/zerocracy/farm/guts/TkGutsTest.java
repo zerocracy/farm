@@ -19,10 +19,10 @@ package com.zerocracy.farm.guts;
 import com.jcabi.matchers.XhtmlMatchers;
 import com.zerocracy.Farm;
 import com.zerocracy.farm.SmartFarm;
-import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.pmo.Pmo;
 import com.zerocracy.tk.RqWithUser;
+import com.zerocracy.tk.TestWithUser;
 import com.zerocracy.tk.TkApp;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
@@ -36,13 +36,13 @@ import org.takes.rs.RsPrint;
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-public final class TkGutsTest {
+@SuppressWarnings("PMD.TestClassWithoutTestCases")
+public final class TkGutsTest extends TestWithUser {
 
     @Test
     public void rendersXml() throws Exception {
-        final Farm raw = new FkFarm();
-        new Roles(new Pmo(raw)).bootstrap().assign("yegor256", "PO");
-        try (final Farm farm = new SmartFarm(raw)) {
+        new Roles(new Pmo(this.farm)).bootstrap().assign("yegor256", "PO");
+        try (final Farm farm = new SmartFarm(this.farm)) {
             final Take take = new TkApp(farm);
             MatcherAssert.assertThat(
                 XhtmlMatchers.xhtml(

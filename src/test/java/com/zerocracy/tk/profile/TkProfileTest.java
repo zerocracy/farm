@@ -31,6 +31,7 @@ import com.zerocracy.pmo.People;
 import com.zerocracy.pmo.Pmo;
 import com.zerocracy.pmo.Projects;
 import com.zerocracy.tk.RqWithUser;
+import com.zerocracy.tk.TestWithUser;
 import com.zerocracy.tk.TkApp;
 import com.zerocracy.tk.View;
 import java.net.URLEncoder;
@@ -53,8 +54,14 @@ import org.takes.rs.RsPrint;
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.ExcessiveImports"})
-public final class TkProfileTest {
+@SuppressWarnings(
+    {
+        "PMD.AvoidDuplicateLiterals",
+        "PMD.ExcessiveImports",
+        "PMD.TestClassWithoutTestCases"
+    }
+)
+public final class TkProfileTest extends TestWithUser {
 
     /**
      * Temporary folder.
@@ -64,31 +71,29 @@ public final class TkProfileTest {
 
     @Test
     public void rendersHomePage() throws Exception {
-        final Farm farm = new PropsFarm(new FkFarm());
         final String uid = "yegor";
-        new Awards(farm, uid).bootstrap().add(
+        new Awards(this.farm, uid).bootstrap().add(
             new FkProject(), 1, "gh:test/test#1", "reason"
         );
-        new Agenda(farm, uid).bootstrap().add(
+        new Agenda(this.farm, uid).bootstrap().add(
             new FkProject(), "gh:test/test#2", "QA"
         );
         MatcherAssert.assertThat(
-            XhtmlMatchers.xhtml(new View(farm, "/u/Yegor256").html()),
+            XhtmlMatchers.xhtml(new View(this.farm, "/u/Yegor256").html()),
             XhtmlMatchers.hasXPaths("//xhtml:body")
         );
     }
 
     @Test
     public void rendersProfilePageWithRateInFirefox() throws Exception {
-        final Farm farm = new PropsFarm(new FkFarm());
         final double rate = 99.99;
-        final People people = new People(farm).bootstrap();
+        final People people = new People(this.farm).bootstrap();
         people.wallet("yegor256", "paypal", "test@example.com");
         people.rate(
             "yegor256", new Cash.S(String.format("USD %f", rate))
         );
         MatcherAssert.assertThat(
-            new View(farm, "/u/yegor256").html(),
+            new View(this.farm, "/u/yegor256").html(),
             Matchers.containsString(
                 String.format(
                     "rate</a> is <span style=\"color:darkgreen\">$%.2f</span>",
@@ -100,10 +105,9 @@ public final class TkProfileTest {
 
     @Test
     public void rendersProfilePageInFirefoxWithReputation() throws Exception {
-        final Farm farm = new PropsFarm(new FkFarm());
         final String user = "yegor256";
         MatcherAssert.assertThat(
-            new View(farm, String.format("/u/%s", user)).html(),
+            new View(this.farm, String.format("/u/%s", user)).html(),
             XhtmlMatchers.hasXPath(
                 String.format(
                     "//xhtml:a[@href='https://github.com/%s']",
@@ -115,22 +119,20 @@ public final class TkProfileTest {
 
     @Test
     public void rendersProfilePageWithoutRateInFirefox() throws Exception {
-        final Farm farm = new PropsFarm(new FkFarm());
-        final People people = new People(farm).bootstrap();
+        final People people = new People(this.farm).bootstrap();
         final String uid = "yegor256";
         people.wallet(
             uid, "btc", "3HcEB6bi4TFPdvk31Pwz77DwAzfAZz2fMn"
         );
         MatcherAssert.assertThat(
-            new View(farm, String.format("/u/%s", uid)).html(),
+            new View(this.farm, String.format("/u/%s", uid)).html(),
             Matchers.containsString("rate</a> is not defined")
         );
     }
 
     @Test
     public void rendersDebts() throws Exception {
-        final Farm farm = new PropsFarm(new FkFarm());
-        final Debts debts = new Debts(farm).bootstrap();
+        final Debts debts = new Debts(this.farm).bootstrap();
         final String uid = "yegor256";
         final String first = "details 1";
         final String second = "details 2";
@@ -139,7 +141,8 @@ public final class TkProfileTest {
         final String reason = "reason";
         debts.add(uid, new Cash.S(price), first, reason);
         debts.add(uid, new Cash.S(amount), second, reason);
-        final String html = new View(farm, String.format("/u/%s", uid)).html();
+        final String html =
+            new View(this.farm, String.format("/u/%s", uid)).html();
         MatcherAssert.assertThat(
             html,
             Matchers.allOf(
@@ -189,8 +192,7 @@ public final class TkProfileTest {
                                 ),
                                 ""
                             ),
-                            uid,
-                            false
+                            uid
                         )
                     )
                 ).printBody()
@@ -210,7 +212,7 @@ public final class TkProfileTest {
             // @checkstyle LineLength (1 line)
             "@nvseenu is not invited to us yet, see <a href=\"www.zerocracy.com/policy.html#1\">§1</a>";
         MatcherAssert.assertThat(
-            new View(new PropsFarm(new FkFarm()), "/").html(
+            new View(this.farm, "/").html(
                 new FormattedText(
                     "Cookie: RsFlash=%s/WARNING",
                     URLEncoder.encode(flash, StandardCharsets.UTF_8.toString())

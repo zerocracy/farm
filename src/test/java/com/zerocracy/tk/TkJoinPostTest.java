@@ -16,9 +16,6 @@
  */
 package com.zerocracy.tk;
 
-import com.zerocracy.Farm;
-import com.zerocracy.farm.fake.FkFarm;
-import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pmo.People;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -41,17 +38,18 @@ import org.takes.rq.RqWithBody;
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public final class TkJoinPostTest {
+@SuppressWarnings(
+    { "PMD.AvoidDuplicateLiterals", "PMD.TestClassWithoutTestCases" }
+)
+public final class TkJoinPostTest extends TestWithUser {
 
     @Test
     public void acceptRequestAndRedirectOnPost() throws Exception {
-        final Farm farm = new PropsFarm(new FkFarm());
         MatcherAssert.assertThat(
-            new TkApp(farm).act(
+            new TkApp(this.farm).act(
                 new RqWithBody(
                     new RqWithUser(
-                        farm,
+                        this.farm,
                         new RqFake("POST", "/join-post")
                     ),
                     "personality=INTJ-A&stackoverflow=187141"
@@ -66,18 +64,17 @@ public final class TkJoinPostTest {
 
     @Test
     public void rejectsIfAlreadyApplied() throws Exception {
-        final Farm farm = new PropsFarm(new FkFarm());
-        final People people = new People(farm).bootstrap();
+        final People people = new People(this.farm).bootstrap();
         final String uid = "yegor256";
         people.touch(uid);
         people.apply(uid, new Date());
         final RqWithUser req = new RqWithUser(
-            farm,
+            this.farm,
             new RqFake("POST", "/join-post")
         );
         people.breakup(uid);
         MatcherAssert.assertThat(
-            new TkApp(farm).act(
+            new TkApp(this.farm).act(
                 new RqWithBody(
                     req,
                     "personality=INTJ-A&stackoverflow=187241"
@@ -89,17 +86,16 @@ public final class TkJoinPostTest {
 
     @Test
     public void acceptIfNeverApplied() throws Exception {
-        final Farm farm = new PropsFarm(new FkFarm());
-        final People people = new People(farm).bootstrap();
+        final People people = new People(this.farm).bootstrap();
         final String uid = "yegor256";
         people.touch(uid);
         final RqWithUser req = new RqWithUser(
-            farm,
+            this.farm,
             new RqFake("POST", "/join-post")
         );
         people.breakup(uid);
         MatcherAssert.assertThat(
-            new TkApp(farm).act(
+            new TkApp(this.farm).act(
                 new RqWithBody(
                     req,
                     // @checkstyle LineLength (1 line)
@@ -124,21 +120,19 @@ public final class TkJoinPostTest {
     @Test
     @SuppressWarnings("unchecked")
     public void showsThatUserAlreadyHasMentor() throws IOException {
-        final Farm farm = new PropsFarm(new FkFarm());
-        final People people = new People(farm).bootstrap();
+        final People people = new People(this.farm).bootstrap();
         final String mentor = "yoda";
         final String applicant = "luke";
         people.touch(mentor);
         people.touch(applicant);
         people.invite(applicant, mentor, true);
         MatcherAssert.assertThat(
-            new TkApp(farm).act(
+            new TkApp(this.farm).act(
                 new RqWithBody(
                     new RqWithUser(
-                        farm,
+                        this.farm,
                         new RqFake("GET", "/join-post"),
-                        applicant,
-                        false
+                        applicant
                     ),
                     "personality=INTJ-A&stackoverflow=187242"
                 )

@@ -31,7 +31,8 @@ import org.takes.rs.RsPrint;
  * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
-public final class TkVacanciesTest {
+@SuppressWarnings("PMD.TestClassWithoutTestCases")
+public final class TkVacanciesTest extends TestWithUser {
     @Test
     public void rendersVacanciesPage() throws Exception {
         final Farm farm = new PropsFarm(new FkFarm());

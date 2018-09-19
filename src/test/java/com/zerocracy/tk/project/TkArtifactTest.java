@@ -17,10 +17,8 @@
 package com.zerocracy.tk.project;
 
 import com.jcabi.matchers.XhtmlMatchers;
-import com.zerocracy.Farm;
-import com.zerocracy.farm.fake.FkFarm;
-import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.tk.RqWithUser;
+import com.zerocracy.tk.TestWithUser;
 import com.zerocracy.tk.TkApp;
 import java.net.HttpURLConnection;
 import org.hamcrest.MatcherAssert;
@@ -37,12 +35,14 @@ import org.takes.rs.RsPrint;
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public final class TkArtifactTest {
+@SuppressWarnings(
+    { "PMD.AvoidDuplicateLiterals", "PMD.TestClassWithoutTestCases" }
+)
+public final class TkArtifactTest extends TestWithUser {
 
     @Test
     public void rejectsAbsentProject() throws Exception {
-        final Take take = new TkApp(new PropsFarm(new FkFarm()));
+        final Take take = new TkApp(this.farm);
         MatcherAssert.assertThat(
             take.act(
                 new RqFake(
@@ -56,13 +56,12 @@ public final class TkArtifactTest {
 
     @Test
     public void rendersHomePage() throws Exception {
-        final Farm farm = new PropsFarm(new FkFarm());
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
                 new RsPrint(
-                    new TkApp(farm).act(
+                    new TkApp(this.farm).act(
                         new RqWithUser(
-                            farm,
+                            this.farm,
                             new RqFake(
                                 "GET",
                                 "/a/C00000000?a=pm/staff/roles"
@@ -77,11 +76,10 @@ public final class TkArtifactTest {
 
     @Test
     public void rendersWithoutChromeNotice() throws Exception {
-        final Farm farm = new PropsFarm(new FkFarm());
         final String get = new RsPrint(
-            new TkApp(farm).act(
+            new TkApp(this.farm).act(
                 new RqWithUser(
-                    farm,
+                    this.farm,
                     new RqFake(
                         "GET",
                         "/a/C00000000?a=pm/staff/roles"

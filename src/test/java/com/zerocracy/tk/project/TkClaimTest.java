@@ -26,9 +26,8 @@ import com.zerocracy.claims.ClaimOut;
 import com.zerocracy.claims.Claims;
 import com.zerocracy.claims.ClaimsItem;
 import com.zerocracy.entry.ClaimsOf;
-import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.footprint.FtFarm;
-import com.zerocracy.farm.props.PropsFarm;
+import com.zerocracy.tk.TestWithUser;
 import com.zerocracy.tk.View;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
@@ -40,12 +39,14 @@ import org.junit.Test;
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public final class TkClaimTest {
+@SuppressWarnings(
+    { "PMD.AvoidDuplicateLiterals", "PMD.TestClassWithoutTestCases" }
+)
+public final class TkClaimTest extends TestWithUser {
 
     @Test
     public void renderClaimWithNoChildrenXml() throws Exception {
-        final Farm farm = new FtFarm(new PropsFarm(new FkFarm()));
+        final Farm farm = new FtFarm(this.farm);
         final long cid = 42L;
         final ClaimOut claim = new ClaimOut().type("test").cid(cid);
         final Project project = farm.find("@id='C00000000'").iterator().next();
@@ -65,7 +66,7 @@ public final class TkClaimTest {
 
     @Test
     public void renderClaimWithOneChild() throws Exception {
-        final FtFarm farm = new FtFarm(new PropsFarm(new FkFarm()));
+        final FtFarm farm = new FtFarm(this.farm);
         final long parent = 111L;
         final long child = 222L;
         final Project proj = farm.find("@id='C00000000'").iterator().next();
@@ -89,7 +90,7 @@ public final class TkClaimTest {
 
     @Test
     public void renderClaimWithManyChildren() throws Exception {
-        final FtFarm farm = new FtFarm(new PropsFarm(new FkFarm()));
+        final FtFarm farm = new FtFarm(this.farm);
         final long parent = 164L;
         final int children = Tv.FIFTY;
         final Project proj = farm.find("@id='C00000000'").iterator().next();
