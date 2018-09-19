@@ -21,12 +21,12 @@ import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.pmo.People
 import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
+import org.hamcrest.collection.IsEmptyIterable
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   MatcherAssert.assertThat(
     new People(farm).bootstrap().iterate(),
-    Matchers.emptyIterable()
+    new IsEmptyIterable<>()
   )
 }
