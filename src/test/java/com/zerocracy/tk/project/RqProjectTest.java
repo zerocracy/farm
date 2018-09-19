@@ -42,7 +42,7 @@ public final class RqProjectTest {
 
     @Test
     public void buildsProject() throws Exception {
-        try (final Farm farm = new SmartFarm(new FkFarm()).value()) {
+        try (final Farm farm = new SmartFarm(new FkFarm())) {
             final Catalog catalog = new Catalog(new Pmo(farm)).bootstrap();
             final String pid = "A1B2C3D4F";
             catalog.add(pid, String.format("2017/07/%s/", pid));
@@ -75,7 +75,7 @@ public final class RqProjectTest {
     public void buildsPmo() throws Exception {
         final Farm raw = new FkFarm();
         new Roles(new Pmo(raw)).bootstrap().assign("yegor256", "PO");
-        try (final Farm farm = new SmartFarm(raw).value()) {
+        try (final Farm farm = new SmartFarm(raw)) {
             new People(new Pmo(farm)).bootstrap().invite("yegor256", "mentor");
             MatcherAssert.assertThat(
                 new RqProject(

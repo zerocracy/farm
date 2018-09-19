@@ -14,24 +14,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.farm.reactive;
+package com.zerocracy.bundles.resigns_stale_users_from_project
 
-import com.zerocracy.Project;
-import java.io.Closeable;
-import org.cactoos.Proc;
-import org.cactoos.Scalar;
-import org.xembly.Directive;
+import com.jcabi.xml.XML
+import com.zerocracy.Project
 
-/**
- * The flush.
- *
- * @since 1.0
- * @todo #1464:30min Get rid of flushes and refactor the code to
- *  use similar logic for unit-tests and web app. Now web-app logic
- *  located in ClaimsRoutine class + com.zerocracy.claims.proc classes,
- *  ClaimsRoutine was designed to use claims long-polling with Amazon SQS,
- *  but unit tests uses claims.xml files and Flush implementations with
- *  RvFarm class.
- */
-interface Flush extends Proc<Project>, Closeable, Scalar<Iterable<Directive>> {
+def exec(Project project, XML xml) {
+  // Nothing to do.
 }

@@ -15,7 +15,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<elections xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.32.2/xsd/pm/staff/elections.xsd" version="1" updated="2016-12-29T09:03:21.684Z">
+<elections xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" updated="2018-09-07T06:54:25Z" version="0.62.5" xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.62.5/xsd/pm/staff/elections.xsd">
   <job id="gh:test/test#1">
     <election date="2016-11-20T09:03:21.684Z">
       <vote author="com.zerocracy.pm.staff.voter.NoRoom" weight="-100">

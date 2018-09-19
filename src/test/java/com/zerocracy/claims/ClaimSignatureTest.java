@@ -18,6 +18,7 @@ package com.zerocracy.claims;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.hamcrest.core.IsEqual;
 import org.junit.Test;
 
 /**
@@ -134,4 +135,19 @@ public final class ClaimSignatureTest {
         );
     }
 
+    @Test
+    public void withUniqueSource() throws Exception {
+        MatcherAssert.assertThat(
+            new ClaimSignature(
+                new ClaimXml(
+                    new ClaimOut()
+                        .type("utest1")
+                        .unique("yes")
+                ).asXml()
+            ).asString(),
+            new IsEqual<>(
+                "inmIkP6TgXFjsQtfe9LKTSXYTFJzmmRaiJwXPu59nT0="
+            )
+        );
+    }
 }

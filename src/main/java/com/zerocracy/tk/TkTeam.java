@@ -16,16 +16,19 @@
  */
 package com.zerocracy.tk;
 
+import com.jcabi.aspects.Tv;
 import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Xocument;
+import com.zerocracy.pmo.Awards;
 import com.zerocracy.pmo.Pmo;
 import com.zerocracy.pmo.Projects;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
 import org.cactoos.func.FuncOf;
+import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.LengthOf;
 import org.cactoos.scalar.And;
 import org.takes.Request;
@@ -60,6 +63,12 @@ public final class TkTeam implements Take {
         this.farm = frm;
     }
 
+    // @todo #1332:30min After zerocracy/datum#386 is done remove below
+    //  filtering based on Awards below and get the data directly from
+    //  people.xml file. Also people.xml needs to be updated with "active=true"
+    //  when given person receives any award, and when there is no reward for
+    //  the last 90 days, we should automatically updated people.xml with
+    //  "active=false".
     @Override
     public Response act(final Request req) throws IOException {
         return new RsPage(
@@ -75,7 +84,12 @@ public final class TkTeam implements Take {
                             input -> sources.add(this.source(input)),
                             true
                         ),
-                        new Xocument(item).nodes("/people/person[mentor]")
+                        new Filtered<>(
+                            node -> !new Awards(
+                                this.farm, node.xpath("@id").get(0)
+                            ).bootstrap().awards(Tv.NINETY).isEmpty(),
+                            new Xocument(item).nodes("/people/person[mentor]")
+                        )
                     ).value();
                 }
                 return new XeAppend("people", new XeChain(sources));

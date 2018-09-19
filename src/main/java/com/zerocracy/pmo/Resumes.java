@@ -22,6 +22,7 @@ import com.zerocracy.Xocument;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import org.cactoos.text.FormattedText;
 import org.xembly.Directives;
 
 /**
@@ -122,6 +123,18 @@ public final class Resumes {
     }
 
     /**
+     * All resumes.
+     *
+     * @return Login list
+     * @throws IOException If fails
+     */
+    public Iterable<String> all() throws IOException {
+        try (final Item item = this.item()) {
+            return new Xocument(item).xpath("/resumes/resume/@login");
+        }
+    }
+
+    /**
      * Assign examiner to resume.
      *
      * @param login Resume author
@@ -158,6 +171,25 @@ public final class Resumes {
                     )
                 )
                 .get(0);
+        }
+    }
+
+    /**
+     * Remove a resume.
+     *
+     * @param login Resume author
+     * @throws IOException If fails
+     */
+    public void remove(final String login) throws IOException {
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                new Directives().xpath(
+                    new FormattedText(
+                        "/resumes/resume[@login='%s']",
+                        login
+                    ).asString()
+                ).remove()
+            );
         }
     }
 

@@ -41,6 +41,7 @@ import com.zerocracy.sentry.SafeSentry;
 import com.zerocracy.shutdown.ShutdownFarm;
 import com.zerocracy.tk.TkAlias;
 import com.zerocracy.tk.TkApp;
+import com.zerocracy.tk.TkSentry;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -126,7 +127,7 @@ public final class Main {
             final Farm farm = new ShutdownFarm(
                 new SmartFarm(
                     new S3Farm(new ExtBucket().value(), temp)
-                ).value(),
+                ),
                 shutdown
             );
             final SlackRadar radar = new SlackRadar(farm);
@@ -177,11 +178,17 @@ public final class Main {
                     new FkRegex("/viber", new TkViber(farm)),
                     new FkRegex(
                         "/ghook",
-                        new TkMethods(new TkGithub(farm), HttpMethod.POST)
+                        new TkMethods(
+                            new TkSentry(farm, new TkGithub(farm)),
+                            HttpMethod.POST
+                        )
                     ),
                     new FkRegex(
                         "/glhook",
-                        new TkMethods(new TkGitlab(), HttpMethod.POST)
+                        new TkMethods(
+                            new TkSentry(farm, new TkGitlab()),
+                            HttpMethod.POST
+                        )
                     )
                 ),
                 this.arguments

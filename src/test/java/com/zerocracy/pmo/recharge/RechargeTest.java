@@ -21,9 +21,14 @@ import com.zerocracy.Project;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
+import com.zerocracy.pm.cost.Estimates;
+import com.zerocracy.pm.cost.Ledger;
+import com.zerocracy.pm.in.Orders;
+import com.zerocracy.pm.scope.Wbs;
 import com.zerocracy.pmo.Catalog;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.hamcrest.core.IsEqual;
 import org.junit.Test;
 
 /**
@@ -31,6 +36,7 @@ import org.junit.Test;
  * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle AvoidDuplicateLiterals (600 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class RechargeTest {
@@ -44,7 +50,7 @@ public final class RechargeTest {
             String.format("2018/01/%s/", project.pid())
         );
         final Recharge recharge = new Recharge(
-            farm, project.pid()
+            farm, project
         );
         final Cash amount = new Cash.S("$100");
         recharge.set("stripe", amount, "the code");
@@ -54,4 +60,25 @@ public final class RechargeTest {
         MatcherAssert.assertThat(recharge.exists(), Matchers.is(false));
     }
 
+    @Test
+    public void rechargeIsRequiredIfCashBalanceIsLessThanLocked()
+        throws Exception {
+        final Project project = new FkProject();
+        final String job = "gh:test/test#1";
+        new Wbs(project).bootstrap().add(job);
+        new Orders(project).bootstrap().assign(job, "perf", 1L);
+        new Estimates(project).bootstrap().update(job, new Cash.S("$100"));
+        new Ledger(project).bootstrap().add(
+            new Ledger.Transaction(
+                new Cash.S("$10"),
+                "assets", "cash",
+                "income", "test",
+                "Recharge#required test"
+            )
+        );
+        MatcherAssert.assertThat(
+            new Recharge(new FkFarm(), project).required(),
+            new IsEqual<>(true)
+        );
+    }
 }

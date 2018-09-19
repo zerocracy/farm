@@ -57,6 +57,13 @@ import org.xembly.Xembler;
 
 /**
  * XML document.
+ *
+ * @todo #1347:30min Xocument is the most slow part of the system,
+ *  especially in bundle tests: bootstrap of a new file can take
+ *  few hundreds ms to complete (in BundleTests too
+ *  many new files to bootstrap). Also there are too many `modify` calls,
+ *  which can take few seconds in sum for one bundle test. Let's investigate
+ *  how to speed up this class and discuss the solution.
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
  * @since 1.0
@@ -67,7 +74,7 @@ public final class Xocument {
     /**
      * Current DATUM version.
      */
-    public static final String VERSION = "0.62.4";
+    public static final String VERSION = "0.62.5";
 
     /**
      * Cache of documents.

@@ -223,4 +223,21 @@ public final class ClaimIn {
         return map;
     }
 
+    /**
+     * Has unique value.
+     *
+     * @return TRUE if has
+     */
+    public boolean isUnique() {
+        return !this.xml.nodes("unique").isEmpty();
+    }
+
+    /**
+     * Get unique source (see {@link ClaimOut#unique(String)}).
+     *
+     * @return Unique source
+     */
+    public String unique() {
+        return this.xml.xpath("unique/text()").get(0);
+    }
 }

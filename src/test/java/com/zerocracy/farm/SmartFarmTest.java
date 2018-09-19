@@ -29,7 +29,6 @@ import com.zerocracy.pm.in.Orders;
 import com.zerocracy.pm.scope.Wbs;
 import java.nio.file.Files;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.cactoos.Scalar;
 import org.cactoos.func.RunnableOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -49,7 +48,7 @@ public final class SmartFarmTest {
             Files.createTempDirectory("").toFile(),
             "some-bucket"
         );
-        try (final Farm farm = new SmartFarm(new S3Farm(bucket)).value()) {
+        try (final Farm farm = new SmartFarm(new S3Farm(bucket))) {
             final Project project = farm.find("@id='SMRTFRMTT'")
                 .iterator().next();
             MatcherAssert.assertThat(
@@ -73,20 +72,20 @@ public final class SmartFarmTest {
             Files.createTempDirectory("").toFile(),
             "some-bucket-again"
         );
-        final Scalar<Farm> farm = new SmartFarm(new S3Farm(bucket));
-        MatcherAssert.assertThat(
-            inc -> {
-                final Project project = farm.value()
-                    .find("@id='AAAAABBBB'").iterator().next();
-                final String job = String.format(
-                    "gh:test/testing#%d", inc.incrementAndGet()
-                );
-                new Wbs(project).bootstrap().add(job);
-                return new Wbs(project).exists(job);
-            },
-            new RunsInThreads<>(new AtomicInteger())
-        );
-        farm.value().close();
+        try (final Farm farm = new SmartFarm(new S3Farm(bucket))) {
+            MatcherAssert.assertThat(
+                inc -> {
+                    final Project project = farm.find("@id='AAAAABBBB'")
+                        .iterator().next();
+                    final String job = String.format(
+                        "gh:test/testing#%d", inc.incrementAndGet()
+                    );
+                    new Wbs(project).bootstrap().add(job);
+                    return new Wbs(project).exists(job);
+                },
+                new RunsInThreads<>(new AtomicInteger())
+            );
+        }
     }
 
     @Test
@@ -95,19 +94,19 @@ public final class SmartFarmTest {
             Files.createTempDirectory("").toFile(),
             "some-bucket-3"
         );
-        final Scalar<Farm> farm = new SmartFarm(new S3Farm(bucket));
-        MatcherAssert.assertThat(
-            inc -> {
-                final Project project = farm.value().find(
-                    String.format("@id='AAAAA%04d'", inc.incrementAndGet())
-                ).iterator().next();
-                final String job = "gh:test/some#2";
-                new Wbs(project).bootstrap().add(job);
-                return new Wbs(project).iterate().size() == 1;
-            },
-            new RunsInThreads<>(new AtomicInteger())
-        );
-        farm.value().close();
+        try (final Farm farm = new SmartFarm(new S3Farm(bucket))) {
+            MatcherAssert.assertThat(
+                inc -> {
+                    final Project project = farm.find(
+                        String.format("@id='AAAAA%04d'", inc.incrementAndGet())
+                    ).iterator().next();
+                    final String job = "gh:test/some#2";
+                    new Wbs(project).bootstrap().add(job);
+                    return new Wbs(project).iterate().size() == 1;
+                },
+                new RunsInThreads<>(new AtomicInteger())
+            );
+        }
     }
 
     @Test
@@ -116,7 +115,7 @@ public final class SmartFarmTest {
             Files.createTempDirectory("").toFile(),
             "some-bucket-6"
         );
-        try (final Farm farm = new SmartFarm(new S3Farm(bucket)).value()) {
+        try (final Farm farm = new SmartFarm(new S3Farm(bucket))) {
             final Project project = farm.find(
                 "@id='123456709'"
             ).iterator().next();
@@ -131,7 +130,7 @@ public final class SmartFarmTest {
 
     @Test
     public void readsProps() throws Exception {
-        try (final Farm farm = new SmartFarm(new FkFarm()).value()) {
+        try (final Farm farm = new SmartFarm(new FkFarm())) {
             final Project project = farm.find(
                 "@id='123456700'"
             ).iterator().next();
@@ -148,7 +147,7 @@ public final class SmartFarmTest {
             Files.createTempDirectory("").toFile(),
             "some-bucket-09"
         );
-        try (final Farm farm = new SmartFarm(new S3Farm(bucket)).value()) {
+        try (final Farm farm = new SmartFarm(new S3Farm(bucket))) {
             final Project project = farm.find(
                 "@id='SMARTFARM'"
             ).iterator().next();

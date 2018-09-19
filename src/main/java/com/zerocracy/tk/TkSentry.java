@@ -14,35 +14,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.farm.reactive;
+package com.zerocracy.tk;
 
 import com.zerocracy.Farm;
-import com.zerocracy.farm.guts.Guts;
-import org.cactoos.scalar.NumberEnvelope;
-import org.cactoos.scalar.NumberOf;
+import com.zerocracy.sentry.SafeSentry;
+import org.takes.Take;
+import org.takes.facets.fallback.TkFallback;
+import org.takes.misc.Opt;
+import org.takes.tk.TkWrap;
 
 /**
- * Reactive farm is still alive?
+ * Take to capture all errors in sentry.
  *
  * @since 1.0
  */
-public final class RvAlive extends NumberEnvelope {
-
-    /**
-     * Serialization marker.
-     */
-    private static final long serialVersionUID = 8977134566634953102L;
+public final class TkSentry extends TkWrap {
 
     /**
      * Ctor.
-     * @param farm Original farm
+     *
+     * @param farm Farm
+     * @param origin Origin take
      */
-    public RvAlive(final Farm farm) {
-        super(() -> new NumberOf(
-            new Guts(farm).value().xpath(
-                "sum(/guts/farm[@id='RvFarm']/alive/count/text())"
-            ).get(0)
-        ).doubleValue());
+    public TkSentry(final Farm farm, final Take origin) {
+        this(new SafeSentry(farm), origin);
     }
 
+    /**
+     * Ctor.
+     *
+     * @param sentry Sentry
+     * @param origin Origin take
+     */
+    private TkSentry(final SafeSentry sentry, final Take origin) {
+        super(
+            new TkFallback(
+                origin,
+                err -> {
+                    sentry.capture(err.throwable());
+                    return new Opt.Empty<>();
+                }
+            )
+        );
+    }
 }
