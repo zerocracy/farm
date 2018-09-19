@@ -27,6 +27,7 @@ import org.cactoos.collection.Mapped
 import org.cactoos.list.ListOf
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
+import org.hamcrest.core.IsEqual
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
@@ -49,7 +50,7 @@ def exec(Project project, XML xml) {
   MatcherAssert.assertThat(
     'Bans was removed',
     bans.exists('gh:test/test#1', '0pdd'),
-    Matchers.is(true)
+    new IsEqual<>(true)
   )
   MatcherAssert.assertThat(
     new Mapped<>(
