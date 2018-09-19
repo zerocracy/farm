@@ -70,6 +70,10 @@ SOFTWARE.
     <key>${sqs.key}</key>
     <secret>${sqs.secret}</secret>
   </sqs>
+  <cloudwatch>
+    <key>${cloudwatch.key}</key>
+    <secret>${cloudwatch.secret}</secret>
+  </cloudwatch>
   <mongo>
     <dbname>${mongo.dbname}</dbname>
     <host>${mongo.host}</host>
