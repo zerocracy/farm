@@ -28,7 +28,6 @@ import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.farm.props.Props
 import com.zerocracy.pmo.People
-import groovy.mock.interceptor.MockFor
 import java.util.concurrent.TimeUnit
 
 def exec(Project pmo, XML xml) {
@@ -39,18 +38,7 @@ def exec(Project pmo, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   people.iterate().each { uid ->
     User.Smart user = new User.Smart(new ExtGithub(farm).value().users().get(uid))
-    boolean org = user.type() == 'Organization'
-    if (new Props(farm).has('//testing')) {
-      MockFor mock = new MockFor(User.Smart)
-      mock.demand.type {
-        'Organization'
-      }
-      mock.use {
-        org = new User.Smart(new ExtGithub(farm).value().users().get(uid))
-          .type() == 'Organization'
-      }
-    }
-    if (org) {
+    if (user.type() == 'Organization') {
       claim.copy()
         .type('Notify user')
         .token("user;$uid")
@@ -68,7 +56,7 @@ def exec(Project pmo, XML xml) {
       if (!new Props(farm).has('//testing')) {
         delete.until(TimeUnit.HOURS.toSeconds(24))
       }
-        delete.postTo(new ClaimsOf(farm))
+      delete.postTo(new ClaimsOf(farm))
     }
   }
 }

@@ -19,9 +19,18 @@ package com.zerocracy.bundles.remove_organizations
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.entry.ExtGithub
 import com.zerocracy.pmo.People
+import javax.json.Json
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
+  new ExtGithub(farm).value().users()
+    .get('organization')
+    .patch(
+      Json.createObjectBuilder()
+        .add('type', 'Organization')
+        .build()
+    )
   new People(farm).bootstrap().invite('organization', '0crat')
 }
