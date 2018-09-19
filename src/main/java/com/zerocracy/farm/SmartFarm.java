@@ -17,22 +17,16 @@
 package com.zerocracy.farm;
 
 import com.zerocracy.Farm;
-import com.zerocracy.Stakeholder;
+import com.zerocracy.Project;
 import com.zerocracy.entry.ExtFarm;
 import com.zerocracy.farm.footprint.FtFarm;
 import com.zerocracy.farm.props.PropsFarm;
-import com.zerocracy.farm.reactive.RvFarm;
-import com.zerocracy.farm.reactive.StkRuntime;
 import com.zerocracy.farm.ruled.RdFarm;
 import com.zerocracy.farm.strict.StrictFarm;
 import com.zerocracy.farm.sync.SyncFarm;
-import groovy.lang.Script;
-import org.cactoos.Scalar;
-import org.cactoos.iterable.Mapped;
+import java.io.IOException;
+import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.scalar.SolidScalar;
-import org.cactoos.scalar.UncheckedScalar;
-import org.reflections.Reflections;
-import org.reflections.scanners.SubTypesScanner;
 
 /**
  * Smart farm.
@@ -41,21 +35,21 @@ import org.reflections.scanners.SubTypesScanner;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.ExcessiveImports")
-public final class SmartFarm implements Scalar<Farm> {
+public final class SmartFarm implements Farm {
 
     /**
      * Unique self.
      */
-    private final Scalar<Farm> self;
+    private final IoCheckedScalar<Farm> self;
 
     /**
      * Ctor.
      * @param farm Original
      */
     public SmartFarm(final Farm farm) {
-        this.self = new SolidScalar<>(
-            () -> new RvFarm(
-                new RdFarm(
+        this.self = new IoCheckedScalar<>(
+            new SolidScalar<>(
+                () -> new RdFarm(
                     new FtFarm(
                         new ExtFarm(
                             new PropsFarm(
@@ -65,32 +59,18 @@ public final class SmartFarm implements Scalar<Farm> {
                             )
                         )
                     )
-                ),
-                this.stakeholders()
+                )
             )
         );
     }
 
     @Override
-    public Farm value() {
-        return new UncheckedScalar<>(this.self).value();
+    public Iterable<Project> find(final String xpath) throws IOException {
+        return this.self.value().find(xpath);
     }
 
-    /**
-     * List of stakeholders.
-     * @return Stakeholders
-     */
-    private Iterable<Stakeholder> stakeholders() {
-        return new Mapped<>(
-            cls -> new StkSafe(
-                cls.getSimpleName(),
-                this.value(),
-                new StkRuntime(cls, this.value())
-            ),
-            new Reflections(
-                "com.zerocracy.stk",
-                new SubTypesScanner(false)
-            ).getSubTypesOf(Script.class)
-        );
+    @Override
+    public void close() throws IOException {
+        this.self.value().close();
     }
 }

@@ -15,7 +15,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<roles xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.37/xsd/pm/staff/roles.xsd" version="0.1" updated="2017-03-27T11:18:09.228Z">
+<roles xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" updated="2018-09-07T06:54:26Z" version="0.62.5" xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.62.5/xsd/pm/staff/roles.xsd">
   <person id="yegor256">
     <role>ARC</role>
   </person>

@@ -150,6 +150,7 @@ SOFTWARE.
       </a>
       <xsl:text> and most likely</xsl:text>
       <xsl:text> won't be interested in working in any projects at the moment.</xsl:text>
+      <xsl:text>The list shows only people that received reputation points during the last 90 days.</xsl:text>
     </p>
   </xsl:template>
   <xsl:template match="user">

@@ -16,13 +16,34 @@
  */
 package com.zerocracy.bundles.small_pr_skip_wbs
 
+import com.jcabi.github.Github
+import com.jcabi.github.Pull
+import com.jcabi.github.Repo
+import com.jcabi.github.Repos
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.entry.ExtGithub
+import com.zerocracy.farm.fake.FkFarm
+import com.zerocracy.radars.github.RbOnPullRequest
+
+import javax.json.Json
 
 def exec(Project project, XML xml) {
-  // @todo #510:30min Let's implement a test for small-size pull requests.
-  //  At moment it's not possible because it requires to construct specific
-  //  json for PR with fields 'additions' and 'deletions' via MkStorage.
-  //  Also `add_new_pull_request_to_wbs` should be fixed.
-  //  See https://developer.github.com/v3/pulls/#get-a-single-pull-request
+  Farm farm = binding.variables.farm
+  Github github = new ExtGithub(farm).value()
+  Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
+  Pull pull = repo.pulls().create('New Small PR', 'master', 'master')
+  pull.patch(
+    Json.createObjectBuilder()
+    .add('additions', 5).add('deletions', 4).build()
+  )
+  new RbOnPullRequest().react(
+    new FkFarm(project),
+    github,
+    Json.createObjectBuilder()
+      .add('pull_request', Json.createObjectBuilder().add('number', pull.number()))
+      .add('repository', Json.createObjectBuilder().add('full_name', repo.coordinates().toString()))
+      .build()
+  )
 }
