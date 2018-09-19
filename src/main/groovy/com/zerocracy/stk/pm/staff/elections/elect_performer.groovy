@@ -30,8 +30,8 @@ import com.zerocracy.pm.cost.Ledger
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.qa.Reviews
 import com.zerocracy.pm.scope.Wbs
+import com.zerocracy.pm.staff.Election
 import com.zerocracy.pm.staff.ElectionResult
-import com.zerocracy.pm.staff.Elections
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pm.staff.ranks.RnkBoost
 import com.zerocracy.pm.staff.ranks.RnkGithubBug
@@ -54,7 +54,6 @@ def exec(Project project, XML xml) {
   Wbs wbs = new Wbs(project).bootstrap()
   Roles roles = new Roles(project).bootstrap()
   Collection<String> orders = new Orders(project).bootstrap().iterate()
-  Elections elections = new Elections(project).bootstrap()
   Collection<String> reviews = new Reviews(project).bootstrap().iterate()
   Farm farm = binding.variables.farm
   Pmo pmo = new Pmo(farm)
@@ -66,16 +65,14 @@ def exec(Project project, XML xml) {
   //  _after.groovy tests in dont_assign_job_closed bundle.
   List<String> jobs = wbs.iterate().toList()
   [
-      new RnkGithubBug(github),
-      new RnkBoost(new Boosts(project).bootstrap()),
-      new RnkGithubMilestone(github),
-      new RnkRev(new Wbs(project).bootstrap())
+    new RnkGithubBug(github),
+    new RnkBoost(new Boosts(project).bootstrap()),
+    new RnkGithubMilestone(github),
+    new RnkRev(new Wbs(project).bootstrap())
   ].each { jobs.sort(it) }
+  int max = new Policy().get('3.absolute-max', 32)
   for (String job : jobs) {
     if (orders.contains(job) || reviews.contains(job)) {
-      continue
-    }
-    if (elections.exists(job)) {
       continue
     }
     String role = wbs.role(job)
@@ -83,29 +80,28 @@ def exec(Project project, XML xml) {
     if (logins.empty) {
       return
     }
-    int max = new Policy().get('3.absolute-max', 32)
-    boolean done = elections.elect(
-      job, logins,
-      [
-        (new VsSafe(new VsHardCap(pmo, max)))                                     : -100,
-//        (new VsSafe(new VsOverElected(project, farm)))                            : role == 'REV' ? 0 : -100,
-        (new VsSafe(new VsReputation(pmo, logins)))                               : 4,
-        (new VsSafe(new VsLosers(pmo, new Policy().get('3.low-threshold', -128)))): -100,
-        (new VsSafe(new VsRate(project, logins)))                                 : 2,
-        (new VsSafe(new VsBigDebt(pmo)))                                          : -100,
-        (new VsSafe(new VsNoRoom(pmo)))                                           : role == 'REV' ? 0 : -100,
-        (new VsSafe(new VsOptionsMaxJobs(pmo)))                                   : role == 'REV' ? 0 : -100,
-        (new VsSafe(new VsBanned(project, job)))                                  : -100,
-        (new VsSafe(new VsVacation(pmo)))                                         : -100,
-        (new VsSafe(new VsWorkload(farm, logins)))                                : 1,
-        (new VsSafe(new VsWorkload(farm, project, logins)))                       : 1,
-        (new VsSafe(new VsSpeed(pmo, logins)))                                    : 3,
-        (new VsSafe(new VsBalance(project, farm, logins)))                        : 3,
-        (new VsSafe(new VsRandom()))                                              : 1
-      ]
+    ElectionResult result = new ElectionResult(
+      new Election(
+        job, logins,
+        [
+          (new VsSafe(new VsHardCap(pmo, max)))                                     : -100,
+          (new VsSafe(new VsReputation(pmo, logins)))                               : 4,
+          (new VsSafe(new VsLosers(pmo, new Policy().get('3.low-threshold', -128)))): -100,
+          (new VsSafe(new VsRate(project, logins)))                                 : 2,
+          (new VsSafe(new VsBigDebt(pmo)))                                          : -100,
+          (new VsSafe(new VsNoRoom(pmo)))                                           : role == 'REV' ? 0 : -100,
+          (new VsSafe(new VsOptionsMaxJobs(pmo)))                                   : role == 'REV' ? 0 : -100,
+          (new VsSafe(new VsBanned(project, job)))                                  : -100,
+          (new VsSafe(new VsVacation(pmo)))                                         : -100,
+          (new VsSafe(new VsWorkload(farm, logins)))                                : 1,
+          (new VsSafe(new VsWorkload(farm, project, logins)))                       : 1,
+          (new VsSafe(new VsSpeed(pmo, logins)))                                    : 3,
+          (new VsSafe(new VsBalance(project, farm, logins)))                        : 3,
+          (new VsSafe(new VsRandom()))                                              : 1
+        ]
+      )
     )
-    ElectionResult result = elections.result(job)
-    if (done && result.elected()) {
+    if (result.elected()) {
       claim.copy()
         .type('Performer was elected')
         .param('login', result.winner())

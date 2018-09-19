@@ -22,22 +22,29 @@ import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.claims.Footprint
 import com.zerocracy.pm.in.Orders
-import com.zerocracy.pm.staff.Elections
 import org.cactoos.iterable.LengthOf
+import org.hamcrest.MatcherAssert
+import org.hamcrest.core.IsEqual
 
 def exec(Project project, XML xml) {
   String job = 'gh:test/test#1'
   Orders orders = new Orders(project).bootstrap()
-  assert orders.performer(job) == 'yegor256'
-  Elections elections = new Elections(project).bootstrap()
-  assert !elections.result(job).elected()
+  MatcherAssert.assertThat(
+    'Performer wasn\'t assigned to the job',
+    orders.performer(job),
+    new IsEqual<>('yegor256')
+  )
   Farm farm = binding.variables.farm
-  assert new LengthOf(
-    new Footprint(farm, project).collection().find(
-      Filters.and(
-        Filters.eq('project', project.pid()),
-        Filters.eq('type', 'Performer was elected')
+  MatcherAssert.assertThat(
+    '"Performer was elected" claim was not found',
+    new LengthOf(
+      new Footprint(farm, project).collection().find(
+        Filters.and(
+          Filters.eq('project', project.pid()),
+          Filters.eq('type', 'Performer was elected')
+        )
       )
-    )
-  ).value() == 1
+    ).intValue(),
+    new IsEqual<>(1)
+  )
 }
