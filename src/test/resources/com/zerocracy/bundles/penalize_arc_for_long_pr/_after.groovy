@@ -25,10 +25,9 @@ import org.hamcrest.core.IsEqual
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
-  Awards awards = new Awards(farm, 'arc').bootstrap()
   MatcherAssert.assertThat(
     "ARC didn't receive negative points",
-    awards.total(),
+    new Awards(farm, 'arc').bootstrap().total(),
     new IsEqual<Integer>(-50)
   )
 }

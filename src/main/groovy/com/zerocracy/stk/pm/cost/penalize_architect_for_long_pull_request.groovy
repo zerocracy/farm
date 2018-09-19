@@ -82,7 +82,7 @@ def exec(Project project, XML xml) {
       .token("job;${job}")
       .param(
       'message',
-      new Par("Code review was too long (%d days), architects ${logins} was penalized, see §36")
+      new Par("Code review was too long (%d days), architects (${logins}) were penalized, see §55")
         .say(age.toDays())
     ).postTo(new ClaimsOf(farm, project))
   }
