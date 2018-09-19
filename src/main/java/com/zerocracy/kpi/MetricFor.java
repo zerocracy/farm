@@ -38,32 +38,33 @@ public final class MetricFor implements Metric {
             new SolidFunc<>(
                 clm -> {
                     final Metric metric;
-                    final String type = clm.type();
-                    if ("Payment was made"
-                        .equalsIgnoreCase(type)) {
-                        metric = new Metric.S(
-                            "make_payment",
-                            new Cash.S(clm.param("amount"))
-                                .decimal().doubleValue()
-                        );
-                    } else if ("Funded by Stripe"
-                        .equalsIgnoreCase(type)) {
-                        metric = new Metric.S(
-                            "received_payment",
-                            new Cash.S(clm.param("amount"))
-                                .decimal().doubleValue()
-                        );
-                    } else if ("Invite a friend"
-                        .equalsIgnoreCase(type)) {
-                        metric = new Metric.S("user_invited");
-                    } else if ("Role was assigned"
-                        .equalsIgnoreCase(type)) {
-                        metric = new Metric.S("role_assigned");
-                    } else if ("Role was resigned"
-                        .equalsIgnoreCase(type)) {
-                        metric = new Metric.S("role_resigned");
-                    } else {
-                        metric = Metric.INVALID;
+                    switch (clm.type()) {
+                        case "Payment was made":
+                            metric = new Metric.S(
+                                "make_payment",
+                                new Cash.S(clm.param("amount"))
+                                    .decimal().doubleValue()
+                            );
+                            break;
+                        case "Funded by Stripe":
+                            metric = new Metric.S(
+                                "received_payment",
+                                new Cash.S(clm.param("amount"))
+                                    .decimal().doubleValue()
+                            );
+                            break;
+                        case "Invite a friend":
+                            metric = new Metric.S("user_invited");
+                            break;
+                        case "Role was assigned":
+                            metric = new Metric.S("role_assigned");
+                            break;
+                        case "Role was resigned":
+                            metric = new Metric.S("role_resigned");
+                            break;
+                        default:
+                            metric = Metric.INVALID;
+                            break;
                     }
                     return metric;
                 }

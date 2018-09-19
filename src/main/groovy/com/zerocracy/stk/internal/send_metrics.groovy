@@ -45,7 +45,7 @@ def exec(Project project, XML xml) {
   metrics.metrics().each { name ->
     KpiStats stats = metrics.statistic(name, period)
     builder.append("`${name}`:\t`")
-    if (stats.min() != Double.valueOf(1) || stats.max() != Double.valueOf(1)) {
+    if (!isCloseTo(stats.min(), 1) || !isCloseTo(stats.max(), 1)) {
       builder.append("`avg=`${stats.avg()}` (min=`${stats.min()}` - max=`${stats.max()}`) ")
     }
     builder.append("${stats.count()}` events\n")
@@ -54,4 +54,8 @@ def exec(Project project, XML xml) {
     .type('Notify PMO')
     .param('message', builder.toString())
     .postTo(new ClaimsOf(farm))
+}
+
+boolean isCloseTo(double value, double target) {
+  Math.abs(value - target) - 0.0001 <= 0.0
 }

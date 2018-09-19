@@ -40,8 +40,8 @@ public interface KpiStats {
             return 0.0;
         }
         @Override
-        public double count() {
-            return 0.0;
+        public long count() {
+            return 0L;
         }
     };
 
@@ -71,5 +71,5 @@ public interface KpiStats {
      *
      * @return Count value
      */
-    double count();
+    long count();
 }

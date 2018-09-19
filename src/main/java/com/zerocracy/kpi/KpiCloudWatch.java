@@ -148,8 +148,8 @@ public final class KpiCloudWatch implements KpiMetrics {
         }
 
         @Override
-        public double count() {
-            return this.datapoint.getSampleCount();
+        public long count() {
+            return this.datapoint.getSampleCount().longValue();
         }
     }
 }
