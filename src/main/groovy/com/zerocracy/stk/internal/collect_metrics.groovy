@@ -32,7 +32,8 @@ import com.zerocracy.kpi.MetricFor
  */
 def exec(Project project, XML xml) {
   new Assume(project, xml).type(
-    'Payment was made', 'Funded by Stripe', 'Invite a friend',
+    'Payment was made', 'Payment was added to debts',
+    'Funded by Stripe', 'Invite a friend',
     'Role was assigned', 'Role was resigned'
   )
   Farm farm = binding.variables.farm

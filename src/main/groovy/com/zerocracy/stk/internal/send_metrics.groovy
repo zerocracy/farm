@@ -47,9 +47,9 @@ def exec(Project project, XML xml) {
     KpiStats stats = metrics.statistic(name, period)
     builder.append("`${name}`:\t`")
     if (!isCloseTo(stats.min(), 1) || !isCloseTo(stats.max(), 1)) {
-      builder.append("`avg=`${stats.avg()}` (min=`${stats.min()}` - max=`${stats.max()}`) ")
+      builder.append("avg=`${stats.avg()}` (min=`${stats.min()}` - max=`${stats.max()}`) ")
     }
-    builder.append("${stats.count()}` events\n")
+    builder.append("`${stats.count()}` events\n")
   }
   new ClaimIn(xml).copy()
     .type('Notify PMO')

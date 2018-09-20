@@ -40,6 +40,7 @@ public final class MetricFor implements Metric {
                     final Metric metric;
                     switch (clm.type()) {
                         case "Payment was made":
+                        case "Payment was added to debts":
                             metric = new Metric.S(
                                 "make_payment",
                                 new Cash.S(clm.param("amount"))
