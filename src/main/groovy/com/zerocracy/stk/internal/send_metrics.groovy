@@ -36,7 +36,8 @@ import java.time.Instant
  * @param xml Claim
  */
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Ping hourly')
+  new Assume(project, xml).type('Ping daily')
+  new Assume(project, xml).isPmo()
   Farm farm = binding.variables.farm
   KpiMetrics metrics = new KpiOf(farm)
   Duration period = Duration.ofHours(1)
