@@ -32,6 +32,13 @@ import org.xembly.Directives;
  * Ledger.
  *
  * @since 1.0
+ * @todo #1662:30min Ledger is really slow when it grows big. Performance
+ *  degrades linearly (O(n)) with the size of the ledger due to the need
+ *  to perform ID lookups. The slowdown is roughly 50ms per 1000 entries.
+ *  See https://github.com/zerocracy/farm/issues/1662#issuecomment-416454156
+ *  for details. Let's move away from using XML and record entries using
+ *  Postgres. For more info see
+ *  https://github.com/zerocracy/farm/issues/1662#issuecomment-422759929
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class Ledger {
