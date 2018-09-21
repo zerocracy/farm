@@ -40,16 +40,18 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).isPmo()
   Farm farm = binding.variables.farm
   KpiMetrics metrics = new KpiOf(farm)
-  Duration period = Duration.ofHours(1)
+  Duration period = Duration.ofDays(1)
   StringBuilder builder = new StringBuilder()
-  builder.append("KPI for period: ${(Instant.now() - period)} - ${Instant.now()}\n")
+  builder.append("KPI for period: `${(Instant.now() - period)}` - `${Instant.now()}`\n")
   metrics.metrics().each { name ->
     KpiStats stats = metrics.statistic(name, period)
-    builder.append("`${name}`:\t`")
-    if (!isCloseTo(stats.min(), 1) || !isCloseTo(stats.max(), 1)) {
-      builder.append("avg=`${stats.avg()}` (min=`${stats.min()}` - max=`${stats.max()}`) ")
+    if (stats.count() > 0) {
+      builder.append("`${name}`:\t")
+      if (!isCloseTo(stats.min(), 1) || !isCloseTo(stats.max(), 1)) {
+        builder.append("avg=`${stats.avg()}` (min=`${stats.min()}` - max=`${stats.max()}`) ")
+      }
+      builder.append("`${stats.count()}` events\n")
     }
-    builder.append("`${stats.count()}` events\n")
   }
   new ClaimIn(xml).copy()
     .type('Notify PMO')
