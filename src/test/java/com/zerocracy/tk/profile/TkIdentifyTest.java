@@ -17,10 +17,8 @@
 package com.zerocracy.tk.profile;
 
 import com.jcabi.matchers.XhtmlMatchers;
-import com.zerocracy.Farm;
-import com.zerocracy.farm.fake.FkFarm;
-import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.tk.RqWithUser;
+import com.zerocracy.tk.TestWithUser;
 import com.zerocracy.tk.TkApp;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
@@ -33,17 +31,17 @@ import org.takes.rs.RsPrint;
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-public final class TkIdentifyTest {
+@SuppressWarnings("PMD.TestClassWithoutTestCases")
+public final class TkIdentifyTest extends TestWithUser {
 
     @Test
     public void rendersHomePage() throws Exception {
-        final Farm farm = new PropsFarm(new FkFarm());
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
                 new RsPrint(
-                    new TkApp(farm).act(
+                    new TkApp(this.farm).act(
                         new RqWithUser(
-                            farm,
+                            this.farm,
                             new RqFake("GET", "/identify")
                         )
                     )

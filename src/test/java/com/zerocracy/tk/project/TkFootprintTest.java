@@ -18,15 +18,13 @@ package com.zerocracy.tk.project;
 
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
-import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.claims.ClaimOut;
 import com.zerocracy.claims.ClaimsItem;
 import com.zerocracy.claims.Footprint;
 import com.zerocracy.entry.ClaimsOf;
-import com.zerocracy.farm.fake.FkFarm;
-import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.tk.RqWithUser;
+import com.zerocracy.tk.TestWithUser;
 import com.zerocracy.tk.TkApp;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -40,18 +38,19 @@ import org.takes.rs.RsPrint;
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public final class TkFootprintTest {
+@SuppressWarnings(
+    { "PMD.AvoidDuplicateLiterals", "PMD.TestClassWithoutTestCases" }
+)
+public final class TkFootprintTest extends TestWithUser {
 
     @Test
     public void rendersListOfClaims() throws Exception {
-        final Farm farm = new PropsFarm(new FkFarm());
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
                 new RsPrint(
-                    new TkApp(farm).act(
+                    new TkApp(this.farm).act(
                         new RqWithUser(
-                            farm,
+                            this.farm,
                             new RqFake(
                                 "GET",
                                 "/footprint/C00000000"
@@ -66,18 +65,18 @@ public final class TkFootprintTest {
 
     @Test
     public void rendersListOfClaimsAsText() throws Exception {
-        final Farm farm = new PropsFarm();
-        final Project project = farm.find("@id='C00000000'").iterator().next();
-        new ClaimOut().type("Hello").postTo(new ClaimsOf(farm, project));
+        final Project project =
+            this.farm.find("@id='C00000000'").iterator().next();
+        new ClaimOut().type("Hello").postTo(new ClaimsOf(this.farm, project));
         final XML xml = new ClaimsItem(project).iterate().iterator().next();
-        try (final Footprint footprint = new Footprint(farm, project)) {
+        try (final Footprint footprint = new Footprint(this.farm, project)) {
             footprint.open(xml, "test");
             footprint.close(xml);
             MatcherAssert.assertThat(
                 new RsPrint(
-                    new TkApp(farm).act(
+                    new TkApp(this.farm).act(
                         new RqWithUser(
-                            farm,
+                            this.farm,
                             new RqFake(
                                 "GET",
                                 "/footprint/C00000000?format=plain"

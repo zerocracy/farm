@@ -38,8 +38,10 @@ import org.takes.rs.RsPrint;
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public final class TkJoinTest {
+@SuppressWarnings(
+    { "PMD.AvoidDuplicateLiterals", "PMD.TestClassWithoutTestCases" }
+)
+public final class TkJoinTest extends TestWithUser {
 
     @Test
     public void renderJoinPage() throws Exception {
@@ -65,15 +67,14 @@ public final class TkJoinTest {
     @Test
     @Ignore
     public void showsResumeIfAlreadyApplied() throws Exception {
-        final Farm farm = new PropsFarm(new FkFarm());
-        final People people = new People(farm).bootstrap();
+        final People people = new People(this.farm).bootstrap();
         final String uid = "yegor256";
         people.touch(uid);
         people.apply(uid, new Date());
         MatcherAssert.assertThat(
             new RsPrint(
-                new TkApp(farm).act(
-                    new RqWithUser(farm, new RqFake("GET", "/join"))
+                new TkApp(this.farm).act(
+                    new RqWithUser(this.farm, new RqFake("GET", "/join"))
                 )
             ).printBody(),
             new StringContainsInOrder(

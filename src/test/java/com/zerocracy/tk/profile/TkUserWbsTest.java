@@ -38,6 +38,7 @@ import org.takes.rs.RsPrint;
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.TestClassWithoutTestCases")
 public final class TkUserWbsTest {
 
     @Test
@@ -63,8 +64,7 @@ public final class TkUserWbsTest {
                             ),
                             ""
                         ),
-                        uid,
-                        false
+                        uid
                     )
                 )
             ).printBody(),

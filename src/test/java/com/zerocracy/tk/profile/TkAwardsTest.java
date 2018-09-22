@@ -17,11 +17,9 @@
 package com.zerocracy.tk.profile;
 
 import com.jcabi.matchers.XhtmlMatchers;
-import com.zerocracy.Farm;
-import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
-import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pmo.Awards;
+import com.zerocracy.tk.TestWithUser;
 import com.zerocracy.tk.View;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -33,15 +31,15 @@ import org.junit.Test;
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-public final class TkAwardsTest {
+@SuppressWarnings("PMD.TestClassWithoutTestCases")
+public final class TkAwardsTest extends TestWithUser {
 
     @Test
     public void rendersXmlAwardsPage() throws Exception {
-        final Farm farm = new PropsFarm(new FkFarm());
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
                 XhtmlMatchers.xhtml(
-                    new View(farm, "/u/yegor256/awards").html()
+                    new View(this.farm, "/u/yegor256/awards").html()
                 )
             ),
             XhtmlMatchers.hasXPaths("//xhtml:body")
@@ -50,13 +48,12 @@ public final class TkAwardsTest {
 
     @Test
     public void rendersHtmlAwardsPageForFirefox() throws Exception {
-        final Farm farm = new PropsFarm(new FkFarm());
         final String user = "yegor256";
         final int points = 1234;
-        new Awards(farm, user).bootstrap()
+        new Awards(this.farm, user).bootstrap()
             .add(new FkProject(), points, "none", "reason");
         final String html = new View(
-            farm, String.format("/u/%s/awards", user)
+            this.farm, String.format("/u/%s/awards", user)
         ).html();
         MatcherAssert.assertThat(
             html,

@@ -19,9 +19,7 @@ package com.zerocracy.tk;
 import com.jcabi.aspects.Tv;
 import com.jcabi.matchers.XhtmlMatchers;
 import com.zerocracy.Farm;
-import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
-import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pmo.Awards;
 import com.zerocracy.pmo.People;
 import java.io.IOException;
@@ -42,21 +40,22 @@ import org.takes.rs.RsPrint;
  * @checkstyle MagicNumber (500 lines)
  * @checkstyle ClassDataAbstractionCoupling (3 lines)
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public final class TkTeamTest {
+@SuppressWarnings(
+    { "PMD.AvoidDuplicateLiterals", "PMD.TestClassWithoutTestCases" }
+)
+public final class TkTeamTest extends TestWithUser {
 
     @Test
     public void showsSpeedInDays() throws Exception {
-        final Farm farm = new PropsFarm(new FkFarm());
-        final People people = new People(farm).bootstrap();
+        final People people = new People(this.farm).bootstrap();
         final String user = "yegor256";
         people.touch(user);
         people.speed(user, 2880.0);
-        new Awards(farm, user).bootstrap().add(
+        new Awards(this.farm, user).bootstrap().add(
             new FkProject(), 1, "none", "reason", new Date()
         );
         MatcherAssert.assertThat(
-            XhtmlMatchers.xhtml(this.responseBody(farm)),
+            XhtmlMatchers.xhtml(this.responseBody(this.farm)),
             XhtmlMatchers.hasXPaths(
                 String.format("//xhtml:td[.='%s']", 2.0)
             )
@@ -65,16 +64,15 @@ public final class TkTeamTest {
 
     @Test
     public void showsNumberOfJobsInAgenda() throws Exception {
-        final Farm farm = new PropsFarm(new FkFarm());
-        final People people = new People(farm).bootstrap();
+        final People people = new People(this.farm).bootstrap();
         final String user = "yegor256";
         people.touch(user);
-        new Awards(farm, user).bootstrap().add(
+        new Awards(this.farm, user).bootstrap().add(
             new FkProject(), 1, "none", "reason", new Date()
         );
         people.jobs(user, Tv.TEN);
         MatcherAssert.assertThat(
-            XhtmlMatchers.xhtml(this.responseBody(farm)),
+            XhtmlMatchers.xhtml(this.responseBody(this.farm)),
             XhtmlMatchers.hasXPaths(
                 String.format("//xhtml:td[.='%s']", Tv.TEN)
             )
@@ -83,23 +81,22 @@ public final class TkTeamTest {
 
     @Test
     public void showsActiveUsers() throws Exception {
-        final Farm farm = new PropsFarm(new FkFarm());
-        final People people = new People(farm).bootstrap();
+        final People people = new People(this.farm).bootstrap();
         final String active = "g4s8";
         people.touch(active);
         people.invite(active, "yegor256");
-        new Awards(farm, active).bootstrap().add(
+        new Awards(this.farm, active).bootstrap().add(
             new FkProject(), 1, "none", "reason1", new Date()
         );
         final String inactive = "krzyk";
         people.touch(inactive);
         people.invite(inactive, "yegor256");
-        new Awards(farm, inactive).bootstrap().add(
+        new Awards(this.farm, inactive).bootstrap().add(
             new FkProject(), 2, "none", "reason2",
             new Date(Instant.now().minus(Duration.ofDays(91)).toEpochMilli())
         );
         MatcherAssert.assertThat(
-            XhtmlMatchers.xhtml(this.responseBody(farm)),
+            XhtmlMatchers.xhtml(this.responseBody(this.farm)),
             Matchers.allOf(
                 XhtmlMatchers.hasXPaths(
                     String.format("//xhtml:a[.='@%s']", active)

@@ -14,41 +14,45 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.tk.project;
+package com.zerocracy.tk;
 
-import com.jcabi.matchers.XhtmlMatchers;
 import com.zerocracy.Farm;
+import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pm.staff.Roles;
+import com.zerocracy.pmo.Catalog;
+import com.zerocracy.pmo.People;
 import com.zerocracy.pmo.Pmo;
-import com.zerocracy.tk.TestWithUser;
-import com.zerocracy.tk.View;
-import org.hamcrest.MatcherAssert;
-import org.junit.Test;
+import org.junit.Before;
 
 /**
- * Test case for {@link TkProject}.
+ * Base test case with initialized User.
  * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@SuppressWarnings("PMD.TestClassWithoutTestCases")
-public final class TkProjectTest extends TestWithUser {
+@SuppressWarnings("PMD.AbstractClassWithoutAbstractMethod")
+public abstract class TestWithUser {
 
-    @Test
-    public void rendersProjectPage() throws Exception {
-        final Farm raw = this.farm;
-        new Roles(new Pmo(raw)).bootstrap().assign("yegor256", "PO");
-        final Farm farm = new PropsFarm(raw);
-        MatcherAssert.assertThat(
-            XhtmlMatchers.xhtml(
-                new View(farm, "/p/C00000000").xml()
-            ),
-            XhtmlMatchers.hasXPaths(
-                "/page[project='C00000000']",
-                "/page/project_links[link='github:test/test']"
-            )
-        );
+    /**
+     * Farm to use.
+     * @checkstyle VisibilityModifierCheck (2 lines)
+     */
+    protected final Farm farm;
+
+    protected TestWithUser() {
+        this.farm = new PropsFarm(new FkFarm());
     }
 
+    @Before
+    public final void init() throws Exception {
+        final String uid = "yegor256";
+        final Catalog catalog = new Catalog(new Pmo(this.farm)).bootstrap();
+        final String pid = "C00000000";
+        catalog.add(pid, String.format("2017/07/%s/", pid));
+        catalog.link(pid, "github", "test/test");
+        new Roles(
+            this.farm.find(String.format("@id='%s'", pid)).iterator().next()
+        ).bootstrap().assign(uid, "PO");
+        new People(new Pmo(this.farm)).bootstrap().invite(uid, "mentor");
+    }
 }
