@@ -161,7 +161,7 @@ public final class Estimates {
                     .add("cash")
                     .set(cash)
             );
-            final Cash value = new IoCheckedScalar<>(
+            final Cash value = new IoCheckedScalar<Cash>(
                 new Ternary<>(
                     new IoCheckedScalar<>(
                         new Reduced<Cash, Cash>(
