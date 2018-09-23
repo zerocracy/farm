@@ -1,14 +1,7 @@
 import com.zerocracy.Xocument
-
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.stream.Collectors
-
-// @todo #1347:30min Call this script from maven build (maybe on `process-test-resources`
-//  if possible), the execution of this script should be enabled with maven profile, e.g.:
-//  `mvn process-test-resources -Pupgrade-bundles`. Note: this script depends on
-//  compiled farm classes, such as Xocument, Farm, so it's required to reference
-//  farm classes somehow before run.
 
 def itemType(String name) {
   if (["claims"].contains(name)) {
