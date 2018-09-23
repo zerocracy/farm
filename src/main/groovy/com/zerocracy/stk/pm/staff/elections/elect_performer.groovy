@@ -34,7 +34,7 @@ import com.zerocracy.pm.staff.Election
 import com.zerocracy.pm.staff.ElectionResult
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pm.staff.ranks.RnkBoost
-import com.zerocracy.pm.staff.ranks.RnkGithubBug
+import com.zerocracy.pm.staff.ranks.RnkGithubLabel
 import com.zerocracy.pm.staff.ranks.RnkGithubMilestone
 import com.zerocracy.pm.staff.ranks.RnkRev
 import com.zerocracy.pm.staff.votes.*
@@ -65,7 +65,8 @@ def exec(Project project, XML xml) {
   //  _after.groovy tests in dont_assign_job_closed bundle.
   List<String> jobs = wbs.iterate().toList()
   [
-    new RnkGithubBug(github),
+    new RnkGithubLabel(github, 'pdd'),
+    new RnkGithubLabel(github, 'bug'),
     new RnkBoost(new Boosts(project).bootstrap()),
     new RnkGithubMilestone(github),
     new RnkRev(new Wbs(project).bootstrap())
