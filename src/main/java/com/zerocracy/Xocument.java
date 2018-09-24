@@ -152,8 +152,8 @@ public final class Xocument {
      * @todo #1705:30min Xocument writes upgraded xml files with formatting
      *  incompatible with xcop validation. When upgrade-bundles profile is
      *  activated it results in xcop errors in the upgraded files.
-     *  After this has been resolved enable upgrade-bundles profile in rultor,
-     *  travis and appveyor builds.
+     *  After this has been resolved enable upgrade-bundles profile in rultor
+     *  and travis builds.
      */
     public Xocument bootstrap(final String xsd)
         throws IOException {
