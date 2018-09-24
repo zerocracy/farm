@@ -66,7 +66,7 @@ public final class RechargeTest {
         final Project project = new FkProject();
         final String job = "gh:test/test#1";
         new Wbs(project).bootstrap().add(job);
-        new Orders(project).bootstrap().assign(job, "perf", 1L);
+        new Orders(project).bootstrap().assign(job, "perf", "0");
         new Estimates(project).bootstrap().update(job, new Cash.S("$100"));
         new Ledger(project).bootstrap().add(
             new Ledger.Transaction(

@@ -102,7 +102,7 @@ public final class BrigadeProc implements Proc<Message> {
         final ClaimIn claim = new ClaimIn(xml);
         Logger.info(
             this,
-            "Processing message %s:\"%s/%d\" at \"%s\"",
+            "Processing message %s:\"%s/%s\" at \"%s\"",
             input.getMessageId(), claim.type(),
             claim.cid(), project.pid()
         );
@@ -117,7 +117,7 @@ public final class BrigadeProc implements Proc<Message> {
         }
         Logger.info(
             this,
-            "Seen message %s:\"%s/%d\" at \"%s\" by %d stk, %[ms]s [%s]%s",
+            "Seen message %s:\"%s/%s\" at \"%s\" by %d stk, %[ms]s [%s]%s",
             input.getMessageId(), claim.type(), claim.cid(),
             project.pid(),
             total,

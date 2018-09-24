@@ -56,7 +56,7 @@ public final class EstimatesTest {
         final Estimates estimates = new Estimates(project).bootstrap();
         final String first = "gh:yegor256/pdd#4";
         new Wbs(project).bootstrap().add(first);
-        new Orders(project).bootstrap().assign(first, "yegor256", 0L);
+        new Orders(project).bootstrap().assign(first, "yegor256", "0");
         estimates.update(first, new Cash.S("$45"));
         MatcherAssert.assertThat(
             estimates.get(first),
@@ -64,7 +64,7 @@ public final class EstimatesTest {
         );
         final String second = "gh:yegor256/pdd#1";
         new Wbs(project).bootstrap().add(second);
-        new Orders(project).bootstrap().assign(second, "yegor", 0L);
+        new Orders(project).bootstrap().assign(second, "yegor", "0");
         estimates.update(second, new Cash.S("$100"));
         MatcherAssert.assertThat(
             estimates.total(),
@@ -87,7 +87,7 @@ public final class EstimatesTest {
         final String first = "gh:yegor256/pdd#4";
         final Wbs wbs = new Wbs(project).bootstrap();
         wbs.add(first);
-        new Orders(project).bootstrap().assign(first, "yegor256", 0L);
+        new Orders(project).bootstrap().assign(first, "yegor256", "0");
         estimates.update(first, new Cash.S("$45"));
         MatcherAssert.assertThat(
             estimates.get(first),
@@ -95,7 +95,7 @@ public final class EstimatesTest {
         );
         final String second = "gh:yegor256/pdd#1";
         wbs.add(second);
-        new Orders(project).bootstrap().assign(second, "yegor", 0L);
+        new Orders(project).bootstrap().assign(second, "yegor", "0");
         estimates.update(second, new Cash.S("€100"));
         MatcherAssert.assertThat(
             estimates.total(),

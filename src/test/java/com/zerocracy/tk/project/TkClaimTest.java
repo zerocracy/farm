@@ -46,18 +46,18 @@ public final class TkClaimTest {
     @Test
     public void renderClaimWithNoChildrenXml() throws Exception {
         final Farm farm = new FtFarm(new PropsFarm(new FkFarm()));
-        final long cid = 42L;
+        final String cid = "42";
         final ClaimOut claim = new ClaimOut().type("test").cid(cid);
         final Project project = farm.find("@id='C00000000'").iterator().next();
         claim.postTo(new ClaimsOf(farm, project));
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
                 new View(
-                    farm, String.format("/footprint/C00000000/%d", cid)
+                    farm, String.format("/footprint/C00000000/%s", cid)
                 ).xml()
             ),
             XhtmlMatchers.hasXPaths(
-                String.format("/page/claim/cid[text() = %d]", cid),
+                String.format("/page/claim/cid[text() = %s]", cid),
                 "/page/children"
             )
         );
@@ -66,8 +66,8 @@ public final class TkClaimTest {
     @Test
     public void renderClaimWithOneChild() throws Exception {
         final FtFarm farm = new FtFarm(new PropsFarm(new FkFarm()));
-        final long parent = 111L;
-        final long child = 222L;
+        final String parent = "111";
+        final String child = "222";
         final Project proj = farm.find("@id='C00000000'").iterator().next();
         new ClaimOut().type("test").cid(parent)
             .postTo(new ClaimsOf(farm, proj));
@@ -77,12 +77,12 @@ public final class TkClaimTest {
             XhtmlMatchers.xhtml(
                 new View(
                     farm,
-                    String.format("/footprint/%s/%d", proj.pid(), parent)
+                    String.format("/footprint/%s/%s", proj.pid(), parent)
                 ).xml()
             ),
             XhtmlMatchers.hasXPaths(
-                String.format("/page/claim/cid[text() = %d]", parent),
-                String.format("/page/children/child/cid[text() = %d]", child)
+                String.format("/page/claim/cid[text() = %s]", parent),
+                String.format("/page/children/child/cid[text() = %s]", child)
             )
         );
     }
@@ -90,7 +90,7 @@ public final class TkClaimTest {
     @Test
     public void renderClaimWithManyChildren() throws Exception {
         final FtFarm farm = new FtFarm(new PropsFarm(new FkFarm()));
-        final long parent = 164L;
+        final String parent = "164";
         final int children = Tv.FIFTY;
         final Project proj = farm.find("@id='C00000000'").iterator().next();
         final Claims claims = new ClaimsOf(farm, proj);
@@ -100,7 +100,7 @@ public final class TkClaimTest {
             new ClaimsItem(proj).iterate().iterator().next()
         );
         for (int number = 0; number < children; ++number) {
-            claim.copy().cid((long) (Tv.THOUSAND + number))
+            claim.copy().cid(Integer.toString(Tv.THOUSAND + number))
                 .param("number", number)
                 .postTo(claims);
         }
@@ -108,12 +108,12 @@ public final class TkClaimTest {
             XhtmlMatchers.xhtml(
                 new View(
                     farm,
-                    String.format("/footprint/%s/%d", proj.pid(), parent)
+                    String.format("/footprint/%s/%s", proj.pid(), parent)
                 ).xml()
             ),
             XhtmlMatchers.hasXPaths(
-                String.format("/page/claim/cid[text() = %d]", parent),
-                String.format("/page/children[count(child) = %d]", children)
+                String.format("/page/claim/cid[text() = %s]", parent),
+                String.format("/page/children[count(child) = %s]", children)
             )
         );
     }

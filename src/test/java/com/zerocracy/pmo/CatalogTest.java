@@ -223,7 +223,7 @@ public final class CatalogTest {
         for (int cont = 0; cont < Tv.THREE; cont = cont + 1) {
             wbs.add(new Job(repo.issues().create("Job", "")).toString());
         }
-        new Orders(project).bootstrap().assign(one, dev, Tv.TEN);
+        new Orders(project).bootstrap().assign(one, dev, "10");
         try (final Item item = CatalogTest.item(project)) {
             MatcherAssert.assertThat(
                 "Architect(s) not found",

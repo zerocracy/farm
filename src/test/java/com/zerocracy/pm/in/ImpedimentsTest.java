@@ -38,7 +38,7 @@ public final class ImpedimentsTest {
         final Impediments imp = new Impediments(project).bootstrap();
         final String job = "gh:test/test#1";
         new Wbs(project).bootstrap().add(job);
-        new Orders(project).bootstrap().assign(job, "yegor256", 0L);
+        new Orders(project).bootstrap().assign(job, "yegor256", "0");
         imp.register(job, "test");
         MatcherAssert.assertThat(
             imp.jobs(),
@@ -56,7 +56,7 @@ public final class ImpedimentsTest {
         final Impediments imp = new Impediments(project).bootstrap();
         final String job = "gh:test/test#2";
         new Wbs(project).bootstrap().add(job);
-        new Orders(project).bootstrap().assign(job, "amihaiemil", 0L);
+        new Orders(project).bootstrap().assign(job, "amihaiemil", "0");
         imp.register(job, "reason");
         MatcherAssert.assertThat(
             imp.jobs(),

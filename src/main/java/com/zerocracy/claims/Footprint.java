@@ -96,7 +96,7 @@ public final class Footprint implements Closeable {
         throws IOException {
         synchronized (Footprint.LOCK) {
             final ClaimIn claim = new ClaimIn(xml);
-            final long cid = claim.cid();
+            final String cid = claim.cid();
             final MongoCollection<Document> col =
                 this.mongo.getDatabase("footprint")
                     .getCollection("claims");
@@ -109,7 +109,7 @@ public final class Footprint implements Closeable {
             if (found.hasNext()) {
                 throw new IllegalArgumentException(
                     String.format(
-                        "Claim #%d (%s) already exists for %s",
+                        "Claim #%s (%s) already exists for %s",
                         cid, claim.type(), this.pid
                     )
                 );

@@ -43,7 +43,7 @@ public final class OrdersTest {
         final Orders orders = new Orders(project).bootstrap();
         final String job = "gh:yegor256/0pdd#13";
         new Wbs(project).bootstrap().add(job);
-        orders.assign(job, "yegor256", 0L);
+        orders.assign(job, "yegor256", "0");
     }
 
     @Test
@@ -64,7 +64,7 @@ public final class OrdersTest {
         wbs.add(job);
         wbs.role(job, "REV");
         final Orders orders = new Orders(project).bootstrap();
-        orders.assign(job, login, 0L);
+        orders.assign(job, login, "0");
         MatcherAssert.assertThat(
             new Estimates(project).bootstrap().get(job),
             Matchers.equalTo(new Cash.S("$12.50"))
@@ -77,7 +77,7 @@ public final class OrdersTest {
         final Orders orders = new Orders(project).bootstrap();
         final String job = "gh:yegor256/0pdd#13";
         new Wbs(project).bootstrap().add(job);
-        orders.assign(job, "yegor256", 0L);
+        orders.assign(job, "yegor256", "0");
         orders.remove(job);
         MatcherAssert.assertThat(
             "Order not removed",
