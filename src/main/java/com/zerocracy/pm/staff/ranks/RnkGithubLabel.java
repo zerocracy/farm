@@ -21,7 +21,6 @@ import com.jcabi.github.IssueLabels;
 import com.zerocracy.radars.github.Job;
 import com.zerocracy.radars.github.Quota;
 import java.util.Comparator;
-import org.cactoos.BiFunc;
 import org.cactoos.func.StickyBiFunc;
 import org.cactoos.func.SyncBiFunc;
 import org.cactoos.func.UncheckedBiFunc;
@@ -35,7 +34,7 @@ public final class RnkGithubLabel implements Comparator<String> {
     /**
      * Global bug jobs cache.
      */
-    private final BiFunc<Github, String, Boolean> cached;
+    private final UncheckedBiFunc<Github, String, Boolean> cached;
 
     /**
      * Function to check github bug label.
@@ -68,9 +67,8 @@ public final class RnkGithubLabel implements Comparator<String> {
      * @param github Github
      * @param cache Cache function
      */
-    RnkGithubLabel(
-        final Github github, final BiFunc<Github, String, Boolean> cache
-    ) {
+    RnkGithubLabel(final Github github,
+        final UncheckedBiFunc<Github, String, Boolean> cache) {
         this.ghb = github;
         this.cached = cache;
     }
@@ -78,8 +76,8 @@ public final class RnkGithubLabel implements Comparator<String> {
     @Override
     public int compare(final String left, final String right) {
         return Boolean.compare(
-            new UncheckedBiFunc<>(this.cached).apply(this.ghb, right),
-            new UncheckedBiFunc<>(this.cached).apply(this.ghb, left)
+            this.cached.apply(this.ghb, right),
+            this.cached.apply(this.ghb, left)
         );
     }
 
