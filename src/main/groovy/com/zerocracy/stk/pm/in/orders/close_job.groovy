@@ -50,7 +50,7 @@ def exec(Project project, XML xml) {
       .token("job;${job}")
       .postTo(new ClaimsOf(farm, project))
   }
-  Orders orders = new Orders(project).bootstrap()
+  Orders orders = new Orders(farm, project).bootstrap()
   if (job.startsWith('gh:') && orders.assigned(job)) {
     if (issue.open) {
       throw new SoftException(

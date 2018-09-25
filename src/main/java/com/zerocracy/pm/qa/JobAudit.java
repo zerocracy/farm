@@ -71,7 +71,7 @@ public final class JobAudit {
      */
     public Collection<String> review(final String job) throws IOException {
         final Roles roles = new Roles(this.project).bootstrap();
-        final Orders orders = new Orders(this.project).bootstrap();
+        final Orders orders = new Orders(this.farm, this.project).bootstrap();
         final List<String> arcs = roles.findByRole("ARC");
         final String performer = orders.performer(job);
         final Issue.Smart issue = new Issue.Smart(

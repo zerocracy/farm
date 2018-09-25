@@ -22,7 +22,7 @@ import com.zerocracy.cash.Cash
 import com.zerocracy.pm.cost.Ledger
 
 def exec(Project project, XML xml) {
-  new Ledger(project).bootstrap().add(
+  new Ledger(farm, project).bootstrap().add(
     new Ledger.Transaction(
       new Cash.S('$1000'),
       'expenses', 'jobs',

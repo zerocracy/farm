@@ -173,8 +173,9 @@ public final class Recharge {
      * @throws IOException If fails
      */
     public boolean required() throws IOException {
-        final Cash cash = new Ledger(this.pkt).bootstrap().cash();
-        final Cash locked = new Estimates(this.pkt).bootstrap().total();
+        final Cash cash = new Ledger(this.farm, this.pkt).bootstrap().cash();
+        final Cash locked = new Estimates(this.farm, this.pkt)
+            .bootstrap().total();
         return cash.compareTo(locked.add(new Cash.S("$16"))) < 0;
     }
 

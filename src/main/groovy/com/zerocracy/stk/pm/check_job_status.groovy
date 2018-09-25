@@ -56,7 +56,7 @@ def exec(Project project, XML xml) {
       ).say(job)
     )
     items.add(new Par('The role is %s').say(wbs.role(job)))
-    Orders orders = new Orders(project).bootstrap()
+    Orders orders = new Orders(farm, project).bootstrap()
     if (orders.assigned(job)) {
       String performer = orders.performer(job)
       items.add(
@@ -73,7 +73,7 @@ def exec(Project project, XML xml) {
         items.add(new Par('@%s is on vacation!').say(performer))
       }
       Vesting vesting = new Vesting(project).bootstrap()
-      Estimates estimates = new Estimates(project).bootstrap()
+      Estimates estimates = new Estimates(farm, project).bootstrap()
       if (estimates.exists(job)) {
         items.add(
           new Par(
@@ -102,7 +102,7 @@ def exec(Project project, XML xml) {
           ).say()
         )
       }
-      Impediments impediments = new Impediments(project).bootstrap()
+      Impediments impediments = new Impediments(farm, project).bootstrap()
       if (new ListOf<>(impediments.jobs()).contains(job)) {
         items.add(
           new Par(
@@ -119,7 +119,7 @@ def exec(Project project, XML xml) {
     } else {
       items.add(new Par('The job is not assigned to anyone').say())
     }
-    Boosts boosts = new Boosts(project).bootstrap()
+    Boosts boosts = new Boosts(farm, project).bootstrap()
     if (orders.assigned(job)) {
       items.add(
         new Par(

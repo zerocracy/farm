@@ -29,12 +29,12 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   MatcherAssert.assertThat(
     'Boost didn\'t change for ARC request',
-    new Boosts(project).bootstrap().factor('gh:test/test#1'),
+    new Boosts(farm, project).bootstrap().factor('gh:test/test#1'),
     Matchers.equalTo(42)
   )
   MatcherAssert.assertThat(
     'Boost did change for DEV request',
-    new Boosts(project).bootstrap().factor('gh:test/test#2'),
+    new Boosts(farm, project).bootstrap().factor('gh:test/test#2'),
     Matchers.equalTo(2)
   )
   MatcherAssert.assertThat(

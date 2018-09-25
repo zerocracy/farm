@@ -34,7 +34,7 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Ping daily')
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
-  Orders orders = new Orders(project).bootstrap()
+  Orders orders = new Orders(farm, project).bootstrap()
   Date threshold = new Date() - 5
   ClaimIn claim = new ClaimIn(xml)
   int done = 0

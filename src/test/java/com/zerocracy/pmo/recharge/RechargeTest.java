@@ -19,8 +19,8 @@ package com.zerocracy.pmo.recharge;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.cash.Cash;
-import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
+import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pm.cost.Estimates;
 import com.zerocracy.pm.cost.Ledger;
 import com.zerocracy.pm.in.Orders;
@@ -43,7 +43,7 @@ public final class RechargeTest {
 
     @Test
     public void addsAndRemovesInfo() throws Exception {
-        final Farm farm = new FkFarm();
+        final Farm farm = new PropsFarm();
         final Project project = new FkProject();
         new Catalog(farm).bootstrap().add(
             project.pid(),
@@ -66,9 +66,11 @@ public final class RechargeTest {
         final Project project = new FkProject();
         final String job = "gh:test/test#1";
         new Wbs(project).bootstrap().add(job);
-        new Orders(project).bootstrap().assign(job, "perf", 1L);
-        new Estimates(project).bootstrap().update(job, new Cash.S("$100"));
-        new Ledger(project).bootstrap().add(
+        final PropsFarm farm = new PropsFarm();
+        new Orders(farm, project).bootstrap().assign(job, "perf", 1L);
+        new Estimates(farm, project).bootstrap()
+            .update(job, new Cash.S("$100"));
+        new Ledger(farm, project).bootstrap().add(
             new Ledger.Transaction(
                 new Cash.S("$10"),
                 "assets", "cash",
@@ -77,7 +79,7 @@ public final class RechargeTest {
             )
         );
         MatcherAssert.assertThat(
-            new Recharge(new FkFarm(), project).required(),
+            new Recharge(new PropsFarm(), project).required(),
             new IsEqual<>(true)
         );
     }

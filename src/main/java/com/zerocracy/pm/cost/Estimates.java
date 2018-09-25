@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pm.cost;
 
+import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Par;
 import com.zerocracy.Project;
@@ -69,15 +70,22 @@ import org.xembly.Directives;
 public final class Estimates {
 
     /**
+     * Farm.
+     */
+    private final Farm farm;
+
+    /**
      * Project.
      */
     private final Project project;
 
     /**
      * Ctor.
+     * @param farm Farm
      * @param pkt Project
      */
-    public Estimates(final Project pkt) {
+    public Estimates(final Farm farm, final Project pkt) {
+        this.farm = farm;
         this.project = pkt;
     }
 
@@ -120,7 +128,7 @@ public final class Estimates {
      */
     public void update(final String job, final Cash cash)
         throws IOException {
-        final Orders orders = new Orders(this.project).bootstrap();
+        final Orders orders = new Orders(this.farm, this.project).bootstrap();
         if (!orders.assigned(job)) {
             throw new SoftException(
                 new Par(
@@ -128,8 +136,8 @@ public final class Estimates {
                 ).say(job)
             );
         }
-        if (this.total()
-            .compareTo(new Ledger(this.project).bootstrap().cash()) > 0) {
+        final Ledger ledger = new Ledger(this.farm, this.project).bootstrap();
+        if (this.total().compareTo(ledger.cash()) > 0) {
             final Roles roles = new Roles(this.project).bootstrap();
             final Collection<String> owners = new LinkedList<>();
             owners.addAll(roles.findByRole("ARC"));

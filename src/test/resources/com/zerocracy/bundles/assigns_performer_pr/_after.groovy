@@ -24,7 +24,7 @@ import com.zerocracy.pm.scope.Wbs
 
 def exec(Project project, XML xml) {
   def job = 'gh:test/test#1'
-  assert new Orders(project).performer(job) == 'krzyk'
+  assert new Orders(farm, project).performer(job) == 'krzyk'
   assert new Wbs(project).role(job) == 'REV'
-  assert new Boosts(project).factor(job) == 1
+  assert new Boosts(farm, project).factor(job) == 1
 }

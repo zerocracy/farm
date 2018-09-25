@@ -52,7 +52,7 @@ def exec(Project project, XML xml) {
       'Funded via Stripe by recharge, payment ID is `%s`'
     ).say(pid)
   }
-  new Ledger(project).bootstrap().add(
+  new Ledger(farm, project).bootstrap().add(
     new Ledger.Transaction(
       amount,
       'assets', 'cash',

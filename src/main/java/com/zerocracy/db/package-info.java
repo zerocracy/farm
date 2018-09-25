@@ -14,13 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.assigns_performer
 
-import com.jcabi.xml.XML
-import com.zerocracy.Project
-import com.zerocracy.pm.in.Orders
-
-def exec(Project project, XML xml) {
-  Orders orders = new Orders(farm, project).bootstrap()
-  assert orders.performer('gh:test/test#1') == 'yegor256'
-}
+/**
+ * Database.
+ *
+ * @since 1.0
+ */
+package com.zerocracy.db;

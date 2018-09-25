@@ -31,9 +31,9 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Ping')
   ClaimIn claim = new ClaimIn(xml)
-  Ledger ledger = new Ledger(project).bootstrap()
+  Ledger ledger = new Ledger(farm, project).bootstrap()
   Cash cash = ledger.cash()
-  Cash locked = new Estimates(project).bootstrap().total()
+  Cash locked = new Estimates(farm, project).bootstrap().total()
   Farm farm = binding.variables.farm
   if (ledger.deficit() && cash > locked) {
     ledger.deficit(false)

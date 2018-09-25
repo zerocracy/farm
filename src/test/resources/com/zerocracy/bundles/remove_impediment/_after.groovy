@@ -23,7 +23,7 @@ import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
-    Iterable<String> impediments = new Impediments(project).bootstrap().jobs()
+    Iterable<String> impediments = new Impediments(farm, project).bootstrap().jobs()
     MatcherAssert.assertThat(
         'impediment was not removed for job #1',
         impediments,
