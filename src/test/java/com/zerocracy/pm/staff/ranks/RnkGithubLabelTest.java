@@ -26,17 +26,18 @@ import com.zerocracy.radars.github.Job;
 import java.util.ArrayList;
 import java.util.List;
 import org.cactoos.func.StickyBiFunc;
+import org.cactoos.func.UncheckedBiFunc;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
- * Test case for {@link RnkGithubBug}.
+ * Test case for {@link RnkGithubLabel}.
  *
  * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
-public final class RnkGithubBugTest {
+public final class RnkGithubLabelTest {
     @Test
     public void sortBugsFirst() throws Exception {
         final Github github = new MkGithub().relogin("test");
@@ -46,10 +47,11 @@ public final class RnkGithubBugTest {
         final List<String> jobs = new ArrayList<>(3);
         jobs.add(new Job(repo.issues().create("A feature 1", "")).toString());
         final Issue bug = repo.issues().create("A bug", "");
-        new IssueLabels.Smart(bug.labels()).addIfAbsent("bug");
+        final String label = "some-label";
+        new IssueLabels.Smart(bug.labels()).addIfAbsent(label);
         jobs.add(new Job(bug).toString());
         jobs.add(new Job(repo.issues().create("A feature 2", "")).toString());
-        jobs.sort(new RnkGithubBug(github));
+        jobs.sort(new RnkGithubLabel(github, label));
         MatcherAssert.assertThat(
             jobs,
             Matchers.contains(
@@ -64,10 +66,11 @@ public final class RnkGithubBugTest {
     public void evaluatesFromCache() throws Exception {
         final String issue = "gh:test/cached#4";
         final String bug = "gh:test/cached#5";
-        final StickyBiFunc<Github, String, Boolean> cache = new StickyBiFunc<>(
-            (ghb, job) -> job.equals(bug)
-        );
-        final RnkGithubBug rnk = new RnkGithubBug(new MkGithub(), cache);
+        final UncheckedBiFunc<Github, String, Boolean> cache =
+            new UncheckedBiFunc<>(
+                new StickyBiFunc<>((ghb, job) -> job.equals(bug))
+            );
+        final RnkGithubLabel rnk = new RnkGithubLabel(new MkGithub(), cache);
         MatcherAssert.assertThat(
             rnk.compare(issue, bug),
             Matchers.greaterThan(0)

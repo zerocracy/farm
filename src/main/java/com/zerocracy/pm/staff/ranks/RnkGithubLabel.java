@@ -21,7 +21,6 @@ import com.jcabi.github.IssueLabels;
 import com.zerocracy.radars.github.Job;
 import com.zerocracy.radars.github.Quota;
 import java.util.Comparator;
-import org.cactoos.BiFunc;
 import org.cactoos.func.StickyBiFunc;
 import org.cactoos.func.SyncBiFunc;
 import org.cactoos.func.UncheckedBiFunc;
@@ -31,21 +30,11 @@ import org.cactoos.func.UncheckedBiFunc;
  *
  * @since 1.0
  */
-public final class RnkGithubBug implements Comparator<String> {
+public final class RnkGithubLabel implements Comparator<String> {
     /**
      * Global bug jobs cache.
      */
-    private static final BiFunc<Github, String, Boolean> CACHED =
-        new UncheckedBiFunc<>(
-            new SyncBiFunc<>(
-                new StickyBiFunc<>(
-                    (github, job) -> new Quota(github).quiet()
-                        && job.startsWith("gh:") && new IssueLabels.Smart(
-                            new Job.Issue(github, job).labels()
-                        ).contains("bug")
-                )
-            )
-        );
+    private final UncheckedBiFunc<Github, String, Boolean> cached;
 
     /**
      * Function to check github bug label.
@@ -53,16 +42,24 @@ public final class RnkGithubBug implements Comparator<String> {
     private final Github ghb;
 
     /**
-     * Locally referenced cache.
-     */
-    private final UncheckedBiFunc<Github, String, Boolean> cache;
-
-    /**
      * Ctor.
      * @param github Github
+     * @param label Github label
      */
-    public RnkGithubBug(final Github github) {
-        this(github, RnkGithubBug.CACHED);
+    public RnkGithubLabel(final Github github, final String label) {
+        this(
+            github,
+            new UncheckedBiFunc<>(
+                new SyncBiFunc<>(
+                    new StickyBiFunc<>(
+                        (ghub, job) -> new Quota(ghub).quiet()
+                            && job.startsWith("gh:") && new IssueLabels.Smart(
+                            new Job.Issue(ghub, job).labels()
+                        ).contains(label)
+                    )
+                )
+            )
+        );
     }
 
     /**
@@ -70,17 +67,17 @@ public final class RnkGithubBug implements Comparator<String> {
      * @param github Github
      * @param cache Cache function
      */
-    RnkGithubBug(
-        final Github github, final BiFunc<Github, String, Boolean> cache
-    ) {
+    RnkGithubLabel(final Github github,
+        final UncheckedBiFunc<Github, String, Boolean> cache) {
         this.ghb = github;
-        this.cache = new UncheckedBiFunc<>(cache);
+        this.cached = cache;
     }
 
     @Override
     public int compare(final String left, final String right) {
         return Boolean.compare(
-            this.cache.apply(this.ghb, right), this.cache.apply(this.ghb, left)
+            this.cached.apply(this.ghb, right),
+            this.cached.apply(this.ghb, left)
         );
     }
 
