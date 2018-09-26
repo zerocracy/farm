@@ -43,6 +43,9 @@ import org.xembly.Directives;
  * Test case for {@link PgLedger}.
  *
  * @since 1.0
+ * @todo #1662:30min Run this test with embedded postgres installation
+ *  on Travis and Rultor. Embedded database should be started before tests
+ *  and updated with liquibase changelog from maven.
  * @checkstyle MagicNumberCheck (500 lines)
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle LineLength (500 line)
