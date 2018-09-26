@@ -16,17 +16,30 @@
  */
 package com.zerocracy.bundles.delete_stale_jobs
 
+import com.jcabi.github.Issues
 import com.jcabi.github.Repos
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.cash.Cash
 import com.zerocracy.entry.ExtGithub
+import com.zerocracy.pm.qa.Reviews
 import com.zerocracy.pmo.Agenda
 
-def exec(Project project, XML xml) {
+def exec(Project pmo, XML xml) {
   Farm farm = binding.variables.farm
-  new ExtGithub(farm).value().repos()
+  Project project = farm.find("@id='TESTPROJECT'")[0]
+  Issues issues = new ExtGithub(farm).value().repos()
     .create(new Repos.RepoCreate('test', false))
-    .issues().create('hello', 'world')
-  new Agenda(farm, 'g4s8').bootstrap().add(project, 'gh:test/test#1', 'DEV')
+    .issues()
+  issues.create('hello1', 'world1')
+  issues.create('hello2', 'world2')
+  String user = 'g4s8'
+  Agenda agenda = new Agenda(farm, user).bootstrap()
+  agenda.add(project, 'gh:test/test#1', 'DEV')
+  String inspected = 'gh:test/test#2'
+  agenda.add(project, inspected, 'DEV')
+  agenda.inspector(inspected, 'some-qa')
+  Reviews reviews = new Reviews(project).bootstrap()
+  reviews.add(inspected,'test', user, new Cash.S('$10'), 30, new Cash.S('$0'))
 }

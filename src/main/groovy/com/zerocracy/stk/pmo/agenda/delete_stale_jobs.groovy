@@ -36,7 +36,7 @@ def exec(Project pmo, XML xml) {
     }
     boolean updated = false
     agenda.jobs().each { job ->
-      if (!orders.contains(job)) {
+      if (!orders.contains(job) && !agenda.hasInspector(job)) {
         agenda.remove(job)
         updated = true
       }

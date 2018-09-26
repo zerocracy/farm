@@ -23,10 +23,10 @@ import com.zerocracy.pmo.Agenda
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 
-def exec(Project project, XML xml) {
+def exec(Project pmo, XML xml) {
   Farm farm = binding.variables.farm
   Agenda agenda = new Agenda(farm, 'g4s8').bootstrap()
   MatcherAssert.assertThat(
-    agenda.jobs(), Matchers.empty()
+    agenda.jobs(), Matchers.contains('gh:test/test#2')
   )
 }
