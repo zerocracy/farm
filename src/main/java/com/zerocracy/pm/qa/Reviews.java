@@ -25,14 +25,12 @@ import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.claims.ClaimOut;
 import java.io.IOException;
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 import org.cactoos.iterable.ItemAt;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.text.JoinedText;
-import org.cactoos.time.DateAsText;
-import org.cactoos.time.DateOf;
 import org.xembly.Directives;
 
 /**
@@ -94,7 +92,7 @@ public final class Reviews {
                     .xpath("/reviews")
                     .add("review")
                     .attr("job", job)
-                    .add("requested").set(new DateAsText().asString()).up()
+                    .add("requested").set(Instant.now().toString()).up()
                     .add("inspector").set(inspector).up()
                     .add("performer").set(performer).up()
                     .add("cash").set(cash).up()
@@ -197,7 +195,7 @@ public final class Reviews {
      * @return Name of inspector
      * @throws IOException If fails
      */
-    public Date requested(final String job) throws IOException {
+    public Instant requested(final String job) throws IOException {
         if (!this.exists(job)) {
             throw new SoftException(
                 new Par(
@@ -206,11 +204,11 @@ public final class Reviews {
             );
         }
         try (final Item reviews = this.item()) {
-            return new DateOf(
+            return Instant.parse(
                 new Xocument(reviews.path()).xpath(
                     String.format("//review[@job='%s']/requested/text()", job)
                 ).get(0)
-            ).value();
+            );
         }
     }
 

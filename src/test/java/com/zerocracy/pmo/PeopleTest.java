@@ -24,8 +24,8 @@ import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.IterableOf;
@@ -44,10 +44,6 @@ import org.junit.rules.ExpectedException;
 /**
  * Test case for {@link People}.
  * @since 1.0
- * @todo #952:30min Continue replacing old Date classes with Instant.
- *  Remember also to remove instances of `DateAsText` (Instant.toString should
- *  be used). There is a lot of classes to change so try to find a good small
- *  cluster of related classes that can be updated.
  * @checkstyle JavadocMethodCheck (1000 lines)
  * @checkstyle JavadocVariableCheck (1000 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (3 lines)
@@ -390,7 +386,7 @@ public final class PeopleTest {
         final FkFarm farm = new FkFarm(new FkProject());
         final People people = new People(farm).bootstrap();
         final String uid = "user3236";
-        final Date when = new Date(0L);
+        final Instant when = Instant.ofEpochMilli(0L);
         people.invite(uid, uid);
         people.apply(uid, when);
         MatcherAssert.assertThat(
@@ -409,7 +405,7 @@ public final class PeopleTest {
     public void throwIfApplyButDoesntExist() throws Exception {
         final FkFarm farm = new FkFarm(new FkProject());
         new People(farm).bootstrap()
-            .apply("user124", new Date(0L));
+            .apply("user124", Instant.ofEpochMilli(0L));
     }
 
     @Test(expected = IllegalArgumentException.class)

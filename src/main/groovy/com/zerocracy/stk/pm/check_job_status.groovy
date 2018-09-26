@@ -36,6 +36,9 @@ import com.zerocracy.pm.staff.Bans
 import com.zerocracy.pmo.People
 import org.cactoos.list.ListOf
 
+import java.time.Duration
+import java.time.Instant
+
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Check job status')
@@ -152,7 +155,7 @@ def exec(Project project, XML xml) {
     items.add(
       new Par(
         'The job is waiting quality review verdict by @%s for %[ms]s'
-      ).say(inspector, System.currentTimeMillis() - reviews.requested(job).time)
+      ).say(inspector, Duration.between(reviews.requested(job), Instant.now()).toMillis())
     )
     items.add(
       new Par(

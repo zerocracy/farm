@@ -8,3 +8,4 @@ target/
 .recommenders
 Gemfile.lock
 ajcore.*
+.factorypath

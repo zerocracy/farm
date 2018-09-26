@@ -33,8 +33,8 @@ import com.zerocracy.pm.scope.Wbs;
 import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.radars.github.Job;
 import java.io.IOException;
+import java.time.Instant;
 import org.cactoos.text.FormattedText;
-import org.cactoos.time.DateAsText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.collection.IsEmptyIterable;
@@ -73,7 +73,7 @@ public final class CatalogTest {
                     .attr("id", pid)
                     .add("title").set(pid).up()
                     .add("created")
-                    .set(new DateAsText().asString()).up()
+                    .set(Instant.now().toString()).up()
                     .add("prefix").set("2017/01/AAAABBBBC/").up()
                     .add("fee").set("0").up()
                     .add("alive").set("true").up()

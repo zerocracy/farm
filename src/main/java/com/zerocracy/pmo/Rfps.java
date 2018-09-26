@@ -23,7 +23,7 @@ import com.zerocracy.Item;
 import com.zerocracy.Par;
 import com.zerocracy.Xocument;
 import java.io.IOException;
-import java.util.Date;
+import java.time.Instant;
 import java.util.Iterator;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.text.JoinedText;
@@ -293,7 +293,7 @@ public final class Rfps {
      * @return Rfp ids
      * @throws IOException If fails
      */
-    public Iterable<Integer> olderThan(final Date date) throws IOException {
+    public Iterable<Integer> olderThan(final Instant date) throws IOException {
         try (final Item item = this.item()) {
             return new Mapped<>(
                 Integer::parseInt,
@@ -302,7 +302,7 @@ public final class Rfps {
                         "",
                         "/rfps/rfp[xs:dateTime(created) < ",
                         "xs:dateTime('",
-                        new DateAsText(date).asString(),
+                        date.toString(),
                         "')]/@id"
                     ).asString()
                 )
