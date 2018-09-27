@@ -40,6 +40,5 @@ def exec(Project pmo, XML xml) {
   String inspected = 'gh:test/test#2'
   agenda.add(project, inspected, 'DEV')
   agenda.inspector(inspected, 'some-qa')
-  Reviews reviews = new Reviews(project).bootstrap()
-  reviews.add(inspected,'test', user, new Cash.S('$10'), 30, new Cash.S('$0'))
+  new Reviews(project).bootstrap().add(inspected,'test', user, new Cash.S('$10'), 30, new Cash.S('$0'))
 }
