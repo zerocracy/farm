@@ -57,13 +57,13 @@ public final class ExtDataSource implements Scalar<DataSource> {
                         dsrc.setUrl(
                             String.format(
                                 "jdbc:postgresql://%s:%s/%s",
-                                props.get("pgsql.host"),
-                                props.get("pgsql.port"),
-                                props.get("pgsql.database")
+                                props.get("//pgsql//host"),
+                                props.get("//pgsql/port"),
+                                props.get("//pgsql/database")
                             )
                         );
-                        dsrc.setUsername(props.get("pgsql.user"));
-                        dsrc.setPassword(props.get("pgsql.password"));
+                        dsrc.setUsername(props.get("//pgsql/user"));
+                        dsrc.setPassword(props.get("//pgsql/password"));
                         dsrc.setMinIdle(Tv.TEN);
                         dsrc.setMaxIdle(Tv.TWENTY);
                     }
