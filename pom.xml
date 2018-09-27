@@ -1103,6 +1103,7 @@ SOFTWARE.
               <configuration>
                 <excludes>
                   <exclude>com.zerocracy.farm.S3ItemTest</exclude>
+                  <exclude>com.zerocracy.tk.profile.TkProfileTest</exclude>
                 </excludes>
               </configuration>
               <!--
@@ -1129,6 +1130,7 @@ SOFTWARE.
                 <configuration>
                   <excludes combine.children="append">
                     <exclude>com/zerocracy/farm/S3Item.java</exclude>
+                    <exclude>com/zerocracy/tk/profile/TkProfileTest.java</exclude>
                   </excludes>
                 </configuration>
               </execution>
