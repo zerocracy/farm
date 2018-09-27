@@ -43,7 +43,7 @@ public final class JobExpiredTest {
     public void sayWhenJobIsExpired() throws IOException {
         final Farm farm = new PropsFarm(new FkFarm());
         final Project pkt = new FkProject();
-        final Orders orders = new Orders(pkt).bootstrap();
+        final Orders orders = new Orders(farm, pkt).bootstrap();
         final String job = "gh:test/test#1";
         new Wbs(pkt).bootstrap().add(job);
         final String performer = "user2241234";
@@ -66,7 +66,7 @@ public final class JobExpiredTest {
     public void sayWhenJobIsNotExpired() throws IOException {
         final Farm farm = new PropsFarm(new FkFarm());
         final Project pkt = new FkProject();
-        final Orders orders = new Orders(pkt).bootstrap();
+        final Orders orders = new Orders(farm, pkt).bootstrap();
         final String job = "gh:test/test#2";
         new Wbs(pkt).bootstrap().add(job);
         final String performer = "user22234";

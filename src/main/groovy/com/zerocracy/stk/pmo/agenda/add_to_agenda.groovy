@@ -33,7 +33,7 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Order was given')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
-  Orders orders = new Orders(project).bootstrap()
+  Orders orders = new Orders(farm, project).bootstrap()
   if (!orders.assigned(job)) {
     return
   }
@@ -42,7 +42,7 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Agenda agenda = new Agenda(farm, owner).bootstrap()
   agenda.add(project, job, role)
-  Estimates estimates = new Estimates(project).bootstrap()
+  Estimates estimates = new Estimates(farm, project).bootstrap()
   Cash cash = Cash.ZERO
   if (estimates.exists(job)) {
     cash = estimates.get(job)

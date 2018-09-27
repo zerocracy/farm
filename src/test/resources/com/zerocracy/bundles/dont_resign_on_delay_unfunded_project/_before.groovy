@@ -33,7 +33,7 @@ def exec(Project project, XML xml) {
   repo.issues().create('Issue title', 'Issue body')
   repo.pulls().create('PR title', 'master', 'master')
   MatcherAssert.assertThat(
-    new Ledger(project).bootstrap().cash().decimal(),
+    new Ledger(farm, project).bootstrap().cash().decimal(),
     Matchers.comparesEqualTo(BigDecimal.ZERO)
   )
 }

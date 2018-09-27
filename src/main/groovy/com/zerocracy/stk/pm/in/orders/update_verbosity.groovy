@@ -47,7 +47,7 @@ def exec(Project project, XML xml) {
   Github github = new ExtGithub(farm).value()
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
-  String performer = new Orders(project).bootstrap().performer(job)
+  String performer = new Orders(farm, project).bootstrap().performer(job)
   Issue.Smart issue = new Issue.Smart(new Job.Issue(github, job))
   int verbosity = new LengthOf<>(
     new Joined<>(

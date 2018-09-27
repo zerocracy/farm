@@ -36,7 +36,7 @@ def exec(Project project, XML xml) {
   if (!wbs.exists(job)) {
     return
   }
-  Orders orders = new Orders(project).bootstrap()
+  Orders orders = new Orders(farm, project).bootstrap()
   Farm farm = binding.variables.farm
   if (orders.assigned(job)) {
     String performer = orders.performer(job)

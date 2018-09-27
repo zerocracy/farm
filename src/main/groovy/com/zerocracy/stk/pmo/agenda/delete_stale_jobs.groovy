@@ -28,7 +28,7 @@ def exec(Project pmo, XML xml) {
         return
       }
       orders.addAll(
-        new Orders(farm.find("@id='${pid}'")[0]).bootstrap().jobs(login)
+        new Orders(farm, farm.find("@id='${pid}'")[0]).bootstrap().jobs(login)
       )
       orders.addAll(
         new Reviews(farm.find("@id='${pid}'")[0]).bootstrap().findByInspector(login)

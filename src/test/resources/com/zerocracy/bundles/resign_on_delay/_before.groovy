@@ -32,7 +32,7 @@ def exec(Project project, XML xml) {
   Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
   repo.issues().create('Issue title', 'Issue body')
   repo.pulls().create('PR title', 'master', 'master')
-  new Ledger(project).bootstrap().add(
+  new Ledger(farm, project).bootstrap().add(
     new Ledger.Transaction(
       new Cash.S('$1000'),
       'assets', 'cash',

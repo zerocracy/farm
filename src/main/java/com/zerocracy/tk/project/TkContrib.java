@@ -89,8 +89,9 @@ public final class TkContrib implements TkRegex {
                     ),
                     new XeAppend(
                         "balance",
-                        new Ledger(project).bootstrap().cash().add(
-                            new Estimates(project).bootstrap().total().mul(-1L)
+                        new Ledger(this.farm, project).bootstrap().cash().add(
+                            new Estimates(this.farm, project).bootstrap()
+                                .total().mul(-1L)
                         ).toString()
                     )
                 );

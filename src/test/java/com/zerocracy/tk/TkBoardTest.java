@@ -53,7 +53,7 @@ public final class TkBoardTest {
             repo.coordinates().toString()
         );
         catalog.publish(project.pid(), true);
-        final Ledger ledger = new Ledger(project).bootstrap();
+        final Ledger ledger = new Ledger(farm, project).bootstrap();
         final Cash.S cash = new Cash.S("$256");
         ledger.add(
             new Ledger.Transaction(
@@ -112,7 +112,7 @@ public final class TkBoardTest {
             repo.coordinates().toString()
         );
         catalog.publish(project.pid(), true);
-        final Ledger ledger = new Ledger(project).bootstrap();
+        final Ledger ledger = new Ledger(farm, project).bootstrap();
         final Cash.S liabilities = new Cash.S("$256");
         ledger.add(
             new Ledger.Transaction(

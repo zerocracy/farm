@@ -37,7 +37,7 @@ def exec(Project project, XML xml) {
   String login = claim.param('login')
   Roles roles = new Roles(project).bootstrap()
   String arc = roles.findByRole('ARC')[0]
-  Orders orders = new Orders(project).bootstrap()
+  Orders orders = new Orders(farm, project).bootstrap()
   Farm farm = binding.variables.farm
   orders.iterate().each { job ->
     claim.copy()

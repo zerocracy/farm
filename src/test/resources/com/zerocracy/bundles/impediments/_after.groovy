@@ -29,8 +29,8 @@ import org.hamcrest.Matchers
  *  impediments if threshold has been reached. See #447 comments for details.
  */
 def exec(Project project, XML xml) {
-    Orders orders = new Orders(project).bootstrap()
-    def impediments = new Impediments(project).bootstrap().jobs()
+    Orders orders = new Orders(farm, project).bootstrap()
+    def impediments = new Impediments(farm, project).bootstrap().jobs()
     MatcherAssert.assertThat(
         'impediment was not registered for job #1',
         impediments,

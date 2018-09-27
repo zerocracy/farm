@@ -37,7 +37,7 @@ def exec(Project project, XML xml) {
   Project prj = farm.find("@id='ZEROCRACY'")[(0)]
   repo.issues().create('hello', 'world')
   new Wbs(prj).bootstrap().add('gh:test/repo#1')
-  new Orders(prj).bootstrap().assign('gh:test/repo#1','g4s8',5)
+  new Orders(farm, prj).bootstrap().assign('gh:test/repo#1','g4s8',5)
   new Agenda(farm, 'g4s8').bootstrap().add(project, 'gh:test/repo#1', 'DEV')
   repo.patch(Json.createObjectBuilder().add('name', 'other').build())
 }

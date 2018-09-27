@@ -52,7 +52,7 @@ def exec(Project project, XML xml) {
   if (!people.hasMentor(login)) {
     return
   }
-  Orders orders = new Orders(project).bootstrap()
+  Orders orders = new Orders(farm, project).bootstrap()
   if (orders.assigned(job)) {
     return
   }

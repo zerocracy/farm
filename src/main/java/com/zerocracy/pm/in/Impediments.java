@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pm.in;
 
+import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Par;
 import com.zerocracy.Project;
@@ -33,6 +34,12 @@ import org.xembly.Directives;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class Impediments {
+
+    /**
+     * Farm.
+     */
+    private final Farm farm;
+
     /**
      * A project.
      */
@@ -40,9 +47,11 @@ public final class Impediments {
 
     /**
      * Ctor.
+     * @param farm Farm
      * @param pkt A project
      */
-    public Impediments(final Project pkt) {
+    public Impediments(final Farm farm, final Project pkt) {
+        this.farm = farm;
         this.project = pkt;
     }
 
@@ -81,7 +90,7 @@ public final class Impediments {
                 ).say(job)
             );
         }
-        if (!new Orders(this.project).bootstrap().assigned(job)) {
+        if (!new Orders(this.farm, this.project).bootstrap().assigned(job)) {
             throw new SoftException(
                 new Par(
                     "Job %s is not assigned, can't put it on hold"

@@ -38,7 +38,7 @@ def exec(Project project, XML xml) {
   new Issue.Smart(
     new Pull.Smart(repo.pulls().create('PR', 'dev', 'mater')).issue()
   ).close()
-  new Ledger(project).bootstrap().add(
+  new Ledger(farm, project).bootstrap().add(
     new Ledger.Transaction(
       new Cash.S('$1000'),
       'assets', 'cash',

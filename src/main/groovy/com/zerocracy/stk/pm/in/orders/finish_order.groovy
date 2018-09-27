@@ -41,7 +41,7 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Finish order')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
-  Orders orders = new Orders(project).bootstrap()
+  Orders orders = new Orders(farm, project).bootstrap()
   Instant closed
   if (claim.hasParam('closed')) {
     closed = Instant.parse(claim.param('closed'))
@@ -51,7 +51,7 @@ def exec(Project project, XML xml) {
 
   long velocity = closed.toEpochMilli() - orders.startTime(job).time
   String performer = orders.performer(job)
-  Estimates estimates = new Estimates(project).bootstrap()
+  Estimates estimates = new Estimates(farm, project).bootstrap()
   Cash price = Cash.ZERO
   Farm farm = binding.variables.farm
   int speed = 0
@@ -77,7 +77,7 @@ def exec(Project project, XML xml) {
       price = price.add(new Rates(project).bootstrap().rate(performer).mul(speed) / 60)
     }
   }
-  int minutes = new Boosts(project).bootstrap().factor(job) * 15 + speed
+  int minutes = new Boosts(farm, project).bootstrap().factor(job) * 15 + speed
   Roles roles = new Roles(project).bootstrap()
   List<String> qa = roles.findByRole('QA')
   if (qa.empty || roles.hasRole(performer, 'ARC', 'PO')) {

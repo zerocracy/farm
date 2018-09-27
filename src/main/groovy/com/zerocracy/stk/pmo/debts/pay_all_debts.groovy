@@ -66,7 +66,7 @@ def exec(Project pmo, XML xml) {
       }
       String details = amounts.join(', ')
       String pid = new Payroll(farm).pay(
-        new Ledger(new FkProject()).bootstrap(),
+        new Ledger(farm, new FkProject()).bootstrap(),
         uid, debt,
         new Par('Debt repayment, per §46: %s').say(details)
       )

@@ -26,7 +26,7 @@ import org.hamcrest.Matchers
 def exec(Project project, XML xml) {
   Wbs wbs = new Wbs(project).bootstrap()
   assert wbs.exists('gh:test/test#1')
-  def orders = new Orders(project).bootstrap()
+  def orders = new Orders(farm, project).bootstrap()
   MatcherAssert.assertThat(
     orders.assigned('gh:test/test#3'),
     Matchers.is(true)
