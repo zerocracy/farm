@@ -70,13 +70,18 @@ public final class PgLedger {
      * Add transactions.
      *
      * @param tns Transactions
-     * @throws SQLException If fails
+     * @throws SQLException If database fails
+     * @throws IOException If project fails
      */
-    public void add(final Ledger.Transaction... tns) throws SQLException {
+    public void add(final Ledger.Transaction... tns) throws SQLException,
+        IOException {
         final JdbcSession session = new JdbcSession(this.data)
             .autocommit(false);
         Optional<Long> parent = session
-            .sql("SELECT id FROM ledger ORDER BY id DESC LIMIT 1").select(
+            // @checkstyle LineLength (1 line)
+            .sql("SELECT id FROM ledger WHERE project = ? ORDER BY id DESC LIMIT 1")
+            .set(this.pkt.pid())
+            .select(
                 (rset, stmt) -> {
                     final Optional<Long> res;
                     if (rset.next()) {
