@@ -413,7 +413,7 @@ SOFTWARE.
     <dependency>
       <groupId>com.jcabi</groupId>
       <artifactId>jcabi-jdbc</artifactId>
-      <version>0.17.1</version>
+      <version>0.16</version>
     </dependency>
     <dependency>
       <groupId>com.h2database</groupId>
