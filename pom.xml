@@ -1149,7 +1149,7 @@ SOFTWARE.
               <configuration>
                 <changeLogFile>${basedir}/src/main/resources/liquibase/master.xml</changeLogFile>
                 <driver>org.postgresql.Driver</driver>
-                <url>jdbc:postgresql://${pgsql.host}:${pgsql.port}/${pgsql.database}</url>
+                <url>jdbc:postgresql://${pgsql.host}:${pgsql.port}/${pgsql.database}?ssl=true&amp;sslmode=require</url>
                 <username>${pgsql.user}</username>
                 <password>${pgsql.password}</password>
                 <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
