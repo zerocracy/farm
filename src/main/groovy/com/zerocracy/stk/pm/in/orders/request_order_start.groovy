@@ -43,7 +43,7 @@ def exec(Project project, XML xml) {
       .param('reason', 'Order start requested, but WBS is empty')
       .postTo(new ClaimsOf(farm, project))
   }
-  Orders orders = new Orders(project).bootstrap()
+  Orders orders = new Orders(farm, project).bootstrap()
   if (orders.assigned(job)) {
     String performer = orders.performer(job)
     if (login == performer) {

@@ -16,14 +16,20 @@
  */
 package com.zerocracy.pm.cost;
 
+import com.jcabi.jdbc.Preparation;
+import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
+import com.zerocracy.db.ExtDataSource;
+import com.zerocracy.farm.props.Props;
 import java.io.IOException;
+import java.sql.SQLException;
+import java.sql.Types;
+import java.util.Optional;
 import org.cactoos.Scalar;
-import org.cactoos.scalar.UncheckedScalar;
 import org.cactoos.time.DateAsText;
 import org.xembly.Directive;
 import org.xembly.Directives;
@@ -32,16 +38,15 @@ import org.xembly.Directives;
  * Ledger.
  *
  * @since 1.0
- * @todo #1662:30min Ledger is really slow when it grows big. Performance
- *  degrades linearly (O(n)) with the size of the ledger due to the need
- *  to perform ID lookups. The slowdown is roughly 50ms per 1000 entries.
- *  See https://github.com/zerocracy/farm/issues/1662#issuecomment-416454156
- *  for details. Let's move away from using XML and record entries using
- *  Postgres. For more info see
- *  https://github.com/zerocracy/farm/issues/1662#issuecomment-422759929
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 public final class Ledger {
+
+    /**
+     * Farm.
+     */
+    private final Farm farm;
 
     /**
      * Project.
@@ -50,9 +55,11 @@ public final class Ledger {
 
     /**
      * Ctor.
+     * @param farm Farm
      * @param pkt Project
      */
-    public Ledger(final Project pkt) {
+    public Ledger(final Farm farm, final Project pkt) {
+        this.farm = farm;
         this.project = pkt;
     }
 
@@ -110,33 +117,23 @@ public final class Ledger {
     /**
      * Add transactions.
      * @param tns Transactions
-     * @return First transaction ID
      * @throws IOException If fails
      */
     @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
-    public long add(final Ledger.Transaction... tns) throws IOException {
+    public void add(final Ledger.Transaction... tns) throws IOException {
         try (final Item item = this.item()) {
+            if (!new Props(this.farm).has("//testing")
+                || System.getProperty("pgsql.port") != null) {
+                new PgLedger(
+                    new ExtDataSource(this.farm).value(), this.project
+                ).add(tns);
+            }
             final Xocument xoc = new Xocument(item);
-            long before = 0L;
-            if (!xoc.nodes("//transaction").isEmpty()) {
-                before = Long.parseLong(
-                    xoc.xpath("max(//transaction/@id)").get(0)
-                );
+            for (final Transaction txn : tns) {
+                txn.update(xoc);
             }
-            for (int idx = 0; idx < tns.length; ++idx) {
-                final Directives dirs = new Directives()
-                    .xpath("/ledger")
-                    .addIf("transactions")
-                    .add("transaction")
-                    .attr("id", before + 1L + (long) idx)
-                    .append(new UncheckedScalar<>(tns[idx]).value());
-                if (idx > 0) {
-                    dirs.attr("parent", before + 1L);
-                }
-                xoc.modify(dirs);
-                tns[idx].update(xoc);
-            }
-            return before + 1L;
+        } catch (final SQLException err) {
+            throw new IOException("Failed to add transaction", err);
         }
     }
 
@@ -146,8 +143,19 @@ public final class Ledger {
      * @throws IOException If fails
      */
     public Ledger bootstrap() throws IOException {
-        try (final Item wbs = this.item()) {
-            new Xocument(wbs.path()).bootstrap("pm/cost/ledger");
+        try (final Item xml = this.item()) {
+            new Xocument(xml.path()).bootstrap("pm/cost/ledger");
+            if (!new Props(this.farm).has("//testing")
+                || System.getProperty("pgsql.port") != null) {
+                new PgLedger(
+                    new ExtDataSource(this.farm).value(),
+                    this.project
+                ).bootstrap(xml);
+            }
+        } catch (final SQLException err) {
+            throw new IOException(
+                "Failed to bootstrap postgres ledger", err
+            );
         }
         return this;
     }
@@ -234,7 +242,7 @@ public final class Ledger {
             this.details = text;
         }
         @Override
-        public Iterable<Directive> value() throws Exception {
+        public Iterable<Directive> value() {
             return new Directives()
                 .add("created")
                 .set(new DateAsText().asString()).up()
@@ -301,5 +309,35 @@ public final class Ledger {
             );
         }
 
+        /**
+         * Preparation for SQL insert.
+         *
+         * @param project Project
+         * @param parent Parent transaction
+         * @return SQL session preparation
+         * @checkstyle MagicNumberCheck (50 lines)
+         */
+        public Preparation preparation(final Project project,
+            final Optional<Long> parent) {
+            return stmt -> {
+                stmt.setLong(1, parent.map(x -> x + 1L).orElse(1L));
+                try {
+                    stmt.setString(2, project.pid());
+                } catch (final IOException err) {
+                    throw new SQLException("Failed to read project id", err);
+                }
+                if (parent.isPresent()) {
+                    stmt.setLong(3, parent.get());
+                } else {
+                    stmt.setNull(3, Types.BIGINT);
+                }
+                stmt.setBigDecimal(4, this.amount.decimal());
+                stmt.setString(5, this.debit);
+                stmt.setString(6, this.debitx);
+                stmt.setString(7, this.credit);
+                stmt.setString(8, this.creditx);
+                stmt.setString(9, new Par.ToHtml(this.details).toString());
+            };
+        }
     }
 }

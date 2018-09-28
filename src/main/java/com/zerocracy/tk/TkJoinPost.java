@@ -76,7 +76,7 @@ public final class TkJoinPost implements TkRegex {
         final LocalDateTime when;
         if (people.applied(author)) {
             when = LocalDateTime.ofInstant(
-                people.appliedTime(author).toInstant(),
+                people.appliedTime(author),
                 ZoneOffset.UTC
             );
         } else {

@@ -57,9 +57,9 @@ public final class SmartFarmTest {
                         "gh:test/test#%d", inc.incrementAndGet()
                     );
                     new Wbs(project).bootstrap().add(job);
-                    new Boosts(project).bootstrap().boost(job, 1);
+                    new Boosts(farm, project).bootstrap().boost(job, 1);
                     new Wbs(project).bootstrap().remove(job);
-                    return new Boosts(project).factor(job) == 2;
+                    return new Boosts(farm, project).factor(job) == 2;
                 },
                 new RunsInThreads<>(new AtomicInteger())
             );
@@ -153,7 +153,7 @@ public final class SmartFarmTest {
             ).iterator().next();
             final String job = "gh:test/test#22";
             new Wbs(project).bootstrap().add(job);
-            new Orders(project).bootstrap().assign(job, "jeff", "0");
+            new Orders(farm, project).bootstrap().assign(job, "jeff", "0");
             new VerboseRunnable(
                 new RunnableOf<>(
                     obj -> {

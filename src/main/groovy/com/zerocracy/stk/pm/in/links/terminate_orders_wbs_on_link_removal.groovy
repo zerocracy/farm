@@ -26,7 +26,7 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Project link was removed')
   new Assume(project, xml).roles('PO', 'ARC')
-  Orders orders = new Orders(project).bootstrap()
+  Orders orders = new Orders(farm, project).bootstrap()
   orders.iterate().each {
     order -> orders.remove(order)
   }

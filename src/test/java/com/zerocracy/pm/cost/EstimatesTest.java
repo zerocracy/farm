@@ -16,9 +16,11 @@
  */
 package com.zerocracy.pm.cost;
 
+import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.farm.fake.FkProject;
+import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pm.in.Orders;
 import com.zerocracy.pm.scope.Wbs;
 import org.hamcrest.MatcherAssert;
@@ -29,13 +31,15 @@ import org.junit.Test;
  * Test case for {@link Estimates}.
  * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class EstimatesTest {
 
     @Test
     public void showsEmptyTotal() throws Exception {
-        final Estimates estimates = new Estimates(new FkProject()).bootstrap();
+        final Estimates estimates =
+            new Estimates(new PropsFarm(), new FkProject()).bootstrap();
         MatcherAssert.assertThat(
             estimates.total(),
             Matchers.equalTo(Cash.ZERO)
@@ -45,7 +49,8 @@ public final class EstimatesTest {
     @Test
     public void estimatesJobs() throws Exception {
         final Project project = new FkProject();
-        new Ledger(project).bootstrap().add(
+        final PropsFarm farm = new PropsFarm();
+        new Ledger(farm, project).bootstrap().add(
             new Ledger.Transaction(
                 new Cash.S("$500"),
                 "assets", "cash",
@@ -53,10 +58,10 @@ public final class EstimatesTest {
                 "Funded by Stripe customer"
             )
         );
-        final Estimates estimates = new Estimates(project).bootstrap();
+        final Estimates estimates = new Estimates(farm, project).bootstrap();
         final String first = "gh:yegor256/pdd#4";
         new Wbs(project).bootstrap().add(first);
-        new Orders(project).bootstrap().assign(first, "yegor256", "0");
+        new Orders(farm, project).bootstrap().assign(first, "yegor256", "0");
         estimates.update(first, new Cash.S("$45"));
         MatcherAssert.assertThat(
             estimates.get(first),
@@ -64,7 +69,7 @@ public final class EstimatesTest {
         );
         final String second = "gh:yegor256/pdd#1";
         new Wbs(project).bootstrap().add(second);
-        new Orders(project).bootstrap().assign(second, "yegor", "0");
+        new Orders(farm, project).bootstrap().assign(second, "yegor", "0");
         estimates.update(second, new Cash.S("$100"));
         MatcherAssert.assertThat(
             estimates.total(),
@@ -75,7 +80,8 @@ public final class EstimatesTest {
     @Test
     public void estimatesJobsWithDifferentCurrencies() throws Exception {
         final Project project = new FkProject();
-        new Ledger(project).bootstrap().add(
+        final Farm farm = new PropsFarm();
+        new Ledger(farm, project).bootstrap().add(
             new Ledger.Transaction(
                 new Cash.S("$500"),
                 "assets", "cash",
@@ -83,11 +89,11 @@ public final class EstimatesTest {
                 "Funded by some guy"
             )
         );
-        final Estimates estimates = new Estimates(project).bootstrap();
+        final Estimates estimates = new Estimates(farm, project).bootstrap();
         final String first = "gh:yegor256/pdd#4";
         final Wbs wbs = new Wbs(project).bootstrap();
         wbs.add(first);
-        new Orders(project).bootstrap().assign(first, "yegor256", "0");
+        new Orders(farm, project).bootstrap().assign(first, "yegor256", "0");
         estimates.update(first, new Cash.S("$45"));
         MatcherAssert.assertThat(
             estimates.get(first),
@@ -95,7 +101,7 @@ public final class EstimatesTest {
         );
         final String second = "gh:yegor256/pdd#1";
         wbs.add(second);
-        new Orders(project).bootstrap().assign(second, "yegor", "0");
+        new Orders(farm, project).bootstrap().assign(second, "yegor", "0");
         estimates.update(second, new Cash.S("€100"));
         MatcherAssert.assertThat(
             estimates.total(),

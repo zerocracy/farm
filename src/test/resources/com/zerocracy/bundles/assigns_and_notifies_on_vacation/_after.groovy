@@ -26,7 +26,7 @@ import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
-  Orders orders = new Orders(project).bootstrap()
+  Orders orders = new Orders(farm, project).bootstrap()
   assert orders.performer('gh:test/test#1') == 'yegor256'
   Github github = new ExtGithub(binding.variables.farm).value()
   Repo repo = github.repos().get(new Coordinates.Simple('test/test'))

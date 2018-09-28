@@ -21,6 +21,7 @@ import com.zerocracy.SoftException;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
+import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pm.cost.Ledger;
 import org.junit.Rule;
 import org.junit.Test;
@@ -49,7 +50,7 @@ public final class PayrollTest {
         );
         new Payroll(new FkFarm()).pay(
             new Ledger(
-                new FkProject()
+                new PropsFarm(), new FkProject()
             ),
             "paulodamaso",
             amount,
@@ -57,21 +58,21 @@ public final class PayrollTest {
         );
     }
 
-    @Test (expected = UnsupportedOperationException.class)
+    @Test(expected = UnsupportedOperationException.class)
     public void walletIsEmpty() {
         throw new UnsupportedOperationException(
             "walletIsEmpty test is not implemented"
         );
     }
 
-    @Test (expected = UnsupportedOperationException.class)
+    @Test(expected = UnsupportedOperationException.class)
     public void unsupportedPaymentMethod() {
         throw new UnsupportedOperationException(
             "unsupportedPaymentMethod test is not implemented"
         );
     }
 
-    @Test (expected = UnsupportedOperationException.class)
+    @Test(expected = UnsupportedOperationException.class)
     public void makePayment() {
         throw new UnsupportedOperationException(
             "makePayment test is not implemented"

@@ -27,15 +27,12 @@ import com.zerocracy.cash.Cash;
 import com.zerocracy.cash.CashParsingException;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.Date;
 import java.util.Iterator;
 import org.cactoos.iterable.ItemAt;
 import org.cactoos.iterable.Joined;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.scalar.NumberOf;
 import org.cactoos.scalar.UncheckedScalar;
-import org.cactoos.time.DateAsText;
-import org.cactoos.time.DateOf;
 import org.xembly.Directives;
 
 /**
@@ -798,13 +795,13 @@ public final class People {
      * @param when When applied (UTC)
      * @throws IOException If fails
      */
-    public void apply(final String uid, final Date when) throws IOException {
+    public void apply(final String uid, final Instant when) throws IOException {
         this.checkExisting(uid);
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives().xpath(
                     String.format("//people/person[@id  ='%s']", uid)
-                ).addIf("applied").set(new DateAsText(when).asString())
+                ).addIf("applied").set(when.toString())
             );
         }
     }
@@ -830,7 +827,7 @@ public final class People {
      * @return Applied time (UTC)
      * @throws IOException If fails
      */
-    public Date appliedTime(final String uid) throws IOException {
+    public Instant appliedTime(final String uid) throws IOException {
         this.checkExisting(uid);
         if (!this.applied(uid)) {
             throw new IllegalArgumentException(
@@ -838,14 +835,14 @@ public final class People {
             );
         }
         try (final Item item = this.item()) {
-            return new DateOf(
+            return Instant.parse(
                 new Xocument(item).xpath(
                     String.format(
                         "//people/person[@id  ='%s']/applied/text()",
                         uid
                     )
                 ).get(0)
-            ).value();
+            );
         }
     }
 

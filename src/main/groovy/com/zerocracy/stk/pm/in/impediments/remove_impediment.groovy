@@ -42,7 +42,7 @@ def exec(Project project, XML xml) {
   String job = claim.param('job')
   String author = claim.author()
   Farm farm = binding.variables.farm
-  new Impediments(project)
+  new Impediments(farm, project)
     .bootstrap()
     .remove(job)
   claim.reply(

@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
+import java.time.Instant;
 import org.cactoos.text.FormattedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -70,7 +70,7 @@ public final class TkJoinPostTest {
         final People people = new People(farm).bootstrap();
         final String uid = "yegor256";
         people.touch(uid);
-        people.apply(uid, new Date());
+        people.apply(uid, Instant.now());
         final RqWithUser req = new RqWithUser(
             farm,
             new RqFake("POST", "/join-post")

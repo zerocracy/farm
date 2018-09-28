@@ -41,7 +41,7 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   Cash amount = new Cash.S(claim.param('amount'))
   Farm farm = binding.variables.farm
-  new Ledger(project).bootstrap().add(
+  new Ledger(farm, project).bootstrap().add(
     new Ledger.Transaction(
       amount,
       'assets', 'cash',

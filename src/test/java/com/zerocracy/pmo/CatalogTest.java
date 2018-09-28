@@ -27,14 +27,15 @@ import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
+import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pm.cost.Ledger;
 import com.zerocracy.pm.in.Orders;
 import com.zerocracy.pm.scope.Wbs;
 import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.radars.github.Job;
 import java.io.IOException;
+import java.time.Instant;
 import org.cactoos.text.FormattedText;
-import org.cactoos.time.DateAsText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.collection.IsEmptyIterable;
@@ -73,7 +74,7 @@ public final class CatalogTest {
                     .attr("id", pid)
                     .add("title").set(pid).up()
                     .add("created")
-                    .set(new DateAsText().asString()).up()
+                    .set(Instant.now().toString()).up()
                     .add("prefix").set("2017/01/AAAABBBBC/").up()
                     .add("fee").set("0").up()
                     .add("alive").set("true").up()
@@ -197,7 +198,8 @@ public final class CatalogTest {
     @Ignore
     public void catalogHasBoardPageInfo() throws Exception {
         final FkProject project = new FkProject();
-        new Ledger(project).bootstrap().add(
+        final PropsFarm farm = new PropsFarm();
+        new Ledger(farm, project).bootstrap().add(
             new Ledger.Transaction(
                 new Cash.S("$100"),
                 "assets", "cash",
@@ -223,7 +225,7 @@ public final class CatalogTest {
         for (int cont = 0; cont < Tv.THREE; cont = cont + 1) {
             wbs.add(new Job(repo.issues().create("Job", "")).toString());
         }
-        new Orders(project).bootstrap().assign(one, dev, "10");
+        new Orders(farm, project).bootstrap().assign(one, dev, "10");
         try (final Item item = CatalogTest.item(project)) {
             MatcherAssert.assertThat(
                 "Architect(s) not found",

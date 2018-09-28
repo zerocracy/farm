@@ -34,7 +34,7 @@ import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
-  new Ledger(project).bootstrap().add(
+  new Ledger(farm, project).bootstrap().add(
     new Ledger.Transaction(
       new Cash.S('$1000'),
       'assets', 'cash',

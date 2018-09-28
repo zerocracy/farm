@@ -153,19 +153,19 @@ public final class TkProject implements TkRegex {
                                         ),
                                         new XeAppend(
                                             "cash",
-                                            new Ledger(project).bootstrap()
-                                                .cash().toString()
+                                            new Ledger(this.farm, project)
+                                                .bootstrap().cash().toString()
                                         ),
                                         new XeAppend(
                                             "estimates",
-                                            new Estimates(project).bootstrap()
-                                                .total().toString()
+                                            new Estimates(this.farm, project)
+                                                .bootstrap().total().toString()
                                         ),
                                         new XeAppend(
                                             "deficit",
                                             Boolean.toString(
-                                                new Ledger(project).bootstrap()
-                                                    .deficit()
+                                                new Ledger(this.farm, project)
+                                                    .bootstrap().deficit()
                                             )
                                         ),
                                         new XeAppend(

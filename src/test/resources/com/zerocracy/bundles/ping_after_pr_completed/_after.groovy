@@ -28,6 +28,6 @@ def exec(Project project, XML xml) {
     new Wbs(project).bootstrap().iterate(), Matchers.empty()
   )
   MatcherAssert.assertThat(
-      new Orders(project).bootstrap().iterate(), Matchers.empty()
+      new Orders(farm, project).bootstrap().iterate(), Matchers.empty()
   )
 }

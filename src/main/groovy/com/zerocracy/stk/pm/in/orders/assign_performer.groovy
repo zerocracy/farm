@@ -37,7 +37,7 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Performer was elected')
   ClaimIn claim = new ClaimIn(xml)
   Wbs wbs = new Wbs(project).bootstrap()
-  Collection<String> orders = new Orders(project).bootstrap().iterate()
+  Collection<String> orders = new Orders(farm, project).bootstrap().iterate()
   Collection<String> reviews = new Reviews(project).bootstrap().iterate()
   Farm farm = binding.variables.farm
   String job = claim.param('job')

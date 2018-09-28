@@ -116,15 +116,7 @@ def exec(Project pmo, XML xml) {
         'You have been invited to Zerocracy by @%s, as required in §1;',
         'you can now apply to the projects, see §2'
       ).say(author)
-    )
-    .postTo(new ClaimsOf(farm))
-  claim.copy()
-    .type('Add award points')
-    .param('login', author)
-    .param('job', 'none')
-    .param('minutes', -new Policy().get('1.price', 128))
-    .param('reason', new Par('Invited @%s').say(login))
-    .postTo(new ClaimsOf(farm))
+    ).postTo(new ClaimsOf(farm))
   String reason = new Par('@%s resume examination').say(login)
   int bonus = new Policy().get('1.bonus', 32)
   claim.copy()

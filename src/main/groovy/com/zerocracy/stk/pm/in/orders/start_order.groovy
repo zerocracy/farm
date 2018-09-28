@@ -60,7 +60,7 @@ def exec(Project project, XML xml) {
       ).say(login)
     )
   }
-  new Orders(project).bootstrap().assign(job, login, claim.cid(), claim.created().toInstant())
+  new Orders(farm, project).bootstrap().assign(job, login, claim.cid(), claim.created().toInstant())
   String role = new Wbs(project).bootstrap().role(job)
   String msg
   if (role == 'REV') {
@@ -101,7 +101,7 @@ def exec(Project project, XML xml) {
     ).say(login)
   }
   Cash cash = Cash.ZERO
-  Estimates estimates = new Estimates(project).bootstrap()
+  Estimates estimates = new Estimates(farm, project).bootstrap()
   if (estimates.exists(job)) {
     msg += new Par('; there will be a monetary reward for this job').say()
     cash = estimates.get(job)

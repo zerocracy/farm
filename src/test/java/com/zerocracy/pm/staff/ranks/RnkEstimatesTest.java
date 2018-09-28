@@ -18,6 +18,7 @@ package com.zerocracy.pm.staff.ranks;
 
 import com.zerocracy.cash.Cash;
 import com.zerocracy.farm.fake.FkProject;
+import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pm.cost.Estimates;
 import com.zerocracy.pm.cost.Ledger;
 import com.zerocracy.pm.in.Orders;
@@ -50,11 +51,12 @@ public final class RnkEstimatesTest {
             new MapEntry<>("gh:test/test#3", new Cash.S("$42"))
         );
         final FkProject proj = new FkProject();
-        final Estimates estimates = new Estimates(proj).bootstrap();
-        final Orders orders = new Orders(proj).bootstrap();
+        final PropsFarm farm = new PropsFarm();
+        final Estimates estimates = new Estimates(farm, proj).bootstrap();
+        final Orders orders = new Orders(farm, proj).bootstrap();
         final Wbs wbs = new Wbs(proj).bootstrap();
         new Roles(proj).bootstrap().assign("arc", "ARC");
-        new Ledger(proj).bootstrap().add(
+        new Ledger(farm, proj).bootstrap().add(
             new Ledger.Transaction(
                 new Cash.S("$10000"),
                 "assets", "cash",

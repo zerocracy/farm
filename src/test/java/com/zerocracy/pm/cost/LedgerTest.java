@@ -18,6 +18,7 @@ package com.zerocracy.pm.cost;
 
 import com.zerocracy.cash.Cash;
 import com.zerocracy.farm.fake.FkProject;
+import com.zerocracy.farm.props.PropsFarm;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -32,24 +33,22 @@ public final class LedgerTest {
 
     @Test
     public void addsTransactions() throws Exception {
-        final Ledger ledger = new Ledger(new FkProject()).bootstrap();
+        final Ledger ledger =
+            new Ledger(new PropsFarm(), new FkProject()).bootstrap();
         MatcherAssert.assertThat(ledger.cash(), Matchers.equalTo(Cash.ZERO));
-        MatcherAssert.assertThat(
-            ledger.add(
-                new Ledger.Transaction(
-                    new Cash.S("$43"),
-                    "assets", "cash",
-                    "income", "sponsor",
-                    "There is some funding just arrived"
-                ),
-                new Ledger.Transaction(
-                    new Cash.S("$7"),
-                    "expenses", "yegor256",
-                    "liabilities", "paypal",
-                    "Just paid something to paypal"
-                )
+        ledger.add(
+            new Ledger.Transaction(
+                new Cash.S("$43"),
+                "assets", "cash",
+                "income", "sponsor",
+                "There is some funding just arrived"
             ),
-            Matchers.equalTo(1L)
+            new Ledger.Transaction(
+                new Cash.S("$7"),
+                "expenses", "yegor256",
+                "liabilities", "paypal",
+                "Just paid something to paypal"
+            )
         );
         ledger.add(
             new Ledger.Transaction(
@@ -67,7 +66,8 @@ public final class LedgerTest {
 
     @Test
     public void addsOneTransactions() throws Exception {
-        final Ledger ledger = new Ledger(new FkProject()).bootstrap();
+        final Ledger ledger =
+            new Ledger(new PropsFarm(), new FkProject()).bootstrap();
         ledger.add(
             new Ledger.Transaction(
                 new Cash.S("$77"),
@@ -84,7 +84,8 @@ public final class LedgerTest {
 
     @Test
     public void modifiesDeficit() throws Exception {
-        final Ledger ledger = new Ledger(new FkProject()).bootstrap();
+        final Ledger ledger =
+            new Ledger(new PropsFarm(), new FkProject()).bootstrap();
         ledger.deficit(true);
         MatcherAssert.assertThat(
             ledger.deficit(),

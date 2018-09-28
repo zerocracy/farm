@@ -35,6 +35,11 @@ import org.xembly.Directives;
  * Catalog of all projects.
  *
  * @since 1.0
+ * @todo #1305:30min Continue replacing old Date classes with Instant.
+ *  Remember also to remove instances of `DateAsText` (Instant.toString should
+ *  be used). Be careful to ensure Groovy classes are properly updated since
+ *  typing is sometimes dodgy in there. There is a lot of classes to change so
+ *  try to find a good small cluster of related classes that can be updated.
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals"})

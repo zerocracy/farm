@@ -24,18 +24,16 @@ import com.zerocracy.Par;
 import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Iterator;
-import java.util.concurrent.TimeUnit;
 import org.cactoos.collection.Joined;
 import org.cactoos.collection.Sorted;
 import org.cactoos.iterable.ItemAt;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.scalar.Reduced;
-import org.cactoos.time.DateAsText;
-import org.cactoos.time.DateOf;
 import org.xembly.Directive;
 import org.xembly.Directives;
 
@@ -107,16 +105,18 @@ public final class Debts {
                                     xml.xpath("details/text()").get(0),
                                     xml.xpath("reason/text()").get(0)
                                 );
-                                final Date created = new DateOf(
+                                final Instant created = Instant.parse(
                                     xml.xpath("created/text()").get(0)
-                                ).value();
+                                );
                                 return new Directives().add("item")
                                     .add("ago")
                                     .set(
                                         Logger.format(
                                             "%[ms]s",
-                                            System.currentTimeMillis()
-                                                - created.getTime()
+                                            Duration.between(
+                                                created,
+                                                Instant.now()
+                                            ).toMillis()
                                         )
                                     )
                                     .up()
@@ -165,7 +165,7 @@ public final class Debts {
      */
     public void add(final String uid, final Cash amount,
         final String details, final String reason) throws IOException {
-        this.add(uid, amount, details, reason, new Date());
+        this.add(uid, amount, details, reason, Instant.now());
     }
 
     /**
@@ -179,7 +179,7 @@ public final class Debts {
      * @checkstyle ParameterNumberCheck (5 lines)
      */
     public void add(final String uid, final Cash amount,
-        final String details, final String reason, final Date created)
+        final String details, final String reason, final Instant created)
         throws IOException {
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
@@ -191,7 +191,7 @@ public final class Debts {
                     .addIf("items")
                     .add("item")
                     .add("created")
-                    .set(new DateAsText(created).asString())
+                    .set(created.toString())
                     .up()
                     .add("amount").set(amount).up()
                     .add("details").set(details).up()
@@ -282,7 +282,7 @@ public final class Debts {
                     )
                     .strict(1)
                     .xpath("attempt").xset(". + 1").up()
-                    .addIf("created").set(new DateAsText().asString()).up()
+                    .addIf("created").set(Instant.now().toString()).up()
                     .addIf("reason").set(reason)
             );
         }
@@ -301,16 +301,15 @@ public final class Debts {
             );
         }
         try (final Item item = this.item()) {
-            final Date failed = new DateOf(
+            final Instant failed = Instant.parse(
                 new Xocument(item.path()).xpath(
                     String.format(
                         "/debts/debt[@login='%s']/failure/created/text()", uid
                     ),
                     "2000-01-01T00:00:00Z"
                 )
-            ).value();
-            return System.currentTimeMillis() - failed.getTime()
-                > TimeUnit.DAYS.toMillis(1L);
+            );
+            return failed.isBefore(Instant.now().minus(Duration.ofDays(1)));
         }
     }
 
@@ -346,7 +345,7 @@ public final class Debts {
      * @return True if older
      * @throws IOException If fails
      */
-    public boolean olderThan(final String uid, final Date date)
+    public boolean olderThan(final String uid, final Instant date)
         throws IOException {
         if (!this.exists(uid)) {
             throw new IllegalArgumentException(
@@ -357,16 +356,16 @@ public final class Debts {
             final String xpath = String.format(
                 "/debts/debt[@login='%s']/items/item/created/text()", uid
             );
-            return new IoCheckedScalar<Date>(
+            return new IoCheckedScalar<>(
                 new ItemAt<>(
                     new Sorted<>(
                         new Mapped<>(
-                            (String val) -> new DateOf(val).value(),
+                            Instant::parse,
                             new Xocument(item.path()).xpath(xpath)
                         )
                     )
                 )
-            ).value().getTime() < date.getTime();
+            ).value().isBefore(date);
         }
     }
 

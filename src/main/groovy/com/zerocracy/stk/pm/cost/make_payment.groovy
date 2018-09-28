@@ -81,7 +81,7 @@ def exec(Project project, XML xml) {
       'and sent to @%s (your mentor), according to §45'
     ).say(fee, mentor)
   }
-  Ledger ledger = new Ledger(project).bootstrap()
+  Ledger ledger = new Ledger(farm, project).bootstrap()
   String msg
   try {
     msg = new Payroll(farm).pay(

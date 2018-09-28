@@ -34,7 +34,7 @@ import com.zerocracy.pm.staff.Election
 import com.zerocracy.pm.staff.ElectionResult
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pm.staff.ranks.RnkBoost
-import com.zerocracy.pm.staff.ranks.RnkGithubBug
+import com.zerocracy.pm.staff.ranks.RnkGithubLabel
 import com.zerocracy.pm.staff.ranks.RnkGithubMilestone
 import com.zerocracy.pm.staff.ranks.RnkRev
 import com.zerocracy.pm.staff.votes.*
@@ -44,7 +44,7 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Ping')
   ClaimIn claim = new ClaimIn(xml)
-  if (new Ledger(project).bootstrap().deficit()) {
+  if (new Ledger(farm, project).bootstrap().deficit()) {
     return
   }
   // @todo #926:30min we should synchronize elected, but not assigned jobs
@@ -53,7 +53,7 @@ def exec(Project project, XML xml) {
   //  before jobs from first project will be assigned to the performer.
   Wbs wbs = new Wbs(project).bootstrap()
   Roles roles = new Roles(project).bootstrap()
-  Collection<String> orders = new Orders(project).bootstrap().iterate()
+  Collection<String> orders = new Orders(farm, project).bootstrap().iterate()
   Collection<String> reviews = new Reviews(project).bootstrap().iterate()
   Farm farm = binding.variables.farm
   Pmo pmo = new Pmo(farm)
@@ -65,8 +65,9 @@ def exec(Project project, XML xml) {
   //  _after.groovy tests in dont_assign_job_closed bundle.
   List<String> jobs = wbs.iterate().toList()
   [
-    new RnkGithubBug(github),
-    new RnkBoost(new Boosts(project).bootstrap()),
+    new RnkGithubLabel(github, 'pdd'),
+    new RnkGithubLabel(github, 'bug'),
+    new RnkBoost(new Boosts(farm, project).bootstrap()),
     new RnkGithubMilestone(github),
     new RnkRev(new Wbs(project).bootstrap())
   ].each { jobs.sort(it) }

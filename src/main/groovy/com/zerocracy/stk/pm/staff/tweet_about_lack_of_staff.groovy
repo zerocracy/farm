@@ -37,7 +37,7 @@ def exec(Project project, XML xml) {
   }
   ClaimIn claim = new ClaimIn(xml)
   Wbs wbs = new Wbs(project).bootstrap()
-  Orders orders = new Orders(project).bootstrap()
+  Orders orders = new Orders(farm, project).bootstrap()
   int pending = 0
   wbs.iterate().each { job ->
     Date created = wbs.created(job)

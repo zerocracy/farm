@@ -17,6 +17,7 @@
 package com.zerocracy.pm.staff.ranks;
 
 import com.zerocracy.farm.fake.FkProject;
+import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pm.cost.Boosts;
 import java.util.Arrays;
 import java.util.List;
@@ -34,7 +35,7 @@ public final class RnkBoostTest {
     @Test
     public void order() throws Exception {
         final FkProject project = new FkProject();
-        final Boosts boosts = new Boosts(project).bootstrap();
+        final Boosts boosts = new Boosts(new PropsFarm(), project).bootstrap();
         final String first = "gh:test/test#1";
         final List<String> list = Arrays.asList(
             "gh:test/test#4",
