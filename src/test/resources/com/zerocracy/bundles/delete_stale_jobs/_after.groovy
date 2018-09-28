@@ -20,13 +20,17 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.pmo.Agenda
+import org.cactoos.collection.CollectionOf
 import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
+import org.hamcrest.collection.IsIterableContainingInAnyOrder
+import org.hamcrest.core.IsEqual
 
-def exec(Project project, XML xml) {
+def exec(Project pmo, XML xml) {
   Farm farm = binding.variables.farm
   Agenda agenda = new Agenda(farm, 'g4s8').bootstrap()
   MatcherAssert.assertThat(
-    agenda.jobs(), Matchers.empty()
+    agenda.jobs(), new IsIterableContainingInAnyOrder<>(
+      new CollectionOf<>(new IsEqual('gh:test/test#2'))
+    )
   )
 }
