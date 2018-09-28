@@ -41,7 +41,7 @@ def exec(Project project, XML xml) {
   )
   MatcherAssert.assertThat(
     new Awards(farm, user).bootstrap().total(),
-    new IsEqual<>(1138)
+    new IsEqual<>(1266)
   )
   project.acq('test.txt').withCloseable {
     item -> MatcherAssert.assertThat(
