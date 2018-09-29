@@ -283,7 +283,10 @@ public final class ClaimOut implements Iterable<Directive> {
                 .xpath(String.format("param[@name='%s']", name))
                 .remove()
                 .pop()
-                .add("param").attr("name", name).set(value).up()
+                .add("param")
+                .attr("name", name)
+                .set(Xembler.escape(value.toString()))
+                .up()
                 .up()
         );
     }

@@ -17,6 +17,7 @@
 package com.zerocracy.pm;
 
 import com.jcabi.matchers.XhtmlMatchers;
+import com.jcabi.xml.XMLDocument;
 import com.zerocracy.Project;
 import com.zerocracy.claims.ClaimOut;
 import com.zerocracy.claims.Claims;
@@ -29,11 +30,13 @@ import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.takes.misc.Concat;
 import org.xembly.Directive;
+import org.xembly.Xembler;
 
 /**
  * Test case for {@link ClaimOut}.
  * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class ClaimOutTest {
@@ -118,4 +121,19 @@ public final class ClaimOutTest {
         }
     }
 
+    @Test
+    public void escapesParams() throws Exception {
+        MatcherAssert.assertThat(
+            new XMLDocument(
+                new Xembler(
+                    new ClaimOut()
+                        .type("tst")
+                        .param("foo", "bar\0")
+                ).xml()
+            ),
+            XhtmlMatchers.hasXPath(
+                "/claim/params/param[@name='foo' and .= 'bar\\u0000']"
+            )
+        );
+    }
 }
