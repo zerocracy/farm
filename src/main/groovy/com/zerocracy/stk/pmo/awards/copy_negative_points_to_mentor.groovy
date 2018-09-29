@@ -27,7 +27,7 @@ import com.zerocracy.pmo.People
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Make payment')
+  new Assume(project, xml).type('Add award points')
   ClaimIn claim = new ClaimIn(xml)
   String login = claim.param('login')
   int minutes = Integer.parseInt(claim.param('minutes'))

@@ -49,7 +49,7 @@ def exec(Project project, XML xml) {
   String assignee = claim.param('login')
   if (issue.author().login().equalsIgnoreCase(assignee)) {
     claim.copy()
-      .type('Make payment')
+      .type('Add award points')
       .param('job', job)
       .param('login', claim.author())
       .param(
