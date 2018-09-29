@@ -46,7 +46,7 @@ def exec(Project pmo, XML xml) {
   }
   Cash rate
   try {
-    rate = new Cash.S(claim.param('rate').replaceAll('([A-Z]{3})$', ' \1'))
+    rate = new Cash.S(claim.param('rate').replaceAll('(.*)([A-Z]{3})$', '$2 $1'))
   } catch (CashParsingException ex) {
     throw new SoftException(
       new Par(
