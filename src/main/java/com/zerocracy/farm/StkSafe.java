@@ -16,6 +16,7 @@
  */
 package com.zerocracy.farm;
 
+import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
@@ -97,8 +98,15 @@ public final class StkSafe implements Stakeholder {
         } catch (final MismatchException ex) {
             throw ex;
         } catch (final SoftException ex) {
+            if (new Props(this.farm).has("//testing")) {
+                Logger.warn(
+                    this,
+                    "Soft error for '%s': %s",
+                    claim.type(), ex.getMessage()
+                );
+            }
             if (claim.hasToken()) {
-                new ClaimIn(xml).reply(ex.getMessage()).postTo(
+                claim.reply(ex.getMessage()).postTo(
                     new ClaimsOf(this.farm, project)
                 );
             } else {
