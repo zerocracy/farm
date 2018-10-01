@@ -87,7 +87,8 @@ public final class StkSafe implements Stakeholder {
         {
             "PMD.AvoidCatchingThrowable",
             "PMD.AvoidRethrowingException",
-            "PMD.CyclomaticComplexity"
+            "PMD.CyclomaticComplexity",
+            "PMD.PrematureDeclaration"
         }
     )
     public void process(final Project project,
