@@ -15,7 +15,6 @@ import org.cactoos.collection.Filtered
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Ping daily')
-  ClaimIn claim = new ClaimIn(xml)
   Farm farm = binding.variables.farm
   new Roles(project).bootstrap().findByRole('QA').each { login ->
     List<String> reviews = new Reviews(project).bootstrap().findByInspector(login)
@@ -27,7 +26,7 @@ def exec(Project project, XML xml) {
       updated = true
     }
     if (updated) {
-      claim.copy()
+      new ClaimIn(xml).copy()
         .type('Agenda was updated')
         .param('login', login)
         .postTo(new ClaimsOf(farm))

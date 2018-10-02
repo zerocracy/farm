@@ -16,7 +16,6 @@
  */
 package com.zerocracy.bundles.adds_reviews_to_qa_agenda
 
-import com.jcabi.github.Issues
 import com.jcabi.github.Repos
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
@@ -28,11 +27,10 @@ import com.zerocracy.pmo.Agenda
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
-  Issues issues = new ExtGithub(farm).value().repos()
+  new ExtGithub(farm).value().repos()
     .create(new Repos.RepoCreate('test', false))
-    .issues()
-  issues.create('hello1', 'world1')
+    .issues().create('hello1', 'world1')
   new Agenda(farm, 'ypshenychka').bootstrap().add(project, 'gh:test/test#1', 'QA')
-  String inspected = 'gh:test/test#2'
-  new Reviews(project).bootstrap().add(inspected,'ypshenychka', 'krzyk', new Cash.S('$10'), 30, new Cash.S('$0'))
+  new Reviews(project).bootstrap()
+    .add('gh:test/test#2','ypshenychka', 'krzyk', new Cash.S('$10'), 30, new Cash.S('$0'))
 }
