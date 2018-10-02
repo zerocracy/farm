@@ -45,14 +45,6 @@ import org.slf4j.LoggerFactory;
  *
  * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
- * @todo #1711:30min Extract the test related parts to another class and use it
- *  as a decorator (for testing purposes only). The ExtMongo mustn't know about
- *  the "testing" configurations any more, and the only thing it must know
- *  about is how to provide a "real" Mongo client. The testing correlated
- *  behaviour must be in the authority of the ExtMongo decorator, which would
- *  decide whether it is a time to launch a new mongod process or return back a
- *  a client to an existing database instance, to which the connection
- *  parameters are specified via the system properties values.
  * @todo #1711:30min Provide a single Mongo database instance (process) for
  *  all tests. The ExtMongo launches a new Mongo database process every time
  *  it is requested for the testing purposes.
