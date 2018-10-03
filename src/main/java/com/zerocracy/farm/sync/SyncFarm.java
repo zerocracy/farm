@@ -16,20 +16,13 @@
  */
 package com.zerocracy.farm.sync;
 
-import com.jcabi.aspects.Tv;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
-import com.zerocracy.farm.SmartLock;
 import com.zerocracy.farm.guts.Guts;
 import java.io.IOException;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import lombok.EqualsAndHashCode;
-import org.cactoos.iterable.Joined;
 import org.cactoos.iterable.Mapped;
-import org.cactoos.text.TextOf;
-import org.xembly.Directive;
 import org.xembly.Directives;
 
 /**
@@ -45,11 +38,6 @@ public final class SyncFarm implements Farm {
      * Original farm.
      */
     private final Farm origin;
-
-    /**
-     * Pool of locks.
-     */
-    private final Map<Project, Lock> pool;
 
     /**
      * Terminator.
@@ -72,29 +60,18 @@ public final class SyncFarm implements Farm {
      */
     public SyncFarm(final Farm farm, final long sec) {
         this.origin = farm;
-        this.pool = new ConcurrentHashMap<>(0);
         this.terminator = new Terminator(farm, sec);
     }
 
     @Override
     public Iterable<Project> find(final String query) throws IOException {
-        if (this.pool.size() > Tv.HUNDRED) {
-            throw new IllegalStateException(
-                String.format(
-                    "%s pool overflow, too many items: %d",
-                    this.getClass().getCanonicalName(), this.pool.size()
-                )
-            );
-        }
         synchronized (this.origin) {
             return new Guts(
                 this.origin,
                 () -> new Mapped<>(
                     pkt -> new SyncProject(
                         pkt,
-                        this.pool.computeIfAbsent(
-                            pkt, p -> new SmartLock()
-                        ),
+                        res -> new LockOf(this, pkt, res),
                         this.terminator
                     ),
                     this.origin.find(query)
@@ -104,25 +81,6 @@ public final class SyncFarm implements Farm {
                     .add("farm")
                     .attr("id", this.getClass().getSimpleName())
                     .append(this.terminator.value())
-                    .add("locks")
-                    .append(
-                        new Joined<Directive>(
-                            new Mapped<>(
-                                ent -> new Directives()
-                                    .add("lock")
-                                    .attr("pid", ent.getKey().pid())
-                                    .attr("label", ent.getValue().toString())
-                                    .set(
-                                        new TextOf(
-                                            ent.getValue().stacktrace()
-                                        )
-                                    )
-                                    .up(),
-                                this.pool.entrySet()
-                            )
-                        )
-                    )
-                    .up()
             ).apply(query);
         }
     }
