@@ -16,6 +16,7 @@
  */
 package com.zerocracy.farm.sync;
 
+import com.jcabi.aspects.Tv;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.farm.guts.Guts;
@@ -45,21 +46,39 @@ public final class SyncFarm implements Farm {
     private final Terminator terminator;
 
     /**
+     * Locks.
+     */
+    private final Locks locks;
+
+    /**
      * Ctor.
+     *
      * @param farm Original farm
      */
     public SyncFarm(final Farm farm) {
-        // @checkstyle MagicNumber (1 line)
-        this(farm, TimeUnit.MINUTES.toMillis(4L));
+        this(farm, new TestLocks());
     }
 
     /**
      * Ctor.
+     *
+     * @param farm Farm
+     * @param locks Locks
+     */
+    public SyncFarm(final Farm farm, final Locks locks) {
+        this(farm, locks, TimeUnit.MINUTES.toMillis((long) Tv.FOUR));
+    }
+
+    /**
+     * Ctor.
+     *
      * @param farm Original farm
+     * @param locks Sync locks
      * @param sec Seconds to give to each thread
      */
-    public SyncFarm(final Farm farm, final long sec) {
+    public SyncFarm(final Farm farm, final Locks locks, final long sec) {
         this.origin = farm;
+        this.locks = locks;
         this.terminator = new Terminator(farm, sec);
     }
 
@@ -69,11 +88,7 @@ public final class SyncFarm implements Farm {
             return new Guts(
                 this.origin,
                 () -> new Mapped<>(
-                    pkt -> new SyncProject(
-                        pkt,
-                        res -> new LockOf(this, pkt, res),
-                        this.terminator
-                    ),
+                    pkt -> new SyncProject(pkt, this.locks, this.terminator),
                     this.origin.find(query)
                 ),
                 () -> new Directives()

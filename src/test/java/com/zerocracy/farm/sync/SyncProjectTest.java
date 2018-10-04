@@ -20,7 +20,7 @@ import com.jcabi.aspects.Tv;
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Project;
-import com.zerocracy.farm.fake.FkFarm;
+import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pmo.Pmo;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -37,7 +37,7 @@ public final class SyncProjectTest {
 
     @Test
     public void locksFilesIndividually() throws Exception {
-        try (final Farm farm = new SyncFarm(new FkFarm())) {
+        try (final Farm farm = new SyncFarm(new PropsFarm())) {
             final Project project = new Pmo(farm);
             final Collection<Item> items = new LinkedList<>();
             for (int idx = 0; idx < Tv.FIFTY; ++idx) {

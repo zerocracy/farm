@@ -67,6 +67,29 @@ public final class SmartFarmTest {
     }
 
     @Test
+    public void lockItems() throws Exception {
+        final Bucket bucket = new FkBucket(
+            Files.createTempDirectory("").toFile(),
+            "some-bucket-lockItems"
+        );
+        try (final Farm farm = new SmartFarm(new S3Farm(bucket))) {
+            final Project project = farm.find("@id='SMRTFRMTX'")
+                .iterator().next();
+            final String job = String.format(
+                "gh:test/testt#%d", 42
+            );
+            new Wbs(project).bootstrap().add(job);
+            new Boosts(farm, project).bootstrap().boost(job, 1);
+            new Wbs(project).bootstrap().remove(job);
+            final int factor = new Boosts(farm, project).factor(job);
+            MatcherAssert.assertThat(
+                factor,
+                Matchers.equalTo(2)
+            );
+        }
+    }
+
+    @Test
     public void synchronizesBetweenProjects() throws Exception {
         final Bucket bucket = new FkBucket(
             Files.createTempDirectory("").toFile(),

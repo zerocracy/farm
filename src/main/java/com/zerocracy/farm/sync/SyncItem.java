@@ -77,5 +77,4 @@ final class SyncItem implements Item {
             this.lock.unlock();
         }
     }
-
 }

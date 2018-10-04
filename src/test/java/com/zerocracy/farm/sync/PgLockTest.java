@@ -18,7 +18,6 @@ package com.zerocracy.farm.sync;
 
 import com.jcabi.aspects.Tv;
 import com.zerocracy.db.ExtDataSource;
-import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.PropsFarm;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -28,6 +27,8 @@ import java.util.concurrent.locks.Lock;
 import javax.sql.DataSource;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Assume;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -35,16 +36,24 @@ import org.junit.Test;
  *
  * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle ExecutableStatementCountCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class PgLockTest {
+
+    @BeforeClass
+    public static void setUp() {
+        Assume.assumeNotNull(System.getProperty("pgsql.port"));
+    }
+
     @Test
     public void lockResource() throws Exception {
         final String res = "roles.xml";
-        final List<String> actions = Collections.synchronizedList(new LinkedList<>());
-        final PropsFarm farm = new PropsFarm();
-        final FkProject pkt = new FkProject();
-        final DataSource data = new ExtDataSource(farm).value();
-        final Lock lone = new PgLock(data, pkt, res);
+        final List<String> actions =
+            Collections.synchronizedList(new LinkedList<>());
+        final DataSource data = new ExtDataSource(new PropsFarm()).value();
+        final String pid = "test";
+        final Lock lone = new PgLock(data, pid, res, new PgLock.Holder());
         actions.add("locking1");
         lone.lock();
         actions.add("locked1");
@@ -52,9 +61,10 @@ public final class PgLockTest {
         final Thread thread = new Thread(
             () -> {
                 synchronized (started) {
-                    started.notify();
+                    started.notifyAll();
                 }
-                final PgLock ltwo = new PgLock(data, pkt, res);
+                final PgLock ltwo =
+                    new PgLock(data, pid, res, new PgLock.Holder());
                 actions.add("locking2");
                 ltwo.lock();
                 actions.add("locked2");

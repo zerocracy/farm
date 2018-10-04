@@ -18,19 +18,24 @@ package com.zerocracy.farm.sync;
 
 import com.jcabi.jdbc.JdbcSession;
 import com.jcabi.jdbc.Outcome;
-import com.zerocracy.Project;
-import java.io.IOException;
-import java.sql.SQLException;
+import com.jcabi.log.Logger;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import javax.sql.DataSource;
+import org.cactoos.Proc;
+import org.cactoos.Scalar;
+import org.cactoos.func.UncheckedProc;
+import org.cactoos.scalar.UncheckedScalar;
 
 /**
  * {@link Lock} using MongoDB.
  *
  * @since 1.0
  */
+@SuppressWarnings("PMD.TooManyMethods")
 final class PgLock implements Lock {
 
     /**
@@ -44,9 +49,9 @@ final class PgLock implements Lock {
     private final DataSource data;
 
     /**
-     * Project.
+     * Project id.
      */
-    private final Project pkt;
+    private final String pid;
 
     /**
      * Resource to be locked.
@@ -54,17 +59,25 @@ final class PgLock implements Lock {
     private final String res;
 
     /**
+     * Thread holder.
+     */
+    private final PgLock.Holder holder;
+
+    /**
      * Ctor.
      *
      * @param data Data Database
-     * @param pkt Project
+     * @param pid Project id
      * @param res Resource to be locked
+     * @param holder Thread holder
+     * @checkstyle ParameterNumberCheck (3 lines)
      */
-    PgLock(final DataSource data, final Project pkt,
-        final String res) {
+    PgLock(final DataSource data, final String pid, final String res,
+        final PgLock.Holder holder) {
         this.data = data;
-        this.pkt = pkt;
+        this.pid = pid;
         this.res = res;
+        this.holder = holder;
     }
 
     @Override
@@ -79,7 +92,9 @@ final class PgLock implements Lock {
     @Override
     public void lockInterruptibly() throws InterruptedException {
         while (!this.tryLock(PgLock.DEFAULT_WAIT_SEC, TimeUnit.SECONDS)) {
-            // wait
+            if (Logger.isDebugEnabled(this)) {
+                Logger.debug(this, "attempting to lock");
+            }
         }
     }
 
@@ -101,31 +116,24 @@ final class PgLock implements Lock {
         boolean locked = false;
         final JdbcSession session = new JdbcSession(this.data);
         while (!locked && System.nanoTime() < deadline) {
-            try {
-                locked = session
-                    .sql("INSERT INTO farm_locks (project, resource) VALUES (?, ?) ON CONFLICT DO NOTHING RETURNING 1")
-                    .set(this.pkt.pid())
-                    .set(this.res)
-                    .select(Outcome.NOT_EMPTY);
-            } catch (final IOException | SQLException err) {
-                throw new IllegalStateException("Failed to lock", err);
+            locked = this.acq(session);
+            if (!locked) {
+                TimeUnit.MILLISECONDS.sleep(1L);
             }
-            TimeUnit.MILLISECONDS.sleep(1L);
         }
         return locked;
     }
 
     @Override
     public void unlock() {
-        try {
-            new JdbcSession(this.data)
+        this.holder.free(
+            none -> new JdbcSession(this.data)
+                // @checkstyle LineLength (1 line)
                 .sql("DELETE FROM farm_locks WHERE project = ? AND resource = ?")
-                .set(this.pkt.pid())
+                .set(this.pid)
                 .set(this.res)
-                .update(Outcome.VOID);
-        } catch (final IOException | SQLException err) {
-            throw new IllegalStateException("Failed to unlock", err);
-        }
+                .update(Outcome.VOID)
+        );
     }
 
     @Override
@@ -133,5 +141,109 @@ final class PgLock implements Lock {
         throw new UnsupportedOperationException(
             "newCondition() is not implemented"
         );
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+            "PgLock[%s](%s:%s)", this.holder, this.pid, this.res
+        );
+    }
+
+    /**
+     * Acquire a lock.
+     *
+     * @param session Database session
+     * @return True if success
+     */
+    private boolean acq(final JdbcSession session) {
+        return this.holder.lock(
+            () -> session
+                // @checkstyle LineLength (1 line)
+                .sql("INSERT INTO farm_locks (project, resource) VALUES (?, ?) ON CONFLICT DO NOTHING RETURNING 1")
+                .set(this.pid)
+                .set(this.res)
+                .select(Outcome.NOT_EMPTY)
+        );
+    }
+
+    /**
+     * Thread holder.
+     */
+    public static final class Holder {
+
+        /**
+         * Lock thread reference.
+         */
+        private final AtomicReference<Thread> ref =
+            new AtomicReference<>();
+
+        /**
+         * Lock counter.
+         */
+        private final AtomicInteger cnt = new AtomicInteger();
+
+        /**
+         * Sync object.
+         */
+        private final Object sync = new Object();
+
+        /**
+         * Acquire a lock.
+         *
+         * @param func Function to perform lock
+         * @return True if success
+         */
+        public boolean lock(final Scalar<Boolean> func) {
+            final Thread thread = Thread.currentThread();
+            final boolean locked;
+            if (this.ref.compareAndSet(thread, thread)) {
+                this.cnt.incrementAndGet();
+                locked = true;
+            } else {
+                synchronized (this.sync) {
+                    locked = new UncheckedScalar<>(func).value();
+                    if (locked) {
+                        this.ref.set(thread);
+                        this.cnt.set(1);
+                    }
+                }
+            }
+            return locked;
+        }
+
+        /**
+         * Free a lock.
+         *
+         * @param func Function to release
+         */
+        public void free(final Proc<Void> func) {
+            final Thread thread = Thread.currentThread();
+            if (this.ref.get() != thread) {
+                throw new IllegalStateException(
+                    "Should be locked by same thread"
+                );
+            }
+            if (this.cnt.decrementAndGet() == 0) {
+                synchronized (this.sync) {
+                    this.ref.set(null);
+                    new UncheckedProc<>(func).exec(null);
+                }
+            }
+        }
+
+        @Override
+        public String toString() {
+            final Thread thread = this.ref.get();
+            final String str;
+            if (thread == null) {
+                str = "free";
+            } else {
+                str = String.format(
+                    "locked %d times by %s", this.cnt.get(), thread.getName()
+                );
+            }
+            return str;
+        }
     }
 }

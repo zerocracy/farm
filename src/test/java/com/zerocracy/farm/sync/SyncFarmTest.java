@@ -23,9 +23,11 @@ import com.zerocracy.Item;
 import com.zerocracy.Project;
 import com.zerocracy.RunsInThreads;
 import com.zerocracy.farm.S3Farm;
+import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pm.scope.Wbs;
 import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.pmo.Pmo;
+import java.io.File;
 import java.nio.file.Files;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -73,13 +75,30 @@ public final class SyncFarmTest {
     }
 
     @Test
+    public void acquireItems() throws Exception {
+        final File tmp = Files.createTempDirectory("").toFile();
+        tmp.deleteOnExit();
+        final Bucket bucket = new FkBucket(tmp, "acquireItems-bucket");
+        try (final Farm farm = new SyncFarm(new S3Farm(bucket))) {
+            final Project project = farm.find("@id='ABCZZFE09'")
+                .iterator().next();
+            final Item one = project.acq("one.txt");
+            final Item two = project.acq("two.txt");
+            one.close();
+            two.close();
+        }
+    }
+
+    @Test
     public void interruptsTooLongThread() throws Exception {
         final Bucket bucket = new FkBucket(
             Files.createTempDirectory("").toFile(),
             "the-bucket-1"
         );
         try (final Farm farm = new SyncFarm(
-            new S3Farm(bucket), TimeUnit.SECONDS.toMillis(1L)
+            new PropsFarm(new S3Farm(bucket)),
+            new TestLocks(),
+            TimeUnit.SECONDS.toMillis(1L)
         )) {
             final Project pmo = new Pmo(farm);
             final CountDownLatch locked = new CountDownLatch(1);

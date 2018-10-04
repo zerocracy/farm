@@ -23,8 +23,6 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import lombok.EqualsAndHashCode;
-import org.cactoos.Func;
-import org.cactoos.func.IoCheckedFunc;
 
 /**
  * Sync project.
@@ -41,9 +39,9 @@ final class SyncProject implements Project {
     private final Project origin;
 
     /**
-     * Lock.
+     * Locks.
      */
-    private final Func<String, Lock> locks;
+    private final Locks locks;
 
     /**
      * Terminator.
@@ -56,8 +54,7 @@ final class SyncProject implements Project {
      * @param lcks Locks
      * @param tmr Terminator
      */
-    SyncProject(final Project pkt, final Func<String, Lock> lcks,
-        final Terminator tmr) {
+    SyncProject(final Project pkt, final Locks lcks, final Terminator tmr) {
         this.origin = pkt;
         this.locks = lcks;
         this.terminator = tmr;
@@ -71,7 +68,7 @@ final class SyncProject implements Project {
     @Override
     public Item acq(final String file) throws IOException {
         final long start = System.currentTimeMillis();
-        final Lock lock = new IoCheckedFunc<>(this.locks).apply(file);
+        final Lock lock = this.locks.lock(this, file);
         try {
             // @checkstyle MagicNumber (1 line)
             if (!lock.tryLock(2L, TimeUnit.MINUTES)) {
