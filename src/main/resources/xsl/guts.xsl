@@ -102,7 +102,15 @@ SOFTWARE.
               <xsl:if test="position() &gt; 1">
                 <xsl:text>, </xsl:text>
               </xsl:if>
-              <xsl:value-of select="concat('[', @id, ' claim={', claim/text(), '}, pkt={', project/text(), '}, received={', received/text()), '}]'"/>
+              <xsl:text>[</xsl:text>
+              <xsl:value-of select="@id"/>
+              <xsl:text> claim={</xsl:text>
+              <xsl:value-of select="claim"/>
+              <xsl:text>}, pkt={</xsl:text>
+              <xsl:value-of select="project"/>
+              <xsl:text>}, received={</xsl:text>
+              <xsl:value-of select="received"/>
+              <xsl:text>}]</xsl:text>
             </xsl:for-each>
           </li>
         </xsl:for-each>
