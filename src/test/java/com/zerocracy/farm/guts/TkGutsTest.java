@@ -48,7 +48,7 @@ public final class TkGutsTest {
                 XhtmlMatchers.xhtml(
                     new RsPrint(
                         take.act(
-                            new RqWithUser(
+                            new RqWithUser.WithInit(
                                 farm, new RqFake("GET", "/guts")
                             )
                         )

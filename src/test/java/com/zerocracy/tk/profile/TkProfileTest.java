@@ -189,8 +189,7 @@ public final class TkProfileTest {
                                 ),
                                 ""
                             ),
-                            uid,
-                            false
+                            uid
                         )
                     )
                 ).printBody()

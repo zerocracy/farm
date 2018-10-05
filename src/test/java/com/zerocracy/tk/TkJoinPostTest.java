@@ -29,6 +29,7 @@ import org.cactoos.text.FormattedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.takes.Request;
 import org.takes.facets.hamcrest.HmRsHeader;
 import org.takes.facets.hamcrest.HmRsStatus;
 import org.takes.rq.RqFake;
@@ -50,7 +51,7 @@ public final class TkJoinPostTest {
         MatcherAssert.assertThat(
             new TkApp(farm).act(
                 new RqWithBody(
-                    new RqWithUser(
+                    new RqWithUser.WithInit(
                         farm,
                         new RqFake("POST", "/join-post")
                     ),
@@ -71,7 +72,7 @@ public final class TkJoinPostTest {
         final String uid = "yegor256";
         people.touch(uid);
         people.apply(uid, Instant.now());
-        final RqWithUser req = new RqWithUser(
+        final Request req = new RqWithUser.WithInit(
             farm,
             new RqFake("POST", "/join-post")
         );
@@ -93,9 +94,10 @@ public final class TkJoinPostTest {
         final People people = new People(farm).bootstrap();
         final String uid = "yegor256";
         people.touch(uid);
-        final RqWithUser req = new RqWithUser(
+        final Request req = new RqWithUser(
             farm,
-            new RqFake("POST", "/join-post")
+            new RqFake("POST", "/join-post"),
+            uid
         );
         people.breakup(uid);
         MatcherAssert.assertThat(
@@ -137,8 +139,7 @@ public final class TkJoinPostTest {
                     new RqWithUser(
                         farm,
                         new RqFake("GET", "/join-post"),
-                        applicant,
-                        false
+                        applicant
                     ),
                     "personality=INTJ-A&stackoverflow=187242"
                 )

@@ -116,7 +116,7 @@ public final class TkTeamTest {
     private String responseBody(final Farm farm) throws IOException {
         return new RsPrint(
             new TkApp(farm).act(
-                new RqWithUser(
+                new RqWithUser.WithInit(
                     farm,
                     new RqFake(
                         new ListOf<>(
