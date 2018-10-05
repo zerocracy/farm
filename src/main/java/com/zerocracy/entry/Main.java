@@ -19,6 +19,7 @@ package com.zerocracy.entry;
 import com.jcabi.aspects.Loggable;
 import com.jcabi.log.Logger;
 import com.zerocracy.Farm;
+import com.zerocracy.claims.ClaimGuts;
 import com.zerocracy.claims.ClaimsFarm;
 import com.zerocracy.claims.ClaimsRoutine;
 import com.zerocracy.claims.proc.AsyncProc;
@@ -124,10 +125,14 @@ public final class Main {
         final ShutdownFarm.Hook shutdown = new ShutdownFarm.Hook();
         final AtomicInteger count = new AtomicInteger();
         final int threads = Runtime.getRuntime().availableProcessors();
+        final ClaimGuts cgts = new ClaimGuts();
         try (
             final Farm farm = new ShutdownFarm(
-                new SmartFarm(
-                    new S3Farm(new ExtBucket().value(), temp)
+                new ClaimsFarm(
+                    new SmartFarm(
+                        new S3Farm(new ExtBucket().value(), temp)
+                    ),
+                    cgts
                 ),
                 shutdown
             );
@@ -152,6 +157,7 @@ public final class Main {
                         ),
                         shutdown
                     ),
+                    cgts,
                     shutdown
                 ),
                 () -> count.intValue() < threads
@@ -173,7 +179,7 @@ public final class Main {
             new Pings(farm).start();
             new FtCli(
                 new TkApp(
-                    new ClaimsFarm(farm, claims),
+                    farm,
                     new FkRegex("/alias", new TkAlias(farm)),
                     new FkRegex("/slack", new TkSlack(farm, radar)),
                     new FkRegex("/viber", new TkViber(farm)),
