@@ -32,6 +32,7 @@ import java.io.Closeable;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +45,8 @@ import org.cactoos.Scalar;
 import org.cactoos.scalar.And;
 import org.cactoos.scalar.UncheckedScalar;
 import org.cactoos.text.UncheckedText;
+import org.xembly.Directive;
+import org.xembly.Directives;
 
 /**
  * Claims routine.
@@ -51,9 +54,22 @@ import org.cactoos.text.UncheckedText;
  * This class uses long-polling to fetch claims from SQS queue.
  *
  * @since 1.0
+ * @todo #1731:30min ClaimsRoutine is too complex and not testable,
+ *  let's refactor it to few simpler classes and unit test them
+ *  if possible.
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @checkstyle ExecutableStatementCountCheck (500 lines)
  */
-public final class ClaimsRoutine implements Runnable, Closeable {
+@SuppressWarnings(
+    {
+        "PMD.AvoidDuplicateLiterals",
+        "PMD.AvoidInstantiatingObjectsInLoops",
+        "PMD.ExcessiveImports"
+    }
+)
+public final class ClaimsRoutine implements Runnable, Closeable,
+    Iterable<Directive> {
+
     /**
      * Until attribute.
      */
@@ -90,6 +106,11 @@ public final class ClaimsRoutine implements Runnable, Closeable {
     private final Scalar<Boolean> proceed;
 
     /**
+     * Current messages.
+     */
+    private final List<List<Message>> current;
+
+    /**
      * Ctor.
      *
      * @param farm Farm
@@ -104,6 +125,7 @@ public final class ClaimsRoutine implements Runnable, Closeable {
             new VerboseThreads(ClaimsRoutine.class)
         );
         this.farm = farm;
+        this.current = new LinkedList<>();
     }
 
     /**
@@ -113,7 +135,9 @@ public final class ClaimsRoutine implements Runnable, Closeable {
      */
     public void start(final ShutdownFarm.Hook shutdown) {
         this.service.scheduleWithFixedDelay(
-            new VerboseRunnable(new ShutdownRunnable(this, shutdown)),
+            new VerboseRunnable(
+                new ClaimsRoutine.ShutdownRunnable(this, shutdown)
+            ),
             0L,
             ClaimsRoutine.DELAY,
             TimeUnit.SECONDS
@@ -124,7 +148,6 @@ public final class ClaimsRoutine implements Runnable, Closeable {
     @SuppressWarnings(
         {
             "PMD.AvoidInstantiatingObjectsInLoops",
-            "PMD.AvoidDuplicateLiterals",
             "PMD.ConfusingTernary"
         }
     )
@@ -150,10 +173,15 @@ public final class ClaimsRoutine implements Runnable, Closeable {
             for (final Message message : messages) {
                 final Map<String, MessageAttributeValue> attr =
                     message.getMessageAttributes();
+                attr.put(
+                    "received",
+                    new MessageAttributeValue()
+                        .withStringValue(Instant.now().toString())
+                );
                 if (attr.containsKey(ClaimsRoutine.UNTIL)
                     && Instant.parse(
-                        attr.get(ClaimsRoutine.UNTIL).getStringValue()
-                    ).isAfter(Instant.now())) {
+                    attr.get(ClaimsRoutine.UNTIL).getStringValue()
+                ).isAfter(Instant.now())) {
                     continue;
                 }
                 final XML xml = new XMLDocument(message.getBody())
@@ -176,13 +204,49 @@ public final class ClaimsRoutine implements Runnable, Closeable {
                 this, "received %d (%d actual) messages from SQS",
                 messages.size(), merged.size()
             );
-            new UncheckedScalar<>(new And(this.proc, merged)).value();
+            new UncheckedScalar<>(
+                new And(new ClaimsRoutine.MonitorProc(this.proc), merged)
+            ).value();
         }
     }
 
     @Override
     public void close() {
         this.service.shutdown();
+    }
+
+    @Override
+    public Iterator<Directive> iterator() {
+        final Directives dirs = new Directives();
+        dirs.add("queues");
+        synchronized (this.current) {
+            for (final List<Message> messages : this.current) {
+                dirs.add("queue");
+                for (final Message message : messages) {
+                    final ClaimIn claim = new ClaimIn(
+                        new XMLDocument(message.getBody())
+                            .nodes("/claim").get(0)
+                    );
+                    final Map<String, MessageAttributeValue> attr =
+                        message.getMessageAttributes();
+                    dirs.add("message")
+                        .attr("id", message.getMessageId())
+                        .add("claim").attr("id", claim.cid())
+                        .set(claim.type())
+                        .up()
+                        .add("project")
+                        .set(attr.get("project").getStringValue())
+                        .up()
+                        .add("received")
+                        .set(attr.get("received").getStringValue())
+                        .up()
+                        .up();
+                }
+                dirs.up();
+            }
+        }
+        dirs.up();
+        return dirs.iterator();
     }
 
     /**
@@ -216,6 +280,37 @@ public final class ClaimsRoutine implements Runnable, Closeable {
         public void run() {
             if (this.shutdown.check()) {
                 this.origin.run();
+            }
+        }
+    }
+
+    /**
+     * Monitor current messages.
+     */
+    private final class MonitorProc implements Proc<List<Message>> {
+
+        /**
+         * Origin proc.
+         */
+        private final Proc<List<Message>> origin;
+
+        /**
+         * Ctor.
+         *
+         * @param origin Origin proc
+         */
+        private MonitorProc(final Proc<List<Message>> origin) {
+            this.origin = origin;
+        }
+
+        @Override
+        public void exec(final List<Message> input) throws Exception {
+            synchronized (ClaimsRoutine.this.current) {
+                ClaimsRoutine.this.current.add(input);
+            }
+            this.origin.exec(input);
+            synchronized (ClaimsRoutine.this.current) {
+                ClaimsRoutine.this.current.remove(input);
             }
         }
     }

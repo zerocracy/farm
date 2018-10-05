@@ -19,6 +19,7 @@ package com.zerocracy.entry;
 import com.jcabi.aspects.Loggable;
 import com.jcabi.log.Logger;
 import com.zerocracy.Farm;
+import com.zerocracy.claims.ClaimsFarm;
 import com.zerocracy.claims.ClaimsRoutine;
 import com.zerocracy.claims.proc.AsyncProc;
 import com.zerocracy.claims.proc.BrigadeProc;
@@ -172,7 +173,7 @@ public final class Main {
             new Pings(farm).start();
             new FtCli(
                 new TkApp(
-                    farm,
+                    new ClaimsFarm(farm, claims),
                     new FkRegex("/alias", new TkAlias(farm)),
                     new FkRegex("/slack", new TkSlack(farm, radar)),
                     new FkRegex("/viber", new TkViber(farm)),
