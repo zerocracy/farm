@@ -228,7 +228,15 @@ the list of claims to be dispatched. There are also a few supplementary files:
 
 More details you can find in the Javadoc section of `BundlesTest`.
 
-You can skip BundlesTest's execution by specifying ``-DskipBundlesTest``:
+The entire `BundlesTest` suite can take a very long amount of time to execute.
+If you are debugging a certain test or function, you can specify the exact tests
+to run by specifying a comma separated list via `-DbundlesTests`. E.g. to run
+the `assign_role` and `cancel_order` tests:
+
+``$mvn clean install -Pqulice -DbundlesTests=assign_role,cancel_order``
+
+Alternatively, you can skip `BundlesTest` suite execution altogether by
+specifying ``-DskipBundlesTest``:
 
 ``$mvn clean install -Pqulice -DskipBundlesTest``
 

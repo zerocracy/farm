@@ -142,18 +142,28 @@ public final class BundlesTest {
 
     @Parameterized.Parameters(name = "{0}")
     public static Collection<Object[]> bundles() {
-        return new SolidList<Object[]>(
-            new Mapped<>(
-                path -> new Object[]{
-                    path.substring(0, path.indexOf("/claims.xml")),
-                },
-                new Sorted<>(
+        final Iterable<Object[]> list;
+        final String tests = System.getProperty("bundlesTests", "");
+        if (tests.isEmpty()) {
+            list = new Sorted<>(
+                new Mapped<>(
+                    path -> new Object[]{
+                        path.substring(0, path.indexOf("/claims.xml")),
+                    },
                     new Reflections(
                         "com.zerocracy.bundles", new ResourcesScanner()
                     ).getResources(p -> p.endsWith("claims.xml"))
                 )
-            )
-        );
+            );
+        } else {
+            list = new Mapped<>(
+                test -> new Object[]{
+                    String.format("com/zerocracy/bundles/%s", test),
+                },
+                new ListOf<>(tests.split(","))
+            );
+        }
+        return new SolidList<>(list);
     }
 
     @Before
