@@ -17,6 +17,7 @@
 package com.zerocracy.stk.pm.staff.elections
 
 import com.jcabi.github.Github
+import com.jcabi.log.Logger
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Policy
@@ -33,12 +34,10 @@ import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pm.staff.Election
 import com.zerocracy.pm.staff.ElectionResult
 import com.zerocracy.pm.staff.Roles
-import com.zerocracy.pm.staff.ranks.RnkBoost
-import com.zerocracy.pm.staff.ranks.RnkGithubLabel
-import com.zerocracy.pm.staff.ranks.RnkGithubMilestone
-import com.zerocracy.pm.staff.ranks.RnkRev
+import com.zerocracy.pm.staff.ranks.*
 import com.zerocracy.pm.staff.votes.*
 import com.zerocracy.pmo.Pmo
+import org.cactoos.iterable.Mapped
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
@@ -64,13 +63,27 @@ def exec(Project project, XML xml) {
   //  iterating only in open issues when electing performer and uncomment
   //  _after.groovy tests in dont_assign_job_closed bundle.
   List<String> jobs = wbs.iterate().toList()
-  [
-    new RnkGithubLabel(github, 'pdd'),
-    new RnkGithubLabel(github, 'bug'),
-    new RnkBoost(new Boosts(farm, project).bootstrap()),
-    new RnkGithubMilestone(github),
-    new RnkRev(new Wbs(project).bootstrap())
-  ].each { jobs.sort(it) }
+  List<Comparator<String>> ranks = [
+    new RnkMeasured(new RnkGithubLabel(github, 'pdd')),
+    new RnkMeasured(new RnkGithubLabel(github, 'bug')),
+    new RnkMeasured(new RnkBoost(new Boosts(farm, project).bootstrap())),
+    new RnkMeasured(new RnkGithubMilestone(github)),
+    new RnkMeasured(new RnkRev(new Wbs(project).bootstrap()))
+  ]
+  ranks.each { jobs.sort(it) }
+  String ltag = 'com.zerocracy.election'
+  if (Logger.isInfoEnabled(ltag)) {
+    Logger.info(
+      ltag,
+      "Election ranks metrics (project=%s, size(jobs)=%d):\n  %s",
+      project.pid(),
+      jobs.size(),
+      String.join(
+        "\n  ",
+        new Mapped<>({ it.toString() }, ranks)
+      )
+    )
+  }
   int max = new Policy().get('3.absolute-max', 32)
   for (String job : jobs) {
     if (orders.contains(job) || reviews.contains(job)) {
@@ -85,20 +98,20 @@ def exec(Project project, XML xml) {
       new Election(
         job, logins,
         [
-          (new VsSafe(new VsHardCap(pmo, max)))                                     : -100,
-          (new VsSafe(new VsReputation(pmo, logins)))                               : 4,
-          (new VsSafe(new VsLosers(pmo, new Policy().get('3.low-threshold', -128)))): -100,
-          (new VsSafe(new VsRate(project, logins)))                                 : 2,
-          (new VsSafe(new VsBigDebt(pmo)))                                          : -100,
-          (new VsSafe(new VsNoRoom(pmo)))                                           : role == 'REV' ? 0 : -100,
-          (new VsSafe(new VsOptionsMaxJobs(pmo)))                                   : role == 'REV' ? 0 : -100,
-          (new VsSafe(new VsBanned(project, job)))                                  : -100,
-          (new VsSafe(new VsVacation(pmo)))                                         : -100,
-          (new VsSafe(new VsWorkload(farm, logins)))                                : 1,
-          (new VsSafe(new VsWorkload(farm, project, logins)))                       : 1,
-          (new VsSafe(new VsSpeed(pmo, logins)))                                    : 3,
-          (new VsSafe(new VsBalance(project, farm, logins)))                        : 3,
-          (new VsSafe(new VsRandom()))                                              : 1
+          (new VsSafe(new VsMeasured(new VsHardCap(pmo, max))))                                     : -100,
+          (new VsSafe(new VsMeasured(new VsReputation(pmo, logins))))                               : 4,
+          (new VsSafe(new VsMeasured(new VsLosers(pmo, new Policy().get('3.low-threshold', -128))))): -100,
+          (new VsSafe(new VsMeasured(new VsRate(project, logins))))                                 : 2,
+          (new VsSafe(new VsMeasured(new VsBigDebt(pmo))))                                          : -100,
+          (new VsSafe(new VsMeasured(new VsNoRoom(pmo))))                                           : role == 'REV' ? 0 : -100,
+          (new VsSafe(new VsMeasured(new VsOptionsMaxJobs(pmo))))                                   : role == 'REV' ? 0 : -100,
+          (new VsSafe(new VsMeasured(new VsBanned(project, job))))                                  : -100,
+          (new VsSafe(new VsMeasured(new VsVacation(pmo))))                                         : -100,
+          (new VsSafe(new VsMeasured(new VsWorkload(farm, logins))))                                : 1,
+          (new VsSafe(new VsMeasured(new VsWorkload(farm, project, logins))))                       : 1,
+          (new VsSafe(new VsMeasured(new VsSpeed(pmo, logins))))                                    : 3,
+          (new VsSafe(new VsMeasured(new VsBalance(project, farm, logins))))                        : 3,
+          (new VsSafe(new VsMeasured(new VsRandom())))                                              : 1
         ]
       )
     )

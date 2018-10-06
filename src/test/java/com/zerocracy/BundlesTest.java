@@ -24,6 +24,7 @@ import com.zerocracy.claims.ClaimsItem;
 import com.zerocracy.claims.Footprint;
 import com.zerocracy.farm.SmartFarm;
 import com.zerocracy.farm.StkSafe;
+import com.zerocracy.farm.StkTimed;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.reactive.Brigade;
@@ -38,6 +39,7 @@ import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -292,7 +294,11 @@ public final class BundlesTest {
                 cls -> new StkSafe(
                     cls.getSimpleName(),
                     farm,
-                    new StkRuntime(cls, farm)
+                    new StkTimed(
+                        new StkRuntime(cls, farm),
+                        cls.getSimpleName(),
+                        Duration.ofMinutes(1L)
+                    )
                 ),
                 new Reflections(
                     "com.zerocracy.stk",
