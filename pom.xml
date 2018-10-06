@@ -24,7 +24,7 @@ SOFTWARE.
   </parent>
   <groupId>com.zerocracy</groupId>
   <artifactId>farm</artifactId>
-  <version>0.30.7</version>
+  <version>0.35.5</version>
   <packaging>jar</packaging>
   <name>farm</name>
   <description>Java Stakeholder API</description>
