@@ -28,13 +28,6 @@ import org.xembly.Directives;
 /**
  * Resumes.
  * @since 1.0
- *
- * @todo #1569:30min Implement resumes.resume(login), which will return the
- *  resume sent for some user. It will have to return a Resume
- *  implementation which reads the resume from resumes.xml. It must read
- *  /resumes/resume attributes and return them in its methods.
- *  Then remove expected from ResumesTest.findResume so it can be tested to
- *  be used in resume page.
  */
 public final class Resumes {
     /**
@@ -84,7 +77,7 @@ public final class Resumes {
     @SuppressWarnings("PMD.UseObjectForClearerAPI")
     public void add(final String login, final LocalDateTime when,
         final String text, final String personality,
-        final int stackoverflow, final String telegram) throws IOException {
+        final long stackoverflow, final String telegram) throws IOException {
         try (final Item item = this.item()) {
             new Xocument(item).modify(
                 new Directives()
@@ -201,7 +194,16 @@ public final class Resumes {
      * @throws IOException If fails or resume not found
      */
     public Resume resume(final String login) throws IOException {
-        throw new UnsupportedOperationException("resume() not implemented");
+        try (final Item item = this.item()) {
+            return new ResumeXml(
+                new Xocument(item.path()).nodes(
+                    new FormattedText(
+                        "/resumes/resume[@login='%s' ]",
+                        login
+                    ).asString()
+                ).get(0)
+            );
+        }
     }
 
     /**
