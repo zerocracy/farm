@@ -65,7 +65,7 @@ public final class TkHiring implements TkRegex {
         final RqFormSmart form = new RqFormSmart(new RqGreedy(req));
         final String text = form.single("text");
         new ClaimOut()
-            .type("Make payment")
+            .type("Add award points")
             .author(user)
             .param("login", user)
             .param("job", "none")
