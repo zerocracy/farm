@@ -33,7 +33,7 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   if (claim.hasParam('voluntarily') && claim.param('voluntarily') == 'true') {
     claim.copy()
-      .type('Make payment')
+      .type('Add award points')
       .param('job', job)
       .param('login', claim.param('login'))
       .param(

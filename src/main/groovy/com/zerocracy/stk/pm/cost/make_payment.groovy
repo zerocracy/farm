@@ -34,7 +34,16 @@ import com.zerocracy.pmo.banks.Payroll
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Make payment')
+  Farm farm = binding.variables.farm
   ClaimIn claim = new ClaimIn(xml)
+  /**
+   * @todo #1162:30min In continuation of #1162, add a test to ensure that a payment
+   *  results on points being awarded. Once this is done, add a todo to continue
+   *  the work on the the "Make Payment" started with #1162.
+   */
+  claim.copy()
+    .type('Add award points')
+    .postTo(new ClaimsOf(farm, project))
   String job = claim.param('job')
   String login = claim.param('login')
   String reason = new Par.ToText(claim.param('reason')).toString()
@@ -56,11 +65,10 @@ def exec(Project project, XML xml) {
     }
     price = rate.mul(minutes) / 60
   }
-  if (price == Cash.ZERO) {
+  if (price.empty) {
     return
   }
   String tail = ''
-  Farm farm = binding.variables.farm
   People people = new People(farm).bootstrap()
   if (!claim.hasParam('no-tuition-fee') && people.hasMentor(login) && people.mentor(login) != '0crat') {
     int share = new Policy().get('45.share', 8)

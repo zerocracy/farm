@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pm.staff;
 
+import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
@@ -24,6 +25,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.xml.namespace.NamespaceContext;
+import org.cactoos.iterable.LengthOf;
+import org.cactoos.iterable.Mapped;
 import org.cactoos.scalar.StickyScalar;
 import org.cactoos.scalar.UncheckedScalar;
 import org.w3c.dom.Node;
@@ -154,6 +157,19 @@ public final class Election implements XML {
                     }
                 }
                 dirs.up();
+            }
+            final String ltag = "com.zerocracy.election";
+            if (Logger.isInfoEnabled(ltag)) {
+                Logger.info(
+                    ltag,
+                    "Election votes metrics (job=%s, size(logins)=%d):\n  %s",
+                    this.job,
+                    new LengthOf(this.logins).intValue(),
+                    String.join(
+                        "\n  ",
+                        new Mapped<>(Votes::toString, this.voters.keySet())
+                    )
+                );
             }
             return dirs.iterator();
         }

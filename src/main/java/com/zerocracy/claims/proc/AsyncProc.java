@@ -22,6 +22,7 @@ import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseCallable;
 import com.jcabi.log.VerboseRunnable;
 import com.jcabi.log.VerboseThreads;
+import com.zerocracy.claims.ClaimGuts;
 import com.zerocracy.shutdown.ShutdownFarm;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -61,14 +62,23 @@ public final class AsyncProc implements Proc<List<Message>> {
     private final AtomicInteger count;
 
     /**
+     * Claim guts.
+     */
+    private final ClaimGuts guts;
+
+    /**
      * Ctor.
      *
      * @param origin Origin proc
+     * @param cgts Guts
      * @param shutdown Shutdown hook
      */
     public AsyncProc(final Proc<Message> origin,
-        final ShutdownFarm.Hook shutdown) {
-        this(Runtime.getRuntime().availableProcessors(), origin, shutdown);
+        final ClaimGuts cgts, final ShutdownFarm.Hook shutdown) {
+        this(
+            Runtime.getRuntime().availableProcessors(),
+            origin, cgts, shutdown
+        );
     }
 
     /**
@@ -76,14 +86,17 @@ public final class AsyncProc implements Proc<List<Message>> {
      *
      * @param threads Threads
      * @param origin Origin proc
+     * @param cgts Claim guts
      * @param shutdown Shutdown hook
+     * @checkstyle ParameterNumberCheck (3 lines)
      */
     public AsyncProc(final int threads, final Proc<Message> origin,
-        final ShutdownFarm.Hook shutdown) {
+        final ClaimGuts cgts, final ShutdownFarm.Hook shutdown) {
         this.service = Executors.newScheduledThreadPool(
             threads, new VerboseThreads(AsyncProc.class)
         );
         this.origin = origin;
+        this.guts = cgts;
         this.shutdown = shutdown;
         this.count = new AtomicInteger();
         this.service.scheduleWithFixedDelay(
@@ -123,6 +136,7 @@ public final class AsyncProc implements Proc<List<Message>> {
                 new VerboseCallable<>(
                     () -> {
                         try {
+                            this.guts.start(input);
                             Logger.info(
                                 this, "Processing %d messages",
                                 input.size()
@@ -133,6 +147,7 @@ public final class AsyncProc implements Proc<List<Message>> {
                                 && this.shutdown.stopping()) {
                                 this.shutdown.complete();
                             }
+                            this.guts.stop(input);
                         }
                         return null;
                     },

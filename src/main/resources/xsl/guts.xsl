@@ -92,6 +92,31 @@ SOFTWARE.
       <xsl:text>.</xsl:text>
     </p>
   </xsl:template>
+  <xsl:template match="farm[@id='ClaimsFarm']">
+    <p>
+      <xsl:text>Claim queues: </xsl:text>
+      <ul>
+        <xsl:for-each select="queues/queue">
+          <li>
+            <xsl:for-each select="message">
+              <xsl:if test="position() &gt; 1">
+                <xsl:text>, </xsl:text>
+              </xsl:if>
+              <xsl:text>[</xsl:text>
+              <xsl:value-of select="@id"/>
+              <xsl:text> claim={</xsl:text>
+              <xsl:value-of select="claim"/>
+              <xsl:text>}, pkt={</xsl:text>
+              <xsl:value-of select="project"/>
+              <xsl:text>}, received={</xsl:text>
+              <xsl:value-of select="received"/>
+              <xsl:text>}]</xsl:text>
+            </xsl:for-each>
+          </li>
+        </xsl:for-each>
+      </ul>
+    </p>
+  </xsl:template>
   <xsl:template match="farm[@id='RvFarm']">
     <p>
       <xsl:text>Alive (</xsl:text>
