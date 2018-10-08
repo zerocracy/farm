@@ -25,8 +25,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import org.cactoos.map.MapEntry;
 import org.cactoos.map.SolidMap;
+import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.scalar.StickyScalar;
-import org.cactoos.scalar.UncheckedScalar;
 import org.takes.Request;
 import org.takes.facets.auth.Identity;
 import org.takes.facets.auth.PsCookie;
@@ -79,7 +79,7 @@ public final class RqWithUser extends RqWrap {
         /**
          * Underlying request.
          */
-        private final UncheckedScalar<RqWithUser> req;
+        private final IoCheckedScalar<RqWithUser> req;
 
         /**
          * Ctor.
@@ -97,11 +97,9 @@ public final class RqWithUser extends RqWrap {
          * @param farm The farm
          * @param req The request
          * @param uid UID of the user making the request
-         * @throws IOException If fails
          */
-        public WithInit(final Farm farm, final Request req, final String uid)
-            throws IOException {
-            this.req = new UncheckedScalar<>(
+        public WithInit(final Farm farm, final Request req, final String uid) {
+            this.req = new IoCheckedScalar<>(
                 new StickyScalar<>(
                     () -> {
                         final Catalog catalog =
