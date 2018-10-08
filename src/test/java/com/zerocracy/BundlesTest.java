@@ -56,7 +56,7 @@ import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.iterable.Sorted;
 import org.cactoos.list.ListOf;
-import org.cactoos.list.SolidList;
+import org.cactoos.list.StickyList;
 import org.cactoos.scalar.And;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
@@ -147,13 +147,13 @@ public final class BundlesTest {
         final Iterable<Object[]> list;
         final String tests = System.getProperty("bundlesTests", "");
         if (tests.isEmpty()) {
-            list = new Sorted<>(
-                new Mapped<>(
-                    path -> new Object[]{
-                        path.substring(0, path.indexOf("/claims.xml")),
-                    },
+            list = new Mapped<>(
+                path -> new Object[]{
+                    path.substring(0, path.indexOf("/claims.xml")),
+                },
+                new Sorted<>(
                     new Reflections(
-                        "com.zerocracy.bundles", new ResourcesScanner()
+                    "com.zerocracy.bundles", new ResourcesScanner()
                     ).getResources(p -> p.endsWith("claims.xml"))
                 )
             );
@@ -165,7 +165,7 @@ public final class BundlesTest {
                 new ListOf<>(tests.split(","))
             );
         }
-        return new SolidList<>(list);
+        return new StickyList<>(list);
     }
 
     @Before
