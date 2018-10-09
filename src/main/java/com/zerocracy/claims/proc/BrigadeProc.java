@@ -24,10 +24,12 @@ import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.claims.ClaimIn;
 import com.zerocracy.farm.StkSafe;
+import com.zerocracy.farm.StkTimed;
 import com.zerocracy.farm.StkVerbose;
 import com.zerocracy.farm.reactive.Brigade;
 import com.zerocracy.farm.reactive.StkRuntime;
 import groovy.lang.Script;
+import java.time.Duration;
 import java.util.Map;
 import org.cactoos.Proc;
 import org.cactoos.iterable.Mapped;
@@ -67,7 +69,11 @@ public final class BrigadeProc implements Proc<Message> {
                         cls.getSimpleName(),
                         farm,
                         new StkVerbose(
-                            new StkRuntime(cls, farm),
+                            new StkTimed(
+                                new StkRuntime(cls, farm),
+                                cls.getSimpleName(),
+                                Duration.ofMinutes(1L)
+                            ),
                             cls.getName()
                         )
                     ),

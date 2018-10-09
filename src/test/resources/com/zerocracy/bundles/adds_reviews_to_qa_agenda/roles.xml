@@ -15,26 +15,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<claims xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" updated="2018-09-07T06:54:40Z" version="0.62.5" xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.62.5/xsd/pm/claims.xsd">
-  <claim id="1">
-    <created>2017-07-21T20:32:19.716Z</created>
-    <type>Add award points</type>
-    <author>yegor256</author>
-    <token>test;C123;user42</token>
-    <params>
-      <param name="login">yegor256</param>
-      <param name="minutes">2000</param>
-      <param name="job">gh:test/test#1</param>
-      <param name="reason">To make it possible to bootstrap</param>
-    </params>
-  </claim>
-  <claim id="2147483642">
-    <created>2017-07-21T20:32:19.716Z</created>
-    <type>Bootstrap</type>
-    <author>yegor256</author>
-    <token>test;C123;user42</token>
-    <params>
-      <param name="channel">zc</param>
-    </params>
-  </claim>
-</claims>
+<roles xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" updated="2018-09-07T06:54:47Z" version="0.62.5" xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.62.5/xsd/pm/staff/roles.xsd">
+  <person id="krzyk">
+    <role>DEV</role>
+  </person>
+  <person id="ypshenychka">
+    <role>QA</role>
+  </person>
+</roles>

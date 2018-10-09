@@ -14,33 +14,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.cost
+package com.zerocracy.bundles.set_user_rate_eur
 
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
-import com.zerocracy.Par
-import com.zerocracy.Policy
 import com.zerocracy.Project
-import com.zerocracy.entry.ClaimsOf
-import com.zerocracy.farm.Assume
-import com.zerocracy.claims.ClaimIn
-import com.zerocracy.pm.staff.Roles
+import com.zerocracy.cash.Cash
+import com.zerocracy.pmo.People
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Set boost')
-  ClaimIn claim = new ClaimIn(xml)
   Farm farm = binding.variables.farm
-  Roles roles = new Roles(project).bootstrap()
-  if (claim.hasAuthor() && roles.hasRole(claim.author(), 'ARC')) {
-    claim.copy()
-      .type('Add award points')
-      .param('login', claim.author())
-      .param(
-        'reason',
-        new Par('Boosting tasks is against our principles, see §15').say()
-      )
-      .param('minutes', -new Policy().get('15.penalty', 10))
-      .postTo(new ClaimsOf(farm, project))
-  }
+  MatcherAssert.assertThat(
+    new People(farm).rate('user42'),
+    Matchers.comparesEqualTo(new Cash.S('EUR 100'))
+  )
 }

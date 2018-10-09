@@ -14,33 +14,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.cost
+package com.zerocracy.bundles.adds_reviews_to_qa_agenda
 
+import com.jcabi.github.Repos
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
-import com.zerocracy.Par
-import com.zerocracy.Policy
 import com.zerocracy.Project
-import com.zerocracy.entry.ClaimsOf
-import com.zerocracy.farm.Assume
-import com.zerocracy.claims.ClaimIn
-import com.zerocracy.pm.staff.Roles
+import com.zerocracy.cash.Cash
+import com.zerocracy.entry.ExtGithub
+import com.zerocracy.pm.qa.Reviews
+import com.zerocracy.pmo.Agenda
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Set boost')
-  ClaimIn claim = new ClaimIn(xml)
   Farm farm = binding.variables.farm
-  Roles roles = new Roles(project).bootstrap()
-  if (claim.hasAuthor() && roles.hasRole(claim.author(), 'ARC')) {
-    claim.copy()
-      .type('Add award points')
-      .param('login', claim.author())
-      .param(
-        'reason',
-        new Par('Boosting tasks is against our principles, see §15').say()
-      )
-      .param('minutes', -new Policy().get('15.penalty', 10))
-      .postTo(new ClaimsOf(farm, project))
-  }
+  new ExtGithub(farm).value().repos()
+    .create(new Repos.RepoCreate('test', false))
+    .issues().create('hello1', 'world1')
+  new Agenda(farm, 'ypshenychka').bootstrap().add(project, 'gh:test/test#1', 'QA')
+  new Reviews(project).bootstrap()
+    .add('gh:test/test#2','ypshenychka', 'krzyk', new Cash.S('$10'), 30, new Cash.S('$0'))
 }

@@ -84,7 +84,7 @@ def exec(Project project, XML xml) {
       .param('reason', new Par('It is older than %d day(s), see §8').say(days))
       .postTo(new ClaimsOf(farm, project))
     claim.copy()
-      .type('Make payment')
+      .type('Add award points')
       .param('job', job)
       .param('login', worker)
       .param('reason', new Par('Resigned on delay, see §8').say())

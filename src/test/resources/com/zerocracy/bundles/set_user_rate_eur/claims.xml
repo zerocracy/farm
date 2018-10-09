@@ -15,26 +15,24 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<claims xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" updated="2018-09-07T06:54:40Z" version="0.62.5" xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.62.5/xsd/pm/claims.xsd">
+<claims xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" updated="2018-09-07T06:54:28Z" version="0.62.5" xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.62.5/xsd/pm/claims.xsd">
   <claim id="1">
     <created>2017-07-21T20:32:19.716Z</created>
-    <type>Add award points</type>
-    <author>yegor256</author>
+    <type>Set wallet</type>
     <token>test;C123;user42</token>
+    <author>user42</author>
     <params>
-      <param name="login">yegor256</param>
-      <param name="minutes">2000</param>
-      <param name="job">gh:test/test#1</param>
-      <param name="reason">To make it possible to bootstrap</param>
+      <param name="bank">paypal</param>
+      <param name="wallet">test@example.com</param>
     </params>
   </claim>
-  <claim id="2147483642">
+  <claim id="2">
     <created>2017-07-21T20:32:19.716Z</created>
-    <type>Bootstrap</type>
-    <author>yegor256</author>
+    <type>Set rate</type>
     <token>test;C123;user42</token>
+    <author>user42</author>
     <params>
-      <param name="channel">zc</param>
+      <param name="rate">100EUR</param>
     </params>
   </claim>
 </claims>
