@@ -27,7 +27,6 @@ import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pm.scope.Wbs;
 import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.pmo.Pmo;
-import java.io.File;
 import java.nio.file.Files;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -35,7 +34,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.func.RunnableOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.Timeout;
 
 /**
  * Test case for {@link SyncFarm}.
@@ -45,6 +46,9 @@ import org.junit.Test;
  * @checkstyle ExecutableStatementCountCheck (500 lines)
  */
 public final class SyncFarmTest {
+
+    @Rule
+    public final Timeout timeout = Timeout.seconds(5L);
 
     @Test
     public void makesProjectsThreadSafe() throws Exception {
@@ -71,21 +75,6 @@ public final class SyncFarmTest {
                 },
                 new RunsInThreads<>(new AtomicInteger())
             );
-        }
-    }
-
-    @Test
-    public void acquireItems() throws Exception {
-        final File tmp = Files.createTempDirectory("").toFile();
-        tmp.deleteOnExit();
-        final Bucket bucket = new FkBucket(tmp, "acquireItems-bucket");
-        try (final Farm farm = new SyncFarm(new S3Farm(bucket))) {
-            final Project project = farm.find("@id='ABCZZFE09'")
-                .iterator().next();
-            final Item one = project.acq("one.txt");
-            final Item two = project.acq("two.txt");
-            one.close();
-            two.close();
         }
     }
 

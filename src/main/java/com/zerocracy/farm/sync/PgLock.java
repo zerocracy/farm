@@ -31,7 +31,7 @@ import org.cactoos.func.UncheckedProc;
 import org.cactoos.scalar.UncheckedScalar;
 
 /**
- * {@link Lock} using MongoDB.
+ * {@link Lock} using postgres table.
  *
  * @since 1.0
  */
