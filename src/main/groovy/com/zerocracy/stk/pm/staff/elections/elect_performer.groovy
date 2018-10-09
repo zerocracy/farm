@@ -76,11 +76,11 @@ def exec(Project project, XML xml) {
   if (Logger.isInfoEnabled(ltag)) {
     Logger.info(
       ltag,
-      "Election ranks metrics (project=%s, size(jobs)=%d):\n  %s",
+      'Election ranks metrics (project=%s, size(jobs)=%d):\n  %s',
       project.pid(),
       jobs.size(),
       String.join(
-        "\n  ",
+        '\n  ',
         new Mapped<>({ it.toString() }, ranks)
       )
     )
@@ -130,5 +130,5 @@ def exec(Project project, XML xml) {
 }
 
 static Votes wrapped(Votes votes) {
-  return new VsSafe(new VsMeasured(votes))
+  new VsSafe(new VsMeasured(votes))
 }
