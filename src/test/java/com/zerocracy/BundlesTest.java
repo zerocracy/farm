@@ -56,7 +56,7 @@ import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.iterable.Sorted;
 import org.cactoos.list.ListOf;
-import org.cactoos.list.SolidList;
+import org.cactoos.list.StickyList;
 import org.cactoos.scalar.And;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
@@ -144,18 +144,28 @@ public final class BundlesTest {
 
     @Parameterized.Parameters(name = "{0}")
     public static Collection<Object[]> bundles() {
-        return new SolidList<Object[]>(
-            new Mapped<>(
+        final Iterable<Object[]> list;
+        final String tests = System.getProperty("bundlesTests", "");
+        if (tests.isEmpty()) {
+            list = new Mapped<>(
                 path -> new Object[]{
                     path.substring(0, path.indexOf("/claims.xml")),
                 },
                 new Sorted<>(
                     new Reflections(
-                        "com.zerocracy.bundles", new ResourcesScanner()
+                    "com.zerocracy.bundles", new ResourcesScanner()
                     ).getResources(p -> p.endsWith("claims.xml"))
                 )
-            )
-        );
+            );
+        } else {
+            list = new Mapped<>(
+                test -> new Object[]{
+                    String.format("com/zerocracy/bundles/%s", test),
+                },
+                new ListOf<>(tests.split(","))
+            );
+        }
+        return new StickyList<>(list);
     }
 
     @Before
