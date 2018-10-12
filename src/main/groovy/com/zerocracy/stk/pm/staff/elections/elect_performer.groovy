@@ -34,6 +34,7 @@ import com.zerocracy.pm.scope.Wbs
 import com.zerocracy.pm.staff.Election
 import com.zerocracy.pm.staff.ElectionResult
 import com.zerocracy.pm.staff.Roles
+import com.zerocracy.pm.staff.Votes
 import com.zerocracy.pm.staff.ranks.*
 import com.zerocracy.pm.staff.votes.*
 import com.zerocracy.pmo.Pmo
@@ -75,11 +76,11 @@ def exec(Project project, XML xml) {
   if (Logger.isInfoEnabled(ltag)) {
     Logger.info(
       ltag,
-      "Election ranks metrics (project=%s, size(jobs)=%d):\n  %s",
+      'Election ranks metrics (project=%s, size(jobs)=%d):\n  %s',
       project.pid(),
       jobs.size(),
       String.join(
-        "\n  ",
+        '\n  ',
         new Mapped<>({ it.toString() }, ranks)
       )
     )
@@ -98,20 +99,20 @@ def exec(Project project, XML xml) {
       new Election(
         job, logins,
         [
-          (new VsSafe(new VsMeasured(new VsHardCap(pmo, max))))                                     : -100,
-          (new VsSafe(new VsMeasured(new VsReputation(pmo, logins))))                               : 4,
-          (new VsSafe(new VsMeasured(new VsLosers(pmo, new Policy().get('3.low-threshold', -128))))): -100,
-          (new VsSafe(new VsMeasured(new VsRate(project, logins))))                                 : 2,
-          (new VsSafe(new VsMeasured(new VsBigDebt(pmo))))                                          : -100,
-          (new VsSafe(new VsMeasured(new VsNoRoom(pmo))))                                           : role == 'REV' ? 0 : -100,
-          (new VsSafe(new VsMeasured(new VsOptionsMaxJobs(pmo))))                                   : role == 'REV' ? 0 : -100,
-          (new VsSafe(new VsMeasured(new VsBanned(project, job))))                                  : -100,
-          (new VsSafe(new VsMeasured(new VsVacation(pmo))))                                         : -100,
-          (new VsSafe(new VsMeasured(new VsWorkload(farm, logins))))                                : 1,
-          (new VsSafe(new VsMeasured(new VsWorkload(farm, project, logins))))                       : 1,
-          (new VsSafe(new VsMeasured(new VsSpeed(pmo, logins))))                                    : 3,
-          (new VsSafe(new VsMeasured(new VsBalance(project, farm, logins))))                        : 3,
-          (new VsSafe(new VsMeasured(new VsRandom())))                                              : 1
+          (wrapped(new VsHardCap(pmo, max)))                                     : -100,
+          (wrapped(new VsReputation(pmo, logins)))                               : 4,
+          (wrapped(new VsLosers(pmo, new Policy().get('3.low-threshold', -128)))): -100,
+          (wrapped(new VsRate(project, logins)))                                 : 2,
+          (wrapped(new VsBigDebt(pmo)))                                          : -100,
+          (wrapped(new VsNoRoom(pmo)))                                           : role == 'REV' ? 0 : -100,
+          (wrapped(new VsOptionsMaxJobs(pmo)))                                   : role == 'REV' ? 0 : -100,
+          (wrapped(new VsBanned(project, job)))                                  : -100,
+          (wrapped(new VsVacation(pmo)))                                         : -100,
+          (wrapped(new VsWorkload(farm, logins)))                                : 1,
+          (wrapped(new VsWorkload(farm, project, logins)))                       : 1,
+          (wrapped(new VsSpeed(pmo, logins)))                                    : 3,
+          (wrapped(new VsBalance(project, farm, logins)))                        : 3,
+          (wrapped(new VsRandom()))                                              : 1
         ]
       )
     )
@@ -126,4 +127,8 @@ def exec(Project project, XML xml) {
       break
     }
   }
+}
+
+static Votes wrapped(Votes votes) {
+  new VsSafe(new VsMeasured(votes))
 }
