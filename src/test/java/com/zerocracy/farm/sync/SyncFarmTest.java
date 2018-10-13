@@ -47,6 +47,9 @@ import org.junit.rules.Timeout;
  */
 public final class SyncFarmTest {
 
+    /**
+     * Timeout rule.
+     */
     @Rule
     public final Timeout timeout = Timeout.seconds(5L);
 
