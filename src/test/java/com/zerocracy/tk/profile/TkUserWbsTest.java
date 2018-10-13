@@ -63,8 +63,7 @@ public final class TkUserWbsTest {
                             ),
                             ""
                         ),
-                        uid,
-                        false
+                        uid
                     )
                 )
             ).printBody(),

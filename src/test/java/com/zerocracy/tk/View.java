@@ -93,7 +93,7 @@ public final class View {
         throws IOException {
         return new RsPrint(
             new TkApp(this.farm).act(
-                new RqWithUser(
+                new RqWithUser.WithInit(
                     this.farm,
                     new RqFake(
                         new Joined<String>(
