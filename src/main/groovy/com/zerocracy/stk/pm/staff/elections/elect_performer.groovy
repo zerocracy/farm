@@ -86,10 +86,14 @@ def exec(Project project, XML xml) {
     )
   }
   int max = new Policy().get('3.absolute-max', 32)
+  int count = 0
+  long vtime = System.nanoTime()
+  String elected = 'not-elected'
   for (String job : jobs) {
     if (orders.contains(job) || reviews.contains(job)) {
       continue
     }
+    ++count
     String role = wbs.role(job)
     List<String> logins = roles.findByRole(role)
     if (logins.empty) {
@@ -117,6 +121,7 @@ def exec(Project project, XML xml) {
       )
     )
     if (result.elected()) {
+      elected = job
       claim.copy()
         .type('Performer was elected')
         .param('login', result.winner())
@@ -126,6 +131,13 @@ def exec(Project project, XML xml) {
         .postTo(new ClaimsOf(farm, project))
       break
     }
+  }
+  if (Logger.isInfoEnabled(ltag)) {
+    Logger.info(
+            ltag,
+            'Election was completed for job %s at %d attempt, votes time was %[nano]s',
+            elected, count, System.nanoTime() - vtime
+    )
   }
 }
 
