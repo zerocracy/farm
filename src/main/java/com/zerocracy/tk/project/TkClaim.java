@@ -78,7 +78,7 @@ public final class TkClaim implements TkRegex {
     public Response act(final RqRegex request) throws IOException {
         final RqProject pkt = new RqProject(this.farm, request);
         final String user = new RqUser(this.farm, request, false).value();
-        final long cid = Long.valueOf(request.matcher().group(2));
+        final String cid = request.matcher().group(2);
         try (final Footprint ftp = new Footprint(this.farm, pkt)) {
             final Collection<XeSource> children = new SolidList<>(
                 new Mapped<>(
@@ -96,7 +96,7 @@ public final class TkClaim implements TkRegex {
                         )
                     ),
                     ftp.collection().find(
-                        Filters.eq("cause", cid)
+                        Filters.regex("cause", cid)
                     )
                 )
             );
