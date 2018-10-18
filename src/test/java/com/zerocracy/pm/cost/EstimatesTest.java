@@ -23,6 +23,7 @@ import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pm.in.Orders;
 import com.zerocracy.pm.scope.Wbs;
+import java.util.UUID;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -61,7 +62,8 @@ public final class EstimatesTest {
         final Estimates estimates = new Estimates(farm, project).bootstrap();
         final String first = "gh:yegor256/pdd#4";
         new Wbs(project).bootstrap().add(first);
-        new Orders(farm, project).bootstrap().assign(first, "yegor256", "0");
+        new Orders(farm, project).bootstrap()
+            .assign(first, "yegor256", UUID.randomUUID().toString());
         estimates.update(first, new Cash.S("$45"));
         MatcherAssert.assertThat(
             estimates.get(first),
@@ -69,7 +71,8 @@ public final class EstimatesTest {
         );
         final String second = "gh:yegor256/pdd#1";
         new Wbs(project).bootstrap().add(second);
-        new Orders(farm, project).bootstrap().assign(second, "yegor", "0");
+        new Orders(farm, project).bootstrap()
+            .assign(second, "yegor", UUID.randomUUID().toString());
         estimates.update(second, new Cash.S("$100"));
         MatcherAssert.assertThat(
             estimates.total(),
@@ -93,7 +96,8 @@ public final class EstimatesTest {
         final String first = "gh:yegor256/pdd#4";
         final Wbs wbs = new Wbs(project).bootstrap();
         wbs.add(first);
-        new Orders(farm, project).bootstrap().assign(first, "yegor256", "0");
+        new Orders(farm, project).bootstrap()
+            .assign(first, "yegor256", UUID.randomUUID().toString());
         estimates.update(first, new Cash.S("$45"));
         MatcherAssert.assertThat(
             estimates.get(first),
@@ -101,7 +105,8 @@ public final class EstimatesTest {
         );
         final String second = "gh:yegor256/pdd#1";
         wbs.add(second);
-        new Orders(farm, project).bootstrap().assign(second, "yegor", "0");
+        new Orders(farm, project).bootstrap()
+            .assign(second, "yegor", UUID.randomUUID().toString());
         estimates.update(second, new Cash.S("€100"));
         MatcherAssert.assertThat(
             estimates.total(),

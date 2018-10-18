@@ -28,6 +28,7 @@ import com.zerocracy.pm.cost.Boosts;
 import com.zerocracy.pm.in.Orders;
 import com.zerocracy.pm.scope.Wbs;
 import java.nio.file.Files;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.func.RunnableOf;
 import org.hamcrest.MatcherAssert;
@@ -176,7 +177,8 @@ public final class SmartFarmTest {
             ).iterator().next();
             final String job = "gh:test/test#22";
             new Wbs(project).bootstrap().add(job);
-            new Orders(farm, project).bootstrap().assign(job, "jeff", "0");
+            new Orders(farm, project).bootstrap()
+                .assign(job, "jeff", UUID.randomUUID().toString());
             new VerboseRunnable(
                 new RunnableOf<>(
                     obj -> {
