@@ -23,7 +23,9 @@ import com.zerocracy.farm.footprint.FtFarm;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.farm.ruled.RdFarm;
 import com.zerocracy.farm.strict.StrictFarm;
+import com.zerocracy.farm.sync.Locks;
 import com.zerocracy.farm.sync.SyncFarm;
+import com.zerocracy.farm.sync.TestLocks;
 import java.io.IOException;
 import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.scalar.SolidScalar;
@@ -44,17 +46,28 @@ public final class SmartFarm implements Farm {
 
     /**
      * Ctor.
-     * @param farm Original
+     *
+     * @param farm Farm
      */
     public SmartFarm(final Farm farm) {
+        this(farm, new TestLocks());
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param farm Original
+     * @param locks Sync locks
+     */
+    public SmartFarm(final Farm farm, final Locks locks) {
         this.self = new IoCheckedScalar<>(
             new SolidScalar<>(
                 () -> new RdFarm(
                     new FtFarm(
                         new ExtFarm(
-                            new PropsFarm(
-                                new StrictFarm(
-                                    new SyncFarm(farm)
+                            new StrictFarm(
+                                new PropsFarm(
+                                    new SyncFarm(farm, locks)
                                 )
                             )
                         )

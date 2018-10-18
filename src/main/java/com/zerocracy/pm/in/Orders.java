@@ -76,8 +76,8 @@ public final class Orders {
      * @throws IOException If fails
      */
     public Orders bootstrap() throws IOException {
-        try (final Item wbs = this.item()) {
-            new Xocument(wbs.path()).bootstrap("pm/in/orders");
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).bootstrap("pm/in/orders");
         }
         return this;
     }
@@ -212,8 +212,8 @@ public final class Orders {
      * @throws IOException If fails of it there is no assignee
      */
     public boolean assigned(final String job) throws IOException {
-        try (final Item wbs = this.item()) {
-            return !new Xocument(wbs.path()).nodes(
+        try (final Item item = this.item()) {
+            return !new Xocument(item.path()).nodes(
                 String.format("/orders/order[@job='%s']", job)
             ).isEmpty();
         }
@@ -233,8 +233,8 @@ public final class Orders {
                 )
             );
         }
-        try (final Item wbs = this.item()) {
-            return new Xocument(wbs.path()).xpath(
+        try (final Item item = this.item()) {
+            return new Xocument(item.path()).xpath(
                 String.format("/orders/order[@job='%s']/performer/text()", job)
             ).get(0);
         }

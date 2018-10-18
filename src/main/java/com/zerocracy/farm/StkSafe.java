@@ -16,6 +16,7 @@
  */
 package com.zerocracy.farm;
 
+import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
@@ -86,19 +87,28 @@ public final class StkSafe implements Stakeholder {
         {
             "PMD.AvoidCatchingThrowable",
             "PMD.AvoidRethrowingException",
-            "PMD.CyclomaticComplexity"
+            "PMD.CyclomaticComplexity",
+            "PMD.PrematureDeclaration"
         }
     )
     public void process(final Project project,
         final XML xml) throws IOException {
         final ClaimIn claim = new ClaimIn(xml);
+        final boolean testing = new Props(this.farm).has("//testing");
         try {
             this.origin.process(project, xml);
         } catch (final MismatchException ex) {
             throw ex;
         } catch (final SoftException ex) {
+            if (testing) {
+                Logger.warn(
+                    this,
+                    "Soft error for '%s': %s",
+                    claim.type(), ex.getMessage()
+                );
+            }
             if (claim.hasToken()) {
-                new ClaimIn(xml).reply(ex.getMessage()).postTo(
+                claim.reply(ex.getMessage()).postTo(
                     new ClaimsOf(this.farm, project)
                 );
             } else {
@@ -128,7 +138,7 @@ public final class StkSafe implements Stakeholder {
                 msg.append(String.format(", token=\"%s\"", claim.token()));
             }
             final Props props = new Props(this.farm);
-            if (props.has("//testing")) {
+            if (testing) {
                 throw new IllegalStateException(ex);
             }
             if (!claim.isError()) {

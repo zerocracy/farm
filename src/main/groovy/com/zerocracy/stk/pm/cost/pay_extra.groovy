@@ -86,7 +86,7 @@ def exec(Project project, XML xml) {
     .param('reason', new Par('Direct payment from @%s').say(author))
     .postTo(new ClaimsOf(farm, project))
   claim.copy()
-    .type('Make payment')
+    .type('Add award points')
     .param('login', author)
     .param('minutes', -new Policy().get('49.penalty', 60))
     .param(

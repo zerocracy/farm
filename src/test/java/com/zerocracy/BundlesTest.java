@@ -24,6 +24,7 @@ import com.zerocracy.claims.ClaimsItem;
 import com.zerocracy.claims.Footprint;
 import com.zerocracy.farm.SmartFarm;
 import com.zerocracy.farm.StkSafe;
+import com.zerocracy.farm.StkTimed;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.reactive.Brigade;
@@ -38,6 +39,7 @@ import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -54,7 +56,7 @@ import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.iterable.Sorted;
 import org.cactoos.list.ListOf;
-import org.cactoos.list.SolidList;
+import org.cactoos.list.StickyList;
 import org.cactoos.scalar.And;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
@@ -142,18 +144,28 @@ public final class BundlesTest {
 
     @Parameterized.Parameters(name = "{0}")
     public static Collection<Object[]> bundles() {
-        return new SolidList<Object[]>(
-            new Mapped<>(
+        final Iterable<Object[]> list;
+        final String tests = System.getProperty("bundlesTests", "");
+        if (tests.isEmpty()) {
+            list = new Mapped<>(
                 path -> new Object[]{
                     path.substring(0, path.indexOf("/claims.xml")),
                 },
                 new Sorted<>(
                     new Reflections(
-                        "com.zerocracy.bundles", new ResourcesScanner()
+                    "com.zerocracy.bundles", new ResourcesScanner()
                     ).getResources(p -> p.endsWith("claims.xml"))
                 )
-            )
-        );
+            );
+        } else {
+            list = new Mapped<>(
+                test -> new Object[]{
+                    String.format("com/zerocracy/bundles/%s", test),
+                },
+                new ListOf<>(tests.split(","))
+            );
+        }
+        return new StickyList<>(list);
     }
 
     @Before
@@ -292,7 +304,11 @@ public final class BundlesTest {
                 cls -> new StkSafe(
                     cls.getSimpleName(),
                     farm,
-                    new StkRuntime(cls, farm)
+                    new StkTimed(
+                        new StkRuntime(cls, farm),
+                        cls.getSimpleName(),
+                        Duration.ofMinutes(1L)
+                    )
                 ),
                 new Reflections(
                     "com.zerocracy.stk",

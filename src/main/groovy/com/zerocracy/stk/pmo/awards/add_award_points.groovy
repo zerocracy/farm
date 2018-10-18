@@ -26,7 +26,7 @@ import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pmo.Awards
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).type('Make payment', 'Add award points')
+  new Assume(project, xml).type('Add award points')
   ClaimIn claim = new ClaimIn(xml)
   if (!claim.hasParam('minutes')) {
     return

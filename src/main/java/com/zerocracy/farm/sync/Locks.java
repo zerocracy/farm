@@ -16,16 +16,24 @@
  */
 package com.zerocracy.farm.sync;
 
+import com.zerocracy.Project;
+import java.io.IOException;
+import java.util.concurrent.locks.Lock;
+
 /**
- * Zerocracy interface for synchronization locks.
+ * Shared resource locks.
  *
  * @since 1.0
  */
-public interface Lock extends java.util.concurrent.locks.Lock {
+public interface Locks {
 
     /**
-     * Full stack trace of this lock holder.
-     * @return The stacktrace
+     * Lock for resource.
+     *
+     * @param pkt Project
+     * @param res Resource
+     * @return Lock
+     * @throws IOException If fails
      */
-    StackTraceElement[] stacktrace();
+    Lock lock(Project pkt, String res) throws IOException;
 }

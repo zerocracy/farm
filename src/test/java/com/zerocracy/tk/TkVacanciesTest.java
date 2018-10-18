@@ -39,7 +39,7 @@ public final class TkVacanciesTest {
             XhtmlMatchers.xhtml(
                 new RsPrint(
                     new TkApp(farm).act(
-                        new RqWithUser(
+                        new RqWithUser.WithInit(
                             farm,
                             new RqFake("GET", "/vacancies")
                         )

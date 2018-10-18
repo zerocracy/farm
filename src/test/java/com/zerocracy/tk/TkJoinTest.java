@@ -48,7 +48,9 @@ public final class TkJoinTest {
             XhtmlMatchers.xhtml(
                 new RsPrint(
                     new TkApp(farm).act(
-                        new RqWithUser(farm, new RqFake("GET", "/join"))
+                        new RqWithUser.WithInit(
+                            farm, new RqFake("GET", "/join")
+                        )
                     )
                 ).printBody()
             ),
@@ -73,7 +75,9 @@ public final class TkJoinTest {
         MatcherAssert.assertThat(
             new RsPrint(
                 new TkApp(farm).act(
-                    new RqWithUser(farm, new RqFake("GET", "/join"))
+                    new RqWithUser.WithInit(
+                        farm, new RqFake("GET", "/join")
+                    )
                 )
             ).printBody(),
             new StringContainsInOrder(

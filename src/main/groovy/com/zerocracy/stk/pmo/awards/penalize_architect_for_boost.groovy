@@ -34,7 +34,7 @@ def exec(Project project, XML xml) {
   Roles roles = new Roles(project).bootstrap()
   if (claim.hasAuthor() && roles.hasRole(claim.author(), 'ARC')) {
     claim.copy()
-      .type('Make payment')
+      .type('Add award points')
       .param('login', claim.author())
       .param(
         'reason',

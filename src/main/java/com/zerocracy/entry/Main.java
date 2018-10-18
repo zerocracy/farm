@@ -19,6 +19,8 @@ package com.zerocracy.entry;
 import com.jcabi.aspects.Loggable;
 import com.jcabi.log.Logger;
 import com.zerocracy.Farm;
+import com.zerocracy.claims.ClaimGuts;
+import com.zerocracy.claims.ClaimsFarm;
 import com.zerocracy.claims.ClaimsRoutine;
 import com.zerocracy.claims.proc.AsyncProc;
 import com.zerocracy.claims.proc.BrigadeProc;
@@ -27,10 +29,12 @@ import com.zerocracy.claims.proc.ExpiryProc;
 import com.zerocracy.claims.proc.FootprintProc;
 import com.zerocracy.claims.proc.MessageMonitorProc;
 import com.zerocracy.claims.proc.SentryProc;
+import com.zerocracy.db.ExtDataSource;
 import com.zerocracy.farm.S3Farm;
 import com.zerocracy.farm.SmartFarm;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.farm.props.PropsFarm;
+import com.zerocracy.farm.sync.PgLocks;
 import com.zerocracy.radars.github.GithubRoutine;
 import com.zerocracy.radars.github.TkGithub;
 import com.zerocracy.radars.gitlab.TkGitlab;
@@ -123,10 +127,18 @@ public final class Main {
         final ShutdownFarm.Hook shutdown = new ShutdownFarm.Hook();
         final AtomicInteger count = new AtomicInteger();
         final int threads = Runtime.getRuntime().availableProcessors();
+        final ClaimGuts cgts = new ClaimGuts();
         try (
+            final S3Farm origin = new S3Farm(new ExtBucket().value(), temp);
             final Farm farm = new ShutdownFarm(
-                new SmartFarm(
-                    new S3Farm(new ExtBucket().value(), temp)
+                new ClaimsFarm(
+                    new SmartFarm(
+                        origin,
+                        new PgLocks(
+                            new ExtDataSource(new PropsFarm(origin)).value()
+                        )
+                    ),
+                    cgts
                 ),
                 shutdown
             );
@@ -151,6 +163,7 @@ public final class Main {
                         ),
                         shutdown
                     ),
+                    cgts,
                     shutdown
                 ),
                 () -> count.intValue() < threads

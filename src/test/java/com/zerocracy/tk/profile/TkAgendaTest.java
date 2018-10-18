@@ -76,7 +76,7 @@ public final class TkAgendaTest {
         MatcherAssert.assertThat(
             new RsPrint(
                 new TkApp(farm).act(
-                    new RqWithUser(
+                    new RqWithUser.WithInit(
                         farm,
                         new RqFake("GET", "/u/foo-user/agenda")
                     )

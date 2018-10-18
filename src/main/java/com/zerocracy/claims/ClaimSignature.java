@@ -77,7 +77,7 @@ public final class ClaimSignature implements Text {
                     "%s=%s", entry.getKey(), entry.getValue()
                 ),
                 new Sorted<>(
-                    Comparator.comparing(Map.Entry::getKey),
+                    Comparator.comparing(Map.Entry<String, String>::getKey),
                     claim.params().entrySet()
                 )
             );
