@@ -58,7 +58,7 @@ import org.xembly.Directives;
  * @checkstyle ExecutableStatementCountCheck (500 lines)
  */
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals",
-    "PMD.AvoidInstantiatingObjectsInLoops"})
+    "PMD.AvoidInstantiatingObjectsInLoops", "PMD.ExcessiveImports"})
 public final class CatalogTest {
 
     @Test
