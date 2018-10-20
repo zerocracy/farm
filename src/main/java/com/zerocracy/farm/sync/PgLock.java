@@ -19,6 +19,7 @@ package com.zerocracy.farm.sync;
 import com.jcabi.jdbc.JdbcSession;
 import com.jcabi.jdbc.Outcome;
 import com.jcabi.log.Logger;
+import java.sql.SQLException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -114,12 +115,18 @@ final class PgLock implements Lock {
         throws InterruptedException {
         final long deadline = System.nanoTime() + unit.toNanos(time);
         boolean locked = false;
-        final JdbcSession session = new JdbcSession(this.data);
+        final JdbcSession session = new JdbcSession(this.data)
+            .autocommit(false);
         while (!locked && System.nanoTime() < deadline) {
             locked = this.acq(session);
             if (!locked) {
                 TimeUnit.MILLISECONDS.sleep(1L);
             }
+        }
+        try {
+            session.commit();
+        } catch (final SQLException err) {
+            Logger.error(this, "Failed to commit: %[exception]s", err);
         }
         return locked;
     }
@@ -159,7 +166,12 @@ final class PgLock implements Lock {
     private boolean acq(final JdbcSession session) {
         return this.holder.lock(
             () -> session
-                // @checkstyle LineLength (1 line)
+                // @checkstyle LineLength (10 line)
+                .sql("DELETE FROM farm_locks WHERE project = ? AND resource = ? AND created < NOW() - INTERVAL '20 minutes'")
+                .set(this.pid)
+                .set(this.res)
+                .execute()
+                .clear()
                 .sql("INSERT INTO farm_locks (project, resource) VALUES (?, ?) ON CONFLICT DO NOTHING RETURNING 1")
                 .set(this.pid)
                 .set(this.res)
