@@ -216,8 +216,8 @@ public final class ClaimsItem {
             new Xocument(item).modify(
                 new Directives().xpath(
                     String.format(
-                        "/claims/claim[@id='%d' and type='%s']",
-                        Long.parseLong(claim.xpath("@id").get(0)),
+                        "/claims/claim[@id='%s' and type='%s']",
+                        claim.xpath("@id").get(0),
                         claim.xpath("type/text()").get(0)
                     )
                 ).strict(1).remove()
