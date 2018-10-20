@@ -25,6 +25,8 @@ import com.zerocracy.Item;
 import com.zerocracy.Project;
 import com.zerocracy.farm.S3Farm;
 import com.zerocracy.farm.fake.FkFarm;
+import com.zerocracy.farm.fake.FkItem;
+import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.sync.SyncFarm;
 import com.zerocracy.pm.cost.Boosts;
 import com.zerocracy.pm.scope.Wbs;
@@ -33,6 +35,7 @@ import java.nio.file.Files;
 import org.cactoos.func.RunnableOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.hamcrest.core.IsEqual;
 import org.junit.Test;
 
 /**
@@ -132,6 +135,21 @@ public final class RdItemTest {
             bug.join();
             new Boosts(farm, pkt).bootstrap();
         }
+    }
+
+    @Test
+    public void createsFileAndDeletesOnClose() throws Exception {
+        final RdItem item = new RdItem(new FkProject(), new FkItem(), "blah");
+        try {
+            MatcherAssert.assertThat(
+                item.path().toFile().exists(), new IsEqual<>(true)
+            );
+        } finally {
+            item.close();
+        }
+        MatcherAssert.assertThat(
+            item.path().toFile().exists(), new IsEqual<>(false)
+        );
     }
 
 }
