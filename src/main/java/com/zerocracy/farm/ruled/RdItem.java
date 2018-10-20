@@ -140,6 +140,7 @@ final class RdItem implements Item {
             }
         } finally {
             this.origin.close();
+            this.temp.value().toFile().delete();
         }
     }
 
