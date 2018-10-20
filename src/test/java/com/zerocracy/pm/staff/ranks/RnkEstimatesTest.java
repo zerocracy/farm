@@ -25,6 +25,7 @@ import com.zerocracy.pm.in.Orders;
 import com.zerocracy.pm.scope.Wbs;
 import com.zerocracy.pm.staff.Roles;
 import java.util.Map;
+import java.util.UUID;
 import org.cactoos.func.UncheckedFunc;
 import org.cactoos.list.ListOf;
 import org.cactoos.list.Sorted;
@@ -66,7 +67,7 @@ public final class RnkEstimatesTest {
         );
         for (final Map.Entry<String, Cash> job : jobs.entrySet()) {
             wbs.add(job.getKey());
-            orders.assign(job.getKey(), "test", 0L);
+            orders.assign(job.getKey(), "test", UUID.randomUUID().toString());
             estimates.update(job.getKey(), job.getValue());
         }
         MatcherAssert.assertThat(

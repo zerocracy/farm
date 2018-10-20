@@ -30,6 +30,7 @@ import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.footprint.FtFarm;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.tk.View;
+import java.util.UUID;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 
@@ -46,18 +47,18 @@ public final class TkClaimTest {
     @Test
     public void renderClaimWithNoChildrenXml() throws Exception {
         final Farm farm = new FtFarm(new PropsFarm(new FkFarm()));
-        final long cid = 42L;
+        final String cid = "bed54c2a-acc4-4d63-baa4-d64397a23d1a";
         final ClaimOut claim = new ClaimOut().type("test").cid(cid);
         final Project project = farm.find("@id='C00000000'").iterator().next();
         claim.postTo(new ClaimsOf(farm, project));
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
                 new View(
-                    farm, String.format("/footprint/C00000000/%d", cid)
+                    farm, String.format("/footprint/C00000000/%s", cid)
                 ).xml()
             ),
             XhtmlMatchers.hasXPaths(
-                String.format("/page/claim/cid[text() = %d]", cid),
+                String.format("/page/claim/cid[text() = '%s']", cid),
                 "/page/children"
             )
         );
@@ -66,8 +67,8 @@ public final class TkClaimTest {
     @Test
     public void renderClaimWithOneChild() throws Exception {
         final FtFarm farm = new FtFarm(new PropsFarm(new FkFarm()));
-        final long parent = 111L;
-        final long child = 222L;
+        final String parent = "bfdea64b-0902-4335-93fe-c739184ffa0f";
+        final String child = "a4c07649-a149-4f39-a3b6-7958fd7b8d3e";
         final Project proj = farm.find("@id='C00000000'").iterator().next();
         new ClaimOut().type("test").cid(parent)
             .postTo(new ClaimsOf(farm, proj));
@@ -77,12 +78,12 @@ public final class TkClaimTest {
             XhtmlMatchers.xhtml(
                 new View(
                     farm,
-                    String.format("/footprint/%s/%d", proj.pid(), parent)
+                    String.format("/footprint/%s/%s", proj.pid(), parent)
                 ).xml()
             ),
             XhtmlMatchers.hasXPaths(
-                String.format("/page/claim/cid[text() = %d]", parent),
-                String.format("/page/children/child/cid[text() = %d]", child)
+                String.format("/page/claim/cid[text() = '%s']", parent),
+                String.format("/page/children/child/cid[text() = '%s']", child)
             )
         );
     }
@@ -90,7 +91,7 @@ public final class TkClaimTest {
     @Test
     public void renderClaimWithManyChildren() throws Exception {
         final FtFarm farm = new FtFarm(new PropsFarm(new FkFarm()));
-        final long parent = 164L;
+        final String parent = "34fe441e-d2a3-11e8-a8d5-f2801f1b9fd1";
         final int children = Tv.FIFTY;
         final Project proj = farm.find("@id='C00000000'").iterator().next();
         final Claims claims = new ClaimsOf(farm, proj);
@@ -100,7 +101,7 @@ public final class TkClaimTest {
             new ClaimsItem(proj).iterate().iterator().next()
         );
         for (int number = 0; number < children; ++number) {
-            claim.copy().cid((long) (Tv.THOUSAND + number))
+            claim.copy().cid(UUID.randomUUID().toString())
                 .param("number", number)
                 .postTo(claims);
         }
@@ -108,12 +109,12 @@ public final class TkClaimTest {
             XhtmlMatchers.xhtml(
                 new View(
                     farm,
-                    String.format("/footprint/%s/%d", proj.pid(), parent)
+                    String.format("/footprint/%s/%s", proj.pid(), parent)
                 ).xml()
             ),
             XhtmlMatchers.hasXPaths(
-                String.format("/page/claim/cid[text() = %d]", parent),
-                String.format("/page/children[count(child) = %d]", children)
+                String.format("/page/claim/cid[text() = '%s']", parent),
+                String.format("/page/children[count(child) = %s]", children)
             )
         );
     }

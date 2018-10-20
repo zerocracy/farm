@@ -104,8 +104,8 @@ public final class ClaimIn {
      * Get ID.
      * @return ID
      */
-    public long cid() {
-        return Long.parseLong(this.xml.xpath("@id").get(0));
+    public String cid() {
+        return this.xml.xpath("@id").get(0);
     }
 
     /**

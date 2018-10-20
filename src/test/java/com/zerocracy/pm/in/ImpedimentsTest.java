@@ -21,6 +21,7 @@ import com.zerocracy.SoftException;
 import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pm.scope.Wbs;
+import java.util.UUID;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -29,7 +30,7 @@ import org.junit.Test;
  * Test case for {@link Impediments}.
  *
  * @since 1.0
- *  @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class ImpedimentsTest {
 
@@ -41,7 +42,7 @@ public final class ImpedimentsTest {
         final String job = "gh:test/test#1";
         new Wbs(project).bootstrap().add(job);
         new Orders(new PropsFarm(), project).bootstrap()
-            .assign(job, "yegor256", 0L);
+            .assign(job, "yegor256", UUID.randomUUID().toString());
         imp.register(job, "test");
         MatcherAssert.assertThat(
             imp.jobs(),
@@ -60,7 +61,8 @@ public final class ImpedimentsTest {
         final Impediments imp = new Impediments(farm, project).bootstrap();
         final String job = "gh:test/test#2";
         new Wbs(project).bootstrap().add(job);
-        new Orders(farm, project).bootstrap().assign(job, "amihaiemil", 0L);
+        new Orders(farm, project).bootstrap()
+            .assign(job, "amihaiemil", UUID.randomUUID().toString());
         imp.register(job, "reason");
         MatcherAssert.assertThat(
             imp.jobs(),
