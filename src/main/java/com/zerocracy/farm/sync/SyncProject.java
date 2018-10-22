@@ -82,6 +82,7 @@ final class SyncProject implements Project {
                 );
             }
         } catch (final InterruptedException ex) {
+            lock.unlock();
             Thread.currentThread().interrupt();
             throw new IllegalStateException(
                 Logger.format(

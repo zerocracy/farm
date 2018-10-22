@@ -218,16 +218,18 @@ final class PgLock implements Lock {
          * @param func Function to release
          */
         public void free(final Proc<Void> func) {
-            final Thread thread = Thread.currentThread();
-            if (this.ref.get() != thread) {
-                throw new IllegalStateException(
-                    "Should be locked by same thread"
-                );
-            }
-            if (this.cnt.decrementAndGet() == 0) {
-                synchronized (this.sync) {
-                    this.ref.set(null);
-                    new UncheckedProc<>(func).exec(null);
+            if (this.ref.get() == null) {
+                final Thread thread = Thread.currentThread();
+                if (this.ref.get() != thread) {
+                    throw new IllegalStateException(
+                        "Should be locked by same thread"
+                    );
+                }
+                if (this.cnt.decrementAndGet() == 0) {
+                    synchronized (this.sync) {
+                        this.ref.set(null);
+                        new UncheckedProc<>(func).exec(null);
+                    }
                 }
             }
         }
