@@ -73,8 +73,8 @@ def exec(Project project, XML xml) {
   ]
   ranks.each { jobs.sort(it) }
   String ltag = 'com.zerocracy.election'
-  if (Logger.isInfoEnabled(ltag)) {
-    Logger.info(
+  if (Logger.isDebugEnabled(ltag)) {
+    Logger.debug(
       ltag,
       'Election ranks metrics (project=%s, size(jobs)=%d):\n  %s',
       project.pid(),
