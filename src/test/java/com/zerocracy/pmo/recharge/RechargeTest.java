@@ -26,6 +26,7 @@ import com.zerocracy.pm.cost.Ledger;
 import com.zerocracy.pm.in.Orders;
 import com.zerocracy.pm.scope.Wbs;
 import com.zerocracy.pmo.Catalog;
+import java.util.UUID;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.core.IsEqual;
@@ -67,7 +68,8 @@ public final class RechargeTest {
         final String job = "gh:test/test#1";
         new Wbs(project).bootstrap().add(job);
         final PropsFarm farm = new PropsFarm();
-        new Orders(farm, project).bootstrap().assign(job, "perf", 1L);
+        new Orders(farm, project).bootstrap()
+            .assign(job, "perf", UUID.randomUUID().toString());
         new Estimates(farm, project).bootstrap()
             .update(job, new Cash.S("$100"));
         new Ledger(farm, project).bootstrap().add(

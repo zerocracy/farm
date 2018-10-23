@@ -115,7 +115,7 @@ public final class StkSafe implements Stakeholder {
                 new SafeSentry(this.farm).capture(
                     new IllegalArgumentException(
                         String.format(
-                            "Claim #%d \"%s\" has no token in %s",
+                            "Claim #%s \"%s\" has no token in %s",
                             claim.cid(), claim.type(), this.identifier
                         ),
                         ex
@@ -126,7 +126,7 @@ public final class StkSafe implements Stakeholder {
         } catch (final Throwable ex) {
             final StringBuilder msg = new StringBuilder(
                 String.format(
-                    "Claim #%d in %s: type=\"%s\", stakeholder=\"%s\"",
+                    "Claim #%s in %s: type=\"%s\", stakeholder=\"%s\"",
                     claim.cid(), project.pid(), claim.type(),
                     this.identifier
                 )
@@ -157,7 +157,7 @@ public final class StkSafe implements Stakeholder {
                         ex, props,
                         String.format(
                             // @checkstyle LineLength (1 line)
-                            "CID: [%d](https://www.0crat.com/%s/%1$d), Type: \"%s\", Author: \"%s\"",
+                            "CID: [%s](https://www.0crat.com/%s/%1$d), Type: \"%s\", Author: \"%s\"",
                             claim.cid(), project.pid(), claim.type(),
                             claim.author()
                         )

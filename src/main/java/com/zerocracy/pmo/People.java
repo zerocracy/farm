@@ -927,6 +927,7 @@ public final class People {
             .add("projects").set("0").up()
             .add("speed").set("0.0").up()
             .add("skills").attr("updated", Instant.now()).up()
+            .add("active").set(true).up()
             .add("links")
             .add("link")
             .attr("rel", "github")

@@ -24,6 +24,7 @@ import com.zerocracy.pm.cost.Estimates;
 import com.zerocracy.pm.cost.Ledger;
 import com.zerocracy.pm.cost.Rates;
 import com.zerocracy.pm.scope.Wbs;
+import java.util.UUID;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.collection.IsEmptyCollection;
@@ -44,7 +45,7 @@ public final class OrdersTest {
         final Orders orders = new Orders(new PropsFarm(), project).bootstrap();
         final String job = "gh:yegor256/0pdd#13";
         new Wbs(project).bootstrap().add(job);
-        orders.assign(job, "yegor256", 0L);
+        orders.assign(job, "yegor256", UUID.randomUUID().toString());
     }
 
     @Test
@@ -66,7 +67,7 @@ public final class OrdersTest {
         wbs.add(job);
         wbs.role(job, "REV");
         final Orders orders = new Orders(farm, project).bootstrap();
-        orders.assign(job, login, 0L);
+        orders.assign(job, login, UUID.randomUUID().toString());
         MatcherAssert.assertThat(
             new Estimates(farm, project).bootstrap().get(job),
             Matchers.equalTo(new Cash.S("$12.50"))
@@ -79,7 +80,7 @@ public final class OrdersTest {
         final Orders orders = new Orders(new PropsFarm(), project).bootstrap();
         final String job = "gh:yegor256/0pdd#13";
         new Wbs(project).bootstrap().add(job);
-        orders.assign(job, "yegor256", 0L);
+        orders.assign(job, "yegor256", UUID.randomUUID().toString());
         orders.remove(job);
         MatcherAssert.assertThat(
             "Order not removed",

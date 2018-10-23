@@ -90,7 +90,7 @@ public final class Orders {
      * @throws IOException If fails
      */
     public void assign(final String job, final String login,
-        final long reason) throws IOException {
+        final String reason) throws IOException {
         this.assign(job, login, reason, Instant.now());
     }
 
@@ -104,7 +104,7 @@ public final class Orders {
      * @checkstyle ParameterNumber (3 lines)
      */
     public void assign(final String job, final String login,
-        final long reason, final Instant start) throws IOException {
+        final String reason, final Instant start) throws IOException {
         if (this.assigned(job)) {
             throw new SoftException(
                 String.format(

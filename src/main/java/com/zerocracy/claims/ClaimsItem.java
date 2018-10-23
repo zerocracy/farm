@@ -27,6 +27,7 @@ import com.zerocracy.Xocument;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -188,11 +189,12 @@ public final class ClaimsItem {
                 new Comparator<XML>() {
                     @Override
                     public int compare(final XML left, final XML right) {
-                        return Long.compare(this.cid(left), this.cid(right));
+                        return this.created(left)
+                            .compareTo(this.created(right));
                     }
 
-                    private long cid(final XML xml) {
-                        return new ClaimIn(xml).cid();
+                    private Date created(final XML xml) {
+                        return new ClaimIn(xml).created();
                     }
                 },
                 new Xocument(item).nodes(
@@ -214,8 +216,8 @@ public final class ClaimsItem {
             new Xocument(item).modify(
                 new Directives().xpath(
                     String.format(
-                        "/claims/claim[@id='%d' and type='%s']",
-                        Long.parseLong(claim.xpath("@id").get(0)),
+                        "/claims/claim[@id='%s' and type='%s']",
+                        claim.xpath("@id").get(0),
                         claim.xpath("type/text()").get(0)
                     )
                 ).strict(1).remove()

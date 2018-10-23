@@ -546,7 +546,7 @@ SOFTWARE.
                           branch coverage of 65% and class missed count of max 15.
                           Remember to increase those coverages below in jacoco configuration.
                       -->
-                      <!-- 
+                      <!--
                            @todo #1088:30min Groovy scripts are now not excluded, as a result
                             complexity coverage ration dropped from 0.57, and instruction
                             coverage dropped from 0.60. Add tests to

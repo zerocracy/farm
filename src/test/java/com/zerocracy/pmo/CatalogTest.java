@@ -35,6 +35,7 @@ import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.radars.github.Job;
 import java.io.IOException;
 import java.time.Instant;
+import java.util.UUID;
 import org.cactoos.text.FormattedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -57,7 +58,7 @@ import org.xembly.Directives;
  * @checkstyle ExecutableStatementCountCheck (500 lines)
  */
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals",
-    "PMD.AvoidInstantiatingObjectsInLoops"})
+    "PMD.AvoidInstantiatingObjectsInLoops", "PMD.ExcessiveImports"})
 public final class CatalogTest {
 
     @Test
@@ -225,7 +226,8 @@ public final class CatalogTest {
         for (int cont = 0; cont < Tv.THREE; cont = cont + 1) {
             wbs.add(new Job(repo.issues().create("Job", "")).toString());
         }
-        new Orders(farm, project).bootstrap().assign(one, dev, Tv.TEN);
+        new Orders(farm, project).bootstrap()
+            .assign(one, dev, UUID.randomUUID().toString());
         try (final Item item = CatalogTest.item(project)) {
             MatcherAssert.assertThat(
                 "Architect(s) not found",
