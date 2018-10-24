@@ -33,7 +33,7 @@ def exec(Project project, XML xml) {
         Filters.and(
           Filters.eq('type', 'Make payment'),
           Filters.eq('login', 'arc'),
-          Filters.regex('job', '^tag 0.1 in repo test/test')
+          Filters.regex('reason', 'tag 0.1 in repo test/test$')
         )
       ),
       Matchers.iterableWithSize(1)

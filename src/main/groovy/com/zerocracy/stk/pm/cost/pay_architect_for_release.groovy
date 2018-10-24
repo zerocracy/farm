@@ -81,9 +81,13 @@ def exec(Project project, XML xml) {
     claim.copy()
       .type('Make payment')
       .param('login', it)
-      .param('reason', new Par('Release bonus for ARC §54').say())
+      .param(
+        'reason',
+        new Par('Release bonus for ARC §54 for tag %s in repo %s')
+            .say(tag, repo)
+      )
       .param('minutes', mpa)
-      .param('job', new Par('tag %s in repo %s').say(tag, repo))
+      .param('job', 'none')
       .postTo(new ClaimsOf(farm, project))
     claim.copy()
       .type('Notify PMO')
