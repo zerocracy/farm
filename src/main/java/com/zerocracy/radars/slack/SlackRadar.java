@@ -161,6 +161,9 @@ public final class SlackRadar implements AutoCloseable {
         );
         ssn.addMessagePostedListener(
             (event, sess) -> {
+                if (Logger.isDebugEnabled(this)) {
+                    Logger.debug(this, "Message posted: %s", event);
+                }
                 try {
                     this.posted.react(this.farm, event, ssn);
                 } catch (final IOException ex) {
@@ -170,6 +173,9 @@ public final class SlackRadar implements AutoCloseable {
         );
         ssn.addChannelJoinedListener(
             (event, sess) -> {
+                if (Logger.isDebugEnabled(this)) {
+                    Logger.debug(this, "Channel joined: %s", event);
+                }
                 try {
                     this.joined.react(this.farm, event, ssn);
                 } catch (final IOException ex) {
@@ -187,5 +193,4 @@ public final class SlackRadar implements AutoCloseable {
     private Map<String, SkSession> sessions() {
         return new ExtSlack(this.farm).value();
     }
-
 }
