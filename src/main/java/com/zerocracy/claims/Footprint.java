@@ -91,6 +91,10 @@ public final class Footprint implements Closeable {
      * @param xml The claim XML
      * @param signature Claim signature
      * @throws IOException If fails
+     * @todo #1779:30min We are ignoring ping claims duplicates
+     *  due to Sentry over loading, ping duplicates are not critical, but
+     *  we need to uncomment this check (!claim.type().equals("Ping"))
+     *  after duplicate issue fix in #1770.
      */
     public void open(final XML xml, final String signature)
         throws IOException {
@@ -106,7 +110,7 @@ public final class Footprint implements Closeable {
                     Filters.eq("project", this.pid)
                 )
             ).iterator();
-            if (found.hasNext()) {
+            if (found.hasNext() && !claim.type().equals("Ping")) {
                 throw new IllegalArgumentException(
                     String.format(
                         "Claim #%s (%s) already exists for %s",
