@@ -1,0 +1,53 @@
+/*
+ * Copyright (c) 2016-2018 Zerocracy
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to read
+ * the Software only. Permissions is hereby NOT GRANTED to use, copy, modify,
+ * merge, publish, distribute, sublicense, and/or sell copies of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+package com.zerocracy.stk.pm.staff
+
+import com.jcabi.xml.XML
+import com.zerocracy.Par
+import com.zerocracy.Project
+import com.zerocracy.claims.ClaimIn
+import com.zerocracy.farm.Assume
+import com.zerocracy.pm.staff.Roles
+
+/**
+ * Remind architects to send a report to PO
+ * about situation in the project.
+ */
+def exec(Project project, XML xml) {
+  new Assume(project, xml).notPmo()
+  new Assume(project, xml).type('Ping 2weeks')
+  ClaimIn claim = new ClaimIn(xml)
+  Roles roles = new Roles(project).bootstrap()
+  roles.findByRole('ARC').each { arc ->
+    claim.copy()
+      .type('Notify user')
+      .token("user;$arc")
+      .param(
+      'message',
+        new Par(
+          farm,
+          'Don\'t forget to send a report about',
+          'the situation in project to PO of %s\n',
+          'See this post for details:',
+          ''.join(
+            '[software architect responsibilities]',
+            '(https://www.yegor256.com/2015/05/11/software-architect-responsibilities.html)'
+          )
+        ).say(project.pid())
+    )
+  }
+}
