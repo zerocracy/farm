@@ -93,7 +93,7 @@ def exec(Project project, XML xml) {
       .type('Notify PMO')
       .param(
       'message',
-      new Par('We just sent "ARC release bonus" of %d minutes to %s in %s (%d claims)')
+      new Par(farm,'We just sent "ARC release bonus" of %d minutes to %s in %s (%d claims)')
         .say(mpa, it, project.pid(), claims)
     ).postTo(new ClaimsOf(farm))
   }
