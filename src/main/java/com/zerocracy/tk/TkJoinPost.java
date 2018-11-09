@@ -104,7 +104,7 @@ public final class TkJoinPost implements TkRegex {
         final String telegram = form.single("telegram");
         final String personality = form.single("personality");
         final String about = form.single("about");
-        final int stko = Integer.parseInt(form.single("stackoverflow"));
+        final long stko = Long.parseLong(form.single("stackoverflow"));
         new ClaimOut().type("Join form submitted")
             .author(author)
             .param("telegram", telegram)

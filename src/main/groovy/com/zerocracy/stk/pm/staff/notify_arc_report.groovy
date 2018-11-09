@@ -14,49 +14,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.staff.roles
+package com.zerocracy.stk.pm.staff
 
 import com.jcabi.xml.XML
-import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
-import com.zerocracy.SoftException
-import com.zerocracy.entry.ClaimsOf
-import com.zerocracy.farm.Assume
 import com.zerocracy.claims.ClaimIn
+import com.zerocracy.farm.Assume
 import com.zerocracy.pm.staff.Roles
 
+/**
+ * Remind architects to send a report to PO
+ * about situation in the project.
+ */
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Resign all roles')
+  new Assume(project, xml).type('Ping 2weeks')
   ClaimIn claim = new ClaimIn(xml)
-  String login = claim.param('login')
   Roles roles = new Roles(project).bootstrap()
-  Farm farm = binding.variables.farm
-  claim.reply(
-    new Par('All roles were resigned from @%s in %s').say(
-      login, project.pid()
-    )
-  ).postTo(new ClaimsOf(farm, project))
-  roles.allRoles(login).each { role ->
-    try {
-      roles.resign(login, role)
-    } catch (SoftException err) {
-      claim.reply(err.message)
-    }
+  roles.findByRole('ARC').each { arc ->
     claim.copy()
-      .type('Role was resigned')
-      .param('login', login)
-      .param('role', role)
-      .postTo(new ClaimsOf(farm, project))
-  }
-  claim.copy()
-    .type('Notify project')
-    .param(
+      .type('Notify user')
+      .token("user;$arc")
+      .param(
       'message',
-      new Par(
-        'Project member @%s was resigned from all project roles: %s',
-      ).say(login, claim.param('reason'))
+        new Par(
+          farm,
+          'Don\'t forget to send a report about',
+          'the situation in project to PO of %s\n',
+          'See this post for details:',
+          ''.join(
+            '[software architect responsibilities]',
+            '(https://www.yegor256.com/2015/05/11/software-architect-responsibilities.html)'
+          )
+        ).say(project.pid())
     )
-    .postTo(new ClaimsOf(farm, project))
+  }
 }

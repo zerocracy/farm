@@ -159,8 +159,8 @@ public final class Election implements XML {
                 dirs.up();
             }
             final String ltag = "com.zerocracy.election";
-            if (Logger.isInfoEnabled(ltag)) {
-                Logger.info(
+            if (Logger.isDebugEnabled(ltag)) {
+                Logger.debug(
                     ltag,
                     "Election votes metrics (job=%s, size(logins)=%d):\n  %s",
                     this.job,

@@ -24,12 +24,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.scalar.SolidScalar;
+import org.quartz.CronScheduleBuilder;
 import org.quartz.Job;
 import org.quartz.JobBuilder;
 import org.quartz.JobKey;
+import org.quartz.ScheduleBuilder;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.SimpleScheduleBuilder;
+import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.simpl.SimpleJobFactory;
@@ -46,6 +49,7 @@ import org.quartz.spi.TriggerFiredBundle;
  * @since 1.0
  */
 public final class Pings {
+
     /**
      * Claim job param.
      */
@@ -118,6 +122,11 @@ public final class Pings {
             // @checkstyle MagicNumberCheck (1 line)
             SimpleScheduleBuilder.repeatHourlyForever(24)
         );
+        this.start(
+            "2weeks",
+            "Ping 2weeks",
+            CronScheduleBuilder.cronSchedule("0 0 12 1/14 * ?")
+        );
         Logger.info(this, "Pings started");
     }
 
@@ -129,7 +138,7 @@ public final class Pings {
      * @throws IOException If fails
      */
     private void start(final String name, final String claim,
-        final SimpleScheduleBuilder schedule) throws IOException {
+        final ScheduleBuilder<? extends Trigger> schedule) throws IOException {
         try {
             final Scheduler scheduler = this.quartz.value();
             final JobKey key = new JobKey(name, Pings.GROUP);
@@ -156,6 +165,7 @@ public final class Pings {
      * Quartz scalar.
      */
     private static final class Quartz implements Scalar<Scheduler> {
+
         /**
          * Farm.
          */
@@ -209,6 +219,7 @@ public final class Pings {
      * Job quartz factory.
      */
     private static final class Factory implements JobFactory {
+
         /**
          * Farm.
          */

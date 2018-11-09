@@ -79,7 +79,7 @@ def exec(Project project, XML xml) {
       .param(
         'message',
         new Par(
-          'You earned %s of new share in %s for %s'
+          farm, 'You earned %s of new share in %s for %s'
         ).say(reward, project.pid(), job)
       )
       .postTo(new ClaimsOf(farm, project))

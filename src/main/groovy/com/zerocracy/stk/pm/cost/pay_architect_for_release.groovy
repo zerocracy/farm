@@ -47,7 +47,9 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   Releases releases = new Releases(project).bootstrap()
   Instant latest = releases.latest()
-  releases.add(claim.param('repo'), claim.param('tag'), Instant.parse(claim.param('date')))
+  String repo = claim.param('repo')
+  String tag = claim.param('tag')
+  releases.add(repo, tag, Instant.parse(claim.param('date')))
   Policy policy = new Policy(farm)
   Duration mpc = Duration.ofMinutes(policy.get('54.min-per-claim', 2))
   Duration max = Duration.ofHours(policy.get('54.max', 4))
@@ -79,7 +81,11 @@ def exec(Project project, XML xml) {
     claim.copy()
       .type('Make payment')
       .param('login', it)
-      .param('reason', new Par('Release bonus for ARC §54').say())
+      .param(
+        'reason',
+        new Par('Release bonus for ARC §54 for tag %s in repo %s')
+            .say(tag, repo)
+      )
       .param('minutes', mpa)
       .param('job', 'none')
       .postTo(new ClaimsOf(farm, project))
@@ -87,7 +93,7 @@ def exec(Project project, XML xml) {
       .type('Notify PMO')
       .param(
       'message',
-      new Par('We just sent "ARC release bonus" of %d minutes to %s in %s (%d claims)')
+      new Par(farm,'We just sent "ARC release bonus" of %d minutes to %s in %s (%d claims)')
         .say(mpa, it, project.pid(), claims)
     ).postTo(new ClaimsOf(farm))
   }

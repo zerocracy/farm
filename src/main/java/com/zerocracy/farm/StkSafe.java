@@ -157,9 +157,9 @@ public final class StkSafe implements Stakeholder {
                         ex, props,
                         String.format(
                             // @checkstyle LineLength (1 line)
-                            "CID: [%s](https://www.0crat.com/%s/%1$d), Type: \"%s\", Author: \"%s\"",
-                            claim.cid(), project.pid(), claim.type(),
-                            claim.author()
+                            "CID: [%s](https://www.0crat.com/footprint/%s/%s), Type: \"%s\"",
+                            claim.cid(), project.pid(), claim.cid(),
+                            claim.type()
                         )
                     ).asString()
                 ).postTo(new ClaimsOf(this.farm, project));

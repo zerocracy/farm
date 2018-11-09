@@ -29,12 +29,11 @@ import com.zerocracy.claims.proc.ExpiryProc;
 import com.zerocracy.claims.proc.FootprintProc;
 import com.zerocracy.claims.proc.MessageMonitorProc;
 import com.zerocracy.claims.proc.SentryProc;
-import com.zerocracy.db.ExtDataSource;
 import com.zerocracy.farm.S3Farm;
 import com.zerocracy.farm.SmartFarm;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.farm.props.PropsFarm;
-import com.zerocracy.farm.sync.PgLocks;
+import com.zerocracy.farm.sync.TestLocks;
 import com.zerocracy.radars.github.GithubRoutine;
 import com.zerocracy.radars.github.TkGithub;
 import com.zerocracy.radars.gitlab.TkGitlab;
@@ -133,10 +132,7 @@ public final class Main {
             final Farm farm = new ShutdownFarm(
                 new ClaimsFarm(
                     new SmartFarm(
-                        origin,
-                        new PgLocks(
-                            new ExtDataSource(new PropsFarm(origin)).value()
-                        )
+                        origin, new TestLocks()
                     ),
                     cgts
                 ),
@@ -208,5 +204,4 @@ public final class Main {
             ).start(Exit.NEVER);
         }
     }
-
 }

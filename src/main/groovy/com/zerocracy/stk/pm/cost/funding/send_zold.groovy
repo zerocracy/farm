@@ -64,7 +64,7 @@ def exec(Project project, XML xml) {
     .token("user;${recipient}")
     .param(
     'message',
-    new Par('We just sent you %s ZLD through https://wts.zold.io')
+    new Par(farm,'We just sent you %s ZLD through https://wts.zold.io')
       .say(amount.decimal())
   ).postTo(new ClaimsOf(farm, project))
   claim.copy().type('Notify PMO').param(
