@@ -15,11 +15,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<rfps xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      max="1031"
-      updated="2018-11-20T14:20:59Z"
-      version="0.63.1"
-      xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.63.1/xsd/pmo/rfps.xsd">
+<rfps xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" max="1031" updated="2018-11-20T14:20:59Z" version="0.63.1" xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.63.1/xsd/pmo/rfps.xsd">
   <rfp id="42">
     <created>2018-10-22T22:35:55.338Z</created>
     <login>owner</login>
