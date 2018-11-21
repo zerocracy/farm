@@ -21,10 +21,11 @@ import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
-import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pm.cost.Ledger
+import com.zerocracy.pmo.Catalog
 
 /**
  * This stakeholder is called when project is funded by Stripe,
@@ -35,6 +36,7 @@ import com.zerocracy.pm.cost.Ledger
  *
  * @param project Funded project
  * @param xml Claim
+ *
  */
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
@@ -81,6 +83,28 @@ def exec(Project project, XML xml) {
       'We just funded %s for %s via Stripe'
     ).say(project.pid(), amount)
   ).postTo(new ClaimsOf(farm, project))
+  Catalog catalog = new Catalog(farm).bootstrap()
+  if (catalog.hasAdviser(pid)) {
+    // @todo #1658:30min Add adviser info to policy and provide amount
+    //  of adviser payments there, then replace current constants which are used
+    //  to calculate the payment with `Par` objects.
+    Cash bonus = amount.mul(4) / 100
+    String adviser = catalog.adviser(pid)
+    claim.copy()
+      .type('Make payment')
+      .param('login', adviser)
+      .param('job', 'none')
+      .param('cash', bonus)
+      .param(
+      'reason',
+        new Par(farm, 'Adviser payment for @%s project')
+          .say(project.pid())
+      ).postTo(new ClaimsOf(farm))
+    claim.copy().type('Notify PMO').param(
+      'message',
+      new Par(farm, 'We just send adviser payment of %s for %s to %s').say(amount, project.pid(), adviser)
+    ).postTo(new ClaimsOf(farm))
+  }
   if (claim.hasAuthor()) {
     claim.copy().type('Send zold')
       .param('recipient', claim.author())

@@ -25,6 +25,7 @@ import com.zerocracy.cash.Cash;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import org.cactoos.collection.CollectionOf;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.list.SolidList;
@@ -42,7 +43,11 @@ import org.xembly.Directives;
  *  try to find a good small cluster of related classes that can be updated.
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals"})
+@SuppressWarnings(
+    {
+        "PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals", "PMD.GodClass"
+    }
+)
 public final class Catalog {
 
     /**
@@ -567,6 +572,25 @@ public final class Catalog {
                 title = items.next();
             }
             return title;
+        }
+    }
+
+    /**
+     * Has project adviser.
+     *
+     * @param pid Project id
+     * @return True if has
+     * @throws IOException If fails
+     */
+    public boolean hasAdviser(final String pid) throws IOException {
+        try (final Item item = this.item()) {
+            final List<String> xpath = new Xocument(item.path()).xpath(
+                String.format(
+                    "/catalog/project[@id = '%s']/adviser/text()",
+                    pid
+                )
+            );
+            return !xpath.isEmpty() && !"0crat".equals(xpath.get(0));
         }
     }
 

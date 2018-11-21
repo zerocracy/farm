@@ -196,6 +196,26 @@ public final class CatalogTest {
     }
 
     @Test
+    public void hasAdviser() throws Exception {
+        final String pid = "000000400";
+        final Pmo pmo = new Pmo(new FkFarm());
+        final Catalog catalog = new Catalog(pmo).bootstrap();
+        catalog.add(pid, "2018/10/000000400/");
+        MatcherAssert.assertThat(
+            "Has adviser but should not",
+            catalog.hasAdviser(pid),
+            new IsEqual<>(false)
+        );
+        final String adviser = "user235231";
+        catalog.adviser(pid, adviser);
+        MatcherAssert.assertThat(
+            "Doesn't have adviser but should",
+            catalog.hasAdviser(pid),
+            new IsEqual<>(true)
+        );
+    }
+
+    @Test
     @Ignore
     public void catalogHasBoardPageInfo() throws Exception {
         final FkProject project = new FkProject();

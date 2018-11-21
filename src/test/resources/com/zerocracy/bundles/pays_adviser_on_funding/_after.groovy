@@ -19,10 +19,9 @@ package com.zerocracy.bundles.pays_adviser_on_funding
 import com.jcabi.xml.XML
 import com.zerocracy.Project
 
-// @todo #1536:30min Project is not paying adviser when being funded. Correct
-//  fund_by_stripe.groovy and donate.groovy to send a payment of 4% of the
-//  amount of funding to the project advisor on every funding operation. Then
-//  uncomment these tests to make sure that these payments are happening.'
+// @todo #1658:30min It's not possible to test ledger related code because it uses PgLedger
+//  Postgres implementation, let's extract interface of PgLedger and create fake ledger object to
+//  use it for testing. Then uncomment this test.
 def exec(Project project, XML xml) {
 //  Farm farm = binding.variables.farm
 //  new Footprint(farm, project).withCloseable {
