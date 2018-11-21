@@ -22,6 +22,7 @@ import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
 import com.zerocracy.claims.ClaimIn
+import com.zerocracy.claims.ClaimOut
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.cost.Ledger
@@ -90,7 +91,7 @@ def exec(Project project, XML xml) {
     //  to calculate the payment with `Par` objects.
     Cash bonus = amount.mul(4) / 100
     String adviser = catalog.adviser(pid)
-    claim.copy()
+    new ClaimOut()
       .type('Make payment')
       .param('login', adviser)
       .param('job', 'none')
@@ -100,7 +101,7 @@ def exec(Project project, XML xml) {
         new Par(farm, 'Adviser payment for @%s project')
           .say(project.pid())
       ).postTo(new ClaimsOf(farm))
-    claim.copy().type('Notify PMO').param(
+    new ClaimOut().type('Notify PMO').param(
       'message',
       new Par(farm, 'We just send adviser payment of %s for %s to %s').say(amount, project.pid(), adviser)
     ).postTo(new ClaimsOf(farm))
