@@ -22,9 +22,9 @@ import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
-import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pm.cost.Ledger
 import com.zerocracy.pm.cost.Rates
 import com.zerocracy.pmo.Debts
@@ -112,6 +112,7 @@ def exec(Project project, XML xml) {
       )
       .postTo(new ClaimsOf(farm, project))
   } catch (IOException ex) {
+    new Debts(farm).bootstrap().add(login, price, "${reason} at ${job}", ex.message)
     Cash commission = price.mul(3) / 100
     ledger.add(
       new Ledger.Transaction(
@@ -133,8 +134,6 @@ def exec(Project project, XML xml) {
         reason
       )
     )
-    Debts debts = new Debts(farm).bootstrap()
-    debts.add(login, price, "${reason} at ${job}", ex.message)
     claim.copy()
       .type('Payment was added to debts')
       .param('amount', price)
