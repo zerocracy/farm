@@ -17,14 +17,10 @@
 package com.zerocracy.stk.pmo.profile
 
 import com.jcabi.xml.XML
-import com.zerocracy.Farm
-import com.zerocracy.Par
-import com.zerocracy.Policy
-import com.zerocracy.Project
-import com.zerocracy.SoftException
+import com.zerocracy.*
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
-import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pmo.Awards
 import com.zerocracy.pmo.Exam
 import com.zerocracy.pmo.Rfps
@@ -45,6 +41,7 @@ def exec(Project pmo, XML xml) {
   new Exam(farm, author).min('40.min', 512)
   String job = 'gh:zerocracy/datum#1'
   int points = new Policy().get('40.price', -256)
+  String owner = rfps.owner(rid)
   String email = rfps.buy(rid, author)
   String reason = new Par(
     'RFP #%d has been purchased: %s'
