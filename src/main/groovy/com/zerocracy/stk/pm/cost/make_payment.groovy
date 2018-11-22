@@ -72,7 +72,7 @@ def exec(Project project, XML xml) {
   Estimates estimates = new Estimates(farm, project).bootstrap()
   if (project.pid() != 'PMO' && (ledger.cash() <= estimates.total().add(price) || ledger.deficit())) {
     claim.reply('The project doesn\'t have enough funds, can\'t make a payment')
-      .postTo(farm, project)
+      .postTo(new ClaimsOf(farm, project))
   }
   String tail = ''
   People people = new People(farm).bootstrap()
