@@ -23,6 +23,7 @@ import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
 import com.zerocracy.entry.ExtGithub
+import com.zerocracy.pm.cost.Ledger
 import com.zerocracy.pm.cost.Rates
 import com.zerocracy.pm.cost.Vesting
 
@@ -36,4 +37,13 @@ def exec(Project project, XML xml) {
   Vesting vesting = new Vesting(project).bootstrap()
   vesting.rate('krzyk', new Cash.S('$100'))
   vesting.rate('amihaiemil', new Cash.S('$100'))
+  Ledger ledger = new Ledger(farm, project).bootstrap()
+  ledger.add(
+    new Ledger.Transaction(
+      new Cash.S('$1000'),
+      'assets', 'cash',
+      'income', 'zerocracy',
+      'Donated by unknown'
+    )
+  )
 }

@@ -29,9 +29,18 @@ import com.zerocracy.pm.cost.Rates
 import com.zerocracy.pm.cost.Vesting
 import com.zerocracy.pm.staff.Roles
 
+/**
+ * Transfer shares from project to user.
+ * <p>
+ * Shares amount is calculating based on 'vesting rate' of the user.
+ * This stakeholder handles shares payment claims and pay with equity to user.
+ *
+ * @param project Project
+ * @param xml XML
+ */
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Make payment')
+  new Assume(project, xml).type('Transfer shares')
   ClaimIn claim = new ClaimIn(xml)
   if (!claim.hasParam('job')) {
     return

@@ -122,8 +122,7 @@ public final class Ledger {
     @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     public void add(final Ledger.Transaction... tns) throws IOException {
         try (final Item item = this.item()) {
-            if (!new Props(this.farm).has("//testing")
-                || System.getProperty("pgsql.port") != null) {
+            if (!new Props(this.farm).has("//testing")) {
                 new PgLedger(
                     new ExtDataSource(this.farm).value(), this.project
                 ).add(tns);
