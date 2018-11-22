@@ -25,6 +25,7 @@ import com.zerocracy.cash.Cash
 import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
+import com.zerocracy.pm.cost.Estimates
 import com.zerocracy.pm.cost.Ledger
 import com.zerocracy.pm.cost.Rates
 import com.zerocracy.pmo.Debts
@@ -32,7 +33,6 @@ import com.zerocracy.pmo.People
 import com.zerocracy.pmo.banks.Payroll
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Make payment')
   Farm farm = binding.variables.farm
   ClaimIn claim = new ClaimIn(xml)
@@ -68,6 +68,12 @@ def exec(Project project, XML xml) {
   if (price.empty) {
     return
   }
+  Ledger ledger = new Ledger(farm, project).bootstrap()
+  Estimates estimates = new Estimates(farm, project).bootstrap()
+  if (project.pid() != 'PMO' && (ledger.cash() <= estimates.total().add(price) || ledger.deficit())) {
+    claim.reply('The project doesn\'t have enough funds, can\'t make a payment')
+      .postTo(farm, project)
+  }
   String tail = ''
   People people = new People(farm).bootstrap()
   if (!claim.hasParam('no-tuition-fee') && people.hasMentor(login) && people.mentor(login) != '0crat') {
@@ -89,7 +95,6 @@ def exec(Project project, XML xml) {
       'and sent to @%s (your mentor), according to §45'
     ).say(fee, mentor)
   }
-  Ledger ledger = new Ledger(farm, project).bootstrap()
   String msg
   try {
     msg = new Payroll(farm).pay(

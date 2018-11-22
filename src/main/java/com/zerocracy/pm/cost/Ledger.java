@@ -38,9 +38,6 @@ import org.xembly.Directives;
  * Ledger.
  *
  * @since 1.0
- * @todo #1658:30min We should allow negative balance only to PMO project.
- *  If any other project tries to submit a transaction which changes the
- *  balance to negative value we should fail this transaction.
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})

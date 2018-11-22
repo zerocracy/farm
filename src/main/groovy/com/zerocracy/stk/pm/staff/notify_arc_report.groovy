@@ -17,9 +17,11 @@
 package com.zerocracy.stk.pm.staff
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.claims.ClaimIn
+import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.staff.Roles
 
@@ -30,6 +32,7 @@ import com.zerocracy.pm.staff.Roles
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Ping 2weeks')
+  Farm farm = binding.variables.farm
   ClaimIn claim = new ClaimIn(xml)
   Roles roles = new Roles(project).bootstrap()
   roles.findByRole('ARC').each { arc ->
@@ -48,6 +51,6 @@ def exec(Project project, XML xml) {
             '(https://www.yegor256.com/2015/05/11/software-architect-responsibilities.html)'
           )
         ).say(project.pid())
-    )
+    ).postTo(new ClaimsOf(farm, project))
   }
 }
