@@ -54,8 +54,7 @@ def exec(Project project, XML xml) {
     return
   }
   Ledger ledger = new Ledger(farm, project).bootstrap()
-  if (project.pid() != 'PMO'
-    && (ledger.cash() <= new Estimates(farm, project).bootstrap().total().add(price) || ledger.deficit())) {
+  if (!canPay(farm, project, job, price)) {
     claim.reply('The project doesn\'t have enough funds, can\'t make a payment')
       .postTo(new ClaimsOf(farm, project))
   }
@@ -152,4 +151,17 @@ def exec(Project project, XML xml) {
       ).say(price, login, job, reason)
     )
     .postTo(new ClaimsOf(farm, project))
+}
+
+
+static canPay(Farm farm, Project project, String job, Cash price) {
+  if (project.pid() == 'PMO') {
+    return true
+  }
+  Estimates estimates = new Estimates(farm, project).bootstrap()
+  if (estimates.exists(job)) {
+    return true
+  }
+  Ledger ledger = new Ledger(farm, project).bootstrap()
+  !ledger.deficit() && ledger.cash() > estimates.total().add(price)
 }

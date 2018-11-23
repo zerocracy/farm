@@ -209,6 +209,23 @@ public final class ClaimIn {
     }
 
     /**
+     * Get param by name or default.
+     *
+     * @param name Param name
+     * @param def Default value
+     * @return Param value or default
+     */
+    public String param(final String name, final String def) {
+        final String par;
+        if (this.hasParam(name)) {
+            par = this.param(name);
+        } else {
+            par = def;
+        }
+        return par;
+    }
+
+    /**
      * Get all params.
      * @return All params
      */
