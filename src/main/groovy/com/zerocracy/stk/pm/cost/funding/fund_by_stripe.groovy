@@ -85,12 +85,12 @@ def exec(Project project, XML xml) {
     ).say(project.pid(), amount)
   ).postTo(new ClaimsOf(farm, project))
   Catalog catalog = new Catalog(farm).bootstrap()
-  if (catalog.hasAdviser(pid)) {
+  if (catalog.hasAdviser(project.pid())) {
     // @todo #1658:30min Add adviser info to policy and provide amount
     //  of adviser payments there, then replace current constants which are used
     //  to calculate the payment with `Par` objects.
     Cash bonus = amount.mul(4) / 100
-    String adviser = catalog.adviser(pid)
+    String adviser = catalog.adviser(project.pid())
     new ClaimOut()
       .type('Make payment')
       .param('login', adviser)
