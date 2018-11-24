@@ -17,28 +17,20 @@
 package com.zerocracy.tk;
 
 import com.zerocracy.Farm;
-import java.io.IOException;
-
 import com.zerocracy.pmo.People;
-import com.zerocracy.pmo.Pmo;
+import com.zerocracy.pmo.Resume;
 import com.zerocracy.pmo.Resumes;
-import com.zerocracy.tk.profile.RqSecureLogin;
+import java.io.IOException;
 import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
+import org.takes.rs.xe.XeAppend;
 
 /**
  * Join Zerocracy form.
  *
  * @since 1.0
  *
- * @todo #1506:30min Each user should see the status of his/her resume at /join.
- *  If the resume is there, he/she should see the resume, not the form. For
- *  this, a resume page must be implemented in zerocracy-datum (pmo/resume
- *  .xsl), which will show the resume extracted from Resumes.This condition is
- *  already tested in TkJoinTest, in showResumeIfAlreadyApplied. When
- *  implemented, update the test and the ignore tag should be removed upon
- *  puzzle completion.
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
@@ -62,17 +54,21 @@ public final class TkJoin implements TkRegex {
         final String author = new RqUser(this.farm, req, false).value();
         final People people = new People(this.farm).bootstrap();
         people.touch(author);
+        //@checkstyle FinalLocalVariableCheck (1 line)
         RsPage result;
-        final Resumes resumes = new Resumes(this.farm).bootstrap();
-        if (people.exists(author)){
-            result =  new RsPage(
+        final Resume resume = new Resumes(this.farm).bootstrap().resume(author);
+        if (people.exists(author)) {
+            result = new RsPage(
                 this.farm,
                 "/xsl/resume.xsl",
                 req,
-                () -> new XeXsl(
-                    new Pmo(this.farm),
-                    resumes.resume(author),
-                    "pmo/resume.xsl"
+                () -> new XeAppend(
+                    "resume",
+                    new XeAppend("login", resume.login()),
+                    new XeAppend("text", resume.text()),
+                    new XeAppend("personality", resume.personality()),
+                    new XeAppend("soid", Long.toString(resume.soid())),
+                    new XeAppend("telegram", resume.telegram())
                 )
             );
         } else {
