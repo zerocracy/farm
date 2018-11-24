@@ -35,6 +35,10 @@ import org.takes.rs.RsPrint;
  * Test case for {@link TkJoin}.
  *
  * @since 1.0
+ * @todo #1568:30min TkJoinTest is not checking if join page is being rendered
+ *  correctly; it just checks if something is rendered. Improve this test
+ *  making sure that a user that not joined yet is requisting /join and that
+ *  join page is bein correctly fetched.
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
@@ -81,7 +85,7 @@ public final class TkJoinTest {
                 )
             ).printBody(),
             new StringContainsInOrder(
-                new IterableOf<String>(
+                new IterableOf<>(
                     "User",
                     "here is your resume."
                 )

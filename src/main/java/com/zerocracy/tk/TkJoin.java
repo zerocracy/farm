@@ -56,8 +56,9 @@ public final class TkJoin implements TkRegex {
         people.touch(author);
         //@checkstyle FinalLocalVariableCheck (1 line)
         RsPage result;
-        final Resume resume = new Resumes(this.farm).bootstrap().resume(author);
         if (people.exists(author)) {
+            final Resume resume =
+                new Resumes(this.farm).bootstrap().resume(author);
             result = new RsPage(
                 this.farm,
                 "/xsl/resume.xsl",
