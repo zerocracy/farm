@@ -47,6 +47,11 @@ SOFTWARE.
             </a>
           </li>
           <li>
+            <a href="/u/{identity/login}/wbs">
+              <xsl:text>WBS</xsl:text>
+            </a>
+          </li>
+          <li>
             <a href="/board">
               <xsl:text>Board</xsl:text>
             </a>

@@ -16,6 +16,7 @@
  */
 package com.zerocracy.farm;
 
+import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
@@ -86,26 +87,35 @@ public final class StkSafe implements Stakeholder {
         {
             "PMD.AvoidCatchingThrowable",
             "PMD.AvoidRethrowingException",
-            "PMD.CyclomaticComplexity"
+            "PMD.CyclomaticComplexity",
+            "PMD.PrematureDeclaration"
         }
     )
     public void process(final Project project,
         final XML xml) throws IOException {
         final ClaimIn claim = new ClaimIn(xml);
+        final boolean testing = new Props(this.farm).has("//testing");
         try {
             this.origin.process(project, xml);
         } catch (final MismatchException ex) {
             throw ex;
         } catch (final SoftException ex) {
+            if (testing) {
+                Logger.warn(
+                    this,
+                    "Soft error for '%s': %s",
+                    claim.type(), ex.getMessage()
+                );
+            }
             if (claim.hasToken()) {
-                new ClaimIn(xml).reply(ex.getMessage()).postTo(
+                claim.reply(ex.getMessage()).postTo(
                     new ClaimsOf(this.farm, project)
                 );
             } else {
                 new SafeSentry(this.farm).capture(
                     new IllegalArgumentException(
                         String.format(
-                            "Claim #%d \"%s\" has no token in %s",
+                            "Claim #%s \"%s\" has no token in %s",
                             claim.cid(), claim.type(), this.identifier
                         ),
                         ex
@@ -116,7 +126,7 @@ public final class StkSafe implements Stakeholder {
         } catch (final Throwable ex) {
             final StringBuilder msg = new StringBuilder(
                 String.format(
-                    "Claim #%d in %s: type=\"%s\", stakeholder=\"%s\"",
+                    "Claim #%s in %s: type=\"%s\", stakeholder=\"%s\"",
                     claim.cid(), project.pid(), claim.type(),
                     this.identifier
                 )
@@ -128,7 +138,7 @@ public final class StkSafe implements Stakeholder {
                 msg.append(String.format(", token=\"%s\"", claim.token()));
             }
             final Props props = new Props(this.farm);
-            if (props.has("//testing")) {
+            if (testing) {
                 throw new IllegalStateException(ex);
             }
             if (!claim.isError()) {
@@ -147,9 +157,9 @@ public final class StkSafe implements Stakeholder {
                         ex, props,
                         String.format(
                             // @checkstyle LineLength (1 line)
-                            "CID: [%d](https://www.0crat.com/%s/%1$d), Type: \"%s\", Author: \"%s\"",
-                            claim.cid(), project.pid(), claim.type(),
-                            claim.author()
+                            "CID: [%s](https://www.0crat.com/footprint/%s/%s), Type: \"%s\"",
+                            claim.cid(), project.pid(), claim.cid(),
+                            claim.type()
                         )
                     ).asString()
                 ).postTo(new ClaimsOf(this.farm, project));

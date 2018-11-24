@@ -33,7 +33,7 @@ def exec(Project project, XML xml) {
   String author = claim.author()
   String reason = new Par('@%s asked to wait a bit').say(author)
   Farm farm = binding.variables.farm
-  new Impediments(project)
+  new Impediments(farm, project)
     .bootstrap()
     .register(job, reason)
   claim.reply(

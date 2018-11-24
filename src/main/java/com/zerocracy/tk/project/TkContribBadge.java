@@ -68,9 +68,10 @@ public final class TkContribBadge implements TkRegex {
                 String.format("/p/%s", project.pid())
             );
         }
-        final Cash left = new Ledger(project).bootstrap().cash().add(
-            new Estimates(project).bootstrap().total().mul(-1L)
-        );
+        final Cash left = new Ledger(this.farm, project)
+            .bootstrap().cash().add(
+                new Estimates(this.farm, project).bootstrap().total().mul(-1L)
+            );
         final String amount;
         if (left.equals(Cash.ZERO)) {
             amount = "no money";

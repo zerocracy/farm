@@ -27,12 +27,14 @@ import org.cactoos.collection.Mapped
 import org.cactoos.list.ListOf
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
+import org.hamcrest.core.IsEqual
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
   Repo repo = github.repos().get(new Coordinates.Simple('test/test'))
   Issue.Smart issue = new Issue.Smart(repo.issues().get(1))
+  Bans bans = new Bans(project).bootstrap()
   MatcherAssert.assertThat(
     issue.assignee().login(),
     Matchers.equalTo('')
@@ -42,12 +44,17 @@ def exec(Project project, XML xml) {
     Matchers.equalTo(false)
   )
   MatcherAssert.assertThat(
-    new Bans(project).bootstrap().reasons('gh:test/test#1', 'g4s8'),
+    bans.reasons('gh:test/test#1', 'g4s8'),
     Matchers.iterableWithSize(1)
   )
   MatcherAssert.assertThat(
+    'Bans was removed',
+    bans.exists('gh:test/test#1', '0pdd'),
+    new IsEqual<>(true)
+  )
+  MatcherAssert.assertThat(
     new Mapped<>(
-      {new Comment.Smart(it as Comment).body() },
+      { new Comment.Smart(it as Comment).body() },
       issue.comments().iterate(new Date(0))
     ),
     Matchers.hasItem(Matchers.stringContainsInOrder(new ListOf<String>('please stop working', 'Test reason')))

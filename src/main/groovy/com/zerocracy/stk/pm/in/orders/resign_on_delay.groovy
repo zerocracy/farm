@@ -32,7 +32,7 @@ import org.cactoos.iterable.Limited
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Ping')
-  if (new Ledger(project).bootstrap().cash().decimal() <= BigDecimal.ZERO) {
+  if (new Ledger(farm, project).bootstrap().cash().decimal() <= BigDecimal.ZERO) {
     // We must not resign when the project is not funded, simply
     // because developers can't do anything without money. Their PRs
     // will have no reviewers, etc.
@@ -42,9 +42,9 @@ def exec(Project project, XML xml) {
   ZonedDateTime time = ZonedDateTime.ofInstant(
     claim.created().toInstant(), ZoneOffset.UTC
   )
-  Orders orders = new Orders(project).bootstrap()
-  Boosts boosts = new Boosts(project).bootstrap()
-  Impediments impediments = new Impediments(project).bootstrap()
+  Orders orders = new Orders(farm, project).bootstrap()
+  Boosts boosts = new Boosts(farm, project).bootstrap()
+  Impediments impediments = new Impediments(farm, project).bootstrap()
   Farm farm = binding.variables.farm
   Roles pmos = new Roles(new Pmo(farm)).bootstrap()
   List<String> waiting = impediments.jobs().toList()
@@ -84,7 +84,7 @@ def exec(Project project, XML xml) {
       .param('reason', new Par('It is older than %d day(s), see §8').say(days))
       .postTo(new ClaimsOf(farm, project))
     claim.copy()
-      .type('Make payment')
+      .type('Add award points')
       .param('job', job)
       .param('login', worker)
       .param('reason', new Par('Resigned on delay, see §8').say())

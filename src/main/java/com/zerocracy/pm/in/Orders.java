@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pm.in;
 
+import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Project;
 import com.zerocracy.SoftException;
@@ -50,15 +51,22 @@ import org.xembly.Directives;
 public final class Orders {
 
     /**
+     * Farm.
+     */
+    private final Farm farm;
+
+    /**
      * Project.
      */
     private final Project project;
 
     /**
      * Ctor.
+     * @param farm Farm
      * @param pkt Project
      */
-    public Orders(final Project pkt) {
+    public Orders(final Farm farm, final Project pkt) {
+        this.farm = farm;
         this.project = pkt;
     }
 
@@ -68,8 +76,8 @@ public final class Orders {
      * @throws IOException If fails
      */
     public Orders bootstrap() throws IOException {
-        try (final Item wbs = this.item()) {
-            new Xocument(wbs.path()).bootstrap("pm/in/orders");
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).bootstrap("pm/in/orders");
         }
         return this;
     }
@@ -82,7 +90,7 @@ public final class Orders {
      * @throws IOException If fails
      */
     public void assign(final String job, final String login,
-        final long reason) throws IOException {
+        final String reason) throws IOException {
         this.assign(job, login, reason, Instant.now());
     }
 
@@ -96,7 +104,7 @@ public final class Orders {
      * @checkstyle ParameterNumber (3 lines)
      */
     public void assign(final String job, final String login,
-        final long reason, final Instant start) throws IOException {
+        final String reason, final Instant start) throws IOException {
         if (this.assigned(job)) {
             throw new SoftException(
                 String.format(
@@ -139,7 +147,7 @@ public final class Orders {
             if ("REV".equals(role)) {
                 factor = 1;
             }
-            new Boosts(this.project).bootstrap().boost(job, factor);
+            new Boosts(this.farm, this.project).bootstrap().boost(job, factor);
             txn.commit();
         }
     }
@@ -204,8 +212,8 @@ public final class Orders {
      * @throws IOException If fails of it there is no assignee
      */
     public boolean assigned(final String job) throws IOException {
-        try (final Item wbs = this.item()) {
-            return !new Xocument(wbs.path()).nodes(
+        try (final Item item = this.item()) {
+            return !new Xocument(item.path()).nodes(
                 String.format("/orders/order[@job='%s']", job)
             ).isEmpty();
         }
@@ -225,8 +233,8 @@ public final class Orders {
                 )
             );
         }
-        try (final Item wbs = this.item()) {
-            return new Xocument(wbs.path()).xpath(
+        try (final Item item = this.item()) {
+            return new Xocument(item.path()).xpath(
                 String.format("/orders/order[@job='%s']/performer/text()", job)
             ).get(0);
         }

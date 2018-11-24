@@ -61,7 +61,7 @@ public final class TkArtifactTest {
             XhtmlMatchers.xhtml(
                 new RsPrint(
                     new TkApp(farm).act(
-                        new RqWithUser(
+                        new RqWithUser.WithInit(
                             farm,
                             new RqFake(
                                 "GET",
@@ -80,7 +80,7 @@ public final class TkArtifactTest {
         final Farm farm = new PropsFarm(new FkFarm());
         final String get = new RsPrint(
             new TkApp(farm).act(
-                new RqWithUser(
+                new RqWithUser.WithInit(
                     farm,
                     new RqFake(
                         "GET",

@@ -34,4 +34,28 @@ public interface Votes {
      */
     double take(String login, StringBuilder log) throws IOException;
 
+    /**
+     * Fake vote.
+     */
+    final class Fake implements Votes {
+
+        /**
+         * Vote.
+         */
+        private final double value;
+
+        /**
+         * Ctor.
+         *
+         * @param vote Vote
+         */
+        public Fake(final double vote) {
+            this.value = vote;
+        }
+
+        @Override
+        public double take(final String login, final StringBuilder log) {
+            return this.value;
+        }
+    }
 }

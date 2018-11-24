@@ -25,6 +25,7 @@ import com.zerocracy.cash.Cash;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import org.cactoos.collection.CollectionOf;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.list.SolidList;
@@ -35,9 +36,18 @@ import org.xembly.Directives;
  * Catalog of all projects.
  *
  * @since 1.0
+ * @todo #1305:30min Continue replacing old Date classes with Instant.
+ *  Remember also to remove instances of `DateAsText` (Instant.toString should
+ *  be used). Be careful to ensure Groovy classes are properly updated since
+ *  typing is sometimes dodgy in there. There is a lot of classes to change so
+ *  try to find a good small cluster of related classes that can be updated.
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals"})
+@SuppressWarnings(
+    {
+        "PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals", "PMD.GodClass"
+    }
+)
 public final class Catalog {
 
     /**
@@ -510,32 +520,6 @@ public final class Catalog {
     }
 
     /**
-     * Set a parent to the pmo.
-     * @param pid Project ID
-     * @param parent Parent
-     * @throws IOException If fails
-     */
-    public void parent(final String pid, final String parent)
-        throws IOException {
-        if (!this.exists(pid)) {
-            throw new IllegalArgumentException(
-                new Par(
-                    "Project %s doesn't exist, can't set parent"
-                ).say(pid)
-            );
-        }
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
-                new Directives()
-                    .xpath(String.format("/catalog/project[@id='%s' ]", pid))
-                    .strict(1)
-                    .addIf("parent")
-                    .set(parent)
-            );
-        }
-    }
-
-    /**
      * Change project title.
      * @param pid Project id
      * @param title New title
@@ -588,6 +572,25 @@ public final class Catalog {
                 title = items.next();
             }
             return title;
+        }
+    }
+
+    /**
+     * Has project adviser.
+     *
+     * @param pid Project id
+     * @return True if has
+     * @throws IOException If fails
+     */
+    public boolean hasAdviser(final String pid) throws IOException {
+        try (final Item item = this.item()) {
+            final List<String> xpath = new Xocument(item.path()).xpath(
+                String.format(
+                    "/catalog/project[@id = '%s']/adviser/text()",
+                    pid
+                )
+            );
+            return !xpath.isEmpty() && !"0crat".equals(xpath.get(0));
         }
     }
 

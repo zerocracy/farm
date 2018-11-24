@@ -40,7 +40,7 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   String author = claim.author()
   Cash amount = new Cash.S(claim.param('amount'))
-  new Ledger(project).bootstrap().add(
+  new Ledger(farm, project).bootstrap().add(
     new Ledger.Transaction(
       amount,
       'assets', 'cash',

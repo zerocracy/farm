@@ -34,7 +34,7 @@ import org.cactoos.scalar.StickyScalar;
 import org.cactoos.scalar.SumOf;
 
 /**
- * Result of {@link Elections}.
+ * Result of {@link Election}.
  *
  * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
@@ -45,7 +45,7 @@ public final class ElectionResult {
     /**
      * Election XML.
      */
-    private final List<XML> elections;
+    private final XML election;
 
     /**
      * Table (votes by user).
@@ -55,14 +55,14 @@ public final class ElectionResult {
     /**
      * Ctor.
      *
-     * @param elections XML
+     * @param election XML
      */
-    public ElectionResult(final List<XML> elections) {
-        this.elections = elections;
+    public ElectionResult(final XML election) {
+        this.election = election;
         this.table = new IoCheckedScalar<>(
             new StickyScalar<>(
                 () -> ElectionResult.asTable(
-                    elections.get(0).nodes("//election").get(0)
+                    election.nodes("//election").get(0)
                 )
             )
         );
@@ -105,7 +105,7 @@ public final class ElectionResult {
      */
     public String reason() throws IOException {
         final int max = ElectionResult.max(
-            this.elections.get(0).nodes("//election").get(0)
+            this.election.nodes("//election").get(0)
         );
         return String.join(
             "\n",
@@ -140,8 +140,7 @@ public final class ElectionResult {
      * @throws IOException If fails
      */
     public boolean elected() throws IOException {
-        return !this.elections.isEmpty()
-            && new IoCheckedScalar<>(
+        return new IoCheckedScalar<>(
             new Or(
                 (Number sum) -> {
                     final Double dbl = sum.doubleValue();

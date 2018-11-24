@@ -17,6 +17,7 @@
 package com.zerocracy.pm.cost;
 
 import com.zerocracy.farm.fake.FkProject;
+import com.zerocracy.farm.props.PropsFarm;
 import java.io.IOException;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -33,7 +34,7 @@ public final class BoostsTest {
     public void defaultBoost() throws IOException {
         MatcherAssert.assertThat(
             "default boost factor is not 2.0",
-            new Boosts(new FkProject()).bootstrap()
+            new Boosts(new PropsFarm(), new FkProject()).bootstrap()
                 .factor("gh:test/test#1"),
             Matchers.equalTo(2)
         );
@@ -41,7 +42,8 @@ public final class BoostsTest {
 
     @Test
     public void addBoost() throws IOException {
-        final Boosts boosts = new Boosts(new FkProject()).bootstrap();
+        final Boosts boosts =
+            new Boosts(new PropsFarm(), new FkProject()).bootstrap();
         final String job = "gh:test/test#2";
         final int factor = 4;
         boosts.boost(job, factor);
@@ -54,7 +56,8 @@ public final class BoostsTest {
 
     @Test
     public void updateBoost() throws IOException {
-        final Boosts boosts = new Boosts(new FkProject()).bootstrap();
+        final Boosts boosts =
+            new Boosts(new PropsFarm(), new FkProject()).bootstrap();
         final String job = "gh:test/test#3";
         boosts.boost(job, 1);
         final int factor = 3;

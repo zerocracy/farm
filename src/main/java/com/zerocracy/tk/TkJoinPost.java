@@ -76,7 +76,7 @@ public final class TkJoinPost implements TkRegex {
         final LocalDateTime when;
         if (people.applied(author)) {
             when = LocalDateTime.ofInstant(
-                people.appliedTime(author).toInstant(),
+                people.appliedTime(author),
                 ZoneOffset.UTC
             );
         } else {
@@ -104,7 +104,7 @@ public final class TkJoinPost implements TkRegex {
         final String telegram = form.single("telegram");
         final String personality = form.single("personality");
         final String about = form.single("about");
-        final int stko = Integer.parseInt(form.single("stackoverflow"));
+        final long stko = Long.parseLong(form.single("stackoverflow"));
         new ClaimOut().type("Join form submitted")
             .author(author)
             .param("telegram", telegram)

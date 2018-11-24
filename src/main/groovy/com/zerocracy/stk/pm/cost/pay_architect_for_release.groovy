@@ -22,13 +22,12 @@ import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
-import com.zerocracy.entry.ClaimsOf
-import com.zerocracy.farm.Assume
 import com.zerocracy.claims.ClaimIn
 import com.zerocracy.claims.Footprint
+import com.zerocracy.entry.ClaimsOf
+import com.zerocracy.farm.Assume
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pm.time.Releases
-
 import java.time.Duration
 import java.time.Instant
 
@@ -48,7 +47,9 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   Releases releases = new Releases(project).bootstrap()
   Instant latest = releases.latest()
-  releases.add(claim.param('repo'), claim.param('tag'), Instant.parse(claim.param('date')))
+  String repo = claim.param('repo')
+  String tag = claim.param('tag')
+  releases.add(repo, tag, Instant.parse(claim.param('date')))
   Policy policy = new Policy(farm)
   Duration mpc = Duration.ofMinutes(policy.get('54.min-per-claim', 2))
   Duration max = Duration.ofHours(policy.get('54.max', 4))
@@ -56,10 +57,19 @@ def exec(Project project, XML xml) {
     footprint.collection().countDocuments(
       Filters.and(
         Filters.gt('created', Date.from(latest)),
-        Filters.and(
-          Filters.not(Filters.regex('type', 'Ping.*')),
-          Filters.ne('type', 'Error'),
-          Filters.not(Filters.regex('type', 'Notify.*')),
+        Filters.or(
+          Filters.eq('type', 'Order was given'),
+          Filters.eq('type', 'Order was canceled'),
+          Filters.eq('type', 'Order was finished'),
+          Filters.eq('type', 'Request order start'),
+          Filters.eq('type', 'Job removed from WBS'),
+          Filters.eq('type', 'Job was added to WBS'),
+          Filters.eq('type', 'Quality review completed'),
+          Filters.eq('type', 'Register impediment'),
+          Filters.eq('type', 'Set boost'),
+          Filters.eq('type', 'Assign role'),
+          Filters.eq('type', 'Resign role'),
+          Filters.eq('type', 'Job was declined'),
         ),
       )
     )
@@ -71,7 +81,11 @@ def exec(Project project, XML xml) {
     claim.copy()
       .type('Make payment')
       .param('login', it)
-      .param('reason', new Par('Release bonus for ARC §54').say())
+      .param(
+        'reason',
+        new Par('Release bonus for ARC §54 for tag %s in repo %s')
+            .say(tag, repo)
+      )
       .param('minutes', mpa)
       .param('job', 'none')
       .postTo(new ClaimsOf(farm, project))
@@ -79,7 +93,7 @@ def exec(Project project, XML xml) {
       .type('Notify PMO')
       .param(
       'message',
-      new Par('We just sent "ARC release bonus" of %d minutes to %s in %s (%d claims)')
+      new Par(farm,'We just sent "ARC release bonus" of %d minutes to %s in %s (%d claims)')
         .say(mpa, it, project.pid(), claims)
     ).postTo(new ClaimsOf(farm))
   }

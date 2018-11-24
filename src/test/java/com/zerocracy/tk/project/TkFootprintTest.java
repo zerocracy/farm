@@ -50,7 +50,7 @@ public final class TkFootprintTest {
             XhtmlMatchers.xhtml(
                 new RsPrint(
                     new TkApp(farm).act(
-                        new RqWithUser(
+                        new RqWithUser.WithInit(
                             farm,
                             new RqFake(
                                 "GET",
@@ -76,7 +76,7 @@ public final class TkFootprintTest {
             MatcherAssert.assertThat(
                 new RsPrint(
                     new TkApp(farm).act(
-                        new RqWithUser(
+                        new RqWithUser.WithInit(
                             farm,
                             new RqFake(
                                 "GET",

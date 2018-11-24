@@ -51,9 +51,21 @@ import org.cactoos.text.UncheckedText;
  * This class uses long-polling to fetch claims from SQS queue.
  *
  * @since 1.0
+ * @todo #1731:30min ClaimsRoutine is too complex and not testable,
+ *  let's refactor it to few simpler classes and unit test them
+ *  if possible.
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @checkstyle ExecutableStatementCountCheck (500 lines)
  */
+@SuppressWarnings(
+    {
+        "PMD.AvoidDuplicateLiterals",
+        "PMD.AvoidInstantiatingObjectsInLoops",
+        "PMD.ExcessiveImports"
+    }
+)
 public final class ClaimsRoutine implements Runnable, Closeable {
+
     /**
      * Until attribute.
      */
@@ -113,7 +125,9 @@ public final class ClaimsRoutine implements Runnable, Closeable {
      */
     public void start(final ShutdownFarm.Hook shutdown) {
         this.service.scheduleWithFixedDelay(
-            new VerboseRunnable(new ShutdownRunnable(this, shutdown)),
+            new VerboseRunnable(
+                new ClaimsRoutine.ShutdownRunnable(this, shutdown)
+            ),
             0L,
             ClaimsRoutine.DELAY,
             TimeUnit.SECONDS
@@ -124,7 +138,6 @@ public final class ClaimsRoutine implements Runnable, Closeable {
     @SuppressWarnings(
         {
             "PMD.AvoidInstantiatingObjectsInLoops",
-            "PMD.AvoidDuplicateLiterals",
             "PMD.ConfusingTernary"
         }
     )
@@ -150,10 +163,15 @@ public final class ClaimsRoutine implements Runnable, Closeable {
             for (final Message message : messages) {
                 final Map<String, MessageAttributeValue> attr =
                     message.getMessageAttributes();
+                attr.put(
+                    "received",
+                    new MessageAttributeValue()
+                        .withStringValue(Instant.now().toString())
+                );
                 if (attr.containsKey(ClaimsRoutine.UNTIL)
                     && Instant.parse(
-                        attr.get(ClaimsRoutine.UNTIL).getStringValue()
-                    ).isAfter(Instant.now())) {
+                    attr.get(ClaimsRoutine.UNTIL).getStringValue()
+                ).isAfter(Instant.now())) {
                     continue;
                 }
                 final XML xml = new XMLDocument(message.getBody())

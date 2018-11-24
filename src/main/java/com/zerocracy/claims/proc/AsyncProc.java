@@ -17,14 +17,18 @@
 package com.zerocracy.claims.proc;
 
 import com.amazonaws.services.sqs.model.Message;
+import com.jcabi.aspects.Tv;
 import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseCallable;
+import com.jcabi.log.VerboseRunnable;
 import com.jcabi.log.VerboseThreads;
+import com.zerocracy.claims.ClaimGuts;
 import com.zerocracy.shutdown.ShutdownFarm;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.Proc;
 import org.cactoos.scalar.And;
@@ -34,12 +38,13 @@ import org.cactoos.scalar.And;
  *
  * @since 1.0
  */
+@SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
 public final class AsyncProc implements Proc<List<Message>> {
 
     /**
      * Executor.
      */
-    private final ExecutorService service;
+    private final ScheduledExecutorService service;
 
     /**
      * Origin proc.
@@ -57,14 +62,23 @@ public final class AsyncProc implements Proc<List<Message>> {
     private final AtomicInteger count;
 
     /**
+     * Claim guts.
+     */
+    private final ClaimGuts guts;
+
+    /**
      * Ctor.
      *
      * @param origin Origin proc
+     * @param cgts Guts
      * @param shutdown Shutdown hook
      */
     public AsyncProc(final Proc<Message> origin,
-        final ShutdownFarm.Hook shutdown) {
-        this(Runtime.getRuntime().availableProcessors(), origin, shutdown);
+        final ClaimGuts cgts, final ShutdownFarm.Hook shutdown) {
+        this(
+            Runtime.getRuntime().availableProcessors(),
+            origin, cgts, shutdown
+        );
     }
 
     /**
@@ -72,16 +86,45 @@ public final class AsyncProc implements Proc<List<Message>> {
      *
      * @param threads Threads
      * @param origin Origin proc
+     * @param cgts Claim guts
      * @param shutdown Shutdown hook
+     * @checkstyle ParameterNumberCheck (3 lines)
      */
     public AsyncProc(final int threads, final Proc<Message> origin,
-        final ShutdownFarm.Hook shutdown) {
-        this.service = Executors.newFixedThreadPool(
+        final ClaimGuts cgts, final ShutdownFarm.Hook shutdown) {
+        this.service = Executors.newScheduledThreadPool(
             threads, new VerboseThreads(AsyncProc.class)
         );
         this.origin = origin;
+        this.guts = cgts;
         this.shutdown = shutdown;
         this.count = new AtomicInteger();
+        this.service.scheduleWithFixedDelay(
+            new VerboseRunnable(
+                () -> {
+                    if (!this.shutdown.check()) {
+                        this.service.shutdown();
+                        try {
+                            this.service.awaitTermination(
+                                Tv.FIVE,
+                                TimeUnit.MINUTES
+                            );
+                        } catch (final InterruptedException err) {
+                            Logger.info(
+                                this,
+                                "Service wait was interrupted"
+                            );
+                        }
+                        Logger.info(
+                            this,
+                            "Shutting down with %d tasks still executing",
+                            this.service.shutdownNow().size()
+                        );
+                    }
+                }
+            ),
+            1, 1, TimeUnit.MINUTES
+        );
     }
 
     @Override
@@ -93,6 +136,7 @@ public final class AsyncProc implements Proc<List<Message>> {
                 new VerboseCallable<>(
                     () -> {
                         try {
+                            this.guts.start(input);
                             Logger.info(
                                 this, "Processing %d messages",
                                 input.size()
@@ -103,6 +147,7 @@ public final class AsyncProc implements Proc<List<Message>> {
                                 && this.shutdown.stopping()) {
                                 this.shutdown.complete();
                             }
+                            this.guts.stop(input);
                         }
                         return null;
                     },

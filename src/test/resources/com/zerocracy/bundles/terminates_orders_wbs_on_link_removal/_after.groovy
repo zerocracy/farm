@@ -24,7 +24,7 @@ import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
-  Orders orders = new Orders(project).bootstrap()
+  Orders orders = new Orders(farm, project).bootstrap()
   MatcherAssert.assertThat(orders.jobs('cmiranda'), Matchers.empty())
   MatcherAssert.assertThat(orders.jobs('krzyk'), Matchers.empty())
   MatcherAssert.assertThat(orders.jobs('yegor256'), Matchers.empty())

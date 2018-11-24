@@ -22,7 +22,7 @@ import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pmo.People;
 import java.io.IOException;
-import java.util.Date;
+import java.time.Instant;
 import org.cactoos.iterable.IterableOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.text.StringContainsInOrder;
@@ -48,7 +48,9 @@ public final class TkJoinTest {
             XhtmlMatchers.xhtml(
                 new RsPrint(
                     new TkApp(farm).act(
-                        new RqWithUser(farm, new RqFake("GET", "/join"))
+                        new RqWithUser.WithInit(
+                            farm, new RqFake("GET", "/join")
+                        )
                     )
                 ).printBody()
             ),
@@ -69,11 +71,13 @@ public final class TkJoinTest {
         final People people = new People(farm).bootstrap();
         final String uid = "yegor256";
         people.touch(uid);
-        people.apply(uid, new Date());
+        people.apply(uid, Instant.now());
         MatcherAssert.assertThat(
             new RsPrint(
                 new TkApp(farm).act(
-                    new RqWithUser(farm, new RqFake("GET", "/join"))
+                    new RqWithUser.WithInit(
+                        farm, new RqFake("GET", "/join")
+                    )
                 )
             ).printBody(),
             new StringContainsInOrder(

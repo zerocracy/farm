@@ -33,7 +33,7 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   int factor = Integer.valueOf(claim.param('factor').replaceAll('x$', ''))
   String job = claim.param('job')
-  Boosts boosts = new Boosts(project).bootstrap()
+  Boosts boosts = new Boosts(farm, project).bootstrap()
   if (boosts.factor(job) == factor) {
     throw new SoftException(
       new Par(

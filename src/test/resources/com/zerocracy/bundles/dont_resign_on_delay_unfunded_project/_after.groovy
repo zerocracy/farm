@@ -25,12 +25,12 @@ import org.hamcrest.Matchers
 def exec(Project project, XML xml) {
   MatcherAssert.assertThat(
     'Issue should not have been resigned',
-    new Orders(project).bootstrap().jobs('lazydev'),
+    new Orders(farm, project).bootstrap().jobs('lazydev'),
     Matchers.contains('gh:test/test#1')
   )
   MatcherAssert.assertThat(
     'CR should not have been resigned',
-    new Orders(project).bootstrap().jobs('lazyrev'),
+    new Orders(farm, project).bootstrap().jobs('lazyrev'),
     Matchers.contains('gh:test/test#2')
   )
 }

@@ -19,6 +19,8 @@ package com.zerocracy.entry;
 import com.jcabi.aspects.Loggable;
 import com.jcabi.log.Logger;
 import com.zerocracy.Farm;
+import com.zerocracy.claims.ClaimGuts;
+import com.zerocracy.claims.ClaimsFarm;
 import com.zerocracy.claims.ClaimsRoutine;
 import com.zerocracy.claims.proc.AsyncProc;
 import com.zerocracy.claims.proc.BrigadeProc;
@@ -31,6 +33,7 @@ import com.zerocracy.farm.S3Farm;
 import com.zerocracy.farm.SmartFarm;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.farm.props.PropsFarm;
+import com.zerocracy.farm.sync.TestLocks;
 import com.zerocracy.radars.github.GithubRoutine;
 import com.zerocracy.radars.github.TkGithub;
 import com.zerocracy.radars.gitlab.TkGitlab;
@@ -41,6 +44,7 @@ import com.zerocracy.sentry.SafeSentry;
 import com.zerocracy.shutdown.ShutdownFarm;
 import com.zerocracy.tk.TkAlias;
 import com.zerocracy.tk.TkApp;
+import com.zerocracy.tk.TkSentry;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -122,11 +126,16 @@ public final class Main {
         final ShutdownFarm.Hook shutdown = new ShutdownFarm.Hook();
         final AtomicInteger count = new AtomicInteger();
         final int threads = Runtime.getRuntime().availableProcessors();
+        final ClaimGuts cgts = new ClaimGuts();
         try (
+            final S3Farm origin = new S3Farm(new ExtBucket().value(), temp);
             final Farm farm = new ShutdownFarm(
-                new SmartFarm(
-                    new S3Farm(new ExtBucket().value(), temp)
-                ).value(),
+                new ClaimsFarm(
+                    new SmartFarm(
+                        origin, new TestLocks()
+                    ),
+                    cgts
+                ),
                 shutdown
             );
             final SlackRadar radar = new SlackRadar(farm);
@@ -150,6 +159,7 @@ public final class Main {
                         ),
                         shutdown
                     ),
+                    cgts,
                     shutdown
                 ),
                 () -> count.intValue() < threads
@@ -177,16 +187,21 @@ public final class Main {
                     new FkRegex("/viber", new TkViber(farm)),
                     new FkRegex(
                         "/ghook",
-                        new TkMethods(new TkGithub(farm), HttpMethod.POST)
+                        new TkMethods(
+                            new TkSentry(farm, new TkGithub(farm)),
+                            HttpMethod.POST
+                        )
                     ),
                     new FkRegex(
                         "/glhook",
-                        new TkMethods(new TkGitlab(), HttpMethod.POST)
+                        new TkMethods(
+                            new TkSentry(farm, new TkGitlab()),
+                            HttpMethod.POST
+                        )
                     )
                 ),
                 this.arguments
             ).start(Exit.NEVER);
         }
     }
-
 }

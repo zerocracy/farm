@@ -42,13 +42,13 @@ public final class TkGutsTest {
     public void rendersXml() throws Exception {
         final Farm raw = new FkFarm();
         new Roles(new Pmo(raw)).bootstrap().assign("yegor256", "PO");
-        try (final Farm farm = new SmartFarm(raw).value()) {
+        try (final Farm farm = new SmartFarm(raw)) {
             final Take take = new TkApp(farm);
             MatcherAssert.assertThat(
                 XhtmlMatchers.xhtml(
                     new RsPrint(
                         take.act(
-                            new RqWithUser(
+                            new RqWithUser.WithInit(
                                 farm, new RqFake("GET", "/guts")
                             )
                         )

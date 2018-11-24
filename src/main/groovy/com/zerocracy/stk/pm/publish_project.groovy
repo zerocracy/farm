@@ -64,7 +64,7 @@ def exec(Project project, XML xml) {
       ).say(project.pid())
     ).postTo(new ClaimsOf(farm, project))
     claim.copy()
-      .type('Make payment')
+      .type('Add award points')
       .param('login', claim.author())
       .param('job', 'none')
       .param('minutes', -new Policy().get('26.price', 256))

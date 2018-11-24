@@ -40,7 +40,7 @@ def exec(Project pmo, XML xml) {
   }
   Project target = projects[0]
   String author = claim.author()
-  Orders orders = new Orders(target).bootstrap()
+  Orders orders = new Orders(farm, target).bootstrap()
   for (String job : orders.jobs(author)) {
     claim.copy()
       .type('Cancel order')

@@ -24,10 +24,12 @@ import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.claims.ClaimIn;
 import com.zerocracy.farm.StkSafe;
+import com.zerocracy.farm.StkTimed;
 import com.zerocracy.farm.StkVerbose;
 import com.zerocracy.farm.reactive.Brigade;
 import com.zerocracy.farm.reactive.StkRuntime;
 import groovy.lang.Script;
+import java.time.Duration;
 import java.util.Map;
 import org.cactoos.Proc;
 import org.cactoos.iterable.Mapped;
@@ -67,7 +69,11 @@ public final class BrigadeProc implements Proc<Message> {
                         cls.getSimpleName(),
                         farm,
                         new StkVerbose(
-                            new StkRuntime(cls, farm),
+                            new StkTimed(
+                                new StkRuntime(cls, farm),
+                                cls.getSimpleName(),
+                                Duration.ofMinutes(1L)
+                            ),
                             cls.getName()
                         )
                     ),
@@ -102,7 +108,7 @@ public final class BrigadeProc implements Proc<Message> {
         final ClaimIn claim = new ClaimIn(xml);
         Logger.info(
             this,
-            "Processing message %s:\"%s/%d\" at \"%s\"",
+            "Processing message %s:\"%s/%s\" at \"%s\"",
             input.getMessageId(), claim.type(),
             claim.cid(), project.pid()
         );
@@ -117,7 +123,7 @@ public final class BrigadeProc implements Proc<Message> {
         }
         Logger.info(
             this,
-            "Seen message %s:\"%s/%d\" at \"%s\" by %d stk, %[ms]s [%s]%s",
+            "Seen message %s:\"%s/%s\" at \"%s\" by %d stk, %[ms]s [%s]%s",
             input.getMessageId(), claim.type(), claim.cid(),
             project.pid(),
             total,

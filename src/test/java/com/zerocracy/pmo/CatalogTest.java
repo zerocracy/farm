@@ -16,26 +16,49 @@
  */
 package com.zerocracy.pmo;
 
+import com.jcabi.aspects.Tv;
+import com.jcabi.github.Github;
+import com.jcabi.github.Repo;
+import com.jcabi.github.Repos;
+import com.jcabi.github.mock.MkGithub;
 import com.zerocracy.Item;
 import com.zerocracy.Project;
 import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
+import com.zerocracy.farm.props.PropsFarm;
+import com.zerocracy.pm.cost.Ledger;
+import com.zerocracy.pm.in.Orders;
+import com.zerocracy.pm.scope.Wbs;
+import com.zerocracy.pm.staff.Roles;
+import com.zerocracy.radars.github.Job;
 import java.io.IOException;
-import org.cactoos.time.DateAsText;
+import java.time.Instant;
+import java.util.UUID;
+import org.cactoos.text.FormattedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.hamcrest.collection.IsEmptyIterable;
+import org.hamcrest.core.IsCollectionContaining;
+import org.hamcrest.core.IsEqual;
+import org.hamcrest.core.IsNot;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.xembly.Directives;
 
 /**
  * Test case for {@link Catalog}.
  * @since 1.0
+ * @todo #1333:30min Board page is slow, load all project properties present in
+ *  board page in catalog.xml similar it is made in team page. After this,
+ *  uncomment test catalogHasBoardPageInfo
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @checkstyle ExecutableStatementCountCheck (500 lines)
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals",
+    "PMD.AvoidInstantiatingObjectsInLoops", "PMD.ExcessiveImports"})
 public final class CatalogTest {
 
     @Test
@@ -52,7 +75,7 @@ public final class CatalogTest {
                     .attr("id", pid)
                     .add("title").set(pid).up()
                     .add("created")
-                    .set(new DateAsText().asString()).up()
+                    .set(Instant.now().toString()).up()
                     .add("prefix").set("2017/01/AAAABBBBC/").up()
                     .add("fee").set("0").up()
                     .add("alive").set("true").up()
@@ -170,6 +193,123 @@ public final class CatalogTest {
             catalog.adviser(pid),
             Matchers.equalTo(adviser)
         );
+    }
+
+    @Test
+    public void hasAdviser() throws Exception {
+        final String pid = "000000400";
+        final Pmo pmo = new Pmo(new FkFarm());
+        final Catalog catalog = new Catalog(pmo).bootstrap();
+        catalog.add(pid, "2018/10/000000400/");
+        MatcherAssert.assertThat(
+            "Has adviser but should not",
+            catalog.hasAdviser(pid),
+            new IsEqual<>(false)
+        );
+        final String adviser = "user235231";
+        catalog.adviser(pid, adviser);
+        MatcherAssert.assertThat(
+            "Doesn't have adviser but should",
+            catalog.hasAdviser(pid),
+            new IsEqual<>(true)
+        );
+    }
+
+    @Test
+    @Ignore
+    public void catalogHasBoardPageInfo() throws Exception {
+        final FkProject project = new FkProject();
+        final PropsFarm farm = new PropsFarm();
+        new Ledger(farm, project).bootstrap().add(
+            new Ledger.Transaction(
+                new Cash.S("$100"),
+                "assets", "cash",
+                "income", "zerocracy",
+                "Current project funds"
+            )
+        );
+        new Catalog(new FkFarm(project)).bootstrap();
+        final Github github = new MkGithub();
+        final Repo repo = github.repos().create(
+            new Repos.RepoCreate("test", false)
+        );
+        final String arc = "yegor256";
+        final String dev = "paulodamaso";
+        final Roles roles = new Roles(project).bootstrap();
+        roles.assign(arc, "ARC");
+        roles.assign(dev, "DEV");
+        final Wbs wbs = new Wbs(project).bootstrap();
+        final String one = new Job(
+            repo.issues().create("Job number one", "")
+        ).toString();
+        wbs.add(one);
+        for (int cont = 0; cont < Tv.THREE; cont = cont + 1) {
+            wbs.add(new Job(repo.issues().create("Job", "")).toString());
+        }
+        new Orders(farm, project).bootstrap()
+            .assign(one, dev, UUID.randomUUID().toString());
+        try (final Item item = CatalogTest.item(project)) {
+            MatcherAssert.assertThat(
+                "Architect(s) not found",
+                new Xocument(item.path()).xpath(
+                    new FormattedText(
+                        "/catalog/project[@id='%s']/architect",
+                        project.pid()
+                    ).asString()
+                ),
+                new IsCollectionContaining<>(new IsEqual<>(arc))
+            );
+            MatcherAssert.assertThat(
+                "Members not found",
+                new Xocument(item.path()).xpath(
+                    new FormattedText(
+                        "/catalog/project[@id='%s']/members",
+                        project.pid()
+                    ).asString()
+                ),
+                new IsCollectionContaining<>(new IsEqual<>(dev))
+            );
+            MatcherAssert.assertThat(
+                "Jobs not found",
+                new Xocument(item.path()).xpath(
+                    new FormattedText(
+                        "/catalog/project[@id='%s']/jobs",
+                        project.pid()
+                    ).asString()
+                ),
+                new IsNot<>(new IsEmptyIterable<>())
+            );
+            MatcherAssert.assertThat(
+                "Assigned jobs not found",
+                new Xocument(item.path()).xpath(
+                    new FormattedText(
+                        "/catalog/project[@id='%s']/jobs[@assigned]",
+                        project.pid()
+                    ).asString()
+                ),
+                new IsEqual<>(1)
+            );
+            MatcherAssert.assertThat(
+                "Total jobs not found",
+                new Xocument(item.path()).xpath(
+                    new FormattedText(
+                        "/catalog/project[@id='%s']/jobs[@total]",
+                        project.pid()
+                    ).asString()
+                ),
+                new IsEqual<>(Tv.THREE)
+            );
+            MatcherAssert.assertThat(
+                "Funding info incorrect",
+                new Xocument(item.path()).xpath(
+                    new FormattedText(
+                        "/catalog/project[@id='%s']/funding[@amount]",
+                        project.pid()
+                    ).asString()
+                ),
+                new IsEqual<>("$100")
+            );
+        }
     }
 
     private static Item item(final Project project) throws IOException {

@@ -104,8 +104,8 @@ public final class ClaimIn {
      * Get ID.
      * @return ID
      */
-    public long cid() {
-        return Long.parseLong(this.xml.xpath("@id").get(0));
+    public String cid() {
+        return this.xml.xpath("@id").get(0);
     }
 
     /**
@@ -209,6 +209,23 @@ public final class ClaimIn {
     }
 
     /**
+     * Get param by name or default.
+     *
+     * @param name Param name
+     * @param def Default value
+     * @return Param value or default
+     */
+    public String param(final String name, final String def) {
+        final String par;
+        if (this.hasParam(name)) {
+            par = this.param(name);
+        } else {
+            par = def;
+        }
+        return par;
+    }
+
+    /**
      * Get all params.
      * @return All params
      */
@@ -223,4 +240,21 @@ public final class ClaimIn {
         return map;
     }
 
+    /**
+     * Has unique value.
+     *
+     * @return TRUE if has
+     */
+    public boolean isUnique() {
+        return !this.xml.nodes("unique").isEmpty();
+    }
+
+    /**
+     * Get unique source (see {@link ClaimOut#unique(String)}).
+     *
+     * @return Unique source
+     */
+    public String unique() {
+        return this.xml.xpath("unique/text()").get(0);
+    }
 }

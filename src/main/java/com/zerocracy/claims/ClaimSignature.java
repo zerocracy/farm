@@ -62,24 +62,28 @@ public final class ClaimSignature implements Text {
         }
         final Charset charset = StandardCharsets.UTF_8;
         final ClaimIn claim = new ClaimIn(this.xml);
-        digest.update(claim.type().getBytes(charset));
-        if (claim.hasToken()) {
-            digest.update(claim.token().getBytes(charset));
-        }
-        if (claim.hasAuthor()) {
-            digest.update(claim.author().getBytes(charset));
-        }
-        final Iterable<String> params = new Mapped<>(
-            entry -> String.format(
-                "%s=%s", entry.getKey(), entry.getValue()
-            ),
-            new Sorted<>(
-                Comparator.comparing(Map.Entry::getKey),
-                claim.params().entrySet()
-            )
-        );
-        for (final String item : params) {
-            digest.update(item.getBytes(charset));
+        if (claim.isUnique()) {
+            digest.update(claim.unique().getBytes(charset));
+        } else {
+            digest.update(claim.type().getBytes(charset));
+            if (claim.hasToken()) {
+                digest.update(claim.token().getBytes(charset));
+            }
+            if (claim.hasAuthor()) {
+                digest.update(claim.author().getBytes(charset));
+            }
+            final Iterable<String> params = new Mapped<>(
+                entry -> String.format(
+                    "%s=%s", entry.getKey(), entry.getValue()
+                ),
+                new Sorted<>(
+                    Comparator.comparing(Map.Entry<String, String>::getKey),
+                    claim.params().entrySet()
+                )
+            );
+            for (final String item : params) {
+                digest.update(item.getBytes(charset));
+            }
         }
         return Base64.getEncoder().encodeToString(digest.digest());
     }

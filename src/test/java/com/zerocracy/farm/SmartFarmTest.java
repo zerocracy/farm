@@ -28,8 +28,8 @@ import com.zerocracy.pm.cost.Boosts;
 import com.zerocracy.pm.in.Orders;
 import com.zerocracy.pm.scope.Wbs;
 import java.nio.file.Files;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.cactoos.Scalar;
 import org.cactoos.func.RunnableOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -49,7 +49,7 @@ public final class SmartFarmTest {
             Files.createTempDirectory("").toFile(),
             "some-bucket"
         );
-        try (final Farm farm = new SmartFarm(new S3Farm(bucket)).value()) {
+        try (final Farm farm = new SmartFarm(new S3Farm(bucket))) {
             final Project project = farm.find("@id='SMRTFRMTT'")
                 .iterator().next();
             MatcherAssert.assertThat(
@@ -58,11 +58,34 @@ public final class SmartFarmTest {
                         "gh:test/test#%d", inc.incrementAndGet()
                     );
                     new Wbs(project).bootstrap().add(job);
-                    new Boosts(project).bootstrap().boost(job, 1);
+                    new Boosts(farm, project).bootstrap().boost(job, 1);
                     new Wbs(project).bootstrap().remove(job);
-                    return new Boosts(project).factor(job) == 2;
+                    return new Boosts(farm, project).factor(job) == 2;
                 },
                 new RunsInThreads<>(new AtomicInteger())
+            );
+        }
+    }
+
+    @Test
+    public void lockItems() throws Exception {
+        final Bucket bucket = new FkBucket(
+            Files.createTempDirectory("").toFile(),
+            "some-bucket-lockItems"
+        );
+        try (final Farm farm = new SmartFarm(new S3Farm(bucket))) {
+            final Project project = farm.find("@id='SMRTFRMTX'")
+                .iterator().next();
+            final String job = String.format(
+                "gh:test/testt#%d", 42
+            );
+            new Wbs(project).bootstrap().add(job);
+            new Boosts(farm, project).bootstrap().boost(job, 1);
+            new Wbs(project).bootstrap().remove(job);
+            final int factor = new Boosts(farm, project).factor(job);
+            MatcherAssert.assertThat(
+                factor,
+                Matchers.equalTo(2)
             );
         }
     }
@@ -73,20 +96,20 @@ public final class SmartFarmTest {
             Files.createTempDirectory("").toFile(),
             "some-bucket-again"
         );
-        final Scalar<Farm> farm = new SmartFarm(new S3Farm(bucket));
-        MatcherAssert.assertThat(
-            inc -> {
-                final Project project = farm.value()
-                    .find("@id='AAAAABBBB'").iterator().next();
-                final String job = String.format(
-                    "gh:test/testing#%d", inc.incrementAndGet()
-                );
-                new Wbs(project).bootstrap().add(job);
-                return new Wbs(project).exists(job);
-            },
-            new RunsInThreads<>(new AtomicInteger())
-        );
-        farm.value().close();
+        try (final Farm farm = new SmartFarm(new S3Farm(bucket))) {
+            MatcherAssert.assertThat(
+                inc -> {
+                    final Project project = farm.find("@id='AAAAABBBB'")
+                        .iterator().next();
+                    final String job = String.format(
+                        "gh:test/testing#%d", inc.incrementAndGet()
+                    );
+                    new Wbs(project).bootstrap().add(job);
+                    return new Wbs(project).exists(job);
+                },
+                new RunsInThreads<>(new AtomicInteger())
+            );
+        }
     }
 
     @Test
@@ -95,19 +118,19 @@ public final class SmartFarmTest {
             Files.createTempDirectory("").toFile(),
             "some-bucket-3"
         );
-        final Scalar<Farm> farm = new SmartFarm(new S3Farm(bucket));
-        MatcherAssert.assertThat(
-            inc -> {
-                final Project project = farm.value().find(
-                    String.format("@id='AAAAA%04d'", inc.incrementAndGet())
-                ).iterator().next();
-                final String job = "gh:test/some#2";
-                new Wbs(project).bootstrap().add(job);
-                return new Wbs(project).iterate().size() == 1;
-            },
-            new RunsInThreads<>(new AtomicInteger())
-        );
-        farm.value().close();
+        try (final Farm farm = new SmartFarm(new S3Farm(bucket))) {
+            MatcherAssert.assertThat(
+                inc -> {
+                    final Project project = farm.find(
+                        String.format("@id='AAAAA%04d'", inc.incrementAndGet())
+                    ).iterator().next();
+                    final String job = "gh:test/some#2";
+                    new Wbs(project).bootstrap().add(job);
+                    return new Wbs(project).iterate().size() == 1;
+                },
+                new RunsInThreads<>(new AtomicInteger())
+            );
+        }
     }
 
     @Test
@@ -116,7 +139,7 @@ public final class SmartFarmTest {
             Files.createTempDirectory("").toFile(),
             "some-bucket-6"
         );
-        try (final Farm farm = new SmartFarm(new S3Farm(bucket)).value()) {
+        try (final Farm farm = new SmartFarm(new S3Farm(bucket))) {
             final Project project = farm.find(
                 "@id='123456709'"
             ).iterator().next();
@@ -131,7 +154,7 @@ public final class SmartFarmTest {
 
     @Test
     public void readsProps() throws Exception {
-        try (final Farm farm = new SmartFarm(new FkFarm()).value()) {
+        try (final Farm farm = new SmartFarm(new FkFarm())) {
             final Project project = farm.find(
                 "@id='123456700'"
             ).iterator().next();
@@ -148,13 +171,14 @@ public final class SmartFarmTest {
             Files.createTempDirectory("").toFile(),
             "some-bucket-09"
         );
-        try (final Farm farm = new SmartFarm(new S3Farm(bucket)).value()) {
+        try (final Farm farm = new SmartFarm(new S3Farm(bucket))) {
             final Project project = farm.find(
                 "@id='SMARTFARM'"
             ).iterator().next();
             final String job = "gh:test/test#22";
             new Wbs(project).bootstrap().add(job);
-            new Orders(project).bootstrap().assign(job, "jeff", 0L);
+            new Orders(farm, project).bootstrap()
+                .assign(job, "jeff", UUID.randomUUID().toString());
             new VerboseRunnable(
                 new RunnableOf<>(
                     obj -> {

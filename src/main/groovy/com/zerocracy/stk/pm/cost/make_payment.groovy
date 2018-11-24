@@ -18,31 +18,41 @@ package com.zerocracy.stk.pm.cost
 
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
-import com.zerocracy.Par
-import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
-import com.zerocracy.claims.ClaimIn
+import com.zerocracy.pm.cost.Estimates
 import com.zerocracy.pm.cost.Ledger
 import com.zerocracy.pm.cost.Rates
-import com.zerocracy.pmo.Debts
-import com.zerocracy.pmo.People
-import com.zerocracy.pmo.banks.Payroll
 
+/**
+ * Make payment is payment dispatcher stakeholder.
+ * <p>
+ * It parses origin claim and redirect it to 'Add award points',
+ * 'Pay cash', 'Transfer shares' and 'Send zold'.
+ *
+ * @param project Project or PMO
+ * @param xml Claim
+ */
 def exec(Project project, XML xml) {
-  new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Make payment')
+  Farm farm = binding.variables.farm
   ClaimIn claim = new ClaimIn(xml)
-  String job = claim.param('job')
+  // @todo #1162:30min In continuation of #1162, add a test to ensure that a payment
+  //  results on points being awarded. Also add tests for transfer_shares and pay_cash stakeholders.
+  claim.copy()
+    .type('Add award points')
+    .postTo(new ClaimsOf(farm, project))
   String login = claim.param('login')
-  String reason = new Par.ToText(claim.param('reason')).toString()
-  int minutes = Integer.parseInt(claim.param('minutes'))
-  if (minutes < 0) {
-    return
+  int minutes
+  if (claim.hasParam('minutes')) {
+    minutes = Integer.parseInt(claim.param('minutes'))
+  } else {
+    minutes = 0
   }
-  if (login == 'yegor256') {
+  if (minutes < 0) {
     return
   }
   Cash price
@@ -56,93 +66,23 @@ def exec(Project project, XML xml) {
     }
     price = rate.mul(minutes) / 60
   }
-  if (price == Cash.ZERO) {
+  if (price.empty) {
     return
   }
-  String tail = ''
-  Farm farm = binding.variables.farm
-  People people = new People(farm).bootstrap()
-  if (!claim.hasParam('no-tuition-fee') && people.hasMentor(login) && people.mentor(login) != '0crat') {
-    int share = new Policy().get('45.share', 8)
-    Cash fee = price.mul(share) / 100
-    price = price.mul(100 - share) / 100
-    String mentor = people.mentor(login)
-    claim.copy()
-      .type('Make payment')
-      .param('login', mentor)
-      .param('minutes', 0)
-      .param('cash', fee)
-      .param('student', login)
-      .param('no-tuition-fee', true)
-      .param('reason', new Par('Tuition fee from @%s').say(login))
-      .postTo(new ClaimsOf(farm, project))
-    tail = new Par(
-      'the tuition fee %s was deducted',
-      'and sent to @%s (your mentor), according to §45'
-    ).say(fee, mentor)
+  Cash cash = price
+  if (!canPay(farm, project, claim.param('job', 'none'), price)) {
+    cash = Cash.ZERO
   }
-  Ledger ledger = new Ledger(project).bootstrap()
-  String msg
-  try {
-    msg = new Payroll(farm).pay(
-      ledger,
-      login, price, "Payment for ${job} (${minutes} minutes): ${reason}"
-    )
+  if (!cash.empty) {
     claim.copy()
-      .type('Payment was made')
-      .param('amount', price)
-      .param('payment_id', msg)
+      .type('Pay cash')
+      .param('cash', cash)
       .postTo(new ClaimsOf(farm, project))
+  }
+  if (!claim.hasParam('student') && claim.hasParam('job')) {
     claim.copy()
-      .type('Notify user')
-      .token("user;${login}")
-      .param(
-        'message',
-        new Par(
-          'We just paid you %s (`%s`) for %s: %s'
-        ).say(price, msg, job, reason) + tail
-      )
-      .postTo(new ClaimsOf(farm, project))
-  } catch (IOException ex) {
-    Cash commission = price.mul(3) / 100
-    ledger.add(
-      new Ledger.Transaction(
-        price.add(commission),
-        'liabilities', 'debt',
-        'assets', 'cash',
-        reason + new Par(' (amount:%s, commission:%s)').say(price, commission)
-      ),
-      new Ledger.Transaction(
-        commission,
-        'expenses', 'jobs',
-        'liabilities', 'debt',
-        "${commission} (commission)"
-      ),
-      new Ledger.Transaction(
-        price,
-        'expenses', 'jobs',
-        'liabilities', "@${login}",
-        reason
-      )
-    )
-    Debts debts = new Debts(farm).bootstrap()
-    debts.add(login, price, "${reason} at ${job}", ex.message)
-    claim.copy()
-      .type('Payment was added to debts')
-      .param('amount', price)
-      .postTo(new ClaimsOf(farm, project))
-    claim.copy()
-      .type('Notify user')
-      .token("user;${login}")
-      .param(
-        'message',
-        new Par(
-          'We are very sorry, but we failed to pay you %s for %s: "%s";',
-          'this amount was added to the list of payments we owe you;',
-          'we will try to send them all together very soon;',
-          'we will keep you informed, see §20'
-        ).say(price, job, ex.message) + tail
-      )
+      .type('Transfer shares')
+      .param('cash', cash)
       .postTo(new ClaimsOf(farm, project))
   }
   claim.copy()
@@ -150,13 +90,16 @@ def exec(Project project, XML xml) {
     .param('recipient', login)
     .param('amount', price)
     .postTo(new ClaimsOf(farm, project))
-  claim.copy()
-    .type('Notify project')
-    .param(
-      'message',
-      new Par(
-        'We just paid %s to @%s for %s: %s'
-      ).say(price, login, job, reason)
-    )
-    .postTo(new ClaimsOf(farm, project))
+}
+
+static canPay(Farm farm, Project project, String job, Cash price) {
+  if (project.pid() == 'PMO') {
+    return true
+  }
+  Estimates estimates = new Estimates(farm, project).bootstrap()
+  if (estimates.exists(job)) {
+    return true
+  }
+  Ledger ledger = new Ledger(farm, project).bootstrap()
+  !ledger.deficit() && ledger.cash() > estimates.total().add(price)
 }

@@ -20,14 +20,11 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.claims.ClaimIn
-import com.zerocracy.claims.ClaimOut
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.qa.Reviews
 import com.zerocracy.pm.scope.Wbs
-import com.zerocracy.pm.staff.ElectionResult
-import com.zerocracy.pm.staff.Elections
 
 /**
  * Assign elected performer.
@@ -40,23 +37,18 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Performer was elected')
   ClaimIn claim = new ClaimIn(xml)
   Wbs wbs = new Wbs(project).bootstrap()
-  Collection<String> orders = new Orders(project).bootstrap().iterate()
+  Collection<String> orders = new Orders(farm, project).bootstrap().iterate()
   Collection<String> reviews = new Reviews(project).bootstrap().iterate()
-  Elections elections = new Elections(project).bootstrap()
   Farm farm = binding.variables.farm
   String job = claim.param('job')
   String login = claim.param('login')
-  ElectionResult result = elections.result(job)
   if (!wbs.exists(job)) {
     return
   }
   if (orders.contains(job) || reviews.contains(job)) {
     return
   }
-  if (!result.elected() || result.winner() != login) {
-    return
-  }
-  new ClaimOut()
+  claim.copy()
     .type('Start order')
     .token("job;${job}")
     .param('job', job)
@@ -64,6 +56,5 @@ def exec(Project project, XML xml) {
     .param('reason', claim.param('reason'))
     .param('public', true)
     .postTo(new ClaimsOf(farm, project))
-  elections.remove(job)
 }
 

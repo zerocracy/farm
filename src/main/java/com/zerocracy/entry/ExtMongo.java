@@ -45,13 +45,66 @@ import org.slf4j.LoggerFactory;
  *
  * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @todo #1711:30min Provide a single Mongo database instance (process) for
+ *  all tests. The ExtMongo launches a new Mongo database process every time
+ *  it is requested for the testing purposes.
+ * @todo #1711:30min Provide a documentation on how to configure an external
+ *  (local or remote) Mongo database authorization. It is not clear how to do
+ *  this properly. If a Mongo database security.authorization option is turned
+ *  on, it is impossible to pass the authentication by running associated unit
+ *  tests.
+ * @todo #1711:30min Fix up failing cases when an external Mongo database is
+ *  specified for tests. Under these conditions the Mongo database data is not
+ *  get cleared every time a new database related test is started.
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class ExtMongo implements Scalar<MongoClient> {
 
     /**
+     * The test host property name.
+     */
+    private static final String TEST_HOST_PROPERTY = "test.mongo.host";
+
+    /**
+     * The test port property name.
+     */
+    private static final String TEST_PORT_PROPERTY = "test.mongo.port";
+
+    /**
+     * The test user property name.
+     */
+    private static final String TEST_USER_PROPERTY = "test.mongo.user";
+
+    /**
+     * The test password property name.
+     */
+    private static final String TEST_PASSWORD_PROPERTY = "test.mongo.password";
+
+    /**
+     * The test database name property name.
+     */
+    private static final String TEST_DB_NAME_PROPERTY = "test.mongo.dbname";
+
+    /**
+     * The default password.
+     */
+    private static final String DEFAULT_PASSWORD = "";
+
+    /**
+     * The default database name.
+     */
+    private static final String DEFAULT_DB_NAME = "footprint";
+
+    /**
+     * The default timeout.
+     * @checkstyle MagicNumberCheck (1 lines)
+     */
+    private static final int DEFAULT_TIMEOUT =
+        (int) TimeUnit.SECONDS.toMillis(15L);
+
+    /**
      * Thread with Mongodb.
-     * @checkstyle ConstantUsageCheck (5 lines)
+     * @checkstyle ConstantUsageCheck (1 lines)
      */
     private static final UncheckedFunc<String, Integer> FAKE =
         new UncheckedFunc<>(
@@ -60,7 +113,12 @@ public final class ExtMongo implements Scalar<MongoClient> {
                 final int port;
                 try (ServerSocket socket = new ServerSocket()) {
                     socket.setReuseAddress(true);
-                    socket.bind(new InetSocketAddress("localhost", 0));
+                    socket.bind(
+                        new InetSocketAddress(
+                            ServerAddress.defaultHost(),
+                            0
+                        )
+                    );
                     port = socket.getLocalPort();
                 }
                 final MongodStarter starter = MongodStarter.getInstance(
@@ -75,7 +133,7 @@ public final class ExtMongo implements Scalar<MongoClient> {
                     new MongodConfigBuilder()
                         .net(
                             new Net(
-                                "localhost",
+                                ServerAddress.defaultHost(),
                                 port,
                                 Network.localhostIsIPv6()
                             )
@@ -131,31 +189,116 @@ public final class ExtMongo implements Scalar<MongoClient> {
         final Props props = new Props(this.farm);
         final MongoClient client;
         if (props.has("//testing")) {
-            client = new MongoClient(
-                "localhost", ExtMongo.FAKE.apply(this.id)
-            );
+            if (System.getProperty(ExtMongo.TEST_USER_PROPERTY) == null) {
+                client = new MongoClient(
+                    ServerAddress.defaultHost(),
+                    ExtMongo.FAKE.apply(this.id)
+                );
+            } else {
+                client = realMongoClient(
+                    testHost(),
+                    testPort(),
+                    testUser(),
+                    testPassword(),
+                    testDbName()
+                );
+            }
         } else {
-            // @checkstyle MagicNumber (5 lines)
-            final int timeout = (int) TimeUnit.SECONDS.toMillis(15L);
-            client = new MongoClient(
-                new ServerAddress(
-                    props.get("//mongo/host"),
-                    Integer.parseInt(props.get("//mongo/port"))
-                ),
-                MongoCredential.createCredential(
-                    props.get("//mongo/user"),
-                    props.get("//mongo/dbname"),
-                    props.get("//mongo/password").toCharArray()
-                ),
-                MongoClientOptions.builder()
-                    .maxWaitTime(timeout)
-                    .socketTimeout(timeout)
-                    .connectTimeout(timeout)
-                    .serverSelectionTimeout(timeout)
-                    .build()
+            client = realMongoClient(
+                props.get("//mongo/host"),
+                Integer.parseInt(props.get("//mongo/port")),
+                props.get("//mongo/user"),
+                props.get("//mongo/password"),
+                props.get("//mongo/dbname")
             );
         }
         return client;
+    }
+
+    /**
+     * Instantiates a real Mongo client.
+     * @param host A host name
+     * @param port A port number
+     * @param user A user name
+     * @param password A password
+     * @param database A database name
+     * @return A MongoClient
+     * @checkstyle ParameterNumberCheck (5 lines)
+     */
+    private static MongoClient realMongoClient(final String host,
+        final int port,
+        final String user,
+        final String password,
+        final String database) {
+        return new MongoClient(
+            new ServerAddress(
+                host,
+                port
+            ),
+            MongoCredential.createCredential(
+                user,
+                database,
+                password.toCharArray()
+            ),
+            MongoClientOptions.builder()
+                .maxWaitTime(ExtMongo.DEFAULT_TIMEOUT)
+                .socketTimeout(ExtMongo.DEFAULT_TIMEOUT)
+                .connectTimeout(ExtMongo.DEFAULT_TIMEOUT)
+                .serverSelectionTimeout(ExtMongo.DEFAULT_TIMEOUT)
+                .build()
+        );
+    }
+
+    /**
+     * Obtains the test Mongo host name.
+     * @return The test Mongo host name
+     */
+    private static String testHost() {
+        return System.getProperty(
+            ExtMongo.TEST_HOST_PROPERTY,
+            ServerAddress.defaultHost()
+        );
+    }
+
+    /**
+     * Obtains the test Mongo port number.
+     * @return The test Mongo port
+     */
+    private static int testPort() {
+        return Integer.getInteger(
+            ExtMongo.TEST_PORT_PROPERTY,
+            ServerAddress.defaultPort()
+        );
+    }
+
+    /**
+     * Obtains the test Mongo user.
+     * @return The test Mongo user
+     */
+    private static String testUser() {
+        return System.getProperty(ExtMongo.TEST_USER_PROPERTY);
+    }
+
+    /**
+     * Obtains the test Mongo password.
+     * @return The test Mongo password
+     */
+    private static String testPassword() {
+        return System.getProperty(
+            ExtMongo.TEST_PASSWORD_PROPERTY,
+            ExtMongo.DEFAULT_PASSWORD
+        );
+    }
+
+    /**
+     * Obtains the test Mongo database name.
+     * @return The test Mongo database name
+     */
+    private static String testDbName() {
+        return System.getProperty(
+            ExtMongo.TEST_DB_NAME_PROPERTY,
+            ExtMongo.DEFAULT_DB_NAME
+        );
     }
 
 }

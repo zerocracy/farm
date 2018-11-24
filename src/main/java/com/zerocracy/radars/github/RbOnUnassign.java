@@ -49,7 +49,7 @@ public final class RbOnUnassign implements Rebound {
             .getString("login").toLowerCase(Locale.ENGLISH);
         final String job = new Job(issue).toString();
         final Project project = new GhProject(farm, issue.repo());
-        final Orders orders = new Orders(project).bootstrap();
+        final Orders orders = new Orders(farm, project).bootstrap();
         if (orders.assigned(job)) {
             new ClaimOut()
                 .type("Notify")

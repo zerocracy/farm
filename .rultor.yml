@@ -43,6 +43,7 @@ release:
     git fetch
     git add settings.xml
     mvn initialize -Pshutdown --settings settings.xml
+    mvn liquibase:update -Pliquibase --errors --settings settings.xml
     git commit -m 'settings.xml'; trap "git reset HEAD~1" EXIT
     git push -f heroku $(git symbolic-ref --short HEAD):master
     rm -rf settings.xml

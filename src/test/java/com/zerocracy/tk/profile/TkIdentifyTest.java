@@ -42,7 +42,7 @@ public final class TkIdentifyTest {
             XhtmlMatchers.xhtml(
                 new RsPrint(
                     new TkApp(farm).act(
-                        new RqWithUser(
+                        new RqWithUser.WithInit(
                             farm,
                             new RqFake("GET", "/identify")
                         )

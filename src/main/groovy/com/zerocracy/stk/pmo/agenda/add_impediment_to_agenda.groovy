@@ -31,11 +31,11 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Impediment was registered')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
-  Orders orders = new Orders(project).bootstrap()
+  Orders orders = new Orders(farm, project).bootstrap()
   String owner = orders.performer(job)
   Farm farm = binding.variables.farm
   Agenda agenda = new Agenda(farm, owner).bootstrap()
-  Impediments impediments = new Impediments(project).bootstrap()
+  Impediments impediments = new Impediments(farm, project).bootstrap()
   if (impediments.exists(job)) {
     agenda.impediment(job, 'on hold')
   }

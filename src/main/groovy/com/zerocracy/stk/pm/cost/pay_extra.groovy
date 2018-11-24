@@ -48,7 +48,7 @@ def exec(Project project, XML xml) {
       new Par('Minutes %d can\'t be more than %d, see §49').say(minutes, max)
     )
   }
-  if (new Ledger(project).bootstrap().deficit()) {
+  if (new Ledger(farm, project).bootstrap().deficit()) {
     throw new SoftException(
       new Par(
         'The project is under-funded, you can\'t do it now, see §49'
@@ -69,7 +69,7 @@ def exec(Project project, XML xml) {
       ).say(login)
     )
   }
-  if (new Ledger(project).bootstrap().deficit()) {
+  if (new Ledger(farm, project).bootstrap().deficit()) {
     throw new SoftException(
       new Par(
         'The project is underfunded, see §21'
@@ -86,7 +86,7 @@ def exec(Project project, XML xml) {
     .param('reason', new Par('Direct payment from @%s').say(author))
     .postTo(new ClaimsOf(farm, project))
   claim.copy()
-    .type('Make payment')
+    .type('Add award points')
     .param('login', author)
     .param('minutes', -new Policy().get('49.penalty', 60))
     .param(

@@ -20,11 +20,17 @@ import com.jcabi.aspects.Tv;
 import com.jcabi.matchers.XhtmlMatchers;
 import com.zerocracy.Farm;
 import com.zerocracy.farm.fake.FkFarm;
+import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.PropsFarm;
+import com.zerocracy.pmo.Awards;
 import com.zerocracy.pmo.People;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Date;
 import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.takes.rq.RqFake;
 import org.takes.rs.RsPrint;
@@ -46,6 +52,9 @@ public final class TkTeamTest {
         final String user = "yegor256";
         people.touch(user);
         people.speed(user, 2880.0);
+        new Awards(farm, user).bootstrap().add(
+            new FkProject(), 1, "none", "reason", new Date()
+        );
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(this.responseBody(farm)),
             XhtmlMatchers.hasXPaths(
@@ -60,6 +69,9 @@ public final class TkTeamTest {
         final People people = new People(farm).bootstrap();
         final String user = "yegor256";
         people.touch(user);
+        new Awards(farm, user).bootstrap().add(
+            new FkProject(), 1, "none", "reason", new Date()
+        );
         people.jobs(user, Tv.TEN);
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(this.responseBody(farm)),
@@ -69,10 +81,42 @@ public final class TkTeamTest {
         );
     }
 
+    @Test
+    public void showsActiveUsers() throws Exception {
+        final Farm farm = new PropsFarm(new FkFarm());
+        final People people = new People(farm).bootstrap();
+        final String active = "g4s8";
+        people.touch(active);
+        people.invite(active, "yegor256");
+        new Awards(farm, active).bootstrap().add(
+            new FkProject(), 1, "none", "reason1", new Date()
+        );
+        final String inactive = "krzyk";
+        people.touch(inactive);
+        people.invite(inactive, "yegor256");
+        new Awards(farm, inactive).bootstrap().add(
+            new FkProject(), 2, "none", "reason2",
+            new Date(Instant.now().minus(Duration.ofDays(91)).toEpochMilli())
+        );
+        MatcherAssert.assertThat(
+            XhtmlMatchers.xhtml(this.responseBody(farm)),
+            Matchers.allOf(
+                XhtmlMatchers.hasXPaths(
+                    String.format("//xhtml:a[.='@%s']", active)
+                ),
+                Matchers.not(
+                    XhtmlMatchers.hasXPaths(
+                        String.format("//xhtml:a[.='@%s']", inactive)
+                    )
+                )
+            )
+        );
+    }
+
     private String responseBody(final Farm farm) throws IOException {
         return new RsPrint(
             new TkApp(farm).act(
-                new RqWithUser(
+                new RqWithUser.WithInit(
                     farm,
                     new RqFake(
                         new ListOf<>(

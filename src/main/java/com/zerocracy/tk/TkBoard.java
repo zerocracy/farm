@@ -16,11 +16,15 @@
  */
 package com.zerocracy.tk;
 
+import com.jcabi.github.Coordinates;
+import com.jcabi.github.Github;
+import com.jcabi.github.Language;
 import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Project;
 import com.zerocracy.Xocument;
+import com.zerocracy.entry.ExtGithub;
 import com.zerocracy.pm.cost.Estimates;
 import com.zerocracy.pm.cost.Ledger;
 import com.zerocracy.pm.in.Orders;
@@ -30,9 +34,12 @@ import com.zerocracy.pmo.Catalog;
 import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Set;
 import org.cactoos.func.FuncOf;
 import org.cactoos.scalar.And;
+import org.cactoos.text.JoinedText;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
@@ -47,6 +54,7 @@ import org.takes.rs.xe.XeTransform;
  * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.AvoidDuplicateLiterals"})
 public final class TkBoard implements Take {
 
     /**
@@ -55,11 +63,26 @@ public final class TkBoard implements Take {
     private final Farm farm;
 
     /**
+     * Github.
+     */
+    private final Github github;
+
+    /**
      * Ctor.
      * @param frm Farm
      */
     public TkBoard(final Farm frm) {
+        this(frm, new ExtGithub(frm).value());
+    }
+
+    /**
+     * Ctor.
+     * @param frm Farm
+     * @param github Github
+     */
+    TkBoard(final Farm frm, final Github github) {
         this.farm = frm;
+        this.github = github;
     }
 
     @Override
@@ -101,7 +124,7 @@ public final class TkBoard implements Take {
         ).iterator().next();
         final Catalog catalog = new Catalog(this.farm).bootstrap();
         final Roles roles = new Roles(project).bootstrap();
-        final Ledger ledger = new Ledger(project).bootstrap();
+        final Ledger ledger = new Ledger(this.farm, project).bootstrap();
         return new XeAppend(
             "project",
             new XeAppend(
@@ -126,13 +149,16 @@ public final class TkBoard implements Take {
                 )
             ),
             new XeAppend(
+                "languages", this.languages(node)
+            ),
+            new XeAppend(
                 "jobs",
                 Integer.toString(new Wbs(project).bootstrap().iterate().size())
             ),
             new XeAppend(
                 "orders",
                 Integer.toString(
-                    new Orders(project).bootstrap().iterate().size()
+                    new Orders(this.farm, project).bootstrap().iterate().size()
                 )
             ),
             new XeAppend(
@@ -142,7 +168,8 @@ public final class TkBoard implements Take {
             new XeAppend(
                 "cash",
                 ledger.cash().add(
-                    new Estimates(project).bootstrap().total().mul(-1L)
+                    new Estimates(this.farm, project)
+                        .bootstrap().total().mul(-1L)
                 ).toString()
             ),
             new XeAppend(
@@ -152,6 +179,28 @@ public final class TkBoard implements Take {
                 )
             )
         );
+    }
+
+    /**
+     * Get languages from repos.
+     * @param node XML
+     * @return Languages
+     * @throws IOException If an IO error occurs
+     * @todo #930:30min Right now we are displaying all languages for all
+     *  repositories. We should only display the top 4 languages (ranked by
+     *  bytes of code, as returned by Github) across all project repos.
+     */
+    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
+    private String languages(final XML node) throws IOException {
+        final Set<String> langs = new HashSet<>();
+        for (final String repo
+            : node.xpath("links/link[@rel='github']/@href")) {
+            for (final Language lang : this.github.repos()
+                .get(new Coordinates.Simple(repo)).languages()) {
+                langs.add(lang.name());
+            }
+        }
+        return new JoinedText(",", langs).asString();
     }
 
 }

@@ -27,7 +27,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.UUID;
 import org.cactoos.collection.Mapped;
 import org.cactoos.time.DateAsText;
 import org.xembly.Directive;
@@ -57,11 +57,6 @@ public final class ClaimOut implements Iterable<Directive> {
     private static final Duration MAX_DELAY = Duration.ofMinutes(15L);
 
     /**
-     * Counter of IDs.
-     */
-    private static final AtomicLong COUNTER = new AtomicLong();
-
-    /**
      * Directives.
      */
     private final Directives dirs;
@@ -81,7 +76,7 @@ public final class ClaimOut implements Iterable<Directive> {
         this(
             new Directives()
                 .add("claim")
-                .attr("id", ClaimOut.cid())
+                .attr("id", UUID.randomUUID())
                 .add("created").set(new DateAsText(created).asString())
                 .up()
         );
@@ -98,10 +93,12 @@ public final class ClaimOut implements Iterable<Directive> {
     /**
      * Post it to the project.
      * @param claims Claims
+     * @param expires When this claim expires
      * @throws IOException If fails
      */
     @SuppressWarnings("overloads")
-    public void postTo(final Claims claims) throws IOException {
+    public void postTo(final Claims claims, final Instant expires)
+        throws IOException {
         claims.submit(
             new XSLChain(
                 new Mapped<>(
@@ -122,8 +119,21 @@ public final class ClaimOut implements Iterable<Directive> {
                 )
             )
                 .with(new ClasspathSources())
-                .transform(new XMLDocument(new Xembler(this).xmlQuietly()))
+                .transform(
+                    new XMLDocument(new Xembler(this).xmlQuietly())
+                ),
+            expires
         );
+    }
+
+    /**
+     * Post it to the project.
+     * @param claims Claims
+     * @throws IOException If fails
+     */
+    @SuppressWarnings("overloads")
+    public void postTo(final Claims claims) throws IOException {
+        this.postTo(claims, Instant.MAX);
     }
 
     /**
@@ -163,7 +173,7 @@ public final class ClaimOut implements Iterable<Directive> {
      * @param cid Claim ID
      * @return This
      */
-    public ClaimOut cid(final long cid) {
+    public ClaimOut cid(final String cid) {
         return new ClaimOut(
             this.dirs
                 .push()
@@ -223,6 +233,28 @@ public final class ClaimOut implements Iterable<Directive> {
     }
 
     /**
+     * Override signature, use this value as source for signature hash.
+     *
+     * @param src Source of signature
+     * @return This
+     */
+    public ClaimOut unique(final String src) {
+        if (src == null) {
+            throw new IllegalArgumentException("src can't be null");
+        }
+        return new ClaimOut(
+            this.dirs
+                .push()
+                .xpath("unique")
+                .remove()
+                .pop()
+                .add("unique")
+                .set(src)
+                .up()
+        );
+    }
+
+    /**
      * With this param.
      * @param name Name
      * @param value Value
@@ -246,7 +278,10 @@ public final class ClaimOut implements Iterable<Directive> {
                 .xpath(String.format("param[@name='%s']", name))
                 .remove()
                 .pop()
-                .add("param").attr("name", name).set(value).up()
+                .add("param")
+                .attr("name", name)
+                .set(Xembler.escape(value.toString()))
+                .up()
                 .up()
         );
     }
@@ -266,17 +301,6 @@ public final class ClaimOut implements Iterable<Directive> {
     @Override
     public Iterator<Directive> iterator() {
         return new Directives(this.dirs).up().iterator();
-    }
-
-    /**
-     * Create unique ID.
-     * @return ID of the claim
-     */
-    private static long cid() {
-        final long body = Long.parseLong(
-            String.format("%1$tj%1$tH%1$tM000", new Date())
-        );
-        return ClaimOut.COUNTER.incrementAndGet() + body;
     }
 
 }

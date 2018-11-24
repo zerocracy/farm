@@ -23,6 +23,7 @@ import com.zerocracy.Item;
 import com.zerocracy.Project;
 import com.zerocracy.RunsInThreads;
 import com.zerocracy.farm.S3Farm;
+import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pm.scope.Wbs;
 import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.pmo.Pmo;
@@ -33,7 +34,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.func.RunnableOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.Timeout;
 
 /**
  * Test case for {@link SyncFarm}.
@@ -43,6 +46,12 @@ import org.junit.Test;
  * @checkstyle ExecutableStatementCountCheck (500 lines)
  */
 public final class SyncFarmTest {
+
+    /**
+     * Timeout rule.
+     */
+    @Rule
+    public final Timeout timeout = Timeout.seconds(5L);
 
     @Test
     public void makesProjectsThreadSafe() throws Exception {
@@ -79,7 +88,9 @@ public final class SyncFarmTest {
             "the-bucket-1"
         );
         try (final Farm farm = new SyncFarm(
-            new S3Farm(bucket), TimeUnit.SECONDS.toMillis(1L)
+            new PropsFarm(new S3Farm(bucket)),
+            new TestLocks(),
+            TimeUnit.SECONDS.toMillis(1L)
         )) {
             final Project pmo = new Pmo(farm);
             final CountDownLatch locked = new CountDownLatch(1);

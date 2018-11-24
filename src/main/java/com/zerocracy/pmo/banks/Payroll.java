@@ -22,6 +22,7 @@ import com.zerocracy.Policy;
 import com.zerocracy.SoftException;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.pm.cost.Ledger;
+import com.zerocracy.pmo.Debts;
 import com.zerocracy.pmo.People;
 import java.io.IOException;
 import java.util.Map;
@@ -56,9 +57,6 @@ public final class Payroll {
         this.banks = new MapOf<String, Bank>(
             new MapEntry<>("paypal", new Paypal(frm)),
             new MapEntry<>("btc", new Crypto(frm, "BTC")),
-            new MapEntry<>("bch", new Crypto(frm, "BCH")),
-            new MapEntry<>("eth", new Crypto(frm, "ETH")),
-            new MapEntry<>("ltc", new Crypto(frm, "LTC")),
             new MapEntry<>("zld", new Zold(frm))
         );
     }
@@ -92,6 +90,14 @@ public final class Payroll {
                     "@%s doesn't have payment method configured;",
                     "we can't pay %s"
                 ).say(login, amount)
+            );
+        }
+        if (new Debts(this.farm).bootstrap().exists(login)
+            && !reason.startsWith("Debt repayment")) {
+            throw new SoftException(
+                new Par(
+                    "Debt already exists, adding payment of %s for %s to debts"
+                ).say(amount, reason)
             );
         }
         final String method = people.bank(login);

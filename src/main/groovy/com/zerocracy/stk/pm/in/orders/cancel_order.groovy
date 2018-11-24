@@ -32,7 +32,7 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Cancel order')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
-  Orders orders = new Orders(project).bootstrap()
+  Orders orders = new Orders(farm, project).bootstrap()
   String performer = orders.performer(job)
   Roles roles = new Roles(project).bootstrap()
   if (claim.hasAuthor() && !roles.hasRole(claim.author(), 'PO', 'ARC')

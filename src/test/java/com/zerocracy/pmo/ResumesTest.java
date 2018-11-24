@@ -21,21 +21,30 @@ import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Xocument;
 import com.zerocracy.farm.fake.FkFarm;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
+import java.time.ZoneOffset;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.hamcrest.core.IsEqual;
+import org.hamcrest.core.IsNot;
+import org.hamcrest.core.IsNull;
 import org.junit.Test;
 
 /**
  * Test case for {@link Resumes}.
  *
  * @since 1.0
+ * @todo #1645:30min Handle resume not found in resumes.resume(login).
+ *  It will have to throw a meaningful message using a SoftException.
+ *  A test should be written to cover this situation.
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle MagicNumberCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class ResumesTest {
     @Test
     public void addsResumes() throws Exception {
@@ -99,6 +108,180 @@ public final class ResumesTest {
         MatcherAssert.assertThat(
             resumes.unassigned(),
             Matchers.contains(first)
+        );
+    }
+
+    @Test
+    public void findResume() throws Exception {
+        final Farm farm = new FkFarm();
+        final String login = "login";
+        final Instant time = Instant.parse("2018-01-01T00:00:00Z");
+        final String text = "Resume text";
+        final String personality = "ENTP-T";
+        final long id = 187141;
+        final String telegram = "telegram";
+        final Resumes resumes = new Resumes(farm).bootstrap();
+        resumes.add(
+            login,
+            LocalDateTime.ofInstant(time, ZoneOffset.UTC),
+            text,
+            personality,
+            id,
+            telegram
+        );
+        MatcherAssert.assertThat(
+            "Could not find resume",
+            resumes.resume(login),
+            new IsNot<>(new IsNull<>())
+        );
+    }
+    @Test
+    public void resumeHasLoginAttribute() throws Exception {
+        final Farm farm = new FkFarm();
+        final String login = "a-login";
+        final Instant time = Instant.parse("2018-01-01T00:00:00Z");
+        final String text = "Resume text";
+        final String personality = "ENTP-T";
+        final long id = 187141;
+        final String telegram = "telegram";
+        final Resumes resumes = new Resumes(farm).bootstrap();
+        resumes.add(
+            login,
+            LocalDateTime.ofInstant(time, ZoneOffset.UTC),
+            text,
+            personality,
+            id,
+            telegram
+        );
+        MatcherAssert.assertThat(
+            "Could not find resume",
+            resumes.resume(login).login(),
+            new IsEqual<>(login)
+        );
+    }
+
+    @Test
+    public void resumeHasSubmittedTime() throws Exception {
+        final Farm farm = new FkFarm();
+        final String login = "a-login";
+        final Instant time = Instant.parse("2018-01-01T00:00:00Z");
+        final String text = "Resume text";
+        final String personality = "ENTP-T";
+        final long id = 187141;
+        final String telegram = "telegram";
+        final Resumes resumes = new Resumes(farm).bootstrap();
+        resumes.add(
+            login,
+            LocalDateTime.ofInstant(time, ZoneOffset.UTC),
+            text,
+            personality,
+            id,
+            telegram
+        );
+        MatcherAssert.assertThat(
+            "Could not find resume",
+            resumes.resume(login).submitted(),
+            new IsEqual<>(time)
+        );
+    }
+
+    @Test
+    public void resumeHasText() throws Exception {
+        final Farm farm = new FkFarm();
+        final String login = "a-login";
+        final Instant time = Instant.parse("2018-01-01T00:00:00Z");
+        final String text = "Resume text";
+        final String personality = "ENTP-T";
+        final long id = 187141;
+        final String telegram = "telegram";
+        final Resumes resumes = new Resumes(farm).bootstrap();
+        resumes.add(
+            login,
+            LocalDateTime.ofInstant(time, ZoneOffset.UTC),
+            text,
+            personality,
+            id,
+            telegram
+        );
+        MatcherAssert.assertThat(
+            "Could not find resume",
+            resumes.resume(login).text(),
+            new IsEqual<>(text)
+        );
+    }
+
+    @Test
+    public void resumeHasPersonality() throws Exception {
+        final Farm farm = new FkFarm();
+        final String login = "a-login";
+        final Instant time = Instant.parse("2018-01-01T00:00:00Z");
+        final String text = "Resume text";
+        final String personality = "ENTP-T";
+        final long id = 187141;
+        final String telegram = "telegram";
+        final Resumes resumes = new Resumes(farm).bootstrap();
+        resumes.add(
+            login,
+            LocalDateTime.ofInstant(time, ZoneOffset.UTC),
+            text,
+            personality,
+            id,
+            telegram
+        );
+        MatcherAssert.assertThat(
+            "Could not find resume",
+            resumes.resume(login).personality(),
+            new IsEqual<>(personality)
+        );
+    }
+
+    @Test
+    public void resumeHasLoginStackOverflowId() throws Exception {
+        final Farm farm = new FkFarm();
+        final String login = "a-login";
+        final Instant time = Instant.parse("2018-01-01T00:00:00Z");
+        final String text = "Resume text";
+        final String personality = "ENTP-T";
+        final long id = 187141;
+        final String telegram = "telegram";
+        final Resumes resumes = new Resumes(farm).bootstrap();
+        resumes.add(
+            login,
+            LocalDateTime.ofInstant(time, ZoneOffset.UTC),
+            text,
+            personality,
+            id,
+            telegram
+        );
+        MatcherAssert.assertThat(
+            "Could not find resume",
+            resumes.resume(login).soid(),
+            new IsEqual<>(id)
+        );
+    }
+
+    @Test
+    public void resumeHasLoginTelegramId() throws Exception {
+        final Farm farm = new FkFarm();
+        final String login = "a-login";
+        final Instant time = Instant.parse("2018-01-01T00:00:00Z");
+        final String text = "Resume text";
+        final String personality = "ENTP-T";
+        final long id = 187141;
+        final String telegram = "atelegramid";
+        final Resumes resumes = new Resumes(farm).bootstrap();
+        resumes.add(
+            login,
+            LocalDateTime.ofInstant(time, ZoneOffset.UTC),
+            text,
+            personality,
+            id,
+            telegram
+        );
+        MatcherAssert.assertThat(
+            "Could not find resume",
+            resumes.resume(login).telegram(),
+            new IsEqual<>(telegram)
         );
     }
 }

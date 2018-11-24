@@ -19,11 +19,17 @@ package com.zerocracy.pmo.recharge;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.cash.Cash;
-import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
+import com.zerocracy.farm.props.PropsFarm;
+import com.zerocracy.pm.cost.Estimates;
+import com.zerocracy.pm.cost.Ledger;
+import com.zerocracy.pm.in.Orders;
+import com.zerocracy.pm.scope.Wbs;
 import com.zerocracy.pmo.Catalog;
+import java.util.UUID;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.hamcrest.core.IsEqual;
 import org.junit.Test;
 
 /**
@@ -31,20 +37,21 @@ import org.junit.Test;
  * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle AvoidDuplicateLiterals (600 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class RechargeTest {
 
     @Test
     public void addsAndRemovesInfo() throws Exception {
-        final Farm farm = new FkFarm();
+        final Farm farm = new PropsFarm();
         final Project project = new FkProject();
         new Catalog(farm).bootstrap().add(
             project.pid(),
             String.format("2018/01/%s/", project.pid())
         );
         final Recharge recharge = new Recharge(
-            farm, project.pid()
+            farm, project
         );
         final Cash amount = new Cash.S("$100");
         recharge.set("stripe", amount, "the code");
@@ -54,4 +61,28 @@ public final class RechargeTest {
         MatcherAssert.assertThat(recharge.exists(), Matchers.is(false));
     }
 
+    @Test
+    public void rechargeIsRequiredIfCashBalanceIsLessThanLocked()
+        throws Exception {
+        final Project project = new FkProject();
+        final String job = "gh:test/test#1";
+        new Wbs(project).bootstrap().add(job);
+        final PropsFarm farm = new PropsFarm();
+        new Orders(farm, project).bootstrap()
+            .assign(job, "perf", UUID.randomUUID().toString());
+        new Estimates(farm, project).bootstrap()
+            .update(job, new Cash.S("$100"));
+        new Ledger(farm, project).bootstrap().add(
+            new Ledger.Transaction(
+                new Cash.S("$10"),
+                "assets", "cash",
+                "income", "test",
+                "Recharge#required test"
+            )
+        );
+        MatcherAssert.assertThat(
+            new Recharge(new PropsFarm(), project).required(),
+            new IsEqual<>(true)
+        );
+    }
 }

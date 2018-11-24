@@ -27,6 +27,7 @@ import com.zerocracy.tk.profile.TkAwards;
 import com.zerocracy.tk.profile.TkIdentify;
 import com.zerocracy.tk.profile.TkKyc;
 import com.zerocracy.tk.profile.TkProfile;
+import com.zerocracy.tk.profile.TkUserWbs;
 import com.zerocracy.tk.profile.TkYoti;
 import com.zerocracy.tk.project.RqProject;
 import com.zerocracy.tk.project.TkArchive;
@@ -262,7 +263,7 @@ public final class TkApp extends TkWrap {
                                                                         new TkFootprint(farm)
                                                                     ),
                                                                     new FkRegex(
-                                                                        "/footprint/(PMO|[A-Z0-9]{9})/([0-9]+)",
+                                                                        "/footprint/(PMO|[A-Z0-9]{9})/([a-fA-F0-9\\-]+)",
                                                                         new TkClaim(farm)
                                                                     ),
                                                                     new FkRegex(
@@ -312,6 +313,10 @@ public final class TkApp extends TkWrap {
                                                                     new FkRegex(
                                                                         "/u/([a-zA-Z0-9-]+)/agenda",
                                                                         new TkAgenda(farm)
+                                                                    ),
+                                                                    new FkRegex(
+                                                                        "/u/([a-zA-Z0-9-]+)/wbs",
+                                                                        new TkUserWbs(farm)
                                                                     ),
                                                                     new FkRegex(
                                                                         "/u/([a-zA-Z0-9-]+)",

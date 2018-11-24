@@ -24,11 +24,11 @@ import com.jcabi.github.Repo
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.farm.props.Props
-import com.zerocracy.claims.ClaimIn
 import com.zerocracy.radars.github.GhTube
 import com.zerocracy.radars.github.Quota
 import com.zerocracy.radars.github.ThrottledComments
@@ -64,7 +64,7 @@ def exec(Project project, XML xml) {
   )
   Props props = new Props(farm)
   String message = String.format(
-    '%s\n\n<!-- https://www.0crat.com/footprint/%s/%d, version: %s, hash: %s -->',
+    '%s\n\n<!-- https://www.0crat.com/footprint/%s/%s, version: %s, hash: %s -->',
     claim.param('message'),
     project.pid(),
     claim.cid(),

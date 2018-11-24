@@ -49,7 +49,7 @@ def exec(Project project, XML xml) {
         )
         .postTo(new ClaimsOf(farm, project))
     } else {
-      new Ledger(project).bootstrap().add(
+      new Ledger(farm, project).bootstrap().add(
         new Ledger.Transaction(
           fee,
           'expenses', 'fee',

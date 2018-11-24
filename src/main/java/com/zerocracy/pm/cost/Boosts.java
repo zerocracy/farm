@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pm.cost;
 
+import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Par;
 import com.zerocracy.Project;
@@ -41,15 +42,23 @@ public final class Boosts {
     private static final int FCT_DEFAULT = 2;
 
     /**
+     * Farm.
+     */
+    private final Farm farm;
+
+    /**
      * Project.
      */
     private final Project project;
 
     /**
      * Ctor.
+     *
+     * @param farm Farm
      * @param pkt Project
      */
-    public Boosts(final Project pkt) {
+    public Boosts(final Farm farm, final Project pkt) {
+        this.farm = farm;
         this.project = pkt;
     }
 
@@ -101,12 +110,12 @@ public final class Boosts {
                 ).say(job, factor)
             );
         }
-        final Orders orders = new Orders(this.project).bootstrap();
+        final Orders orders = new Orders(this.farm, this.project).bootstrap();
         if (orders.assigned(job)) {
             final String login = orders.performer(job);
             final Rates rates = new Rates(this.project).bootstrap();
             if (rates.exists(login)) {
-                new Estimates(this.project).bootstrap().update(
+                new Estimates(this.farm, this.project).bootstrap().update(
                     // @checkstyle MagicNumber (1 line)
                     job, rates.rate(login).mul((long) factor).div(4L)
                 );

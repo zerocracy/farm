@@ -27,15 +27,12 @@ import com.zerocracy.cash.Cash;
 import com.zerocracy.cash.CashParsingException;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.Date;
 import java.util.Iterator;
 import org.cactoos.iterable.ItemAt;
 import org.cactoos.iterable.Joined;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.scalar.NumberOf;
 import org.cactoos.scalar.UncheckedScalar;
-import org.cactoos.time.DateAsText;
-import org.cactoos.time.DateOf;
 import org.xembly.Directives;
 
 /**
@@ -409,23 +406,14 @@ public final class People {
                 new Par("Bitcoin address is not valid: `%s`").say(wallet)
             );
         }
-        if ("bch".equals(bank)
-            && !wallet.matches("[pq][a-z0-9]{41}")) {
-            throw new SoftException(
-                new Par("Bitcoin Cash address is not valid: `%s`").say(wallet)
-            );
+        if ("bch".equals(bank)) {
+            throw new SoftException("We don't support Bitcoin Cash wallets");
         }
-        if ("eth".equals(bank)
-            && !wallet.matches("(0x)?[0-9a-fA-F]{40}")) {
-            throw new SoftException(
-                new Par("Ethereum address is not valid: `%s`").say(wallet)
-            );
+        if ("eth".equals(bank)) {
+            throw new SoftException("We don't support Ethereum wallets");
         }
-        if ("ltc".equals(bank)
-            && !wallet.matches("[0-9a-zA-Z]{34}")) {
-            throw new SoftException(
-                new Par("Litecoin address is not valid: `%s`").say(wallet)
-            );
+        if ("ltc".equals(bank)) {
+            throw new SoftException("We don't support Litecoin wallets");
         }
         if ("zld".equals(bank)
             && !wallet.matches("^[a-z\\d](?:[a-z\\d]|-(?=[a-z\\d])){0,38}$")) {
@@ -807,13 +795,13 @@ public final class People {
      * @param when When applied (UTC)
      * @throws IOException If fails
      */
-    public void apply(final String uid, final Date when) throws IOException {
+    public void apply(final String uid, final Instant when) throws IOException {
         this.checkExisting(uid);
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives().xpath(
                     String.format("//people/person[@id  ='%s']", uid)
-                ).addIf("applied").set(new DateAsText(when).asString())
+                ).addIf("applied").set(when.toString())
             );
         }
     }
@@ -839,7 +827,7 @@ public final class People {
      * @return Applied time (UTC)
      * @throws IOException If fails
      */
-    public Date appliedTime(final String uid) throws IOException {
+    public Instant appliedTime(final String uid) throws IOException {
         this.checkExisting(uid);
         if (!this.applied(uid)) {
             throw new IllegalArgumentException(
@@ -847,14 +835,14 @@ public final class People {
             );
         }
         try (final Item item = this.item()) {
-            return new DateOf(
+            return Instant.parse(
                 new Xocument(item).xpath(
                     String.format(
                         "//people/person[@id  ='%s']/applied/text()",
                         uid
                     )
                 ).get(0)
-            ).value();
+            );
         }
     }
 
@@ -939,6 +927,7 @@ public final class People {
             .add("projects").set("0").up()
             .add("speed").set("0.0").up()
             .add("skills").attr("updated", Instant.now()).up()
+            .add("active").set(true).up()
             .add("links")
             .add("link")
             .attr("rel", "github")

@@ -36,7 +36,7 @@ def exec(Project project, XML xml) {
   }
   if (claim.hasParam('manual')) {
     claim.copy()
-      .type('Make payment')
+      .type('Add award points')
       .param('job', job)
       .param('login', claim.author())
       .param(

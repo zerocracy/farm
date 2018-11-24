@@ -29,8 +29,8 @@ import com.zerocracy.farm.S3Farm;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.farm.sync.SyncFarm;
 import java.nio.file.Files;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -57,14 +57,13 @@ public final class FtFarmTest {
             final Project project = farm.find(
                 String.format("@id='%s'", pid)
             ).iterator().next();
-            final AtomicLong cid = new AtomicLong(1L);
             final int threads = 10;
             MatcherAssert.assertThat(
                 inc -> {
-                    final long num = cid.getAndIncrement();
-                    new ClaimOut().cid(num)
+                    final String cid = UUID.randomUUID().toString();
+                    new ClaimOut().cid(cid)
                         .type("Hello")
-                        .param("something", num)
+                        .param("something", cid)
                         .author("0pdd")
                         .postTo(new ClaimsOf(farm, project));
                     return true;

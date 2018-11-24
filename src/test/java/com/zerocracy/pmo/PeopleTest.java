@@ -24,8 +24,8 @@ import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.IterableOf;
@@ -44,10 +44,6 @@ import org.junit.rules.ExpectedException;
 /**
  * Test case for {@link People}.
  * @since 1.0
- * @todo #952:30min Continue replacing old Date classes with Instant.
- *  Remember also to remove instances of `DateAsText` (Instant.toString should
- *  be used). There is a lot of classes to change so try to find a good small
- *  cluster of related classes that can be updated.
  * @checkstyle JavadocMethodCheck (1000 lines)
  * @checkstyle JavadocVariableCheck (1000 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (3 lines)
@@ -150,32 +146,6 @@ public final class PeopleTest {
     }
 
     @Test
-    public void setsCorrectBitcoinCashAddress() throws Exception {
-        PeopleTest.setsWallet(
-            "bch", "qpm2qsznhks23z7629mms6s4cwef74vcwvy22gdx6a"
-        );
-    }
-
-    @Test
-    public void setsCorrectEthereumAddress() throws Exception {
-        PeopleTest.setsWallet(
-            "eth", "e79c3300773E8593fb332487E1EfdD8729b87445"
-        );
-    }
-
-    @Test
-    public void setsCorrectPrefixedEthereumAddress() throws Exception {
-        PeopleTest.setsWallet(
-            "eth", "0xe79c3300773E8593fb332487E1EfdD8729b87445"
-        );
-    }
-
-    @Test
-    public void setsCorrectLitecoinAddress() throws Exception {
-        PeopleTest.setsWallet("ltc", "LS78aoGtfuGCZ777x3Hmr6tcoW3WaYynx9");
-    }
-
-    @Test
     public void setCorrectZoldAddress() throws Exception {
         PeopleTest.setsWallet("zld", "g4s8");
     }
@@ -191,23 +161,23 @@ public final class PeopleTest {
     }
 
     @Test
-    public void failsForIncorrectEthereumAddress() throws Exception {
-        this.failsWallet("eth");
-    }
-
-    @Test
-    public void failsForIncorrectBitcoinCashAddress() throws Exception {
-        this.failsWallet("bch");
-    }
-
-    @Test
-    public void failsForIncorrectLitecoinAddress() throws Exception {
-        this.failsWallet("ltc");
-    }
-
-    @Test
     public void failsForIncorrectZoldAddress() throws Exception {
         this.failsWallet("zld", "!@#$%fgs");
+    }
+
+    @Test
+    public void doesnAcceptEthereumAddress() throws Exception {
+        this.dontSupportWallet("eth", "Ethereum");
+    }
+
+    @Test
+    public void doesnAcceptBitcoinCashAddress() throws Exception {
+        this.dontSupportWallet("bch", "Bitcoin Cash");
+    }
+
+    @Test
+    public void doesnAcceptLitecoinAddress() throws Exception {
+        this.dontSupportWallet("ltc", "Litecoin");
     }
 
     @Test
@@ -416,7 +386,7 @@ public final class PeopleTest {
         final FkFarm farm = new FkFarm(new FkProject());
         final People people = new People(farm).bootstrap();
         final String uid = "user3236";
-        final Date when = new Date(0L);
+        final Instant when = Instant.ofEpochMilli(0L);
         people.invite(uid, uid);
         people.apply(uid, when);
         MatcherAssert.assertThat(
@@ -435,7 +405,7 @@ public final class PeopleTest {
     public void throwIfApplyButDoesntExist() throws Exception {
         final FkFarm farm = new FkFarm(new FkProject());
         new People(farm).bootstrap()
-            .apply("user124", new Date(0L));
+            .apply("user124", Instant.ofEpochMilli(0L));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -620,6 +590,16 @@ public final class PeopleTest {
             new FormattedText(" not valid: `%s`", wallet).asString()
         );
         people.wallet("yegor512", bank, wallet);
+    }
+
+    private void dontSupportWallet(final String bank, final String name)
+        throws IOException {
+        this.thrown.expect(SoftException.class);
+        this.thrown.expectMessage(
+            String.format("We don't support %s wallets", name)
+        );
+        new People(new FkFarm()).bootstrap()
+            .wallet("yegor512", bank, "123");
     }
 
     private void failsWallet(final String bank)

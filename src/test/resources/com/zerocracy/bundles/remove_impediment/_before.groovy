@@ -32,7 +32,7 @@ def exec(Project project, XML xml) {
     Github github = new ExtGithub(farm).value()
     Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
     repo.issues().create('On Hold', 'This issue has an impediment')
-    Iterable<String> impediments = new Impediments(project).bootstrap().jobs()
+    Iterable<String> impediments = new Impediments(farm, project).bootstrap().jobs()
     MatcherAssert.assertThat(
         'Impediment is not registered for job #1',
         impediments,

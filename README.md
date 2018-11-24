@@ -228,7 +228,15 @@ the list of claims to be dispatched. There are also a few supplementary files:
 
 More details you can find in the Javadoc section of `BundlesTest`.
 
-You can skip BundlesTest's execution by specifying ``-DskipBundlesTest``:
+The entire `BundlesTest` suite can take a very long amount of time to execute.
+If you are debugging a certain test or function, you can specify the exact tests
+to run by specifying a comma separated list via `-DbundlesTests`. E.g. to run
+the `assign_role` and `cancel_order` tests:
+
+``$mvn clean install -Pqulice -DbundlesTests=assign_role,cancel_order``
+
+Alternatively, you can skip `BundlesTest` suite execution altogether by
+specifying ``-DskipBundlesTest``:
 
 ``$mvn clean install -Pqulice -DskipBundlesTest``
 
@@ -281,6 +289,12 @@ daylight saving).
 Just fork it, make changes, run `mvn clean install -Pqulice,codenarc`,
 and submit a pull request. Read
 [this](http://www.yegor256.com/2014/04/15/github-guidelines.html), if lost.
+
+Keep in mind that you don't need to setup the server locally or start it. If you need to
+prove that a class is working - write a unit tests for it or integration tests if external API
+is involved (see `ClaimsSqsITCase` for instance).
+See this for details: https://www.yegor256.com/2016/02/09/are-you-still-debugging.html
+
 Don't forget to add documentation for groovy scripts if you create new
 stakeholder.
 

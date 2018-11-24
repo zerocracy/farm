@@ -22,17 +22,12 @@ import com.zerocracy.Xocument;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import org.cactoos.text.FormattedText;
 import org.xembly.Directives;
 
 /**
  * Resumes.
  * @since 1.0
- *
- * @todo #1506:30min Implement resumes.resume(login), which will return the
- *  resume sent for some user. It will have to return a Resume (the interface
- *  needs to be created, too) object mapping the resume information so it
- *  can be used in resume page. Don't forget to create a test for it in
- *  ResumesTest.
  */
 public final class Resumes {
     /**
@@ -82,7 +77,7 @@ public final class Resumes {
     @SuppressWarnings("PMD.UseObjectForClearerAPI")
     public void add(final String login, final LocalDateTime when,
         final String text, final String personality,
-        final int stackoverflow, final String telegram) throws IOException {
+        final long stackoverflow, final String telegram) throws IOException {
         try (final Item item = this.item()) {
             new Xocument(item).modify(
                 new Directives()
@@ -117,6 +112,18 @@ public final class Resumes {
         try (final Item item = this.item()) {
             return new Xocument(item)
                 .xpath("/resumes/resume[not(./examiner)]/@login");
+        }
+    }
+
+    /**
+     * All resumes.
+     *
+     * @return Login list
+     * @throws IOException If fails
+     */
+    public Iterable<String> all() throws IOException {
+        try (final Item item = this.item()) {
+            return new Xocument(item).xpath("/resumes/resume/@login");
         }
     }
 
@@ -157,6 +164,45 @@ public final class Resumes {
                     )
                 )
                 .get(0);
+        }
+    }
+
+    /**
+     * Remove a resume.
+     *
+     * @param login Resume author
+     * @throws IOException If fails
+     */
+    public void remove(final String login) throws IOException {
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                new Directives().xpath(
+                    new FormattedText(
+                        "/resumes/resume[@login='%s']",
+                        login
+                    ).asString()
+                ).remove()
+            );
+        }
+    }
+
+    /**
+     * Returns the {@link Resume} from user.
+     *
+     * @param login Resume author login
+     * @return Resume from author
+     * @throws IOException If fails or resume not found
+     */
+    public Resume resume(final String login) throws IOException {
+        try (final Item item = this.item()) {
+            return new ResumeXml(
+                new Xocument(item.path()).nodes(
+                    new FormattedText(
+                        "/resumes/resume[@login='%s' ]",
+                        login
+                    ).asString()
+                ).get(0)
+            );
         }
     }
 

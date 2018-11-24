@@ -21,6 +21,6 @@ import com.zerocracy.Project
 import com.zerocracy.pm.in.Orders
 
 def exec(Project project, XML xml) {
-  Orders orders = new Orders(project).bootstrap()
+  Orders orders = new Orders(farm, project).bootstrap()
   assert orders.performer('gh:test/test#1') == 'yegor256'
 }

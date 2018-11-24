@@ -31,7 +31,7 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
   String role = claim.param('role')
-  Estimates estimates = new Estimates(project).bootstrap()
+  Estimates estimates = new Estimates(farm, project).bootstrap()
   String tail
   if (estimates.exists(job)) {
     tail = new Par(
