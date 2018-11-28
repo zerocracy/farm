@@ -54,11 +54,11 @@ public final class TkJoin implements TkRegex {
         final String author = new RqUser(this.farm, req, false).value();
         final People people = new People(this.farm).bootstrap();
         people.touch(author);
+        final Resumes resumes = new Resumes(this.farm).bootstrap();
         //@checkstyle FinalLocalVariableCheck (1 line)
         RsPage result;
-        if (people.exists(author)) {
-            final Resume resume =
-                new Resumes(this.farm).bootstrap().resume(author);
+        if (people.exists(author) && resumes.exists(author)) {
+            final Resume resume = resumes.resume(author);
             result = new RsPage(
                 this.farm,
                 "/xsl/resume.xsl",
@@ -69,7 +69,8 @@ public final class TkJoin implements TkRegex {
                     new XeAppend("text", resume.text()),
                     new XeAppend("personality", resume.personality()),
                     new XeAppend("soid", Long.toString(resume.soid())),
-                    new XeAppend("telegram", resume.telegram())
+                    new XeAppend("telegram", resume.telegram()),
+                    new XeAppend("examiner", resumes.examiner(author))
                 )
             );
         } else {

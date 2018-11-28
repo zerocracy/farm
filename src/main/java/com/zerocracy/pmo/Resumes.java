@@ -207,6 +207,23 @@ public final class Resumes {
     }
 
     /**
+     * Resume exists?
+     * @param login User login
+     * @return TRUE if it exists
+     * @throws IOException If fails
+     */
+    public boolean exists(final String login) throws IOException {
+        try (final Item item = this.item()) {
+            return !new Xocument(item.path()).nodes(
+                new FormattedText(
+                    "/resumes/resume[@login='%s' ]",
+                    login
+                ).asString()
+            ).isEmpty();
+        }
+    }
+
+    /**
      * The item.
      * @return Item
      * @throws IOException If fails

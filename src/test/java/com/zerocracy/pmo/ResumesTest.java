@@ -46,6 +46,12 @@ import org.junit.Test;
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class ResumesTest {
+
+    /**
+     * Personality type.
+     */
+    private final static String PERSONALITY = "INTJ-A";
+
     @Test
     public void addsResumes() throws Exception {
         final Farm farm = new FkFarm();
@@ -135,6 +141,44 @@ public final class ResumesTest {
             new IsNot<>(new IsNull<>())
         );
     }
+
+    @Test
+    public void resumeExists() throws Exception {
+        final Farm farm = new FkFarm();
+        final String login = "resumeexists";
+        final Instant time = Instant.parse("2018-02-01T00:00:00Z");
+        final String text = "This resume exists in farm";
+        final String personality = ResumesTest.PERSONALITY;
+        final long id = 187141;
+        final String telegram = "existentresumetelegram";
+        final Resumes resumes = new Resumes(farm).bootstrap();
+        resumes.add(
+            login,
+            LocalDateTime.ofInstant(time, ZoneOffset.UTC),
+            text,
+            personality,
+            id,
+            telegram
+        );
+        MatcherAssert.assertThat(
+            "Resume exists but resumes did not found it",
+            resumes.exists(login),
+            new IsEqual<>(true)
+        );
+    }
+
+    @Test
+    public void resumeDoesNotExists() throws Exception {
+        final Farm farm = new FkFarm();
+        final String login = "resumedoesnotexists";
+        final Resumes resumes = new Resumes(farm).bootstrap();
+        MatcherAssert.assertThat(
+            "Resume does not exist but resumes found it",
+            resumes.exists(login),
+            new IsEqual<>(false)
+        );
+    }
+
     @Test
     public void resumeHasLoginAttribute() throws Exception {
         final Farm farm = new FkFarm();
