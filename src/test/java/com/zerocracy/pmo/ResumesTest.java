@@ -44,13 +44,13 @@ import org.junit.Test;
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle MagicNumberCheck (500 lines)
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 public final class ResumesTest {
 
     /**
      * Personality type.
      */
-    private final static String PERSONALITY = "INTJ-A";
+    private static final String PERSONALITY = "INTJ-A";
 
     @Test
     public void addsResumes() throws Exception {

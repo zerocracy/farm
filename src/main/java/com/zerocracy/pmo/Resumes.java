@@ -29,6 +29,7 @@ import org.xembly.Directives;
  * Resumes.
  * @since 1.0
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class Resumes {
     /**
      * PMO.
