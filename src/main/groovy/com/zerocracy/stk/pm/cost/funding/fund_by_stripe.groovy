@@ -98,12 +98,12 @@ def exec(Project project, XML xml) {
       .param('cash', bonus)
       .param(
       'reason',
-        new Par(farm, 'Adviser payment for @%s project')
-          .say(project.pid())
+        new Par(farm, 'Adviser payment for @%s project (%s)')
+          .say(project.pid(), pid)
       ).postTo(new ClaimsOf(farm))
     new ClaimOut().type('Notify PMO').param(
       'message',
-      new Par(farm, 'We just send adviser payment of %s for %s to %s').say(amount, project.pid(), adviser)
+      new Par(farm, 'We just send adviser payment of %s for %s to %s').say(bonus, project.pid(), adviser)
     ).postTo(new ClaimsOf(farm))
   }
   if (claim.hasAuthor()) {
