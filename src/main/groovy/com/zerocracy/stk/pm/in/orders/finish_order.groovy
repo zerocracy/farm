@@ -88,6 +88,7 @@ def exec(Project project, XML xml) {
         .param('login', performer)
         .param('reason', new Par('Order was finished').say())
         .param('minutes', minutes)
+        .param('estimated', 'true')
         .param('cash', price)
         .postTo(new ClaimsOf(farm, project))
     } else {
