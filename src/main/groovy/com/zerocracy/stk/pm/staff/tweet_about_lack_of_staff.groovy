@@ -54,7 +54,7 @@ def exec(Project project, XML xml) {
   }
   new Hint(
     farm,
-    (int) TimeUnit.DAYS.toSeconds(5L),
+    (int) TimeUnit.DAYS.toSeconds(10L),
     claim.copy()
       .type('Tweet')
       .token("project;${project.pid()}")
