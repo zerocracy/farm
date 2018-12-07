@@ -16,12 +16,6 @@
  */
 package com.zerocracy.pmo.banks;
 
-import com.coinbase.api.Coinbase;
-import com.coinbase.api.CoinbaseBuilder;
-import com.coinbase.api.entity.Transaction;
-import com.coinbase.api.entity.TransactionsResponse;
-import com.coinbase.api.entity.Transfer;
-import com.coinbase.api.exception.CoinbaseException;
 import com.jcabi.aspects.Tv;
 import com.jcabi.log.Logger;
 import com.zerocracy.Farm;
@@ -31,9 +25,12 @@ import com.zerocracy.cash.Currency;
 import com.zerocracy.claims.ClaimOut;
 import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.farm.props.Props;
+import com.zerocracy.pmo.banks.coinbase.CbTransaction;
+import com.zerocracy.pmo.banks.coinbase.Coinbase;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
-import org.joda.money.Money;
+import java.math.BigDecimal;
+import java.time.Duration;
+import java.time.Instant;
 
 /**
  * Coinbase payment method.
@@ -41,17 +38,20 @@ import org.joda.money.Money;
  * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 final class Crypto implements Bank {
 
     /**
      * When to buy.
      */
-    private static final double THRESHOLD = 0.1d;
+    private static final BigDecimal THRESHOLD =
+        new BigDecimal("0.1");
 
     /**
      * How much to buy.
      */
-    private static final double BUYIN = 0.1d;
+    private static final BigDecimal BUYIN =
+        new BigDecimal("0.1");
 
     /**
      * Farm.
@@ -85,33 +85,15 @@ final class Crypto implements Bank {
     public String pay(final String target, final Cash amount,
         final String details) throws IOException {
         final Props props = new Props(this.farm);
-        final Coinbase base = new CoinbaseBuilder().withApiKey(
-            props.get("//coinbase/key"), props.get("//coinbase/secret")
-        ).build();
-        this.fund(base, props.get("//coinbase/account"));
-        final Transaction trn = new Transaction();
-        trn.setTo(target);
-        trn.setAmount(
-            Money.parse(
-                String.format(
-                    "USD %.2f",
-                    amount.exchange(Currency.USD).decimal().doubleValue()
-                )
-            )
+        final Coinbase base = new Coinbase(
+            props.get("//coinbase/key"), props.get("//coinbase/secret"),
+            props.get("//coinbase/account")
         );
-        trn.setNotes(details);
-        trn.setInstantBuy(true);
-        try {
-            return base.sendMoney(trn).getId();
-        } catch (final CoinbaseException ex) {
-            throw new IOException(
-                String.format(
-                    "Failed to send %s to %s via Coinbase: %s",
-                    trn.getAmount(), trn.getTo(), trn.getNotes()
-                ),
-                ex
-            );
-        }
+        this.fund(base);
+        return base.send(
+            "USD", target,
+            amount.exchange(Currency.USD).decimal()
+        ).tid();
     }
 
     @Override
@@ -122,86 +104,62 @@ final class Crypto implements Bank {
     /**
      * Fund account, if necessary.
      * @param base Base
-     * @param account The account
      * @throws IOException I
      */
-    private void fund(final Coinbase base, final String account)
+    private void fund(final Coinbase base)
         throws IOException {
-        try {
-            final Money balance = base.getBalance(account);
-            if (balance.getAmount().doubleValue() < Crypto.THRESHOLD
-                && this.permitted(base, account)) {
-                final Transfer bought = base.buy(this.money(Crypto.BUYIN));
-                new ClaimOut().type("Notify PMO").param(
-                    "message",
-                    new Par(
-                        "%s purchased @ Coinbase;",
-                        "createdAt=%s; transactionId=%s;",
-                        "status=%s; balance=%s"
-                    ).say(
-                        bought.getBtc(),
-                        bought.getCreatedAt(),
-                        bought.getTransactionId(),
-                        bought.getStatus(),
-                        balance
-                    )
-                ).postTo(new ClaimsOf(this.farm));
-            }
-        } catch (final CoinbaseException ex) {
-            throw new IOException("Failed to buy at Coinbase", ex);
+        final BigDecimal balance = base.balance();
+        if (balance.compareTo(Crypto.THRESHOLD) < 0
+            && this.permitted(base)) {
+            final Coinbase.Bought bought = base.buy(
+                this.currency, Crypto.BUYIN,
+                true
+            );
+            new ClaimOut().type("Notify PMO").param(
+                "message",
+                new Par(
+                    "%s purchased @ Coinbase;",
+                    "createdAt=%s; transactionId=%s;",
+                    "status=%s; balance=%s"
+                ).say(
+                    bought.amount(),
+                    bought.timestamp(),
+                    bought.tid(),
+                    bought.status(),
+                    bought.total()
+                )
+            ).postTo(new ClaimsOf(this.farm));
         }
     }
 
     /**
      * We can buy more right now.
      * @param base Base
-     * @param account The account
      * @return TRUE if we're allowed to buy more
      * @throws IOException If fails
      */
-    private boolean permitted(final Coinbase base,
-        final String account) throws IOException {
-        try {
-            boolean permitted = true;
-            int page = 0;
-            while (true) {
-                final TransactionsResponse rsp = base.getTransactions(page);
-                for (final Transaction trn : rsp.getTransactions()) {
+    private boolean permitted(final Coinbase base) throws IOException {
+        boolean permitted = true;
+        int cnt = 0;
+        for (final CbTransaction txn : base.transactions()) {
+            final boolean pending = txn.status().equals("pending");
+            final Instant created = txn.created();
+            final BigDecimal amt = txn.amount();
+            // @checkstyle LineLength (1 line)
+            if (pending && created.isAfter(Instant.now().minus(Duration.ofHours(1L)))) {
+                Logger.info(
+                    this,
                     // @checkstyle LineLength (1 line)
-                    final boolean pending = trn.getDetailedStatus() == Transaction.DetailedStatus.PENDING
-                        && trn.getRecipientAddress().equals(account);
-                    final long msec = System.currentTimeMillis()
-                        - trn.getCreatedAt().toDate().getTime();
-                    final long hours = msec / TimeUnit.HOURS.toMillis(1L);
-                    if (pending && hours < TimeUnit.DAYS.toHours(1L)) {
-                        Logger.info(
-                            this,
-                            // @checkstyle LineLength (1 line)
-                            "Funding request is pending for just %d hours, amount=%s, created=%s",
-                            hours, trn.getAmount(), trn.getCreatedAt()
-                        );
-                        permitted = false;
-                    }
-                }
-                ++page;
-                if (!permitted || page >= rsp.getNumPages()
-                    || page >= Tv.TWENTY) {
-                    break;
-                }
+                    "Funding request is pending since %s, amount=%s, created=%s",
+                    created, amt
+                );
+                permitted = false;
             }
-            return permitted;
-        } catch (final CoinbaseException ex) {
-            throw new IOException("Failed to list transactions", ex);
+            ++cnt;
+            if (cnt > Tv.THIRTY * Tv.TEN) {
+                break;
+            }
         }
+        return permitted;
     }
-
-    /**
-     * Create money.
-     * @param val Double value
-     * @return Money
-     */
-    private Money money(final double val) {
-        return Money.parse(String.format("%s %.2f", this.currency, val));
-    }
-
 }
