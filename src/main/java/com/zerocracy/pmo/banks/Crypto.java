@@ -23,6 +23,7 @@ import com.zerocracy.Par;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.cash.Currency;
 import com.zerocracy.claims.ClaimOut;
+import com.zerocracy.claims.ClaimOutSafe;
 import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.pmo.banks.coinbase.CbTransaction;
@@ -90,10 +91,21 @@ final class Crypto implements Bank {
             props.get("//coinbase/account")
         );
         this.fund(base);
-        return base.send(
+        final CbTransaction txn = base.send(
             "USD", target,
             amount.exchange(Currency.USD).decimal()
-        ).tid();
+        );
+        new ClaimOutSafe(
+            new ClaimOut().type("Notify PMO").param(
+                "message",
+                new Par(
+                    "Coinbase payment has been sent;",
+                    "TX=%, Target=%s,",
+                    "Amount=%s"
+                ).say(txn.tid(), target, amount)
+            )
+        ).postTo(new ClaimsOf(this.farm));
+        return txn.tid();
     }
 
     @Override
