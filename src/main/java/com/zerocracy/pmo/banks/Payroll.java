@@ -24,6 +24,8 @@ import com.zerocracy.cash.Cash;
 import com.zerocracy.pm.cost.Ledger;
 import com.zerocracy.pmo.Debts;
 import com.zerocracy.pmo.People;
+import com.zerocracy.sentry.SafeSentry;
+import com.zerocracy.sentry.Sentry;
 import java.io.IOException;
 import java.util.Map;
 import org.cactoos.map.MapEntry;
@@ -110,14 +112,20 @@ public final class Payroll {
         }
         final Bank bank = this.banks.get(method);
         final Cash commission = bank.fee(amount);
-        final String pid = bank.pay(
-            wallet, amount,
-            String.format(
-                "@%s: %s",
-                login,
-                new Par.ToText(reason).toString()
-            )
-        );
+        final String pid;
+        try {
+            pid = bank.pay(
+                wallet, amount,
+                String.format(
+                    "@%s: %s",
+                    login,
+                    new Par.ToText(reason).toString()
+                )
+            );
+        } catch (final IOException err) {
+            new SafeSentry(this.farm).capture(err);
+            throw new IOException("Failed to pay", err);
+        }
         final String text = new Par.ToText(reason).toString();
         ledger.add(
             new Ledger.Transaction(
