@@ -98,6 +98,12 @@ public final class SignWire implements Wire {
                 Long.toString(timestamp)
             )
         );
+        final String query;
+        if (req.uri().get().getQuery() == null) {
+            query = "";
+        } else {
+            query = String.format("?%s", req.uri().get().getQuery());
+        }
         final Bytes hmac = new MacOf(
             new InputOf(
                 new JoinedText(
@@ -105,6 +111,7 @@ public final class SignWire implements Wire {
                     Long.toString(timestamp),
                     method.toUpperCase(Locale.US),
                     req.uri().get().getPath(),
+                    query,
                     req.body().get()
                 )
             ),

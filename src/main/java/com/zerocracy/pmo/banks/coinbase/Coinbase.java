@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pmo.banks.coinbase;
 
+import com.jcabi.aspects.Tv;
 import com.jcabi.http.request.JdkRequest;
 import com.jcabi.http.response.JsonResponse;
 import com.jcabi.http.response.RestResponse;
@@ -23,11 +24,16 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import javax.json.Json;
+import javax.json.JsonArray;
 import javax.json.JsonObject;
+import javax.json.JsonString;
 import javax.json.JsonValue;
+import org.cactoos.collection.Mapped;
 
 /**
  * Coinbase account API.
@@ -70,6 +76,35 @@ public final class Coinbase {
         this.key = key;
         this.secret = secret;
         this.acc = account;
+    }
+
+    /**
+     * Account scopes.
+     *
+     * @return Scopes set
+     * @throws IOException If fails
+     */
+    public Set<String> scopes() throws IOException {
+        final JsonArray jscopes = new JdkRequest(Coinbase.HOST)
+            .method("GET")
+            .uri()
+            .path("/v2/user/auth")
+            .back()
+            .through(SignWire.class, this.key, this.secret)
+            .fetch()
+            .as(RestResponse.class)
+            .assertStatus(HttpURLConnection.HTTP_OK)
+            .as(JsonResponse.class)
+            .json()
+            .readObject()
+            .getJsonObject("data")
+            .getJsonArray("scopes");
+        return new HashSet<>(
+            new Mapped<>(
+                jsn -> JsonString.class.cast(jsn).getString(),
+                jscopes
+            )
+        );
     }
 
     /**
@@ -145,6 +180,7 @@ public final class Coinbase {
             Coinbase.HOST, this.acc
         );
         final List<CbTransaction> txns = new LinkedList<>();
+        int pages = Tv.FIVE;
         while (!url.isEmpty()) {
             final JsonObject jsn = new JdkRequest(url)
                 .method("GET")
@@ -154,11 +190,19 @@ public final class Coinbase {
                 .assertStatus(HttpURLConnection.HTTP_OK)
                 .as(JsonResponse.class)
                 .json().readObject();
-            url = jsn.getJsonObject("pagination")
-                .getString("next_uri", "");
+            url = String.format(
+                "%s%s",
+                Coinbase.HOST,
+                jsn.getJsonObject("pagination")
+                    .getString("next_uri", "")
+            );
             for (final JsonValue item : jsn.getJsonArray("data")) {
                 txns.add(new CbTransaction(JsonObject.class.cast(item)));
             }
+            if (pages <= 0) {
+                break;
+            }
+            --pages;
         }
         return txns;
     }

@@ -44,6 +44,20 @@ public final class CoinbaseTest {
     }
 
     @Test
+    public void testSCopes() throws IOException {
+        MatcherAssert.assertThat(
+            this.cbs.scopes(),
+            Matchers.containsInAnyOrder(
+                "wallet:accounts:read",
+                "wallet:buys:create",
+                "wallet:buys:read",
+                "wallet:transactions:read",
+                "wallet:transactions:send"
+            )
+        );
+    }
+
+    @Test
     public void testFetchBalance() throws IOException {
         MatcherAssert.assertThat(
             this.cbs.balance().compareTo(BigDecimal.ZERO),
