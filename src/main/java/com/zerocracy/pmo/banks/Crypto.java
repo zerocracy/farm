@@ -100,7 +100,7 @@ final class Crypto implements Bank {
                 "message",
                 new Par(
                     "Coinbase payment has been sent;",
-                    "TX=%, Target=%s,",
+                    "TX=%s, Target=%s,",
                     "Amount=%s"
                 ).say(txn.tid(), target, amount)
             )
