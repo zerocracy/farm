@@ -137,8 +137,9 @@ final class FkBank implements Bank {
     }
 
     @Override
+    // @checkstyle ParameterNumberCheck (3 lines)
     public String pay(final String target, final Cash amount,
-        final String details) throws IOException {
+        final String details, final String unique) throws IOException {
         final String result = UUID.randomUUID().toString();
         try {
             final String xml = new Xembler(

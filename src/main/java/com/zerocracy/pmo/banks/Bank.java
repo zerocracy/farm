@@ -40,9 +40,11 @@ interface Bank extends Closeable {
      * @param target The target to pay to
      * @param amount The amount to charge
      * @param details Payment details
+     * @param unique Unique string for payment
      * @return Payment ID
      * @throws IOException If fails
+     * @checkstyle ParameterNumberCheck (3 lines)
      */
-    String pay(String target, Cash amount, String details) throws IOException;
-
+    String pay(String target, Cash amount, String details, String unique)
+        throws IOException;
 }

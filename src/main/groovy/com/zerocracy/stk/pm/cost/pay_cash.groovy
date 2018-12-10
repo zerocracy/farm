@@ -84,7 +84,8 @@ def exec(Project project, XML xml) {
   try {
     msg = new Payroll(farm).pay(
       ledger,
-      login, price, "Payment for ${job}: ${reason}"
+      login, price, "Payment for ${job}: ${reason}",
+      job
     )
     claim.copy()
       .type('Payment was made')

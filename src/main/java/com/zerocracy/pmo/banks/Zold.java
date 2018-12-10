@@ -62,8 +62,9 @@ public final class Zold implements Bank {
     }
 
     @Override
+    // @checkstyle ParameterNumberCheck (3 lines)
     public String pay(final String target, final Cash amount,
-        final String details) throws IOException {
+        final String details, final String unique) throws IOException {
         final int status = new JdkRequest(this.props.get("//zold/host"))
             .uri()
             .path("/do-pay")

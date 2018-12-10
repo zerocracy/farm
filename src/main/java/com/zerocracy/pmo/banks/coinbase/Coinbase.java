@@ -213,11 +213,16 @@ public final class Coinbase {
      * @param currency Currency
      * @param addr Address
      * @param amount Amount
+     * @param details Payment details
+     * @param idem Unique string, see API docs
      * @return Transaction
      * @throws IOException If fails
+     * @checkstyle ParameterNumberCheck (5 lines)
      */
+    @SuppressWarnings("PMD.UseObjectForClearerAPI")
     public CbTransaction send(final String currency, final String addr,
-        final BigDecimal amount) throws IOException {
+        final BigDecimal amount, final String details,
+        final String idem) throws IOException {
         final JsonObject data = new JdkRequest(Coinbase.HOST)
             .method("POST")
             .uri()
@@ -230,6 +235,7 @@ public final class Coinbase {
                     .add("to", addr)
                     .add("amount", amount.toString())
                     .add("currency", currency)
+                    .add("description", details)
                     .build()
             ).back()
             .header("Content-Type", "application/json")

@@ -52,7 +52,8 @@ public final class FkBankTest {
         final Path file = FkBankTest.temp("x9");
         try (final Bank bank = new FkBank(file)) {
             bank.pay(
-                "target", new Cash.S("$0.10"), "details"
+                "target", new Cash.S("$0.10"), "details",
+                "test"
             );
             MatcherAssert.assertThat(
                 new TextOf(file).asString(),
@@ -93,7 +94,8 @@ public final class FkBankTest {
         final Path file = FkBankTest.temp("x2");
         try (final Bank bank = new FkBank(file)) {
             final String id = bank.pay(
-                "trgt2", new Cash.S("$0.60"), "dtls2"
+                "trgt2", new Cash.S("$0.60"), "dtls2",
+                "test2"
             );
             MatcherAssert.assertThat(
                 new XMLDocument(file)
@@ -109,7 +111,8 @@ public final class FkBankTest {
         try (final Bank bank = new FkBank(file)) {
             final String amount = "$1.60";
             bank.pay(
-                "trgt3", new Cash.S(amount), "dtls3"
+                "trgt3", new Cash.S(amount), "dtls3",
+                "test3"
             );
             MatcherAssert.assertThat(
                 new XMLDocument(file)
@@ -125,7 +128,8 @@ public final class FkBankTest {
         try (final Bank bank = new FkBank(file)) {
             final String target = "some_target";
             bank.pay(
-                target, new Cash.S("$1.65"), "dtls4"
+                target, new Cash.S("$1.65"), "dtls4",
+                "test4"
             );
             MatcherAssert.assertThat(
                 new XMLDocument(file)
@@ -141,7 +145,8 @@ public final class FkBankTest {
         try (final Bank bank = new FkBank(file)) {
             final String details = "some_details";
             bank.pay(
-                "trgt5", new Cash.S("$1.68"), details
+                "trgt5", new Cash.S("$1.68"), details,
+                "test5"
             );
             MatcherAssert.assertThat(
                 new XMLDocument(file)

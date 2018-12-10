@@ -77,7 +77,8 @@ public final class CoinbaseTest {
     public void sendTest() throws IOException {
         this.cbs.send(
             "USD", "1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2",
-            new BigDecimal("0.01")
+            new BigDecimal("0.01"),
+            "test", "idem"
         );
     }
 

@@ -78,8 +78,9 @@ final class Paypal implements Bank {
     }
 
     @Override
+    // @checkstyle ParameterNumberCheck (3 lines)
     public String pay(final String target, final Cash amount,
-        final String details) throws IOException {
+        final String details, final String unique) throws IOException {
         if (details.length() >= Tv.THOUSAND) {
             throw new IllegalArgumentException(
                 String.format(

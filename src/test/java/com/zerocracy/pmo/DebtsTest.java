@@ -23,6 +23,7 @@ import com.zerocracy.farm.fake.FkFarm;
 import java.time.Instant;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.hamcrest.core.IsEqual;
 import org.junit.Test;
 import org.xembly.Xembler;
 
@@ -55,6 +56,22 @@ public final class DebtsTest {
         MatcherAssert.assertThat(debts.expired(uid), Matchers.equalTo(true));
         debts.failure(uid, "Can't pay over PayPal");
         MatcherAssert.assertThat(debts.expired(uid), Matchers.equalTo(false));
+    }
+
+    @Test
+    public void hasSameHash() throws Exception {
+        final Debts debts = new Debts(new FkFarm()).bootstrap();
+        final String login = "test124356";
+        debts.add(
+            login, Cash.ZERO,
+            "Hello", "job:test/1",
+            Instant.parse("2018-12-09T09:10:05.657Z")
+        );
+        MatcherAssert.assertThat(
+            debts.hash(login),
+            // @checkstyle LineLengthCheck (1 line)
+            new IsEqual<>("5df6c2adfdf30347650285cfecd6be2e38df09ff6372b5598acdfa5ec4463be0")
+        );
     }
 
     @Test

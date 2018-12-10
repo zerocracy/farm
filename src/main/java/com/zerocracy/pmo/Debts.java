@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pmo;
 
+import com.jcabi.aspects.Tv;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
@@ -24,16 +25,20 @@ import com.zerocracy.Par;
 import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Iterator;
 import org.cactoos.collection.Joined;
 import org.cactoos.collection.Sorted;
+import org.cactoos.io.InputOf;
+import org.cactoos.io.Sha256DigestOf;
 import org.cactoos.iterable.ItemAt;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.scalar.Reduced;
+import org.cactoos.text.HexOf;
 import org.xembly.Directive;
 import org.xembly.Directives;
 
@@ -370,6 +375,40 @@ public final class Debts {
     }
 
     /**
+     * Hash of all debts.
+     * @param uid Login
+     * @return Hash string
+     * @throws IOException If fails
+     */
+    public String hash(final String uid) throws IOException {
+        final String str;
+        try (final Item item = this.item()) {
+            str = new IoCheckedScalar<>(
+                new Reduced<>(
+                    new StringBuilder(Tv.HUNDRED),
+                    (acc, debt) -> acc.append(
+                        String.join(
+                            "",
+                            debt.xpath("created/text()").get(0),
+                            debt.xpath("amount/text()").get(0),
+                            debt.xpath("details/text()").get(0),
+                            debt.xpath("reason/text()").get(0)
+                        )
+                    ),
+                    new Xocument(item.path()).nodes(
+                        String.format(
+                            "/debts/debt[@login='%s']/items/item", uid
+                        )
+                    )
+                )
+            ).value().toString();
+        }
+        return new HexOf(
+            new Sha256DigestOf(new InputOf(str, StandardCharsets.UTF_8))
+        ).asString();
+    }
+
+    /**
      * The item.
      * @return Item
      * @throws IOException If fails
@@ -377,5 +416,4 @@ public final class Debts {
     private Item item() throws IOException {
         return this.pmo.acq("debts.xml");
     }
-
 }

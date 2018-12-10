@@ -68,13 +68,14 @@ public final class Payroll {
      * @param login The login to charge
      * @param amount The amount to charge
      * @param reason The reason
+     * @param unique Unique string for payment
      * @return Payment receipt (short summary of the payment)
      * @throws IOException If fails
      * @checkstyle ParameterNumberCheck (6 lines)
      */
     public String pay(final Ledger ledger,
         final String login, final Cash amount,
-        final String reason) throws IOException {
+        final String reason, final String unique) throws IOException {
         final Cash min = new Policy().get("46.min", new Cash.S("$10"));
         if (amount.compareTo(min) < 0 && !reason.startsWith("Debt repayment")) {
             throw new SoftException(
@@ -118,7 +119,8 @@ public final class Payroll {
                     "@%s: %s",
                     login,
                     new Par.ToText(reason).toString()
-                )
+                ),
+                unique
             );
         } catch (final IOException err) {
             new SafeSentry(this.farm).capture(err);
@@ -150,5 +152,4 @@ public final class Payroll {
         );
         return pid;
     }
-
 }

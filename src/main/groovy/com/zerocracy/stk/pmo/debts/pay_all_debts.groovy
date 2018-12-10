@@ -68,7 +68,8 @@ def exec(Project pmo, XML xml) {
       String pid = new Payroll(farm).pay(
         new Ledger(farm, new FkProject()).bootstrap(),
         uid, debt,
-        new Par('Debt repayment, per §46: %s').say(details)
+        new Par('Debt repayment, per §46: %s').say(details),
+        debts.hash(uid)
       )
       debts.remove(uid)
       claim.copy()

@@ -83,8 +83,9 @@ final class Crypto implements Bank {
     }
 
     @Override
+    // @checkstyle ParameterNumberCheck (3 lines)
     public String pay(final String target, final Cash amount,
-        final String details) throws IOException {
+        final String details, final String unique) throws IOException {
         final Props props = new Props(this.farm);
         final Coinbase base = new Coinbase(
             props.get("//coinbase/key"), props.get("//coinbase/secret"),
@@ -93,7 +94,8 @@ final class Crypto implements Bank {
         this.fund(base);
         final CbTransaction txn = base.send(
             "USD", target,
-            amount.exchange(Currency.USD).decimal()
+            amount.exchange(Currency.USD).decimal(),
+            details, unique
         );
         new ClaimOutSafe(
             new ClaimOut().type("Notify PMO").param(
