@@ -57,7 +57,8 @@ def exec(Project project, XML xml) {
     new Zold(farm).pay(
       recipient,
       amount,
-      'none'
+      'none',
+      ''
     )
   }
   claim.copy().type('Notify user')
