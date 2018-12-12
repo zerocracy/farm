@@ -21,10 +21,11 @@ import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
-import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pm.cost.Ledger
+import com.zerocracy.pmo.Catalog
 
 /**
  * This stakeholder process user Stripe contributions: it adds funds
@@ -71,8 +72,11 @@ def exec(Project project, XML xml) {
       'from https://github.com/%s; many thanks for your support!'
     ).say(project.pid(), amount, claim.author())
   ).postTo(new ClaimsOf(farm, project))
-  claim.copy().type('Send zold')
-    .param('recipient', claim.author())
-    .param('reason', 'contribution reward')
-    .postTo(new ClaimsOf(farm, project))
+  Catalog catalog = new Catalog(farm).bootstrap()
+  if (catalog.sandbox().contains(project.pid())) {
+    claim.copy().type('Send zold')
+      .param('recipient', claim.author())
+      .param('reason', 'contribution reward')
+      .postTo(new ClaimsOf(farm, project))
+  }
 }

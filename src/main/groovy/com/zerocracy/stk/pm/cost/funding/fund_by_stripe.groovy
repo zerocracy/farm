@@ -106,7 +106,7 @@ def exec(Project project, XML xml) {
       new Par(farm, 'We just send adviser payment of %s for %s to %s').say(bonus, project.pid(), adviser)
     ).postTo(new ClaimsOf(farm))
   }
-  if (claim.hasAuthor()) {
+  if (catalog.sandbox().contains(project.pid()) && claim.hasAuthor()) {
     claim.copy().type('Send zold')
       .param('recipient', claim.author())
       .param('reason', 'Funded reward')

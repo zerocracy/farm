@@ -85,11 +85,6 @@ def exec(Project project, XML xml) {
       .param('cash', cash)
       .postTo(new ClaimsOf(farm, project))
   }
-  claim.copy()
-    .type('Send zold')
-    .param('recipient', login)
-    .param('amount', price)
-    .postTo(new ClaimsOf(farm, project))
 }
 
 static canPay(Farm farm, Project project, boolean est, Cash price) {
