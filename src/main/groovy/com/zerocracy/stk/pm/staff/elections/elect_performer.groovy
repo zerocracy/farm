@@ -97,10 +97,14 @@ def exec(Project project, XML xml) {
     String role = wbs.role(job)
     List<String> allogins = roles.findByRole(role)
     List<String> logins = new ArrayList<>()
-    for (String login : allogins){
-      if (debt && !new Rates(project).bootstrap().exists(login)){
-        logins.add(login)
+    if (debt) {
+      for (String login : allogins){
+        if (!new Rates(project).bootstrap().exists(login)) {
+          logins.add(login)
+        }
       }
+    } else {
+      logins.addAll(allogins)
     }
     if (logins.empty) {
       return
