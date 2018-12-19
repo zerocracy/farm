@@ -22,12 +22,14 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Policy
 import com.zerocracy.Project
+import com.zerocracy.cash.Cash
 import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.cost.Boosts
 import com.zerocracy.pm.cost.Ledger
+import com.zerocracy.pm.cost.Rates
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.qa.Reviews
 import com.zerocracy.pm.scope.Wbs
@@ -44,9 +46,6 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Ping')
   ClaimIn claim = new ClaimIn(xml)
-  if (new Ledger(farm, project).bootstrap().deficit()) {
-    return
-  }
   // @todo #926:30min we should synchronize elected, but not assigned jobs
   //  between different projects, because one project may elect a user
   //  as a performer for few jobs and another project may elect same user
@@ -89,13 +88,20 @@ def exec(Project project, XML xml) {
   int count = 0
   long vtime = System.nanoTime()
   String elected = 'not-elected'
+  boolean debt = new Ledger(farm, project).bootstrap().deficit()
   for (String job : jobs) {
     if (orders.contains(job) || reviews.contains(job)) {
       continue
     }
     ++count
     String role = wbs.role(job)
-    List<String> logins = roles.findByRole(role)
+    List<String> allogins = roles.findByRole(role)
+    List<String> logins = new ArrayList<>()
+    for (String login : allogins){
+      if (debt && !new Rates(project).bootstrap().exists(login)){
+        logins.add(login)
+      }
+    }
     if (logins.empty) {
       return
     }
