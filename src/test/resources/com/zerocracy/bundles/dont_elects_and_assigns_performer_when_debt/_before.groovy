@@ -32,13 +32,6 @@ def exec(Project project, XML xml) {
   Github github = new ExtGithub(farm).value()
   Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
   repo.issues().create('Hello, world', '')
-  new Ledger(farm, project).bootstrap().add(
-    new Ledger.Transaction(
-      new Cash.S('$1000'),
-      'expenses', 'jobs',
-      'liabilities', '@yegor256',
-      'Yegor is super expensive'
-    )
-  )
+  new Ledger(farm, project).bootstrap().deficit(true)
   new Rates(project).bootstrap().set('yegor256', new Cash.S('$10'))
 }

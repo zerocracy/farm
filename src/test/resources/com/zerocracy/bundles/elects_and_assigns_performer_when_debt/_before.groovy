@@ -22,22 +22,13 @@ import com.jcabi.github.Repos
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
-import com.zerocracy.cash.Cash
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.pm.cost.Ledger
-import com.zerocracy.pm.cost.Rates
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
   Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
   repo.issues().create('Hello, world', '')
-  new Ledger(farm, project).bootstrap().add(
-    new Ledger.Transaction(
-      new Cash.S('$1000'),
-      'expenses', 'jobs',
-      'liabilities', '@yegor256',
-      'Yegor is super expensive'
-    )
-  )
+  new Ledger(farm, project).bootstrap().deficit(true)
 }

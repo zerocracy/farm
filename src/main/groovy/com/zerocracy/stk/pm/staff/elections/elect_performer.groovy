@@ -88,7 +88,7 @@ def exec(Project project, XML xml) {
   int count = 0
   long vtime = System.nanoTime()
   String elected = 'not-elected'
-  boolean debt = new Ledger(farm, project).bootstrap().deficit()
+  boolean deficit = new Ledger(farm, project).bootstrap().deficit()
   for (String job : jobs) {
     if (orders.contains(job) || reviews.contains(job)) {
       continue
@@ -97,7 +97,7 @@ def exec(Project project, XML xml) {
     String role = wbs.role(job)
     List<String> allogins = roles.findByRole(role)
     List<String> logins = new ArrayList<>()
-    if (debt) {
+    if (deficit) {
       for (String login : allogins){
         if (!new Rates(project).bootstrap().exists(login)) {
           logins.add(login)
