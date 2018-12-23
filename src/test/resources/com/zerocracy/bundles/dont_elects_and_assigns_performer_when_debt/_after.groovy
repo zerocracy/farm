@@ -17,12 +17,8 @@
 package com.zerocracy.bundles.elects_and_assigns_performer
 
 import com.jcabi.xml.XML
-import com.mongodb.client.model.Filters
-import com.zerocracy.Farm
 import com.zerocracy.Project
-import com.zerocracy.claims.Footprint
 import com.zerocracy.pm.in.Orders
-import org.cactoos.iterable.LengthOf
 import org.hamcrest.MatcherAssert
 import org.hamcrest.core.IsEqual
 
