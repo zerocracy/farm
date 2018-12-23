@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.elects_and_assigns_performer
+package com.zerocracy.bundles.elects_and_assigns_performer_when_debt
 
 import com.jcabi.xml.XML
 import com.mongodb.client.model.Filters

@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.elects_and_assigns_performer
+package com.zerocracy.bundles.dont_elects_and_assigns_performer_when_debt
 
 import com.jcabi.github.Github
 import com.jcabi.github.Repo
