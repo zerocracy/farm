@@ -22,7 +22,6 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Policy
 import com.zerocracy.Project
-import com.zerocracy.cash.Cash
 import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtGithub
@@ -46,12 +45,16 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Ping')
   ClaimIn claim = new ClaimIn(xml)
+  boolean deficit = new Ledger(farm, project).bootstrap().deficit()
+  Roles roles = new Roles(project).bootstrap()
+  Rates rates = new Rates(project).bootstrap()
+  int zeroRates = roles.everybody().count { uid -> !rates.exists(uid) }
+  if (deficit && zeroRates == 0) { return }
   // @todo #926:30min we should synchronize elected, but not assigned jobs
   //  between different projects, because one project may elect a user
   //  as a performer for few jobs and another project may elect same user
   //  before jobs from first project will be assigned to the performer.
   Wbs wbs = new Wbs(project).bootstrap()
-  Roles roles = new Roles(project).bootstrap()
   Collection<String> orders = new Orders(farm, project).bootstrap().iterate()
   Collection<String> reviews = new Reviews(project).bootstrap().iterate()
   Farm farm = binding.variables.farm
@@ -88,7 +91,7 @@ def exec(Project project, XML xml) {
   int count = 0
   long vtime = System.nanoTime()
   String elected = 'not-elected'
-  boolean deficit = new Ledger(farm, project).bootstrap().deficit()
+
   for (String job : jobs) {
     if (orders.contains(job) || reviews.contains(job)) {
       continue
