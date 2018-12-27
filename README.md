@@ -298,6 +298,14 @@ See this for details: https://www.yegor256.com/2016/02/09/are-you-still-debuggin
 Don't forget to add documentation for groovy scripts if you create new
 stakeholder.
 
+## Maven profiles
+
+There are maven profiles which you can enabled:
+ - `qulice` - enabled [Qulice](https://www.qulice.com/) (Source Code Quality Police) profile
+ - `codenarc` - enables [Codenarc](http://codenarc.sourceforge.net/) validation 
+ - `upgrade-bundles` - fetch fresh xml schemas from `datum` repo and update bundle tests
+ - `dynamodb` - starts local dynamodb instance for integration testing
+
 ## License
 
 Copyright (c) 2016-2018 Zerocracy
