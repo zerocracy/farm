@@ -14,38 +14,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.elects_and_assigns_performer
+package com.zerocracy.bundles.dont_elects_and_assigns_performer_when_debt
 
 import com.jcabi.xml.XML
-import com.mongodb.client.model.Filters
-import com.zerocracy.Farm
 import com.zerocracy.Project
-import com.zerocracy.claims.Footprint
 import com.zerocracy.pm.in.Orders
-import org.cactoos.iterable.LengthOf
 import org.hamcrest.MatcherAssert
 import org.hamcrest.core.IsEqual
 
 def exec(Project project, XML xml) {
-  String job = 'gh:test/test#1'
+  String job = 'gh:test/test#3'
   Orders orders = new Orders(farm, project).bootstrap()
   MatcherAssert.assertThat(
-    'Performer wasn\'t assigned to the job',
-    orders.performer(job),
-    new IsEqual<>('yegor256')
-  )
-  Farm farm = binding.variables.farm
-  MatcherAssert.assertThat(
-    '"Performer was elected" claim was not found',
-    new LengthOf(
-      new Footprint(farm, project).collection().find(
-        Filters.and(
-          Filters.eq('project', project.pid()),
-          Filters.eq('type', 'Performer was elected'),
-          Filters.eq('job', job)
-        )
-      )
-    ).intValue(),
-    new IsEqual<>(1)
+    'Performer was assigned to the job',
+    orders.assigned(job),
+    new IsEqual<>(false)
   )
 }

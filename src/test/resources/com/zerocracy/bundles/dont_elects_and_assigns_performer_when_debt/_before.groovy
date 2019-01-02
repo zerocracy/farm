@@ -14,38 +14,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.elects_and_assigns_performer
+package com.zerocracy.bundles.dont_elects_and_assigns_performer_when_debt
 
+import com.jcabi.github.Github
+import com.jcabi.github.Repo
+import com.jcabi.github.Repos
 import com.jcabi.xml.XML
-import com.mongodb.client.model.Filters
 import com.zerocracy.Farm
 import com.zerocracy.Project
-import com.zerocracy.claims.Footprint
-import com.zerocracy.pm.in.Orders
-import org.cactoos.iterable.LengthOf
-import org.hamcrest.MatcherAssert
-import org.hamcrest.core.IsEqual
+import com.zerocracy.cash.Cash
+import com.zerocracy.entry.ExtGithub
+import com.zerocracy.pm.cost.Ledger
+import com.zerocracy.pm.cost.Rates
 
 def exec(Project project, XML xml) {
-  String job = 'gh:test/test#1'
-  Orders orders = new Orders(farm, project).bootstrap()
-  MatcherAssert.assertThat(
-    'Performer wasn\'t assigned to the job',
-    orders.performer(job),
-    new IsEqual<>('yegor256')
-  )
   Farm farm = binding.variables.farm
-  MatcherAssert.assertThat(
-    '"Performer was elected" claim was not found',
-    new LengthOf(
-      new Footprint(farm, project).collection().find(
-        Filters.and(
-          Filters.eq('project', project.pid()),
-          Filters.eq('type', 'Performer was elected'),
-          Filters.eq('job', job)
-        )
-      )
-    ).intValue(),
-    new IsEqual<>(1)
-  )
+  Github github = new ExtGithub(farm).value()
+  Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
+  repo.issues().create('Issue one', '')
+  repo.issues().create('Issue two', '')
+  repo.issues().create('Issue three', '')
+  new Ledger(farm, project).bootstrap().deficit(true)
+  new Rates(project).bootstrap().set('paulodamaso', new Cash.S('$10'))
 }

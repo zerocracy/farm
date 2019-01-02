@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.elects_and_assigns_performer
+package com.zerocracy.bundles.elects_and_assigns_performer_when_debt
 
 import com.jcabi.xml.XML
 import com.mongodb.client.model.Filters
@@ -27,14 +27,14 @@ import org.hamcrest.MatcherAssert
 import org.hamcrest.core.IsEqual
 
 def exec(Project project, XML xml) {
-  String job = 'gh:test/test#1'
+  String job = 'gh:test/test#2'
+  Farm farm = binding.variables.farm
   Orders orders = new Orders(farm, project).bootstrap()
   MatcherAssert.assertThat(
     'Performer wasn\'t assigned to the job',
     orders.performer(job),
     new IsEqual<>('yegor256')
   )
-  Farm farm = binding.variables.farm
   MatcherAssert.assertThat(
     '"Performer was elected" claim was not found',
     new LengthOf(

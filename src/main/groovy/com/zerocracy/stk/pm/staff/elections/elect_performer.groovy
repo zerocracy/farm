@@ -28,6 +28,7 @@ import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.cost.Boosts
 import com.zerocracy.pm.cost.Ledger
+import com.zerocracy.pm.cost.Rates
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.qa.Reviews
 import com.zerocracy.pm.scope.Wbs
@@ -44,15 +45,16 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Ping')
   ClaimIn claim = new ClaimIn(xml)
-  if (new Ledger(farm, project).bootstrap().deficit()) {
-    return
-  }
+  boolean deficit = new Ledger(farm, project).bootstrap().deficit()
+  Roles roles = new Roles(project).bootstrap()
+  Rates rates = new Rates(project).bootstrap()
+  int zeroRates = roles.everybody().count { uid -> !rates.exists(uid) }
+  if (deficit && zeroRates == 0) { return }
   // @todo #926:30min we should synchronize elected, but not assigned jobs
   //  between different projects, because one project may elect a user
   //  as a performer for few jobs and another project may elect same user
   //  before jobs from first project will be assigned to the performer.
   Wbs wbs = new Wbs(project).bootstrap()
-  Roles roles = new Roles(project).bootstrap()
   Collection<String> orders = new Orders(farm, project).bootstrap().iterate()
   Collection<String> reviews = new Reviews(project).bootstrap().iterate()
   Farm farm = binding.variables.farm
@@ -89,13 +91,24 @@ def exec(Project project, XML xml) {
   int count = 0
   long vtime = System.nanoTime()
   String elected = 'not-elected'
+
   for (String job : jobs) {
     if (orders.contains(job) || reviews.contains(job)) {
       continue
     }
     ++count
     String role = wbs.role(job)
-    List<String> logins = roles.findByRole(role)
+    List<String> allogins = roles.findByRole(role)
+    List<String> logins = []
+    if (deficit) {
+      for (String login : allogins){
+        if (!new Rates(project).bootstrap().exists(login)) {
+          logins.add(login)
+        }
+      }
+    } else {
+      logins.addAll(allogins)
+    }
     if (logins.empty) {
       return
     }
