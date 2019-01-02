@@ -17,18 +17,24 @@
 package com.zerocracy.bundles.dont_refresh_awards_when_no_changes
 
 import com.jcabi.xml.XML
+import com.mongodb.client.model.Filters
+import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.claims.Footprint
+import org.hamcrest.MatcherAssert
+import org.hamcrest.collection.IsEmptyIterable
 
 def exec(Project project, XML xml) {
-//  Farm farm = binding.variables.farm
-//  MatcherAssert.assertThat(
-//    "Empty claim submitted",
-//    new Footprint(farm, project).collection().find(
-//      Filters.and(
-//        Filters.eq('project', project.pid()),
-//        Filters.eq('type', 'Award points were added')
-//      )
-//    ),
-//    new IsEmptyIterable<>()
-//  )
+  Farm farm = binding.variables.farm
+  MatcherAssert.assertThat(
+    'Empty claim submitted',
+    new Footprint(farm, project).collection().find(
+      Filters.and(
+        Filters.eq('project', project.pid()),
+        Filters.eq('type', 'Award points were added'),
+        Filters.eq('login', 'g4s8')
+      )
+    ),
+    new IsEmptyIterable<>()
+  )
 }

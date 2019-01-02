@@ -20,9 +20,9 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Policy
 import com.zerocracy.Project
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
-import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pmo.Awards
 import com.zerocracy.pmo.People
 
@@ -37,16 +37,13 @@ def exec(Project pmo, XML xml) {
     int before = awards.total()
     awards.removeOlderThan(outdated)
     int after = awards.total()
-    // @todo #1218:30min refresh_awards.groovy is submitting claims for all
-    //  users in Zerocracy even if reputation didn't change. Fix
-    //  refresh_awards.groovy so it only submit claims when there is a
-    //  reputation change for user and uncomment tests in
-    //  dont_refresh_awards_when_no_change/_after.groovy
-    claim.copy()
-      .type('Award points were added')
-      .param('login', it)
-      .param('points', after - before)
-      .param('reason', 'fresh awards')
-      .postTo(new ClaimsOf(farm))
+    if (before != after) {
+      claim.copy()
+        .type('Award points were added')
+        .param('login', it)
+        .param('points', after - before)
+        .param('reason', 'fresh awards')
+        .postTo(new ClaimsOf(farm))
+    }
   }
 }
