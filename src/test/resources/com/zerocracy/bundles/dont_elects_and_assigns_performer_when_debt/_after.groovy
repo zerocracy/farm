@@ -23,7 +23,7 @@ import org.hamcrest.MatcherAssert
 import org.hamcrest.core.IsEqual
 
 def exec(Project project, XML xml) {
-  String job = 'gh:test/test#1'
+  String job = 'gh:test/test#3'
   Orders orders = new Orders(farm, project).bootstrap()
   MatcherAssert.assertThat(
     'Performer was assigned to the job',

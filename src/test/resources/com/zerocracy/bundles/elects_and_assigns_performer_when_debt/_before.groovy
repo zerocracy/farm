@@ -29,6 +29,7 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
   Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
-  repo.issues().create('Hello, world', '')
+  repo.issues().create('Issue one', '')
+  repo.issues().create('Issue two', '')
   new Ledger(farm, project).bootstrap().deficit(true)
 }

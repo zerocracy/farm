@@ -16,8 +16,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <people xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" updated="2018-09-07T06:54:29Z" version="0.62.5" xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.62.5/xsd/pmo/people.xsd">
-  <person id="yegor256">
-    <mentor>paulodamaso</mentor>
+  <person id="paulodamaso">
+    <mentor>yegor256</mentor>
     <reputation>0</reputation>
     <projects>0</projects>
     <jobs>0</jobs>

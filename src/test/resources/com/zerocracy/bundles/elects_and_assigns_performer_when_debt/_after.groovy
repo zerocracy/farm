@@ -27,21 +27,21 @@ import org.hamcrest.MatcherAssert
 import org.hamcrest.core.IsEqual
 
 def exec(Project project, XML xml) {
-  String job = 'gh:test/test#1'
+  String job = 'gh:test/test#2'
   Orders orders = new Orders(farm, project).bootstrap()
   MatcherAssert.assertThat(
     'Performer wasn\'t assigned to the job',
     orders.performer(job),
     new IsEqual<>('yegor256')
   )
-  Farm farm = binding.variables.farm
   MatcherAssert.assertThat(
     '"Performer was elected" claim was not found',
     new LengthOf(
       new Footprint(farm, project).collection().find(
         Filters.and(
           Filters.eq('project', project.pid()),
-          Filters.eq('type', 'Performer was elected')
+          Filters.eq('type', 'Performer was elected'),
+          Filters.eq('job', job)
         )
       )
     ).intValue(),
