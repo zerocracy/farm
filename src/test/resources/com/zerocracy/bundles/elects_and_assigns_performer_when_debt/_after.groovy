@@ -28,6 +28,7 @@ import org.hamcrest.core.IsEqual
 
 def exec(Project project, XML xml) {
   String job = 'gh:test/test#2'
+  Farm farm = binding.variables.farm
   Orders orders = new Orders(farm, project).bootstrap()
   MatcherAssert.assertThat(
     'Performer wasn\'t assigned to the job',
