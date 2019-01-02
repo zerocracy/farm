@@ -321,6 +321,10 @@ public final class TkApp extends TkWrap {
                                                                     new FkRegex(
                                                                         "/u/([a-zA-Z0-9-]+)",
                                                                         new TkProfile(farm)
+                                                                    ),
+                                                                    new FkRegex(
+                                                                        "/known/(?<login>[a-zA-Z0-9-]+)",
+                                                                        new TkKnown(farm)
                                                                     )
                                                                 )
                                                             )
@@ -395,5 +399,4 @@ public final class TkApp extends TkWrap {
             )
         );
     }
-
 }
