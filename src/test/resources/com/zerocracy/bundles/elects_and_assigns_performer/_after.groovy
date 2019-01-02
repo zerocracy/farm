@@ -41,7 +41,8 @@ def exec(Project project, XML xml) {
       new Footprint(farm, project).collection().find(
         Filters.and(
           Filters.eq('project', project.pid()),
-          Filters.eq('type', 'Performer was elected')
+          Filters.eq('type', 'Performer was elected'),
+          Filters.eq('job', job)
         )
       )
     ).intValue(),
