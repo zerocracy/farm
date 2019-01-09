@@ -16,6 +16,7 @@
  */
 package com.zerocracy.tk.project;
 
+import com.jcabi.log.Logger;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.cash.Cash;
@@ -23,10 +24,12 @@ import com.zerocracy.farm.props.Props;
 import com.zerocracy.pm.cost.Estimates;
 import com.zerocracy.pm.cost.Ledger;
 import com.zerocracy.pmo.Catalog;
+import com.zerocracy.pmo.recharge.Stripe;
 import com.zerocracy.tk.RqUser;
 import com.zerocracy.tk.RsPage;
 import com.zerocracy.tk.RsParFlash;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.logging.Level;
 import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
@@ -42,6 +45,11 @@ import org.takes.rs.xe.XeChain;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class TkContrib implements TkRegex {
+
+    /**
+     * Revenue threshold.
+     */
+    private static final BigDecimal THRESHOLD = new BigDecimal("2048");
 
     /**
      * Farm.
@@ -71,6 +79,15 @@ public final class TkContrib implements TkRegex {
                 String.format("/p/%s", project.pid())
             );
         }
+        final BigDecimal rev = new Stripe(this.farm).dailyRevenue("USD");
+        Logger.info(this, "/contrib/%s : rev=%s", rev.toString());
+        final String key;
+        final boolean can = rev.compareTo(TkContrib.THRESHOLD) < 0;
+        if (can) {
+            key = new Props(this.farm).get("//stripe/key", "");
+        } else {
+            key = "";
+        }
         return new RsPage(
             this.farm,
             "/xsl/contrib.xsl",
@@ -84,8 +101,10 @@ public final class TkContrib implements TkRegex {
                         new Catalog(this.farm).bootstrap().title(pid)
                     ),
                     new XeAppend(
-                        "stripe_key",
-                        new Props(this.farm).get("//stripe/key", "")
+                        "stripe_key", key
+                    ),
+                    new XeAppend(
+                        "can_pay", Boolean.toString(can)
                     ),
                     new XeAppend(
                         "balance",
@@ -98,5 +117,4 @@ public final class TkContrib implements TkRegex {
             }
         );
     }
-
 }

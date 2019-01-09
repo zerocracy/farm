@@ -16,11 +16,14 @@
  */
 package com.zerocracy.pmo.recharge;
 
+import com.jcabi.aspects.Tv;
 import com.stripe.exception.APIConnectionException;
 import com.stripe.exception.APIException;
 import com.stripe.exception.AuthenticationException;
 import com.stripe.exception.CardException;
 import com.stripe.exception.InvalidRequestException;
+import com.stripe.model.BalanceTransaction;
+import com.stripe.model.BalanceTransactionCollection;
 import com.stripe.model.Charge;
 import com.stripe.model.Customer;
 import com.stripe.net.RequestOptions;
@@ -31,7 +34,13 @@ import com.zerocracy.claims.ClaimOut;
 import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.farm.props.Props;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Collections;
 import org.cactoos.map.MapEntry;
+import org.cactoos.map.MapOf;
 import org.cactoos.map.SolidMap;
 
 /**
@@ -70,6 +79,50 @@ public final class Stripe {
         final Cash amount, final String details)
         throws IOException {
         return this.charge(this.register(token, email), amount, details);
+    }
+
+    /**
+     * Daily revenue of stripe.
+     * @param currency Currency
+     * @return Amount decimal
+     * @throws IOException If fails
+     */
+    public BigDecimal dailyRevenue(final String currency) throws IOException {
+        try {
+            final BalanceTransactionCollection txns = BalanceTransaction.list(
+                new MapOf<String, Object>(
+                    new MapEntry<>(
+                        "created",
+                        Collections.singletonMap(
+                            "gte",
+                            Long.toString(
+                                Instant.now()
+                                    .minus(Duration.ofDays(1L))
+                                    .getEpochSecond()
+                            )
+                        )
+                    ),
+                    new MapEntry<>(
+                        "limit", Tv.HUNDRED
+                    )
+                ),
+                this.options()
+            );
+            long cents = 0L;
+            for (final BalanceTransaction txn : txns.autoPagingIterable()) {
+                if (currency.equalsIgnoreCase(txn.getCurrency())) {
+                    cents += txn.getAmount();
+                }
+            }
+            return BigDecimal.valueOf(cents)
+                .divide(
+                    BigDecimal.valueOf((long) Tv.HUNDRED),
+                    2, RoundingMode.UNNECESSARY
+                );
+        } catch (final APIException | APIConnectionException | CardException
+            | AuthenticationException | InvalidRequestException ex) {
+            throw new Stripe.PaymentException(ex);
+        }
     }
 
     /**
@@ -157,10 +210,12 @@ public final class Stripe {
      * Failure.
      */
     public static final class PaymentException extends IOException {
+
         /**
          * Serialization marker.
          */
         private static final long serialVersionUID = 9204303106888716333L;
+
         /**
          * Ctor.
          * @param cause The cause
@@ -169,5 +224,4 @@ public final class Stripe {
             super(cause);
         }
     }
-
 }

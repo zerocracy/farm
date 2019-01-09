@@ -49,51 +49,64 @@ SOFTWARE.
       </a>
       <xsl:text>.</xsl:text>
     </p>
-    <p>
-      <xsl:text>We will appreciate if you </xsl:text>
-      <a href="http://www.zerocracy.com/policy.html#1">
-        <xsl:text>contribute</xsl:text>
-      </a>
-      <xsl:text>!</xsl:text>
-    </p>
-    <p>
-      <xsl:text>Pick one of those: </xsl:text>
-      <a href="#" class="pay" data-cents="1600">
-        <xsl:text>$16</xsl:text>
-      </a>
-      <xsl:text>, </xsl:text>
-      <a href="#" class="pay" data-cents="3200">
-        <xsl:text>$32</xsl:text>
-      </a>
-      <xsl:text>, </xsl:text>
-      <a href="#" class="pay" data-cents="6400">
-        <xsl:text>$64</xsl:text>
-      </a>
-      <xsl:text>, </xsl:text>
-      <a href="#" class="pay" data-cents="12800">
-        <xsl:text>$128</xsl:text>
-      </a>
-      <xsl:text>, </xsl:text>
-      <a href="#" class="pay" data-cents="25600">
-        <xsl:text>$256</xsl:text>
-      </a>
-      <xsl:text>, or </xsl:text>
-      <a href="#" class="pay" data-cents="51200">
-        <xsl:text>$512</xsl:text>
-      </a>
-      <xsl:text>.</xsl:text>
-    </p>
-    <p>
-      <xsl:text>This donation is non-refundable.</xsl:text>
-      <xsl:text> It's a one-time payment, we will not re-charge your card.</xsl:text>
-      <xsl:text> If later you decide to contribute again, you will have to get back to this page again.</xsl:text>
-    </p>
-    <form id="form" style="display:none" action="/contrib-pay/{project}" method="post">
-      <input name="cents" id="cents" type="hidden"/>
-      <input name="token" id="token" type="hidden"/>
-      <input name="email" id="email" type="hidden"/>
-      <input type="submit"/>
-    </form>
+    <xsl:choose>
+      <xsl:when test="can_pay='true'">
+        <p>
+          <xsl:text>We will appreciate if you </xsl:text>
+          <a href="http://www.zerocracy.com/policy.html#1">
+            <xsl:text>contribute</xsl:text>
+          </a>
+          <xsl:text>!</xsl:text>
+        </p>
+        <p>
+          <xsl:text>Pick one of those: </xsl:text>
+          <a href="#" class="pay" data-cents="1600">
+            <xsl:text>$16</xsl:text>
+          </a>
+          <xsl:text>, </xsl:text>
+          <a href="#" class="pay" data-cents="3200">
+            <xsl:text>$32</xsl:text>
+          </a>
+          <xsl:text>, </xsl:text>
+          <a href="#" class="pay" data-cents="6400">
+            <xsl:text>$64</xsl:text>
+          </a>
+          <xsl:text>, </xsl:text>
+          <a href="#" class="pay" data-cents="12800">
+            <xsl:text>$128</xsl:text>
+          </a>
+          <xsl:text>, </xsl:text>
+          <a href="#" class="pay" data-cents="25600">
+            <xsl:text>$256</xsl:text>
+          </a>
+          <xsl:text>, or </xsl:text>
+          <a href="#" class="pay" data-cents="51200">
+            <xsl:text>$512</xsl:text>
+          </a>
+          <xsl:text>.</xsl:text>
+        </p>
+        <p>
+          <xsl:text>This donation is non-refundable.</xsl:text>
+          <xsl:text> It's a one-time payment, we will not re-charge your card.</xsl:text>
+          <xsl:text> If later you decide to contribute again, you will have to get back to this page again.</xsl:text>
+        </p>
+        <form id="form" style="display:none" action="/contrib-pay/{project}" method="post">
+          <input name="cents" id="cents" type="hidden"/>
+          <input name="token" id="token" type="hidden"/>
+          <input name="email" id="email" type="hidden"/>
+          <input type="submit"/>
+        </form>
+      </xsl:when>
+      <xsl:otherwise>
+        <p>
+          <xsl:text>we are sorry, please come back tomorrow or use our </xsl:text>
+          <a href="https://blog.zold.io/2018/12/09/btc-to-zld.html">
+            <xsl:text>BTC-to-ZLD</xsl:text>
+          </a>
+          <xsl:text> gateway</xsl:text>
+        </p>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
   <xsl:template match="page" mode="js">
     <xsl:element name="script">
