@@ -136,4 +136,11 @@ public final class ClaimOutTest {
             )
         );
     }
+
+    @Test
+    public void jobWithUnderscore() throws Exception {
+        new ClaimOut()
+            .param("job", "gh:zverovich/timeless_is#1")
+            .postTo(Claims.FAKE);
+    }
 }

@@ -28,6 +28,12 @@ import java.time.Instant;
 public interface Claims {
 
     /**
+     * Fake claims.
+     */
+    Claims FAKE = claim -> {
+    };
+
+    /**
      * Submit new claim.
      *
      * @param claim Claim to submit
