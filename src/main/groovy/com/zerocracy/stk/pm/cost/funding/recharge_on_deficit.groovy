@@ -39,8 +39,9 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Make payment', 'Ping hourly')
   Farm farm = binding.variables.farm
   if (new Recharge(farm, project).required()) {
-    ClaimOut recharge = new ClaimIn(xml).copy()
+    ClaimOut recharge = new ClaimOut()
       .type('Recharge project')
+      .param('triggered_by', new ClaimIn(xml).cid())
       .unique('recharge')
     if (!new Props(farm).has('//testing')) {
       recharge.until(Duration.ofMinutes(5))
