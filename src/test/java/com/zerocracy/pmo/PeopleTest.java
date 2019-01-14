@@ -141,6 +141,22 @@ public final class PeopleTest {
     }
 
     @Test
+    public void setCorrectPaypalAddressFromSlackLink() throws Exception {
+        final FkFarm farm = new FkFarm(new FkProject());
+        final People people = new People(farm).bootstrap();
+        final String uid = "amihaiemil";
+        people.wallet(
+            uid,
+            "paypal",
+            "<mailto:amihaiemil@gmail.com|amihaiemil@gmail.com>"
+        );
+        MatcherAssert.assertThat(
+            people.wallet(uid),
+            Matchers.is("amihaiemil@gmail.com")
+        );
+    }
+
+    @Test
     public void setsCorrectBitcoinAddress() throws Exception {
         PeopleTest.setsWallet("btc", "3HcEB6bi4TFPdvk31Pwz77DwAzfAZz2fMn");
     }

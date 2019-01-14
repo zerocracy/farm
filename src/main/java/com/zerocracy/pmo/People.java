@@ -379,13 +379,13 @@ public final class People {
      * Set wallet.
      * @param uid User ID
      * @param bank Bank
-     * @param wallet Wallet value
+     * @param address Wallet value
      * @throws IOException If fails
      * @checkstyle CyclomaticComplexityCheck (100 lines)
      * @checkstyle NPathComplexityCheck (100 lines)
      */
     public void wallet(final String uid, final String bank,
-        final String wallet) throws IOException {
+        final String address) throws IOException {
         if (!bank.matches("paypal|btc|bch|eth|ltc|zld")) {
             throw new SoftException(
                 new Par(
@@ -394,6 +394,8 @@ public final class People {
                 ).say(bank)
             );
         }
+        final String wallet =
+            new FixedAddress(bank, address).asString();
         if ("paypal".equals(bank)
             && !wallet.matches("\\b[\\w.%-]+@[-.\\w]+\\.[A-Za-z]{2,4}\\b")) {
             throw new SoftException(
