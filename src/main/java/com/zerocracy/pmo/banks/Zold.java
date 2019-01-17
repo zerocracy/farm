@@ -22,10 +22,7 @@ import com.zerocracy.Farm;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.farm.props.Props;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
 /**
  * Zold payment.
@@ -72,9 +69,9 @@ public final class Zold implements Bank {
             .method("POST")
             .header("X-Zold-Wts", this.props.get("//zold/secret"))
             .body()
-            .formParam("bnf", Zold.enc(target))
-            .formParam("amount", Zold.enc(amount.decimal().toString()))
-            .formParam("details", Zold.enc(details))
+            .formParam("bnf", target)
+            .formParam("amount", amount.decimal().toString())
+            .formParam("details", new ZoldDetails(details))
             .back()
             .fetch()
             .as(RestResponse.class)
@@ -90,17 +87,5 @@ public final class Zold implements Bank {
     @Override
     public void close() throws IOException {
         // Nothing to do
-    }
-
-    /**
-     * URL-encode string.
-     *
-     * @param src Source to encode
-     * @return Encoded value
-     * @throws UnsupportedEncodingException If fails
-     */
-    private static String enc(final String src)
-        throws UnsupportedEncodingException {
-        return URLEncoder.encode(src, StandardCharsets.UTF_8.name());
     }
 }
