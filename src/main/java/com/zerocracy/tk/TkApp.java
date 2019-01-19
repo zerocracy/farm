@@ -325,6 +325,10 @@ public final class TkApp extends TkWrap {
                                                                     new FkRegex(
                                                                         "/known/(?<login>[a-zA-Z0-9-]+)",
                                                                         new TkKnown(farm)
+                                                                    ),
+                                                                    new FkRegex(
+                                                                        "/resumes",
+                                                                        new TkResumes(farm)
                                                                     )
                                                                 )
                                                             )

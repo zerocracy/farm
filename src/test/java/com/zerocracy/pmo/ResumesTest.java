@@ -33,6 +33,7 @@ import org.hamcrest.core.IsEqual;
 import org.hamcrest.core.IsNot;
 import org.hamcrest.core.IsNull;
 import org.junit.Test;
+import org.xembly.Xembler;
 
 /**
  * Test case for {@link Resumes}.
@@ -43,6 +44,7 @@ import org.junit.Test;
  *  A test should be written to cover this situation.
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle MagicNumberCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 public final class ResumesTest {
@@ -326,6 +328,24 @@ public final class ResumesTest {
             "Could not find resume",
             resumes.resume(login).telegram(),
             new IsEqual<>(telegram)
+        );
+    }
+
+    @Test
+    public void filterByExaminer() throws Exception {
+        final Farm farm = new FkFarm();
+        final String login = "test25437";
+        final Resumes resumes = new Resumes(farm).bootstrap();
+        resumes.add(
+            login, LocalDateTime.now(), "test resume 1245",
+            ResumesTest.PERSONALITY, 761536247L, "qwrtsfg"
+        );
+        resumes.assign(login, "g4s8");
+        MatcherAssert.assertThat(
+            new Xembler(resumes.filter("examiner = *")).xml(),
+            XhtmlMatchers.hasXPaths(
+                "/resumes/resume[@login = 'test25437']"
+            )
         );
     }
 }

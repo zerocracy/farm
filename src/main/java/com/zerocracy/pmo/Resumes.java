@@ -16,21 +16,25 @@
  */
 package com.zerocracy.pmo;
 
+import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Xocument;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import org.cactoos.text.FormattedText;
+import org.xembly.Directive;
 import org.xembly.Directives;
 
 /**
  * Resumes.
  * @since 1.0
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 public final class Resumes {
+
     /**
      * PMO.
      */
@@ -222,6 +226,47 @@ public final class Resumes {
                 ).asString()
             ).isEmpty();
         }
+    }
+
+    /**
+     * Filter resumes by expression.
+     * @param expr Expression for resume
+     * @return Resumes
+     * @throws IOException If fails
+     */
+    public Iterable<Directive> filter(final String expr) throws IOException {
+        final Directives dirs = new Directives();
+        try (final Item item = this.item()) {
+            final List<XML> nodes = new Xocument(item.path()).nodes(
+                String.format("/resumes/resume[%s]", expr)
+            );
+            dirs.add("resumes");
+            for (final XML node : nodes) {
+                dirs.add("resume")
+                    .attr("login", node.xpath("@login").get(0))
+                    .add("text")
+                    .set(node.xpath("text/text()").get(0))
+                    .up()
+                    .add("personality")
+                    .set(node.xpath("personality/text()").get(0))
+                    .up()
+                    .add("stackoverflow")
+                    .set(node.xpath("stackoverflow/text()").get(0))
+                    .up()
+                    .add("telegram")
+                    .set(node.xpath("telegram/text()").get(0))
+                    .up()
+                    .add("examiner")
+                    .set(node.xpath("examiner/text()").get(0))
+                    .up()
+                    .add("submitted")
+                    .set(node.xpath("submitted/text()").get(0))
+                    .up()
+                    .up();
+            }
+            dirs.up();
+        }
+        return dirs;
     }
 
     /**
