@@ -23,10 +23,10 @@ import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.SoftException
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
-import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pmo.Catalog
 
 def exec(Project project, XML xml) {
@@ -35,9 +35,16 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).roles('PO', 'ARC')
   ClaimIn claim = new ClaimIn(xml)
   String pid = project.pid()
-  String rel = claim.param('rel')
-  String href = claim.param('href')
+  String rel = claim.param('rel').toLowerCase(Locale.US)
+  String href = claim.param('href').toLowerCase(Locale.US)
   Farm farm = binding.variables.farm
+  Catalog catalog = new Catalog(farm).bootstrap()
+  if (catalog.hasLink(pid, rel, ref)) {
+    claim.reply(
+      new Par(farm, 'The project %s already has link rel=\'%s\' ref=\'%s\'')
+        .say(pid, rel, ref)
+    ).postTo(new ClaimsOf(farm, project))
+  }
   if (rel == 'github') {
     Repo.Smart repo = new Repo.Smart(
       new ExtGithub(farm).value().repos().get(new Coordinates.Simple(href))
@@ -56,7 +63,6 @@ def exec(Project project, XML xml) {
       ).say(href)
     ).postTo(new ClaimsOf(farm, project))
   }
-  Catalog catalog = new Catalog(farm).bootstrap()
   catalog.link(pid, rel, href)
   claim.reply(
     new Par(

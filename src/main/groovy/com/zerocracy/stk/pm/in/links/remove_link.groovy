@@ -20,9 +20,9 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
-import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pmo.Catalog
 
 def exec(Project project, XML xml) {
@@ -31,10 +31,18 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).roles('PO', 'ARC')
   ClaimIn claim = new ClaimIn(xml)
   String pid = project.pid()
-  String rel = claim.param('rel')
-  String href = claim.param('href')
+  String rel = claim.param('rel').toLowerCase(Locale.US)
+  String href = claim.param('href').toLowerCase(Locale.US)
   Farm farm = binding.variables.farm
-  new Catalog(farm).unlink(pid, rel, href)
+  Catalog catalog = new Catalog(farm).bootstrap()
+  if (!catalog.hasLink(pid, rel, ref)) {
+    claim.reply(
+      new Par(farm, 'The project %s doesn\'t have the link rel=\'%s\' ref=\'%s\'')
+        .say(pid, rel, ref)
+    ).postTo(new ClaimsOf(farm, project))
+    return
+  }
+  catalog.unlink(pid, rel, href)
   claim.reply(
     new Par(
       'Link removed from %s to rel=`%s` and href=`%s`, by §17'
