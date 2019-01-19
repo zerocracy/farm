@@ -49,7 +49,7 @@ public final class TkResumes implements Take {
     public Response act(final Request req) throws IOException {
         final String login = new RqUser(this.farm, req).value();
         final boolean pmo = new Roles(new Pmo(this.farm)).bootstrap()
-            .hasRole(login, "PO");
+            .hasAnyRole(login);
         final String expr;
         if (pmo) {
             expr = "examiner = *";
