@@ -39,7 +39,7 @@ def exec(Project project, XML xml) {
   String href = claim.param('href').toLowerCase(Locale.US)
   Farm farm = binding.variables.farm
   Catalog catalog = new Catalog(farm).bootstrap()
-  if (catalog.hasLink(pid, rel, ref)) {
+  if (catalog.hasLink(pid, rel, href)) {
     claim.reply(
       new Par(farm, 'The project %s already has link rel=\'%s\' ref=\'%s\'')
         .say(pid, rel, ref)
