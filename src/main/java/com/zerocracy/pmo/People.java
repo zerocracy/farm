@@ -21,6 +21,7 @@ import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Par;
 import com.zerocracy.Policy;
+import com.zerocracy.Project;
 import com.zerocracy.SoftException;
 import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
@@ -44,7 +45,8 @@ import org.xembly.Directives;
     (
         {
             "PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals",
-            "PMD.NPathComplexity", "PMD.CyclomaticComplexity"
+            "PMD.NPathComplexity", "PMD.CyclomaticComplexity",
+            "PMD.GodClass"
         }
     )
 public final class People {
@@ -76,7 +78,7 @@ public final class People {
      * @throws IOException If fails
      */
     public People bootstrap() throws IOException {
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ_WRITE)) {
             new Xocument(item.path()).bootstrap("pmo/people");
         }
         return this;
@@ -88,7 +90,7 @@ public final class People {
      * @throws IOException If fails
      */
     public Iterable<String> iterate() throws IOException {
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ)) {
             return new Xocument(item.path()).xpath(
                 "/people/person/@id"
             );
@@ -101,7 +103,7 @@ public final class People {
      * @throws IOException If fails
      */
     public void remove(final String uid) throws IOException {
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ_WRITE)) {
             new Xocument(item.path()).modify(
                 new Directives().xpath(
                     String.format("/people/person[@id='%s']", uid)
@@ -116,7 +118,7 @@ public final class People {
      * @throws IOException If fails
      */
     public void touch(final String uid) throws IOException {
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ_WRITE)) {
             new Xocument(item.path()).modify(
                 People.start(uid)
             );
@@ -136,7 +138,7 @@ public final class People {
                 ).say(uid)
             );
         }
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ_WRITE)) {
             new Xocument(item.path()).modify(
                 People.start(uid)
                     .addIf("mentor")
@@ -167,7 +169,7 @@ public final class People {
                 ).say(uid)
             );
         }
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ_WRITE)) {
             new Xocument(item.path()).modify(
                 People.start(uid)
                     .addIf("details")
@@ -183,7 +185,7 @@ public final class People {
      * @throws IOException If fails
      */
     public String details(final String uid) throws IOException {
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ)) {
             final Iterator<String> items = new Xocument(item.path()).xpath(
                 String.format(
                     "/people/person[@id='%s']/details/text()",
@@ -229,7 +231,7 @@ public final class People {
                 ).say(uid)
             );
         }
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ_WRITE)) {
             final int max = new Policy().get("1.max-students", 16);
             final int current = new Xocument(item.path())
                 .nodes(
@@ -265,7 +267,7 @@ public final class People {
      * @throws IOException If fails
      */
     public boolean hasMentor(final String uid) throws IOException {
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ)) {
             return !new Xocument(item.path()).nodes(
                 String.format(
                     "/people/person[@id='%s']/mentor",
@@ -282,7 +284,7 @@ public final class People {
      * @throws IOException If fails
      */
     public String mentor(final String uid) throws IOException {
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ)) {
             return new Xocument(item.path()).xpath(
                 String.format(
                     "/people/person[@id='%s']/mentor/text()",
@@ -298,7 +300,7 @@ public final class People {
      * @throws IOException If fails
      */
     public void breakup(final String uid) throws IOException {
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ_WRITE)) {
             new Xocument(item.path()).modify(
                 new Directives().xpath(
                     String.format("/people/person[@id='%s']/mentor", uid)
@@ -340,7 +342,7 @@ public final class People {
                 ).say(rate)
             );
         }
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ_WRITE)) {
             new Xocument(item.path()).modify(
                 People.start(uid)
                     .addIf("rate")
@@ -356,7 +358,7 @@ public final class People {
      * @throws IOException If fails
      */
     public Cash rate(final String uid) throws IOException {
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ)) {
             final Iterator<XML> rates = new Xocument(item.path()).nodes(
                 String.format(
                     "/people/person[@id='%s']/rate",
@@ -423,7 +425,7 @@ public final class People {
                 new Par("Zold address is not valid: `%s`").say(wallet)
             );
         }
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ_WRITE)) {
             new Xocument(item.path()).modify(
                 People.start(uid)
                     .addIf("wallet")
@@ -440,7 +442,7 @@ public final class People {
      * @throws IOException If fails
      */
     public String wallet(final String uid) throws IOException {
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ)) {
             final Iterator<String> wallet = new Xocument(item.path()).xpath(
                 String.format(
                     "/people/person[@id='%s']/wallet/text()",
@@ -464,7 +466,7 @@ public final class People {
      * @throws IOException If fails
      */
     public String bank(final String uid) throws IOException {
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ)) {
             final Iterator<String> banks = new Xocument(item.path()).xpath(
                 String.format(
                     "/people/person[@id='%s']/wallet/@bank",
@@ -494,7 +496,7 @@ public final class People {
      */
     public void link(final String uid, final String rel,
         final String alias) throws IOException {
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ_WRITE)) {
             new Xocument(item.path()).modify(
                 People.start(uid)
                     .addIf("links")
@@ -514,7 +516,7 @@ public final class People {
      */
     public Iterable<String> find(final String rel,
         final String alias) throws IOException {
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ)) {
             return new Xocument(item).xpath(
                 String.format(
                     "/people/person[links/link[@rel='%s' and @href='%s']]/@id",
@@ -531,7 +533,7 @@ public final class People {
      * @throws IOException If fails
      */
     public Iterable<String> links(final String uid) throws IOException {
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ)) {
             return new Mapped<>(
                 xml -> String.format(
                     "%s:%s",
@@ -557,7 +559,7 @@ public final class People {
      */
     public Iterable<String> links(final String uid, final String rel)
         throws IOException {
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ)) {
             return new Xocument(item).xpath(
                 String.format(
                     "/people/person[@id='%s']/links/link[@rel='%s']/@href",
@@ -600,7 +602,7 @@ public final class People {
      */
     public void vacation(final String uid,
         final boolean mode) throws IOException {
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ_WRITE)) {
             new Xocument(item.path()).modify(
                 People.start(uid)
                     .addIf("vacation")
@@ -616,7 +618,7 @@ public final class People {
      * @throws IOException If fails
      */
     public boolean vacation(final String uid) throws IOException {
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ)) {
             return new UncheckedScalar<>(
                 new ItemAt<>(
                     false,
@@ -641,7 +643,7 @@ public final class People {
      * @throws IOException If fails
      */
     public Iterable<String> students(final String uid) throws IOException {
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ)) {
             return new Xocument(item.path()).xpath(
                 String.format(
                     "/people/person[mentor/text()='%s']/@id",
@@ -660,7 +662,7 @@ public final class People {
     public void reputation(final String uid, final int rep)
         throws IOException {
         this.checkExisting(uid);
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ_WRITE)) {
             new Xocument(item.path()).modify(
                 new Directives().xpath(
                     String.format(
@@ -680,7 +682,7 @@ public final class People {
      */
     public int reputation(final String uid) throws IOException {
         this.checkExisting(uid);
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ)) {
             return new NumberOf(
                 new Xocument(item.path()).xpath(
                     String.format(
@@ -702,7 +704,7 @@ public final class People {
     public void jobs(final String uid, final int jobs)
         throws IOException {
         this.checkExisting(uid);
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ_WRITE)) {
             new Xocument(item.path()).modify(
                 new Directives().xpath(
                     String.format(
@@ -722,7 +724,7 @@ public final class People {
      */
     public int jobs(final String uid) throws IOException {
         this.checkExisting(uid);
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ)) {
             return new NumberOf(
                 new Xocument(item.path()).xpath(
                     String.format(
@@ -744,7 +746,7 @@ public final class People {
     public void speed(final String uid, final double speed)
         throws IOException {
         this.checkExisting(uid);
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ_WRITE)) {
             new Xocument(item.path()).modify(
                 new Directives().xpath(
                     String.format(
@@ -764,7 +766,7 @@ public final class People {
      */
     public double speed(final String uid) throws IOException {
         this.checkExisting(uid);
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ)) {
             return new NumberOf(
                 new Xocument(item.path()).xpath(
                     String.format(
@@ -784,7 +786,7 @@ public final class People {
      * @throws IOException If fails
      */
     public boolean exists(final String uid) throws IOException {
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ)) {
             return !new Xocument(item).nodes(
                 String.format("//people/person[@id  ='%s']", uid)
             ).isEmpty();
@@ -799,7 +801,7 @@ public final class People {
      */
     public void apply(final String uid, final Instant when) throws IOException {
         this.checkExisting(uid);
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ_WRITE)) {
             new Xocument(item.path()).modify(
                 new Directives().xpath(
                     String.format("//people/person[@id  ='%s']", uid)
@@ -816,7 +818,7 @@ public final class People {
      */
     public boolean applied(final String uid) throws IOException {
         this.checkExisting(uid);
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ_WRITE)) {
             return !new Xocument(item).nodes(
                 String.format("//people/person[@id  ='%s']/applied", uid)
             ).isEmpty();
@@ -836,7 +838,7 @@ public final class People {
                 new Par("Person @%s doesn't have apply-time").say(uid)
             );
         }
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ)) {
             return Instant.parse(
                 new Xocument(item).xpath(
                     String.format(
@@ -855,7 +857,7 @@ public final class People {
      * @throws IOException If fails
      */
     public Iterable<String> skills(final String user) throws IOException {
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ)) {
             return new Mapped<>(
                 xml -> xml.node().getTextContent(),
                 new Xocument(item.path()).nodes(
@@ -877,7 +879,7 @@ public final class People {
     public void skills(final String uid, final Iterable<String> skills)
         throws IOException {
         this.checkExisting(uid);
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ_WRITE)) {
             new Xocument(item.path()).modify(
                 new Directives().xpath(
                     String.format(
@@ -902,11 +904,12 @@ public final class People {
 
     /**
      * The item.
+     * @param mode Access mode
      * @return Item
      * @throws IOException If fails
      */
-    private Item item() throws IOException {
-        return this.pmo.acq("people.xml");
+    private Item item(final Project.Access mode) throws IOException {
+        return this.pmo.acq("people.xml", mode);
     }
 
     /**

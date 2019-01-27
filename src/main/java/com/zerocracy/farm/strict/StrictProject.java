@@ -112,7 +112,8 @@ final class StrictProject implements Project {
     }
 
     @Override
-    public Item acq(final String file) throws IOException {
+    public Item acq(final String file, final Project.Access mode)
+        throws IOException {
         final boolean pmo = "PMO".equals(this.origin.pid());
         if (pmo && !StrictProject.PMO.matcher(file).matches()) {
             throw new IllegalArgumentException(
@@ -130,7 +131,7 @@ final class StrictProject implements Project {
                 )
             );
         }
-        return this.origin.acq(file);
+        return this.origin.acq(file, mode);
     }
 
 }

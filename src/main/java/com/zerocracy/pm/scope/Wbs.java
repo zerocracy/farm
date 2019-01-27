@@ -65,7 +65,7 @@ public final class Wbs {
      * @throws IOException If fails
      */
     public Wbs bootstrap() throws IOException {
-        try (final Item wbs = this.item()) {
+        try (final Item wbs = this.item(Project.Access.READ_WRITE)) {
             new Xocument(wbs.path()).bootstrap("pm/scope/wbs");
         }
         return this;
@@ -82,7 +82,7 @@ public final class Wbs {
                 new Par("Job %s is already in scope").say(job)
             );
         }
-        try (final Item wbs = this.item()) {
+        try (final Item wbs = this.item(Project.Access.READ_WRITE)) {
             new Xocument(wbs.path()).modify(
                 new Directives()
                     .xpath(String.format("/wbs[not(job[@id='%s'])]", job))
@@ -106,7 +106,7 @@ public final class Wbs {
                 new Par("Job %s was not in scope").say(job)
             );
         }
-        try (final Item wbs = this.item()) {
+        try (final Item wbs = this.item(Project.Access.READ_WRITE)) {
             new Xocument(wbs.path()).modify(
                 new Directives().xpath(Wbs.xpath(job)).strict(1).remove()
             );
@@ -120,7 +120,7 @@ public final class Wbs {
      * @throws IOException If fails
      */
     public boolean exists(final String job) throws IOException {
-        try (final Item wbs = this.item()) {
+        try (final Item wbs = this.item(Project.Access.READ)) {
             return !new Xocument(wbs.path()).nodes(Wbs.xpath(job)).isEmpty();
         }
     }
@@ -131,7 +131,7 @@ public final class Wbs {
      * @throws IOException If fails
      */
     public Collection<String> iterate() throws IOException {
-        try (final Item wbs = this.item()) {
+        try (final Item wbs = this.item(Project.Access.READ)) {
             return new Xocument(wbs.path()).xpath("/wbs/job/@id");
         }
     }
@@ -148,7 +148,7 @@ public final class Wbs {
                 new Par("Job %s doesn't exist, can't set role").say(job)
             );
         }
-        try (final Item wbs = this.item()) {
+        try (final Item wbs = this.item(Project.Access.READ_WRITE)) {
             new Xocument(wbs.path()).modify(
                 new Directives()
                     .xpath(String.format("/wbs/job[@id='%s']/role", job))
@@ -169,7 +169,7 @@ public final class Wbs {
                 new Par("Job %s doesn't exist, can't get role").say(job)
             );
         }
-        try (final Item wbs = this.item()) {
+        try (final Item wbs = this.item(Project.Access.READ)) {
             return new Xocument(wbs.path()).xpath(
                 String.format("/wbs/job[@id='%s']/role/text()", job)
             ).get(0);
@@ -188,7 +188,7 @@ public final class Wbs {
                 new Par("Job %s doesn't exist, can't check date").say(job)
             );
         }
-        try (final Item wbs = this.item()) {
+        try (final Item wbs = this.item(Project.Access.READ)) {
             return new DateOf(
                 new Xocument(wbs.path()).xpath(
                     String.format("/wbs/job[@id='%s']/created/text()", job)
@@ -208,11 +208,12 @@ public final class Wbs {
 
     /**
      * The item.
+     * @param mode Access mode
      * @return Item
      * @throws IOException If fails
      */
-    private Item item() throws IOException {
-        return this.project.acq("wbs.xml");
+    private Item item(final Project.Access mode) throws IOException {
+        return this.project.acq("wbs.xml", mode);
     }
 
 }

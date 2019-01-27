@@ -86,8 +86,8 @@ public final class GhProject implements Project {
     }
 
     @Override
-    public Item acq(final String file) throws IOException {
-        return new IoCheckedScalar<>(this.pkt).value().acq(file);
+    public Item acq(final String file, final Project.Access mode)
+        throws IOException {
+        return new IoCheckedScalar<>(this.pkt).value().acq(file, mode);
     }
-
 }

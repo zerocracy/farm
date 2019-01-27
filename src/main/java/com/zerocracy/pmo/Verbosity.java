@@ -61,7 +61,7 @@ public final class Verbosity {
      */
     public void add(final String job, final Project project,
         final int verbosity) throws IOException {
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ_WRITE)) {
             new Xocument(item).modify(
                 new Directives()
                     .xpath("/verbosity")
@@ -85,7 +85,7 @@ public final class Verbosity {
      * @throws IOException If fails
      */
     public Verbosity bootstrap() throws IOException {
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ_WRITE)) {
             new Xocument(item.path()).bootstrap("pmo/verbosity");
         }
         return this;
@@ -93,12 +93,13 @@ public final class Verbosity {
 
     /**
      * The item.
+     * @param mode Access mode
      * @return Item
      * @throws IOException If fails
      */
-    private Item item() throws IOException {
+    private Item item(final Project.Access mode) throws IOException {
         return this.pkt.acq(
-            String.format("verbosity/%s.xml", this.login)
+            String.format("verbosity/%s.xml", this.login), mode
         );
     }
 }

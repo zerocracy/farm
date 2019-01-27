@@ -28,6 +28,20 @@ import java.io.IOException;
 public interface Project {
 
     /**
+     * Item access mode.
+     */
+    enum Access {
+        /**
+         * Readonly.
+         */
+        READ,
+        /**
+         * Read-write.
+         */
+        READ_WRITE
+    }
+
+    /**
      * Project ID.
      * @return PID
      * @throws IOException If fails on I/O
@@ -37,6 +51,19 @@ public interface Project {
         throw new UnsupportedOperationException(
             "pid() is not implemented"
         );
+    }
+
+    /**
+     * Acquire an item with read-write mode.
+     * @param file File name
+     * @return Item
+     * @throws IOException If fails
+     * @todo #1706:30min Find all usages of this method and replace them
+     *  with acq(file, mode) methods with correct access mode, when all
+     *  done, remove this default method.
+     */
+    default Item acq(final String file) throws IOException {
+        return this.acq(file, Project.Access.READ_WRITE);
     }
 
     /**
@@ -53,9 +80,9 @@ public interface Project {
      * }}</pre>
      *
      * @param file File name in the project
+     * @param mode Access mode
      * @return Item acquired
      * @throws IOException If fails on I/O
      */
-    Item acq(String file) throws IOException;
-
+    Item acq(String file, Project.Access mode) throws IOException;
 }

@@ -103,7 +103,7 @@ public final class FkProject implements Project {
     }
 
     @Override
-    public Item acq(final String file) {
+    public Item acq(final String file, final Project.Access mode) {
         if (!this.items.containsKey(file)) {
             this.items.put(file, new FkItem(this.dir.resolve(file)));
         }

@@ -20,13 +20,15 @@ import com.zerocracy.Project;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
 import javax.sql.DataSource;
 
 /**
  * Postgres locks.
  *
  * @since 1.0
+ * @todo #1706:30min Implement ReadWriteLock in PgLock and use it here
+ *  also add many tests to verify that postgres locks are working.
  */
 public final class PgLocks implements Locks {
 
@@ -56,10 +58,12 @@ public final class PgLocks implements Locks {
     }
 
     @Override
-    public Lock lock(final Project pkt, final String res) throws IOException {
+    public ReadWriteLock lock(final Project pkt, final String res)
+        throws IOException {
         final String lid = String.format("%s:%s", pkt.pid(), PgLocks.RES);
         final PgLock.Holder holder = this.holders
             .computeIfAbsent(lid, key -> new PgLock.Holder());
-        return new PgLock(this.data, pkt.pid(), PgLocks.RES, holder);
+        new PgLock(this.data, pkt.pid(), res, holder).none();
+        throw new IllegalStateException("not implemented");
     }
 }
