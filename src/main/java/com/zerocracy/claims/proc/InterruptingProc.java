@@ -18,7 +18,6 @@ package com.zerocracy.claims.proc;
 
 import com.amazonaws.services.sqs.model.Message;
 import com.jcabi.log.Logger;
-import java.io.InterruptedIOException;
 import org.cactoos.Proc;
 
 /**
@@ -42,17 +41,34 @@ public final class InterruptingProc implements Proc<Message> {
     }
 
     @Override
+    @SuppressWarnings("PMD.AvoidCatchingThrowable")
     public void exec(final Message input) throws Exception {
         try {
             this.proc.exec(input);
-        } catch (final InterruptedException | InterruptedIOException err) {
-            final Thread thread = Thread.currentThread();
-            thread.interrupt();
-            Logger.info(
-                this,
-                "The thread %s was interrupted",
-                thread.getName()
-            );
+            // @checkstyle IllegalCatch (1 line)
+        } catch (final Throwable err) {
+            if (InterruptingProc.causedByInterrupted(err)) {
+                final Thread thread = Thread.currentThread();
+                thread.interrupt();
+                Logger.info(
+                    this,
+                    "The thread %s was interrupted",
+                    thread.getName()
+                );
+            } else {
+                throw err;
+            }
         }
+    }
+
+    /**
+     * Check if exception was caused by interrupted exception.
+     * @param thr Throwable
+     * @return TRUE if yes
+     */
+    private static boolean causedByInterrupted(final Throwable thr) {
+        return thr.getClass().equals(InterruptedException.class)
+            || thr.getCause() != null
+            && InterruptingProc.causedByInterrupted(thr.getCause());
     }
 }

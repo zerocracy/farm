@@ -20,7 +20,6 @@ import com.zerocracy.Item;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.nio.file.Path;
-import java.util.concurrent.locks.Lock;
 import lombok.EqualsAndHashCode;
 
 /**
@@ -39,16 +38,16 @@ final class SyncItem implements Item {
     /**
      * Lock.
      */
-    private final Lock lock;
+    private final Cancellation cancellation;
 
     /**
      * Ctor.
      * @param item Original item
-     * @param lck Lock
+     * @param cancellation Lock cancellation
      */
-    SyncItem(final Item item, final Lock lck) {
+    SyncItem(final Item item, final Cancellation cancellation) {
         this.origin = item;
-        this.lock = lck;
+        this.cancellation = cancellation;
     }
 
     @Override
@@ -59,7 +58,6 @@ final class SyncItem implements Item {
     @Override
     public Path path() throws IOException {
         if (Thread.interrupted()) {
-            Thread.currentThread().interrupt();
             throw new InterruptedIOException(
                 String.format(
                     "The thread %s is interrupted, can't continue.",
@@ -72,10 +70,8 @@ final class SyncItem implements Item {
 
     @Override
     public void close() throws IOException {
-        try {
-            this.origin.close();
-        } finally {
-            this.lock.unlock();
-        }
+        this.cancellation.cancelAfter(
+            none -> this.origin.close()
+        );
     }
 }

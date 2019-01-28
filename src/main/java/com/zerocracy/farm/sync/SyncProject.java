@@ -20,7 +20,6 @@ import com.jcabi.log.Logger;
 import com.zerocracy.Item;
 import com.zerocracy.Project;
 import java.io.IOException;
-import java.io.InterruptedIOException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -36,18 +35,6 @@ import lombok.EqualsAndHashCode;
 final class SyncProject implements Project {
 
     /**
-     * Interrupted item.
-     */
-    private static final Item ITEM_INTERRUPTED = () -> {
-        throw new InterruptedIOException(
-            String.format(
-                "The thread %s is interrupted, can't continue.",
-                Thread.currentThread().getName()
-            )
-        );
-    };
-
-    /**
      * Origin project.
      */
     private final Project origin;
@@ -58,20 +45,20 @@ final class SyncProject implements Project {
     private final Locks locks;
 
     /**
-     * Terminator.
+     * Lock time (millis).
      */
-    private final Terminator terminator;
+    private final long ttl;
 
     /**
      * Ctor.
      * @param pkt Project
      * @param lcks Locks
-     * @param tmr Terminator
+     * @param ttl Lock time
      */
-    SyncProject(final Project pkt, final Locks lcks, final Terminator tmr) {
+    SyncProject(final Project pkt, final Locks lcks, final long ttl) {
         this.origin = pkt;
         this.locks = lcks;
-        this.terminator = tmr;
+        this.ttl = ttl;
     }
 
     @Override
@@ -90,7 +77,7 @@ final class SyncProject implements Project {
         } else {
             lock = rwlock.writeLock();
         }
-        Item item;
+        final Item item;
         try {
             // @checkstyle MagicNumber (1 line)
             if (!lock.tryLock(2L, TimeUnit.MINUTES)) {
@@ -103,12 +90,20 @@ final class SyncProject implements Project {
                     )
                 );
             }
-            this.terminator.submit(this, file, lock);
-            item = new SyncItem(this.origin.acq(file), lock);
-        } catch (final InterruptedException ex) {
-            lock.unlock();
-            Thread.currentThread().interrupt();
-            item = SyncProject.ITEM_INTERRUPTED;
+            final Cancellation cancellation = new Cancellation(lock);
+            item = new SyncItem(this.origin.acq(file), cancellation);
+            cancellation.schedule(this.ttl);
+        } catch (final InterruptedException iex) {
+            if (lock.tryLock()) {
+                lock.unlock();
+            }
+            throw new IllegalStateException(
+                String.format(
+                    "Acquire interrupted; item=%s/%s(%s)",
+                    this.pid(), file, mode
+                ),
+                iex
+            );
         }
         return item;
     }
