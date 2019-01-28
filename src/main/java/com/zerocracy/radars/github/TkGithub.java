@@ -184,22 +184,16 @@ public final class TkGithub implements Take, Runnable {
                 HttpURLConnection.HTTP_UNAVAILABLE
             );
         }
-        try {
-            return new RsWithStatus(
-                new RsText(
-                    this.rebound.react(
-                        this.farm,
-                        github,
-                        TkGithub.json(body.iterator().next())
-                    )
-                ),
-                HttpURLConnection.HTTP_OK
-            );
-        } catch (final InterruptedException err) {
-            throw new HttpException(
-                HttpURLConnection.HTTP_REQ_TOO_LONG, err
-            );
-        }
+        return new RsWithStatus(
+            new RsText(
+                this.rebound.react(
+                    this.farm,
+                    github,
+                    TkGithub.json(body.iterator().next())
+                )
+            ),
+            HttpURLConnection.HTTP_OK
+        );
     }
 
     @Override

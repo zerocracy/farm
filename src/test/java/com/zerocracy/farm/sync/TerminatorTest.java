@@ -25,7 +25,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -43,7 +42,6 @@ public final class TerminatorTest {
      * @throws Exception if error occurred during test.
      */
     @Test
-    @Ignore
     public void interruptsThreadAfterLockTimeoutAndChecksLockAgain()
         throws Exception {
         final Lock lock = Mockito.mock(Lock.class);

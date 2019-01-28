@@ -16,7 +16,6 @@
  */
 package com.zerocracy.radars.github;
 
-import com.jcabi.aspects.Tv;
 import com.jcabi.github.Github;
 import com.zerocracy.Farm;
 import java.io.IOException;
@@ -45,8 +44,15 @@ public final class RbDelayed implements Rebound {
 
     @Override
     public String react(final Farm farm, final Github github,
-        final JsonObject event) throws IOException, InterruptedException {
-        TimeUnit.SECONDS.sleep((long) Tv.FIVE);
+        final JsonObject event) throws IOException {
+        try {
+            // @checkstyle MagicNumber (1 line)
+            TimeUnit.SECONDS.sleep(5L);
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException(ex);
+        }
         return this.origin.react(farm, github, event);
     }
+
 }
