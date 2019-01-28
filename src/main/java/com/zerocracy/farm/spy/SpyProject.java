@@ -14,45 +14,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.farm.footprint;
+package com.zerocracy.farm.spy;
 
-import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Project;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import lombok.EqualsAndHashCode;
-import org.cactoos.io.LengthOf;
-import org.cactoos.io.TeeInput;
+import org.cactoos.Proc;
+import org.cactoos.func.UncheckedProc;
 
 /**
- * Footprint project.
+ * Spy {@link Project}.
+ *
+ * <p>There is no thread-safety guarantee.</p>
  *
  * @since 1.0
  */
 @EqualsAndHashCode(of = "origin")
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
-final class FtProject implements Project {
+public final class SpyProject implements Project {
 
     /**
-     * Origin project.
+     * Origin.
      */
     private final Project origin;
 
     /**
-     * Farm.
+     * Spy.
      */
-    private final Farm farm;
+    private final UncheckedProc<String> spy;
 
     /**
      * Ctor.
-     * @param pkt Project
-     * @param frm Farm
+     * @param pkt The project
+     * @param proc The spy
      */
-    FtProject(final Project pkt, final Farm frm) {
+    public SpyProject(final Project pkt, final Proc<String> proc) {
         this.origin = pkt;
-        this.farm = frm;
+        this.spy = new UncheckedProc<>(proc);
     }
 
     @Override
@@ -62,16 +60,8 @@ final class FtProject implements Project {
 
     @Override
     public Item acq(final String file) throws IOException {
-        Item item = this.origin.acq(file);
-        if ("claims.xml".equals(file)) {
-            final Path temp = Files.createTempFile("footprint", ".xml");
-            final Path before = item.path();
-            if (before.toFile().exists()) {
-                new LengthOf(new TeeInput(item.path(), temp)).intValue();
-            }
-            item = new FtItem(this, item, this.farm, temp);
-        }
-        return item;
+        this.spy.exec(String.format("acq:%s", file));
+        return new SpyItem(this.origin.acq(file), this.spy);
     }
 
 }

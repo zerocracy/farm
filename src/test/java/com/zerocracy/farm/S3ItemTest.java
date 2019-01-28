@@ -21,7 +21,6 @@ import com.jcabi.s3.Bucket;
 import com.jcabi.s3.Ocket;
 import com.jcabi.s3.fake.FkOcket;
 import com.zerocracy.Item;
-import com.zerocracy.Project;
 import com.zerocracy.Xocument;
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,8 +49,7 @@ public final class S3ItemTest {
             "bucket", "roles.xml"
         );
         final Path temp = Files.createTempFile("", "");
-        // @checkstyle LineLengthCheck (1 line)
-        try (final Item item = new S3Item(ocket, temp, Project.Access.READ_WRITE)) {
+        try (final Item item = new S3Item(ocket, temp)) {
             new Xocument(item).bootstrap("pm/staff/roles");
             new Xocument(item).modify(
                 new Directives().xpath("/roles")
@@ -60,7 +58,7 @@ public final class S3ItemTest {
                     .add("role").set("ARC")
             );
         }
-        try (final Item item = new S3Item(ocket, temp, Project.Access.READ)) {
+        try (final Item item = new S3Item(ocket, temp)) {
             MatcherAssert.assertThat(
                 new Xocument(item).xpath("/roles/text()"),
                 Matchers.not(Matchers.emptyIterable())
@@ -98,8 +96,7 @@ public final class S3ItemTest {
         );
         final Path temp = Files.createTempFile("", "");
         final String before;
-        // @checkstyle LineLengthCheck (1 line)
-        try (final Item item = new S3Item(ocket, temp, Project.Access.READ_WRITE)) {
+        try (final Item item = new S3Item(ocket, temp)) {
             new Xocument(item).bootstrap("pm/scope/wbs");
             before = new Xocument(item).toString();
             new Xocument(item).modify(
@@ -115,8 +112,7 @@ public final class S3ItemTest {
             ocket.file().toPath(),
             FileTime.fromMillis(Long.MAX_VALUE)
         );
-        // @checkstyle LineLengthCheck (1 line)
-        try (final Item item = new S3Item(ocket, temp, Project.Access.READ_WRITE)) {
+        try (final Item item = new S3Item(ocket, temp)) {
             MatcherAssert.assertThat(
                 new Xocument(item).nodes("/wbs[not(job)]"),
                 Matchers.not(Matchers.emptyIterable())
@@ -136,8 +132,7 @@ public final class S3ItemTest {
                 "bucket-1", "test.txt"
             )
         );
-        // @checkstyle LineLengthCheck (1 line)
-        try (final Item item = new S3Item(okt, target, Project.Access.READ_WRITE)) {
+        try (final Item item = new S3Item(okt, target)) {
             Files.write(
                 item.path(),
                 new byte[]{(byte) 1, (byte) 0},
@@ -150,7 +145,6 @@ public final class S3ItemTest {
      * Ocket implementation which thread will be interrupted after first read.
      */
     private static final class OcktInterrupted implements Ocket {
-
         /**
          * Origin ocket.
          */

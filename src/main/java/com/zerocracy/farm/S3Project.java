@@ -89,8 +89,7 @@ final class S3Project implements Project {
     }
 
     @Override
-    public Item acq(final String file, final Project.Access mode)
-        throws IOException {
+    public Item acq(final String file) throws IOException {
         final Item item;
         if ("_list.xml".equals(file)) {
             final ObjectListing listing = this.bucket.region().aws()
@@ -135,8 +134,7 @@ final class S3Project implements Project {
             final String key = String.format("%s%s", this.prefix, file);
             item = new S3Item(
                 this.bucket.ocket(key),
-                this.temp.resolve(key),
-                mode
+                this.temp.resolve(key)
             );
         }
         return item;

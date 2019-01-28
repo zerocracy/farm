@@ -18,7 +18,7 @@ package com.zerocracy.farm.sync;
 
 import com.zerocracy.Project;
 import java.io.IOException;
-import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.Lock;
 
 /**
  * Shared resource locks.
@@ -35,5 +35,5 @@ public interface Locks {
      * @return Lock
      * @throws IOException If fails
      */
-    ReadWriteLock lock(Project pkt, String res) throws IOException;
+    Lock lock(Project pkt, String res) throws IOException;
 }

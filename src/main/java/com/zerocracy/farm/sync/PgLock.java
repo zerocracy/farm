@@ -151,14 +151,6 @@ final class PgLock implements Lock {
     }
 
     /**
-     * A hack for PMD & checkstyle.
-     * @checkstyle NonStaticMethodCheck (5 lines)
-     */
-    public void none() {
-        // do nothing
-    }
-
-    /**
      * Acquire a lock.
      *
      * @param session Database session
@@ -241,6 +233,7 @@ final class PgLock implements Lock {
                 }
             }
         }
+
         @Override
         public String toString() {
             final Thread thread = this.ref.get();
@@ -254,6 +247,5 @@ final class PgLock implements Lock {
             }
             return str;
         }
-
     }
 }
