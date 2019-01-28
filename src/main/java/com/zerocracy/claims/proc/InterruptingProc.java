@@ -14,39 +14,45 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.radars.github;
+package com.zerocracy.claims.proc;
 
-import com.jcabi.aspects.Tv;
-import com.jcabi.github.Github;
-import com.zerocracy.Farm;
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
-import javax.json.JsonObject;
+import com.amazonaws.services.sqs.model.Message;
+import com.jcabi.log.Logger;
+import java.io.InterruptedIOException;
+import org.cactoos.Proc;
 
 /**
- * Rebound that acts in about 5 seconds.
+ * Proc which handle interrupted exceptions.
  *
  * @since 1.0
  */
-public final class RbDelayed implements Rebound {
+public final class InterruptingProc implements Proc<Message> {
 
     /**
-     * Original reaction.
+     * Origin proc.
      */
-    private final Rebound origin;
+    private final Proc<Message> proc;
 
     /**
      * Ctor.
-     * @param rtn Reaction
+     * @param proc Origin
      */
-    public RbDelayed(final Rebound rtn) {
-        this.origin = rtn;
+    public InterruptingProc(final Proc<Message> proc) {
+        this.proc = proc;
     }
 
     @Override
-    public String react(final Farm farm, final Github github,
-        final JsonObject event) throws IOException, InterruptedException {
-        TimeUnit.SECONDS.sleep((long) Tv.FIVE);
-        return this.origin.react(farm, github, event);
+    public void exec(final Message input) throws Exception {
+        try {
+            this.proc.exec(input);
+        } catch (final InterruptedException | InterruptedIOException err) {
+            final Thread thread = Thread.currentThread();
+            thread.interrupt();
+            Logger.info(
+                this,
+                "The thread %s was interrupted",
+                thread.getName()
+            );
+        }
     }
 }

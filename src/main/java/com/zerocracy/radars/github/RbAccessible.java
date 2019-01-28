@@ -52,7 +52,7 @@ public final class RbAccessible implements Rebound {
     @Override
     @SuppressWarnings("PMD.PreserveStackTrace")
     public String react(final Farm farm, final Github github,
-        final JsonObject event) throws IOException {
+        final JsonObject event) throws IOException, InterruptedException {
         final JsonObject obj = event.getJsonObject("repository");
         if (obj == null) {
             throw new RsForward(

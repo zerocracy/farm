@@ -23,8 +23,10 @@ import com.zerocracy.pm.cost.Equity;
 import com.zerocracy.tk.RqUser;
 import com.zerocracy.tk.RsParFlash;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.util.logging.Level;
 import org.cactoos.io.BytesOf;
+import org.takes.HttpException;
 import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
@@ -69,14 +71,20 @@ public final class TkEquity implements TkRegex {
                 String.format("/p/%s", project.pid())
             );
         }
-        return new RsWithHeaders(
-            new RsWithBody(new BytesOf(equity.pdf(user)).asBytes()),
-            "Content-Type: application/pdf",
-            String.format(
-                "Content-Disposition: attachment; filename=equity-%s.pdf",
-                project.pid()
-            )
-        );
+        try {
+            return new RsWithHeaders(
+                new RsWithBody(new BytesOf(equity.pdf(user)).asBytes()),
+                "Content-Type: application/pdf",
+                String.format(
+                    "Content-Disposition: attachment; filename=equity-%s.pdf",
+                    project.pid()
+                )
+            );
+        } catch (final InterruptedException err) {
+            throw new HttpException(
+                HttpURLConnection.HTTP_REQ_TOO_LONG, err
+            );
+        }
     }
 
 }

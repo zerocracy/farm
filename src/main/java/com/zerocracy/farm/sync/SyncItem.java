@@ -18,6 +18,7 @@ package com.zerocracy.farm.sync;
 
 import com.zerocracy.Item;
 import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.nio.file.Path;
 import java.util.concurrent.locks.Lock;
 import lombok.EqualsAndHashCode;
@@ -57,9 +58,9 @@ final class SyncItem implements Item {
 
     @Override
     public Path path() throws IOException {
-        if (Thread.currentThread().isInterrupted()) {
+        if (Thread.interrupted()) {
             Thread.currentThread().interrupt();
-            throw new IllegalStateException(
+            throw new InterruptedIOException(
                 String.format(
                     "The thread %s is interrupted, can't continue.",
                     Thread.currentThread().getName()

@@ -16,6 +16,7 @@
  */
 package com.zerocracy;
 
+import com.jcabi.log.Logger;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -58,7 +59,7 @@ public final class ShutUp {
             }
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
-            throw new IllegalStateException(ex);
+            Logger.info(this, "ShutUp.close was interrupted");
         }
     }
 
