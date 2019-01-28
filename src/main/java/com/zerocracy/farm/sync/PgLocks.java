@@ -28,7 +28,7 @@ import javax.sql.DataSource;
  *
  * @since 1.0
  * @todo #1706:30min Implement ReadWriteLock in PgLock and use it here
- *  also add many tests to verify that postgres locks are working.
+ *  also add many tests to verify that postgres locks are working correctly.
  */
 public final class PgLocks implements Locks {
 
