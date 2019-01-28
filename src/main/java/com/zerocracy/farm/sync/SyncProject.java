@@ -20,10 +20,8 @@ import com.jcabi.log.Logger;
 import com.zerocracy.Item;
 import com.zerocracy.Project;
 import java.io.IOException;
-import java.io.InterruptedIOException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
 import lombok.EqualsAndHashCode;
 
 /**
@@ -34,18 +32,6 @@ import lombok.EqualsAndHashCode;
  */
 @EqualsAndHashCode(of = "origin")
 final class SyncProject implements Project {
-
-    /**
-     * Interrupted item.
-     */
-    private static final Item ITEM_INTERRUPTED = () -> {
-        throw new InterruptedIOException(
-            String.format(
-                "The thread %s is interrupted, can't continue.",
-                Thread.currentThread().getName()
-            )
-        );
-    };
 
     /**
      * Origin project.
@@ -80,17 +66,9 @@ final class SyncProject implements Project {
     }
 
     @Override
-    public Item acq(final String file, final Project.Access mode)
-        throws IOException {
+    public Item acq(final String file) throws IOException {
         final long start = System.currentTimeMillis();
-        final ReadWriteLock rwlock = this.locks.lock(this, file);
-        final Lock lock;
-        if (mode == Project.Access.READ) {
-            lock = rwlock.readLock();
-        } else {
-            lock = rwlock.writeLock();
-        }
-        Item item;
+        final Lock lock = this.locks.lock(this, file);
         try {
             // @checkstyle MagicNumber (1 line)
             if (!lock.tryLock(2L, TimeUnit.MINUTES)) {
@@ -103,13 +81,20 @@ final class SyncProject implements Project {
                     )
                 );
             }
-            this.terminator.submit(this, file, lock);
-            item = new SyncItem(this.origin.acq(file), lock);
         } catch (final InterruptedException ex) {
             lock.unlock();
             Thread.currentThread().interrupt();
-            item = SyncProject.ITEM_INTERRUPTED;
+            throw new IllegalStateException(
+                Logger.format(
+                    "%s interrupted while waiting for \"%s\" in %s for %[ms]s",
+                    Thread.currentThread().getName(),
+                    file, this.pid(),
+                    System.currentTimeMillis() - start
+                ),
+                ex
+            );
         }
-        return item;
+        this.terminator.submit(this, file, lock);
+        return new SyncItem(this.origin.acq(file), lock);
     }
 }

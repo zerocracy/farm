@@ -72,7 +72,7 @@ public final class RbByLabel implements Rebound {
 
     @Override
     public String react(final Farm farm, final Github github,
-        final JsonObject event) throws IOException, InterruptedException {
+        final JsonObject event) throws IOException {
         final Text reaction;
         if (event.containsKey(RbByLabel.FIELD)) {
             final String label = event.getJsonObject(RbByLabel.FIELD)

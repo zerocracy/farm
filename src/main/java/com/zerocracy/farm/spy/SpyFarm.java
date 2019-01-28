@@ -14,64 +14,62 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.farm.footprint;
+package com.zerocracy.farm.spy;
 
 import com.zerocracy.Farm;
-import com.zerocracy.Item;
 import com.zerocracy.Project;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import lombok.EqualsAndHashCode;
-import org.cactoos.io.LengthOf;
-import org.cactoos.io.TeeInput;
+import org.cactoos.Proc;
+import org.cactoos.func.UncheckedProc;
+import org.cactoos.iterable.Mapped;
 
 /**
- * Footprint project.
+ * Fake {@link Farm}.
+ *
+ * <p>There is no thread-safety guarantee.</p>
  *
  * @since 1.0
  */
 @EqualsAndHashCode(of = "origin")
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
-final class FtProject implements Project {
-
-    /**
-     * Origin project.
-     */
-    private final Project origin;
+public final class SpyFarm implements Farm {
 
     /**
      * Farm.
      */
-    private final Farm farm;
+    private final Farm origin;
+
+    /**
+     * Proc to accept changes.
+     */
+    private final UncheckedProc<String> spy;
 
     /**
      * Ctor.
-     * @param pkt Project
-     * @param frm Farm
+     * @param farm The farm
+     * @param proc The spy
      */
-    FtProject(final Project pkt, final Farm frm) {
-        this.origin = pkt;
-        this.farm = frm;
+    public SpyFarm(final Farm farm, final Proc<String> proc) {
+        this.origin = farm;
+        this.spy = new UncheckedProc<>(proc);
     }
 
     @Override
-    public String pid() throws IOException {
-        return this.origin.pid();
+    public String toString() {
+        return this.origin.toString();
     }
 
     @Override
-    public Item acq(final String file) throws IOException {
-        Item item = this.origin.acq(file);
-        if ("claims.xml".equals(file)) {
-            final Path temp = Files.createTempFile("footprint", ".xml");
-            final Path before = item.path();
-            if (before.toFile().exists()) {
-                new LengthOf(new TeeInput(item.path(), temp)).intValue();
-            }
-            item = new FtItem(this, item, this.farm, temp);
-        }
-        return item;
+    public Iterable<Project> find(final String xpath) throws IOException {
+        this.spy.exec(String.format("find:%s", xpath));
+        return new Mapped<>(
+            project -> new SpyProject(project, this.spy),
+            this.origin.find(xpath)
+        );
     }
 
+    @Override
+    public void close() throws IOException {
+        this.origin.close();
+    }
 }

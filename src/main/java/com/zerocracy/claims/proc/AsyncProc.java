@@ -104,26 +104,22 @@ public final class AsyncProc implements Proc<List<Message>> {
                 () -> {
                     if (!this.shutdown.check()) {
                         this.service.shutdown();
-                        final Thread thread = Thread.currentThread();
                         try {
                             this.service.awaitTermination(
                                 Tv.FIVE,
                                 TimeUnit.MINUTES
                             );
                         } catch (final InterruptedException err) {
-                            thread.interrupt();
                             Logger.info(
                                 this,
                                 "Service wait was interrupted"
                             );
                         }
-                        if (!thread.isInterrupted()) {
-                            Logger.info(
-                                this,
-                                "Shutting down with %d tasks still executing",
-                                this.service.shutdownNow().size()
-                            );
-                        }
+                        Logger.info(
+                            this,
+                            "Shutting down with %d tasks still executing",
+                            this.service.shutdownNow().size()
+                        );
                     }
                 }
             ),

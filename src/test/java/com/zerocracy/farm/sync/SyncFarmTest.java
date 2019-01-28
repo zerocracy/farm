@@ -51,7 +51,7 @@ public final class SyncFarmTest {
      * Timeout rule.
      */
     @Rule
-    public final Timeout timeout = Timeout.seconds(15L);
+    public final Timeout timeout = Timeout.seconds(5L);
 
     @Test
     public void makesProjectsThreadSafe() throws Exception {

@@ -17,7 +17,6 @@
 package com.zerocracy.pmo;
 
 import com.zerocracy.Item;
-import com.zerocracy.Project;
 import com.zerocracy.Xocument;
 import java.io.IOException;
 import org.cactoos.iterable.ItemAt;
@@ -56,7 +55,7 @@ public final class Options {
      * @throws IOException If fails
      */
     public Options bootstrap() throws IOException {
-        try (final Item item = this.item(Project.Access.READ_WRITE)) {
+        try (final Item item = this.item()) {
             new Xocument(item).bootstrap("pmo/options");
         }
         return this;
@@ -68,7 +67,7 @@ public final class Options {
      * @throws IOException If fails
      */
     public int maxJobsInAgenda() throws IOException {
-        try (final Item item = this.item(Project.Access.READ)) {
+        try (final Item item = this.item()) {
             return new IoCheckedScalar<>(
                 new ItemAt<Number>(
                     xpath -> Integer.MAX_VALUE,
@@ -88,7 +87,7 @@ public final class Options {
      * @throws IOException If fails
      */
     public void maxJobsInAgenda(final int max) throws IOException {
-        try (final Item item = this.item(Project.Access.READ_WRITE)) {
+        try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()
                     .xpath("/options")
@@ -134,7 +133,7 @@ public final class Options {
      */
     private boolean notify(final String name, final boolean def)
         throws IOException {
-        try (final Item item = this.item(Project.Access.READ)) {
+        try (final Item item = this.item()) {
             return new IoCheckedScalar<>(
                 new ItemAt<Boolean>(
                     xpath -> def,
@@ -155,11 +154,10 @@ public final class Options {
 
     /**
      * The item.
-     * @param mode Access mode
      * @return Item
      * @throws IOException If fails
      */
-    private Item item(final Project.Access mode) throws IOException {
-        return this.pmo.acq(String.format("options/%s.xml", this.uid), mode);
+    private Item item() throws IOException {
+        return this.pmo.acq(String.format("options/%s.xml", this.uid));
     }
 }

@@ -51,10 +51,9 @@ public final class Signature {
      * PGP signature text.
      * @return PGP signature
      * @throws IOException If fails
-     * @throws InterruptedException If interrupted
      */
     @SuppressWarnings("PMD.PrematureDeclaration")
-    public String asString() throws IOException, InterruptedException {
+    public String asString() throws IOException {
         final String key = "0AAF4B5A";
         final Process receive = Signature.env(
             new ProcessBuilder(
@@ -67,7 +66,12 @@ public final class Signature {
                 key
             )
         ).start();
-        receive.waitFor(1L, TimeUnit.MINUTES);
+        try {
+            receive.waitFor(1L, TimeUnit.MINUTES);
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException(ex);
+        }
         if (receive.exitValue() != 0) {
             throw new IllegalStateException(
                 String.format(
@@ -98,7 +102,12 @@ public final class Signature {
                     "--sign"
                 )
             ).redirectInput(temp.toFile()).start();
-            receive.waitFor(1L, TimeUnit.MINUTES);
+            try {
+                receive.waitFor(1L, TimeUnit.MINUTES);
+            } catch (final InterruptedException ex) {
+                Thread.currentThread().interrupt();
+                throw new IllegalStateException(ex);
+            }
             if (receive.exitValue() != 0) {
                 throw new IllegalStateException(
                     String.format(
@@ -133,4 +142,5 @@ public final class Signature {
         );
         return builder;
     }
+
 }

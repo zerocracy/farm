@@ -69,7 +69,7 @@ public final class Boosts {
      * @throws IOException If fails
      */
     public int factor(final String job) throws IOException {
-        try (final Item item = this.item(Project.Access.READ)) {
+        try (final Item item = this.item()) {
             return new UncheckedScalar<>(
                 new ItemAt<Integer>(
                     src -> Boosts.FCT_DEFAULT,
@@ -121,7 +121,7 @@ public final class Boosts {
                 );
             }
         }
-        try (final Item item = this.item(Project.Access.READ_WRITE)) {
+        try (final Item item = this.item()) {
             final Xocument xoc = new Xocument(item);
             final String xpath = String.format("/boosts/boost[@id='%s']", job);
             if (xoc.nodes(xpath).isEmpty()) {
@@ -149,7 +149,7 @@ public final class Boosts {
      * @throws IOException If fails
      */
     public Boosts bootstrap() throws IOException {
-        try (final Item wbs = this.item(Project.Access.READ_WRITE)) {
+        try (final Item wbs = this.item()) {
             new Xocument(wbs.path()).bootstrap("pm/cost/boosts");
         }
         return this;
@@ -157,11 +157,10 @@ public final class Boosts {
 
     /**
      * The item.
-     * @param mode Access mode
      * @return Item
      * @throws IOException If fails
      */
-    private Item item(final Project.Access mode) throws IOException {
-        return this.project.acq("boosts.xml", mode);
+    private Item item() throws IOException {
+        return this.project.acq("boosts.xml");
     }
 }

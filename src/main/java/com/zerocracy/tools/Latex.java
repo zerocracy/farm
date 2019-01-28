@@ -60,9 +60,8 @@ public final class Latex {
      * Create PDF file.
      * @return PDF file location
      * @throws IOException If fails
-     * @throws InterruptedException If interrupted
      */
-    public Input pdf() throws IOException, InterruptedException {
+    public Input pdf() throws IOException {
         final String latex = this.source.replace(
             "\\begin{document}",
             String.format(

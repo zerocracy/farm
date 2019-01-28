@@ -66,7 +66,7 @@ public final class Roles {
      * @throws IOException If fails
      */
     public Roles bootstrap() throws IOException {
-        try (final Item team = this.item(Project.Access.READ_WRITE)) {
+        try (final Item team = this.item()) {
             new Xocument(team).bootstrap("pm/staff/roles");
         }
         return this;
@@ -78,7 +78,7 @@ public final class Roles {
      * @throws IOException If fails
      */
     public boolean isEmpty() throws IOException {
-        try (final Item roles = this.item(Project.Access.READ)) {
+        try (final Item roles = this.item()) {
             return new Xocument(roles).nodes("/roles/person").isEmpty();
         }
     }
@@ -89,7 +89,7 @@ public final class Roles {
      * @throws IOException If fails
      */
     public Collection<String> everybody() throws IOException {
-        try (final Item roles = this.item(Project.Access.READ)) {
+        try (final Item roles = this.item()) {
             return new Xocument(roles).xpath(
                 "/roles/person/@id"
             );
@@ -153,7 +153,7 @@ public final class Roles {
                 )
             );
         }
-        try (final Item roles = this.item(Project.Access.READ_WRITE)) {
+        try (final Item roles = this.item()) {
             final String login = person.toLowerCase(Locale.ENGLISH);
             new Xocument(roles.path()).modify(
                 new Directives()
@@ -209,7 +209,7 @@ public final class Roles {
                 ).say()
             );
         }
-        try (final Item roles = this.item(Project.Access.READ_WRITE)) {
+        try (final Item roles = this.item()) {
             final Xocument xoc = new Xocument(roles.path());
             xoc.modify(
                 new Directives()
@@ -239,7 +239,7 @@ public final class Roles {
      * @throws IOException If fails
      */
     public boolean hasAnyRole(final String person) throws IOException {
-        try (final Item roles = this.item(Project.Access.READ)) {
+        try (final Item roles = this.item()) {
             return new Xocument(roles).nodes(
                 String.format(
                     "/roles/person[@id = '%s']",
@@ -263,7 +263,7 @@ public final class Roles {
                 "The list of roles can't be empty, use hasAnyRoles() instead"
             );
         }
-        try (final Item roles = this.item(Project.Access.READ)) {
+        try (final Item roles = this.item()) {
             return new Xocument(roles).nodes(
                 String.format(
                     "/roles/person[@id='%s' and (%s)]",
@@ -287,7 +287,7 @@ public final class Roles {
      * @throws IOException If fails
      */
     public List<String> findByRole(final String role) throws IOException {
-        try (final Item roles = this.item(Project.Access.READ)) {
+        try (final Item roles = this.item()) {
             return new Xocument(roles).xpath(
                 String.format(
                     "/roles/person[role='%s']/@id",
@@ -304,7 +304,7 @@ public final class Roles {
      * @throws IOException If fails
      */
     public Collection<String> allRoles(final String login) throws IOException {
-        try (final Item roles = this.item(Project.Access.READ)) {
+        try (final Item roles = this.item()) {
             return new Xocument(roles).xpath(
                 String.format(
                     "/roles/person[@id='%s']/role/text()",
@@ -316,12 +316,11 @@ public final class Roles {
 
     /**
      * The item.
-     * @param mode Access mode
      * @return Item
      * @throws IOException If fails
      */
-    private Item item(final Project.Access mode) throws IOException {
-        return this.project.acq("roles.xml", mode);
+    private Item item() throws IOException {
+        return this.project.acq("roles.xml");
     }
 
 }
