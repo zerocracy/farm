@@ -64,8 +64,7 @@ public final class Txn implements Project, Closeable {
         }
         )
     @Override
-    public Item acq(final String file, final Project.Access mode)
-        throws IOException {
+    public Item acq(final String file) throws IOException {
         final Txn.TxnItem item;
         if (this.items.containsKey(file)) {
             item = this.items.get(file);
@@ -118,7 +117,7 @@ public final class Txn implements Project, Closeable {
      */
     private Txn.TxnItem item(final String file) throws IOException {
         final File tmp = File.createTempFile("txn_", ".tmp");
-        final Item src = this.origin.acq(file, Project.Access.READ_WRITE);
+        final Item src = this.origin.acq(file);
         if (src.path().toFile().exists()) {
             Files.copy(
                 src.path(),

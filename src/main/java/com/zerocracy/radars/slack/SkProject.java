@@ -69,9 +69,8 @@ public final class SkProject implements Project {
     }
 
     @Override
-    public Item acq(final String file, final Project.Access mode)
-        throws IOException {
-        return new IoCheckedScalar<>(this.pkt).value().acq(file, mode);
+    public Item acq(final String file) throws IOException {
+        return new IoCheckedScalar<>(this.pkt).value().acq(file);
     }
 
 }

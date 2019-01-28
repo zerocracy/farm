@@ -100,7 +100,7 @@ public final class Agenda {
      * @throws IOException If fails
      */
     public Agenda bootstrap() throws IOException {
-        try (final Item item = this.item(Project.Access.READ_WRITE)) {
+        try (final Item item = this.item()) {
             new Xocument(item.path()).bootstrap("pmo/agenda");
         }
         return this;
@@ -112,7 +112,7 @@ public final class Agenda {
      * @throws IOException If fails
      */
     public Collection<String> jobs() throws IOException {
-        try (final Item item = this.item(Project.Access.READ)) {
+        try (final Item item = this.item()) {
             return new Xocument(item.path()).xpath(
                 "/agenda/order/@job"
             );
@@ -127,7 +127,7 @@ public final class Agenda {
      * @throws IOException If fails
      */
     public Collection<String> jobs(final Project pkt) throws IOException {
-        try (final Item item = this.item(Project.Access.READ)) {
+        try (final Item item = this.item()) {
             return new Xocument(item.path()).xpath(
                 String.format(
                     "/agenda/order[project = '%s']/@job",
@@ -144,7 +144,7 @@ public final class Agenda {
      * @throws IOException If fails
      */
     public boolean exists(final String job) throws IOException {
-        try (final Item item = this.item(Project.Access.READ)) {
+        try (final Item item = this.item()) {
             return !new Xocument(item.path()).nodes(Agenda.path(job)).isEmpty();
         }
     }
@@ -156,7 +156,7 @@ public final class Agenda {
      * @throws IOException If fails
      */
     public boolean hasInspector(final String job) throws IOException {
-        try (final Item item = this.item(Project.Access.READ)) {
+        try (final Item item = this.item()) {
             return !new Xocument(item.path())
                 .nodes(String.format("%s/inspector", Agenda.path(job)))
                 .isEmpty();
@@ -181,7 +181,7 @@ public final class Agenda {
                 ).say(job, this.login)
             );
         }
-        try (final Item item = this.item(Project.Access.READ)) {
+        try (final Item item = this.item()) {
             return Instant.parse(
                 new Xocument(item.path()).nodes(
                     String.format(
@@ -210,7 +210,7 @@ public final class Agenda {
                 ).say(job, this.login)
             );
         }
-        try (final Item item = this.item(Project.Access.READ_WRITE)) {
+        try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()
                     .xpath("/agenda")
@@ -238,7 +238,7 @@ public final class Agenda {
                 ).say(job, this.login)
             );
         }
-        try (final Item item = this.item(Project.Access.READ_WRITE)) {
+        try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()
                     .xpath(Agenda.path(job))
@@ -253,7 +253,7 @@ public final class Agenda {
      * @throws IOException If fails.
      */
     public void removeAll() throws IOException {
-        try (final Item item = this.item(Project.Access.READ_WRITE)) {
+        try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()
                     .xpath("/agenda/order")
@@ -276,7 +276,7 @@ public final class Agenda {
                 ).say(job, this.login)
             );
         }
-        try (final Item item = this.item(Project.Access.READ_WRITE)) {
+        try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()
                     .xpath(Agenda.path(job))
@@ -302,7 +302,7 @@ public final class Agenda {
                 ).say(job, this.login)
             );
         }
-        try (final Item item = this.item(Project.Access.READ_WRITE)) {
+        try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()
                     .xpath(Agenda.path(job))
@@ -328,7 +328,7 @@ public final class Agenda {
                 ).say(job, this.login)
             );
         }
-        try (final Item item = this.item(Project.Access.READ_WRITE)) {
+        try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()
                     .xpath(Agenda.path(job))
@@ -354,7 +354,7 @@ public final class Agenda {
                 ).say(job, this.login)
             );
         }
-        try (final Item item = this.item(Project.Access.READ_WRITE)) {
+        try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()
                     .xpath(Agenda.path(job))
@@ -379,7 +379,7 @@ public final class Agenda {
                 ).say(job, this.login)
             );
         }
-        try (final Item item = this.item(Project.Access.READ)) {
+        try (final Item item = this.item()) {
             return new Xocument(item.path()).nodes(
                 String.format(
                     "/agenda/order[@job='%s']/title",
@@ -391,13 +391,12 @@ public final class Agenda {
 
     /**
      * The item.
-     * @param mode Access mode
      * @return Item
      * @throws IOException If fails
      */
-    private Item item(final Project.Access mode) throws IOException {
+    private Item item() throws IOException {
         return this.pmo.acq(
-            String.format("agenda/%s.xml", this.login), mode
+            String.format("agenda/%s.xml", this.login)
         );
     }
 

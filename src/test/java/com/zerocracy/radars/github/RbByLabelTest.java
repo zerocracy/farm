@@ -19,6 +19,7 @@ package com.zerocracy.radars.github;
 import com.jcabi.github.Github;
 import com.jcabi.github.mock.MkGithub;
 import com.zerocracy.farm.fake.FkFarm;
+import java.io.IOException;
 import javax.json.Json;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -34,7 +35,7 @@ import org.mockito.Mockito;
 public final class RbByLabelTest {
 
     @Test
-    public void ignoresLabel() throws Exception {
+    public void ignoresLabel() throws IOException {
         final Github github = new MkGithub();
         final Rebound rebound = Mockito.mock(Rebound.class);
         MatcherAssert.assertThat(
@@ -53,7 +54,7 @@ public final class RbByLabelTest {
     }
 
     @Test
-    public void passesThrough() throws Exception {
+    public void passesThrough() throws IOException {
         final Github github = new MkGithub();
         final Rebound rebound = Mockito.mock(Rebound.class);
         final String label = "improvement";

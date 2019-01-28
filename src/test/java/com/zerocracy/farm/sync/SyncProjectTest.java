@@ -24,7 +24,6 @@ import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pmo.Pmo;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.concurrent.TimeUnit;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -42,7 +41,7 @@ public final class SyncProjectTest {
             final Project project = new Pmo(farm);
             final Collection<Item> items = new LinkedList<>();
             for (int idx = 0; idx < Tv.FIFTY; ++idx) {
-                final Item item = project.acq(String.format("%d.xml", 0));
+                final Item item = project.acq(String.format("%d.xml", idx));
                 item.path();
                 items.add(item);
             }
@@ -52,30 +51,6 @@ public final class SyncProjectTest {
             MatcherAssert.assertThat(
                 items.size(),
                 Matchers.greaterThan(0)
-            );
-        }
-    }
-
-    @Test
-    public void unlockIfHoldTooLong() throws Exception {
-        boolean interrupted = false;
-        final TestLocks locks = new TestLocks();
-        try (final Farm farm = new SyncFarm(new PropsFarm(), locks, 1L)) {
-            final Project pkt = new Pmo(farm);
-            try (final Item item = pkt.acq("test.txt")) {
-                item.path();
-                TimeUnit.SECONDS.sleep(2L);
-            } catch (final InterruptedException iex) {
-                interrupted = true;
-            }
-            MatcherAssert.assertThat(
-                "Interrupted exception",
-                interrupted, Matchers.is(true)
-            );
-            MatcherAssert.assertThat(
-                "Thread interrupted flag",
-                Thread.currentThread().isInterrupted(),
-                Matchers.is(false)
             );
         }
     }

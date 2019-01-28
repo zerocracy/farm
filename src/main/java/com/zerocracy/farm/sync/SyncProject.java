@@ -22,7 +22,6 @@ import com.zerocracy.Project;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
 import lombok.EqualsAndHashCode;
 
 /**
@@ -45,20 +44,20 @@ final class SyncProject implements Project {
     private final Locks locks;
 
     /**
-     * Lock time (millis).
+     * Terminator.
      */
-    private final long ttl;
+    private final Terminator terminator;
 
     /**
      * Ctor.
      * @param pkt Project
      * @param lcks Locks
-     * @param ttl Lock time
+     * @param tmr Terminator
      */
-    SyncProject(final Project pkt, final Locks lcks, final long ttl) {
+    SyncProject(final Project pkt, final Locks lcks, final Terminator tmr) {
         this.origin = pkt;
         this.locks = lcks;
-        this.ttl = ttl;
+        this.terminator = tmr;
     }
 
     @Override
@@ -67,17 +66,9 @@ final class SyncProject implements Project {
     }
 
     @Override
-    public Item acq(final String file, final Project.Access mode)
-        throws IOException {
+    public Item acq(final String file) throws IOException {
         final long start = System.currentTimeMillis();
-        final ReadWriteLock rwlock = this.locks.lock(this, file);
-        final Lock lock;
-        if (mode == Project.Access.READ) {
-            lock = rwlock.readLock();
-        } else {
-            lock = rwlock.writeLock();
-        }
-        final Item item;
+        final Lock lock = this.locks.lock(this, file);
         try {
             // @checkstyle MagicNumber (1 line)
             if (!lock.tryLock(2L, TimeUnit.MINUTES)) {
@@ -90,21 +81,20 @@ final class SyncProject implements Project {
                     )
                 );
             }
-            final Cancellation cancellation = new Cancellation(lock);
-            item = new SyncItem(this.origin.acq(file), cancellation);
-            cancellation.schedule(this.ttl);
-        } catch (final InterruptedException iex) {
-            if (lock.tryLock()) {
-                lock.unlock();
-            }
+        } catch (final InterruptedException ex) {
+            lock.unlock();
+            Thread.currentThread().interrupt();
             throw new IllegalStateException(
-                String.format(
-                    "Acquire interrupted; item=%s/%s(%s)",
-                    this.pid(), file, mode
+                Logger.format(
+                    "%s interrupted while waiting for \"%s\" in %s for %[ms]s",
+                    Thread.currentThread().getName(),
+                    file, this.pid(),
+                    System.currentTimeMillis() - start
                 ),
-                iex
+                ex
             );
         }
-        return item;
+        this.terminator.submit(this, file, lock);
+        return new SyncItem(this.origin.acq(file), lock);
     }
 }

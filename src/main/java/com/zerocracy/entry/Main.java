@@ -27,7 +27,6 @@ import com.zerocracy.claims.proc.BrigadeProc;
 import com.zerocracy.claims.proc.CountingProc;
 import com.zerocracy.claims.proc.ExpiryProc;
 import com.zerocracy.claims.proc.FootprintProc;
-import com.zerocracy.claims.proc.InterruptingProc;
 import com.zerocracy.claims.proc.MessageMonitorProc;
 import com.zerocracy.claims.proc.SentryProc;
 import com.zerocracy.farm.S3Farm;
@@ -152,9 +151,7 @@ public final class Main {
                                 new FootprintProc(
                                     farm,
                                     new CountingProc(
-                                        new InterruptingProc(
-                                            new BrigadeProc(farm)
-                                        ),
+                                        new BrigadeProc(farm),
                                         count
                                     )
                                 )

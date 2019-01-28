@@ -20,7 +20,6 @@ import com.jcabi.aspects.Tv;
 import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
-import com.zerocracy.Project;
 import com.zerocracy.Xocument;
 import com.zerocracy.pmo.Awards;
 import com.zerocracy.pmo.Pmo;
@@ -79,8 +78,7 @@ public final class TkTeam implements Take {
             () -> {
                 new RqUser(this.farm, req, false).value();
                 final Collection<XeSource> sources = new LinkedList<>();
-                try (final Item item = new Pmo(this.farm)
-                    .acq("people.xml", Project.Access.READ)) {
+                try (final Item item = new Pmo(this.farm).acq("people.xml")) {
                     new And(
                         new FuncOf<>(
                             input -> sources.add(this.source(input)),

@@ -45,21 +45,17 @@ public interface Rebound {
      * @param event JSON event
      * @return The answer to give back to GitHub
      * @throws IOException If fails
-     * @throws InterruptedException If interrupted
      */
-    String react(Farm farm, Github github, JsonObject event)
-        throws IOException, InterruptedException;
+    String react(Farm farm, Github github, JsonObject event) throws IOException;
 
     /**
      * Reactions chained.
      */
     final class Chain implements Rebound {
-
         /**
          * Reactions.
          */
         private final Iterable<Rebound> reactions;
-
         /**
          * Ctor.
          * @param list All reactions
@@ -67,7 +63,6 @@ public interface Rebound {
         public Chain(final Iterable<Rebound> list) {
             this.reactions = list;
         }
-
         /**
          * Ctor.
          * @param list All reactions
@@ -75,10 +70,9 @@ public interface Rebound {
         public Chain(final Rebound... list) {
             this(Arrays.asList(list));
         }
-
         @Override
         public String react(final Farm farm, final Github github,
-            final JsonObject event) throws IOException, InterruptedException {
+            final JsonObject event) throws IOException {
             final Collection<String> answers = new LinkedList<>();
             for (final Rebound rebound : this.reactions) {
                 answers.add(rebound.react(farm, github, event));

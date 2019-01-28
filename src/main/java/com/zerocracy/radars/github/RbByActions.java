@@ -52,7 +52,7 @@ public final class RbByActions implements Rebound {
 
     @Override
     public String react(final Farm farm, final Github github,
-        final JsonObject event) throws IOException, InterruptedException {
+        final JsonObject event) throws IOException {
         final String field = "action";
         final String answer;
         if (event.containsKey(field)

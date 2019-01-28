@@ -41,14 +41,14 @@ public final class SyncFarm implements Farm {
     private final Farm origin;
 
     /**
+     * Terminator.
+     */
+    private final Terminator terminator;
+
+    /**
      * Locks.
      */
     private final Locks locks;
-
-    /**
-     * Lock time (millis).
-     */
-    private final long ttl;
 
     /**
      * Ctor.
@@ -66,7 +66,7 @@ public final class SyncFarm implements Farm {
      * @param locks Locks
      */
     public SyncFarm(final Farm farm, final Locks locks) {
-        this(farm, locks, TimeUnit.SECONDS.toMillis((long) Tv.NINETY));
+        this(farm, locks, TimeUnit.MINUTES.toMillis((long) Tv.FOUR));
     }
 
     /**
@@ -79,7 +79,7 @@ public final class SyncFarm implements Farm {
     public SyncFarm(final Farm farm, final Locks locks, final long sec) {
         this.origin = farm;
         this.locks = locks;
-        this.ttl = TimeUnit.SECONDS.toMillis(sec);
+        this.terminator = new Terminator(farm, sec);
     }
 
     @Override
@@ -88,19 +88,24 @@ public final class SyncFarm implements Farm {
             return new Guts(
                 this.origin,
                 () -> new Mapped<>(
-                    pkt -> new SyncProject(pkt, this.locks, this.ttl),
+                    pkt -> new SyncProject(pkt, this.locks, this.terminator),
                     this.origin.find(query)
                 ),
                 () -> new Directives()
                     .xpath("/guts")
                     .add("farm")
                     .attr("id", this.getClass().getSimpleName())
+                    .append(this.terminator.value())
             ).apply(query);
         }
     }
 
     @Override
     public void close() throws IOException {
-        this.origin.close();
+        try {
+            this.terminator.close();
+        } finally {
+            this.origin.close();
+        }
     }
 }
