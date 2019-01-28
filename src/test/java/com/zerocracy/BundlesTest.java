@@ -35,6 +35,7 @@ import com.zerocracy.pmo.Pmo;
 import groovy.lang.Script;
 import java.io.File;
 import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -61,6 +62,7 @@ import org.cactoos.scalar.And;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -153,7 +155,7 @@ public final class BundlesTest {
                 },
                 new Sorted<>(
                     new Reflections(
-                    "com.zerocracy.bundles", new ResourcesScanner()
+                        "com.zerocracy.bundles", new ResourcesScanner()
                     ).getResources(p -> p.endsWith("claims.xml"))
                 )
             );
@@ -273,6 +275,8 @@ public final class BundlesTest {
                     Matchers.emptyIterable()
                 );
             }
+        } catch (final InterruptedIOException err) {
+            Assert.fail(err.getMessage());
         }
     }
 

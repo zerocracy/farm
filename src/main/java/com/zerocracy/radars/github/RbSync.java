@@ -43,7 +43,7 @@ public final class RbSync implements Rebound {
 
     @Override
     public String react(final Farm farm, final Github github,
-        final JsonObject event) throws IOException {
+        final JsonObject event) throws IOException, InterruptedException {
         synchronized (this.origin) {
             return this.origin.react(farm, github, event);
         }

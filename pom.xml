@@ -583,6 +583,9 @@ SOFTWARE.
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
+        <configuration combine.children="append">
+          <reuseForks>false</reuseForks>
+        </configuration>
         <executions>
           <execution>
             <goals>

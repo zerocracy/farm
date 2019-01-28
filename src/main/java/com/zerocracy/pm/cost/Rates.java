@@ -54,7 +54,7 @@ public final class Rates {
      * @throws IOException If fails
      */
     public Rates bootstrap() throws IOException {
-        try (final Item wbs = this.item()) {
+        try (final Item wbs = this.item(Project.Access.READ_WRITE)) {
             new Xocument(wbs.path()).bootstrap("pm/cost/rates");
         }
         return this;
@@ -85,7 +85,7 @@ public final class Rates {
                 ).say(rate, min)
             );
         }
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ_WRITE)) {
             new Xocument(item).modify(
                 new Directives()
                     .xpath(String.format("/rates/person[@id='%s']", login))
@@ -119,7 +119,7 @@ public final class Rates {
                 ).say(login)
             );
         }
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ)) {
             return new Cash.S(
                 new Xocument(item).xpath(
                     String.format("/rates/person[@id='%s']/rate/text()", login)
@@ -137,7 +137,7 @@ public final class Rates {
      * @throws IOException If fails
      */
     public boolean exists(final String login) throws IOException {
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ)) {
             return !new Xocument(item).nodes(
                 String.format("/rates/person[@id='%s']/rate", login)
             ).isEmpty();
@@ -146,10 +146,11 @@ public final class Rates {
 
     /**
      * The item.
+     * @param mode Access mode
      * @return Item
      * @throws IOException If fails
      */
-    private Item item() throws IOException {
-        return this.project.acq("rates.xml");
+    private Item item(final Project.Access mode) throws IOException {
+        return this.project.acq("rates.xml", mode);
     }
 }

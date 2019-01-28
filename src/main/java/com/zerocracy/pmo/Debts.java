@@ -22,6 +22,7 @@ import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Par;
+import com.zerocracy.Project;
 import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
 import java.io.IOException;
@@ -81,7 +82,7 @@ public final class Debts {
      * @throws IOException If fails
      */
     public Debts bootstrap() throws IOException {
-        try (final Item team = this.item()) {
+        try (final Item team = this.item(Project.Access.READ_WRITE)) {
             new Xocument(team).bootstrap("pmo/debts");
         }
         return this;
@@ -94,7 +95,7 @@ public final class Debts {
      * @throws IOException If fails
      */
     public Iterable<Directive> toXembly(final String uid) throws IOException {
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ)) {
             final Iterator<XML> debts = new Xocument(item.path()).nodes(
                 String.format("/debts/debt[@login='%s']", uid)
             ).iterator();
@@ -186,7 +187,7 @@ public final class Debts {
     public void add(final String uid, final Cash amount,
         final String details, final String reason, final Instant created)
         throws IOException {
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ_WRITE)) {
             new Xocument(item.path()).modify(
                 new Directives()
                     .xpath(String.format("/debts[not(debt[@login='%s'])]", uid))
@@ -217,7 +218,7 @@ public final class Debts {
                 new Par("@%s doesn't have a debt, can't calculate").say(uid)
             );
         }
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ)) {
             return new IoCheckedScalar<>(
                 new Reduced<Cash, Cash>(
                     Cash.ZERO,
@@ -247,7 +248,7 @@ public final class Debts {
                 new Par("@%s doesn't have a debt").say(uid)
             );
         }
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ_WRITE)) {
             new Xocument(item.path()).modify(
                 new Directives()
                     .xpath(String.format("/debts/debt[@login= '%s']", uid))
@@ -270,7 +271,7 @@ public final class Debts {
                 new Par("@%s doesn't have a debt, can't add failure").say(uid)
             );
         }
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ_WRITE)) {
             new Xocument(item.path()).modify(
                 new Directives()
                     .xpath(
@@ -305,7 +306,7 @@ public final class Debts {
                 new Par("@%s doesn't have a debt, can't check it").say(uid)
             );
         }
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ)) {
             final Instant failed = Instant.parse(
                 new Xocument(item.path()).xpath(
                     String.format(
@@ -324,7 +325,7 @@ public final class Debts {
      * @throws IOException If fails
      */
     public Collection<String> iterate() throws IOException {
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ)) {
             return new Xocument(item).xpath("/debts/debt/@login");
         }
     }
@@ -336,7 +337,7 @@ public final class Debts {
      * @throws IOException If fails
      */
     public boolean exists(final String uid) throws IOException {
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ)) {
             return !new Xocument(item).nodes(
                 String.format("//debt[@login='%s']", uid)
             ).isEmpty();
@@ -357,7 +358,7 @@ public final class Debts {
                 new Par("@%s doesn't have a debt, can't check it").say(uid)
             );
         }
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ)) {
             final String xpath = String.format(
                 "/debts/debt[@login='%s']/items/item/created/text()", uid
             );
@@ -382,7 +383,7 @@ public final class Debts {
      */
     public String hash(final String uid) throws IOException {
         final String str;
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ)) {
             str = new IoCheckedScalar<>(
                 new Reduced<>(
                     new StringBuilder(Tv.HUNDRED),
@@ -410,10 +411,11 @@ public final class Debts {
 
     /**
      * The item.
+     * @param mode Access mode
      * @return Item
      * @throws IOException If fails
      */
-    private Item item() throws IOException {
-        return this.pmo.acq("debts.xml");
+    private Item item(final Project.Access mode) throws IOException {
+        return this.pmo.acq("debts.xml", mode);
     }
 }

@@ -66,8 +66,10 @@ public final class Equity {
      * @param login The GitHub login
      * @return PDF document
      * @throws IOException If fails
+     * @throws InterruptedException If fails
      */
-    public Input pdf(final String login) throws IOException {
+    public Input pdf(final String login) throws IOException,
+        InterruptedException {
         final double share = this.share(login);
         if (share == 0.0d) {
             throw new IllegalArgumentException(

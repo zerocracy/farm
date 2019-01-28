@@ -91,7 +91,8 @@ final class GsProject implements Project {
     }
 
     @Override
-    public Item acq(final String file) throws IOException {
+    public Item acq(final String file, final Project.Access mode)
+        throws IOException {
         final Path temp = Files.createTempFile("farm", ".xml");
         final Iterator<Project> pkts = this.farm.find(this.query).iterator();
         XML before = new XMLDocument(

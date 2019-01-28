@@ -14,54 +14,45 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.farm.spy;
+package com.zerocracy.claims.proc;
 
-import com.zerocracy.Item;
-import com.zerocracy.Project;
-import java.io.IOException;
-import lombok.EqualsAndHashCode;
+import com.amazonaws.services.sqs.model.Message;
+import com.jcabi.log.Logger;
+import java.io.InterruptedIOException;
 import org.cactoos.Proc;
-import org.cactoos.func.UncheckedProc;
 
 /**
- * Spy {@link Project}.
- *
- * <p>There is no thread-safety guarantee.</p>
+ * Proc which handle interrupted exceptions.
  *
  * @since 1.0
  */
-@EqualsAndHashCode(of = "origin")
-public final class SpyProject implements Project {
+public final class InterruptingProc implements Proc<Message> {
 
     /**
-     * Origin.
+     * Origin proc.
      */
-    private final Project origin;
-
-    /**
-     * Spy.
-     */
-    private final UncheckedProc<String> spy;
+    private final Proc<Message> proc;
 
     /**
      * Ctor.
-     * @param pkt The project
-     * @param proc The spy
+     * @param proc Origin
      */
-    public SpyProject(final Project pkt, final Proc<String> proc) {
-        this.origin = pkt;
-        this.spy = new UncheckedProc<>(proc);
+    public InterruptingProc(final Proc<Message> proc) {
+        this.proc = proc;
     }
 
     @Override
-    public String pid() throws IOException {
-        return this.origin.pid();
+    public void exec(final Message input) throws Exception {
+        try {
+            this.proc.exec(input);
+        } catch (final InterruptedException | InterruptedIOException err) {
+            final Thread thread = Thread.currentThread();
+            thread.interrupt();
+            Logger.info(
+                this,
+                "The thread %s was interrupted",
+                thread.getName()
+            );
+        }
     }
-
-    @Override
-    public Item acq(final String file) throws IOException {
-        this.spy.exec(String.format("acq:%s", file));
-        return new SpyItem(this.origin.acq(file), this.spy);
-    }
-
 }

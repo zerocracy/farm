@@ -94,7 +94,8 @@ public final class TkBoard implements Take {
             () -> {
                 final String user = new RqUser(this.farm, req, false).value();
                 final Collection<XeSource> sources = new LinkedList<>();
-                try (final Item item = new Pmo(this.farm).acq("catalog.xml")) {
+                try (final Item item = new Pmo(this.farm)
+                    .acq("catalog.xml", Project.Access.READ)) {
                     new And(
                         new FuncOf<>(
                             input -> sources.add(this.source(input, user)),
@@ -202,5 +203,4 @@ public final class TkBoard implements Take {
         }
         return new JoinedText(",", langs).asString();
     }
-
 }

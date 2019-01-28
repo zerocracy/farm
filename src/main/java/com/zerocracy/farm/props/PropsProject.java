@@ -69,16 +69,16 @@ final class PropsProject implements Project {
     }
 
     @Override
-    public Item acq(final String file) throws IOException {
+    public Item acq(final String file, final Project.Access mode)
+        throws IOException {
         final Item item;
         if ("_props.xml".equals(file)) {
             item = new PropsItem(
                 Files.createTempFile("props", ".xml"), this.post
             );
         } else {
-            item = this.origin.acq(file);
+            item = this.origin.acq(file, mode);
         }
         return item;
     }
-
 }

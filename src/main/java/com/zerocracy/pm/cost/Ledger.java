@@ -69,7 +69,7 @@ public final class Ledger {
      * @throws IOException If fails
      */
     public boolean deficit() throws IOException {
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ)) {
             return !new Xocument(item).nodes(
                 "/ledger/deficit"
             ).isEmpty();
@@ -82,7 +82,7 @@ public final class Ledger {
      * @throws IOException If fails
      */
     public void deficit(final boolean def) throws IOException {
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ_WRITE)) {
             if (def) {
                 new Xocument(item).modify(
                     new Directives()
@@ -121,7 +121,7 @@ public final class Ledger {
      */
     @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     public void add(final Ledger.Transaction... tns) throws IOException {
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ_WRITE)) {
             if (!new Props(this.farm).has("//testing")) {
                 new PgLedger(
                     new ExtDataSource(this.farm).value(), this.project
@@ -142,7 +142,7 @@ public final class Ledger {
      * @throws IOException If fails
      */
     public Ledger bootstrap() throws IOException {
-        try (final Item xml = this.item()) {
+        try (final Item xml = this.item(Project.Access.READ_WRITE)) {
             new Xocument(xml.path()).bootstrap("pm/cost/ledger");
             if (!new Props(this.farm).has("//testing")
                 || System.getProperty("pgsql.port") != null) {
@@ -168,7 +168,7 @@ public final class Ledger {
      */
     @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     private Cash sum(final String acc, final String col) throws IOException {
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ)) {
             final Iterable<String> values = new Xocument(item).xpath(
                 String.format(
                     "//balance/account[name='%s']/%s/text()",
@@ -185,11 +185,12 @@ public final class Ledger {
 
     /**
      * The item.
+     * @param mode Access mode
      * @return Item
      * @throws IOException If fails
      */
-    private Item item() throws IOException {
-        return this.project.acq("ledger.xml");
+    private Item item(final Project.Access mode) throws IOException {
+        return this.project.acq("ledger.xml", mode);
     }
 
     /**

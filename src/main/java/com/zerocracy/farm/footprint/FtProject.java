@@ -61,8 +61,9 @@ final class FtProject implements Project {
     }
 
     @Override
-    public Item acq(final String file) throws IOException {
-        Item item = this.origin.acq(file);
+    public Item acq(final String file, final Project.Access mode)
+        throws IOException {
+        Item item = this.origin.acq(file, mode);
         if ("claims.xml".equals(file)) {
             final Path temp = Files.createTempFile("footprint", ".xml");
             final Path before = item.path();

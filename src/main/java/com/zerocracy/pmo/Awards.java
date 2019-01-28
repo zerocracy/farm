@@ -71,7 +71,7 @@ public final class Awards {
      * @throws IOException If fails
      */
     public Awards bootstrap() throws IOException {
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ_WRITE)) {
             new Xocument(item.path()).bootstrap("pmo/awards");
         }
         return this;
@@ -83,7 +83,7 @@ public final class Awards {
      * @throws IOException If failed
      */
     public void removeOlderThan(final Date date) throws IOException {
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ_WRITE)) {
             new Xocument(item.path()).modify(
                 new Directives()
                     .xpath(
@@ -135,7 +135,7 @@ public final class Awards {
                 )
             );
         }
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ_WRITE)) {
             new Xocument(item.path()).modify(
                 new Directives()
                     .xpath("/awards")
@@ -162,7 +162,7 @@ public final class Awards {
      * @throws IOException If fails
      */
     public int total() throws IOException {
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ)) {
             return Integer.parseInt(
                 new Xocument(item.path()).xpath(
                     "sum(/awards/award/points/text())"
@@ -178,7 +178,7 @@ public final class Awards {
      * @throws IOException If fails
      */
     public List<Integer> awards(final int days) throws IOException {
-        try (final Item item = this.item()) {
+        try (final Item item = this.item(Project.Access.READ)) {
             return new Mapped<>(
                 Integer::parseInt,
                 new Xocument(item.path()).xpath(
@@ -201,13 +201,13 @@ public final class Awards {
 
     /**
      * The item.
+     * @param mode Access mode
      * @return Item
      * @throws IOException If fails
      */
-    private Item item() throws IOException {
+    private Item item(final Project.Access mode) throws IOException {
         return this.pmo.acq(
-            String.format("awards/%s.xml", this.login)
+            String.format("awards/%s.xml", this.login), mode
         );
     }
-
 }
