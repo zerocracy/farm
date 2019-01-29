@@ -153,7 +153,7 @@ public final class BundlesTest {
                 },
                 new Sorted<>(
                     new Reflections(
-                    "com.zerocracy.bundles", new ResourcesScanner()
+                        "com.zerocracy.bundles", new ResourcesScanner()
                     ).getResources(p -> p.endsWith("claims.xml"))
                 )
             );

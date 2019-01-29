@@ -82,7 +82,6 @@ final class SyncProject implements Project {
                 );
             }
         } catch (final InterruptedException ex) {
-            lock.unlock();
             Thread.currentThread().interrupt();
             throw new IllegalStateException(
                 Logger.format(
@@ -95,6 +94,10 @@ final class SyncProject implements Project {
             );
         }
         this.terminator.submit(this, file, lock);
-        return new SyncItem(this.origin.acq(file), lock);
+        return new WarnItem(
+            String.format("%s/%s", this.pid(), file),
+            new SyncItem(this.origin.acq(file), lock),
+            System.nanoTime()
+        );
     }
 }

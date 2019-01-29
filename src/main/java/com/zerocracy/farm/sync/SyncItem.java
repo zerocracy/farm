@@ -72,7 +72,9 @@ final class SyncItem implements Item {
     @Override
     public void close() throws IOException {
         try {
-            this.origin.close();
+            if (!Thread.currentThread().isInterrupted()) {
+                this.origin.close();
+            }
         } finally {
             this.lock.unlock();
         }
