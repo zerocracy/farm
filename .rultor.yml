@@ -51,8 +51,10 @@ release:
 merge:
   script: |-
     pdd --source=$(pwd) --verbose --file=/dev/null
-    mvn help:system clean install -Pqulice,codenarc --settings ../settings.xml
+    mvn -Pupgrade-bundles process-test-resources
+    mvn help:system install -Pqulice,codenarc --settings ../settings.xml
     mvn clean site -Psite --settings ../settings.xml --quiet
+    git commit -am "updated resources" || echo "nothing to update"
 architect:
   - g4s8
   - yegor256
