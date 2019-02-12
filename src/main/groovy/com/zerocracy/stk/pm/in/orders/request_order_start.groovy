@@ -16,28 +16,43 @@
  */
 package com.zerocracy.stk.pm.in.orders
 
+import com.jcabi.github.Issue
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.SoftException
-import com.zerocracy.entry.ClaimsOf
-import com.zerocracy.farm.Assume
 import com.zerocracy.claims.ClaimIn
+import com.zerocracy.entry.ClaimsOf
+import com.zerocracy.entry.ExtGithub
+import com.zerocracy.farm.Assume
 import com.zerocracy.pm.in.Orders
 import com.zerocracy.pm.scope.Wbs
+import com.zerocracy.radars.github.Job
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Request order start')
   new Assume(project, xml).roles('ARC', 'PO')
+
+  Farm farm = binding.variables.farm
   ClaimIn claim = new ClaimIn(xml)
   String login = claim.param('login')
   String job = claim.param('job')
   Wbs wbs = new Wbs(project).bootstrap()
-  Farm farm = binding.variables.farm
   if (!wbs.exists(job)) {
+    String role = 'DEV'
+    if (claim.hasParam('role')) {
+      role = claim.param('role')
+    }
+    if (job.startsWith('gh:')) {
+      Issue issue = new Issue.Smart(new Job.Issue(new ExtGithub(farm).value(), job))
+      if (issue.pull) {
+        role = 'REV'
+      }
+    }
     wbs.add(job)
+    wbs.role(job, role)
     claim.copy()
       .type('Job was added to WBS')
       .param('reason', 'Order start requested, but WBS is empty')
