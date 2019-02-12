@@ -27,6 +27,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
+import java.util.Locale;
 import java.util.logging.Level;
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -39,6 +40,7 @@ import org.takes.Response;
 import org.takes.Take;
 import org.takes.facets.forward.RsForward;
 import org.takes.rq.RqForm;
+import org.takes.rq.RqHeaders;
 import org.takes.rq.form.RqFormBase;
 import org.takes.rs.RsText;
 import org.takes.rs.RsWithBody;
@@ -128,7 +130,8 @@ public final class TkGithub implements Take, Runnable {
                                     ),
                                     new RbByActions(new RbOnAssign(), "assigned"),
                                     new RbByActions(new RbOnUnassign(), "unassigned"),
-                                    new RbByActions(new RbRelease(), "published")
+                                    new RbByActions(new RbRelease(), "published"),
+                                    new RbByEvent(new RbOnRepoEvent(), "repository")
                                 )
                             )
                         )
@@ -184,14 +187,15 @@ public final class TkGithub implements Take, Runnable {
                 HttpURLConnection.HTTP_UNAVAILABLE
             );
         }
+        final JsonObject json = Json.createObjectBuilder(
+            TkGithub.json(body.iterator().next())
+        ).add(
+            "_0crat_github_event",
+            new RqHeaders.Smart(req).single("X-GitHub-Event", "")
+                .toLowerCase(Locale.US)
+        ).build();
         return new RsWithStatus(
-            new RsText(
-                this.rebound.react(
-                    this.farm,
-                    github,
-                    TkGithub.json(body.iterator().next())
-                )
-            ),
+            new RsText(this.rebound.react(this.farm, github, json)),
             HttpURLConnection.HTTP_OK
         );
     }

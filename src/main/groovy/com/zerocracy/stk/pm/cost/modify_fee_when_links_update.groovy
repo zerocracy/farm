@@ -33,7 +33,8 @@ import com.zerocracy.pmo.Catalog
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Project link was added', 'Project link was removed')
+  new Assume(project, xml)
+    .type('Project link was added', 'Project link was removed', 'Repo visibility changed')
   ClaimIn claim = new ClaimIn(xml)
   Farm farm = binding.variables.farm
   Catalog catalog = new Catalog(farm).bootstrap()
