@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.bundles.assigns_performer_pr
+package com.zerocracy.bundles.pr_assigns_performer
 
 import com.jcabi.github.Github
 import com.jcabi.github.Repo
