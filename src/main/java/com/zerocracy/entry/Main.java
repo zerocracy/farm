@@ -133,7 +133,8 @@ public final class Main {
             final ClaimsRoutine claims = new ClaimsRoutine(farm)
         ) {
             new ExtMongobee(farm).apply();
-            new MessageSink(farm, cgts, shutdown).start(claims.messages());
+            new MessageSink(farm, shutdown).start(claims.messages());
+            cgts.add(claims.messages());
             claims.start(shutdown);
             new AsyncFunc<>(
                 input -> {

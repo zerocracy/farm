@@ -110,6 +110,8 @@ SOFTWARE.
               <xsl:value-of select="project"/>
               <xsl:text>}, received={</xsl:text>
               <xsl:value-of select="received"/>
+              <xsl:text>}, priority={</xsl:text>
+              <xsl:value-of select="priority"/>
               <xsl:text>}]</xsl:text>
             </xsl:for-each>
           </li>

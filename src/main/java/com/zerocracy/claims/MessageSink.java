@@ -17,6 +17,7 @@
 package com.zerocracy.claims;
 
 import com.amazonaws.services.sqs.model.Message;
+import com.jcabi.aspects.Tv;
 import com.jcabi.log.Logger;
 import com.zerocracy.Farm;
 import com.zerocracy.claims.proc.AsyncSink;
@@ -28,6 +29,7 @@ import com.zerocracy.claims.proc.MessageMonitorProc;
 import com.zerocracy.claims.proc.SentryProc;
 import com.zerocracy.shutdown.ShutdownFarm;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -50,11 +52,9 @@ public final class MessageSink {
     /**
      * Ctor.
      * @param farm Farm
-     * @param cgts Guts
      * @param shutdown Shutdown
      */
-    public MessageSink(final Farm farm, final ClaimGuts cgts,
-        final ShutdownFarm.Hook shutdown) {
+    public MessageSink(final Farm farm, final ShutdownFarm.Hook shutdown) {
         this.asynk = new AsyncSink(
             new MessageMonitorProc(
                 farm,
@@ -72,7 +72,7 @@ public final class MessageSink {
                 ),
                 shutdown
             ),
-            cgts, shutdown
+            shutdown
         );
     }
 
@@ -87,8 +87,23 @@ public final class MessageSink {
             "Starting message sink with %d async routines",
             processors
         );
-        for (int trd = 0; trd < processors; ++trd) {
-            this.asynk.monitor(queue);
-        }
+        final Thread thread = new Thread(
+            () -> {
+                while (!Thread.currentThread().isInterrupted()) {
+                    try {
+                        final Message msg = queue.take();
+                        while (this.asynk.tasks() >= Tv.TEN) {
+                            TimeUnit.SECONDS.sleep(1L);
+                        }
+                        this.asynk.execAsync(msg);
+                    } catch (final InterruptedException ignore) {
+                        Thread.currentThread().interrupt();
+                    }
+                }
+            }
+        );
+        thread.setDaemon(true);
+        thread.setName(this.getClass().getSimpleName());
+        thread.start();
     }
 }

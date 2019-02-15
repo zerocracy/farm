@@ -22,12 +22,10 @@ import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseCallable;
 import com.jcabi.log.VerboseRunnable;
 import com.jcabi.log.VerboseThreads;
-import com.zerocracy.claims.ClaimGuts;
 import com.zerocracy.shutdown.ShutdownFarm;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledExecutorService;
@@ -66,22 +64,16 @@ public final class AsyncSink {
     private final AtomicInteger count;
 
     /**
-     * Claim guts.
-     */
-    private final ClaimGuts guts;
-
-    /**
      * Ctor.
      *
      * @param origin Origin proc
-     * @param cgts Guts
      * @param shutdown Shutdown hook
      */
     public AsyncSink(final Proc<Message> origin,
-        final ClaimGuts cgts, final ShutdownFarm.Hook shutdown) {
+        final ShutdownFarm.Hook shutdown) {
         this(
             Runtime.getRuntime().availableProcessors(),
-            origin, cgts, shutdown
+            origin, shutdown
         );
     }
 
@@ -90,17 +82,15 @@ public final class AsyncSink {
      *
      * @param threads Threads
      * @param origin Origin proc
-     * @param cgts Claim guts
      * @param shutdown Shutdown hook
      * @checkstyle ParameterNumberCheck (3 lines)
      */
     public AsyncSink(final int threads, final Proc<Message> origin,
-        final ClaimGuts cgts, final ShutdownFarm.Hook shutdown) {
+        final ShutdownFarm.Hook shutdown) {
         this.service = Executors.newScheduledThreadPool(
             threads, new VerboseThreads(AsyncSink.class)
         );
         this.origin = origin;
-        this.guts = cgts;
         this.shutdown = shutdown;
         this.count = new AtomicInteger();
         this.service.scheduleWithFixedDelay(
@@ -133,32 +123,22 @@ public final class AsyncSink {
 
     /**
      * Monitor a queue.
-     * @param queue Queue to monitor
+     * @param msg Message to process
      */
-    public void monitor(final BlockingQueue<Message> queue) {
+    public void execAsync(final Message msg) {
         try {
+            this.count.incrementAndGet();
             this.service.submit(
                 new VerboseCallable<>(
                     () -> {
-                        final Thread thread = Thread.currentThread();
-                        Logger.info(
-                            this,
-                            "Started async routine on thread %d:%s",
-                            thread.getId(),
-                            thread.getName()
-                        );
-                        while (!thread.isInterrupted()) {
-                            try {
-                                this.exec(queue.take());
-                            } catch (final IOException exx) {
-                                Logger.error(
-                                    this,
-                                    "Failed to process message: %[exception]s",
-                                    exx
-                                );
-                            } catch (final InterruptedException err) {
-                                thread.interrupt();
-                            }
+                        try {
+                            this.exec(msg);
+                        } catch (final IOException exx) {
+                            Logger.error(
+                                this,
+                                "Failed to process message: %[exception]s",
+                                exx
+                            );
                         }
                         return null;
                     },
@@ -172,6 +152,14 @@ public final class AsyncSink {
     }
 
     /**
+     * Amount of tasks processing right now.
+     * @return Count
+     */
+    public int tasks() {
+        return this.count.get();
+    }
+
+    /**
      * Exec a message.
      * @param msg Message
      * @throws IOException If fails
@@ -181,7 +169,6 @@ public final class AsyncSink {
         final List<Message> input =
             Collections.singletonList(msg);
         try {
-            this.guts.start(input);
             Logger.info(
                 this, "Processing a messages",
                 input.size()
@@ -193,7 +180,6 @@ public final class AsyncSink {
                 this.shutdown.complete();
                 Thread.currentThread().interrupt();
             }
-            this.guts.stop(input);
         }
     }
 }

@@ -42,42 +42,43 @@ public final class ClaimGuts implements Iterable<Directive> {
     /**
      * Current messages.
      */
-    private final List<List<Message>> current;
+    private final List<Iterable<Message>> queues;
 
     /**
      * Ctor.
      */
     public ClaimGuts() {
-        this.current = new LinkedList<>();
+        this.queues = new LinkedList<>();
     }
 
     @Override
     public Iterator<Directive> iterator() {
         final Directives dirs = new Directives();
         dirs.add("queues");
-        synchronized (this.current) {
-            for (final List<Message> messages : this.current) {
+        for (final Iterable<Message> queue : this.queues) {
+            for (final Message message : queue) {
                 dirs.add("queue");
-                for (final Message message : messages) {
-                    final ClaimIn claim = new ClaimIn(
-                        new XMLDocument(message.getBody())
-                            .nodes("/claim").get(0)
-                    );
-                    final Map<String, MessageAttributeValue> attr =
-                        message.getMessageAttributes();
-                    dirs.add("message")
-                        .attr("id", message.getMessageId())
-                        .add("claim").attr("id", claim.cid())
-                        .set(claim.type())
-                        .up()
-                        .add("project")
-                        .set(attr.get("project").getStringValue())
-                        .up()
-                        .add("received")
-                        .set(attr.get("received").getStringValue())
-                        .up()
-                        .up();
-                }
+                final ClaimIn claim = new ClaimIn(
+                    new XMLDocument(message.getBody())
+                        .nodes("/claim").get(0)
+                );
+                final Map<String, MessageAttributeValue> attr =
+                    message.getMessageAttributes();
+                dirs.add("message")
+                    .attr("id", message.getMessageId())
+                    .add("claim").attr("id", claim.cid())
+                    .set(claim.type())
+                    .up()
+                    .add("project")
+                    .set(attr.get("project").getStringValue())
+                    .up()
+                    .add("received")
+                    .set(attr.get("received").getStringValue())
+                    .up()
+                    .add("priority")
+                    .set(MsgPriority.from(message))
+                    .up()
+                    .up();
                 dirs.up();
             }
         }
@@ -88,22 +89,9 @@ public final class ClaimGuts implements Iterable<Directive> {
     /**
      * Start processing input.
      *
-     * @param input Messages
+     * @param queue Message queue
      */
-    public void start(final List<Message> input) {
-        synchronized (this.current) {
-            this.current.add(input);
-        }
-    }
-
-    /**
-     * Stop processing input.
-     *
-     * @param input Input claims
-     */
-    public void stop(final List<Message> input) {
-        synchronized (this.current) {
-            this.current.remove(input);
-        }
+    public void add(final Iterable<Message> queue) {
+        this.queues.add(queue);
     }
 }

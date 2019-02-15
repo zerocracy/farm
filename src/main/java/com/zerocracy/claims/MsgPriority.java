@@ -18,6 +18,7 @@ package com.zerocracy.claims;
 
 import com.amazonaws.services.sqs.model.Message;
 import com.amazonaws.services.sqs.model.MessageAttributeValue;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -42,7 +43,7 @@ public enum MsgPriority {
     /**
      * Message priority.
      */
-    private static final String MSG_ATTR = "_priority";
+    private static final String MSG_ATTR = "priority";
 
     /**
      * Priority.
@@ -78,6 +79,7 @@ public enum MsgPriority {
         if (attr.containsKey(MsgPriority.MSG_ATTR)) {
             res = MsgPriority.valueOf(
                 attr.get(MsgPriority.MSG_ATTR).getStringValue()
+                    .toUpperCase(Locale.US)
             );
         } else {
             res = MsgPriority.NORMAL;
