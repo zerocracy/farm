@@ -19,6 +19,7 @@ package com.zerocracy.stk.pm.comm
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.claims.MsgPriority
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.claims.ClaimIn
@@ -44,18 +45,22 @@ def exec(Project project, XML xml) {
   if (parts[0] == 'slack') {
     claim.copy()
       .type('Notify in Slack')
+      .param('priority', MsgPriority.HIGH)
       .postTo(new ClaimsOf(farm, project))
   } else if (parts[0] == 'telegram') {
     claim.copy()
       .type('Notify in Telegram')
+      .param('priority', MsgPriority.HIGH)
       .postTo(new ClaimsOf(farm, project))
   } else if (parts[0] == 'github') {
     claim.copy()
       .type('Notify in GitHub')
+      .param('priority', MsgPriority.HIGH)
       .postTo(new ClaimsOf(farm, project))
   } else if (parts[0] == 'job') {
     claim.copy()
       .type('Notify job')
+      .param('priority', MsgPriority.HIGH)
       .postTo(new ClaimsOf(farm, project))
   } else if (parts[0] == 'test') {
     claim.copy()

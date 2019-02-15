@@ -21,6 +21,7 @@ import com.zerocracy.Par;
 import com.zerocracy.Project;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.claims.ClaimOut;
+import com.zerocracy.claims.MsgPriority;
 import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.pmo.Pmo;
 import com.zerocracy.pmo.recharge.Stripe;
@@ -93,6 +94,7 @@ public final class TkStripePay implements TkRegex {
             .param("stripe_customer", customer)
             .param("payment_id", pid)
             .param("email", email)
+            .param("priority", MsgPriority.HIGH)
             .author(user)
             .postTo(new ClaimsOf(this.farm, project));
         new ClaimOut().type("Notify PMO").param(
@@ -115,5 +117,4 @@ public final class TkStripePay implements TkRegex {
             String.format("/p/%s", project.pid())
         );
     }
-
 }

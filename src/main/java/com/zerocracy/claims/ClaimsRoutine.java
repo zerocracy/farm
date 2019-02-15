@@ -23,25 +23,20 @@ import com.amazonaws.services.sqs.model.ReceiveMessageRequest;
 import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseRunnable;
 import com.jcabi.log.VerboseThreads;
-import com.jcabi.xml.XML;
-import com.jcabi.xml.XMLDocument;
 import com.zerocracy.Farm;
 import com.zerocracy.entry.ExtSqs;
 import com.zerocracy.shutdown.ShutdownFarm;
 import java.io.Closeable;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.HashSet;
-import java.util.LinkedList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
+import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import org.cactoos.Proc;
-import org.cactoos.Scalar;
-import org.cactoos.scalar.And;
 import org.cactoos.scalar.UncheckedScalar;
 import org.cactoos.text.UncheckedText;
 
@@ -67,6 +62,12 @@ import org.cactoos.text.UncheckedText;
 public final class ClaimsRoutine implements Runnable, Closeable {
 
     /**
+     * Message by priority comparator.
+     */
+    private static final Comparator<Message> BY_PRIORITY =
+        Comparator.comparingInt(msg -> MsgPriority.from(msg).value());
+
+    /**
      * Until attribute.
      */
     private static final String UNTIL = "until";
@@ -75,6 +76,11 @@ public final class ClaimsRoutine implements Runnable, Closeable {
      * Messages limit.
      */
     private static final int LIMIT = 8;
+
+    /**
+     * Max size of local message queue.
+     */
+    private static final int QUEUE_SIZE = 128;
 
     /**
      * Delay to fetch claims.
@@ -92,30 +98,23 @@ public final class ClaimsRoutine implements Runnable, Closeable {
     private final Farm farm;
 
     /**
-     * Process queue messages.
+     * Local message queue.
      */
-    private final Proc<List<Message>> proc;
-
-    /**
-     * If we can proceed with execution.
-     */
-    private final Scalar<Boolean> proceed;
+    private final BlockingQueue<Message> queue;
 
     /**
      * Ctor.
      *
      * @param farm Farm
-     * @param proc Proc
-     * @param proceed A flag that signals if the processing can proceed
      */
-    public ClaimsRoutine(final Farm farm, final Proc<List<Message>> proc,
-        final Scalar<Boolean> proceed) {
-        this.proc = proc;
-        this.proceed = proceed;
+    public ClaimsRoutine(final Farm farm) {
         this.service = Executors.newSingleThreadScheduledExecutor(
             new VerboseThreads(ClaimsRoutine.class)
         );
         this.farm = farm;
+        this.queue = new PriorityBlockingQueue<>(
+            ClaimsRoutine.QUEUE_SIZE, ClaimsRoutine.BY_PRIORITY
+        );
     }
 
     /**
@@ -124,6 +123,11 @@ public final class ClaimsRoutine implements Runnable, Closeable {
      * @param shutdown Shutdown hook
      */
     public void start(final ShutdownFarm.Hook shutdown) {
+        Logger.info(
+            this,
+            "Starting claims routine with local queue size = %s",
+            ClaimsRoutine.QUEUE_SIZE
+        );
         this.service.scheduleWithFixedDelay(
             new VerboseRunnable(
                 new ClaimsRoutine.ShutdownRunnable(this, shutdown)
@@ -142,24 +146,23 @@ public final class ClaimsRoutine implements Runnable, Closeable {
         }
     )
     public void run() {
-        if (new UncheckedScalar<>(this.proceed).value()) {
+        if (this.queue.size() + ClaimsRoutine.LIMIT
+            < ClaimsRoutine.QUEUE_SIZE) {
             final AmazonSQS sqs = new UncheckedScalar<>(new ExtSqs(this.farm))
                 .value();
-            final String queue =
+            final String url =
                 new UncheckedText(new ClaimsQueueUrl(this.farm))
                     .asString();
             final List<Message> messages = sqs.receiveMessage(
-                new ReceiveMessageRequest(queue)
+                new ReceiveMessageRequest(url)
                     .withMessageAttributeNames(
                         "project", "signature", ClaimsRoutine.UNTIL, "expires"
                     )
                     .withVisibilityTimeout(
-                        (int) Duration.ofMinutes(2).getSeconds()
+                        (int) Duration.ofMinutes(2L).getSeconds()
                     )
                     .withMaxNumberOfMessages(ClaimsRoutine.LIMIT)
             ).getMessages();
-            final Set<String> projects = new HashSet<>();
-            final List<Message> merged = new LinkedList<>();
             for (final Message message : messages) {
                 final Map<String, MessageAttributeValue> attr =
                     message.getMessageAttributes();
@@ -174,33 +177,31 @@ public final class ClaimsRoutine implements Runnable, Closeable {
                 ).isAfter(Instant.now())) {
                     continue;
                 }
-                final XML xml = new XMLDocument(message.getBody())
-                    .nodes("/claim").get(0);
-                final String pid = attr
-                    .get("project")
-                    .getStringValue();
-                final ClaimIn claim = new ClaimIn(xml);
-                final boolean ping = "ping".equalsIgnoreCase(claim.type());
-                if (ping && !projects.contains(pid)) {
-                    projects.add(pid);
-                    merged.add(message);
-                } else if (!ping) {
-                    merged.add(message);
-                } else {
-                    sqs.deleteMessage(queue, message.getReceiptHandle());
-                }
+                this.queue.add(message);
             }
             Logger.info(
-                this, "received %d (%d actual) messages from SQS",
-                messages.size(), merged.size()
+                this, "received %d messages from SQS",
+                messages.size()
             );
-            new UncheckedScalar<>(new And(this.proc, merged)).value();
+        } else {
+            Logger.info(
+                this,
+                "local queue is full, can't process new messages"
+            );
         }
     }
 
     @Override
     public void close() {
         this.service.shutdown();
+    }
+
+    /**
+     * Local queue of messages ordered by priority.
+     * @return Message queue
+     */
+    public BlockingQueue<Message> messages() {
+        return this.queue;
     }
 
     /**

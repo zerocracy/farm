@@ -29,11 +29,7 @@ import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.shutdown.ShutdownFarm;
-import java.time.Duration;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
-import org.cactoos.scalar.And;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Assume;
@@ -49,6 +45,7 @@ import org.junit.Test;
  * @checkstyle ExecutableStatementCountCheck (500 lines)
  */
 public final class ClaimsRoutineITCase {
+
     @BeforeClass
     public static void checkProps() throws Exception {
         Assume.assumeTrue(
@@ -64,19 +61,7 @@ public final class ClaimsRoutineITCase {
         final AmazonSQS sqs = new ExtSqs(farm).value();
         final String queue = new ClaimsQueueUrl(farm).asString();
         final ClaimsSqs claims = new ClaimsSqs(sqs, queue, project);
-        final List<Message> messages = new CopyOnWriteArrayList<>();
-        final ClaimsRoutine routine = new ClaimsRoutine(
-            farm,
-            msgs -> {
-                messages.addAll(msgs);
-                new And(
-                    (Message msg) -> sqs.deleteMessage(
-                        queue, msg.getReceiptHandle()
-                    ), msgs
-                ).value();
-            },
-            () -> true
-        );
+        final ClaimsRoutine routine = new ClaimsRoutine(farm);
         routine.start(new ShutdownFarm.Hook());
         TimeUnit.SECONDS.sleep((long) Tv.FIVE);
         final String type = "test";
@@ -84,19 +69,8 @@ public final class ClaimsRoutineITCase {
             .type(type)
             .param("nonce1", System.nanoTime())
             .postTo(claims);
-        new ClaimOut()
-            .type("delayed")
-            .until(Duration.ofMinutes(1L))
-            .param("nonce2", System.nanoTime())
-            .postTo(claims);
-        TimeUnit.SECONDS.sleep((long) Tv.FIVE);
+        final Message message = routine.messages().take();
         routine.close();
-        MatcherAssert.assertThat(
-            "expected one message",
-            messages,
-            Matchers.hasSize(1)
-        );
-        final Message message = messages.get(0);
         MatcherAssert.assertThat(
             "invalid project",
             new SqsProject(farm, message).pid(),

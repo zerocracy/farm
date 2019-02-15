@@ -24,7 +24,10 @@ import com.jcabi.log.VerboseRunnable;
 import com.jcabi.log.VerboseThreads;
 import com.zerocracy.claims.ClaimGuts;
 import com.zerocracy.shutdown.ShutdownFarm;
+import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledExecutorService;
@@ -32,6 +35,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.Proc;
 import org.cactoos.scalar.And;
+import org.cactoos.scalar.IoCheckedScalar;
 
 /**
  * Proc to execute origin proc asynchronously.
@@ -39,7 +43,7 @@ import org.cactoos.scalar.And;
  * @since 1.0
  */
 @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-public final class AsyncProc implements Proc<List<Message>> {
+public final class AsyncSink {
 
     /**
      * Executor.
@@ -73,7 +77,7 @@ public final class AsyncProc implements Proc<List<Message>> {
      * @param cgts Guts
      * @param shutdown Shutdown hook
      */
-    public AsyncProc(final Proc<Message> origin,
+    public AsyncSink(final Proc<Message> origin,
         final ClaimGuts cgts, final ShutdownFarm.Hook shutdown) {
         this(
             Runtime.getRuntime().availableProcessors(),
@@ -90,10 +94,10 @@ public final class AsyncProc implements Proc<List<Message>> {
      * @param shutdown Shutdown hook
      * @checkstyle ParameterNumberCheck (3 lines)
      */
-    public AsyncProc(final int threads, final Proc<Message> origin,
+    public AsyncSink(final int threads, final Proc<Message> origin,
         final ClaimGuts cgts, final ShutdownFarm.Hook shutdown) {
         this.service = Executors.newScheduledThreadPool(
-            threads, new VerboseThreads(AsyncProc.class)
+            threads, new VerboseThreads(AsyncSink.class)
         );
         this.origin = origin;
         this.guts = cgts;
@@ -127,27 +131,34 @@ public final class AsyncProc implements Proc<List<Message>> {
         );
     }
 
-    @Override
-    @SuppressWarnings("PMD.PrematureDeclaration")
-    public void exec(final List<Message> input) {
-        final int cnt = this.count.incrementAndGet();
+    /**
+     * Monitor a queue.
+     * @param queue Queue to monitor
+     */
+    public void monitor(final BlockingQueue<Message> queue) {
         try {
             this.service.submit(
                 new VerboseCallable<>(
                     () -> {
-                        try {
-                            this.guts.start(input);
-                            Logger.info(
-                                this, "Processing %d messages",
-                                input.size()
-                            );
-                            new And(this.origin, input).value();
-                        } finally {
-                            if (this.count.decrementAndGet() == 0
-                                && this.shutdown.stopping()) {
-                                this.shutdown.complete();
+                        final Thread thread = Thread.currentThread();
+                        Logger.info(
+                            this,
+                            "Started async routine on thread %d:%s",
+                            thread.getId(),
+                            thread.getName()
+                        );
+                        while (!thread.isInterrupted()) {
+                            try {
+                                this.exec(queue.take());
+                            } catch (final IOException exx) {
+                                Logger.error(
+                                    this,
+                                    "Failed to process message: %[exception]s",
+                                    exx
+                                );
+                            } catch (final InterruptedException err) {
+                                thread.interrupt();
                             }
-                            this.guts.stop(input);
                         }
                         return null;
                     },
@@ -158,9 +169,31 @@ public final class AsyncProc implements Proc<List<Message>> {
             this.count.decrementAndGet();
             throw new IllegalStateException("Task was rejected", err);
         }
-        Logger.info(
-            this, "Submitted %d messages (count=%d)",
-            input.size(), cnt
-        );
+    }
+
+    /**
+     * Exec a message.
+     * @param msg Message
+     * @throws IOException If fails
+     */
+    @SuppressWarnings("PMD.PrematureDeclaration")
+    private void exec(final Message msg) throws IOException {
+        final List<Message> input =
+            Collections.singletonList(msg);
+        try {
+            this.guts.start(input);
+            Logger.info(
+                this, "Processing a messages",
+                input.size()
+            );
+            new IoCheckedScalar<>(new And(this.origin, input)).value();
+        } finally {
+            if (this.count.decrementAndGet() == 0
+                && this.shutdown.stopping()) {
+                this.shutdown.complete();
+                Thread.currentThread().interrupt();
+            }
+            this.guts.stop(input);
+        }
     }
 }

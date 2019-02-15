@@ -21,6 +21,7 @@ import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.zerocracy.Farm;
 import com.zerocracy.Par;
 import com.zerocracy.Project;
+import com.zerocracy.claims.MsgPriority;
 import com.zerocracy.entry.ClaimsOf;
 import com.zerocracy.radars.ClaimOnQuestion;
 import com.zerocracy.radars.Question;
@@ -58,6 +59,7 @@ public final class ReProject implements Reaction<SlackMessagePosted> {
             .author(new SkPerson(farm, event).uid(question.invited()))
             .param("pid", project.pid())
             .param("channel", event.getChannel().getName())
+            .param("priority", MsgPriority.HIGH)
             .postTo(new ClaimsOf(farm, project));
         return question.matches();
     }

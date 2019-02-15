@@ -20,6 +20,7 @@ import com.jcabi.aspects.Tv;
 import com.zerocracy.Farm;
 import com.zerocracy.Project;
 import com.zerocracy.claims.ClaimOut;
+import com.zerocracy.claims.MsgPriority;
 import com.zerocracy.pmo.Catalog;
 import com.zerocracy.sentry.SafeSentry;
 import java.io.IOException;
@@ -130,6 +131,7 @@ public final class Ping implements Job {
         if (catalog.exists(project.pid()) && !catalog.pause(project.pid())) {
             new ClaimOut()
                 .type(type)
+                .param("priority", MsgPriority.LOW)
                 .postTo(
                     new ClaimsOf(this.farm, project),
                     Instant.now().plus(Duration.ofMinutes(Tv.FIVE))

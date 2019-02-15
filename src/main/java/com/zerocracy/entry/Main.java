@@ -22,13 +22,7 @@ import com.zerocracy.Farm;
 import com.zerocracy.claims.ClaimGuts;
 import com.zerocracy.claims.ClaimsFarm;
 import com.zerocracy.claims.ClaimsRoutine;
-import com.zerocracy.claims.proc.AsyncProc;
-import com.zerocracy.claims.proc.BrigadeProc;
-import com.zerocracy.claims.proc.CountingProc;
-import com.zerocracy.claims.proc.ExpiryProc;
-import com.zerocracy.claims.proc.FootprintProc;
-import com.zerocracy.claims.proc.MessageMonitorProc;
-import com.zerocracy.claims.proc.SentryProc;
+import com.zerocracy.claims.MessageSink;
 import com.zerocracy.farm.S3Farm;
 import com.zerocracy.farm.SmartFarm;
 import com.zerocracy.farm.props.Props;
@@ -48,7 +42,6 @@ import com.zerocracy.tk.TkSentry;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.concurrent.atomic.AtomicInteger;
 import javax.ws.rs.HttpMethod;
 import org.cactoos.func.AsyncFunc;
 import org.takes.facets.fork.FkRegex;
@@ -124,8 +117,6 @@ public final class Main {
         }
         Logger.info(this, "Farm is ready to start");
         final ShutdownFarm.Hook shutdown = new ShutdownFarm.Hook();
-        final AtomicInteger count = new AtomicInteger();
-        final int threads = Runtime.getRuntime().availableProcessors();
         final ClaimGuts cgts = new ClaimGuts();
         try (
             final S3Farm origin = new S3Farm(new ExtBucket().value(), temp);
@@ -139,33 +130,10 @@ public final class Main {
                 shutdown
             );
             final SlackRadar radar = new SlackRadar(farm);
-            final ClaimsRoutine claims = new ClaimsRoutine(
-                farm,
-                new AsyncProc(
-                    threads,
-                    new MessageMonitorProc(
-                        farm,
-                        new ExpiryProc(
-                            new SentryProc(
-                                farm,
-                                new FootprintProc(
-                                    farm,
-                                    new CountingProc(
-                                        new BrigadeProc(farm),
-                                        count
-                                    )
-                                )
-                            )
-                        ),
-                        shutdown
-                    ),
-                    cgts,
-                    shutdown
-                ),
-                () -> count.intValue() < threads
-            )
+            final ClaimsRoutine claims = new ClaimsRoutine(farm)
         ) {
             new ExtMongobee(farm).apply();
+            new MessageSink(farm, cgts, shutdown).start(claims.messages());
             claims.start(shutdown);
             new AsyncFunc<>(
                 input -> {

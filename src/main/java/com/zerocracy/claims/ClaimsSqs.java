@@ -108,6 +108,17 @@ public final class ClaimsSqs implements Claims {
                 claim.xpath("/claim/until/text()")
             )
         ).value();
+        new IoCheckedScalar<>(
+            new And(
+                (String priority) -> attrs.put(
+                    "priority",
+                    new MessageAttributeValue()
+                        .withDataType("String")
+                        .withStringValue(priority)
+                ),
+                claim.xpath("/claim/params/param[@name='priority']/text()")
+            )
+        ).value();
         msg.setMessageDeduplicationId(
             String.format(
                 "%s:%s",
