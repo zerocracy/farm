@@ -21,16 +21,19 @@ import com.amazonaws.services.sqs.model.DeleteMessageRequest;
 import com.amazonaws.services.sqs.model.Message;
 import com.amazonaws.services.sqs.model.MessageAttributeValue;
 import com.amazonaws.services.sqs.model.ReceiveMessageRequest;
+import com.jcabi.aspects.Tv;
 import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseRunnable;
 import com.jcabi.log.VerboseThreads;
 import com.zerocracy.Farm;
+import com.zerocracy.claims.proc.MsgExpired;
 import com.zerocracy.entry.ExtSqs;
 import com.zerocracy.shutdown.ShutdownFarm;
 import java.io.Closeable;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
@@ -72,11 +75,6 @@ public final class ClaimsRoutine implements Runnable, Closeable {
      * Until attribute.
      */
     private static final String UNTIL = "until";
-
-    /**
-     * Expires attr.
-     */
-    private static final String KEY_EXPIRES = "expires";
 
     /**
      * Messages limit.
@@ -163,7 +161,7 @@ public final class ClaimsRoutine implements Runnable, Closeable {
             new ReceiveMessageRequest(url)
                 .withMessageAttributeNames(
                     "project", "signature", ClaimsRoutine.UNTIL,
-                    ClaimsRoutine.KEY_EXPIRES, "priority"
+                    "expires", "priority"
                 )
                 .withVisibilityTimeout(
                     (int) Duration.ofMinutes(2L).getSeconds()
@@ -174,23 +172,18 @@ public final class ClaimsRoutine implements Runnable, Closeable {
         for (final Message message : messages) {
             final Map<String, MessageAttributeValue> attr =
                 message.getMessageAttributes();
-            if (attr.containsKey(ClaimsRoutine.KEY_EXPIRES)) {
-                final Instant expiry = Instant.parse(
-                    attr.get(ClaimsRoutine.KEY_EXPIRES).getStringValue()
+            if (new MsgExpired(message).value()) {
+                sqs.deleteMessage(
+                    new DeleteMessageRequest()
+                        .withQueueUrl(url)
+                        .withReceiptHandle(message.getReceiptHandle())
                 );
-                if (Instant.now().isAfter(expiry)) {
-                    sqs.deleteMessage(
-                        new DeleteMessageRequest()
-                            .withQueueUrl(url)
-                            .withReceiptHandle(message.getReceiptHandle())
-                    );
-                    Logger.info(
-                        this,
-                        "Removed expired message: %s",
-                        message.getMessageId()
-                    );
-                    continue;
-                }
+                Logger.info(
+                    this,
+                    "Removed expired message: %s",
+                    message.getMessageId()
+                );
+                continue;
             }
             if (full && MsgPriority.from(message).value()
                 > MsgPriority.NORMAL.value()) {
@@ -211,9 +204,13 @@ public final class ClaimsRoutine implements Runnable, Closeable {
             ++queued;
         }
         Logger.info(
-            this, "received %d messages from SQS, enqueued %d",
-            messages.size(), queued
+            this,
+            "received %d messages from SQS, enqueued %d, size %d",
+            messages.size(), queued, this.queue.size()
         );
+        if (this.queue.size() > Tv.HUNDRED) {
+            this.sanitize(sqs, url);
+        }
     }
 
     @Override
@@ -227,6 +224,32 @@ public final class ClaimsRoutine implements Runnable, Closeable {
      */
     public BlockingQueue<Message> messages() {
         return this.queue;
+    }
+
+    /**
+     * Sanitize messages on high load.
+     *
+     * @param sqs SQS queue
+     * @param url Queue url
+     */
+    private void sanitize(final AmazonSQS sqs, final String url) {
+        final Iterator<Message> iter = this.queue.iterator();
+        while (iter.hasNext()) {
+            final Message msg = iter.next();
+            if (new MsgExpired(msg).value()) {
+                iter.remove();
+                sqs.deleteMessage(
+                    new DeleteMessageRequest()
+                        .withQueueUrl(url)
+                        .withReceiptHandle(msg.getReceiptHandle())
+                );
+                Logger.info(
+                    this,
+                    "Sanitize: removing message: %s",
+                    msg.getMessageId()
+                );
+            }
+        }
     }
 
     /**
