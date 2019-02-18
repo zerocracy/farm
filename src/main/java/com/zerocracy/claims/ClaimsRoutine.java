@@ -184,6 +184,11 @@ public final class ClaimsRoutine implements Runnable, Closeable {
                             .withQueueUrl(url)
                             .withReceiptHandle(message.getReceiptHandle())
                     );
+                    Logger.info(
+                        this,
+                        "Removed expired message: %s",
+                        message.getMessageId()
+                    );
                     continue;
                 }
             }
