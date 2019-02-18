@@ -147,7 +147,7 @@ public final class ClaimsRoutine implements Runnable, Closeable {
     )
     public void run() {
         final boolean full = this.queue.size() + ClaimsRoutine.LIMIT
-            < ClaimsRoutine.QUEUE_SIZE;
+            >= ClaimsRoutine.QUEUE_SIZE;
         final AmazonSQS sqs = new UncheckedScalar<>(new ExtSqs(this.farm))
             .value();
         final String url =
