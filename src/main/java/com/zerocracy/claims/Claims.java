@@ -30,7 +30,7 @@ public interface Claims {
     /**
      * Fake claims.
      */
-    Claims FAKE = (claim, exp)-> {
+    Claims FAKE = (claim, exp) -> {
     };
 
     /**

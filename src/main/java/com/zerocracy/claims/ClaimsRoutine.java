@@ -17,6 +17,7 @@
 package com.zerocracy.claims;
 
 import com.amazonaws.services.sqs.AmazonSQS;
+import com.amazonaws.services.sqs.model.AmazonSQSException;
 import com.amazonaws.services.sqs.model.DeleteMessageRequest;
 import com.amazonaws.services.sqs.model.Message;
 import com.amazonaws.services.sqs.model.MessageAttributeValue;
@@ -147,7 +148,8 @@ public final class ClaimsRoutine implements Runnable, Closeable {
     @SuppressWarnings(
         {
             "PMD.AvoidInstantiatingObjectsInLoops",
-            "PMD.ConfusingTernary"
+            "PMD.ConfusingTernary",
+            "PMD.AvoidCatchingGenericException"
         }
     )
     public void run() {
@@ -212,6 +214,7 @@ public final class ClaimsRoutine implements Runnable, Closeable {
         if (this.queue.size() > Tv.HUNDRED) {
             try {
                 this.sanitize(sqs, url);
+                // @checkstyle IllegalCatch (1 line)
             } catch (final Exception err) {
                 Logger.warn(this, "Sanitize failed: %[exception]s");
             }
@@ -243,14 +246,23 @@ public final class ClaimsRoutine implements Runnable, Closeable {
             final Message msg = iter.next();
             if (new MsgExpired(msg).value() || ClaimsRoutine.isOldPing(msg)) {
                 iter.remove();
-                sqs.deleteMessage(
-                    new DeleteMessageRequest()
-                        .withQueueUrl(url)
-                        .withReceiptHandle(msg.getReceiptHandle())
-                );
+                try {
+                    sqs.deleteMessage(
+                        new DeleteMessageRequest()
+                            .withQueueUrl(url)
+                            .withReceiptHandle(msg.getReceiptHandle())
+                    );
+                } catch (final AmazonSQSException err) {
+                    Logger.error(
+                        this,
+                        "Failed to delete expired message: %[exception]s",
+                        err
+                    );
+                    continue;
+                }
                 Logger.info(
                     this,
-                    "Sanitize: removing message: %s",
+                    "Sanitize: removed message: %s",
                     msg.getMessageId()
                 );
             }
