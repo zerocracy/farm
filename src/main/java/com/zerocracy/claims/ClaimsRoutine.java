@@ -17,6 +17,7 @@
 package com.zerocracy.claims;
 
 import com.amazonaws.services.sqs.AmazonSQS;
+import com.amazonaws.services.sqs.model.DeleteMessageRequest;
 import com.amazonaws.services.sqs.model.Message;
 import com.amazonaws.services.sqs.model.MessageAttributeValue;
 import com.amazonaws.services.sqs.model.ReceiveMessageRequest;
@@ -71,6 +72,11 @@ public final class ClaimsRoutine implements Runnable, Closeable {
      * Until attribute.
      */
     private static final String UNTIL = "until";
+
+    /**
+     * Expires attr.
+     */
+    private static final String KEY_EXPIRES = "expires";
 
     /**
      * Messages limit.
@@ -156,8 +162,8 @@ public final class ClaimsRoutine implements Runnable, Closeable {
         final List<Message> messages = sqs.receiveMessage(
             new ReceiveMessageRequest(url)
                 .withMessageAttributeNames(
-                    "project", "signature", ClaimsRoutine.UNTIL, "expires",
-                    "priority"
+                    "project", "signature", ClaimsRoutine.UNTIL,
+                    ClaimsRoutine.KEY_EXPIRES, "priority"
                 )
                 .withVisibilityTimeout(
                     (int) Duration.ofMinutes(2L).getSeconds()
@@ -168,6 +174,19 @@ public final class ClaimsRoutine implements Runnable, Closeable {
         for (final Message message : messages) {
             final Map<String, MessageAttributeValue> attr =
                 message.getMessageAttributes();
+            if (attr.containsKey(ClaimsRoutine.KEY_EXPIRES)) {
+                final Instant expiry = Instant.parse(
+                    attr.get(ClaimsRoutine.KEY_EXPIRES).getStringValue()
+                );
+                if (Instant.now().isAfter(expiry)) {
+                    sqs.deleteMessage(
+                        new DeleteMessageRequest()
+                            .withQueueUrl(url)
+                            .withReceiptHandle(message.getReceiptHandle())
+                    );
+                    continue;
+                }
+            }
             if (full && MsgPriority.from(message).value()
                 > MsgPriority.NORMAL.value()) {
                 continue;
