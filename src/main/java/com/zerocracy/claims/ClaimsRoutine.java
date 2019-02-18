@@ -146,50 +146,50 @@ public final class ClaimsRoutine implements Runnable, Closeable {
         }
     )
     public void run() {
-        if (this.queue.size() + ClaimsRoutine.LIMIT
-            < ClaimsRoutine.QUEUE_SIZE) {
-            final AmazonSQS sqs = new UncheckedScalar<>(new ExtSqs(this.farm))
-                .value();
-            final String url =
-                new UncheckedText(new ClaimsQueueUrl(this.farm))
-                    .asString();
-            final List<Message> messages = sqs.receiveMessage(
-                new ReceiveMessageRequest(url)
-                    .withMessageAttributeNames(
-                        "project", "signature", ClaimsRoutine.UNTIL, "expires",
-                        "priority"
-                    )
-                    .withVisibilityTimeout(
-                        (int) Duration.ofMinutes(2L).getSeconds()
-                    )
-                    .withMaxNumberOfMessages(ClaimsRoutine.LIMIT)
-            ).getMessages();
-            for (final Message message : messages) {
-                final Map<String, MessageAttributeValue> attr =
-                    message.getMessageAttributes();
-                attr.put(
-                    "received",
-                    new MessageAttributeValue()
-                        .withStringValue(Instant.now().toString())
-                );
-                if (attr.containsKey(ClaimsRoutine.UNTIL)
-                    && Instant.parse(
-                    attr.get(ClaimsRoutine.UNTIL).getStringValue()
-                ).isAfter(Instant.now())) {
-                    continue;
-                }
-                this.queue.add(message);
+        final boolean full = this.queue.size() + ClaimsRoutine.LIMIT
+            < ClaimsRoutine.QUEUE_SIZE;
+        final AmazonSQS sqs = new UncheckedScalar<>(new ExtSqs(this.farm))
+            .value();
+        final String url =
+            new UncheckedText(new ClaimsQueueUrl(this.farm))
+                .asString();
+        final List<Message> messages = sqs.receiveMessage(
+            new ReceiveMessageRequest(url)
+                .withMessageAttributeNames(
+                    "project", "signature", ClaimsRoutine.UNTIL, "expires",
+                    "priority"
+                )
+                .withVisibilityTimeout(
+                    (int) Duration.ofMinutes(2L).getSeconds()
+                )
+                .withMaxNumberOfMessages(ClaimsRoutine.LIMIT)
+        ).getMessages();
+        int queued = 0;
+        for (final Message message : messages) {
+            final Map<String, MessageAttributeValue> attr =
+                message.getMessageAttributes();
+            if (full && MsgPriority.from(message).value()
+                > MsgPriority.NORMAL.value()) {
+                continue;
             }
-            Logger.info(
-                this, "received %d messages from SQS",
-                messages.size()
+            attr.put(
+                "received",
+                new MessageAttributeValue()
+                    .withStringValue(Instant.now().toString())
             );
-        } else {
-            Logger.info(
-                this,
-                "local queue is full, can't process new messages"
-            );
+            if (attr.containsKey(ClaimsRoutine.UNTIL)
+                && Instant.parse(
+                attr.get(ClaimsRoutine.UNTIL).getStringValue()
+            ).isAfter(Instant.now())) {
+                continue;
+            }
+            this.queue.add(message);
+            ++queued;
         }
+        Logger.info(
+            this, "received %d messages from SQS, enqueued %d",
+            messages.size(), queued
+        );
     }
 
     @Override

@@ -239,7 +239,6 @@ public final class ClaimsSqsITCase {
         final Claims claims = new ClaimsSqs(
             this.client, this.queue, new FkProject()
         );
-        final Duration delay = Duration.ofSeconds((long) Tv.THIRTY);
         final String prt = "priority";
         new ClaimOut()
             .type("important")
