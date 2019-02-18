@@ -19,6 +19,7 @@ package com.zerocracy.entry;
 import com.jcabi.xml.XML;
 import com.zerocracy.claims.Claims;
 import java.io.IOException;
+import java.time.Instant;
 
 /**
  * Validation decorator for claims.
@@ -54,7 +55,8 @@ public final class ValidClaims implements Claims {
     }
 
     @Override
-    public void submit(final XML claim) throws IOException {
+    public void submit(final XML claim, final Instant expires)
+        throws IOException {
         final int size = claim.toString().length();
         if (size > ValidClaims.MAX_CLAIM_LENGTH) {
             throw new IllegalArgumentException(
@@ -65,6 +67,6 @@ public final class ValidClaims implements Claims {
                 )
             );
         }
-        this.claims.submit(claim);
+        this.claims.submit(claim, expires);
     }
 }

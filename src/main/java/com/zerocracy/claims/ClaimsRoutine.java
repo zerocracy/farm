@@ -25,6 +25,7 @@ import com.jcabi.aspects.Tv;
 import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseRunnable;
 import com.jcabi.log.VerboseThreads;
+import com.jcabi.xml.XMLDocument;
 import com.zerocracy.Farm;
 import com.zerocracy.claims.proc.MsgExpired;
 import com.zerocracy.entry.ExtSqs;
@@ -236,7 +237,7 @@ public final class ClaimsRoutine implements Runnable, Closeable {
         final Iterator<Message> iter = this.queue.iterator();
         while (iter.hasNext()) {
             final Message msg = iter.next();
-            if (new MsgExpired(msg).value()) {
+            if (new MsgExpired(msg).value() || ClaimsRoutine.isOldPing(msg)) {
                 iter.remove();
                 sqs.deleteMessage(
                     new DeleteMessageRequest()
@@ -250,6 +251,23 @@ public final class ClaimsRoutine implements Runnable, Closeable {
                 );
             }
         }
+    }
+
+    /**
+     * Check if ping claim is old.
+     * @param msg Message
+     * @return True if is ping and is old
+     */
+    private static boolean isOldPing(final Message msg) {
+        final ClaimIn claim = new ClaimIn(
+            new XMLDocument(msg.getBody())
+                .nodes("/claim").get(0)
+        );
+        final boolean ping = "ping".equalsIgnoreCase(claim.type())
+            || "ping hourly".equalsIgnoreCase(claim.type());
+        final boolean old = claim.created().toInstant()
+            .isBefore(Instant.now().minus(Duration.ofHours(1L)));
+        return ping && old;
     }
 
     /**

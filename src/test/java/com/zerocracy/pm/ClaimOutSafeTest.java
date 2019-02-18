@@ -37,7 +37,7 @@ public final class ClaimOutSafeTest {
     @Test
     public void swallowAllExceptions() {
         new ClaimOutSafe(new ClaimOut().type("None")).postTo(
-            claim -> {
+            (claim, exp) -> {
                 throw new IllegalStateException("submit failed");
             }
         );

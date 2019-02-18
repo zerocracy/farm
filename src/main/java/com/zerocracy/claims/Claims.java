@@ -30,7 +30,7 @@ public interface Claims {
     /**
      * Fake claims.
      */
-    Claims FAKE = claim -> {
+    Claims FAKE = (claim, exp)-> {
     };
 
     /**
@@ -39,7 +39,9 @@ public interface Claims {
      * @param claim Claim to submit
      * @throws IOException If fails
      */
-    void submit(XML claim) throws IOException;
+    default void submit(XML claim) throws IOException {
+        this.submit(claim, Instant.MAX);
+    }
 
     /**
      * Submit new claim with a time to live.
@@ -48,8 +50,6 @@ public interface Claims {
      * @param expires When this claim expires
      * @throws IOException If fails
      */
-    default void submit(final XML claim, final Instant expires)
-        throws IOException {
-        this.submit(claim);
-    }
+    void submit(final XML claim, final Instant expires)
+        throws IOException;
 }
