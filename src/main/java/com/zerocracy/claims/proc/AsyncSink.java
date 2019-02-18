@@ -17,19 +17,13 @@
 package com.zerocracy.claims.proc;
 
 import com.amazonaws.services.sqs.model.Message;
-import com.jcabi.aspects.Tv;
 import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseCallable;
-import com.jcabi.log.VerboseRunnable;
-import com.jcabi.log.VerboseThreads;
 import com.zerocracy.shutdown.ShutdownFarm;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.Proc;
 import org.cactoos.scalar.And;
@@ -42,11 +36,6 @@ import org.cactoos.scalar.IoCheckedScalar;
  */
 @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
 public final class AsyncSink {
-
-    /**
-     * Executor.
-     */
-    private final ScheduledExecutorService service;
 
     /**
      * Origin proc.
@@ -68,57 +57,13 @@ public final class AsyncSink {
      *
      * @param origin Origin proc
      * @param shutdown Shutdown hook
+     * @checkstyle ParameterNumberCheck (3 lines)
      */
     public AsyncSink(final Proc<Message> origin,
         final ShutdownFarm.Hook shutdown) {
-        this(
-            Runtime.getRuntime().availableProcessors(),
-            origin, shutdown
-        );
-    }
-
-    /**
-     * Ctor.
-     *
-     * @param threads Threads
-     * @param origin Origin proc
-     * @param shutdown Shutdown hook
-     * @checkstyle ParameterNumberCheck (3 lines)
-     */
-    public AsyncSink(final int threads, final Proc<Message> origin,
-        final ShutdownFarm.Hook shutdown) {
-        this.service = Executors.newScheduledThreadPool(
-            threads, new VerboseThreads(AsyncSink.class)
-        );
         this.origin = origin;
         this.shutdown = shutdown;
         this.count = new AtomicInteger();
-        this.service.scheduleWithFixedDelay(
-            new VerboseRunnable(
-                () -> {
-                    if (!this.shutdown.check()) {
-                        this.service.shutdown();
-                        try {
-                            this.service.awaitTermination(
-                                Tv.FIVE,
-                                TimeUnit.MINUTES
-                            );
-                        } catch (final InterruptedException err) {
-                            Logger.info(
-                                this,
-                                "Service wait was interrupted"
-                            );
-                        }
-                        Logger.info(
-                            this,
-                            "Shutting down with %d tasks still executing",
-                            this.service.shutdownNow().size()
-                        );
-                    }
-                }
-            ),
-            1, 1, TimeUnit.MINUTES
-        );
     }
 
     /**
@@ -128,7 +73,7 @@ public final class AsyncSink {
     public void execAsync(final Message msg) {
         try {
             this.count.incrementAndGet();
-            this.service.submit(
+            new ExecFor(msg).value().submit(
                 new VerboseCallable<>(
                     () -> {
                         try {
