@@ -156,7 +156,8 @@ public final class ClaimsRoutine implements Runnable, Closeable {
             final List<Message> messages = sqs.receiveMessage(
                 new ReceiveMessageRequest(url)
                     .withMessageAttributeNames(
-                        "project", "signature", ClaimsRoutine.UNTIL, "expires"
+                        "project", "signature", ClaimsRoutine.UNTIL, "expires",
+                        "priority"
                     )
                     .withVisibilityTimeout(
                         (int) Duration.ofMinutes(2L).getSeconds()

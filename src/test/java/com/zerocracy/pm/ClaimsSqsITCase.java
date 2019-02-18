@@ -28,6 +28,7 @@ import com.jcabi.log.Logger;
 import com.zerocracy.claims.ClaimOut;
 import com.zerocracy.claims.Claims;
 import com.zerocracy.claims.ClaimsSqs;
+import com.zerocracy.claims.MsgPriority;
 import com.zerocracy.entry.PropsAwsCredentials;
 import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.Props;
@@ -216,7 +217,7 @@ public final class ClaimsSqsITCase {
         new ClaimOut()
             .type("Ping")
             .postTo(claims, expire);
-        final String attr = "expire";
+        final String attr = "expires";
         MatcherAssert.assertThat(
             "received claim with expiry",
             this.client.receiveMessage(
@@ -228,6 +229,33 @@ public final class ClaimsSqsITCase {
                 new MatcherOf<>(
                     (Message msg) -> msg.getMessageAttributes()
                         .containsKey(attr)
+                )
+            )
+        );
+    }
+
+    @Test
+    public void submitWithPriority() throws Exception {
+        final Claims claims = new ClaimsSqs(
+            this.client, this.queue, new FkProject()
+        );
+        final Duration delay = Duration.ofSeconds((long) Tv.THIRTY);
+        final String prt = "priority";
+        new ClaimOut()
+            .type("important")
+            .param(prt, MsgPriority.HIGH)
+            .postTo(claims);
+        MatcherAssert.assertThat(
+            "received claim with priority",
+            this.client.receiveMessage(
+                new ReceiveMessageRequest(this.queue)
+                    .withMaxNumberOfMessages(Tv.TEN)
+                    .withMessageAttributeNames(prt)
+            ).getMessages(),
+            Matchers.contains(
+                new MatcherOf<>(
+                    (Message msg) -> msg.getMessageAttributes()
+                        .containsKey(prt)
                 )
             )
         );
