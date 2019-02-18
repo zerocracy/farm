@@ -31,7 +31,6 @@ import com.zerocracy.claims.proc.MsgExpired;
 import com.zerocracy.entry.ExtSqs;
 import com.zerocracy.shutdown.ShutdownFarm;
 import java.io.Closeable;
-import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Comparator;
@@ -43,7 +42,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import org.cactoos.func.IoCheckedProc;
 import org.cactoos.scalar.UncheckedScalar;
 import org.cactoos.text.UncheckedText;
 
@@ -213,9 +211,8 @@ public final class ClaimsRoutine implements Runnable, Closeable {
         );
         if (this.queue.size() > Tv.HUNDRED) {
             try {
-                new IoCheckedProc<>(none -> this.sanitize(sqs, url))
-                    .exec(null);
-            } catch (final IOException err) {
+                this.sanitize(sqs, url);
+            } catch (final Exception err) {
                 Logger.warn(this, "Sanitize failed: %[exception]s");
             }
         }
