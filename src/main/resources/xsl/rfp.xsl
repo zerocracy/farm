@@ -65,6 +65,13 @@ SOFTWARE.
         <xsl:text> get back to you by email and you will discuss the next steps.</xsl:text>
       </p>
       <p>
+        <xsl:text>Watch </xsl:text>
+        <a href="https://www.youtube.com/watch?v=QsxwHdKoWEI">
+          <xsl:text>this video</xsl:text>
+        </a>
+        <xsl:text>, it will help you understand how this process works.</xsl:text>
+      </p>
+      <p>
         <xsl:text>Click here to pay </xsl:text>
         <xsl:text> </xsl:text>
         <a href="#" class="pay" data-cents="{price_cents}">
