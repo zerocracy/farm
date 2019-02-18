@@ -80,7 +80,7 @@ public final class ClaimsRoutine implements Runnable, Closeable {
     /**
      * Max size of local message queue.
      */
-    private static final int QUEUE_SIZE = 128;
+    private static final int QUEUE_SIZE = 1024;
 
     /**
      * Delay to fetch claims.
