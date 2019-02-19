@@ -51,7 +51,7 @@ release:
 merge:
   script: |-
     pdd --source=$(pwd) --verbose --file=/dev/null
-    mvn -Pupgrade-bundles --settings ../settings.xml process-test-resources
+    # mvn -Pupgrade-bundles --settings ../settings.xml process-test-resources
     mvn help:system install -Pqulice,codenarc --settings ../settings.xml
     mvn clean site -Psite --settings ../settings.xml --quiet
     git commit -am "updated resources" || echo "nothing to update"
