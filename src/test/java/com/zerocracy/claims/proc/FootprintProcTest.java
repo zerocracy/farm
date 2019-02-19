@@ -61,7 +61,7 @@ public final class FootprintProcTest {
                         .param("something", num)
                         .author("0pdd")
                         .postTo(
-                            claim -> new IoCheckedProc<>(
+                            (claim, exp) -> new IoCheckedProc<>(
                                 new FootprintProc(
                                     farm,
                                     msg -> {

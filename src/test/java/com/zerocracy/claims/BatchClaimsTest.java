@@ -21,6 +21,7 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.Closeable;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.LinkedList;
 import java.util.List;
 import org.hamcrest.MatcherAssert;
@@ -38,7 +39,7 @@ import org.xembly.Xembler;
 public final class BatchClaimsTest {
 
     @Test(expected = UnsupportedOperationException.class)
-    public void obeyClaimBatchMaxSize()throws IOException {
+    public void obeyClaimBatchMaxSize() throws IOException {
         final List<ClaimOut> claims = new LinkedList<>();
         final int count = Tv.FIVE;
         final ClaimOut claim = new ClaimOut();
@@ -86,8 +87,9 @@ public final class BatchClaimsTest {
         }
 
         @Override
-        public void submit(final XML claim) throws IOException {
-            this.origin.submit(claim);
+        public void submit(final XML claim, final Instant expires)
+            throws IOException {
+            this.origin.submit(claim, expires);
         }
 
         @Override

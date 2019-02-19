@@ -17,33 +17,48 @@
 package com.zerocracy.claims.proc;
 
 import com.amazonaws.services.sqs.model.Message;
-import org.cactoos.Proc;
+import com.amazonaws.services.sqs.model.MessageAttributeValue;
+import java.time.Instant;
+import java.util.Map;
+import org.cactoos.Scalar;
 
 /**
- * Proc that checks for claims expiry.
+ * Message expired.
  *
  * @since 1.0
  */
-public final class ExpiryProc implements Proc<Message> {
+public final class MsgExpired implements Scalar<Boolean> {
 
     /**
-     * Decorated proc.
+     * Expires attr.
      */
-    private final Proc<Message> proc;
+    private static final String KEY_EXPIRES = "expires";
+
+    /**
+     * Message.
+     */
+    private final Message msg;
 
     /**
      * Ctor.
-     * @param origin Original proc
+     * @param msg Message
      */
-    public ExpiryProc(final Proc<Message> origin) {
-        this.proc = origin;
+    public MsgExpired(final Message msg) {
+        this.msg = msg;
     }
 
     @Override
-    public void exec(final Message input) throws Exception {
-        if (new MsgExpired(input).value()) {
-            return;
+    public Boolean value() {
+        final Map<String, MessageAttributeValue> attr =
+            this.msg.getMessageAttributes();
+        final boolean expired;
+        if (attr.containsKey(MsgExpired.KEY_EXPIRES)) {
+            expired = Instant.parse(
+                attr.get(MsgExpired.KEY_EXPIRES).getStringValue()
+            ).isBefore(Instant.now());
+        } else {
+            expired = false;
         }
-        this.proc.exec(input);
+        return expired;
     }
 }

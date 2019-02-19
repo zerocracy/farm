@@ -92,8 +92,12 @@ public final class MessageSink {
                 while (!Thread.currentThread().isInterrupted()) {
                     try {
                         final Message msg = queue.take();
-                        while (this.asynk.tasks() >= Tv.TEN) {
-                            TimeUnit.SECONDS.sleep(1L);
+                        final boolean important = MsgPriority.from(msg).value()
+                            <= MsgPriority.NORMAL.value();
+                        if (!important) {
+                            while (this.asynk.tasks() >= Tv.TEN) {
+                                TimeUnit.SECONDS.sleep(1L);
+                            }
                         }
                         this.asynk.execAsync(msg);
                     } catch (final InterruptedException ignore) {

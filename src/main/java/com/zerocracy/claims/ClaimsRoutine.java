@@ -17,19 +17,25 @@
 package com.zerocracy.claims;
 
 import com.amazonaws.services.sqs.AmazonSQS;
+import com.amazonaws.services.sqs.model.AmazonSQSException;
+import com.amazonaws.services.sqs.model.DeleteMessageRequest;
 import com.amazonaws.services.sqs.model.Message;
 import com.amazonaws.services.sqs.model.MessageAttributeValue;
 import com.amazonaws.services.sqs.model.ReceiveMessageRequest;
+import com.jcabi.aspects.Tv;
 import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseRunnable;
 import com.jcabi.log.VerboseThreads;
+import com.jcabi.xml.XMLDocument;
 import com.zerocracy.Farm;
+import com.zerocracy.claims.proc.MsgExpired;
 import com.zerocracy.entry.ExtSqs;
 import com.zerocracy.shutdown.ShutdownFarm;
 import java.io.Closeable;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
@@ -80,7 +86,7 @@ public final class ClaimsRoutine implements Runnable, Closeable {
     /**
      * Max size of local message queue.
      */
-    private static final int QUEUE_SIZE = 128;
+    private static final int QUEUE_SIZE = 1024;
 
     /**
      * Delay to fetch claims.
@@ -142,52 +148,76 @@ public final class ClaimsRoutine implements Runnable, Closeable {
     @SuppressWarnings(
         {
             "PMD.AvoidInstantiatingObjectsInLoops",
-            "PMD.ConfusingTernary"
+            "PMD.ConfusingTernary",
+            "PMD.AvoidCatchingGenericException"
         }
     )
     public void run() {
-        if (this.queue.size() + ClaimsRoutine.LIMIT
-            < ClaimsRoutine.QUEUE_SIZE) {
-            final AmazonSQS sqs = new UncheckedScalar<>(new ExtSqs(this.farm))
-                .value();
-            final String url =
-                new UncheckedText(new ClaimsQueueUrl(this.farm))
-                    .asString();
-            final List<Message> messages = sqs.receiveMessage(
-                new ReceiveMessageRequest(url)
-                    .withMessageAttributeNames(
-                        "project", "signature", ClaimsRoutine.UNTIL, "expires"
-                    )
-                    .withVisibilityTimeout(
-                        (int) Duration.ofMinutes(2L).getSeconds()
-                    )
-                    .withMaxNumberOfMessages(ClaimsRoutine.LIMIT)
-            ).getMessages();
-            for (final Message message : messages) {
-                final Map<String, MessageAttributeValue> attr =
-                    message.getMessageAttributes();
-                attr.put(
-                    "received",
-                    new MessageAttributeValue()
-                        .withStringValue(Instant.now().toString())
+        final boolean full = this.queue.size() + ClaimsRoutine.LIMIT
+            >= ClaimsRoutine.QUEUE_SIZE;
+        final AmazonSQS sqs = new UncheckedScalar<>(new ExtSqs(this.farm))
+            .value();
+        final String url =
+            new UncheckedText(new ClaimsQueueUrl(this.farm))
+                .asString();
+        final List<Message> messages = sqs.receiveMessage(
+            new ReceiveMessageRequest(url)
+                .withMessageAttributeNames(
+                    "project", "signature", ClaimsRoutine.UNTIL,
+                    "expires", "priority"
+                )
+                .withVisibilityTimeout(
+                    (int) Duration.ofMinutes(2L).getSeconds()
+                )
+                .withMaxNumberOfMessages(ClaimsRoutine.LIMIT)
+        ).getMessages();
+        int queued = 0;
+        for (final Message message : messages) {
+            final Map<String, MessageAttributeValue> attr =
+                message.getMessageAttributes();
+            if (new MsgExpired(message).value()) {
+                sqs.deleteMessage(
+                    new DeleteMessageRequest()
+                        .withQueueUrl(url)
+                        .withReceiptHandle(message.getReceiptHandle())
                 );
-                if (attr.containsKey(ClaimsRoutine.UNTIL)
-                    && Instant.parse(
-                    attr.get(ClaimsRoutine.UNTIL).getStringValue()
-                ).isAfter(Instant.now())) {
-                    continue;
-                }
-                this.queue.add(message);
+                Logger.info(
+                    this,
+                    "Removed expired message: %s",
+                    message.getMessageId()
+                );
+                continue;
             }
-            Logger.info(
-                this, "received %d messages from SQS",
-                messages.size()
+            if (full && MsgPriority.from(message).value()
+                > MsgPriority.NORMAL.value()) {
+                continue;
+            }
+            attr.put(
+                "received",
+                new MessageAttributeValue()
+                    .withStringValue(Instant.now().toString())
             );
-        } else {
-            Logger.info(
-                this,
-                "local queue is full, can't process new messages"
-            );
+            if (attr.containsKey(ClaimsRoutine.UNTIL)
+                && Instant.parse(
+                attr.get(ClaimsRoutine.UNTIL).getStringValue()
+            ).isAfter(Instant.now())) {
+                continue;
+            }
+            this.queue.add(message);
+            ++queued;
+        }
+        Logger.info(
+            this,
+            "received %d messages from SQS, enqueued %d, size %d",
+            messages.size(), queued, this.queue.size()
+        );
+        if (this.queue.size() > Tv.HUNDRED) {
+            try {
+                this.sanitize(sqs, url);
+                // @checkstyle IllegalCatch (1 line)
+            } catch (final Exception err) {
+                Logger.warn(this, "Sanitize failed: %[exception]s");
+            }
         }
     }
 
@@ -202,6 +232,58 @@ public final class ClaimsRoutine implements Runnable, Closeable {
      */
     public BlockingQueue<Message> messages() {
         return this.queue;
+    }
+
+    /**
+     * Sanitize messages on high load.
+     *
+     * @param sqs SQS queue
+     * @param url Queue url
+     */
+    private void sanitize(final AmazonSQS sqs, final String url) {
+        final Iterator<Message> iter = this.queue.iterator();
+        while (iter.hasNext()) {
+            final Message msg = iter.next();
+            if (new MsgExpired(msg).value() || ClaimsRoutine.isOldPing(msg)) {
+                iter.remove();
+                try {
+                    sqs.deleteMessage(
+                        new DeleteMessageRequest()
+                            .withQueueUrl(url)
+                            .withReceiptHandle(msg.getReceiptHandle())
+                    );
+                } catch (final AmazonSQSException err) {
+                    Logger.error(
+                        this,
+                        "Failed to delete expired message: %[exception]s",
+                        err
+                    );
+                    continue;
+                }
+                Logger.info(
+                    this,
+                    "Sanitize: removed message: %s",
+                    msg.getMessageId()
+                );
+            }
+        }
+    }
+
+    /**
+     * Check if ping claim is old.
+     * @param msg Message
+     * @return True if is ping and is old
+     */
+    private static boolean isOldPing(final Message msg) {
+        final ClaimIn claim = new ClaimIn(
+            new XMLDocument(msg.getBody())
+                .nodes("/claim").get(0)
+        );
+        final boolean ping = "ping".equalsIgnoreCase(claim.type())
+            || "ping hourly".equalsIgnoreCase(claim.type());
+        final boolean old = claim.created().toInstant()
+            .isBefore(Instant.now().minus(Duration.ofHours(1L)));
+        return ping && old;
     }
 
     /**

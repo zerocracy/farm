@@ -64,7 +64,7 @@ public final class ClaimGuts implements Iterable<Directive> {
                 );
                 final Map<String, MessageAttributeValue> attr =
                     message.getMessageAttributes();
-                dirs.add("message")
+                final Directives msg = dirs.add("message")
                     .attr("id", message.getMessageId())
                     .add("claim").attr("id", claim.cid())
                     .set(claim.type())
@@ -77,8 +77,13 @@ public final class ClaimGuts implements Iterable<Directive> {
                     .up()
                     .add("priority")
                     .set(MsgPriority.from(message))
-                    .up()
                     .up();
+                if (attr.containsKey("expires")) {
+                    msg.add("expires")
+                        .set(attr.get("expires").getStringValue())
+                        .up();
+                }
+                msg.up();
                 dirs.up();
             }
         }

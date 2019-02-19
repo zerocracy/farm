@@ -50,7 +50,7 @@ public final class ClaimXml {
     public XML asXml() throws IOException {
         final AtomicReference<XML> xml = new AtomicReference<>();
         this.src.postTo(
-            claim -> xml.set(claim.nodes("//claim").get(0))
+            (claim, exp) -> xml.set(claim.nodes("//claim").get(0))
         );
         return xml.get();
     }

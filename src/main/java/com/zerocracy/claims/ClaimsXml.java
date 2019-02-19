@@ -19,6 +19,7 @@ package com.zerocracy.claims;
 import com.jcabi.xml.XML;
 import com.zerocracy.Project;
 import java.io.IOException;
+import java.time.Instant;
 import org.cactoos.Proc;
 import org.cactoos.Scalar;
 import org.cactoos.iterable.Endless;
@@ -73,7 +74,8 @@ public final class ClaimsXml implements Claims {
     }
 
     @Override
-    public void submit(final XML claim) throws IOException {
+    public void submit(final XML claim, final Instant expires)
+        throws IOException {
         new ClaimsItem(this.pkt).bootstrap().add(claim);
     }
 }

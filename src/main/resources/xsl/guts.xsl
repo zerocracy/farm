@@ -110,6 +110,10 @@ SOFTWARE.
               <xsl:value-of select="project"/>
               <xsl:text>}, received={</xsl:text>
               <xsl:value-of select="received"/>
+              <xsl:if test="expires">
+                <xsl:text>}, expires={</xsl:text>
+                <xsl:value-of select="expires"/>
+              </xsl:if>
               <xsl:text>}, priority={</xsl:text>
               <xsl:value-of select="priority"/>
               <xsl:text>}]</xsl:text>
