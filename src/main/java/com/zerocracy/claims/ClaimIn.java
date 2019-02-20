@@ -20,6 +20,7 @@ import com.jcabi.xml.XML;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import org.cactoos.text.UncheckedText;
@@ -232,10 +233,13 @@ public final class ClaimIn {
     public Map<String, String> params() {
         final Map<String, String> map = new HashMap<>(0);
         for (final XML param : this.xml.nodes("params/param")) {
-            map.put(
-                param.xpath("@name").get(0),
-                param.xpath("text()").get(0)
-            );
+            final List<String> xval = param.xpath("text()");
+            if (!xval.isEmpty()) {
+                map.put(
+                    param.xpath("@name").get(0),
+                    xval.get(0)
+                );
+            }
         }
         return map;
     }
