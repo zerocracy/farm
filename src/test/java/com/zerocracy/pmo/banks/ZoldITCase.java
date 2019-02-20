@@ -16,9 +16,13 @@
  */
 package com.zerocracy.pmo.banks;
 
+import com.zerocracy.Farm;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.farm.props.PropsFarm;
+import com.zerocracy.pm.staff.Roles;
+import com.zerocracy.pmo.Pmo;
+import java.io.IOException;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Assume;
@@ -29,6 +33,7 @@ import org.junit.Test;
  * Test case for {@link Zold}.
  *
  * @since 1.0
+ * @checkstyle JavadocMethodCheck (500 lines)
  */
 public final class ZoldITCase {
 
@@ -42,14 +47,27 @@ public final class ZoldITCase {
 
     @Test
     public void payZold() throws Exception {
+        final Farm farm = new PropsFarm();
+        final String target = "yegor256";
+        new Roles(new Pmo(farm)).bootstrap().assign(target, "PO");
         MatcherAssert.assertThat(
-            new Zold(new PropsFarm()).pay(
-                "yegor256",
+            new Zold(farm).pay(
+                target,
                 new Cash.S("$0.01"),
                 "ZoldITCase#payZold",
                 "none"
             ),
             Matchers.not(Matchers.isEmptyString())
+        );
+    }
+
+    @Test(expected = IOException.class)
+    public void failPaymentForNonPmoUsers() throws Exception {
+        new Zold(new PropsFarm()).pay(
+            "g4s8",
+            new Cash.S("$0.02"),
+            "ZoldITCase#failPaymentForNonPmoUsers",
+            "none2"
         );
     }
 }

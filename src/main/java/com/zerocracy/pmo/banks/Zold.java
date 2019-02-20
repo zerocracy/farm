@@ -22,6 +22,8 @@ import com.jcabi.http.response.RestResponse;
 import com.zerocracy.Farm;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.farm.props.Props;
+import com.zerocracy.pm.staff.Roles;
+import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.List;
@@ -34,9 +36,9 @@ import java.util.concurrent.TimeUnit;
 public final class Zold implements Bank {
 
     /**
-     * Props.
+     * Farm.
      */
-    private final Props props;
+    private final Farm farm;
 
     /**
      * Ctor.
@@ -44,16 +46,7 @@ public final class Zold implements Bank {
      * @param farm Farm
      */
     public Zold(final Farm farm) {
-        this(new Props(farm));
-    }
-
-    /**
-     * Ctor.
-     *
-     * @param props Props
-     */
-    public Zold(final Props props) {
-        this.props = props;
+        this.farm = farm;
     }
 
     @Override
@@ -62,21 +55,26 @@ public final class Zold implements Bank {
     }
 
     @Override
+    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     // @checkstyle ParameterNumberCheck (3 lines)
     public String pay(final String target, final Cash amount,
         final String details, final String unique) throws IOException {
-        final String uri = this.props.get("//zold/host");
+        if (!new Roles(new Pmo(this.farm)).bootstrap().hasAnyRole(target)) {
+            throw new IOException("Zold payments are temporary disabled");
+        }
+        final Props props = new Props(this.farm);
+        final String uri = props.get("//zold/host");
         final RestResponse rsp = new JdkRequest(uri)
             .uri()
             .path("/do-pay")
             .back()
             .method("POST")
-            .header("X-Zold-Wts", this.props.get("//zold/secret"))
+            .header("X-Zold-Wts", props.get("//zold/secret"))
             .body()
             .formParam("bnf", target)
             .formParam("amount", amount.decimal().toString())
-            .formParam("details", new ZoldDetails(details))
-            .formParam("keygap", this.props.get("//zold/keygap"))
+            .formParam("details", new ZoldDetails(details).asString())
+            .formParam("keygap", props.get("//zold/keygap"))
             .back()
             .fetch()
             .as(RestResponse.class);
