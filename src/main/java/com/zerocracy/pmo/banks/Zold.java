@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pmo.banks;
 
+import com.jcabi.aspects.Tv;
 import com.jcabi.http.request.JdkRequest;
 import com.jcabi.http.response.RestResponse;
 import com.zerocracy.Farm;
@@ -23,6 +24,8 @@ import com.zerocracy.cash.Cash;
 import com.zerocracy.farm.props.Props;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Zold payment.
@@ -62,7 +65,8 @@ public final class Zold implements Bank {
     // @checkstyle ParameterNumberCheck (3 lines)
     public String pay(final String target, final Cash amount,
         final String details, final String unique) throws IOException {
-        final int status = new JdkRequest(this.props.get("//zold/host"))
+        final String uri = this.props.get("//zold/host");
+        final RestResponse rsp = new JdkRequest(uri)
             .uri()
             .path("/do-pay")
             .back()
@@ -72,16 +76,54 @@ public final class Zold implements Bank {
             .formParam("bnf", target)
             .formParam("amount", amount.decimal().toString())
             .formParam("details", new ZoldDetails(details))
+            .formParam("keygap", this.props.get("//zold/keygap"))
             .back()
             .fetch()
-            .as(RestResponse.class)
-            .status();
-        if (status != HttpURLConnection.HTTP_SEE_OTHER) {
+            .as(RestResponse.class);
+        if (rsp.status() != HttpURLConnection.HTTP_MOVED_TEMP) {
             throw new IOException(
-                String.format("Zold payment failed, code=%d", status)
+                String.format("Zold payment failed, code=%d", rsp.status())
             );
         }
-        return "";
+        final List<String> hds = rsp.headers().get("X-Zold-Job");
+        if (hds.isEmpty()) {
+            throw new IOException(
+                "Zold response doesn't have job-id"
+            );
+        }
+        final String job = hds.get(0);
+        String status;
+        do {
+            try {
+                TimeUnit.SECONDS.sleep((long) Tv.FIVE);
+            } catch (final InterruptedException err) {
+                Thread.currentThread().interrupt();
+                throw new IOException("Thread interrupted", err);
+            }
+            final RestResponse jrsp = new JdkRequest(uri)
+                .uri().path("/job").queryParam("id", job).back()
+                .method("GET")
+                .fetch()
+                .as(RestResponse.class);
+            status = jrsp.body();
+            if (jrsp.status() != HttpURLConnection.HTTP_OK) {
+                throw new IOException(
+                    String.format(
+                        "WTS job failed; job-id=%s code=%d status=%s",
+                        job, jrsp.status(), status
+                    )
+                );
+            }
+        } while ("RUNNING".equalsIgnoreCase(status));
+        if (!"OK".equals(status)) {
+            throw new IOException(
+                String.format(
+                    "Failed to pay via WTS: job=%s error=%s",
+                    job, status
+                )
+            );
+        }
+        return job;
     }
 
     @Override
