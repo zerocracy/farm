@@ -76,14 +76,6 @@ public final class Payroll {
     public String pay(final Ledger ledger,
         final String login, final Cash amount,
         final String reason, final String unique) throws IOException {
-        final Cash min = new Policy().get("46.min", new Cash.S("$10"));
-        if (amount.compareTo(min) < 0 && !reason.startsWith("Debt repayment")) {
-            throw new SoftException(
-                new Par(
-                    "The amount %s is too small at: %s"
-                ).say(amount, reason)
-            );
-        }
         final People people = new People(this.farm).bootstrap();
         final String wallet = people.wallet(login);
         if (wallet.isEmpty()) {
@@ -94,6 +86,16 @@ public final class Payroll {
                 ).say(login, amount)
             );
         }
+        final String method = people.bank(login);
+        final Cash min = new Policy().get("46.min", new Cash.S("$10"));
+        if (amount.compareTo(min) < 0 && !reason.startsWith("Debt repayment")
+            && !"zld".equalsIgnoreCase(method)) {
+            throw new SoftException(
+                new Par(
+                    "The amount %s is too small at: %s"
+                ).say(amount, reason)
+            );
+        }
         if (new Debts(this.farm).bootstrap().exists(login)
             && !reason.startsWith("Debt repayment")) {
             throw new SoftException(
@@ -102,7 +104,6 @@ public final class Payroll {
                 ).say(amount, reason)
             );
         }
-        final String method = people.bank(login);
         if (!this.banks.containsKey(method)) {
             throw new SoftException(
                 new Par(

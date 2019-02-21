@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pmo.banks;
 
+import com.zerocracy.Farm;
 import com.zerocracy.Par;
 import com.zerocracy.SoftException;
 import com.zerocracy.cash.Cash;
@@ -23,6 +24,7 @@ import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pm.cost.Ledger;
+import com.zerocracy.pmo.People;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -32,6 +34,7 @@ import org.junit.rules.ExpectedException;
  * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle JavadocVariableCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class PayrollTest {
 
@@ -48,11 +51,16 @@ public final class PayrollTest {
                 "The amount %s is too small at: %s"
             ).say(amount, reason)
         );
-        new Payroll(new FkFarm()).pay(
+        final Farm farm = new FkFarm();
+        final String user = "paulodamaso";
+        new People(farm).bootstrap().wallet(
+            user, "paypal", "test@paypal.com"
+        );
+        new Payroll(farm).pay(
             new Ledger(
                 new PropsFarm(), new FkProject()
             ),
-            "paulodamaso",
+            user,
             amount,
             reason,
             "test"
