@@ -21,6 +21,7 @@ import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Xocument;
 import com.zerocracy.farm.fake.FkFarm;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -346,6 +347,33 @@ public final class ResumesTest {
             XhtmlMatchers.hasXPaths(
                 "/resumes/resume[@login = 'test25437']"
             )
+        );
+    }
+
+    @Test
+    public void filterOlderThan() throws Exception {
+        final Farm farm = new FkFarm();
+        final Resumes resumes = new Resumes(farm).bootstrap();
+        final String target = "olduser";
+        resumes.add(
+            target,
+            LocalDateTime.MIN,
+            "invite my please12561",
+            ResumesTest.PERSONALITY,
+            2652134263L,
+            "tyrte54t4"
+        );
+        resumes.add(
+            "newuser",
+            LocalDateTime.now(),
+            "new user 125",
+            ResumesTest.PERSONALITY,
+            65435364L,
+            "ghgdf456"
+        );
+        MatcherAssert.assertThat(
+            resumes.olderThan(Instant.now().minus(Duration.ofDays(1L))),
+            Matchers.contains(target)
         );
     }
 }

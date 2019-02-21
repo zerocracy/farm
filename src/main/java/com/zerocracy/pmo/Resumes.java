@@ -21,6 +21,7 @@ import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Xocument;
 import java.io.IOException;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -267,6 +268,26 @@ public final class Resumes {
             dirs.up();
         }
         return dirs;
+    }
+
+    /**
+     * Find all resumes older than time.
+     * @param time Time to filter
+     * @return Resume logins
+     * @throws IOException If fails
+     */
+    public Iterable<String> olderThan(final Instant time) throws IOException {
+        try (final Item item = this.item()) {
+            return new Xocument(item.path()).xpath(
+                String.join(
+                    "",
+                    "/resumes/resume[",
+                    "xs:dateTime(submitted) < xs:dateTime('",
+                    time.toString(),
+                    "')]/@login"
+                )
+            );
+        }
     }
 
     /**

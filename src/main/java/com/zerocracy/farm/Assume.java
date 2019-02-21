@@ -60,30 +60,35 @@ public final class Assume {
 
     /**
      * It's not a PMO.
+     * @return Self
      * @throws IOException If this is PMO
      */
-    public void notPmo() throws IOException {
+    public Assume notPmo() throws IOException {
         if ("PMO".equals(this.project.pid())) {
             throw new MismatchException("This is PMO");
         }
+        return this;
     }
 
     /**
      * It's a PMO.
+     * @return Self
      * @throws IOException If this is PMO
      */
-    public void isPmo() throws IOException {
+    public Assume isPmo() throws IOException {
         if (!"PMO".equals(this.project.pid())) {
             throw new MismatchException("This is not PMO");
         }
+        return this;
     }
 
     /**
      * Equals.
      * @param types The types to accept
+     * @return Self
      * @throws MismatchException If doesn't match
      */
-    public void type(final String... types) throws MismatchException {
+    public Assume type(final String... types) throws MismatchException {
         final String input = new ClaimIn(this.xml)
             .type().toLowerCase(Locale.ENGLISH);
         final Set<String> expected = new HashSet<>(
@@ -100,6 +105,7 @@ public final class Assume {
                 )
             );
         }
+        return this;
     }
 
     /**

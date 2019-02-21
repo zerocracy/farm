@@ -29,6 +29,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.cactoos.func.IoCheckedFunc;
 import org.cactoos.list.ListOf;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -40,6 +41,25 @@ import org.quartz.SchedulerException;
  * @since 1.0
  */
 public final class Ping implements Job {
+
+    /**
+     * Delay for ping.
+     */
+    private static final IoCheckedFunc<String, Duration> DELAY =
+        new IoCheckedFunc<>(
+            ping -> {
+                final Duration dur;
+                if ("ping 2weeks".equalsIgnoreCase(ping)
+                    || "ping daily".equalsIgnoreCase(ping)) {
+                    dur = Duration.ofHours((long) Tv.TEN);
+                } else if ("ping hourly".equalsIgnoreCase(ping)) {
+                    dur = Duration.ofHours(1L);
+                } else {
+                    dur = Duration.ofMinutes((long) Tv.FIVE);
+                }
+                return dur;
+            }
+        );
 
     /**
      * Farm.
@@ -134,7 +154,7 @@ public final class Ping implements Job {
                 .param("priority", MsgPriority.LOW)
                 .postTo(
                     new ClaimsOf(this.farm, project),
-                    Instant.now().plus(Duration.ofMinutes(Tv.FIVE))
+                    Instant.now().plus(Ping.DELAY.apply(type))
                 );
         }
     }
