@@ -14,51 +14,50 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.tk;
+package com.zerocracy.pm.staff;
 
 import com.zerocracy.Farm;
-import com.zerocracy.pm.staff.GlobalInviters;
-import com.zerocracy.pmo.Resumes;
-import java.io.IOException;
-import org.takes.Request;
-import org.takes.Response;
-import org.takes.Take;
+import java.util.AbstractSet;
+import java.util.Iterator;
+import java.util.List;
+import org.cactoos.list.ListOf;
 
 /**
- * Render resumes take.
+ * List of users who can invite any person.
+ * See https://github.com/zerocracy/farm/issues/1410
  *
  * @since 1.0
+ * @todo #1775:30min Reimplement this class - it should return
+ *  not constant set of users, but all users who has any role
+ *  in PMO project and users who has QA role in Zerocracy project.
  */
-public final class TkResumes implements Take {
+public final class GlobalInviters extends AbstractSet<String> {
 
     /**
-     * Farm.
+     * Users.
      */
-    private final Farm farm;
+    private static final List<String> USERS = new ListOf<>(
+        "yegor256",
+        "ypshenychka",
+        "g4s8"
+    );
 
     /**
      * Ctor.
      * @param farm Farm
      */
-    public TkResumes(final Farm farm) {
-        this.farm = farm;
+    @SuppressWarnings("PMD.UnusedFormalParameter")
+    public GlobalInviters(final Farm farm) {
+        super();
     }
 
     @Override
-    public Response act(final Request req) throws IOException {
-        final String login = new RqUser(this.farm, req).value();
-        final boolean inviter = new GlobalInviters(this.farm).contains(login);
-        final String expr;
-        if (inviter) {
-            expr = "examiner = *";
-        } else {
-            expr = String.format("examiner = '%s'", login);
-        }
-        return new RsPage(
-            this.farm,
-            "/xsl/resumes.xsl",
-            req,
-            () -> () -> new Resumes(this.farm).bootstrap().filter(expr)
-        );
+    public Iterator<String> iterator() {
+        return GlobalInviters.USERS.iterator();
+    }
+
+    @Override
+    public int size() {
+        return GlobalInviters.USERS.size();
     }
 }

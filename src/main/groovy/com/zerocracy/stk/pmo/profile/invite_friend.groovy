@@ -18,26 +18,15 @@ package com.zerocracy.stk.pmo.profile
 
 import com.jcabi.github.User
 import com.jcabi.xml.XML
-import com.zerocracy.Farm
-import com.zerocracy.Par
-import com.zerocracy.Policy
-import com.zerocracy.Project
-import com.zerocracy.SoftException
+import com.zerocracy.*
 import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
-import com.zerocracy.pm.staff.Roles
+import com.zerocracy.pm.staff.GlobalInviters
 import com.zerocracy.pmo.Exam
 import com.zerocracy.pmo.People
-import com.zerocracy.pmo.Pmo
 import com.zerocracy.pmo.Resumes
-import org.cactoos.Scalar
-import org.cactoos.iterable.ItemAt
-import org.cactoos.iterable.Mapped
-import org.cactoos.list.ListOf
-import org.cactoos.scalar.Or
-import org.cactoos.scalar.StickyScalar
 import org.cactoos.text.FormattedText
 
 def exec(Project pmo, XML xml) {
@@ -51,26 +40,8 @@ def exec(Project pmo, XML xml) {
   // we allow to invite new students without limitations to PMO users
   // and 'farm' (C3NDPUA8L) QA users
   // see https://github.com/zerocracy/farm/issues/1410
-  Scalar<Boolean> force = new StickyScalar<>(
-    new Or(
-      new ListOf<>(
-        new Scalar<Boolean>() {
-          @Override
-          Boolean value() throws Exception {
-            new Roles(new Pmo(farm)).bootstrap().hasAnyRole(author)
-          }
-        },
-        new ItemAt<>(
-          false,
-          new Mapped<>(
-            { Project project -> new Roles(project).bootstrap().hasRole(author, 'QA') },
-            farm.find('@id="C3NDPUA8L"')
-          )
-        )
-      )
-    )
-  )
-  if (new Resumes(farm).bootstrap().examiner(login) != author && !force.value()) {
+  boolean force = new GlobalInviters(farm).contains(author)
+  if (new Resumes(farm).bootstrap().examiner(login) != author && !force) {
     throw new SoftException(
       new Par('You are not the examiner of %s, see §1').say(login)
     )
@@ -94,7 +65,7 @@ def exec(Project pmo, XML xml) {
   }
 
   People people = new People(farm).bootstrap()
-  people.invite(login, author, force.value())
+  people.invite(login, author, force)
   String name
   if (user.name()) {
     name = "@${login} (%${user.name()})"

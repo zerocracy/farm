@@ -21,6 +21,7 @@ import com.zerocracy.Par;
 import com.zerocracy.Policy;
 import com.zerocracy.claims.ClaimOut;
 import com.zerocracy.entry.ClaimsOf;
+import com.zerocracy.pm.staff.GlobalInviters;
 import com.zerocracy.pmo.People;
 import com.zerocracy.pmo.Resumes;
 import java.io.IOException;
@@ -44,6 +45,7 @@ import org.takes.rq.form.RqFormSmart;
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class TkJoinPost implements TkRegex {
+
     /**
      * Farm.
      */
@@ -57,7 +59,9 @@ public final class TkJoinPost implements TkRegex {
         this.farm = frm;
     }
 
+    // @checkstyle ExecutableStatementCountCheck (100 lines)
     @Override
+    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     public Response act(final RqRegex req) throws IOException {
         final String author = new RqUser(this.farm, req, false).value();
         final People people = new People(this.farm).bootstrap();
@@ -105,28 +109,6 @@ public final class TkJoinPost implements TkRegex {
         final String personality = form.single("personality");
         final String about = form.single("about");
         final long stko = Long.parseLong(form.single("stackoverflow"));
-        new ClaimOut().type("Join form submitted")
-            .author(author)
-            .param("telegram", telegram)
-            .param("stackoverflow", stko)
-            .param("about", about)
-            .param("personality", personality)
-            .postTo(new ClaimsOf(this.farm));
-        new ClaimOut().type("Notify all").param(
-            "message", new Par(
-                "A new user @%s (%s) would like to join us and needs a mentor;",
-                "you can get in touch with him/her",
-                "(telegram: `%s`) to discuss;",
-                "if you become a mentor, you may earn",
-                "some extra income, see §45;",
-                "here are [GitHub](https://github.com/%1$s)",
-                "and [StackOverflow](https://stackoverflow.com/users/%d)",
-                "profiles of the user;",
-                "this is the message the user left for us:\n\n%s"
-            ).say(author, personality, telegram, stko, about)
-        ).param("min", new Policy().get("1.min-rep", 0))
-        .param("reason", "New student")
-        .postTo(new ClaimsOf(this.farm));
         new Resumes(this.farm).bootstrap()
             .add(
                 author,
@@ -136,6 +118,27 @@ public final class TkJoinPost implements TkRegex {
                 stko,
                 telegram
             );
+        new ClaimOut().type("Join form submitted")
+            .author(author)
+            .param("telegram", telegram)
+            .param("stackoverflow", stko)
+            .param("about", about)
+            .param("personality", personality)
+            .postTo(new ClaimsOf(this.farm));
+        for (final String inv : new GlobalInviters(this.farm)) {
+            new ClaimOut()
+                .type("Notify user")
+                .token(String.format("user;%s", inv))
+                .param(
+                    "message",
+                    // @checkstyle LineLengthCheck (1 line)
+                    new Par("Join form was submitted by @%s, you can check resumes page")
+                        .say(author)
+                )
+                .param("min", new Policy().get("1.min-rep", 0))
+                .param("reason", "New student")
+                .postTo(new ClaimsOf(this.farm));
+        }
         return new RsForward(
             new RsParFlash(
                 new Par(
