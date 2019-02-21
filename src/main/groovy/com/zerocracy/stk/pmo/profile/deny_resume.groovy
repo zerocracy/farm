@@ -38,9 +38,11 @@ def exec(Project pmo, XML xml) {
   Farm farm = binding.variables.farm
   String login = claim.param('login')
   Resumes resumes = new Resumes(farm).bootstrap()
-  if (resumes.examiner(login) != author) {
+  if (!resumes.exists(login) || resumes.examiner(login) != author) {
     throw new SoftException(
-      new Par('You are not the examiner of %s, see §1').say(login)
+      new Par(
+        'You are not the examiner of %s or resume does not exist, see §1'
+      ).say(login)
     )
   }
   User.Smart user = new User.Smart(

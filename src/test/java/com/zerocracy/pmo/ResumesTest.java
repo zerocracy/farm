@@ -40,9 +40,6 @@ import org.xembly.Xembler;
  * Test case for {@link Resumes}.
  *
  * @since 1.0
- * @todo #1645:30min Handle resume not found in resumes.resume(login).
- *  It will have to throw a meaningful message using a SoftException.
- *  A test should be written to cover this situation.
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle MagicNumberCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)

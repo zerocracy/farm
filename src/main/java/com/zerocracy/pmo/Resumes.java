@@ -162,14 +162,12 @@ public final class Resumes {
      */
     public String examiner(final String login) throws IOException {
         try (final Item item = this.item()) {
-            return new Xocument(item.path())
-                .xpath(
-                    String.format(
-                        "/resumes/resume[@login='%s']/examiner/text()",
-                        login
-                    )
+            return new Xocument(item.path()).xpath(
+                String.format(
+                    "/resumes/resume[@login='%s']/examiner/text()",
+                    login
                 )
-                .get(0);
+            ).get(0);
         }
     }
 
