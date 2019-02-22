@@ -13,11 +13,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-@import "//fonts.googleapis.com/css?family=Nunito";
 @import "//cdn.rawgit.com/yegor256/tacit/gh-pages/tacit-css.min.css";
 
 body {
-  font-family: 'Nunito', sans-serif;
   padding: 1em;
 }
 
@@ -108,7 +106,6 @@ header {
     color: #275a90!important;
     text-decoration: none;
     background:none!important;
-    font-family: 'Nunito', sans-serif;
     margin:0;
     padding:0;
 }
