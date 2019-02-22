@@ -30,6 +30,9 @@ import com.zerocracy.pmo.Agenda
 
 import java.security.SecureRandom
 
+// @todo #1904:30min 0crat often can't update agenda of performer on 'Start QA review'
+//  because failed to find the job in agenda. 0crat is responding with message
+//  "can't inspect" right in the ticket.
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Start QA review')
@@ -55,7 +58,6 @@ def exec(Project project, XML xml) {
     .param('login', inspector)
     .param('reason', 'start_qa_review')
     .postTo(new ClaimsOf(farm, project))
-  new Agenda(farm, performer).bootstrap().inspector(job, inspector)
   claim.copy().type('Notify job').token("job;${job}").param(
     'message',
     new Par(
@@ -64,4 +66,5 @@ def exec(Project project, XML xml) {
       'when the quality review is completed'
     ).say(inspector, performer)
   ).postTo(new ClaimsOf(farm, project))
+  new Agenda(farm, performer).bootstrap().inspector(job, inspector)
 }
