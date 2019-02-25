@@ -57,9 +57,6 @@ public final class Zold implements Bank {
     // @checkstyle ParameterNumberCheck (3 lines)
     public String pay(final String target, final Cash amount,
         final String details, final String unique) throws IOException {
-        if (!"3be3416c805e4371".equals(target)) {
-            throw new IOException("Zold payments are temporary disabled");
-        }
         final Props props = new Props(this.farm);
         final String uri = props.get("//zold/host");
         final RestResponse rsp = new JdkRequest(uri)
