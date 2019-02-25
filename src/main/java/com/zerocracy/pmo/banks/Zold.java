@@ -22,8 +22,6 @@ import com.jcabi.http.response.RestResponse;
 import com.zerocracy.Farm;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.farm.props.Props;
-import com.zerocracy.pm.staff.Roles;
-import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.List;
@@ -59,7 +57,7 @@ public final class Zold implements Bank {
     // @checkstyle ParameterNumberCheck (3 lines)
     public String pay(final String target, final Cash amount,
         final String details, final String unique) throws IOException {
-        if (!new Roles(new Pmo(this.farm)).bootstrap().hasAnyRole(target)) {
+        if (!"3be3416c805e4371".equals(target)) {
             throw new IOException("Zold payments are temporary disabled");
         }
         final Props props = new Props(this.farm);
