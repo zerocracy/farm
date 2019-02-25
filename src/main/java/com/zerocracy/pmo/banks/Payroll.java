@@ -125,7 +125,9 @@ public final class Payroll {
             );
         } catch (final IOException err) {
             new SafeSentry(this.farm).capture(err);
-            throw new IOException("Failed to pay", err);
+            throw new IOException(
+                String.format("Failed to pay: %s", err.getMessage()), err
+            );
         }
         final Cash commission = bank.fee(amount);
         final String text = new Par.ToText(reason).toString();

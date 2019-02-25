@@ -17,6 +17,7 @@
 package com.zerocracy.pmo.banks;
 
 import com.jcabi.aspects.Tv;
+import com.jcabi.http.Response;
 import com.jcabi.http.request.JdkRequest;
 import com.jcabi.http.response.RestResponse;
 import com.zerocracy.Farm;
@@ -62,6 +63,7 @@ public final class Zold implements Bank {
         final RestResponse rsp = new JdkRequest(uri)
             .uri()
             .path("/do-pay")
+            .queryParam("noredirect", "1")
             .back()
             .method("POST")
             .header("X-Zold-Wts", props.get("//zold/secret"))
@@ -75,7 +77,10 @@ public final class Zold implements Bank {
             .as(RestResponse.class);
         if (rsp.status() != HttpURLConnection.HTTP_MOVED_TEMP) {
             throw new IOException(
-                String.format("Zold payment failed, code=%d", rsp.status())
+                String.format(
+                    "Zold payment failed, code=%d error=%s",
+                    rsp.status(), Zold.zldError(rsp)
+                )
             );
         }
         final List<String> hds = rsp.headers().get("X-Zold-Job");
@@ -102,8 +107,9 @@ public final class Zold implements Bank {
             if (jrsp.status() != HttpURLConnection.HTTP_OK) {
                 throw new IOException(
                     String.format(
-                        "WTS job failed; job-id=%s code=%d status=%s",
-                        job, jrsp.status(), status
+                        "WTS job failed; job-id=%s code=%d status=%s err=%s",
+                        job, jrsp.status(), status,
+                        Zold.zldError(rsp)
                     )
                 );
             }
@@ -120,7 +126,23 @@ public final class Zold implements Bank {
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
         // Nothing to do
+    }
+
+    /**
+     * Zold error from header.
+     * @param rsp Response
+     * @return Error
+     */
+    private static String zldError(final Response rsp) {
+        final List<String> hdr = rsp.headers().get("X-Zold-Error");
+        final String error;
+        if (hdr.isEmpty()) {
+            error = "unknown";
+        } else {
+            error = hdr.get(0);
+        }
+        return error;
     }
 }
