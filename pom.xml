@@ -358,11 +358,6 @@ SOFTWARE.
       <scope>runtime</scope>
     </dependency>
     <dependency>
-      <groupId>com.g4s8</groupId>
-      <artifactId>cryptocactoos</artifactId>
-      <version>0.1.2</version>
-    </dependency>
-    <dependency>
       <groupId>org.glassfish.jersey.core</groupId>
       <artifactId>jersey-server</artifactId>
       <version>2.26</version>
