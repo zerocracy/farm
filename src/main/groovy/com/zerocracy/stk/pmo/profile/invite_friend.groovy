@@ -69,6 +69,7 @@ def exec(Project pmo, XML xml) {
 
   People people = new People(farm).bootstrap()
   people.invite(login, author, force)
+  resumes.remove(login)
   String name
   if (user.name()) {
     name = "@${login} (%${user.name()})"

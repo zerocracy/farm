@@ -22,6 +22,7 @@ import com.zerocracy.Par
 import com.zerocracy.Project
 import com.zerocracy.pmo.Awards
 import com.zerocracy.pmo.People
+import com.zerocracy.pmo.Resumes
 import org.hamcrest.MatcherAssert
 import org.hamcrest.core.IsEqual
 import org.hamcrest.core.StringContains
@@ -36,19 +37,28 @@ def exec(Project project, XML xml) {
   )
   String user = 'user'
   MatcherAssert.assertThat(
+    'inviter is not a mentor',
     people.mentor(friend),
     new IsEqual<>(user)
   )
   MatcherAssert.assertThat(
+    'inviter didn\'t receive points',
     new Awards(farm, user).bootstrap().total(),
     new IsEqual<>(1266)
   )
   project.acq('test.txt').withCloseable {
-    item -> MatcherAssert.assertThat(
-      item.path().text,
-      new StringContains(
-        new Par('You received bonus %d points for @%s resume examination').say(32, friend)
+    item ->
+      MatcherAssert.assertThat(
+        'inviter didn\'t receive a message',
+        item.path().text,
+        new StringContains(
+          new Par('You received bonus %d points for @%s resume examination').say(32, friend)
+        )
       )
-    )
   }
+  MatcherAssert.assertThat(
+    'resume was not deleted',
+    new Resumes(farm).bootstrap().exists(friend),
+    new IsEqual<>(false)
+  )
 }
