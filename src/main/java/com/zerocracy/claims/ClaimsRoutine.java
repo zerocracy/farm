@@ -34,10 +34,12 @@ import com.zerocracy.shutdown.ShutdownFarm;
 import java.io.Closeable;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.PriorityBlockingQueue;
@@ -203,7 +205,7 @@ public final class ClaimsRoutine implements Runnable, Closeable {
             ).isAfter(Instant.now())) {
                 continue;
             }
-            this.queue.add(message);
+            ClaimsRoutine.addClaim(this.queue, message);
             ++queued;
         }
         Logger.info(
@@ -284,6 +286,19 @@ public final class ClaimsRoutine implements Runnable, Closeable {
         final boolean old = claim.created().toInstant()
             .isBefore(Instant.now().minus(Duration.ofHours(1L)));
         return ping && old;
+    }
+
+    /**
+     * Remove all duplicates and add new message.
+     * @param queue Queue
+     * @param msg Message
+     */
+    private static void addClaim(final Collection<Message> queue,
+        final Message msg) {
+        queue.removeIf(
+            next -> Objects.equals(next.getMessageId(), msg.getMessageId())
+        );
+        queue.add(msg);
     }
 
     /**
