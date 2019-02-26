@@ -119,7 +119,7 @@ public final class TkProfileTest {
         final People people = new People(farm).bootstrap();
         final String uid = "yegor256";
         people.wallet(
-            uid, "btc", "3HcEB6bi4TFPdvk31Pwz77DwAzfAZz2fMn"
+            uid, "paypal", "test@paypal.com"
         );
         MatcherAssert.assertThat(
             new View(farm, String.format("/u/%s", uid)).html(),

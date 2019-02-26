@@ -157,11 +157,6 @@ public final class PeopleTest {
     }
 
     @Test
-    public void setsCorrectBitcoinAddress() throws Exception {
-        PeopleTest.setsWallet("btc", "3HcEB6bi4TFPdvk31Pwz77DwAzfAZz2fMn");
-    }
-
-    @Test
     public void setCorrectZoldAddress() throws Exception {
         PeopleTest.setsWallet("zld", "g4s8");
     }
@@ -172,28 +167,28 @@ public final class PeopleTest {
     }
 
     @Test
-    public void failsForIncorrectBitcoinAddress() throws Exception {
-        this.failsWallet("btc");
-    }
-
-    @Test
     public void failsForIncorrectZoldAddress() throws Exception {
         this.failsWallet("zld", "!@#$%fgs");
     }
 
     @Test
+    public void doesnAcceptBtcAddress() throws Exception {
+        this.dontSupportWallet("btc");
+    }
+
+    @Test
     public void doesnAcceptEthereumAddress() throws Exception {
-        this.dontSupportWallet("eth", "Ethereum");
+        this.dontSupportWallet("eth");
     }
 
     @Test
     public void doesnAcceptBitcoinCashAddress() throws Exception {
-        this.dontSupportWallet("bch", "Bitcoin Cash");
+        this.dontSupportWallet("bch");
     }
 
     @Test
     public void doesnAcceptLitecoinAddress() throws Exception {
-        this.dontSupportWallet("ltc", "Litecoin");
+        this.dontSupportWallet("ltc");
     }
 
     @Test
@@ -608,11 +603,11 @@ public final class PeopleTest {
         people.wallet("yegor512", bank, wallet);
     }
 
-    private void dontSupportWallet(final String bank, final String name)
+    private void dontSupportWallet(final String bank)
         throws IOException {
         this.thrown.expect(SoftException.class);
         this.thrown.expectMessage(
-            String.format("We don't support %s wallets", name)
+            String.format("Bank name `%s` is invalid", bank)
         );
         new People(new FkFarm()).bootstrap()
             .wallet("yegor512", bank, "123");
@@ -634,5 +629,4 @@ public final class PeopleTest {
             Matchers.is(wallet)
         );
     }
-
 }

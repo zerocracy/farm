@@ -57,7 +57,6 @@ public final class Payroll {
         this.farm = frm;
         this.banks = new MapOf<String, Bank>(
             new MapEntry<>("paypal", new Paypal(frm)),
-            new MapEntry<>("btc", new Crypto(frm, "BTC")),
             new MapEntry<>("zld", new Zold(frm))
         );
     }

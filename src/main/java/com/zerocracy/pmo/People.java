@@ -386,11 +386,11 @@ public final class People {
      */
     public void wallet(final String uid, final String bank,
         final String address) throws IOException {
-        if (!bank.matches("paypal|btc|bch|eth|ltc|zld")) {
+        if (!bank.matches("paypal|zld")) {
             throw new SoftException(
                 new Par(
                     "Bank name `%s` is invalid, we accept only",
-                    "`paypal`, `btc`, `bch`, `eth`, or `ltc`, see §20"
+                    "`paypal`, `zld`, see §20"
                 ).say(bank)
             );
         }
@@ -401,21 +401,6 @@ public final class People {
             throw new SoftException(
                 new Par("Email address is not valid: `%s`").say(wallet)
             );
-        }
-        if ("btc".equals(bank)
-            && !wallet.matches("(1|3|bc1)[a-zA-Z0-9]{20,40}")) {
-            throw new SoftException(
-                new Par("Bitcoin address is not valid: `%s`").say(wallet)
-            );
-        }
-        if ("bch".equals(bank)) {
-            throw new SoftException("We don't support Bitcoin Cash wallets");
-        }
-        if ("eth".equals(bank)) {
-            throw new SoftException("We don't support Ethereum wallets");
-        }
-        if ("ltc".equals(bank)) {
-            throw new SoftException("We don't support Litecoin wallets");
         }
         if ("zld".equals(bank)
             && !wallet.matches("^[a-z\\d](?:[a-z\\d]|-(?=[a-z\\d])){0,38}$")) {
