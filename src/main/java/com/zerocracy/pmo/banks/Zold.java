@@ -25,6 +25,7 @@ import com.zerocracy.cash.Cash;
 import com.zerocracy.farm.props.Props;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -75,7 +76,7 @@ public final class Zold implements Bank {
             .back()
             .fetch()
             .as(RestResponse.class);
-        if (rsp.status() != HttpURLConnection.HTTP_MOVED_TEMP) {
+        if (rsp.status() != HttpURLConnection.HTTP_OK) {
             throw new IOException(
                 String.format(
                     "Zold payment failed, code=%d error=%s",
@@ -136,7 +137,8 @@ public final class Zold implements Bank {
      * @return Error
      */
     private static String zldError(final Response rsp) {
-        final List<String> hdr = rsp.headers().get("X-Zold-Error");
+        final List<String> hdr = rsp.headers()
+            .getOrDefault("X-Zold-Error", Collections.emptyList());
         final String error;
         if (hdr.isEmpty()) {
             error = "unknown";

@@ -48,7 +48,7 @@ public final class ZoldITCase {
     @Test
     public void payZold() throws Exception {
         final Farm farm = new PropsFarm();
-        final String target = "yegor256";
+        final String target = "zonuses";
         new Roles(new Pmo(farm)).bootstrap().assign(target, "PO");
         MatcherAssert.assertThat(
             new Zold(farm).pay(

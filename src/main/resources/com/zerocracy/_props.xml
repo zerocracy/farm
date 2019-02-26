@@ -110,7 +110,7 @@ SOFTWARE.
   </pgsql>
   <zold>
     <host>https://wts.zold.io/</host>
-    <secret>${zold.secret}</secret>
+    <secret>${zold.token}</secret>
     <keygap>${zold.keygap}</keygap>
   </zold>
   <viber>
