@@ -23,12 +23,13 @@ import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.farm.fake.FkProject
-import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pm.cost.Ledger
 import com.zerocracy.pmo.Debts
+import com.zerocracy.pmo.People
 import com.zerocracy.pmo.banks.Payroll
 import org.xembly.Xembler
 
@@ -47,12 +48,13 @@ def exec(Project pmo, XML xml) {
   Debts debts = new Debts(farm).bootstrap()
   ClaimIn claim = new ClaimIn(xml)
   debts.iterate().each { uid ->
-    if (!debts.expired(uid)) {
+    boolean  zld = new People(farm).bootstrap().bank(uid) == 'zld'
+    if (!debts.expired(uid) && !zld) {
       return
     }
     Cash debt = debts.amount(uid)
     Policy policy = new Policy()
-    if (debt < policy.get('46.threshold', new Cash.S('$50')) &&
+    if (!zld && debt < policy.get('46.threshold', new Cash.S('$50')) &&
       !debts.olderThan(uid, Instant.now() - Duration.ofDays(policy.get('46.days', 20)))) {
       return
     }
