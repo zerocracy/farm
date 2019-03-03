@@ -70,12 +70,17 @@ def exec(Project pmo, XML xml) {
   People people = new People(farm).bootstrap()
   people.invite(login, author, force)
   resumes.remove(login)
-  String name
-  if (user.name()) {
-    name = "@${login} (%${user.name()})"
-  } else {
-    name = "@${login}"
-  }
+  String name = "@${login}"
+  // @todo #1753:30min It's a temporary workaround to use `login` as a name, because jcabi-github
+  //  can't check that real name is present because of bug
+  //  https://github.com/jcabi/jcabi-github/issues/1495
+  //  After fix `hasName` in jcabi-github uncomment the code above and remove
+  //  name variable initialization.
+//  if (user.hasName()) {
+//    name = "@${login} (%${user.name()})"
+//  } else {
+//    name = "@${login}"
+//  }
   claim.reply(
     new Par(
       'Thanks, %s can now work with us,',
