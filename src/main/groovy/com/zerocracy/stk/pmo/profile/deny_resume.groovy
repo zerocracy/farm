@@ -66,6 +66,7 @@ def exec(Project pmo, XML xml) {
   }
 
   resumes.remove(login)
+  Policy policy = new Policy(farm)
   claim.copy()
     .type('Notify user')
     .token("user;${login}")
@@ -73,8 +74,9 @@ def exec(Project pmo, XML xml) {
       'message',
       new Par(
         'Your application to Zerocracy has been denied.',
+        'The reason is "%s"',
         'You can try again in %d days (see §1).'
-      ).say(new Policy().get('1.lag', 16))
+      ).say(claim.param('reason'), policy.get('1.lag', 16))
     )
     .postTo(new ClaimsOf(farm))
   String reason = new Par('@%s resume examination').say(login)

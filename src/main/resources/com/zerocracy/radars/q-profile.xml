@@ -56,6 +56,11 @@ SOFTWARE.
         <regex>@?[A-Za-z0-9-]+</regex>
         <help>GitHub login of applicant</help>
       </opt>
+      <opt>
+        <name>reason</name>
+        <regex>.+</regex>
+        <help>The reason of deny</help>
+      </opt>
     </opts>
   </cmd>
   <cmd>
