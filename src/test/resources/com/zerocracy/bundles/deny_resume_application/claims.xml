@@ -22,6 +22,7 @@ SOFTWARE.
     <author>user</author>
     <params>
       <param name="login">friend</param>
+      <param name="reason">Not so good</param>
     </params>
     <created>2018-07-15T01:00:00.000Z</created>
   </claim>

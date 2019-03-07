@@ -16,12 +16,16 @@
  */
 package com.zerocracy.tk;
 
+import com.g4s8.hamcrest.json.JsonHas;
+import com.g4s8.hamcrest.json.JsonValueIs;
+import com.g4s8.hamcrest.json.StringIsJson;
 import com.jcabi.http.request.JdkRequest;
 import com.jcabi.http.response.RestResponse;
 import com.zerocracy.Farm;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.pmo.People;
 import java.net.HttpURLConnection;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.takes.Take;
 import org.takes.facets.fork.FkRegex;
@@ -33,22 +37,14 @@ import org.takes.http.FtRemote;
  *
  * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class TkKnownTest {
 
-    @Test
-    public void returnsOkIfFound() throws Exception {
-        final Farm farm = new FkFarm();
-        final String login = "user1";
-        new People(farm).bootstrap().invite(login, "0crat");
-        new FtRemote(TkKnownTest.take(farm)).exec(
-            base -> new JdkRequest(base)
-                .uri().path(String.format("/known/%s", login)).back()
-                .fetch()
-                .as(RestResponse.class)
-                .assertStatus(HttpURLConnection.HTTP_OK)
-        );
-    }
+    /**
+     * Zerocrat login.
+     */
+    private static final String ZEROCRAT = "0crat";
 
     @Test
     public void returnsNotFoundIfNotFound() throws Exception {
@@ -58,6 +54,33 @@ public final class TkKnownTest {
                 .fetch()
                 .as(RestResponse.class)
                 .assertStatus(HttpURLConnection.HTTP_NOT_FOUND)
+        );
+    }
+
+    @Test
+    public void returnsDetils() throws Exception {
+        final Farm farm = new FkFarm();
+        final String login = "user15";
+        final People people = new People(farm).bootstrap();
+        people.invite(login, TkKnownTest.ZEROCRAT);
+        people.details(login, "details243564");
+        final int rep = 1324;
+        people.reputation(login, rep);
+        new FtRemote(TkKnownTest.take(farm)).exec(
+            base -> new JdkRequest(base)
+                .uri().path(String.format("/known/%s", login)).back()
+                .fetch()
+                .as(RestResponse.class)
+                .assertStatus(HttpURLConnection.HTTP_OK)
+                .assertBody(
+                    new StringIsJson.Object(
+                        Matchers.allOf(
+                            new JsonHas("login", new JsonValueIs(login)),
+                            new JsonHas("reputation", new JsonValueIs(rep)),
+                            new JsonHas("identified", new JsonValueIs(true))
+                        )
+                    )
+                )
         );
     }
 

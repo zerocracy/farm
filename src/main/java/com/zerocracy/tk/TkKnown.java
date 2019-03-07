@@ -20,11 +20,12 @@ import com.zerocracy.Farm;
 import com.zerocracy.pmo.People;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import javax.json.Json;
 import org.takes.HttpException;
 import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
-import org.takes.rs.RsEmpty;
+import org.takes.rs.RsJson;
 
 /**
  * This take returns 200 if user exists, 400 otherwise.
@@ -47,11 +48,19 @@ public final class TkKnown implements TkRegex {
     }
 
     @Override
+    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     public Response act(final RqRegex req) throws IOException {
         final String login = req.matcher().group("login");
-        if (!new People(this.farm).bootstrap().hasMentor(login)) {
+        final People people = new People(this.farm).bootstrap();
+        if (!people.hasMentor(login)) {
             throw new HttpException(HttpURLConnection.HTTP_NOT_FOUND);
         }
-        return new RsEmpty();
+        return new RsJson(
+            Json.createObjectBuilder()
+                .add("login", login)
+                .add("reputation", people.reputation(login))
+                .add("identified", !people.details(login).isEmpty())
+                .build()
+        );
     }
 }
