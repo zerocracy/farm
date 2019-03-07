@@ -31,13 +31,13 @@ SOFTWARE.
         <xsl:when test="filter = 'all' and inviter = 'true'">
           <xsl:text>All Zerocracy resumes</xsl:text>
           <xsl:text> (click </xsl:text>
-          <a href="/u/{login}/resumes?filter=my">here</a>
+          <a href="/u/{identity/login}/resumes?filter=my">here</a>
           <xsl:text> to see only your resumes):</xsl:text>
         </xsl:when>
         <xsl:when test="filter = 'my' and inviter = 'true'">
           <xsl:text>You are examiner for these resumes</xsl:text>
           <xsl:text> (click </xsl:text>
-          <a href="/u/{login}/resumes?filter=all">here</a>
+          <a href="/u/{identity/login}/resumes?filter=all">here</a>
           <xsl:text> to see all resumes):</xsl:text>
         </xsl:when>
         <xsl:otherwise>
