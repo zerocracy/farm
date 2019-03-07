@@ -26,43 +26,59 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="page" mode="inner">
     <h1>Resumes</h1>
-    <xsl:apply-templates select="resumes"/>
+    <p>
+      <xsl:choose>
+        <xsl:when test="filter = 'all' and inviter = 'true'">
+          <xsl:text>All Zerocracy resumes</xsl:text>
+          <xsl:text> (click </xsl:text>
+          <a href="/u/{login}/resumes?filter=my">here</a>
+          <xsl:text> to see only your resumes):</xsl:text>
+        </xsl:when>
+        <xsl:when test="filter = 'my' and inviter = 'true'">
+          <xsl:text>You are examiner for these resumes</xsl:text>
+          <xsl:text> (click </xsl:text>
+          <a href="/u/{login}/resumes?filter=all">here</a>
+          <xsl:text> to see all resumes):</xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:text>You are examiner for these resumes:</xsl:text>
+        </xsl:otherwise>
+      </xsl:choose>
+      <xsl:apply-templates select="resumes"/>
+    </p>
   </xsl:template>
   <xsl:template match="resumes">
-    <p>
-      <xsl:text>You are examiner for these resumes:</xsl:text>
-      <ul>
-        <xsl:for-each select="./resume">
-          <li>
-            <xsl:text>Resume by @</xsl:text>
+    <ul>
+      <xsl:for-each select="./resume">
+        <li>
+          <xsl:text>Resume by @</xsl:text>
+          <xsl:value-of select="@login"/>
+          <br/>
+          <xsl:value-of select="text/text()"/>
+          <br/>
+          <xsl:text>Stackoverflow: </xsl:text>
+          <a href="https://stackoverflow.com/users/{stackoverflow}">
+            <xsl:value-of select="stackoverflow"/>
+          </a>
+          <br/>
+          <xsl:text>Github: </xsl:text>
+          <a href="https://github.com/{@login}">
             <xsl:value-of select="@login"/>
-            <br/>
-            <xsl:value-of select="text/text()"/>
-            <br/>
-            <xsl:text>Stackoverflow: </xsl:text>
-            <a href="https://stackoverflow.com/users/{stackoverflow}">
-              <xsl:value-of select="stackoverflow"/>
-            </a>
-            <br/>
-            <xsl:text>Github: </xsl:text>
-            <a href="https://github.com/{@login}">
-              <xsl:value-of select="@login"/>
-            </a>
-            <br/>
-            <xsl:text>Personality: </xsl:text>
-            <xsl:value-of select="personality"/>
-            <br/>
-            <xsl:text>Examiner: </xsl:text>
-            <a href="https://0crat/u/{examiner}">
-              <xsl:text>@</xsl:text>
-              <xsl:value-of select="examiner"/>
-            </a>
-            <br/>
-            <xsl:text>Submitted: </xsl:text>
-            <xsl:value-of select="submitted"/>
-          </li>
-        </xsl:for-each>
-      </ul>
-    </p>
+          </a>
+          <br/>
+          <xsl:text>Personality: </xsl:text>
+          <xsl:value-of select="personality"/>
+          <br/>
+          <xsl:text>Examiner: </xsl:text>
+          <a href="https://0crat/u/{examiner}">
+            <xsl:text>@</xsl:text>
+            <xsl:value-of select="examiner"/>
+          </a>
+          <br/>
+          <xsl:text>Submitted: </xsl:text>
+          <xsl:value-of select="submitted"/>
+        </li>
+      </xsl:for-each>
+    </ul>
   </xsl:template>
 </xsl:stylesheet>

@@ -52,7 +52,7 @@ SOFTWARE.
             </a>
           </li>
           <li>
-            <a href="/resumes">
+            <a href="/u/{identity/login}/resumes">
               <xsl:text>Resumes</xsl:text>
             </a>
           </li>

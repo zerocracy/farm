@@ -27,6 +27,7 @@ import com.zerocracy.tk.profile.TkAwards;
 import com.zerocracy.tk.profile.TkIdentify;
 import com.zerocracy.tk.profile.TkKyc;
 import com.zerocracy.tk.profile.TkProfile;
+import com.zerocracy.tk.profile.TkResumes;
 import com.zerocracy.tk.profile.TkUserWbs;
 import com.zerocracy.tk.profile.TkYoti;
 import com.zerocracy.tk.project.RqProject;
@@ -319,16 +320,16 @@ public final class TkApp extends TkWrap {
                                                                         new TkUserWbs(farm)
                                                                     ),
                                                                     new FkRegex(
+                                                                        "/u/([a-zA-Z0-9-]+)/resumes",
+                                                                        new TkResumes(farm)
+                                                                    ),
+                                                                    new FkRegex(
                                                                         "/u/([a-zA-Z0-9-]+)",
                                                                         new TkProfile(farm)
                                                                     ),
                                                                     new FkRegex(
                                                                         "/known/(?<login>[a-zA-Z0-9-]+)",
                                                                         new TkKnown(farm)
-                                                                    ),
-                                                                    new FkRegex(
-                                                                        "/resumes",
-                                                                        new TkResumes(farm)
                                                                     )
                                                                 )
                                                             )

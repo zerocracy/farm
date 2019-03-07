@@ -14,22 +14,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.tk;
+package com.zerocracy.tk.profile;
 
 import com.zerocracy.Farm;
 import com.zerocracy.pm.staff.GlobalInviters;
 import com.zerocracy.pmo.Resumes;
+import com.zerocracy.tk.RsPage;
 import java.io.IOException;
-import org.takes.Request;
+import java.util.Objects;
 import org.takes.Response;
-import org.takes.Take;
+import org.takes.facets.fork.RqRegex;
+import org.takes.facets.fork.TkRegex;
+import org.takes.rq.RqHref;
+import org.xembly.Directives;
 
 /**
  * Render resumes take.
  *
  * @since 1.0
  */
-public final class TkResumes implements Take {
+public final class TkResumes implements TkRegex {
 
     /**
      * Farm.
@@ -45,11 +49,13 @@ public final class TkResumes implements Take {
     }
 
     @Override
-    public Response act(final Request req) throws IOException {
-        final String login = new RqUser(this.farm, req).value();
-        final boolean inviter = new GlobalInviters(this.farm).contains(login);
+    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
+    public Response act(final RqRegex req) throws IOException {
+        final String login = new RqSecureLogin(this.farm, req).value();
         final String expr;
-        if (inviter) {
+        final String filter = new RqHref.Smart(req).single("filter", "my");
+        final boolean inviter = new GlobalInviters(this.farm).contains(login);
+        if (Objects.equals("all", filter) && inviter) {
             expr = "examiner = *";
         } else {
             expr = String.format("examiner = '%s'", login);
@@ -58,7 +64,14 @@ public final class TkResumes implements Take {
             this.farm,
             "/xsl/resumes.xsl",
             req,
-            () -> () -> new Resumes(this.farm).bootstrap().filter(expr)
+            () -> () -> new Directives()
+                .add("filter")
+                .set(filter)
+                .up()
+                .add("inviter")
+                .set(inviter)
+                .up()
+                .append(new Resumes(this.farm).bootstrap().filter(expr))
         );
     }
 }
