@@ -324,6 +324,12 @@ public final class TkApp extends TkWrap {
                                                                         new TkResumes(farm)
                                                                     ),
                                                                     new FkRegex(
+                                                                        "/resumes",
+                                                                        (TkRegex) req -> new RsRedirect(
+                                                                            String.format("/u/%s/resumes", new RqUser(farm, req, false).value())
+                                                                        )
+                                                                    ),
+                                                                    new FkRegex(
                                                                         "/u/([a-zA-Z0-9-]+)",
                                                                         new TkProfile(farm)
                                                                     ),
