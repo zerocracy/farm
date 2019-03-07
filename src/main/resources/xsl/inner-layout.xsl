@@ -52,6 +52,11 @@ SOFTWARE.
             </a>
           </li>
           <li>
+            <a href="/resumes">
+              <xsl:text>Resumes</xsl:text>
+            </a>
+          </li>
+          <li>
             <a href="/board">
               <xsl:text>Board</xsl:text>
             </a>
