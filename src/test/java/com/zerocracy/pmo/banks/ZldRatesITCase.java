@@ -16,13 +16,9 @@
  */
 package com.zerocracy.pmo.banks;
 
-import com.zerocracy.Farm;
-import com.zerocracy.cash.Cash;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.farm.props.PropsFarm;
-import com.zerocracy.pm.staff.Roles;
-import com.zerocracy.pmo.Pmo;
-import java.io.IOException;
+import java.math.BigDecimal;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Assume;
@@ -30,12 +26,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Test case for {@link Zold}.
+ * Test case for {@link ZldRates}.
  *
  * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
-public final class ZoldITCase {
+public final class ZldRatesITCase {
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -46,28 +42,10 @@ public final class ZoldITCase {
     }
 
     @Test
-    public void payZold() throws Exception {
-        final Farm farm = new PropsFarm();
-        final String target = "zonuses";
-        new Roles(new Pmo(farm)).bootstrap().assign(target, "PO");
+    public void fetchRateFromWts() throws Exception {
         MatcherAssert.assertThat(
-            new Zold(farm).pay(
-                target,
-                new Cash.S("$0.10"),
-                "ZoldITCase#payZold",
-                "none"
-            ),
-            Matchers.not(Matchers.isEmptyString())
-        );
-    }
-
-    @Test(expected = IOException.class)
-    public void failPaymentForNonPmoUsers() throws Exception {
-        new Zold(new PropsFarm()).pay(
-            "g4s8",
-            new Cash.S("$0.02"),
-            "ZoldITCase#failPaymentForNonPmoUsers",
-            "none2"
+            new ZldRates(new PropsFarm()).usd().compareTo(BigDecimal.ONE),
+            Matchers.equalTo(1)
         );
     }
 }

@@ -17,15 +17,16 @@
 package com.zerocracy.pmo.banks;
 
 import com.jcabi.aspects.Tv;
-import com.jcabi.http.Response;
 import com.jcabi.http.request.JdkRequest;
 import com.jcabi.http.response.RestResponse;
 import com.zerocracy.Farm;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.farm.props.Props;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.HttpURLConnection;
-import java.util.Collections;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -34,6 +35,17 @@ import java.util.concurrent.TimeUnit;
  * @since 1.0
  */
 public final class Zold implements Bank {
+
+    /**
+     * Amount format.
+     */
+    private static final DecimalFormat FMT = new DecimalFormat();
+
+    static {
+        Zold.FMT.setMaximumFractionDigits(2);
+        Zold.FMT.setMinimumFractionDigits(2);
+        Zold.FMT.setGroupingUsed(false);
+    }
 
     /**
      * Farm.
@@ -61,6 +73,7 @@ public final class Zold implements Bank {
         final String details, final String unique) throws IOException {
         final Props props = new Props(this.farm);
         final String uri = props.get("//zold/host");
+        final BigDecimal rate = new ZldRates(this.farm).usd();
         final RestResponse rsp = new JdkRequest(uri)
             .uri()
             .path("/do-pay")
@@ -70,19 +83,19 @@ public final class Zold implements Bank {
             .header("X-Zold-Wts", props.get("//zold/secret"))
             .body()
             .formParam("bnf", target)
-            .formParam("amount", amount.decimal().toString())
+            .formParam(
+                "amount",
+                Zold.FMT.format(
+                    amount.decimal().divide(rate, 2, RoundingMode.FLOOR)
+                )
+            )
             .formParam("details", new ZoldDetails(details).asString())
             .formParam("keygap", props.get("//zold/keygap"))
             .back()
             .fetch()
             .as(RestResponse.class);
         if (rsp.status() != HttpURLConnection.HTTP_OK) {
-            throw new IOException(
-                String.format(
-                    "Zold payment failed, code=%d error=%s",
-                    rsp.status(), Zold.zldError(rsp)
-                )
-            );
+            new ZldError(rsp).raise("Zold payment failed");
         }
         final List<String> hds = rsp.headers().get("X-Zold-Job");
         if (hds.isEmpty()) {
@@ -106,11 +119,9 @@ public final class Zold implements Bank {
                 .as(RestResponse.class);
             status = jrsp.body();
             if (jrsp.status() != HttpURLConnection.HTTP_OK) {
-                throw new IOException(
+                new ZldError(jrsp).raise(
                     String.format(
-                        "WTS job failed; job-id=%s code=%d status=%s err=%s",
-                        job, jrsp.status(), status,
-                        Zold.zldError(rsp)
+                        "WTS job failed, job-id=%s, status=%s", job, status
                     )
                 );
             }
@@ -129,22 +140,5 @@ public final class Zold implements Bank {
     @Override
     public void close() {
         // Nothing to do
-    }
-
-    /**
-     * Zold error from header.
-     * @param rsp Response
-     * @return Error
-     */
-    private static String zldError(final Response rsp) {
-        final List<String> hdr = rsp.headers()
-            .getOrDefault("X-Zold-Error", Collections.emptyList());
-        final String error;
-        if (hdr.isEmpty()) {
-            error = "unknown";
-        } else {
-            error = hdr.get(0);
-        }
-        return error;
     }
 }
