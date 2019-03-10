@@ -20,10 +20,11 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Par
 import com.zerocracy.Project
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtTwitter
 import com.zerocracy.farm.Assume
-import com.zerocracy.claims.ClaimIn
+import com.zerocracy.sentry.SafeSentry
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).type('Tweet')
@@ -32,12 +33,19 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   ExtTwitter.Tweets tweets = new ExtTwitter(farm).value()
   String body = new Par.ToText(par).toString()
-  long tid = tweets.publish(body)
-  claim.copy().type('Tweeted').postTo(new ClaimsOf(farm, project))
-  claim.copy().type('Notify PMO').param(
-    'message', new Par(
-      'We just [tweeted](https://twitter.com/0crat/status/%d) this text:',
-      '`%s`'
-    ).say(tid, body)
-  ).postTo(new ClaimsOf(farm, project))
+  try {
+    long tid = tweets.publish(body)
+    claim.copy().type('Tweeted').postTo(new ClaimsOf(farm, project))
+    claim.copy()
+      .type('Notify PMO')
+      .param(
+      'message',
+        new Par(
+        'We just [tweeted](https://twitter.com/0crat/status/%d) this text:',
+          '`%s`'
+        ).say(tid, body)
+      ).postTo(new ClaimsOf(farm, project))
+  } catch (IOException err) {
+    new SafeSentry(farm).capture(err)
+  }
 }
