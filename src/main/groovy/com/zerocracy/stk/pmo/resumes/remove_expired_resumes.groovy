@@ -18,6 +18,7 @@ package com.zerocracy.stk.pmo.resumes
 
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
+import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.claims.ClaimIn
@@ -34,7 +35,9 @@ def exec(Project pmo, XML xml) {
   Instant expiration = claim.created().toInstant() -
     Duration.ofDays(new Policy(farm).get('1.lag', 16))
   Resumes resumes = new Resumes(farm).bootstrap()
+  int penalty = new Policy(farm).get('1.penalty', -32)
   resumes.olderThan(expiration).each { resume ->
+    String examiner = resumes.examiner(resume)
     resumes.remove(resume)
     claim.copy()
       .type('Notify user')
@@ -43,5 +46,15 @@ def exec(Project pmo, XML xml) {
       'message',
       'Your resume was expired, you can try again to submit join form'
       ).postTo(new ClaimsOf(farm, pmo))
+    claim.copy()
+      .type('Add award points')
+      .param('job', 'none')
+      .param('login', examiner)
+      .param(
+      'reason',
+        new Par('%s resume assigned to you was expired, see §1').say(resume)
+      )
+      .param('minutes', penalty)
+      .postTo(new ClaimsOf(farm, pmo))
   }
 }

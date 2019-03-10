@@ -19,6 +19,7 @@ package com.zerocracy.bundles.rm_expired_resumes
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.pmo.Awards
 import com.zerocracy.pmo.Resumes
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
@@ -26,11 +27,18 @@ import org.hamcrest.Matchers
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   MatcherAssert.assertThat(
+    'olduser wasn\'t removed',
     new Resumes(farm).bootstrap().exists('olduser'),
     Matchers.is(false)
   )
   MatcherAssert.assertThat(
+    'newuser was removed',
     new Resumes(farm).bootstrap().exists('newuser'),
     Matchers.is(true)
+  )
+  MatcherAssert.assertThat(
+    'examiner didn\' get a penalty',
+    new Awards(farm, 'examiner').total(),
+    Matchers.equalTo(-32)
   )
 }

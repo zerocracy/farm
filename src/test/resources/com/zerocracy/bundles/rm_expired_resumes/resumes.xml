@@ -22,6 +22,7 @@ SOFTWARE.
     <personality>INTJ-A</personality>
     <stackoverflow>43256543</stackoverflow>
     <telegram>567543</telegram>
+    <examiner>examiner</examiner>
   </resume>
   <resume login="newuser">
     <submitted>2018-06-01T00:00:00.000Z</submitted>
@@ -29,5 +30,6 @@ SOFTWARE.
     <personality>INTJ-T</personality>
     <stackoverflow>87654356</stackoverflow>
     <telegram>3546765</telegram>
+    <examiner>examiner</examiner>
   </resume>
 </resumes>
