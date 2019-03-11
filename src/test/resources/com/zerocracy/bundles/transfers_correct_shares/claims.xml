@@ -38,6 +38,7 @@ SOFTWARE.
       <param name="login">krzyk</param>
       <param name="minutes">30</param>
       <param name="job">gh:test/test#2</param>
+      <param name="cash">0</param>
       <param name="reason">Order was finished</param>
     </params>
   </claim>

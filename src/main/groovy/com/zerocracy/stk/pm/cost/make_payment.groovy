@@ -66,9 +66,6 @@ def exec(Project project, XML xml) {
     }
     price = rate.mul(minutes) / 60
   }
-  if (price.empty) {
-    return
-  }
   Cash cash = price
   if (!canPay(farm, project, claim.hasParam('estimated'), price)) {
     cash = Cash.ZERO

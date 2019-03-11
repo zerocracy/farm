@@ -26,7 +26,7 @@ def exec(Project project, XML xml) {
   Equity equity = new Equity(project).bootstrap()
   MatcherAssert.assertThat(
     equity.ownership('krzyk'),
-    Matchers.containsString('$40.00')
+    Matchers.containsString('$48.00')
   )
   MatcherAssert.assertThat(
     equity.ownership('amihaiemil'),
