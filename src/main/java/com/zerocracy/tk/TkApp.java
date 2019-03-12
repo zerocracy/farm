@@ -43,6 +43,7 @@ import com.zerocracy.tk.project.TkDonate;
 import com.zerocracy.tk.project.TkEquity;
 import com.zerocracy.tk.project.TkFiles;
 import com.zerocracy.tk.project.TkFootprint;
+import com.zerocracy.tk.project.TkFundZold;
 import com.zerocracy.tk.project.TkHiring;
 import com.zerocracy.tk.project.TkProject;
 import com.zerocracy.tk.project.TkReport;
@@ -221,6 +222,10 @@ public final class TkApp extends TkWrap {
                                                                     new FkRegex(
                                                                         "/p/(PMO|[A-Z0-9]{9})",
                                                                         new TkProject(farm)
+                                                                    ),
+                                                                    new FkRegex(
+                                                                        "/p/(PMO|[A-Z0-9]{9})/zold",
+                                                                        new TkFundZold(farm)
                                                                     ),
                                                                     new FkRegex(
                                                                         "/hiring/([A-Z0-9]{9})",

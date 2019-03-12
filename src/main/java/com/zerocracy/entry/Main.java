@@ -39,6 +39,7 @@ import com.zerocracy.shutdown.ShutdownFarm;
 import com.zerocracy.tk.TkAlias;
 import com.zerocracy.tk.TkApp;
 import com.zerocracy.tk.TkSentry;
+import com.zerocracy.tk.TkZoldCallback;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -167,6 +168,10 @@ public final class Main {
                             new TkSentry(farm, new TkGitlab()),
                             HttpMethod.POST
                         )
+                    ),
+                    new FkRegex(
+                        "/zcallback",
+                        new TkZoldCallback(farm)
                     )
                 ),
                 this.arguments

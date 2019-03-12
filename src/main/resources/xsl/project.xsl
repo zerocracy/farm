@@ -201,6 +201,8 @@ SOFTWARE.
       </a>
       <xsl:text> via </xsl:text>
       <img src="/svg/stripe-logo.svg" style="height:1em;vertical-align:middle;"/>
+      <xsl:text> or fund with </xsl:text>
+      <a href="/p/{project}/zold">Zold</a>
       <xsl:text>), locked: </xsl:text>
       <a href="/a/{project}?a=pm/cost/estimates">
         <xsl:value-of select="estimates"/>

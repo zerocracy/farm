@@ -14,38 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pmo.banks;
-
-import com.zerocracy.farm.props.Props;
-import com.zerocracy.farm.props.PropsFarm;
-import java.math.BigDecimal;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.Assume;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 /**
- * Test case for {@link ZldRates}.
+ * Zold.
  *
  * @since 1.0
- * @checkstyle JavadocMethodCheck (500 lines)
  */
-public final class ZldRatesITCase {
-
-    @BeforeClass
-    public static void setUp() throws Exception {
-        Assume.assumeTrue(
-            "Zold integration test is not configured",
-            new Props().has("//zold/secret")
-        );
-    }
-
-    @Test
-    public void fetchRateFromWts() throws Exception {
-        MatcherAssert.assertThat(
-            new ZldRates(new PropsFarm()).usd().compareTo(BigDecimal.ONE),
-            Matchers.equalTo(1)
-        );
-    }
-}
+package com.zerocracy.zold;

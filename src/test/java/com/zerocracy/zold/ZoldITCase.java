@@ -14,15 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pmo.banks;
+package com.zerocracy.zold;
 
-import com.zerocracy.Farm;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.farm.props.Props;
 import com.zerocracy.farm.props.PropsFarm;
-import com.zerocracy.pm.staff.Roles;
-import com.zerocracy.pmo.Pmo;
-import java.io.IOException;
+import java.math.BigDecimal;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Assume;
@@ -46,28 +43,43 @@ public final class ZoldITCase {
     }
 
     @Test
-    public void payZold() throws Exception {
-        final Farm farm = new PropsFarm();
-        final String target = "zonuses";
-        new Roles(new Pmo(farm)).bootstrap().assign(target, "PO");
+    public void fetchRateFromWts() throws Exception {
         MatcherAssert.assertThat(
-            new Zold(farm).pay(
-                target,
-                new Cash.S("$0.10"),
-                "ZoldITCase#payZold",
-                "none"
+            new Zold(new PropsFarm()).rate().compareTo(BigDecimal.ONE),
+            Matchers.equalTo(1)
+        );
+    }
+
+    @Test
+    public void payZold() throws Exception {
+        MatcherAssert.assertThat(
+            new Zold(new PropsFarm()).pay(
+                "zonuses",
+                new Cash.S("$0.10").decimal(),
+                "ZoldITCase#payZold"
             ),
             Matchers.not(Matchers.isEmptyString())
         );
     }
 
-    @Test(expected = IOException.class)
-    public void failPaymentForNonPmoUsers() throws Exception {
-        new Zold(new PropsFarm()).pay(
-            "g4s8",
-            new Cash.S("$0.02"),
-            "ZoldITCase#failPaymentForNonPmoUsers",
-            "none2"
+    @Test
+    public void readWalletId() throws Exception {
+        MatcherAssert.assertThat(
+            new Zold(new PropsFarm()).wallet(),
+            Matchers.not(Matchers.isEmptyString())
+        );
+    }
+
+    @Test
+    public void createsInvoice() throws Exception {
+        final ZldInvoice invoice = new Zold(new PropsFarm()).invoice();
+        MatcherAssert.assertThat(
+            "prefix", invoice.prefix(),
+            Matchers.not(Matchers.isEmptyString())
+        );
+        MatcherAssert.assertThat(
+            "invoice", invoice.invoice(),
+            Matchers.not(Matchers.isEmptyString())
         );
     }
 }

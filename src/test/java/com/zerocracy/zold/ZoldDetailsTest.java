@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pmo.banks;
+package com.zerocracy.zold;
 
 import org.cactoos.matchers.TextHasString;
 import org.hamcrest.MatcherAssert;

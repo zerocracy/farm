@@ -16,50 +16,51 @@
  */
 package com.zerocracy.pmo.banks;
 
-import java.util.regex.Pattern;
-import org.cactoos.Text;
+import com.zerocracy.Farm;
+import com.zerocracy.cash.Cash;
+import com.zerocracy.zold.Zold;
+import java.io.IOException;
+import java.math.RoundingMode;
 
 /**
- * Zold details string.
- *
+ * Zold payment.
  * @since 1.0
  */
-public final class ZoldDetails implements Text {
+public final class BnkZold implements Bank {
 
     /**
-     * Invalid zold details.
+     * Farm.
      */
-    private static final Pattern PTN_INVALID =
-        Pattern.compile("[^a-zA-Z0-9 @!?*_\\-.:,\'/]");
-
-    /**
-     * Zold details length.
-     */
-    private static final int MAX_LEN = 128;
-
-    /**
-     * Source.
-     */
-    private final String source;
+    private final Farm farm;
 
     /**
      * Ctor.
-     * @param source Source
+     *
+     * @param farm Farm
      */
-    ZoldDetails(final String source) {
-        this.source = source;
+    public BnkZold(final Farm farm) {
+        this.farm = farm;
     }
 
     @Override
-    public String asString() {
-        final String valid = ZoldDetails.PTN_INVALID.matcher(this.source)
-            .replaceAll("-");
-        final String truncated;
-        if (valid.length() > ZoldDetails.MAX_LEN) {
-            truncated = valid.substring(0, ZoldDetails.MAX_LEN);
-        } else {
-            truncated = valid;
-        }
-        return truncated;
+    public Cash fee(final Cash amount) {
+        return Cash.ZERO;
+    }
+
+    @Override
+    // @checkstyle ParameterNumberCheck (3 lines)
+    public String pay(final String target, final Cash amount,
+        final String details, final String unique) throws IOException {
+        final Zold zold = new Zold(this.farm);
+        return zold.pay(
+            target,
+            amount.decimal().divide(zold.rate(), 2, RoundingMode.FLOOR),
+            details
+        );
+    }
+
+    @Override
+    public void close() {
+        // Nothing to do
     }
 }

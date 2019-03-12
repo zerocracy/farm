@@ -26,7 +26,7 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.farm.props.Props
 import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pm.cost.Vesting
-import com.zerocracy.pmo.banks.Zold
+import com.zerocracy.pmo.banks.BnkZold
 
 /**
  * Send Zold to user via wts.zold.io API and notify user about payment.
@@ -54,7 +54,7 @@ def exec(Project project, XML xml) {
   //  because of this bug: https://github.com/zold-io/wts.zold.io/issues/36
   //  let's use reason claim parameter as reason when it will be fixed.
   if (!new Props(farm).has('//testing')) {
-    new Zold(farm).pay(
+    new BnkZold(farm).pay(
       recipient,
       amount,
       'none',

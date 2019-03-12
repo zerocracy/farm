@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pmo.banks;
+package com.zerocracy.zold;
 
 import com.jcabi.http.Response;
 import java.io.IOException;
@@ -27,7 +27,7 @@ import org.cactoos.Text;
  *
  * @since 1.0
  */
-public final class ZldError implements Text {
+final class ZldError implements Text {
 
     /**
      * Response.
@@ -38,7 +38,7 @@ public final class ZldError implements Text {
      * Ctor.
      * @param rsp Response
      */
-    public ZldError(final Response rsp) {
+    ZldError(final Response rsp) {
         this.rsp = rsp;
     }
 
