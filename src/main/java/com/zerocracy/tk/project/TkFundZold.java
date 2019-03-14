@@ -62,7 +62,7 @@ public final class TkFundZold implements TkRegex {
             zold.wallet(),
             invoice.prefix(),
             code,
-            "https://0crat.com/zcallback",
+            "https://www.0crat.com/zcallback",
             secret
         );
         new ZldCallbacks(new ExtDataSource(this.farm).value(), this.farm).add(
