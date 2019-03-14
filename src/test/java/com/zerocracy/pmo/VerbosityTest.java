@@ -16,18 +16,11 @@
  */
 package com.zerocracy.pmo;
 
-import com.zerocracy.Item;
-import com.zerocracy.Xocument;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
 import java.io.IOException;
-import java.util.List;
-import org.cactoos.text.FormattedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.hamcrest.core.IsCollectionContaining;
-import org.hamcrest.core.IsEqual;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -38,33 +31,21 @@ import org.junit.Test;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class VerbosityTest {
+
     @Test
     public void addsVerbosity() throws Exception {
-        final Pmo pmo = new Pmo(new FkFarm());
-        final FkProject pkt = new FkProject();
-        final String login = "user1234";
         final String job = "gh:test/test#1";
-        new Verbosity(pmo, login).bootstrap().add(
-            job,
-            pkt,
-            1
-        );
+        final int value = 1;
+        final Verbosity verbosity =
+            new Verbosity(new Pmo(new FkFarm()), "user1234").bootstrap();
+        verbosity.add(job, new FkProject(), value);
         MatcherAssert.assertThat(
-            new Xocument(
-                pmo.acq("verbosity/user1234.xml")
-            ).xpath(
-                String.format(
-                    // @checkstyle LineLengthCheck (1 line)
-                    "/verbosity/order[@job = 'gh:test/test#1' and ./project/text() = '%s']/messages/text()",
-                    pkt.pid()
-                )
-            ),
-            Matchers.contains("1")
+            verbosity.messages(job),
+            Matchers.equalTo(value)
         );
     }
 
     @Test
-    @Ignore
     public void overridesVerbosity() throws IOException {
         final Pmo pmo = new Pmo(new FkFarm());
         final FkProject pkt = new FkProject();
@@ -74,31 +55,9 @@ public final class VerbosityTest {
         final Verbosity verbosity = new Verbosity(pmo, login).bootstrap();
         verbosity.add(job, pkt, 1);
         verbosity.add(job, pkt, newvalue);
-        try (
-            Item item = pmo.acq(
-                new FormattedText(
-                    "verbosity/%s.xml",
-                    login
-                ).asString()
-            )
-        ) {
-            final List<String> result = new Xocument(item).xpath(
-                new FormattedText(
-                    // @checkstyle LineLengthCheck (1 line)
-                    "/verbosity/order[@job = '%s' and ./project/text() = '%s']/messages/text()",
-                    job,
-                    pkt.pid()
-                ).asString()
-            );
-            MatcherAssert.assertThat(
-                "Added verbosity twice",
-                result,
-                new IsCollectionContaining<>(
-                    new IsEqual<>(
-                        Integer.toString(newvalue)
-                    )
-                )
-            );
-        }
+        MatcherAssert.assertThat(
+            verbosity.messages(job),
+            Matchers.equalTo(newvalue)
+        );
     }
 }

@@ -29,14 +29,17 @@ import org.xembly.Directives;
  * @since 1.0
  */
 public final class Verbosity {
+
     /**
      * Project.
      */
     private final Pmo pkt;
+
     /**
      * User.
      */
     private final String login;
+
     /**
      * Ctor.
      * @param pmo Project
@@ -53,11 +56,6 @@ public final class Verbosity {
      * @param project Project
      * @param verbosity Messages for a job
      * @throws IOException If fails
-     * @todo #1233:30min Verbosity.add is throwing an exception when trying
-     *  to add verbosity to a job more than once. We should check verbosity
-     *  before adding a new element and override the previous value to
-     *  prevent this exception being thrown. After the fix, test the code
-     *  removing ignore tag from VerbositTest.overrideVerbosity.
      */
     public void add(final String job, final Project project,
         final int verbosity) throws IOException {
@@ -65,6 +63,10 @@ public final class Verbosity {
             new Xocument(item).modify(
                 new Directives()
                     .xpath("/verbosity")
+                    .push()
+                    .xpath(String.format("order[@job='%s']", job))
+                    .remove()
+                    .pop()
                     .add("order")
                     .attr("job", job)
                     .add("project")
@@ -75,6 +77,25 @@ public final class Verbosity {
                     .up()
                     .add("added")
                     .set(Instant.now())
+            );
+        }
+    }
+
+    /**
+     * Verbosity value for a job.
+     * @param job Job id
+     * @return Message count
+     * @throws IOException If fails
+     */
+    public int messages(final String job) throws IOException {
+        try (final Item item = this.item()) {
+            return Integer.parseInt(
+                new Xocument(item).xpath(
+                    String.format(
+                        "/verbosity/order[@job = '%s']/messages/text()",
+                        job
+                    )
+                ).get(0)
             );
         }
     }
