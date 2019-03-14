@@ -50,16 +50,8 @@ def exec(Project project, XML xml) {
     amount = vesting.rate(recipient).mul(Integer.parseInt(claim.param('minutes'))) / 60
   }
   String reason = claim.param('reason')
-  // @todo #1119:30min Reason is not attached to transaction as 'details'
-  //  because of this bug: https://github.com/zold-io/wts.zold.io/issues/36
-  //  let's use reason claim parameter as reason when it will be fixed.
   if (!new Props(farm).has('//testing')) {
-    new BnkZold(farm).pay(
-      recipient,
-      amount,
-      'none',
-      ''
-    )
+    new BnkZold(farm).pay(recipient, amount, reason, '')
   }
   claim.copy().type('Notify user')
     .token("user;${recipient}")
