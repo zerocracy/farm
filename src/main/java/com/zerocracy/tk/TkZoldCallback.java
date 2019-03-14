@@ -46,6 +46,11 @@ import org.takes.rs.RsEmpty;
 public final class TkZoldCallback implements Take {
 
     /**
+     * Zents in ZLD.
+     */
+    private static final BigDecimal ZENTS = BigDecimal.valueOf(1L << 32);
+
+    /**
      * Amount format.
      */
     private static final DecimalFormat FMT = new DecimalFormat();
@@ -86,7 +91,9 @@ public final class TkZoldCallback implements Take {
             String.format(
                 "USD %s",
                 TkZoldCallback.FMT.format(
-                    new BigDecimal(amount).multiply(new Zold(this.farm).rate())
+                    new BigDecimal(amount)
+                        .divide(TkZoldCallback.ZENTS, RoundingMode.FLOOR)
+                        .multiply(new Zold(this.farm).rate())
                         .setScale(2, RoundingMode.FLOOR)
                 )
             )
