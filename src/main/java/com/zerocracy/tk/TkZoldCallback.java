@@ -34,7 +34,7 @@ import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
 import org.takes.rq.RqHref;
-import org.takes.rs.RsEmpty;
+import org.takes.rs.RsText;
 
 /**
  * Zold callback.
@@ -47,6 +47,7 @@ public final class TkZoldCallback implements Take {
 
     /**
      * Zents in ZLD.
+     * @checkstyle MagicNumberCheck (2 lines)
      */
     private static final BigDecimal ZENTS = BigDecimal.valueOf(1L << 32);
 
@@ -86,7 +87,7 @@ public final class TkZoldCallback implements Take {
         final String secret = href.single("token");
         final Project pkt = new ZldCallbacks(
             new ExtDataSource(this.farm).value(), this.farm
-        ).project(cid, code, secret, prefix);
+        ).take(cid, code, secret, prefix);
         final Cash.S cash = new Cash.S(
             String.format(
                 "USD %s",
@@ -119,6 +120,6 @@ public final class TkZoldCallback implements Take {
                     "callabck id is %s"
                 ).say(pkt.pid(), amount, cash, prefix, wallet, txn, cid)
             ).postTo(new ClaimsOf(this.farm));
-        return new RsEmpty();
+        return new RsText("OK");
     }
 }

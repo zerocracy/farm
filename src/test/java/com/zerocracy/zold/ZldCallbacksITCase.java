@@ -53,7 +53,7 @@ public final class ZldCallbacksITCase {
         final String prefix = "ertyu7iu6y5t@afsdfgs4r3";
         cbs.add(pid, cid, code, secret, prefix);
         MatcherAssert.assertThat(
-            cbs.project(cid, code, secret, prefix).pid(),
+            cbs.take(cid, code, secret, prefix).pid(),
             Matchers.equalTo(pid)
         );
     }

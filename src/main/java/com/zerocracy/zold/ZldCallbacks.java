@@ -32,7 +32,7 @@ import javax.sql.DataSource;
  * @since 1.0
  * @checkstyle ParameterNumberCheck (500 lines)
  */
-@SuppressWarnings("PMD.UseObjectForClearerAPI")
+@SuppressWarnings({"PMD.UseObjectForClearerAPI", "PMD.AvoidDuplicateLiterals"})
 public final class ZldCallbacks {
 
     /**
@@ -90,7 +90,7 @@ public final class ZldCallbacks {
     }
 
     /**
-     * Find project by callback.
+     * Take project by callback and invalidate callback.
      * @param callback Callback id
      * @param code Secret code
      * @param secret Token
@@ -98,13 +98,15 @@ public final class ZldCallbacks {
      * @return Project if found
      * @throws IOException If fails
      */
-    public Project project(final String callback, final String code,
+    public Project take(final String callback, final String code,
         final String secret, final String prefix) throws IOException {
         try {
+            final JdbcSession session = new JdbcSession(this.data)
+                .autocommit(false);
             final Iterator<Project> iter = this.farm.find(
                 String.format(
                     "@id='%s'",
-                    new JdbcSession(this.data)
+                    session
                         .sql(
                             String.join(
                                 " ",
@@ -120,6 +122,18 @@ public final class ZldCallbacks {
             if (!iter.hasNext()) {
                 throw new IOException("Project for callback doesn't exist");
             }
+            session.sql(
+                String.join(
+                    " ",
+                    "UPDATE zold_invoices SET token = ?",
+                    "WHERE callback = ? AND prefix = ?",
+                    "AND secret = ? AND token = ?"
+                )
+            ).set(String.format("x:%s", secret))
+                .set(callback).set(prefix)
+                .set(code).set(secret)
+                .execute()
+                .commit();
             return iter.next();
         } catch (final SQLException err) {
             throw new IOException("Failed to find project", err);
