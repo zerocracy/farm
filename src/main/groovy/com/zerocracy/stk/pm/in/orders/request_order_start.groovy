@@ -39,6 +39,15 @@ def exec(Project project, XML xml) {
   ClaimIn claim = new ClaimIn(xml)
   String login = claim.param('login')
   String job = claim.param('job')
+  if (job.startsWith('gh:')) {
+    Issue issue = new Issue.Smart(new Job.Issue(new ExtGithub(farm).value(), job))
+    if (!issue.open) {
+      throw new SoftException(
+        new Par(farm, 'Job %s is closed, can\'t start order').say(job)
+      )
+    }
+  }
+
   Wbs wbs = new Wbs(project).bootstrap()
   if (!wbs.exists(job)) {
     String role = 'DEV'
