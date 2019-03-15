@@ -61,10 +61,11 @@ def exec(Project project, XML xml) {
         'message',
         new Par(
           farm,
-          'A new applicant, @%s, has been assigned to you.',
+          'A new applicant, @%s, has been assigned to you:',
+          '[resume by %s](https://www.0crat.com/u/%s/resumes#resume-%s).',
           'Please review the resume, and either invite or reject the applicant.',
           'In either case you will receive +32 reputation points as in §1'
-        ).say(it)
+        ).say(it, it, examiner, it)
       ).postTo(new ClaimsOf(farm, project))
   }
 }

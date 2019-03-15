@@ -50,7 +50,7 @@ SOFTWARE.
   <xsl:template match="resumes">
     <ul>
       <xsl:for-each select="./resume">
-        <li>
+        <li id="resume-{@login}">
           <xsl:text>Resume by @</xsl:text>
           <xsl:value-of select="@login"/>
           <br/>
