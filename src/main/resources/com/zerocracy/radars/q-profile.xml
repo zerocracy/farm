@@ -105,6 +105,11 @@ SOFTWARE.
         <help>Project ID you're applying to, find it [here](https://www.0crat.com/board)</help>
       </opt>
       <opt>
+        <name>role</name>
+        <regex>[A-Z]{2,4}</regex>
+        <help>Project role you want to apply</help>
+      </opt>
+      <opt>
         <name>rate</name>
         <regex>\$\d{1,3}</regex>
         <help>Hourly rate you are ready to work for or 0</help>

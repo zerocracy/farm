@@ -44,6 +44,7 @@ def exec(Project pmo, XML xml) {
       new Par('Project %s doesn\'t exist').say(pid)
     )
   }
+  String role = claim.param('role')
   String author = claim.author()
   People people = new People(farm).bootstrap()
   Cash std = people.rate(author)
@@ -107,12 +108,12 @@ def exec(Project pmo, XML xml) {
       'message',
       new Par(
         farm,
-        '@%s wants to join you guys;',
+        '@%s wants to join you guys as `%s`;',
         'if you want to add them to the project %s,',
-        'just assign `DEV` role and that\'s it;',
+        'just assign a role and that\'s it;',
         'the hourly rate suggested is %s (profile rate is %s);',
         'you can use that rate or define another one, see §13'
-      ).say(claim.author(), pid, rate, std)
+      ).say(claim.author(), role, pid, rate, std)
     )
     .postTo(new ClaimsOf(farm, project))
   claim.reply(

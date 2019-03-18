@@ -21,7 +21,7 @@ SOFTWARE.
     <code>Set rate</code>
   </cmd>
   <cmd>
-    <text>apply C3T46CUJJ $10</text>
+    <text>apply C3T46CUJJ REV $10</text>
     <code>Apply to a project</code>
     <opts>
       <opt>
@@ -30,6 +30,7 @@ SOFTWARE.
       </opt>
       <opt>
         <name>rate</name>
+        <role>REV</role>
         <value>$10</value>
       </opt>
     </opts>
