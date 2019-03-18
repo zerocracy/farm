@@ -68,7 +68,7 @@ def exec(Project project, XML xml) {
               '',
               'Role `DEV` was successfully assigned to @g4s8[/z]',
               '(https://www.0crat.com/u/g4s8), see [full list]',
-              '(https://www.0crat.com/a/ASSIGNROL?a=pm/staff/roles) of roles; ',
+              '(https://www.0crat.com/a/UPMBDDASS?a=pm/staff/roles) of roles; ',
               'hourly rate of @g4s8[/z](https://www.0crat.com/u/g4s8) is not ',
               'set, the user will receive no money for task completion; ',
               'if you want to assign an hourly rate, say `assign DEV g4s8 $25`',

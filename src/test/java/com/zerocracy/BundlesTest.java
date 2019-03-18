@@ -42,9 +42,13 @@ import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import org.cactoos.Func;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.InputWithFallback;
@@ -58,6 +62,7 @@ import org.cactoos.iterable.Sorted;
 import org.cactoos.list.ListOf;
 import org.cactoos.list.StickyList;
 import org.cactoos.scalar.And;
+import org.cactoos.scalar.Reduced;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -134,12 +139,57 @@ public final class BundlesTest {
     private Path home;
 
     @BeforeClass
-    public static void checkShouldRun() {
+    public static void checkShouldRun() throws Exception {
         Assume.assumeThat(
             "Parameter skipBundlesTest found, skipping...",
             System.getProperty("skipBundlesTest"),
             Matchers.nullValue()
         );
+        // @checkstyle LineLengthCheck (1 line)
+        final Iterable<Map.Entry<String, List<String>>> duplicates = new Filtered<>(
+            entry -> entry.getValue().size() > 1,
+            new Reduced<>(
+                new HashMap<String, List<String>>(Tv.HUNDRED),
+                (map, bnd) -> {
+                    final String pid = BundlesTest.toPid(bnd);
+                    final List<String> list;
+                    if (map.containsKey(pid)) {
+                        list = map.get(pid);
+                    } else {
+                        list = new LinkedList<>();
+                        map.put(pid, list);
+                    }
+                    list.add(bnd);
+                    return map;
+                },
+                new Mapped<>(
+                    file -> file.getFileName().toString(),
+                    new Filtered<>(
+                        file -> Files.isDirectory(file)
+                            && !file.getFileName().toString()
+                            .equalsIgnoreCase("bundles"),
+                        Files.walk(
+                            // @checkstyle LineLengthCheck (1 line)
+                            Paths.get("src/test/resources/com/zerocracy/bundles/"), 1
+                        ).collect(Collectors.toList())
+                    )
+                )
+            ).value().entrySet()
+        );
+        final StringBuilder dupstr = new StringBuilder();
+        for (final Map.Entry<String, List<String>> duplicate : duplicates) {
+            dupstr.append(
+                String.format(
+                    "Bundle duplicate found for pid %s: %s\n",
+                    duplicate.getKey(),
+                    String.join(",", duplicate.getValue())
+                )
+            );
+        }
+        final String dss = dupstr.toString();
+        if (!dss.isEmpty()) {
+            throw new IllegalStateException(dss);
+        }
     }
 
     @Parameterized.Parameters(name = "{0}")
@@ -208,9 +258,7 @@ public final class BundlesTest {
             final String pid;
             final List<String> projects;
             if (setup.nodes("/setup/pmo").isEmpty()) {
-                pid = this.name.toUpperCase(Locale.ENGLISH)
-                    .replaceAll("[^A-Z0-9]", "")
-                    .substring(0, Tv.NINE);
+                pid = BundlesTest.toPid(this.name);
                 projects = new ListOf<>(pid, pmo);
             } else {
                 pid = pmo;
@@ -274,6 +322,12 @@ public final class BundlesTest {
                 );
             }
         }
+    }
+
+    private static String toPid(final String bundle) {
+        return bundle.toUpperCase(Locale.ENGLISH)
+            .replaceAll("[^A-Z0-9]", "")
+            .substring(0, Tv.NINE);
     }
 
     private static Iterable<String> resources(final String path,
