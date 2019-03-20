@@ -22,6 +22,7 @@ import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Project;
 import com.zerocracy.Xocument;
+import com.zerocracy.cash.Cash;
 import com.zerocracy.claims.ClaimIn;
 import com.zerocracy.claims.ClaimsItem;
 import com.zerocracy.farm.fake.FkFarm;
@@ -81,6 +82,12 @@ public final class PingTest {
                     .add("alive").set("true").up()
                     .add("publish").set("false").up()
                     .add("adviser").set("0crat").up()
+                    .add("architect").set("1crat").up()
+                    .add("members").up()
+                    .add("jobs").set(0).up()
+                    .add("orders").set(0).up()
+                    .add("cash").attr("deficit", false).set(Cash.ZERO).up()
+                    .add("languages").up()
             );
         }
         final AtomicInteger counter = new AtomicInteger(0);

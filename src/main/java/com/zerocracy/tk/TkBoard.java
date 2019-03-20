@@ -16,30 +16,20 @@
  */
 package com.zerocracy.tk;
 
-import com.jcabi.github.Coordinates;
-import com.jcabi.github.Github;
-import com.jcabi.github.Language;
 import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Project;
+import com.zerocracy.Txn;
 import com.zerocracy.Xocument;
-import com.zerocracy.entry.ExtGithub;
-import com.zerocracy.pm.cost.Estimates;
-import com.zerocracy.pm.cost.Ledger;
-import com.zerocracy.pm.in.Orders;
-import com.zerocracy.pm.scope.Wbs;
 import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.pmo.Catalog;
 import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Set;
 import org.cactoos.func.FuncOf;
 import org.cactoos.scalar.And;
-import org.cactoos.text.JoinedText;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
@@ -52,6 +42,11 @@ import org.takes.rs.xe.XeTransform;
  * Board of projects.
  *
  * @since 1.0
+ * @todo #1657:30min Implement stakeholders to update catalog project
+ *  properties such as architect, members, jobs, orders, cash, languages.
+ *  Languages should be loaded from github repository.
+ *  This stakeholder should be started once a day.
+ *  All update should be performed in a transaction.
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.AvoidDuplicateLiterals"})
@@ -63,26 +58,11 @@ public final class TkBoard implements Take {
     private final Farm farm;
 
     /**
-     * Github.
-     */
-    private final Github github;
-
-    /**
      * Ctor.
      * @param frm Farm
      */
     public TkBoard(final Farm frm) {
-        this(frm, new ExtGithub(frm).value());
-    }
-
-    /**
-     * Ctor.
-     * @param frm Farm
-     * @param github Github
-     */
-    TkBoard(final Farm frm, final Github github) {
         this.farm = frm;
-        this.github = github;
     }
 
     @Override
@@ -122,25 +102,19 @@ public final class TkBoard implements Take {
         final Project project = this.farm.find(
             String.format("@id='%s'", node.xpath("@id").get(0))
         ).iterator().next();
-        final Catalog catalog = new Catalog(this.farm).bootstrap();
+        final Catalog catalog =
+            new Catalog(new Txn(new Pmo(this.farm))).bootstrap();
         final Roles roles = new Roles(project).bootstrap();
-        final Ledger ledger = new Ledger(this.farm, project).bootstrap();
+        final String pid = project.pid();
         return new XeAppend(
             "project",
             new XeAppend(
-                "sandbox",
-                Boolean.toString(catalog.sandbox().contains(project.pid()))
+                "sandbox", Boolean.toString(catalog.sandbox().contains(pid))
             ),
-            new XeAppend("id", project.pid()),
-            new XeAppend("title", catalog.title(project.pid())),
+            new XeAppend("id", pid),
+            new XeAppend("title", catalog.title(pid)),
             new XeAppend("mine", Boolean.toString(roles.hasAnyRole(user))),
-            new XeAppend(
-                "architects",
-                new XeTransform<>(
-                    roles.findByRole("ARC"),
-                    login -> new XeAppend("architect", login)
-                )
-            ),
+            new XeAppend("architects", catalog.architect(pid)),
             new XeAppend(
                 "repositories",
                 new XeTransform<>(
@@ -149,58 +123,15 @@ public final class TkBoard implements Take {
                 )
             ),
             new XeAppend(
-                "languages", this.languages(node)
+                "languages", String.join(",", catalog.languages(pid))
             ),
+            new XeAppend("jobs", Integer.toString(catalog.jobs(pid))),
+            new XeAppend("orders", Integer.toString(catalog.orders(pid))),
+            new XeAppend("deficit", Boolean.toString(catalog.deficit(pid))),
+            new XeAppend("cash", catalog.cash(pid).toString()),
             new XeAppend(
-                "jobs",
-                Integer.toString(new Wbs(project).bootstrap().iterate().size())
-            ),
-            new XeAppend(
-                "orders",
-                Integer.toString(
-                    new Orders(this.farm, project).bootstrap().iterate().size()
-                )
-            ),
-            new XeAppend(
-                "deficit",
-                Boolean.toString(ledger.deficit())
-            ),
-            new XeAppend(
-                "cash",
-                ledger.cash().add(
-                    new Estimates(this.farm, project)
-                        .bootstrap().total().mul(-1L)
-                ).toString()
-            ),
-            new XeAppend(
-                "members",
-                Integer.toString(
-                    new Roles(project).bootstrap().everybody().size()
-                )
+                "members", Integer.toString(catalog.members(pid).size())
             )
         );
     }
-
-    /**
-     * Get languages from repos.
-     * @param node XML
-     * @return Languages
-     * @throws IOException If an IO error occurs
-     * @todo #930:30min Right now we are displaying all languages for all
-     *  repositories. We should only display the top 4 languages (ranked by
-     *  bytes of code, as returned by Github) across all project repos.
-     */
-    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
-    private String languages(final XML node) throws IOException {
-        final Set<String> langs = new HashSet<>();
-        for (final String repo
-            : node.xpath("links/link[@rel='github']/@href")) {
-            for (final Language lang : this.github.repos()
-                .get(new Coordinates.Simple(repo)).languages()) {
-                langs.add(lang.name());
-            }
-        }
-        return new JoinedText(",", langs).asString();
-    }
-
 }
