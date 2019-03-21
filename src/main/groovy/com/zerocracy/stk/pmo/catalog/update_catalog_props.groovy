@@ -17,11 +17,13 @@
 package com.zerocracy.stk.pmo.catalog
 
 import com.jcabi.github.Coordinates
+import com.jcabi.github.Github
 import com.jcabi.github.Language
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.Txn
+import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.cost.Estimates
 import com.zerocracy.pm.cost.Ledger
@@ -39,6 +41,7 @@ def exec(Project pkt, XML xml) {
   Orders orders = new Orders(farm, pkt).bootstrap()
   Estimates est = new Estimates(farm, pkt).bootstrap()
   Roles roles = new Roles(pkt).bootstrap()
+  Github github = new ExtGithub(farm).value()
   new Txn(new Pmo(farm)).withCloseable {
     Catalog catalog = new Catalog(it).bootstrap()
     catalog.jobs(pkt.pid(), wbs.iterate().size())
@@ -46,7 +49,7 @@ def exec(Project pkt, XML xml) {
     catalog.cash(pkt.pid(), ledger.cash().add(est.total().mul(-1L)), ledger.deficit())
     catalog.members(pkt.pid(), roles.everybody())
     Iterable<String> repos = catalog.links(pkt.pid(), 'github')
-    catalog.languages(pkt.pid(), languages(repos))
+    catalog.languages(pkt.pid(), languages(github, repos))
     it.commit()
   }
 }
@@ -60,10 +63,10 @@ def exec(Project pkt, XML xml) {
  *  repositories. We should only display the top 4 languages (ranked by
  *  bytes of code, as returned by Github) across all project repos.
  */
-Set<String> languages(Iterable<String> repos) throws IOException {
+Set<String> languages(Github github, Iterable < String > repos) throws IOException {
   Set<String> langs = [] as Set<String>
   for (String repo : repos) {
-    for (final Language lang : this.github.repos()
+    for (final Language lang : github.repos()
       .get(new Coordinates.Simple(repo)).languages()) {
       langs.add(lang.name())
     }
