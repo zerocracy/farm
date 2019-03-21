@@ -69,6 +69,7 @@ public final class TkBoard implements Take {
                 final Collection<XeSource> sources = new LinkedList<>();
                 // @checkstyle LineLengthCheck (1 line)
                 try (final Txn pmo = new Txn(new Pmo(this.farm)); final Item item = pmo.acq("catalog.xml")) {
+                    new Catalog(pmo).bootstrap();
                     new And(
                         new FuncOf<>(
                             input -> sources.add(
@@ -98,7 +99,7 @@ public final class TkBoard implements Take {
      */
     private static XeSource source(final Project pmo, final String pid,
         final String user) throws IOException {
-        final Catalog catalog = new Catalog(pmo).bootstrap();
+        final Catalog catalog = new Catalog(pmo);
         final Collection<String> members = catalog.members(pid);
         return new XeAppend(
             "project",
