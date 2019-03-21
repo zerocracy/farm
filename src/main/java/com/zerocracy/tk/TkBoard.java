@@ -16,13 +16,11 @@
  */
 package com.zerocracy.tk;
 
-import com.jcabi.xml.XML;
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Project;
 import com.zerocracy.Txn;
 import com.zerocracy.Xocument;
-import com.zerocracy.pm.staff.Roles;
 import com.zerocracy.pmo.Catalog;
 import com.zerocracy.pmo.Pmo;
 import java.io.IOException;
@@ -69,10 +67,15 @@ public final class TkBoard implements Take {
             () -> {
                 final String user = new RqUser(this.farm, req, false).value();
                 final Collection<XeSource> sources = new LinkedList<>();
-                try (final Item item = new Pmo(this.farm).acq("catalog.xml")) {
+                // @checkstyle LineLengthCheck (1 line)
+                try (final Txn pmo = new Txn(new Pmo(this.farm)); final Item item = pmo.acq("catalog.xml")) {
                     new And(
                         new FuncOf<>(
-                            input -> sources.add(this.source(input, user)),
+                            input -> sources.add(
+                                TkBoard.source(
+                                    pmo, input.xpath("@id").get(0), user
+                                )
+                            ),
                             true
                         ),
                         new Xocument(item).nodes(
@@ -87,48 +90,40 @@ public final class TkBoard implements Take {
 
     /**
      * Create source for one project.
-     * @param node XML node
+     * @param pmo PMO transaction
+     * @param pid Project id
      * @param user Current user
      * @return Source
      * @throws IOException If fails
-     * @checkstyle LineLengthCheck (100 lines)
      */
-    private XeSource source(final XML node, final String user)
-        throws IOException {
-        final Project project = this.farm.find(
-            String.format("@id='%s'", node.xpath("@id").get(0))
-        ).iterator().next();
-        try (final Txn txn = new Txn(new Pmo(this.farm))) {
-            final Catalog catalog = new Catalog(txn).bootstrap();
-            final Roles roles = new Roles(project).bootstrap();
-            final String pid = project.pid();
-            return new XeAppend(
-                "project",
-                new XeAppend(
-                    "sandbox", Boolean.toString(catalog.sandbox().contains(pid))
-                ),
-                new XeAppend("id", pid),
-                new XeAppend("title", catalog.title(pid)),
-                new XeAppend("mine", Boolean.toString(roles.hasAnyRole(user))),
-                new XeAppend("architects", catalog.architect(pid)),
-                new XeAppend(
-                    "repositories",
-                    new XeTransform<>(
-                        node.xpath("links/link[@rel='github']/@href"),
-                        repo -> new XeAppend("repository", repo)
-                    )
-                ),
-                new XeAppend(
-                    "languages", String.join(",", catalog.languages(pid))
-                ),
-                new XeAppend("jobs", Integer.toString(catalog.jobs(pid))),
-                new XeAppend("orders", Integer.toString(catalog.orders(pid))),
-                new XeAppend("deficit", Boolean.toString(catalog.deficit(pid))),
-                new XeAppend("cash", catalog.cash(pid).toString()),
-                new XeAppend(
-                    "members", Integer.toString(catalog.members(pid).size())
+    private static XeSource source(final Project pmo, final String pid,
+        final String user) throws IOException {
+        final Catalog catalog = new Catalog(pmo).bootstrap();
+        final Collection<String> members = catalog.members(pid);
+        return new XeAppend(
+            "project",
+            new XeAppend(
+                "sandbox", Boolean.toString(catalog.sandbox().contains(pid))
+            ),
+            new XeAppend("id", pid),
+            new XeAppend("title", catalog.title(pid)),
+            new XeAppend("mine", Boolean.toString(members.contains(user))),
+            new XeAppend("architects", catalog.architect(pid)),
+            new XeAppend(
+                "repositories",
+                new XeTransform<>(
+                    catalog.links(pid, "github"),
+                    repo -> new XeAppend("repository", repo)
                 )
-            );
-        }
+            ),
+            new XeAppend(
+                "languages", String.join(",", catalog.languages(pid))
+            ),
+            new XeAppend("jobs", Integer.toString(catalog.jobs(pid))),
+            new XeAppend("orders", Integer.toString(catalog.orders(pid))),
+            new XeAppend("deficit", Boolean.toString(catalog.deficit(pid))),
+            new XeAppend("cash", catalog.cash(pid).toString()),
+            new XeAppend("members", Integer.toString(members.size()))
+        );
     }
 }
