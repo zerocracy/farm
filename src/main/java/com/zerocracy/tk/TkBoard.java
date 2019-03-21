@@ -42,11 +42,6 @@ import org.takes.rs.xe.XeTransform;
  * Board of projects.
  *
  * @since 1.0
- * @todo #1657:30min Implement stakeholders to update catalog project
- *  properties such as architect, members, jobs, orders, cash, languages.
- *  Languages should be loaded from github repository.
- *  This stakeholder should be started once a day.
- *  All update should be performed in a transaction.
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.AvoidDuplicateLiterals"})
