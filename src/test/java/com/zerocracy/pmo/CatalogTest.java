@@ -263,7 +263,7 @@ public final class CatalogTest {
     public void changeCash() throws Exception {
         final String pid = "CHANGECAS";
         final Catalog catalog = CatalogTest.withProject(pid);
-        final Cash cash = new Cash.S("$100");
+        final Cash cash = new Cash.S("$1000.00");
         final boolean deficit = true;
         catalog.cash(pid, cash, deficit);
         MatcherAssert.assertThat(

@@ -23,6 +23,7 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.Txn
+import com.zerocracy.cash.Cash
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
 import com.zerocracy.pm.cost.Estimates
@@ -46,7 +47,11 @@ def exec(Project pkt, XML xml) {
     Catalog catalog = new Catalog(it).bootstrap()
     catalog.jobs(pkt.pid(), wbs.iterate().size())
     catalog.orders(pkt.pid(), orders.iterate().size())
-    catalog.cash(pkt.pid(), ledger.cash().add(est.total().mul(-1L)), ledger.deficit())
+    Cash cash = ledger.cash().add(est.total().mul(-1L))
+    if (cash < Cash.ZERO) {
+      cash = Cash.ZERO
+    }
+    catalog.cash(pkt.pid(), cash, ledger.deficit())
     catalog.members(pkt.pid(), roles.everybody())
     Iterable<String> repos = catalog.links(pkt.pid(), 'github')
     catalog.languages(pkt.pid(), languages(github, repos))

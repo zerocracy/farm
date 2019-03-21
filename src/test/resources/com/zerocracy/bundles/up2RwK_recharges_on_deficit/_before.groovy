@@ -17,11 +17,13 @@
 package com.zerocracy.bundles.recharges_on_deficit
 
 import com.jcabi.xml.XML
+import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.cash.Cash
 import com.zerocracy.pm.cost.Ledger
 
 def exec(Project project, XML xml) {
+  Farm farm = binding.variables.farm
   new Ledger(farm, project).bootstrap().add(
     new Ledger.Transaction(
       new Cash.S('$1000'),
