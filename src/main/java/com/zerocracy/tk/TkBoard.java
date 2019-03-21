@@ -96,42 +96,44 @@ public final class TkBoard implements Take {
      * @param user Current user
      * @return Source
      * @throws IOException If fails
+     * @checkstyle LineLengthCheck (100 lines)
      */
     private XeSource source(final XML node, final String user)
         throws IOException {
         final Project project = this.farm.find(
             String.format("@id='%s'", node.xpath("@id").get(0))
         ).iterator().next();
-        final Catalog catalog =
-            new Catalog(new Txn(new Pmo(this.farm))).bootstrap();
-        final Roles roles = new Roles(project).bootstrap();
-        final String pid = project.pid();
-        return new XeAppend(
-            "project",
-            new XeAppend(
-                "sandbox", Boolean.toString(catalog.sandbox().contains(pid))
-            ),
-            new XeAppend("id", pid),
-            new XeAppend("title", catalog.title(pid)),
-            new XeAppend("mine", Boolean.toString(roles.hasAnyRole(user))),
-            new XeAppend("architects", catalog.architect(pid)),
-            new XeAppend(
-                "repositories",
-                new XeTransform<>(
-                    node.xpath("links/link[@rel='github']/@href"),
-                    repo -> new XeAppend("repository", repo)
+        try (final Txn txn = new Txn(new Pmo(this.farm))) {
+            final Catalog catalog = new Catalog(txn).bootstrap();
+            final Roles roles = new Roles(project).bootstrap();
+            final String pid = project.pid();
+            return new XeAppend(
+                "project",
+                new XeAppend(
+                    "sandbox", Boolean.toString(catalog.sandbox().contains(pid))
+                ),
+                new XeAppend("id", pid),
+                new XeAppend("title", catalog.title(pid)),
+                new XeAppend("mine", Boolean.toString(roles.hasAnyRole(user))),
+                new XeAppend("architects", catalog.architect(pid)),
+                new XeAppend(
+                    "repositories",
+                    new XeTransform<>(
+                        node.xpath("links/link[@rel='github']/@href"),
+                        repo -> new XeAppend("repository", repo)
+                    )
+                ),
+                new XeAppend(
+                    "languages", String.join(",", catalog.languages(pid))
+                ),
+                new XeAppend("jobs", Integer.toString(catalog.jobs(pid))),
+                new XeAppend("orders", Integer.toString(catalog.orders(pid))),
+                new XeAppend("deficit", Boolean.toString(catalog.deficit(pid))),
+                new XeAppend("cash", catalog.cash(pid).toString()),
+                new XeAppend(
+                    "members", Integer.toString(catalog.members(pid).size())
                 )
-            ),
-            new XeAppend(
-                "languages", String.join(",", catalog.languages(pid))
-            ),
-            new XeAppend("jobs", Integer.toString(catalog.jobs(pid))),
-            new XeAppend("orders", Integer.toString(catalog.orders(pid))),
-            new XeAppend("deficit", Boolean.toString(catalog.deficit(pid))),
-            new XeAppend("cash", catalog.cash(pid).toString()),
-            new XeAppend(
-                "members", Integer.toString(catalog.members(pid).size())
-            )
-        );
+            );
+        }
     }
 }
