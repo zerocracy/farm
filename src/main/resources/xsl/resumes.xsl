@@ -53,28 +53,28 @@ SOFTWARE.
         <li id="resume-{@login}">
           <xsl:text>Resume by @</xsl:text>
           <xsl:value-of select="@login"/>
-          <br/>
           <xsl:value-of select="text/text()"/>
-          <br/>
           <xsl:text>Stackoverflow: </xsl:text>
           <a href="https://stackoverflow.com/users/{stackoverflow}">
             <xsl:value-of select="stackoverflow"/>
           </a>
-          <br/>
           <xsl:text>Github: </xsl:text>
           <a href="https://github.com/{@login}">
             <xsl:value-of select="@login"/>
           </a>
-          <br/>
+          <xsl:text>Telegram: </xsl:text>
+          <a href="https://t.me/{telegram}">
+            <xsl:value-of select="concat('@', telegram)"/>
+          </a>
           <xsl:text>Personality: </xsl:text>
-          <xsl:value-of select="personality"/>
-          <br/>
+          <code>
+            <xsl:value-of select="personality"/>
+          </code>
           <xsl:text>Examiner: </xsl:text>
           <a href="https://0crat/u/{examiner}">
             <xsl:text>@</xsl:text>
             <xsl:value-of select="examiner"/>
           </a>
-          <br/>
           <xsl:text>Submitted: </xsl:text>
           <xsl:value-of select="submitted"/>
         </li>
