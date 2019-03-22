@@ -169,6 +169,17 @@ public final class Estimates {
                     .add("cash")
                     .set(cash)
             );
+        }
+        this.refresh();
+    }
+
+    /**
+     * Refresh total value.
+     * @throws IOException If fails
+     */
+    public void refresh() throws IOException {
+        try (final Item estimates = this.item()) {
+            final Xocument xoc = new Xocument(estimates.path());
             final Cash value = new IoCheckedScalar<Cash>(
                 new Ternary<>(
                     new IoCheckedScalar<>(

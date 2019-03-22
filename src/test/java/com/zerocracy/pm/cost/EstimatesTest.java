@@ -16,17 +16,25 @@
  */
 package com.zerocracy.pm.cost;
 
+import com.jcabi.aspects.Tv;
 import com.zerocracy.Farm;
+import com.zerocracy.Item;
 import com.zerocracy.Project;
+import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
+import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pm.in.Orders;
 import com.zerocracy.pm.scope.Wbs;
 import java.util.UUID;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.iterable.RangeOf;
+import org.cactoos.scalar.And;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.xembly.Directives;
 
 /**
  * Test case for {@link Estimates}.
@@ -114,4 +122,42 @@ public final class EstimatesTest {
         );
     }
 
+    @Test
+    public void refreshEstimateWhenJobDeleted() throws Exception {
+        final Project pkt = new FkProject();
+        final Farm farm = new PropsFarm(new FkFarm(pkt));
+        new Ledger(farm, pkt).bootstrap().add(
+            new Ledger.Transaction(
+                new Cash.S("$500"),
+                "assets", "cash",
+                "income", "sponsor",
+                "Funded by Stripe customer"
+            )
+        );
+        final Wbs wbs = new Wbs(pkt).bootstrap();
+        final Orders orders = new Orders(farm, pkt).bootstrap();
+        final Estimates est = new Estimates(farm, pkt).bootstrap();
+        new And(
+            job -> {
+                wbs.add(job);
+                orders.assign(job, "developer", "test");
+                est.update(job, new Cash.S("$16"));
+            },
+            new Mapped<>(
+                jid -> String.format("gh:test/test#%d", jid),
+                new RangeOf<Integer>(1, Tv.TEN, x -> x + 1)
+            )
+        ).value();
+        try (final Item item = pkt.acq("estimates.xml")) {
+            new Xocument(item.path()).modify(
+                new Directives()
+                    .xpath("/estimates/order[@id='gh:test/test#1']")
+                    .remove()
+            );
+        }
+        est.refresh();
+        MatcherAssert.assertThat(
+            est.total(), Matchers.equalTo(new Cash.S("$144"))
+        );
+    }
 }
