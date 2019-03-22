@@ -71,7 +71,10 @@ def exec(Project project, XML xml) {
     ).say(project.pid(), amount)
   ).postTo(new ClaimsOf(farm, project))
   Catalog catalog = new Catalog(farm).bootstrap()
-  new Recharge(farm, project).delete()
+  Recharge recharge = new Recharge(farm, project)
+  if (recharge.exists()) {
+    recharge.delete()
+  }
   if (catalog.hasAdviser(project.pid())) {
     Cash bonus = amount.mul(4) / 100
     String adviser = catalog.adviser(project.pid())
