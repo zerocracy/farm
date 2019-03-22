@@ -51,32 +51,49 @@ SOFTWARE.
     <ul>
       <xsl:for-each select="./resume">
         <li id="resume-{@login}">
-          <xsl:text>Resume by @</xsl:text>
-          <xsl:value-of select="@login"/>
-          <xsl:value-of select="text/text()"/>
-          <xsl:text>Stackoverflow: </xsl:text>
-          <a href="https://stackoverflow.com/users/{stackoverflow}">
-            <xsl:value-of select="stackoverflow"/>
-          </a>
-          <xsl:text>Github: </xsl:text>
-          <a href="https://github.com/{@login}">
-            <xsl:value-of select="@login"/>
-          </a>
-          <xsl:text>Telegram: </xsl:text>
-          <a href="https://t.me/{telegram}">
-            <xsl:value-of select="concat('@', telegram)"/>
-          </a>
-          <xsl:text>Personality: </xsl:text>
+          <xsl:text>Resume by </xsl:text>
           <code>
-            <xsl:value-of select="personality"/>
+            <xsl:value-of select="@login"/>
           </code>
-          <xsl:text>Examiner: </xsl:text>
-          <a href="https://0crat/u/{examiner}">
-            <xsl:text>@</xsl:text>
-            <xsl:value-of select="examiner"/>
-          </a>
-          <xsl:text>Submitted: </xsl:text>
-          <xsl:value-of select="submitted"/>
+          <xsl:text>: </xsl:text>
+          <xsl:value-of select="text/text()"/>
+          <ul>
+            <li>
+              <xsl:text>stackoverflow: </xsl:text>
+              <a href="https://stackoverflow.com/users/{stackoverflow}">
+                <xsl:value-of select="stackoverflow"/>
+              </a>
+            </li>
+            <li>
+              <xsl:text>github: </xsl:text>
+              <a href="https://github.com/{@login}">
+                <xsl:value-of select="@login"/>
+              </a>
+            </li>
+            <li>
+              <xsl:text>telegram: </xsl:text>
+              <a href="https://t.me/{telegram}">
+                <xsl:value-of select="concat('@', telegram)"/>
+              </a>
+            </li>
+            <li>
+              <xsl:text>personality: </xsl:text>
+              <code>
+                <xsl:value-of select="personality"/>
+              </code>
+            </li>
+            <li>
+              <xsl:text>examiner: </xsl:text>
+              <a href="https://0crat/u/{examiner}">
+                <xsl:text>@</xsl:text>
+                <xsl:value-of select="examiner"/>
+              </a>
+            </li>
+            <li>
+              <xsl:text>submitted: </xsl:text>
+              <xsl:value-of select="submitted"/>
+            </li>
+          </ul>
         </li>
       </xsl:for-each>
     </ul>
