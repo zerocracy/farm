@@ -33,20 +33,21 @@ def exec(Project pmo, XML xml) {
   People people = new People(farm).bootstrap()
   ClaimIn claim = new ClaimIn(xml)
   String author = claim.author()
-  if (!claim.hasParam('bank') || !claim.hasParam('wallet')) {
+  if (!claim.hasParam('wallet')) {
     String wallet = people.wallet(author)
     String bank = people.bank(author)
     if (wallet.empty || bank.empty) {
       throw new SoftException(
         new Par(
           'Your wallet is not configured yet.',
-          'To configure it just say `wallet paypal me@example.com`, for example.'
+          'To configure it just say `wallet zld_address`, for example.',
+          'See §20'
         ).say()
       )
     }
     throw new SoftException(
       new Par(
-        'Your wallet is `%s` at "%s"'
+        'Your wallet is `%s` at `%s`'
       ).say(people.wallet(author), people.bank(author))
     )
   }
@@ -59,17 +60,16 @@ def exec(Project pmo, XML xml) {
       ).say()
     )
   }
-  String bank = claim.param('bank')
   String wallet = claim.param('wallet')
-  people.wallet(author, bank, wallet)
+  people.wallet(author, wallet)
   claim.copy().type('Notify PMO').param(
     'message', new Par(
-      'The wallet was modified by @%s, set to `%s` at `%s`'
-    ).say(author, wallet, bank)
+      'The wallet was modified by @%s, set to `%s`'
+    ).say(author, wallet)
   ).postTo(new ClaimsOf(farm))
   claim.reply(
     new Par(
-      'Wallet of @%s set to `%s:%s`'
-    ).say(author, bank, wallet)
+      'Wallet of @%s set to `%s`'
+    ).say(author, wallet)
   ).postTo(new ClaimsOf(farm))
 }

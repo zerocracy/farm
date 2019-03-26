@@ -139,16 +139,6 @@ SOFTWARE.
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>com.paypal.sdk</groupId>
-      <artifactId>adaptivepaymentssdk</artifactId>
-      <version>2.9.117</version>
-    </dependency>
-    <dependency>
-      <groupId>com.paypal.sdk</groupId>
-      <artifactId>paypal-core</artifactId>
-      <version>1.7.2</version>
-    </dependency>
-    <dependency>
       <groupId>org.quartz-scheduler</groupId>
       <artifactId>quartz</artifactId>
       <version>2.2.1</version>
@@ -561,7 +551,7 @@ SOFTWARE.
                       <limit>
                         <counter>CLASS</counter>
                         <value>MISSEDCOUNT</value>
-                        <maximum>102</maximum>
+                        <maximum>103</maximum>
                       </limit>
                     </limits>
                   </rule>

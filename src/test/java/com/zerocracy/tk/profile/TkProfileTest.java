@@ -83,7 +83,7 @@ public final class TkProfileTest {
         final Farm farm = new PropsFarm(new FkFarm());
         final double rate = 99.99;
         final People people = new People(farm).bootstrap();
-        people.wallet("yegor256", "paypal", "test@example.com");
+        people.wallet("yegor256", "testexample");
         people.rate(
             "yegor256", new Cash.S(String.format("USD %f", rate))
         );
@@ -119,7 +119,7 @@ public final class TkProfileTest {
         final People people = new People(farm).bootstrap();
         final String uid = "yegor256";
         people.wallet(
-            uid, "paypal", "test@paypal.com"
+            uid, "test123"
         );
         MatcherAssert.assertThat(
             new View(farm, String.format("/u/%s", uid)).html(),

@@ -378,32 +378,14 @@ public final class People {
     /**
      * Set wallet.
      * @param uid User ID
-     * @param bank Bank
-     * @param address Wallet value
+     * @param wallet Wallet value
      * @throws IOException If fails
      * @checkstyle CyclomaticComplexityCheck (100 lines)
      * @checkstyle NPathComplexityCheck (100 lines)
      */
-    public void wallet(final String uid, final String bank,
-        final String address) throws IOException {
-        if (!bank.matches("paypal|zld")) {
-            throw new SoftException(
-                new Par(
-                    "Bank name `%s` is invalid, we accept only",
-                    "`paypal`, `zld`, see §20"
-                ).say(bank)
-            );
-        }
-        final String wallet =
-            new FixedAddress(bank, address).asString();
-        if ("paypal".equals(bank)
-            && !wallet.matches("\\b[\\w.%-]+@[-.\\w]+\\.[A-Za-z]{2,4}\\b")) {
-            throw new SoftException(
-                new Par("Email address is not valid: `%s`").say(wallet)
-            );
-        }
-        if ("zld".equals(bank)
-            && !wallet.matches("^[a-z\\d](?:[a-z\\d]|-(?=[a-z\\d])){0,38}$")) {
+    public void wallet(final String uid, final String wallet)
+        throws IOException {
+        if (!wallet.matches("^[a-z\\d](?:[a-z\\d]|-(?=[a-z\\d])){0,38}$")) {
             throw new SoftException(
                 new Par("Zold address is not valid: `%s`").say(wallet)
             );
@@ -413,7 +395,7 @@ public final class People {
                 People.start(uid)
                     .addIf("wallet")
                     .set(wallet)
-                    .attr("bank", bank)
+                    .attr("bank", "zld")
             );
         }
     }

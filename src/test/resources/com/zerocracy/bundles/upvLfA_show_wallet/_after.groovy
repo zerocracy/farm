@@ -17,13 +17,15 @@
 package com.zerocracy.bundles.show_wallet
 
 import com.jcabi.xml.XML
-import com.zerocracy.Item
 import com.zerocracy.Project
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
-  Item item = project.acq('test.txt')
-  assert item.path().toFile().newReader().readLine().contains(
-    'Your wallet is `yegor256@gmail.com` at "paypal"'
-  )
-  item.close()
+  project.acq('test.txt').withCloseable {
+    MatcherAssert.assertThat(
+      it.path().toFile().newReader().readLine(),
+      Matchers.containsString('Your wallet is `yegor256@gmail.com` at `paypal`')
+    )
+  }
 }

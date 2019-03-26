@@ -16,15 +16,6 @@
  */
 package com.zerocracy.pmo.banks;
 
-import com.zerocracy.Farm;
-import com.zerocracy.Par;
-import com.zerocracy.SoftException;
-import com.zerocracy.cash.Cash;
-import com.zerocracy.farm.fake.FkFarm;
-import com.zerocracy.farm.fake.FkProject;
-import com.zerocracy.farm.props.PropsFarm;
-import com.zerocracy.pm.cost.Ledger;
-import com.zerocracy.pmo.People;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -40,32 +31,6 @@ public final class PayrollTest {
 
     @Rule
     public ExpectedException expected = ExpectedException.none();
-
-    @Test
-    public void amountTooSmall() throws Exception {
-        final Cash amount = new Cash.S("$0.1");
-        final String reason = "Some payment";
-        this.expected.expect(SoftException.class);
-        this.expected.expectMessage(
-            new Par(
-                "The amount %s is too small at: %s"
-            ).say(amount, reason)
-        );
-        final Farm farm = new FkFarm();
-        final String user = "paulodamaso";
-        new People(farm).bootstrap().wallet(
-            user, "paypal", "test@paypal.com"
-        );
-        new Payroll(farm).pay(
-            new Ledger(
-                new PropsFarm(), new FkProject()
-            ),
-            user,
-            amount,
-            reason,
-            "test"
-        );
-    }
 
     @Test(expected = UnsupportedOperationException.class)
     public void walletIsEmpty() {

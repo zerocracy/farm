@@ -22,8 +22,7 @@ SOFTWARE.
     <token>test;C123;user42</token>
     <author>user42</author>
     <params>
-      <param name="bank">paypal</param>
-      <param name="wallet">test@example.com</param>
+      <param name="wallet">test</param>
     </params>
   </claim>
   <claim id="2">
