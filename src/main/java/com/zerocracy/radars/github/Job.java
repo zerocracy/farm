@@ -39,7 +39,7 @@ public final class Job {
      * Pattern to match.
      */
     private static final Pattern PTN = Pattern.compile(
-        "gh:([a-z0-9\\-.]+/[a-z0-9\\-.]+)#(\\d+)"
+        "gh:([a-z0-9\\-.]+/[a-z0-9_\\-.]+)#(\\d+)"
     );
 
     /**
