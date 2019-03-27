@@ -43,7 +43,7 @@ public final class OrdersTest {
     public void assignsAndResigns() throws Exception {
         final Project project = new FkProject();
         final Orders orders = new Orders(new PropsFarm(), project).bootstrap();
-        final String job = "gh:yegor256/0pdd#13";
+        final String job = "gh:yegor256/0pdd_test#13";
         new Wbs(project).bootstrap().add(job);
         orders.assign(job, "yegor256", UUID.randomUUID().toString());
     }
