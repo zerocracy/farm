@@ -87,7 +87,7 @@ public final class PeopleTest {
         final FkFarm farm = new FkFarm(new FkProject());
         final People people = new People(farm).bootstrap();
         final String uid = "alex-palevsky";
-        people.wallet(uid, "paypal", "test@example.com");
+        people.wallet(uid, "testwlt");
         people.rate(uid, new Cash.S("$35"));
         people.rate(uid, new Cash.S("$50"));
         MatcherAssert.assertThat(
@@ -112,83 +112,26 @@ public final class PeopleTest {
         final FkFarm farm = new FkFarm(new FkProject());
         final People people = new People(farm).bootstrap();
         final String uid = "yegor256-1";
-        people.wallet(uid, "paypal", "yegor256@gmail.com");
+        final String wlt = "yegor256";
+        people.wallet(uid, wlt);
         MatcherAssert.assertThat(
             people.wallet(uid),
-            Matchers.startsWith("yegor256@")
+            Matchers.equalTo(wlt)
         );
         MatcherAssert.assertThat(
             people.bank(uid),
-            Matchers.startsWith("payp")
-        );
-    }
-
-    @Test
-    public void failsForIncorrectBankName() throws Exception {
-        final FkFarm farm = new FkFarm(new FkProject());
-        final People people = new People(farm).bootstrap();
-        final String bank = "test";
-        this.thrown.expect(SoftException.class);
-        this.thrown.expectMessage(
-            new FormattedText("Bank name `%s` is invalid", bank).asString()
-        );
-        people.wallet("yegor128", bank, "");
-    }
-
-    @Test
-    public void setsCorrectPaypalAddress() throws Exception {
-        PeopleTest.setsWallet("paypal", "john@example.com");
-    }
-
-    @Test
-    public void setCorrectPaypalAddressFromSlackLink() throws Exception {
-        final FkFarm farm = new FkFarm(new FkProject());
-        final People people = new People(farm).bootstrap();
-        final String uid = "amihaiemil";
-        people.wallet(
-            uid,
-            "paypal",
-            "<mailto:amihaiemil@gmail.com|amihaiemil@gmail.com>"
-        );
-        MatcherAssert.assertThat(
-            people.wallet(uid),
-            Matchers.is("amihaiemil@gmail.com")
+            Matchers.equalTo("zld")
         );
     }
 
     @Test
     public void setCorrectZoldAddress() throws Exception {
-        PeopleTest.setsWallet("zld", "g4s8");
-    }
-
-    @Test
-    public void failsForIncorrectPaypalAddress() throws Exception {
-        this.failsWallet("paypal");
+        PeopleTest.setsWallet("g4s8");
     }
 
     @Test
     public void failsForIncorrectZoldAddress() throws Exception {
-        this.failsWallet("zld", "!@#$%fgs");
-    }
-
-    @Test
-    public void doesnAcceptBtcAddress() throws Exception {
-        this.dontSupportWallet("btc");
-    }
-
-    @Test
-    public void doesnAcceptEthereumAddress() throws Exception {
-        this.dontSupportWallet("eth");
-    }
-
-    @Test
-    public void doesnAcceptBitcoinCashAddress() throws Exception {
-        this.dontSupportWallet("bch");
-    }
-
-    @Test
-    public void doesnAcceptLitecoinAddress() throws Exception {
-        this.dontSupportWallet("ltc");
+        this.failsWallet("!@#$%fgs");
     }
 
     @Test
@@ -207,7 +150,7 @@ public final class PeopleTest {
         final FkFarm farm = new FkFarm(project);
         final People people = new People(farm).bootstrap();
         final String uid = "karato90";
-        people.wallet(uid, "paypal", "tes1t@example.com");
+        people.wallet(uid, "tes1t");
         people.rate(uid, new Cash.S("$27"));
     }
 
@@ -592,7 +535,7 @@ public final class PeopleTest {
         );
     }
 
-    private void failsWallet(final String bank, final String wallet)
+    private void failsWallet(final String wallet)
         throws IOException {
         final FkFarm farm = new FkFarm(new FkProject());
         final People people = new People(farm).bootstrap();
@@ -600,30 +543,15 @@ public final class PeopleTest {
         this.thrown.expectMessage(
             new FormattedText(" not valid: `%s`", wallet).asString()
         );
-        people.wallet("yegor512", bank, wallet);
+        people.wallet("yegor512", wallet);
     }
 
-    private void dontSupportWallet(final String bank)
-        throws IOException {
-        this.thrown.expect(SoftException.class);
-        this.thrown.expectMessage(
-            String.format("Bank name `%s` is invalid", bank)
-        );
-        new People(new FkFarm()).bootstrap()
-            .wallet("yegor512", bank, "123");
-    }
-
-    private void failsWallet(final String bank)
-        throws IOException {
-        this.failsWallet(bank, "123456");
-    }
-
-    private static void setsWallet(final String bank, final String wallet)
+    private static void setsWallet(final String wallet)
         throws IOException {
         final FkFarm farm = new FkFarm(new FkProject());
         final People people = new People(farm).bootstrap();
         final String uid = "yegor64";
-        people.wallet(uid, bank, wallet);
+        people.wallet(uid, wallet);
         MatcherAssert.assertThat(
             people.wallet(uid),
             Matchers.is(wallet)

@@ -29,7 +29,7 @@ def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   People people = new People(farm).bootstrap()
   String user = 'user42'
-  people.wallet(user, 'paypal', 'user@example.com')
+  people.wallet(user, 'userw1ge')
   Rates rates = new Rates(project).bootstrap()
   rates.set(user, new Cash.S('$10'))
   MatcherAssert.assertThat(

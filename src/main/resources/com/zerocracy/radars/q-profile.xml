@@ -167,12 +167,6 @@ SOFTWARE.
     <invited>true</invited>
     <opts>
       <opt>
-        <optional>true</optional>
-        <name>bank</name>
-        <regex>(paypal|zld)</regex>
-        <help>Bank, like "paypal|zld"</help>
-      </opt>
-      <opt>
         <name>wallet</name>
         <regex>.+</regex>
         <help>Technical payment details, e.g. PayPal email or Zold address</help>
