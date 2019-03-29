@@ -21,6 +21,7 @@ import com.zerocracy.Par;
 import com.zerocracy.Policy;
 import com.zerocracy.SoftException;
 import com.zerocracy.cash.Cash;
+import com.zerocracy.farm.props.Props;
 import com.zerocracy.pm.cost.Ledger;
 import com.zerocracy.pmo.Debts;
 import com.zerocracy.pmo.People;
@@ -35,8 +36,9 @@ import org.cactoos.map.MapOf;
  *
  * @since 1.0
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @checkstyle ExecutableStatementCountCheck (500 lines)
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.CyclomaticComplexity"})
 public final class Payroll {
 
     /**
@@ -109,7 +111,12 @@ public final class Payroll {
                 ).say(login, method)
             );
         }
-        final Bank bank = this.banks.get(method);
+        final Bank bank;
+        if (new Props(this.farm).has("//testing")) {
+            bank = new FkBank();
+        } else {
+            bank = this.banks.get(method);
+        }
         final String pid;
         try {
             pid = bank.pay(

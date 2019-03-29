@@ -16,9 +16,7 @@
  */
 package com.zerocracy.pmo.banks;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 /**
  * Tests for {@link Payroll}.
@@ -28,9 +26,6 @@ import org.junit.rules.ExpectedException;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class PayrollTest {
-
-    @Rule
-    public ExpectedException expected = ExpectedException.none();
 
     @Test(expected = UnsupportedOperationException.class)
     public void walletIsEmpty() {

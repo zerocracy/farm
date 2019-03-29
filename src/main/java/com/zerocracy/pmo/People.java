@@ -332,14 +332,6 @@ public final class People {
                 ).say(rate, min)
             );
         }
-        if (this.wallet(uid).isEmpty()) {
-            throw new SoftException(
-                new Par(
-                    "You must configure your wallet first,",
-                    "before setting the rate to %s, see §20"
-                ).say(rate)
-            );
-        }
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 People.start(uid)
@@ -376,52 +368,19 @@ public final class People {
     }
 
     /**
-     * Set wallet.
-     * @param uid User ID
-     * @param wallet Wallet value
-     * @throws IOException If fails
-     * @checkstyle CyclomaticComplexityCheck (100 lines)
-     * @checkstyle NPathComplexityCheck (100 lines)
-     */
-    public void wallet(final String uid, final String wallet)
-        throws IOException {
-        if (!wallet.matches("^[a-z\\d](?:[a-z\\d]|-(?=[a-z\\d])){0,38}$")) {
-            throw new SoftException(
-                new Par("Zold address is not valid: `%s`").say(wallet)
-            );
-        }
-        try (final Item item = this.item()) {
-            new Xocument(item.path()).modify(
-                People.start(uid)
-                    .addIf("wallet")
-                    .set(wallet)
-                    .attr("bank", "zld")
-            );
-        }
-    }
-
-    /**
      * Get user wallet.
      * @param uid User ID
      * @return Wallet of the user or empty string if it's not set
      * @throws IOException If fails
+     * @todo #1966:30min Refactor wallet usage, wallet command was removed
+     *  from chat bots, so we're sending all payments only via Zold WTS
+     *  by Github username. So let's update datum and remove elements from
+     *  'people' scheme and remove it from farm then. Same for bank()
+     *  method.
+     * @checkstyle NonStaticMethodCheck (5 lines)
      */
     public String wallet(final String uid) throws IOException {
-        try (final Item item = this.item()) {
-            final Iterator<String> wallet = new Xocument(item.path()).xpath(
-                String.format(
-                    "/people/person[@id='%s']/wallet/text()",
-                    uid
-                )
-            ).iterator();
-            final String value;
-            if (wallet.hasNext()) {
-                value = wallet.next();
-            } else {
-                value = "";
-            }
-            return value;
-        }
+        return uid;
     }
 
     /**
@@ -429,23 +388,10 @@ public final class People {
      * @param uid User ID
      * @return Wallet of the user
      * @throws IOException If fails
+     * @checkstyle NonStaticMethodCheck (5 lines)
      */
     public String bank(final String uid) throws IOException {
-        try (final Item item = this.item()) {
-            final Iterator<String> banks = new Xocument(item.path()).xpath(
-                String.format(
-                    "/people/person[@id='%s']/wallet/@bank",
-                    uid
-                )
-            ).iterator();
-            final String value;
-            if (banks.hasNext()) {
-                value = banks.next();
-            } else {
-                value = "";
-            }
-            return value;
-        }
+        return "zld";
     }
 
     /**

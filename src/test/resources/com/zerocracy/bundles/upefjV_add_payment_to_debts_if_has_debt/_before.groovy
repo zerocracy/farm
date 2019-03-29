@@ -24,13 +24,10 @@ import com.zerocracy.cash.Cash
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.pm.cost.Ledger
 import com.zerocracy.pmo.Debts
-import com.zerocracy.pmo.People
-
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   new ExtGithub(farm).value().repos().create(new Repos.RepoCreate('test', false))
-  new People(farm).bootstrap().wallet('paulodamaso', 'pauloeduardolobo')
   new Debts(farm).bootstrap().add('paulodamaso', new Cash.S('$5'), 'Five dollars', 'Too small')
   Ledger ledger = new Ledger(farm, project).bootstrap()
   ledger.add(
