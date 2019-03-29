@@ -22,9 +22,12 @@ import com.zerocracy.Par
 import com.zerocracy.Policy
 import com.zerocracy.Project
 import com.zerocracy.SoftException
+import com.zerocracy.cash.Cash
+import com.zerocracy.claims.ClaimOut
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.claims.ClaimIn
+import com.zerocracy.pm.cost.Estimates
 import com.zerocracy.pm.cost.Ledger
 import com.zerocracy.pm.cost.Rates
 import com.zerocracy.pm.staff.Roles
@@ -48,10 +51,25 @@ def exec(Project project, XML xml) {
       new Par('Minutes %d can\'t be more than %d, see §49').say(minutes, max)
     )
   }
-  if (new Ledger(farm, project).bootstrap().deficit()) {
+  Farm farm = binding.variables.farm
+  Rates rates = new Rates(project).bootstrap()
+  if (!rates.exists(login)) {
     throw new SoftException(
       new Par(
-        'The project is under-funded, you can\'t do it now, see §49'
+        'The user @%s works for free in this project, see §49'
+      ).say(login)
+    )
+  }
+  if (!canPay(farm, project, rates.rate(login))) {
+    new ClaimOut()
+      .type('Recharge project')
+      .param('triggered_by', new ClaimIn(xml).cid())
+      .unique('recharge')
+      .postTo(new ClaimsOf(farm, project))
+    throw new SoftException(
+      new Par(
+        'The project is under-funded, you can\'t do it now, see §49',
+        'We just triggered recharge.'
       ).say()
     )
   }
@@ -59,13 +77,6 @@ def exec(Project project, XML xml) {
     throw new SoftException(
       new Par(
         'The user @%s is not a member of this project, see §49'
-      ).say(login)
-    )
-  }
-  if (!new Rates(project).bootstrap().exists(login)) {
-    throw new SoftException(
-      new Par(
-        'The user @%s works for free in this project, see §49'
       ).say(login)
     )
   }
@@ -77,7 +88,6 @@ def exec(Project project, XML xml) {
     )
   }
   String author = claim.author()
-  Farm farm = binding.variables.farm
   claim.copy()
     .type('Make payment')
     .param('login', login)
@@ -96,4 +106,10 @@ def exec(Project project, XML xml) {
       ).say(login, job)
     )
     .postTo(new ClaimsOf(farm, project))
+}
+
+static boolean canPay(Farm farm, Project project, Cash price) {
+  Estimates estimates = new Estimates(farm, project).bootstrap()
+  Ledger ledger = new Ledger(farm, project).bootstrap()
+  !ledger.deficit() && ledger.cash() > estimates.total().add(price)
 }
