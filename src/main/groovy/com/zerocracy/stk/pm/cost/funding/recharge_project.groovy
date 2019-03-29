@@ -55,8 +55,9 @@ def exec(Project project, XML xml) {
     return
   }
   ClaimIn claim = new ClaimIn(xml)
+  boolean force = claim.hasParam('force')
   Recharge recharge = new Recharge(farm, project)
-  if (recharge.exists() && recharge.required()) {
+  if (recharge.exists() && (recharge.required() || force)) {
     recharge.pay(claim.copy()).postTo(new ClaimsOf(farm, project))
     claim.copy()
       .type('Project was recharged')

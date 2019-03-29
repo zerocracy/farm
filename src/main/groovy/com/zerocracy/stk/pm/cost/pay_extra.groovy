@@ -64,6 +64,7 @@ def exec(Project project, XML xml) {
     new ClaimOut()
       .type('Recharge project')
       .param('triggered_by', new ClaimIn(xml).cid())
+      .param('force', true)
       .unique('recharge')
       .postTo(new ClaimsOf(farm, project))
     throw new SoftException(
