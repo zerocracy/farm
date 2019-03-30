@@ -32,6 +32,8 @@ import com.zerocracy.pm.cost.Ledger
 import com.zerocracy.pm.cost.Rates
 import com.zerocracy.pm.staff.Roles
 
+import java.time.Duration
+
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
   new Assume(project, xml).type('Pay extra')
@@ -60,6 +62,14 @@ def exec(Project project, XML xml) {
       ).say(login)
     )
   }
+  int attempt = Integer.parseInt(claim.param('attempt', '0'))
+  if (attempt > 7) {
+    throw new SoftException(
+      new Par(
+        'We failed to pay in %d attempts'
+      ).say(attempt)
+    )
+  }
   if (!canPay(farm, project, rates.rate(login))) {
     new ClaimOut()
       .type('Recharge project')
@@ -67,11 +77,15 @@ def exec(Project project, XML xml) {
       .param('force', true)
       .unique('recharge')
       .postTo(new ClaimsOf(farm, project))
+    claim.copy()
+      .param('attempt', attempt + 1)
+      .until(Duration.ofMinutes(5))
+      .postTo(new ClaimsOf(farm, project))
     throw new SoftException(
       new Par(
         'The project is under-funded, you can\'t do it now, see §49',
-        'We just triggered recharge.'
-      ).say()
+        'We just triggered recharge and will retry to make payment in 5 minutes (%d/8).'
+      ).say(attempt)
     )
   }
   if (!new Roles(project).bootstrap().hasAnyRole(login)) {
