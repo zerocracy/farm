@@ -79,6 +79,8 @@ def exec(Project project, XML xml) {
       .postTo(new ClaimsOf(farm, project))
     claim.copy()
       .param('attempt', attempt + 1)
+      .author(claim.author())
+      .token(claim.token())
       .until(Duration.ofMinutes(5))
       .postTo(new ClaimsOf(farm, project))
     throw new SoftException(
