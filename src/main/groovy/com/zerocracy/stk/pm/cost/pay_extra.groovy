@@ -17,16 +17,12 @@
 package com.zerocracy.stk.pm.cost
 
 import com.jcabi.xml.XML
-import com.zerocracy.Farm
-import com.zerocracy.Par
-import com.zerocracy.Policy
-import com.zerocracy.Project
-import com.zerocracy.SoftException
+import com.zerocracy.*
 import com.zerocracy.cash.Cash
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.claims.ClaimOut
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
-import com.zerocracy.claims.ClaimIn
 import com.zerocracy.pm.cost.Estimates
 import com.zerocracy.pm.cost.Ledger
 import com.zerocracy.pm.cost.Rates
@@ -70,7 +66,7 @@ def exec(Project project, XML xml) {
       ).say(attempt)
     )
   }
-  if (!canPay(farm, project, rates.rate(login))) {
+  if (!canPay(farm, project, rates.rate(login).mul(minutes) / 60)) {
     new ClaimOut()
       .type('Recharge project')
       .param('triggered_by', new ClaimIn(xml).cid())
