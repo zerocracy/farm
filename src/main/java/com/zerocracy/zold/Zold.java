@@ -84,7 +84,7 @@ public final class Zold {
         final Props props = new Props(this.farm);
         final RestResponse rsp = this.wtsRequest(Request.POST, "/do-pay")
             .body()
-            .formParam("bnf", target)
+            .formParam("bnf", String.format("@%s", target))
             .formParam("amount", Zold.FMT.format(amount))
             .formParam("details", new ZoldDetails(details).asString())
             .formParam("keygap", props.get("//zold/keygap"))

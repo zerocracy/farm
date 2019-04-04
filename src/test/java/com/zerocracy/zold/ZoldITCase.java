@@ -54,7 +54,7 @@ public final class ZoldITCase {
     public void payZold() throws Exception {
         MatcherAssert.assertThat(
             new Zold(new PropsFarm()).pay(
-                "zonuses",
+                "yegor256",
                 new Cash.S("$0.10").decimal(),
                 "ZoldITCase#payZold"
             ),
