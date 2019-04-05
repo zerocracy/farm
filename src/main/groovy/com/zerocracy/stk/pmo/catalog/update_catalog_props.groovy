@@ -22,7 +22,6 @@ import com.jcabi.github.Language
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
-import com.zerocracy.Txn
 import com.zerocracy.cash.Cash
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
@@ -43,20 +42,17 @@ def exec(Project pkt, XML xml) {
   Estimates est = new Estimates(farm, pkt).bootstrap()
   Roles roles = new Roles(pkt).bootstrap()
   Github github = new ExtGithub(farm).value()
-  new Txn(new Pmo(farm)).withCloseable {
-    Catalog catalog = new Catalog(it).bootstrap()
-    catalog.jobs(pkt.pid(), wbs.iterate().size())
-    catalog.orders(pkt.pid(), orders.iterate().size())
-    Cash cash = ledger.cash().add(est.total().mul(-1L))
-    if (cash < Cash.ZERO) {
-      cash = Cash.ZERO
-    }
-    catalog.cash(pkt.pid(), cash, ledger.deficit())
-    catalog.members(pkt.pid(), roles.everybody())
-    Iterable<String> repos = catalog.links(pkt.pid(), 'github')
-    catalog.languages(pkt.pid(), languages(github, repos))
-    it.commit()
+  Catalog catalog = new Catalog(new Pmo(farm)).bootstrap()
+  catalog.jobs(pkt.pid(), wbs.iterate().size())
+  catalog.orders(pkt.pid(), orders.iterate().size())
+  Cash cash = ledger.cash().add(est.total().mul(-1L))
+  if (cash < Cash.ZERO) {
+    cash = Cash.ZERO
   }
+  catalog.cash(pkt.pid(), cash, ledger.deficit())
+  catalog.members(pkt.pid(), roles.everybody())
+  Iterable<String> repos = catalog.links(pkt.pid(), 'github')
+  catalog.languages(pkt.pid(), languages(github, repos))
 }
 
 /**
@@ -68,7 +64,7 @@ def exec(Project pkt, XML xml) {
  *  repositories. We should only display the top 4 languages (ranked by
  *  bytes of code, as returned by Github) across all project repos.
  */
-Set<String> languages(Github github, Iterable < String > repos) throws IOException {
+Set<String> languages(Github github, Iterable<String> repos) throws IOException {
   Set<String> langs = [] as Set<String>
   for (String repo : repos) {
     for (final Language lang : github.repos()
