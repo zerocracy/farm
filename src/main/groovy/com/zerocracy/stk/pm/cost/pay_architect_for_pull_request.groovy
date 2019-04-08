@@ -18,15 +18,14 @@ package com.zerocracy.stk.pm.cost
 
 import com.jcabi.github.Github
 import com.jcabi.github.Issue
+import com.jcabi.github.Pull
 import com.jcabi.xml.XML
-import com.zerocracy.Farm
-import com.zerocracy.Par
-import com.zerocracy.Policy
-import com.zerocracy.Project
+import com.zerocracy.*
+import com.zerocracy.claims.ClaimIn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
-import com.zerocracy.claims.ClaimIn
+import com.zerocracy.farm.props.Props
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.radars.github.Job
 
@@ -38,6 +37,30 @@ def exec(Project project, XML xml) {
   String performer = claim.param('login')
   if (!job.startsWith('gh:')) {
     return
+  }
+  Github github = new ExtGithub(farm).value()
+  Issue.Smart issue = new Issue.Smart(new Job.Issue(github, job))
+  if (!issue.pull) {
+    return
+  }
+  Pull pull = issue.pull()
+  // @todo #1897:30min MkPull.merge is not implemented in jcabi github library
+  //  let's submit a bug to jcabi, wait for fix and remove this check for testing mode.
+  //  MkPull.merge should change 'merged' boolean flag in pull JSON, see github docs.
+  //  Also jcabi can implement Pull.Smart.merged() method to check that PR was merged.
+  boolean merged
+  if (new Props(farm).has('//testing')) {
+    merged = true
+  } else {
+    merged = pull.json().getBoolean('merged', false)
+  }
+  if (!merged) {
+    throw new SoftException(
+      new Par(
+        farm,
+        'Pull request %s was not merged, no payment for ARC, see §28'
+      ).say(job)
+    )
   }
   List<String> logins = new Roles(project).bootstrap().findByRole('ARC')
   Farm farm = binding.variables.farm
@@ -71,8 +94,6 @@ def exec(Project project, XML xml) {
   if (arc == performer) {
     return
   }
-  Github github = new ExtGithub(farm).value()
-  Issue.Smart issue = new Issue.Smart(new Job.Issue(github, job))
   if (issue.pull) {
     claim.copy()
       .type('Make payment')
