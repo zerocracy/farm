@@ -34,4 +34,13 @@ SOFTWARE.
     </params>
     <created>2018-07-24T01:00:00.000Z</created>
   </claim>
+  <claim id="100000">
+    <type>Invite a friend</type>
+    <token>test;C123;test</token>
+    <author>pmouser</author>
+    <params>
+      <param name="login">pmofriend</param>
+    </params>
+    <created>2018-07-24T01:00:00.000Z</created>
+  </claim>
 </claims>
