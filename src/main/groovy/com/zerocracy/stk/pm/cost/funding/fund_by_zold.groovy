@@ -86,7 +86,7 @@ def exec(Project project, XML xml) {
       .param(
       'reason',
         new Par(farm, 'Adviser payment for @%s project (%s)')
-          .say(project.pid(), pid)
+          .say(project.pid(), txn)
       ).postTo(new ClaimsOf(farm))
     new ClaimOut().type('Notify PMO').param(
       'message',
