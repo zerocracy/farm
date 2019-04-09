@@ -17,30 +17,28 @@
 package com.zerocracy.pm.staff;
 
 import com.zerocracy.Farm;
+import com.zerocracy.pmo.Pmo;
 import java.util.AbstractSet;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
-import org.cactoos.list.ListOf;
+import java.util.Set;
+import org.cactoos.collection.Joined;
+import org.cactoos.collection.Mapped;
+import org.cactoos.scalar.SolidScalar;
+import org.cactoos.scalar.UncheckedScalar;
 
 /**
  * List of users who can invite any person.
  * See https://github.com/zerocracy/farm/issues/1410
  *
  * @since 1.0
- * @todo #1775:30min Reimplement this class - it should return
- *  not constant set of users, but all users who has any role
- *  in PMO project and users who has QA role in Zerocracy project.
  */
 public final class GlobalInviters extends AbstractSet<String> {
 
     /**
-     * Users.
+     * Users scalar.
      */
-    private static final List<String> USERS = new ListOf<>(
-        "yegor256",
-        "ypshenychka",
-        "g4s8"
-    );
+    private final UncheckedScalar<Set<String>> users;
 
     /**
      * Ctor.
@@ -49,15 +47,31 @@ public final class GlobalInviters extends AbstractSet<String> {
     @SuppressWarnings("PMD.UnusedFormalParameter")
     public GlobalInviters(final Farm farm) {
         super();
+        this.users = new UncheckedScalar<>(
+            new SolidScalar<>(
+                () -> new HashSet<String>(
+                    new Joined<String>(
+                        new Roles(new Pmo(farm)).bootstrap().everybody(),
+                        new Joined<String>(
+                            new Mapped<>(
+                                pkt -> new Roles(pkt).bootstrap()
+                                    .findByRole("QA"),
+                                farm.find("@id='C3NDPUA8L'")
+                            )
+                        )
+                    )
+                )
+            )
+        );
     }
 
     @Override
     public Iterator<String> iterator() {
-        return GlobalInviters.USERS.iterator();
+        return this.users.value().iterator();
     }
 
     @Override
     public int size() {
-        return GlobalInviters.USERS.size();
+        return this.users.value().size();
     }
 }
