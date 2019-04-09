@@ -22,7 +22,7 @@ install: |-
   java -version
   sudo apt-get install -y golang-go
   export GOPATH=$HOME/go && mkdir -p $GOPATH
-  go get -uv github.com/g4s8/local-cdn
+  go get github.com/g4s8/local-cdn
   export PATH=$GOPATH/bin:$PATH
 deploy:
   script: |
