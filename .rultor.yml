@@ -1,29 +1,11 @@
 docker:
-  image: yegor256/java8
+  image: g4s8/rultor:farm
 assets:
   settings.xml: zerocracy/home#assets/zerocracy/settings.xml
   id_rsa: zerocracy/home#assets/heroku-key
   id_rsa.pub: zerocracy/home#assets/heroku-key.pub
 env:
   MAVEN_OPTS: -Xmx1g
-install: |-
-  sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6
-  echo "deb [ arch=amd64 ] http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
-  sudo apt-get update
-  sudo apt-get install -y mongodb-org
-  sudo locale-gen en_US en_US.UTF-8
-  sudo dpkg-reconfigure locales
-  export LC_ALL=en_US.UTF-8
-  export LANG=en_US.UTF-8
-  export LANGUAGE=en_US.UTF-8
-  sudo gem install pdd
-  sudo gem install xcop
-  sudo gem install sass -v 3.4.25
-  java -version
-  sudo apt-get install -y golang-go
-  export GOPATH=$HOME/go && mkdir -p $GOPATH
-  go get github.com/g4s8/local-cdn
-  export PATH=$GOPATH/bin:$PATH
 deploy:
   script: |
     pdd --source=$(pwd) --verbose --file=/dev/null
@@ -34,7 +16,6 @@ release:
     - settings.xml
   script: |
     [[ "${tag}" =~ ^[0-9]+(\.[0-9]+)*$ ]] || exit -1
-    nohup local-cdn -host datum.zerocracy.com -pid /tmp/local-cdn.pid &>/dev/null &
     mvn clean process-resources --quiet
     mvn clean versions:set "-DnewVersion=${tag}" --quiet
     git commit -am "${tag}"
