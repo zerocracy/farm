@@ -30,6 +30,7 @@ def exec(Project project, XML xml) {
   MkGithub github = new ExtGithub(farm).value() as MkGithub
   Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
   Pull pull = repo.pulls().create('Test PR', 'test', 'the test')
+  pull.merge('merged')
   github.relogin('cmiranda')
     .repos().get(repo.coordinates())
     .pulls().get(pull.number())
