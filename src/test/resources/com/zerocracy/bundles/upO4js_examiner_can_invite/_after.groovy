@@ -42,6 +42,11 @@ def exec(Project project, XML xml) {
     new IsEqual<>(user)
   )
   MatcherAssert.assertThat(
+    'pmouser failed to invite',
+    people.mentor('pmofriend'),
+    new IsEqual<>('pmouser')
+  )
+  MatcherAssert.assertThat(
     'inviter didn\'t receive points',
     new Awards(farm, user).bootstrap().total(),
     new IsEqual<>(1266)

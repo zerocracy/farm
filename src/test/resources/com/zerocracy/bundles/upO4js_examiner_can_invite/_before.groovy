@@ -21,7 +21,9 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.entry.ExtGithub
+import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.Awards
+import com.zerocracy.pmo.Pmo
 import com.zerocracy.pmo.Resumes
 
 import java.time.LocalDateTime
@@ -46,4 +48,5 @@ def exec(Project project, XML xml) {
   new Awards(farm, 'other-user').bootstrap().add(
     project, 2048, 'gh:test/test#1', 'test'
   )
+  new Roles(new Pmo(farm)).bootstrap().assign('pmouser', 'DEV')
 }

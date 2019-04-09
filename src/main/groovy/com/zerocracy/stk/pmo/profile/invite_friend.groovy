@@ -38,11 +38,8 @@ def exec(Project pmo, XML xml) {
   new Exam(farm, author).min('1.min-rep', 1024)
   String login = claim.param('login')
   Resumes resumes = new Resumes(farm).bootstrap()
-  // we allow to invite new students without limitations to PMO users
-  // and 'farm' (C3NDPUA8L) QA users
-  // see https://github.com/zerocracy/farm/issues/1410
   boolean force = new GlobalInviters(farm).contains(author)
-  if (!resumes.exists(login) || (resumes.examiner(login) != author && !force)) {
+  if ((!resumes.exists(login) || resumes.examiner(login) != author) && !force) {
     throw new SoftException(
       new Par(
         'You are not the examiner of %s or resume does not exist, see §1'
