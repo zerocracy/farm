@@ -1,6 +1,5 @@
----
 docker:
-  image: g4s8/rultor:farm
+  image: yegor256/java8
 assets:
   settings.xml: zerocracy/home#assets/zerocracy/settings.xml
   id_rsa: zerocracy/home#assets/heroku-key
@@ -8,9 +7,19 @@ assets:
 env:
   MAVEN_OPTS: -Xmx1g
 install: |-
-  rm -fr $HOME/.m2/repository
-  sudo chmod 777 -R /tmp/.m2
-  ln -sn /tmp/.m2 $HOME/.m2/repository
+  sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6
+  echo "deb [ arch=amd64 ] http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
+  sudo apt-get update
+  sudo apt-get install -y mongodb-org
+  sudo locale-gen en_US en_US.UTF-8
+  sudo dpkg-reconfigure locales
+  export LC_ALL=en_US.UTF-8
+  export LANG=en_US.UTF-8
+  export LANGUAGE=en_US.UTF-8
+  sudo gem install pdd
+  sudo gem install xcop
+  sudo gem install sass -v 3.4.25
+  java -version
 deploy:
   script: |
     pdd --source=$(pwd) --verbose --file=/dev/null
@@ -21,12 +30,11 @@ release:
     - settings.xml
   script: |
     [[ "${tag}" =~ ^[0-9]+(\.[0-9]+)*$ ]] || exit -1
-    nohup local-cdn -host datum.zerocracy.com -pid /tmp/local-cdn.pid &>/dev/null &
     mvn clean process-resources --quiet
     mvn clean versions:set "-DnewVersion=${tag}" --quiet
     git commit -am "${tag}"
     cp ../settings.xml settings.xml
-    mvn clean package -Pqulice,codenarc,zc-farm --errors --batch-mode --quiet --settings ../settings.xml -Dhttp.proxyHost=localhost -Dhttp.proxyPort=8010
+    mvn clean package -Pqulice,codenarc,zc-farm --errors --batch-mode --quiet --settings ../settings.xml
     git remote add heroku git@heroku.com:zerocrat.git
     mkdir ~/.ssh
     mv ../id_rsa ../id_rsa.pub ~/.ssh
@@ -43,7 +51,8 @@ release:
 merge:
   script: |-
     pdd --source=$(pwd) --verbose --file=/dev/null
-    mvn help:system install -Pqulice,codenarc --settings ../settings.xml -Dhttp.proxyHost=localhost -Dhttp.proxyPort=8010
+    # mvn -Pupgrade-bundles --settings ../settings.xml process-test-resources
+    mvn help:system install -Pqulice,codenarc --settings ../settings.xml
     mvn clean site -Psite --settings ../settings.xml --quiet
     git commit -am "updated resources" || echo "nothing to update"
 architect:
