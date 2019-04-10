@@ -9,6 +9,7 @@ env:
   MAVEN_OPTS: -Xmx1g
 install: |-
   rm -fr $HOME/.m2/repository
+  sudo chmod 777 -R /tmp/.m2
   ln -sn /tmp/.m2 $HOME/.m2/repository
 deploy:
   script: |
