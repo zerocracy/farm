@@ -1,3 +1,4 @@
+---
 docker:
   image: g4s8/rultor:farm
 assets:
@@ -6,6 +7,9 @@ assets:
   id_rsa.pub: zerocracy/home#assets/heroku-key.pub
 env:
   MAVEN_OPTS: -Xmx1g
+install: |-
+  rm -fr $HOME/.m2/repository
+  ln -sn /tmp/.m2 $HOME/.m2/repository
 deploy:
   script: |
     pdd --source=$(pwd) --verbose --file=/dev/null
@@ -16,6 +20,7 @@ release:
     - settings.xml
   script: |
     [[ "${tag}" =~ ^[0-9]+(\.[0-9]+)*$ ]] || exit -1
+    nohup local-cdn -host datum.zerocracy.com -pid /tmp/local-cdn.pid &>/dev/null &
     mvn clean process-resources --quiet
     mvn clean versions:set "-DnewVersion=${tag}" --quiet
     git commit -am "${tag}"
