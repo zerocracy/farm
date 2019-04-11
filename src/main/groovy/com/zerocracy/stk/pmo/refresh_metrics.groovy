@@ -20,29 +20,63 @@ import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Policy
 import com.zerocracy.Project
+import com.zerocracy.Txn
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.claims.ClaimIn
+import com.zerocracy.pmo.Awards
+import com.zerocracy.pmo.Blanks
+import com.zerocracy.pmo.Negligence
 import com.zerocracy.pmo.People
+import com.zerocracy.pmo.Pmo
 import com.zerocracy.pmo.Speed
-import java.time.Instant
+import com.zerocracy.pmo.Verbosity
 
-def exec(Project pmo, XML xml) {
-  new Assume(pmo, xml).type('Ping daily')
+import java.time.Instant
+import java.time.Period
+
+def exec(Project pkt, XML xml) {
+  new Assume(pkt, xml).isPmo().type('Ping daily')
   ClaimIn claim = new ClaimIn(xml)
-  Instant outdated = (claim.created() - new Policy().get('18.days', 90)).toInstant()
   Farm farm = binding.variables.farm
-  new People(farm).bootstrap().iterate().each {
-    login ->
-      Speed speed = new Speed(farm, login).bootstrap()
-      double before = speed.avg()
-      speed.removeOlderThan(outdated)
-      double after = speed.avg()
-      if (Math.abs(after - before) > 0.001) {
-        claim.copy()
-          .param('login', login)
-          .type('Speed was updated')
-          .postTo(new ClaimsOf(farm))
+  Policy policy = new Policy(farm)
+  Instant outdated = claim.created().toInstant() - Period.ofDays(policy.get('18.days', 90))
+  new Txn(new Pmo(farm)).withCloseable { pmo ->
+    new People(farm).bootstrap().iterate().each { login ->
+      new Awards(pmo, login).bootstrap().with {
+        int before = total()
+        removeOlderThan(outdated)
+        int after = total()
+        if (before != after) {
+          claim.copy()
+            .type('Award points were added')
+            .param('login', login)
+            .param('points', after - before)
+            .param('reason', 'fresh awards')
+            .postTo(new ClaimsOf(farm))
+        }
       }
+      new Speed(pmo, login).bootstrap().with {
+        double before = avg()
+        removeOlderThan(outdated)
+        double after = avg()
+        if (Math.abs(after - before) > 0.001) {
+          claim.copy()
+            .param('login', login)
+            .type('Speed was updated')
+            .postTo(new ClaimsOf(farm))
+        }
+      }
+      new Blanks(pmo, login).bootstrap().with {
+        removeOlderThan(outdated)
+      }
+      new Negligence(pmo, login).bootstrap().with {
+        removeOlderThan(outdated)
+      }
+      new Verbosity(pmo, login).bootstrap().with {
+        removeOlderThan(outdated)
+      }
+      pmo.commit()
+    }
   }
 }

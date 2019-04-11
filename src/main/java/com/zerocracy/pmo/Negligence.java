@@ -22,6 +22,7 @@ import com.zerocracy.Project;
 import com.zerocracy.Xocument;
 import java.io.IOException;
 import java.time.Instant;
+import org.cactoos.text.JoinedText;
 import org.xembly.Directives;
 
 /**
@@ -42,7 +43,7 @@ public final class Negligence {
     /**
      * Project.
      */
-    private final Pmo pmo;
+    private final Project pmo;
 
     /**
      * Login of the person.
@@ -63,7 +64,7 @@ public final class Negligence {
      * @param pkt Pmo project
      * @param user The user
      */
-    public Negligence(final Pmo pkt, final String user) {
+    public Negligence(final Project pkt, final String user) {
         this.pmo = pkt;
         this.login = user;
     }
@@ -78,6 +79,28 @@ public final class Negligence {
             return new Xocument(item.path())
                 .nodes("/negligence/order")
                 .size();
+        }
+    }
+
+    /**
+     * Remove all blanks older than specified date.
+     * @param date Date
+     * @throws IOException If failed
+     */
+    public void removeOlderThan(final Instant date) throws IOException {
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                new Directives()
+                    .xpath(
+                        new JoinedText(
+                            "",
+                            "/negligence/order[xs:dateTime(added) < ",
+                            "xs:dateTime('",
+                            date.toString(),
+                            "')]"
+                        ).asString()
+                    ).remove()
+            );
         }
     }
 

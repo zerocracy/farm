@@ -21,6 +21,7 @@ import com.zerocracy.Item;
 import com.zerocracy.Project;
 import com.zerocracy.Xocument;
 import java.io.IOException;
+import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
@@ -39,7 +40,7 @@ public final class Awards {
     /**
      * Project.
      */
-    private final Pmo pmo;
+    private final Project pmo;
 
     /**
      * Login of the person.
@@ -60,7 +61,7 @@ public final class Awards {
      * @param pkt Project
      * @param user The user
      */
-    public Awards(final Pmo pkt, final String user) {
+    public Awards(final Project pkt, final String user) {
         this.pmo = pkt;
         this.login = user;
     }
@@ -82,7 +83,7 @@ public final class Awards {
      * @param date Date
      * @throws IOException If failed
      */
-    public void removeOlderThan(final Date date) throws IOException {
+    public void removeOlderThan(final Instant date) throws IOException {
         try (final Item item = this.item()) {
             new Xocument(item.path()).modify(
                 new Directives()
@@ -91,7 +92,7 @@ public final class Awards {
                             "",
                             "/awards/award[xs:dateTime(added) < ",
                             "xs:dateTime('",
-                            new DateAsText(date).asString(),
+                            date.toString(),
                             "')]"
                         ).asString()
                     ).remove()
@@ -209,5 +210,4 @@ public final class Awards {
             String.format("awards/%s.xml", this.login)
         );
     }
-
 }

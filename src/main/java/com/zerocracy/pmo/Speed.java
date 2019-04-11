@@ -18,6 +18,7 @@ package com.zerocracy.pmo;
 
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
+import com.zerocracy.Project;
 import com.zerocracy.Xocument;
 import java.io.IOException;
 import java.time.Instant;
@@ -39,7 +40,7 @@ public final class Speed {
     /**
      * PMO.
      */
-    private final Pmo pmo;
+    private final Project pmo;
 
     /**
      * Login of the person.
@@ -60,7 +61,7 @@ public final class Speed {
      * @param pkt PMO
      * @param user The user
      */
-    public Speed(final Pmo pkt, final String user) {
+    public Speed(final Project pkt, final String user) {
         this.pmo = pkt;
         this.login = user;
     }

@@ -52,6 +52,7 @@ final class StrictProject implements Project {
             "(agenda/[a-zA-Z0-9-]+\\.xml)",
             "(projects/[a-zA-Z0-9-]+\\.xml)",
             "(blanks/[a-zA-Z0-9-]+\\.xml)",
+            "(negligence/[a-zA-Z0-9-]+\\.xml)",
             "(speed/[a-zA-Z0-9-]+\\.xml)",
             "(options/[a-zA-Z0-9-]+\\.xml)",
             "(verbosity/[a-zA-Z0-9-]+\\.xml)",

@@ -21,6 +21,7 @@ import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Par;
 import com.zerocracy.Policy;
+import com.zerocracy.Project;
 import com.zerocracy.SoftException;
 import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
@@ -52,7 +53,7 @@ public final class People {
     /**
      * PMO.
      */
-    private final Pmo pmo;
+    private final Project pmo;
 
     /**
      * Ctor.
@@ -66,7 +67,7 @@ public final class People {
      * Ctor.
      * @param pkt PMO
      */
-    public People(final Pmo pkt) {
+    public People(final Project pkt) {
         this.pmo = pkt;
     }
 

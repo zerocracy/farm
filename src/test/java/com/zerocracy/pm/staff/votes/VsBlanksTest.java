@@ -14,54 +14,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.pmo;
+package com.zerocracy.pm.staff.votes;
 
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
+import com.zerocracy.pm.staff.Votes;
+import com.zerocracy.pmo.Blanks;
+import com.zerocracy.pmo.Pmo;
+import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
- * Test case for {@link Blanks}.
+ * Test case for {@link VsBlanks}.
+ *
  * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  */
-public final class BlanksTest {
-
-    /**
-     * Issue blank kind.
-     */
-    private static final String ISSUE = "issue";
+public final class VsBlanksTest {
 
     @Test
-    public void addBlank() throws Exception {
-        final Blanks blanks = new Blanks(new FkFarm(), "user1")
-            .bootstrap();
-        blanks.add(new FkProject(), "gh:test/test#1", BlanksTest.ISSUE);
-        blanks.add(new FkProject(), "gh:test/test#2", "pull-request");
-        MatcherAssert.assertThat(
-            blanks.iterate(),
-            Matchers.iterableWithSize(2)
+    public void giveHigherVoteWhenLessBlanks() throws Exception {
+        final String worse = "user2";
+        final String better = "user3";
+        final FkFarm farm = new FkFarm();
+        final FkProject pkt = new FkProject();
+        final String kind = "issue";
+        new Blanks(farm, worse).bootstrap().add(
+            pkt, "gh:test/test#2", kind
         );
-    }
-
-    @Test
-    public void calcualtesCount() throws Exception {
-        final Blanks blanks = new Blanks(new FkFarm(), "user2").bootstrap();
-        MatcherAssert.assertThat(
-            "Empty blanks",
-            blanks.total(), Matchers.equalTo(0)
+        new Blanks(farm, worse).bootstrap().add(
+            pkt, "gh:test/test#3", kind
         );
-        blanks.add(new FkProject(), "gh:test/test#3", BlanksTest.ISSUE);
-        MatcherAssert.assertThat(
-            "Single blank",
-            blanks.total(), Matchers.equalTo(1)
+        new Blanks(farm, better).bootstrap().add(
+            pkt, "gh:test/test#22", kind
         );
-        blanks.add(new FkProject(), "gh:test/test#4", BlanksTest.ISSUE);
+        final Votes votes = new VsBlanks(
+            new Pmo(farm),
+            new ListOf<>(worse, better)
+        );
         MatcherAssert.assertThat(
-            "Two blanks",
-            blanks.total(), Matchers.equalTo(2)
+            votes.take(better, new StringBuilder(0)),
+            Matchers.greaterThan(votes.take(worse, new StringBuilder(0)))
         );
     }
 }

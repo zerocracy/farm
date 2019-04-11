@@ -49,7 +49,9 @@ def exec(Project project, XML xml) {
   Roles roles = new Roles(project).bootstrap()
   Rates rates = new Rates(project).bootstrap()
   int zeroRates = roles.everybody().count { uid -> !rates.exists(uid) }
-  if (deficit && zeroRates == 0) { return }
+  if (deficit && zeroRates == 0) {
+    return
+  }
   // @todo #926:30min we should synchronize elected, but not assigned jobs
   //  between different projects, because one project may elect a user
   //  as a performer for few jobs and another project may elect same user
@@ -101,7 +103,7 @@ def exec(Project project, XML xml) {
     List<String> allogins = roles.findByRole(role)
     List<String> logins = []
     if (deficit) {
-      for (String login : allogins){
+      for (String login : allogins) {
         if (!new Rates(project).bootstrap().exists(login)) {
           logins.add(login)
         }
@@ -129,7 +131,8 @@ def exec(Project project, XML xml) {
           (wrapped(new VsWorkload(farm, project, logins)))                       : 1,
           (wrapped(new VsSpeed(pmo, logins)))                                    : 3,
           (wrapped(new VsBalance(project, farm, logins)))                        : 3,
-          (wrapped(new VsRandom()))                                              : 1
+          (wrapped(new VsRandom()))                                              : 1,
+          (wrapped(new VsBlanks(pmo, logins)))                                   : 1
         ]
       )
     )
@@ -147,9 +150,9 @@ def exec(Project project, XML xml) {
   }
   if (Logger.isInfoEnabled(ltag)) {
     Logger.info(
-            ltag,
-            'Election was completed for job %s at %d attempt, votes time was %[nano]s',
-            elected, count, System.nanoTime() - vtime
+      ltag,
+      'Election was completed for job %s at %d attempt, votes time was %[nano]s',
+      elected, count, System.nanoTime() - vtime
     )
   }
 }

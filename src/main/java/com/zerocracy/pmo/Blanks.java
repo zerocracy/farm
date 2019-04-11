@@ -22,6 +22,10 @@ import com.zerocracy.Project;
 import com.zerocracy.Xocument;
 import java.io.IOException;
 import java.time.Instant;
+import org.cactoos.iterable.ItemAt;
+import org.cactoos.scalar.IoCheckedScalar;
+import org.cactoos.scalar.NumberOf;
+import org.cactoos.text.JoinedText;
 import org.xembly.Directives;
 
 /**
@@ -33,10 +37,11 @@ import org.xembly.Directives;
  * @since 1.0
  */
 public final class Blanks {
+
     /**
      * Project.
      */
-    private final Pmo pmo;
+    private final Project pmo;
 
     /**
      * Login of the person.
@@ -57,7 +62,7 @@ public final class Blanks {
      * @param pkt Pmo project
      * @param user The user
      */
-    public Blanks(final Pmo pkt, final String user) {
+    public Blanks(final Project pkt, final String user) {
         this.pmo = pkt;
         this.login = user;
     }
@@ -101,6 +106,23 @@ public final class Blanks {
     }
 
     /**
+     * Total amount of blanks.
+     * @return Blanks count
+     * @throws IOException If fails
+     */
+    public int total() throws IOException {
+        try (final Item item = this.item()) {
+            return new NumberOf(
+                new IoCheckedScalar<>(
+                    new ItemAt<>(
+                        new Xocument(item).xpath("count(/blanks/blank)")
+                    )
+                ).value()
+            ).intValue();
+        }
+    }
+
+    /**
      * Bootstrap it.
      * @return This
      * @throws IOException If fails
@@ -110,6 +132,28 @@ public final class Blanks {
             new Xocument(item.path()).bootstrap("pmo/blanks");
         }
         return this;
+    }
+
+    /**
+     * Remove all blanks older than specified date.
+     * @param date Date
+     * @throws IOException If failed
+     */
+    public void removeOlderThan(final Instant date) throws IOException {
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                new Directives()
+                    .xpath(
+                        new JoinedText(
+                            "",
+                            "/blanks/blank[xs:dateTime(added) < ",
+                            "xs:dateTime('",
+                            date.toString(),
+                            "')]"
+                        ).asString()
+                    ).remove()
+            );
+        }
     }
 
     /**

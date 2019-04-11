@@ -21,6 +21,7 @@ import com.zerocracy.Project;
 import com.zerocracy.Xocument;
 import java.io.IOException;
 import java.time.Instant;
+import org.cactoos.text.JoinedText;
 import org.xembly.Directives;
 
 /**
@@ -33,7 +34,7 @@ public final class Verbosity {
     /**
      * Project.
      */
-    private final Pmo pkt;
+    private final Project pkt;
 
     /**
      * User.
@@ -45,7 +46,7 @@ public final class Verbosity {
      * @param pmo Project
      * @param user User
      */
-    public Verbosity(final Pmo pmo, final String user) {
+    public Verbosity(final Project pmo, final String user) {
         this.pkt = pmo;
         this.login = user;
     }
@@ -96,6 +97,28 @@ public final class Verbosity {
                         job
                     )
                 ).get(0)
+            );
+        }
+    }
+
+    /**
+     * Remove all blanks older than specified date.
+     * @param date Date
+     * @throws IOException If failed
+     */
+    public void removeOlderThan(final Instant date) throws IOException {
+        try (final Item item = this.item()) {
+            new Xocument(item.path()).modify(
+                new Directives()
+                    .xpath(
+                        new JoinedText(
+                            "",
+                            "/verbosity/order[xs:dateTime(added) < ",
+                            "xs:dateTime('",
+                            date.toString(),
+                            "')]"
+                        ).asString()
+                    ).remove()
             );
         }
     }
