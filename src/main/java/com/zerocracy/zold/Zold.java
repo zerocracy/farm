@@ -217,6 +217,19 @@ public final class Zold {
     }
 
     /**
+     * Pull the wallet.
+     * @throws IOException If fails
+     */
+    public void pull() throws IOException {
+        final RestResponse rsp = this.wtsRequest(Request.GET, "/pull")
+            .fetch()
+            .as(RestResponse.class);
+        if (rsp.status() != HttpURLConnection.HTTP_OK) {
+            new ZldError(rsp).raise("Failed to find wallet id");
+        }
+    }
+
+    /**
      * Base WTS request.
      * @param method HTTP method
      * @param path URL path

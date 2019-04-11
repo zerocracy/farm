@@ -55,6 +55,7 @@ public final class TkFundZold implements TkRegex {
     public Response act(final RqRegex req) throws IOException {
         final Project pkt = new RqProject(this.farm, req, "PO");
         final Zold zold = new Zold(this.farm);
+        zold.pull();
         final ZldInvoice invoice = zold.invoice();
         final String secret = new RandomString(Tv.EIGHT).asString();
         final String code = new RandomString(Tv.EIGHT).asString();

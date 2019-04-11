@@ -52,6 +52,7 @@ public final class BnkZold implements Bank {
     public String pay(final String target, final Cash amount,
         final String details, final String unique) throws IOException {
         final Zold zold = new Zold(this.farm);
+        zold.pull();
         return zold.pay(
             target,
             amount.decimal().divide(zold.rate(), 2, RoundingMode.FLOOR),
