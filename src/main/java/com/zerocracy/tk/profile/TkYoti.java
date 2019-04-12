@@ -16,6 +16,7 @@
  */
 package com.zerocracy.tk.profile;
 
+import com.yoti.api.client.Date;
 import com.yoti.api.client.FileKeyPairSource;
 import com.yoti.api.client.HumanProfile;
 import com.yoti.api.client.ProfileException;
@@ -80,12 +81,11 @@ public final class TkYoti implements TkRegex {
         } catch (final ProfileException ex) {
             throw new IOException(ex);
         }
+        final Date bdate = profile.getDateOfBirth().getValue();
         final String name = String.format(
             "%s %s %d-%d-%d @Yoti",
             profile.getGivenNames(), profile.getFamilyName(),
-            profile.getDateOfBirth().getDay(),
-            profile.getDateOfBirth().getMonth(),
-            profile.getDateOfBirth().getYear()
+            bdate.getDay(), bdate.getMonth(), bdate.getYear()
         );
         final String user = new RqUser(this.farm, req).value();
         new People(this.farm).bootstrap().details(user, name);
@@ -110,5 +110,4 @@ public final class TkYoti implements TkRegex {
             String.format("/u/%s", user)
         );
     }
-
 }
