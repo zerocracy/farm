@@ -83,9 +83,9 @@ public final class TkYoti implements TkRegex {
         final String name = String.format(
             "%s %s %d-%d-%d @Yoti",
             profile.getGivenNames(), profile.getFamilyName(),
-            profile.getDateOfBirth().getDay(),
-            profile.getDateOfBirth().getMonth(),
-            profile.getDateOfBirth().getYear()
+            profile.getDateOfBirth().getValue().getDay(),
+            profile.getDateOfBirth().getValue().getMonth(),
+            profile.getDateOfBirth().getValue().getYear()
         );
         final String user = new RqUser(this.farm, req).value();
         new People(this.farm).bootstrap().details(user, name);
@@ -110,5 +110,4 @@ public final class TkYoti implements TkRegex {
             String.format("/u/%s", user)
         );
     }
-
 }
