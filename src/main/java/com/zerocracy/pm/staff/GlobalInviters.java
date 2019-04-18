@@ -54,8 +54,14 @@ public final class GlobalInviters extends AbstractSet<String> {
                         new Roles(new Pmo(farm)).bootstrap().everybody(),
                         new Joined<String>(
                             new Mapped<>(
-                                pkt -> new Roles(pkt).bootstrap()
-                                    .findByRole("QA"),
+                                pkt -> {
+                                    final Roles roles = new Roles(pkt)
+                                        .bootstrap();
+                                    return new Joined<String>(
+                                        roles.findByRole("QA"),
+                                        roles.findByRole("TST")
+                                    );
+                                },
                                 farm.find("@id='C3NDPUA8L'")
                             )
                         )

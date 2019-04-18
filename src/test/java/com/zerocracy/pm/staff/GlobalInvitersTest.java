@@ -31,18 +31,36 @@ import org.junit.Test;
  */
 public final class GlobalInvitersTest {
 
+    /**
+     * Project xpath.
+     */
+    private static final String PKT_XPATH = "@id='C3NDPUA8L'";
+
     @Test
     public void containsPmoAndZerocracyQaPeople() throws Exception {
         final Farm farm = new FkFarm();
         final String pmouser = "pmouser";
         final String zqa = "zerocracyqa";
         new Roles(new Pmo(farm)).bootstrap().assign(pmouser, "DEV");
-        new Roles(farm.find("@id='C3NDPUA8L'").iterator().next())
+        new Roles(farm.find(GlobalInvitersTest.PKT_XPATH).iterator().next())
             .bootstrap()
             .assign(zqa, "QA");
         MatcherAssert.assertThat(
             new GlobalInviters(farm),
             Matchers.containsInAnyOrder(pmouser, zqa)
+        );
+    }
+
+    @Test
+    public void containsPmoAndZerocracyTstPeople() throws Exception {
+        final Farm farm = new FkFarm();
+        final String ztst = "zerocracytst";
+        new Roles(farm.find(GlobalInvitersTest.PKT_XPATH).iterator().next())
+            .bootstrap()
+            .assign(ztst, "TST");
+        MatcherAssert.assertThat(
+            new GlobalInviters(farm),
+            Matchers.contains(ztst)
         );
     }
 }
