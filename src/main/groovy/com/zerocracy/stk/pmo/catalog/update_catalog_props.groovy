@@ -22,6 +22,7 @@ import com.jcabi.github.Language
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.Txn
 import com.zerocracy.cash.Cash
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.farm.Assume
@@ -34,7 +35,7 @@ import com.zerocracy.pmo.Catalog
 import com.zerocracy.pmo.Pmo
 
 def exec(Project pkt, XML xml) {
-  new Assume(pkt, xml).notPmo().type('Ping hourly')
+  new Assume(pkt, xml).notPmo().type('Ping daily')
   Farm farm = binding.variables.farm
   Ledger ledger = new Ledger(farm, pkt).bootstrap()
   Wbs wbs = new Wbs(pkt).bootstrap()
@@ -42,17 +43,20 @@ def exec(Project pkt, XML xml) {
   Estimates est = new Estimates(farm, pkt).bootstrap()
   Roles roles = new Roles(pkt).bootstrap()
   Github github = new ExtGithub(farm).value()
-  Catalog catalog = new Catalog(new Pmo(farm)).bootstrap()
-  catalog.jobs(pkt.pid(), wbs.iterate().size())
-  catalog.orders(pkt.pid(), orders.iterate().size())
-  Cash cash = ledger.cash().add(est.total().mul(-1L))
-  if (cash < Cash.ZERO) {
-    cash = Cash.ZERO
+  new Txn(new Pmo(farm)).withCloseable { pmo ->
+    Catalog catalog = new Catalog(pmo).bootstrap()
+    catalog.jobs(pkt.pid(), wbs.iterate().size())
+    catalog.orders(pkt.pid(), orders.iterate().size())
+    Cash cash = ledger.cash().add(est.total().mul(-1L))
+    if (cash < Cash.ZERO) {
+      cash = Cash.ZERO
+    }
+    catalog.cash(pkt.pid(), cash, ledger.deficit())
+    catalog.members(pkt.pid(), roles.everybody())
+    Iterable<String> repos = catalog.links(pkt.pid(), 'github')
+    catalog.languages(pkt.pid(), languages(github, repos))
+    pmo.commit()
   }
-  catalog.cash(pkt.pid(), cash, ledger.deficit())
-  catalog.members(pkt.pid(), roles.everybody())
-  Iterable<String> repos = catalog.links(pkt.pid(), 'github')
-  catalog.languages(pkt.pid(), languages(github, repos))
 }
 
 /**
