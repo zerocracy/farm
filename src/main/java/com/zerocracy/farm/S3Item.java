@@ -24,6 +24,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.FileTime;
 import java.util.Date;
@@ -93,12 +94,19 @@ final class S3Item implements Item {
             if (this.ocket.exists() && (!this.temp.toFile().exists()
                 || this.expired())) {
                 final long start = System.currentTimeMillis();
+                final Path tloc = Files.createTempFile(
+                    this.getClass().getSimpleName(),
+                    ".tmp"
+                );
                 this.ocket.read(
                     Files.newOutputStream(
-                        this.temp,
+                        tloc,
                         StandardOpenOption.CREATE,
                         StandardOpenOption.TRUNCATE_EXISTING
                     )
+                );
+                Files.move(
+                    tloc, this.temp, StandardCopyOption.REPLACE_EXISTING
                 );
                 Files.setLastModifiedTime(
                     this.temp,
