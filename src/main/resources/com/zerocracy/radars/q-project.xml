@@ -185,4 +185,18 @@ SOFTWARE.
     <help>Destroy all project files on our servers</help>
     <invited>false</invited>
   </cmd>
+  <cmd>
+    <code>Refund</code>
+    <regex>refund</regex>
+    <label>refund</label>
+    <help>Refund the project</help>
+    <invited>false</invited>
+    <opts>
+      <opt>
+        <name>amount</name>
+        <regex>\$\d{1,}</regex>
+        <help>Amount to refund in USD</help>
+      </opt>
+    </opts>
+  </cmd>
 </question>
