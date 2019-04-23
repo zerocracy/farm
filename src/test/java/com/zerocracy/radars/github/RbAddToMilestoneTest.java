@@ -50,7 +50,7 @@ public final class RbAddToMilestoneTest {
         final Issue bug = repo
             .issues().create("bug", "");
         final Milestone milestone =
-            repo.milestones().create("my milestone");
+            repo.milestones().create("milestone");
         new Issue.Smart(bug).milestone(milestone);
         final Farm farm = new PropsFarm();
         MatcherAssert.assertThat(
@@ -79,8 +79,8 @@ public final class RbAddToMilestoneTest {
             ),
             Matchers.is(
                 String.format(
-                    "Issue #%d has been added to milestone #%d",
-                    bug.number(), milestone.number()
+                    "Issue #%d has been added to milestone #milestone-title",
+                    bug.number()
                 )
             )
         );
@@ -95,7 +95,7 @@ public final class RbAddToMilestoneTest {
         );
         MatcherAssert.assertThat(
             claim.param("milestone"),
-            Matchers.is(String.valueOf(milestone.number()))
+            Matchers.is("gh:milestone-title")
         );
         MatcherAssert.assertThat(
             claim.param("job"),

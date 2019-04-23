@@ -14,20 +14,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.zerocracy.stk.pm.staff.milestones
+package com.zerocracy.bundles.upLp2f_update_precedences
 
-
+import com.jcabi.matchers.XhtmlMatchers
 import com.jcabi.xml.XML
 import com.zerocracy.Project
-import com.zerocracy.claims.ClaimIn
-import com.zerocracy.farm.Assume
 import com.zerocracy.pm.time.Precedences
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
 
 def exec(Project project, XML xml) {
-  new Assume(project, xml).notPmo().type('Job milestoned')
-  ClaimIn claim = new ClaimIn(xml)
-  String job = claim.param('job')
-  String milestone = claim.param('milestone')
-  new Precedences(project).bootstrap()
-    .add('finish-to-start', job, 'job', milestone, 'milestone')
+
+  MatcherAssert.assertThat(
+    new Precedences(project).bootstrap().iterate(),
+    Matchers.contains(
+      Matchers.allOf(
+        XhtmlMatchers.hasXPath("/precedence/type[text() = 'finish-to-start']"),
+        XhtmlMatchers.hasXPath("/precedence/successor[@type = 'milestone']"),
+        XhtmlMatchers.hasXPath("/precedence/predecessor[@type = 'job']"),
+        XhtmlMatchers.hasXPath("/precedence/successor[text() = 'gh:ML-test']"),
+        XhtmlMatchers.hasXPath("/precedence/predecessor[text() = 'gh:test/test#1']")
+      )
+    )
+  )
 }

@@ -41,17 +41,19 @@ public final class RbAddToMilestone implements Rebound {
         final Issue.Smart issue = new Issue.Smart(
             new IssueOfEvent(github, event)
         );
-        final int milestone = event.getJsonObject("issue")
+        final String milestone = event.getJsonObject("issue")
             .getJsonObject("milestone")
-            .getInt("number");
+            .getString("title");
         new ClaimOut()
             .type("Job milestoned")
             .token(new TokenOfIssue(issue))
             .param("job", new Job(issue))
-            .param("milestone", milestone)
-            .postTo(new ClaimsOf(farm, new GhProject(farm, issue.repo())));
+            .param(
+                "milestone",
+                String.format("gh:%s", milestone)
+            ).postTo(new ClaimsOf(farm, new GhProject(farm, issue.repo())));
         return new FormattedText(
-            "Issue #%d has been added to milestone #%d",
+            "Issue #%d has been added to milestone #%s",
             issue.number(), milestone
         ).asString();
     }
