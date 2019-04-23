@@ -20,6 +20,7 @@ import com.jcabi.aspects.Tv;
 import com.zerocracy.Farm;
 import com.zerocracy.Item;
 import com.zerocracy.Project;
+import com.zerocracy.Txn;
 import com.zerocracy.Xocument;
 import com.zerocracy.cash.Cash;
 import com.zerocracy.farm.fake.FkFarm;
@@ -28,11 +29,13 @@ import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pm.in.Orders;
 import com.zerocracy.pm.scope.Wbs;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.iterable.RangeOf;
 import org.cactoos.scalar.And;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.xembly.Directives;
 
@@ -155,9 +158,53 @@ public final class EstimatesTest {
                     .remove()
             );
         }
-        est.refresh();
         MatcherAssert.assertThat(
             est.total(), Matchers.equalTo(new Cash.S("$144"))
         );
+    }
+
+    @Test
+    @Ignore
+    public void calculatesTotal() throws Exception {
+        final Farm farm = new PropsFarm();
+        final Project pkt = new FkProject();
+        new Ledger(farm, pkt).bootstrap().add(
+            new Ledger.Transaction(
+                new Cash.S("$1000000"),
+                "assets", "cash",
+                "income", "sponsor",
+                "Funded by Stripe customer"
+            )
+        );
+        try (final Txn txn = new Txn(pkt)) {
+            final Wbs wbs = new Wbs(txn).bootstrap();
+            final Estimates est = new Estimates(farm, txn).bootstrap();
+            final Orders orders = new Orders(farm, txn).bootstrap();
+            new And(
+                cnt -> {
+                    final String job = String.format("gh:test/test#%d", cnt);
+                    wbs.add(job);
+                    orders.assign(job, "test", "estimating");
+                    est.update(job, new Cash.S(String.format("$%s", cnt)));
+                },
+                new RangeOf<>(1, Tv.THREE * Tv.HUNDRED, num -> num + 1)
+            ).value();
+            txn.commit();
+        }
+        try (final Txn txn = new Txn(pkt)) {
+            final Estimates est = new Estimates(farm, txn).bootstrap();
+            final long start = System.nanoTime();
+            final Cash total = est.total();
+            final long end = System.nanoTime();
+            MatcherAssert.assertThat(
+                total, Matchers.equalTo(new Cash.S("$45150"))
+            );
+            MatcherAssert.assertThat(
+                end - start,
+                Matchers.lessThan(
+                    TimeUnit.MILLISECONDS.toNanos((long) Tv.TWENTY)
+                )
+            );
+        }
     }
 }

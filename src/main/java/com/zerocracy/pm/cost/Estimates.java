@@ -113,10 +113,25 @@ public final class Estimates {
      * @throws IOException If fails
      */
     public Cash total() throws IOException {
-        try (final Item wbs = this.item()) {
-            return new Cash.S(
-                new Xocument(wbs.path()).xpath("/estimates/@total").get(0)
-            );
+        try (final Item item = this.item()) {
+            final Xocument xoc = new Xocument(item);
+            return new IoCheckedScalar<Cash>(
+                new Ternary<>(
+                    new IoCheckedScalar<>(
+                        new Reduced<Cash, Cash>(
+                            Cash.ZERO,
+                            Cash::add,
+                            new Mapped<>(
+                                Cash.S::new,
+                                xoc.xpath("//order/cash/text()")
+                            )
+                        )
+                    ).value(),
+                    Cash::unified,
+                    csh -> csh,
+                    csh -> csh.exchange(Currency.USD)
+                )
+            ).value();
         }
     }
 
@@ -170,40 +185,6 @@ public final class Estimates {
                     .set(cash)
             );
         }
-        this.refresh();
-    }
-
-    /**
-     * Refresh total value.
-     * @throws IOException If fails
-     */
-    public void refresh() throws IOException {
-        try (final Item estimates = this.item()) {
-            final Xocument xoc = new Xocument(estimates.path());
-            final Cash value = new IoCheckedScalar<Cash>(
-                new Ternary<>(
-                    new IoCheckedScalar<>(
-                        new Reduced<Cash, Cash>(
-                            Cash.ZERO,
-                            Cash::add,
-                            new Mapped<>(
-                                Cash.S::new,
-                                xoc.xpath("//order/cash/text()")
-                            )
-                        )
-                    ).value(),
-                    Cash::unified,
-                    csh -> csh,
-                    csh -> csh.exchange(Currency.USD)
-                )
-            ).value();
-            xoc.modify(
-                new Directives().xpath("/estimates").attr(
-                    "total",
-                    value
-                )
-            );
-        }
     }
 
     /**
@@ -255,5 +236,4 @@ public final class Estimates {
     private Item item() throws IOException {
         return this.project.acq("estimates.xml");
     }
-
 }
