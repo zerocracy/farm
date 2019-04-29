@@ -42,7 +42,7 @@ def exec(Project project, XML xml) {
   String host = props.get('//zold/host')
   ClaimIn claim = new ClaimIn(xml)
   String amount = claim.param('amount')
-  new JdkRequest("https://www.rehttp.net/p/https://${host}/funded")
+  new JdkRequest("https://www.rehttp.net/p/${host}/funded")
     .uri()
     .queryParam('amount', amount)
     .back()
