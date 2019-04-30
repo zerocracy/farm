@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pmo;
 
+import com.zerocracy.Project;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.fake.FkProject;
 import org.hamcrest.MatcherAssert;
@@ -62,6 +63,18 @@ public final class BlanksTest {
         MatcherAssert.assertThat(
             "Two blanks",
             blanks.total(), Matchers.equalTo(2)
+        );
+    }
+
+    @Test
+    public void overrideBlankOnUpdate() throws Exception {
+        final Blanks blanks = new Blanks(new FkFarm(), "user3").bootstrap();
+        final Project pkt = new FkProject();
+        final String job = "gh:test/test#10";
+        blanks.add(pkt, job, BlanksTest.ISSUE);
+        blanks.add(pkt, job, BlanksTest.ISSUE);
+        MatcherAssert.assertThat(
+            blanks.total(), Matchers.equalTo(1)
         );
     }
 }
