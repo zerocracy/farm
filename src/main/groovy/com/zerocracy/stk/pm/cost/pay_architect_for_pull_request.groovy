@@ -31,13 +31,13 @@ import com.zerocracy.radars.github.Job
 
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo()
-  new Assume(project, xml).type('Order was finished')
+  new Assume(project, xml).type('Job removed from WBS')
   ClaimIn claim = new ClaimIn(xml)
   String job = claim.param('job')
-  String performer = claim.param('login')
   if (!job.startsWith('gh:')) {
     return
   }
+  Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
   Issue.Smart issue = new Issue.Smart(new Job.Issue(github, job))
   if (!issue.pull) {
@@ -63,7 +63,6 @@ def exec(Project project, XML xml) {
     )
   }
   List<String> logins = new Roles(project).bootstrap().findByRole('ARC')
-  Farm farm = binding.variables.farm
   if (logins.empty) {
     claim.copy()
       .type('Notify project')
@@ -91,9 +90,6 @@ def exec(Project project, XML xml) {
     return
   }
   String arc = logins[0]
-  if (arc == performer) {
-    return
-  }
   if (issue.pull) {
     claim.copy()
       .type('Make payment')

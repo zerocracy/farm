@@ -18,9 +18,8 @@ SOFTWARE.
 <claims xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" updated="2018-09-07T06:54:33Z" version="0.62.5" xsi:noNamespaceSchemaLocation="http://datum.zerocracy.com/0.62.5/xsd/pm/claims.xsd">
   <claim id="1">
     <created>2017-03-27T11:18:09.228Z</created>
-    <type>Finish order</type>
+    <type>Job removed from WBS</type>
     <token>job;gh:test/test#1</token>
-    <author>dmarkov</author>
     <params>
       <param name="job">gh:test/test#1</param>
       <param name="closed">2017-08-05T01:00:00.000Z</param>
