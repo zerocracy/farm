@@ -90,7 +90,8 @@ final class StrictProject implements Project {
             "(impediments\\.xml)",
             "(boosts\\.xml)",
             "(reminders\\.xml)",
-            "(releases\\.xml)"
+            "(releases\\.xml)",
+            "(options\\.xml)"
         )
     );
 
@@ -133,5 +134,4 @@ final class StrictProject implements Project {
         }
         return this.origin.acq(file);
     }
-
 }

@@ -74,7 +74,7 @@ public final class Xocument {
     /**
      * Current DATUM version.
      */
-    public static final String VERSION = "0.64.2";
+    public static final String VERSION = "0.65.1";
 
     /**
      * Cache of documents.

@@ -199,4 +199,23 @@ SOFTWARE.
       </opt>
     </opts>
   </cmd>
+  <cmd>
+    <code>Change project option</code>
+    <regex>option</regex>
+    <label>option</label>
+    <help>Change project option</help>
+    <invited>false</invited>
+    <opts>
+      <opt>
+        <name>name</name>
+        <regex>[A-Za-z]{3,}</regex>
+        <help>Option name</help>
+      </opt>
+      <opt>
+        <name>value</name>
+        <regex>[a-zA-Z0-9]+</regex>
+        <help>Option value</help>
+      </opt>
+    </opts>
+  </cmd>
 </question>

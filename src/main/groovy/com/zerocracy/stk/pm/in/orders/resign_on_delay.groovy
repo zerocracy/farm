@@ -25,6 +25,7 @@ import com.zerocracy.Project
 import com.zerocracy.entry.ClaimsOf
 import com.zerocracy.farm.Assume
 import com.zerocracy.claims.ClaimIn
+import com.zerocracy.pm.PktOptions
 import com.zerocracy.pm.cost.Boosts
 import com.zerocracy.pm.cost.Ledger
 import com.zerocracy.pm.in.Impediments
@@ -67,7 +68,7 @@ def exec(Project project, XML xml) {
   List<String> waiting = impediments.jobs().toList()
   Policy policy = new Policy()
   Wbs wbs = new Wbs(project).bootstrap()
-  int days = policy.get('8.days', 10)
+  int days = new PktOptions(project, farm).bootstrap().daysToCloseTask()
   new Limited<>(
     5,
     new Filtered<String>(
