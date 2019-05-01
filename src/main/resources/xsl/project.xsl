@@ -328,10 +328,6 @@ SOFTWARE.
         <xsl:text>Footprint</xsl:text>
       </a>
       <xsl:text>, </xsl:text>
-      <a href="/a/{project}?a=pm/claims">
-        <xsl:text>Claims</xsl:text>
-      </a>
-      <xsl:text>, </xsl:text>
       <a href="/a/{project}?a=pm/in/orders">
         <xsl:text>Orders</xsl:text>
       </a>
@@ -389,10 +385,6 @@ SOFTWARE.
       <xsl:text>, </xsl:text>
       <a href="/a/{project}?a=pmo/people">
         <xsl:text>People</xsl:text>
-      </a>
-      <xsl:text>, </xsl:text>
-      <a href="/a/{project}?a=pm/claims">
-        <xsl:text>Claims</xsl:text>
       </a>
       <xsl:text>, </xsl:text>
       <a href="/a/{project}?a=pmo/debts">
