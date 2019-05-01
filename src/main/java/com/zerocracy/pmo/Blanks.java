@@ -80,6 +80,10 @@ public final class Blanks {
             new Xocument(item.path()).modify(
                 new Directives()
                     .xpath("/blanks")
+                    .push()
+                    .xpath(String.format("blank[@job = '%s']", job))
+                    .remove()
+                    .pop()
                     .add("blank")
                     .attr("job", job)
                     .add("project")
