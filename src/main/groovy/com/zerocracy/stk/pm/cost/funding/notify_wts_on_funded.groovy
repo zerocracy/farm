@@ -16,13 +16,15 @@
  */
 package com.zerocracy.stk.pm.cost.funding
 
-import com.jcabi.http.request.JdkRequest
+
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.cash.Cash
 import com.zerocracy.claims.ClaimIn
 import com.zerocracy.farm.Assume
 import com.zerocracy.farm.props.Props
+import com.zerocracy.zold.Zold
 
 /**
  * This stakeholder is called when project is funded by Stripe,
@@ -30,7 +32,6 @@ import com.zerocracy.farm.props.Props
  *
  * @param project Funded project
  * @param xml Claim
- *
  */
 def exec(Project project, XML xml) {
   new Assume(project, xml).notPmo().type('Funded by Stripe')
@@ -39,13 +40,7 @@ def exec(Project project, XML xml) {
   if (props.has('//testing')) {
     return
   }
-  String host = props.get('//zold/host')
   ClaimIn claim = new ClaimIn(xml)
-  String amount = claim.param('amount')
-  new JdkRequest("https://www.rehttp.net/p/${host}/funded")
-    .uri()
-    .queryParam('amount', amount)
-    .back()
-    .header('X-Zold-Wts', props.get('//zold/secret'))
-    .fetch()
+  Cash amount = new Cash.S(claim.param('amount'))
+  new Zold(farm).funded(amount)
 }

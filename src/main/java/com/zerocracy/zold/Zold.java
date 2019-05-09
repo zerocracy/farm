@@ -23,6 +23,8 @@ import com.jcabi.http.response.JsonResponse;
 import com.jcabi.http.response.RestResponse;
 import com.jcabi.http.wire.VerboseWire;
 import com.zerocracy.Farm;
+import com.zerocracy.cash.Cash;
+import com.zerocracy.cash.Currency;
 import com.zerocracy.farm.props.Props;
 import java.io.IOException;
 import java.io.StringReader;
@@ -226,6 +228,25 @@ public final class Zold {
             .as(RestResponse.class);
         if (rsp.status() != HttpURLConnection.HTTP_OK) {
             new ZldError(rsp).raise("Failed to find wallet id");
+        }
+    }
+
+    /**
+     * Notify WTS on funded.
+     * @param cash Amount of cash
+     * @throws IOException If fails
+     */
+    public void funded(final Cash cash) throws IOException {
+        final RestResponse rsp = this.wtsRequest(Request.GET, "/funded")
+            .uri()
+            .queryParam(
+                "amount",
+                Zold.FMT.format(cash.exchange(Currency.USD).decimal())
+            ).back()
+            .fetch()
+            .as(RestResponse.class);
+        if (rsp.status() != HttpURLConnection.HTTP_OK) {
+            new ZldError(rsp).raise("Failed to send funded callback");
         }
     }
 
