@@ -40,25 +40,25 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).isPmo()
   Farm farm = binding.variables.farm
   KpiMetrics metrics = new KpiOf(farm)
-  Duration period = Duration.ofDays(1)
+  int days = 1
+  Duration period = Duration.ofDays(days)
   StringBuilder builder = new StringBuilder()
-  builder.append("KPI for period: `${(Instant.now() - period)}` - `${Instant.now()}`\n")
+  builder.append("Hey, the stats for the last ${days} days:\n\n")
   metrics.metrics().each { name ->
     KpiStats stats = metrics.statistic(name, period)
     if (stats.count() > 0) {
-      builder.append("`${name}`:\t")
-      if (!isCloseTo(stats.min(), 1) || !isCloseTo(stats.max(), 1)) {
-        builder.append("avg=`${stats.avg()}` (min=`${stats.min()}` - max=`${stats.max()}`) ")
-      }
-      builder.append("`${stats.count()}` events\n")
+      builder.append("  `${name}`:")
+        .append(" ${stats.count()}e")
+        .append(" ${Math.round(stats.avg())}")
+        .append("/${Math.round(stats.min())}")
+        .append("/${Math.round(stats.max())}")
+        .append("\n")
     }
   }
+  builder.append("\nIf you have any questions,")
+    .append(" don't hesitate to check the [dashboard](https://www.0crat.com).")
   new ClaimIn(xml).copy()
     .type('Notify PMO')
     .param('message', builder.toString())
     .postTo(new ClaimsOf(farm))
-}
-
-boolean isCloseTo(double value, double target) {
-  Math.abs(value - target) - 0.0001 <= 0.0
 }

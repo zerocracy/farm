@@ -46,6 +46,7 @@ def exec(Project project, XML xml) {
             .enableMarkdown(true)
             .setChatId(chat)
             .setText(claim.param('message'))
+            .disableWebPagePreview()
         )
       }
     }
