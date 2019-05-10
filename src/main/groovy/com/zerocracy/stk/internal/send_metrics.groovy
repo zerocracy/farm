@@ -25,9 +25,7 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.kpi.KpiMetrics
 import com.zerocracy.kpi.KpiOf
 import com.zerocracy.kpi.KpiStats
-
 import java.time.Duration
-import java.time.Instant
 
 /**
  * Send KPI metrics to PMO users.
@@ -52,11 +50,11 @@ def exec(Project project, XML xml) {
         .append(" ${Math.round(stats.avg())}")
         .append("/${Math.round(stats.min())}")
         .append("/${Math.round(stats.max())}")
-        .append("\n")
+        .append('\n')
     }
   }
-  builder.append("\nIf you have any questions,")
-    .append(" don't hesitate to check the [dashboard](https://www.0crat.com).")
+  builder.append('\nIf you have any questions,')
+    .append(' don\'t hesitate to check the [dashboard](https://www.0crat.com).')
   new ClaimIn(xml).copy()
     .type('Notify PMO')
     .param('message', builder.toString())
