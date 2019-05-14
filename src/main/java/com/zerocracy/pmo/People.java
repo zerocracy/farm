@@ -28,7 +28,9 @@ import com.zerocracy.cash.Cash;
 import com.zerocracy.cash.CashParsingException;
 import java.io.IOException;
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 import org.cactoos.iterable.ItemAt;
 import org.cactoos.iterable.Joined;
 import org.cactoos.iterable.Mapped;
@@ -811,6 +813,52 @@ public final class People {
                         )
                     )
             );
+        }
+    }
+
+    /**
+     * Active users IDs (with reputation > 256).
+     * @return Active users IDs set
+     * @throws IOException If fails
+     */
+    public Set<String> active() throws IOException {
+        try (final Item item = this.item()) {
+            return new HashSet<>(
+                new Xocument(item).xpath(
+                    "/people/person[reputation > 256]/@id"
+                )
+            );
+        }
+    }
+
+    /**
+     * Visible users (with mentor and non-zero reputation).
+     * @return Visible users set
+     * @throws IOException If fails
+     */
+    public Set<String> visible() throws IOException {
+        try (final Item item = this.item()) {
+            return new HashSet<>(
+                new Xocument(item).xpath(
+                    "/people/person[mentor and reputation > 0]/@id"
+                )
+            );
+        }
+    }
+
+    /**
+     * Total reputation of all visible users.
+     * @return Reputation number
+     * @throws IOException If fails
+     */
+    public int totalReputation() throws IOException {
+        try (final Item item = this.item()) {
+            return new NumberOf(
+                new Xocument(item).xpath(
+                    "sum(/people/person[mentor and reputation >0]/reputation)",
+                    "0"
+                )
+            ).intValue();
         }
     }
 

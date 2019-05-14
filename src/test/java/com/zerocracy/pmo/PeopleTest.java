@@ -45,6 +45,7 @@ import org.junit.rules.ExpectedException;
  * @since 1.0
  * @checkstyle JavadocMethodCheck (1000 lines)
  * @checkstyle JavadocVariableCheck (1000 lines)
+ * @checkstyle MagicNumberCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (3 lines)
  */
 @SuppressWarnings(
@@ -501,6 +502,46 @@ public final class PeopleTest {
         MatcherAssert.assertThat(
             people.skills(uid),
             Matchers.emptyIterable()
+        );
+    }
+
+    @Test
+    public void collectsActive() throws Exception {
+        final People people = new People(new FkFarm()).bootstrap();
+        final String active = "active";
+        people.invite(active, "0crat");
+        people.reputation(active, 257);
+        final String inactive = "inactive";
+        people.invite(inactive, "0crat");
+        people.reputation(inactive, 255);
+        MatcherAssert.assertThat(
+            people.active(), Matchers.contains(active)
+        );
+    }
+
+    @Test
+    public void collectsVisible() throws Exception {
+        final People people = new People(new FkFarm()).bootstrap();
+        final String visible = "visible";
+        people.invite(visible, "0crat");
+        people.reputation(visible, 1);
+        people.invite("empty", "0crat");
+        people.touch("nomentor");
+        MatcherAssert.assertThat(
+            people.visible(), Matchers.contains(visible)
+        );
+    }
+
+    @Test
+    public void totalReputation() throws Exception {
+        final People people = new People(new FkFarm()).bootstrap();
+        for (int num = 0; num < 10; ++num) {
+            final String login = String.format("user%d", num);
+            people.invite(login, "0crat");
+            people.reputation(login, num);
+        }
+        MatcherAssert.assertThat(
+            people.totalReputation(), Matchers.equalTo(45)
         );
     }
 }
