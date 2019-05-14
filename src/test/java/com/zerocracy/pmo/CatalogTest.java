@@ -293,6 +293,19 @@ public final class CatalogTest {
         );
     }
 
+    @Test
+    public void collectsActive() throws Exception {
+        final Catalog catalog = new Catalog(new FkFarm()).bootstrap();
+        final String active = "AAAAAAAAA";
+        catalog.add(active, "2018/10/000000401/");
+        final String inactive = "IIIIIIIII";
+        catalog.add(inactive, "2018/10/000000402/");
+        catalog.pause(inactive, true);
+        MatcherAssert.assertThat(
+            catalog.active(), Matchers.contains(active)
+        );
+    }
+
     private static Catalog withProject(final String pid) throws IOException {
         final Pmo pmo = new Pmo(new FkFarm());
         final Catalog catalog = new Catalog(pmo).bootstrap();

@@ -942,6 +942,21 @@ public final class Catalog {
     }
 
     /**
+     * Active project IDs.
+     * @return Set of project IDs
+     * @throws IOException If fails
+     */
+    public Set<String> active() throws IOException {
+        try (final Item item = this.item()) {
+            return new HashSet<>(
+                new Xocument(item).xpath(
+                    "/catalog/project[alive = 'true']/@id"
+                )
+            );
+        }
+    }
+
+    /**
      * Check project exists, or throw exception.
      * @param pid Project id
      * @throws IOException If not exist
