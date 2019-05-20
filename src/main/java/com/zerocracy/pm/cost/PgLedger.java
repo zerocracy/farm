@@ -31,6 +31,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.text.DecimalFormat;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
@@ -42,8 +43,23 @@ import org.xembly.Directives;
  *
  * @since 1.0
  * @checkstyle MagicNumberCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.StaticAccessToStaticFields")
 public final class PgLedger {
+
+    /**
+     * Amount number format.
+     */
+    private static final DecimalFormat FMT_AMOUNT;
+
+    static {
+        final DecimalFormat fmt = new DecimalFormat();
+        fmt.setGroupingUsed(false);
+        fmt.setMaximumFractionDigits(2);
+        fmt.setMinimumFractionDigits(0);
+        FMT_AMOUNT = fmt;
+    }
 
     /**
      * Database.
@@ -78,8 +94,13 @@ public final class PgLedger {
         final JdbcSession session = new JdbcSession(this.data)
             .autocommit(false);
         Optional<Long> parent = session
-            // @checkstyle LineLength (1 line)
-            .sql("SELECT id FROM ledger WHERE project = ? ORDER BY id DESC LIMIT 1")
+            .sql(
+                String.join(
+                    " ",
+                    "SELECT id FROM ledger",
+                    "WHERE project = ? ORDER BY id DESC LIMIT 1"
+                )
+            )
             .set(this.pkt.pid())
             .select(
                 (rset, stmt) -> {
@@ -95,13 +116,67 @@ public final class PgLedger {
         final Outcome<Long> outcome = new SingleOutcome<>(Long.class);
         for (final Ledger.Transaction txn : tns) {
             parent = Optional.of(
-                // @checkstyle LineLength (1 line)
-                session.sql("INSERT INTO ledger (id, project, parent, amount, dt, dtx, ct, ctx, details) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id")
-                    .prepare(txn.preparation(this.pkt, parent))
-                    .insert(outcome)
+                session.sql(
+                    String.join(
+                        " ",
+                        "INSERT INTO ledger",
+                        "(id, project, parent, amount,",
+                        "dt, dtx, ct, ctx, details)",
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                        "RETURNING id"
+                    )
+                ).prepare(txn.preparation(this.pkt, parent)).insert(outcome)
             );
         }
         session.commit();
+    }
+
+    /**
+     * Sum of fees for all projects for selected period.
+     * @param time Time to start
+     * @return Sum of fees
+     * @throws IOException If fails
+     */
+    @SuppressWarnings("PMD.ExceptionAsFlowControl")
+    public Cash fees(final Instant time) throws IOException {
+        try {
+            return new JdbcSession(this.data).sql(
+                String.join(
+                    " ",
+                    "SELECT sum(amount) FROM ledger",
+                    "WHERE dt = ? AND dtx = ?",
+                    "AND created >= ?"
+                )
+            ).prepare(
+                stmt -> {
+                    stmt.setString(1, "liabilities");
+                    stmt.setString(2, "zerocracy");
+                    stmt.setTimestamp(3, Timestamp.from(time));
+                }
+            ).select(
+                (Outcome<Cash>) (rset, stmt) -> {
+                    if (!rset.next()) {
+                        throw new SQLException("Empty result");
+                    }
+                    try {
+                        return new Cash.S(
+                            String.format(
+                                "USD %s",
+                                PgLedger.FMT_AMOUNT.format(
+                                    rset.getBigDecimal(1)
+                                )
+                            )
+                        );
+                    } catch (final CashParsingException err) {
+                        throw new SQLException(
+                            "Failed to parse amount of cash", err
+                        );
+                    }
+                }
+            );
+        } catch (final SQLException err) {
+            throw new IOException("Failed to collect fees", err);
+        }
     }
 
     /**

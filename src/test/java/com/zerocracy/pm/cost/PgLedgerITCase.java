@@ -16,6 +16,7 @@
  */
 package com.zerocracy.pm.cost;
 
+import com.jcabi.aspects.Tv;
 import com.jcabi.jdbc.JdbcSession;
 import com.jcabi.jdbc.ListOutcome;
 import com.zerocracy.Item;
@@ -24,7 +25,9 @@ import com.zerocracy.cash.Cash;
 import com.zerocracy.db.ExtDataSource;
 import com.zerocracy.farm.fake.FkProject;
 import com.zerocracy.farm.props.PropsFarm;
+import com.zerocracy.pmo.Pmo;
 import java.sql.SQLException;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -291,6 +294,33 @@ public final class PgLedgerITCase {
                     )
                 )
             )
+        );
+    }
+
+    @Test
+    public void collectFees() throws Exception {
+        final PropsFarm farm = new PropsFarm();
+        final DataSource data = new ExtDataSource(farm).value();
+        PgLedgerITCase.cleanup(data);
+        final PgLedger ledger = new PgLedger(data, new Pmo(farm));
+        final Cash.S fee = new Cash.S("$4");
+        ledger.add(
+            new Ledger.Transaction(
+                fee,
+                "expenses", "fee",
+                "liabilities", "zerocracy",
+                "Zerocracy test fee"
+            ),
+            new Ledger.Transaction(
+                fee,
+                "liabilities", "zerocracy",
+                "assets", "cash",
+                "Zerocracy test fee"
+            )
+        );
+        MatcherAssert.assertThat(
+            ledger.fees(Instant.now().minusSeconds(Tv.FIVE)),
+            Matchers.equalTo(fee)
         );
     }
 
