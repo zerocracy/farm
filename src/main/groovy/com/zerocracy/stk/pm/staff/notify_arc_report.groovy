@@ -43,13 +43,14 @@ def exec(Project project, XML xml) {
       'message',
         new Par(
           farm,
-          'Don\'t forget to send a report about',
-          'the situation in project to PO of %s\n',
-          'See this post for details:',
+          'Hey, don\'t forget to send a regular bi-weekly report about',
+          'the situation in the project %s to its Product Owner (PO) by email;',
+          'see this blog post for details:',
           ''.join(
-            '[software architect responsibilities]',
-            '(https://www.yegor256.com/2015/05/11/software-architect-responsibilities.html)'
-          )
+            '[__Software Architect Responsibilities__]',
+            '(https://www.yegor256.com/2015/05/11/software-architect-responsibilities.html);'
+          ),
+          'don\'t forget to CC `pmo@zerocracy.com`'
         ).say(project.pid())
     ).postTo(new ClaimsOf(farm, project))
   }
