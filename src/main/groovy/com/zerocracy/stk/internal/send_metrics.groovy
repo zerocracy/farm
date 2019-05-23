@@ -45,12 +45,19 @@ def exec(Project project, XML xml) {
   metrics.metrics().each { name ->
     KpiStats stats = metrics.statistic(name, period)
     if (stats.count() > 0) {
+      double avg = Math.round(stats.avg())
+      double min = Math.round(stats.min())
+      double max = Math.round(stats.max())
       builder.append("  `${name}`:")
-        .append(" ${stats.count()}e")
-        .append(" ${Math.round(stats.avg())}")
-        .append("/${Math.round(stats.min())}")
-        .append("/${Math.round(stats.max())}")
-        .append('\n')
+      if (avg != min || avg != max) {
+        builder.append(" ${avg}/${min}/${max}")
+      } else {
+        builder.append(" ${avg}")
+      }
+      if (stats.count() > 1) {
+        builder.append(" ${stats.count()}e")
+      }
+      builder.append('\n')
     }
   }
   builder.append('\nIf you have any questions,')
