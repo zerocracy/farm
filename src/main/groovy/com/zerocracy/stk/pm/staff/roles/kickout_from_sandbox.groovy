@@ -44,6 +44,16 @@ def exec(Project project, XML xml) {
     if (!people.hasMentor(uid)) {
       return
     }
+    if (uid == 'victornoel') {
+      // @todo #2030:30min Reimplement this stakeholder in such way:
+      //  it should react to 'Reputation was updated' for the user,
+      //  and if it was less than 1024 but becomes greater than 1024 then
+      //  kick out user from sandbox projects. If user decided to join
+      //  sandbox project when he/she has more than 1024 reputation,
+      //  then we should not kick out such user.
+      //  Use 33.sandbox-rep-threshold instead of 1024 like in this stk.
+      return
+    }
     if (roles.hasRole(uid, 'PO', 'ARC')) {
       return
     }
