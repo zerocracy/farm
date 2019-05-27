@@ -25,6 +25,46 @@ SOFTWARE.
     </title>
   </xsl:template>
   <xsl:template match="page" mode="inner">
-    <xsl:value-of select="xml" disable-output-escaping="yes"/>
+    <xsl:apply-templates select="resume"/>
+  </xsl:template>
+  <xsl:template match="resume">
+    <ul>
+      <li id="resume-{login}">
+        <xsl:value-of select="text/text()"/>
+        <xsl:text>Resume by </xsl:text>
+        <code>
+          <xsl:value-of select="login"/>
+        </code>
+        <xsl:text>: </xsl:text>
+        <xsl:value-of select="resume/text/text()"/>
+        <ul>
+          <li>
+            <xsl:text>github: </xsl:text>
+            <a href="https://github.com/{login}">
+              <xsl:value-of select="login"/>
+            </a>
+          </li>
+          <li>
+            <xsl:text>telegram: </xsl:text>
+            <a href="https://t.me/{telegram}">
+              <xsl:value-of select="concat('@', telegram)"/>
+            </a>
+          </li>
+          <li>
+            <xsl:text>personality: </xsl:text>
+            <code>
+              <xsl:value-of select="personality"/>
+            </code>
+          </li>
+          <li>
+            <xsl:text>examiner: </xsl:text>
+            <a href="https://0crat/u/{examiner}">
+              <xsl:text>@</xsl:text>
+              <xsl:value-of select="examiner"/>
+            </a>
+          </li>
+        </ul>
+      </li>
+    </ul>
   </xsl:template>
 </xsl:stylesheet>

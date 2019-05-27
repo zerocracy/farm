@@ -23,10 +23,12 @@ import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pmo.People;
 import java.io.IOException;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import com.zerocracy.pmo.Resumes;
 import org.cactoos.iterable.IterableOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.text.StringContainsInOrder;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.takes.rq.RqFake;
 import org.takes.rs.RsPrint;
@@ -49,16 +51,16 @@ public final class TkJoinTest {
     public void renderJoinPage() throws Exception {
         final Farm farm = new PropsFarm(new FkFarm());
         MatcherAssert.assertThat(
-            XhtmlMatchers.xhtml(
-                new RsPrint(
-                    new TkApp(farm).act(
-                        new RqWithUser.WithInit(
-                            farm, new RqFake("GET", "/join")
-                        )
-                    )
-                ).printBody()
-            ),
-            XhtmlMatchers.hasXPaths("//xhtml:body")
+                XhtmlMatchers.xhtml(
+                        new RsPrint(
+                                new TkApp(farm).act(
+                                        new RqWithUser.WithInit(
+                                                farm, new RqFake("GET", "/join")
+                                        )
+                                )
+                        ).printBody()
+                ),
+                XhtmlMatchers.hasXPaths("//xhtml:body")
         );
     }
 
@@ -69,27 +71,49 @@ public final class TkJoinTest {
      * @throws IOException If something goes wrong accessing page
      */
     @Test
-    @Ignore
     public void showsResumeIfAlreadyApplied() throws Exception {
         final Farm farm = new PropsFarm(new FkFarm());
         final People people = new People(farm).bootstrap();
         final String uid = "yegor256";
         people.touch(uid);
         people.apply(uid, Instant.now());
+
+
+        final Resumes resumes = new Resumes(farm).bootstrap();
+
+        final Instant time = Instant.parse("2018-02-01T00:00:00Z");
+        final String text = "This resume exists in farm";
+        final String personality = "INTJ-A";
+        final long id = 187141;
+        final String telegram = "existentresumetelegram";
+        final String examiner = "test-examiner";
+
+        resumes.add(
+                uid,
+                LocalDateTime.ofInstant(time, ZoneOffset.UTC),
+                text,
+                personality,
+                id,
+                telegram
+        );
+        resumes.assign(uid, examiner);
+
         MatcherAssert.assertThat(
-            new RsPrint(
-                new TkApp(farm).act(
-                    new RqWithUser.WithInit(
-                        farm, new RqFake("GET", "/join")
-                    )
+                new RsPrint(
+                        new TkApp(farm).act(
+                                new RqWithUser.WithInit(
+                                        farm, new RqFake("GET", "/join")
+                                )
+                        )
+                ).printBody(),
+                new StringContainsInOrder(
+                        new IterableOf<>(
+                                text,
+                                telegram,
+                                personality,
+                                examiner
+                        )
                 )
-            ).printBody(),
-            new StringContainsInOrder(
-                new IterableOf<>(
-                    "User",
-                    "here is your resume."
-                )
-            )
         );
     }
 }
