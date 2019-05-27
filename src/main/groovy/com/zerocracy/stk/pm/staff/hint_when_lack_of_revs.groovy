@@ -31,6 +31,9 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Ping hourly')
   ClaimIn claim = new ClaimIn(xml)
   Roles roles = new Roles(project).bootstrap()
+  if (roles.everybody().size() < 10) {
+    return
+  }
   int revs = roles.findByRole('REV').size()
   int devs = roles.findByRole('DEV').size()
   if (revs >= devs) {
