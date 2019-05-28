@@ -1,9 +1,9 @@
 docker:
   image: yegor256/java8
 assets:
-  settings.xml: zerocracy/home#assets/zerocracy/settings.xml
-  id_rsa: zerocracy/home#assets/heroku-key
-  id_rsa.pub: zerocracy/home#assets/heroku-key.pub
+  settings.xml: yegor256/home#assets/zerocracy/settings.xml
+  id_rsa: yegor256/home#assets/heroku-key
+  id_rsa.pub: yegor256/home#assets/heroku-key.pub
 env:
   MAVEN_OPTS: -Xmx1g
 install: |-
