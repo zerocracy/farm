@@ -6,10 +6,11 @@
 [![We recommend IntelliJ IDEA](http://www.elegantobjects.org/intellij-idea.svg)](https://www.jetbrains.com/idea/)
 
 [![Stability of Webhook](https://www.rehttp.net/b?u=http%3A%2F%2Fwww.0crat.com%2Fghook)](https://www.rehttp.net/i?u=http%3A%2F%2Fwww.0crat.com%2Fghook)
-[![Availability at SixNines](http://www.sixnines.io/b/2b3a)](http://www.sixnines.io/h/2b3a)
+[![Availability at SixNines](http://www.sixnines.io/b/9f5b)](http://www.sixnines.io/h/9f5b)
 [![Build Status](https://travis-ci.org/zerocracy/farm.svg?branch=master)](https://travis-ci.org/zerocracy/farm)
 [![Build status](https://ci.appveyor.com/api/projects/status/yrnrhc44a09u3g59?svg=true)](https://ci.appveyor.com/project/yegor256/farm)
 [![PDD status](http://www.0pdd.com/svg?name=zerocracy/farm)](http://www.0pdd.com/p?name=zerocracy/farm)
+[![Hits-of-Code](https://hitsofcode.com/github/zerocracy/farm)](https://hitsofcode.com/view/github/zerocracy/farm)
 
 [What is it?](http://www.zerocracy.com/toc.html)
 
@@ -272,13 +273,13 @@ Here, `"18.days"` is the HTML `id` attribute and `90` is the default value to
 be used during unit testing. You must always use class `Policy` in your code
 and never hard-code any business constants.
 
-## Time API 
+## Time API
 
 We don't mix different Java Time APIs and we have chosen the new java.time.*
 classes instead of the old Date and Calendar classes. Old classes can be used
 only in cases where external libraries require or return them.
 
-When considering which of the new classes to use, it is best to first try 
+When considering which of the new classes to use, it is best to first try
 `Instant`, if more formatting or manipulation of the date/time is needed then
 `ZonedDateTime` with ZoneOffset.UTC. LocalDateTime/LocalDate/LocalTime should
 be used as a last resort (as it is e.g. problematic during the switch to
@@ -302,7 +303,7 @@ stakeholder.
 
 There are maven profiles which you can enabled:
  - `qulice` - enabled [Qulice](https://www.qulice.com/) (Source Code Quality Police) profile
- - `codenarc` - enables [Codenarc](http://codenarc.sourceforge.net/) validation 
+ - `codenarc` - enables [Codenarc](http://codenarc.sourceforge.net/) validation
  - `upgrade-bundles` - fetch fresh xml schemas from `datum` repo and update bundle tests
  - `dynamodb` - starts local dynamodb instance for integration testing
 
