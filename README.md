@@ -11,7 +11,7 @@
 [![Hits-of-Code](https://hitsofcode.com/github/zerocracy/farm)](https://hitsofcode.com/view/github/zerocracy/farm)
 
 [![Stability of Webhook](https://www.rehttp.net/b?u=http%3A%2F%2Fwww.0crat.com%2Fghook)](https://www.rehttp.net/i?u=http%3A%2F%2Fwww.0crat.com%2Fghook)
-[![Availability at SixNines](http://www.sixnines.io/b/9f5b)](http://www.sixnines.io/h/9f5b)
+[![Availability at SixNines](https://www.sixnines.io/b/9f5b)](https://www.sixnines.io/h/9f5b)
 
 [What is it?](http://www.zerocracy.com/toc.html)
 
