@@ -21,12 +21,14 @@ import com.zerocracy.Farm;
 import com.zerocracy.farm.fake.FkFarm;
 import com.zerocracy.farm.props.PropsFarm;
 import com.zerocracy.pmo.People;
+import com.zerocracy.pmo.Resumes;
 import java.io.IOException;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import org.cactoos.iterable.IterableOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.text.StringContainsInOrder;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.takes.rq.RqFake;
 import org.takes.rs.RsPrint;
@@ -35,10 +37,6 @@ import org.takes.rs.RsPrint;
  * Test case for {@link TkJoin}.
  *
  * @since 1.0
- * @todo #1568:30min TkJoinTest is not checking if join page is being rendered
- *  correctly; it just checks if something is rendered. Improve this test
- *  making sure that a user that not joined yet is requisting /join and that
- *  join page is bein correctly fetched.
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
@@ -69,13 +67,26 @@ public final class TkJoinTest {
      * @throws IOException If something goes wrong accessing page
      */
     @Test
-    @Ignore
     public void showsResumeIfAlreadyApplied() throws Exception {
         final Farm farm = new PropsFarm(new FkFarm());
         final People people = new People(farm).bootstrap();
         final String uid = "yegor256";
         people.touch(uid);
         people.apply(uid, Instant.now());
+        final Resumes resumes = new Resumes(farm).bootstrap();
+        final Instant time = Instant.parse("2018-02-01T00:00:00Z");
+        final String text = "This resume exists in farm";
+        final String personality = "INTJ-A";
+        final long id = 187141;
+        final String telegram = "existentresumetelegram";
+        resumes.add(
+            uid,
+            LocalDateTime.ofInstant(time, ZoneOffset.UTC),
+            text,
+            personality,
+            id,
+            telegram
+        );
         MatcherAssert.assertThat(
             new RsPrint(
                 new TkApp(farm).act(
@@ -86,8 +97,9 @@ public final class TkJoinTest {
             ).printBody(),
             new StringContainsInOrder(
                 new IterableOf<>(
-                    "User",
-                    "here is your resume."
+                    text,
+                    telegram,
+                    personality
                 )
             )
         );
