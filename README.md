@@ -5,12 +5,13 @@
 [![DevOps By Rultor.com](http://www.rultor.com/b/zerocracy/farm)](http://www.rultor.com/p/zerocracy/farm)
 [![We recommend IntelliJ IDEA](http://www.elegantobjects.org/intellij-idea.svg)](https://www.jetbrains.com/idea/)
 
-[![Stability of Webhook](https://www.rehttp.net/b?u=http%3A%2F%2Fwww.0crat.com%2Fghook)](https://www.rehttp.net/i?u=http%3A%2F%2Fwww.0crat.com%2Fghook)
-[![Availability at SixNines](http://www.sixnines.io/b/9f5b)](http://www.sixnines.io/h/9f5b)
 [![Build Status](https://travis-ci.org/zerocracy/farm.svg?branch=master)](https://travis-ci.org/zerocracy/farm)
 [![Build status](https://ci.appveyor.com/api/projects/status/yrnrhc44a09u3g59?svg=true)](https://ci.appveyor.com/project/yegor256/farm)
 [![PDD status](http://www.0pdd.com/svg?name=zerocracy/farm)](http://www.0pdd.com/p?name=zerocracy/farm)
 [![Hits-of-Code](https://hitsofcode.com/github/zerocracy/farm)](https://hitsofcode.com/view/github/zerocracy/farm)
+
+[![Stability of Webhook](https://www.rehttp.net/b?u=http%3A%2F%2Fwww.0crat.com%2Fghook)](https://www.rehttp.net/i?u=http%3A%2F%2Fwww.0crat.com%2Fghook)
+[![Availability at SixNines](http://www.sixnines.io/b/9f5b)](http://www.sixnines.io/h/9f5b)
 
 [What is it?](http://www.zerocracy.com/toc.html)
 
@@ -302,25 +303,8 @@ stakeholder.
 ## Maven profiles
 
 There are maven profiles which you can enabled:
+
  - `qulice` - enabled [Qulice](https://www.qulice.com/) (Source Code Quality Police) profile
  - `codenarc` - enables [Codenarc](http://codenarc.sourceforge.net/) validation
  - `upgrade-bundles` - fetch fresh xml schemas from `datum` repo and update bundle tests
  - `dynamodb` - starts local dynamodb instance for integration testing
-
-## License
-
-Copyright (c) 2016-2018 Zerocracy
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to read
-the Software only. Permissions is hereby NOT GRANTED to use, copy, modify,
-merge, publish, distribute, sublicense, and/or sell copies of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
