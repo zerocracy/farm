@@ -31,8 +31,7 @@ def exec(Project project, XML xml) {
   MatcherAssert.assertThat(
     agenda.jobs(), new IsIterableContainingInAnyOrder<>(
       new CollectionOf<>(
-        new IsEqual<>('gh:test/test#1'),
-        new IsEqual<>('gh:test/test#2')
+        new IsEqual<>('gh:test/test#1')
       )
     )
   )
