@@ -69,8 +69,7 @@ public final class TkJoin implements TkRegex {
                     new XeAppend("text", resume.text()),
                     new XeAppend("personality", resume.personality()),
                     new XeAppend("soid", Long.toString(resume.soid())),
-                    new XeAppend("telegram", resume.telegram()),
-                    new XeAppend("examiner", resumes.examiner(author))
+                    new XeAppend("telegram", resume.telegram())
                 )
             );
         } else {

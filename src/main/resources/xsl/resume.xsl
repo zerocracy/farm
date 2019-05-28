@@ -56,13 +56,6 @@ SOFTWARE.
               <xsl:value-of select="personality"/>
             </code>
           </li>
-          <li>
-            <xsl:text>examiner: </xsl:text>
-            <a href="https://0crat/u/{examiner}">
-              <xsl:text>@</xsl:text>
-              <xsl:value-of select="examiner"/>
-            </a>
-          </li>
         </ul>
       </li>
     </ul>
