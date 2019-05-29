@@ -28,8 +28,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.time.ZoneOffset;
-
-import org.apache.tools.ant.taskdefs.condition.IsTrue;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.core.IsEqual;
@@ -387,21 +385,20 @@ public final class ResumesTest {
         final String telegram = "telegram";
         final Resumes resumes = new Resumes(farm).bootstrap();
         resumes.add(
-                login,
-                LocalDateTime.ofInstant(time, ZoneOffset.UTC),
-                text,
-                personality,
-                id,
-                telegram
+            login,
+            LocalDateTime.ofInstant(time, ZoneOffset.UTC),
+            text,
+            personality,
+            id,
+            telegram
         );
         resumes.assign(login, "g4s8");
         MatcherAssert.assertThat(
-                "The resume doesn't have an examiner",
-                resumes.hasExaminer(login),
-                Matchers.is(true)
+            "The resume doesn't have an examiner",
+            resumes.hasExaminer(login),
+            Matchers.is(true)
         );
     }
-
 
     @Test
     public void resumeDoesntHaveExaminer() throws Exception {
@@ -414,17 +411,17 @@ public final class ResumesTest {
         final String telegram = "telegram";
         final Resumes resumes = new Resumes(farm).bootstrap();
         resumes.add(
-                login,
-                LocalDateTime.ofInstant(time, ZoneOffset.UTC),
-                text,
-                personality,
-                id,
-                telegram
+            login,
+            LocalDateTime.ofInstant(time, ZoneOffset.UTC),
+            text,
+            personality,
+            id,
+            telegram
         );
         MatcherAssert.assertThat(
-                "The resume has an examiner",
-                resumes.hasExaminer(login),
-                Matchers.is(false)
+            "The resume has an examiner",
+            resumes.hasExaminer(login),
+            Matchers.is(false)
         );
     }
 }

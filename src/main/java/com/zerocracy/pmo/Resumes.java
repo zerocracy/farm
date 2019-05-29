@@ -162,10 +162,10 @@ public final class Resumes {
     public boolean hasExaminer(final String login) throws IOException {
         try (final Item item = this.item()) {
             return !new Xocument(item.path()).nodes(
-                    String.format(
-                            "/resumes/resume[@login='%s']/examiner",
-                            login
-                    )
+                String.format(
+                    "/resumes/resume[@login='%s']/examiner",
+                    login
+                )
             ).isEmpty();
         }
     }

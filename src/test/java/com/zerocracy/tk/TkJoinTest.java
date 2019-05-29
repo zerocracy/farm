@@ -61,7 +61,8 @@ public final class TkJoinTest {
     }
 
     /**
-     * {@link TkJoinPost} can show resume without Examiner if user already applied.
+     * {@link TkJoinPost} can show resume without Examiner
+     * if user already applied.
      * {@link TkJoinPost} must show user's resume, if there is one, when
      * user tries to access <code>/join</code> endpoint.
      * @throws IOException If something goes wrong accessing page
@@ -127,30 +128,30 @@ public final class TkJoinTest {
         final long id = 187141;
         final String telegram = "existentresumetelegram";
         resumes.add(
-                uid,
-                LocalDateTime.ofInstant(time, ZoneOffset.UTC),
-                text,
-                personality,
-                id,
-                telegram
+            uid,
+            LocalDateTime.ofInstant(time, ZoneOffset.UTC),
+            text,
+            personality,
+            id,
+            telegram
         );
         resumes.assign(uid, examiner);
         MatcherAssert.assertThat(
-                new RsPrint(
-                        new TkApp(farm).act(
-                                new RqWithUser.WithInit(
-                                        farm, new RqFake("GET", "/join")
-                                )
-                        )
-                ).printBody(),
-                new StringContainsInOrder(
-                        new IterableOf<>(
-                                text,
-                                telegram,
-                                personality,
-                                examiner
-                        )
+            new RsPrint(
+                new TkApp(farm).act(
+                    new RqWithUser.WithInit(
+                        farm, new RqFake("GET", "/join")
+                    )
                 )
+            ).printBody(),
+            new StringContainsInOrder(
+                new IterableOf<>(
+                    text,
+                    telegram,
+                    personality,
+                    examiner
+                )
+            )
         );
     }
 }

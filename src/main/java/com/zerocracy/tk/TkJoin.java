@@ -64,7 +64,6 @@ public final class TkJoin implements TkRegex {
         RsPage result;
         if (people.exists(author) && resumes.exists(author)) {
             final Resume resume = resumes.resume(author);
-
             List<XeSource> items = new ArrayList<>();
             items.add(new XeAppend("login", resume.login()));
             items.add(new XeAppend("text", resume.text()));
@@ -79,8 +78,8 @@ public final class TkJoin implements TkRegex {
                 "/xsl/resume.xsl",
                 req,
                 () -> new XeAppend(
-                    "resume",
-                        items
+                "resume",
+                    items
                 )
             );
         } else {
