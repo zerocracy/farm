@@ -61,13 +61,13 @@ public final class TkJoinTest {
     }
 
     /**
-     * {@link TkJoinPost} can show resume if user already applied.
+     * {@link TkJoinPost} can show resume without Examiner if user already applied.
      * {@link TkJoinPost} must show user's resume, if there is one, when
      * user tries to access <code>/join</code> endpoint.
      * @throws IOException If something goes wrong accessing page
      */
     @Test
-    public void showsResumeIfAlreadyApplied() throws Exception {
+    public void showsResumeWithoutExaminerIfAlreadyApplied() throws Exception {
         final Farm farm = new PropsFarm(new FkFarm());
         final People people = new People(farm).bootstrap();
         final String uid = "yegor256";
@@ -102,6 +102,55 @@ public final class TkJoinTest {
                     personality
                 )
             )
+        );
+    }
+
+
+    /**
+     * {@link TkJoinPost} can show resume if user already applied.
+     * {@link TkJoinPost} must show user's resume, if there is one, when
+     * user tries to access <code>/join</code> endpoint.
+     * @throws IOException If something goes wrong accessing page
+     */
+    @Test
+    public void showsResumeIfAlreadyApplied() throws Exception {
+        final Farm farm = new PropsFarm(new FkFarm());
+        final People people = new People(farm).bootstrap();
+        final String uid = "yegor256";
+        people.touch(uid);
+        people.apply(uid, Instant.now());
+        final Resumes resumes = new Resumes(farm).bootstrap();
+        final Instant time = Instant.parse("2018-02-01T00:00:00Z");
+        final String text = "This resume exists in farm";
+        final String personality = "INTJ-A";
+        final String examiner = "examiner123";
+        final long id = 187141;
+        final String telegram = "existentresumetelegram";
+        resumes.add(
+                uid,
+                LocalDateTime.ofInstant(time, ZoneOffset.UTC),
+                text,
+                personality,
+                id,
+                telegram
+        );
+        resumes.assign(uid, examiner);
+        MatcherAssert.assertThat(
+                new RsPrint(
+                        new TkApp(farm).act(
+                                new RqWithUser.WithInit(
+                                        farm, new RqFake("GET", "/join")
+                                )
+                        )
+                ).printBody(),
+                new StringContainsInOrder(
+                        new IterableOf<>(
+                                text,
+                                telegram,
+                                personality,
+                                examiner
+                        )
+                )
         );
     }
 }

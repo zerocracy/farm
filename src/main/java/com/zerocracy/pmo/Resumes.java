@@ -154,6 +154,23 @@ public final class Resumes {
     }
 
     /**
+     * This resume has a examiner?
+     * @param login Resume author
+     * @return TRUE if it has a examiner
+     * @throws IOException If fails
+     */
+    public boolean hasExaminer(final String login) throws IOException {
+        try (final Item item = this.item()) {
+            return !new Xocument(item.path()).nodes(
+                    String.format(
+                            "/resumes/resume[@login='%s']/examiner",
+                            login
+                    )
+            ).isEmpty();
+        }
+    }
+
+    /**
      * Get the user's examiner.
      *
      * @param login Resume author

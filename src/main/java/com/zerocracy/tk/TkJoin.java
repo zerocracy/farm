@@ -21,10 +21,15 @@ import com.zerocracy.pmo.People;
 import com.zerocracy.pmo.Resume;
 import com.zerocracy.pmo.Resumes;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.takes.Response;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkRegex;
 import org.takes.rs.xe.XeAppend;
+import org.takes.rs.xe.XeSource;
 
 /**
  * Join Zerocracy form.
@@ -59,17 +64,23 @@ public final class TkJoin implements TkRegex {
         RsPage result;
         if (people.exists(author) && resumes.exists(author)) {
             final Resume resume = resumes.resume(author);
+
+            List<XeSource> items = new ArrayList<>();
+            items.add(new XeAppend("login", resume.login()));
+            items.add(new XeAppend("text", resume.text()));
+            items.add(new XeAppend("personality", resume.personality()));
+            items.add(new XeAppend("soid", Long.toString(resume.soid())));
+            items.add(new XeAppend("telegram", resume.telegram()));
+            if (resumes.hasExaminer(resume.login())) {
+                items.add(new XeAppend("examiner", resumes.examiner(resume.login())));
+            }
             result = new RsPage(
                 this.farm,
                 "/xsl/resume.xsl",
                 req,
                 () -> new XeAppend(
                     "resume",
-                    new XeAppend("login", resume.login()),
-                    new XeAppend("text", resume.text()),
-                    new XeAppend("personality", resume.personality()),
-                    new XeAppend("soid", Long.toString(resume.soid())),
-                    new XeAppend("telegram", resume.telegram())
+                        items
                 )
             );
         } else {

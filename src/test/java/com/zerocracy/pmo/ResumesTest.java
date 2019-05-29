@@ -28,6 +28,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.time.ZoneOffset;
+
+import org.apache.tools.ant.taskdefs.condition.IsTrue;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.core.IsEqual;
@@ -371,6 +373,58 @@ public final class ResumesTest {
         MatcherAssert.assertThat(
             resumes.olderThan(Instant.now().minus(Duration.ofDays(1L))),
             Matchers.contains(target)
+        );
+    }
+
+    @Test
+    public void resumeHasExaminer() throws Exception {
+        final Farm farm = new FkFarm();
+        final String login = "a-login";
+        final Instant time = Instant.parse("2018-01-01T00:00:00Z");
+        final String text = "Resume text";
+        final String personality = "ENTP-T";
+        final long id = 187141;
+        final String telegram = "telegram";
+        final Resumes resumes = new Resumes(farm).bootstrap();
+        resumes.add(
+                login,
+                LocalDateTime.ofInstant(time, ZoneOffset.UTC),
+                text,
+                personality,
+                id,
+                telegram
+        );
+        resumes.assign(login, "g4s8");
+        MatcherAssert.assertThat(
+                "The resume doesn't have an examiner",
+                resumes.hasExaminer(login),
+                Matchers.is(true)
+        );
+    }
+
+
+    @Test
+    public void resumeDoesntHaveExaminer() throws Exception {
+        final Farm farm = new FkFarm();
+        final String login = "a-login";
+        final Instant time = Instant.parse("2018-01-01T00:00:00Z");
+        final String text = "Resume text";
+        final String personality = "ENTP-T";
+        final long id = 187141;
+        final String telegram = "telegram";
+        final Resumes resumes = new Resumes(farm).bootstrap();
+        resumes.add(
+                login,
+                LocalDateTime.ofInstant(time, ZoneOffset.UTC),
+                text,
+                personality,
+                id,
+                telegram
+        );
+        MatcherAssert.assertThat(
+                "The resume has an examiner",
+                resumes.hasExaminer(login),
+                Matchers.is(false)
         );
     }
 }
