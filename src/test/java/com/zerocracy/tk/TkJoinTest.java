@@ -106,7 +106,6 @@ public final class TkJoinTest {
         );
     }
 
-
     /**
      * {@link TkJoinPost} can show resume if user already applied.
      * {@link TkJoinPost} must show user's resume, if there is one, when
