@@ -20,12 +20,16 @@ import com.jcabi.github.Github
 import com.jcabi.github.Issue
 import com.jcabi.github.IssueLabels
 import com.jcabi.xml.XML
+import com.mongodb.client.model.Filters
 import com.zerocracy.Farm
 import com.zerocracy.Project
+import com.zerocracy.claims.Footprint
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.radars.github.Job
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
+import org.hamcrest.collection.IsEmptyIterable
+import org.hamcrest.core.IsNot
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
@@ -35,4 +39,17 @@ def exec(Project project, XML xml) {
     new IssueLabels.Smart(new Issue.Smart(new Job.Issue(github, 'gh:test/test#1')).labels()).contains('waiting'),
     Matchers.is(true)
   )
+  new Footprint(farm, project).withCloseable { Footprint footprint ->
+    MatcherAssert.assertThat(
+ 'Performer not notified',
+        footprint.collection().find(
+            Filters.and(
+                Filters.eq('project', project.pid()),
+                Filters.eq('type', 'Notify in Telegram'),
+                Filters.eq('token', 'telegram;463943472')
+            )
+        ),
+        new IsNot(new IsEmptyIterable<>())
+    )
+  }
 }

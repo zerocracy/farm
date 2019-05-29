@@ -17,16 +17,45 @@
 package com.zerocracy.bundles.adds_waiting_label_to_issue
 
 import com.jcabi.github.Github
+import com.jcabi.github.Issue
 import com.jcabi.github.Repo
 import com.jcabi.github.Repos
 import com.jcabi.xml.XML
 import com.zerocracy.Farm
 import com.zerocracy.Project
 import com.zerocracy.entry.ExtGithub
+import com.zerocracy.entry.ExtTelegram
+import com.zerocracy.pmo.People
+import com.zerocracy.radars.telegram.TmZerocrat
+import org.cactoos.func.UncheckedFunc
+import org.mockito.Mockito
+import org.telegram.telegrambots.api.methods.send.SendMessage
+import java.lang.reflect.Field
+import java.lang.reflect.Modifier
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
   Github github = new ExtGithub(farm).value()
   Repo repo = github.repos().create(new Repos.RepoCreate('test', false))
-  repo.issues().create('The issue', 'to wait')
+  Issue issue = new Issue.Smart(repo.issues().create('The issue', 'to wait'))
+  issue.assign('yegor256')
+  new People(farm).bootstrap().link('yegor256', 'telegram', '463943472')
+
+  UncheckedFunc mockedFunc =  Mockito.mock(UncheckedFunc)
+  TmZerocrat tmZerocrat = Mockito.mock(TmZerocrat)
+  Mockito.when(mockedFunc.apply(Mockito.any(ExtTelegram))).thenReturn(tmZerocrat)
+  Mockito.doNothing().when(tmZerocrat).post(Mockito.any(SendMessage))
+  Field field = ExtTelegram.class.getDeclaredField("SINGLETON")
+
+  setFinalStatic(field, mockedFunc)
 }
+
+static setFinalStatic(Field field, Object newValue) {
+  field.setAccessible(true)
+  Field modifiersField = Field.class.getDeclaredField("modifiers")
+  modifiersField.setAccessible(true)
+  Modifier.FINAL
+  modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL)
+  field.set(null, newValue)
+}
+
