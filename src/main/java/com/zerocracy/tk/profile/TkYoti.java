@@ -81,8 +81,8 @@ public final class TkYoti implements TkRegex {
             throw new IOException(ex);
         }
         final String name = String.format(
-            "%s %s %d-%d-%d @Yoti",
-            profile.getGivenNames(), profile.getFamilyName(),
+            "%s %d-%d-%d @Yoti",
+            profile.getFullName().getValue(),
             profile.getDateOfBirth().getValue().getDay(),
             profile.getDateOfBirth().getValue().getMonth(),
             profile.getDateOfBirth().getValue().getYear()
