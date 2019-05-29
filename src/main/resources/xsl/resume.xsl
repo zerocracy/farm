@@ -56,7 +56,7 @@ SOFTWARE.
               <xsl:value-of select="personality"/>
             </code>
           </li>
-          <xsl:if test="examiner">...
+          <xsl:if test="examiner">
             <li>
               <xsl:text>examiner: </xsl:text>
               <code>
