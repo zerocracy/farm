@@ -35,4 +35,13 @@ def exec(Project project, XML xml) {
       )
     )
   )
+  agenda = new Agenda(farm, 'yegor256').bootstrap()
+  MatcherAssert.assertThat(
+    agenda.jobs(), new IsIterableContainingInAnyOrder<>(
+      new CollectionOf<>(
+        new IsEqual<>('gh:test/test#3'),
+        new IsEqual<>('gh:test/test#4')
+      )
+    )
+  )
 }
