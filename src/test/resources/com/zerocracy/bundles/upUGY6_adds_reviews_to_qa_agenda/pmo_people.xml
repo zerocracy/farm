@@ -34,13 +34,4 @@ SOFTWARE.
     <applied>2018-01-01T00:00:00.000Z</applied>
     <speed>0.0</speed>
   </person>
-  <person id="yegor256">
-    <mentor>0crat</mentor>
-    <reputation>0</reputation>
-    <projects>0</projects>
-    <jobs>0</jobs>
-    <skills updated="2018-02-22T18:35:15.684Z"/>
-    <applied>2018-01-01T00:00:00.000Z</applied>
-    <speed>0.0</speed>
-  </person>
 </people>

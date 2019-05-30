@@ -27,7 +27,6 @@ import com.zerocracy.farm.Assume
 import com.zerocracy.pm.qa.Reviews
 import com.zerocracy.pm.staff.Roles
 import com.zerocracy.pmo.Agenda
-import com.zerocracy.pmo.People
 import org.cactoos.collection.Filtered
 
 def exec(Project project, XML xml) {
@@ -35,9 +34,6 @@ def exec(Project project, XML xml) {
   new Assume(project, xml).type('Ping daily')
   Farm farm = binding.variables.farm
   new Roles(project).bootstrap().findByRole('QA').each { login ->
-    if (new People(farm).bootstrap().vacation(login)) {
-      return
-    }
     List<String> reviews = new Reviews(project).bootstrap().findByInspector(login)
     Agenda agenda = new Agenda(farm, login).bootstrap()
     Collection<String> jobs = agenda.jobs()

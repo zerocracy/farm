@@ -24,7 +24,6 @@ import com.zerocracy.cash.Cash
 import com.zerocracy.entry.ExtGithub
 import com.zerocracy.pm.qa.Reviews
 import com.zerocracy.pmo.Agenda
-import com.zerocracy.pmo.People
 
 def exec(Project project, XML xml) {
   Farm farm = binding.variables.farm
@@ -34,10 +33,4 @@ def exec(Project project, XML xml) {
   new Agenda(farm, 'ypshenychka').bootstrap().add(project, 'gh:test/test#1', 'QA')
   new Reviews(project).bootstrap()
     .add('gh:test/test#2','ypshenychka', 'krzyk', new Cash.S('$10'), 30, new Cash.S('$0'))
-  new People(farm).bootstrap().vacation('ypshenychka', true)
-
-  new Agenda(farm, 'yegor256').bootstrap().add(project, 'gh:test/test#3', 'QA')
-  new Reviews(project).bootstrap()
-          .add('gh:test/test#4','yegor256', 'krzyk', new Cash.S('$10'), 30, new Cash.S('$0'))
-
 }
